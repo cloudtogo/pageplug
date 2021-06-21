@@ -27,6 +27,10 @@ APPSMITH_REDIS_URL="redis://10.10.13.50:63799"
 
 ## 💕合并 GitHub 更新
 ```
+// 外网代理
+export https_proxy=http://127.0.0.1:3083
+export http_proxy=http://127.0.0.1:3083
+
 // 添加 GitHub 远程仓库，定期同步
 git remote add mirror https://github.com/appsmithorg/appsmith.git
 git fetch mirror master
