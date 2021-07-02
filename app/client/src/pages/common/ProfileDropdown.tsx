@@ -16,6 +16,7 @@ import ProfileImage from "./ProfileImage";
 import { PopperModifiers } from "@blueprintjs/core";
 import { PROFILE } from "constants/routes";
 import { useIntl } from "react-intl";
+import UserApi from "api/UserApi";
 
 type TagProps = CommonComponentProps & {
   onClick?: (text: string) => void;
@@ -77,8 +78,13 @@ const UserNameWrapper = styled.div`
 `;
 
 export default function ProfileDropdown(props: TagProps) {
-  const Profile = <ProfileImage userName={props.userName} />;
   const intl = useIntl();
+  const Profile = (
+    <ProfileImage
+      source={`/api/${UserApi.photoURL}`}
+      userName={props.name || props.userName}
+    />
+  );
 
   return (
     <>
