@@ -2,7 +2,7 @@ import React from "react";
 import "./wdyr";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import "./index.css";
+import "./index.less";
 import { ThemeProvider } from "constants/DefaultTheme";
 import { appInitializer } from "utils/AppsmithUtils";
 import { Slide } from "react-toastify";
@@ -17,6 +17,11 @@ import { setThemeMode } from "actions/themeActions";
 import { StyledToastContainer } from "components/ads/Toast";
 import localStorage from "utils/localStorage";
 import "./polyfills/corejs-add-on";
+// locale
+import { ConfigProvider } from "antd";
+import zhCNAntd from "antd/lib/locale/zh_CN";
+import zhCN from "locales/zh-CN";
+import { IntlProvider } from "react-intl";
 // enable autofreeze only in development
 import { setAutoFreeze } from "immer";
 const shouldAutoFreeze = process.env.NODE_ENV === "development";
@@ -60,7 +65,11 @@ class ThemedApp extends React.Component<{
         />
         <GlobalStyles />
         <AppErrorBoundary>
-          <AppRouter />
+          <IntlProvider locale="zh-CN" messages={zhCN}>
+            <ConfigProvider locale={zhCNAntd}>
+              <AppRouter />
+            </ConfigProvider>
+          </IntlProvider>
         </AppErrorBoundary>
       </ThemeProvider>
     );
