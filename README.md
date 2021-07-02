@@ -1,6 +1,6 @@
 # 前端低代码工具（base on AppSmith）
 
-## 🎈启动项目（windows）
+## 🎈 启动项目（windows）
 [非windows](/contributions/ClientSetup.md)  
 ```
 // 配置 host
@@ -23,9 +23,13 @@ yarn start-win
 // .env 环境变量，开发测试 mongo、redis 地址
 APPSMITH_MONGODB_URI="mongodb://10.10.13.50:27017/appsmith"
 APPSMITH_REDIS_URL="redis://10.10.13.50:63799"
+
+// 启动 java 服务
+cd app/server
+bash ./scripts/start-dev-server.sh
 ```
 
-## 💕合并 GitHub 更新
+## 💕 合并 GitHub 更新
 ```
 // 外网代理
 export https_proxy=http://127.0.0.1:3083
