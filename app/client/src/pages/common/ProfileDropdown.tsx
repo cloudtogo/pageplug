@@ -15,6 +15,7 @@ import { ReduxActionTypes } from "constants/ReduxActionConstants";
 import ProfileImage from "./ProfileImage";
 import { PopperModifiers } from "@blueprintjs/core";
 import { PROFILE } from "constants/routes";
+import { useIntl } from "react-intl";
 
 type TagProps = CommonComponentProps & {
   onClick?: (text: string) => void;
@@ -77,6 +78,7 @@ const UserNameWrapper = styled.div`
 
 export default function ProfileDropdown(props: TagProps) {
   const Profile = <ProfileImage userName={props.userName} />;
+  const intl = useIntl();
 
   return (
     <>
@@ -128,7 +130,10 @@ export default function ProfileDropdown(props: TagProps) {
               type: ReduxActionTypes.LOGOUT_USER_INIT,
             })
           }
-          text="Sign Out"
+          text={intl.formatMessage({
+            id: "header.user.signOut",
+            defaultMessage: "Sign Out",
+          })}
         />
       </Menu>
     </>
