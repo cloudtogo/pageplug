@@ -69,6 +69,7 @@ export const IconLabel = styled.h5`
   flex-shrink: 1;
   font-size: ${(props) => props.theme.fontSizes[1]}px;
   line-height: ${(props) => props.theme.lineHeights[2]}px;
+  color: ${Colors.WHITE};
   &::selection {
     background: none;
   }
