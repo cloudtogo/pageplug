@@ -354,13 +354,13 @@ public class RestApiPlugin extends BasePlugin {
                             if (MediaType.APPLICATION_JSON.equals(contentType) ||
                                     MediaType.APPLICATION_JSON_UTF8.equals(contentType)) {
                                 try {
-                                    String jsonBody = new String(body);
+                                    String jsonBody = new String(body, StandardCharsets.UTF_8);
                                     result.setBody(objectMapper.readTree(jsonBody));
                                 } catch (IOException e) {
                                     throw Exceptions.propagate(
                                             new AppsmithPluginException(
                                                     AppsmithPluginError.PLUGIN_JSON_PARSE_ERROR,
-                                                    new String(body),
+                                                    new String(body, StandardCharsets.UTF_8),
                                                     e.getMessage()
                                             )
                                     );
@@ -372,7 +372,7 @@ public class RestApiPlugin extends BasePlugin {
                                 result.setBody(encode);
                             } else {
                                 // If the body is not of JSON type, just set it as is.
-                                String bodyString = new String(body);
+                                String bodyString = new String(body, StandardCharsets.UTF_8);
                                 result.setBody(bodyString.trim());
                             }
                         }
