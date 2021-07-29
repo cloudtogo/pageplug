@@ -15,6 +15,7 @@ import _, {
   isPlainObject,
   isString,
   isUndefined,
+  startsWith,
   toNumber,
   toString,
 } from "lodash";
@@ -24,6 +25,38 @@ import {
   CUSTOM_CHART_DEFAULT_PARSED,
 } from "../constants/CustomChartConstants";
 import moment from "moment";
+
+/**
+ * REF: https://github.com/angular/angular/blob/master/packages/core/src/sanitization/url_sanitizer.ts
+ * A pattern that recognizes a commonly useful subset of URLs that are safe.
+ *
+ * This regular expression matches a subset of URLs that will not cause script
+ * execution if used in URL context within a HTML document. Specifically, this
+ * regular expression matches if (comment from here on and regex copied from
+ * Soy's EscapingConventions):
+ * (1) Either an allowed protocol (http, https, mailto or ftp).
+ * (2) or no protocol.  A protocol must be followed by a colon. The below
+ *     allows that by allowing colons only after one of the characters [/?#].
+ *     A colon after a hash (#) must be in the fragment.
+ *     Otherwise, a colon after a (?) must be in a query.
+ *     Otherwise, a colon after a single solidus (/) must be in a path.
+ *     Otherwise, a colon after a double solidus (//) must be in the authority
+ *     (before port).
+ *
+ * The pattern disallows &, used in HTML entity declarations before
+ * one of the characters in [/?#]. This disallows HTML entities used in the
+ * protocol name, which should never happen, e.g. "h&#116;tp" for "http".
+ * It also disallows HTML entities in the first path part of a relative path,
+ * e.g. "foo&lt;bar/baz".  Our existing escaping functions should not produce
+ * that. More importantly, it disallows masking of a colon,
+ * e.g. "javascript&#58;...".
+ *
+ * This regular expression was taken from the Closure sanitization library.
+ */
+const SAFE_URL_PATTERN = /^(?:(?:https?|mailto|ftp|tel|file|sms):|[^&:/?#]*(?:[/?#]|$))/gi;
+
+/** A pattern that matches safe data URLs. Only matches image, video and audio types. */
+const DATA_URL_PATTERN = /^data:(?:image\/(?:bmp|gif|jpeg|jpg|png|tiff|webp)|video\/(?:mpeg|mp4|ogg|webm)|audio\/(?:mp3|oga|ogg|opus));base64,[a-z0-9+\/]+=*$/i;
 
 export function validateDateString(
   dateString: string,
@@ -148,9 +181,8 @@ export const VALIDATORS: Record<VALIDATION_TYPES, Validator> = {
     let parsed = value;
     if (isUndefined(value)) {
       return {
-        isValid: false,
+        isValid: true,
         parsed: false,
-        message: `${WIDGET_TYPE_VALIDATION_ERROR} "boolean"`,
       };
     }
     const isABoolean = isBoolean(value);
@@ -201,6 +233,39 @@ export const VALIDATORS: Record<VALIDATION_TYPES, Validator> = {
           parsed: [],
           transformed: undefined,
           message: `${WIDGET_TYPE_VALIDATION_ERROR} "Array"`,
+        };
+      }
+      if (isString(value)) {
+        parsed = JSON.parse(parsed as string);
+      }
+
+      if (!Array.isArray(parsed)) {
+        return {
+          isValid: false,
+          parsed: [],
+          transformed: parsed,
+          message: `${WIDGET_TYPE_VALIDATION_ERROR} "Array"`,
+        };
+      }
+
+      return { isValid: true, parsed, transformed: parsed };
+    } catch (e) {
+      return {
+        isValid: false,
+        parsed: [],
+        transformed: parsed,
+        message: `${WIDGET_TYPE_VALIDATION_ERROR} "Array"`,
+      };
+    }
+  },
+  [VALIDATION_TYPES.ARRAY_OPTIONAL]: (value: any): ValidationResponse => {
+    let parsed = value;
+    try {
+      if (!value) {
+        return {
+          isValid: true,
+          parsed: undefined,
+          transformed: undefined,
         };
       }
       if (isString(value)) {
@@ -1032,5 +1097,90 @@ export const VALIDATORS: Record<VALIDATION_TYPES, Validator> = {
       parsed: [],
       message: `${WIDGET_TYPE_VALIDATION_ERROR}: number[]`,
     };
+  },
+  [VALIDATION_TYPES.RATE_DEFAULT_RATE]: (
+    value: any,
+    props: WidgetProps,
+  ): ValidationResponse => {
+    const { isValid, message, parsed } = VALIDATORS[VALIDATION_TYPES.NUMBER](
+      value,
+      props,
+    );
+    if (!isValid) {
+      return { isValid, parsed, message };
+    }
+    // default rate must be less than max count
+    if (!isNaN(props.maxCount) && Number(value) > Number(props.maxCount)) {
+      return {
+        isValid: false,
+        parsed,
+        message: `This value must be less than or equal to max count`,
+      };
+    }
+    // default rate can be a decimal onlf if Allow half property is true
+    if (!props.isAllowHalf && !Number.isInteger(parsed)) {
+      return {
+        isValid: false,
+        parsed,
+        message: `This value can be a decimal onlf if 'Allow half' is true`,
+      };
+    }
+    return { isValid, parsed };
+  },
+  [VALIDATION_TYPES.RATE_MAX_COUNT]: (
+    value: any,
+    props: WidgetProps,
+  ): ValidationResponse => {
+    const { isValid, message, parsed } = VALIDATORS[VALIDATION_TYPES.NUMBER](
+      value,
+      props,
+    );
+    if (!isValid) {
+      return { isValid, parsed, message };
+    }
+    // max count must be integer
+    if (!Number.isInteger(parsed)) {
+      return {
+        isValid: false,
+        parsed,
+        message: `This value must be integer`,
+      };
+    }
+    return { isValid, parsed };
+  },
+  [VALIDATION_TYPES.COLOR_PICKER_TEXT]: (
+    value: any,
+    props: WidgetProps,
+  ): ValidationResponse => {
+    // check value should be string
+    const { isValid, parsed } = VALIDATORS[VALIDATION_TYPES.TEXT](value, props);
+    // check value should not html tag or unparsed js
+    if (startsWith(parsed, "{{") || startsWith(parsed, "<")) {
+      return {
+        isValid: false,
+        parsed: "",
+        message: `${WIDGET_TYPE_VALIDATION_ERROR}: text`,
+      };
+    }
+    return { isValid, parsed };
+  },
+  [VALIDATION_TYPES.SAFE_URL]: (value: any): ValidationResponse => {
+    const invalidResponse = {
+      isValid: false,
+      parsed: "",
+      message: `${WIDGET_TYPE_VALIDATION_ERROR}: URL`,
+    };
+
+    if (
+      typeof value === "string" &&
+      (value.match(SAFE_URL_PATTERN) || value.match(DATA_URL_PATTERN))
+    ) {
+      return {
+        isValid: true,
+        parsed: value,
+      };
+    } else {
+      return invalidResponse;
+    }
   },
 };
