@@ -1196,6 +1196,18 @@ const WidgetConfigResponse: WidgetConfigReducerState = {
       columns: 4 * GRID_DENSITY_MIGRATION_V1,
       widgetName: "MenuButton",
     },
+    [WidgetTypes.FORMILY_WIDGET]: {
+      widgetName: "复杂表单",
+      rows: 12 * GRID_DENSITY_MIGRATION_V1,
+      columns: 8 * GRID_DENSITY_MIGRATION_V1,
+      version: 1,
+      formType: "PLAIN",
+      triggerLabel: "打开表单",
+      title: "表单标题",
+      submitLabel: "提交",
+      showReset: true,
+      resetLabel: "重置",
+    },
   },
   configVersion: 1,
 };

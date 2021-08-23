@@ -119,6 +119,10 @@ import MenuButtonWidget, {
   MenuButtonWidgetProps,
   ProfiledMenuButtonWidget,
 } from "widgets/MenuButtonWidget";
+import FormilyWidget, {
+  FormilyWidgetProps,
+  ProfiledFormilyWidget,
+} from "widgets/FormilyWidget";
 
 export default class WidgetBuilderRegistry {
   static registerWidgetBuilders() {
@@ -522,6 +526,19 @@ export default class WidgetBuilderRegistry {
       MenuButtonWidget.getDefaultPropertiesMap(),
       MenuButtonWidget.getMetaPropertiesMap(),
       MenuButtonWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.FORMILY_WIDGET,
+      {
+        buildWidget(widgetData: FormilyWidgetProps): JSX.Element {
+          return <ProfiledFormilyWidget {...widgetData} />;
+        },
+      },
+      FormilyWidget.getDerivedPropertiesMap(),
+      FormilyWidget.getDefaultPropertiesMap(),
+      FormilyWidget.getMetaPropertiesMap(),
+      FormilyWidget.getPropertyPaneConfig(),
     );
   }
 }

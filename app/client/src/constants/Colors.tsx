@@ -38,7 +38,7 @@ export const Colors: Record<string, string> = {
   MAKO: "#464D53",
   ALTO: "#DFDFDF",
 
-  GREEN: "#03B365",
+  GREEN: "#2CBBA6",
   JUNGLE_GREEN: "#24BA91",
   JUNGLE_GREEN_DARKER: "#30A481",
   EUCALYPTUS: "#218358",

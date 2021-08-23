@@ -125,6 +125,11 @@ const WidgetSidebarResponse: WidgetCardProps[] = [
     widgetCardName: "Menu Button",
     key: generateReactKey(),
   },
+  {
+    type: "FORMILY_WIDGET",
+    widgetCardName: "复杂表单",
+    key: generateReactKey(),
+  },
 ];
 
 export default WidgetSidebarResponse;
