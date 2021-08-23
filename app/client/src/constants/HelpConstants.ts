@@ -131,6 +131,10 @@ export const HelpMap = {
     path: "/widget-reference/menu-button",
     searchKey: "Menu Button",
   },
+  FORMILY_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Formily",
+  },
 };
 
 export const HelpBaseURL = "https://docs.appsmith.com";

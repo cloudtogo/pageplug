@@ -268,6 +268,12 @@ export const entityDefinitions = {
     isVisible: isVisible,
     label: "string",
   },
+  FORMILY_WIDGET: {
+    "!doc": "复杂表单解决方案",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+    isVisible: isVisible,
+    formData: "any",
+  },
 };
 
 export const GLOBAL_DEFS = {
