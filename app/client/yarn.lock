@@ -104,7 +104,7 @@
   resolved "https://registry.nlark.com/@ant-design/icons-svg/download/@ant-design/icons-svg-4.1.0.tgz#480b025f4b20ef7fe8f47d4a4846e4fee84ea06c"
   integrity sha1-SAsCX0sg73/o9H1KSEbk/uhOoGw=
 
-"@ant-design/icons@^4.6.2":
+"@ant-design/icons@^4.0.0", "@ant-design/icons@^4.6.2":
   version "4.6.2"
   resolved "https://registry.nlark.com/@ant-design/icons/download/@ant-design/icons-4.6.2.tgz#290f2e8cde505ab081fda63e511e82d3c48be982"
   integrity sha1-KQ8ujN5QWrCB/aY+UR6C08SL6YI=
@@ -514,6 +514,11 @@
 "@babel/parser@^7.12.1", "@babel/parser@^7.12.3":
   version "7.12.3"
   resolved "https://registry.npmjs.org/@babel/parser/-/parser-7.12.3.tgz"
+
+"@babel/parser@^7.14.7":
+  version "7.15.2"
+  resolved "https://registry.nlark.com/@babel/parser/download/@babel/parser-7.15.2.tgz#08d4ffcf90d211bf77e7cc7154c6f02d468d2b1d"
+  integrity sha1-CNT/z5DSEb9358xxVMbwLUaNKx0=
 
 "@babel/plugin-proposal-async-generator-functions@^7.10.4":
   version "7.10.5"
@@ -1664,6 +1669,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.1.5", "@babel/runtime@^7.2.0":
+  version "7.14.8"
+  resolved "https://registry.nlark.com/@babel/runtime/download/@babel/runtime-7.14.8.tgz#7119a56f421018852694290b9f9148097391b446"
+  integrity sha1-cRmlb0IQGIUmlCkLn5FICXORtEY=
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/runtime@^7.10.1", "@babel/runtime@^7.12.5":
   version "7.13.10"
   resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.13.10.tgz"
@@ -1922,6 +1934,67 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
+"@designable/core@0.4.34":
+  version "0.4.34"
+  resolved "https://registry.nlark.com/@designable/core/download/@designable/core-0.4.34.tgz#47a7b6251f17c6034f4972d71af13747d8a14dd3"
+  integrity sha1-R6e2JR8XxgNPSXLXGvE3R9ihTdM=
+  dependencies:
+    "@designable/shared" "0.4.34"
+    "@formily/json-schema" "^2.0.0-beta.84"
+    "@formily/path" "^2.0.0-beta.84"
+    "@formily/reactive" "^2.0.0-beta.84"
+    "@juggle/resize-observer" "^3.3.1"
+
+"@designable/formily@0.4.34":
+  version "0.4.34"
+  resolved "https://registry.nlark.com/@designable/formily/download/@designable/formily-0.4.34.tgz#d73c34c925d6c40d9438130d2482e3bcc2e217a1"
+  integrity sha1-1zw0ySXWxA2UOBMNJILjvMLiF6E=
+  dependencies:
+    "@designable/core" "0.4.34"
+    "@designable/shared" "0.4.34"
+    "@formily/core" "^2.0.0-beta.84"
+    "@formily/json-schema" "^2.0.0-beta.84"
+
+"@designable/react-settings-form@0.4.34":
+  version "0.4.34"
+  resolved "https://registry.nlark.com/@designable/react-settings-form/download/@designable/react-settings-form-0.4.34.tgz#a05b04d500348c36d09680eda9a1d7c9d25d4dac"
+  integrity sha1-oFsE1QA0jDbQloDtqaHXydJdTaw=
+  dependencies:
+    "@babel/parser" "^7.14.7"
+    "@designable/core" "0.4.34"
+    "@designable/react" "0.4.34"
+    "@designable/shared" "0.4.34"
+    "@formily/antd" "^2.0.0-beta.84"
+    "@formily/core" "^2.0.0-beta.84"
+    "@formily/react" "^2.0.0-beta.84"
+    "@formily/reactive" "^2.0.0-beta.84"
+    "@formily/reactive-react" "^2.0.0-beta.84"
+    "@formily/shared" "^2.0.0-beta.84"
+    "@monaco-editor/react" "^4.2.1"
+    monaco-editor "^0.25.2"
+    prettier "^2.3.2"
+    react-color "^2.19.3"
+    react-tiny-popover "^6.0.5"
+
+"@designable/react@0.4.34":
+  version "0.4.34"
+  resolved "https://registry.nlark.com/@designable/react/download/@designable/react-0.4.34.tgz#9970a390c92c216cadbd42b5ff778e1306e6b733"
+  integrity sha1-mXCjkMksIWytvUK1/3eOEwbmtzM=
+  dependencies:
+    "@designable/core" "0.4.34"
+    "@designable/shared" "0.4.34"
+    "@formily/reactive" "^2.0.0-beta.84"
+    "@formily/reactive-react" "^2.0.0-beta.84"
+    "@juggle/resize-observer" "^3.3.1"
+    dateformat "^4.5.1"
+
+"@designable/shared@0.4.34":
+  version "0.4.34"
+  resolved "https://registry.nlark.com/@designable/shared/download/@designable/shared-0.4.34.tgz#5ca190f32905719751e4a33422b8c4332b1ffc37"
+  integrity sha1-XKGQ8ykFcZdR5KM0IrjEMysf/Dc=
+  dependencies:
+    requestidlecallback "^0.3.0"
+
 "@draft-js-plugins/editor@^4.1.0":
   version "4.1.0"
   resolved "https://registry.npmjs.org/@draft-js-plugins/editor/-/editor-4.1.0.tgz"
@@ -2106,6 +2179,92 @@
     "@formatjs/intl-listformat" "6.2.5"
     intl-messageformat "9.7.0"
     tslib "^2.1.0"
+
+"@formily/antd@2.0.0-beta.88", "@formily/antd@^2.0.0-beta.84":
+  version "2.0.0-beta.88"
+  resolved "https://registry.nlark.com/@formily/antd/download/@formily/antd-2.0.0-beta.88.tgz#636f3e64907f510c41764a87b97ea9ac44e6e093"
+  integrity sha1-Y28+ZJB/UQxBdkqHuX6prETm4JM=
+  dependencies:
+    "@ant-design/icons" "^4.0.0"
+    "@formily/core" "2.0.0-beta.88"
+    "@formily/json-schema" "2.0.0-beta.88"
+    "@formily/react" "2.0.0-beta.88"
+    "@formily/reactive" "2.0.0-beta.88"
+    "@formily/reactive-react" "2.0.0-beta.88"
+    "@formily/shared" "2.0.0-beta.88"
+    "@juggle/resize-observer" "^3.3.1"
+    classnames "^2.2.6"
+    react-sortable-hoc "^1.11.0"
+    react-sticky-box "^0.9.3"
+
+"@formily/core@2.0.0-beta.88", "@formily/core@^2.0.0-beta.84":
+  version "2.0.0-beta.88"
+  resolved "https://registry.nlark.com/@formily/core/download/@formily/core-2.0.0-beta.88.tgz?cache=0&sync_timestamp=1628480324723&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40formily%2Fcore%2Fdownload%2F%40formily%2Fcore-2.0.0-beta.88.tgz#b9264896ad91ee9114f4dd86ac466b41c8715529"
+  integrity sha1-uSZIlq2R7pEU9N2GrEZrQchxVSk=
+  dependencies:
+    "@formily/reactive" "2.0.0-beta.88"
+    "@formily/shared" "2.0.0-beta.88"
+    "@formily/validator" "2.0.0-beta.88"
+
+"@formily/json-schema@2.0.0-beta.88", "@formily/json-schema@^2.0.0-beta.84":
+  version "2.0.0-beta.88"
+  resolved "https://registry.nlark.com/@formily/json-schema/download/@formily/json-schema-2.0.0-beta.88.tgz?cache=0&sync_timestamp=1628480324779&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40formily%2Fjson-schema%2Fdownload%2F%40formily%2Fjson-schema-2.0.0-beta.88.tgz#abd9c831a622b04558c98dbaf1bfa3656c6c334c"
+  integrity sha1-q9nIMaYisEVYyY268b+jZWxsM0w=
+  dependencies:
+    "@formily/core" "2.0.0-beta.88"
+    "@formily/reactive" "2.0.0-beta.88"
+    "@formily/shared" "2.0.0-beta.88"
+
+"@formily/path@2.0.0-beta.88", "@formily/path@^2.0.0-beta.84":
+  version "2.0.0-beta.88"
+  resolved "https://registry.nlark.com/@formily/path/download/@formily/path-2.0.0-beta.88.tgz?cache=0&sync_timestamp=1628480324662&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40formily%2Fpath%2Fdownload%2F%40formily%2Fpath-2.0.0-beta.88.tgz#ebc8cb09f0659d4a0bb880535406bb9ae1e1fcf6"
+  integrity sha1-68jLCfBlnUoLuIBTVAa7muHh/PY=
+
+"@formily/react@2.0.0-beta.88", "@formily/react@^2.0.0-beta.84":
+  version "2.0.0-beta.88"
+  resolved "https://registry.nlark.com/@formily/react/download/@formily/react-2.0.0-beta.88.tgz#c6110c32abe5f3279728d25fc5767872ce194308"
+  integrity sha1-xhEMMqvl8yeXKNJfxXZ4cs4ZQwg=
+  dependencies:
+    "@formily/core" "2.0.0-beta.88"
+    "@formily/json-schema" "2.0.0-beta.88"
+    "@formily/reactive" "2.0.0-beta.88"
+    "@formily/reactive-react" "2.0.0-beta.88"
+    "@formily/shared" "2.0.0-beta.88"
+    "@formily/validator" "2.0.0-beta.88"
+    hoist-non-react-statics "^3.3.2"
+
+"@formily/reactive-react@2.0.0-beta.88", "@formily/reactive-react@^2.0.0-beta.84":
+  version "2.0.0-beta.88"
+  resolved "https://registry.nlark.com/@formily/reactive-react/download/@formily/reactive-react-2.0.0-beta.88.tgz?cache=0&sync_timestamp=1628480324067&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40formily%2Freactive-react%2Fdownload%2F%40formily%2Freactive-react-2.0.0-beta.88.tgz#2eb87e3d1a1ce811841d6cfdbea7d94f68c5a657"
+  integrity sha1-Lrh+PRoc6BGEHWz9vqfZT2jFplc=
+  dependencies:
+    "@formily/reactive" "2.0.0-beta.88"
+    hoist-non-react-statics "^3.3.2"
+
+"@formily/reactive@2.0.0-beta.88", "@formily/reactive@^2.0.0-beta.84":
+  version "2.0.0-beta.88"
+  resolved "https://registry.nlark.com/@formily/reactive/download/@formily/reactive-2.0.0-beta.88.tgz?cache=0&sync_timestamp=1628480323614&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40formily%2Freactive%2Fdownload%2F%40formily%2Freactive-2.0.0-beta.88.tgz#97f5277e050b895b98944382fc0236f31473232a"
+  integrity sha1-l/UnfgULiVuYlEOC/AI28xRzIyo=
+
+"@formily/shared@2.0.0-beta.88", "@formily/shared@^2.0.0-beta.84":
+  version "2.0.0-beta.88"
+  resolved "https://registry.nlark.com/@formily/shared/download/@formily/shared-2.0.0-beta.88.tgz?cache=0&sync_timestamp=1628480325706&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40formily%2Fshared%2Fdownload%2F%40formily%2Fshared-2.0.0-beta.88.tgz#c1afebc0f5a6328737bf25e7983643246411dc31"
+  integrity sha1-wa/rwPWmMoc3vyXnmDZDJGQR3DE=
+  dependencies:
+    "@formily/path" "2.0.0-beta.88"
+    camel-case "^4.1.1"
+    lower-case "^2.0.1"
+    no-case "^3.0.4"
+    param-case "^3.0.4"
+    pascal-case "^3.1.1"
+    upper-case "^2.0.1"
+
+"@formily/validator@2.0.0-beta.88":
+  version "2.0.0-beta.88"
+  resolved "https://registry.nlark.com/@formily/validator/download/@formily/validator-2.0.0-beta.88.tgz?cache=0&sync_timestamp=1628480323886&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40formily%2Fvalidator%2Fdownload%2F%40formily%2Fvalidator-2.0.0-beta.88.tgz#33027b3adb75eab64ccd4137869ac152511464eb"
+  integrity sha1-MwJ7Ott16rZMzUE3hprBUlEUZOs=
+  dependencies:
+    "@formily/shared" "2.0.0-beta.88"
 
 "@fusioncharts/charts@^3.16.0":
   version "3.16.0"
@@ -2484,6 +2643,11 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
+"@juggle/resize-observer@^3.3.1":
+  version "3.3.1"
+  resolved "https://registry.nlark.com/@juggle/resize-observer/download/@juggle/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
+  integrity sha1-tQp4FwnIHhBwEAQhQ0DyVHWhcaA=
+
 "@manaflair/redux-batch@^1.0.0":
   version "1.0.0"
   resolved "https://registry.npmjs.org/@manaflair/redux-batch/-/redux-batch-1.0.0.tgz"
@@ -2527,6 +2691,21 @@
 "@mdx-js/util@1.6.18":
   version "1.6.18"
   resolved "https://registry.npmjs.org/@mdx-js/util/-/util-1.6.18.tgz"
+
+"@monaco-editor/loader@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.nlark.com/@monaco-editor/loader/download/@monaco-editor/loader-1.1.1.tgz?cache=0&sync_timestamp=1624254052274&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40monaco-editor%2Floader%2Fdownload%2F%40monaco-editor%2Floader-1.1.1.tgz#37db648c81a86946d0febd391de00df9c28a0a3d"
+  integrity sha1-N9tkjIGoaUbQ/r05HeAN+cKKCj0=
+  dependencies:
+    state-local "^1.0.6"
+
+"@monaco-editor/react@^4.2.1":
+  version "4.2.2"
+  resolved "https://registry.nlark.com/@monaco-editor/react/download/@monaco-editor/react-4.2.2.tgz?cache=0&sync_timestamp=1628497722423&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40monaco-editor%2Freact%2Fdownload%2F%40monaco-editor%2Freact-4.2.2.tgz#636e5b8eb9519ef62f475f9a4a50f62ee0c493a8"
+  integrity sha1-Y25bjrlRnvYvR1+aSlD2LuDEk6g=
+  dependencies:
+    "@monaco-editor/loader" "^1.1.1"
+    prop-types "^15.7.2"
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -6389,7 +6568,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@2.x, classnames@^2.2.3:
+classnames@2.x, classnames@^2.2.3, classnames@^2.3.1:
   version "2.3.1"
   resolved "https://registry.npm.taobao.org/classnames/download/classnames-2.3.1.tgz?cache=0&sync_timestamp=1617400318265&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fclassnames%2Fdownload%2Fclassnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
   integrity sha1-38+jiR4wbsHa0QXQ6I9EF7hTXo4=
@@ -7334,6 +7513,11 @@ dateformat@^3.0.2:
   version "3.0.3"
   resolved "https://registry.npmjs.org/dateformat/-/dateformat-3.0.3.tgz"
 
+dateformat@^4.5.1:
+  version "4.5.1"
+  resolved "https://registry.nlark.com/dateformat/download/dateformat-4.5.1.tgz#c20e7a9ca77d147906b6dc2261a8be0a5bd2173c"
+  integrity sha1-wg56nKd9FHkGttwiYai+ClvSFzw=
+
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.9:
   version "2.6.9"
   resolved "https://registry.npmjs.org/debug/-/debug-2.6.9.tgz"
@@ -7722,6 +7906,14 @@ dot-case@^3.0.3:
   dependencies:
     no-case "^3.0.3"
     tslib "^1.10.0"
+
+dot-case@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.npm.taobao.org/dot-case/download/dot-case-3.0.4.tgz?cache=0&sync_timestamp=1606867327042&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fdot-case%2Fdownload%2Fdot-case-3.0.4.tgz#9b2b670d00a431667a8a75ba29cd1b98809ce751"
+  integrity sha1-mytnDQCkMWZ6inW6Kc0bmICc51E=
+  dependencies:
+    no-case "^3.0.4"
+    tslib "^2.0.3"
 
 dot-prop@^5.2.0:
   version "5.3.0"
@@ -11638,7 +11830,7 @@ lodash-es@4.17.14:
   version "4.17.14"
   resolved "https://registry.npmjs.org/lodash-es/-/lodash-es-4.17.14.tgz"
 
-lodash-es@^4.17.21:
+lodash-es@^4.17.15, lodash-es@^4.17.21:
   version "4.17.21"
   resolved "https://registry.npmjs.org/lodash-es/-/lodash-es-4.17.21.tgz"
 
@@ -11787,6 +11979,13 @@ lower-case@^2.0.1:
   resolved "https://registry.npmjs.org/lower-case/-/lower-case-2.0.1.tgz"
   dependencies:
     tslib "^1.10.0"
+
+lower-case@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.npm.taobao.org/lower-case/download/lower-case-2.0.2.tgz#6fa237c63dbdc4a82ca0fd882e4722dc5e634e28"
+  integrity sha1-b6I3xj29xKgsoP2ILkci3F5jTig=
+  dependencies:
+    tslib "^2.0.3"
 
 lowlight@~1.11.0:
   version "1.11.0"
@@ -12350,6 +12549,11 @@ moment-timezone@*, moment-timezone@^0.5.27, moment-timezone@^0.5.31:
   version "2.29.1"
   resolved "https://registry.npmjs.org/moment/-/moment-2.29.1.tgz"
 
+monaco-editor@^0.25.2:
+  version "0.25.2"
+  resolved "https://registry.nlark.com/monaco-editor/download/monaco-editor-0.25.2.tgz#119e2b15bbd968a1a99c03cac9c329316d7c37e9"
+  integrity sha1-EZ4rFbvZaKGpnAPKycMpMW18N+k=
+
 moo-color@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/moo-color/-/moo-color-1.0.2.tgz"
@@ -12502,6 +12706,14 @@ no-case@^3.0.3:
   dependencies:
     lower-case "^2.0.1"
     tslib "^1.10.0"
+
+no-case@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.npm.taobao.org/no-case/download/no-case-3.0.4.tgz#d361fd5c9800f558551a8369fc0dcd4662b6124d"
+  integrity sha1-02H9XJgA9VhVGoNp/A3NRmK2Ek0=
+  dependencies:
+    lower-case "^2.0.2"
+    tslib "^2.0.3"
 
 node-dir@^0.1.10, node-dir@^0.1.17:
   version "0.1.17"
@@ -13050,6 +13262,14 @@ param-case@^3.0.3:
   dependencies:
     dot-case "^3.0.3"
     tslib "^1.10.0"
+
+param-case@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.nlark.com/param-case/download/param-case-3.0.4.tgz#7d17fe4aa12bde34d4a77d91acfb6219caad01c5"
+  integrity sha1-fRf+SqEr3jTUp32RrPtiGcqtAcU=
+  dependencies:
+    dot-case "^3.0.4"
+    tslib "^2.0.3"
 
 parent-module@^1.0.0:
   version "1.0.1"
@@ -14001,6 +14221,11 @@ prettier@^1.16.4, prettier@^1.18.2:
   version "1.19.1"
   resolved "https://registry.npmjs.org/prettier/-/prettier-1.19.1.tgz"
 
+prettier@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.nlark.com/prettier/download/prettier-2.3.2.tgz?cache=0&sync_timestamp=1624696193562&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fprettier%2Fdownload%2Fprettier-2.3.2.tgz#ef280a05ec253712e486233db5c6f23441e7342d"
+  integrity sha1-7ygKBewlNxLkhiM9tcbyNEHnNC0=
+
 pretty-bytes@^5.3.0:
   version "5.4.1"
   resolved "https://registry.npmjs.org/pretty-bytes/-/pretty-bytes-5.4.1.tgz"
@@ -14134,7 +14359,7 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.4"
 
-prop-types@^15.5.0, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.0, prop-types@^15.7.2:
+prop-types@^15.5.0, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.0, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.7.2.tgz"
   dependencies:
@@ -14847,6 +15072,19 @@ react-color@^2.17.0:
     reactcss "^1.2.0"
     tinycolor2 "^1.4.1"
 
+react-color@^2.19.3:
+  version "2.19.3"
+  resolved "https://registry.npm.taobao.org/react-color/download/react-color-2.19.3.tgz#ec6c6b4568312a3c6a18420ab0472e146aa5683d"
+  integrity sha1-7GxrRWgxKjxqGEIKsEcuFGqlaD0=
+  dependencies:
+    "@icons/material" "^0.2.4"
+    lodash "^4.17.15"
+    lodash-es "^4.17.15"
+    material-colors "^1.2.1"
+    prop-types "^15.5.10"
+    reactcss "^1.2.0"
+    tinycolor2 "^1.4.1"
+
 react-custom-scrollbars@^4.2.1:
   version "4.2.1"
   resolved "https://registry.npmjs.org/react-custom-scrollbars/-/react-custom-scrollbars-4.2.1.tgz"
@@ -15368,12 +15606,29 @@ react-sizeme@^2.6.7:
     shallowequal "^1.1.0"
     throttle-debounce "^2.1.0"
 
+react-sortable-hoc@^1.11.0:
+  version "1.11.0"
+  resolved "https://registry.nlark.com/react-sortable-hoc/download/react-sortable-hoc-1.11.0.tgz#fe4022362bbafc4b836f5104b9676608a40a278f"
+  integrity sha1-/kAiNiu6/EuDb1EEuWdmCKQKJ48=
+  dependencies:
+    "@babel/runtime" "^7.2.0"
+    invariant "^2.2.4"
+    prop-types "^15.5.7"
+
 react-spring@^8.0.27:
   version "8.0.27"
   resolved "https://registry.npmjs.org/react-spring/-/react-spring-8.0.27.tgz"
   dependencies:
     "@babel/runtime" "^7.3.1"
     prop-types "^15.5.8"
+
+react-sticky-box@^0.9.3:
+  version "0.9.3"
+  resolved "https://registry.npm.taobao.org/react-sticky-box/download/react-sticky-box-0.9.3.tgz#8450d4cef8e4fdd7b0351520365bc98c97da11af"
+  integrity sha1-hFDUzvjk/dewNRUgNlvJjJfaEa8=
+  dependencies:
+    "@babel/runtime" "^7.1.5"
+    resize-observer-polyfill "^1.5.1"
 
 react-syntax-highlighter@^11.0.2:
   version "11.0.2"
@@ -15417,6 +15672,11 @@ react-textarea-autosize@^7.1.0:
   dependencies:
     "@babel/runtime" "^7.1.2"
     prop-types "^15.6.0"
+
+react-tiny-popover@^6.0.5:
+  version "6.0.10"
+  resolved "https://registry.nlark.com/react-tiny-popover/download/react-tiny-popover-6.0.10.tgz#6167a1b4a1ae6cf847d2909057defd00d95d726c"
+  integrity sha1-YWehtKGubPhH0pCQV979ANldcmw=
 
 react-toastify@^5.5.0:
   version "5.5.0"
@@ -15906,6 +16166,11 @@ request@^2.88.0, request@^2.88.2:
     tough-cookie "~2.5.0"
     tunnel-agent "^0.6.0"
     uuid "^3.3.2"
+
+requestidlecallback@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.nlark.com/requestidlecallback/download/requestidlecallback-0.3.0.tgz#6fb74e0733f90df3faa4838f9f6a2a5f9b742ac5"
+  integrity sha1-b7dOBzP5DfP6pIOPn2oqX5t0KsU=
 
 require-directory@^2.1.1:
   version "2.1.1"
@@ -16799,6 +17064,11 @@ stackframe@^1.1.1:
   version "1.2.0"
   resolved "https://registry.npmjs.org/stackframe/-/stackframe-1.2.0.tgz"
 
+state-local@^1.0.6:
+  version "1.0.7"
+  resolved "https://registry.nlark.com/state-local/download/state-local-1.0.7.tgz#da50211d07f05748d53009bee46307a37db386d5"
+  integrity sha1-2lAhHQfwV0jVMAm+5GMHo32zhtU=
+
 state-toggle@^1.0.0:
   version "1.0.3"
   resolved "https://registry.npmjs.org/state-toggle/-/state-toggle-1.0.3.tgz"
@@ -17613,6 +17883,11 @@ tslib@^2.0.0, tslib@^2.0.1:
   version "2.0.3"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.0.3.tgz"
 
+tslib@^2.0.3:
+  version "2.3.0"
+  resolved "https://registry.nlark.com/tslib/download/tslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
+  integrity sha1-gDuM2rPhK6WBpMpByIObuw2ssJ4=
+
 tslib@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.1.0.tgz"
@@ -17907,6 +18182,13 @@ untildify@^4.0.0:
 upath@^1.1.1, upath@^1.1.2, upath@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/upath/-/upath-1.2.0.tgz"
+
+upper-case@^2.0.1:
+  version "2.0.2"
+  resolved "https://registry.nlark.com/upper-case/download/upper-case-2.0.2.tgz#d89810823faab1df1549b7d97a76f8662bae6f7a"
+  integrity sha1-2JgQgj+qsd8VSbfZenb4Ziuub3o=
+  dependencies:
+    tslib "^2.0.3"
 
 uri-js@^4.2.2:
   version "4.4.0"

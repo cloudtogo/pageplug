@@ -331,6 +331,10 @@ export default class DataTreeEvaluator {
     if (dynamicBindingPathList.length) {
       dynamicBindingPathList.forEach((dynamicPath) => {
         const propertyPath = dynamicPath.key;
+        // [[ quincy hack ]] skip all "schema" path binding
+        if (propertyPath === "schema") {
+          return;
+        }
         const unevalPropValue = _.get(entity, propertyPath);
         const { jsSnippets } = getDynamicBindings(unevalPropValue);
         const existingDeps =
