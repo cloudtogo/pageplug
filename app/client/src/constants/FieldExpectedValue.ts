@@ -197,6 +197,10 @@ const FIELD_VALUES: Record<
     isVisible: "boolean",
     label: "string",
   },
+  FORMILY_WIDGET: {
+    schema: "string",
+    onFormSubmit: "Function Call",
+  },
 };
 
 export default FIELD_VALUES;

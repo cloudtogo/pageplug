@@ -46,6 +46,7 @@ import CustomFusionChartControl from "./CustomFusionChartControl";
 import MenuItemsControl from "./MenuItemsControl";
 import IconSelectControl from "./IconSelectControl";
 import IconAlignControl from "./IconAlignControl";
+import FormilyControl from "./FormilyControl";
 
 export const PropertyControls = {
   InputTextControl,
@@ -71,6 +72,7 @@ export const PropertyControls = {
   MenuItemsControl,
   IconSelectControl,
   IconAlignControl,
+  FormilyControl,
 };
 
 export type PropertyControlPropsType =

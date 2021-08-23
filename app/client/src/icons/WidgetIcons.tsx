@@ -167,6 +167,11 @@ export const WidgetIcons: {
       <MenuButtonIcon />
     </IconWrapper>
   ),
+  FORMILY_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <FormIcon />
+    </IconWrapper>
+  ),
 };
 
 export type WidgetIcon = typeof WidgetIcons[keyof typeof WidgetIcons];
