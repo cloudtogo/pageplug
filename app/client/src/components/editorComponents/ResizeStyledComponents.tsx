@@ -3,13 +3,25 @@ import { WIDGET_PADDING } from "constants/WidgetConstants";
 import styled, { css } from "styled-components";
 
 const EDGE_RESIZE_HANDLE_WIDTH = 12;
-const CORNER_RESIZE_HANDLE_WIDTH = 10;
+const EDGE_RESIZE_BAR_LONG = 20;
+const EDGE_RESIZE_BAR_SHORT = 5;
+const CORNER_RESIZE_HANDLE_WIDTH = 7;
+
+const CORNER_OFFSET = -WIDGET_PADDING - CORNER_RESIZE_HANDLE_WIDTH / 2;
+const HANDLE_OFFSET = -EDGE_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING;
 
 export const VisibilityContainer = styled.div<{
   visible: boolean;
   padding: number;
+  isWidgetActive: boolean;
 }>`
   ${(props) => (!props.visible ? invisible : "")}
+  ${(props) =>
+    props.isWidgetActive
+      ? css`
+          box-shadow: 0 0 32px 0px #2cbba640;
+        `
+      : ""}
   height: 100%;
   width: 100%;
 `;
@@ -26,19 +38,20 @@ export const EdgeHandleStyles = css`
   &::after {
     position: absolute;
     content: "";
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: ${theme.colors.widgetBorder};
-    top: calc(50% - 2px);
+    width: ${EDGE_RESIZE_BAR_SHORT}px;
+    height: ${EDGE_RESIZE_BAR_LONG}px;
+    border-radius: 3px;
+    background: ${theme.colors.widgetResizeBarBG};
+    border: 1px solid ${theme.colors.widgetBorder};
+    top: calc(50% - ${EDGE_RESIZE_BAR_LONG / 2}px);
     left: calc(50% - 2px);
   }
 `;
 
 export const VerticalHandleStyles = css`
   ${EdgeHandleStyles}
-  top:-${WIDGET_PADDING - 1}px;
-  height: calc(100% + ${2 * WIDGET_PADDING - 1}px);
+  top: ${CORNER_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING}px;
+  height: calc(100% + ${2 * WIDGET_PADDING - CORNER_RESIZE_HANDLE_WIDTH}px);
   cursor: col-resize;
   &:before {
     left: 50%;
@@ -50,8 +63,8 @@ export const VerticalHandleStyles = css`
 
 export const HorizontalHandleStyles = css`
   ${EdgeHandleStyles}
-  left: -${WIDGET_PADDING}px;
-  width: calc(100% + ${2 * WIDGET_PADDING}px);
+  left: ${CORNER_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING}px;
+  width: calc(100% + ${2 * WIDGET_PADDING - CORNER_RESIZE_HANDLE_WIDTH}px);
   cursor: row-resize;
   &:before {
     top: 50%;
@@ -59,27 +72,32 @@ export const HorizontalHandleStyles = css`
     left: 0px;
     height: 1px;
   }
+  &::after {
+    width: ${EDGE_RESIZE_BAR_LONG}px;
+    height: ${EDGE_RESIZE_BAR_SHORT}px;
+    top: calc(50% - 2px);
+    left: calc(50% - ${EDGE_RESIZE_BAR_LONG / 2}px);
+  }
 `;
 
 export const LeftHandleStyles = styled.div`
   ${VerticalHandleStyles}
-  left: ${-EDGE_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING}px;
+  left: ${HANDLE_OFFSET}px;
 `;
 
 export const RightHandleStyles = styled.div`
   ${VerticalHandleStyles};
-  right: ${-EDGE_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING + 1}px;
-  height: calc(100% + ${2 * WIDGET_PADDING}px);
+  right: ${HANDLE_OFFSET}px;
 `;
 
 export const TopHandleStyles = styled.div`
   ${HorizontalHandleStyles};
-  top: ${-EDGE_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING}px;
+  top: ${HANDLE_OFFSET}px;
 `;
 
 export const BottomHandleStyles = styled.div`
   ${HorizontalHandleStyles};
-  bottom: ${-EDGE_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING}px;
+  bottom: ${HANDLE_OFFSET}px;
 `;
 
 export const CornerHandleStyles = css`
@@ -87,30 +105,32 @@ export const CornerHandleStyles = css`
   z-index: 3;
   width: ${CORNER_RESIZE_HANDLE_WIDTH}px;
   height: ${CORNER_RESIZE_HANDLE_WIDTH}px;
+  background: ${theme.colors.widgetResizeBarBG};
+  border: 1px solid ${theme.colors.widgetBorder};
+  border-radius: 2px;
 `;
 
 export const BottomRightHandleStyles = styled.div`
   ${CornerHandleStyles};
-  bottom: -${CORNER_RESIZE_HANDLE_WIDTH / 2}px;
-  right: -${CORNER_RESIZE_HANDLE_WIDTH / 2}px;
+  bottom: ${CORNER_OFFSET}px;
+  right: ${CORNER_OFFSET}px;
   cursor: se-resize;
 `;
-
 export const BottomLeftHandleStyles = styled.div`
   ${CornerHandleStyles};
-  left: -${CORNER_RESIZE_HANDLE_WIDTH / 2}px;
-  bottom: -${CORNER_RESIZE_HANDLE_WIDTH / 2}px;
+  left: ${CORNER_OFFSET}px;
+  bottom: ${CORNER_OFFSET}px;
   cursor: sw-resize;
 `;
 export const TopLeftHandleStyles = styled.div`
   ${CornerHandleStyles};
-  left: -${CORNER_RESIZE_HANDLE_WIDTH / 2}px;
-  top: -${CORNER_RESIZE_HANDLE_WIDTH / 2}px;
-  cursor: ew-resize;
+  left: ${CORNER_OFFSET}px;
+  top: ${CORNER_OFFSET}px;
+  cursor: nw-resize;
 `;
 export const TopRightHandleStyles = styled.div`
   ${CornerHandleStyles};
-  right: -${CORNER_RESIZE_HANDLE_WIDTH / 2}px;
-  top: -${CORNER_RESIZE_HANDLE_WIDTH / 2}px;
+  right: ${CORNER_OFFSET}px;
+  top: ${CORNER_OFFSET}px;
   cursor: ne-resize;
 `;

@@ -73,12 +73,12 @@ const getStyles = (
   switch (activity) {
     case Activities.ACTIVE:
       return {
-        background: Colors.JAFFA_DARK,
+        background: Colors.MINT_ORANGE,
         color: Colors.WHITE,
       };
     case Activities.HOVERING:
       return {
-        background: Colors.WATUSI,
+        background: Colors.MINT_ORANGE_LIGHT,
         color: Colors.BLACK_PEARL,
       };
     case Activities.SELECTED:
@@ -99,7 +99,7 @@ export function SettingsControl(props: SettingsControlProps) {
           ? Colors.BLACK_PEARL
           : Colors.WHITE
       }
-      height={14}
+      height={16}
       width={12}
     />
   );
@@ -113,7 +113,7 @@ export function SettingsControl(props: SettingsControlProps) {
 
   return (
     <StyledTooltip
-      content="Edit widget properties"
+      content="编辑组件属性"
       hoverOpenDelay={500}
       position="top-right"
     >

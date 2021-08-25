@@ -40,6 +40,7 @@ import { scrollElementIntoParentCanvasView } from "utils/helpers";
 import { getNearestParentCanvas } from "utils/generators";
 import { commentModeSelector } from "selectors/commentsSelectors";
 import { useWidgetSelection } from "utils/hooks/useWidgetSelection";
+import { PropertyPaneReduxState } from "reducers/uiReducers/propertyPaneReducer";
 
 export type ResizableComponentProps = WidgetProps & {
   paddingOffset: number;
@@ -81,11 +82,20 @@ export const ResizableComponent = memo(function ResizableComponent(
     (state: AppState) => state.ui.widgetDragResize.isResizing,
   );
 
+  const propertyPaneState: PropertyPaneReduxState = useSelector(
+    (state: AppState) => state.ui.propertyPane,
+  );
+
   // isFocused (string | boolean) -> isWidgetFocused (boolean)
   const isWidgetFocused =
     focusedWidget === props.widgetId ||
     selectedWidget === props.widgetId ||
     selectedWidgets.includes(props.widgetId);
+  const isWidgetActive =
+    (selectedWidget === props.widgetId ||
+      selectedWidgets.includes(props.widgetId)) &&
+    propertyPaneState.isVisible &&
+    propertyPaneState.widgetId === props.widgetId;
 
   // Calculate the dimensions of the widget,
   // The ResizableContainer's size prop is controlled
@@ -296,6 +306,7 @@ export const ResizableComponent = memo(function ResizableComponent(
       <VisibilityContainer
         padding={props.paddingOffset}
         visible={!!props.isVisible}
+        isWidgetActive={isWidgetActive}
       >
         {props.children}
       </VisibilityContainer>
