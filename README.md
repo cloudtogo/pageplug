@@ -24,8 +24,14 @@ yarn start-win
 APPSMITH_MONGODB_URI="mongodb://10.10.13.50:27017/appsmith"
 APPSMITH_REDIS_URL="redis://10.10.13.50:63799"
 
+// 使用 IDEA 打开工程
+app/server
+
+// 构建 java 服务
+mvn clean compile
+bash ./build.sh -DskipTests
+
 // 启动 java 服务
-cd app/server
 bash ./scripts/start-dev-server.sh
 ```
 
