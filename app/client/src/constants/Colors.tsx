@@ -81,6 +81,17 @@ export const Colors: Record<string, string> = {
   OPAQ_BLUE: "rgba(106, 134, 206, 0.1)",
   RATE_ACTIVE: "#FFCB45",
   RATE_INACTIVE: "#F2F2F2",
+
+  MINT_GREEN: "#2CBBA6",
+  MINT_GREEN_LIGHT: "#CAF0EB",
+  MINT_ORANGE: "#FF6A00",
+  MINT_ORANGE_LIGHT: "#FFE8D7",
+  MINT_BLUE: "#3C6DC1",
+  MINT_BLUE_LIGHT: "#CFDCF1",
+  MINT_YELLOW: "#FFB93C",
+  MINT_YELLOW_LIGHT: "#FFF1D7",
+  MINT_RED: "#F93B4D",
+  MINT_RED_LIGHT: "#FED6DA",
 };
 
 export type Color = typeof Colors[keyof typeof Colors];
