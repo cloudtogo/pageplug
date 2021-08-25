@@ -30,15 +30,13 @@ import useProceedToNextTourStep, {
 import { getCommentsIntroSeen } from "utils/storage";
 import { ANONYMOUS_USERNAME, User } from "constants/userConstants";
 import { AppState } from "reducers";
-import { APP_MODE } from "reducers/entityReducers/appReducer";
+import { APP_MODE } from "entities/App";
 
 import {
   AUTH_LOGIN_URL,
   matchBuilderPath,
   matchViewerPath,
 } from "constants/routes";
-
-import { createMessage, UNREAD_MESSAGE } from "constants/messages";
 
 import localStorage from "utils/localStorage";
 
@@ -134,7 +132,7 @@ const useUpdateCommentMode = async (currentUser?: User) => {
     const searchParams = new URL(window.location.href).searchParams;
     const isCommentMode = searchParams.get("isCommentMode");
     const isCommentsIntroSeen = await getCommentsIntroSeen();
-    const updatedIsCommentMode = isCommentMode === "true" ? true : false;
+    const updatedIsCommentMode = isCommentMode === "true";
 
     const notLoggedId = currentUser?.username === ANONYMOUS_USERNAME;
 
@@ -150,6 +148,7 @@ const useUpdateCommentMode = async (currentUser?: User) => {
 
     if (updatedIsCommentMode && !isCommentsIntroSeen) {
       dispatch(showCommentsIntroCarousel());
+      setCommentModeInUrl(false);
     } else {
       setCommentModeInStore(updatedIsCommentMode);
     }
@@ -390,19 +389,12 @@ function ToggleCommentModeButton({
           >
             <ViewOrEditMode mode={mode} />
           </ModeButton>
-          <TooltipComponent
-            content={createMessage(UNREAD_MESSAGE)}
-            isOpen={showCommentButtonDiscoveryTooltip}
-          >
-            <CommentModeBtn
-              {...{
-                handleSetCommentModeButton,
-                isCommentMode: isCommentMode || isTourStepActive, // Highlight the button during the tour
-                showUnreadIndicator,
-                showSelectedMode,
-              }}
-            />
-          </TooltipComponent>
+          <CommentModeBtn
+            handleSetCommentModeButton={handleSetCommentModeButton}
+            isCommentMode={isCommentMode || isTourStepActive} // Highlight the button during the tour
+            showSelectedMode={showSelectedMode}
+            showUnreadIndicator={showUnreadIndicator}
+          />
         </div>
       </TourTooltipWrapper>
     </Container>
