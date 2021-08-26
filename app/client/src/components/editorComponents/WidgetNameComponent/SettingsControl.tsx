@@ -124,11 +124,7 @@ export function SettingsControl(props: SettingsControlProps) {
 
   return (
     <StyledTooltip
-      content={
-        isSnipingMode
-          ? `绑定到组件 ${props.name}`
-          : "编辑组件属性"
-      }
+      content={isSnipingMode ? `绑定到组件 ${props.name}` : "编辑组件属性"}
       hoverOpenDelay={500}
       position="top-right"
     >
@@ -148,7 +144,7 @@ export function SettingsControl(props: SettingsControlProps) {
           <BindDataIcon color={Colors.WHITE} height={16} width={12} />
         )}
         <WidgetName className="t--widget-name">
-          {isSnipingMode ? `Bind to ${props.name}` : props.name}
+          {isSnipingMode ? `绑定到 ${props.name}` : props.name}
         </WidgetName>
         {!isSnipingMode && settingsIcon}
       </SettingsWrapper>
