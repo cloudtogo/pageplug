@@ -2,7 +2,7 @@ import React from "react";
 import BaseWidget, { WidgetProps, WidgetState } from "./BaseWidget";
 import { WidgetType, WidgetTypes } from "constants/WidgetConstants";
 import FormilyComponent from "components/designSystems/appsmith/FormilyComponent";
-import { VALIDATION_TYPES } from "constants/WidgetValidation";
+import { ValidationTypes } from "constants/WidgetValidation";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import * as Sentry from "@sentry/react";
 import withMeta, { WithMeta } from "./MetaHOC";
@@ -20,7 +20,7 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
             isJSConvertible: false,
             isBindProperty: true,
             isTriggerProperty: false,
-            validation: VALIDATION_TYPES.TEXT,
+            validation: { type: ValidationTypes.TEXT },
           },
           {
             helpText: "表单展示形式，支持平铺、弹窗、侧边抽屉三种形式",
@@ -50,7 +50,7 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
-            validation: VALIDATION_TYPES.TEXT,
+            validation: { type: ValidationTypes.TEXT },
             hidden: (props: FormilyWidgetProps) => {
               return props.formType === "PLAIN";
             },
@@ -61,7 +61,7 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
-            validation: VALIDATION_TYPES.TEXT,
+            validation: { type: ValidationTypes.TEXT },
           },
           {
             propertyName: "submitLabel",
@@ -69,7 +69,7 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
-            validation: VALIDATION_TYPES.TEXT,
+            validation: { type: ValidationTypes.TEXT },
           },
           {
             propertyName: "showReset",
@@ -77,7 +77,7 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
             controlType: "SWITCH",
             isBindProperty: true,
             isTriggerProperty: false,
-            validation: VALIDATION_TYPES.BOOLEAN,
+            validation: { type: ValidationTypes.BOOLEAN },
           },
           {
             propertyName: "resetLabel",
@@ -85,7 +85,7 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
-            validation: VALIDATION_TYPES.TEXT,
+            validation: { type: ValidationTypes.TEXT },
             hidden: (props: FormilyWidgetProps) => {
               return !props.showReset;
             },
