@@ -46,12 +46,10 @@ function AddDatasourceSecurely() {
       <div>
         <HeadWrapper>
           <img src={Secure} />
-          <Header>Secure & fast database connection</Header>
+          <Header>快速且安全的数据连接</Header>
         </HeadWrapper>
         <Content>
-          Connect your database to start building read/write workflows. Your
-          Passwords are fully encrypted and we never store any of your data.
-          That’s a promise.
+          立即连接数据源来构建您的工作流，您的全部数据都是加密传输，我们向您保证不会存储您的任何数据。
         </Content>
       </div>
       <img className="datasource-img" src={AppsmithDatasource} />

@@ -152,7 +152,7 @@ export function EditableText(props: EditableTextProps) {
         setIsEditing(false);
       } else {
         Toaster.show({
-          text: "Invalid name",
+          text: "无效名称",
           variant: Variant.danger,
         });
       }

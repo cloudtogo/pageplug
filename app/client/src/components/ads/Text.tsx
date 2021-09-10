@@ -33,6 +33,7 @@ export type TextProps = CommonComponentProps & {
   weight?: FontWeight;
   highlight?: boolean;
   textAlign?: string;
+  wordBreak?: string;
 };
 
 const typeSelector = (props: TextProps & ThemeProp): string => {
@@ -74,6 +75,7 @@ const Text = styled.span.attrs((props: TextProps) => ({
     props.highlight ? props.theme.colors.text.highlight : typeSelector(props)};
   text-transform: ${(props) => (props.case ? props.case : "none")};
   text-align: ${(props) => (props.textAlign ? props.textAlign : "normal")};
+  word-break: ${(props) => (props.wordBreak ? props.wordBreak : "normal")};
 `;
 
 export default Text;

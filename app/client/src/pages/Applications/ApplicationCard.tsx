@@ -60,7 +60,7 @@ const NameWrapper = styled((props: HTMLDivProps & NameWrapperProps) => (
   <div {...omit(props, ["hasReadPermission", "showOverlay", "isMenuOpen"])} />
 ))`
   .bp3-card {
-    border-radius: 0;
+    border-radius: 6px;
     box-shadow: none;
   }
   ${(props) =>
@@ -68,6 +68,7 @@ const NameWrapper = styled((props: HTMLDivProps & NameWrapperProps) => (
     `
       {
         background-color: ${props.theme.colors.card.hoverBorder}};
+        border-radius: 6px;
         justify-content: center;
         align-items: center;
 
@@ -87,7 +88,12 @@ const NameWrapper = styled((props: HTMLDivProps & NameWrapperProps) => (
                 z-index: 1;
               }`}
 
+          ${props.hasReadPermission &&
+            !props.isMenuOpen &&
+            `backdrop-filter: saturate(180%) blur(5px);`}
+
           & div.image-container {
+            border-radius: 6px;
             background: ${
               props.hasReadPermission && !props.isMenuOpen
                 ? getColorWithOpacity(
@@ -117,7 +123,17 @@ const Wrapper = styled(
   width: ${(props) => props.theme.card.minWidth}px;
   height: ${(props) => props.theme.card.minHeight}px;
   position: relative;
-  background-color: ${(props) => props.backgroundColor};
+  background-color: #ffffff;
+  border: 2px solid ${(props) => props.backgroundColor};
+  background-image: repeating-radial-gradient(
+      circle at 0 0,
+      transparent 0,
+      #ffffff 12px
+    ),
+    repeating-linear-gradient(
+      ${(props) => props.backgroundColor}08,
+      ${(props) => props.backgroundColor}22
+    );
   margin: ${(props) => props.theme.spaces[5]}px;
   .overlay {
     display: block;
@@ -126,6 +142,7 @@ const Wrapper = styled(
     top: 0;
     height: 100%;
     width: 100%;
+    border-radius: 6px;
     ${(props) => !props.hasReadPermission && `pointer-events: none;`}
   }
   .bp3-card {
@@ -135,7 +152,7 @@ const Wrapper = styled(
     margin: 0 auto;
     svg {
       path {
-        fill: #fff;
+        fill: ${(props) => props.backgroundColor};
       }
     }
   }
@@ -190,7 +207,8 @@ const Control = styled.div<{ fixed?: boolean }>`
 const MoreOptionsContainer = styled.div`
   width: 22px;
   height: 22px;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -232,8 +250,8 @@ const EditButton = styled(Button)`
 
 const ContextDropdownWrapper = styled.div`
   position: absolute;
-  top: -6px;
-  right: -3px;
+  top: -4px;
+  right: -8px;
 
   .${Classes.POPOVER_TARGET} {
     span {
@@ -280,7 +298,7 @@ export function ApplicationCard(props: ApplicationCardProps) {
     if (props.share) {
       moreActionItems.push({
         onSelect: shareApp,
-        text: "Share",
+        text: "分享",
         icon: "share",
         cypressSelector: "t--share",
       });
@@ -288,7 +306,7 @@ export function ApplicationCard(props: ApplicationCardProps) {
     if (props.duplicate && hasEditPermission) {
       moreActionItems.push({
         onSelect: duplicateApp,
-        text: "Duplicate",
+        text: "复制到当前应用组",
         icon: "duplicate",
         cypressSelector: "t--duplicate",
       });
@@ -297,7 +315,7 @@ export function ApplicationCard(props: ApplicationCardProps) {
     if (hasEditPermission) {
       moreActionItems.push({
         onSelect: forkApplicationInitiate,
-        text: "Fork",
+        text: "复制到任意应用组",
         icon: "fork",
         cypressSelector: "t--fork-app",
       });
@@ -305,7 +323,7 @@ export function ApplicationCard(props: ApplicationCardProps) {
     if (!!props.enableImportExport && hasExportPermission) {
       moreActionItems.push({
         onSelect: exportApplicationAsJSONFile,
-        text: "Export",
+        text: "导出",
         icon: "download",
         cypressSelector: "t--export-app",
       });
@@ -381,7 +399,7 @@ export function ApplicationCard(props: ApplicationCardProps) {
     updatedActionItems.pop();
     updatedActionItems.push({
       onSelect: deleteApp,
-      text: "Are you sure?",
+      text: "确定删除吗？",
       icon: "delete",
       type: "warning",
       cypressSelector: "t--delete",
@@ -396,7 +414,7 @@ export function ApplicationCard(props: ApplicationCardProps) {
       }
       moreActionItems.push({
         onSelect: askForConfirmation,
-        text: "Delete",
+        text: "删除",
         icon: "delete",
         cypressSelector: "t--delete-confirm",
       });
@@ -455,7 +473,7 @@ export function ApplicationCard(props: ApplicationCardProps) {
             isError={isErroredSavingName}
             isInvalid={(value: string) => {
               if (!value) {
-                return "Name cannot be empty";
+                return "名字不能为空";
               } else {
                 return false;
               }
@@ -469,7 +487,7 @@ export function ApplicationCard(props: ApplicationCardProps) {
             onTextChanged={(value: string) => {
               setLastUpdatedValue(value);
             }}
-            placeholder={"Edit text input"}
+            placeholder={"编辑名称"}
             savingState={
               isSavingName ? SavingState.STARTED : SavingState.NOT_STARTED
             }
@@ -564,7 +582,7 @@ export function ApplicationCard(props: ApplicationCardProps) {
                       href={editApplicationURL}
                       icon={"edit"}
                       size={Size.medium}
-                      text="Edit"
+                      text="编辑"
                     />
                   )}
                   {!isMenuOpen && (
@@ -575,7 +593,7 @@ export function ApplicationCard(props: ApplicationCardProps) {
                       href={viewApplicationURL}
                       icon={"rocket"}
                       size={Size.medium}
-                      text="LAUNCH"
+                      text="访问"
                     />
                   )}
                 </Control>

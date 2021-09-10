@@ -9,7 +9,10 @@ import { getCurrentUser } from "selectors/usersSelectors";
 import { forgotPasswordSubmitHandler } from "pages/UserAuth/helpers";
 import { Toaster } from "components/ads/Toast";
 import { Variant } from "components/ads/common";
-import { FORGOT_PASSWORD_SUCCESS_TEXT } from "constants/messages";
+import {
+  FORGOT_PASSWORD_SUCCESS_TEXT,
+  createMessage,
+} from "constants/messages";
 import { logoutUser, updateUserDetails } from "actions/userActions";
 import { AppState } from "reducers";
 import UserProfileImagePicker from "components/ads/UserProfileImagePicker";
@@ -58,7 +61,7 @@ function General() {
     try {
       await forgotPasswordSubmitHandler({ email: user?.email }, dispatch);
       Toaster.show({
-        text: `${FORGOT_PASSWORD_SUCCESS_TEXT} ${user?.email}`,
+        text: `${createMessage(FORGOT_PASSWORD_SUCCESS_TEXT)} ${user?.email}`,
         variant: Variant.success,
       });
       dispatch(logoutUser());
@@ -87,13 +90,13 @@ function General() {
     <Wrapper>
       <FieldWrapper>
         <LabelWrapper>
-          <Text type={TextType.H4}>Display Picture</Text>
+          <Text type={TextType.H4}>头像</Text>
         </LabelWrapper>
         <UserProfileImagePicker />
       </FieldWrapper>
       <FieldWrapper>
         <LabelWrapper>
-          <Text type={TextType.H4}>Display name</Text>
+          <Text type={TextType.H4}>昵称</Text>
         </LabelWrapper>
         {isFetchingUser && <Loader className={Classes.SKELETON} />}
         {!isFetchingUser && (
@@ -103,7 +106,7 @@ function General() {
               defaultValue={user?.name}
               fill={false}
               onChange={onNameChange}
-              placeholder="Display name"
+              placeholder="昵称"
               validator={notEmptyValidator}
             />
           </div>
@@ -111,15 +114,13 @@ function General() {
       </FieldWrapper>
       <FieldWrapper>
         <LabelWrapper>
-          <Text type={TextType.H4}>Email</Text>
+          <Text type={TextType.H4}>邮箱</Text>
         </LabelWrapper>
         <div style={{ flexDirection: "column", display: "flex" }}>
           {isFetchingUser && <TextLoader className={Classes.SKELETON} />}
           {!isFetchingUser && <Text type={TextType.P1}>{user?.email}</Text>}
 
-          <ForgotPassword onClick={forgotPassword}>
-            Reset Password
-          </ForgotPassword>
+          <ForgotPassword onClick={forgotPassword}>重置密码</ForgotPassword>
         </div>
       </FieldWrapper>
       {/* <InputWrapper>

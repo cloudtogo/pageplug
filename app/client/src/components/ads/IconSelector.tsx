@@ -38,6 +38,7 @@ const IconBox = styled.div<{ selectedColor?: string }>`
   align-items: center;
   background-color: ${(props) =>
     props.selectedColor || props.theme.colors.appIcon.background};
+  border-radius: ${(props) => props.theme.borderRadius};
   margin: 0 ${(props) => props.theme.spaces[2]}px
     ${(props) => props.theme.spaces[2]}px 0;
   position: relative;

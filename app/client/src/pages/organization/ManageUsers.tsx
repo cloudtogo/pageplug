@@ -46,7 +46,7 @@ function ManageUsers({ orgId }: { orgId: string }) {
         history.push(`/org/${orgId}/settings/members`);
       }}
     >
-      <Text type={TextType.H6}>MANAGE USERS</Text>
+      <Text type={TextType.H6}>管理组员</Text>
       <Icon name="manage" size={IconSize.XXS} />
     </StyledManageUsers>
   ) : null;

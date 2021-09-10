@@ -15,7 +15,7 @@ const ExplorerSearchWrapper = styled.div<{ isHidden?: boolean }>`
   font-size: 12px;
   top: 0;
   z-index: 1;
-  background: ${Colors.MINE_SHAFT};
+  background: ${Colors.MINT_GRAY};
   & {
     .${Classes.ICON} {
       color: ${Colors.DOVE_GRAY};
@@ -26,7 +26,7 @@ const ExplorerSearchWrapper = styled.div<{ isHidden?: boolean }>`
       justify-content: center;
       align-items: center;
       &:last-of-type {
-        color: ${Colors.MINE_SHAFT};
+        color: ${Colors.MINT_GRAY};
       }
     }
     input {
@@ -34,7 +34,7 @@ const ExplorerSearchWrapper = styled.div<{ isHidden?: boolean }>`
       border: none;
       background: none;
       padding: 0px 10px 0px 10px;
-      color: ${Colors.WHITE};
+      color: ${Colors.BLACK};
       &::placeholder {
         color: ${Colors.DOVE_GRAY};
       }
@@ -43,7 +43,7 @@ const ExplorerSearchWrapper = styled.div<{ isHidden?: boolean }>`
           width: 100%;
         }
         & ~ .${Classes.ICON} {
-          color: ${Colors.WHITE};
+          color: ${Colors.DOVE_GRAY};
         }
       }
     }
@@ -56,7 +56,7 @@ const Underline = styled.div`
   right: 0;
   width: 0%;
   height: 1px;
-  background: ${Colors.TIA_MARIA};
+  background: ${Colors.MINT_GREEN};
   bottom: 0;
   transition: width 0.3s ease-in;
 `;
@@ -78,7 +78,7 @@ export const ExplorerSearch = forwardRef(
           autoComplete="off"
           autoFocus={props.autoFocus}
           id={ENTITY_EXPLORER_SEARCH_ID}
-          placeholder={props.placeholder || "Search entities..."}
+          placeholder={props.placeholder || "搜索组件..."}
           ref={ref}
           type="text"
         />

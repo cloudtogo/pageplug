@@ -25,10 +25,28 @@ export enum EntityClassNames {
   COLLAPSE_TOGGLE = "t--entity-collapse-toggle",
   WRAPPER = "t--entity",
   PROPERTY = "t--entity-property",
+  PAGE = "page",
 }
 
 const Wrapper = styled.div<{ active: boolean }>`
   line-height: ${(props) => props.theme.lineHeights[2]}px;
+
+  &.${EntityClassNames.PAGE} {
+    margin: 12px 0;
+    border-radius: ${(props) => props.theme.borderRadius};
+    border: ${(props) =>
+      props.active
+        ? `2px solid ${props.theme.colors.primary}`
+        : `1px solid ${props.theme.colors.primary}`};
+    box-shadow: ${(props) =>
+      props.active
+        ? `0 0 0 4px ${props.theme.colors.primary}22
+      `
+        : `
+      0 1px 3px 0 rgb(0 0 0 / 10%),
+      0 1px 2px 0 rgb(0 0 0 / 6%)
+    `};
+  }
 `;
 
 export const EntityItem = styled.div<{
@@ -38,24 +56,27 @@ export const EntityItem = styled.div<{
   highlight: boolean;
 }>`
   position: relative;
-  border-top: ${(props) => (props.highlight ? "1px solid #e7e7e7" : "none")};
-  border-bottom: ${(props) => (props.highlight ? "1px solid #e7e7e7" : "none")};
+  border-top: ${(props) =>
+    props.highlight ? `1px solid ${Colors.MINT_GREEN}` : "none"};
+  border-bottom: ${(props) =>
+    props.highlight ? `1px solid ${Colors.MINT_GREEN}` : "none"};
   font-size: 12px;
   user-select: none;
   padding-left: ${(props) =>
     props.step * props.theme.spaces[2] + props.theme.spaces[2]}px;
-  background: ${(props) => (props.active ? Colors.TUNDORA : "none")};
+  background: ${(props) => (props.active ? Colors.MINT_GREEN_LIGHT : "none")};
   height: 30px;
   width: 100%;
   display: inline-grid;
   grid-template-columns: ${(props) =>
     props.spaced ? "20px auto 1fr auto 30px" : "8px auto 1fr auto 30px"};
   border-radius: 0;
-  color: ${(props) => (props.active ? Colors.WHITE : Colors.ALTO)};
+  color: ${(props) =>
+    props.active ? Colors.MINT_BLACK : props.theme.colors.text.normal};
   cursor: pointer;
   align-items: center;
   &:hover {
-    background: ${Colors.TUNDORA};
+    background: ${Colors.MINT_GREEN_LIGHT}66;
   }
   & .${Classes.POPOVER_TARGET}, & .${Classes.POPOVER_WRAPPER} {
     width: 100%;

@@ -441,7 +441,7 @@ export function* leaveOrgSaga(action: ReduxAction<LeaveOrgRequest>) {
         type: ReduxActionTypes.GET_ALL_APPLICATION_INIT,
       });
       Toaster.show({
-        text: `You have successfully left the organization`,
+        text: `成功退出应用组`,
         variant: Variant.success,
       });
     }

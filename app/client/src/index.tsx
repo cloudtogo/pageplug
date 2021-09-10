@@ -22,6 +22,7 @@ import { ConfigProvider } from "antd";
 import zhCNAntd from "antd/lib/locale/zh_CN";
 import zhCN from "locales/zh-CN";
 import { IntlProvider } from "react-intl";
+import "moment/locale/zh-cn";
 // enable autofreeze only in development
 import { setAutoFreeze } from "immer";
 const shouldAutoFreeze = process.env.NODE_ENV === "development";

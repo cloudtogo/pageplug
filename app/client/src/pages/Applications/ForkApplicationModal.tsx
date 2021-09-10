@@ -85,7 +85,7 @@ function ForkApplicationModal(props: ForkApplicationModalProps) {
       isOpen={isModalOpen || showBasedOnURL}
       maxHeight={"540px"}
       setModalClose={setModalClose}
-      title={"Choose where to fork the app"}
+      title={"复制到哪个应用组呢？"}
       trigger={props.trigger}
     >
       <Divider />
@@ -112,7 +112,7 @@ function ForkApplicationModal(props: ForkApplicationModalProps) {
           isLoading={forkingApplication}
           onClick={forkApplication}
           size={Size.large}
-          text={"FORK"}
+          text={"复 制"}
         />
       </ButtonWrapper>
     </StyledDialog>

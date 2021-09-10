@@ -38,10 +38,10 @@ function ServerUnavailable() {
         src={PageUnavailableImage}
       />
       <div>
-        <p className="bold-text">Appsmith server is unavailable</p>
-        <p>Please try again after some time</p>
+        <p className="bold-text">系统服务出了一点问题😭</p>
+        <p>请稍后重试</p>
         <RetryButton onClick={() => window.location.reload()}>
-          {"Retry"}
+          {"重试"}
         </RetryButton>
       </div>
     </Wrapper>

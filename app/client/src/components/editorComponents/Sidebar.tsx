@@ -10,13 +10,16 @@ import PerformanceTracker, {
 import { Layers } from "constants/Layers";
 
 const SidebarWrapper = styled.div`
-  background-color: ${Colors.MINE_SHAFT};
+  background-color: ${Colors.WHITE};
   padding: 0;
   width: ${(props) => props.theme.sidebarWidth};
   z-index: ${Layers.sideBar};
-
-  color: ${(props) => props.theme.colors.textOnDarkBG};
+  color: ${(props) => props.theme.colors.textDefault};
   overflow-y: auto;
+  box-shadow: ${(props) => props.theme.colors.header.boxShadow};
+  border-right: 1px solid
+    ${(props) => props.theme.colors.header.tabsHorizontalSeparator};
+
   & .${Classes.PANEL_STACK} {
     height: 100%;
     .${Classes.PANEL_STACK_VIEW} {

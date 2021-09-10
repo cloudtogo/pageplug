@@ -22,7 +22,7 @@ export function CollapseToggle(props: {
   return (
     <Icon
       className={props.className}
-      color={props.disabled ? Colors.SLATE_GRAY : Colors.WHITE}
+      color={props.disabled ? Colors.SLATE_GRAY : "#484848"}
       icon={icon}
       onClick={handleClick}
     />

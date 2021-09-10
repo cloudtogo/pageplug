@@ -63,14 +63,14 @@ class AppViewerPageContainer extends Component<AppViewerPageContainerProps> {
     ) {
       appsmithEditorLink = (
         <p>
-          Please add widgets to this page in the&nbsp;
+          想给页面添加组件？立即前往&nbsp;
           <Link
             to={BUILDER_PAGE_URL(
               this.props.match.params.applicationId,
               this.props.match.params.pageId,
             )}
           >
-            Appsmith Editor
+            页面编辑
           </Link>
         </p>
       );
@@ -86,7 +86,7 @@ class AppViewerPageContainer extends Component<AppViewerPageContainerProps> {
               iconSize={theme.fontSizes[9]}
             />
           }
-          title="This page seems to be blank"
+          title="页面空空如也😅"
         />
       </Centered>
     );

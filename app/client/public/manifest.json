@@ -1,9 +1,9 @@
 {
-  "short_name": "Appsmith App",
-  "name": "Appsmith Client Web UI",
+  "short_name": "PagePlug",
+  "name": "PagePlug Client Web UI",
   "icons": [
     {
-      "src": "favicon-orange.ico",
+      "src": "favicon-black.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     }

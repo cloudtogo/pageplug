@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import styled, { ThemeContext } from "styled-components";
+import styled, { ThemeContext, keyframes, css } from "styled-components";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { AppState } from "reducers";
@@ -310,13 +310,12 @@ const WorkpsacesNavigator = styled.div`
 
 const textIconStyles = (props: { color: string; hover: string }) => {
   return `
-    &&&&&& {
+    & {
       .${Classes.TEXT},.${Classes.ICON} svg path {
         color: ${props.color};
         stroke: ${props.color};
         fill: ${props.color};
       }
-
 
       &:hover {
         .${Classes.TEXT},.${Classes.ICON} svg path {
@@ -329,7 +328,19 @@ const textIconStyles = (props: { color: string; hover: string }) => {
   `;
 };
 
+const spreadKeyframes = (init: number) => {
+  const frames = Array.from(Array(21))
+    .map((a, i) => {
+      return `
+        ${i * 5}% { --spread: ${init + i}px; }
+      `;
+    })
+    .join("\n");
+  return keyframes`${frames}`;
+};
+
 const ApplicationAddCardWrapper = styled(Card)`
+  --spread: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -338,8 +349,8 @@ const ApplicationAddCardWrapper = styled(Card)`
   width: ${(props) => props.theme.card.minWidth}px;
   height: ${(props) => props.theme.card.minHeight}px;
   position: relative;
-  box-shadow: none;
-  border-radius: 0;
+  box-shadow: inset 0 0 20px #dcdcdc;
+  border-radius: 6px;
   padding: 0;
   margin: ${(props) => props.theme.spaces[5]}px;
   a {
@@ -352,14 +363,16 @@ const ApplicationAddCardWrapper = styled(Card)`
   }
   cursor: pointer;
   &:hover {
-    background: ${(props) => props.theme.colors.applications.hover.bg};
+    animation: ${spreadKeyframes(20)} 0.6s infinite;
   }
-  ${(props) => {
-    return `${textIconStyles({
-      color: props.theme.colors.applications.textColor,
-      hover: props.theme.colors.applications.hover.textColor,
-    })}`;
-  }}
+  .t--create-app-popup svg path {
+    color: ${(props) => props.theme.colors.applications.iconColor};
+    stroke: ${(props) => props.theme.colors.applications.iconColor};
+    fill: ${(props) => props.theme.colors.applications.iconColor};
+  }
+  .createnew {
+    color: ${(props) => props.theme.colors.applications.textColor};
+  }
 `;
 
 function OrgMenuItem({ isFetchingApplications, org, selected }: any) {
@@ -409,7 +422,7 @@ function LeftPane() {
   return (
     <LeftPaneWrapper>
       <LeftPaneSection
-        heading="ORGANIZATIONS"
+        heading="应用组"
         isFetchingApplications={isFetchingApplications}
       >
         <WorkpsacesNavigator data-cy="t--left-panel">
@@ -421,7 +434,7 @@ function LeftPane() {
                 submitCreateOrganizationForm(
                   {
                     name: getNextEntityName(
-                      "Untitled organization ",
+                      "未命名应用组 ",
                       fetchedUserOrgs.map((el: any) => el.organization.name),
                     ),
                   },
@@ -440,10 +453,10 @@ function LeftPane() {
                 selected={urlHash === org.organization.slug}
               />
             ))}
-          <div style={{ marginTop: 12 }}>
+          {/* <div style={{ marginTop: 12 }}>
             <Item
               isFetchingApplications={isFetchingApplications}
-              label={"GETTING STARTED"}
+              label="立即出发"
               textType={TextType.H6}
             />
           </div>
@@ -453,7 +466,7 @@ function LeftPane() {
             onSelect={() => {
               window.open("https://docs.appsmith.com/", "_blank");
             }}
-            text={"Documentation"}
+            text="功能文档"
           />
           <MenuItem
             className={
@@ -467,8 +480,8 @@ function LeftPane() {
 
               initiateOnboarding();
             }}
-            text={"Welcome Tour"}
-          />
+            text="新手教程"
+          /> */}
         </WorkpsacesNavigator>
       </LeftPaneSection>
     </LeftPaneWrapper>
@@ -494,7 +507,7 @@ cursor: ${(props) => (!props.disabled ? "pointer" : "inherit")};
 ${(props) => {
   const color = props.disabled
     ? props.theme.colors.applications.orgColor
-    : props.theme.colors.applications.hover.orgColor[9];
+    : props.theme.colors.applications.hover.orgColor;
   return `${textIconStyles({
     color: color,
     hover: color,
@@ -513,6 +526,7 @@ const OrgRename = styled(EditableText)`
 
 const NoSearchResultImg = styled.img`
   margin: 1em;
+  height: 240px;
 `;
 
 function ApplicationsSection(props: any) {
@@ -631,10 +645,8 @@ function ApplicationsSection(props: any) {
   ) {
     organizationsListComponent = (
       <CenteredWrapper style={{ flexDirection: "column", marginTop: "-150px" }}>
-        <CreateNewLabel type={TextType.H4}>
-          Whale! Whale! this name doesn&apos;t ring a bell!
-        </CreateNewLabel>
-        <NoSearchResultImg alt="No result found" src={NoSearchImage} />
+        <CreateNewLabel type={TextType.H4}>没有搜索到相关内容</CreateNewLabel>
+        <NoSearchResultImg alt="没有搜索到相关内容" src={NoSearchImage} />
       </CenteredWrapper>
     );
   } else {
@@ -681,7 +693,7 @@ function ApplicationsSection(props: any) {
                         onBlur={(value: string) => {
                           OrgNameChange(value, organization.id);
                         }}
-                        placeholder="Workspace name"
+                        placeholder="应用组名称"
                         savingState={
                           isSavingOrgInfo
                             ? SavingState.STARTED
@@ -697,7 +709,7 @@ function ApplicationsSection(props: any) {
                             path: `/org/${organization.id}/settings/general`,
                           })
                         }
-                        text="Organization Settings"
+                        text="应用组配置"
                       />
                       {enableImportExport && (
                         <MenuItem
@@ -708,13 +720,13 @@ function ApplicationsSection(props: any) {
                               organization.id,
                             )
                           }
-                          text="Import Application"
+                          text="导入应用"
                         />
                       )}
                       <MenuItem
                         icon="share"
                         onSelect={() => setSelectedOrgId(organization.id)}
-                        text="Share"
+                        text="分享"
                       />
                       <MenuItem
                         icon="user"
@@ -723,7 +735,7 @@ function ApplicationsSection(props: any) {
                             path: `/org/${organization.id}/settings/members`,
                           })
                         }
-                        text="Members"
+                        text="成员"
                       />
                     </>
                   )}
@@ -735,9 +747,7 @@ function ApplicationsSection(props: any) {
                         : leaveOrg(organization.id)
                     }
                     text={
-                      !warnLeavingOrganization
-                        ? "Leave Organization"
-                        : "Are you sure?"
+                      !warnLeavingOrganization ? "退出应用组" : "确定退出吗？"
                     }
                     type={!warnLeavingOrganization ? undefined : "warning"}
                   />
@@ -759,7 +769,7 @@ function ApplicationsSection(props: any) {
                   isOpen={selectedOrgId === organization.id}
                   onClose={() => setSelectedOrgId("")}
                   setMaxWidth
-                  title={`Invite Users to ${organization.name}`}
+                  title={`邀请小伙伴到 ${organization.name}`}
                 >
                   <div className={BlueprintClasses.DIALOG_BODY}>
                     <Form orgId={organization.id} />
@@ -792,12 +802,12 @@ function ApplicationsSection(props: any) {
                       Form={OrgInviteUsersForm}
                       canOutsideClickClose
                       orgId={organization.id}
-                      title={`Invite Users to ${organization.name}`}
+                      title={`邀请小伙伴到 ${organization.name}`}
                       trigger={
                         <Button
                           icon={"share"}
                           size={Size.small}
-                          text={"Share"}
+                          text={"分享"}
                         />
                       }
                     />
@@ -820,7 +830,7 @@ function ApplicationsSection(props: any) {
                         ) {
                           createNewApplication(
                             getNextEntityName(
-                              "Untitled application ",
+                              "未命名应用 ",
                               applications.map((el: any) => el.name),
                             ),
                             organization.id,
@@ -842,7 +852,7 @@ function ApplicationsSection(props: any) {
                             className="createnew"
                             type={TextType.H4}
                           >
-                            Create New
+                            新建应用
                           </CreateNewLabel>
                         </>
                       )}
@@ -874,8 +884,8 @@ function ApplicationsSection(props: any) {
   return (
     <ApplicationContainer className="t--applications-container">
       {organizationsListComponent}
-      <HelpModal page={"Applications"} />
-      <WelcomeHelper />
+      {/* <HelpModal page={"Applications"} />
+      <WelcomeHelper /> */}
     </ApplicationContainer>
   );
 }
@@ -963,16 +973,16 @@ class Applications extends Component<
 
   public render() {
     return (
-      <PageWrapper displayName="Applications">
+      <PageWrapper displayName="我的应用">
         {this.state.showOnboardingForm ? (
           <OnboardingForm />
         ) : (
           <>
-            <ProductUpdatesModal />
+            {/* <ProductUpdatesModal /> */}
             <LeftPane />
             <SubHeader
               search={{
-                placeholder: "Search for apps...",
+                placeholder: "搜索应用...",
                 queryFn: this.props.searchApplications,
                 defaultValue: this.props.searchKeyword,
               }}

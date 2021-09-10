@@ -99,13 +99,13 @@ function EntityExplorer(props: IPanelProps) {
       {noResults && (
         <NoResult
           className={Classes.DARK}
-          description="Try modifying the search keyword."
+          description="试试其他关键字吧"
           icon="search"
-          title="No entities found"
+          title="没有找到相关实体"
         />
       )}
-      <StyledDivider />
-      <JSDependencies />
+      {/* <StyledDivider />
+      <JSDependencies /> */}
       <ScrollIndicator containerRef={explorerRef} />
     </Wrapper>
   );

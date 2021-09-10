@@ -36,6 +36,8 @@ import {
 import { getOccupiedSpacesSelectorForContainer } from "selectors/editorSelectors";
 import { useWidgetSelection } from "utils/hooks/useWidgetSelection";
 import { OccupiedSpace } from "constants/editorConstants";
+import { DragSourceAnimation } from "./DropTargetEmpty";
+const CanvasEmpty: any = DragSourceAnimation.light;
 
 type DropTargetComponentProps = WidgetProps & {
   children?: ReactNode;
@@ -53,11 +55,32 @@ const StyledDropTarget = styled.div`
   user-select: none;
 `;
 
+const EmptyContainer = styled.div`
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 400px;
+  height: 400px;
+  margin-top: -180px;
+  margin-left: -100px;
+  text-align: center;
+
+  & h2 {
+    color: #ccc;
+    margin-top: -68px;
+  }
+
+  & svg {
+    width: 100%;
+  }
+`;
+
 function Onboarding() {
   return (
-    <div style={{ position: "fixed", left: "50%", top: "50vh" }}>
-      <h2 style={{ color: "#ccc" }}>Drag and drop a widget here</h2>
-    </div>
+    <EmptyContainer>
+      <CanvasEmpty />
+      <h2>把组件拖动到这里吧</h2>
+    </EmptyContainer>
   );
 }
 

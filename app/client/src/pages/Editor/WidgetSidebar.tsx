@@ -26,24 +26,6 @@ const MainWrapper = styled.div`
   padding: 10px 10px 20px 10px;
   height: 100%;
   overflow-y: auto;
-
-  scrollbar-color: ${(props) => props.theme.colors.paneCard}
-    ${(props) => props.theme.colors.paneBG};
-  scrollbar-width: thin;
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 6px
-      ${(props) => getColorWithOpacity(props.theme.colors.paneBG, 0.3)};
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: ${(props) => props.theme.colors.paneCard};
-    outline: 1px solid ${(props) => props.theme.paneText};
-    border-radius: ${(props) => props.theme.radii[1]}px;
-  }
 `;
 
 const CardsWrapper = styled.div`
@@ -82,6 +64,7 @@ const Info = styled.div`
   }
   p {
     opacity: 0.6;
+    text-align: center;
   }
 `;
 
@@ -145,7 +128,7 @@ function WidgetSidebar(props: IPanelProps) {
         <ExplorerSearch
           autoFocus
           clear={clearSearchInput}
-          placeholder="Search widgets..."
+          placeholder="搜索组件..."
           ref={searchInputRef}
         />
       </Boxed>
@@ -157,7 +140,7 @@ function WidgetSidebar(props: IPanelProps) {
           </Info>
           <CloseIcon
             className="t--close-widgets-sidebar"
-            color={Colors.WHITE}
+            color={Colors.MINT_RED}
             icon="cross"
             iconSize={16}
             onClick={props.closePanel}
