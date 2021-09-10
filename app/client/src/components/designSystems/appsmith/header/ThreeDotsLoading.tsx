@@ -7,9 +7,10 @@ const Spinner = styled.div`
   width: 30px;
   text-align: center;
   && > div {
-    width: 4px;
-    height: 4px;
-    background-color: #fff;
+    width: 6px;
+    height: 6px;
+    margin: 0 1px;
+    background-color: ${(props) => props.theme.colors.info.main};
 
     border-radius: 100%;
     display: inline-block;

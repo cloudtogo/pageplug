@@ -26,6 +26,7 @@ export type AppStoreState = {
 };
 
 export type AppDataState = {
+  inCloudOS?: boolean;
   mode?: APP_MODE;
   user: AuthUserState;
   URL: UrlDataState;
@@ -33,6 +34,7 @@ export type AppDataState = {
 };
 
 const initialState: AppDataState = {
+  inCloudOS: true,
   user: {
     username: "",
     email: "",

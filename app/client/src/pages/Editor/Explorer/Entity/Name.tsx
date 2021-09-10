@@ -133,9 +133,9 @@ export const EntityName = forwardRef(
     const isInvalidName = useCallback(
       (newName: string): string | boolean => {
         if (!newName || newName.trim().length === 0) {
-          return "Please enter a name";
+          return "请输入页面名称";
         } else if (newName !== name && hasNameConflict(newName, tabs)) {
-          return `${newName} is already being used.`;
+          return `${newName} 已经被占用了`;
         }
         return false;
       },
@@ -210,7 +210,7 @@ export const EntityName = forwardRef(
           minimal
           onBlur={exitEditMode}
           onTextChanged={handleAPINameChange}
-          placeholder="Name"
+          placeholder="名称"
           type="text"
           valueTransform={props.nameTransformFn || removeSpecialChars}
         />

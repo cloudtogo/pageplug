@@ -54,7 +54,7 @@ export type ActionGroupConfig = {
 /*eslint-disable react/display-name */
 export const ACTION_PLUGIN_MAP: Array<ActionGroupConfig | undefined> = [
   {
-    groupName: "Datasources",
+    groupName: "数据源",
     types: [PluginType.API, PluginType.SAAS, PluginType.DB],
     icon: dbQueryIcon,
     key: generateReactKey(),
@@ -220,7 +220,7 @@ export const useNewActionName = () => {
 
     return actionNames.indexOf(name) > -1
       ? getNextEntityName(
-          isCopyOperation ? `${name}Copy` : name,
+          isCopyOperation ? `${name}副本` : name,
           actionNames,
           true,
         )

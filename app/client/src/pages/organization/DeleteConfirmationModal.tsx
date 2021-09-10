@@ -22,7 +22,7 @@ const CenteredContainer = styled.div`
 
 const ImportButton = styled(Button)<{ disabled?: boolean }>`
   height: 30px;
-  width: 81px;
+  width: 86px;
   pointer-events: ${(props) => (!!props.disabled ? "none" : "auto")};
 `;
 
@@ -54,11 +54,12 @@ function DeleteConfirmationModal(props: DeleteConfirmationProps) {
       className={"t--member-delete-confirmation-modal"}
       isOpen={isOpen}
       maxHeight={"540px"}
+      width={"400px"}
       setModalClose={onClose}
       title={DELETE_CONFIRMATION_MODAL_TITLE()}
     >
       <CenteredContainer>
-        <Text textAlign="center" type={TextType.P1}>
+        <Text textAlign="center" wordBreak="break-word" type={TextType.P1}>
           {DELETE_CONFIRMATION_MODAL_SUBTITLE(name || username)}
         </Text>
         <ButtonWrapper>
@@ -67,7 +68,7 @@ function DeleteConfirmationModal(props: DeleteConfirmationProps) {
             className=".button-item"
             onClick={onClose}
             size={Size.large}
-            text={"CANCEL"}
+            text={"取消"}
             variant={Variant.danger}
           />
           <ImportButton
@@ -76,7 +77,7 @@ function DeleteConfirmationModal(props: DeleteConfirmationProps) {
             isLoading={isDeletingUser}
             onClick={onConfirm}
             size={Size.large}
-            text={"REMOVE"}
+            text={"移除"}
             variant={Variant.danger}
           />
         </ButtonWrapper>

@@ -3,7 +3,6 @@ import { Helmet } from "react-helmet";
 import styled from "styled-components";
 
 const Wrapper = styled.section`
-  margin-top: ${(props) => props.theme.homePage.header}px;
   && .fade {
     position: relative;
   }
@@ -50,8 +49,8 @@ export function PageWrapper(props: PageWrapperProps) {
     <Wrapper>
       <Helmet>
         <title>{`${
-          props.displayName ? `${props.displayName} | ` : ""
-        }Appsmith`}</title>
+          props.displayName ? `${props.displayName} - ` : ""
+        }PagePlug`}</title>
       </Helmet>
       <PageBody>{props.children}</PageBody>
     </Wrapper>

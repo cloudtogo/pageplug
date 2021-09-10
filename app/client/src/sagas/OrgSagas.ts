@@ -259,7 +259,7 @@ export function* uploadOrgLogoSaga(action: ReduxAction<SaveOrgLogo>) {
           },
         });
         Toaster.show({
-          text: "Logo uploaded successfully",
+          text: "图标上传成功",
           variant: Variant.success,
         });
       }
@@ -286,7 +286,7 @@ export function* deleteOrgLogoSaga(action: ReduxAction<{ id: string }>) {
           },
         });
         Toaster.show({
-          text: "Logo removed successfully",
+          text: "图标删除成功",
           variant: Variant.success,
         });
       }

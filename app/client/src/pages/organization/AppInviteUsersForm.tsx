@@ -74,7 +74,7 @@ function AppInviteUsersForm(props: any) {
     <>
       {canShareWithPublic && (
         <ShareWithPublicOption>
-          <Text type={TextType.H5}>Make the application public</Text>
+          <Text type={TextType.H5}>开启免登访问，允许游客访问应用</Text>
           <ShareToggle>
             {currentApplicationDetails && (
               <Toggle
@@ -93,9 +93,7 @@ function AppInviteUsersForm(props: any) {
         </ShareWithPublicOption>
       )}
       <Title>
-        <Text type={TextType.H5}>
-          Get Shareable link for this for this application
-        </Text>
+        <Text type={TextType.H5}>应用分享链接</Text>
       </Title>
       <CopyToClipBoard copyText={getViewApplicationURL()} />
 

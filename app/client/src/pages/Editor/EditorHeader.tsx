@@ -13,7 +13,7 @@ import AppInviteUsersForm from "pages/organization/AppInviteUsersForm";
 import StyledHeader from "components/designSystems/appsmith/StyledHeader";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { FormDialogComponent } from "components/editorComponents/form/FormDialogComponent";
-import AppsmithLogo from "assets/images/appsmith_logo_square.png";
+import PagePlugLogo from "assets/images/pageplug_icon_mint.svg";
 import { Link } from "react-router-dom";
 import { AppState } from "reducers";
 import {
@@ -68,7 +68,9 @@ const HeaderWrapper = styled(StyledHeader)`
   background-color: ${(props) => props.theme.colors.header.background};
   height: ${(props) => props.theme.smallHeaderHeight};
   flex-direction: row;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: ${(props) => props.theme.colors.header.boxShadow};
+  border-bottom: 1px solid
+    ${(props) => props.theme.colors.header.tabsHorizontalSeparator};
   & .editable-application-name {
     ${(props) => getTypographyByKey(props, "h4")}
     color: ${(props) => props.theme.colors.header.appName};
@@ -77,7 +79,10 @@ const HeaderWrapper = styled(StyledHeader)`
   & .header__application-share-btn {
     background-color: ${(props) => props.theme.colors.header.background};
     border-color: ${(props) => props.theme.colors.header.background};
-    // margin-right: ${(props) => props.theme.spaces[1]}px;
+    color: ${(props) => props.theme.colors.header.shareBtn};
+    ${IconWrapper} path {
+      fill: ${(props) => props.theme.colors.header.shareBtn};
+    }
   }
 
   & .header__application-share-btn:hover {
@@ -91,12 +96,14 @@ const HeaderWrapper = styled(StyledHeader)`
     width: 24px;
     height: 24px;
   }
+
+  & .t--save-status-container .header-status-icon {
+    vertical-align: -6px;
+  }
 `;
 
-// looks offset by 1px even though, checking bounding rect values
 const HeaderSection = styled.div`
   position: relative;
-  top: -1px;
   display: flex;
   flex: 1;
   overflow: visible;
@@ -117,9 +124,9 @@ const HeaderSection = styled.div`
   }
 `;
 
-const AppsmithLogoImg = styled.img`
+const PagePlugLogoImg = styled.img`
   margin-right: ${(props) => props.theme.spaces[6]}px;
-  height: 24px;
+  height: 28px;
 `;
 
 const SaveStatusContainer = styled.div`
@@ -142,6 +149,7 @@ const StyledDeployButton = styled(Button)`
   height: ${(props) => props.theme.smallHeaderHeight};
   ${(props) => getTypographyByKey(props, "btnLarge")}
   padding: ${(props) => props.theme.spaces[2]}px;
+  border-radius: 0;
 `;
 
 const BindingBanner = styled.div`
@@ -167,6 +175,25 @@ const BindingBanner = styled.div`
   z-index: 9999;
 `;
 
+const CloudOSHeader = styled.div`
+  position: fixed;
+  right: 20px;
+  top: 8px;
+  display: flex;
+  align-items: center;
+
+  & .bp3-popover-wrapper {
+    height: 20px;
+  }
+
+  & .t--application-publish-btn {
+    height: 25px;
+    width: 60px;
+    border-radius: 3px;
+    margin-left: 16px;
+  }
+`;
+
 type EditorHeaderProps = {
   pageSaveError?: boolean;
   pageName?: string;
@@ -178,8 +205,9 @@ type EditorHeaderProps = {
   currentApplication?: ApplicationPayload;
   isSaving: boolean;
   publishApplication: (appId: string) => void;
-  darkTheme: any;
+  lightTheme: any;
   lastUpdatedTime?: number;
+  inCloudOS: any;
 };
 
 export function EditorHeader(props: EditorHeaderProps) {
@@ -193,6 +221,7 @@ export function EditorHeader(props: EditorHeaderProps) {
     pageId,
     pageSaveError,
     publishApplication,
+    inCloudOS,
   } = props;
   const location = useLocation();
   const dispatch = useDispatch();
@@ -217,7 +246,7 @@ export function EditorHeader(props: EditorHeaderProps) {
   const findLastUpdatedTimeMessage = () => {
     setLastUpdatedTimeMessage(
       lastUpdatedTime
-        ? `Saved ${moment(lastUpdatedTime * 1000).fromNow()}`
+        ? `上次保存于 ${moment(lastUpdatedTime * 1000).fromNow()}`
         : "",
     );
   };
@@ -255,7 +284,7 @@ export function EditorHeader(props: EditorHeaderProps) {
       saveStatusIcon = (
         <TooltipComponent content={lastUpdatedTimeMessage} hoverOpenDelay={200}>
           <HeaderIcons.SAVE_SUCCESS
-            className="t--save-status-success"
+            className="t--save-status-success header-status-icon"
             color={"#36AB80"}
             height={20}
             width={20}
@@ -265,7 +294,7 @@ export function EditorHeader(props: EditorHeaderProps) {
     } else {
       saveStatusIcon = (
         <HeaderIcons.SAVE_FAILURE
-          className={"t--save-status-error"}
+          className={"t--save-status-error header-status-icon"}
           color={"#F69D2C"}
           height={20}
           width={20}
@@ -285,15 +314,33 @@ export function EditorHeader(props: EditorHeaderProps) {
     showAppInviteUsersDialogSelector,
   );
 
+  if (inCloudOS) {
+    return (
+      <ThemeProvider theme={props.lightTheme}>
+        <CloudOSHeader>
+          {saveStatusIcon}
+          <span style={{ color: "#8a8a8a" }}>{lastUpdatedTimeMessage}</span>
+          <StyledDeployButton
+            className="t--application-publish-btn"
+            isLoading={isPublishing}
+            onClick={handlePublish}
+            size={Size.small}
+            text={"提交"}
+          />
+        </CloudOSHeader>
+      </ThemeProvider>
+    );
+  }
+
   return (
-    <ThemeProvider theme={props.darkTheme}>
+    <ThemeProvider theme={props.lightTheme}>
       <HeaderWrapper>
         <HeaderSection>
-          <Link style={{ height: 24 }} to={APPLICATIONS_URL}>
-            <AppsmithLogoImg
-              alt="Appsmith logo"
+          <Link style={{ height: 28 }} to={APPLICATIONS_URL}>
+            <PagePlugLogoImg
+              alt="PagePlug logo"
               className="t--appsmith-logo"
-              src={AppsmithLogo}
+              src={PagePlugLogo}
             />
           </Link>
           <Boxed step={OnboardingStep.FINISH}>
@@ -328,10 +375,7 @@ export function EditorHeader(props: EditorHeaderProps) {
             <ToggleModeButton showSelectedMode={!isPopoverOpen} />
           </Boxed>
         </HeaderSection>
-        <HeaderSection>
-          <HelpBar />
-          <HelpButton />
-        </HeaderSection>
+        <HeaderSection>{/* <HelpBar /><HelpButton /> */}</HeaderSection>
         <HeaderSection>
           <Boxed step={OnboardingStep.FINISH}>
             <SaveStatusContainer className={"t--save-status-container"}>
@@ -343,17 +387,13 @@ export function EditorHeader(props: EditorHeaderProps) {
               canOutsideClickClose
               isOpen={showAppInviteUsersDialog}
               orgId={orgId}
-              title={
-                currentApplication
-                  ? currentApplication.name
-                  : "Share Application"
-              }
+              title={currentApplication ? currentApplication.name : "分享应用"}
               trigger={
                 <Button
                   className="t--application-share-btn header__application-share-btn"
                   icon={"share"}
                   size={Size.small}
-                  text={"Share"}
+                  text={"分享"}
                 />
               }
             />
@@ -373,7 +413,7 @@ export function EditorHeader(props: EditorHeaderProps) {
                   isLoading={isPublishing}
                   onClick={handlePublish}
                   size={Size.small}
-                  text={"Deploy"}
+                  text={"发布应用"}
                 />
               </OnboardingIndicator>
 
@@ -399,7 +439,7 @@ export function EditorHeader(props: EditorHeaderProps) {
         <GlobalSearch />
         {isSnipingMode && (
           <BindingBanner className="t--sniping-mode-banner">
-            Select a widget to bind
+            选择一个组件绑定
           </BindingBanner>
         )}
       </HeaderWrapper>
@@ -417,7 +457,8 @@ const mapStateToProps = (state: AppState) => ({
   currentApplication: state.ui.applications.currentApplication,
   isPublishing: getIsPublishingApplication(state),
   pageId: getCurrentPageId(state),
-  darkTheme: getThemeDetails(state, ThemeMode.DARK),
+  lightTheme: getThemeDetails(state, ThemeMode.LIGHT),
+  inCloudOS: state.entities.app.inCloudOS,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({

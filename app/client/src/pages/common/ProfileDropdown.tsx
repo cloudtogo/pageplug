@@ -126,7 +126,7 @@ export default function ProfileDropdown(props: TagProps) {
               path: PROFILE,
             });
           }}
-          text="Edit Profile"
+          text="个人信息"
         />
         <MenuItem
           className="t--logout-icon"

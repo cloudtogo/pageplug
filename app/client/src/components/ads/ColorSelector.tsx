@@ -24,6 +24,7 @@ const ColorBox = styled.div<{ selected: string; color: string }>`
   margin: 0 ${(props) => props.theme.spaces[2]}px
     ${(props) => props.theme.spaces[2]}px 0;
   background-color: ${(props) => props.color};
+  border-radius: ${(props) => props.theme.borderRadius};
   cursor: pointer;
   position: relative;
 

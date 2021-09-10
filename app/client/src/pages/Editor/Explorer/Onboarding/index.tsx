@@ -38,7 +38,7 @@ function OnboardingExplorer(props: IPanelProps) {
   return (
     <Wrapper ref={wrapperRef}>
       {node}
-      <ScrollIndicator containerRef={wrapperRef} mode="DARK" />
+      <ScrollIndicator containerRef={wrapperRef} mode="LIGHT" />
     </Wrapper>
   );
 }

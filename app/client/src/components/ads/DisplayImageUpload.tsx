@@ -14,6 +14,7 @@ import "@uppy/core/dist/style.css";
 import "@uppy/dashboard/dist/style.css";
 import "@uppy/image-editor/dist/style.css";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
+import UppyCN from "./uppyLocale/zh-CN";
 
 type Props = {
   onChange: (file: File) => void;
@@ -65,7 +66,7 @@ const Container = styled.div`
   }
 `;
 
-const defaultLabel = "Upload Display Picture";
+const defaultLabel = "上传图片";
 
 export default function DisplayImageUpload({
   onChange,
@@ -86,19 +87,17 @@ export default function DisplayImageUpload({
         allowedFileTypes: [".jpg", ".jpeg", ".png"],
       },
       infoTimeout: 5000,
-      locale: {
-        strings: {},
-      },
+      locale: UppyCN,
     });
 
-    uppy.setOptions({
-      locale: {
-        strings: {
-          cancel: "Cancel",
-          done: "Cancel",
-        },
-      },
-    });
+    // uppy.setOptions({
+    //   locale: {
+    //     strings: {
+    //       cancel: "Cancel",
+    //       done: "Cancel",
+    //     },
+    //   },
+    // });
 
     uppy.use(ImageEditor, {
       id: "ImageEditor",
@@ -190,7 +189,7 @@ export default function DisplayImageUpload({
       >
         <Dashboard
           id="uppy-img-upload-dashboard"
-          note="File size must not exceed 3 MB"
+          note="上传图片的大小不能超过 3 MB"
           plugins={["ImageEditor"]}
           uppy={uppy}
         />

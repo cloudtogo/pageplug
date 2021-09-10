@@ -1,5 +1,10 @@
 import React from "react";
 import styled from "styled-components";
+import {
+  PRIVACY_POLICY_LINK,
+  TERMS_AND_CONDITIONS_LINK,
+  createMessage,
+} from "constants/messages";
 
 const FooterLink = styled.a`
   cursor: pointer;
@@ -13,7 +18,7 @@ const FooterLink = styled.a`
   line-height: ${(props) => props.theme.typography.releaseList.lineHeight}px;
   letter-spacing: ${(props) =>
     props.theme.typography.releaseList.letterSpacing}px;
-  color: ${(props) => props.theme.colors.text.normal};
+  color: #9f9f9f;
 `;
 
 const FooterLinksContainer = styled.div`
@@ -22,17 +27,17 @@ const FooterLinksContainer = styled.div`
   align-items: center;
   justify-content: space-around;
   width: 100%;
-  max-width: ${(props) => props.theme.authCard.width}px;
+  max-width: 240px;
 `;
 
 function FooterLinks() {
   return (
     <FooterLinksContainer>
       <FooterLink href="/privacy-policy.html" target="_blank">
-        Privacy Policy
+        {createMessage(PRIVACY_POLICY_LINK)}
       </FooterLink>
       <FooterLink href="/terms-and-conditions.html" target="_blank">
-        Terms and conditions
+        {createMessage(TERMS_AND_CONDITIONS_LINK)}
       </FooterLink>
     </FooterLinksContainer>
   );

@@ -10,7 +10,7 @@ export function Organization() {
   const { path } = useRouteMatch();
   const location = useLocation();
   return (
-    <PageWrapper displayName="Organization Settings">
+    <PageWrapper displayName="应用组配置">
       <Switch location={location}>
         <SentryRoute component={Settings} path={`${path}/:orgId/settings`} />
         <SentryRoute component={DefaultOrgPage} />

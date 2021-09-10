@@ -138,14 +138,14 @@ export function GeneralSettings() {
     <>
       <SettingsHeading type={TextType.H2}>
         <Row>
-          <Col>General</Col>
+          <Col>基本设置</Col>
         </Row>
       </SettingsHeading>
       <SettingWrapper>
         <Row>
           <Col>
             <InputLabelWrapper>
-              <Text type={TextType.H4}>Organization Name</Text>
+              <Text type={TextType.H4}>应用组名称</Text>
             </InputLabelWrapper>
           </Col>
           <Col>
@@ -155,7 +155,7 @@ export function GeneralSettings() {
                 cypressSelector="t--org-name-input"
                 defaultValue={currentOrg && currentOrg.name}
                 onChange={onWorkspaceNameChange}
-                placeholder="Organization Name"
+                placeholder="应用组名称"
                 validator={notEmptyValidator}
               />
             )}
@@ -167,7 +167,7 @@ export function GeneralSettings() {
         <Row className="t--organization-settings-filepicker">
           <Col>
             <InputLabelWrapper>
-              <Text type={TextType.H4}>Upload Logo</Text>
+              <Text type={TextType.H4}>上传图标</Text>
             </InputLabelWrapper>
           </Col>
           <Col>
@@ -189,7 +189,7 @@ export function GeneralSettings() {
         <Row>
           <Col>
             <InputLabelWrapper>
-              <Text type={TextType.H4}>Website</Text>
+              <Text type={TextType.H4}>网站</Text>
             </InputLabelWrapper>
           </Col>
           <Col>
@@ -199,7 +199,7 @@ export function GeneralSettings() {
                 cypressSelector="t--org-website-input"
                 defaultValue={(currentOrg && currentOrg.website) || ""}
                 onChange={onWebsiteChange}
-                placeholder="Your website"
+                placeholder="你的网站"
               />
             )}
           </Col>
@@ -210,7 +210,7 @@ export function GeneralSettings() {
         <Row>
           <Col>
             <InputLabelWrapper>
-              <Text type={TextType.H4}>Email</Text>
+              <Text type={TextType.H4}>邮箱</Text>
             </InputLabelWrapper>
           </Col>
           <Col>
@@ -220,7 +220,7 @@ export function GeneralSettings() {
                 cypressSelector="t--org-email-input"
                 defaultValue={(currentOrg && currentOrg.email) || ""}
                 onChange={onEmailChange}
-                placeholder="Email"
+                placeholder="邮箱"
                 validator={emailValidator}
               />
             )}

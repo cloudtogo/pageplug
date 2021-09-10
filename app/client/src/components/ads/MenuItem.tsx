@@ -22,6 +22,7 @@ const ItemRow = styled.a<{ disabled?: boolean; selected?: boolean }>`
   align-items: center;
   justify-content: space-between;
   text-decoration: none;
+  border-radius: ${(props) => props.theme.borderRadius};
   padding: 0px ${(props) => props.theme.spaces[6]}px;
   background-color: ${(props) =>
     props.selected ? props.theme.colors.menuItem.hoverBg : "transparent"};
@@ -29,6 +30,8 @@ const ItemRow = styled.a<{ disabled?: boolean; selected?: boolean }>`
     color: ${(props) =>
       props.selected
         ? props.theme.colors.menuItem.hoverText
+        : props.type === "warning"
+        ? props.theme.colors.menuItem.warning.bg
         : props.theme.colors.menuItem.normalText};
   }
   .${Classes.ICON} {
@@ -37,6 +40,8 @@ const ItemRow = styled.a<{ disabled?: boolean; selected?: boolean }>`
         fill: ${(props) =>
           props.selected
             ? props.theme.colors.menuItem.hoverIcon
+            : props.type === "warning"
+            ? props.theme.colors.menuItem.warning.bg
             : props.theme.colors.menuItem.normalIcon};
       }
     }

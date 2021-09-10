@@ -7,21 +7,21 @@ import StyledHeader from "components/designSystems/appsmith/StyledHeader";
 import { AppState } from "reducers";
 import { BASE_URL } from "constants/routes";
 import { Colors } from "constants/Colors";
-import AppsmithLogo from "assets/images/appsmith_logo_white.png";
+import LogoImage from "assets/images/pageplug_logo_black.svg";
 
 const StyledPageHeader = styled(StyledHeader)`
   width: 100%;
   height: 48px;
-  background: ${Colors.BALTIC_SEA};
+  background: ${Colors.MINT_GREEN};
   display: flex;
   justify-content: center;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
-  padding: 0px ${(props) => props.theme.spaces[12]};
+  box-shadow: ${(props) => props.theme.colors.header.boxShadow};
+  padding: 0px ${(props) => props.theme.spaces[12]}px;
 `;
 
 const LogoContainer = styled.div`
   .logoimg {
-    max-width: 110px;
+    height: 32px;
   }
 `;
 
@@ -31,9 +31,9 @@ export function LoginHeader() {
       <LogoContainer>
         <Link to={BASE_URL}>
           <img
-            alt="Appsmith Logo"
+            alt="PagePlug Logo"
             className="logoimg t--Appsmith-logo-image"
-            src={AppsmithLogo}
+            src={LogoImage}
           />
         </Link>
       </LogoContainer>

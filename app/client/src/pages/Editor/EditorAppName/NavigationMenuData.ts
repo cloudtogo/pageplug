@@ -51,7 +51,7 @@ export const GetNavigationMenuData = ({
       history.push(APPLICATIONS_URL);
     } else {
       Toaster.show({
-        text: "Error while deleting Application",
+        text: "删除应用时发生了错误",
         variant: Variant.danger,
       });
     }
@@ -59,25 +59,25 @@ export const GetNavigationMenuData = ({
 
   return [
     {
-      text: "Rename",
+      text: "重命名",
       onClick: editMode,
       type: MenuTypes.MENU,
       isVisible: true,
     },
     {
-      text: "View Modes",
+      text: "视图模式",
       type: MenuTypes.PARENT,
       isVisible: !!commentsEnabled,
       children: [
         {
-          text: "Edit Mode",
+          text: "编辑模式",
           label: "E",
           onClick: () => setCommentModeInUrl(false),
           type: MenuTypes.MENU,
           isVisible: true,
         },
         {
-          text: "Comment Mode",
+          text: "注释模式",
           label: "C",
           onClick: () => setCommentModeInUrl(true),
           type: MenuTypes.MENU,
@@ -86,19 +86,19 @@ export const GetNavigationMenuData = ({
       ],
     },
     {
-      text: "Deploy",
+      text: "发布",
       type: MenuTypes.PARENT,
       isVisible: true,
       children: [
         {
-          text: "Deploy",
+          text: "发布",
           onClick: deploy,
           type: MenuTypes.MENU,
           isVisible: true,
           isOpensNewWindow: true,
         },
         {
-          text: "Current Deployed Version",
+          text: "最新发布版本",
           onClick: () => openExternalLink(currentDeployLink),
           type: MenuTypes.MENU,
           isVisible: true,
@@ -106,51 +106,51 @@ export const GetNavigationMenuData = ({
         },
       ],
     },
+    // {
+    //   text: "快速查找",
+    //   onClick: () => dispatch(toggleShowGlobalSearchModal()),
+    //   type: MenuTypes.MENU,
+    //   isVisible: true,
+    // },
+    // {
+    //   text: "帮助",
+    //   type: MenuTypes.PARENT,
+    //   isVisible: true,
+    //   children: [
+    //     {
+    //       text: "Community Forum",
+    //       onClick: () => openExternalLink("https://community.appsmith.com/"),
+    //       type: MenuTypes.MENU,
+    //       isVisible: true,
+    //       isOpensNewWindow: true,
+    //     },
+    //     {
+    //       text: "Discord Channel",
+    //       onClick: () => openExternalLink("https://discord.gg/9deFW7q4kB"),
+    //       type: MenuTypes.MENU,
+    //       isVisible: true,
+    //       isOpensNewWindow: true,
+    //     },
+    //     {
+    //       text: "Github",
+    //       onClick: () =>
+    //         openExternalLink("https://github.com/appsmithorg/appsmith/"),
+    //       type: MenuTypes.MENU,
+    //       isVisible: true,
+    //       isOpensNewWindow: true,
+    //     },
+    //     {
+    //       text: "Documentation",
+    //       onClick: () => openExternalLink("https://docs.appsmith.com/"),
+    //       type: MenuTypes.MENU,
+    //       isVisible: true,
+    //       isOpensNewWindow: true,
+    //     },
+    //   ],
+    // },
     {
-      text: "Shortcuts",
-      onClick: () => dispatch(toggleShowGlobalSearchModal()),
-      type: MenuTypes.MENU,
-      isVisible: true,
-    },
-    {
-      text: "Help",
-      type: MenuTypes.PARENT,
-      isVisible: true,
-      children: [
-        {
-          text: "Community Forum",
-          onClick: () => openExternalLink("https://community.appsmith.com/"),
-          type: MenuTypes.MENU,
-          isVisible: true,
-          isOpensNewWindow: true,
-        },
-        {
-          text: "Discord Channel",
-          onClick: () => openExternalLink("https://discord.gg/9deFW7q4kB"),
-          type: MenuTypes.MENU,
-          isVisible: true,
-          isOpensNewWindow: true,
-        },
-        {
-          text: "Github",
-          onClick: () =>
-            openExternalLink("https://github.com/appsmithorg/appsmith/"),
-          type: MenuTypes.MENU,
-          isVisible: true,
-          isOpensNewWindow: true,
-        },
-        {
-          text: "Documentation",
-          onClick: () => openExternalLink("https://docs.appsmith.com/"),
-          type: MenuTypes.MENU,
-          isVisible: true,
-          isOpensNewWindow: true,
-        },
-      ],
-    },
-    {
-      text: "Delete Application",
-      confirmText: "Are you sure?",
+      text: "删除应用",
+      confirmText: "确定删除吗？",
       onClick: deleteApplication,
       type: MenuTypes.RECONFIRM,
       isVisible: isApplicationIdPresent,

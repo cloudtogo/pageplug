@@ -118,15 +118,15 @@ export default function MemberSettings(props: PageProps) {
 
   const columns = [
     {
-      Header: "Email",
+      Header: "邮箱",
       accessor: "username",
     },
     {
-      Header: "Name",
+      Header: "用户名",
       accessor: "name",
     },
     {
-      Header: "Role",
+      Header: "角色",
       accessor: "roleName",
       Cell: function DropdownCell(cellProps: any) {
         const allRoles = useSelector(getAllRoles);
@@ -171,7 +171,7 @@ export default function MemberSettings(props: PageProps) {
       },
     },
     {
-      Header: "Delete",
+      Header: "删除",
       accessor: "delete",
       disableSortBy: true,
       Cell: function DeleteCell(cellProps: any) {
@@ -202,17 +202,17 @@ export default function MemberSettings(props: PageProps) {
   return (
     <>
       <PageSectionHeader>
-        <SettingsHeading type={TextType.H2}>Manage Users</SettingsHeading>
+        <SettingsHeading type={TextType.H2}>管理成员</SettingsHeading>
         <FormDialogComponent
           Form={OrgInviteUsersForm}
           canOutsideClickClose
           orgId={orgId}
-          title={`Invite Users to ${currentOrgName}`}
+          title={`邀请小伙伴到 ${currentOrgName}`}
           trigger={
             <Button
               cypressSelector="t--invite-users"
               size={Size.medium}
-              text="Invite Users"
+              text="邀请"
               variant={Variant.info}
             />
           }

@@ -65,7 +65,7 @@ function EntityNotFoundPane() {
           onClick={history.goBack}
           size={Size.large}
           tag="button"
-          text="Go Back"
+          text="返回"
         />
       </div>
     </Wrapper>

@@ -9,16 +9,16 @@ export function OrgMembers() {
   const history = useHistory();
 
   return (
-    <PageWrapper displayName="Users">
+    <PageWrapper displayName="小伙伴们">
       <PageSectionHeader>
-        <h2>Users</h2>
+        <h2>小伙伴们</h2>
         <Button
           filled
           icon="plus"
           iconAlignment="left"
           intent="primary"
           onClick={() => history.push(ORG_INVITE_USERS_PAGE_URL)}
-          text="Invite Users"
+          text="邀请小伙伴"
         />
       </PageSectionHeader>
     </PageWrapper>

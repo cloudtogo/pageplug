@@ -124,9 +124,7 @@ class Editor extends Component<Props> {
           <div>
             <Helmet>
               <meta charSet="utf-8" />
-              <title>
-                {`${this.props.currentApplicationName} |`} Editor | Appsmith
-              </title>
+              <title>{`${this.props.currentApplicationName} - `}PagePlug</title>
             </Helmet>
             <GlobalHotKeys>
               <MainContainer />

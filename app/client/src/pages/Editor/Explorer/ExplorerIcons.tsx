@@ -19,7 +19,7 @@ const ENTITY_ICON_SIZE = 14;
 const PagesIcon = MenuIcons.PAGES_ICON;
 export const pageGroupIcon = (
   <PagesIcon
-    color={Colors.ALTO}
+    color={Colors.MINT_GREEN}
     height={ENTITY_ICON_SIZE}
     width={ENTITY_ICON_SIZE}
   />
@@ -28,7 +28,7 @@ export const pageGroupIcon = (
 const PageIcon = MenuIcons.PAGE_ICON;
 export const pageIcon = (
   <PageIcon
-    color={Colors.ALTO}
+    color={Colors.MINT_GREEN}
     height={ENTITY_ICON_SIZE}
     width={ENTITY_ICON_SIZE}
   />
@@ -39,7 +39,7 @@ export const homePageIcon = (
 );
 
 export const hiddenPageIcon = (
-  <Icon color={Colors.ALTO} icon="eye-off" iconSize={ENTITY_ICON_SIZE} />
+  <Icon color={Colors.MINT_GREEN} icon="eye-off" iconSize={ENTITY_ICON_SIZE} />
 );
 
 const WidgetIcon = MenuIcons.WIDGETS_COLORED_ICON;
@@ -84,7 +84,7 @@ export function QueryIcon(props: { plugin: Plugin }) {
 const DataSourceIcon = MenuIcons.DATASOURCES_ICON;
 export const datasourceIcon = (
   <DataSourceIcon
-    color={Colors.ALTO}
+    color={Colors.MINT_GREEN}
     height={ENTITY_ICON_SIZE}
     width={ENTITY_ICON_SIZE}
   />
