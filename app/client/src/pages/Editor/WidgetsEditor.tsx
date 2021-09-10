@@ -33,7 +33,11 @@ const EditorWrapper = styled.div`
   align-items: stretch;
   justify-content: flex-start;
   overflow: hidden;
-  height: calc(100vh - ${(props) => props.theme.smallHeaderHeight});
+  height: calc(
+    100vh -
+      ${(props) =>
+        props.theme.inCloudOS ? "0px" : props.theme.smallHeaderHeight}
+  );
 `;
 
 const CanvasContainer = styled.section`

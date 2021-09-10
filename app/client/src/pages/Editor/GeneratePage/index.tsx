@@ -37,7 +37,7 @@ const SubHeading = styled.p`
 
 function GeneratePage() {
   const isGenerateFormPage = window.location.pathname.includes("/form");
-  const heading = isGenerateFormPage ? "Quick Page Wizard" : "New Page";
+  const heading = isGenerateFormPage ? "快速向导" : "新建页面";
 
   return (
     <Container>
@@ -45,9 +45,7 @@ function GeneratePage() {
         <Heading> {heading}</Heading>
       </HeadingContainer>
       {isGenerateFormPage ? (
-        <SubHeading>
-          Auto create a simple CRUD interface on top of your data
-        </SubHeading>
+        <SubHeading>自动为你的数据创建增删改查页面</SubHeading>
       ) : null}
 
       <PageContent />

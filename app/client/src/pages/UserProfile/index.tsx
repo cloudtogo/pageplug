@@ -30,21 +30,21 @@ function UserProfile() {
   const tabs: TabProp[] = [
     {
       key: "general",
-      title: "General",
+      title: "基本信息",
       panelComponent: <General />,
       icon: "general",
     },
   ];
 
   return (
-    <PageWrapper displayName={"Profile"}>
+    <PageWrapper displayName={"个人信息"}>
       <ProfileWrapper>
         <LinkToApplications className="t--back" to={"/applications"}>
           <IconComponent
             color={Colors.SILVER_CHALICE}
             iconName="chevron-left"
           />
-          <Text type={TextType.H1}>Profile</Text>
+          <Text type={TextType.H1}>个人信息</Text>
         </LinkToApplications>
         <TabComponent tabs={tabs} />
       </ProfileWrapper>

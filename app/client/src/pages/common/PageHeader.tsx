@@ -4,7 +4,7 @@ import { connect, useSelector } from "react-redux";
 import { getCurrentUser } from "selectors/usersSelectors";
 import styled from "styled-components";
 import StyledHeader from "components/designSystems/appsmith/StyledHeader";
-import AppsmithLogo from "assets/images/appsmith_logo_white.png";
+import LogoImage from "assets/images/pageplug_logo_black.svg";
 import { AppState } from "reducers";
 import { User, ANONYMOUS_USERNAME } from "constants/userConstants";
 import { AUTH_LOGIN_URL, APPLICATIONS_URL } from "constants/routes";
@@ -17,14 +17,14 @@ import Bell from "notifications/Bell";
 import { areCommentsEnabledForUserAndApp as areCommentsEnabledForUserAndAppSelector } from "selectors/commentsSelectors";
 
 const StyledPageHeader = styled(StyledHeader)`
-  background: ${Colors.BALTIC_SEA};
+  background: ${Colors.MINT_GREEN};
   height: 48px;
   color: white;
   flex-direction: row;
-  position: fixed;
+  position: relative;
   top: 0;
   z-index: 10;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: ${(props) => props.theme.colors.header.boxShadow};
 `;
 
 const HeaderSection = styled.div`
@@ -35,8 +35,8 @@ const HeaderSection = styled.div`
 
 const StyledDropDownContainer = styled.div``;
 
-const AppsmithLogoImg = styled.img`
-  max-width: 110px;
+const PagePlugLogoImg = styled.img`
+  height: 32px;
 `;
 
 type PageHeaderProps = {
@@ -61,7 +61,7 @@ export function PageHeader(props: PageHeaderProps) {
     <StyledPageHeader>
       <HeaderSection>
         <Link className="t--appsmith-logo" to={APPLICATIONS_URL}>
-          <AppsmithLogoImg alt="Appsmith logo" src={AppsmithLogo} />
+          <PagePlugLogoImg alt="Appsmith logo" src={LogoImage} />
         </Link>
       </HeaderSection>
       {user && (
@@ -74,10 +74,14 @@ export function PageHeader(props: PageHeaderProps) {
                 intent={"primary"}
                 onClick={() => history.push(loginUrl)}
                 size="small"
-                text="Sign In"
+                text="登录"
               />
             ) : (
-              <ProfileDropdown name={user.name} userName={user.username} />
+              <ProfileDropdown
+                name={user.name}
+                userName={user.username}
+                hideThemeSwitch
+              />
             )}
           </StyledDropDownContainer>
         </>

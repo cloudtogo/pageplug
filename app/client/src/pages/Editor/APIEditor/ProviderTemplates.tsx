@@ -326,7 +326,7 @@ class ProviderTemplates extends React.Component<ProviderTemplatesProps> {
               )
             }
           >
-            {" Back"}
+            {" 返回"}
           </span>
           <br />
 

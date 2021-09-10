@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import styled, { ThemeProvider } from "styled-components";
 import StyledHeader from "components/designSystems/appsmith/StyledHeader";
-import AppsmithLogo from "assets/images/appsmith_logo.png";
+import PagePlugLogo from "assets/images/pageplug_logo_mint.svg";
 import {
   isPermitted,
   PERMISSION_TYPE,
@@ -36,9 +36,15 @@ import ToggleCommentModeButton from "pages/Editor/ToggleModeButton";
 import GetAppViewerHeaderCTA from "./GetAppViewerHeaderCTA";
 import { showAppInviteUsersDialogSelector } from "selectors/applicationSelectors";
 
-const HeaderWrapper = styled(StyledHeader)<{ hasPages: boolean }>`
-  box-shadow: unset;
-  height: unset;
+const HeaderWrapper = styled(StyledHeader)<{
+  hasPages: boolean;
+  inCloudOS?: boolean;
+}>`
+  box-shadow: ${(props) => props.theme.colors.header.boxShadow};
+  height: ${(props) => `
+    calc(${props.inCloudOS ? "0px" : props.theme.smallHeaderHeight}${
+    props.hasPages ? ` + ${props.theme.viewHeaderTabHeight}` : ""
+  })`};
   padding: 0;
   background-color: ${(props) => props.theme.colors.header.background};
   color: white;
@@ -91,7 +97,7 @@ const HeaderRow = styled.div<{ justify: string }>`
   flex: 1;
   flex-direction: row;
   justify-content: ${(props) => props.justify};
-  height: ${(props) => `calc(${props.theme.smallHeaderHeight})`};
+  height: 100%;
   border-bottom: 1px solid
     ${(props) => props.theme.colors.header.tabsHorizontalSeparator};
 `;
@@ -103,9 +109,9 @@ const HeaderSection = styled.div<{ justify: string }>`
   justify-content: ${(props) => props.justify};
 `;
 
-const AppsmithLogoImg = styled.img`
+const PagePlugLogoImg = styled.img`
   padding-left: ${(props) => props.theme.spaces[7]}px;
-  max-width: 110px;
+  height: 25px;
 `;
 
 const HeaderRightItemContainer = styled.div`
@@ -127,10 +133,17 @@ type AppViewerHeaderProps = {
   currentOrgId: string;
   currentUser?: User;
   lightTheme: Theme;
+  inCloudOS: any;
 };
 
 export function AppViewerHeader(props: AppViewerHeaderProps) {
-  const { currentApplicationDetails, currentOrgId, currentUser, pages } = props;
+  const {
+    currentApplicationDetails,
+    currentOrgId,
+    currentUser,
+    pages,
+    inCloudOS,
+  } = props;
   const userPermissions = currentApplicationDetails?.userPermissions ?? [];
   const permissionRequired = PERMISSION_TYPE.MANAGE_APPLICATION;
   const canEdit = isPermitted(userPermissions, permissionRequired);
@@ -165,6 +178,20 @@ export function AppViewerHeader(props: AppViewerHeaderProps) {
     loginUrl,
   });
 
+  if (inCloudOS) {
+    return (
+      <ThemeProvider theme={props.lightTheme}>
+        <HeaderWrapper hasPages={pages.length > 1} inCloudOS>
+          <HtmlTitle />
+          <PageTabsContainer
+            currentApplicationDetails={currentApplicationDetails}
+            pages={pages}
+          />
+        </HeaderWrapper>
+      </ThemeProvider>
+    );
+  }
+
   return (
     <ThemeProvider theme={props.lightTheme}>
       <HeaderWrapper hasPages={pages.length > 1}>
@@ -173,7 +200,7 @@ export function AppViewerHeader(props: AppViewerHeaderProps) {
           <HeaderSection justify={"flex-start"}>
             <div style={{ flex: 1 }}>
               <PrimaryLogoLink to={APPLICATIONS_URL}>
-                <AppsmithLogoImg alt="Appsmith logo" src={AppsmithLogo} />
+                <PagePlugLogoImg alt="PagePlug logo" src={PagePlugLogo} />
               </PrimaryLogoLink>
             </div>
             <div style={{ flex: 1 }}>
@@ -200,7 +227,7 @@ export function AppViewerHeader(props: AppViewerHeaderProps) {
                       className="t--application-share-btn header__application-share-btn"
                       icon={"share"}
                       size={Size.small}
-                      text={"Share"}
+                      text={"分享"}
                     />
                   }
                 />
@@ -242,6 +269,7 @@ const mapStateToProps = (state: AppState): AppViewerHeaderProps => ({
   currentOrgId: getCurrentOrgId(state),
   currentUser: getCurrentUser(state),
   lightTheme: getThemeDetails(state, ThemeMode.LIGHT),
+  inCloudOS: state.entities.app.inCloudOS,
 });
 
 export default connect(mapStateToProps)(AppViewerHeader);

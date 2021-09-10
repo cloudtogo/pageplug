@@ -411,12 +411,12 @@ export function* createApplicationSaga(
       : null;
     if (existingApplication) {
       yield call(reject, {
-        _error: "An application with this name already exists",
+        _error: "应用名称被占用",
       });
       yield put({
         type: ReduxActionErrorTypes.CREATE_APPLICATION_ERROR,
         payload: {
-          error: "Could not create application",
+          error: "应用创建失败",
           show: false,
         },
       });

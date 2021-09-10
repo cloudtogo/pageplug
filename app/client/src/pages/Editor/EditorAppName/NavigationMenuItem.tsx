@@ -27,12 +27,13 @@ export interface MenuItemData {
 }
 
 const StyledMenuItem = styled(MenuItem)`
-  width: 240px;
+  width: 160px;
   background: ${(props) =>
     props.theme.colors.navigationMenu.backgroundInactive};
   color: ${(props) => props.theme.colors.navigationMenu.contentInactive};
-  border-radius: 0;
+  border-radius: ${(props) => props.theme.borderRadius};
   height: ${(props) => props.theme.navbarMenuHeight};
+  line-height: 26px;
 
   &&&:hover {
     color: ${(props) => props.theme.colors.navigationMenu.contentActive};

@@ -9,14 +9,14 @@ export const EntityTogglesWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    color: ${Colors.ALTO};
+    color: ${Colors.MINT_GREEN};
     svg,
     svg path {
-      fill: ${Colors.ALTO};
+      fill: ${Colors.MINT_GREEN};
     }
 
     &:hover {
-      background: ${Colors.SHARK2};
+      background: ${Colors.MINT_GREEN};
       svg,
       svg path {
         fill: ${Colors.WHITE};

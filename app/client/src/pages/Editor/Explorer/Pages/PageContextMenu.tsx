@@ -76,12 +76,12 @@ export function PageContextMenu(props: {
     {
       value: "rename",
       onSelect: editPageName,
-      label: "Edit Name",
+      label: "修改名称",
     },
     {
       value: "clone",
       onSelect: clonePage,
-      label: "Clone",
+      label: "复制",
     },
     {
       value: "visibility",
@@ -89,7 +89,7 @@ export function PageContextMenu(props: {
       // Possibly support ReactNode in TreeOption
       label: ((
         <CustomLabel>
-          {props.isHidden ? "Show" : "Hide"}
+          {props.isHidden ? "显示" : "隐藏"}
           <Icon icon={props.isHidden ? "eye-open" : "eye-off"} iconSize={14} />
         </CustomLabel>
       ) as ReactNode) as string,
@@ -99,7 +99,7 @@ export function PageContextMenu(props: {
     optionTree.push({
       value: "setdefault",
       onSelect: () => setPageAsDefault(props.pageId, props.applicationId),
-      label: "Set as Home Page",
+      label: "设置为主页",
     });
   }
 
@@ -107,7 +107,7 @@ export function PageContextMenu(props: {
     optionTree.push({
       value: "delete",
       onSelect: () => deletePage(props.pageId, props.name),
-      label: "Delete",
+      label: "删除",
       intent: "danger",
     });
   }

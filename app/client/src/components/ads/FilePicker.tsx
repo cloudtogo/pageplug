@@ -54,6 +54,7 @@ const ContainerDiv = styled.div<{
   height: 190px;
   background-color: ${(props) => props.theme.colors.filePicker.bg};
   position: relative;
+  border-radius: ${(props) => props.theme.borderRadius};
 
   #fileInput {
     display: none;
@@ -140,11 +141,10 @@ const ContainerDiv = styled.div<{
       ${(props) => props.theme.colors.filePicker.shadow.from},
       ${(props) => props.theme.colors.filePicker.shadow.to}
     );
-    opacity: 0.6;
     width: 100%;
 
     a {
-      width: 110px;
+      width: 100px;
       margin: ${(props) => props.theme.spaces[13]}px
         ${(props) => props.theme.spaces[3]}px
         ${(props) => props.theme.spaces[3]}px auto;
@@ -382,7 +382,7 @@ function FilePickerComponent(props: FilePickerProps) {
     <div className="button-wrapper" ref={fileContainerRef}>
       <UploadIcon />
       <Text className="drag-drop-text" type={TextType.P2}>
-        Drag & Drop files to upload or
+        拖拽文件上传，或者你也可以
       </Text>
       <form>
         <input
@@ -398,7 +398,7 @@ function FilePickerComponent(props: FilePickerProps) {
           category={Category.tertiary}
           onClick={(el) => ButtonClick(el)}
           size={Size.medium}
-          text="Browse"
+          text="浏览文件"
         />
       </form>
     </div>
@@ -428,7 +428,7 @@ function FilePickerComponent(props: FilePickerProps) {
           icon="delete"
           onClick={() => removeFile()}
           size={Size.medium}
-          text="remove"
+          text="删除"
         />
       </div>
     </>
@@ -446,7 +446,7 @@ function FilePickerComponent(props: FilePickerProps) {
         <div className="success-container">
           <UploadSuccessIcon className="success-icon" />
           <Text className="success-text" type={TextType.H4}>
-            Successfully Uploaded!
+            上传成功！
           </Text>
           <TooltipComponent
             content={REMOVE_FILE_TOOL_TIP()}

@@ -90,7 +90,10 @@ export const Colors = {
   SELECT_DISABLED: "#ced9e080",
   // new colors
   MINT_GREEN: "#2CBBA6",
-  MINT_GREEN_LIGHT: "#CAF0EB",
+  MINT_GREEN_LIGHT: "#d1ede5",
+  MINT_GREEN_DARK: "#1c9486",
+  MINT_GREEN_DARKER: "#0f6e66",
+  MINT_GREEN_DARKEST: "#d3e4e2",
   MINT_ORANGE: "#FF6A00",
   MINT_ORANGE_LIGHT: "#FFE8D7",
   MINT_BLUE: "#3C6DC1",
@@ -99,5 +102,7 @@ export const Colors = {
   MINT_YELLOW_LIGHT: "#FFF1D7",
   MINT_RED: "#F93B4D",
   MINT_RED_LIGHT: "#FED6DA",
+  MINT_BLACK: "#232323",
+  MINT_GRAY: "#f6f6f6",
 };
 export type Color = typeof Colors[keyof typeof Colors];

@@ -47,10 +47,8 @@ const ExplorerPluginGroup = memo((props: ExplorerPluginGroupProps) => {
 
   const emptyNode = (
     <EntityPlaceholder step={props.step + 1}>
-      No {props.actionConfig?.groupName || "Plugin Groups"} yet. Please click
-      the <strong>+</strong> icon on
-      <strong> {props.actionConfig?.groupName || "Plugin Groups"}</strong>{" "}
-      above, to create.
+      暂无{props.actionConfig?.groupName || "插件组"}，请点击
+      <strong>+</strong>按钮添加
     </EntityPlaceholder>
   );
 

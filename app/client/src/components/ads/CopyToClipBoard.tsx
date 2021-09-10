@@ -8,10 +8,10 @@ const Wrapper = styled.div`
   display: flex;
 
   div {
-    flex-basis: calc(100% - 110px);
+    flex-basis: calc(100% - 120px);
   }
   a {
-    flex-basis: 110px;
+    flex-basis: 120px;
   }
 `;
 
@@ -51,7 +51,7 @@ function CopyToClipboard(props: any) {
           copyToClipboard(copyText);
         }}
         size={Size.large}
-        text={isCopied ? "Copied" : "Copy"}
+        text={isCopied ? "复制成功" : "复制"}
       />
     </Wrapper>
   );

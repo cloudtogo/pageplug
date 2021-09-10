@@ -19,11 +19,12 @@ export const Wrapper = styled.div`
   border-radius: 0px;
   border: none;
   position: relative;
-  color: ${Colors.ALTO};
+  color: ${Colors.MINT_BLACK};
   height: 72px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: ${(props) => props.theme.borderRadius};
   & > div {
     display: flex;
     flex-direction: column;
@@ -31,15 +32,8 @@ export const Wrapper = styled.div`
     justify-content: center;
   }
   &:hover {
-    color: ${Colors.WHITE};
-    background: ${Colors.TUNDORA};
+    background: ${Colors.MINT_GREEN_LIGHT};
     cursor: grab;
-    color: ${Colors.WHITE};
-    svg {
-      path {
-        fill: ${Colors.WHITE};
-      }
-    }
   }
   & i {
     font-family: ${(props) => props.theme.fonts.text};
@@ -49,7 +43,7 @@ export const Wrapper = styled.div`
 
 export const BetaLabel = styled.div`
   font-size: 10px;
-  background: ${Colors.TUNDORA};
+  background: ${Colors.MINT_YELLOW};
   margin-top: 3px;
   padding: 2px 4px;
   border-radius: 3px;
@@ -66,7 +60,7 @@ export const IconLabel = styled.h5`
   flex-shrink: 1;
   font-size: ${(props) => props.theme.fontSizes[1]}px;
   line-height: ${(props) => props.theme.lineHeights[2]}px;
-  color: ${Colors.WHITE};
+  color: ${Colors.MINT_BLACK};
   &::selection {
     background: none;
   }
@@ -110,7 +104,7 @@ function WidgetCard(props: CardProps) {
       <DragPreviewImage connect={preview} src={blankImage} />
       <Wrapper className={className} ref={drag}>
         <div>
-          <Icon />
+          <Icon needBG />
           <IconLabel>{props.details.widgetCardName}</IconLabel>
           {props.details.isBeta && <BetaLabel>Beta</BetaLabel>}
         </div>

@@ -96,7 +96,7 @@ const StyledInput = styled((props) => {
   );
 })<TextInputProps & { inputStyle: boxReturnType; isValid: boolean }>`
   width: ${(props) => (props.fill ? "100%" : "320px")};
-  border-radius: 0;
+  border-radius: ${(props) => props.theme.borderRadius};
   outline: 0;
   box-shadow: none;
   border: 1px solid ${(props) => props.inputStyle.borderColor};
@@ -131,8 +131,8 @@ const StyledInput = styled((props) => {
       };
     box-shadow: ${
       props.isValid
-        ? "0px 0px 4px 4px rgba(203, 72, 16, 0.18)"
-        : "0px 0px 4px 4px rgba(226, 44, 44, 0.18)"
+        ? `0px 0px 4px 4px ${props.theme.colors.info.main}2e`
+        : `0px 0px 4px 4px ${props.theme.colors.danger.main}2e`
     };
   }
   `

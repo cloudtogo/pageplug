@@ -71,13 +71,13 @@ export default function Settings() {
   const tabArr: TabProp[] = [
     {
       key: "general",
-      title: "General",
+      title: "基本",
       panelComponent: SettingsRenderer,
       icon: "general",
     },
     {
       key: "members",
-      title: "Members",
+      title: "团队",
       panelComponent: SettingsRenderer,
       icon: "user",
     },

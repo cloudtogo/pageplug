@@ -115,7 +115,7 @@ const getMainStateStyles = (props: ThemeProp & ButtonProps) => {
       bgColorSecondary: "transparent",
     },
     [Category.tertiary]: {
-      bgColorTertiary: "transparent",
+      bgColorTertiary: "#fff",
       borderColorTertiary: props.theme.colors.tertiary.main,
       txtColorTertiary: props.theme.colors.tertiary.main,
     },
@@ -140,7 +140,7 @@ const getHoverStateStyles = (props: ThemeProp & ButtonProps) => {
       borderColorSecondary: props.theme.colors[variant].main,
     },
     [Category.tertiary]: {
-      bgColorTertiary: hexToRgba(props.theme.colors.tertiary.main, 0.1),
+      bgColorTertiary: "#f0f0f0",
       borderColorTertiary: props.theme.colors.tertiary.main,
       txtColorTertiary: props.theme.colors.tertiary.main,
     },
@@ -165,9 +165,9 @@ const getActiveStateStyles = (props: ThemeProp & ButtonProps) => {
       borderColorSecondary: props.theme.colors[variant].light,
     },
     [Category.tertiary]: {
-      bgColorTertiary: hexToRgba(props.theme.colors.tertiary.main, 0.1),
-      borderColorTertiary: props.theme.colors.tertiary.light,
-      txtColorTertiary: props.theme.colors.tertiary.light,
+      bgColorTertiary: "#ddd",
+      borderColorTertiary: hexToRgba(props.theme.colors.tertiary.main, 0.8),
+      txtColorTertiary: props.theme.colors.tertiary.main,
     },
   };
 
@@ -301,7 +301,7 @@ const ButtonStyles = css<ThemeProp & ButtonProps>`
   background-color: ${(props) => btnColorStyles(props, "main").bgColor};
   color: ${(props) => btnColorStyles(props, "main").txtColor};
   border: ${(props) => btnColorStyles(props, "main").border};
-  border-radius: 0;
+  border-radius: ${(props) => props.theme.borderRadius};
   ${(props) => btnFontStyles(props).buttonFont};
   padding: ${(props) => btnFontStyles(props).padding};
   .${Classes.ICON} {

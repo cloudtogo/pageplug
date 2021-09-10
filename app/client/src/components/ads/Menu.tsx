@@ -22,7 +22,8 @@ type MenuProps = CommonComponentProps & {
 const MenuWrapper = styled.div<{ width?: string }>`
   width: ${(props) => (props.width ? props.width : "234px")};
   background: ${(props) => props.theme.colors.menu.background};
-  box-shadow: 0px 12px 28px ${(props) => props.theme.colors.menu.shadow};
+  box-shadow: ${(props) => props.theme.colors.menu.shadow};
+  border-radius: ${(props) => props.theme.borderRadius};
 `;
 
 const MenuOption = styled.div`
