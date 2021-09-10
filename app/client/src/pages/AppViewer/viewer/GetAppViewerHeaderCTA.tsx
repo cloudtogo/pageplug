@@ -13,6 +13,7 @@ import { getAllApplications } from "actions/applicationActions";
 const Cta = styled(Button)`
   ${(props) => getTypographyByKey(props, "btnLarge")}
   height: 100%;
+  border-radius: 0;
 `;
 
 const ForkButton = styled(Cta)`

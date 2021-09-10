@@ -271,7 +271,7 @@ function OrgInviteUsersForm(props: any) {
         <>
           <Divider />
           <OrgInviteTitle>
-            <Text type={TextType.H5}>Invite Users to {currentOrg?.name} </Text>
+            <Text type={TextType.H5}>邀请小伙伴到 {currentOrg?.name} </Text>
           </OrgInviteTitle>
         </>
       )}
@@ -293,7 +293,7 @@ function OrgInviteUsersForm(props: any) {
               intent="success"
               label="Emails"
               name="users"
-              placeholder="Enter email address"
+              placeholder="请输入邮箱地址"
               type="email"
             />
             <SelectField
@@ -301,7 +301,7 @@ function OrgInviteUsersForm(props: any) {
               name="role"
               options={styledRoles}
               outline={false}
-              placeholder="Select a role"
+              placeholder="请选择角色"
               size="small"
             />
           </div>
@@ -311,7 +311,7 @@ function OrgInviteUsersForm(props: any) {
             isLoading={submitting && !(submitFailed && !anyTouched)}
             size={Size.large}
             tag="button"
-            text="Invite"
+            text="邀请"
             variant={Variant.info}
           />
         </StyledInviteFieldGroup>
@@ -322,13 +322,13 @@ function OrgInviteUsersForm(props: any) {
             {!mailEnabled && (
               <MailConfigContainer>
                 {allUsers.length === 0 && <NoEmailConfigImage />}
-                <span>You haven’t setup any email service yet</span>
+                <span>未配置邮件服务</span>
                 <a
                   href="https://docs.appsmith.com/v/v1.2.1/setup/docker/email"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  Please configure your email service to invite people
+                  请配置你的邮件服务来开启邀请功能
                 </a>
               </MailConfigContainer>
             )}

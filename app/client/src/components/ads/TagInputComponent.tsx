@@ -15,7 +15,7 @@ const TagInputWrapper = styled.div<{ intent?: Intent }>`
       background-color: ${(props) => props.theme.colors.tagInput.bg};
       min-height: 38px;
       border: 1px solid ${(props) => props.theme.colors.tagInput.bg};
-      border-radius: 0px;
+      border-radius: ${(props) => props.theme.borderRadius};
     }
     .${Classes.TAG_INPUT}.${Classes.ACTIVE} {
       border: 1px solid ${(props) => props.theme.colors.info.main};
@@ -31,7 +31,7 @@ const TagInputWrapper = styled.div<{ intent?: Intent }>`
       padding: 3px 10px;
       color: ${(props) => props.theme.colors.tagInput.tag.text};
       background-color: ${(props) => props.theme.colors.info.main};
-      border-radius: 0px;
+      border-radius: ${(props) => props.theme.borderRadius};
       font-size: 11px;
       line-height: 13px;
       letter-spacing: 0.4px;

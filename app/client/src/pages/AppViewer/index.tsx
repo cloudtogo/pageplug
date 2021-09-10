@@ -37,14 +37,24 @@ import GlobalHotKeys from "./GlobalHotKeys";
 
 const SentryRoute = Sentry.withSentryRouting(Route);
 
-const AppViewerBody = styled.section<{ hasPages: boolean }>`
+const AppViewerBody = styled.section<{
+  hasPages: boolean;
+  inCloudOS: boolean;
+}>`
   display: flex;
   flex-direction: row;
   align-items: stretch;
   justify-content: flex-start;
   height: calc(
     100vh -
-      ${(props) => (!props.hasPages ? props.theme.smallHeaderHeight : "72px")}
+      ${(props) =>
+        !props.hasPages
+          ? props.inCloudOS
+            ? "0px"
+            : props.theme.smallHeaderHeight
+          : props.inCloudOS
+          ? props.theme.viewHeaderTabHeight
+          : `${props.theme.smallHeaderHeight} - ${props.theme.viewHeaderTabHeight}`}
   );
 `;
 
@@ -78,6 +88,7 @@ export type AppViewerProps = {
   resetChildrenMetaProperty: (widgetId: string) => void;
   pages: PageListPayload;
   lightTheme: Theme;
+  inCloudOS: any;
 } & RouteComponentProps<BuilderRouteParams>;
 
 class AppViewer extends Component<
@@ -103,7 +114,7 @@ class AppViewer extends Component<
   };
 
   public render() {
-    const { isInitialized } = this.props;
+    const { isInitialized, inCloudOS } = this.props;
     return (
       <ThemeProvider theme={this.props.lightTheme}>
         <GlobalHotKeys>
@@ -117,7 +128,10 @@ class AppViewer extends Component<
             <ContainerWithComments>
               <AppComments isInline />
               <AppViewerBodyContainer>
-                <AppViewerBody hasPages={this.props.pages.length > 1}>
+                <AppViewerBody
+                  inCloudOS={inCloudOS}
+                  hasPages={this.props.pages.length > 1}
+                >
                   {isInitialized && this.state.registered && (
                     <Switch>
                       <SentryRoute
@@ -148,6 +162,7 @@ const mapStateToProps = (state: AppState) => ({
   isInitialized: getIsInitialized(state),
   pages: getViewModePageList(state),
   lightTheme: getThemeDetails(state, ThemeMode.LIGHT),
+  inCloudOS: state.entities.app.inCloudOS,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({

@@ -13,13 +13,14 @@ import { IMPORT_APPLICATION_MODAL_TITLE } from "constants/messages";
 
 const ImportButton = styled(Button)<{ disabled?: boolean }>`
   height: 30px;
-  width: 81px;
+  width: 86px;
   pointer-events: ${(props) => (!!props.disabled ? "none" : "auto")};
 `;
 
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
+  margin-top: 16px;
 `;
 
 const FilePickerWrapper = styled.div`
@@ -107,7 +108,7 @@ function ImportApplicationModal(props: ImportApplicationModalProps) {
           isLoading={importingApplication}
           onClick={onImportApplication}
           size={Size.large}
-          text={"IMPORT"}
+          text={"导入"}
         />
       </ButtonWrapper>
     </StyledDialog>

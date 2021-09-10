@@ -130,6 +130,7 @@ const Selected = styled.div<{
   width: 100%;
   height: ${(props) => props.height};
   cursor: pointer;
+  border-radius: ${(props) => props.theme.borderRadius};
   ${(props) =>
     props.isOpen
       ? `border: 1px solid ${
@@ -146,7 +147,7 @@ const Selected = styled.div<{
     props.isOpen && !props.disabled ? "box-sizing: border-box" : null};
   ${(props) =>
     props.isOpen && !props.disabled && !props.bgColor
-      ? "box-shadow: 0px 0px 4px 4px rgba(203, 72, 16, 0.18)"
+      ? `box-shadow: 0px 0px 4px 4px ${props.theme.colors.info.main}2e`
       : null};
   .${Classes.TEXT} {
     ${(props) =>
@@ -167,6 +168,7 @@ const DropdownWrapper = styled.div<{
 }>`
   width: ${(props) => props.width};
   z-index: 1;
+  border-radius: ${(props) => props.theme.borderRadius};
   background-color: ${(props) => props.theme.colors.propertyPane.radioGroupBg};
   margin-top: ${(props) => -props.theme.spaces[3]}px;
   padding: ${(props) => props.theme.spaces[3]}px 0;
@@ -250,11 +252,6 @@ const LabelWrapper = styled.div<{ label?: string }>`
   align-items: flex-start;
   span:last-child {
     margin-top: ${(props) => props.theme.spaces[2] - 1}px;
-  }
-  &:hover {
-    .${Classes.TEXT} {
-      color: ${(props) => props.theme.colors.dropdown.selected.text};
-    }
   }
 `;
 

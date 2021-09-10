@@ -13,6 +13,8 @@ import { CanvasStructure } from "reducers/uiReducers/pageCanvasStructureReducer"
 import { Datasource } from "entities/Datasource";
 import { Plugin } from "api/PluginApi";
 import { extractCurrentDSL } from "utils/WidgetPropsUtils";
+import Button, { Category, Size } from "components/ads/Button";
+import styled from "styled-components";
 
 type ExplorerPageGroupProps = {
   searchKeyword?: string;
@@ -23,6 +25,17 @@ type ExplorerPageGroupProps = {
   plugins: Plugin[];
   showWidgetsSidebar: (pageId: string) => void;
 };
+
+const PageList = styled.div`
+  margin: 8px;
+
+  & .newpage {
+    height: 32px;
+    & svg path {
+      stroke: ${(props) => props.theme.colors.tertiary.main};
+    }
+  }
+`;
 
 const pageGroupEqualityCheck = (
   prev: ExplorerPageGroupProps,
@@ -45,7 +58,7 @@ export const ExplorerPageGroup = memo((props: ExplorerPageGroupProps) => {
   });
   const createPageCallback = useCallback(() => {
     const name = getNextEntityName(
-      "Page",
+      "页面",
       pages.map((page: Page) => page.pageName),
     );
     // Default layout is extracted by adding dynamically computed properties like min-height.
@@ -78,13 +91,29 @@ export const ExplorerPageGroup = memo((props: ExplorerPageGroupProps) => {
 
   if (pageEntities.filter(Boolean).length === 0) return null;
 
+  // quincy hack: no need to collapse all items
+  return (
+    <PageList>
+      <Button
+        fill
+        onClick={createPageCallback}
+        icon={"plus"}
+        size={Size.medium}
+        category={Category.tertiary}
+        text="新建页面"
+        className="newpage"
+      />
+      {pageEntities}
+    </PageList>
+  );
+
   return (
     <Entity
       className="group pages"
       entityId="Pages"
       icon={pageGroupIcon}
       isDefaultExpanded
-      name="Pages"
+      name="页面"
       onCreate={createPageCallback}
       searchKeyword={props.searchKeyword}
       step={props.step}

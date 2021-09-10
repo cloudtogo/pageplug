@@ -119,11 +119,11 @@ export const StyledMultiSelectDropDown = styled(MultiSelectDropdown)`
 
 export const StyledMenu = styled(Menu)`
   && {
-    background: ${(props) => props.theme.dropdown[Skin.DARK].background};
-    border-radius: unset;
+    background: ${(props) => props.theme.dropdown[Skin.LIGHT].background};
+    border-radius: ${(props) => props.theme.borderRadius};
   }
   .bp3-submenu .bp3-menu {
-    background: ${(props) => props.theme.dropdown[Skin.DARK].background};
+    background: ${(props) => props.theme.dropdown[Skin.LIGHT].background};
   }
 `;
 
@@ -162,20 +162,23 @@ export const StyledPopover = styled(Popover)`
 
 export const StyledMenuItem = styled(MenuItem)`
   &&&&&& {
-    border-radius: ${(props) => props.theme.radii[1]}px;
-    background: ${(props) => props.theme.dropdown[Skin.DARK].background};
-    color: ${(props) => props.theme.dropdown[Skin.DARK].inActiveText};
+    border-radius: ${(props) => props.theme.borderRadius};
+    background: ${(props) => props.theme.dropdown[Skin.LIGHT].background};
+    color: ${(props) => props.theme.dropdown[Skin.LIGHT].inActiveText};
     padding: 4px 8px;
     margin: 4px 0px;
+    &.bp3-menu-item.bp3-intent-danger {
+      color: ${Colors.MINT_RED};
+    }
     &:hover {
-      background: ${(props) => props.theme.dropdown[Skin.DARK].hoverBG};
+      background: ${(props) => props.theme.dropdown[Skin.LIGHT].hoverBG};
       &&&.bp3-menu-item.bp3-intent-danger:hover {
-        background: ${(props) => props.theme.colors.error};
+        background: ${Colors.MINT_RED_LIGHT};
       }
     }
     &.${Classes.ACTIVE} {
-      background: ${(props) => props.theme.dropdown[Skin.DARK].hoverBG};
-      color: ${(props) => props.theme.dropdown[Skin.DARK].hoverText};
+      background: ${(props) => props.theme.dropdown[Skin.LIGHT].hoverBG};
+      color: ${(props) => props.theme.dropdown[Skin.LIGHT].hoverText};
       position: relative;
       &.single-select {
         &:before {
@@ -183,7 +186,7 @@ export const StyledMenuItem = styled(MenuItem)`
           top: -2px;
           position: absolute;
           content: "";
-          background: ${(props) => props.theme.dropdown[Skin.DARK].hoverBG};
+          background: ${(props) => props.theme.dropdown[Skin.LIGHT].hoverBG};
           border-radius: 4px 0 0 4px;
           width: 4px;
           height: 100%;
@@ -191,7 +194,7 @@ export const StyledMenuItem = styled(MenuItem)`
       }
     }
     &&&& .${Classes.MENU} {
-      background: ${(props) => props.theme.dropdown[Skin.DARK].inActiveBG};
+      background: ${(props) => props.theme.dropdown[Skin.LIGHT].inActiveBG};
     }
   }
 `;

@@ -98,15 +98,17 @@ const StyledMenu = styled(Menu)`
     props.theme.colors.navigationMenu.backgroundInactive};
   color: ${(props) => props.theme.colors.navigationMenu.contentInactive};
   ${(props) => getTypographyByKey(props, "p1")};
-  border-radius: 0;
+  border-radius: ${(props) => props.theme.borderRadius};
   padding: 0;
+  min-width: 120px;
 
   &&& .${Classes.MENU}, &&& .${Classes.MENU_SUBMENU} {
     background: ${(props) =>
       props.theme.colors.navigationMenu.backgroundInactive};
     color: ${(props) => props.theme.colors.navigationMenu.contentInactive};
-    border-radius: 0;
+    border-radius: ${(props) => props.theme.borderRadius};
     padding: 0;
+    min-width: 120px;
 
     .${Classes.ICON} {
       color: ${(props) => props.theme.colors.navigationMenu.contentInactive};
@@ -156,7 +158,7 @@ export function EditorAppName(props: EditorAppNameProps) {
   const inputValidation = (value: string) => {
     if (value.trim() === "") {
       Toaster.show({
-        text: "Application name can't be empty",
+        text: "应用名不能为空",
         variant: Variant.danger,
       });
     }

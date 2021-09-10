@@ -20,7 +20,7 @@ export const IntentColors: Record<string, Color> = {
   primary: Colors.GREEN,
   success: Colors.PURPLE,
   secondary: Colors.BLACK_PEARL,
-  danger: Colors.RED,
+  danger: Colors.MINT_RED,
   none: Colors.GEYSER_LIGHT,
   warning: Colors.JAFFA,
 };
@@ -325,6 +325,7 @@ export type NestedObjectOrArray<T> =
   | T
   | T[];
 export type Theme = {
+  inCloudOS: boolean;
   radii: Array<number>;
   fontSizes: Array<number>;
   drawerWidth: string;
@@ -338,6 +339,7 @@ export type Theme = {
     text: FontFamily;
   };
   borders: ThemeBorder[];
+  borderRadius: string;
   evaluatedValuePopup: {
     width: number;
     height: number;
@@ -345,6 +347,7 @@ export type Theme = {
   propertyPane: PropertyPaneTheme;
   headerHeight: string;
   smallHeaderHeight: string;
+  viewHeaderTabHeight: string;
   integrationsPageUnusableHeight: string;
   backBanner: string;
   homePage: any;
@@ -368,16 +371,18 @@ export type Theme = {
   };
   dropdown: {
     [Skin.LIGHT]: {
-      hoverBG: ShadeColor;
-      hoverText: ShadeColor;
-      inActiveBG: ShadeColor;
-      inActiveText: ShadeColor;
+      hoverBG: Color;
+      hoverText: Color;
+      inActiveBG: Color;
+      inActiveText: Color;
+      border: Color;
+      background: Color;
     };
     [Skin.DARK]: {
-      hoverBG: ShadeColor;
-      hoverText: ShadeColor;
-      inActiveBG: ShadeColor;
-      inActiveText: ShadeColor;
+      hoverBG: Color;
+      hoverText: Color;
+      inActiveBG: Color;
+      inActiveText: Color;
       border: Color;
       background: Color;
     };
@@ -550,7 +555,7 @@ const lightShades = [
   "#302D2D",
   "#090707",
   "#FFFFFF",
-  "#6A86CE",
+  "#2CBBA6",
   "#E0DEDE",
   "#EBEBEB",
   "#858282",
@@ -607,7 +612,7 @@ type ColorType = {
     normalIcon: ShadeColor;
     hoverIcon: ShadeColor;
     hoverText: ShadeColor;
-    hoverBg: ShadeColor;
+    hoverBg: string;
     warning: {
       color: string;
       bg: string;
@@ -736,14 +741,14 @@ type ColorType = {
     };
   };
   applications: {
-    bg: ShadeColor;
-    textColor: ShadeColor;
-    orgColor: ShadeColor;
-    iconColor: ShadeColor;
+    bg: ShadeColor | string;
+    textColor: ShadeColor | string;
+    orgColor: ShadeColor | string;
+    iconColor: ShadeColor | string;
     hover: {
-      bg: ShadeColor;
-      textColor: ShadeColor;
-      orgColor: ShadeColor;
+      bg: ShadeColor | string;
+      textColor: ShadeColor | string;
+      orgColor: ShadeColor | string;
     };
   };
   switch: {
@@ -894,13 +899,14 @@ type ColorType = {
   formMessage: Record<string, Record<Intent, string>>;
   header: {
     separator: string;
-    appName: ShadeColor;
+    appName: string;
     background: string;
     deployToolTipBackground: string;
     deployToolTipText: ShadeColor;
     shareBtnHighlight: string;
     shareBtn: string;
     tabsHorizontalSeparator: string;
+    boxShadow: string;
     tabText: string;
     activeTabBorderBottom: string;
     activeTabText: string;
@@ -1107,8 +1113,8 @@ const notifications = {
 };
 
 const displayImageUpload = {
-  background: "#AEBAD9",
-  label: "#457AE6",
+  background: Colors.MINT_GREEN_LIGHT,
+  label: Colors.MINT_GREEN,
 };
 
 const showcaseCarousel = {
@@ -1182,14 +1188,15 @@ const comments = {
 };
 
 const auth: any = {
-  background: darkShades[1],
-  cardBackground: lightShades[10],
+  background: darkShades[8],
+  cardBackground: Colors.WHITE,
   btnPrimary: "#F86A2B",
   inputBackground: darkShades[1],
-  headingText: "#FFF",
-  link: "#106ba3",
-  text: darkShades[7],
-  placeholder: darkShades[5],
+  headingText: "#000",
+  link: Colors.MINT_GREEN,
+  boxShadow: `0 0 0 6px ${Colors.MINT_GREEN}ab`,
+  text: darkShades[6],
+  placeholder: darkShades[9],
   socialBtnText: darkShades[8],
   socialBtnBorder: darkShades[8],
   socialBtnHighlight: darkShades[1],
@@ -1202,14 +1209,14 @@ const helpModal = {
 
 const formMessage = {
   background: {
-    danger: "rgba(226,44,44,0.08)",
+    danger: `${Colors.MINT_RED}11`,
     success: "#172320",
-    warning: "rgba(224, 179, 14, 0.08)",
+    warning: `${Colors.MINT_YELLOW}11`,
   },
   text: {
-    danger: "#E22C2C",
+    danger: Colors.MINT_RED,
     success: "#03B365",
-    warning: "#E0B30E",
+    warning: Colors.MINT_YELLOW,
   },
 };
 
@@ -1257,12 +1264,12 @@ const actionSidePane = {
   collapsibleIcon: Colors.CODE_GRAY,
 };
 const navigationMenu = {
-  contentActive: "#F0F0F0",
-  backgroundActive: "#222222",
-  contentInactive: "#858282",
-  backgroundInactive: "#090707",
+  contentActive: "#000",
+  backgroundActive: Colors.MINT_GREEN_LIGHT,
+  contentInactive: "#333",
+  backgroundInactive: "#f6f6f6",
   label: "#A9A7A7",
-  warning: "#F22B2B",
+  warning: Colors.MINT_RED,
 };
 
 export const dark: ColorType = {
@@ -1287,6 +1294,7 @@ export const dark: ColorType = {
     shareBtnHighlight: "#F86A2B",
     shareBtn: "#fff",
     tabsHorizontalSeparator: "#EFEFEF",
+    boxShadow: "0 0 16px rgb(255 255 255 / 3%)",
     tabText: "#6F6D6D",
     activeTabBorderBottom: "#FF6D2D",
     activeTabText: "#000",
@@ -1303,7 +1311,7 @@ export const dark: ColorType = {
   },
   info: {
     main: "#CB4810",
-    light: "#F86A2B",
+    light: Colors.MINT_GREEN,
     dark: "#8B2E05",
     darker: "#A03C12",
     darkest: "#2B2B2B",
@@ -1352,7 +1360,7 @@ export const dark: ColorType = {
   },
   menu: {
     background: darkShades[3],
-    shadow: "rgba(0, 0, 0, 0.75)",
+    shadow: "0 0 0px 6px #2cbba652",
   },
   menuItem: {
     normalText: darkShades[7],
@@ -1361,8 +1369,8 @@ export const dark: ColorType = {
     hoverText: darkShades[9],
     hoverBg: darkShades[4],
     warning: {
-      color: "#EABB0C",
-      bg: "#3A3628",
+      color: Colors.WHITE,
+      bg: Colors.MINT_RED,
     },
   },
   colorSelector: {
@@ -1755,33 +1763,34 @@ export const light: ColorType = {
   selected: lightShades[12],
   header: {
     separator: "#E0DEDE",
-    appName: lightShades[8],
-    background: lightShades[0],
+    appName: Colors.MINT_BLACK,
+    background: Colors.WHITE,
     deployToolTipText: lightShades[8],
     deployToolTipBackground: "#FFF",
-    shareBtnHighlight: "#F86A2B",
+    shareBtnHighlight: Colors.MINT_GREEN,
     shareBtn: "#4B4848",
     tabsHorizontalSeparator: "#EFEFEF",
+    boxShadow: "0 0 16px rgb(0 0 0 / 3%)",
     tabText: "#6F6D6D",
-    activeTabBorderBottom: "#FF6D2D",
+    activeTabBorderBottom: Colors.MINT_GREEN,
     activeTabText: "#000",
   },
   button: {
     disabledText: lightShades[6],
   },
   tertiary: {
-    main: "#716E6E",
-    light: "#090707",
+    main: Colors.MINT_BLUE,
+    light: Colors.MINT_BLUE_LIGHT,
     dark: "#F7F7F7",
     darker: "#E8E8E8",
     darkest: "#939090",
   },
   info: {
-    main: "#F86A2B",
-    light: "#DC5B21",
-    dark: "#BF4109",
-    darker: "#FEEDE5",
-    darkest: "#F7EBE6",
+    main: Colors.MINT_GREEN,
+    light: Colors.MINT_GREEN_LIGHT,
+    dark: Colors.MINT_GREEN_DARK,
+    darker: Colors.MINT_GREEN_DARKER,
+    darkest: Colors.MINT_GREEN_DARKEST,
   },
   success: {
     main: "#03B365",
@@ -1798,8 +1807,8 @@ export const light: ColorType = {
     darkest: "#FECB11",
   },
   danger: {
-    main: "#F22B2B",
-    light: "#C60707",
+    main: Colors.MINT_RED,
+    light: Colors.MINT_RED_LIGHT,
     dark: "#B90707",
     darker: "#FFF0F0",
     darkest: "#FDE4E4",
@@ -1827,17 +1836,17 @@ export const light: ColorType = {
   },
   menu: {
     background: lightShades[11],
-    shadow: "rgba(0, 0, 0, 0.32)",
+    shadow: "0 0 0px 6px #2cbba652",
   },
   menuItem: {
     normalText: lightShades[8],
     normalIcon: lightShades[6],
     hoverIcon: lightShades[8],
     hoverText: lightShades[10],
-    hoverBg: lightShades[2],
+    hoverBg: Colors.MINT_GREEN_LIGHT,
     warning: {
-      color: "#D2A500",
-      bg: "#FDFAF2",
+      color: Colors.WHITE,
+      bg: Colors.MINT_RED,
     },
   },
   colorSelector: {
@@ -1955,12 +1964,12 @@ export const light: ColorType = {
     },
   },
   applications: {
-    bg: lightShades[3],
-    textColor: lightShades[7],
-    orgColor: lightShades[7],
-    iconColor: lightShades[7],
+    bg: `repeating-radial-gradient( circle at 50% 36%,transparent 0,#ffffff var(--spread) ),repeating-linear-gradient( #d8d8d808,#d8d8d836 )`,
+    textColor: Colors.MINT_GREEN,
+    orgColor: Colors.MINT_GREEN,
+    iconColor: Colors.MINT_GREEN,
     hover: {
-      bg: lightShades[5],
+      bg: Colors.MINT_GREEN,
       textColor: lightShades[8],
       orgColor: lightShades[9],
     },
@@ -1985,7 +1994,7 @@ export const light: ColorType = {
   modal: {
     bg: lightShades[11],
     headerText: lightShades[10],
-    iconColor: lightShades[5],
+    iconColor: Colors.MINT_RED,
     user: {
       textColor: lightShades[9],
     },
@@ -2007,7 +2016,7 @@ export const light: ColorType = {
     },
     text: lightShades[9],
     placeholder: darkShades[7],
-    shadow: "0px 0px 4px 4px rgba(203, 72, 16, 0.18)",
+    shadow: `0px 0px 4px 4px ${Colors.MINT_GREEN}2e`,
   },
   callout: {
     info: {
@@ -2210,6 +2219,7 @@ export const light: ColorType = {
 };
 
 export const theme: Theme = {
+  inCloudOS: true,
   radii: [0, 4, 8, 10, 20, 50],
   fontSizes: [0, 10, 12, 14, 16, 18, 24, 28, 32, 48, 64],
   spaces: [0, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 30, 36, 38, 40, 42, 44],
@@ -2353,15 +2363,16 @@ export const theme: Theme = {
       darkBg: lightShades[10],
       darkText: lightShades[0],
     },
-    appBackground: "#EDEDED",
+    appBackground: Colors.WHITE,
     artboard: "#F6F6F6",
+    primary: Colors.MINT_GREEN,
     primaryOld: Colors.GREEN,
     primaryDarker: Colors.JUNGLE_GREEN,
     primaryDarkest: Colors.JUNGLE_GREEN_DARKER,
     secondary: Colors.GEYSER_LIGHT,
     secondaryDarker: Colors.CONCRETE,
     secondaryDarkest: Colors.MERCURY,
-    error: Colors.RED,
+    error: Colors.MINT_RED,
     infoOld: Colors.SLATE_GRAY,
     errorMessage: Colors.ERROR_RED,
     hover: Colors.POLAR,
@@ -2443,9 +2454,10 @@ export const theme: Theme = {
       color: Colors.MYSTIC,
     },
   ],
-  sidebarWidth: "250px",
+  borderRadius: "3px",
+  sidebarWidth: "266px",
   homePage: {
-    header: 52,
+    header: 48,
     leftPane: {
       width: 240,
       leftPadding: 16,
@@ -2458,6 +2470,7 @@ export const theme: Theme = {
   },
   headerHeight: "48px",
   smallHeaderHeight: "35px",
+  viewHeaderTabHeight: "36px",
   integrationsPageUnusableHeight: "182px",
   backBanner: "30px",
   canvasBottomPadding: 200,
@@ -2482,10 +2495,12 @@ export const theme: Theme = {
   },
   dropdown: {
     [Skin.LIGHT]: {
-      hoverBG: lightShades[12],
+      hoverBG: Colors.MINT_GREEN_LIGHT,
       hoverText: lightShades[0],
       inActiveBG: lightShades[3],
       inActiveText: lightShades[8],
+      border: Colors.MINT_GREEN_LIGHT,
+      background: lightShades[1],
     },
     [Skin.DARK]: {
       hoverBG: darkShades[0],

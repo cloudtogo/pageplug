@@ -10,6 +10,7 @@ const DeployLinkDialog = styled.div`
   background-color: ${(props) =>
     props.theme.colors.header.deployToolTipBackground};
   flex-direction: row;
+  border-radius: ${(props) => props.theme.borderRadius};
 `;
 
 const DeployLink = styled.a`
@@ -51,7 +52,7 @@ export const DeployLinkButton = withTheme((props: Props) => {
       content={
         <DeployLinkDialog>
           <DeployLink href={props.link} target="_blank">
-            <DeployUrl>Current deployed version</DeployUrl>
+            <DeployUrl>最新发布版本</DeployUrl>
             <Icon
               color={props.theme.colors.header.deployToolTipText}
               icon="share"
