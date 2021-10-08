@@ -156,7 +156,7 @@ class DatasourceDBEditor extends JSONtoForm<Props> {
                     false,
                   );
                 }}
-                text="EDIT"
+                text="编辑"
               />
             </Boxed>
           )}
@@ -189,7 +189,7 @@ class DatasourceDBEditor extends JSONtoForm<Props> {
                 className="t--delete-datasource"
                 loading={isDeleting}
                 onClick={() => handleDelete(datasourceId)}
-                text="Delete"
+                text="删除"
               />
 
               <ActionButton
@@ -197,7 +197,7 @@ class DatasourceDBEditor extends JSONtoForm<Props> {
                 className="t--test-datasource"
                 loading={isTesting}
                 onClick={this.test}
-                text="Test"
+                text="测试"
               />
               <StyledButton
                 className="t--save-datasource"
@@ -207,7 +207,7 @@ class DatasourceDBEditor extends JSONtoForm<Props> {
                 loading={isSaving}
                 onClick={this.save}
                 size="small"
-                text="Save"
+                text="保存"
               />
             </SaveButtonContainer>
           </>

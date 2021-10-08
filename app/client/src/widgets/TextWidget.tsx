@@ -10,30 +10,28 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "text",
-            helpText: "Sets the text of the widget",
-            label: "Text",
+            label: "文本",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter text",
+            placeholderText: "请输入文本内容",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
           },
           {
             propertyName: "shouldScroll",
-            label: "Enable Scroll",
-            helpText: "Allows scrolling text instead of truncation",
+            label: "允许滚动",
+            helpText: "内容超长时允许滚动，不然文本会被截断",
             controlType: "SWITCH",
             isBindProperty: false,
             isTriggerProperty: false,
           },
           {
             propertyName: "isVisible",
-            helpText: "Controls the visibility of the widget",
-            label: "Visible",
+            label: "是否可见",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -43,18 +41,18 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Styles",
+        sectionName: "样式",
         children: [
           {
             propertyName: "backgroundColor",
-            label: "Cell Background",
+            label: "背景颜色",
             controlType: "COLOR_PICKER",
             isBindProperty: false,
             isTriggerProperty: false,
           },
           {
             propertyName: "textColor",
-            label: "Text Color",
+            label: "文本颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -68,7 +66,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "fontSize",
-            label: "Text Size",
+            label: "字体大小",
             controlType: "DROP_DOWN",
             options: [
               {
@@ -107,7 +105,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "fontStyle",
-            label: "Font Style",
+            label: "字体风格",
             controlType: "BUTTON_TABS",
             options: [
               {
@@ -126,7 +124,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "textAlign",
-            label: "Text Align",
+            label: "文字对齐",
             controlType: "ICON_TABS",
             options: [
               {

@@ -57,10 +57,10 @@ const Wrapper = styled.div<{ step: number }>`
       text-align: center;
       z-index: 1;
       &.success {
-        background: ${Colors.TUNDORA};
+        background: ${Colors.MINT_GREEN};
       }
       &.error {
-        background: ${Colors.RED};
+        background: ${Colors.MINT_RED};
       }
     }
     & > div:first-of-type {
@@ -76,8 +76,8 @@ const Wrapper = styled.div<{ step: number }>`
       &:hover {
         &:before {
           content: "";
-          background: ${Colors.TUNDORA};
-          opacity: 0.5;
+          background: ${Colors.MINT_GREEN_LIGHT};
+          opacity: 0.4;
           position: absolute;
           left: 0;
           height: 100%;
@@ -123,7 +123,7 @@ const Wrapper = styled.div<{ step: number }>`
 `;
 
 const StyledPopoverContent = styled.div`
-  background: black;
+  background: ${Colors.MINT_GRAY};
   max-height: 500px;
   width: 400px;
   padding: 10px;
@@ -204,11 +204,11 @@ export const EntityProperty = memo((props: EntityPropertyProps) => {
                 <CurrentValueViewer
                   evaluatedValue={props.value}
                   hideLabel
-                  theme={EditorTheme.DARK}
+                  theme={EditorTheme.LIGHT}
                 />
               )}
               {isString && <pre>{props.value}</pre>}
-              <ScrollIndicator containerRef={popoverContentRef} mode="DARK" />
+              <ScrollIndicator containerRef={popoverContentRef} mode="LIGHT" />
             </StyledPopoverContent>
           )}
         </Popover>
@@ -224,9 +224,9 @@ export const EntityProperty = memo((props: EntityPropertyProps) => {
         language={SYNTAX_HIGHLIGHTING_SUPPORTED_LANGUAGES.APPSMITH}
         onClick={copyBindingToClipboard}
         ref={propertyRef}
-        skin={Skin.DARK}
+        skin={Skin.LIGHT}
       />
-      <Icon color={Colors.ALTO} icon="duplicate" iconSize={14} />
+      <Icon color={Colors.MINT_GREEN} icon="duplicate" iconSize={14} />
       {propertyValue}
     </Wrapper>
   );

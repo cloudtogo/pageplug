@@ -82,7 +82,7 @@ const WidgetSidebarResponse: WidgetCardProps[] = [
   },
   {
     type: "RICH_TEXT_EDITOR_WIDGET",
-    widgetCardName: "富文本编辑器",
+    widgetCardName: "富文本",
     key: generateReactKey(),
   },
   {

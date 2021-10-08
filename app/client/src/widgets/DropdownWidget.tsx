@@ -30,15 +30,14 @@ class DropdownWidget extends BaseWidget<DropdownWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
-            helpText:
-              "Allows users to select a single option. Values must be unique",
+            helpText: "单选项，每项值必须唯一",
             propertyName: "options",
-            label: "Options",
+            label: "可选项",
             controlType: "INPUT_TEXT",
-            placeholderText: 'Enter [{"label": "label1", "value": "value2"}]',
+            placeholderText: '例如 [{"label": "label1", "value": "value2"}]',
             isBindProperty: true,
             isTriggerProperty: false,
             validation: {
@@ -74,11 +73,11 @@ class DropdownWidget extends BaseWidget<DropdownWidgetProps, WidgetState> {
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText: "Selects the option with value by default",
+            helpText: "单选下拉默认选中项",
             propertyName: "defaultOptionValue",
-            label: "Default Option",
+            label: "默认选中",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter option value",
+            placeholderText: "输入默认选中",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: {
@@ -96,8 +95,8 @@ class DropdownWidget extends BaseWidget<DropdownWidgetProps, WidgetState> {
           },
           {
             propertyName: "isFilterable",
-            label: "Filterable",
-            helpText: "Makes the dropdown list filterable",
+            label: "允许过滤",
+            helpText: "支持过滤可选项列表",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -106,8 +105,7 @@ class DropdownWidget extends BaseWidget<DropdownWidgetProps, WidgetState> {
           },
           {
             propertyName: "isRequired",
-            label: "Required",
-            helpText: "Makes input to the widget mandatory",
+            label: "必须",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -115,9 +113,8 @@ class DropdownWidget extends BaseWidget<DropdownWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText: "Controls the visibility of the widget",
             propertyName: "isVisible",
-            label: "Visible",
+            label: "是否可见",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -126,8 +123,7 @@ class DropdownWidget extends BaseWidget<DropdownWidgetProps, WidgetState> {
           },
           {
             propertyName: "isDisabled",
-            label: "Disabled",
-            helpText: "Disables input to this widget",
+            label: "是否禁用",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -137,10 +133,10 @@ class DropdownWidget extends BaseWidget<DropdownWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Actions",
+        sectionName: "动作",
         children: [
           {
-            helpText: "Triggers an action when a user selects an option",
+            helpText: "当用户选中某项值时触发",
             propertyName: "onOptionChange",
             label: "onOptionChange",
             controlType: "ACTION_SELECTOR",

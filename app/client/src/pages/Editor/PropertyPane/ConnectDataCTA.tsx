@@ -101,18 +101,18 @@ function ConnectDataCTA(props: ConnectDataCTAProps) {
 
   return (
     <StyledDiv className="t--propertypane-connect-cta">
-      Data Required
+      数据缺失
       <Button
         category={Category.primary}
         onClick={onClick}
         size={Size.large}
-        text="CONNECT DATA"
+        text="绑定数据"
       />
-      <Button
+      {/* <Button
         category={Category.tertiary}
         onClick={openHelpModal}
-        text="Learn more"
-      />
+        text="了解更多"
+      /> */}
     </StyledDiv>
   );
 }

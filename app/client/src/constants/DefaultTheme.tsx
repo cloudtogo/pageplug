@@ -1020,10 +1020,10 @@ type ColorType = {
     };
   };
   propertyPane: {
-    title: ShadeColor;
-    bg: ShadeColor;
-    label: ShadeColor;
-    jsIconBg: ShadeColor;
+    title: ShadeColor | string;
+    bg: ShadeColor | string;
+    label: ShadeColor | string;
+    jsIconBg: ShadeColor | string;
     buttonBg: ShadeColor;
     buttonText: ShadeColor;
     radioGroupBg: ShadeColor;
@@ -2151,8 +2151,8 @@ export const light: ColorType = {
   },
   propertyPane: {
     title: darkShades[11],
-    bg: lightShades[2],
-    label: lightShades[8],
+    bg: lightShades[11],
+    label: "#888",
     jsIconBg: lightShades[5],
     buttonBg: lightShades[8],
     buttonText: lightShades[11],
@@ -2219,7 +2219,7 @@ export const light: ColorType = {
 };
 
 export const theme: Theme = {
-  inCloudOS: true,
+  inCloudOS: false,
   radii: [0, 4, 8, 10, 20, 50],
   fontSizes: [0, 10, 12, 14, 16, 18, 24, 28, 32, 48, 64],
   spaces: [0, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 30, 36, 38, 40, 42, 44],
@@ -2363,6 +2363,7 @@ export const theme: Theme = {
       darkBg: lightShades[10],
       darkText: lightShades[0],
     },
+    action: Colors.MINT_ORANGE,
     appBackground: Colors.WHITE,
     artboard: "#F6F6F6",
     primary: Colors.MINT_GREEN,
@@ -2496,7 +2497,7 @@ export const theme: Theme = {
   dropdown: {
     [Skin.LIGHT]: {
       hoverBG: Colors.MINT_GREEN_LIGHT,
-      hoverText: lightShades[0],
+      hoverText: Colors.MINT_BLACK,
       inActiveBG: lightShades[3],
       inActiveText: lightShades[8],
       border: Colors.MINT_GREEN_LIGHT,

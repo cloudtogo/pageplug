@@ -105,12 +105,12 @@ function KeyValueRow(props: Props & WrappedFieldArrayProps) {
         <FlexContainer>
           <Flex className="key-value" size={1}>
             <Text case={Case.CAPITALIZE} type={TextType.H6}>
-              Key
+              键
             </Text>
           </Flex>
           <Flex className="key-value" size={3}>
             <Text case={Case.CAPITALIZE} type={TextType.H6}>
-              Value
+              值
             </Text>
           </Flex>
         </FlexContainer>
@@ -216,7 +216,7 @@ function KeyValueRow(props: Props & WrappedFieldArrayProps) {
           size={IconSize.LARGE}
         />
         <Text case={Case.UPPERCASE} type={TextType.H5}>
-          Add more
+          新增一条
         </Text>
       </AddMoreAction>
     </KeyValueStackContainer>

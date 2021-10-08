@@ -9,20 +9,19 @@ class DividerWidget extends BaseWidget<DividerWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
-            helpText: "Controls widget orientation",
             propertyName: "orientation",
-            label: "Orientation",
+            label: "方向",
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "Horizontal",
+                label: "水平",
                 value: "horizontal",
               },
               {
-                label: "Vertical",
+                label: "垂直",
                 value: "vertical",
               },
             ],
@@ -32,9 +31,8 @@ class DividerWidget extends BaseWidget<DividerWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Controls the visibility of the widget",
             propertyName: "isVisible",
-            label: "Visible",
+            label: "是否可见",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -44,28 +42,28 @@ class DividerWidget extends BaseWidget<DividerWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Styles",
+        sectionName: "样式",
         children: [
           {
-            helpText: "Controls the style of the divider",
+            helpText: "线条样式",
             propertyName: "strokeStyle",
-            label: "Dash Style",
+            label: "风格",
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "Solid",
+                label: "实线",
                 value: "solid",
                 icon: "cap-solid",
                 iconSize: "large",
               },
               {
-                label: "Dashed",
+                label: "虚线",
                 value: "dashed",
                 icon: "line-dashed",
                 iconSize: "large",
               },
               {
-                label: "Dotted",
+                label: "点线",
                 value: "dotted",
                 icon: "line-dotted",
                 iconSize: "large",
@@ -76,11 +74,11 @@ class DividerWidget extends BaseWidget<DividerWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Controls the thickness of divider",
+            helpText: "分隔线粗细",
             propertyName: "thickness",
-            label: "Thickness (px)",
+            label: "粗细 (px)",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter thickness in pixels",
+            placeholderText: "输入线条粗细像素值",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: {
@@ -89,33 +87,33 @@ class DividerWidget extends BaseWidget<DividerWidgetProps, WidgetState> {
             },
           },
           {
-            helpText: "Controls the stroke color of divider",
+            helpText: "分隔线颜色",
             propertyName: "dividerColor",
-            label: "Divider Color",
+            label: "颜色",
             controlType: "COLOR_PICKER",
             isBindProperty: false,
             isTriggerProperty: false,
           },
           {
-            helpText: "Controls the type of divider cap",
+            helpText: "线条边角类型",
             propertyName: "capType",
-            label: "Cap",
+            label: "边角",
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "No Cap",
+                label: "无",
                 value: "nc",
                 icon: "cap-solid",
                 iconSize: "large",
               },
               {
-                label: "Arrow",
+                label: "箭头",
                 value: "arrow",
                 icon: "arrow-forward",
                 iconSize: "large",
               },
               {
-                label: "Dot",
+                label: "点",
                 value: "dot",
                 icon: "cap-dot",
                 iconSize: "large",
@@ -125,8 +123,7 @@ class DividerWidget extends BaseWidget<DividerWidgetProps, WidgetState> {
             isTriggerProperty: false,
           },
           {
-            helpText:
-              "Controls hide/show divider cap on start or end of divider",
+            helpText: "控制分隔线边角是否显示",
             propertyName: "capSide",
             label: "",
             controlType: "ICON_TABS",

@@ -67,7 +67,7 @@ function ActionCards() {
             fillColor={color}
             hoverFillColor={color}
             name="wand"
-            size={IconSize.LARGE}
+            size={IconSize.XXXL}
           />
         )}
         className="t--GenerateCRUDPage"

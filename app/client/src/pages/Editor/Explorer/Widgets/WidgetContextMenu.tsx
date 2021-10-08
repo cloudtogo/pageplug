@@ -69,7 +69,7 @@ export function WidgetContextMenu(props: {
     {
       value: "rename",
       onSelect: editWidgetName,
-      label: "Edit Name",
+      label: "编辑名称",
     },
   ];
 
@@ -77,7 +77,7 @@ export function WidgetContextMenu(props: {
     const option: TreeDropdownOption = {
       value: "delete",
       onSelect: dispatchDelete,
-      label: "Delete",
+      label: "删除",
       intent: "danger",
     };
 

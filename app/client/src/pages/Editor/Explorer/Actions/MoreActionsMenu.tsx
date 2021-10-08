@@ -114,7 +114,7 @@ export function MoreActionsMenu(props: EntityContextMenuProps) {
           icon: "duplicate",
           value: "copy",
           onSelect: noop,
-          label: "Copy to page",
+          label: "复制到页面",
           children: menuPages.map((page) => {
             return {
               ...page,
@@ -126,7 +126,7 @@ export function MoreActionsMenu(props: EntityContextMenuProps) {
           icon: "swap-horizontal",
           value: "move",
           onSelect: noop,
-          label: "Move to page",
+          label: "移动到页面",
           children:
             menuPages.length > 1
               ? menuPages
@@ -138,13 +138,13 @@ export function MoreActionsMenu(props: EntityContextMenuProps) {
                         moveActionToPage(props.id, props.name, page.id),
                     };
                   })
-              : [{ value: "No Pages", onSelect: noop, label: "No Pages" }],
+              : [{ value: "No Pages", onSelect: noop, label: "暂无页面" }],
         },
         {
           icon: "trash",
           value: "delete",
           onSelect: () => deleteActionFromPage(props.id, props.name),
-          label: "Delete",
+          label: "删除",
           intent: "danger",
           className: "t--apiFormDeleteBtn",
         },

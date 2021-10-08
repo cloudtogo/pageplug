@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import AppTimeoutImage from "assets/images/timeout-image.png";
+import { Colors } from "constants/Colors";
 
 const Wrapper = styled.div`
   display: flex;
@@ -22,14 +23,14 @@ const Wrapper = styled.div`
 `;
 
 const RetryButton = styled.button`
-  background-color: #f3672a;
+  background-color: ${Colors.MINT_GREEN};
+  border-radius: ${(props) => props.theme.borderRadius};
   color: white;
   height: 40px;
   width: 300px;
   border: none;
   cursor: pointer;
-  font-weight: 600;
-  font-size: 17px;
+  font-size: 16px;
 `;
 
 function ServerTimeout() {
@@ -41,12 +42,10 @@ function ServerTimeout() {
         src={AppTimeoutImage}
       />
       <div>
-        <p className="bold-text">
-          Appsmith server is taking too long to respond
-        </p>
-        <p>Please retry after some time</p>
+        <p className="bold-text">服务器长时间无响应</p>
+        <p>请稍后重试</p>
         <RetryButton onClick={() => window.location.reload()}>
-          {"Retry"}
+          {"重试"}
         </RetryButton>
       </div>
     </Wrapper>

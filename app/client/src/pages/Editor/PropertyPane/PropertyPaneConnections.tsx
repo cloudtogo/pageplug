@@ -173,7 +173,7 @@ type PropertyPaneConnectionsProps = {
 type TriggerNodeProps = DefaultDropDownValueNodeProps & {
   entityCount: number;
   iconAlignment: "LEFT" | "RIGHT";
-  connectionType: "INCOMING" | "OUTGOING";
+  connectionType: string;
   hasError: boolean;
 };
 
@@ -267,10 +267,10 @@ function OptionNode(props: any) {
 }
 
 const TriggerNode = memo((props: TriggerNodeProps) => {
-  const ENTITY = props.entityCount > 1 ? "entities" : "entity";
+  const ENTITY = "实体";
   const tooltipText = !!props.entityCount
-    ? `See ${props.connectionType.toLowerCase()} connections`
-    : `No ${props.connectionType.toLowerCase()} connections`;
+    ? `查看${props.connectionType}连接`
+    : `暂无${props.connectionType}连接`;
   const iconColor = props.hasError ? "#f22b2b" : "";
 
   const onClick = () => {
@@ -294,7 +294,7 @@ const TriggerNode = memo((props: TriggerNodeProps) => {
       )}
       <span>
         <Tooltip content={tooltipText} disabled={props.isOpen}>
-          {props.entityCount ? `${props.entityCount} ${ENTITY}` : "No Entity"}
+          {props.entityCount ? `${props.entityCount} ${ENTITY}` : "暂无实体"}
         </Tooltip>
       </span>
       {props.iconAlignment === "RIGHT" && (
@@ -338,7 +338,7 @@ function PropertyPaneConnections(props: PropertyPaneConnectionsProps) {
           <TriggerNode
             iconAlignment={"LEFT"}
             {...selectedValueProps}
-            connectionType="INCOMING"
+            connectionType="输入"
             entityCount={dependencies.dependencyOptions.length}
             hasError={errorIncomingConnections}
           />
@@ -347,7 +347,7 @@ function PropertyPaneConnections(props: PropertyPaneConnectionsProps) {
           errorIncomingConnections ? "error" : ""
         }`}
         disabled={!dependencies.dependencyOptions.length}
-        headerLabel="Incoming connections"
+        headerLabel="输入连接"
         height={`${CONNECTION_HEIGHT}px`}
         options={dependencies.dependencyOptions}
         renderOption={(optionProps) => {
@@ -364,7 +364,7 @@ function PropertyPaneConnections(props: PropertyPaneConnectionsProps) {
           <TriggerNode
             iconAlignment={"RIGHT"}
             {...selectedValueProps}
-            connectionType="OUTGOING"
+            connectionType="输出"
             entityCount={dependencies.inverseDependencyOptions.length}
             hasError={errorOutgoingConnections}
           />
@@ -373,7 +373,7 @@ function PropertyPaneConnections(props: PropertyPaneConnectionsProps) {
           errorOutgoingConnections ? "error" : ""
         }`}
         disabled={!dependencies.inverseDependencyOptions.length}
-        headerLabel="Outgoing connections"
+        headerLabel="输出连接"
         height={`${CONNECTION_HEIGHT}px`}
         onSelect={navigateToEntity}
         options={dependencies.inverseDependencyOptions}

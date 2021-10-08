@@ -51,6 +51,7 @@ import {
   DEBUGGER_ERRORS,
   DEBUGGER_LOGS,
   INSPECT_ENTITY,
+  EMPTY_RESPONSE_FIRST_HALF,
 } from "constants/messages";
 import { useParams } from "react-router";
 import { AppState } from "reducers";
@@ -447,7 +448,7 @@ export function EditorJSONtoForm(props: Props) {
         <components.MenuList {...props}>{props.children}</components.MenuList>
         <CreateDatasource onClick={() => onCreateDatasourceClick()}>
           <Icon className="createIcon" icon="plus" iconSize={11} />
-          Create new datasource
+          新建数据源
         </CreateDatasource>
       </>
     );
@@ -536,14 +537,14 @@ export function EditorJSONtoForm(props: Props) {
   const responseTabs = [
     {
       key: "Response",
-      title: "Response",
+      title: "响应",
       panelComponent: (
         <ResponseContentWrapper>
           {error && (
             <ErrorContainer>
               <AdsIcon keepColors name="warning-triangle" />
               <Text style={{ color: "#F22B2B" }} type={TextType.H3}>
-                An error occurred
+                发现错误
               </Text>
 
               <ErrorDescriptionText
@@ -584,16 +585,16 @@ export function EditorJSONtoForm(props: Props) {
             <NoResponseContainer>
               <AdsIcon name="no-response" />
               <Text type={TextType.P1}>
-                🙌 Click on
+                {EMPTY_RESPONSE_FIRST_HALF()}
                 <InlineButton
                   isLoading={isRunning}
                   onClick={responeTabOnRunClick}
                   size={Size.medium}
                   tag="button"
-                  text="Run"
+                  text="运行"
                   type="button"
                 />
-                after adding your query
+                执行你的查询
               </Text>
             </NoResponseContainer>
           )}
@@ -653,7 +654,7 @@ export function EditorJSONtoForm(props: Props) {
                 maxMenuHeight={200}
                 name="datasource.id"
                 options={DATASOURCES_OPTIONS}
-                placeholder="Datasource"
+                placeholder="数据源"
                 width={232}
               />
             </DropdownSelect>
@@ -667,7 +668,7 @@ export function EditorJSONtoForm(props: Props) {
                 onClick={onRunClick}
                 size={Size.medium}
                 tag="button"
-                text="Run"
+                text="运行"
                 type="button"
               />
             </OnboardingIndicator>
@@ -676,29 +677,27 @@ export function EditorJSONtoForm(props: Props) {
         <Wrapper>
           <SecondaryWrapper>
             <TabContainerView>
-              {documentationLink && (
+              {/* {documentationLink && (
                 <DocumentationLink
                   className="t--datasource-documentation-link"
                   onClick={(e: React.MouseEvent) => handleDocumentationClick(e)}
                 >
-                  {"Documentation "}
+                  {"帮助文档 "}
                   <StyledOpenDocsIcon icon="document-open" />
                 </DocumentationLink>
-              )}
+              )} */}
               <TabComponent
                 tabs={[
                   {
                     key: "query",
-                    title: "Query",
+                    title: "查询",
                     panelComponent: (
                       <SettingsWrapper>
                         {editorConfig && editorConfig.length > 0 ? (
                           editorConfig.map(renderEachConfig(formName))
                         ) : (
                           <>
-                            <ErrorMessage>
-                              An unexpected error occurred
-                            </ErrorMessage>
+                            <ErrorMessage>发生了意外的错误</ErrorMessage>
                             <Tag
                               intent="warning"
                               interactive
@@ -706,23 +705,20 @@ export function EditorJSONtoForm(props: Props) {
                               onClick={() => window.location.reload()}
                               round
                             >
-                              Refresh
+                              刷新
                             </Tag>
                           </>
                         )}
                         {dataSources.length === 0 && (
                           <NoDataSourceContainer>
-                            <p className="font18">
-                              Seems like you don’t have any Datasources to
-                              create a query
-                            </p>
+                            <p className="font18">没有数据源来执行查询</p>
                             <EditorButton
                               filled
                               icon="plus"
                               intent="primary"
                               onClick={() => onCreateDatasourceClick()}
                               size="small"
-                              text="Add a Datasource"
+                              text="新建数据源"
                             />
                           </NoDataSourceContainer>
                         )}
@@ -731,7 +727,7 @@ export function EditorJSONtoForm(props: Props) {
                   },
                   {
                     key: "settings",
-                    title: "Settings",
+                    title: "设置",
                     panelComponent: (
                       <SettingsWrapper>
                         <ActionSettings
@@ -756,10 +752,10 @@ export function EditorJSONtoForm(props: Props) {
                 <Boxed step={OnboardingStep.SUCCESSFUL_BINDING}>
                   <ResultsCount>
                     <Text type={TextType.P3}>
-                      Result:
-                      <Text type={TextType.H5}>{`${output.length} Record${
-                        output.length > 1 ? "s" : ""
-                      }`}</Text>
+                      结果：
+                      <Text type={TextType.H5}>
+                        {`${output.length} 条记录`}
+                      </Text>
                     </Text>
                   </ResultsCount>
                 </Boxed>

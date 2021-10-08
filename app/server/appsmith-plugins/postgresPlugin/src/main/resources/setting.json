@@ -5,27 +5,27 @@
       "id": 1,
       "children": [
         {
-          "label": "Run query on page load",
+          "label": "页面加载完成后执行",
           "configProperty": "executeOnLoad",
           "controlType": "SWITCH",
-          "info": "Will refresh data each time the page is loaded"
+          "info": "是否在页面加载完成后执行查询"
         },
         {
-          "label": "Request confirmation before running query",
+          "label": "在执行查询前确认",
           "configProperty": "confirmBeforeExecute",
           "controlType": "SWITCH",
-          "info": "Ask confirmation from the user each time before refreshing data"
+          "info": "在每次请求数据前向用户确认"
         },
         {
-          "label": "Use Prepared Statement",
-          "info": "Turning on Prepared Statement makes the query parametrized. This in turn makes it resilient against SQL injections",
+          "label": "使用预置语句",
+          "info": "使查询语句参数化，这能够有效的防止 SQL 注入",
           "configProperty": "actionConfiguration.pluginSpecifiedTemplates[0].value",
           "controlType": "SWITCH",
           "initialValue": true
         },
         {
-          "label": "Query timeout (in milliseconds)",
-          "info": "Maximum time after which the query will return",
+          "label": "查询超时（毫秒）",
+          "info": "查询超过最大响应时间",
           "configProperty": "actionConfiguration.timeoutInMillisecond",
           "controlType": "INPUT_TEXT",
           "dataType": "NUMBER"

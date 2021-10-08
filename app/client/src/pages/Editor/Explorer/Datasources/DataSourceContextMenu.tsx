@@ -36,17 +36,17 @@ export function DataSourceContextMenu(props: {
         {
           value: "rename",
           onSelect: editDatasourceName,
-          label: "Edit Name",
+          label: "编辑名称",
         },
         {
           value: "refresh",
           onSelect: dispatchRefresh,
-          label: "Refresh",
+          label: "刷新",
         },
         {
           value: "delete",
           onSelect: dispatchDelete,
-          label: "Delete",
+          label: "删除",
           intent: "danger",
         },
       ]}

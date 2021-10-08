@@ -12,29 +12,28 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "source",
-            helpText: "The URL of the page to embed",
-            label: "Source",
+            helpText: "页面地址",
+            label: "地址",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter the URL of the page to embed",
+            placeholderText: "请输入嵌入的页面地址",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: {
               type: ValidationTypes.SAFE_URL,
               params: {
-                default: "https://wikipedia.org",
+                default: "https://bing.com",
               },
             },
           },
           {
             propertyName: "title",
-            helpText: "Label the content of the page to embed",
-            label: "Title",
+            label: "标题",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter the title of the page to embed",
+            placeholderText: "页面标题",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -42,10 +41,10 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Actions",
+        sectionName: "动作",
         children: [
           {
-            helpText: "Triggers an action when the source URL is changed",
+            helpText: "地址变化时触发",
             propertyName: "onURLChanged",
             label: "onURLChanged",
             controlType: "ACTION_SELECTOR",
@@ -54,7 +53,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when a message event is received",
+            helpText: "接收到消息时触发",
             propertyName: "onMessageReceived",
             label: "onMessageReceived",
             controlType: "ACTION_SELECTOR",
@@ -65,18 +64,18 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Styles",
+        sectionName: "样式",
         children: [
           {
             propertyName: "borderColor",
-            label: "Border Color",
+            label: "边框颜色",
             controlType: "COLOR_PICKER",
             isBindProperty: false,
             isTriggerProperty: false,
           },
           {
             propertyName: "borderOpacity",
-            label: "Border Opacity (%)",
+            label: "边框透明度 (%)",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -88,7 +87,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           },
           {
             propertyName: "borderWidth",
-            label: "Border Width (px)",
+            label: "边框宽度 (px)",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,

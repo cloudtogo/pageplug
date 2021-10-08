@@ -23,6 +23,7 @@ import {
   fetchPublishedPage,
   setAppMode,
   updateAppPersistentStore,
+  fetchCloudOSApi,
 } from "actions/pageActions";
 import {
   fetchDatasources,
@@ -88,7 +89,7 @@ function* failFastApiCalls(
 function* initializeEditorSaga(
   initializeEditorAction: ReduxAction<InitializeEditorPayload>,
 ) {
-  const { applicationId, pageId } = initializeEditorAction.payload;
+  const { applicationId, pageId, queryParams } = initializeEditorAction.payload;
   try {
     PerformanceTracker.startAsyncTracking(
       PerformanceTransactionName.INIT_EDIT_APP,
@@ -96,6 +97,20 @@ function* initializeEditorSaga(
     yield put(setAppMode(APP_MODE.EDIT));
     yield put(updateAppPersistentStore(getPersistentAppStore(applicationId)));
     yield put({ type: ReduxActionTypes.START_EVALUATION });
+
+    // sync CloudOS api
+    if (queryParams.get("inCloudOS") === "true") {
+      const depList = queryParams.get("depList") || "";
+      const projectId = queryParams.get("projectId");
+      const orgId = queryParams.get("orgId");
+      if (projectId && orgId) {
+        yield failFastApiCalls(
+          [fetchCloudOSApi(pageId, depList.split(","), projectId, orgId)],
+          [ReduxActionTypes.FETCH_CLOUDOS_API_SUCCESS],
+          [ReduxActionErrorTypes.FETCH_CLOUDOS_API_ERROR],
+        );
+      }
+    }
 
     const applicationAndLayoutCalls = yield failFastApiCalls(
       [

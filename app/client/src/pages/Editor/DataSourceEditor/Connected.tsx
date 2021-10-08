@@ -141,7 +141,7 @@ function Connected() {
             width={30}
           />
 
-          <div style={{ marginLeft: "12px" }}>Datasource Connected</div>
+          <div style={{ marginLeft: "12px" }}>数据源已连接</div>
         </ConnectedText>
 
         <OnboardingIndicator step={OnboardingStep.EXAMPLE_DATABASE} width={120}>
@@ -149,7 +149,7 @@ function Connected() {
             className="t--create-query"
             icon="plus"
             onClick={createQueryAction}
-            text={"New Query"}
+            text={"新建查询"}
           />
         </OnboardingIndicator>
       </Header>

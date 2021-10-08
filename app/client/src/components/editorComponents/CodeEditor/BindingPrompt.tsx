@@ -55,13 +55,11 @@ function BindingPrompt(props: {
         props.promptMessage
       ) : (
         <>
-          Type{" "}
+          输入{" "}
           <CurlyBraces>
             {props.showLightningMenu === false ? "{{" : "/"}
           </CurlyBraces>{" "}
-          {props.showLightningMenu === false
-            ? "to see a list of variables"
-            : "to access quick commands"}
+          {props.showLightningMenu === false ? "显示可用变量" : "访问快捷命令"}
         </>
       )}
     </Wrapper>
