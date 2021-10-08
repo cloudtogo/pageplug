@@ -67,7 +67,7 @@ const ButtonWrapper = styled((props: ButtonStyleProps & IButtonProps) => (
         props.accent
           ? props.theme.colors[AccentColorMap[props.accent]]
           : props.theme.colors.primary};
-    border-radius: 0;
+    border-radius: ${(props) => props.theme.borderRadius};
     font-weight: ${(props) => props.theme.fontWeights[2]};
     outline: none;
     &.bp3-button {

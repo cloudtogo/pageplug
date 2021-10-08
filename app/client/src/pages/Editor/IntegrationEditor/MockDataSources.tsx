@@ -15,9 +15,6 @@ const MockDataSourceWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 16px;
-  /* height: calc(
-    100vh - ${(props) => props.theme.integrationsPageUnusableHeight}
-  ); */
 
   .sectionHeader {
     font-weight: ${(props) => props.theme.fontWeights[2]};
@@ -53,6 +50,7 @@ export default MockDataSources;
 
 const CardWrapper = styled.div`
   padding: 18px;
+  border-radius: ${(props) => props.theme.borderRadius};
   /* margin-top: 18px; */
 
   &:hover {

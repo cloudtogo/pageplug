@@ -87,7 +87,8 @@ const RestApiForm = styled.div`
   margin-left: 10px;
   margin-right: 0px;
   height: calc(
-    100vh - ${(props) => props.theme.headerHeight} -
+    100vh -
+      ${(props) => (props.theme.inCloudOS ? "0px" : props.theme.headerHeight)} -
       ${(props) => props.theme.backBanner}
   );
   overflow: auto;
@@ -336,7 +337,7 @@ class DatasourceRestAPIEditor extends React.Component<Props> {
           className="t--delete-datasource"
           loading={isDeleting}
           onClick={() => deleteDatasource(datasourceId)}
-          text="Delete"
+          text="删除"
         />
 
         <StyledButton
@@ -347,7 +348,7 @@ class DatasourceRestAPIEditor extends React.Component<Props> {
           loading={isSaving}
           onClick={() => this.save()}
           size="small"
-          text="Save"
+          text="保存"
         />
       </SaveButtonContainer>
     );
@@ -375,7 +376,7 @@ class DatasourceRestAPIEditor extends React.Component<Props> {
           <KeyValueInputControl
             {...COMMON_INPUT_PROPS}
             configProperty="headers"
-            label="Headers"
+            label="请求头"
           />
         </FormInputContainer>
         <FormInputContainer>
@@ -383,7 +384,7 @@ class DatasourceRestAPIEditor extends React.Component<Props> {
             {...COMMON_INPUT_PROPS}
             configProperty="isSendSessionEnabled"
             isRequired
-            label="Send Appsmith signature header"
+            label="发送带有签名的请求头"
             options={[
               {
                 label: "Yes",
@@ -413,7 +414,7 @@ class DatasourceRestAPIEditor extends React.Component<Props> {
           <DropDownControl
             {...COMMON_INPUT_PROPS}
             configProperty="authType"
-            label="Authentication Type"
+            label="认证类型"
             options={[
               {
                 label: "None",
@@ -474,7 +475,7 @@ class DatasourceRestAPIEditor extends React.Component<Props> {
           <InputTextControl
             {...COMMON_INPUT_PROPS}
             configProperty="authentication.label"
-            label="Key"
+            label="键"
             placeholderText="api_key"
           />
         </FormInputContainer>
@@ -482,7 +483,7 @@ class DatasourceRestAPIEditor extends React.Component<Props> {
           <InputTextControl
             {...COMMON_INPUT_PROPS}
             configProperty="authentication.value"
-            label="Value"
+            label="值"
             placeholderText="value"
           />
         </FormInputContainer>
@@ -490,7 +491,7 @@ class DatasourceRestAPIEditor extends React.Component<Props> {
           <DropDownControl
             {...COMMON_INPUT_PROPS}
             configProperty="authentication.addTo"
-            label="Add To"
+            label="添加到"
             options={[
               {
                 label: "Query Params",
@@ -529,8 +530,8 @@ class DatasourceRestAPIEditor extends React.Component<Props> {
           <InputTextControl
             {...COMMON_INPUT_PROPS}
             configProperty="authentication.username"
-            label="Username"
-            placeholderText="Username"
+            label="用户名"
+            placeholderText="用户名"
           />
         </FormInputContainer>
         <FormInputContainer>
@@ -539,8 +540,8 @@ class DatasourceRestAPIEditor extends React.Component<Props> {
             configProperty="authentication.password"
             dataType="PASSWORD"
             encrypted
-            label="Password"
-            placeholderText="Password"
+            label="密码"
+            placeholderText="密码"
           />
         </FormInputContainer>
       </>
@@ -566,7 +567,7 @@ class DatasourceRestAPIEditor extends React.Component<Props> {
           <DropDownControl
             {...COMMON_INPUT_PROPS}
             configProperty="authentication.grantType"
-            label="Grant Type"
+            label="授权类型"
             options={[
               {
                 label: "Client Credentials",
@@ -594,14 +595,14 @@ class DatasourceRestAPIEditor extends React.Component<Props> {
           <DropDownControl
             {...COMMON_INPUT_PROPS}
             configProperty="authentication.isTokenHeader"
-            label="Add Access Token To"
+            label="添加 Access Token 到"
             options={[
               {
-                label: "Request Header",
+                label: "请求头",
                 value: true,
               },
               {
-                label: "Request URL",
+                label: "请求URL",
                 value: false,
               },
             ]}
@@ -612,7 +613,7 @@ class DatasourceRestAPIEditor extends React.Component<Props> {
             <InputTextControl
               {...COMMON_INPUT_PROPS}
               configProperty="authentication.headerPrefix"
-              label="Header Prefix"
+              label="头前缀"
               placeholderText="eg: Bearer "
             />
           </FormInputContainer>
@@ -710,11 +711,9 @@ class DatasourceRestAPIEditor extends React.Component<Props> {
         <FormInputContainer>
           <div style={{ width: "50vh" }}>
             <FormLabel>
-              Redirect URL
+              重定向 URL
               <br />
-              <StyledInfo>
-                Url that the oauth server should redirect to
-              </StyledInfo>
+              <StyledInfo>oauth 服务器重定向Url</StyledInfo>
             </FormLabel>
             <CopyToClipBoard copyText={redirectURL} />
           </div>
@@ -723,21 +722,21 @@ class DatasourceRestAPIEditor extends React.Component<Props> {
           <KeyValueInputControl
             {...COMMON_INPUT_PROPS}
             configProperty="authentication.customAuthenticationParameters"
-            label="Custom Authentication Parameters"
+            label="自定义鉴权参数"
           />
         </FormInputContainer>
         <FormInputContainer>
           <DropDownControl
             {...COMMON_INPUT_PROPS}
             configProperty="authentication.isAuthorizationHeader"
-            label="Client Authentication"
+            label="客户端鉴权"
             options={[
               {
-                label: "Send as Basic Auth header",
+                label: "发送 Basic Auth 头",
                 value: true,
               },
               {
-                label: "Send client credentials in body",
+                label: "在 body 里发送客户端凭证",
                 value: false,
               },
             ]}
@@ -757,7 +756,7 @@ class DatasourceRestAPIEditor extends React.Component<Props> {
               )
             }
             size="small"
-            text={isAuthorized ? "Save and Re-Authorize" : "Save and Authorize"}
+            text={isAuthorized ? "保存并重新鉴权" : "保存并鉴权"}
           />
         </FormInputContainer>
       </>

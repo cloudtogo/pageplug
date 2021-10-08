@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { getCurrentUser } from "selectors/usersSelectors";
 import styled from "styled-components";
 import StyledHeader from "components/designSystems/appsmith/StyledHeader";
-import AppsmithLogo from "assets/images/appsmith_logo_white.png";
+import PagePlugLogo from "assets/images/pageplug_logo_black.svg";
 import { AppState } from "reducers";
 import { User, ANONYMOUS_USERNAME } from "constants/userConstants";
 import { AUTH_LOGIN_URL, APPLICATIONS_URL } from "constants/routes";
@@ -15,7 +15,7 @@ import { flushErrorsAndRedirect, flushErrors } from "actions/errorActions";
 import { getSafeCrash } from "selectors/errorSelectors";
 
 const StyledPageHeader = styled(StyledHeader)`
-  background: ${Colors.BALTIC_SEA};
+  background: ${Colors.MINT_GREEN};
   height: 48px;
   color: white;
   flex-direction: row;
@@ -33,8 +33,8 @@ const HeaderSection = styled.div`
 
 const StyledDropDownContainer = styled.div``;
 
-const AppsmithLogoImg = styled.img`
-  max-width: 110px;
+const PagePlugLogoImg = styled.img`
+  height: 32px;
 `;
 
 type ErrorPageHeaderProps = {
@@ -64,7 +64,7 @@ export function ErrorPageHeader(props: ErrorPageHeaderProps) {
           }}
           to={APPLICATIONS_URL}
         >
-          <AppsmithLogoImg alt="Appsmith logo" src={AppsmithLogo} />
+          <PagePlugLogoImg alt="logo" src={PagePlugLogo} />
         </Link>
       </HeaderSection>
       {user && (
@@ -77,7 +77,7 @@ export function ErrorPageHeader(props: ErrorPageHeaderProps) {
                 flushErrorsAndRedirect(loginUrl);
               }}
               size="small"
-              text="Sign In"
+              text="登录"
             />
           ) : (
             <ProfileDropdown name={user.name} userName={user.username} />

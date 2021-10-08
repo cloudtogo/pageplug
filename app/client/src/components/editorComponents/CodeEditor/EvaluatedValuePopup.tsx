@@ -22,6 +22,7 @@ import {
 import * as Sentry from "@sentry/react";
 import { Severity } from "@sentry/react";
 import { CodeEditorExpected } from "components/editorComponents/CodeEditor/index";
+import { Colors } from "constants/Colors";
 
 const modifiers: IPopoverSharedProps["modifiers"] = {
   offset: {
@@ -52,7 +53,7 @@ const THEMES: PopupTheme = {
   [EditorTheme.LIGHT]: {
     backgroundColor: "#EBEBEB",
     textColor: "#4B4848",
-    editorBackground: "#FAFAFA",
+    editorBackground: Colors.MINT_GRAY,
     editorColor: "#1E242B",
   },
   [EditorTheme.DARK]: {
@@ -295,7 +296,7 @@ export const CurrentValueViewer = memo(
             data-testid="evaluated-value-popup-title"
             onClick={toggleEvaluatedValue}
           >
-            Evaluated Value
+            解析值
             <CollapseToggle isOpen={openEvaluatedValue} />
           </StyledTitle>
         )}
@@ -351,7 +352,7 @@ function PopoverContent(props: PopoverContentProps) {
         <ErrorText>
           <span className="t--evaluatedPopup-error">
             {error.errorType === PropertyEvaluationErrorType.VALIDATION
-              ? `This value does not evaluate to type "${expected?.type}".`
+              ? `当前表达式不能解析成数据类型 "${expected?.type}".`
               : error.errorMessage}
           </span>
           <StyledDebugButton
@@ -363,7 +364,7 @@ function PopoverContent(props: PopoverContentProps) {
       {props.expected && props.expected.type !== UNDEFINED_VALIDATION && (
         <>
           <StyledTitle onClick={toggleExpectedDataType}>
-            Expected Structure
+            数据结构
             <CollapseToggle isOpen={openExpectedDataType} />
           </StyledTitle>
           <Collapse isOpen={openExpectedDataType}>
@@ -376,7 +377,7 @@ function PopoverContent(props: PopoverContentProps) {
       {props.expected && props.expected.type !== UNDEFINED_VALIDATION && (
         <>
           <StyledTitle onClick={toggleExpectedExample}>
-            Expected Structure - Example
+            数据结构 - 例子
             <CollapseToggle isOpen={openExpectedExample} />
           </StyledTitle>
           <Collapse isOpen={openExpectedExample}>

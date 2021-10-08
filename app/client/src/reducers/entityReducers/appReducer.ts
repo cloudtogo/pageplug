@@ -34,7 +34,7 @@ export type AppDataState = {
 };
 
 const initialState: AppDataState = {
-  inCloudOS: true,
+  inCloudOS: false,
   user: {
     username: "",
     email: "",

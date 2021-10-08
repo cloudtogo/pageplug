@@ -32,17 +32,17 @@ export const generateQuickCommands = (
     recentEntities: string[];
   },
 ) => {
-  const suggestionsHeader: CommandsCompletion = commandsHeader("Bind Data");
-  const createNewHeader: CommandsCompletion = commandsHeader("Create New");
+  const suggestionsHeader: CommandsCompletion = commandsHeader("绑定数据");
+  const createNewHeader: CommandsCompletion = commandsHeader("新建");
   recentEntities.reverse();
   const newBinding: CommandsCompletion = generateCreateNewCommand({
     text: "{{}}",
-    displayText: "New Binding",
+    displayText: "添加绑定",
     shortcut: Shortcuts.BINDING,
   });
   const newIntegration: CommandsCompletion = generateCreateNewCommand({
     text: "",
-    displayText: "New Datasource",
+    displayText: "新建数据源",
     action: () =>
       executeCommand({
         actionType: "NEW_INTEGRATION",

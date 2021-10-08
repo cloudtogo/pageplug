@@ -213,13 +213,12 @@ const getBasePropertyPath = (propertyPath: string): string | undefined => {
 
 export default [
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
-        helpText:
-          "Takes in an array of objects to display rows in the table. Bind data from an API using {{}}",
+        helpText: "表格数据列表，通过 {{}} 进行数据绑定",
         propertyName: "tableData",
-        label: "Table Data",
+        label: "数据",
         controlType: "INPUT_TEXT",
         placeholderText: 'Enter [{ "col1": "val1" }]',
         inputType: "ARRAY",
@@ -237,7 +236,7 @@ export default [
         helpText: "Columns",
         propertyName: "primaryColumns",
         controlType: "PRIMARY_COLUMNS",
-        label: "Columns",
+        label: "数据列",
         updateHook: updateDerivedColumnsHook,
         dependencies: ["derivedColumns", "columnOrder"],
         isBindProperty: false,
@@ -250,16 +249,16 @@ export default [
           dependencies: ["primaryColumns", "derivedColumns", "columnOrder"],
           children: [
             {
-              sectionName: "Column Control",
+              sectionName: "数据列配置",
               children: [
                 {
                   propertyName: "columnType",
-                  label: "Column Type",
+                  label: "数据类型",
                   controlType: "DROP_DOWN",
                   customJSControl: "COMPUTE_VALUE",
                   options: [
                     {
-                      label: "Plain Text",
+                      label: "纯文本",
                       value: "text",
                     },
                     {
@@ -267,23 +266,23 @@ export default [
                       value: "url",
                     },
                     {
-                      label: "Number",
+                      label: "数字",
                       value: "number",
                     },
                     {
-                      label: "Image",
+                      label: "图片",
                       value: "image",
                     },
                     {
-                      label: "Video",
+                      label: "视频",
                       value: "video",
                     },
                     {
-                      label: "Date",
+                      label: "日期",
                       value: "date",
                     },
                     {
-                      label: "Button",
+                      label: "按钮",
                       value: "button",
                     },
                   ],
@@ -298,7 +297,7 @@ export default [
                 },
                 {
                   propertyName: "displayText",
-                  label: "Display Text",
+                  label: "显示名称",
                   controlType: "COMPUTE_VALUE",
                   customJSControl: "COMPUTE_VALUE",
                   updateHook: updateDerivedColumnsHook,
@@ -321,7 +320,7 @@ export default [
                 },
                 {
                   propertyName: "computedValue",
-                  label: "Computed Value",
+                  label: "解析值",
                   controlType: "COMPUTE_VALUE",
                   updateHook: updateDerivedColumnsHook,
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
@@ -343,7 +342,7 @@ export default [
                 },
                 {
                   propertyName: "inputFormat",
-                  label: "Original Date Format",
+                  label: "原始日期格式",
                   controlType: "DROP_DOWN",
                   options: [
                     {
@@ -450,7 +449,7 @@ export default [
                 },
                 {
                   propertyName: "outputFormat",
-                  label: "Display Date Format",
+                  label: "显示日期格式",
                   controlType: "DROP_DOWN",
                   customJSControl: "COMPUTE_VALUE",
                   isJSConvertible: true,
@@ -581,7 +580,7 @@ export default [
               ],
             },
             {
-              sectionName: "Styles",
+              sectionName: "样式",
               hidden: (props: TableWidgetProps, propertyPath: string) => {
                 const columnType = get(props, `${propertyPath}.columnType`, "");
 
@@ -595,7 +594,7 @@ export default [
               children: [
                 {
                   propertyName: "horizontalAlignment",
-                  label: "Text Align",
+                  label: "文本对齐",
                   controlType: "ICON_TABS",
                   options: [
                     {
@@ -625,7 +624,7 @@ export default [
                 },
                 {
                   propertyName: "textSize",
-                  label: "Text Size",
+                  label: "字体大小",
                   controlType: "DROP_DOWN",
                   isJSConvertible: true,
                   customJSControl: "COMPUTE_VALUE",
@@ -672,7 +671,7 @@ export default [
                 },
                 {
                   propertyName: "fontStyle",
-                  label: "Font Style",
+                  label: "字体风格",
                   controlType: "BUTTON_TABS",
                   options: [
                     {
@@ -697,7 +696,7 @@ export default [
                 },
                 {
                   propertyName: "verticalAlignment",
-                  label: "Vertical Alignment",
+                  label: "垂直对齐",
                   controlType: "ICON_TABS",
                   options: [
                     {
@@ -727,7 +726,7 @@ export default [
                 },
                 {
                   propertyName: "textColor",
-                  label: "Text Color",
+                  label: "文本颜色",
                   controlType: "COLOR_PICKER",
                   isJSConvertible: true,
                   customJSControl: "COMPUTE_VALUE",
@@ -742,7 +741,7 @@ export default [
                 },
                 {
                   propertyName: "cellBackground",
-                  label: "Cell Background",
+                  label: "背景颜色",
                   controlType: "COLOR_PICKER",
                   isJSConvertible: true,
                   customJSControl: "COMPUTE_VALUE",
@@ -758,7 +757,7 @@ export default [
               ],
             },
             {
-              sectionName: "Button Properties",
+              sectionName: "按钮属性",
               hidden: (props: TableWidgetProps, propertyPath: string) => {
                 const columnType = get(props, `${propertyPath}.columnType`, "");
                 return columnType !== "button";
@@ -766,7 +765,7 @@ export default [
               children: [
                 {
                   propertyName: "buttonLabel",
-                  label: "Label",
+                  label: "文本",
                   controlType: "COMPUTE_VALUE",
                   defaultValue: "Action",
                   updateHook: updateDerivedColumnsHook,
@@ -780,9 +779,8 @@ export default [
                 },
                 {
                   propertyName: "buttonStyle",
-                  label: "Button Color",
+                  label: "按钮背景颜色",
                   controlType: "COLOR_PICKER",
-                  helpText: "Changes the color of the button",
                   isJSConvertible: true,
                   customJSControl: "COMPUTE_VALUE",
                   defaultColor: Colors.GREEN,
@@ -797,7 +795,7 @@ export default [
                 },
                 {
                   propertyName: "buttonLabelColor",
-                  label: "Label Color",
+                  label: "按钮文本颜色",
                   controlType: "COLOR_PICKER",
                   isJSConvertible: true,
                   customJSControl: "COMPUTE_VALUE",
@@ -812,7 +810,7 @@ export default [
                   isTriggerProperty: false,
                 },
                 {
-                  helpText: "Triggers an action when the button is clicked",
+                  helpText: "按钮点击时触发",
                   propertyName: "onClick",
                   label: "onClick",
                   controlType: "ACTION_SELECTOR",
@@ -841,19 +839,18 @@ export default [
       },
       {
         propertyName: "defaultSearchText",
-        label: "Default Search Text",
+        label: "默认搜索",
         controlType: "INPUT_TEXT",
-        placeholderText: "Enter default search text",
+        placeholderText: "请输入默认搜索",
         isBindProperty: true,
         isTriggerProperty: false,
         validation: { type: ValidationTypes.TEXT },
       },
       {
-        helpText: "Selects row(s) by default",
         propertyName: "defaultSelectedRow",
-        label: "Default Selected Row",
+        label: "默认选中行",
         controlType: "INPUT_TEXT",
-        placeholderText: "Enter row index",
+        placeholderText: "请输入行号",
         isBindProperty: true,
         isTriggerProperty: false,
         validation: {
@@ -870,19 +867,17 @@ export default [
         dependencies: ["multiRowSelection"],
       },
       {
-        helpText:
-          "Bind the Table.pageNo property in your API and call it onPageChange",
+        helpText: "在 onPageChange 动作触发时绑定 Table.pageNo 属性到接口调用",
         propertyName: "serverSidePaginationEnabled",
-        label: "Server Side Pagination",
+        label: "后端分页",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
       },
       {
-        helpText: "Controls the visibility of the widget",
         propertyName: "isVisible",
         isJSConvertible: true,
-        label: "Visible",
+        label: "是否可见",
         controlType: "SWITCH",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -890,7 +885,7 @@ export default [
       },
       {
         propertyName: "multiRowSelection",
-        label: "Enable multi row selection",
+        label: "支持多选",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -898,10 +893,10 @@ export default [
     ],
   },
   {
-    sectionName: "Actions",
+    sectionName: "动作",
     children: [
       {
-        helpText: "Triggers an action when a table row is selected",
+        helpText: "表行被选中时触发",
         propertyName: "onRowSelected",
         label: "onRowSelected",
         controlType: "ACTION_SELECTOR",
@@ -910,7 +905,7 @@ export default [
         isTriggerProperty: true,
       },
       {
-        helpText: "Triggers an action when a table page is changed",
+        helpText: "表页编号变化时触发",
         propertyName: "onPageChange",
         label: "onPageChange",
         controlType: "ACTION_SELECTOR",
@@ -919,7 +914,7 @@ export default [
         isTriggerProperty: true,
       },
       {
-        helpText: "Triggers an action when a table page size is changed",
+        helpText: "表页大小变化时触发",
         propertyName: "onPageSizeChange",
         label: "onPageSizeChange",
         controlType: "ACTION_SELECTOR",
@@ -928,7 +923,7 @@ export default [
         isTriggerProperty: true,
       },
       {
-        propertyName: "onSearchTextChanged",
+        propertyName: "搜索文字变化时触发",
         label: "onSearchTextChanged",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
@@ -938,44 +933,44 @@ export default [
     ],
   },
   {
-    sectionName: "Header options",
+    sectionName: "表头配置",
     children: [
       {
-        helpText: "Toggle visibility of the search box",
+        helpText: "是否显示搜索框",
         propertyName: "isVisibleSearch",
-        label: "Search",
+        label: "开启搜索",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
       },
       {
-        helpText: "Toggle visibility of the filters",
+        helpText: "是否显示过滤框",
         propertyName: "isVisibleFilters",
-        label: "Filters",
+        label: "开启过滤",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
       },
       {
-        helpText: "Toggle visibility of the data download",
+        helpText: "是否支持下载数据",
         propertyName: "isVisibleDownload",
-        label: "Download",
+        label: "开启下载",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
       },
       {
-        helpText: "Toggle visibility of the row height",
+        helpText: "是否支持行高配置",
         propertyName: "isVisibleCompactMode",
-        label: "Row Height",
+        label: "行高",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
       },
       {
-        helpText: "Toggle visibility of the pagination",
+        helpText: "是否支持分页",
         propertyName: "isVisiblePagination",
-        label: "Pagination",
+        label: "分页",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -983,11 +978,11 @@ export default [
     ],
   },
   {
-    sectionName: "Styles",
+    sectionName: "样式",
     children: [
       {
         propertyName: "cellBackground",
-        label: "Cell Background",
+        label: "背景颜色",
         controlType: "COLOR_PICKER",
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns", "derivedColumns"],
@@ -996,7 +991,7 @@ export default [
       },
       {
         propertyName: "textColor",
-        label: "Text Color",
+        label: "字体颜色",
         controlType: "COLOR_PICKER",
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns", "derivedColumns"],
@@ -1005,7 +1000,7 @@ export default [
       },
       {
         propertyName: "textSize",
-        label: "Text Size",
+        label: "字体大小",
         controlType: "DROP_DOWN",
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns", "derivedColumns"],
@@ -1046,7 +1041,7 @@ export default [
       },
       {
         propertyName: "fontStyle",
-        label: "Font Style",
+        label: "字体风格",
         controlType: "BUTTON_TABS",
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns", "derivedColumns"],
@@ -1065,7 +1060,7 @@ export default [
       },
       {
         propertyName: "horizontalAlignment",
-        label: "Text Align",
+        label: "文本对齐",
         controlType: "ICON_TABS",
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns", "derivedColumns"],
@@ -1089,7 +1084,7 @@ export default [
       },
       {
         propertyName: "verticalAlignment",
-        label: "Vertical Alignment",
+        label: "垂直对齐",
         controlType: "ICON_TABS",
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns", "derivedColumns"],

@@ -42,44 +42,44 @@ import Fields, {
 
 const baseOptions: any = [
   {
-    label: "No Action",
+    label: "无动作",
     value: ActionType.none,
   },
   {
-    label: "Execute a Query",
+    label: "执行查询",
     value: ActionType.integration,
   },
 
   {
-    label: "Navigate To",
+    label: "跳转到",
     value: ActionType.navigateTo,
   },
   {
-    label: "Show Message",
+    label: "显示消息",
     value: ActionType.showAlert,
   },
   {
-    label: "Open Modal",
+    label: "打开弹窗",
     value: ActionType.showModal,
   },
   {
-    label: "Close Modal",
+    label: "关闭弹窗",
     value: ActionType.closeModal,
   },
   {
-    label: "Store Value",
+    label: "保存信息",
     value: ActionType.storeValue,
   },
   {
-    label: "Download",
+    label: "下载",
     value: ActionType.download,
   },
   {
-    label: "Copy to Clipboard",
+    label: "复制",
     value: ActionType.copyToClipboard,
   },
   {
-    label: "Reset Widget",
+    label: "重置组件",
     value: ActionType.resetWidget,
   },
 ];
@@ -233,7 +233,7 @@ function useModalDropdownList() {
 
   let finalList: TreeDropdownOption[] = [
     {
-      label: "New Modal",
+      label: "新建弹窗",
       value: "Modal",
       id: "create",
       icon: "plus",
@@ -359,7 +359,7 @@ function useIntegrationsOptionTree() {
     actions,
     datasources,
     {
-      label: "Create New Query",
+      label: "新建查询",
       value: "datasources",
       id: "create",
       icon: "plus",

@@ -158,7 +158,7 @@ class MenuItemsControl extends BaseControl<ControlProps> {
             onClick={this.addOption}
             size={Size.medium}
             tag="button"
-            text="Add a new Menu Item"
+            text="新建菜单项"
             type="button"
           />
         </StyledPropertyPaneButtonWrapper>

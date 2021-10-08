@@ -126,7 +126,7 @@ function PropertyPaneView(
   }> => {
     return [
       {
-        tooltipContent: "Copy Widget",
+        tooltipContent: "复制组件",
         icon: (
           <CopyIcon
             className="t--copy-widget"
@@ -137,7 +137,7 @@ function PropertyPaneView(
         ),
       },
       {
-        tooltipContent: "Delete Widget",
+        tooltipContent: "删除组件",
         icon: (
           <DeleteIcon
             className="t--delete-widget"
@@ -147,12 +147,12 @@ function PropertyPaneView(
           />
         ),
       },
+      // {
+      //   tooltipContent: <span>Explore widget related docs</span>,
+      //   icon: <PropertyPaneHelpButton />,
+      // },
       {
-        tooltipContent: <span>Explore widget related docs</span>,
-        icon: <PropertyPaneHelpButton />,
-      },
-      {
-        tooltipContent: "Close",
+        tooltipContent: "关闭",
         icon: (
           <Icon
             className={"t--property-pane-close-btn"}

@@ -17,6 +17,7 @@ const Value = styled.div`
   font-weight: 500;
   display: inline-block;
   margin-left: 5px;
+  word-break: break-all;
 `;
 
 const ValueWrapper = styled.div`

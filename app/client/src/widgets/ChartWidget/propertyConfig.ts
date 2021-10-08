@@ -5,22 +5,20 @@ import { CUSTOM_CHART_TYPES } from "constants/CustomChartConstants";
 
 export default [
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
-        helpText: "Adds a title to the chart",
-        placeholderText: "Enter title",
+        placeholderText: "请输入图表标题",
         propertyName: "chartName",
-        label: "Title",
+        label: "标题",
         controlType: "INPUT_TEXT",
         isBindProperty: true,
         isTriggerProperty: false,
         validation: { type: ValidationTypes.TEXT },
       },
       {
-        helpText: "Changes the visualisation of the chart data",
         propertyName: "chartType",
-        label: "Chart Type",
+        label: "图表类型",
         controlType: "DROP_DOWN",
         options: [
           {
@@ -67,8 +65,7 @@ export default [
       },
       {
         propertyName: "isVisible",
-        label: "Visible",
-        helpText: "Controls the visibility of the widget",
+        label: "是否可见",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -78,14 +75,13 @@ export default [
     ],
   },
   {
-    sectionName: "Chart Data",
+    sectionName: "图表数据",
     children: [
       {
-        helpText:
-          "Manually configure a FusionChart, see https://docs.appsmith.com/widget-reference/chart#custom-chart",
+        helpText: "手动配置 FusionChart",
         placeholderText: `Enter {"type": "bar2d","dataSource": {}}`,
         propertyName: "customFusionChartConfig",
-        label: "Custom Fusion Chart Configuration",
+        label: "自定义 Fusion 图表配置",
         controlType: "INPUT_TEXT",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -148,10 +144,9 @@ export default [
         evaluationSubstitutionType: EvaluationSubstitutionType.SMART_SUBSTITUTE,
       },
       {
-        helpText: "Populates the chart with the data",
         propertyName: "chartData",
-        placeholderText: 'Enter [{ "x": "val", "y": "val" }]',
-        label: "Chart Series",
+        placeholderText: '例如 [{ "x": "val", "y": "val" }]',
+        label: "图表数据 Series",
         controlType: "CHART_DATA",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -160,18 +155,16 @@ export default [
         dependencies: ["chartType"],
         children: [
           {
-            helpText: "Series Name",
             propertyName: "seriesName",
-            label: "Series Name",
+            label: "Series 名称",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Series data",
             propertyName: "data",
-            label: "Series Data",
+            label: "Series 数据",
             controlType: "INPUT_TEXT_AREA",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -211,35 +204,33 @@ export default [
     ],
   },
   {
-    sectionName: "Axis",
+    sectionName: "Axis 数据轴",
     hidden: (props: ChartWidgetProps) =>
       props.chartType === "CUSTOM_FUSION_CHART",
     dependencies: ["chartType"],
     children: [
       {
-        helpText: "Specifies the label of the x-axis",
         propertyName: "xAxisName",
-        placeholderText: "Enter label text",
-        label: "x-axis Label",
+        placeholderText: "请输入x-轴名称",
+        label: "x-轴名称",
         controlType: "INPUT_TEXT",
         isBindProperty: true,
         isTriggerProperty: false,
         validation: { type: ValidationTypes.TEXT },
       },
       {
-        helpText: "Specifies the label of the y-axis",
         propertyName: "yAxisName",
-        placeholderText: "Enter label text",
-        label: "y-axis Label",
+        placeholderText: "请输入y-轴名称",
+        label: "y-轴名称",
         controlType: "INPUT_TEXT",
         isBindProperty: true,
         isTriggerProperty: false,
         validation: { type: ValidationTypes.TEXT },
       },
       {
-        helpText: "Enables scrolling inside the chart",
+        helpText: "允许图表内水平滚动",
         propertyName: "allowHorizontalScroll",
-        label: "Allow horizontal scroll",
+        label: "允许水平滚动",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -249,10 +240,10 @@ export default [
     ],
   },
   {
-    sectionName: "Actions",
+    sectionName: "动作",
     children: [
       {
-        helpText: "Triggers an action when the chart data point is clicked",
+        helpText: "点击数据点时触发",
         propertyName: "onDataPointClick",
         label: "onDataPointClick",
         controlType: "ACTION_SELECTOR",

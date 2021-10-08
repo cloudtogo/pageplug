@@ -420,7 +420,7 @@ function GeneratePageForm() {
       </Wrapper>
       <FormWrapper>
         <SelectWrapper>
-          <Label>Select Datasource</Label>
+          <Label>选择数据源</Label>
           <Dropdown
             cypressSelector="t--datasource-dropdown"
             dropdownMaxHeight={"300px"}
@@ -448,8 +448,7 @@ function GeneratePageForm() {
             {selectedDatasource.value ? (
               <SelectWrapper>
                 <Label>
-                  Select {tableLabel} from{" "}
-                  <Bold>{selectedDatasource.label}</Bold>
+                  从 <Bold>{selectedDatasource.label}</Bold> 中选择 {tableLabel}
                 </Label>
                 <Dropdown
                   cypressSelector="t--table-dropdown"
@@ -473,15 +472,15 @@ function GeneratePageForm() {
                   category={Category.tertiary}
                   onClick={goToEditDatasource}
                   size={Size.medium}
-                  text="Edit Datasource"
+                  text="编辑数据源"
                   type="button"
                 />
               )}
             {selectedTable.value ? (
               <SelectWrapper>
                 <Label>
-                  Select a searchable {columnLabel} from
-                  <Bold> {selectedTable.label} </Bold>
+                  从 <Bold> {selectedTable.label} </Bold>
+                  中选择一个可搜索的 {columnLabel}
                 </Label>
                 <Dropdown
                   cypressSelector="t--searchColumn-dropdown"
@@ -525,7 +524,7 @@ function GeneratePageForm() {
             isLoading={isGeneratingTemplatePage}
             onClick={handleFormSubmit}
             size={Size.large}
-            text="Generate Page"
+            text="生成页面"
             type="button"
           />
         ) : null}

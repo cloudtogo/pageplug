@@ -8,11 +8,11 @@ const writeToClipboard = async (
   if ("clipboard" in navigator) {
     try {
       await navigator.clipboard.writeText(text);
-      el.childNodes[0].textContent = "Copied to clipboard!";
+      el.childNodes[0].textContent = "复制成功！";
       el.classList.add("success");
       ref.current && ref.current.append(el);
     } catch (e) {
-      el.childNodes[0].textContent = "Failed!";
+      el.childNodes[0].textContent = "复制失败！";
       el.classList.add("error");
       ref.current && ref.current.append(el);
     }

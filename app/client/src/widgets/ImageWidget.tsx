@@ -14,32 +14,31 @@ class ImageWidget extends BaseWidget<ImageWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
-            helpText: "Renders the url or Base64 in the widget",
+            helpText: "图片地址或者 Base64 数据",
             propertyName: "image",
-            label: "Image",
+            label: "图片",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter URL / Base64",
+            placeholderText: "输入图片 URL / Base64",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.IMAGE_URL },
           },
           {
-            helpText: "Renders the url or Base64 when no image is provided",
             propertyName: "defaultImage",
-            label: "Default Image",
+            label: "默认图片",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter URL / Base64",
+            placeholderText: "输入图片 URL / Base64",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.IMAGE_URL },
           },
           {
-            helpText: "Controls the visibility of the widget",
+            helpText: "控制组件显示/隐藏",
             propertyName: "isVisible",
-            label: "Visible",
+            label: "是否可见",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -47,13 +46,13 @@ class ImageWidget extends BaseWidget<ImageWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText: "Controls the max zoom of the widget",
+            helpText: "控制图片的最大拉伸倍数",
             propertyName: "maxZoomLevel",
-            label: "Max Zoom Level",
+            label: "最大缩放倍数",
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "1x (No Zoom)",
+                label: "1x (原始尺寸))",
                 value: 1,
               },
               {
@@ -82,10 +81,9 @@ class ImageWidget extends BaseWidget<ImageWidgetProps, WidgetState> {
             },
           },
           {
-            helpText:
-              "Sets how the Image should be resized to fit its container.",
+            helpText: "设置图片填充父容器的方式",
             propertyName: "objectFit",
-            label: "Object Fit",
+            label: "图片填充方式",
             controlType: "DROP_DOWN",
             defaultValue: "contain",
             options: [
@@ -113,9 +111,9 @@ class ImageWidget extends BaseWidget<ImageWidgetProps, WidgetState> {
             },
           },
           {
-            helpText: "Controls if the image is allowed to rotate",
+            helpText: "是否允许旋转图片",
             propertyName: "enableRotation",
-            label: "Enable Rotation",
+            label: "允许旋转",
             controlType: "SWITCH",
             isJSConvertible: false,
             isBindProperty: true,
@@ -123,9 +121,9 @@ class ImageWidget extends BaseWidget<ImageWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText: "Controls if the image is allowed to download",
+            helpText: "是否允许下载图片",
             propertyName: "enableDownload",
-            label: "Enable Download",
+            label: "允许下载",
             controlType: "SWITCH",
             isJSConvertible: false,
             isBindProperty: true,
@@ -135,11 +133,10 @@ class ImageWidget extends BaseWidget<ImageWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Actions",
+        sectionName: "动作",
         children: [
           {
-            helpText:
-              "Triggers an action when a user changes the selected option",
+            helpText: "当用户点击图片时触发",
             propertyName: "onClick",
             label: "onClick",
             controlType: "ACTION_SELECTOR",

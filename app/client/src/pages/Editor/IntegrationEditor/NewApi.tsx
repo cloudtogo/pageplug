@@ -82,6 +82,7 @@ const ApiCard = styled.div`
   align-items: center;
   justify-content: space-between;
   height: 64px;
+  border-radius: ${(props) => props.theme.borderRadius};
   &:hover {
     background: ${Colors.Gallery};
     cursor: pointer;
@@ -257,7 +258,7 @@ function NewApiScreen(props: Props) {
                 src={PlusLogo}
               />
             </div>
-            <p className="textBtn">Create new API</p>
+            <p className="textBtn">新建 API</p>
           </CardContentWrapper>
           {isCreating && <Spinner className="cta" size={25} />}
         </ApiCard>
@@ -273,7 +274,7 @@ function NewApiScreen(props: Props) {
                 src={CurlLogo}
               />
             </div>
-            <p className="textBtn">CURL import</p>
+            <p className="textBtn">CURL 导入</p>
           </CardContentWrapper>
         </ApiCard>
         {authApiPlugin && (
@@ -289,11 +290,11 @@ function NewApiScreen(props: Props) {
                   src={authApiPlugin.iconLocation}
                 />
               </div>
-              <p className="textBtn">Authenticated API</p>
+              <p className="textBtn">鉴权 API</p>
             </CardContentWrapper>
           </ApiCard>
         )}
-        {plugins
+        {/* {plugins
           .filter((p) => p.type === PluginType.SAAS)
           .map((p) => (
             <ApiCard
@@ -324,14 +325,21 @@ function NewApiScreen(props: Props) {
                 <p className="textBtn">{p.name}</p>
               </CardContentWrapper>
             </ApiCard>
-          ))}
+          ))} */}
       </ApiCardsContainer>
     </StyledContainer>
   );
 }
 
 const mapStateToProps = (state: AppState) => ({
-  plugins: state.entities.plugins.list,
+  plugins: state.entities.plugins.list.map((p: any) => {
+    return {
+      ...p,
+      iconLocation: p.iconLocation
+        ?.replace("https://s3.us-east-2.amazonaws.com/assets.appsmith.com", "")
+        ?.replace(/\.png$/g, ".svg"),
+    };
+  }),
 });
 
 const mapDispatchToProps = {

@@ -6,22 +6,27 @@ import Entity, { EntityClassNames } from "../Entity";
 import { datasourceTableIcon } from "../ExplorerIcons";
 import { EntityTogglesWrapper } from "../ExplorerStyledComponents";
 import styled from "styled-components";
+import { Colors } from "constants/Colors";
 import QueryTemplates from "./QueryTemplates";
 import DatasourceField from "./DatasourceField";
 import { DatasourceTable } from "entities/Datasource";
 
 const Wrapper = styled(EntityTogglesWrapper)`
   &&&& {
-    color: #ff7235;
+    color: ${Colors.MINT_ORANGE};
     svg,
     svg path {
-      fill: #ff7235;
+      fill: ${Colors.MINT_ORANGE};
+    }
+
+    &:hover {
+      background: ${Colors.MINT_ORANGE_LIGHT};
     }
   }
   span {
     font-size: ${(props) => props.theme.fontSizes[2]}px;
     margin-left: 5px;
-    color: white;
+    color: ${Colors.MINT_ORANGE};
     padding-top: 2px;
   }
   padding: 0 5px;
@@ -44,7 +49,6 @@ export function DatasourceStructure(props: DatasourceStructureProps) {
   const iconProps: IconProps = {
     width: 12,
     height: 12,
-    color: "#FF7235",
   };
   let templateMenu = null;
   const [active, setActive] = useState(false);
@@ -57,7 +61,7 @@ export function DatasourceStructure(props: DatasourceStructureProps) {
       <IconWrapper {...iconProps}>
         <LightningIcon />
       </IconWrapper>
-      <span>Add</span>
+      <span>新建查询</span>
     </Wrapper>
   );
 

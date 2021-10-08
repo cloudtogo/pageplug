@@ -186,7 +186,7 @@ export function KeyValueComponent(props: KeyValueComponentProps) {
         onClick={addPair}
         size={Size.medium}
         tag="button"
-        text={props.addLabel || "Option"}
+        text={props.addLabel || "添加一项"}
         type="button"
       />
     </>

@@ -38,6 +38,7 @@ import { useWidgetSelection } from "utils/hooks/useWidgetSelection";
 import { OccupiedSpace } from "constants/editorConstants";
 import { DragSourceAnimation } from "./DropTargetEmpty";
 const CanvasEmpty: any = DragSourceAnimation.light;
+import EmptyCanvas from "assets/images/undraw_blank_canvas.svg";
 
 type DropTargetComponentProps = WidgetProps & {
   children?: ReactNode;
@@ -64,22 +65,26 @@ const EmptyContainer = styled.div`
   margin-top: -180px;
   margin-left: -100px;
   text-align: center;
+  opacity: 0.5;
 
   & h2 {
-    color: #ccc;
-    margin-top: -68px;
+    color: #666;
+    margin-top: 28px;
   }
 
-  & svg {
-    width: 100%;
+  & img {
+    height: 100%;
   }
 `;
 
 function Onboarding() {
   return (
     <EmptyContainer>
-      <CanvasEmpty />
-      <h2>把组件拖动到这里吧</h2>
+      {/* <CanvasEmpty /> */}
+      <img src={EmptyCanvas} />
+      <h2>开始构建你的应用</h2>
+      <p style={{ margin: "18px 0 0" }}>点击“组件”右侧 + 按钮添加组件</p>
+      <p>点击“数据源”右侧 + 按钮添加数据源</p>
     </EmptyContainer>
   );
 }

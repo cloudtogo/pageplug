@@ -106,7 +106,7 @@ function WidgetCard(props: CardProps) {
         <div>
           <Icon needBG />
           <IconLabel>{props.details.widgetCardName}</IconLabel>
-          {props.details.isBeta && <BetaLabel>Beta</BetaLabel>}
+          {/* {props.details.isBeta && <BetaLabel>Beta</BetaLabel>} */}
         </div>
       </Wrapper>
     </>
