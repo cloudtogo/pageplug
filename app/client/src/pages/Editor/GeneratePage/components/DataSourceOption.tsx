@@ -110,7 +110,7 @@ function DataSourceOption({
     : cypressSelector;
   return (
     <TooltipComponent
-      content="Not supported for template generation"
+      content="该数据源不支持自动生成"
       disabled={
         isSupportedForTemplate || isSelectedNode || isConnectNewDataSourceBtn
       }

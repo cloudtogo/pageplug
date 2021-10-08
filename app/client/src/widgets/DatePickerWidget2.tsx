@@ -13,15 +13,13 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "defaultDate",
-            label: "Default Date",
-            helpText:
-              "Sets the default date of the widget. The date is updated if the default date changes",
+            label: "默认日期",
             controlType: "DATE_PICKER",
-            placeholderText: "Enter Default Date",
+            placeholderText: "输入默认日期",
             useValidationMessage: true,
             isJSConvertible: true,
             isBindProperty: true,
@@ -29,9 +27,8 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
             validation: { type: ValidationTypes.DATE_ISO_STRING },
           },
           {
-            helpText: "Sets the format of the selected date",
             propertyName: "dateFormat",
-            label: "Date Format",
+            label: "日期格式",
             controlType: "DROP_DOWN",
             isJSConvertible: true,
             optionWidth: "340px",
@@ -123,8 +120,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           },
           {
             propertyName: "isRequired",
-            label: "Required",
-            helpText: "Makes input to the widget mandatory",
+            label: "是否必须",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -133,8 +129,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           },
           {
             propertyName: "isVisible",
-            label: "Visible",
-            helpText: "Controls the visibility of the widget",
+            label: "是否可见",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -143,8 +138,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           },
           {
             propertyName: "isDisabled",
-            label: "Disabled",
-            helpText: "Disables input to this widget",
+            label: "是否禁用",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -153,8 +147,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           },
           {
             propertyName: "closeOnSelection",
-            label: "Close On Selection",
-            helpText: "Calender should close when a date is selected",
+            label: "选中日期后关闭",
             controlType: "SWITCH",
             isJSConvertible: false,
             isBindProperty: true,
@@ -163,8 +156,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           },
           {
             propertyName: "shortcuts",
-            label: "Show Shortcuts",
-            helpText: "Choose to show shortcut menu",
+            label: "显示快捷键",
             controlType: "SWITCH",
             isJSConvertible: false,
             isBindProperty: true,
@@ -173,8 +165,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           },
           {
             propertyName: "minDate",
-            label: "Min Date",
-            helpText: "Defines the min date for this widget",
+            label: "最小日期",
             controlType: "DATE_PICKER",
             useValidationMessage: true,
             isJSConvertible: true,
@@ -184,8 +175,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           },
           {
             propertyName: "maxDate",
-            label: "Max Date",
-            helpText: "Defines the max date for this widget",
+            label: "最大日期",
             controlType: "DATE_PICKER",
             useValidationMessage: true,
             isJSConvertible: true,
@@ -196,7 +186,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
         ],
       },
       {
-        sectionName: "Actions",
+        sectionName: "动作",
         children: [
           {
             propertyName: "onDateSelected",

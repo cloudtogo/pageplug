@@ -4,17 +4,17 @@ import styled from "styled-components";
 
 const locale = {
   // Options.jsx
-  items_per_page: "/ page",
-  jump_to: "Go to",
-  jump_to_confirm: "confirm",
+  items_per_page: "/ 页",
+  jump_to: "跳转到",
+  jump_to_confirm: "确认",
   page: "",
   // Pagination.jsx
-  prev_page: "Previous Page",
-  next_page: "Next Page",
-  prev_5: "Previous 5 Pages",
-  next_5: "Next 5 Pages",
-  prev_3: "Previous 3 Pages",
-  next_3: "Next 3 Pages",
+  prev_page: "上一页",
+  next_page: "下一页",
+  prev_5: "前 5 页",
+  next_5: "后 5 页",
+  prev_3: "前 3 页",
+  next_3: "后 3 页",
 };
 
 const StyledPagination = styled(Pagination)<{

@@ -16,7 +16,7 @@ const RoundBg = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 40px;
-  background-color: ${Colors.Gallery};
+  background-color: ${Colors.MINT_GREEN_LIGHT};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,10 +52,11 @@ const CardWrapper = styled.button`
   height: 200px;
   width: 320px;
   margin: 0px 10px;
-  border: 1px solid ${Colors.MERCURY};
+  border-radius: ${(props) => props.theme.borderRadius};
+  border: 1px solid ${Colors.MINT_GREEN};
   background-color: ${Colors.WHITE};
   &:hover {
-    background-color: ${Colors.Gallery};
+    background-color: ${Colors.MINT_GREEN_LIGHT};
   }
 `;
 
@@ -73,7 +74,7 @@ function ActionCard(props: actionCardProps) {
     <CardWrapper className={className} onClick={onClick}>
       <IconWrapper>
         <RoundBg>
-          <Icon color={Colors.GRAY2} height={22} width={22} />
+          <Icon color={Colors.MINT_BLACK} height={24} width={24} />
         </RoundBg>
       </IconWrapper>
       <DescWrapper>

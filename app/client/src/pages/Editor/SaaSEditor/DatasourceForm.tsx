@@ -192,7 +192,7 @@ class DatasourceSaaSEditor extends JSONtoForm<Props> {
                     ) as any,
                   )
                 }
-                text="Delete"
+                text="删除"
               />
               <StyledButton
                 className="t--save-datasource"
@@ -215,7 +215,7 @@ class DatasourceSaaSEditor extends JSONtoForm<Props> {
                   );
                 }}
                 size="small"
-                text="Continue"
+                text="继续"
               />
             </SaveButtonContainer>
           </>

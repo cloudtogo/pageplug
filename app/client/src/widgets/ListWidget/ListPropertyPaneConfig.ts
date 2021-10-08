@@ -8,14 +8,14 @@ import { AutocompleteDataType } from "utils/autocomplete/TernServer";
 
 const PropertyPaneConfig = [
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
-        helpText: "Takes in an array of objects to display items in the list.",
+        helpText: "列表数据，数组形式",
         propertyName: "listData",
-        label: "Items",
+        label: "列表数据",
         controlType: "INPUT_TEXT",
-        placeholderText: 'Enter [{ "col1": "val1" }]',
+        placeholderText: '例如 [{ "col1": "val1" }]',
         inputType: "ARRAY",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -24,7 +24,7 @@ const PropertyPaneConfig = [
       },
       {
         propertyName: "backgroundColor",
-        label: "Background",
+        label: "背景颜色",
         controlType: "COLOR_PICKER",
         isJSConvertible: true,
         isBindProperty: true,
@@ -42,7 +42,7 @@ const PropertyPaneConfig = [
       },
       {
         propertyName: "itemBackgroundColor",
-        label: "Item Background",
+        label: "列表项背景颜色",
         controlType: "COLOR_PICKER",
         isJSConvertible: true,
         isBindProperty: true,
@@ -61,10 +61,9 @@ const PropertyPaneConfig = [
       },
 
       {
-        helpText: "Spacing between items in Pixels",
         placeholderText: "0",
         propertyName: "gridGap",
-        label: "Item Spacing (px)",
+        label: "列表项间隔 (px)",
         controlType: "INPUT_TEXT",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -73,8 +72,7 @@ const PropertyPaneConfig = [
       },
       {
         propertyName: "isVisible",
-        label: "Visible",
-        helpText: "Controls the visibility of the widget",
+        label: "是否可见",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -86,10 +84,10 @@ const PropertyPaneConfig = [
     ],
   },
   {
-    sectionName: "Actions",
+    sectionName: "动作",
     children: [
       {
-        helpText: "Triggers an action when a grid list item is clicked",
+        helpText: "点击列表项时触发",
         propertyName: "onListItemClick",
         label: "onListItemClick",
         controlType: "ACTION_SELECTOR",

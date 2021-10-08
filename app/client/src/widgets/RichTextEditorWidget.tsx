@@ -29,13 +29,12 @@ class RichTextEditorWidget extends BaseWidget<
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "inputType",
-            helpText:
-              "Sets the input type of the default text property in widget.",
-            label: "Input Type",
+            helpText: "内容输入方式，支持HTML和Markdown",
+            label: "输入格式",
             controlType: "DROP_DOWN",
             options: [
               {
@@ -52,9 +51,7 @@ class RichTextEditorWidget extends BaseWidget<
           },
           {
             propertyName: "defaultText",
-            helpText:
-              "Sets the default text of the widget. The text is updated if the default text changes",
-            label: "Default text",
+            label: "默认文本",
             controlType: "INPUT_TEXT",
             placeholderText: "Enter HTML",
             isBindProperty: true,
@@ -63,8 +60,7 @@ class RichTextEditorWidget extends BaseWidget<
           },
           {
             propertyName: "isRequired",
-            label: "Required",
-            helpText: "Makes input to the widget mandatory",
+            label: "必须",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -73,8 +69,7 @@ class RichTextEditorWidget extends BaseWidget<
           },
           {
             propertyName: "isVisible",
-            label: "Visible",
-            helpText: "Controls the visibility of the widget",
+            label: "是否可见",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -83,8 +78,7 @@ class RichTextEditorWidget extends BaseWidget<
           },
           {
             propertyName: "isDisabled",
-            label: "Disable",
-            helpText: "Disables input to this widget",
+            label: "是否禁用",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -94,10 +88,10 @@ class RichTextEditorWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Actions",
+        sectionName: "动作",
         children: [
           {
-            helpText: "Triggers an action when the text is changed",
+            helpText: "文本变化时触发",
             propertyName: "onTextChange",
             label: "onTextChange",
             controlType: "ACTION_SELECTOR",

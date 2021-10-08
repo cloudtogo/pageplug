@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 export default styled.div<{ themeMode?: EditorTheme }>`
   background-color: ${(props) => props.theme.colors.propertyPane.bg};
-  border-radius: 0px;
+  border-radius: ${(props) => props.theme.borderRadius};
   border-color: ${(props) => props.theme.colors.propertyPane.bg} !important;
   box-shadow: 12px 0px 28px rgba(0, 0, 0, 0.32) !important;
   padding: ${(props) => props.theme.spaces[5]}px

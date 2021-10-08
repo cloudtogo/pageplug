@@ -16,14 +16,14 @@ const Wrapper = styled.div<{ step: number }>`
   height: 30px;
   width: 100%;
   &:hover {
-    background: ${Colors.TUNDORA};
+    background: ${Colors.MINT_ORANGE_LIGHT};
   }
   align-items: center;
   cursor: pointer;
 `;
 
 const FieldName = styled.div`
-  color: ${Colors.ALTO};
+  color: ${Colors.MINT_BLACK};
   flex: 1;
   font-size: 12px;
   white-space: nowrap;
@@ -63,18 +63,19 @@ const PopoverContent = styled.div`
 const Container = styled.div`
   display: flex;
   flex-direction: row;
-  background-color: #2b2b2b;
+  align-items: center;
+  background-color: ${Colors.MINT_GRAY};
   padding: 11px;
 `;
 
 const PopupValue = styled.div`
-  color: ${Colors.ALTO};
+  color: ${Colors.MINT_ORANGE};
   font-size: 12px;
+  line-height: 16px;
   :nth-child(2) {
     text-align: right;
     font-size: 10px;
-    color: #777777;
-    padding-top: 3px;
+    color: ${Colors.MINT_BLACK};
     font-weight: 300;
   }
 `;

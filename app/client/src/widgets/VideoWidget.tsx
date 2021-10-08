@@ -27,13 +27,13 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "url",
-            label: "URL",
+            label: "URL地址",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter url",
+            placeholderText: "请输入视频地址",
             inputType: "TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -43,7 +43,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
                 regex: /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
                 expected: {
                   type: "Video URL",
-                  example: "https://www.youtube.com/watch?v=mzqK0QIZRLs",
+                  example: "https://www.youtube.com/watch?v=wyRNg7cXvmA",
                   autocompleteDataType: AutocompleteDataType.STRING,
                 },
               },
@@ -51,8 +51,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
           },
           {
             propertyName: "autoPlay",
-            label: "Auto Play",
-            helpText: "Video will be automatically played",
+            label: "自动播放",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -60,9 +59,8 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText: "Controls the visibility of the widget",
             propertyName: "isVisible",
-            label: "Visible",
+            label: "是否可见",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -72,10 +70,10 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Actions",
+        sectionName: "动作",
         children: [
           {
-            helpText: "Triggers an action when the video is played",
+            helpText: "视频开始播放后触发",
             propertyName: "onPlay",
             label: "onPlay",
             controlType: "ACTION_SELECTOR",
@@ -84,7 +82,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the video is paused",
+            helpText: "视频暂停后触发",
             propertyName: "onPause",
             label: "onPause",
             controlType: "ACTION_SELECTOR",
@@ -93,7 +91,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the video ends",
+            helpText: "视频播放结束后触发",
             propertyName: "onEnd",
             label: "onEnd",
             controlType: "ACTION_SELECTOR",

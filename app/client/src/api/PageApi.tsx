@@ -126,6 +126,13 @@ export type GenerateTemplatePageRequestResponse = ApiResponse & {
   };
 };
 
+export interface SyncCloudOSApiRequest {
+  dep_list: string[];
+  project_id: string;
+  org_id: string;
+  page_id: string;
+}
+
 class PageApi extends Api {
   static url = "v1/pages";
   static refactorLayoutURL = "v1/layouts/refactor";
@@ -222,6 +229,12 @@ class PageApi extends Api {
     request: UpdateWidgetNameRequest,
   ): AxiosPromise<UpdateWidgetNameResponse> {
     return Api.put(PageApi.refactorLayoutURL, request);
+  }
+
+  static syncCloudOSApi(
+    request: SyncCloudOSApiRequest,
+  ): AxiosPromise<ApiResponse> {
+    return Api.post("v1/cloudos/bindDependedActions", request);
   }
 }
 

@@ -40,7 +40,7 @@ type EditorProps = {
   currentApplicationId?: string;
   currentPageId?: string;
   currentApplicationName?: string;
-  initEditor: (applicationId: string, pageId: string) => void;
+  initEditor: (applicationId: string, pageId: string, queryParams: any) => void;
   isPublishing: boolean;
   isEditorLoading: boolean;
   isEditorInitialized: boolean;
@@ -52,6 +52,7 @@ type EditorProps = {
   lightTheme: Theme;
   resetEditorRequest: () => void;
   handlePathUpdated: (location: typeof window.location) => void;
+  inCloudOS: boolean;
 };
 
 type Props = EditorProps & RouteComponentProps<BuilderRouteParams>;
@@ -68,8 +69,10 @@ class Editor extends Component<Props> {
       this.setState({ registered: true });
     });
     const { applicationId, pageId } = this.props.match.params;
+    const queryParams = new URLSearchParams(this.props.location.search);
+    queryParams.set("inCloudOS", this.props.inCloudOS ? "true" : "false");
     if (applicationId && pageId) {
-      this.props.initEditor(applicationId, pageId);
+      this.props.initEditor(applicationId, pageId, queryParams);
     }
     this.props.handlePathUpdated(window.location);
     this.unlisten = history.listen(this.handleHistoryChange);
@@ -152,12 +155,13 @@ const mapStateToProps = (state: AppState) => ({
   creatingOnboardingDatabase: state.ui.onBoarding.showOnboardingLoader,
   lightTheme: getThemeDetails(state, ThemeMode.LIGHT),
   currentApplicationName: state.ui.applications.currentApplication?.name,
+  inCloudOS: state.entities.app.inCloudOS || false,
 });
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    initEditor: (applicationId: string, pageId: string) =>
-      dispatch(initEditor(applicationId, pageId)),
+    initEditor: (applicationId: string, pageId: string, queryParams: any) =>
+      dispatch(initEditor(applicationId, pageId, queryParams)),
     resetEditorRequest: () => dispatch(resetEditorRequest()),
     handlePathUpdated: (location: typeof window.location) =>
       dispatch(handlePathUpdated(location)),

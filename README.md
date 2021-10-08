@@ -28,7 +28,7 @@ APPSMITH_REDIS_URL="redis://10.10.13.50:63799"
 app/server
 
 // 构建 java 服务
-mvn clean compile
+mvn clean compile （执行过一次就不用再执行了，build里会执行编译）
 bash ./build.sh -DskipTests
 
 // 启动 java 服务
@@ -47,4 +47,55 @@ git fetch mirror master
 git checkout master
 git merge mirror/master
 git push origin master
-``` 
+```
+
+## 📦 打包发布
+```
+// 前端打包
+cd app/client
+yarn build-win
+docker build -t pageplug-client:demo .
+docker tag pageplug-client:demo harbor.cloud2go.cn/cloud2go/pageplug-client:demo
+docker push harbor.cloud2go.cn/cloud2go/pageplug-client:demo
+
+// 后端打包
+cd app/server
+bash ./build.sh -DskipTests
+docker build -t pageplug-server:demo .
+docker tag pageplug-server:demo harbor.cloud2go.cn/cloud2go/pageplug-server:demo
+docker push harbor.cloud2go.cn/cloud2go/pageplug-server:demo
+
+// 重启服务
+登录到安装目录下 docker-compose 修改镜像
+docker-compose down
+docker-compose up -d
+```
+
+## 🌱 系统安装脚本
+```
+install.sh
+
+// 脚本里替换默认镜像地址，安装完成后按需修改项目目录里的 docker-compose.yml 即可
+sed -i 's/index\.docker\.io\/appsmith\/appsmith-editor/harbor\.cloud2go\.cn\/cloud2go\/pageplug-client:demo/g' docker-compose.yml.sh
+sed -i 's/index\.docker\.io\/appsmith\/appsmith-server/harbor\.cloud2go\.cn\/cloud2go\/pageplug-server:demo/g' docker-compose.yml.sh
+```
+
+## 🔔 StarOS 版本注意
+```
+// StarOS 版本环境变量
+// 同步春景 API 列表
+CLOUDOS_API_BASE_URL="http://10.10.11.20:8035"
+// MOCK API 调用
+CLOUDOS_MOCK_BASE_URL="http://10.10.11.20:8899"
+// 启动开关
+CLOUDOS_IN_CLOUDOS=true
+
+🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
+StarOS 版本使用固定用户
+在开启 inCloudOS 前需要
+预先创建该账号
+
+账号：admin@cloudtogo.cn
+密码：admin123（当前部署密码）
+🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
+```

@@ -36,7 +36,17 @@ const ExplorerPluginGroup = memo((props: ExplorerPluginGroupProps) => {
   }, [props.actionConfig, props.page.pageId, params]);
 
   const plugins = useSelector((state: AppState) => {
-    return state.entities.plugins.list;
+    return state.entities.plugins.list.map((p: any) => {
+      return {
+        ...p,
+        iconLocation: p.iconLocation
+          ?.replace(
+            "https://s3.us-east-2.amazonaws.com/assets.appsmith.com",
+            "",
+          )
+          ?.replace(/\.png$/g, ".svg"),
+      };
+    });
   });
   const pluginGroups = useMemo(() => keyBy(plugins, "id"), [plugins]);
   const disableGroup =

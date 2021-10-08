@@ -49,7 +49,7 @@ const Container = (props: Props) => {
           props.datasourceStructure.error &&
           props.datasourceStructure.error.message
             ? props.datasourceStructure.error.message
-            : "No information available"}
+            : "暂无信息"}
         </EntityPlaceholder>
       );
     }

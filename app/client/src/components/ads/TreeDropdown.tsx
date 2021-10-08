@@ -43,18 +43,20 @@ type TreeDropdownProps = {
 
 const StyledMenu = styled(Menu)`
   min-width: 220px;
-  padding: 0px;
-  border-radius: 0px;
+  padding: 6px 0px;
+  border-radius: ${(props) => props.theme.borderRadius};
   background-color: ${(props) => props.theme.colors.treeDropdown.menuBg.normal};
   .${Classes.MENU} {
     min-width: 220px;
-    padding: 0px;
-    border-radius: 0px;
+    padding: 6px 0px;
+    border-radius: ${(props) => props.theme.borderRadius};
     background-color: ${(props) =>
       props.theme.colors.treeDropdown.menuBg.normal};
   }
   .${Classes.MENU_ITEM} {
-    border-radius: 0px;
+    transition: none;
+    margin: 0px 6px;
+    border-radius: ${(props) => props.theme.borderRadius};
     font-size: 14px;
     line-height: 14px;
     display: flex;
@@ -97,8 +99,8 @@ const DropdownTarget = styled.div`
   &&&& .${Classes.BUTTON} {
     width: 100%;
     box-shadow: none;
-    border-radius: 0px;
-    background-color: ${(props) => props.theme.colors.treeDropdown.targetBg};
+    border-radius: ${(props) => props.theme.borderRadius};
+    background-color: #f3f3f3;
     color: ${(props) => props.theme.colors.treeDropdown.menuText.normal};
     background-image: none;
     display: flex;

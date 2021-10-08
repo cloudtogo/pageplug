@@ -59,7 +59,8 @@ const Form = styled.form`
   height: calc(
     100vh -
       (
-        ${(props) => props.theme.smallHeaderHeight} +
+        ${(props) =>
+            props.theme.inCloudOS ? "0px" : props.theme.smallHeaderHeight} +
           ${(props) => props.theme.backBanner}
       )
   );
@@ -190,7 +191,7 @@ const Link = styled.a`
 const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
-  height: calc(100% - 126px);
+  height: calc(100% - 124px);
   position: relative;
 `;
 interface APIFormProps {
@@ -481,7 +482,7 @@ function ApiEditorForm(props: Props) {
                 }}
                 size={Size.medium}
                 tag="button"
-                text="Run"
+                text="运行"
                 type="button"
               />
             </ActionButtons>
@@ -524,7 +525,7 @@ function ApiEditorForm(props: Props) {
                 tabs={[
                   {
                     key: "headers",
-                    title: "Headers",
+                    title: "请求头",
                     count: headersCount,
                     panelComponent: (
                       <TabSection>
@@ -550,7 +551,7 @@ function ApiEditorForm(props: Props) {
                   },
                   {
                     key: "params",
-                    title: "Params",
+                    title: "参数",
                     count: paramsCount,
                     panelComponent: (
                       <TabSection>
@@ -565,7 +566,7 @@ function ApiEditorForm(props: Props) {
                   },
                   {
                     key: "body",
-                    title: "Body",
+                    title: "请求体",
                     panelComponent: allowPostBody ? (
                       <PostBodyData
                         dataTreePath={`${actionName}.config`}
@@ -573,15 +574,13 @@ function ApiEditorForm(props: Props) {
                       />
                     ) : (
                       <NoBodyMessage>
-                        <Text type={TextType.P2}>
-                          This request does not have a body
-                        </Text>
+                        <Text type={TextType.P2}>当前请求没有请求体</Text>
                       </NoBodyMessage>
                     ),
                   },
                   {
                     key: "pagination",
-                    title: "Pagination",
+                    title: "分页",
                     panelComponent: (
                       <Pagination
                         onTestClick={props.onRunClick}
@@ -592,7 +591,7 @@ function ApiEditorForm(props: Props) {
                   },
                   {
                     key: "settings",
-                    title: "Settings",
+                    title: "配置",
                     panelComponent: (
                       <SettingsWrapper>
                         <ActionSettings

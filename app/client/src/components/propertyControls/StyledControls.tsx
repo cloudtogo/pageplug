@@ -23,6 +23,7 @@ export const ControlWrapper = styled.div<ControlWrapperProps>`
   flex-direction: ${(props) =>
     props.orientation === "VERTICAL" ? "column" : "row"};
   padding: ${(props) => (props.isAction ? "0" : "4px 0 ")};
+  margin-bottom: 4px;
   & > label {
     color: ${(props) => props.theme.colors.propertyPane.label};
     margin-bottom: ${(props) => props.theme.spaces[1]}px;
@@ -42,7 +43,7 @@ export const ControlPropertyLabelContainer = styled.div`
   label {
     color: ${(props) => props.theme.colors.propertyPane.label};
     margin-bottom: ${(props) => props.theme.spaces[1]}px;
-    font-size: ${(props) => props.theme.fontSizes[3]}px;
+    font-size: ${(props) => props.theme.fontSizes[2]}px;
   }
   .underline {
     color: ${(props) => props.theme.colors.paneTextUnderline};
@@ -50,13 +51,12 @@ export const ControlPropertyLabelContainer = styled.div`
 `;
 
 export const JSToggleButton = styled.span<{ active: boolean }>`
-  margin: 4px;
-  margin-top: 0px;
+  margin-left: 4px;
   cursor: pointer;
   border-radius: 4px;
   height: auto;
-  width: 28px;
-  height: 16px;
+  width: 24px;
+  height: 14px;
   border: 0.5px solid
     ${(props) => props.theme.colors.propertyPane.activeButtonText};
   background-color: ${(props) =>
@@ -85,8 +85,8 @@ export const JSToggleButton = styled.span<{ active: boolean }>`
   }
 
   &&& svg {
-    width: 28px;
-    height: 16px;
+    width: 24px;
+    height: 14px;
     transform: scale(1.6);
 
     rect {

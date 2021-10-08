@@ -183,7 +183,7 @@ class TabControl extends BaseControl<ControlProps> {
             onClick={this.addOption}
             size={Size.medium}
             tag="button"
-            text="Add a Tab"
+            text="添加标签页"
             type="button"
           />
         </StyledPropertyPaneButtonWrapper>

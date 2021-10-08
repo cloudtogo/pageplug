@@ -45,7 +45,7 @@ function StoreAsDatasource(props: storeDataSourceProps) {
       onClick={() => dispatch(storeAsDatasource())}
     >
       <Icon name="datasource" size={IconSize.LARGE} />
-      <Text type={TextType.P1}>Save As Datasource</Text>
+      <Text type={TextType.P1}>保存为数据源</Text>
     </DatasourceIcon>
   );
 }

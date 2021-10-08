@@ -338,18 +338,18 @@ export const BACK = () => "返回";
 export const SKIP = () => "跳过";
 
 // Debugger
-export const CLICK_ON = () => "🙌 点击 ";
+export const CLICK_ON = () => "👉 点击 ";
 export const PRESS = () => "🎉 点击 ";
-export const OPEN_THE_DEBUGGER = () => "打开调试器";
-export const NO_LOGS = () => "暂无日志";
-export const NO_ERRORS = () => "一切顺利！";
+export const OPEN_THE_DEBUGGER = () => " 打开调试器";
+export const NO_LOGS = () => "💌 暂无日志";
+export const NO_ERRORS = () => "🌈 一切顺利！";
 export const DEBUGGER_ERRORS = () => "错误";
 export const DEBUGGER_LOGS = () => "日志";
 export const INSPECT_ENTITY = () => "检查实体";
 export const INSPECT_ENTITY_BLANK_STATE = () => "选择一个要检查的实体";
 export const ACTION_CONFIGURATION_UPDATED = () => "配置已更新";
 export const WIDGET_PROPERTIES_UPDATED = () => "组件属性已更新";
-export const EMPTY_RESPONSE_FIRST_HALF = () => "🙌 点击";
+export const EMPTY_RESPONSE_FIRST_HALF = () => "👉 点击";
 export const EMPTY_RESPONSE_LAST_HALF = () => "获取响应";
 export const INVALID_EMAIL = () => "请输入有效的邮箱";
 
@@ -372,14 +372,14 @@ export const UNSUPPORTED_PLUGIN_DIALOG_SUBTITLE = () =>
 export const UNSUPPORTED_PLUGIN_DIALOG_MAIN_HEADING = () => `请注意`;
 
 export const BUILD_FROM_SCRATCH_ACTION_SUBTITLE = () =>
-  "从空白画布开始创造你的应用";
+  "通过拖拉拽来创造你的应用";
 
-export const BUILD_FROM_SCRATCH_ACTION_TITLE = () => "拖拽即可构建你的应用";
+export const BUILD_FROM_SCRATCH_ACTION_TITLE = () => "空白页面";
 
-export const GENERATE_PAGE_ACTION_TITLE = () => "数据表直接生成页面";
+export const GENERATE_PAGE_ACTION_TITLE = () => "自动生成页面";
 
 export const GENERATE_PAGE_ACTION_SUBTITLE = () =>
-  "从一个简单的增删改查页面开始，创建你的自定义页面";
+  "通过数据表自动生成增删改查页面";
 
 export const GENERATE_PAGE_FORM_TITLE = () => "数据直接生成页面";
 // Actions Right pane

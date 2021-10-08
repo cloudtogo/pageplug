@@ -16,18 +16,20 @@ import { INTEGRATION_EDITOR_URL, INTEGRATION_TABS } from "constants/routes";
 import { getDatasource } from "selectors/entitiesSelector";
 
 const Container = styled.div`
-  background-color: ${(props) => props.theme.colors.queryTemplate.bg};
-  color: ${(props) => props.theme.colors.textOnDarkBG};
-  width: 250px;
+  border-radius: ${(props) => props.theme.borderRadius};
+  background-color: ${Colors.MINT_GRAY};
+  color: ${Colors.MINT_BLACK};
+  width: 150px;
 `;
 
 const TemplateType = styled.div`
-  color: ${(props) => props.theme.colors.queryTemplate.color};
+  color: ${Colors.MINT_BLACK};
+  border-radius: ${(props) => props.theme.borderRadius};
   padding: 8px;
   &:hover {
     cursor: pointer;
-    color: ${Colors.WHITE};
-    background: ${Colors.TUNDORA};
+    color: ${Colors.MINT_ORANGE};
+    background: ${Colors.MINT_ORANGE_LIGHT};
   }
 `;
 

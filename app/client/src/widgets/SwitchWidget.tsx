@@ -12,41 +12,37 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "label",
-            label: "Label",
+            label: "文本",
             controlType: "INPUT_TEXT",
-            helpText: "Displays a label next to the widget",
-            placeholderText: "Enter label text",
+            placeholderText: "请输入文本内容",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
           },
           {
             propertyName: "alignWidget",
-            helpText: "Sets the alignment of the widget",
-            label: "Alignment",
+            label: "对齐方式",
             controlType: "DROP_DOWN",
             isBindProperty: true,
             isTriggerProperty: false,
             options: [
               {
-                label: "Left",
+                label: "左对齐",
                 value: "LEFT",
               },
               {
-                label: "Right",
+                label: "右对齐",
                 value: "RIGHT",
               },
             ],
           },
           {
             propertyName: "defaultSwitchState",
-            label: "Default Selected",
-            helpText:
-              "On / Off the Switch by default. Changes to the default selection update the widget state",
+            label: "默认打开",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -55,8 +51,7 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
           },
           {
             propertyName: "isVisible",
-            label: "Visible",
-            helpText: "Controls the visibility of the widget",
+            label: "是否可见",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -65,9 +60,8 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
           },
           {
             propertyName: "isDisabled",
-            label: "Disabled",
+            label: "是否禁用",
             controlType: "SWITCH",
-            helpText: "Disables input to this widget",
             isJSConvertible: true,
             isBindProperty: true,
             isTriggerProperty: false,
@@ -76,10 +70,10 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Actions",
+        sectionName: "动作",
         children: [
           {
-            helpText: "Triggers an action when the switch state is changed",
+            helpText: "开关变化时触发",
             propertyName: "onChange",
             label: "onChange",
             controlType: "ACTION_SELECTOR",

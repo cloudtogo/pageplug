@@ -1,17 +1,17 @@
 {
   "form": [
     {
-      "sectionName": "Connection",
+      "sectionName": "连接",
       "children": [
         {
-          "label": "Use Mongo Connection String URI Key",
+          "label": "使用 Mongo Connection String URI Key",
           "configProperty": "datasourceConfiguration.properties[0].key",
           "controlType": "INPUT_TEXT",
           "initialValue": "Use Mongo Connection String URI",
           "hidden": true
         },
         {
-          "label": "Use Mongo Connection String URI",
+          "label": "使用 Mongo Connection String URI",
           "configProperty": "datasourceConfiguration.properties[0].value",
           "controlType": "DROP_DOWN",
           "initialValue": "No",
@@ -45,17 +45,17 @@
           }
         },
         {
-          "label": "Connection Mode",
+          "label": "连接模式",
           "configProperty": "datasourceConfiguration.connection.mode",
           "controlType": "DROP_DOWN",
           "initialValue": "READ_WRITE",
           "options": [
             {
-              "label": "Read Only",
+              "label": "只读",
               "value": "READ_ONLY"
             },
             {
-              "label": "Read / Write",
+              "label": "读 / 写",
               "value": "READ_WRITE"
             }
           ],
@@ -66,17 +66,17 @@
           }
         },
         {
-          "label": "Connection Type",
+          "label": "连接类型",
           "configProperty": "datasourceConfiguration.connection.type",
           "initialValue": "DIRECT",
           "controlType": "DROP_DOWN",
           "options": [
             {
-              "label": "Direct Connection",
+              "label": "直连",
               "value": "DIRECT"
             },
             {
-              "label": "Replica set",
+              "label": "副本集",
               "value": "REPLICA_SET"
             }
           ],
@@ -90,7 +90,7 @@
           "sectionName": null,
           "children": [
             {
-              "label": "Host Address",
+              "label": "主机地址",
               "configProperty": "datasourceConfiguration.endpoints[*].host",
               "controlType": "KEYVALUE_ARRAY",
               "validationMessage": "Please enter a valid host",
@@ -103,7 +103,7 @@
               }
             },
             {
-              "label": "Port",
+              "label": "端口",
               "configProperty": "datasourceConfiguration.endpoints[*].port",
               "dataType": "NUMBER",
               "controlType": "KEYVALUE_ARRAY",
@@ -116,8 +116,8 @@
           ]
         },
         {
-          "label": "Default Database Name",
-          "placeholderText": "(Optional)",
+          "label": "默认数据库名称",
+          "placeholderText": "（选填）",
           "configProperty": "datasourceConfiguration.connection.defaultDatabaseName",
           "controlType": "INPUT_TEXT",
           "hidden": {
@@ -129,7 +129,7 @@
       ]
     },
     {
-      "sectionName": "Authentication",
+      "sectionName": "身份认证",
       "hidden": {
         "path": "datasourceConfiguration.properties[0].value",
         "comparison": "EQUALS",
@@ -137,14 +137,14 @@
       },
       "children": [
         {
-          "label": "Database Name",
+          "label": "数据库名称",
           "configProperty": "datasourceConfiguration.authentication.databaseName",
           "controlType": "INPUT_TEXT",
-          "placeholderText": "Database name",
+          "placeholderText": "数据库名称",
           "initialValue": "admin"
         },
         {
-          "label": "Authentication Type",
+          "label": "认证类型",
           "configProperty": "datasourceConfiguration.authentication.authType",
           "controlType": "DROP_DOWN",
           "initialValue": "SCRAM_SHA_1",
@@ -167,17 +167,17 @@
           "sectionName": null,
           "children": [
             {
-              "label": "Username",
+              "label": "用户名",
               "configProperty": "datasourceConfiguration.authentication.username",
               "controlType": "INPUT_TEXT",
-              "placeholderText": "Username"
+              "placeholderText": "用户名"
             },
             {
-              "label": "Password",
+              "label": "密码",
               "configProperty": "datasourceConfiguration.authentication.password",
               "dataType": "PASSWORD",
               "controlType": "INPUT_TEXT",
-              "placeholderText": "Password",
+              "placeholderText": "密码",
               "encrypted": true
               }
           ]
@@ -185,7 +185,7 @@
       ]
     },
     {
-      "sectionName": "SSL (optional)",
+      "sectionName": "SSL（选填）",
       "hidden": {
         "path": "datasourceConfiguration.properties[0].value",
         "comparison": "EQUALS",
@@ -193,21 +193,21 @@
       },
       "children": [
         {
-          "label": "SSL Mode",
+          "label": "SSL 模式",
           "configProperty": "datasourceConfiguration.connection.ssl.authType",
           "controlType": "DROP_DOWN",
           "initialValue": "DEFAULT",
           "options": [
             {
-              "label": "Default",
+              "label": "默认",
               "value": "DEFAULT"
             },
             {
-              "label": "Enabled",
+              "label": "开启",
               "value": "ENABLED"
             },
             {
-              "label": "Disabled",
+              "label": "关闭",
               "value": "DISABLED"
             }
           ]

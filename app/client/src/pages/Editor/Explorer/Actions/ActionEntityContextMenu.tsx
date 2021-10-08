@@ -72,12 +72,12 @@ export function ActionEntityContextMenu(props: EntityContextMenuProps) {
         {
           value: "rename",
           onSelect: editActionName,
-          label: "Edit Name",
+          label: "编辑名称",
         },
         {
           value: "copy",
           onSelect: noop,
-          label: "Copy to page",
+          label: "复制到页面",
           children: menuPages.map((page) => {
             return {
               ...page,
@@ -88,7 +88,7 @@ export function ActionEntityContextMenu(props: EntityContextMenuProps) {
         {
           value: "move",
           onSelect: noop,
-          label: "Move to page",
+          label: "移动到页面",
           children:
             menuPages.length > 1
               ? menuPages
@@ -100,11 +100,11 @@ export function ActionEntityContextMenu(props: EntityContextMenuProps) {
                         moveActionToPage(props.id, props.name, page.id),
                     };
                   })
-              : [{ value: "No Pages", onSelect: noop, label: "No Pages" }],
+              : [{ value: "No Pages", onSelect: noop, label: "暂无页面" }],
         },
         {
           value: "delete",
-          label: "Delete",
+          label: "删除",
           intent: "danger",
           onSelect: () =>
             deleteActionFromPage(props.id, props.name, () => {
