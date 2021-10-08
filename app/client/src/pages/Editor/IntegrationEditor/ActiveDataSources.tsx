@@ -14,6 +14,7 @@ import { thinScrollbar } from "constants/DefaultTheme";
 import { Toaster } from "../../../components/ads/Toast";
 import { Variant } from "../../../components/ads/common";
 import { DEFAULT_API_ACTION_CONFIG } from "../../../constants/ApiEditorConstants";
+import AddDatasource from "assets/images/undraw_add_connection.svg";
 
 const QueryHomePage = styled.div`
   ${thinScrollbar};
@@ -22,7 +23,10 @@ const QueryHomePage = styled.div`
   display: flex;
   flex-direction: column;
   height: calc(
-    100vh - ${(props) => props.theme.integrationsPageUnusableHeight}
+    100vh -
+      ${(props) =>
+        props.theme.integrationsPageUnusableHeight +
+        (props.theme.inCloudOS ? " + 21px" : "")}
   );
 
   .sectionHeader {
@@ -35,15 +39,36 @@ const QueryHomePage = styled.div`
 const CreateButton = styled(Button)`
   display: inline;
   padding: 4px 8px;
+  margin-left: 20px;
 `;
 
 const EmptyActiveDatasource = styled.div`
   height: calc(
-    100vh - ${(props) => props.theme.integrationsPageUnusableHeight}
+    100vh -
+      ${(props) =>
+        props.theme.integrationsPageUnusableHeight +
+        (props.theme.inCloudOS ? " + 21px" : "")}
   );
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const EmptyContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  & img {
+    height: 300px;
+    opacity: 0.5;
+  }
+
+  & p {
+    color: #888;
+    margin-top: 50px;
+    font-size: 16px;
+  }
 `;
 
 type ActiveDataSourceProps = {
@@ -74,7 +99,7 @@ class ActiveDataSources extends React.Component<ActiveDataSourceProps> {
         !dataSource.datasourceConfiguration.url)
     ) {
       Toaster.show({
-        text: "Unable to create API. Try adding a url to the datasource",
+        text: "API创建失败，请填写数据源地址",
         variant: Variant.danger,
       });
       return;
@@ -119,16 +144,19 @@ class ActiveDataSources extends React.Component<ActiveDataSourceProps> {
     if (dataSources.length === 0) {
       return (
         <EmptyActiveDatasource>
-          <Text cypressSelector="t--empty-datasource-list" type={TextType.H3}>
-            No active datasources found.{" "}
-            <CreateButton
-              category={Category.primary}
-              onClick={this.props.onCreateNew}
-              size={Size.medium}
-              tag="button"
-              text="Create New"
-            />
-          </Text>
+          <EmptyContent>
+            <img src={AddDatasource} />
+            <p>
+              暂无数据源
+              <CreateButton
+                category={Category.primary}
+                onClick={this.props.onCreateNew}
+                size={Size.large}
+                tag="button"
+                text="添加数据源"
+              />
+            </p>
+          </EmptyContent>
         </EmptyActiveDatasource>
       );
     }

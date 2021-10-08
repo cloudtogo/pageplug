@@ -41,38 +41,35 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "label",
-            helpText: "Sets the label of a menu",
-            label: "Label",
+            helpText: "设置菜单文本",
+            label: "文本",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter label",
+            placeholderText: "输入文本内容",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
           },
           {
             propertyName: "backgroundColor",
-            helpText: "Sets the background color of the widget",
-            label: "Background color",
+            label: "背景颜色",
             controlType: "COLOR_PICKER",
             isBindProperty: false,
             isTriggerProperty: false,
           },
           {
             propertyName: "textColor",
-            helpText: "Sets the text color of the widget",
-            label: "Text color",
+            label: "文本颜色",
             controlType: "COLOR_PICKER",
             isBindProperty: false,
             isTriggerProperty: false,
           },
           {
             propertyName: "isDisabled",
-            helpText: "Disables input to the widget",
-            label: "Disabled",
+            label: "是否禁用",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -81,8 +78,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
           },
           {
             propertyName: "isVisible",
-            helpText: "Controls the visibility of the widget",
-            label: "Visible",
+            label: "是否可见",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -91,8 +87,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
           },
           {
             propertyName: "isCompact",
-            helpText: "Decides if menu items will consume lesser space",
-            label: "Compact",
+            label: "紧凑模式",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -102,10 +97,10 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Menu Items",
+        sectionName: "菜单项",
         children: [
           {
-            helpText: "Menu items",
+            helpText: "菜单项",
             propertyName: "menuItems",
             controlType: "MENU_ITEMS",
             label: "",
@@ -129,38 +124,35 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
               },
               children: [
                 {
-                  sectionName: "General",
+                  sectionName: "属性",
                   children: [
                     {
                       propertyName: "label",
-                      helpText: "Sets the label of a menu item",
-                      label: "Label",
+                      helpText: "菜单项文本",
+                      label: "文本",
                       controlType: "INPUT_TEXT",
-                      placeholderText: "Enter label",
+                      placeholderText: "输入文本",
                       isBindProperty: true,
                       isTriggerProperty: false,
                       validation: { type: ValidationTypes.TEXT },
                     },
                     {
                       propertyName: "backgroundColor",
-                      helpText: "Sets the background color of a menu item",
-                      label: "Background color",
+                      label: "背景颜色",
                       controlType: "COLOR_PICKER",
                       isBindProperty: false,
                       isTriggerProperty: false,
                     },
                     {
                       propertyName: "textColor",
-                      helpText: "Sets the text color of a menu item",
-                      label: "Text color",
+                      label: "文本颜色",
                       controlType: "COLOR_PICKER",
                       isBindProperty: false,
                       isTriggerProperty: false,
                     },
                     {
                       propertyName: "isDisabled",
-                      helpText: "Disables input to the widget",
-                      label: "Disabled",
+                      label: "是否禁用",
                       controlType: "SWITCH",
                       isJSConvertible: true,
                       isBindProperty: true,
@@ -169,8 +161,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                     },
                     {
                       propertyName: "isVisible",
-                      helpText: "Controls the visibility of the widget",
-                      label: "Visible",
+                      label: "是否可见",
                       controlType: "SWITCH",
                       isJSConvertible: true,
                       isBindProperty: true,
@@ -180,12 +171,12 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                   ],
                 },
                 {
-                  sectionName: "Icon Options",
+                  sectionName: "图标配置",
                   children: [
                     {
                       propertyName: "iconName",
-                      label: "Icon",
-                      helpText: "Sets the icon to be used for a menu item",
+                      label: "图标",
+                      helpText: "菜单项图标",
                       controlType: "ICON_SELECT",
                       isBindProperty: false,
                       isTriggerProperty: false,
@@ -193,16 +184,16 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                     },
                     {
                       propertyName: "iconColor",
-                      helpText: "Sets the icon color of a menu item",
-                      label: "Icon color",
+                      helpText: "菜单项图标颜色",
+                      label: "图标颜色",
                       controlType: "COLOR_PICKER",
                       isBindProperty: false,
                       isTriggerProperty: false,
                     },
                     {
                       propertyName: "iconAlign",
-                      label: "Icon alignment",
-                      helpText: "Sets the icon alignment of a menu item",
+                      label: "图标对齐",
+                      helpText: "菜单项图标对齐方式",
                       controlType: "ICON_ALIGN",
                       isBindProperty: false,
                       isTriggerProperty: false,
@@ -211,11 +202,10 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                   ],
                 },
                 {
-                  sectionName: "Actions",
+                  sectionName: "动作",
                   children: [
                     {
-                      helpText:
-                        "Triggers an action when the menu item is clicked",
+                      helpText: "点击菜单项时触发",
                       propertyName: "onClick",
                       label: "onClick",
                       controlType: "ACTION_SELECTOR",
@@ -231,12 +221,12 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Icon Options",
+        sectionName: "按钮图标",
         children: [
           {
             propertyName: "iconName",
-            label: "Icon",
-            helpText: "Sets the icon to be used in the menu button",
+            label: "图标",
+            helpText: "菜单按钮图标",
             controlType: "ICON_SELECT",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -244,16 +234,16 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
           },
           {
             propertyName: "iconColor",
-            helpText: "Sets the icon color of a menu item",
-            label: "Icon color",
+            helpText: "菜单按钮图标颜色",
+            label: "图标颜色",
             controlType: "COLOR_PICKER",
             isBindProperty: false,
             isTriggerProperty: false,
           },
           {
             propertyName: "iconAlign",
-            label: "Icon alignment",
-            helpText: "Sets the icon alignment of a menu item",
+            label: "图标对齐",
+            helpText: "菜单按钮图标对齐方式",
             controlType: "ICON_ALIGN",
             isBindProperty: false,
             isTriggerProperty: false,

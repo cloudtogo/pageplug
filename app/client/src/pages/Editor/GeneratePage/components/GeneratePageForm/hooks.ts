@@ -7,7 +7,7 @@ import { CONNECT_NEW_DATASOURCE_OPTION_ID } from "../DataSourceOption";
 export const FAKE_DATASOURCE_OPTION = {
   CONNECT_NEW_DATASOURCE_OPTION: {
     id: CONNECT_NEW_DATASOURCE_OPTION_ID,
-    label: "Connect New Datasource",
+    label: "新建数据源连接",
     value: "Connect New Datasource",
     data: {
       pluginId: "",

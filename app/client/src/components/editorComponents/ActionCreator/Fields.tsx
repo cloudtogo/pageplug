@@ -24,13 +24,13 @@ const ALERT_STYLE_OPTIONS = [
 ];
 
 const RESET_CHILDREN_OPTIONS = [
-  { label: "Yes", value: "true", id: "true" },
-  { label: "No", value: "false", id: "false" },
+  { label: "是", value: "true", id: "true" },
+  { label: "否", value: "false", id: "false" },
 ];
 
 const FILE_TYPE_OPTIONS = [
-  { label: "Select file type (optional)", value: "", id: "" },
-  { label: "Plain text", value: "'text/plain'", id: "text/plain" },
+  { label: "选择文件类型 (可选)", value: "", id: "" },
+  { label: "纯文本", value: "'text/plain'", id: "text/plain" },
   { label: "HTML", value: "'text/html'", id: "text/html" },
   { label: "CSV", value: "'text/csv'", id: "text/csv" },
   { label: "JSON", value: "'application/json'", id: "application/json" },
@@ -41,12 +41,12 @@ const FILE_TYPE_OPTIONS = [
 
 const NAVIGATION_TARGET_FIELD_OPTIONS = [
   {
-    label: "Same window",
+    label: "当前窗口",
     value: `'${NavigationTargetType.SAME_WINDOW}'`,
     id: NavigationTargetType.SAME_WINDOW,
   },
   {
-    label: "New window",
+    label: "新窗口",
     value: `'${NavigationTargetType.NEW_WINDOW}'`,
     id: NavigationTargetType.NEW_WINDOW,
   },
@@ -559,7 +559,7 @@ function renderField(props: {
     case FieldType.RESET_CHILDREN_FIELD:
     case FieldType.WIDGET_NAME_FIELD:
       let label = "";
-      let defaultText = "Select Action";
+      let defaultText = "选择动作";
       let options = props.integrationOptionTree;
       let selectedLabelModifier = undefined;
       let displayValue = undefined;
@@ -601,37 +601,37 @@ function renderField(props: {
         fieldType === FieldType.SHOW_MODAL_FIELD ||
         fieldType === FieldType.CLOSE_MODAL_FIELD
       ) {
-        label = "Modal Name";
+        label = "弹窗名称";
         options = props.modalDropdownList;
-        defaultText = "Select Modal";
+        defaultText = "选择弹窗";
       }
       if (fieldType === FieldType.RESET_CHILDREN_FIELD) {
-        label = "Reset Children";
+        label = "重置内容";
         options = RESET_CHILDREN_OPTIONS;
         defaultText = "false";
       }
       if (fieldType === FieldType.WIDGET_NAME_FIELD) {
-        label = "Widget";
+        label = "组件";
         options = props.widgetOptionTree;
-        defaultText = "Select Widget";
+        defaultText = "选择组件";
       }
       if (fieldType === FieldType.PAGE_SELECTOR_FIELD) {
-        label = "Page Name";
+        label = "页面名称";
         options = props.pageDropdownOptions;
-        defaultText = "Select Page";
+        defaultText = "选择页面";
       }
       if (fieldType === FieldType.ALERT_TYPE_SELECTOR_FIELD) {
-        label = "Type";
+        label = "提示类型";
         options = ALERT_STYLE_OPTIONS;
-        defaultText = "Select type";
+        defaultText = "选择提示类型";
       }
       if (fieldType === FieldType.DOWNLOAD_FILE_TYPE_FIELD) {
-        label = "Type";
+        label = "文件类型";
         options = FILE_TYPE_OPTIONS;
-        defaultText = "Select file type (optional)";
+        defaultText = "选择文件类型 (可选)";
       }
       if (fieldType === FieldType.NAVIGATION_TARGET_FIELD) {
-        label = "Target";
+        label = "打开目标";
         options = NAVIGATION_TARGET_FIELD_OPTIONS;
         defaultText = NAVIGATION_TARGET_FIELD_OPTIONS[0].label;
       }
@@ -664,7 +664,7 @@ function renderField(props: {
           props.onValueChange(finalValueToSet);
         },
         value: props.value,
-        defaultText: "Select Action",
+        defaultText: "选择动作",
       });
       break;
     case FieldType.ALERT_TEXT_FIELD:
@@ -677,21 +677,21 @@ function renderField(props: {
     case FieldType.COPY_TEXT_FIELD:
       let fieldLabel = "";
       if (fieldType === FieldType.ALERT_TEXT_FIELD) {
-        fieldLabel = "Message";
+        fieldLabel = "提示消息";
       } else if (fieldType === FieldType.URL_FIELD) {
-        fieldLabel = "Page Name or URL";
+        fieldLabel = "页面名称或者 URL";
       } else if (fieldType === FieldType.KEY_TEXT_FIELD) {
-        fieldLabel = "Key";
+        fieldLabel = "键";
       } else if (fieldType === FieldType.VALUE_TEXT_FIELD) {
-        fieldLabel = "Value";
+        fieldLabel = "值";
       } else if (fieldType === FieldType.QUERY_PARAMS_FIELD) {
-        fieldLabel = "Query Params";
+        fieldLabel = "查询参数";
       } else if (fieldType === FieldType.DOWNLOAD_DATA_FIELD) {
-        fieldLabel = "Data to download";
+        fieldLabel = "下载数据";
       } else if (fieldType === FieldType.DOWNLOAD_FILE_NAME_FIELD) {
-        fieldLabel = "File name with extension";
+        fieldLabel = "完整文件名（带扩展名）";
       } else if (fieldType === FieldType.COPY_TEXT_FIELD) {
-        fieldLabel = "Text to be copied to clipboard";
+        fieldLabel = "需要拷贝的文本";
       }
       viewElement = (view as (props: TextViewProps) => JSX.Element)({
         label: fieldLabel,

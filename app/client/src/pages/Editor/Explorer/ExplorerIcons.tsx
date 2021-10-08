@@ -156,6 +156,7 @@ const StyledTag = styled.div<{ color: string }>`
   font-weight: 700;
   color: #fff;
   background: ${(props) => props.color};
+  border-radius: ${(props) => props.theme.borderRadius};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -165,7 +166,7 @@ const StyledTag = styled.div<{ color: string }>`
 export function MethodTag(props: { type: typeof HTTP_METHODS[number] }) {
   return (
     <StyledTag color={HTTP_METHOD_COLOR_MAP[props.type]}>
-      {props.type}
+      {props.type === "DELETE" ? "DEL" : props.type}
     </StyledTag>
   );
 }

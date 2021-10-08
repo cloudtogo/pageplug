@@ -35,27 +35,27 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "canOutsideClickClose",
-            label: "Quick Dismiss",
-            helpText: "Allows dismissing the modal when user taps outside",
+            label: "点击背景关闭",
+            helpText: "点击背景时关闭弹窗",
             controlType: "SWITCH",
             isBindProperty: false,
             isTriggerProperty: false,
           },
           {
             propertyName: "size",
-            label: "Modal Type",
+            label: "弹窗大小",
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "Form Modal",
+                label: "大弹窗",
                 value: "MODAL_LARGE",
               },
               {
-                label: "Alert Modal",
+                label: "小弹窗",
                 value: "MODAL_SMALL",
               },
             ],
@@ -64,7 +64,7 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
           },
           {
             propertyName: "shouldScrollContents",
-            label: "Scroll Contents",
+            label: "内容滚动",
             controlType: "SWITCH",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -72,10 +72,10 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Actions",
+        sectionName: "动作",
         children: [
           {
-            helpText: "Triggers an action when the modal is closed",
+            helpText: "弹窗关闭后触发",
             propertyName: "onClose",
             label: "onClose",
             controlType: "ACTION_SELECTOR",

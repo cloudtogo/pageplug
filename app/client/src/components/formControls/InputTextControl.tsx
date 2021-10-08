@@ -47,7 +47,7 @@ export function InputText(props: {
         {encrypted && (
           <>
             <FormIcons.LOCK_ICON height={12} keepColors width={12} />
-            <StyledInfo>Encrypted</StyledInfo>
+            <StyledInfo>已加密</StyledInfo>
           </>
         )}
         {subtitle && (

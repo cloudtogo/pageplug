@@ -209,7 +209,10 @@ export const getPluginImages = createSelector(getPlugins, (plugins) => {
   const pluginImages: Record<string, string> = {};
 
   plugins.forEach((plugin) => {
-    pluginImages[plugin.id] = plugin?.iconLocation ?? ImageAlt;
+    pluginImages[plugin.id] =
+      plugin?.iconLocation
+        ?.replace("https://s3.us-east-2.amazonaws.com/assets.appsmith.com", "")
+        ?.replace(/\.png$/g, ".svg") ?? ImageAlt;
   });
 
   return pluginImages;

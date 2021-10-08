@@ -70,7 +70,7 @@ const Info = styled.div`
 
 function WidgetSidebar(props: IPanelProps) {
   const cards = useSelector(getWidgetCards);
-  const [filteredCards, setFilteredCards] = useState(cards);
+  const [filteredCards, setFilteredCards] = useState(cards.filter((c) => c.widgetCardName !== "地图"));
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const filterCards = (keyword: string) => {
     let filteredCards = cards;

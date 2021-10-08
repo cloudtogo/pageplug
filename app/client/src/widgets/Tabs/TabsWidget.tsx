@@ -28,7 +28,7 @@ export function selectedTabValidation(
   return {
     isValid: tabNames.includes(value as string),
     parsed: value,
-    message: `Tab name ${value} does not exist`,
+    message: `标签页 ${value} 不存在`,
   };
 }
 class TabsWidget extends BaseWidget<
@@ -38,12 +38,12 @@ class TabsWidget extends BaseWidget<
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "tabsObj",
             isJSConvertible: false,
-            label: "Tabs",
+            label: "标签页列表",
             controlType: "TABS_INPUT",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -65,12 +65,12 @@ class TabsWidget extends BaseWidget<
               },
               children: [
                 {
-                  sectionName: "Tab Control",
+                  sectionName: "标签页配置",
                   children: [
                     {
                       propertyName: "isVisible",
-                      label: "Visible",
-                      helpText: "Controls the visibility of the tab",
+                      label: "是否可见",
+                      helpText: "标签页是否可见",
                       controlType: "SWITCH",
                       useValidationMessage: true,
                       isJSConvertible: true,
@@ -85,9 +85,8 @@ class TabsWidget extends BaseWidget<
           },
           {
             propertyName: "defaultTab",
-            helpText: "Selects a tab name specified by default",
-            placeholderText: "Enter tab name",
-            label: "Default Tab",
+            placeholderText: "输入标签页名称",
+            label: "默认标签页",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -106,24 +105,22 @@ class TabsWidget extends BaseWidget<
           },
           {
             propertyName: "shouldShowTabs",
-            helpText:
-              "Hides the tabs so that different widgets can be displayed based on the default tab",
-            label: "Show Tabs",
+            helpText: "隐藏标签头后，标签页不可切换，只展示默认标签页",
+            label: "显示标签头",
             controlType: "SWITCH",
             isBindProperty: false,
             isTriggerProperty: false,
           },
           {
             propertyName: "shouldScrollContents",
-            label: "Scroll Contents",
+            label: "滚动内容",
             controlType: "SWITCH",
             isBindProperty: false,
             isTriggerProperty: false,
           },
           {
             propertyName: "isVisible",
-            label: "Visible",
-            helpText: "Controls the visibility of the widget",
+            label: "是否可见",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -133,10 +130,10 @@ class TabsWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Actions",
+        sectionName: "动作",
         children: [
           {
-            helpText: "Triggers an action when the button is clicked",
+            helpText: "选中标签页时触发",
             propertyName: "onTabSelected",
             label: "onTabSelected",
             controlType: "ACTION_SELECTOR",

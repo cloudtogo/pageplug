@@ -26,32 +26,32 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             helpText: "Changes the type of data captured in the input",
             propertyName: "inputType",
-            label: "Data Type",
+            label: "输入类型",
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "Text",
+                label: "文本",
                 value: "TEXT",
               },
               {
-                label: "Number",
+                label: "数字",
                 value: "NUMBER",
               },
               {
-                label: "Password",
+                label: "密码",
                 value: "PASSWORD",
               },
               {
-                label: "Email",
+                label: "邮件",
                 value: "EMAIL",
               },
               {
-                label: "Currency",
+                label: "货币",
                 value: "CURRENCY",
               },
             ],
@@ -60,8 +60,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
           },
           {
             propertyName: "allowCurrencyChange",
-            label: "Allow currency change",
-            helpText: "Search by currency or country",
+            label: "允许修改货币类型",
             controlType: "SWITCH",
             isJSConvertible: false,
             isBindProperty: true,
@@ -73,13 +72,13 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             dependencies: ["inputType"],
           },
           {
-            helpText: "Changes the type of currency",
+            helpText: "修改货币类型",
             propertyName: "currencyCountryCode",
-            label: "Currency",
+            label: "货币",
             enableSearch: true,
             dropdownHeight: "195px",
             controlType: "DROP_DOWN",
-            placeholderText: "Search by code or name",
+            placeholderText: "通过代号或名称搜索",
             options: getCurrencyOptions(),
             hidden: (props: InputWidgetProps) => {
               return props.inputType !== InputTypes.CURRENCY;
@@ -89,9 +88,9 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             isTriggerProperty: false,
           },
           {
-            helpText: "No. of decimals in currency input",
+            helpText: "货币精确小数位",
             propertyName: "decimalsInCurrency",
-            label: "Decimals",
+            label: "小数位",
             controlType: "DROP_DOWN",
             options: [
               {
@@ -111,31 +110,27 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             isTriggerProperty: false,
           },
           {
-            helpText:
-              "Sets the default text of the widget. The text is updated if the default text changes",
             propertyName: "defaultText",
-            label: "Default Text",
+            label: "默认文本",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter default text",
+            placeholderText: "输入默认文本",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Sets a placeholder text for the input",
             propertyName: "placeholderText",
-            label: "Placeholder",
+            label: "占位文本",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter placeholder text",
+            placeholderText: "输入占位文本",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText:
-              "Adds a validation to the input which displays an error on failure",
+            helpText: "校验输入内容的正则表达式",
             propertyName: "regex",
-            label: "Regex",
+            label: "正则表达式",
             controlType: "INPUT_TEXT",
             placeholderText: "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$",
             inputType: "TEXT",
@@ -144,12 +139,11 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.REGEX },
           },
           {
-            helpText:
-              "Displays the error message if the regex validation fails",
+            helpText: "正则表达式校验失败后提示的信息",
             propertyName: "errorMessage",
-            label: "Error Message",
+            label: "错误提示",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter error message",
+            placeholderText: "输入错误提示",
             inputType: "TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -157,8 +151,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
           },
           {
             propertyName: "isRequired",
-            label: "Required",
-            helpText: "Makes input to the widget mandatory",
+            label: "必须",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -166,9 +159,8 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText: "Controls the visibility of the widget",
             propertyName: "isVisible",
-            label: "Visible",
+            label: "是否可见",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -176,9 +168,8 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText: "Disables input to this widget",
             propertyName: "isDisabled",
-            label: "Disabled",
+            label: "是否禁用",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -186,9 +177,9 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText: "Clears the input value after submit",
+            helpText: "提交后清空输入框",
             propertyName: "resetOnSubmit",
-            label: "Reset on submit",
+            label: "提交后重置",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -198,10 +189,10 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Actions",
+        sectionName: "动作",
         children: [
           {
-            helpText: "Triggers an action when the text is changed",
+            helpText: "输入内容修改后触发",
             propertyName: "onTextChanged",
             label: "onTextChanged",
             controlType: "ACTION_SELECTOR",
@@ -210,8 +201,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText:
-              "Triggers an action on submit (when the enter key is pressed)",
+            helpText: "提交后触发 (按了回车键)",
             propertyName: "onSubmit",
             label: "onSubmit",
             controlType: "ACTION_SELECTOR",

@@ -47,15 +47,14 @@ class MultiSelectWidget extends BaseWidget<
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
-            helpText:
-              "Allows users to select multiple options. Values must be unique",
+            helpText: "多选列表，可选项值必须唯一",
             propertyName: "options",
-            label: "Options",
+            label: "可选项",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter option value",
+            placeholderText: "输入可选项列表",
             isBindProperty: true,
             isTriggerProperty: false,
             isJSConvertible: false,
@@ -92,11 +91,11 @@ class MultiSelectWidget extends BaseWidget<
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText: "Selects the option with value by default",
+            helpText: "默认选中项",
             propertyName: "defaultOptionValue",
-            label: "Default Value",
+            label: "默认值",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter option value",
+            placeholderText: "输入默认值",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: {
@@ -112,19 +111,17 @@ class MultiSelectWidget extends BaseWidget<
             },
           },
           {
-            helpText: "Input Place Holder",
             propertyName: "placeholderText",
-            label: "Placeholder",
+            label: "占位文本",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter placeholder text",
+            placeholderText: "请输入占位文本",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
           },
           {
             propertyName: "isRequired",
-            label: "Required",
-            helpText: "Makes input to the widget mandatory",
+            label: "必须",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -132,9 +129,8 @@ class MultiSelectWidget extends BaseWidget<
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText: "Controls the visibility of the widget",
             propertyName: "isVisible",
-            label: "Visible",
+            label: "是否可见",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -143,8 +139,7 @@ class MultiSelectWidget extends BaseWidget<
           },
           {
             propertyName: "isDisabled",
-            label: "Disabled",
-            helpText: "Disables input to this widget",
+            label: "是否禁用",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -154,10 +149,10 @@ class MultiSelectWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Actions",
+        sectionName: "动作",
         children: [
           {
-            helpText: "Triggers an action when a user selects an option",
+            helpText: "选中项变化时触发",
             propertyName: "onOptionChange",
             label: "onOptionChange",
             controlType: "ACTION_SELECTOR",

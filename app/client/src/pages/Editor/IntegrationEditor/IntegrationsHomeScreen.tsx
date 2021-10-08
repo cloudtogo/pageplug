@@ -36,8 +36,20 @@ const ApiHomePage = styled.div`
   font-size: 20px;
   padding: 20px 20px 0 20px;
   /* margin-left: 10px; */
-  min-height: calc(100vh - 66px);
-  max-height: calc(100vh - 66px);
+  min-height: calc(
+    100vh - 66px
+      ${(props) =>
+        props.theme.inCloudOS
+          ? " + 1px + " + props.theme.smallHeaderHeight
+          : ""}
+  );
+  max-height: calc(
+    100vh - 66px
+      ${(props) =>
+        props.theme.inCloudOS
+          ? " + 1px + " + props.theme.smallHeaderHeight
+          : ""}
+  );
   overflow: hidden !important;
   .closeBtn {
     position: absolute;
@@ -74,7 +86,10 @@ const NewIntegrationsContainer = styled.div`
   scrollbar-width: thin;
   overflow: auto;
   max-height: calc(
-    100vh - ${(props) => props.theme.integrationsPageUnusableHeight}
+    100vh -
+      ${(props) =>
+        props.theme.integrationsPageUnusableHeight +
+        (props.theme.inCloudOS ? " + 21px" : "")}
   );
   /* padding-bottom: 300px; */
   /* margin-top: 16px; */
@@ -113,12 +128,12 @@ type Props = IntegrationsHomeScreenProps &
 const PRIMARY_MENU: TabProp[] = [
   {
     key: "ACTIVE",
-    title: "已连接",
+    title: "已保存",
     panelComponent: <div />,
   },
   {
     key: "CREATE_NEW",
-    title: "新建",
+    title: "添加",
     panelComponent: <div />,
     icon: "plus",
     iconSize: IconSize.XS,

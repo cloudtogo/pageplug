@@ -135,7 +135,7 @@ export default function ApiRightPane(props: any) {
           tabs={[
             {
               key: "datasources",
-              title: "Datasources",
+              title: "数据源",
               panelComponent:
                 props.datasources && props.datasources.length > 0 ? (
                   <DataSourceListWrapper
@@ -202,7 +202,7 @@ export default function ApiRightPane(props: any) {
             },
             {
               key: "Connections",
-              title: "Connections",
+              title: "连接",
               panelComponent: (
                 <SomeWrapper>
                   <ActionRightPane

@@ -5,18 +5,25 @@ import com.appsmith.server.authentication.handlers.AccessDeniedHandler;
 import com.appsmith.server.authentication.handlers.CustomServerOAuth2AuthorizationRequestResolver;
 import com.appsmith.server.authentication.handlers.LogoutSuccessHandler;
 import com.appsmith.server.constants.FieldName;
-import com.appsmith.server.constants.Url;
 import com.appsmith.server.domains.User;
 import com.appsmith.server.helpers.RedirectHelper;
 import com.appsmith.server.services.UserService;
+import com.appsmith.server.configurations.CloudOSConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
@@ -29,22 +36,24 @@ import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
 import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 import org.springframework.web.server.session.CookieWebSessionIdResolver;
 import org.springframework.web.server.session.WebSessionIdResolver;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import static com.appsmith.server.constants.Url.ACTION_URL;
-import static com.appsmith.server.constants.Url.APPLICATION_URL;
-import static com.appsmith.server.constants.Url.PAGE_URL;
-import static com.appsmith.server.constants.Url.USER_URL;
+import static com.appsmith.server.constants.Url.*;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
+@Slf4j
 public class SecurityConfig {
 
     @Autowired
@@ -73,6 +82,9 @@ public class SecurityConfig {
 
     @Autowired
     private RedirectHelper redirectHelper;
+
+    @Autowired
+    private CloudOSConfig cloudOSConfig;
 
     /**
      * This routerFunction is required to map /public/** endpoints to the src/main/resources/public folder
@@ -117,23 +129,42 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, ReactiveUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         return http
                 // This picks up the configurationSource from the bean corsConfigurationSource()
                 .cors().and()
                 .csrf().disable()
+                .addFilterBefore(new WebFilter() {
+                    @Override
+                    public Mono<Void> filter(ServerWebExchange serverWebExchange, WebFilterChain webFilterChain) {
+                        final Boolean inCloudOS = cloudOSConfig.getInCloudOS();
+                        if (!inCloudOS) {
+                            return webFilterChain.filter(serverWebExchange);
+                        }
+                        return userService.findByEmail("admin@cloudtogo.cn")
+                                .switchIfEmpty(Mono.error(new UsernameNotFoundException("Unable to find username: admin")))
+                                .flatMap(defaultUser -> {
+                                    UsernamePasswordAuthenticationToken token =
+                                            new UsernamePasswordAuthenticationToken(defaultUser, null, defaultUser.getAuthorities());
+                                    return ReactiveSecurityContextHolder.getContext().flatMap(context -> {
+                                        context.setAuthentication(token);
+                                        return webFilterChain.filter(serverWebExchange);
+                                    });
+                                });
+                    }
+                }, SecurityWebFiltersOrder.SECURITY_CONTEXT_SERVER_WEB_EXCHANGE)
                 .anonymous().principal(createAnonymousUser())
                 .and()
                 // This returns 401 unauthorized for all requests that are not authenticated but authentication is required
                 // The client will redirect to the login page if we return 401 as Http status response
                 .exceptionHandling()
-                    .authenticationEntryPoint(authenticationEntryPoint)
-                    .accessDeniedHandler(accessDeniedHandler)
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(accessDeniedHandler)
                 .and()
                 .authorizeExchange()
                 // All public URLs that should be served to anonymous users should also be defined in acl.rego file
                 // This is because the flow enters AclFilter as well and needs to be whitelisted there
-                .matchers(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, Url.LOGIN_URL),
+                .matchers(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, LOGIN_URL),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL + "/forgotPassword"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, USER_URL + "/verifyPasswordResetToken"),
@@ -152,9 +183,9 @@ public class SecurityConfig {
                 .authenticated()
                 .and().httpBasic()
                 .and().formLogin()
-                .loginPage(Url.LOGIN_URL)
+                .loginPage(LOGIN_URL)
                 .authenticationEntryPoint(authenticationEntryPoint)
-                .requiresAuthenticationMatcher(ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, Url.LOGIN_URL))
+                .requiresAuthenticationMatcher(ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, LOGIN_URL))
                 .authenticationSuccessHandler(authenticationSuccessHandler)
                 .authenticationFailureHandler(authenticationFailureHandler)
 
@@ -166,13 +197,14 @@ public class SecurityConfig {
                 .authenticationFailureHandler(authenticationFailureHandler)
                 .authorizedClientRepository(new ClientUserRepository(userService, commonConfig))
                 .and().logout()
-                .logoutUrl(Url.LOGOUT_URL)
+                .logoutUrl(LOGOUT_URL)
                 .logoutSuccessHandler(new LogoutSuccessHandler(objectMapper))
                 .and().build();
     }
 
     /**
      * This bean configures the parameters that need to be set when a Cookie is created for a logged in user
+     *
      * @return
      */
     @Bean

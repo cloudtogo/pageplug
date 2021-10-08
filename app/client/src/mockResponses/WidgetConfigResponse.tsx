@@ -20,7 +20,7 @@ export const GRID_DENSITY_MIGRATION_V1 = 4;
 const WidgetConfigResponse: WidgetConfigReducerState = {
   config: {
     BUTTON_WIDGET: {
-      text: "Submit",
+      text: "提交",
       buttonStyle: "PRIMARY_BUTTON",
       rows: 1 * GRID_DENSITY_MIGRATION_V1,
       columns: 2 * GRID_DENSITY_MIGRATION_V1,
@@ -55,7 +55,8 @@ const WidgetConfigResponse: WidgetConfigReducerState = {
       version: 1,
     },
     IMAGE_WIDGET: {
-      defaultImage: "https://source.unsplash.com/random/1500x600",
+      defaultImage:
+        "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201808%2F15%2F20180815150251_sflmm.jpg",
       imageShape: "RECTANGLE",
       maxZoomLevel: 1,
       enableRotation: false,
@@ -149,7 +150,7 @@ const WidgetConfigResponse: WidgetConfigReducerState = {
       rows: 7 * GRID_DENSITY_MIGRATION_V1,
       columns: 7 * GRID_DENSITY_MIGRATION_V1,
       widgetName: "Video",
-      url: "https://www.youtube.com/watch?v=mzqK0QIZRLs",
+      url: "https://www.youtube.com/watch?v=wyRNg7cXvmA",
       autoPlay: false,
       version: 1,
     },
@@ -1163,7 +1164,7 @@ const WidgetConfigResponse: WidgetConfigReducerState = {
       widgetName: "Rating",
     },
     [WidgetTypes.IFRAME_WIDGET]: {
-      source: "https://www.wikipedia.org/",
+      source: "https://bing.com",
       borderOpacity: 100,
       borderWidth: 1,
       rows: 8 * GRID_DENSITY_MIGRATION_V1,
@@ -1219,7 +1220,7 @@ const WidgetConfigResponse: WidgetConfigReducerState = {
       widgetName: "MenuButton",
     },
     [WidgetTypes.FORMILY_WIDGET]: {
-      widgetName: "复杂表单",
+      widgetName: "proform",
       rows: 12 * GRID_DENSITY_MIGRATION_V1,
       columns: 8 * GRID_DENSITY_MIGRATION_V1,
       version: 1,

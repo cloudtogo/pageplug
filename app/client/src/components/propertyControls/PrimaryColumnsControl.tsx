@@ -217,7 +217,7 @@ class PrimaryColumnsControl extends BaseControl<ControlProps> {
           onClick={this.addNewColumn}
           size={Size.medium}
           tag="button"
-          text="Add a new column"
+          text="新建一列"
           type="button"
         />
       </TabsWrapper>

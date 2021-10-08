@@ -550,6 +550,7 @@ mkdir -p "$templates_dir"
         https://github.91chifun.workers.dev//https://raw.githubusercontent.com/appsmithorg/appsmith/master/deploy/template/nginx_app.conf.sh \
         https://github.91chifun.workers.dev//https://raw.githubusercontent.com/appsmithorg/appsmith/master/deploy/template/encryption.env.sh
     sed -i 's/index\.docker\.io\/appsmith\/appsmith-editor/harbor\.cloud2go\.cn\/cloud2go\/pageplug-client:demo/g' docker-compose.yml.sh
+    sed -i 's/index\.docker\.io\/appsmith\/appsmith-server/harbor\.cloud2go\.cn\/cloud2go\/pageplug-server:demo/g' docker-compose.yml.sh
 )
 
 # Create needed folder structure.

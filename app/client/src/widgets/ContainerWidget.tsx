@@ -30,13 +30,13 @@ class ContainerWidget extends BaseWidget<
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
-            helpText: "Use a html color name, HEX, RGB or RGBA value",
+            helpText: "css颜色配置（html颜色名称，HEX，RGB 或 RGBA）",
             placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
             propertyName: "backgroundColor",
-            label: "Background Color",
+            label: "背景颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -44,9 +44,9 @@ class ContainerWidget extends BaseWidget<
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Controls the visibility of the widget",
+            helpText: "控制组件是否可见",
             propertyName: "isVisible",
-            label: "Visible",
+            label: "是否可见",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -55,7 +55,7 @@ class ContainerWidget extends BaseWidget<
           },
           {
             propertyName: "shouldScrollContents",
-            label: "Scroll Contents",
+            label: "是否滚动内容",
             controlType: "SWITCH",
             isBindProperty: false,
             isTriggerProperty: false,

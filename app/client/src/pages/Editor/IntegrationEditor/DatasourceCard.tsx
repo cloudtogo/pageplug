@@ -39,6 +39,7 @@ const Wrapper = styled.div`
   padding: 18px;
   /* margin-top: 18px; */
   cursor: pointer;
+  border-radius: ${(props) => props.theme.borderRadius};
   &:hover {
     background: ${Colors.Gallery};
     .bp3-collapse-body {
@@ -173,7 +174,7 @@ function DatasourceCard(props: DatasourceCardProps) {
 
   const currentFormConfig: Array<any> =
     datasourceFormConfigs[datasource?.pluginId ?? ""];
-  const QUERY = queriesWithThisDatasource > 1 ? "queries" : "query";
+  const QUERY = queriesWithThisDatasource > 1 ? "查询" : "查询";
   const plugins = useSelector((state: AppState) => {
     return state.entities.plugins.list;
   });
@@ -248,7 +249,7 @@ function DatasourceCard(props: DatasourceCardProps) {
           <div style={{ flex: 1 }}>
             <DatasourceNameWrapper>
               <DatasourceImage
-                alt="Datasource"
+                alt="数据源"
                 className="dataSourceImage"
                 src={pluginImages[datasource.pluginId]}
               />
@@ -256,33 +257,35 @@ function DatasourceCard(props: DatasourceCardProps) {
             </DatasourceNameWrapper>
             <Queries>
               {queriesWithThisDatasource
-                ? `${queriesWithThisDatasource} ${QUERY} on this page`
-                : "No query is using this datasource"}
+                ? `被 ${queriesWithThisDatasource} 个${QUERY}使用`
+                : "未被使用"}
             </Queries>
           </div>
           <ButtonsWrapper className="action-wrapper">
-            <TooltipComponent
-              boundary={"viewport"}
-              content="Currently not supported for page generation"
-              disabled={!!supportTemplateGeneration}
-              hoverOpenDelay={200}
-              position={Position.BOTTOM}
-            >
-              <GenerateTemplateButton
-                category={Category.tertiary}
-                className="t--generate-template"
-                disabled={!supportTemplateGeneration}
-                onClick={routeToGeneratePage}
-                text="GENERATE NEW PAGE"
-              />
-            </TooltipComponent>
+            {supportTemplateGeneration ? (
+              <TooltipComponent
+                boundary={"viewport"}
+                content="该数据源类型暂不支持自动生成页面"
+                disabled={!!supportTemplateGeneration}
+                hoverOpenDelay={200}
+                position={Position.BOTTOM}
+              >
+                <GenerateTemplateButton
+                  category={Category.tertiary}
+                  className="t--generate-template"
+                  disabled={!supportTemplateGeneration}
+                  onClick={routeToGeneratePage}
+                  text="自动生成页面"
+                />
+              </TooltipComponent>
+            ) : null}
 
             <ActionButton
               className="t--create-query"
               icon="plus"
               isLoading={isCreating && isSelected}
               onClick={onCreateNewQuery}
-              text="New Query"
+              text="新建查询"
             />
             <MenuWrapper
               className="t--datasource-menu-option"
@@ -308,13 +311,13 @@ function DatasourceCard(props: DatasourceCardProps) {
                   icon="delete"
                   isLoading={isDeletingDatasource}
                   onSelect={deleteAction}
-                  text="Delete"
+                  text="删除"
                 />
                 <MenuItem
                   className="t--datasource-option-edit"
                   icon="edit"
                   onSelect={editDatasource}
-                  text="Edit"
+                  text="编辑"
                 />
               </MenuComponent>
             </MenuWrapper>
@@ -327,7 +330,7 @@ function DatasourceCard(props: DatasourceCardProps) {
             e.stopPropagation();
           }}
         >
-          <CollapseComponent title="Show More" titleStyle={{ maxWidth: 120 }}>
+          <CollapseComponent title="详情" titleStyle={{ maxWidth: 120 }}>
             <DatasourceInfo>
               {renderDatasourceSection(currentFormConfig[0], datasource)}
             </DatasourceInfo>

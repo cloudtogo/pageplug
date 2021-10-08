@@ -34,6 +34,7 @@ export enum PerformanceTransactionName {
   INIT_EDIT_APP = "INIT_EDIT_APP",
   INIT_VIEW_APP = "INIT_VIEW_APP",
   SHOW_RESIZE_HANDLES = "SHOW_RESIZE_HANDLES",
+  SYNC_CLOUDOS_API = "SYNC_CLOUDOS_API",
 }
 
 export type PerfTag = {

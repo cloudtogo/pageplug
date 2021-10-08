@@ -34,7 +34,6 @@ const removeQueryParams = (paramKeysToRemove: Array<string>) => {
 };
 
 const DatasourceHomePage = styled.div`
-  max-height: 95vh;
   .textBtn {
     justify-content: center;
     text-align: center;
@@ -68,6 +67,7 @@ const DatasourceCard = styled.div`
   align-items: center;
   justify-content: space-between;
   height: 64px;
+  border-radius: ${(props) => props.theme.borderRadius};
   &:hover {
     background: ${Colors.Gallery};
     cursor: pointer;
