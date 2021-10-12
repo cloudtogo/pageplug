@@ -53,7 +53,7 @@ git push origin master
 ```
 // 前端打包
 cd app/client
-yarn build-win
+yarn build-win ( yarn build-cloudos )
 docker build -t pageplug-client:demo .
 docker tag pageplug-client:demo harbor.cloud2go.cn/cloud2go/pageplug-client:demo
 docker push harbor.cloud2go.cn/cloud2go/pageplug-client:demo

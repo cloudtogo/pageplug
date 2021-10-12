@@ -79,4 +79,5 @@ export type AppsmithUIConfigs = {
   };
   onboardingFormEnabled: boolean;
   appsmithSupportEmail: string;
+  inCloudOS: boolean;
 };
