@@ -15,7 +15,12 @@ import UserApi, {
   UpdateUserRequest,
   LeaveOrgRequest,
 } from "api/UserApi";
-import { APPLICATIONS_URL, AUTH_LOGIN_URL, BASE_URL } from "constants/routes";
+import {
+  APPLICATIONS_URL,
+  AUTH_LOGIN_URL,
+  BASE_URL,
+  matchBuilderPath,
+} from "constants/routes";
 import history from "utils/history";
 import { ApiResponse } from "api/ApiResponses";
 import {
@@ -100,6 +105,13 @@ export function* getCurrentUserSaga() {
         !response.data.isAnonymous &&
         response.data.username !== ANONYMOUS_USERNAME
       ) {
+        if (
+          !response.data.cloudOSLogged &&
+          matchBuilderPath(window.location.pathname)
+        ) {
+          window.location.href = window.CLOUDOS_LOGIN_URL;
+          return;
+        }
         AnalyticsUtil.identifyUser(response.data);
         // make fetch feature call only if logged in
         yield put(fetchFeatureFlagsInit());
