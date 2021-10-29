@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { theme } from "constants/DefaultTheme";
 
 const StyledLoader = styled.div`
   position: fixed;
@@ -11,13 +12,13 @@ const StyledLoader = styled.div`
   .line {
     position: absolute;
     opacity: 0.4;
-    background: #d36500;
+    background: ${theme.colors.primary};
     width: 150%;
     height: 4px;
   }
   .subline {
     position: absolute;
-    background: #d36500;
+    background: ${theme.colors.primary};
     height: 4px;
   }
   .inc {

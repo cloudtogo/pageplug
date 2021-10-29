@@ -127,7 +127,7 @@ const Wrapper = styled(
   border: 2px solid ${(props) => props.backgroundColor};
   background-image: repeating-radial-gradient(
       circle at 0 0,
-      transparent 0,
+      rgba(0, 0, 0, 0) 0,
       #ffffff 12px
     ),
     repeating-linear-gradient(

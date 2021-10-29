@@ -190,6 +190,10 @@ export const BlueprintCSSTransform = css`
   }
 `;
 
+export const transparenten = (color: string, opacity: number) => {
+  return new tinycolor(color).setAlpha(opacity).toString();
+};
+
 export const darken = (color: Color, intensity: number) => {
   return new tinycolor(color).darken(intensity).toString();
 };
@@ -557,7 +561,7 @@ const lightShades = [
   "#302D2D",
   "#090707",
   "#FFFFFF",
-  "#2CBBA6",
+  Colors.MINT_GREEN,
   "#E0DEDE",
   "#EBEBEB",
   "#858282",
@@ -1362,7 +1366,7 @@ export const dark: ColorType = {
   },
   menu: {
     background: darkShades[3],
-    shadow: "0 0 0px 6px #2cbba652",
+    shadow: `0 0 0px 6px ${transparenten(Colors.MINT_GREEN, 0.25)}`,
   },
   menuItem: {
     normalText: darkShades[7],
@@ -1838,7 +1842,7 @@ export const light: ColorType = {
   },
   menu: {
     background: lightShades[11],
-    shadow: "0 0 0px 6px #2cbba652",
+    shadow: `0 0 0px 6px ${transparenten(Colors.MINT_GREEN, 0.25)}`,
   },
   menuItem: {
     normalText: lightShades[8],
@@ -1966,7 +1970,7 @@ export const light: ColorType = {
     },
   },
   applications: {
-    bg: `repeating-radial-gradient( circle at 50% 36%,transparent 0,#ffffff var(--spread) ),repeating-linear-gradient( #d8d8d808,#d8d8d836 )`,
+    bg: `repeating-radial-gradient( circle at 50% 36%, rgba(0, 0, 0, 0) 0,#ffffff var(--spread) ),repeating-linear-gradient( #d8d8d808,#d8d8d836 )`,
     textColor: Colors.MINT_GREEN,
     orgColor: Colors.MINT_GREEN,
     iconColor: Colors.MINT_GREEN,

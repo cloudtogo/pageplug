@@ -35,7 +35,7 @@ export const pageIcon = (
 );
 
 export const homePageIcon = (
-  <Icon color={Colors.JUNGLE_GREEN} icon="home" iconSize={ENTITY_ICON_SIZE} />
+  <Icon color={Colors.MINT_GREEN} icon="home" iconSize={ENTITY_ICON_SIZE} />
 );
 
 export const hiddenPageIcon = (

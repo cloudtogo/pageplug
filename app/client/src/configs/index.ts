@@ -51,6 +51,7 @@ declare global {
   interface Window {
     APPSMITH_FEATURE_CONFIGS: INJECTED_CONFIGS;
     Intercom: any;
+    CLOUDOS_LOGIN_URL: string;
   }
 }
 

@@ -10,6 +10,7 @@ import com.appsmith.server.exceptions.AppsmithException;
 import com.appsmith.server.repositories.DatasourceRepository;
 import com.appsmith.server.services.*;
 import com.google.gson.GsonBuilder;
+import io.jsonwebtoken.lang.Strings;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
@@ -22,6 +23,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import io.jsonwebtoken.Jwts;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -43,6 +45,23 @@ public class CloudOSActionSolution {
     private final PluginService pluginService;
     private final ActionCollectionService actionCollectionService;
     private final CloudOSConfig cloudOSConfig;
+
+    /**
+     * verify CloudOS token in cookie.
+     * @param token
+     * @return is valid
+     */
+    public Mono<Boolean> verifyCloudOSToken(String token) {
+        String secretKey = cloudOSConfig.getSecretKey();
+        try {
+            Jwts.parserBuilder().setSigningKey(secretKey).build().parse(token);
+        } catch (Exception e) {
+            log.debug(e.getMessage());
+            return Mono.just(false);
+        }
+
+        return Mono.just(true);
+    }
 
     /**
      * This method is used by CloudOS Composer.
