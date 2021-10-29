@@ -1,4 +1,19 @@
 // Color Names generated from http://chir.ag/projects/name-that-color
+import { getAppsmithConfigs } from "configs";
+import tinycolor from "tinycolor2";
+const { inCloudOS } = getAppsmithConfigs();
+const primaryColor = inCloudOS ? "#613eea" : "#2CBBA6";
+
+const lighten = (color: string, p: number) => {
+  return new tinycolor(color).lighten(p).toString();
+};
+const darken = (color: string, p: number) => {
+  return new tinycolor(color).darken(p).toString();
+};
+const desaturate = (color: string, p: number) => {
+  return new tinycolor(color).desaturate(p).toString();
+};
+
 export const Colors = {
   WHITE: "#FFFFFF",
   WHITE_SMOKE: "#F4F4F4",
@@ -39,7 +54,7 @@ export const Colors = {
   MAKO: "#464D53",
   ALTO: "#DFDFDF",
 
-  GREEN: "#2CBBA6",
+  GREEN: primaryColor,
   JUNGLE_GREEN: "#24BA91",
   JUNGLE_GREEN_DARKER: "#30A481",
   EUCALYPTUS: "#218358",
@@ -89,11 +104,11 @@ export const Colors = {
   RATE_INACTIVE: "#F2F2F2",
   SELECT_DISABLED: "#ced9e080",
   // new colors
-  MINT_GREEN: "#2CBBA6",
-  MINT_GREEN_LIGHT: "#d1ede5",
-  MINT_GREEN_DARK: "#1c9486",
-  MINT_GREEN_DARKER: "#0f6e66",
-  MINT_GREEN_DARKEST: "#d3e4e2",
+  MINT_GREEN: primaryColor,
+  MINT_GREEN_LIGHT: lighten(primaryColor, 38),
+  MINT_GREEN_DARK: darken(primaryColor, 10),
+  MINT_GREEN_DARKER: darken(primaryColor, 20),
+  MINT_GREEN_DARKEST: desaturate(lighten(primaryColor, 30), 50),
   MINT_ORANGE: "#FF6A00",
   MINT_ORANGE_LIGHT: "#FFE8D7",
   MINT_BLUE: "#3C6DC1",

@@ -59,13 +59,13 @@ const EmptyForm = styled.div`
   background-color: #fff;
   border-radius: 6px;
   opacity: 0.4;
-  border: 1px dashed #2cbba6;
+  border: 1px dashed #666;
   background-image: repeating-radial-gradient(
       circle at 0 0,
-      transparent 0,
-      #ffffff 10px
+      rgba(0, 0, 0, 0) 0,
+      #ffffff 60px
     ),
-    repeating-linear-gradient(#8af3c655, #8af3c6);
+    repeating-linear-gradient(#cfcfcf55, #cfcfcf);
 `;
 
 const ScrollContainer = styled.div`

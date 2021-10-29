@@ -15,4 +15,7 @@ public class CloudOSConfig {
 
     @Value("${pageplug.cloudos.in_cloudos}")
     Boolean inCloudOS;
+
+    @Value("${pageplug.cloudos.jwt_secret_key}")
+    String secretKey;
 }

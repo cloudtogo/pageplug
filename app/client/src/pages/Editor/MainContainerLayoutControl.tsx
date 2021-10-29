@@ -28,27 +28,27 @@ export const AppsmithDefaultLayout: AppLayoutConfig = {
 
 const AppsmithLayouts: AppsmithLayoutConfigOption[] = [
   {
-    name: "Desktop",
+    name: "桌面宽度",
     ...AppsmithDefaultLayout,
     icon: "desktop",
   },
+  // {
+  //   name: "Tablet(Large)",
+  //   type: "TABLET_LARGE",
+  //   icon: "tablet",
+  // },
   {
-    name: "Tablet(Large)",
-    type: "TABLET_LARGE",
-    icon: "tablet",
-  },
-  {
-    name: "Tablet",
+    name: "平板宽度",
     type: "TABLET",
     icon: "tablet",
   },
   {
-    name: "Mobile Device",
+    name: "手机宽度",
     type: "MOBILE",
     icon: "mobile",
   },
   {
-    name: "Fluid Width",
+    name: "自适应宽度",
     type: "FLUID",
     icon: "fluid",
   },
@@ -114,6 +114,7 @@ export function MainContainerLayoutControl() {
               />
             );
           }}
+          optionWidth="120"
           className="layout-control"
           onSelect={noop}
           options={layoutOptions}

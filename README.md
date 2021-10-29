@@ -15,7 +15,7 @@ yarn start-proxy
 
 // 启动前端服务
 yarn 
-yarn start-win
+yarn start-win ( yarn start-cloudos )
 ```
 
 [服务端指南](/contributions/ServerSetup.md)
@@ -28,7 +28,7 @@ APPSMITH_REDIS_URL="redis://10.10.13.50:63799"
 app/server
 
 // 构建 java 服务
-mvn clean compile （执行过一次就不用再执行了，build里会执行编译）
+mvn clean compile （有依赖更新时执行）
 bash ./build.sh -DskipTests
 
 // 启动 java 服务
@@ -89,6 +89,9 @@ CLOUDOS_API_BASE_URL="http://10.10.11.20:8035"
 CLOUDOS_MOCK_BASE_URL="http://10.10.11.20:8899"
 // 启动开关
 CLOUDOS_IN_CLOUDOS=true
+
+// nginx.conf 配置前端环境变量，替换 index.html 中的配置
+sub_filter __PAGEPLUG_CLOUDOS_LOGIN_URL__ 'http://factory.dev.staros.local/user/login';
 
 🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
 StarOS 版本使用固定用户
