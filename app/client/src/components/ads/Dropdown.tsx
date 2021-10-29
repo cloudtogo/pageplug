@@ -227,7 +227,8 @@ const OptionWrapper = styled.div<{
     background-color: ${(props) => props.theme.colors.dropdown.hovered.bg};
 
     &&& svg {
-      rect {
+      rect,
+      path {
         fill: ${(props) => props.theme.colors.textOnDarkBG};
       }
     }

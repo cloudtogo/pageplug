@@ -44,6 +44,9 @@ import UserProfile from "pages/UserProfile";
 import { getCurrentUser } from "actions/authActions";
 import { getFeatureFlagsFetched } from "selectors/usersSelectors";
 
+import { getAppsmithConfigs } from "configs";
+const { inCloudOS } = getAppsmithConfigs();
+
 const SentryRoute = Sentry.withSentryRouting(Route);
 
 const loadingIndicator = <PageLoadingBar />;
@@ -100,6 +103,24 @@ class AppRouter extends React.Component<any, any> {
             <>
               <ErrorPageHeader />
               <ErrorPage code={safeCrashCode} />
+            </>
+          ) : inCloudOS ? (
+            <>
+              <AppHeader />
+              <Switch>
+                {/* <SentryRoute
+                  component={ApplicationListLoader}
+                  exact
+                  path={APPLICATIONS_URL}
+                /> */}
+                <SentryRoute component={EditorLoader} path={BUILDER_URL} />
+                <SentryRoute
+                  component={AppViewerLoader}
+                  path={getApplicationViewerPageURL()}
+                />
+                <SentryRoute component={AppViewerLoader} path={APP_VIEW_URL} />
+                <SentryRoute component={PageNotFound} />
+              </Switch>
             </>
           ) : (
             <>

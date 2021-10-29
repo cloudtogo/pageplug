@@ -135,4 +135,6 @@ public class User extends BaseDomain implements UserDetails, OidcUser {
     public String computeFirstName() {
         return (StringUtils.isEmpty(name) ? email : name).split("[\\s@]+", 2)[0];
     }
+
+    public Boolean cloudOSLogged;
 }

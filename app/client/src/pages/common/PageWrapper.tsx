@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import { Helmet } from "react-helmet";
 import styled from "styled-components";
+import { theme } from "constants/DefaultTheme";
 
 const Wrapper = styled.section`
   && .fade {
@@ -48,9 +49,9 @@ export function PageWrapper(props: PageWrapperProps) {
   return (
     <Wrapper>
       <Helmet>
-        <title>{`${
-          props.displayName ? `${props.displayName} - ` : ""
-        }PagePlug`}</title>
+        <title>{`${props.displayName ? `${props.displayName} - ` : ""}
+         ${theme.inCloudOS ? "StarOS" : "PagePlug"}
+         `}</title>
       </Helmet>
       <PageBody>{props.children}</PageBody>
     </Wrapper>
