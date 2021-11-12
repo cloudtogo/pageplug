@@ -51,8 +51,11 @@ import localStorage from "utils/localStorage";
 import { Toaster } from "components/ads/Toast";
 import { Variant } from "components/ads/common";
 import log from "loglevel";
+import { getAppsmithConfigs } from "configs";
 
 import { getCurrentUser } from "selectors/usersSelectors";
+
+const { inCloudOS } = getAppsmithConfigs();
 
 export function* createUserSaga(
   action: ReduxActionWithPromise<CreateUserRequest>,
@@ -106,6 +109,7 @@ export function* getCurrentUserSaga() {
         response.data.username !== ANONYMOUS_USERNAME
       ) {
         if (
+          inCloudOS &&
           !response.data.cloudOSLogged &&
           matchBuilderPath(window.location.pathname)
         ) {
