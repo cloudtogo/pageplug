@@ -55,6 +55,7 @@ export const excludeList = [
   WidgetTypes.TABS_WIDGET,
   WidgetTypes.FORM_WIDGET,
   WidgetTypes.MODAL_WIDGET,
+  WidgetTypes.TARO_POPUP_WIDGET,
   WidgetTypes.DIVIDER_WIDGET,
   WidgetTypes.FILE_PICKER_WIDGET,
   WidgetTypes.BUTTON_WIDGET,

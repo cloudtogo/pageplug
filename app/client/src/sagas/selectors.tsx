@@ -29,6 +29,12 @@ export const getWidgetIdsByType = (state: AppState, type: WidgetType) => {
     .map((widget: FlattenedWidgetProps) => widget.widgetId);
 };
 
+export const getWidgetIdsByTypes = (state: AppState, types: WidgetType[]) => {
+  return Object.values(state.entities.canvasWidgets)
+    .filter((widget: FlattenedWidgetProps) => _.includes(types, widget.type))
+    .map((widget: FlattenedWidgetProps) => widget.widgetId);
+};
+
 export const getWidgetOptionsTree = createSelector(getWidgets, (widgets) =>
   Object.values(widgets)
     .filter((w) => w.type !== "CANVAS_WIDGET" && w.type !== "BUTTON_WIDGET")

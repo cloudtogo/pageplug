@@ -82,7 +82,7 @@ export const JAVASCRIPT_KEYWORDS = {
 
 export const DATA_TREE_KEYWORDS = {
   actionPaths: "actionPaths",
-  appsmith: "appsmith",
+  global: "global",
   pageList: "pageList",
   [EXECUTION_PARAM_KEY]: EXECUTION_PARAM_KEY,
 };

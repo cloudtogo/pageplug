@@ -58,7 +58,7 @@ const StyledMenu = styled(Menu)`
     margin: 0px 6px;
     border-radius: ${(props) => props.theme.borderRadius};
     font-size: 14px;
-    line-height: 14px;
+    line-height: 18px;
     display: flex;
     align-items: center;
     height: 30px;

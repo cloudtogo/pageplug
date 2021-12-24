@@ -2596,6 +2596,10 @@ export const theme: Theme = {
   },
 };
 
-export { css, createGlobalStyle, keyframes, ThemeProvider };
+const taroifyTheme = {
+  primaryColor: Colors.MINT_GREEN,
+};
+
+export { css, createGlobalStyle, keyframes, ThemeProvider, taroifyTheme };
 
 export default styled;

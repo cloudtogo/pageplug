@@ -27,6 +27,7 @@ import {
   getWidgetsMeta,
   getWidgetIdsByType,
   getWidgetMetaProps,
+  getWidgetIdsByTypes,
 } from "sagas/selectors";
 import { FlattenedWidgetProps } from "reducers/entityReducers/canvasWidgetsReducer";
 import { updateWidgetMetaProperty } from "actions/metaActions";
@@ -34,21 +35,23 @@ import { focusWidget } from "actions/widgetActions";
 import log from "loglevel";
 import { flatten } from "lodash";
 import AppsmithConsole from "utils/AppsmithConsole";
+import { isMobileLayout } from "selectors/editorSelectors";
 
 export function* createModalSaga(action: ReduxAction<{ modalName: string }>) {
   try {
+    const isMobile: boolean = yield select(isMobileLayout);
     const modalWidgetId = generateReactKey();
     const props: WidgetAddChild = {
       widgetId: MAIN_CONTAINER_WIDGET_ID,
       widgetName: action.payload.modalName,
-      type: WidgetTypes.MODAL_WIDGET,
+      type: isMobile ? WidgetTypes.TARO_POPUP_WIDGET : WidgetTypes.MODAL_WIDGET,
       newWidgetId: modalWidgetId,
-      parentRowSpace: 1,
+      parentRowSpace: isMobile ? 10 : 1,
       parentColumnSpace: 1,
       leftColumn: 0,
       topRow: 0,
       columns: 0,
-      rows: 0,
+      rows: isMobile ? 40 : 0,
       tabId: "",
     };
     yield put({
@@ -98,7 +101,10 @@ export function* showModalByNameSaga(
 export function* showIfModalSaga(
   action: ReduxAction<{ widgetId: string; type: string }>,
 ) {
-  if (action.payload.type === "MODAL_WIDGET") {
+  if (
+    action.payload.type === "MODAL_WIDGET" ||
+    action.payload.type === WidgetTypes.TARO_POPUP_WIDGET
+  ) {
     yield put({
       type: ReduxActionTypes.SHOW_MODAL,
       payload: { modalId: action.payload.widgetId },
@@ -160,10 +166,10 @@ export function* closeModalSaga(
       const metaProps: Record<string, any> = yield select(getWidgetsMeta);
 
       // Get widgetIds of all widgets of type MODAL_WIDGET
-      const modalWidgetIds: string[] = yield select(
-        getWidgetIdsByType,
+      const modalWidgetIds: string[] = yield select(getWidgetIdsByTypes, [
         WidgetTypes.MODAL_WIDGET,
-      );
+        WidgetTypes.TARO_POPUP_WIDGET,
+      ]);
 
       // Loop through all modal widgetIds
       modalWidgetIds.forEach((widgetId: string) => {

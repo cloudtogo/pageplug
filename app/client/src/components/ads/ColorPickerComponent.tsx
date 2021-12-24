@@ -186,7 +186,7 @@ function ColorPickerComponent(props: ColorPickerProps) {
           )
         }
         onChange={handleChangeColor}
-        placeholder="enter color name or hex"
+        placeholder="输入web颜色名称，或者hex"
         value={color}
       />
       <ColorBoard

@@ -3,7 +3,7 @@ import "./wdyr";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import "./index.less";
-import { ThemeProvider } from "constants/DefaultTheme";
+import { ThemeProvider, taroifyTheme } from "constants/DefaultTheme";
 import { appInitializer } from "utils/AppsmithUtils";
 import { Slide } from "react-toastify";
 import store from "./store";
@@ -17,6 +17,8 @@ import { setThemeMode } from "actions/themeActions";
 import { StyledToastContainer } from "components/ads/Toast";
 import localStorage from "utils/localStorage";
 import "./polyfills/corejs-add-on";
+import AppErrorBoundary from "./AppErrorBoundry";
+import GlobalStyles from "globalStyles";
 // locale
 import { ConfigProvider } from "antd";
 import zhCNAntd from "antd/lib/locale/zh_CN";
@@ -27,9 +29,20 @@ import "moment/locale/zh-cn";
 import { setAutoFreeze } from "immer";
 const shouldAutoFreeze = process.env.NODE_ENV === "development";
 setAutoFreeze(shouldAutoFreeze);
+// taro-components polyfills
+import { ConfigProvider as TaroifyTheme } from "@taroify/core";
+import {
+  applyPolyfills,
+  defineCustomElements,
+} from "@tarojs/components/loader";
+import "@tarojs/components/dist/taro-components/taro-components.css";
+import "@taroify/icons/index.scss";
+import "@taroify/core/index.scss";
+applyPolyfills().then(() => {
+  defineCustomElements(window);
+});
 
-import AppErrorBoundary from "./AppErrorBoundry";
-import GlobalStyles from "globalStyles";
+// app init
 appInitializer();
 
 function App() {
@@ -68,7 +81,9 @@ class ThemedApp extends React.Component<{
         <AppErrorBoundary>
           <IntlProvider locale="zh-CN" messages={zhCN}>
             <ConfigProvider locale={zhCNAntd}>
-              <AppRouter />
+              <TaroifyTheme theme={taroifyTheme}>
+                <AppRouter />
+              </TaroifyTheme>
             </ConfigProvider>
           </IntlProvider>
         </AppErrorBoundary>

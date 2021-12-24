@@ -63,6 +63,7 @@ import { deleteRecentAppEntities } from "utils/storage";
 import { reconnectWebsocket as reconnectWebsocketAction } from "actions/websocketActions";
 import { getCurrentOrg } from "selectors/organizationSelectors";
 import { Org } from "constants/orgConstants";
+import { AppLayoutConfig } from "reducers/entityReducers/pageListReducer";
 
 const getDefaultPageId = (
   pages?: ApplicationPagePayload[],
@@ -392,12 +393,20 @@ export function* createApplicationSaga(
     applicationName: string;
     icon: AppIconName;
     color: AppColorCode;
+    isMobile: boolean;
     orgId: string;
     resolve: any;
     reject: any;
   }>,
 ) {
-  const { applicationName, color, icon, orgId, reject } = action.payload;
+  const {
+    applicationName,
+    color,
+    icon,
+    orgId,
+    reject,
+    isMobile,
+  } = action.payload;
   try {
     const userOrgs = yield select(getUserApplicationsOrgsList);
     const existingOrgs = userOrgs.filter(
@@ -423,11 +432,16 @@ export function* createApplicationSaga(
     } else {
       yield put(resetCurrentApplication());
 
+      const layout: AppLayoutConfig = {
+        type: isMobile ? "MOBILE_FLUID" : "DESKTOP",
+      };
       const request: CreateApplicationRequest = {
         name: applicationName,
         icon: icon,
         color: color,
         orgId,
+        unpublishedAppLayout: layout,
+        publishedAppLayout: layout,
       };
       const response: CreateApplicationResponse = yield call(
         ApplicationApi.createApplication,
@@ -441,6 +455,7 @@ export function* createApplicationSaga(
         };
         AnalyticsUtil.logEvent("CREATE_APP", {
           appName: application.name,
+          isMobile,
         });
         // This sets ui.pageWidgets = {} to ensure that
         // widgets are cleaned up from state before
@@ -458,6 +473,7 @@ export function* createApplicationSaga(
         const pageURL = getGenerateTemplateURL(
           application.id,
           application.defaultPageId,
+          isMobile,
         );
         history.push(pageURL);
 

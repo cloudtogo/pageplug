@@ -13,6 +13,9 @@ public class CloudOSConfig {
     @Value("${pageplug.cloudos.mock_baseurl}")
     String mockUrl;
 
+    @Value("${pageplug.cloudos.db_baseurl}")
+    String dbUrl;
+
     @Value("${pageplug.cloudos.in_cloudos}")
     Boolean inCloudOS;
 
