@@ -264,6 +264,7 @@ export type IconProps = {
   keepColors?: boolean;
   loaderWithIconWrapper?: boolean;
   clickable?: boolean;
+  isMobile?: boolean;
 };
 
 const Icon = forwardRef(

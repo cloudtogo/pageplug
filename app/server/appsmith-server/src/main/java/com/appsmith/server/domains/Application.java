@@ -56,10 +56,8 @@ public class Application extends BaseDomain {
 
     String icon;
 
-    @JsonIgnore
     AppLayout unpublishedAppLayout;
 
-    @JsonIgnore
     AppLayout publishedAppLayout;
 
     Boolean forkingEnabled;
@@ -118,6 +116,7 @@ public class Application extends BaseDomain {
             TABLET,
             MOBILE,
             FLUID,
+            MOBILE_FLUID,
         }
     }
 

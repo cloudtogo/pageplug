@@ -139,6 +139,58 @@ export const HelpMap = {
     path: "/widget-reference/",
     searchKey: "Formily",
   },
+  TARO_PICKER_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro Picker",
+  },
+  TARO_SWIPER_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro Swiper",
+  },
+  TARO_GRID_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro Grid",
+  },
+  TARO_LIST_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro List",
+  },
+  TARO_TEXT_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro Text",
+  },
+  TARO_POPUP_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro Popup",
+  },
+  TARO_BUTTON_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro Button",
+  },
+  TARO_IMAGE_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro Image",
+  },
+  TARO_CELL_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro Cell",
+  },
+  TARO_HTML_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro Html",
+  },
+  TARO_SIMPLE_FORM_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro Simple Form",
+  },
+  TARO_KV_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro KV",
+  },
+  TARO_TABS_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro Tabs",
+  },
 };
 
 export const HelpBaseURL = "https://docs.appsmith.com";

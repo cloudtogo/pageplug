@@ -33,7 +33,10 @@ export const useNavigateToWidget = () => {
     pageId: string,
     parentModalId?: string,
   ) => {
-    if (widgetType === WidgetTypes.MODAL_WIDGET) {
+    if (
+      widgetType === WidgetTypes.MODAL_WIDGET ||
+      widgetType === WidgetTypes.TARO_POPUP_WIDGET
+    ) {
       dispatch(showModal(widgetId));
       return;
     }

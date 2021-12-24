@@ -207,7 +207,11 @@ export const GEN_TEMPLATE_FORM_ROUTE = "/form";
 export const getGenerateTemplateURL = (
   applicationId = ":applicationId",
   pageId = ":pageId",
-): string => `${BUILDER_PAGE_URL(applicationId, pageId)}${GEN_TEMPLATE_URL}`;
+  isMobile = false,
+): string =>
+  `${BUILDER_PAGE_URL(applicationId, pageId)}${
+    isMobile ? "" : GEN_TEMPLATE_URL
+  }`;
 
 export const getGenerateTemplateFormURL = (
   applicationId = ":applicationId",

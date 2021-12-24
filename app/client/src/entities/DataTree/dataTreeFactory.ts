@@ -124,13 +124,13 @@ export class DataTreeFactory {
     });
 
     dataTree.pageList = pageList;
-    dataTree.appsmith = {
+    dataTree.global = {
       ...appData,
       // combine both persistent and transient state with the transient state
       // taking precedence in case the key is the same
       store: { ...appData.store.persistent, ...appData.store.transient },
     } as DataTreeAppsmith;
-    (dataTree.appsmith as DataTreeAppsmith).ENTITY_TYPE = ENTITY_TYPE.APPSMITH;
+    (dataTree.global as DataTreeAppsmith).ENTITY_TYPE = ENTITY_TYPE.APPSMITH;
     return dataTree;
   }
 }

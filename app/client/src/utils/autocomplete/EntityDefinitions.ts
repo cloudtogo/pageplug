@@ -293,6 +293,59 @@ export const entityDefinitions = {
     isVisible: isVisible,
     formData: "any",
   },
+  TARO_PICKER_WIDGET: {
+    "!doc": "Taro 选择器",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+    isVisible: isVisible,
+  },
+  TARO_SWIPER_WIDGET: {
+    "!doc": "轮播",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+  },
+  TARO_GRID_WIDGET: {
+    "!doc": "网格内容",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+  },
+  TARO_TEXT_WIDGET: {
+    "!doc": "文本",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+  },
+  TARO_LIST_WIDGET: {
+    "!doc": "列表",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+  },
+  TARO_POPUP_WIDGET: {
+    "!doc": "底部弹窗",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+  },
+  TARO_IMAGE_WIDGET: {
+    "!doc": "图片",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+  },
+  TARO_BUTTON_WIDGET: {
+    "!doc": "按钮",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+  },
+  TARO_CELL_WIDGET: {
+    "!doc": "单元格",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+  },
+  TARO_HTML_WIDGET: {
+    "!doc": "富文本",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+  },
+  TARO_SIMPLE_FORM_WIDGET: {
+    "!doc": "快速表单",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+  },
+  TARO_KV_WIDGET: {
+    "!doc": "键值对",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+  },
+  TARO_TABS_WIDGET: {
+    "!doc": "标签页",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+  },
 };
 
 export const GLOBAL_DEFS = {

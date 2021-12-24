@@ -113,8 +113,13 @@ public class CloudOSActionSolution {
         String componentId = instance.get("component_id");
         String serviceAddress = instance.get("service_address");
         String datasourceName = componentName == null ? componentId : componentName;
+        String dbPrefix = cloudOSConfig.getDbUrl();
         return datasourceService.findByNameAndOrganizationId(datasourceName, application.getOrganizationId(), AclPermission.MANAGE_DATASOURCES)
                 .flatMap(datasource -> {
+                    final String oldUrl = datasource.getDatasourceConfiguration().getUrl();
+                    if (oldUrl.contains(dbPrefix)) {
+                        return Mono.just(datasource);
+                    }
                     final Datasource deployedDatasource = new Datasource();
                     final DatasourceConfiguration datasourceConfiguration = new DatasourceConfiguration();
                     datasourceConfiguration.setUrl(serviceAddress);
@@ -221,6 +226,14 @@ public class CloudOSActionSolution {
         final String componentId = (String) bp.get("componentId");
         final String componentDisplay = componentName == null ? componentId : componentName;
         List<Map<String, ?>> cloudOSApiList = (List<Map<String, ?>>) bp.get("apis");
+        log.debug("绑定组件 " + componentName + " 的API");
+        log.debug(cloudOSApiList.toString());
+        Boolean isDbApi = cloudOSApiList.stream().anyMatch(ca -> {
+            final String apiKey = (String) ca.get("apiKey");
+            return apiKey != null;
+        });
+        final String apiHost = isDbApi ? cloudOSConfig.getDbUrl() : cloudOSConfig.getMockUrl() + "/" + projectId + "/" + componentId;
+        log.debug("数据源地址：" + apiHost);
 
         // create new datasource
         Datasource newSource = new Datasource();
@@ -229,7 +242,7 @@ public class CloudOSActionSolution {
         newSource.setName(componentDisplay);
 
         DatasourceConfiguration datasourceConfiguration = new DatasourceConfiguration();
-        datasourceConfiguration.setUrl(cloudOSConfig.getMockUrl() + "/" + projectId + "/" + componentId);
+        datasourceConfiguration.setUrl(apiHost);
         ArrayList<Property> properties = new ArrayList<>();
         properties.add(new Property("isSendSessionEnabled", "N"));
         properties.add(new Property("sessionSignatureKey", ""));

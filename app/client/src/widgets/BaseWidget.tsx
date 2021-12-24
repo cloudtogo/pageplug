@@ -492,6 +492,7 @@ export interface WidgetCardProps {
   key?: string;
   widgetCardName: string;
   isBeta?: boolean;
+  isMobile?: boolean;
 }
 
 export const WidgetOperations = {
