@@ -255,6 +255,27 @@ const OrgShareUsers = styled.div`
   display: flex;
   align-items: center;
 `;
+const AddIcon = styled(Icon)`
+  position: absolute;
+  top: ${(props) => (props.isMobile ? "12" : "10")}px;
+  left: 50%;
+  margin-left: -4.5px;
+
+  & svg {
+    width: 9px;
+    height: 9px;
+  }
+`;
+const AddTypeIcon = styled(Icon)`
+  & svg {
+    width: 39px;
+    height: 39px;
+  }
+`;
+
+const IconGroup = styled.div`
+  position: relative;
+`;
 
 function Item(props: {
   label: string;
@@ -613,7 +634,11 @@ function ApplicationsSection(props: any) {
     );
   }
 
-  const createNewApplication = (applicationName: string, orgId: string) => {
+  const createNewApplication = (
+    applicationName: string,
+    orgId: string,
+    isMobile: boolean,
+  ) => {
     const color = getRandomPaletteColor(theme.colors.appCardColors);
     const icon =
       AppIconCollection[Math.floor(Math.random() * AppIconCollection.length)];
@@ -625,8 +650,56 @@ function ApplicationsSection(props: any) {
         orgId,
         icon,
         color,
+        isMobile,
       },
     });
+  };
+
+  const CreateApp = ({ isMobile, orgId, applications }: any) => {
+    return (
+      <PaddingWrapper>
+        <ApplicationAddCardWrapper
+          onClick={() => {
+            if (
+              Object.entries(creatingApplicationMap).length === 0 ||
+              (creatingApplicationMap && !creatingApplicationMap[orgId])
+            ) {
+              createNewApplication(
+                getNextEntityName(
+                  "未命名应用 ",
+                  applications.map((el: any) => el.name),
+                ),
+                orgId,
+                isMobile,
+              );
+            }
+          }}
+        >
+          {creatingApplicationMap && creatingApplicationMap[orgId] ? (
+            <Spinner size={IconSize.XXXL} />
+          ) : (
+            <>
+              <IconGroup>
+                <AddTypeIcon
+                  className="t--create-app-popup"
+                  name={isMobile ? "mobile" : "desktop"}
+                  size={IconSize.LARGE}
+                />
+                <AddIcon
+                  className="t--create-app-popup"
+                  name={"plus"}
+                  size={IconSize.LARGE}
+                  isMobile={isMobile}
+                />
+              </IconGroup>
+              <CreateNewLabel className="createnew" type={TextType.H4}>
+                新建{isMobile ? "移动" : "桌面"}应用
+              </CreateNewLabel>
+            </>
+          )}
+        </ApplicationAddCardWrapper>
+      </PaddingWrapper>
+    );
   };
 
   let updatedOrgs;
@@ -820,44 +893,17 @@ function ApplicationsSection(props: any) {
                 PERMISSION_TYPE.CREATE_APPLICATION,
               ) &&
                 !isFetchingApplications && (
-                  <PaddingWrapper>
-                    <ApplicationAddCardWrapper
-                      onClick={() => {
-                        if (
-                          Object.entries(creatingApplicationMap).length === 0 ||
-                          (creatingApplicationMap &&
-                            !creatingApplicationMap[organization.id])
-                        ) {
-                          createNewApplication(
-                            getNextEntityName(
-                              "未命名应用 ",
-                              applications.map((el: any) => el.name),
-                            ),
-                            organization.id,
-                          );
-                        }
-                      }}
-                    >
-                      {creatingApplicationMap &&
-                      creatingApplicationMap[organization.id] ? (
-                        <Spinner size={IconSize.XXXL} />
-                      ) : (
-                        <>
-                          <Icon
-                            className="t--create-app-popup"
-                            name={"plus"}
-                            size={IconSize.LARGE}
-                          />
-                          <CreateNewLabel
-                            className="createnew"
-                            type={TextType.H4}
-                          >
-                            新建应用
-                          </CreateNewLabel>
-                        </>
-                      )}
-                    </ApplicationAddCardWrapper>
-                  </PaddingWrapper>
+                  <>
+                    <CreateApp
+                      orgId={organization.id}
+                      applications={applications}
+                    />
+                    <CreateApp
+                      orgId={organization.id}
+                      applications={applications}
+                      isMobile
+                    />
+                  </>
                 )}
               {applications.map((application: any) => {
                 return (

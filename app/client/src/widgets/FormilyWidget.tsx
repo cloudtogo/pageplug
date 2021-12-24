@@ -125,7 +125,6 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
   };
 
   getPageView() {
-    console.log("----widget--props--", this.props);
     const {
       title,
       formType,

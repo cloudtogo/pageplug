@@ -113,7 +113,9 @@ export const WidgetEntity = memo((props: WidgetEntityProps) => {
    * so we track the immediate modal parent for the widget
    */
   const parentModalIdForChildren = useMemo(() => {
-    return widgetType === "MODAL_WIDGET" ? widgetId : parentModalId;
+    return widgetType === "MODAL_WIDGET" || widgetType === "TARO_POPUP_WIDGET"
+      ? widgetId
+      : parentModalId;
   }, [widgetType, widgetId, parentModalId]);
 
   if (UNREGISTERED_WIDGETS.indexOf(props.widgetType) > -1) return null;

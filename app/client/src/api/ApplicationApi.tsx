@@ -51,6 +51,8 @@ export interface CreateApplicationRequest {
   orgId: string;
   color?: AppColorCode;
   icon?: AppIconName;
+  unpublishedAppLayout?: AppLayoutConfig;
+  publishedAppLayout?: AppLayoutConfig;
 }
 
 export interface SetDefaultPageRequest {
@@ -171,7 +173,13 @@ class ApplicationApi extends Api {
     return Api.post(
       ApplicationApi.baseURL +
         ApplicationApi.createApplicationPath(request.orgId),
-      { name: request.name, color: request.color, icon: request.icon },
+      {
+        name: request.name,
+        color: request.color,
+        icon: request.icon,
+        unpublishedAppLayout: request.unpublishedAppLayout,
+        publishedAppLayout: request.publishedAppLayout,
+      },
     );
   }
 

@@ -42,11 +42,11 @@ const AppsmithLayouts: AppsmithLayoutConfigOption[] = [
     type: "TABLET",
     icon: "tablet",
   },
-  {
-    name: "手机宽度",
-    type: "MOBILE",
-    icon: "mobile",
-  },
+  // {
+  //   name: "手机宽度",
+  //   type: "MOBILE",
+  //   icon: "mobile",
+  // },
   {
     name: "自适应宽度",
     type: "FLUID",
@@ -71,9 +71,14 @@ const LayoutControlWrapper = styled.div`
   }
 `;
 
+const EmptyBlock = styled.div`
+  height: 30px;
+`;
+
 export function MainContainerLayoutControl() {
   const appId = useSelector(getCurrentApplicationId);
   const appLayout = useSelector(getCurrentApplicationLayout);
+  const isMobile = appLayout?.type === "MOBILE_FLUID";
   const layoutOptions = AppsmithLayouts.map((each) => {
     return {
       ...each,
@@ -89,8 +94,8 @@ export function MainContainerLayoutControl() {
   const selectedLayout = appLayout
     ? layoutOptions.find((each) => each.type === appLayout.type)
     : layoutOptions[0];
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
   const updateAppLayout = (layoutConfig: AppLayoutConfig) => {
     const { type } = layoutConfig;
     dispatch(
@@ -101,6 +106,10 @@ export function MainContainerLayoutControl() {
       }),
     );
   };
+
+  if (isMobile) {
+    return <EmptyBlock />;
+  }
   return (
     <LayoutControlWrapper>
       <div className="layout-control t--layout-control-wrapper">

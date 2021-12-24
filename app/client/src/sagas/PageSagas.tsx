@@ -71,6 +71,7 @@ import {
   getCurrentLayoutId,
   getCurrentPageId,
   getCurrentPageName,
+  isMobileLayout,
 } from "selectors/editorSelectors";
 import {
   fetchActionsForPage,
@@ -486,6 +487,7 @@ export function* createPageSaga(
     const request: CreatePageRequest = createPageAction.payload;
     const response: FetchPageResponse = yield call(PageApi.createPage, request);
     const isValidResponse: boolean = yield validateResponse(response);
+    const isMobile: boolean = yield select(isMobileLayout);
     if (isValidResponse) {
       yield put({
         type: ReduxActionTypes.CREATE_PAGE_SUCCESS,
@@ -508,6 +510,7 @@ export function* createPageSaga(
         getGenerateTemplateURL(
           createPageAction.payload.applicationId,
           response.data.id,
+          isMobile,
         ),
       );
     }

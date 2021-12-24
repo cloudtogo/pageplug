@@ -146,7 +146,8 @@ export type SupportedLayouts =
   | "TABLET_LARGE"
   | "TABLET"
   | "MOBILE"
-  | "FLUID";
+  | "FLUID"
+  | "MOBILE_FLUID";
 export interface AppLayoutConfig {
   type: SupportedLayouts;
 }

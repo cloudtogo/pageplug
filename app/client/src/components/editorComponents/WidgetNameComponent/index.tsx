@@ -132,7 +132,8 @@ export function WidgetNameComponent(props: WidgetNameComponentProps) {
       !!props.errorCount;
 
   let currentActivity =
-    props.type === WidgetTypes.MODAL_WIDGET
+    props.type === WidgetTypes.MODAL_WIDGET ||
+    props.type === WidgetTypes.TARO_POPUP_WIDGET
       ? Activities.HOVERING
       : Activities.NONE;
   if (focusedWidget === props.widgetId) currentActivity = Activities.HOVERING;

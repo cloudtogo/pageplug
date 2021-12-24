@@ -135,6 +135,84 @@ const WidgetSidebarResponse: WidgetCardProps[] = [
     widgetCardName: "复杂表单",
     key: generateReactKey(),
   },
+  // {
+  //   type: "TARO_PICKER_WIDGET",
+  //   widgetCardName: "Picker",
+  //   key: generateReactKey(),
+  //   isMobile: true,
+  // },
+  {
+    type: "TARO_SWIPER_WIDGET",
+    widgetCardName: "轮播",
+    key: generateReactKey(),
+    isMobile: true,
+  },
+  {
+    type: "TARO_GRID_WIDGET",
+    widgetCardName: "网格内容",
+    key: generateReactKey(),
+    isMobile: true,
+  },
+  {
+    type: "TARO_TEXT_WIDGET",
+    widgetCardName: "文本",
+    key: generateReactKey(),
+    isMobile: true,
+  },
+  {
+    type: "TARO_LIST_WIDGET",
+    widgetCardName: "列表",
+    key: generateReactKey(),
+    isMobile: true,
+  },
+  {
+    type: "TARO_POPUP_WIDGET",
+    widgetCardName: "底部弹窗",
+    key: generateReactKey(),
+    isMobile: true,
+  },
+  {
+    type: "TARO_IMAGE_WIDGET",
+    widgetCardName: "图片",
+    key: generateReactKey(),
+    isMobile: true,
+  },
+  {
+    type: "TARO_BUTTON_WIDGET",
+    widgetCardName: "按钮",
+    key: generateReactKey(),
+    isMobile: true,
+  },
+  {
+    type: "TARO_CELL_WIDGET",
+    widgetCardName: "单元格",
+    key: generateReactKey(),
+    isMobile: true,
+  },
+  {
+    type: "TARO_HTML_WIDGET",
+    widgetCardName: "富文本",
+    key: generateReactKey(),
+    isMobile: true,
+  },
+  {
+    type: "TARO_SIMPLE_FORM_WIDGET",
+    widgetCardName: "快速表单",
+    key: generateReactKey(),
+    isMobile: true,
+  },
+  {
+    type: "TARO_KV_WIDGET",
+    widgetCardName: "键值对",
+    key: generateReactKey(),
+    isMobile: true,
+  },
+  {
+    type: "TARO_TABS_WIDGET",
+    widgetCardName: "标签页",
+    key: generateReactKey(),
+    isMobile: true,
+  },
 ];
 
 export default WidgetSidebarResponse;
