@@ -127,6 +127,58 @@ import FormilyWidget, {
   FormilyWidgetProps,
   ProfiledFormilyWidget,
 } from "widgets/FormilyWidget";
+import PickerWidget, {
+  PickerWidgetProps,
+  ProfiledPickerWidget,
+} from "widgets/taro/PickerWidget";
+import SwiperWidget, {
+  SwiperWidgetProps,
+  ProfiledSwiperWidget,
+} from "widgets/taro/SwiperWidget";
+import GridWidget, {
+  GridWidgetProps,
+  ProfiledGridWidget,
+} from "widgets/taro/GridWidget";
+import MTextWidget, {
+  MTextWidgetProps,
+  MProfiledTextWidget,
+} from "widgets/taro/TextWidget";
+import MListWidget, {
+  MListWidgetProps,
+  MProfiledListWidget,
+} from "widgets/taro/ListWidget";
+import MPopupWidget, {
+  MPopupWidgetProps,
+  MProfiledPopupWidget,
+} from "widgets/taro/PopupWidget";
+import MImageWidget, {
+  MImageWidgetProps,
+  MProfiledImageWidget,
+} from "widgets/taro/ImageWidget";
+import MButtonWidget, {
+  MButtonWidgetProps,
+  MProfiledButtonWidget,
+} from "widgets/taro/ButtonWidget";
+import MCellWidget, {
+  MCellWidgetProps,
+  MProfiledCellWidget,
+} from "widgets/taro/CellWidget";
+import MHtmlWidget, {
+  MHtmlWidgetProps,
+  MProfiledHtmlWidget,
+} from "widgets/taro/HtmlWidget";
+import MSimpleFormWidget, {
+  MSimpleFormWidgetProps,
+  MProfiledSimpleFormWidget,
+} from "widgets/taro/SimpleFormWidget";
+import MKVWidget, {
+  MKVWidgetProps,
+  MProfiledKVWidget,
+} from "widgets/taro/KVWidget";
+import MTabsWidget, {
+  MTabsWidgetProps,
+  MProfiledTabsWidget,
+} from "widgets/taro/TabsWidget";
 
 export default class WidgetBuilderRegistry {
   static registerWidgetBuilders() {
@@ -554,6 +606,175 @@ export default class WidgetBuilderRegistry {
       FormilyWidget.getDefaultPropertiesMap(),
       FormilyWidget.getMetaPropertiesMap(),
       FormilyWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_PICKER_WIDGET,
+      {
+        buildWidget(widgetData: PickerWidgetProps): JSX.Element {
+          return <ProfiledPickerWidget {...widgetData} />;
+        },
+      },
+      PickerWidget.getDerivedPropertiesMap(),
+      PickerWidget.getDefaultPropertiesMap(),
+      PickerWidget.getMetaPropertiesMap(),
+      PickerWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_SWIPER_WIDGET,
+      {
+        buildWidget(widgetData: SwiperWidgetProps): JSX.Element {
+          return <ProfiledSwiperWidget {...widgetData} />;
+        },
+      },
+      SwiperWidget.getDerivedPropertiesMap(),
+      SwiperWidget.getDefaultPropertiesMap(),
+      SwiperWidget.getMetaPropertiesMap(),
+      SwiperWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_GRID_WIDGET,
+      {
+        buildWidget(widgetData: GridWidgetProps): JSX.Element {
+          return <ProfiledGridWidget {...widgetData} />;
+        },
+      },
+      GridWidget.getDerivedPropertiesMap(),
+      GridWidget.getDefaultPropertiesMap(),
+      GridWidget.getMetaPropertiesMap(),
+      GridWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_TEXT_WIDGET,
+      {
+        buildWidget(widgetData: MTextWidgetProps): JSX.Element {
+          return <MProfiledTextWidget {...widgetData} />;
+        },
+      },
+      MTextWidget.getDerivedPropertiesMap(),
+      MTextWidget.getDefaultPropertiesMap(),
+      MTextWidget.getMetaPropertiesMap(),
+      MTextWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_LIST_WIDGET,
+      {
+        buildWidget(widgetData: MListWidgetProps): JSX.Element {
+          return <MProfiledListWidget {...widgetData} />;
+        },
+      },
+      MListWidget.getDerivedPropertiesMap(),
+      MListWidget.getDefaultPropertiesMap(),
+      MListWidget.getMetaPropertiesMap(),
+      MListWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_POPUP_WIDGET,
+      {
+        buildWidget(widgetData: MPopupWidgetProps): JSX.Element {
+          return <MProfiledPopupWidget {...widgetData} />;
+        },
+      },
+      MPopupWidget.getDerivedPropertiesMap(),
+      MPopupWidget.getDefaultPropertiesMap(),
+      MPopupWidget.getMetaPropertiesMap(),
+      MPopupWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_IMAGE_WIDGET,
+      {
+        buildWidget(widgetData: MImageWidgetProps): JSX.Element {
+          return <MProfiledImageWidget {...widgetData} />;
+        },
+      },
+      MImageWidget.getDerivedPropertiesMap(),
+      MImageWidget.getDefaultPropertiesMap(),
+      MImageWidget.getMetaPropertiesMap(),
+      MImageWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_BUTTON_WIDGET,
+      {
+        buildWidget(widgetData: MButtonWidgetProps): JSX.Element {
+          return <MProfiledButtonWidget {...widgetData} />;
+        },
+      },
+      MButtonWidget.getDerivedPropertiesMap(),
+      MButtonWidget.getDefaultPropertiesMap(),
+      MButtonWidget.getMetaPropertiesMap(),
+      MButtonWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_CELL_WIDGET,
+      {
+        buildWidget(widgetData: MCellWidgetProps): JSX.Element {
+          return <MProfiledCellWidget {...widgetData} />;
+        },
+      },
+      MCellWidget.getDerivedPropertiesMap(),
+      MCellWidget.getDefaultPropertiesMap(),
+      MCellWidget.getMetaPropertiesMap(),
+      MCellWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_HTML_WIDGET,
+      {
+        buildWidget(widgetData: MHtmlWidgetProps): JSX.Element {
+          return <MProfiledHtmlWidget {...widgetData} />;
+        },
+      },
+      MHtmlWidget.getDerivedPropertiesMap(),
+      MHtmlWidget.getDefaultPropertiesMap(),
+      MHtmlWidget.getMetaPropertiesMap(),
+      MHtmlWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_SIMPLE_FORM_WIDGET,
+      {
+        buildWidget(widgetData: MSimpleFormWidgetProps): JSX.Element {
+          return <MProfiledSimpleFormWidget {...widgetData} />;
+        },
+      },
+      MSimpleFormWidget.getDerivedPropertiesMap(),
+      MSimpleFormWidget.getDefaultPropertiesMap(),
+      MSimpleFormWidget.getMetaPropertiesMap(),
+      MSimpleFormWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_KV_WIDGET,
+      {
+        buildWidget(widgetData: MKVWidgetProps): JSX.Element {
+          return <MProfiledKVWidget {...widgetData} />;
+        },
+      },
+      MKVWidget.getDerivedPropertiesMap(),
+      MKVWidget.getDefaultPropertiesMap(),
+      MKVWidget.getMetaPropertiesMap(),
+      MKVWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_TABS_WIDGET,
+      {
+        buildWidget(widgetData: MTabsWidgetProps): JSX.Element {
+          return <MProfiledTabsWidget {...widgetData} />;
+        },
+      },
+      MTabsWidget.getDerivedPropertiesMap(),
+      MTabsWidget.getDefaultPropertiesMap(),
+      MTabsWidget.getMetaPropertiesMap(),
+      MTabsWidget.getPropertyPaneConfig(),
     );
   }
 }

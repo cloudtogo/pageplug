@@ -96,6 +96,11 @@ const getStyles = (
         background: Colors.OUTER_SPACE,
         color: Colors.WHITE,
       };
+    default:
+      return {
+        background: Colors.OUTER_SPACE,
+        color: Colors.WHITE,
+      };
   }
 };
 

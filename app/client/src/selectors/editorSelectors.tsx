@@ -21,6 +21,7 @@ import _ from "lodash";
 import { ContainerWidgetProps } from "widgets/ContainerWidget";
 import { DataTreeWidget, ENTITY_TYPE } from "entities/DataTree/dataTreeFactory";
 import { getActions } from "selectors/entitiesSelector";
+import { AppLayoutConfig } from "reducers/entityReducers/pageListReducer";
 
 import { getCanvasWidgets } from "./entitiesSelector";
 import { WidgetTypes } from "../constants/WidgetConstants";
@@ -109,6 +110,9 @@ export const getViewModePageList = createSelector(
 export const getCurrentApplicationLayout = (state: AppState) =>
   state.ui.applications.currentApplication?.appLayout;
 
+export const isMobileLayout = (state: AppState) =>
+  state.ui.applications.currentApplication?.appLayout?.type === "MOBILE_FLUID";
+
 export const getCurrentPageName = createSelector(
   getPageListState,
   (pageList: PageListReduxState) =>
@@ -119,11 +123,15 @@ export const getCurrentPageName = createSelector(
 export const getWidgetCards = createSelector(
   getWidgetSideBar,
   getWidgetConfigs,
+  isMobileLayout,
   (
     widgetCards: WidgetSidebarReduxState,
     widgetConfigs: WidgetConfigReducerState,
+    isMobile: boolean,
   ) => {
-    const cards = widgetCards.cards;
+    const cards = widgetCards.cards.filter((c) =>
+      isMobile ? c.isMobile : !c.isMobile,
+    );
     return cards
       .map((widget: WidgetCardProps) => {
         const {

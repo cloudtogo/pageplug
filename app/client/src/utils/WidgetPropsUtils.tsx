@@ -1267,7 +1267,11 @@ export const generateWidgetProps = (
 
     const others = {};
     const props: ContainerWidgetProps<WidgetProps> = {
-      isVisible: WidgetTypes.MODAL_WIDGET === type ? undefined : true,
+      isVisible:
+        WidgetTypes.MODAL_WIDGET === type ||
+        WidgetTypes.TARO_POPUP_WIDGET === type
+          ? undefined
+          : true,
       ...widgetConfig,
       type,
       widgetName,

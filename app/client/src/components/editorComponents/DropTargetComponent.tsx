@@ -63,7 +63,7 @@ const EmptyContainer = styled.div`
   width: 400px;
   height: 400px;
   margin-top: -180px;
-  margin-left: -100px;
+  margin-left: -70px;
   text-align: center;
   opacity: 0.5;
 
@@ -74,6 +74,7 @@ const EmptyContainer = styled.div`
 
   & img {
     height: 100%;
+    width: 70%;
   }
 `;
 
@@ -219,12 +220,17 @@ export function DropTargetComponent(props: DropTargetComponentProps) {
         // Only show propertypane if this is a new widget.
         // If it is not a new widget, then let the DraggableComponent handle it.
         // Give evaluations a second to complete.
+        const waitingTime =
+          widget.type === WidgetTypes.MODAL_WIDGET ||
+          widget.type === WidgetTypes.TARO_POPUP_WIDGET
+            ? 1000
+            : 100;
         setTimeout(() => {
           if (showPropertyPane && updateWidgetParams.payload.newWidgetId) {
             showPropertyPane(updateWidgetParams.payload.newWidgetId);
             // toggleEditWidgetName(updateWidgetParams.payload.newWidgetId, true);
           }
-        }, 100);
+        }, waitingTime);
 
         // Select the widget if it is a new widget
         selectWidget && selectWidget(widget.widgetId);

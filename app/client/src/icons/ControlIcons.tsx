@@ -28,6 +28,7 @@ import { ReactComponent as HideColumnIcon } from "assets/icons/control/columns-v
 import { ReactComponent as DeleteColumnIcon } from "assets/icons/control/delete-column.svg";
 import { ReactComponent as BoldFontIcon } from "assets/icons/control/bold.svg";
 import { ReactComponent as ItalicsFontIcon } from "assets/icons/control/italics.svg";
+import { ReactComponent as LineThroughFontIcon } from "assets/icons/control/line-through.svg";
 import { ReactComponent as LeftAlignIcon } from "assets/icons/control/left-align.svg";
 import { ReactComponent as CenterAlignIcon } from "assets/icons/control/center-align.svg";
 import { ReactComponent as RightAlignIcon } from "assets/icons/control/right-align.svg";
@@ -204,6 +205,11 @@ export const ControlIcons: {
   ITALICS_FONT: (props: IconProps) => (
     <IconWrapper {...props}>
       <ItalicsFontIcon />
+    </IconWrapper>
+  ),
+  LINETHROUGH_FONT: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <LineThroughFontIcon />
     </IconWrapper>
   ),
   LEFT_ALIGN: (props: IconProps) => (

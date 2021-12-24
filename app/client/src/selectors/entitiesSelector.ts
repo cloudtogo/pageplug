@@ -367,7 +367,10 @@ const getParentModalId = (widget: any, pageWidgets: Record<string, any>) => {
   let { parentId } = widget;
   let parentWidget = pageWidgets[parentId];
   while (parentId && parentId !== MAIN_CONTAINER_WIDGET_ID) {
-    if (parentWidget?.type === "MODAL_WIDGET") {
+    if (
+      parentWidget?.type === "MODAL_WIDGET" ||
+      parentWidget?.type === "TARO_POPUP_WIDGET"
+    ) {
       parentModalId = parentId;
       break;
     }

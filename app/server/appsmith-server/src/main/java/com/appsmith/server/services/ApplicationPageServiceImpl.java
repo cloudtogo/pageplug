@@ -15,10 +15,7 @@ import com.appsmith.server.domains.NewPage;
 import com.appsmith.server.domains.Organization;
 import com.appsmith.server.domains.Page;
 import com.appsmith.server.domains.User;
-import com.appsmith.server.dtos.ActionDTO;
-import com.appsmith.server.dtos.ApplicationPagesDTO;
-import com.appsmith.server.dtos.PageDTO;
-import com.appsmith.server.dtos.PageNameIdDTO;
+import com.appsmith.server.dtos.*;
 import com.appsmith.server.exceptions.AppsmithError;
 import com.appsmith.server.exceptions.AppsmithException;
 import com.appsmith.server.repositories.ApplicationRepository;
@@ -255,6 +252,15 @@ public class ApplicationPageServiceImpl implements ApplicationPageService {
 
         return applicationWithPoliciesMono
                 .flatMap(applicationService::createDefault)
+                .flatMap(savedApplication -> {
+                    final Application.AppLayout appLayout = savedApplication.getPublishedAppLayout();
+                    if (appLayout != null && appLayout.getType() == Application.AppLayout.Type.MOBILE_FLUID) {
+                        final ApplicationAccessDTO applicationAccessDTO = new ApplicationAccessDTO();
+                        applicationAccessDTO.setPublicAccess(true);
+                        return this.applicationService.changeViewAccess(savedApplication.getId(), applicationAccessDTO);
+                    }
+                    return Mono.just(savedApplication);
+                })
                 .flatMap(savedApplication -> {
 
                     PageDTO page = new PageDTO();

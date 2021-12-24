@@ -52,8 +52,8 @@ export const dataTreeTypeDefCreator = (
         subType: "ACTION",
       });
     } else if (isAppsmithEntity(entity)) {
-      def.appsmith = generateTypeDef(_.omit(entity, "ENTITY_TYPE"));
-      entityMap.set("appsmith", {
+      def.global = generateTypeDef(_.omit(entity, "ENTITY_TYPE"));
+      entityMap.set("global", {
         type: ENTITY_TYPE.APPSMITH,
         subType: ENTITY_TYPE.APPSMITH,
       });

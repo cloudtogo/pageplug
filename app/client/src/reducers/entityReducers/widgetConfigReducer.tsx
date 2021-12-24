@@ -35,6 +35,19 @@ import { RateWidgetProps } from "widgets/RateWidget";
 import { IframeWidgetProps } from "widgets/IframeWidget";
 import { MenuButtonWidgetProps } from "widgets/MenuButtonWidget";
 import { FormilyWidgetProps } from "widgets/FormilyWidget";
+import { PickerWidgetProps } from "widgets/taro/PickerWidget";
+import { SwiperWidgetProps } from "widgets/taro/SwiperWidget";
+import { GridWidgetProps } from "widgets/taro/GridWidget";
+import { MTextWidgetProps } from "widgets/taro/TextWidget";
+import { MListWidgetProps } from "widgets/taro/ListWidget";
+import { MPopupWidgetProps } from "widgets/taro/PopupWidget";
+import { MImageWidgetProps } from "widgets/taro/ImageWidget";
+import { MButtonWidgetProps } from "widgets/taro/ButtonWidget";
+import { MCellWidgetProps } from "widgets/taro/CellWidget";
+import { MHtmlWidgetProps } from "widgets/taro/HtmlWidget";
+import { MSimpleFormWidgetProps } from "widgets/taro/SimpleFormWidget";
+import { MKVWidgetProps } from "widgets/taro/KVWidget";
+import { MTabsWidgetProps } from "widgets/taro/TabsWidget";
 
 const initialState: WidgetConfigReducerState = WidgetConfigResponse;
 
@@ -94,6 +107,20 @@ export interface WidgetConfigReducerState {
     IFRAME_WIDGET: Partial<IframeWidgetProps> & WidgetConfigProps;
     MENU_BUTTON_WIDGET: Partial<MenuButtonWidgetProps> & WidgetConfigProps;
     FORMILY_WIDGET: Partial<FormilyWidgetProps> & WidgetConfigProps;
+    TARO_PICKER_WIDGET: Partial<PickerWidgetProps> & WidgetConfigProps;
+    TARO_SWIPER_WIDGET: Partial<SwiperWidgetProps> & WidgetConfigProps;
+    TARO_GRID_WIDGET: Partial<GridWidgetProps> & WidgetConfigProps;
+    TARO_TEXT_WIDGET: Partial<MTextWidgetProps> & WidgetConfigProps;
+    TARO_LIST_WIDGET: Partial<MListWidgetProps> & WidgetConfigProps;
+    TARO_POPUP_WIDGET: Partial<MPopupWidgetProps> & WidgetConfigProps;
+    TARO_IMAGE_WIDGET: Partial<MImageWidgetProps> & WidgetConfigProps;
+    TARO_BUTTON_WIDGET: Partial<MButtonWidgetProps> & WidgetConfigProps;
+    TARO_CELL_WIDGET: Partial<MCellWidgetProps> & WidgetConfigProps;
+    TARO_HTML_WIDGET: Partial<MHtmlWidgetProps> & WidgetConfigProps;
+    TARO_SIMPLE_FORM_WIDGET: Partial<MSimpleFormWidgetProps> &
+      WidgetConfigProps;
+    TARO_KV_WIDGET: Partial<MKVWidgetProps> & WidgetConfigProps;
+    TARO_TABS_WIDGET: Partial<MTabsWidgetProps> & WidgetConfigProps;
   };
   configVersion: number;
 }

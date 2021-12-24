@@ -178,6 +178,71 @@ export const WidgetIcons: {
       <FormIcon />
     </IconWrapper>
   ),
+  TARO_PICKER_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <MultiSelectIcon />
+    </IconWrapper>
+  ),
+  TARO_SWIPER_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <VideoIcon />
+    </IconWrapper>
+  ),
+  TARO_GRID_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <TableIcon />
+    </IconWrapper>
+  ),
+  TARO_TEXT_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <TextIcon />
+    </IconWrapper>
+  ),
+  TARO_LIST_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <ListIcon />
+    </IconWrapper>
+  ),
+  TARO_POPUP_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <ModalIcon />
+    </IconWrapper>
+  ),
+  TARO_IMAGE_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <ImageIcon />
+    </IconWrapper>
+  ),
+  TARO_BUTTON_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <ButtonIcon />
+    </IconWrapper>
+  ),
+  TARO_CELL_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <ListIcon />
+    </IconWrapper>
+  ),
+  TARO_HTML_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <RichTextEditorIcon />
+    </IconWrapper>
+  ),
+  TARO_SIMPLE_FORM_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <FormIcon />
+    </IconWrapper>
+  ),
+  TARO_KV_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <TextIcon />
+    </IconWrapper>
+  ),
+  TARO_TABS_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <TabsIcon />
+    </IconWrapper>
+  ),
 };
 
 export type WidgetIcon = typeof WidgetIcons[keyof typeof WidgetIcons];
