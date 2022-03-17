@@ -533,7 +533,7 @@ export default class DataTreeEvaluator {
       }
       this.errors.push({
         type: EvalErrorTypes.CYCLICAL_DEPENDENCY_ERROR,
-        message: "Cyclic dependency found while evaluating.",
+        message: "解析时发现循环依赖！",
         context: {
           node,
           entityType,

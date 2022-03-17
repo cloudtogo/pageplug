@@ -107,11 +107,31 @@ export const getViewModePageList = createSelector(
   },
 );
 
+export const getCurrentPage = createSelector(
+  getPageList,
+  getCurrentPageId,
+  (pageList: PageListReduxState["pages"], currentPageId?: string) => {
+    if (currentPageId) {
+      return pageList.find((page) => page.pageId === currentPageId);
+    }
+    return null;
+  },
+);
+
 export const getCurrentApplicationLayout = (state: AppState) =>
   state.ui.applications.currentApplication?.appLayout;
 
 export const isMobileLayout = (state: AppState) =>
   state.ui.applications.currentApplication?.appLayout?.type === "MOBILE_FLUID";
+
+export const getShowTabBar = createSelector(
+  getCurrentPage,
+  isMobileLayout,
+  getPageList,
+  (page: any, isMobile: boolean) => {
+    return isMobile && !!page?.icon;
+  },
+);
 
 export const getCurrentPageName = createSelector(
   getPageListState,

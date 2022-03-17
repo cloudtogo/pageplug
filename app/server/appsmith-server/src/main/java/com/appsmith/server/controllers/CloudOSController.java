@@ -46,4 +46,18 @@ public class CloudOSController {
                 .map(appUrl -> new ResponseDTO<>(HttpStatus.OK.value(), appUrl, null));
     }
 
+    @PostMapping("/forkApplicationTemplate")
+    public Mono<ResponseDTO<String>> forkApplicationTemplate(@RequestBody Map<String, Object> data) {
+        log.debug("create a organization and fork an app from CloudOS blueprint template");
+        return cloudOSActionSolution.forkApplicationTemplate(data)
+                .map(appUrl -> new ResponseDTO<>(HttpStatus.OK.value(), appUrl, null));
+    }
+
+    @PostMapping("/getMiniPreview")
+    public Mono<ResponseDTO<String>> getMiniPreview(@RequestBody Map<String, Object> data) {
+        log.debug("get mini-app's QR code image data (Base64)");
+        return cloudOSActionSolution.getMiniPreview(data)
+                .map(url -> new ResponseDTO<>(HttpStatus.OK.value(), url, null));
+    }
+
 }

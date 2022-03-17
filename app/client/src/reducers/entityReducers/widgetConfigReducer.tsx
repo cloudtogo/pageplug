@@ -45,9 +45,15 @@ import { MImageWidgetProps } from "widgets/taro/ImageWidget";
 import { MButtonWidgetProps } from "widgets/taro/ButtonWidget";
 import { MCellWidgetProps } from "widgets/taro/CellWidget";
 import { MHtmlWidgetProps } from "widgets/taro/HtmlWidget";
-import { MSimpleFormWidgetProps } from "widgets/taro/SimpleFormWidget";
+import { MSkuWidgetProps } from "widgets/taro/SkuWidget";
 import { MKVWidgetProps } from "widgets/taro/KVWidget";
 import { MTabsWidgetProps } from "widgets/taro/TabsWidget";
+import { MBottomBarWidgetProps } from "widgets/taro/BottomBarWidget";
+import { MActionBarWidgetProps } from "widgets/taro/ActionBarWidget";
+import { MSearchWidgetProps } from "widgets/taro/SearchWidget";
+import { MLoadingWidgetProps } from "widgets/taro/LoadingWidget";
+import { MCheckboxWidgetProps } from "widgets/taro/CheckboxWidget";
+import { MFormWidgetProps } from "widgets/taro/FormWidget";
 
 const initialState: WidgetConfigReducerState = WidgetConfigResponse;
 
@@ -117,10 +123,15 @@ export interface WidgetConfigReducerState {
     TARO_BUTTON_WIDGET: Partial<MButtonWidgetProps> & WidgetConfigProps;
     TARO_CELL_WIDGET: Partial<MCellWidgetProps> & WidgetConfigProps;
     TARO_HTML_WIDGET: Partial<MHtmlWidgetProps> & WidgetConfigProps;
-    TARO_SIMPLE_FORM_WIDGET: Partial<MSimpleFormWidgetProps> &
-      WidgetConfigProps;
+    TARO_SKU_WIDGET: Partial<MSkuWidgetProps> & WidgetConfigProps;
     TARO_KV_WIDGET: Partial<MKVWidgetProps> & WidgetConfigProps;
     TARO_TABS_WIDGET: Partial<MTabsWidgetProps> & WidgetConfigProps;
+    TARO_BOTTOM_BAR_WIDGET: Partial<MBottomBarWidgetProps> & WidgetConfigProps;
+    TARO_ACTION_BAR_WIDGET: Partial<MActionBarWidgetProps> & WidgetConfigProps;
+    TARO_SEARCH_WIDGET: Partial<MSearchWidgetProps> & WidgetConfigProps;
+    TARO_LOADING_WIDGET: Partial<MLoadingWidgetProps> & WidgetConfigProps;
+    TARO_CHECKBOX_WIDGET: Partial<MCheckboxWidgetProps> & WidgetConfigProps;
+    TARO_FORM_WIDGET: Partial<MFormWidgetProps> & WidgetConfigProps;
   };
   configVersion: number;
 }

@@ -7,6 +7,7 @@ import PropertyPane from "pages/Editor/PropertyPane";
 import ArtBoard from "pages/common/ArtBoard";
 import log from "loglevel";
 import * as Sentry from "@sentry/react";
+import TabBarIconPicker from "components/designSystems/taro/TabBarIconPicker";
 
 interface CanvasProps {
   dsl: ContainerWidgetProps<WidgetProps>;
@@ -26,6 +27,7 @@ const Canvas = memo((props: CanvasProps) => {
         >
           {props.dsl.widgetId &&
             WidgetFactory.createWidget(props.dsl, RenderModes.CANVAS)}
+          <TabBarIconPicker />
         </ArtBoard>
       </>
     );

@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Sidebar from "components/editorComponents/Sidebar";
 import { Route, Switch } from "react-router";
 import { BUILDER_URL } from "constants/routes";
+import TabBar from "components/designSystems/taro/TabBar";
 
 import * as Sentry from "@sentry/react";
 const SentryRoute = Sentry.withSentryRouting(Route);
@@ -22,6 +23,7 @@ const Container = styled.div`
 const EditorContainer = styled.div`
   position: relative;
   width: calc(100vw - ${(props) => props.theme.sidebarWidth});
+  transform: translate(0, 0);
 `;
 
 function MainContainer() {
@@ -33,6 +35,7 @@ function MainContainer() {
           <SentryRoute component={WidgetsEditor} exact path={BUILDER_URL} />
           <SentryRoute component={EditorsRouter} />
         </Switch>
+        <TabBar />
       </EditorContainer>
     </Container>
   );

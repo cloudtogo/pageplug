@@ -2598,6 +2598,7 @@ export const theme: Theme = {
 
 const taroifyTheme = {
   primaryColor: Colors.MINT_GREEN,
+  cellIconMarginLeft: "20px",
 };
 
 export { css, createGlobalStyle, keyframes, ThemeProvider, taroifyTheme };

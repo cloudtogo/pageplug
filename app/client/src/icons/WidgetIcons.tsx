@@ -28,6 +28,19 @@ import { ReactComponent as EmbedIcon } from "assets/icons/widget/embed.svg";
 import { ReactComponent as DividerIcon } from "assets/icons/widget/divider.svg";
 import { ReactComponent as MenuButtonIcon } from "assets/icons/widget/menu-button.svg";
 
+import { ReactComponent as KeyValueIcon } from "assets/icons/widget/kv.svg";
+import { ReactComponent as SwiperIcon } from "assets/icons/widget/swiper.svg";
+import { ReactComponent as SearchIcon } from "assets/icons/widget/search.svg";
+import { ReactComponent as GridIcon } from "assets/icons/widget/grid.svg";
+import { ReactComponent as SKUIcon } from "assets/icons/widget/sku.svg";
+import { ReactComponent as LoadingIcon } from "assets/icons/widget/loading.svg";
+import { ReactComponent as DockBottomIcon } from "assets/icons/widget/dock-bottom.svg";
+import { ReactComponent as TabbarIcon } from "assets/icons/widget/tabbar.svg";
+import { ReactComponent as PopoverIcon } from "assets/icons/widget/popover.svg";
+import { ReactComponent as ActionBarIcon } from "assets/icons/widget/action-bar.svg";
+import { ReactComponent as CellIcon } from "assets/icons/widget/cell.svg";
+import { ReactComponent as CapsuleIcon } from "assets/icons/widget/capsule.svg";
+
 /* eslint-disable react/display-name */
 
 export const WidgetIcons: {
@@ -185,12 +198,12 @@ export const WidgetIcons: {
   ),
   TARO_SWIPER_WIDGET: (props: IconProps) => (
     <IconWrapper {...props}>
-      <VideoIcon />
+      <SwiperIcon />
     </IconWrapper>
   ),
   TARO_GRID_WIDGET: (props: IconProps) => (
     <IconWrapper {...props}>
-      <TableIcon />
+      <GridIcon />
     </IconWrapper>
   ),
   TARO_TEXT_WIDGET: (props: IconProps) => (
@@ -205,7 +218,7 @@ export const WidgetIcons: {
   ),
   TARO_POPUP_WIDGET: (props: IconProps) => (
     <IconWrapper {...props}>
-      <ModalIcon />
+      <PopoverIcon />
     </IconWrapper>
   ),
   TARO_IMAGE_WIDGET: (props: IconProps) => (
@@ -215,12 +228,12 @@ export const WidgetIcons: {
   ),
   TARO_BUTTON_WIDGET: (props: IconProps) => (
     <IconWrapper {...props}>
-      <ButtonIcon />
+      <CapsuleIcon />
     </IconWrapper>
   ),
   TARO_CELL_WIDGET: (props: IconProps) => (
     <IconWrapper {...props}>
-      <ListIcon />
+      <CellIcon />
     </IconWrapper>
   ),
   TARO_HTML_WIDGET: (props: IconProps) => (
@@ -228,19 +241,49 @@ export const WidgetIcons: {
       <RichTextEditorIcon />
     </IconWrapper>
   ),
-  TARO_SIMPLE_FORM_WIDGET: (props: IconProps) => (
+  TARO_SKU_WIDGET: (props: IconProps) => (
     <IconWrapper {...props}>
-      <FormIcon />
+      <SKUIcon />
     </IconWrapper>
   ),
   TARO_KV_WIDGET: (props: IconProps) => (
     <IconWrapper {...props}>
-      <TextIcon />
+      <KeyValueIcon />
     </IconWrapper>
   ),
   TARO_TABS_WIDGET: (props: IconProps) => (
     <IconWrapper {...props}>
-      <TabsIcon />
+      <TabbarIcon />
+    </IconWrapper>
+  ),
+  TARO_BOTTOM_BAR_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <DockBottomIcon />
+    </IconWrapper>
+  ),
+  TARO_ACTION_BAR_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <ActionBarIcon />
+    </IconWrapper>
+  ),
+  TARO_SEARCH_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <SearchIcon />
+    </IconWrapper>
+  ),
+  TARO_LOADING_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <LoadingIcon />
+    </IconWrapper>
+  ),
+  TARO_CHECKBOX_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <CheckboxIcon />
+    </IconWrapper>
+  ),
+  TARO_FORM_WIDGET: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <FormIcon />
     </IconWrapper>
   ),
 };

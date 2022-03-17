@@ -170,13 +170,19 @@ export const clonePageSuccess = (
   };
 };
 
-export const updatePage = (id: string, name: string, isHidden: boolean) => {
+export const updatePage = (
+  id: string,
+  name: string,
+  isHidden: boolean,
+  icon?: string,
+) => {
   return {
     type: ReduxActionTypes.UPDATE_PAGE_INIT,
     payload: {
       id,
       name,
       isHidden,
+      icon,
     },
   };
 };

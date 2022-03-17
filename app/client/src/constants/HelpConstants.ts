@@ -179,9 +179,9 @@ export const HelpMap = {
     path: "/widget-reference/",
     searchKey: "Taro Html",
   },
-  TARO_SIMPLE_FORM_WIDGET: {
+  TARO_SKU_WIDGET: {
     path: "/widget-reference/",
-    searchKey: "Taro Simple Form",
+    searchKey: "Taro SKU",
   },
   TARO_KV_WIDGET: {
     path: "/widget-reference/",
@@ -190,6 +190,30 @@ export const HelpMap = {
   TARO_TABS_WIDGET: {
     path: "/widget-reference/",
     searchKey: "Taro Tabs",
+  },
+  TARO_BOTTOM_BAR_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro Bottom Bar",
+  },
+  TARO_ACTION_BAR_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro Action Bar",
+  },
+  TARO_SEARCH_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro Search",
+  },
+  TARO_LOADING_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro Loading",
+  },
+  TARO_CHECKBOX_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro Checkbox",
+  },
+  TARO_FORM_WIDGET: {
+    path: "/widget-reference/",
+    searchKey: "Taro Form",
   },
 };
 

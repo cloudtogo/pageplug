@@ -4,6 +4,7 @@ import { WidgetType, TextSize } from "constants/WidgetConstants";
 import TextComponent from "components/designSystems/taro/TextComponent";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { DerivedPropertiesMap } from "utils/WidgetFactory";
+import LoadingWrapper from "./LoadingWrapper";
 
 class TextWidget extends BaseWidget<MTextWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
@@ -46,7 +47,8 @@ class TextWidget extends BaseWidget<MTextWidgetProps, WidgetState> {
             propertyName: "backgroundColor",
             label: "背景颜色",
             controlType: "COLOR_PICKER",
-            isBindProperty: false,
+            isJSConvertible: true,
+            isBindProperty: true,
             isTriggerProperty: false,
           },
           {
@@ -56,12 +58,6 @@ class TextWidget extends BaseWidget<MTextWidgetProps, WidgetState> {
             isJSConvertible: true,
             isBindProperty: true,
             isTriggerProperty: false,
-            validation: {
-              type: ValidationTypes.TEXT,
-              params: {
-                regex: /^(?![<|{{]).+/,
-              },
-            },
           },
           {
             propertyName: "fontSize",
@@ -156,18 +152,20 @@ class TextWidget extends BaseWidget<MTextWidgetProps, WidgetState> {
 
   getPageView() {
     return (
-      <TextComponent
-        backgroundColor={this.props.backgroundColor}
-        fontSize={this.props.fontSize}
-        fontStyle={this.props.fontStyle}
-        isLoading={this.props.isLoading}
-        key={this.props.widgetId}
-        shouldScroll={this.props.shouldScroll}
-        text={this.props.text}
-        textAlign={this.props.textAlign ? this.props.textAlign : "LEFT"}
-        textColor={this.props.textColor}
-        widgetId={this.props.widgetId}
-      />
+      <LoadingWrapper isLoading={this.props.isLoading}>
+        <TextComponent
+          backgroundColor={this.props.backgroundColor}
+          fontSize={this.props.fontSize}
+          fontStyle={this.props.fontStyle}
+          isLoading={this.props.isLoading}
+          key={this.props.widgetId}
+          shouldScroll={this.props.shouldScroll}
+          text={this.props.text}
+          textAlign={this.props.textAlign ? this.props.textAlign : "LEFT"}
+          textColor={this.props.textColor}
+          widgetId={this.props.widgetId}
+        />
+      </LoadingWrapper>
     );
   }
 

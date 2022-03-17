@@ -122,15 +122,15 @@ export default function Pagination(props: PaginationProps) {
           name="actionConfiguration.paginationType"
           options={[
             {
-              label: "None",
+              label: "不分页",
               value: PaginationType.NONE,
             },
             {
-              label: "Paginate with Table Page No",
+              label: "使用表格页号分页",
               value: PaginationType.PAGE_NO,
             },
             {
-              label: "Paginate with Response Url",
+              label: "上一页下一页",
               value: PaginationType.URL,
             },
           ]}
@@ -143,20 +143,20 @@ export default function Pagination(props: PaginationProps) {
         <PaginationTypeView>
           <div>
             <Description case={Case.UPPERCASE} type={TextType.H6}>
-              Pagination with response url
+              上一页下一页
             </Description>
             <StepTitle>
               <NumberBox>1</NumberBox>
-              <Text type={TextType.P1}>Configure Table for Pagination</Text>
+              <Text type={TextType.P1}>配置表格</Text>
             </StepTitle>
-            <Step type={TextType.P1}>1. Enable server side pagination</Step>
-            <Step type={TextType.P1}>2. Configure OnPageChange action</Step>
+            <Step type={TextType.P1}>1. 打开服务端分页</Step>
+            <Step type={TextType.P1}>2. 配置 OnPageChange 动作</Step>
             <StepTitle>
               <NumberBox>2</NumberBox>
-              <Text type={TextType.P1}>Configure Request Parameters</Text>
+              <Text type={TextType.P1}>配置请求参数</Text>
             </StepTitle>
-            <Step type={TextType.P1}>Configure Next and Previous URL </Step>
-            <Step type={TextType.P1}>Previous url</Step>
+            <Step type={TextType.P1}>配置上下页地址</Step>
+            <Step type={TextType.P1}>上一页地址</Step>
             <PaginationFieldWrapper>
               <DynamicTextField
                 className="t--apiFormPaginationPrev"
@@ -172,11 +172,11 @@ export default function Pagination(props: PaginationProps) {
                 }}
                 size={Size.medium}
                 tag="button"
-                text={"Test"}
+                text={"测试"}
                 type="button"
               />
             </PaginationFieldWrapper>
-            <Step type={TextType.P1}>Next url</Step>
+            <Step type={TextType.P1}>下一页地址</Step>
             <PaginationFieldWrapper>
               <DynamicTextField
                 className="t--apiFormPaginationNext"
@@ -192,12 +192,12 @@ export default function Pagination(props: PaginationProps) {
                 }}
                 size={Size.medium}
                 tag="button"
-                text={"Test"}
+                text={"测试"}
                 type="button"
               />
             </PaginationFieldWrapper>
           </div>
-          <GifContainer>
+          {/* <GifContainer>
             <GifPlayerComponent
               gif={
                 props.theme === EditorTheme.LIGHT ? lightmodeGif : darkmodeGif
@@ -211,37 +211,36 @@ export default function Pagination(props: PaginationProps) {
             <Text type={TextType.P3}>
               1. How to Configure Table for Pagination
             </Text>
-          </GifContainer>
+          </GifContainer> */}
         </PaginationTypeView>
       )}
       {props.paginationType === PaginationType.PAGE_NO && (
         <PaginationTypeView>
           <div>
             <Description case={Case.UPPERCASE} type={TextType.H6}>
-              Pagination with Table Page number
+              使用表格页号分页
             </Description>
             <StepTitle>
               <NumberBox>1</NumberBox>
-              <Text type={TextType.P1}>Configure Table for Pagination</Text>
+              <Text type={TextType.P1}>配置表格</Text>
             </StepTitle>
-            <Step type={TextType.P1}>1. Enable server side pagination</Step>
-            <Step type={TextType.P1}>2. Configure OnPageChange action</Step>
+            <Step type={TextType.P1}>1. 打开服务端分页</Step>
+            <Step type={TextType.P1}>2. 配置 OnPageChange 动作</Step>
             <StepTitle>
               <NumberBox>2</NumberBox>
-              <Text type={TextType.P1}>Configure Request Parameters</Text>
+              <Text type={TextType.P1}>配置请求参数</Text>
             </StepTitle>
             <Step style={{ width: "336px" }} type={TextType.P1}>
-              1. Map appropiate parameter or header in your request to
-              UsersTable’s page number property
+              绑定 UsersTable 的页号到请求参数或请求头中
             </Step>
             <Example type={TextType.P2}>
-              Example - Map key <i>pageNo</i> or similar to value
+              例如 - 绑定表格的 <i>pageNo</i>
             </Example>
             <BindingKey>
               <Text type={TextType.P2}>{"{{UsersTable.pageNo}}"}</Text>
             </BindingKey>
           </div>
-          <GifContainer>
+          {/* <GifContainer>
             <GifPlayerComponent
               gif={
                 props.theme === EditorTheme.LIGHT ? lightmodeGif : darkmodeGif
@@ -255,7 +254,7 @@ export default function Pagination(props: PaginationProps) {
             <Text type={TextType.P3}>
               1. How to Configure Table for Pagination
             </Text>
-          </GifContainer>
+          </GifContainer> */}
         </PaginationTypeView>
       )}
     </PaginationSection>
