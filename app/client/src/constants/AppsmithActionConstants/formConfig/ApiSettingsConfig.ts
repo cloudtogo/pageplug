@@ -4,30 +4,29 @@ export default [
     id: 1,
     children: [
       {
-        label: "Run API on Page load",
+        label: "页面加载完成后立即运行 API",
         configProperty: "executeOnLoad",
         controlType: "CHECKBOX",
-        info: "Will refresh data each time the page is loaded",
+        info: "页面加载后刷新数据",
       },
+      // {
+      //   label: "运行API前请求用户确认",
+      //   configProperty: "confirmBeforeExecute",
+      //   controlType: "CHECKBOX",
+      //   info: "每次刷新数据前询问用户是否确认操作",
+      // },
       {
-        label: "Request confirmation before running API",
-        configProperty: "confirmBeforeExecute",
-        controlType: "CHECKBOX",
-        info: "Ask confirmation from the user each time before refreshing data",
-      },
-      {
-        label: "Encode query params",
+        label: "编码查询参数",
         configProperty: "actionConfiguration.encodeParamsToggle",
         controlType: "CHECKBOX",
         info:
-          "Encode query params for all APIs. Also encode form body when Content-Type header is set to x-www-form-encoded",
+          "编码所有的 API 查询参数。当 Content-Type 请求头设置为 x-www-form-encoded 时，系统也会编码表单体。",
       },
       {
-        label: "Smart JSON Substitution",
+        label: "智能 JSON 修正",
         configProperty: "actionConfiguration.pluginSpecifiedTemplates[0].value",
         controlType: "CHECKBOX",
-        info:
-          "Turning on this property fixes the JSON substitution of bindings in API body by adding/removing quotes intelligently and reduces developer errors",
+        info: "修正 API 请求体 JSON 中的引号",
         initialValue: true,
       },
       // {
@@ -42,8 +41,8 @@ export default [
       //   dataType: "NUMBER",
       // },
       {
-        label: "API timeout (in milliseconds)",
-        info: "Maximum time after which the API will return",
+        label: "API 超时时间 (毫秒)",
+        info: "容忍 API 多长时间不返回",
         configProperty: "actionConfiguration.timeoutInMillisecond",
         controlType: "NUMBER_INPUT",
         dataType: "number",

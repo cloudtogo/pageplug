@@ -23,6 +23,10 @@ export interface FetchApplicationPayload {
   mode: APP_MODE;
 }
 
+export interface FetchApplicationPreviewPayload {
+  applicationId: string;
+}
+
 export const fetchApplication = (
   applicationId: string,
   mode: APP_MODE,
@@ -103,3 +107,14 @@ export const setShowAppInviteUsersDialog = (payload: boolean) => ({
   type: ReduxActionTypes.SET_SHOW_APP_INVITE_USERS_MODAL,
   payload,
 });
+
+export const fetchApplicationPreviewWxaCode = (
+  applicationId: string,
+): ReduxAction<FetchApplicationPreviewPayload> => {
+  return {
+    type: ReduxActionTypes.FETCH_APPLICATION_PREVIEW_INIT,
+    payload: {
+      applicationId,
+    },
+  };
+};

@@ -1,61 +1,168 @@
 import React from "react";
 import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
 import { WidgetType } from "constants/WidgetConstants";
-import ButtonComponent from "components/designSystems/taro/ButtonComponent";
-import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import KVComponent from "components/designSystems/taro/KVComponent";
 import { ValidationTypes } from "constants/WidgetValidation";
 import withMeta, { WithMeta } from "../MetaHOC";
+import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
+import LoadingWrapper from "./LoadingWrapper";
 
-class MKVWidget extends BaseWidget<MKVWidgetProps, KVWidgetState> {
-  state = {
-    isLoading: false,
-  };
+const textSizeOptions = [
+  {
+    label: "一级标题",
+    value: "HEADING1",
+    subText: "24px",
+    icon: "HEADING_ONE",
+  },
+  {
+    label: "二级标题",
+    value: "HEADING2",
+    subText: "18px",
+    icon: "HEADING_TWO",
+  },
+  {
+    label: "三级标题",
+    value: "HEADING3",
+    subText: "16px",
+    icon: "HEADING_THREE",
+  },
+  {
+    label: "一级段落",
+    value: "PARAGRAPH",
+    subText: "14px",
+    icon: "PARAGRAPH",
+  },
+  {
+    label: "二级段落",
+    value: "PARAGRAPH2",
+    subText: "12px",
+    icon: "PARAGRAPH_TWO",
+  },
+];
 
+const textAlignOptions = [
+  {
+    icon: "LEFT_ALIGN",
+    value: "LEFT",
+  },
+  {
+    icon: "CENTER_ALIGN",
+    value: "CENTER",
+  },
+  {
+    icon: "RIGHT_ALIGN",
+    value: "RIGHT",
+  },
+];
+
+const demoLayoutProps: any = {
+  list: [
+    {
+      key: "晚来天欲雪",
+      value: "能饮一杯无",
+    },
+  ],
+  kKey: "key",
+  vKey: "value",
+  layout: "v",
+  inset: false,
+  kColor: "#999",
+  kSize: "PARAGRAPH",
+  kBold: false,
+  kAlign: "LEFT",
+  vColor: "#000",
+  vSize: "PARAGRAPH",
+  vBold: false,
+  vAlign: "LEFT",
+  style: {
+    borderRadius: "4px",
+    padding: "1px 12px",
+    marginBottom: "8px",
+    background: "#f7f8f9",
+    border: "2px solid #ccc",
+  },
+};
+
+class MKVWidget extends BaseWidget<MKVWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
     return [
       {
         sectionName: "属性",
         children: [
           {
-            propertyName: "text",
-            label: "按钮文字",
+            helpText: "数组，通过 {{}} 进行数据绑定",
+            propertyName: "list",
+            label: "数据",
             controlType: "INPUT_TEXT",
-            placeholderText: "输入按钮文字",
+            placeholderText: '[{ "a": "1", b: "2" }]',
+            inputType: "ARRAY",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: {
+              type: ValidationTypes.OBJECT_ARRAY,
+              params: {
+                default: [],
+              },
+            },
+            evaluationSubstitutionType:
+              EvaluationSubstitutionType.SMART_SUBSTITUTE,
+          },
+          {
+            propertyName: "kKey",
+            label: "键字段",
+            controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            propertyName: "color",
-            label: "按钮颜色",
-            controlType: "COLOR_PICKER",
-            isBindProperty: false,
-            isTriggerProperty: false,
-          },
-          {
-            propertyName: "rounded",
-            label: "是否圆角",
-            controlType: "SWITCH",
-            isBindProperty: false,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
-            propertyName: "isVisible",
-            label: "是否可见",
-            helpText: "控制按钮显示/隐藏",
-            controlType: "SWITCH",
-            isJSConvertible: true,
+            propertyName: "vKey",
+            label: "值字段",
+            controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+        ],
+      },
+      {
+        sectionName: "样式",
+        children: [
+          {
+            propertyName: "inset",
+            label: "圆角风格背景",
+            controlType: "SWITCH",
+            isBindProperty: false,
+            isTriggerProperty: false,
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            propertyName: "isDisabled",
-            label: "禁用",
+            propertyName: "layout",
+            label: "布局",
+            controlType: "RADIO",
+            options: [
+              {
+                label: <KVComponent {...demoLayoutProps} layout="v" />,
+                value: "v",
+              },
+              {
+                label: <KVComponent {...demoLayoutProps} layout="h" />,
+                value: "h",
+              },
+              {
+                label: <KVComponent {...demoLayoutProps} layout="hb" />,
+                value: "hb",
+              },
+            ],
+            columns: 1,
+            isBindProperty: false,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+          {
+            propertyName: "showLoading",
+            label: "数据加载时显示加载动画",
             controlType: "SWITCH",
-            helpText: "禁止按钮交互",
-            isJSConvertible: true,
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.BOOLEAN },
@@ -63,73 +170,136 @@ class MKVWidget extends BaseWidget<MKVWidgetProps, KVWidgetState> {
         ],
       },
       {
-        sectionName: "动作",
+        sectionName: "键样式",
         children: [
           {
-            helpText: "点击按钮时触发动作",
-            propertyName: "onClick",
-            label: "onClick",
-            controlType: "ACTION_SELECTOR",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: true,
+            propertyName: "kColor",
+            label: "颜色",
+            controlType: "COLOR_PICKER",
+            isBindProperty: false,
+            isTriggerProperty: false,
+          },
+          {
+            propertyName: "kSize",
+            label: "字体大小",
+            controlType: "DROP_DOWN",
+            options: textSizeOptions,
+            isBindProperty: false,
+            isTriggerProperty: false,
+          },
+          {
+            propertyName: "kBold",
+            label: "粗体",
+            controlType: "SWITCH",
+            isBindProperty: false,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.BOOLEAN },
+          },
+          {
+            propertyName: "kAlign",
+            label: "文字对齐",
+            controlType: "ICON_TABS",
+            options: textAlignOptions,
+            defaultValue: "LEFT",
+            isBindProperty: false,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+        ],
+      },
+      {
+        sectionName: "值样式",
+        children: [
+          {
+            propertyName: "vColor",
+            label: "颜色",
+            controlType: "COLOR_PICKER",
+            isBindProperty: false,
+            isTriggerProperty: false,
+          },
+          {
+            propertyName: "vSize",
+            label: "字体大小",
+            controlType: "DROP_DOWN",
+            options: textSizeOptions,
+            isBindProperty: false,
+            isTriggerProperty: false,
+          },
+          {
+            propertyName: "vBold",
+            label: "粗体",
+            controlType: "SWITCH",
+            isBindProperty: false,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.BOOLEAN },
+          },
+          {
+            propertyName: "vAlign",
+            label: "文字对齐",
+            controlType: "ICON_TABS",
+            options: textAlignOptions,
+            defaultValue: "LEFT",
+            isBindProperty: false,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
           },
         ],
       },
     ];
   }
 
-  onButtonClick = () => {
-    if (this.props.onClick) {
-      this.setState({
-        isLoading: true,
-      });
-      super.executeAction({
-        triggerPropertyName: "onClick",
-        dynamicString: this.props.onClick,
-        event: {
-          type: EventType.ON_CLICK,
-          callback: this.handleActionComplete,
-        },
-      });
-    }
-  };
-
-  handleActionComplete = () => {
-    this.setState({
-      isLoading: false,
-    });
-  };
-
   getPageView() {
+    const {
+      list,
+      kKey,
+      vKey,
+      inset,
+      layout,
+      kColor,
+      kSize,
+      kBold,
+      kAlign,
+      vColor,
+      vSize,
+      vBold,
+      vAlign,
+      isLoading,
+      showLoading,
+    } = this.props;
     return (
-      <ButtonComponent
-        isDisabled={this.props.isDisabled}
-        isLoading={this.props.isLoading || this.state.isLoading}
-        onClick={!this.props.isDisabled ? this.onButtonClick : undefined}
-        text={this.props.text}
-        color={this.props.color}
-        rounded={this.props.rounded}
-      />
+      <LoadingWrapper isLoading={isLoading && showLoading}>
+        <KVComponent
+          {...{
+            list,
+            kKey,
+            vKey,
+            inset,
+            layout,
+            kColor,
+            kSize,
+            kBold,
+            kAlign,
+            vColor,
+            vSize,
+            vBold,
+            vAlign,
+          }}
+        />
+      </LoadingWrapper>
     );
   }
 
   getWidgetType(): WidgetType {
-    return "TARO_BUTTON_WIDGET";
+    return "TARO_KV_WIDGET";
   }
 }
 
 export interface MKVWidgetProps extends WidgetProps, WithMeta {
-  text?: string;
-  color?: string;
-  onClick?: string;
-  rounded?: boolean;
-  isDisabled?: boolean;
-  isVisible?: boolean;
-}
-
-interface KVWidgetState extends WidgetState {
-  isLoading: boolean;
+  list: any[];
+  kKey: string;
+  vKey: string;
+  inset?: boolean;
+  layout: "h" | "hb" | "v";
 }
 
 export default MKVWidget;

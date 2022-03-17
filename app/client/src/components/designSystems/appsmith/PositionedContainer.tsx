@@ -59,6 +59,7 @@ export function PositionedContainer(props: PositionedContainerProps) {
   const openPropPane = useCallback(
     (e) => {
       openPropertyPane(e, props.widgetId);
+      stopEventPropagation(e);
     },
     [props.widgetId, openPropertyPane],
   );
@@ -74,9 +75,11 @@ export function PositionedContainer(props: PositionedContainerProps) {
       data-testid="test-widget"
       id={props.widgetId}
       key={`positioned-container-${props.widgetId}`}
-      onClick={stopEventPropagation}
+      // onClick={stopEventPropagation}
+      // react17 capture is REAL!!!
       // Positioned Widget is the top enclosure for all widgets and clicks on/inside the widget should not be propogated/bubbled out of this Container.
-      onClickCapture={openPropPane}
+      // onClickCapture={openPropPane}
+      onClick={openPropPane}
       //Before you remove: This is used by property pane to reference the element
       style={containerStyle}
     >

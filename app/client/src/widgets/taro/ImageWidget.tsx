@@ -1,9 +1,10 @@
 import * as React from "react";
 import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
-import { WidgetType, RenderModes } from "constants/WidgetConstants";
+import { WidgetType } from "constants/WidgetConstants";
 import ImageComponent from "components/designSystems/taro/ImageComponent";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import LoadingWrapper from "./LoadingWrapper";
 
 class MImageWidget extends BaseWidget<MImageWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
@@ -15,7 +16,7 @@ class MImageWidget extends BaseWidget<MImageWidgetProps, WidgetState> {
             propertyName: "src",
             label: "图片地址",
             controlType: "INPUT_TEXT",
-            placeholderText: "输入图片 URL",
+            placeholderText: "输入图片地址",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.IMAGE_URL },
@@ -44,24 +45,12 @@ class MImageWidget extends BaseWidget<MImageWidgetProps, WidgetState> {
             isTriggerProperty: false,
           },
           {
-            propertyName: "isCircle",
-            label: "显示为圆形",
-            controlType: "SWITCH",
-            isBindProperty: false,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
             propertyName: "radius",
             label: "圆角大小（默认单位 px）",
             controlType: "INPUT_TEXT",
             isBindProperty: false,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
-            dependencies: ["isCircle"],
-            hidden: (props: MImageWidgetProps) => {
-              return !!props.isCircle;
-            },
           },
           {
             helpText: "控制组件显示/隐藏",
@@ -93,15 +82,16 @@ class MImageWidget extends BaseWidget<MImageWidgetProps, WidgetState> {
   }
 
   getPageView() {
-    const { src, onClick, mode, isCircle, radius } = this.props;
+    const { src, onClick, mode, radius, isLoading } = this.props;
     return (
-      <ImageComponent
-        imageUrl={src}
-        onClick={onClick ? this.onImageClick : undefined}
-        mode={mode}
-        isCircle={isCircle}
-        radius={radius}
-      />
+      <LoadingWrapper isLoading={isLoading}>
+        <ImageComponent
+          imageUrl={src}
+          onClick={onClick ? this.onImageClick : undefined}
+          mode={mode}
+          radius={radius}
+        />
+      </LoadingWrapper>
     );
   }
 
@@ -127,7 +117,6 @@ export type ImageFillMode = "aspectFill" | "scaleToFill" | "aspectFit";
 export interface MImageWidgetProps extends WidgetProps {
   src: string;
   mode: ImageFillMode;
-  isCircle?: boolean;
   radius?: string;
   onClick?: string;
 }

@@ -1,9 +1,13 @@
 import React from "react";
 import { Button } from "@taroify/core";
+import { FontWeight } from "components/ads/Text";
 
 interface ButtonComponentProps {
   text?: string;
   color?: string;
+  textColor?: string;
+  fontSize?: string;
+  isBold?: boolean;
   onClick?: any;
   rounded?: boolean;
   isDisabled?: boolean;
@@ -13,6 +17,9 @@ interface ButtonComponentProps {
 const ButtonComponent = ({
   text,
   color,
+  textColor,
+  fontSize,
+  isBold,
   onClick,
   rounded,
   isDisabled,
@@ -21,7 +28,10 @@ const ButtonComponent = ({
   const style = {
     height: "100%",
     backgroundColor: color || "var(--primary-color)",
-    color: "#fff",
+    color: textColor || "#fff",
+    fontSize: fontSize || "20px",
+    fontWeight: isBold ? FontWeight.BOLD : undefined,
+    "--loading-color": textColor || "#fff",
   };
   const shape = rounded ? "round" : "square";
   return (

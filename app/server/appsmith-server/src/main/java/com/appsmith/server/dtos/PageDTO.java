@@ -44,4 +44,6 @@ public class PageDTO {
     @Transient
     Long lastUpdatedTime;
 
+    String icon;
+
 }

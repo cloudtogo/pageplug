@@ -69,6 +69,7 @@ export interface UpdatePageRequest {
   id: string;
   name: string;
   isHidden?: boolean;
+  icon?: string;
 }
 
 export interface CreatePageResponse extends ApiResponse {
@@ -83,6 +84,7 @@ export interface FetchPageListResponse extends ApiResponse {
       isDefault: boolean;
       isHidden?: boolean;
       layouts: Array<PageLayout>;
+      icon?: string;
     }>;
     organizationId: string;
   };
@@ -131,6 +133,10 @@ export interface SyncCloudOSApiRequest {
   project_id: string;
   org_id: string;
   page_id: string;
+}
+
+export interface WxaCodeRequest {
+  app_id: string;
 }
 
 class PageApi extends Api {
@@ -235,6 +241,10 @@ class PageApi extends Api {
     request: SyncCloudOSApiRequest,
   ): AxiosPromise<ApiResponse> {
     return Api.post("v1/cloudos/bindDependedActions", request);
+  }
+
+  static getPreviewWxaCode(request: WxaCodeRequest): AxiosPromise<ApiResponse> {
+    return Api.post("v1/cloudos/getMiniPreview", request);
   }
 }
 

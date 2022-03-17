@@ -305,14 +305,18 @@ export const entityDefinitions = {
   TARO_GRID_WIDGET: {
     "!doc": "网格内容",
     "!url": "https://docs.appsmith.com/widget-reference/input",
+    currentItem: "any",
   },
   TARO_TEXT_WIDGET: {
     "!doc": "文本",
     "!url": "https://docs.appsmith.com/widget-reference/input",
+    text: "string",
   },
   TARO_LIST_WIDGET: {
     "!doc": "列表",
     "!url": "https://docs.appsmith.com/widget-reference/input",
+    currentItem: "any",
+    data: "[any]",
   },
   TARO_POPUP_WIDGET: {
     "!doc": "底部弹窗",
@@ -333,10 +337,12 @@ export const entityDefinitions = {
   TARO_HTML_WIDGET: {
     "!doc": "富文本",
     "!url": "https://docs.appsmith.com/widget-reference/input",
+    content: "string",
   },
-  TARO_SIMPLE_FORM_WIDGET: {
-    "!doc": "快速表单",
+  TARO_SKU_WIDGET: {
+    "!doc": "商品规格",
     "!url": "https://docs.appsmith.com/widget-reference/input",
+    submitData: "any",
   },
   TARO_KV_WIDGET: {
     "!doc": "键值对",
@@ -345,6 +351,36 @@ export const entityDefinitions = {
   TARO_TABS_WIDGET: {
     "!doc": "标签页",
     "!url": "https://docs.appsmith.com/widget-reference/input",
+    selectedTab: "any",
+  },
+  TARO_BOTTOM_BAR_WIDGET: {
+    "!doc": "底部面板",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+  },
+  TARO_ACTION_BAR_WIDGET: {
+    "!doc": "动作栏",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+  },
+  TARO_SEARCH_WIDGET: {
+    "!doc": "搜索框",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+    text: "string",
+  },
+  TARO_LOADING_WIDGET: {
+    "!doc": "加载遮罩",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+  },
+  TARO_CHECKBOX_WIDGET: {
+    "!doc": "复选框",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+    isVisible,
+    isChecked: "bool",
+    isDisabled: "bool",
+  },
+  TARO_FORM_WIDGET: {
+    "!doc": "表单",
+    "!url": "https://docs.appsmith.com/widget-reference/input",
+    formData: "any",
   },
 };
 

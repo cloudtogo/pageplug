@@ -250,7 +250,6 @@ export const StyledEditIcon = styled(
     width: 12px;
     height: 12px;
     position: relative;
-    top: 2px;
     path {
       fill: ${(props) => props.theme.colors.propertyPane.iconColor};
     }

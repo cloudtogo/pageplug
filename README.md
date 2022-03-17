@@ -80,6 +80,13 @@ sed -i 's/index\.docker\.io\/appsmith\/appsmith-editor/harbor\.cloud2go\.cn\/clo
 sed -i 's/index\.docker\.io\/appsmith\/appsmith-server/harbor\.cloud2go\.cn\/cloud2go\/pageplug-server:demo/g' docker-compose.yml.sh
 ```
 
+## 🌼 小程序环境变量
+```
+// 小程序 ID、密钥，用于获取小程序码
+CLOUDOS_WECHAT_APPID="wx414ad0dbeda1a70b"
+CLOUDOS_WECHAT_SECRET="d5289fd08b1fb31290f66ea2ce5ec7dc"
+```
+
 ## 🔔 StarOS 版本注意
 ```
 // StarOS 版本环境变量

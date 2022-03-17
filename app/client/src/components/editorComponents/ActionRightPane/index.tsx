@@ -31,6 +31,7 @@ import {
   SuggestedWidget as SuggestedWidgetsType,
 } from "api/ActionAPI";
 import { Colors } from "constants/Colors";
+import { isMobileLayout } from "selectors/editorSelectors";
 
 const SideBar = styled.div`
   padding: ${(props) => props.theme.spaces[0]}px
@@ -188,6 +189,7 @@ function ActionSidebar({
 }) {
   const dispatch = useDispatch();
   const widgets = useSelector(getWidgets);
+  const isMobile = useSelector(isMobileLayout);
   const { applicationId, pageId } = useParams<ExplorerURLParams>();
   const params = useParams<{ apiId?: string; queryId?: string }>();
   const handleBindData = () => {
@@ -219,8 +221,9 @@ function ActionSidebar({
     entityDependencies &&
     (entityDependencies?.directDependencies.length > 0 ||
       entityDependencies?.inverseDependencies.length > 0);
+  // hide mobile suggested widgets
   const showSuggestedWidgets =
-    hasResponse && suggestedWidgets && !!suggestedWidgets.length;
+    hasResponse && suggestedWidgets && !!suggestedWidgets.length && !isMobile;
   const showSnipingMode = hasResponse && hasWidgets;
 
   if (!hasConnections && !showSuggestedWidgets && !showSnipingMode) {
