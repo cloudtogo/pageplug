@@ -22,6 +22,7 @@ import ApplicationApi, {
   ImportApplicationRequest,
   FetchApplicationResponse,
 } from "api/ApplicationApi";
+import PageApi from "api/PageApi";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 
 import { validateResponse } from "./ErrorSagas";
@@ -38,6 +39,7 @@ import {
   FetchApplicationPayload,
   setDefaultApplicationPageSuccess,
   resetCurrentApplication,
+  FetchApplicationPreviewPayload,
 } from "actions/applicationActions";
 import { fetchUnreadCommentThreadsCountSuccess } from "actions/commentActions";
 import AnalyticsUtil from "utils/AnalyticsUtil";
@@ -580,6 +582,31 @@ export function* importApplicationSaga(
   }
 }
 
+export function* fetchApplicationPreviewWxaCodeSaga(
+  action: ReduxAction<FetchApplicationPreviewPayload>,
+) {
+  try {
+    const { applicationId } = action.payload;
+    const response: ApiResponse = yield call(PageApi.getPreviewWxaCode, {
+      app_id: applicationId,
+    });
+    yield put({
+      type: ReduxActionTypes.FETCH_APPLICATION_PREVIEW_SUCCESS,
+      payload: {
+        data: response.data,
+        failed: !response.responseMeta.success,
+      },
+    });
+  } catch (error) {
+    yield put({
+      type: ReduxActionErrorTypes.FETCH_APPLICATION_PREVIEW_ERROR,
+      payload: {
+        error,
+      },
+    });
+  }
+}
+
 export default function* applicationSagas() {
   yield all([
     takeLatest(
@@ -609,5 +636,9 @@ export default function* applicationSagas() {
       duplicateApplicationSaga,
     ),
     takeLatest(ReduxActionTypes.IMPORT_APPLICATION_INIT, importApplicationSaga),
+    takeLatest(
+      ReduxActionTypes.FETCH_APPLICATION_PREVIEW_INIT,
+      fetchApplicationPreviewWxaCodeSaga,
+    ),
   ]);
 }

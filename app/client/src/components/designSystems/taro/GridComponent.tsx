@@ -1,19 +1,22 @@
-import React, { useState } from "react";
+import React from "react";
 import { Text, View, ScrollView } from "@tarojs/components";
 import { Grid, Image, Button } from "@taroify/core";
-import { PhotoOutlined, ShoppingCartOutlined } from "@taroify/icons";
+import { PhotoOutlined, ShoppingCartOutlined, PhotoFail } from "@taroify/icons";
 import _ from "lodash";
 import styled from "styled-components";
+import Empty from "./EmptyContent";
 
 export interface GridComponentProps {
   list: any[];
   gridType: "I_N" | "I_N_D" | "I_N_D_B";
   urlKey: string;
   titleKey: string;
+  badgeKey?: string;
   descriptionKey?: string;
   asPrice?: boolean;
   priceUnit?: string;
   buttonText?: string;
+  width?: string;
   height?: string;
   cols?: number;
   gutter?: string;
@@ -21,12 +24,18 @@ export interface GridComponentProps {
   titleColor?: string;
   descriptionColor?: string;
   buttonColor?: string;
+  onItemClicked: (item: any, type: "ITEM" | "BUTTON") => void;
+  emptyPic?: string;
+  emptyText?: string;
 }
 
 const SameHeightImage = styled(Image)<{
+  width?: string;
   height?: string;
 }>`
   height: ${(props) => props.height || "auto"};
+  width: ${(props) => props.width || "100%"};
+  overflow: visible;
 `;
 
 const Title = styled(Text)<{
@@ -75,9 +84,11 @@ const GridComponent = (props: GridComponentProps) => {
     urlKey,
     titleKey,
     descriptionKey,
+    badgeKey,
     asPrice,
     priceUnit,
     buttonText,
+    width,
     height,
     cols,
     gutter,
@@ -85,6 +96,9 @@ const GridComponent = (props: GridComponentProps) => {
     titleColor,
     descriptionColor,
     buttonColor,
+    onItemClicked,
+    emptyPic,
+    emptyText,
   } = props;
   const items = _.isArray(list) ? list : [];
   const key = urlKey + titleKey + items.length;
@@ -92,11 +106,16 @@ const GridComponent = (props: GridComponentProps) => {
 
   const onClickButton = (item: any) => (e: any) => {
     e.stopPropagation();
+    onItemClicked(item, "BUTTON");
   };
 
   const onClickGridItem = (item: any) => (e: any) => {
-    console.log(item);
+    onItemClicked(item, "ITEM");
   };
+
+  if (!items.length) {
+    return <Empty text={emptyText} pic={emptyPic} />;
+  }
 
   return (
     <ScrollView style={{ height: "100%" }} scrollY>
@@ -109,32 +128,43 @@ const GridComponent = (props: GridComponentProps) => {
         clickable
       >
         {items.map((item, index) => {
-          const url = item[urlKey];
-          const title = item[titleKey] || "";
+          const url = item?.[urlKey];
+          const title = item?.[titleKey] || "";
+          const badge = item?.[badgeKey || ""] || "";
+
           const image = url ? (
             <SameHeightImage
               src={url}
               height={height}
-              mode={isSimple ? undefined : "aspectFill"}
+              width={width}
+              mode="aspectFit"
+              fallback={<PhotoFail />}
             />
           ) : (
             <PhotoOutlined size={height} />
           );
+
           if (isSimple) {
             return (
               <Grid.Item
                 icon={image}
                 text={title}
                 key={index}
+                badge={badge}
                 onClick={onClickGridItem(item)}
               />
             );
           }
-          const description = item[descriptionKey || ""] || "描述";
+
+          const description = item?.[descriptionKey || ""] || "描述";
           const price = asPrice ? priceUnit + description : description;
           const priceView = <Price color={descriptionColor}>{price}</Price>;
           return (
-            <Grid.Item key={index} onClick={onClickGridItem(item)}>
+            <Grid.Item
+              key={index}
+              onClick={onClickGridItem(item)}
+              badge={badge}
+            >
               {image}
               <View style={{ marginTop: "8px" }}>
                 <Title color={titleColor}>{title}</Title>

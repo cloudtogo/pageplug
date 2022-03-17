@@ -6,6 +6,26 @@ import GridComponent, {
 } from "components/designSystems/taro/GridComponent";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
+import { View } from "@tarojs/components";
+import { Skeleton } from "@taroify/core";
+import styled from "styled-components";
+import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import withMeta, { WithMeta } from "../MetaHOC";
+
+const LoadingContainer = styled(View)<{
+  cols?: number;
+}>`
+  display: grid;
+  height: 100%;
+  gap: 4px;
+  grid-template-columns: repeat(${(props) => props.cols || 2}, 1fr);
+
+  & .taroify-skeleton {
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+  }
+`;
 
 class GridWidget extends BaseWidget<GridWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
@@ -55,6 +75,14 @@ class GridWidget extends BaseWidget<GridWidgetProps, WidgetState> {
           {
             propertyName: "urlKey",
             label: "图片字段",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+          {
+            propertyName: "badgeKey",
+            label: "红点字段",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -130,6 +158,14 @@ class GridWidget extends BaseWidget<GridWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.TEXT },
           },
           {
+            propertyName: "width",
+            label: "图片宽度",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+          {
             propertyName: "cols",
             label: "列数",
             controlType: "INPUT_TEXT",
@@ -188,8 +224,75 @@ class GridWidget extends BaseWidget<GridWidgetProps, WidgetState> {
           },
         ],
       },
+      {
+        sectionName: "空数据样式",
+        children: [
+          {
+            propertyName: "emptyPic",
+            label: "空数据图片",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+          {
+            propertyName: "emptyText",
+            label: "空数据文案",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+        ],
+      },
+      {
+        sectionName: "动作",
+        children: [
+          {
+            helpText: "点击单元格时触发",
+            propertyName: "onItemClicked",
+            label: "onItemClicked",
+            controlType: "ACTION_SELECTOR",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: true,
+          },
+          {
+            helpText: "点击单元格按钮时触发",
+            propertyName: "onItemButtonClicked",
+            label: "onItemButtonClicked",
+            controlType: "ACTION_SELECTOR",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: true,
+            dependencies: ["gridType"],
+            hidden: (props: GridWidgetProps) => {
+              return props.gridType !== "I_N_D_B";
+            },
+          },
+        ],
+      },
     ];
   }
+
+  static getMetaPropertiesMap(): Record<string, any> {
+    return {
+      currentItem: undefined,
+    };
+  }
+
+  onCurrentItemChanged = (item: any, type: "ITEM" | "BUTTON") => {
+    const actionName =
+      type === "ITEM" ? "onItemClicked" : "onItemButtonClicked";
+    const actionScript = this.props[actionName];
+    this.props.updateWidgetMetaProperty("currentItem", item, {
+      triggerPropertyName: actionName,
+      dynamicString: actionScript,
+      event: {
+        type: EventType.ON_CLICK,
+      },
+    });
+  };
 
   getPageView() {
     const {
@@ -198,17 +301,33 @@ class GridWidget extends BaseWidget<GridWidgetProps, WidgetState> {
       urlKey,
       titleKey,
       descriptionKey,
+      badgeKey,
       asPrice,
       priceUnit,
       buttonText,
       height,
+      width,
       cols,
       gutter,
       bordered,
       titleColor,
       descriptionColor,
       buttonColor,
+      isLoading,
+      emptyPic,
+      emptyText,
     } = this.props;
+
+    if (isLoading) {
+      return (
+        <LoadingContainer cols={cols}>
+          {Array.from(Array((cols || 2) * 3)).map((a, i) => (
+            <Skeleton animation="pulse" key={i} />
+          ))}
+        </LoadingContainer>
+      );
+    }
+
     return (
       <GridComponent
         {...{
@@ -217,17 +336,22 @@ class GridWidget extends BaseWidget<GridWidgetProps, WidgetState> {
           urlKey,
           titleKey,
           descriptionKey,
+          badgeKey,
           asPrice,
           priceUnit,
           buttonText,
           height,
+          width,
           cols,
           gutter,
           bordered,
           titleColor,
           descriptionColor,
           buttonColor,
+          emptyPic,
+          emptyText,
         }}
+        onItemClicked={this.onCurrentItemChanged}
       />
     );
   }
@@ -237,7 +361,10 @@ class GridWidget extends BaseWidget<GridWidgetProps, WidgetState> {
   }
 }
 
-export interface GridWidgetProps extends WidgetProps, GridComponentProps {}
+export interface GridWidgetProps
+  extends WidgetProps,
+    GridComponentProps,
+    WithMeta {}
 
 export default GridWidget;
-export const ProfiledGridWidget = GridWidget;
+export const ProfiledGridWidget = withMeta(GridWidget);

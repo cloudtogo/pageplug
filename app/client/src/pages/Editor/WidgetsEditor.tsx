@@ -7,6 +7,7 @@ import {
   getCurrentPageId,
   getCanvasWidgetDsl,
   getCurrentPageName,
+  getShowTabBar,
 } from "selectors/editorSelectors";
 import Centered from "components/designSystems/appsmith/CenteredWrapper";
 import EditorContextProvider from "components/editorComponents/EditorContextProvider";
@@ -27,7 +28,9 @@ import Debugger from "components/editorComponents/Debugger";
 import { closePropertyPane, closeTableFilterPane } from "actions/widgetActions";
 import { useWidgetSelection } from "utils/hooks/useWidgetSelection";
 
-const EditorWrapper = styled.div`
+const EditorWrapper = styled.div<{
+  showTabBar: boolean;
+}>`
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -36,8 +39,10 @@ const EditorWrapper = styled.div`
   height: calc(
     100vh -
       ${(props) =>
-        props.theme.inCloudOS ? "0px" : props.theme.smallHeaderHeight}
+        props.theme.inCloudOS ? "0px" : props.theme.smallHeaderHeight} -
+      ${(props) => (props.showTabBar ? "60px" : "0px")}
   );
+  transform: translate(0, 0);
 `;
 
 const CanvasContainer = styled.section`
@@ -68,6 +73,7 @@ function WidgetsEditor() {
   const currentPageId = useSelector(getCurrentPageId);
   const currentPageName = useSelector(getCurrentPageName);
   const currentApp = useSelector(getCurrentApplication);
+  const showTabBar = useSelector(getShowTabBar);
   useDynamicAppLayout();
   useEffect(() => {
     PerformanceTracker.stopTracking(PerformanceTransactionName.CLOSE_SIDE_PANE);
@@ -127,7 +133,7 @@ function WidgetsEditor() {
   PerformanceTracker.stopTracking();
   return (
     <EditorContextProvider>
-      <EditorWrapper onClick={handleWrapperClick}>
+      <EditorWrapper onClick={handleWrapperClick} showTabBar={showTabBar}>
         <MainContainerLayoutControl />
         <CanvasContainer className={getCanvasClassName()} key={currentPageId}>
           {node}

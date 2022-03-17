@@ -167,10 +167,10 @@ import MHtmlWidget, {
   MHtmlWidgetProps,
   MProfiledHtmlWidget,
 } from "widgets/taro/HtmlWidget";
-import MSimpleFormWidget, {
-  MSimpleFormWidgetProps,
-  MProfiledSimpleFormWidget,
-} from "widgets/taro/SimpleFormWidget";
+import MSkuWidget, {
+  MSkuWidgetProps,
+  MProfiledSkuWidget,
+} from "widgets/taro/SkuWidget";
 import MKVWidget, {
   MKVWidgetProps,
   MProfiledKVWidget,
@@ -179,6 +179,30 @@ import MTabsWidget, {
   MTabsWidgetProps,
   MProfiledTabsWidget,
 } from "widgets/taro/TabsWidget";
+import MBottomBarWidget, {
+  MBottomBarWidgetProps,
+  MProfiledBottomBarWidget,
+} from "widgets/taro/BottomBarWidget";
+import MActionBarWidget, {
+  MActionBarWidgetProps,
+  MProfiledActionBarWidget,
+} from "widgets/taro/ActionBarWidget";
+import MSearchWidget, {
+  MSearchWidgetProps,
+  MProfiledSearchWidget,
+} from "widgets/taro/SearchWidget";
+import MLoadingWidget, {
+  MLoadingWidgetProps,
+  MProfiledLoadingWidget,
+} from "widgets/taro/LoadingWidget";
+import MCheckboxWidget, {
+  MCheckboxWidgetProps,
+  MProfiledCheckboxWidget,
+} from "widgets/taro/CheckboxWidget";
+import MFormWidget, {
+  MFormWidgetProps,
+  MProfiledFormWidget,
+} from "widgets/taro/FormWidget";
 
 export default class WidgetBuilderRegistry {
   static registerWidgetBuilders() {
@@ -739,16 +763,16 @@ export default class WidgetBuilderRegistry {
     );
 
     WidgetFactory.registerWidgetBuilder(
-      WidgetTypes.TARO_SIMPLE_FORM_WIDGET,
+      WidgetTypes.TARO_SKU_WIDGET,
       {
-        buildWidget(widgetData: MSimpleFormWidgetProps): JSX.Element {
-          return <MProfiledSimpleFormWidget {...widgetData} />;
+        buildWidget(widgetData: MSkuWidgetProps): JSX.Element {
+          return <MProfiledSkuWidget {...widgetData} />;
         },
       },
-      MSimpleFormWidget.getDerivedPropertiesMap(),
-      MSimpleFormWidget.getDefaultPropertiesMap(),
-      MSimpleFormWidget.getMetaPropertiesMap(),
-      MSimpleFormWidget.getPropertyPaneConfig(),
+      MSkuWidget.getDerivedPropertiesMap(),
+      MSkuWidget.getDefaultPropertiesMap(),
+      MSkuWidget.getMetaPropertiesMap(),
+      MSkuWidget.getPropertyPaneConfig(),
     );
 
     WidgetFactory.registerWidgetBuilder(
@@ -775,6 +799,84 @@ export default class WidgetBuilderRegistry {
       MTabsWidget.getDefaultPropertiesMap(),
       MTabsWidget.getMetaPropertiesMap(),
       MTabsWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_BOTTOM_BAR_WIDGET,
+      {
+        buildWidget(widgetData: MBottomBarWidgetProps): JSX.Element {
+          return <MProfiledBottomBarWidget {...widgetData} />;
+        },
+      },
+      MBottomBarWidget.getDerivedPropertiesMap(),
+      MBottomBarWidget.getDefaultPropertiesMap(),
+      MBottomBarWidget.getMetaPropertiesMap(),
+      MBottomBarWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_ACTION_BAR_WIDGET,
+      {
+        buildWidget(widgetData: MActionBarWidgetProps): JSX.Element {
+          return <MProfiledActionBarWidget {...widgetData} />;
+        },
+      },
+      MActionBarWidget.getDerivedPropertiesMap(),
+      MActionBarWidget.getDefaultPropertiesMap(),
+      MActionBarWidget.getMetaPropertiesMap(),
+      MActionBarWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_SEARCH_WIDGET,
+      {
+        buildWidget(widgetData: MSearchWidgetProps): JSX.Element {
+          return <MProfiledSearchWidget {...widgetData} />;
+        },
+      },
+      MSearchWidget.getDerivedPropertiesMap(),
+      MSearchWidget.getDefaultPropertiesMap(),
+      MSearchWidget.getMetaPropertiesMap(),
+      MSearchWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_LOADING_WIDGET,
+      {
+        buildWidget(widgetData: MLoadingWidgetProps): JSX.Element {
+          return <MProfiledLoadingWidget {...widgetData} />;
+        },
+      },
+      MLoadingWidget.getDerivedPropertiesMap(),
+      MLoadingWidget.getDefaultPropertiesMap(),
+      MLoadingWidget.getMetaPropertiesMap(),
+      MLoadingWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_CHECKBOX_WIDGET,
+      {
+        buildWidget(widgetData: MCheckboxWidgetProps): JSX.Element {
+          return <MProfiledCheckboxWidget {...widgetData} />;
+        },
+      },
+      MCheckboxWidget.getDerivedPropertiesMap(),
+      MCheckboxWidget.getDefaultPropertiesMap(),
+      MCheckboxWidget.getMetaPropertiesMap(),
+      MCheckboxWidget.getPropertyPaneConfig(),
+    );
+
+    WidgetFactory.registerWidgetBuilder(
+      WidgetTypes.TARO_FORM_WIDGET,
+      {
+        buildWidget(widgetData: MFormWidgetProps): JSX.Element {
+          return <MProfiledFormWidget {...widgetData} />;
+        },
+      },
+      MFormWidget.getDerivedPropertiesMap(),
+      MFormWidget.getDefaultPropertiesMap(),
+      MFormWidget.getMetaPropertiesMap(),
+      MFormWidget.getPropertyPaneConfig(),
     );
   }
 }

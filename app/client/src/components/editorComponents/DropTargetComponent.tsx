@@ -63,7 +63,7 @@ const EmptyContainer = styled.div`
   width: 400px;
   height: 400px;
   margin-top: -180px;
-  margin-left: -70px;
+  margin-left: -200px;
   text-align: center;
   opacity: 0.5;
 
@@ -222,7 +222,8 @@ export function DropTargetComponent(props: DropTargetComponentProps) {
         // Give evaluations a second to complete.
         const waitingTime =
           widget.type === WidgetTypes.MODAL_WIDGET ||
-          widget.type === WidgetTypes.TARO_POPUP_WIDGET
+          widget.type === WidgetTypes.TARO_POPUP_WIDGET ||
+          widget.type === WidgetTypes.TARO_LOADING_WIDGET
             ? 1000
             : 100;
         setTimeout(() => {

@@ -31,7 +31,10 @@ import {
 } from "actions/datasourceActions";
 import { fetchPluginFormConfigs, fetchPlugins } from "actions/pluginActions";
 import { fetchActions, fetchActionsForView } from "actions/actionActions";
-import { fetchApplication } from "actions/applicationActions";
+import {
+  fetchApplication,
+  fetchApplicationPreviewWxaCode,
+} from "actions/applicationActions";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { getCurrentApplication } from "selectors/applicationSelectors";
 import { APP_MODE } from "entities/App";
@@ -49,7 +52,10 @@ import PerformanceTracker, {
   PerformanceTransactionName,
 } from "utils/PerformanceTracker";
 import { executePageLoadActions } from "actions/widgetActions";
-import { getIsEditorInitialized } from "selectors/editorSelectors";
+import {
+  getIsEditorInitialized,
+  isMobileLayout,
+} from "selectors/editorSelectors";
 import { getIsInitialized as getIsViewerInitialized } from "selectors/appViewSelectors";
 
 function* failFastApiCalls(
@@ -236,6 +242,16 @@ export function* initializeAppViewerSaga(
       },
     });
     return;
+  }
+
+  // get weapp WxaCode preview image
+  const isMobile = yield select(isMobileLayout);
+  if (isMobile) {
+    yield failFastApiCalls(
+      [fetchApplicationPreviewWxaCode(applicationId)],
+      [ReduxActionTypes.FETCH_APPLICATION_PREVIEW_SUCCESS],
+      [ReduxActionErrorTypes.FETCH_APPLICATION_PREVIEW_ERROR],
+    );
   }
 
   const defaultPageId = yield select(getDefaultPageId);

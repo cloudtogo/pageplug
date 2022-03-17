@@ -123,7 +123,7 @@ const PickerComponent = (props: PickerComponentProps) => {
         <Flex justify="center" align="center">
           <Image
             round
-            mode="aspectFill"
+            mode="aspectFit"
             style={{ width: "10rem", height: "10rem" }}
             src="https://img.yzcdn.cn/vant/cat.jpeg"
           />
@@ -142,44 +142,6 @@ const PickerComponent = (props: PickerComponentProps) => {
       <div>
         <Uploader value={file} onUpload={onUpload} onChange={setFile} />
       </div>
-      <View>
-        <Cell.Group inset>
-          <Field
-            value={text}
-            label="文本"
-            placeholder="请输入文本"
-            onChange={(e) => setText(e.detail.value)}
-          />
-          <Field
-            value={idcard}
-            label="身份证号"
-            type="idcard"
-            placeholder="请输入手机号"
-            onChange={(e) => setIdcard(e.detail.value)}
-          />
-          <Field
-            value={number}
-            label="整数"
-            type="number"
-            placeholder="请输入整数"
-            onChange={(e) => setNumber(e.detail.value)}
-          />
-          <Field
-            value={digit}
-            label="数字"
-            type="digit"
-            placeholder="请输入数字（支持小数）"
-            onChange={(e) => setDigit(e.detail.value)}
-          />
-          <Field
-            value={password}
-            label="密码"
-            type="password"
-            placeholder="请输入密码"
-            onChange={(e) => setPassword(e.detail.value)}
-          />
-        </Cell.Group>
-      </View>
       <View>
         <NoticeBar scrollable>{title}</NoticeBar>
       </View>

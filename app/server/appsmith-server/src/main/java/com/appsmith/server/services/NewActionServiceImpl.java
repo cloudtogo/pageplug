@@ -1129,11 +1129,11 @@ public class NewActionServiceImpl extends BaseService<NewActionRepository, NewAc
                     // Now add messages that would eventually be displayed to the developer user informing them
                     // about the action setting change.
                     if (!turnedOffActionNames.isEmpty()) {
-                        messages.add(turnedOffActionNames.toString() + " will no longer be executed on page load");
+                        messages.add(turnedOffActionNames.toString() + " 将不再自动运行");
                     }
 
                     if (!turnedOnActionNames.isEmpty()) {
-                        messages.add(turnedOnActionNames.toString() + " will be executed automatically on page load");
+                        messages.add(turnedOnActionNames.toString() + " 将会在页面加载完成后自动运行");
                     }
 
                     // Finally update the actions which require an update

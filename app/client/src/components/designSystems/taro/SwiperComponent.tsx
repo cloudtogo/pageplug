@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { Navigator } from "@tarojs/components";
+import React from "react";
 import { Swiper, Image } from "@taroify/core";
+import { PhotoFail } from "@taroify/icons";
 import _ from "lodash";
 import styled from "styled-components";
 
@@ -24,20 +24,21 @@ const SwiperComponent = (props: SwiperComponentProps) => {
   const items = _.isArray(list) ? list : [];
   const key = urlKey + items.length;
   return (
-    <Swiper style={{ height: "100%" }} autoplay={4000} key={key}>
+    <Swiper style={{ height: "100%", width: "100%" }} autoplay={4000} key={key}>
       <Swiper.Indicator />
       {items.map((item, index) => {
-        const url = _.isString(item) ? item : item[urlKey];
+        const url = _.isString(item) ? item : item?.[urlKey];
         const content = url ? (
-          <Image src={url} mode="aspectFill" />
+          <Image
+            src={url}
+            mode="aspectFit"
+            fallback={<PhotoFail />}
+            style={{ pointerEvents: "none" }}
+          />
         ) : (
           <Empty>{index + 1}</Empty>
         );
-        return (
-          <Swiper.Item key={index}>
-            <Navigator>{content}</Navigator>
-          </Swiper.Item>
-        );
+        return <Swiper.Item key={index}>{content}</Swiper.Item>;
       })}
     </Swiper>
   );

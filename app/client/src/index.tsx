@@ -36,11 +36,33 @@ import {
   defineCustomElements,
 } from "@tarojs/components/loader";
 import "@tarojs/components/dist/taro-components/taro-components.css";
-import "@taroify/icons/index.scss";
-import "@taroify/core/index.scss";
+import "./taroifyStyles";
 applyPolyfills().then(() => {
   defineCustomElements(window);
 });
+// create taro runtime in React
+import { createRouter } from "@tarojs/taro";
+import { createReactApp } from "@tarojs/runtime";
+class Empty extends React.Component {
+  render() {
+    return null;
+  }
+}
+const inst = createReactApp(Empty, React, ReactDOM, {});
+// createRouter(
+//   inst,
+//   {
+//     routes: [],
+//     router: {
+//       mode: "browser",
+//       basename: "",
+//       pathname: "",
+//     },
+//   },
+//   "react",
+// );
+// add touch emulator
+import "@vant/touch-emulator";
 
 // app init
 appInitializer();

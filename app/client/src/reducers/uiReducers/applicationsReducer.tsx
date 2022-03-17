@@ -30,6 +30,9 @@ const initialState: ApplicationsReduxState = {
   importingApplication: false,
   importedApplication: null,
   showAppInviteUsersDialog: false,
+  previewWxaCode: "",
+  isFetchingPreviewWxaCode: false,
+  previewWxaCodeFailed: false,
 };
 
 const applicationsReducer = createReducer(initialState, {
@@ -362,6 +365,27 @@ const applicationsReducer = createReducer(initialState, {
     ...state,
     showAppInviteUsersDialog: action.payload,
   }),
+
+  // wxacode reducer
+  [ReduxActionTypes.FETCH_APPLICATION_PREVIEW_INIT]: (
+    state: ApplicationsReduxState,
+  ) => ({ ...state, isFetchingPreviewWxaCode: true }),
+  [ReduxActionErrorTypes.FETCH_APPLICATION_PREVIEW_ERROR]: (
+    state: ApplicationsReduxState,
+  ) => ({
+    ...state,
+    previewWxaCodeFailed: true,
+    isFetchingPreviewWxaCode: false,
+  }),
+  [ReduxActionTypes.FETCH_APPLICATION_PREVIEW_SUCCESS]: (
+    state: ApplicationsReduxState,
+    action: ReduxAction<{ data: string; failed: boolean }>,
+  ) => ({
+    ...state,
+    previewWxaCode: action.payload.data,
+    isFetchingPreviewWxaCode: false,
+    previewWxaCodeFailed: action.payload.failed,
+  }),
 });
 
 export type creatingApplicationMap = Record<string, boolean>;
@@ -385,6 +409,9 @@ export interface ApplicationsReduxState {
   importingApplication: boolean;
   importedApplication: any;
   showAppInviteUsersDialog: boolean;
+  previewWxaCode: string;
+  isFetchingPreviewWxaCode: boolean;
+  previewWxaCodeFailed: boolean;
 }
 
 export interface Application {

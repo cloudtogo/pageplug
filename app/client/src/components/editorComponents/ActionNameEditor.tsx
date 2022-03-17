@@ -109,12 +109,12 @@ export function ActionNameEditor(props: ActionNameEditorProps) {
   const isInvalidActionName = useCallback(
     (name: string): string | boolean => {
       if (!name || name.trim().length === 0) {
-        return "Please enter a valid name";
+        return "请输入合法名称";
       } else if (
         name !== currentActionConfig?.name &&
         hasActionNameConflict(name)
       ) {
-        return `${name} is already being used.`;
+        return `${name} 名称已被占用`;
       }
       return false;
     },
@@ -168,7 +168,7 @@ export function ActionNameEditor(props: ActionNameEditorProps) {
           isEditingDefault={isNew && !hideEditIcon}
           isInvalid={isInvalidActionName}
           onBlur={handleAPINameChange}
-          placeholder="Name of the API in camelCase"
+          placeholder="接口名称（驼峰形式）"
           savingState={
             saveStatus.isSaving ? SavingState.STARTED : SavingState.NOT_STARTED
           }
@@ -189,7 +189,7 @@ export function ActionNameEditor(props: ActionNameEditorProps) {
             isEditingDefault={isNew}
             isInvalid={isInvalidActionName}
             onTextChanged={handleAPINameChange}
-            placeholder="Name of the API in camelCase"
+            placeholder="接口名称（驼峰形式）"
             type="text"
             updating={saveStatus.isSaving}
             valueTransform={removeSpecialChars}

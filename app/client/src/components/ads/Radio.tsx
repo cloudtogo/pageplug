@@ -2,7 +2,7 @@ import { CommonComponentProps } from "./common";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-type OptionProps = {
+export type OptionProps = {
   label: string;
   value: string;
   disabled?: boolean;
@@ -10,6 +10,7 @@ type OptionProps = {
 };
 
 export type RadioProps = CommonComponentProps & {
+  name?: string;
   columns?: number;
   rows?: number;
   defaultValue: string;
@@ -44,7 +45,8 @@ export const Radio = styled.label<{
 }>`
   display: block;
   position: relative;
-  padding-left: ${(props) => props.theme.spaces[12] - 2}px;
+  padding-left: 24px;
+  margin-bottom: 6px;
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   font-size: ${(props) => props.theme.typography.p1.fontSize}px;
   font-weight: ${(props) => props.theme.typography.p1.fontWeight};
@@ -150,7 +152,7 @@ export default function RadioComponent(props: RadioProps) {
           <input
             checked={selected === option.value}
             disabled={props.disabled || option.disabled}
-            name="radio"
+            name={props.name || "radio"}
             onChange={(e) => option.onSelect && option.onSelect(e.target.value)}
             type="radio"
             value={option.value}

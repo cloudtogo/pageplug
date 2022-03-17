@@ -18,6 +18,7 @@ import { getWidgetOptionsTree } from "sagas/selectors";
 import {
   getCurrentApplicationId,
   getCurrentPageId,
+  isMobileLayout,
 } from "selectors/editorSelectors";
 import {
   getActionsForCurrentPage,
@@ -75,7 +76,7 @@ const baseOptions: any = [
     value: ActionType.download,
   },
   {
-    label: "复制",
+    label: "复制信息",
     value: ActionType.copyToClipboard,
   },
   {
@@ -351,11 +352,16 @@ function useIntegrationsOptionTree() {
   // For onboarding
   const currentStep = useSelector(getCurrentStep);
   const currentSubStep = useSelector(getCurrentSubStep);
+  // mobile hide
+  const isMobile = useSelector(isMobileLayout);
+  const basicOptions = isMobile
+    ? baseOptions.filter((o: any) => o.value !== ActionType.download)
+    : baseOptions;
 
   const integrationOptionTree = getIntegrationOptionsWithChildren(
     pageId,
     pluginGroups,
-    baseOptions,
+    basicOptions,
     actions,
     datasources,
     {
