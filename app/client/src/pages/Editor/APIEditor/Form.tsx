@@ -52,6 +52,7 @@ import DataSourceList from "./ApiRightPane";
 import { Datasource } from "entities/Datasource";
 import { getActionResponses } from "../../../selectors/entitiesSelector";
 import { isEmpty } from "lodash";
+import { isMobileLayout } from "selectors/editorSelectors";
 
 const Form = styled.form`
   display: flex;
@@ -371,7 +372,7 @@ function renderHelpSection(
               onClick={handleClickLearnHow}
             >
               <Text case={Case.UPPERCASE} type={TextType.H6}>
-                Learn How
+                立即了解
               </Text>
               <Icon name="right-arrow" />
             </Link>
@@ -458,6 +459,23 @@ function ApiEditorForm(props: Props) {
     AnalyticsUtil.logEvent("OPEN_OMNIBAR", { source: "LEARN_HOW_DATASOURCE" });
   };
 
+  const isMobile = useSelector(isMobileLayout);
+  const paginationConfig = isMobile
+    ? []
+    : [
+        {
+          key: "pagination",
+          title: "分页",
+          panelComponent: (
+            <Pagination
+              onTestClick={props.onRunClick}
+              paginationType={props.paginationType}
+              theme={theme}
+            />
+          ),
+        },
+      ];
+
   return (
     <>
       <CloseEditor />
@@ -502,7 +520,7 @@ function ApiEditorForm(props: Props) {
             <DatasourceWrapper className="t--dataSourceField">
               <EmbeddedDatasourcePathField
                 name="actionConfiguration.path"
-                placeholder="https://mock-api.appsmith.com/users"
+                placeholder="https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY"
                 pluginId={pluginId}
                 theme={theme}
               />
@@ -529,11 +547,11 @@ function ApiEditorForm(props: Props) {
                     count: headersCount,
                     panelComponent: (
                       <TabSection>
-                        {apiBindHelpSectionVisible &&
+                        {/* {apiBindHelpSectionVisible &&
                           renderHelpSection(
                             handleClickLearnHow,
                             setApiBindHelpSectionVisible,
-                          )}
+                          )} */}
                         {props.datasourceHeaders.length > 0 && (
                           <ImportedHeaders headers={props.datasourceHeaders} />
                         )}
@@ -578,17 +596,7 @@ function ApiEditorForm(props: Props) {
                       </NoBodyMessage>
                     ),
                   },
-                  {
-                    key: "pagination",
-                    title: "分页",
-                    panelComponent: (
-                      <Pagination
-                        onTestClick={props.onRunClick}
-                        paginationType={props.paginationType}
-                        theme={theme}
-                      />
-                    ),
-                  },
+                  ...paginationConfig,
                   {
                     key: "settings",
                     title: "配置",

@@ -33,6 +33,13 @@ const Section = styled.section`
   overflow-x: auto;
   overflow-y: auto;
 `;
+
+const SafeFixedArea = styled.div<{
+  height: number;
+}>`
+  margin-bottom: ${(props) => props.height}px;
+`;
+
 type AppViewerPageContainerProps = {
   isFetchingPage: boolean;
   widgets?: ContainerWidgetProps<WidgetProps>;
@@ -40,6 +47,7 @@ type AppViewerPageContainerProps = {
   currentAppName?: string;
   fetchPage: (pageId: string, bustCache?: boolean) => void;
   currentAppPermissions?: string[];
+  hasFixedWidget?: any;
 } & RouteComponentProps<AppViewerRouteParams>;
 
 class AppViewerPageContainer extends Component<AppViewerPageContainerProps> {
@@ -107,8 +115,9 @@ class AppViewerPageContainer extends Component<AppViewerPageContainerProps> {
     ) {
       return pageNotFound;
     } else if (!this.props.isFetchingPage && this.props.widgets) {
+      const { hasFixedWidget } = this.props;
       return (
-        <Section>
+        <Section id="art-board">
           <AppPage
             appName={this.props.currentAppName}
             dsl={this.props.widgets}
@@ -117,6 +126,9 @@ class AppViewerPageContainer extends Component<AppViewerPageContainerProps> {
           />
           <ConfirmRunModal />
           <EndTourHelper />
+          {hasFixedWidget ? (
+            <SafeFixedArea height={hasFixedWidget?.height || 0} />
+          ) : null}
         </Section>
       );
     }
@@ -125,12 +137,16 @@ class AppViewerPageContainer extends Component<AppViewerPageContainerProps> {
 
 const mapStateToProps = (state: AppState) => {
   const currentApp = getCurrentApplication(state);
+  const widgets = getCanvasWidgetDsl(state);
   const props = {
     isFetchingPage: getIsFetchingPage(state),
-    widgets: getCanvasWidgetDsl(state),
+    widgets,
     currentPageName: getCurrentPageName(state),
     currentAppName: currentApp?.name,
     currentAppPermissions: currentApp?.userPermissions,
+    hasFixedWidget: widgets.children?.find(
+      (w) => w.type === "TARO_BOTTOM_BAR_WIDGET",
+    ),
   };
   return props;
 };

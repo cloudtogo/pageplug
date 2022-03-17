@@ -21,4 +21,10 @@ public class CloudOSConfig {
 
     @Value("${pageplug.cloudos.jwt_secret_key}")
     String secretKey;
+
+    @Value("${pageplug.cloudos.wx_appid}")
+    String wxAppId;
+
+    @Value("${pageplug.cloudos.wx_secret}")
+    String wxSecret;
 }

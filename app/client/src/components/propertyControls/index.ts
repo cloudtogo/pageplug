@@ -46,6 +46,11 @@ import MenuItemsControl from "./MenuItemsControl";
 import IconSelectControl from "./IconSelectControl";
 import IconAlignControl from "./IconAlignControl";
 import FormilyControl from "./FormilyControl";
+import CellControl from "./taro/CellControl";
+import RadioControl from "./RadioControl";
+import VantIconSelectControl from "./taro/IconSelectControl";
+import ActionControl from "./taro/ActionControl";
+import FieldControl from "./taro/FieldControl";
 
 export const PropertyControls = {
   InputTextControl,
@@ -71,6 +76,11 @@ export const PropertyControls = {
   IconSelectControl,
   IconAlignControl,
   FormilyControl,
+  CellControl,
+  RadioControl,
+  VantIconSelectControl,
+  ActionControl,
+  FieldControl,
 };
 
 export type PropertyControlPropsType =

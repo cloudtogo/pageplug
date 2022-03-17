@@ -113,7 +113,7 @@ type ConnectionsProps = {
 
 function Connections(props: ConnectionsProps) {
   return (
-    <Collapsible label="Relationships">
+    <Collapsible label="连接关系">
       <ConnectionType className="icon-text">
         <Icon keepColors name="trending-flat" size={IconSize.MEDIUM} />
         <span className="connection-type">

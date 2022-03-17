@@ -33,11 +33,14 @@ const FooterLinksContainer = styled.div`
 function FooterLinks() {
   return (
     <FooterLinksContainer>
-      <FooterLink href="/privacy-policy.html" target="_blank">
+      {/* <FooterLink href="/privacy-policy.html" target="_blank">
         {createMessage(PRIVACY_POLICY_LINK)}
       </FooterLink>
       <FooterLink href="/terms-and-conditions.html" target="_blank">
         {createMessage(TERMS_AND_CONDITIONS_LINK)}
+      </FooterLink> */}
+      <FooterLink href="https://cloudtogo.cn" target="_blank">
+        行云创新 🧡 用心创造
       </FooterLink>
     </FooterLinksContainer>
   );

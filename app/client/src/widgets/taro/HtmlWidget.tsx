@@ -11,6 +11,9 @@ const Container = styled(ScrollView)`
   & img {
     width: 100%;
   }
+  & p {
+    margin: 0;
+  }
 `;
 
 class MHtmlWidget extends BaseWidget<MHtmlWidgetProps, WidgetState> {
@@ -37,7 +40,7 @@ class MHtmlWidget extends BaseWidget<MHtmlWidgetProps, WidgetState> {
     const { content } = this.props;
     return (
       <Container scrollY>
-        <RichText style={{ fontSize: 0 }} nodes={content} />
+        <RichText nodes={content} />
       </Container>
     );
   }

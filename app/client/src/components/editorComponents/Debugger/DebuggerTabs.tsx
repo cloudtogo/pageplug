@@ -26,6 +26,7 @@ const Container = styled.div`
   height: 25%;
   min-height: ${TABS_HEADER_HEIGHT}px;
   background-color: ${(props) => props.theme.colors.debugger.background};
+  border-top: 1px solid #efefef;
 
   ul.react-tabs__tab-list {
     padding: 0px ${(props) => props.theme.spaces[12]}px;

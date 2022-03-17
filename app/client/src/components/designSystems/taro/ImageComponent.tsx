@@ -1,25 +1,26 @@
 import React from "react";
 import { Image } from "@taroify/core";
+import { PhotoFail } from "@taroify/icons";
 
 interface ImageComponentProps {
   imageUrl: string;
   mode: any;
   onClick?: any;
-  isCircle?: boolean;
   radius?: string;
 }
+
+const hasNoUnit = (d: string) => /^\d+$/g.test(d);
 
 const ImageComponent = ({
   imageUrl,
   mode,
   onClick,
-  isCircle,
-  radius,
+  radius = "0",
 }: ImageComponentProps) => {
   const style = {
     height: "100%",
     width: "100%",
-    borderRadius: radius,
+    borderRadius: hasNoUnit(radius) ? `${radius}px` : radius,
   };
   return (
     <Image
@@ -27,7 +28,7 @@ const ImageComponent = ({
       style={style}
       mode={mode}
       onClick={onClick}
-      round={isCircle}
+      fallback={<PhotoFail />}
     />
   );
 };

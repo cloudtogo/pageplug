@@ -27,10 +27,51 @@ class MButtonWidget extends BaseWidget<MButtonWidgetProps, ButtonWidgetState> {
           },
           {
             propertyName: "color",
-            label: "按钮颜色",
+            label: "背景颜色",
             controlType: "COLOR_PICKER",
+            isBindProperty: true,
+            isTriggerProperty: false,
+          },
+          {
+            propertyName: "textColor",
+            label: "文本颜色",
+            controlType: "COLOR_PICKER",
+            isBindProperty: true,
+            isTriggerProperty: false,
+          },
+          {
+            propertyName: "fontSize",
+            label: "字体大小",
+            controlType: "RADIO",
+            options: [
+              {
+                label: "小",
+                value: "14px",
+              },
+              {
+                label: "适中",
+                value: "16px",
+              },
+              {
+                label: "大",
+                value: "18px",
+              },
+              {
+                label: "超大",
+                value: "20px",
+              },
+            ],
+            columns: 4,
             isBindProperty: false,
             isTriggerProperty: false,
+          },
+          {
+            propertyName: "isBold",
+            label: "字体加粗",
+            controlType: "SWITCH",
+            isBindProperty: false,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.BOOLEAN },
           },
           {
             propertyName: "rounded",
@@ -57,6 +98,15 @@ class MButtonWidget extends BaseWidget<MButtonWidgetProps, ButtonWidgetState> {
             helpText: "禁止按钮交互",
             isJSConvertible: true,
             isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.BOOLEAN },
+          },
+          {
+            propertyName: "showLoading",
+            label: "显示加载动画",
+            helpText: "数据加载或触发动作时，是否显示加载动画",
+            controlType: "SWITCH",
+            isBindProperty: false,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.BOOLEAN },
           },
@@ -102,14 +152,13 @@ class MButtonWidget extends BaseWidget<MButtonWidgetProps, ButtonWidgetState> {
   };
 
   getPageView() {
+    const { isLoading, showLoading, isDisabled, ...others } = this.props;
+    const loading = showLoading && (isLoading || this.state.isLoading);
     return (
       <ButtonComponent
-        isDisabled={this.props.isDisabled}
-        isLoading={this.props.isLoading || this.state.isLoading}
-        onClick={!this.props.isDisabled ? this.onButtonClick : undefined}
-        text={this.props.text}
-        color={this.props.color}
-        rounded={this.props.rounded}
+        {...others}
+        isLoading={loading}
+        onClick={this.onButtonClick}
       />
     );
   }
@@ -122,6 +171,8 @@ class MButtonWidget extends BaseWidget<MButtonWidgetProps, ButtonWidgetState> {
 export interface MButtonWidgetProps extends WidgetProps, WithMeta {
   text?: string;
   color?: string;
+  textColor?: string;
+  fontSize?: string;
   onClick?: string;
   rounded?: boolean;
   isDisabled?: boolean;

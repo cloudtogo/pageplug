@@ -27,19 +27,22 @@ import {
 import { editorInitializer } from "utils/EditorUtils";
 import * as Sentry from "@sentry/react";
 import log from "loglevel";
-import { getViewModePageList } from "selectors/editorSelectors";
+import { getViewModePageList, getShowTabBar } from "selectors/editorSelectors";
 import AppComments from "comments/AppComments/AppComments";
 import AddCommentTourComponent from "comments/tour/AddCommentTourComponent";
 import CommentShowCaseCarousel from "comments/CommentsShowcaseCarousel";
 import { getThemeDetails, ThemeMode } from "selectors/themeSelectors";
 import { Theme } from "constants/DefaultTheme";
 import GlobalHotKeys from "./GlobalHotKeys";
+import TabBar from "components/designSystems/taro/TabBar";
+import PreviewQRCode from "./PreviewQRCode";
 
 const SentryRoute = Sentry.withSentryRouting(Route);
 
 const AppViewerBody = styled.section<{
   hasPages: boolean;
   inCloudOS: boolean;
+  showTabBar: boolean;
 }>`
   display: flex;
   flex-direction: row;
@@ -54,7 +57,8 @@ const AppViewerBody = styled.section<{
             : props.theme.smallHeaderHeight
           : props.inCloudOS
           ? props.theme.viewHeaderTabHeight
-          : `${props.theme.smallHeaderHeight} - ${props.theme.viewHeaderTabHeight}`}
+          : `${props.theme.smallHeaderHeight} - ${props.theme.viewHeaderTabHeight}`} -
+      ${(props) => (props.showTabBar ? "60px" : "0px")}
   );
 `;
 
@@ -62,12 +66,18 @@ const ContainerWithComments = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
+  transform: translate(0, 0);
 `;
 
 const AppViewerBodyContainer = styled.div<{ width?: string }>`
   flex: 1;
   overflow: auto;
   margin: 0 auto;
+`;
+
+const StableContainer = styled.div`
+  position: relative;
+  overflow: hidden;
 `;
 
 export type AppViewerProps = {
@@ -89,6 +99,7 @@ export type AppViewerProps = {
   pages: PageListPayload;
   lightTheme: Theme;
   inCloudOS: any;
+  showTabBar: boolean;
 } & RouteComponentProps<BuilderRouteParams>;
 
 class AppViewer extends Component<
@@ -114,7 +125,7 @@ class AppViewer extends Component<
   };
 
   public render() {
-    const { isInitialized, inCloudOS } = this.props;
+    const { isInitialized, inCloudOS, showTabBar } = this.props;
     return (
       <ThemeProvider theme={this.props.lightTheme}>
         <GlobalHotKeys>
@@ -125,32 +136,37 @@ class AppViewer extends Component<
               resetChildrenMetaProperty: this.props.resetChildrenMetaProperty,
             }}
           >
-            <ContainerWithComments>
-              <AppComments isInline />
-              <AppViewerBodyContainer>
-                <AppViewerBody
-                  inCloudOS={inCloudOS}
-                  hasPages={this.props.pages.length > 1}
-                >
-                  {isInitialized && this.state.registered && (
-                    <Switch>
-                      <SentryRoute
-                        component={AppViewerPageContainer}
-                        exact
-                        path={getApplicationViewerPageURL()}
-                      />
-                      <SentryRoute
-                        component={AppViewerPageContainer}
-                        exact
-                        path={`${getApplicationViewerPageURL()}/fork`}
-                      />
-                    </Switch>
-                  )}
-                </AppViewerBody>
-              </AppViewerBodyContainer>
-            </ContainerWithComments>
-            <AddCommentTourComponent />
-            <CommentShowCaseCarousel />
+            <StableContainer>
+              <ContainerWithComments>
+                <AppComments isInline />
+                <AppViewerBodyContainer>
+                  <AppViewerBody
+                    inCloudOS={inCloudOS}
+                    hasPages={this.props.pages.length > 1}
+                    showTabBar={showTabBar}
+                  >
+                    {isInitialized && this.state.registered && (
+                      <Switch>
+                        <SentryRoute
+                          component={AppViewerPageContainer}
+                          exact
+                          path={getApplicationViewerPageURL()}
+                        />
+                        <SentryRoute
+                          component={AppViewerPageContainer}
+                          exact
+                          path={`${getApplicationViewerPageURL()}/fork`}
+                        />
+                      </Switch>
+                    )}
+                  </AppViewerBody>
+                </AppViewerBodyContainer>
+              </ContainerWithComments>
+              <AddCommentTourComponent />
+              <CommentShowCaseCarousel />
+              <TabBar />
+              <PreviewQRCode />
+            </StableContainer>
           </EditorContext.Provider>
         </GlobalHotKeys>
       </ThemeProvider>
@@ -163,6 +179,7 @@ const mapStateToProps = (state: AppState) => ({
   pages: getViewModePageList(state),
   lightTheme: getThemeDetails(state, ThemeMode.LIGHT),
   inCloudOS: state.entities.app.inCloudOS,
+  showTabBar: getShowTabBar(state),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({

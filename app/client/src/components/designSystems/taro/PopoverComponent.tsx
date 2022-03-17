@@ -14,7 +14,7 @@ const PopupContainer = styled(Popup)<
   overflow: visible;
   width: 450px;
   left: unset;
-  background: #f6f6f6;
+  background: #fff;
 `;
 
 const Content = styled.div`
@@ -50,7 +50,7 @@ export function ModalComponent(props: ModalComponentProps) {
     >
       <Popup.Backdrop
         closeable={props.canOutsideClickClose}
-        style={{ left: "unset", right: "unset", width: "450px" }}
+        style={{ left: "unset", right: "unset", top: "0", width: "450px" }}
       />
       <Popup.Close>
         <Cross size="24px" style={{ zIndex: 2 }} />

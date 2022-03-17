@@ -5,7 +5,25 @@ import ListComponent, {
   ListComponentProps,
 } from "components/designSystems/taro/ListComponent";
 import { ValidationTypes } from "constants/WidgetValidation";
+import { DerivedPropertiesMap } from "utils/WidgetFactory";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
+import { View } from "@tarojs/components";
+import { Skeleton } from "@taroify/core";
+import styled from "styled-components";
+import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import withMeta, { WithMeta } from "../MetaHOC";
+
+const LoadingContainer = styled(View)`
+  height: 100%;
+  overflow: hidden;
+
+  & .taroify-skeleton {
+    width: 100%;
+    height: 100px;
+    border-radius: 4px;
+    margin: 20px 0;
+  }
+`;
 
 class ListWidget extends BaseWidget<MListWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
@@ -45,12 +63,24 @@ class ListWidget extends BaseWidget<MListWidgetProps, WidgetState> {
                 value: "I_N_D_P",
               },
               {
-                label: "图片+标题+描述+价格+按钮",
+                label: "图片+标题+描述+价格+控件",
                 value: "I_N_D_P_B",
               },
             ],
             isBindProperty: false,
             isTriggerProperty: false,
+          },
+          {
+            propertyName: "checkedKey",
+            label: "勾选字段",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+            dependencies: ["enableCheckbox"],
+            hidden: (props: MListWidgetProps) => {
+              return !props.enableCheckbox;
+            },
           },
           {
             propertyName: "urlKey",
@@ -89,9 +119,25 @@ class ListWidget extends BaseWidget<MListWidgetProps, WidgetState> {
             },
           },
           {
-            propertyName: "buttonText",
-            label: "按钮文本",
-            controlType: "INPUT_TEXT",
+            propertyName: "controlType",
+            label: "控件类型",
+            controlType: "RADIO",
+            options: [
+              {
+                label: "文字",
+                value: "TEXT",
+              },
+              {
+                label: "按钮",
+                value: "BUTTON",
+              },
+              {
+                label: "数字输入",
+                value: "STEPPER",
+              },
+            ],
+            columns: 3,
+            defaultValue: "BUTTON",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -100,11 +146,80 @@ class ListWidget extends BaseWidget<MListWidgetProps, WidgetState> {
               return props.contentType !== "I_N_D_P_B";
             },
           },
+          {
+            propertyName: "controlTextKey",
+            label: "文字控件字段",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+            dependencies: ["contentType", "controlType"],
+            hidden: (props: MListWidgetProps) => {
+              return !(
+                props.contentType === "I_N_D_P_B" &&
+                props.controlType === "TEXT"
+              );
+            },
+          },
+          {
+            propertyName: "buttonText",
+            label: "按钮文本",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+            dependencies: ["contentType", "controlType"],
+            hidden: (props: MListWidgetProps) => {
+              return !(
+                props.contentType === "I_N_D_P_B" &&
+                props.controlType === "BUTTON"
+              );
+            },
+          },
+          {
+            propertyName: "defaultNumKey",
+            label: "数字输入字段",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+            dependencies: ["contentType", "controlType"],
+            hidden: (props: MListWidgetProps) => {
+              return !(
+                props.contentType === "I_N_D_P_B" &&
+                props.controlType === "STEPPER"
+              );
+            },
+          },
+          {
+            propertyName: "enableCheckbox",
+            label: "显示复选框",
+            controlType: "SWITCH",
+            isBindProperty: false,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.BOOLEAN },
+          },
+          {
+            propertyName: "enableSwipe",
+            label: "滑动删除",
+            controlType: "SWITCH",
+            isBindProperty: false,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.BOOLEAN },
+          },
         ],
       },
       {
         sectionName: "样式",
         children: [
+          {
+            propertyName: "showLoading",
+            label: "数据加载时显示加载动画",
+            controlType: "SWITCH",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.BOOLEAN },
+          },
           {
             propertyName: "inset",
             label: "圆角风格",
@@ -155,14 +270,124 @@ class ListWidget extends BaseWidget<MListWidgetProps, WidgetState> {
             },
           },
           {
+            propertyName: "textColor",
+            label: "文本控件颜色",
+            controlType: "COLOR_PICKER",
+            isBindProperty: false,
+            isTriggerProperty: false,
+            dependencies: ["contentType", "controlType"],
+            hidden: (props: MListWidgetProps) => {
+              return !(
+                props.contentType === "I_N_D_P_B" &&
+                props.controlType === "TEXT"
+              );
+            },
+          },
+          {
             propertyName: "buttonColor",
             label: "按钮颜色",
             controlType: "COLOR_PICKER",
             isBindProperty: false,
             isTriggerProperty: false,
-            dependencies: ["contentType"],
+            dependencies: ["contentType", "controlType"],
             hidden: (props: MListWidgetProps) => {
-              return props.contentType !== "I_N_D_P_B";
+              return !(
+                props.contentType === "I_N_D_P_B" &&
+                props.controlType === "BUTTON"
+              );
+            },
+          },
+        ],
+      },
+      {
+        sectionName: "空数据样式",
+        children: [
+          {
+            propertyName: "emptyPic",
+            label: "空数据图片",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+          {
+            propertyName: "emptyText",
+            label: "空数据文案",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+        ],
+      },
+      {
+        sectionName: "动作",
+        children: [
+          {
+            helpText: "勾选行时触发",
+            propertyName: "onItemChecked",
+            label: "onItemChecked",
+            controlType: "ACTION_SELECTOR",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: true,
+            dependencies: ["enableCheckbox"],
+            hidden: (props: MListWidgetProps) => {
+              return !props.enableCheckbox;
+            },
+          },
+          {
+            helpText: "删除行时触发",
+            propertyName: "onDeleteClicked",
+            label: "onDeleteClicked",
+            controlType: "ACTION_SELECTOR",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: true,
+            dependencies: ["enableSwipe"],
+            hidden: (props: MListWidgetProps) => {
+              return !props.enableSwipe;
+            },
+          },
+          {
+            helpText: "点击行时触发",
+            propertyName: "onItemClicked",
+            label: "onItemClicked",
+            controlType: "ACTION_SELECTOR",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: true,
+          },
+          {
+            helpText: "点击行按钮时触发",
+            propertyName: "onItemButtonClicked",
+            label: "onItemButtonClicked",
+            controlType: "ACTION_SELECTOR",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: true,
+            dependencies: ["contentType", "controlType"],
+            hidden: (props: MListWidgetProps) => {
+              return !(
+                props.contentType === "I_N_D_P_B" &&
+                props.controlType === "BUTTON"
+              );
+            },
+          },
+          {
+            helpText: "数字输入变化时触发",
+            propertyName: "onItemStepperChanged",
+            label: "onItemStepperChanged",
+            controlType: "ACTION_SELECTOR",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: true,
+            dependencies: ["contentType", "controlType"],
+            hidden: (props: MListWidgetProps) => {
+              return !(
+                props.contentType === "I_N_D_P_B" &&
+                props.controlType === "STEPPER"
+              );
             },
           },
         ],
@@ -170,41 +395,60 @@ class ListWidget extends BaseWidget<MListWidgetProps, WidgetState> {
     ];
   }
 
+  static getDerivedPropertiesMap(): DerivedPropertiesMap {
+    return {
+      data: `{{this.list}}`,
+    };
+  }
+
+  static getMetaPropertiesMap(): Record<string, any> {
+    return {
+      currentItem: undefined,
+      data: [],
+    };
+  }
+
+  onCurrentItemChanged = (
+    item: any,
+    type: "ITEM" | "BUTTON" | "STEPPER" | "CHECKBOX" | "DELETE",
+  ) => {
+    let actionName = "onItemClicked";
+    if (type === "BUTTON") {
+      actionName = "onItemButtonClicked";
+    } else if (type === "STEPPER") {
+      actionName = "onItemStepperChanged";
+    } else if (type === "CHECKBOX") {
+      actionName = "onItemChecked";
+    } else if (type === "DELETE") {
+      actionName = "onDeleteClicked";
+    }
+    const actionScript = this.props[actionName];
+    this.props.updateWidgetMetaProperty("currentItem", item, {
+      triggerPropertyName: actionName,
+      dynamicString: actionScript,
+      event: {
+        type: EventType.ON_CLICK,
+      },
+    });
+  };
+
   getPageView() {
-    const {
-      list,
-      contentType,
-      urlKey,
-      titleKey,
-      descriptionKey,
-      priceKey,
-      buttonText,
-      inset,
-      width,
-      height,
-      titleColor,
-      descriptionColor,
-      priceColor,
-      buttonColor,
-    } = this.props;
+    const { isLoading, showLoading } = this.props;
+
+    if (isLoading && showLoading) {
+      return (
+        <LoadingContainer>
+          {Array.from(Array(6)).map((a, i) => (
+            <Skeleton animation="pulse" key={i} />
+          ))}
+        </LoadingContainer>
+      );
+    }
+
     return (
       <ListComponent
-        {...{
-          list,
-          contentType,
-          urlKey,
-          titleKey,
-          descriptionKey,
-          priceKey,
-          buttonText,
-          inset,
-          width,
-          height,
-          titleColor,
-          descriptionColor,
-          priceColor,
-          buttonColor,
-        }}
+        {...this.props}
+        onItemClicked={this.onCurrentItemChanged}
       />
     );
   }
@@ -214,7 +458,10 @@ class ListWidget extends BaseWidget<MListWidgetProps, WidgetState> {
   }
 }
 
-export interface MListWidgetProps extends WidgetProps, ListComponentProps {}
+export interface MListWidgetProps
+  extends WidgetProps,
+    ListComponentProps,
+    WithMeta {}
 
 export default ListWidget;
-export const MProfiledListWidget = ListWidget;
+export const MProfiledListWidget = withMeta(ListWidget);

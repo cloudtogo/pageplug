@@ -12,6 +12,7 @@ import {
   RenderMode,
   RenderModes,
   WidgetType,
+  WidgetTypes,
 } from "constants/WidgetConstants";
 import React, { Component, ReactNode } from "react";
 import { get, memoize } from "lodash";
@@ -303,6 +304,21 @@ abstract class BaseWidget<
     );
   }
 
+  addTaroWrapper = (content: ReactNode, type: WidgetType) => {
+    if (
+      type === WidgetTypes.TARO_BOTTOM_BAR_WIDGET ||
+      type === WidgetTypes.TARO_POPUP_WIDGET
+    ) {
+      return <div style={{ height: 0 }}>{content}</div>;
+    }
+    if (type === WidgetTypes.TARO_LOADING_WIDGET) {
+      return (
+        <div style={{ zIndex: 10000, position: "relative" }}>{content}</div>
+      );
+    }
+    return content;
+  };
+
   private getWidgetView(): ReactNode {
     let content: ReactNode;
 
@@ -318,6 +334,8 @@ abstract class BaseWidget<
           content = this.makeSnipeable(content);
           // NOTE: In sniping mode we are not blocking onClick events from PositionWrapper.
           content = this.makePositioned(content);
+        } else {
+          content = this.addTaroWrapper(content, this.props.type);
         }
         return content;
 
@@ -330,6 +348,8 @@ abstract class BaseWidget<
           content = this.addErrorBoundary(content);
           if (!this.props.detachFromLayout) {
             content = this.makePositioned(content);
+          } else {
+            content = this.addTaroWrapper(content, this.props.type);
           }
           return content;
         }
