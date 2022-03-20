@@ -33,6 +33,7 @@ import {
   getCurrentPageId,
   getLayoutOnLoadActions,
   getPageList,
+  isMobileLayout,
 } from "selectors/editorSelectors";
 import _, { get, isString } from "lodash";
 import AnalyticsUtil, { EventName } from "utils/AnalyticsUtil";
@@ -118,6 +119,7 @@ import { ENTITY_TYPE } from "entities/AppsmithConsole";
 import LOG_TYPE from "entities/AppsmithConsole/logtype";
 import { matchPath } from "react-router";
 import { setDataUrl } from "./PageSagas";
+import Taro from "@tarojs/taro";
 
 enum ActionResponseDataTypes {
   BINARY = "BINARY",
@@ -365,6 +367,17 @@ function* showAlertSaga(
     if (event.callback) event.callback({ success: false });
     return;
   }
+
+  const isMobile = yield select(isMobileLayout);
+  if (isMobile) {
+    Taro.showToast({
+      icon: payload.style,
+      title: payload.message,
+    });
+    if (event.callback) event.callback({ success: true });
+    return;
+  }
+
   let variant;
   switch (payload.style) {
     case "info":
