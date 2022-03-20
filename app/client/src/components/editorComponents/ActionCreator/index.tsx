@@ -88,6 +88,7 @@ const baseOptions: any = [
 function getFieldFromValue(
   value: string | undefined,
   getParentValue?: Function,
+  isMobile?: boolean,
 ): any[] {
   const fields: any[] = [
     {
@@ -126,6 +127,7 @@ function getFieldFromValue(
             `{{$1(${successArg}, ${errorArg})}}`,
           );
         },
+        isMobile,
       );
       successFields[0].label = "onSuccess";
       fields.push(successFields);
@@ -149,6 +151,7 @@ function getFieldFromValue(
             `{{$1(${successArg}, ${errorArg})}}`,
           );
         },
+        isMobile,
       );
       errorFields[0].label = "onError";
       fields.push(errorFields);
@@ -162,9 +165,11 @@ function getFieldFromValue(
     fields.push({
       field: FieldType.QUERY_PARAMS_FIELD,
     });
-    fields.push({
-      field: FieldType.NAVIGATION_TARGET_FIELD,
-    });
+    if (!isMobile) {
+      fields.push({
+        field: FieldType.NAVIGATION_TARGET_FIELD,
+      });
+    }
   }
 
   if (value.indexOf("showModal") !== -1) {
@@ -184,6 +189,7 @@ function getFieldFromValue(
       },
       {
         field: FieldType.ALERT_TYPE_SELECTOR_FIELD,
+        isMobile,
       },
     );
   }
@@ -355,7 +361,10 @@ function useIntegrationsOptionTree() {
   // mobile hide
   const isMobile = useSelector(isMobileLayout);
   const basicOptions = isMobile
-    ? baseOptions.filter((o: any) => o.value !== ActionType.download)
+    ? baseOptions.filter(
+        (o: any) =>
+          o.value !== ActionType.download && o.value !== ActionType.resetWidget,
+      )
     : baseOptions;
 
   const integrationOptionTree = getIntegrationOptionsWithChildren(
@@ -401,7 +410,8 @@ export function ActionCreator(props: ActionCreatorProps) {
   const widgetOptionTree = useSelector(getWidgetOptionsTree);
   const modalDropdownList = useModalDropdownList();
   const pageDropdownOptions = useSelector(getPageListAsOptions);
-  const fields = getFieldFromValue(props.value);
+  const isMobile = useSelector(isMobileLayout);
+  const fields = getFieldFromValue(props.value, undefined, isMobile);
   return (
     <TreeStructure>
       <Fields

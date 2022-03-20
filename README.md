@@ -69,6 +69,11 @@ docker push harbor.cloud2go.cn/cloud2go/pageplug-server:demo
 登录到安装目录下 docker-compose 修改镜像
 docker-compose down
 docker-compose up -d
+
+[cloudtogo外网版本]
+// 部署在 k8s 上，由乙麟帮忙管理
+docker-registry-idc01-sz.cloudtogo.cn/pageplug-client:cloudtogo
+docker-registry-idc01-sz.cloudtogo.cn/pageplug-server:cloudtogo
 ```
 
 ## 🌱 系统安装脚本
