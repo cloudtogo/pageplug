@@ -100,10 +100,10 @@ const PreviewQRCode = ({
           ) : null}
         </WxaCodeContainer>
       </Card>
-      <Card style={{ marginTop: 32 }}>
+      {/* <Card style={{ marginTop: 32 }}>
         <Title>H5端</Title>
         <QRCode value="https://www.cloudtogo.cn" size={CODE_SIZE} />
-      </Card>
+      </Card> */}
     </Container>
   );
 };

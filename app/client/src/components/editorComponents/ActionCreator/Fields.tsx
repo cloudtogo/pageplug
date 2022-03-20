@@ -17,10 +17,17 @@ import { AutocompleteDataType } from "utils/autocomplete/TernServer";
 /* TODO: Function and object types need to be updated to enable the lint rule */
 
 const ALERT_STYLE_OPTIONS = [
-  { label: "Info", value: "'info'", id: "info" },
-  { label: "Success", value: "'success'", id: "success" },
-  { label: "Error", value: "'error'", id: "error" },
-  { label: "Warning", value: "'warning'", id: "warning" },
+  { label: "无图标", value: "'info'", id: "info" },
+  { label: "成功", value: "'success'", id: "success" },
+  { label: "失败", value: "'error'", id: "error" },
+  { label: "警告", value: "'warning'", id: "warning" },
+];
+
+const WX_ALERT_STYLE_OPTIONS = [
+  { label: "无图标", value: "'none'", id: "info" },
+  { label: "成功", value: "'success'", id: "success" },
+  { label: "失败", value: "'error'", id: "error" },
+  { label: "加载中", value: "'loading'", id: "loading" },
 ];
 
 const RESET_CHILDREN_OPTIONS = [
@@ -622,7 +629,7 @@ function renderField(props: {
       }
       if (fieldType === FieldType.ALERT_TYPE_SELECTOR_FIELD) {
         label = "提示类型";
-        options = ALERT_STYLE_OPTIONS;
+        options = field.isMobile ? WX_ALERT_STYLE_OPTIONS : ALERT_STYLE_OPTIONS;
         defaultText = "选择提示类型";
       }
       if (fieldType === FieldType.DOWNLOAD_FILE_TYPE_FIELD) {
