@@ -368,7 +368,7 @@ const fieldConfigs: FieldConfigs = {
           value = `${value}.run`;
           break;
         case ActionType.navigateTo:
-          defaultParams = `'#', {}`;
+          defaultParams = `'', {}`;
           break;
         default:
           break;
@@ -686,7 +686,7 @@ function renderField(props: {
       if (fieldType === FieldType.ALERT_TEXT_FIELD) {
         fieldLabel = "提示消息";
       } else if (fieldType === FieldType.URL_FIELD) {
-        fieldLabel = "页面名称或者 URL";
+        fieldLabel = field.isMobile ? "页面名称" : "页面名称或者 URL";
       } else if (fieldType === FieldType.KEY_TEXT_FIELD) {
         fieldLabel = "键";
       } else if (fieldType === FieldType.VALUE_TEXT_FIELD) {

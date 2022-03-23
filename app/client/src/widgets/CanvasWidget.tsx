@@ -43,7 +43,11 @@ class CanvasWidget extends ContainerWidget {
   renderChildWidget(childWidgetData: WidgetProps): React.ReactNode {
     if (!childWidgetData) return null;
     // For now, isVisible prop defines whether to render a detached widget
-    if (childWidgetData.detachFromLayout && !childWidgetData.isVisible) {
+    if (
+      childWidgetData.detachFromLayout &&
+      !childWidgetData.isVisible &&
+      childWidgetData.type !== WidgetTypes.TARO_BOTTOM_BAR_WIDGET
+    ) {
       return null;
     }
     const snapSpaces = this.getSnapSpaces();

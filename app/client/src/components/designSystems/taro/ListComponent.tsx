@@ -39,8 +39,12 @@ export interface ListComponentProps {
     item: any,
     type: "ITEM" | "BUTTON" | "STEPPER" | "CHECKBOX" | "DELETE",
   ) => void;
+  runAction: (acton: string) => void;
   emptyPic?: string;
   emptyText?: string;
+  enableEmptyButton?: boolean;
+  emptyButtonText?: string;
+  emptyButtonAction?: string;
 }
 
 const ColCell = styled(Cell)`
@@ -159,8 +163,12 @@ const ListComponent = (props: ListComponentProps) => {
     buttonColor,
     textColor,
     onItemClicked,
+    runAction,
     emptyPic,
     emptyText,
+    enableEmptyButton,
+    emptyButtonText,
+    emptyButtonAction,
   } = props;
   const items = _.isArray(list) ? list : [];
   const noPrice = contentType === "I_N_D";
@@ -359,7 +367,15 @@ const ListComponent = (props: ListComponentProps) => {
   );
 
   if (!items.length) {
-    return <Empty text={emptyText} pic={emptyPic} />;
+    return (
+      <Empty
+        text={emptyText}
+        pic={emptyPic}
+        enableButton={enableEmptyButton}
+        buttonText={emptyButtonText}
+        onClick={() => runAction(emptyButtonAction || "")}
+      />
+    );
   }
 
   return (

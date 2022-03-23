@@ -288,8 +288,8 @@ init_ssl_cert() {
 
     if ! [[ -e "$data_path/conf/options-ssl-nginx.conf" && -e "$data_path/conf/ssl-dhparams.pem" ]]; then
         echo "### Downloading recommended TLS parameters..."
-        wget -P "$data_path/conf/" https://github.91chifun.workers.dev//https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf
-        wget -P "$data_path/conf/" https://github.91chifun.workers.dev//https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem
+        wget -P "$data_path/conf/" https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf
+        wget -P "$data_path/conf/" https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem
         echo
     fi
 
@@ -356,10 +356,8 @@ echo_contact_support() {
 bye() {  # Prints a friendly good bye message and exits the script.
     if [ "$?" -ne 0 ]; then
         set +o errexit
-        echo "Please share your email if you wish to receive support with the installation"
-        read -rp 'Email: ' email
         echo ""
-        echo -e "\nWe will reach out to you at the email provided shortly, Exiting for now. Bye! 👋 \n"
+        echo -e "\n安装失败！白白！ 👋 \n"
         exit 0
     fi
 }
@@ -544,13 +542,13 @@ mkdir -p "$templates_dir"
 (
     cd "$templates_dir"
     wget \
-        https://github.91chifun.workers.dev//https://raw.githubusercontent.com/appsmithorg/appsmith/master/deploy/template/docker-compose.yml.sh \
-        https://github.91chifun.workers.dev//https://raw.githubusercontent.com/appsmithorg/appsmith/master/deploy/template/mongo-init.js.sh \
-        https://github.91chifun.workers.dev//https://raw.githubusercontent.com/appsmithorg/appsmith/master/deploy/template/docker.env.sh \
-        https://github.91chifun.workers.dev//https://raw.githubusercontent.com/appsmithorg/appsmith/master/deploy/template/nginx_app.conf.sh \
-        https://github.91chifun.workers.dev//https://raw.githubusercontent.com/appsmithorg/appsmith/master/deploy/template/encryption.env.sh
-    sed -i 's/index\.docker\.io\/appsmith\/appsmith-editor/harbor\.cloud2go\.cn\/cloud2go\/pageplug-client:demo/g' docker-compose.yml.sh
-    sed -i 's/index\.docker\.io\/appsmith\/appsmith-server/harbor\.cloud2go\.cn\/cloud2go\/pageplug-server:demo/g' docker-compose.yml.sh
+        https://raw.githubusercontent.com/lifeneedspassion/ppDeploy/master/template/docker-compose.yml.sh \
+        https://raw.githubusercontent.com/lifeneedspassion/ppDeploy/master/template/mongo-init.js.sh \
+        https://raw.githubusercontent.com/lifeneedspassion/ppDeploy/master/template/docker.env.sh \
+        https://raw.githubusercontent.com/lifeneedspassion/ppDeploy/master/template/nginx_app.conf.sh \
+        https://raw.githubusercontent.com/lifeneedspassion/ppDeploy/master/template/encryption.env.sh
+    sed -i 's/index\.docker\.io\/appsmith\/appsmith-editor/docker-registry-idc01-sz\.cloudtogo\.cn\/cloud2go\/pageplug-client:demo/g' docker-compose.yml.sh
+    sed -i 's/index\.docker\.io\/appsmith\/appsmith-server/docker-registry-idc01-sz\.cloudtogo\.cn\/cloud2go\/pageplug-server:demo/g' docker-compose.yml.sh
 )
 
 # Create needed folder structure.
