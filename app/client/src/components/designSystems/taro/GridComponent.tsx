@@ -25,8 +25,12 @@ export interface GridComponentProps {
   descriptionColor?: string;
   buttonColor?: string;
   onItemClicked: (item: any, type: "ITEM" | "BUTTON") => void;
+  runAction: (acton: string) => void;
   emptyPic?: string;
   emptyText?: string;
+  enableEmptyButton?: boolean;
+  emptyButtonText?: string;
+  emptyButtonAction?: string;
 }
 
 const SameHeightImage = styled(Image)<{
@@ -97,8 +101,12 @@ const GridComponent = (props: GridComponentProps) => {
     descriptionColor,
     buttonColor,
     onItemClicked,
+    runAction,
     emptyPic,
     emptyText,
+    enableEmptyButton,
+    emptyButtonText,
+    emptyButtonAction,
   } = props;
   const items = _.isArray(list) ? list : [];
   const key = urlKey + titleKey + items.length;
@@ -114,7 +122,15 @@ const GridComponent = (props: GridComponentProps) => {
   };
 
   if (!items.length) {
-    return <Empty text={emptyText} pic={emptyPic} />;
+    return (
+      <Empty
+        text={emptyText}
+        pic={emptyPic}
+        enableButton={enableEmptyButton}
+        buttonText={emptyButtonText}
+        onClick={() => runAction(emptyButtonAction || "")}
+      />
+    );
   }
 
   return (

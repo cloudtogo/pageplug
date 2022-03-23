@@ -35,6 +35,16 @@ export class MBottomBarWidget extends BaseWidget<
               params: { min: 80, max: 200 },
             },
           },
+          {
+            propertyName: "isVisible",
+            label: "是否可见",
+            helpText: "控制显示/隐藏",
+            controlType: "SWITCH",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.BOOLEAN },
+          },
         ],
       },
     ];
