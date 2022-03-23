@@ -243,6 +243,38 @@ class GridWidget extends BaseWidget<GridWidgetProps, WidgetState> {
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
           },
+          {
+            propertyName: "enableEmptyButton",
+            label: "显示空数据按钮",
+            controlType: "SWITCH",
+            isBindProperty: false,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.BOOLEAN },
+          },
+          {
+            propertyName: "emptyButtonText",
+            label: "按钮文本",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+            dependencies: ["enableEmptyButton"],
+            hidden: (props: GridWidgetProps) => {
+              return !props.enableEmptyButton;
+            },
+          },
+          {
+            propertyName: "emptyButtonAction",
+            label: "按钮动作",
+            controlType: "ACTION_SELECTOR",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: true,
+            dependencies: ["enableEmptyButton"],
+            hidden: (props: GridWidgetProps) => {
+              return !props.enableEmptyButton;
+            },
+          },
         ],
       },
       {
@@ -294,29 +326,20 @@ class GridWidget extends BaseWidget<GridWidgetProps, WidgetState> {
     });
   };
 
+  runAction = (dynamicString: string) => {
+    if (dynamicString) {
+      super.executeAction({
+        triggerPropertyName: "onClick",
+        dynamicString,
+        event: {
+          type: EventType.ON_CLICK,
+        },
+      });
+    }
+  };
+
   getPageView() {
-    const {
-      list,
-      gridType,
-      urlKey,
-      titleKey,
-      descriptionKey,
-      badgeKey,
-      asPrice,
-      priceUnit,
-      buttonText,
-      height,
-      width,
-      cols,
-      gutter,
-      bordered,
-      titleColor,
-      descriptionColor,
-      buttonColor,
-      isLoading,
-      emptyPic,
-      emptyText,
-    } = this.props;
+    const { cols, isLoading } = this.props;
 
     if (isLoading) {
       return (
@@ -330,28 +353,9 @@ class GridWidget extends BaseWidget<GridWidgetProps, WidgetState> {
 
     return (
       <GridComponent
-        {...{
-          list,
-          gridType,
-          urlKey,
-          titleKey,
-          descriptionKey,
-          badgeKey,
-          asPrice,
-          priceUnit,
-          buttonText,
-          height,
-          width,
-          cols,
-          gutter,
-          bordered,
-          titleColor,
-          descriptionColor,
-          buttonColor,
-          emptyPic,
-          emptyText,
-        }}
+        {...this.props}
         onItemClicked={this.onCurrentItemChanged}
+        runAction={this.runAction}
       />
     );
   }

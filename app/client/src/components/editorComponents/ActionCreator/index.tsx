@@ -161,6 +161,7 @@ function getFieldFromValue(
   if (value.indexOf("navigateTo") !== -1) {
     fields.push({
       field: FieldType.URL_FIELD,
+      isMobile,
     });
     fields.push({
       field: FieldType.QUERY_PARAMS_FIELD,

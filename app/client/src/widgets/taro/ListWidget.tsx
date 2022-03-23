@@ -318,6 +318,38 @@ class ListWidget extends BaseWidget<MListWidgetProps, WidgetState> {
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
           },
+          {
+            propertyName: "enableEmptyButton",
+            label: "显示空数据按钮",
+            controlType: "SWITCH",
+            isBindProperty: false,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.BOOLEAN },
+          },
+          {
+            propertyName: "emptyButtonText",
+            label: "按钮文本",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+            dependencies: ["enableEmptyButton"],
+            hidden: (props: MListWidgetProps) => {
+              return !props.enableEmptyButton;
+            },
+          },
+          {
+            propertyName: "emptyButtonAction",
+            label: "按钮动作",
+            controlType: "ACTION_SELECTOR",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: true,
+            dependencies: ["enableEmptyButton"],
+            hidden: (props: MListWidgetProps) => {
+              return !props.enableEmptyButton;
+            },
+          },
         ],
       },
       {
@@ -432,6 +464,18 @@ class ListWidget extends BaseWidget<MListWidgetProps, WidgetState> {
     });
   };
 
+  runAction = (dynamicString: string) => {
+    if (dynamicString) {
+      super.executeAction({
+        triggerPropertyName: "onClick",
+        dynamicString,
+        event: {
+          type: EventType.ON_CLICK,
+        },
+      });
+    }
+  };
+
   getPageView() {
     const { isLoading, showLoading } = this.props;
 
@@ -449,6 +493,7 @@ class ListWidget extends BaseWidget<MListWidgetProps, WidgetState> {
       <ListComponent
         {...this.props}
         onItemClicked={this.onCurrentItemChanged}
+        runAction={this.runAction}
       />
     );
   }
