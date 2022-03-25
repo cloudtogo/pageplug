@@ -7,9 +7,9 @@ export interface FieldProps {
   required: boolean;
 }
 
-function Field({ label, name, required }: FieldProps) {
+function Field({ label, name }: FieldProps) {
   return (
-    <Form.Item name={name} rules={[{ required }]}>
+    <Form.Item name={name} defaultValue={false}>
       <Form.Label>{label}</Form.Label>
       <Form.Control>
         <Switch size={26} />
