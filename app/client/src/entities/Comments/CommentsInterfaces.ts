@@ -26,8 +26,8 @@ export type CreateCommentThreadRequest = {
   refId: string; // could be an id to refer any parent based on parent type
   tabId?: string;
   position: {
-    top: number;
-    left: number;
+    top?: number;
+    left?: number;
     leftPercent: number;
     topPercent: number;
   };
@@ -59,11 +59,12 @@ export type Reaction = {
 export type Comment = CreateCommentRequest & {
   id: string;
   authorName?: string;
+  authorPhotoId?: string;
   authorUsername?: string;
   updationTime?: string;
   creationTime?: string;
   reactions?: Array<Reaction>;
-  threadId?: string;
+  threadId: string;
 } & { _id: string };
 
 export type CommentThread = Omit<CreateCommentThreadRequest, "comments"> & {
@@ -75,6 +76,21 @@ export type CommentThread = Omit<CreateCommentThreadRequest, "comments"> & {
   updationTime?: string;
   creationTime?: string;
   viewedByUsers?: Array<string>;
+} & { _id: string };
+
+export type DraggedCommentThread = {
+  dragPosition: {
+    x: number;
+    y: number;
+  };
+  containerSizePosition: {
+    top: number;
+    left: number;
+    width: number;
+    height: number;
+  };
+  refId: string;
+  widgetType?: WidgetType;
 };
 
 export type CommentEventPayload = {

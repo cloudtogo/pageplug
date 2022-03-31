@@ -12,7 +12,7 @@ import SuggestedWidgets from "./SuggestedWidgets";
 import { ReactNode } from "react";
 import { useEffect } from "react";
 import Button, { Category, Size } from "components/ads/Button";
-import { bindDataOnCanvas } from "../../../actions/actionActions";
+import { bindDataOnCanvas } from "actions/pluginActionActions";
 import { useParams } from "react-router";
 import { ExplorerURLParams } from "pages/Editor/Explorer/helpers";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,13 +25,13 @@ import {
   BACK_TO_CANVAS,
   createMessage,
   NO_CONNECTIONS,
-} from "constants/messages";
+} from "@appsmith/constants/messages";
 import {
   SuggestedWidget,
   SuggestedWidget as SuggestedWidgetsType,
 } from "api/ActionAPI";
 import { Colors } from "constants/Colors";
-import { isMobileLayout } from "selectors/editorSelectors";
+import { getCurrentApplicationId } from "selectors/editorSelectors";
 
 const SideBar = styled.div`
   padding: ${(props) => props.theme.spaces[0]}px
@@ -39,8 +39,8 @@ const SideBar = styled.div`
   overflow: auto;
   height: 100%;
   width: 100%;
-  -webkit-animation: slide-left 0.2s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
-  animation: slide-left 0.2s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  -webkit-animation: slide-left 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  animation: slide-left 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 
   & > div {
     margin-top: ${(props) => props.theme.spaces[11]}px;
@@ -85,7 +85,6 @@ const SideBar = styled.div`
       transform: translateX(0);
     }
   }
-
 `;
 
 const Label = styled.span`
@@ -168,7 +167,7 @@ export function Collapsible({
   return (
     <CollapsibleWrapper isOpen={isOpen}>
       <Label className="icon-text" onClick={() => setIsOpen(!isOpen)}>
-        <Icon keepColors name="downArrow" size={IconSize.XS} />
+        <Icon keepColors name="down-arrow" size={IconSize.XXXL} />
         <span className="label">{label}</span>
       </Label>
       <Collapse isOpen={isOpen} keepChildrenMounted>
@@ -178,19 +177,46 @@ export function Collapsible({
   );
 }
 
+export function useEntityDependencies(actionName: string) {
+  const deps = useSelector((state: AppState) => state.evaluations.dependencies);
+  const entityDependencies = useMemo(
+    () =>
+      getDependenciesFromInverseDependencies(
+        deps.inverseDependencyMap,
+        actionName,
+      ),
+    [actionName, deps.inverseDependencyMap],
+  );
+  const hasDependencies =
+    entityDependencies &&
+    (entityDependencies?.directDependencies.length > 0 ||
+      entityDependencies?.inverseDependencies.length > 0);
+  return {
+    hasDependencies,
+    entityDependencies,
+  };
+}
+
 function ActionSidebar({
   actionName,
+  entityDependencies,
+  hasConnections,
   hasResponse,
   suggestedWidgets,
 }: {
   actionName: string;
   hasResponse: boolean;
+  hasConnections: boolean | null;
   suggestedWidgets?: SuggestedWidgetsType[];
+  entityDependencies: {
+    directDependencies: string[];
+    inverseDependencies: string[];
+  } | null;
 }) {
   const dispatch = useDispatch();
   const widgets = useSelector(getWidgets);
-  const isMobile = useSelector(isMobileLayout);
-  const { applicationId, pageId } = useParams<ExplorerURLParams>();
+  const applicationId = useSelector(getCurrentApplicationId);
+  const { pageId } = useParams<ExplorerURLParams>();
   const params = useParams<{ apiId?: string; queryId?: string }>();
   const handleBindData = () => {
     AnalyticsUtil.logEvent("SELECT_IN_CANVAS_CLICK", {
@@ -201,29 +227,15 @@ function ActionSidebar({
     dispatch(
       bindDataOnCanvas({
         queryId: (params.apiId || params.queryId) as string,
-        applicationId,
+        applicationId: applicationId as string,
         pageId,
       }),
     );
   };
   const hasWidgets = Object.keys(widgets).length > 1;
 
-  const deps = useSelector((state: AppState) => state.evaluations.dependencies);
-  const entityDependencies = useMemo(
-    () =>
-      getDependenciesFromInverseDependencies(
-        deps.inverseDependencyMap,
-        actionName,
-      ),
-    [actionName, deps.inverseDependencyMap],
-  );
-  const hasConnections =
-    entityDependencies &&
-    (entityDependencies?.directDependencies.length > 0 ||
-      entityDependencies?.inverseDependencies.length > 0);
-  // hide mobile suggested widgets
   const showSuggestedWidgets =
-    hasResponse && suggestedWidgets && !!suggestedWidgets.length && !isMobile;
+    hasResponse && suggestedWidgets && !!suggestedWidgets.length;
   const showSnipingMode = hasResponse && hasWidgets;
 
   if (!hasConnections && !showSuggestedWidgets && !showSnipingMode) {
@@ -231,7 +243,7 @@ function ActionSidebar({
   }
 
   const navigeteToCanvas = () => {
-    history.push(BUILDER_PAGE_URL(applicationId, pageId));
+    history.push(BUILDER_PAGE_URL({ applicationId, pageId }));
   };
 
   return (
@@ -252,15 +264,8 @@ function ActionSidebar({
           entityDependencies={entityDependencies}
         />
       )}
-      {showSuggestedWidgets && (
-        <SuggestedWidgets
-          actionName={actionName}
-          hasWidgets={hasWidgets}
-          suggestedWidgets={suggestedWidgets as SuggestedWidget[]}
-        />
-      )}
       {hasResponse && Object.keys(widgets).length > 1 && (
-        <Collapsible label="连接组件">
+        <Collapsible label="Connect Widget">
           {/*<div className="description">Go to canvas and select widgets</div>*/}
           <SnipingWrapper>
             <Button
@@ -269,12 +274,19 @@ function ActionSidebar({
               onClick={handleBindData}
               size={Size.medium}
               tag="button"
-              text="选择组件"
+              text="Select Widget"
               type="button"
               variant={Variant.info}
             />
           </SnipingWrapper>
         </Collapsible>
+      )}
+      {showSuggestedWidgets && (
+        <SuggestedWidgets
+          actionName={actionName}
+          hasWidgets={hasWidgets}
+          suggestedWidgets={suggestedWidgets as SuggestedWidget[]}
+        />
       )}
     </SideBar>
   );

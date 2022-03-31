@@ -19,7 +19,7 @@ import { get, memoize } from "lodash";
 import DraggableComponent from "components/editorComponents/DraggableComponent";
 import SnipeableComponent from "components/editorComponents/SnipeableComponent";
 import ResizableComponent from "components/editorComponents/ResizableComponent";
-import { WidgetExecuteActionPayload } from "constants/AppsmithActionConstants/ActionConstants";
+import { ExecuteTriggerPayload } from "constants/AppsmithActionConstants/ActionConstants";
 import PositionedContainer from "components/designSystems/appsmith/PositionedContainer";
 import WidgetNameComponent from "components/editorComponents/WidgetNameComponent";
 import shallowequal from "shallowequal";
@@ -39,6 +39,7 @@ import OverlayCommentsWrapper from "comments/inlineComments/OverlayCommentsWrapp
 import PreventInteractionsOverlay from "components/editorComponents/PreventInteractionsOverlay";
 import AppsmithConsole from "utils/AppsmithConsole";
 import { ENTITY_TYPE } from "entities/AppsmithConsole";
+import PreviewModeComponent from "components/editorComponents/PreviewModeComponent";
 
 /***
  * BaseWidget
@@ -83,15 +84,21 @@ abstract class BaseWidget<
    *   }
    *  ```
    */
-  abstract getWidgetType(): WidgetType;
 
   /**
    *  Widgets can execute actions using this `executeAction` method.
    *  Triggers may be specific to the widget
    */
-  executeAction(actionPayload: WidgetExecuteActionPayload): void {
+  executeAction(actionPayload: ExecuteTriggerPayload): void {
     const { executeAction } = this.context;
-    executeAction && executeAction(actionPayload);
+    executeAction &&
+      executeAction({
+        ...actionPayload,
+        source: {
+          id: this.props.widgetId,
+          name: this.props.widgetName,
+        },
+      });
 
     actionPayload.triggerPropertyName &&
       AppsmithConsole.info({
@@ -126,11 +133,14 @@ abstract class BaseWidget<
     }
   }
 
-  batchUpdateWidgetProperty(updates: BatchPropertyUpdatePayload): void {
+  batchUpdateWidgetProperty(
+    updates: BatchPropertyUpdatePayload,
+    shouldReplay = true,
+  ): void {
     const { batchUpdateWidgetProperty } = this.context;
     const { widgetId } = this.props;
     if (batchUpdateWidgetProperty && widgetId) {
-      batchUpdateWidgetProperty(widgetId, updates);
+      batchUpdateWidgetProperty(widgetId, updates, shouldReplay);
     }
   }
 
@@ -263,6 +273,7 @@ abstract class BaseWidget<
     return (
       <PositionedContainer
         focused={this.props.focused}
+        parentId={this.props.parentId}
         resizeDisabled={this.props.resizeDisabled}
         selected={this.props.selected}
         style={style}
@@ -318,13 +329,21 @@ abstract class BaseWidget<
     }
     return content;
   };
+  
+  addPreviewModeWidget(content: ReactNode): React.ReactElement {
+    return (
+      <PreviewModeComponent isVisible={this.props.isVisible}>
+        {content}
+      </PreviewModeComponent>
+    );
+  }
 
   private getWidgetView(): ReactNode {
     let content: ReactNode;
-
     switch (this.props.renderMode) {
       case RenderModes.CANVAS:
         content = this.getCanvasView();
+        content = this.addPreviewModeWidget(content);
         content = this.addPreventInteractionOverlay(content);
         content = this.addOverlayComments(content);
         if (!this.props.detachFromLayout) {
@@ -491,6 +510,7 @@ export interface WidgetDisplayProps {
   isLoading: boolean;
   isDisabled?: boolean;
   backgroundColor?: string;
+  animateLoading?: boolean;
 }
 
 export interface WidgetDataProps
@@ -510,7 +530,8 @@ export interface WidgetProps
 export interface WidgetCardProps {
   type: WidgetType;
   key?: string;
-  widgetCardName: string;
+  displayName: string;
+  icon: string;
   isBeta?: boolean;
   isMobile?: boolean;
 }

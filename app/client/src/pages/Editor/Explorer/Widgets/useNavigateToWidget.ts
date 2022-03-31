@@ -1,17 +1,18 @@
 import { useCallback } from "react";
-import { WidgetTypes, WidgetType } from "constants/WidgetConstants";
+import { WidgetType } from "constants/WidgetConstants";
 import { useParams } from "react-router";
 import { ExplorerURLParams } from "../helpers";
-import { flashElementById } from "utils/helpers";
+import { flashElementsById } from "utils/helpers";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  forceOpenPropertyPane,
-  showModal,
-  closeAllModals,
-} from "actions/widgetActions";
+import { showModal, closeAllModals } from "actions/widgetActions";
 import { useWidgetSelection } from "utils/hooks/useWidgetSelection";
 import { navigateToCanvas } from "./utils";
 import { getCurrentPageWidgets } from "selectors/entitiesSelector";
+import WidgetFactory from "utils/WidgetFactory";
+import { getCurrentApplicationId } from "selectors/editorSelectors";
+import { inGuidedTour } from "selectors/onboardingSelectors";
+
+const WidgetTypes = WidgetFactory.widgetTypes;
 
 export const useNavigateToWidget = () => {
   const params = useParams<ExplorerURLParams>();
@@ -21,9 +22,11 @@ export const useNavigateToWidget = () => {
     selectWidget,
     shiftSelectWidgetEntityExplorer,
   } = useWidgetSelection();
+  const applicationId = useSelector(getCurrentApplicationId);
+  const guidedTourEnabled = useSelector(inGuidedTour);
   const multiSelectWidgets = (widgetId: string, pageId: string) => {
-    navigateToCanvas(params, window.location.pathname, pageId, widgetId);
-    flashElementById(widgetId);
+    navigateToCanvas({ pageId, widgetId, applicationId });
+    flashElementsById(widgetId);
     selectWidget(widgetId, true);
   };
 
@@ -43,12 +46,17 @@ export const useNavigateToWidget = () => {
     if (parentModalId) dispatch(showModal(parentModalId));
     else dispatch(closeAllModals());
     selectWidget(widgetId, false);
-    navigateToCanvas(params, window.location.pathname, pageId, widgetId);
-    flashElementById(widgetId);
+    navigateToCanvas({ pageId, widgetId, applicationId });
+
     // Navigating to a widget from query pane seems to make the property pane
     // appear below the entity explorer hence adding a timeout here
     setTimeout(() => {
-      dispatch(forceOpenPropertyPane(widgetId));
+      // Scrolling will hide some part of the content at the top during guided tour. To avoid that
+      // we skip scrolling altogether during guided tour as we don't have
+      // too many widgets during the same
+      if (params.pageId === pageId && !guidedTourEnabled) {
+        flashElementsById(widgetId);
+      }
     }, 0);
   };
 

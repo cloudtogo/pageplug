@@ -1,9 +1,12 @@
 import Api from "api/Api";
-import { ContainerWidgetProps } from "widgets/ContainerWidget";
 import { ApiResponse } from "./ApiResponses";
-import { WidgetProps } from "widgets/BaseWidget";
 import axios, { AxiosPromise, CancelTokenSource } from "axios";
 import { PageAction } from "constants/AppsmithActionConstants/ActionConstants";
+import { DSLWidget } from "widgets/constants";
+import {
+  ClonePageActionPayload,
+  CreatePageActionPayload,
+} from "actions/pageActions";
 
 export interface FetchPageRequest {
   id: string;
@@ -16,14 +19,14 @@ export interface FetchPublishedPageRequest {
 }
 
 export interface SavePageRequest {
-  dsl: ContainerWidgetProps<WidgetProps>;
+  dsl: DSLWidget;
   layoutId: string;
   pageId: string;
 }
 
 export interface PageLayout {
   id: string;
-  dsl: Partial<ContainerWidgetProps<any>>;
+  dsl: Partial<DSLWidget>;
   layoutOnLoadActions: PageAction[][];
   layoutActions: PageAction[];
 }
@@ -40,7 +43,7 @@ export type FetchPageResponse = ApiResponse & {
 export type FetchPublishedPageResponse = ApiResponse & {
   data: {
     id: string;
-    dsl: Partial<ContainerWidgetProps<any>>;
+    dsl: Partial<DSLWidget>;
     pageId: string;
   };
 };
@@ -49,27 +52,33 @@ export interface SavePageResponse extends ApiResponse {
   data: {
     id: string;
     layoutOnLoadActions: PageAction[][];
-    dsl: Partial<ContainerWidgetProps<any>>;
+    dsl: Partial<DSLWidget>;
     messages: string[];
     actionUpdates: Array<{
       executeOnLoad: boolean;
       id: string;
       name: string;
+      collectionId?: string;
     }>;
   };
 }
 
-export interface CreatePageRequest {
-  applicationId: string;
-  name: string;
-  layouts: Partial<PageLayout>[];
-}
+export type CreatePageRequest = Omit<
+  CreatePageActionPayload,
+  "blockNavigation"
+>;
 
 export interface UpdatePageRequest {
   id: string;
   name: string;
   isHidden?: boolean;
   icon?: string;
+}
+
+export interface SetPageOrderRequest {
+  order: number;
+  pageId: string;
+  applicationId: string;
 }
 
 export interface CreatePageResponse extends ApiResponse {
@@ -94,9 +103,7 @@ export interface DeletePageRequest {
   id: string;
 }
 
-export interface ClonePageRequest {
-  id: string;
-}
+export type ClonePageRequest = Omit<ClonePageActionPayload, "blockNavigation">;
 
 export interface UpdateWidgetNameRequest {
   pageId: string;
@@ -117,6 +124,7 @@ export interface GenerateTemplatePageRequest {
   columns?: string[];
   searchColumn?: string;
   mode?: string;
+  pluginSpecificParams?: Record<any, any>;
 }
 
 export type GenerateTemplatePageRequestResponse = ApiResponse & {
@@ -127,17 +135,6 @@ export type GenerateTemplatePageRequestResponse = ApiResponse & {
     layouts: Array<PageLayout>;
   };
 };
-
-export interface SyncCloudOSApiRequest {
-  dep_list: string[];
-  project_id: string;
-  org_id: string;
-  page_id: string;
-}
-
-export interface WxaCodeRequest {
-  app_id: string;
-}
 
 class PageApi extends Api {
   static url = "v1/pages";
@@ -157,6 +154,11 @@ class PageApi extends Api {
   };
 
   static updatePageUrl = (pageId: string) => `${PageApi.url}/${pageId}`;
+  static setPageOrderUrl = (
+    applicationId: string,
+    pageId: string,
+    order: number,
+  ) => `v1/applications/${applicationId}/page/${pageId}/reorder?order=${order}`;
 
   static fetchPage(
     pageRequest: FetchPageRequest,
@@ -237,14 +239,16 @@ class PageApi extends Api {
     return Api.put(PageApi.refactorLayoutURL, request);
   }
 
-  static syncCloudOSApi(
-    request: SyncCloudOSApiRequest,
-  ): AxiosPromise<ApiResponse> {
-    return Api.post("v1/cloudos/bindDependedActions", request);
-  }
-
-  static getPreviewWxaCode(request: WxaCodeRequest): AxiosPromise<ApiResponse> {
-    return Api.post("v1/cloudos/getMiniPreview", request);
+  static setPageOrder(
+    request: SetPageOrderRequest,
+  ): AxiosPromise<FetchPageListResponse> {
+    return Api.put(
+      PageApi.setPageOrderUrl(
+        request.applicationId,
+        request.pageId,
+        request.order,
+      ),
+    );
   }
 }
 

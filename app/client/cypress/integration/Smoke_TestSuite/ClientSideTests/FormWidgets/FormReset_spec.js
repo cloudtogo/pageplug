@@ -1,45 +1,72 @@
 const dsl = require("../../../../fixtures/formResetDsl.json");
-const widgetsPage = require("../../../../locators/Widgets.json");
+import widgets from "../../../../locators/Widgets.json";
 
 describe("Form reset functionality", function() {
   before(() => {
     cy.addDsl(dsl);
   });
 
-  it("Resets the form ", () => {
+  it("Resets the form", () => {
+    // Select a row and verify
     cy.get(".tr")
       .eq(2)
       .click()
       .should("have.class", "selected-row");
-
-    cy.get(".t--draggable-multiselectwidget").click({ force: true });
-    cy.get(".t--draggable-multiselectwidget").type("Option");
+    // Select three options
+    cy.get(widgets.multiSelectWidget).click({ force: true });
+    cy.get(widgets.multiSelectWidget).type("Option");
     cy.dropdownMultiSelectDynamic("Option 1");
     cy.dropdownMultiSelectDynamic("Option 2");
     cy.dropdownMultiSelectDynamic("Option 3");
-
-    cy.get(widgetsPage.inputWidget + " " + "input")
+    // Verify input should include the name "lindsay.ferguson@reqres.in"
+    cy.get(widgets.inputWidget + " " + "input")
       .invoke("attr", "value")
       .should("contain", "lindsay.ferguson@reqres.in");
-
-    cy.get(widgetsPage.formButtonWidget)
+    // Reset the form
+    cy.get(widgets.formButtonWidget)
       .contains("Reset")
       .click({ force: true });
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(500);
-
+    // verify table should not have selected row
     cy.get(".tr")
       .eq(2)
       .should("not.have.class", "selected-row");
-
-    cy.get(
-      ".t-draggable-multiselectwidget .bp3-tag-input-values .bp3-tag",
-    ).should(($span) => {
-      expect($span).to.have.length(0);
-    });
-
-    cy.get(widgetsPage.inputWidget + " " + "input")
+    // Verify dropdown does not have selected values
+    cy.get(`${widgets.selectWidget} .bp3-tag-input-values .bp3-tag`).should(
+      ($span) => {
+        expect($span).to.have.length(0);
+      },
+    );
+    // Verify input should not include "lindsay.ferguson@reqres.in"
+    cy.get(widgets.inputWidget + " " + "input")
       .invoke("attr", "value")
       .should("not.contain", "lindsay.ferguson@reqres.in");
+
+    // input widgets should not be in error state
+    cy.get(widgets.inputWidget + " " + "input").should(
+      "not.have.css",
+      "border-color",
+      "rgb(242, 43, 43)",
+    );
+
+    cy.get(widgets.currencyInputWidget + " " + "input").should(
+      "not.have.css",
+      "border-color",
+      "rgb(242, 43, 43)",
+    );
+
+    cy.get(widgets.phoneInputWidget + " " + "input").should(
+      "not.have.css",
+      "border-color",
+      "rgb(242, 43, 43)",
+    );
+
+    // select widget will remain in error state
+    cy.get(`.rc-select-selector`).should(
+      "have.css",
+      "border-color",
+      "rgb(242, 43, 43)",
+    );
   });
 });

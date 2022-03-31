@@ -8,9 +8,15 @@ import { ContextMenuPopoverModifiers } from "../helpers";
 import { noop } from "lodash";
 import { initExplorerEntityNameEdit } from "actions/explorerActions";
 import { AppState } from "reducers";
-import { updateWidgetPropertyRequest } from "actions/controlActions";
-import { RenderModes, WidgetTypes } from "constants/WidgetConstants";
-import { WidgetReduxActionTypes } from "constants/ReduxActionConstants";
+import {
+  ReduxActionTypes,
+  WidgetReduxActionTypes,
+} from "constants/ReduxActionConstants";
+import WidgetFactory from "utils/WidgetFactory";
+import { ENTITY_TYPE } from "entities/DataTree/dataTreeFactory";
+import { toggleShowDeviationDialog } from "actions/onboardingActions";
+import { inGuidedTour } from "selectors/onboardingSelectors";
+const WidgetTypes = WidgetFactory.widgetTypes;
 
 export function WidgetContextMenu(props: {
   widgetId: string;
@@ -29,25 +35,20 @@ export function WidgetContextMenu(props: {
     if (parentId) return state.ui.pageWidgets[props.pageId][parentId];
     return {};
   });
+  const guidedTourEnabled = useSelector(inGuidedTour);
   const dispatch = useDispatch();
   const dispatchDelete = useCallback(() => {
     // If the widget is a tab we are updating the `tabs` of the property of the widget
     // This is similar to deleting a tab from the property pane
     if (widget.tabName && parentWidget.type === WidgetTypes.TABS_WIDGET) {
       const tabsObj = { ...parentWidget.tabsObj };
-      delete tabsObj[widget.tabId];
       const filteredTabs = Object.values(tabsObj);
       if (widget.parentId && !!filteredTabs.length) {
-        dispatch(
-          updateWidgetPropertyRequest(
-            widget.parentId,
-            "tabsObj",
-            tabsObj,
-            RenderModes.CANVAS,
-          ),
-        );
+        dispatch({
+          type: ReduxActionTypes.WIDGET_DELETE_TAB_CHILD,
+          payload: { ...tabsObj[widget.tabId] },
+        });
       }
-
       return;
     }
 
@@ -60,16 +61,38 @@ export function WidgetContextMenu(props: {
     });
   }, [dispatch, widgetId, parentId, widget, parentWidget]);
 
-  const editWidgetName = useCallback(
-    () => dispatch(initExplorerEntityNameEdit(widgetId)),
-    [dispatch, widgetId],
+  const showBinding = useCallback(
+    (widgetId, widgetName) =>
+      dispatch({
+        type: ReduxActionTypes.SET_ENTITY_INFO,
+        payload: {
+          entityId: widgetId,
+          entityName: widgetName,
+          entityType: ENTITY_TYPE.WIDGET,
+          show: true,
+        },
+      }),
+    [],
   );
+
+  const editWidgetName = useCallback(() => {
+    if (guidedTourEnabled) {
+      dispatch(toggleShowDeviationDialog(true));
+      return;
+    }
+    dispatch(initExplorerEntityNameEdit(widgetId));
+  }, [dispatch, widgetId, guidedTourEnabled]);
 
   const optionTree: TreeDropdownOption[] = [
     {
       value: "rename",
       onSelect: editWidgetName,
       label: "编辑名称",
+    },
+    {
+      value: "showBinding",
+      onSelect: () => showBinding(props.widgetId, widget.widgetName),
+      label: "Show Bindings",
     },
   ];
 
@@ -91,9 +114,11 @@ export function WidgetContextMenu(props: {
       onSelect={noop}
       optionTree={optionTree}
       selectedValue=""
-      toggle={<ContextMenuTrigger />}
+      toggle={<ContextMenuTrigger className="t--context-menu" />}
     />
   );
 }
+
+WidgetContextMenu.displayName = "WidgetContextMenu";
 
 export default WidgetContextMenu;

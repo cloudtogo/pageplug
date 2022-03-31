@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useCallback } from "react";
+import React, { memo, useMemo, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import Icon, { IconSize } from "components/ads/Icon";
 import Dropdown, {
@@ -12,36 +12,38 @@ import { getDataTree } from "selectors/dataTreeSelectors";
 import { isAction, isWidget } from "workers/evaluationUtils";
 import Text, { TextType } from "components/ads/Text";
 import { Classes } from "components/ads/common";
+import { useEntityLink } from "components/editorComponents/Debugger/hooks/debuggerHooks";
+import { useGetEntityInfo } from "components/editorComponents/Debugger/hooks/useGetEntityInfo";
 import {
-  useEntityLink,
-  useGetEntityInfo,
-} from "components/editorComponents/Debugger/hooks";
-import {
+  DEBUGGER_TAB_KEYS,
   doesEntityHaveErrors,
   getDependenciesFromInverseDependencies,
 } from "components/editorComponents/Debugger/helpers";
-import { getDebuggerErrors } from "selectors/debuggerSelectors";
-import { ENTITY_TYPE, Message } from "entities/AppsmithConsole";
+import { getFilteredErrors } from "selectors/debuggerSelectors";
+import { ENTITY_TYPE, Log } from "entities/AppsmithConsole";
 import { DebugButton } from "components/editorComponents/Debugger/DebugCTA";
-import { showDebugger } from "actions/debuggerActions";
-import { setActionTabsInitialIndex } from "actions/actionActions";
+import { setCurrentTab, showDebugger } from "actions/debuggerActions";
 import { getTypographyByKey } from "constants/DefaultTheme";
 import AnalyticsUtil from "utils/AnalyticsUtil";
+import { Colors } from "constants/Colors";
+import { Position } from "@blueprintjs/core";
+import { inGuidedTour } from "selectors/onboardingSelectors";
 
-const CONNECTION_WIDTH = 113;
 const CONNECTION_HEIGHT = 28;
 
 const TopLayer = styled.div`
   display: flex;
   flex: 1;
   justify-content: space-between;
-  border-bottom: 0.5px solid #e0dede;
 
   .connection-dropdown {
     box-shadow: none;
-    background-color: ${(props) => props.theme.colors.propertyPane.bg};
     border: none;
+    background-color: ${Colors.WHITE};
+    padding: 0;
+    width: auto;
   }
+
   .error {
     border: 1px solid
       ${(props) => props.theme.colors.propertyPane.connections.error};
@@ -52,16 +54,17 @@ const TopLayer = styled.div`
 const SelectedNodeWrapper = styled.div<{
   entityCount: number;
   hasError: boolean;
+  justifyContent: string;
 }>`
   display: flex;
   align-items: center;
-  justify-content: center;
+  width: 100%;
+  justify-content: ${(props) => props.justifyContent};
   color: ${(props) =>
     props.hasError
       ? props.theme.colors.propertyPane.connections.error
       : props.theme.colors.propertyPane.connections.connectionsCount};
   ${(props) => getTypographyByKey(props, "p3")}
-  width: 113px;
   opacity: ${(props) => (!!props.entityCount ? 1 : 0.5)};
 
   & > *:nth-child(2) {
@@ -122,6 +125,7 @@ const OptionWrapper = styled.div<{ hasError: boolean; fillIconColor: boolean }>`
 
 const OptionContentWrapper = styled.div<{
   hasError: boolean;
+  isSelected: boolean;
 }>`
   padding: ${(props) => props.theme.spaces[2] + 1}px
     ${(props) => props.theme.spaces[5]}px;
@@ -131,6 +135,10 @@ const OptionContentWrapper = styled.div<{
   line-height: 8px;
   flex: 1;
   min-width: 0;
+  background-color: ${(props) =>
+    props.isSelected &&
+    !props.hasError &&
+    props.theme.colors.dropdown.hovered.bg};
 
   span:first-child {
     font-size: 10px;
@@ -156,13 +164,6 @@ const OptionContentWrapper = styled.div<{
   &:hover {
     background-color: ${(props) =>
       !props.hasError && props.theme.colors.dropdown.hovered.bg};
-
-    .${Classes.TEXT} {
-      color: ${(props) =>
-        props.hasError
-          ? props.theme.colors.propertyPane.connections.error
-          : props.theme.colors.textOnDarkBG};
-    }
   }
 `;
 
@@ -175,11 +176,13 @@ type TriggerNodeProps = DefaultDropDownValueNodeProps & {
   iconAlignment: "LEFT" | "RIGHT";
   connectionType: string;
   hasError: boolean;
+  justifyContent: string;
+  tooltipPosition?: Position;
 };
 
 const doConnectionsHaveErrors = (
   options: DropdownOption[],
-  debuggerErrors: Record<string, Message>,
+  debuggerErrors: Record<string, Log>,
 ) => {
   return options.some((option) =>
     doesEntityHaveErrors(option.value as string, debuggerErrors),
@@ -189,6 +192,7 @@ const doConnectionsHaveErrors = (
 const useDependencyList = (name: string) => {
   const dataTree = useSelector(getDataTree);
   const deps = useSelector((state: AppState) => state.evaluations.dependencies);
+  const guidedTour = useSelector(inGuidedTour);
 
   const getEntityId = useCallback((name) => {
     const entity = dataTree[name];
@@ -201,16 +205,17 @@ const useDependencyList = (name: string) => {
   }, []);
 
   const entityDependencies = useMemo(() => {
+    if (guidedTour) return null;
     return getDependenciesFromInverseDependencies(
       deps.inverseDependencyMap,
       name,
     );
-  }, [name, deps.inverseDependencyMap]);
+  }, [name, deps.inverseDependencyMap, guidedTour]);
 
   const dependencyOptions =
     entityDependencies?.directDependencies.map((e) => ({
       label: e,
-      value: getEntityId(e),
+      value: getEntityId(e) ?? e,
     })) ?? [];
   const inverseDependencyOptions =
     entityDependencies?.inverseDependencies.map((e) => ({
@@ -232,10 +237,10 @@ function OptionNode(props: any) {
 
   const onClick = () => {
     if (entityInfo?.hasError) {
-      if (entityInfo?.type === ENTITY_TYPE.ACTION) {
-        dispatch(setActionTabsInitialIndex(1));
-      } else {
+      if (entityInfo?.type === ENTITY_TYPE.WIDGET) {
         dispatch(showDebugger(true));
+      } else {
+        dispatch(setCurrentTab(DEBUGGER_TAB_KEYS.ERROR_TAB));
       }
     }
     navigateToEntity(props.option.label);
@@ -245,12 +250,28 @@ function OptionNode(props: any) {
     });
   };
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (!props.isSelectedNode) return;
+    if (e.key === " " || e.key === "Enter") onClick();
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [props.isSelectedNode]);
+
   return (
     <OptionWrapper
       fillIconColor={!entityInfo?.datasourceName}
       hasError={!!entityInfo?.hasError}
     >
-      <OptionContentWrapper hasError={!!entityInfo?.hasError} onClick={onClick}>
+      <OptionContentWrapper
+        hasError={!!entityInfo?.hasError}
+        isSelected={props.isSelectedNode}
+        onClick={onClick}
+      >
         <span>{entityInfo?.icon}</span>
         <Text type={TextType.H6}>
           {props.option.label}{" "}
@@ -282,6 +303,7 @@ const TriggerNode = memo((props: TriggerNodeProps) => {
       className={props.hasError ? "t--connection-error" : "t--connection"}
       entityCount={props.entityCount}
       hasError={props.hasError}
+      justifyContent={props.justifyContent}
       onClick={onClick}
     >
       {props.iconAlignment === "LEFT" && (
@@ -293,7 +315,12 @@ const TriggerNode = memo((props: TriggerNodeProps) => {
         />
       )}
       <span>
-        <Tooltip content={tooltipText} disabled={props.isOpen}>
+        <Tooltip
+          content={tooltipText}
+          disabled={props.isOpen}
+          openOnTargetFocus={false}
+          position={props.tooltipPosition}
+        >
           {props.entityCount ? `${props.entityCount} ${ENTITY}` : "暂无实体"}
         </Tooltip>
       </span>
@@ -312,10 +339,12 @@ const TriggerNode = memo((props: TriggerNodeProps) => {
 
 TriggerNode.displayName = "TriggerNode";
 
+const selectedOption = { label: "", value: "" };
+
 function PropertyPaneConnections(props: PropertyPaneConnectionsProps) {
   const dependencies = useDependencyList(props.widgetName);
   const { navigateToEntity } = useEntityLink();
-  const debuggerErrors = useSelector(getDebuggerErrors);
+  const debuggerErrors = useSelector(getFilteredErrors);
 
   const errorIncomingConnections = useMemo(() => {
     return doConnectionsHaveErrors(
@@ -337,10 +366,12 @@ function PropertyPaneConnections(props: PropertyPaneConnectionsProps) {
         SelectedValueNode={(selectedValueProps) => (
           <TriggerNode
             iconAlignment={"LEFT"}
+            justifyContent={"flex-start"}
             {...selectedValueProps}
             connectionType="输入"
             entityCount={dependencies.dependencyOptions.length}
             hasError={errorIncomingConnections}
+            tooltipPosition="bottom-left"
           />
         )}
         className={`connection-dropdown ${
@@ -351,22 +382,29 @@ function PropertyPaneConnections(props: PropertyPaneConnectionsProps) {
         height={`${CONNECTION_HEIGHT}px`}
         options={dependencies.dependencyOptions}
         renderOption={(optionProps) => {
-          return <OptionNode option={optionProps.option} />;
+          return (
+            <OptionNode
+              isSelectedNode={optionProps.isSelectedNode}
+              option={optionProps.option}
+            />
+          );
         }}
-        selected={{ label: "", value: "" }}
+        selected={selectedOption}
         showDropIcon={false}
         showLabelOnly
-        width={`${CONNECTION_WIDTH}px`}
+        width="100%"
       />
       {/* <PopperDragHandle /> */}
       <Dropdown
         SelectedValueNode={(selectedValueProps) => (
           <TriggerNode
             iconAlignment={"RIGHT"}
+            justifyContent={"flex-end"}
             {...selectedValueProps}
             connectionType="输出"
             entityCount={dependencies.inverseDependencyOptions.length}
             hasError={errorOutgoingConnections}
+            tooltipPosition="bottom-right"
           />
         )}
         className={`connection-dropdown ${
@@ -378,12 +416,17 @@ function PropertyPaneConnections(props: PropertyPaneConnectionsProps) {
         onSelect={navigateToEntity}
         options={dependencies.inverseDependencyOptions}
         renderOption={(optionProps) => {
-          return <OptionNode option={optionProps.option} />;
+          return (
+            <OptionNode
+              isSelectedNode={optionProps.isSelectedNode}
+              option={optionProps.option}
+            />
+          );
         }}
         selected={{ label: "", value: "" }}
         showDropIcon={false}
         showLabelOnly
-        width={`${CONNECTION_WIDTH}px`}
+        width={`100%`}
       />
     </TopLayer>
   );

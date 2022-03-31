@@ -1,4 +1,9 @@
 import CodeMirror from "codemirror";
+import { ENTITY_TYPE } from "entities/AppsmithConsole";
+import {
+  DataTreeAction,
+  DataTreeWidget,
+} from "entities/DataTree/dataTreeFactory";
 import { getDynamicStringSegments } from "utils/DynamicBindingUtils";
 
 export const removeNewLineChars = (inputValue: any) => {
@@ -6,7 +11,7 @@ export const removeNewLineChars = (inputValue: any) => {
 };
 
 export const getInputValue = (inputValue: any) => {
-  if (typeof inputValue === "object") {
+  if (typeof inputValue === "object" || typeof inputValue === "boolean") {
     inputValue = JSON.stringify(inputValue, null, 2);
   } else if (typeof inputValue === "number" || typeof inputValue === "string") {
     inputValue += "";
@@ -52,4 +57,49 @@ export const checkIfCursorInsideBinding = (
     cumulativeCharCount = start + segment.length;
   });
   return cursorBetweenBinding;
+};
+
+export const isActionEntity = (entity: any): entity is DataTreeAction => {
+  return entity.ENTITY_TYPE === ENTITY_TYPE.ACTION;
+};
+
+export const isWidgetEntity = (entity: any): entity is DataTreeWidget => {
+  return entity.ENTITY_TYPE === ENTITY_TYPE.WIDGET;
+};
+
+interface Event {
+  eventType: string;
+  eventHandlerFn?: (event: MouseEvent) => void;
+}
+
+export const addEventToHighlightedElement = (
+  element: any,
+  customClassName: string,
+  events?: Event[],
+) => {
+  element = document.getElementsByClassName(
+    customClassName, // the text class name is the classname used for the markText-fn for highlighting the text.
+  )[0];
+
+  if (events) {
+    for (const event of events) {
+      if (element && !!event.eventType && !!event.eventHandlerFn) {
+        // if the highlighted element exists, add an event listener to it.
+        element.addEventListener(event.eventType, event.eventHandlerFn);
+      }
+    }
+  }
+};
+
+export const removeEventFromHighlightedElement = (
+  element: any,
+  events?: Event[],
+) => {
+  if (events) {
+    for (const event of events) {
+      if (element && !!event.eventType && !!event.eventHandlerFn) {
+        element.removeEventListener(event.eventType, event.eventHandlerFn);
+      }
+    }
+  }
 };

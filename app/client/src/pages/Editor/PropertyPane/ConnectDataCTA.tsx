@@ -19,7 +19,7 @@ import {
 } from "actions/globalSearchActions";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { getTypographyByKey } from "constants/DefaultTheme";
-import { WidgetType, WidgetTypes } from "constants/WidgetConstants";
+import { WidgetType } from "constants/WidgetConstants";
 
 const StyledDiv = styled.div`
   color: ${(props) => props.theme.colors.propertyPane.ctaTextColor};
@@ -30,10 +30,11 @@ const StyledDiv = styled.div`
   props.theme.spaces[7]}px;
   margin: ${(props) => props.theme.spaces[2]}px 0px;
 
-  a:first-child {
+  button:first-child {
     margin-top: ${(props) => props.theme.spaces[2]}px;
+    width: 100%;
   }
-  a:nth-child(2) {
+  button:nth-child(2) {
     border: none;
     background-color: transparent;
     text-transform: none;
@@ -43,23 +44,11 @@ const StyledDiv = styled.div`
     ${(props) => getTypographyByKey(props, "p3")}
     margin-top: ${(props) => props.theme.spaces[2]}px;
 
-    :hover {
+    :hover, :focus {
       text-decoration: underline;
     }
   }
 `;
-
-// Widgets where we do not want to show the CTA
-export const excludeList = [
-  WidgetTypes.CONTAINER_WIDGET,
-  WidgetTypes.TABS_WIDGET,
-  WidgetTypes.FORM_WIDGET,
-  WidgetTypes.MODAL_WIDGET,
-  WidgetTypes.TARO_POPUP_WIDGET,
-  WidgetTypes.DIVIDER_WIDGET,
-  WidgetTypes.FILE_PICKER_WIDGET,
-  WidgetTypes.BUTTON_WIDGET,
-];
 
 export const actionsExist = (state: AppState): boolean =>
   !!state.entities.actions.length;
@@ -107,12 +96,16 @@ function ConnectDataCTA(props: ConnectDataCTAProps) {
         category={Category.primary}
         onClick={onClick}
         size={Size.large}
+        tabIndex={0}
+        tag="button"
         text="绑定数据"
       />
       {/* <Button
         category={Category.tertiary}
         onClick={openHelpModal}
         text="了解更多"
+        tabIndex={0}
+        tag="button"
       /> */}
     </StyledDiv>
   );

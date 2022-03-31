@@ -1,43 +1,94 @@
-import React from "react";
-import EditorsRouter from "./routes";
-import WidgetsEditor from "./WidgetsEditor";
 import styled from "styled-components";
-import Sidebar from "components/editorComponents/Sidebar";
-import { Route, Switch } from "react-router";
-import { BUILDER_URL } from "constants/routes";
-import TabBar from "components/designSystems/taro/TabBar";
-
 import * as Sentry from "@sentry/react";
+import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useCallback } from "react";
+import { Route, Switch } from "react-router";
+import TabBar from "components/designSystems/taro/TabBar";
+import EditorsRouter from "./routes";
+import BottomBar from "./BottomBar";
+import { DEFAULT_ENTITY_EXPLORER_WIDTH } from "constants/AppConstants";
+import WidgetsEditor from "./WidgetsEditor";
+import { updateExplorerWidthAction } from "actions/explorerActions";
+import { BUILDER_CHECKLIST_URL, BUILDER_URL } from "constants/routes";
+import OnboardingChecklist from "./FirstTimeUserOnboarding/Checklist";
+import EntityExplorerSidebar from "components/editorComponents/Sidebar";
+import classNames from "classnames";
+import { previewModeSelector } from "selectors/editorSelectors";
+
 const SentryRoute = Sentry.withSentryRouting(Route);
 
 const Container = styled.div`
   display: flex;
   height: calc(
-    100vh -
-      ${(props) =>
-        props.theme.inCloudOS ? "0px" : props.theme.smallHeaderHeight}
+    100vh - ${(props) => props.theme.inCloudOS ? "0px" : props.theme.smallHeaderHeight} -
+      ${(props) => props.theme.bottomBarHeight}
   );
   background-color: ${(props) => props.theme.appBackground};
 `;
+function MainContainer() {
+  const dispatch = useDispatch();
+  const [sidebarWidth, setSidebarWidth] = useState(
+    DEFAULT_ENTITY_EXPLORER_WIDTH,
+  );
 
 const EditorContainer = styled.div`
   position: relative;
   width: calc(100vw - ${(props) => props.theme.sidebarWidth});
   transform: translate(0, 0);
 `;
+  /**
+   * on entity explorer sidebar width change
+   *
+   * @return void
+   */
+  const onLeftSidebarWidthChange = useCallback((newWidth) => {
+    setSidebarWidth(newWidth);
+  }, []);
 
-function MainContainer() {
+  /**
+   * on entity explorer sidebar drag end
+   *
+   * @return void
+   */
+  const onLeftSidebarDragEnd = useCallback(() => {
+    dispatch(updateExplorerWidthAction(sidebarWidth));
+  }, [sidebarWidth]);
+
+  const isPreviewMode = useSelector(previewModeSelector);
+
   return (
-    <Container>
-      <Sidebar />
-      <EditorContainer>
-        <Switch>
-          <SentryRoute component={WidgetsEditor} exact path={BUILDER_URL} />
-          <SentryRoute component={EditorsRouter} />
-        </Switch>
-        <TabBar />
-      </EditorContainer>
-    </Container>
+    <>
+      <Container className="w-full overflow-x-hidden">
+        <EntityExplorerSidebar
+          onDragEnd={onLeftSidebarDragEnd}
+          onWidthChange={onLeftSidebarWidthChange}
+          width={sidebarWidth}
+        />
+        <div
+          className="relative flex flex-col w-full overflow-auto"
+          id="app-body"
+        >
+          <EditorContainer>
+            <Switch key={BUILDER_URL}>
+              <SentryRoute component={WidgetsEditor} exact path={BUILDER_URL} />
+              <SentryRoute
+                component={OnboardingChecklist}
+                exact
+                path={BUILDER_CHECKLIST_URL}
+              />
+              <SentryRoute component={EditorsRouter} />
+            </Switch>
+          </EditorContainer>
+        </div>
+      </Container>
+      <BottomBar
+        className={classNames({
+          "translate-y-full fixed bottom-0": isPreviewMode,
+          "translate-y-0 relative opacity-100": !isPreviewMode,
+          "transition-all transform duration-400": true,
+        })}
+      />
+    </>
   );
 }
 

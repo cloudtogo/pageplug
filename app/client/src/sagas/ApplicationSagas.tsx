@@ -36,19 +36,22 @@ import {
 } from "constants/routes";
 import { AppState } from "reducers";
 import {
-  FetchApplicationPayload,
   setDefaultApplicationPageSuccess,
   resetCurrentApplication,
   FetchApplicationPreviewPayload,
+  generateSSHKeyPairSuccess,
+  getSSHKeyPairSuccess,
+  getSSHKeyPairError,
+  GenerateSSHKeyPairReduxAction,
+  GetSSHKeyPairReduxAction,
+  FetchApplicationReduxAction,
 } from "actions/applicationActions";
-import { fetchUnreadCommentThreadsCountSuccess } from "actions/commentActions";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import {
-  APPLICATION_NAME_UPDATE,
   createMessage,
   DELETING_APPLICATION,
   DUPLICATING_APPLICATION,
-} from "constants/messages";
+} from "@appsmith/constants/messages";
 import { Toaster } from "components/ads/Toast";
 import { APP_MODE } from "entities/App";
 import { Organization } from "constants/orgConstants";
@@ -59,15 +62,29 @@ import {
   getCurrentApplicationId,
   getCurrentPageId,
 } from "selectors/editorSelectors";
-import { showCompletionDialog } from "./OnboardingSagas";
 
-import { deleteRecentAppEntities } from "utils/storage";
-import { reconnectWebsocket as reconnectWebsocketAction } from "actions/websocketActions";
+import {
+  deleteRecentAppEntities,
+  setPostWelcomeTourState,
+} from "utils/storage";
+import {
+  reconnectAppLevelWebsocket,
+  reconnectPageLevelWebsocket,
+} from "actions/websocketActions";
 import { getCurrentOrg } from "selectors/organizationSelectors";
 import { Org } from "constants/orgConstants";
 import { AppLayoutConfig } from "reducers/entityReducers/pageListReducer";
 
-const getDefaultPageId = (
+import {
+  getCurrentStep,
+  getEnableFirstTimeUserOnboarding,
+  getFirstTimeUserOnboardingApplicationId,
+  inGuidedTour,
+} from "selectors/onboardingSelectors";
+import { handleRepoLimitReachedError } from "./GitSyncSagas";
+import { GUIDED_TOUR_STEPS } from "pages/Editor/GuidedTour/constants";
+
+export const getDefaultPageId = (
   pages?: ApplicationPagePayload[],
 ): string | undefined => {
   let defaultPage: ApplicationPagePayload | undefined = undefined;
@@ -99,17 +116,24 @@ export function* publishApplicationSaga(
 
       const applicationId = yield select(getCurrentApplicationId);
       const currentPageId = yield select(getCurrentPageId);
-
-      let appicationViewPageUrl = getApplicationViewerPageURL(
+      const guidedTour = yield select(inGuidedTour);
+      const currentStep = yield select(getCurrentStep);
+      let appicationViewPageUrl = getApplicationViewerPageURL({
         applicationId,
-        currentPageId,
-      );
-
-      const showOnboardingCompletionDialog = yield select(showCompletionDialog);
-      if (showOnboardingCompletionDialog) {
-        appicationViewPageUrl += "?onboardingComplete=true";
+        pageId: currentPageId,
+      });
+      if (guidedTour && currentStep === GUIDED_TOUR_STEPS.DEPLOY) {
+        appicationViewPageUrl += "?&guidedTourComplete=true";
+        yield call(setPostWelcomeTourState, true);
       }
 
+      yield put({
+        type: ReduxActionTypes.FETCH_APPLICATION_INIT,
+        payload: {
+          applicationId: applicationId,
+          mode: APP_MODE.EDIT,
+        },
+      });
       // If the tab is opened focus and reload else open in new tab
       if (!windowReference || windowReference.closed) {
         windowReference = window.open(appicationViewPageUrl, "_blank");
@@ -170,9 +194,7 @@ export function* getAllApplicationSaga() {
   }
 }
 
-export function* fetchApplicationSaga(
-  action: ReduxAction<FetchApplicationPayload>,
-) {
+export function* fetchApplicationSaga(action: FetchApplicationReduxAction) {
   try {
     const { applicationId, mode } = action.payload;
     // Get endpoint based on app mode
@@ -191,9 +213,14 @@ export function* fetchApplicationSaga(
       payload: response.data,
     });
 
-    yield put(
-      fetchUnreadCommentThreadsCountSuccess(response.data.unreadCommentThreads),
-    );
+    yield put({
+      type: ReduxActionTypes.SET_APP_VERSION_ON_WORKER,
+      payload: response.data?.evaluationVersion,
+    });
+
+    if (action.onSuccessCallback) {
+      action.onSuccessCallback(response);
+    }
   } catch (error) {
     yield put({
       type: ReduxActionErrorTypes.FETCH_APPLICATION_ERROR,
@@ -201,6 +228,9 @@ export function* fetchApplicationSaga(
         error,
       },
     });
+    if (action.onErrorCallback) {
+      action.onErrorCallback(error);
+    }
   }
 }
 
@@ -271,12 +301,6 @@ export function* updateApplicationSaga(
         payload: action.payload,
       });
     }
-    if (isValidResponse && request && request.name) {
-      Toaster.show({
-        text: createMessage(APPLICATION_NAME_UPDATE),
-        variant: Variant.success,
-      });
-    }
     if (isValidResponse && request.currentApp) {
       yield put({
         type: ReduxActionTypes.CURRENT_APPLICATION_NAME_UPDATE,
@@ -345,10 +369,10 @@ export function* duplicateApplicationSaga(
         type: ReduxActionTypes.DUPLICATE_APPLICATION_SUCCESS,
         payload: response.data,
       });
-      const pageURL = BUILDER_PAGE_URL(
-        application.id,
-        application.defaultPageId,
-      );
+      const pageURL = BUILDER_PAGE_URL({
+        applicationId: application.id,
+        pageId: application.defaultPageId,
+      });
       history.push(pageURL);
     }
   } catch (error) {
@@ -472,17 +496,40 @@ export function* createApplicationSaga(
             application,
           },
         });
-        const pageURL = getGenerateTemplateURL(
-          application.id,
-          application.defaultPageId,
-          isMobile,
+        const isFirstTimeUserOnboardingEnabled = yield select(
+          getEnableFirstTimeUserOnboarding,
         );
+        const FirstTimeUserOnboardingApplicationId = yield select(
+          getFirstTimeUserOnboardingApplicationId,
+        );
+        let pageURL;
+        if (
+          isFirstTimeUserOnboardingEnabled &&
+          FirstTimeUserOnboardingApplicationId === ""
+        ) {
+          yield put({
+            type:
+              ReduxActionTypes.SET_FIRST_TIME_USER_ONBOARDING_APPLICATION_ID,
+            payload: application.id,
+          });
+          pageURL = BUILDER_PAGE_URL({
+            applicationId: application.id,
+            pageId: application.defaultPageId,
+          });
+        } else {
+          pageURL = getGenerateTemplateURL(
+            application.id,
+            application.defaultPageId,
+            isMobile,
+          );
+        }
         history.push(pageURL);
 
         // subscribe to newly created application
         // users join rooms on connection, so reconnecting
         // ensures user receives the updates in the app just created
-        yield put(reconnectWebsocketAction());
+        yield put(reconnectAppLevelWebsocket());
+        yield put(reconnectPageLevelWebsocket());
       }
     }
   } catch (error) {
@@ -519,10 +566,10 @@ export function* forkApplicationSaga(
           application,
         },
       });
-      const pageURL = BUILDER_PAGE_URL(
-        application.id,
-        application.defaultPageId,
-      );
+      const pageURL = BUILDER_PAGE_URL({
+        applicationId: application.id,
+        pageId: application.defaultPageId,
+      });
       history.push(pageURL);
     }
   } catch (error) {
@@ -564,8 +611,15 @@ export function* importApplicationSaga(
           },
         });
         const defaultPage = pages.filter((eachPage) => !!eachPage.isDefault);
-        const pageURL = BUILDER_PAGE_URL(appId, defaultPage[0].id);
+        const pageURL = BUILDER_PAGE_URL({
+          applicationId: appId,
+          pageId: defaultPage[0].id,
+        });
         history.push(pageURL);
+        const guidedTour = yield select(inGuidedTour);
+
+        if (guidedTour) return;
+
         Toaster.show({
           text: "Application imported successfully",
           variant: Variant.success,
@@ -607,6 +661,75 @@ export function* fetchApplicationPreviewWxaCodeSaga(
   }
 }
 
+export function* getSSHKeyPairSaga(action: GetSSHKeyPairReduxAction) {
+  try {
+    const applicationId: string = yield select(getCurrentApplicationId);
+    const response: ApiResponse = yield call(
+      ApplicationApi.getSSHKeyPair,
+      applicationId,
+    );
+    const isValidResponse = yield validateResponse(response, false);
+    if (isValidResponse) {
+      yield put(getSSHKeyPairSuccess(response.data));
+      if (action.onSuccessCallback) {
+        action.onSuccessCallback(response);
+      }
+    }
+  } catch (error) {
+    yield put(getSSHKeyPairError({ error, show: false }));
+    if (action.onErrorCallback) {
+      action.onErrorCallback(error);
+    }
+  }
+}
+
+export function* generateSSHKeyPairSaga(action: GenerateSSHKeyPairReduxAction) {
+  let response: ApiResponse | undefined;
+  try {
+    const applicationId: string = yield select(getCurrentApplicationId);
+    response = yield call(ApplicationApi.generateSSHKeyPair, applicationId);
+    const isValidResponse: boolean = yield validateResponse(
+      response,
+      true,
+      response?.responseMeta?.status === 500,
+    );
+    if (isValidResponse) {
+      yield put(generateSSHKeyPairSuccess(response?.data));
+      if (action.onSuccessCallback) {
+        action.onSuccessCallback(response as ApiResponse);
+      }
+    }
+  } catch (error) {
+    if (action.onErrorCallback) {
+      action.onErrorCallback(error);
+    }
+    yield call(handleRepoLimitReachedError, response);
+  }
+}
+
+function* fetchReleases() {
+  try {
+    const response: FetchUsersApplicationsOrgsResponse = yield call(
+      ApplicationApi.getAllApplication,
+    );
+    const isValidResponse = yield validateResponse(response);
+    if (isValidResponse) {
+      const { newReleasesCount, releaseItems } = response.data || {};
+      yield put({
+        type: ReduxActionTypes.FETCH_RELEASES_SUCCESS,
+        payload: { newReleasesCount, releaseItems },
+      });
+    }
+  } catch (error) {
+    yield put({
+      type: ReduxActionErrorTypes.FETCH_RELEASES_ERROR,
+      payload: {
+        error,
+      },
+    });
+  }
+}
+
 export default function* applicationSagas() {
   yield all([
     takeLatest(
@@ -640,5 +763,11 @@ export default function* applicationSagas() {
       ReduxActionTypes.FETCH_APPLICATION_PREVIEW_INIT,
       fetchApplicationPreviewWxaCodeSaga,
     ),
+    takeLatest(
+      ReduxActionTypes.GENERATE_SSH_KEY_PAIR_INIT,
+      generateSSHKeyPairSaga,
+    ),
+    takeLatest(ReduxActionTypes.FETCH_SSH_KEY_PAIR_INIT, getSSHKeyPairSaga),
+    takeLatest(ReduxActionTypes.FETCH_RELEASES, fetchReleases),
   ]);
 }

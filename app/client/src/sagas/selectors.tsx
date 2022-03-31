@@ -19,6 +19,15 @@ export const getWidgetsMeta = (state: AppState) => state.entities.meta;
 export const getWidgetMetaProps = (state: AppState, widgetId: string) =>
   state.entities.meta[widgetId];
 
+export const getWidgetByID = (widgetId: string) => {
+  return createSelector(
+    getWidgets,
+    (canvasWidgets: { [widgetId: string]: FlattenedWidgetProps }) => {
+      return canvasWidgets[widgetId];
+    },
+  );
+};
+
 export const getWidget = (state: AppState, widgetId: string): WidgetProps => {
   return state.entities.canvasWidgets[widgetId];
 };
@@ -54,25 +63,6 @@ export const getEditorConfigs = (
   const layoutId = state.ui.editor.currentLayoutId;
   if (!pageId || !layoutId) return undefined;
   return { pageId, layoutId };
-};
-
-export const getDefaultWidgetConfig = (
-  state: AppState,
-  type: WidgetType,
-): Partial<WidgetProps> => {
-  const configs = state.entities.widgetConfig.config;
-  if (configs.hasOwnProperty(type)) {
-    const widgetConfig = { ...configs[type] };
-    return widgetConfig;
-  }
-  return {};
-};
-
-export const getWidgetNamePrefix = (
-  state: AppState,
-  type: WidgetType,
-): string => {
-  return state.entities.widgetConfig.config[type].widgetName;
 };
 
 export const getDefaultPageId = (state: AppState): string | undefined =>
@@ -148,6 +138,10 @@ export const getPluginIdOfPackageName = (
   const plugin = _.find(plugins, { packageName: name });
   if (plugin) return plugin.id;
   return undefined;
+};
+
+export const getDragDetails = (state: AppState) => {
+  return state.ui.widgetDragResize.dragDetails;
 };
 
 export const getSelectedWidget = (state: AppState) => {

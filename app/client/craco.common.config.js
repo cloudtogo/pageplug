@@ -4,6 +4,11 @@ const { DefinePlugin, EnvironmentPlugin } = require("webpack");
 const pxtorem = require("./craco.postcss.pxtorem");
 
 module.exports = {
+  style: {
+    postcss: {
+      plugins: [require("tailwindcss"), require("autoprefixer")],
+    },
+  },
   plugins: [
     {
       plugin: CracoAlias,

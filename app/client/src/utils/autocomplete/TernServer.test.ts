@@ -190,7 +190,7 @@ describe("Tern server sorting", () => {
   };
   defEntityInformation.set("sameEntity", {
     type: ENTITY_TYPE.WIDGET,
-    subType: WidgetTypes.TABLE_WIDGET,
+    subType: "TABLE_WIDGET",
   });
 
   const sameTypeCompletion: Completion = {
@@ -203,7 +203,7 @@ describe("Tern server sorting", () => {
   };
   defEntityInformation.set("sameType", {
     type: ENTITY_TYPE.WIDGET,
-    subType: WidgetTypes.TABLE_WIDGET,
+    subType: "TABLE_WIDGET",
   });
 
   const diffTypeCompletion: Completion = {
@@ -217,7 +217,7 @@ describe("Tern server sorting", () => {
 
   defEntityInformation.set("diffType", {
     type: ENTITY_TYPE.WIDGET,
-    subType: WidgetTypes.TABLE_WIDGET,
+    subType: "TABLE_WIDGET",
   });
 
   const sameTypeDiffEntityTypeCompletion: Completion = {
@@ -245,7 +245,7 @@ describe("Tern server sorting", () => {
 
   defEntityInformation.set("otherDataTree", {
     type: ENTITY_TYPE.WIDGET,
-    subType: WidgetTypes.TEXT_WIDGET,
+    subType: "TEXT_WIDGET",
   });
 
   const functionCompletion: Completion = {
@@ -304,7 +304,7 @@ describe("Tern server sorting", () => {
       expectedType: AutocompleteDataType.OBJECT,
     });
     TernServer.defEntityInformation = defEntityInformation;
-    const sortedCompletions = TernServer.sortCompletions(
+    const sortedCompletions = TernServer.sortAndFilterCompletions(
       _.shuffle(completions),
       true,
       "",

@@ -2,8 +2,6 @@ import { createReducer } from "utils/AppsmithUtils";
 import { ReduxAction, ReduxActionTypes } from "constants/ReduxActionConstants";
 import { User } from "constants/userConstants";
 import { APP_MODE } from "entities/App";
-import { getAppsmithConfigs } from "configs";
-const { inCloudOS } = getAppsmithConfigs();
 
 export type AuthUserState = {
   username: string;
@@ -33,6 +31,10 @@ export type AppDataState = {
   user: AuthUserState;
   URL: UrlDataState;
   store: AppStoreState;
+  geolocation: {
+    canBeRequested: boolean;
+    currentPosition?: GeolocationPosition;
+  };
 };
 
 const initialState: AppDataState = {
@@ -55,6 +57,9 @@ const initialState: AppDataState = {
   store: {
     transient: {},
     persistent: {},
+  },
+  geolocation: {
+    canBeRequested: "geolocation" in navigator,
   },
 };
 
@@ -107,6 +112,18 @@ const appReducer = createReducer(initialState, {
       store: {
         ...state.store,
         persistent: action.payload,
+      },
+    };
+  },
+  [ReduxActionTypes.SET_USER_CURRENT_GEO_LOCATION]: (
+    state: AppDataState,
+    action: ReduxAction<{ position: GeolocationPosition }>,
+  ): AppDataState => {
+    return {
+      ...state,
+      geolocation: {
+        ...state.geolocation,
+        currentPosition: action.payload.position,
       },
     };
   },
