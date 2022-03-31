@@ -1,7 +1,11 @@
-import { createMessage, FIELD_REQUIRED_ERROR } from "constants/messages";
+import {
+  createMessage,
+  FIELD_REQUIRED_ERROR,
+} from "@appsmith/constants/messages";
 import { ValidationConfig } from "constants/PropertyControlConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import moment from "moment";
+import { sample } from "lodash";
 import { CodeEditorExpected } from "components/editorComponents/CodeEditor";
 import { AutocompleteDataType } from "utils/autocomplete/TernServer";
 
@@ -47,6 +51,7 @@ export function getExpectedValue(
       if (config.params?.allowedValues) {
         const allowed = config.params.allowedValues.join(" | ");
         result.type = result.type + ` ( ${allowed} )`;
+        result.example = sample(config.params.allowedValues) as string;
       }
       if (config.params?.expected?.type)
         result.type = config.params?.expected.type;
@@ -114,6 +119,7 @@ export function getExpectedValue(
         autocompleteDataType: AutocompleteDataType.OBJECT,
       };
     case ValidationTypes.ARRAY:
+    case ValidationTypes.NESTED_OBJECT_ARRAY:
       if (config.params?.allowedValues) {
         const allowed = config.params?.allowedValues.join("' | '");
         return {
@@ -150,8 +156,10 @@ export function getExpectedValue(
     case ValidationTypes.SAFE_URL:
       return {
         type: "URL",
-        example: `https://wikipedia.org`,
+        example: `https://www.example.com`,
         autocompleteDataType: AutocompleteDataType.STRING,
       };
+    case ValidationTypes.TABLE_PROPERTY:
+      return getExpectedValue(config.params as ValidationConfig);
   }
 }

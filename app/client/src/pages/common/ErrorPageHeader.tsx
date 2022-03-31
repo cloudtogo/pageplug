@@ -80,7 +80,11 @@ export function ErrorPageHeader(props: ErrorPageHeaderProps) {
               text="登录"
             />
           ) : (
-            <ProfileDropdown name={user.name} userName={user.username} />
+            <ProfileDropdown
+              name={user.name}
+              photoId={user?.photoId}
+              userName={user.username}
+            />
           )}
         </StyledDropDownContainer>
       )}

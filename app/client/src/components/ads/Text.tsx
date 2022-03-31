@@ -1,16 +1,24 @@
 import styled from "styled-components";
 import { ThemeProp, Classes, CommonComponentProps } from "./common";
+import { Theme } from "constants/DefaultTheme";
+import { TypographyKeys } from "constants/typography";
 
 export enum TextType {
+  P0 = "p0",
   P1 = "p1",
   P2 = "p2",
   P3 = "p3",
+  P4 = "p4",
   H1 = "h1",
   H2 = "h2",
   H3 = "h3",
   H4 = "h4",
   H5 = "h5",
   H6 = "h6",
+  BUTTON_MEDIUM = "btnMedium",
+  BUTTON_SMALL = "btnSmall",
+  SIDE_HEAD = "sideHeading",
+  DANGER_HEADING = "dangerHeading",
 }
 
 export enum Case {
@@ -29,11 +37,11 @@ export type TextProps = CommonComponentProps & {
   underline?: boolean;
   italic?: boolean;
   case?: Case;
-  className?: string;
-  weight?: FontWeight;
+  weight?: FontWeight | string;
   highlight?: boolean;
   textAlign?: string;
   wordBreak?: string;
+  color?: string;
 };
 
 const typeSelector = (props: TextProps & ThemeProp): string => {
@@ -55,24 +63,53 @@ const typeSelector = (props: TextProps & ThemeProp): string => {
   return color;
 };
 
+const getFontWeight = ({
+  theme,
+  type,
+  weight,
+}: {
+  theme: Theme;
+  weight: string | undefined;
+  type: TypographyKeys;
+}) => {
+  if (weight) {
+    switch (weight) {
+      case FontWeight.BOLD:
+        return theme.fontWeights[2];
+      case FontWeight.NORMAL:
+        return "normal";
+      default:
+        return weight;
+    }
+  } else {
+    return theme.typography[type].fontWeight;
+  }
+};
+
 const Text = styled.span.attrs((props: TextProps) => ({
-  className: props.className ? props.className + Classes.TEXT : Classes.TEXT,
+  className: props.className
+    ? `${props.className} ${Classes.TEXT}`
+    : Classes.TEXT,
   "data-cy": props.cypressSelector,
 }))<TextProps>`
   text-decoration: ${(props) => (props.underline ? "underline" : "unset")};
   font-style: ${(props) => (props.italic ? "italic" : "normal")};
   font-weight: ${(props) =>
-    props.weight
-      ? props.weight === FontWeight.BOLD
-        ? props.theme.fontWeights[2]
-        : "normal"
-      : props.theme.typography[props.type].fontWeight};
+    getFontWeight({
+      theme: props.theme,
+      type: props.type,
+      weight: props.weight,
+    })};
   font-size: ${(props) => props.theme.typography[props.type].fontSize}px;
   line-height: ${(props) => props.theme.typography[props.type].lineHeight}px;
   letter-spacing: ${(props) =>
     props.theme.typography[props.type].letterSpacing}px;
   color: ${(props) =>
-    props.highlight ? props.theme.colors.text.highlight : typeSelector(props)};
+    props.highlight
+      ? props.theme.colors.text.highlight
+      : props.color
+      ? props.color
+      : typeSelector(props)};
   text-transform: ${(props) => (props.case ? props.case : "none")};
   text-align: ${(props) => (props.textAlign ? props.textAlign : "normal")};
   word-break: ${(props) => (props.wordBreak ? props.wordBreak : "normal")};

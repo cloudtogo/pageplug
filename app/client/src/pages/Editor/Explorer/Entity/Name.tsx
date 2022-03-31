@@ -1,42 +1,60 @@
 import EditableText, {
   EditInteractionKind,
 } from "components/editorComponents/EditableText";
+import TooltipComponent from "components/ads/Tooltip";
 import { Colors } from "constants/Colors";
-import { ReduxActionTypes } from "constants/ReduxActionConstants";
-import { WidgetTypes } from "constants/WidgetConstants";
-import React, {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppState } from "reducers";
-import {
-  getExistingActionNames,
-  getExistingPageNames,
-  getExistingWidgetNames,
-} from "selectors/entitiesSelector";
-import styled from "styled-components";
-import { removeSpecialChars } from "utils/helpers";
 
-const searchHighlightSpanClassName = "token";
-const searchTokenizationDelimiter = "!!";
+import React, { forwardRef, useEffect, useMemo, useRef, useState } from "react";
+import { Classes, Position } from "@blueprintjs/core";
+import styled from "styled-components";
+import { isEllipsisActive, removeSpecialChars } from "utils/helpers";
+
+import { TOOLTIP_HOVER_ON_DELAY } from "constants/AppConstants";
+import { ReactComponent as BetaIcon } from "assets/icons/menu/beta.svg";
+import NameEditorComponent from "components/utils/NameEditorComponent";
+import { ENTITY_EXPLORER_ACTION_NAME_CONFLICT_ERROR } from "@appsmith/constants/messages";
+
+export const searchHighlightSpanClassName = "token";
+export const searchTokenizationDelimiter = "!!";
+
+const Container = styled.div`
+  .${Classes.POPOVER_TARGET} {
+    display: initial;
+  }
+  overflow: hidden;
+`;
 
 const Wrapper = styled.div`
+  .${Classes.POPOVER_TARGET} {
+    display: initial;
+  }
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin: 0 4px;
+  margin: 0 4px 0 0;
   padding: 9px 0;
   line-height: 13px;
+  position: relative;
+  font-weight: 500;
+  font-size: 14px;
   & span.token {
     color: ${Colors.OCEAN_GREEN};
   }
+  .beta-icon {
+    position: absolute;
+    top: 5px;
+    right: 0;
+  }
 `;
 
-const replace = (
+const EditableWrapper = styled.div`
+  overflow: hidden;
+  margin: 0 ${(props) => props.theme.spaces[1]}px;
+  padding: ${(props) => props.theme.spaces[3] + 1}px 0;
+  line-height: 13px;
+`;
+
+export const replace = (
   str: string,
   delimiter: string,
   className = "token",
@@ -71,86 +89,24 @@ export interface EntityNameProps {
   entityId: string;
   searchKeyword?: string;
   className?: string;
+  enterEditMode: () => void;
+  exitEditMode: () => void;
   nameTransformFn?: (input: string, limit?: number) => string;
+  isBeta?: boolean;
 }
-
-export const EntityName = forwardRef(
-  (props: EntityNameProps, ref: React.Ref<HTMLDivElement>) => {
+export const EntityName = React.memo(
+  forwardRef((props: EntityNameProps, ref: React.Ref<HTMLDivElement>) => {
     const { name, searchKeyword, updateEntityName } = props;
-    const tabs:
-      | Array<{ id: string; widgetId: string; label: string }>
-      | undefined = useSelector((state: AppState) => {
-      if (state.entities.canvasWidgets.hasOwnProperty(props.entityId)) {
-        const widget = state.entities.canvasWidgets[props.entityId];
-        if (
-          widget.parentId &&
-          state.entities.canvasWidgets.hasOwnProperty(widget.parentId)
-        ) {
-          const parent = state.entities.canvasWidgets[widget.parentId];
-          if (parent.type === WidgetTypes.TABS_WIDGET) {
-            return Object.values(parent.tabsObj);
-          }
-        }
-      }
-      return;
-    });
-
-    const nameUpdateError = useSelector((state: AppState) => {
-      return state.ui.explorer.updateEntityError === props.entityId;
-    });
-
     const [updatedName, setUpdatedName] = useState(name);
+
+    const targetRef = useRef<HTMLDivElement | null>(null);
+
+    const handleUpdateName = ({ name }: { name: string }) =>
+      updateEntityName(name);
 
     useEffect(() => {
       setUpdatedName(name);
-    }, [name, nameUpdateError]);
-
-    const existingPageNames: string[] = useSelector(getExistingPageNames);
-    const existingWidgetNames: string[] = useSelector(getExistingWidgetNames);
-
-    const dispatch = useDispatch();
-
-    const existingActionNames: string[] = useSelector(getExistingActionNames);
-
-    const hasNameConflict = useCallback(
-      (
-        newName: string,
-        tabs?: Array<{ id: string; widgetId: string; label: string }>,
-      ) => {
-        if (tabs === undefined) {
-          return !(
-            existingPageNames.indexOf(newName) === -1 &&
-            existingActionNames.indexOf(newName) === -1 &&
-            existingWidgetNames.indexOf(newName) === -1
-          );
-        } else {
-          return tabs.findIndex((tab) => tab.label === newName) > -1;
-        }
-      },
-      [existingPageNames, existingActionNames, existingWidgetNames],
-    );
-
-    const isInvalidName = useCallback(
-      (newName: string): string | boolean => {
-        if (!newName || newName.trim().length === 0) {
-          return "请输入页面名称";
-        } else if (newName !== name && hasNameConflict(newName, tabs)) {
-          return `${newName} 已经被占用了`;
-        }
-        return false;
-      },
-      [name, hasNameConflict],
-    );
-
-    const handleAPINameChange = useCallback(
-      (newName: string) => {
-        if (name && newName !== name && !isInvalidName(newName)) {
-          setUpdatedName(newName);
-          dispatch(updateEntityName(newName));
-        }
-      },
-      [dispatch, isInvalidName, name, updateEntityName],
-    );
+    }, [name, setUpdatedName]);
 
     const searchHighlightedName = useMemo(() => {
       if (searchKeyword) {
@@ -171,52 +127,64 @@ export const EntityName = forwardRef(
       return updatedName;
     }, [searchKeyword, updatedName]);
 
-    const exitEditMode = useCallback(() => {
-      dispatch({
-        type: ReduxActionTypes.END_EXPLORER_ENTITY_NAME_EDIT,
-      });
-    }, [dispatch]);
-
-    const enterEditMode = useCallback(
-      () =>
-        props.updateEntityName &&
-        dispatch({
-          type: ReduxActionTypes.INIT_EXPLORER_ENTITY_NAME_EDIT,
-          payload: {
-            id: props.entityId,
-          },
-        }),
-      [dispatch, props.entityId, props.updateEntityName],
-    );
-
     if (!props.isEditing)
       return (
-        <Wrapper
-          className={props.className}
-          onDoubleClick={enterEditMode}
-          ref={ref}
-        >
-          {searchHighlightedName}
-        </Wrapper>
+        <Container ref={ref}>
+          <TooltipComponent
+            boundary={"viewport"}
+            content={updatedName}
+            disabled={!isEllipsisActive(targetRef.current)}
+            hoverOpenDelay={TOOLTIP_HOVER_ON_DELAY}
+            modifiers={{ arrow: { enabled: false } }}
+            position={Position.TOP_LEFT}
+          >
+            <Wrapper
+              className={`${
+                props.className ? props.className : ""
+              } ContextMenu`}
+              data-guided-tour-iid={name}
+              onDoubleClick={props.enterEditMode}
+              ref={targetRef}
+            >
+              {searchHighlightedName}
+              {props.isBeta ? <BetaIcon className="beta-icon" /> : ""}
+            </Wrapper>
+          </TooltipComponent>
+        </Container>
       );
+
     return (
-      <Wrapper>
-        <EditableText
-          className={`${props.className} editing`}
-          defaultValue={updatedName}
-          editInteractionKind={EditInteractionKind.SINGLE}
-          isEditingDefault
-          isInvalid={isInvalidName}
-          minimal
-          onBlur={exitEditMode}
-          onTextChanged={handleAPINameChange}
-          placeholder="名称"
-          type="text"
-          valueTransform={props.nameTransformFn || removeSpecialChars}
-        />
-      </Wrapper>
+      <NameEditorComponent
+        currentActionConfig={{ id: props.entityId, name: updatedName }}
+        dispatchAction={handleUpdateName}
+        suffixErrorMessage={ENTITY_EXPLORER_ACTION_NAME_CONFLICT_ERROR}
+      >
+        {({
+          handleNameChange,
+          isInvalidNameForEntity,
+        }: {
+          handleNameChange: (value: string) => void;
+          isInvalidNameForEntity: (value: string) => string | boolean;
+        }) => (
+          <EditableWrapper>
+            <EditableText
+              className={`${props.className} editing`}
+              defaultValue={updatedName}
+              editInteractionKind={EditInteractionKind.SINGLE}
+              isEditingDefault
+              isInvalid={isInvalidNameForEntity}
+              minimal
+              onBlur={props.exitEditMode}
+              onTextChanged={handleNameChange}
+              placeholder="Name"
+              type="text"
+              valueTransform={props.nameTransformFn || removeSpecialChars}
+            />
+          </EditableWrapper>
+        )}
+      </NameEditorComponent>
     );
-  },
+  }),
 );
 
 EntityName.displayName = "EntityName";

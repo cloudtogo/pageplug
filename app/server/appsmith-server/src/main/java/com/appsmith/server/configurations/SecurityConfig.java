@@ -30,9 +30,6 @@ import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler;
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.CorsConfigurationSource;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -42,13 +39,16 @@ import org.springframework.web.server.WebFilterChain;
 import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 import org.springframework.web.server.session.CookieWebSessionIdResolver;
 import org.springframework.web.server.session.WebSessionIdResolver;
-import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.HashSet;
 
-import static com.appsmith.server.constants.Url.*;
+import static com.appsmith.server.constants.Url.ACTION_COLLECTION_URL;
+import static com.appsmith.server.constants.Url.ACTION_URL;
+import static com.appsmith.server.constants.Url.APPLICATION_URL;
+import static com.appsmith.server.constants.Url.PAGE_URL;
+import static com.appsmith.server.constants.Url.THEME_URL;
+import static com.appsmith.server.constants.Url.USER_URL;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @EnableWebFluxSecurity
@@ -105,24 +105,6 @@ public class SecurityConfig {
                 .resources("/public/**", new ClassPathResource("public/"));
     }
 
-    /**
-     * This configuration enables CORS requests for the most common HTTP Methods
-     *
-     * @return
-     */
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("*"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
     @Bean
     public ForwardedHeaderTransformer forwardedHeaderTransformer() {
         return new ForwardedHeaderTransformer();
@@ -132,7 +114,6 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, ReactiveUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         return http
                 // This picks up the configurationSource from the bean corsConfigurationSource()
-                .cors().and()
                 .csrf().disable()
                 .addFilterBefore(new WebFilter() {
                     @Override
@@ -166,6 +147,7 @@ public class SecurityConfig {
                 // This is because the flow enters AclFilter as well and needs to be whitelisted there
                 .matchers(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, LOGIN_URL),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL),
+                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL + "/super"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL + "/forgotPassword"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, USER_URL + "/verifyPasswordResetToken"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.PUT, USER_URL + "/resetPassword"),
@@ -173,8 +155,10 @@ public class SecurityConfig {
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.PUT, USER_URL + "/invite/confirm"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, USER_URL + "/me"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, ACTION_URL + "/**"),
+                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, ACTION_COLLECTION_URL + "/view"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, PAGE_URL + "/**"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, APPLICATION_URL + "/**"),
+                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, THEME_URL + "/**"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, ACTION_URL + "/execute")
                 )
                 .permitAll()
@@ -204,7 +188,6 @@ public class SecurityConfig {
 
     /**
      * This bean configures the parameters that need to be set when a Cookie is created for a logged in user
-     *
      * @return
      */
     @Bean

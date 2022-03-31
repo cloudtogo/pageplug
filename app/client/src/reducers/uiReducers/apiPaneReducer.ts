@@ -5,7 +5,7 @@ import {
   ReduxAction,
 } from "constants/ReduxActionConstants";
 import { Action } from "entities/Action";
-import { UpdateActionPropertyActionPayload } from "actions/actionActions";
+import { UpdateActionPropertyActionPayload } from "actions/pluginActionActions";
 
 const initialState: ApiPaneReduxState = {
   isCreating: false,
@@ -87,6 +87,16 @@ const apiPaneReducer = createReducer(initialState, {
     state: ApiPaneReduxState,
     action: ReduxAction<{ id: string }>,
   ) => ({
+    ...state,
+    isRunning: {
+      ...state.isRunning,
+      [action.payload.id]: false,
+    },
+  }),
+  [ReduxActionTypes.RUN_ACTION_CANCELLED]: (
+    state: ApiPaneReduxState,
+    action: ReduxAction<{ id: string }>,
+  ): ApiPaneReduxState => ({
     ...state,
     isRunning: {
       ...state.isRunning,
@@ -176,6 +186,15 @@ const apiPaneReducer = createReducer(initialState, {
     currentCategory: action.payload.category,
   }),
 
+  /**
+   * This redux action sets the extraformData field for an action. This is used to select the
+   * appropriate body type tab selection in the Rest API plugin based on the content-type.
+   * This redux action can be extended to other functionalities as well in the future.
+   *
+   * @param {ApiPaneReduxState} state
+   * @param {ReduxAction} action
+   * @returns {ApiPaneReduxState}
+   */
   [ReduxActionTypes.SET_EXTRA_FORMDATA]: (
     state: ApiPaneReduxState,
     action: ReduxAction<{ id: string; values: Record<string, unknown> }>,

@@ -2,11 +2,14 @@ import React, { useState } from "react";
 
 import styled from "styled-components";
 import { Classes, MenuItem } from "@blueprintjs/core";
-import { noop } from "lodash";
+import _, { noop } from "lodash";
 
 import { CommonComponentProps } from "components/ads/common";
-import Icon, { IconSize } from "components/ads/Icon";
 import AnalyticsUtil from "utils/AnalyticsUtil";
+import { getTypographyByKey } from "constants/DefaultTheme";
+import { HeaderIcons } from "icons/HeaderIcons";
+
+const ShareIcon = HeaderIcons.SHARE;
 
 export enum MenuTypes {
   MENU = "menu",
@@ -17,8 +20,10 @@ export enum MenuTypes {
 export interface MenuItemData {
   text: string;
   label?: string;
+  labelElement?: React.ReactNode;
   onClick?: typeof noop;
   children?: MenuItemData[];
+  className?: string;
   type: MenuTypes;
   isVisible: boolean;
   confirmText?: string;
@@ -26,14 +31,22 @@ export interface MenuItemData {
   style?: React.CSSProperties;
 }
 
-const StyledMenuItem = styled(MenuItem)`
-  width: 160px;
+const StyledMenuItem = styled((props) => {
+  // we are removing non input related props before passing them in the components
+  // eslint-disable @typescript-eslint/no-unused-vars
+  const omitProps = ["isConfirm"];
+
+  return <MenuItem {..._.omit(props, omitProps)} />;
+})`
+  width: 240px;
   background: ${(props) =>
     props.theme.colors.navigationMenu.backgroundInactive};
   color: ${(props) => props.theme.colors.navigationMenu.contentInactive};
-  border-radius: ${(props) => props.theme.borderRadius};
+  border-radius: 0;
+  ${(props) => getTypographyByKey(props, "h5")};
   height: ${(props) => props.theme.navbarMenuHeight};
-  line-height: 26px;
+  line-height: ${(props) => props.theme.navbarMenuLineHeight};
+  padding: 5px 10px;
 
   &&&:hover {
     color: ${(props) => props.theme.colors.navigationMenu.contentActive};
@@ -44,7 +57,24 @@ const StyledMenuItem = styled(MenuItem)`
   }
 
   > .${Classes.MENU_ITEM_LABEL} {
+    > span {
+      height: 100%;
+    }
+    height: 100%;
     color: ${(props) => props.theme.colors.navigationMenu.label};
+  }
+`;
+
+const ReconfirmStyledItem = styled(StyledMenuItem)<{ isConfirm: boolean }>`
+  &&&:hover {
+    color: ${(props) =>
+      props.isConfirm
+        ? props.theme.colors.navigationMenu.warning
+        : props.theme.colors.navigationMenu.contentActive};
+    background-color: ${(props) =>
+      props.isConfirm
+        ? props.theme.colors.navigationMenu.warningBackground
+        : props.theme.colors.navigationMenu.backgroundActive};
   }
 `;
 
@@ -60,6 +90,7 @@ export function NavigationMenuItem({
   setIsPopoverOpen,
 }: NavigationMenuItemProps) {
   const {
+    className,
     confirmText,
     isOpensNewWindow,
     isVisible,
@@ -76,9 +107,11 @@ export function NavigationMenuItem({
 
   if (!isVisible) return null;
 
-  const labelElement = isOpensNewWindow && (
-    <Icon name="open" size={IconSize.LARGE} />
-  );
+  const labelElement =
+    menuItemData.labelElement ||
+    (isOpensNewWindow && (
+      <ShareIcon color={"#4b4848"} height={12} width={12} />
+    ));
 
   const handleClick = (e: React.SyntheticEvent) => {
     setIsPopoverOpen(false);
@@ -113,6 +146,7 @@ export function NavigationMenuItem({
     case MenuTypes.MENU:
       return (
         <StyledMenuItem
+          className={className}
           label={label}
           labelElement={labelElement}
           onClick={handleClick}
@@ -122,13 +156,20 @@ export function NavigationMenuItem({
       );
     case MenuTypes.PARENT:
       return (
-        <StyledMenuItem label={label} style={style} text={confirm.text}>
+        <StyledMenuItem
+          className={className}
+          label={label}
+          style={style}
+          text={confirm.text}
+        >
           {children}
         </StyledMenuItem>
       );
     case MenuTypes.RECONFIRM:
       return (
-        <StyledMenuItem
+        <ReconfirmStyledItem
+          className={className}
+          isConfirm={confirm.isConfirm}
           label={label}
           onClick={handleReconfirmClick}
           style={style}

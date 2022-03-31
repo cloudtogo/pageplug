@@ -2,32 +2,38 @@ import { createSelector } from "reselect";
 
 import { AppState } from "reducers";
 import { WidgetConfigReducerState } from "reducers/entityReducers/widgetConfigReducer";
-import {
-  WIDGET_STATIC_PROPS,
-  WidgetCardProps,
-  WidgetProps,
-} from "widgets/BaseWidget";
-import { WidgetSidebarReduxState } from "reducers/uiReducers/widgetSidebarReducer";
-import CanvasWidgetsNormalizer from "normalizers/CanvasWidgetsNormalizer";
+import { WidgetProps } from "widgets/BaseWidget";
 import {
   CanvasWidgetsReduxState,
   FlattenedWidgetProps,
 } from "reducers/entityReducers/canvasWidgetsReducer";
 import { PageListReduxState } from "reducers/entityReducers/pageListReducer";
 
-import { OccupiedSpace } from "constants/editorConstants";
+import { OccupiedSpace, WidgetSpace } from "constants/CanvasEditorConstants";
+import {
+  getActions,
+  getCanvasWidgets,
+  getJSCollections,
+} from "selectors/entitiesSelector";
+import {
+  MAIN_CONTAINER_WIDGET_ID,
+  RenderModes,
+  WIDGET_STATIC_PROPS,
+} from "constants/WidgetConstants";
+import CanvasWidgetsNormalizer from "normalizers/CanvasWidgetsNormalizer";
+import {
+  DataTree,
+  DataTreeWidget,
+  ENTITY_TYPE,
+} from "entities/DataTree/dataTreeFactory";
+import { ContainerWidgetProps } from "widgets/ContainerWidget/widget";
+import { find, pick, sortBy } from "lodash";
+import WidgetFactory from "utils/WidgetFactory";
+import { APP_MODE } from "entities/App";
 import { getDataTree, getLoadingEntities } from "selectors/dataTreeSelectors";
-import _ from "lodash";
-import { ContainerWidgetProps } from "widgets/ContainerWidget";
-import { DataTreeWidget, ENTITY_TYPE } from "entities/DataTree/dataTreeFactory";
-import { getActions } from "selectors/entitiesSelector";
 import { AppLayoutConfig } from "reducers/entityReducers/pageListReducer";
 
-import { getCanvasWidgets } from "./entitiesSelector";
-import { WidgetTypes } from "../constants/WidgetConstants";
-
 const getWidgetConfigs = (state: AppState) => state.entities.widgetConfig;
-const getWidgetSideBar = (state: AppState) => state.ui.widgetSidebar;
 const getPageListState = (state: AppState) => state.entities.pageList;
 
 export const getProviderCategories = (state: AppState) =>
@@ -50,14 +56,25 @@ export const getLoadingError = (state: AppState) =>
 
 export const getIsPageSaving = (state: AppState) => {
   let areApisSaving = false;
+  let areJsObjectsSaving = false;
 
   const savingApis = state.ui.apiPane.isSaving;
+  const savingJSObjects = state.ui.jsPane.isSaving;
 
   Object.keys(savingApis).forEach((apiId) => {
     areApisSaving = savingApis[apiId] || areApisSaving;
   });
 
-  return state.ui.editor.loadingStates.saving || areApisSaving;
+  Object.keys(savingJSObjects).forEach((collectionId) => {
+    areJsObjectsSaving = savingJSObjects[collectionId] || areJsObjectsSaving;
+  });
+
+  return (
+    state.ui.editor.loadingStates.saving ||
+    areApisSaving ||
+    areJsObjectsSaving ||
+    state.ui.editor.loadingStates.savingEntity
+  );
 };
 
 export const snipingModeSelector = (state: AppState) =>
@@ -84,8 +101,17 @@ export const getPageList = (state: AppState) => state.entities.pageList.pages;
 export const getCurrentPageId = (state: AppState) =>
   state.entities.pageList.currentPageId;
 
+export const getCurrentApplication = (state: AppState) =>
+  state.ui.applications.currentApplication;
+
 export const getCurrentApplicationId = (state: AppState) =>
-  state.entities.pageList.applicationId;
+  state.entities.pageList.applicationId ||
+  ""; /** this is set during init can assume it to be defined */
+
+export const getRenderMode = (state: AppState) =>
+  state.entities.app.mode === APP_MODE.EDIT
+    ? RenderModes.CANVAS
+    : RenderModes.PAGE;
 
 export const getViewModePageList = createSelector(
   getPageList,
@@ -133,6 +159,9 @@ export const getShowTabBar = createSelector(
   },
 );
 
+export const getCanvasWidth = (state: AppState) =>
+  state.entities.canvasWidgets[MAIN_CONTAINER_WIDGET_ID].rightColumn;
+
 export const getCurrentPageName = createSelector(
   getPageListState,
   (pageList: PageListReduxState) =>
@@ -141,34 +170,49 @@ export const getCurrentPageName = createSelector(
 );
 
 export const getWidgetCards = createSelector(
-  getWidgetSideBar,
   getWidgetConfigs,
   isMobileLayout,
-  (
-    widgetCards: WidgetSidebarReduxState,
-    widgetConfigs: WidgetConfigReducerState,
-    isMobile: boolean,
-  ) => {
-    const cards = widgetCards.cards.filter((c) =>
-      isMobile ? c.isMobile : !c.isMobile,
+  (widgetConfigs: WidgetConfigReducerState, isMobile: boolean) => {
+    const cards = Object.values(widgetConfigs.config).filter(
+      (config) =>
+        !config.hideCard && (isMobile ? config.isMobile : !config.isMobile),
     );
-    return cards
-      .map((widget: WidgetCardProps) => {
-        const {
-          columns,
-          detachFromLayout = false,
-          rows,
-        }: any = widgetConfigs.config[widget.type];
-        return { ...widget, rows, columns, detachFromLayout };
-      })
-      .sort(
-        (
-          { widgetCardName: widgetACardName }: WidgetCardProps,
-          { widgetCardName: widgetBCardName }: WidgetCardProps,
-        ) => widgetACardName.localeCompare(widgetBCardName),
-      );
+
+    const _cards = cards.map((config) => {
+      const {
+        columns,
+        detachFromLayout = false,
+        displayName,
+        iconSVG,
+        key,
+        rows,
+        type,
+      } = config;
+      return {
+        key,
+        type,
+        rows,
+        columns,
+        detachFromLayout,
+        displayName,
+        icon: iconSVG,
+      };
+    });
+    const sortedCards = sortBy(_cards, ["displayName"]);
+    return sortedCards;
   },
 );
+
+const getMainContainer = (
+  canvasWidgets: CanvasWidgetsReduxState,
+  evaluatedDataTree: DataTree,
+) => {
+  const canvasWidget = canvasWidgets[MAIN_CONTAINER_WIDGET_ID];
+  const evaluatedWidget = find(evaluatedDataTree, {
+    widgetId: MAIN_CONTAINER_WIDGET_ID,
+  }) as DataTreeWidget;
+  return createCanvasWidget(canvasWidget, evaluatedWidget);
+};
 
 export const getCanvasWidgetDsl = createSelector(
   getCanvasWidgets,
@@ -179,21 +223,31 @@ export const getCanvasWidgetDsl = createSelector(
     evaluatedDataTree,
     loadingEntities,
   ): ContainerWidgetProps<WidgetProps> => {
-    const widgets: Record<string, DataTreeWidget> = {};
-    Object.keys(canvasWidgets).forEach((widgetKey) => {
-      const canvasWidget = canvasWidgets[widgetKey];
-      const evaluatedWidget = _.find(evaluatedDataTree, {
-        widgetId: widgetKey,
-      }) as DataTreeWidget;
-      if (evaluatedWidget) {
-        widgets[widgetKey] = createCanvasWidget(canvasWidget, evaluatedWidget);
-      } else {
-        widgets[widgetKey] = createLoadingWidget(canvasWidget);
-      }
-      widgets[widgetKey].isLoading = loadingEntities.has(
-        canvasWidget.widgetName,
-      );
-    });
+    const widgets: Record<string, DataTreeWidget> = {
+      [MAIN_CONTAINER_WIDGET_ID]: getMainContainer(
+        canvasWidgets,
+        evaluatedDataTree,
+      ),
+    };
+    Object.keys(canvasWidgets)
+      .filter((each) => each !== MAIN_CONTAINER_WIDGET_ID)
+      .forEach((widgetKey) => {
+        const canvasWidget = canvasWidgets[widgetKey];
+        const evaluatedWidget = find(evaluatedDataTree, {
+          widgetId: widgetKey,
+        }) as DataTreeWidget;
+        if (evaluatedWidget) {
+          widgets[widgetKey] = createCanvasWidget(
+            canvasWidget,
+            evaluatedWidget,
+          );
+        } else {
+          widgets[widgetKey] = createLoadingWidget(canvasWidget);
+        }
+        widgets[widgetKey].isLoading = loadingEntities.has(
+          canvasWidget.widgetName,
+        );
+      });
 
     return CanvasWidgetsNormalizer.denormalize("0", {
       canvasWidgets: widgets,
@@ -213,6 +267,24 @@ const getOccupiedSpacesForContainer = (
       top: widget.topRow,
       bottom: widget.bottomRow,
       right: widget.rightColumn,
+    };
+    return occupiedSpace;
+  });
+};
+
+const getWidgetSpacesForContainer = (
+  containerWidgetId: string,
+  widgets: FlattenedWidgetProps[],
+): WidgetSpace[] => {
+  return widgets.map((widget) => {
+    const occupiedSpace: WidgetSpace = {
+      id: widget.widgetId,
+      parentId: containerWidgetId,
+      left: widget.leftColumn,
+      top: widget.topRow,
+      bottom: widget.bottomRow,
+      right: widget.rightColumn,
+      type: widget.type,
     };
     return occupiedSpace;
   });
@@ -284,6 +356,35 @@ export function getOccupiedSpacesSelectorForContainer(
   });
 }
 
+// same as getOccupiedSpaces but gets only the container specific ocupied Spaces
+export function getWidgetSpacesSelectorForContainer(
+  containerId: string | undefined,
+) {
+  return createSelector(getWidgets, (widgets: CanvasWidgetsReduxState):
+    | WidgetSpace[]
+    | undefined => {
+    if (containerId === null || containerId === undefined) return undefined;
+
+    const containerWidget: FlattenedWidgetProps = widgets[containerId];
+
+    if (!containerWidget || !containerWidget.children) return undefined;
+
+    // Get child widgets for the container
+    const childWidgets = Object.keys(widgets).filter(
+      (widgetId) =>
+        containerWidget.children &&
+        containerWidget.children.indexOf(widgetId) > -1 &&
+        !widgets[widgetId].detachFromLayout,
+    );
+
+    const occupiedSpaces = getWidgetSpacesForContainer(
+      containerId,
+      childWidgets.map((widgetId) => widgets[widgetId]),
+    );
+    return occupiedSpaces;
+  });
+}
+
 export const getActionById = createSelector(
   [getActions, (state: any, props: any) => props.match.params.apiId],
   (actions, id) => {
@@ -296,14 +397,11 @@ export const getActionById = createSelector(
   },
 );
 
-export const getActionTabsInitialIndex = (state: AppState) =>
-  state.ui.actionTabs.index;
-
 const createCanvasWidget = (
   canvasWidget: FlattenedWidgetProps,
   evaluatedWidget: DataTreeWidget,
 ) => {
-  const widgetStaticProps = _.pick(
+  const widgetStaticProps = pick(
     canvasWidget,
     Object.keys(WIDGET_STATIC_PROPS),
   );
@@ -313,10 +411,11 @@ const createCanvasWidget = (
   };
 };
 
+const WidgetTypes = WidgetFactory.widgetTypes;
 const createLoadingWidget = (
   canvasWidget: FlattenedWidgetProps,
 ): DataTreeWidget => {
-  const widgetStaticProps = _.pick(
+  const widgetStaticProps = pick(
     canvasWidget,
     Object.keys(WIDGET_STATIC_PROPS),
   ) as WidgetProps;
@@ -329,5 +428,55 @@ const createLoadingWidget = (
     validationPaths: {},
     logBlackList: {},
     isLoading: true,
+    propertyOverrideDependency: {},
+    overridingPropertyPaths: {},
+    privateWidgets: {},
   };
 };
+
+export const getJSCollectionById = createSelector(
+  [
+    getJSCollections,
+    (state: any, props: any) => props.match.params.collectionId,
+  ],
+  (jsActions, id) => {
+    const action = jsActions.find((action) => action.config.id === id);
+    if (action) {
+      return action.config;
+    } else {
+      return undefined;
+    }
+  },
+);
+
+export const getApplicationLastDeployedAt = (state: AppState) =>
+  state.ui.applications.currentApplication?.lastDeployedAt;
+
+/**
+ * returns the `state.ui.editor.isPreviewMode`
+ *
+ * @param state AppState
+ * @returns boolean
+ */
+export const previewModeSelector = (state: AppState) => {
+  return state.ui.editor.isPreviewMode;
+};
+
+/**
+ * returns the `state.ui.editor.zoomLevel`
+ *
+ * @param state AppState
+ * @returns number
+ */
+export const getZoomLevel = (state: AppState) => {
+  return state.ui.editor.zoomLevel;
+};
+
+/**
+ * returns the `state.ui.editor.savingEntity`
+ *
+ * @param state AppState
+ * @returns boolean
+ */
+export const getIsSavingEntity = (state: AppState) =>
+  state.ui.editor.loadingStates.savingEntity;

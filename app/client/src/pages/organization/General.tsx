@@ -17,32 +17,42 @@ import styled from "styled-components";
 import Text, { TextType } from "components/ads/Text";
 import { Classes } from "@blueprintjs/core";
 import { getOrgLoadingStates } from "selectors/organizationSelectors";
-import FilePicker, {
+import {
   SetProgress,
   UploadCallback,
   FileType,
 } from "components/ads/FilePicker";
+import FilePickerV2 from "components/ads/FilePickerV2";
 import { getIsFetchingApplications } from "selectors/applicationSelectors";
+import { useMediaQuery } from "react-responsive";
 
 // trigger tests
+const GeneralWrapper = styled.div<{
+  isMobile?: boolean;
+  isPortrait?: boolean;
+}>`
+  width: ${(props) => (props.isPortrait ? "336px" : "383px")};
+  margin: ${(props) =>
+    props.isMobile ? (props.isPortrait ? "auto" : "120px") : null};
+`;
 
 const InputLabelWrapper = styled.div`
-  width: 150px;
   display: flex;
   align-items: center;
+  margin-bottom: 8px;
 `;
 
 const SettingWrapper = styled.div`
-  width: 520px;
+  width: 100%;
   display: flex;
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 `;
 
 export const SettingsHeading = styled(Text)`
   color: ${(props) => props.theme.colors.settingHeading};
   display: inline-block;
   margin-top: 25px;
-  margin-bottom: 32px;
+  margin-bottom: 10px;
 `;
 
 const Loader = styled.div`
@@ -59,12 +69,14 @@ const FilePickerLoader = styled.div`
 
 // testing
 export const Row = styled.div`
+  width: 100%;
   margin: 0;
   padding: 0;
   display: flex;
 `;
 
 export const Col = styled.div`
+  width: 100%;
   margin: 0;
   padding: 0;
 `;
@@ -134,9 +146,14 @@ export function GeneralSettings() {
   };
   const isFetchingApplications = useSelector(getIsFetchingApplications);
 
+  const isMobile: boolean = useMediaQuery({ maxWidth: 767 });
+  const isPortrait: boolean = useMediaQuery({
+    query: "(orientation: portrait)",
+  });
+
   return (
-    <>
-      <SettingsHeading type={TextType.H2}>
+    <GeneralWrapper isMobile={isMobile} isPortrait={isPortrait}>
+      <SettingsHeading type={TextType.H1}>
         <Row>
           <Col>基本设置</Col>
         </Row>
@@ -145,15 +162,14 @@ export function GeneralSettings() {
         <Row>
           <Col>
             <InputLabelWrapper>
-              <Text type={TextType.H4}>应用组名称</Text>
+              <Text type={TextType.P1}>应用组名称</Text>
             </InputLabelWrapper>
-          </Col>
-          <Col>
             {isFetchingApplications && <Loader className={Classes.SKELETON} />}
             {!isFetchingApplications && (
               <TextInput
                 cypressSelector="t--org-name-input"
                 defaultValue={currentOrg && currentOrg.name}
+                fill
                 onChange={onWorkspaceNameChange}
                 placeholder="应用组名称"
                 validator={notEmptyValidator}
@@ -167,13 +183,11 @@ export function GeneralSettings() {
         <Row className="t--organization-settings-filepicker">
           <Col>
             <InputLabelWrapper>
-              <Text type={TextType.H4}>上传图标</Text>
+              <Text type={TextType.P1}>上传图标</Text>
             </InputLabelWrapper>
-          </Col>
-          <Col>
             {isFetchingOrg && <FilePickerLoader className={Classes.SKELETON} />}
             {!isFetchingOrg && (
-              <FilePicker
+              <FilePickerV2
                 fileType={FileType.IMAGE}
                 fileUploader={FileUploader}
                 logoUploadError={logoUploadError.message}
@@ -189,15 +203,14 @@ export function GeneralSettings() {
         <Row>
           <Col>
             <InputLabelWrapper>
-              <Text type={TextType.H4}>网站</Text>
+              <Text type={TextType.P1}>网站</Text>
             </InputLabelWrapper>
-          </Col>
-          <Col>
             {isFetchingApplications && <Loader className={Classes.SKELETON} />}
             {!isFetchingApplications && (
               <TextInput
                 cypressSelector="t--org-website-input"
                 defaultValue={(currentOrg && currentOrg.website) || ""}
+                fill
                 onChange={onWebsiteChange}
                 placeholder="你的网站"
               />
@@ -210,15 +223,14 @@ export function GeneralSettings() {
         <Row>
           <Col>
             <InputLabelWrapper>
-              <Text type={TextType.H4}>邮箱</Text>
+              <Text type={TextType.P1}>邮箱</Text>
             </InputLabelWrapper>
-          </Col>
-          <Col>
             {isFetchingApplications && <Loader className={Classes.SKELETON} />}
             {!isFetchingApplications && (
               <TextInput
                 cypressSelector="t--org-email-input"
                 defaultValue={(currentOrg && currentOrg.email) || ""}
+                fill
                 onChange={onEmailChange}
                 placeholder="邮箱"
                 validator={emailValidator}
@@ -227,6 +239,6 @@ export function GeneralSettings() {
           </Col>
         </Row>
       </SettingWrapper>
-    </>
+    </GeneralWrapper>
   );
 }

@@ -10,10 +10,10 @@ import { Colors } from "constants/Colors";
 import QueryTemplates from "./QueryTemplates";
 import DatasourceField from "./DatasourceField";
 import { DatasourceTable } from "entities/Datasource";
+import { Colors } from "constants/Colors";
 
 const Wrapper = styled(EntityTogglesWrapper)`
   &&&& {
-    color: ${Colors.MINT_ORANGE};
     svg,
     svg path {
       fill: ${Colors.MINT_ORANGE};
@@ -26,10 +26,9 @@ const Wrapper = styled(EntityTogglesWrapper)`
   span {
     font-size: ${(props) => props.theme.fontSizes[2]}px;
     margin-left: 5px;
-    color: ${Colors.MINT_ORANGE};
-    padding-top: 2px;
   }
   padding: 0 5px;
+  color: ${Colors.GRAY2};
 `;
 
 const StyledEntity = styled(Entity)`
@@ -80,6 +79,7 @@ export function DatasourceStructure(props: DatasourceStructureProps) {
           setActive(false);
         }
       }}
+      popoverClassName="t--structure-template-menu-popover"
       position={Position.RIGHT_TOP}
     >
       <StyledEntity
