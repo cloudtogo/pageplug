@@ -25,6 +25,7 @@ import com.appsmith.server.dtos.ActionDTO;
 import com.appsmith.server.dtos.ApplicationPagesDTO;
 import com.appsmith.server.dtos.PageDTO;
 import com.appsmith.server.dtos.PageNameIdDTO;
+import com.appsmith.server.dtos.ApplicationAccessDTO;
 import com.appsmith.server.exceptions.AppsmithError;
 import com.appsmith.server.exceptions.AppsmithException;
 import com.appsmith.server.helpers.GitFileUtils;
@@ -323,6 +324,15 @@ public class ApplicationPageServiceCEImpl implements ApplicationPageServiceCE {
                         application1.setPublishedModeThemeId(themeId);
                         return themeId;
                     }).then(applicationService.createDefault(application1));
+                })
+                .flatMap(savedApplication -> {
+                    final Application.AppLayout appLayout = savedApplication.getPublishedAppLayout();
+                    if (appLayout != null && appLayout.getType() == Application.AppLayout.Type.MOBILE_FLUID) {
+                        final ApplicationAccessDTO applicationAccessDTO = new ApplicationAccessDTO();
+                        applicationAccessDTO.setPublicAccess(true);
+                        return this.applicationService.changeViewAccess(savedApplication.getId(), applicationAccessDTO);
+                    }
+                    return Mono.just(savedApplication);
                 })
                 .flatMap(savedApplication -> {
 
