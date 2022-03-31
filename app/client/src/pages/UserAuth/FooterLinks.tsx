@@ -18,7 +18,7 @@ const FooterLink = styled.a`
   line-height: ${(props) => props.theme.typography.releaseList.lineHeight}px;
   letter-spacing: ${(props) =>
     props.theme.typography.releaseList.letterSpacing}px;
-  color: #9f9f9f;
+  color: #000 !important;
 `;
 
 const FooterLinksContainer = styled.div`

@@ -5,9 +5,10 @@ import com.appsmith.server.domains.Action;
 import com.appsmith.server.domains.Application;
 import com.appsmith.server.domains.Comment;
 import com.appsmith.server.domains.CommentThread;
-import com.appsmith.server.domains.Datasource;
+import com.appsmith.external.models.Datasource;
 import com.appsmith.server.domains.Organization;
 import com.appsmith.server.domains.Page;
+import com.appsmith.server.domains.Theme;
 import com.appsmith.server.domains.User;
 import lombok.Getter;
 
@@ -30,6 +31,9 @@ public enum AclPermission {
     USER_MANAGE_ORGANIZATIONS("manage:userOrganization", User.class),
     //Does the user have read organization permissions
     USER_READ_ORGANIZATIONS("read:userOrganization", User.class),
+
+    // Does this user have permission to access Instance Config UI?
+    MANAGE_INSTANCE_ENV("manage:instanceEnv", User.class),
 
     // TODO: Add these permissions to PolicyGenerator to assign them to the user when they sign up
     // The following should be applied to Organization and not User
@@ -71,13 +75,15 @@ public enum AclPermission {
     READ_DATASOURCES("read:datasources", Datasource.class),
     EXECUTE_DATASOURCES("execute:datasources", Datasource.class),
 
-    COMMENT_ON_THREAD("canComment:commentThreads", CommentThread.class),
-    READ_THREAD("read:commentThreads", CommentThread.class),
-    MANAGE_THREAD("manage:commentThreads", CommentThread.class),
+    COMMENT_ON_THREADS("canComment:commentThreads", CommentThread.class),
+    READ_THREADS("read:commentThreads", CommentThread.class),
+    MANAGE_THREADS("manage:commentThreads", CommentThread.class),
 
-    READ_COMMENT("read:comments", Comment.class),
-    MANAGE_COMMENT("manage:comments", Comment.class),
+    READ_COMMENTS("read:comments", Comment.class),
+    MANAGE_COMMENTS("manage:comments", Comment.class),
 
+    READ_THEMES("read:themes", Theme.class),
+    MANAGE_THEMES("manage:themes", Theme.class),
     ;
 
     private final String value;

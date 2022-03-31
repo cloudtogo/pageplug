@@ -10,9 +10,11 @@ export const EntityTogglesWrapper = styled.div`
     justify-content: center;
     align-items: center;
     color: ${Colors.MINT_GREEN};
+    cursor: pointer;
     svg,
     svg path {
       fill: ${Colors.MINT_GREEN};
+      cursor: pointer;
     }
 
     &:hover {

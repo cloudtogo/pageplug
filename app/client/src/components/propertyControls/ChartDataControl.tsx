@@ -15,7 +15,7 @@ import {
   TabBehaviour,
 } from "components/editorComponents/CodeEditor/EditorConfig";
 import { Size, Category } from "components/ads/Button";
-import { AllChartData, ChartData } from "widgets/ChartWidget";
+import { AllChartData, ChartData } from "widgets/ChartWidget/constants";
 import { generateReactKey } from "utils/generators";
 import { AutocompleteDataType } from "utils/autocomplete/TernServer";
 
@@ -100,7 +100,7 @@ const expectedSeriesName: CodeEditorExpected = {
   autocompleteDataType: AutocompleteDataType.STRING,
 };
 const expectedSeriesData: CodeEditorExpected = {
-  type: "Array<{ x: string, y: string | number }>",
+  type: "Array<{ x: string, y: number Required }>",
   example: [
     {
       x: "Mon",

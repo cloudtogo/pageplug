@@ -26,15 +26,9 @@ export const VisibilityContainer = styled.div<{
   width: 100%;
 `;
 
-export const EdgeHandleStyles = css`
-  position: absolute;
-  width: ${EDGE_RESIZE_HANDLE_WIDTH}px;
-  height: ${EDGE_RESIZE_HANDLE_WIDTH}px;
-  &::before {
-    position: absolute;
-    background: ${theme.colors.widgetBorder};
-    content: "";
-  }
+const ResizeIndicatorStyle = css<{
+  showLightBorder: boolean;
+}>`
   &::after {
     position: absolute;
     content: "";
@@ -48,7 +42,31 @@ export const EdgeHandleStyles = css`
   }
 `;
 
-export const VerticalHandleStyles = css`
+export const EdgeHandleStyles = css<{
+  showAsBorder: boolean;
+  showLightBorder: boolean;
+}>`
+  position: absolute;
+  width: ${EDGE_RESIZE_HANDLE_WIDTH}px;
+  height: ${EDGE_RESIZE_HANDLE_WIDTH}px;
+  &::before {
+    position: absolute;
+    background: ${(props) => {
+      if (props.showLightBorder) return theme.colors.widgetLightBorder;
+
+      if (props.showAsBorder) return theme.colors.widgetMultiSelectBorder;
+
+      return theme.colors.widgetBorder;
+    }};
+    content: "";
+  }
+  ${(props) => (!props.showAsBorder ? ResizeIndicatorStyle : "")}
+`;
+
+export const VerticalHandleStyles = css<{
+  showAsBorder: boolean;
+  showLightBorder: boolean;
+}>`
   ${EdgeHandleStyles}
   top: ${CORNER_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING}px;
   height: calc(100% + ${2 * WIDGET_PADDING - CORNER_RESIZE_HANDLE_WIDTH}px);
@@ -61,7 +79,10 @@ export const VerticalHandleStyles = css`
   }
 `;
 
-export const HorizontalHandleStyles = css`
+export const HorizontalHandleStyles = css<{
+  showAsBorder: boolean;
+  showLightBorder: boolean;
+}>`
   ${EdgeHandleStyles}
   left: ${CORNER_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING}px;
   width: calc(100% + ${2 * WIDGET_PADDING - CORNER_RESIZE_HANDLE_WIDTH}px);
@@ -110,7 +131,9 @@ export const CornerHandleStyles = css`
   border-radius: 2px;
 `;
 
-export const BottomRightHandleStyles = styled.div`
+export const BottomRightHandleStyles = styled.div<{
+  showAsBorder: boolean;
+}>`
   ${CornerHandleStyles};
   bottom: ${CORNER_OFFSET}px;
   right: ${CORNER_OFFSET}px;
@@ -122,13 +145,17 @@ export const BottomLeftHandleStyles = styled.div`
   bottom: ${CORNER_OFFSET}px;
   cursor: sw-resize;
 `;
-export const TopLeftHandleStyles = styled.div`
+export const TopLeftHandleStyles = styled.div<{
+  showAsBorder: boolean;
+}>`
   ${CornerHandleStyles};
   left: ${CORNER_OFFSET}px;
   top: ${CORNER_OFFSET}px;
   cursor: nw-resize;
 `;
-export const TopRightHandleStyles = styled.div`
+export const TopRightHandleStyles = styled.div<{
+  showAsBorder: boolean;
+}>`
   ${CornerHandleStyles};
   right: ${CORNER_OFFSET}px;
   top: ${CORNER_OFFSET}px;

@@ -1,23 +1,28 @@
 package com.appsmith.server.helpers;
 
 import com.appsmith.external.models.BaseDomain;
+import com.appsmith.external.models.Datasource;
 import com.appsmith.external.models.Policy;
 import com.appsmith.server.acl.AclPermission;
 import com.appsmith.server.acl.PolicyGenerator;
+import com.appsmith.server.domains.ActionCollection;
 import com.appsmith.server.domains.Application;
 import com.appsmith.server.domains.CommentThread;
-import com.appsmith.server.domains.Datasource;
 import com.appsmith.server.domains.NewAction;
 import com.appsmith.server.domains.NewPage;
+import com.appsmith.server.domains.Theme;
 import com.appsmith.server.domains.User;
+import com.appsmith.server.repositories.ActionCollectionRepository;
 import com.appsmith.server.repositories.ApplicationRepository;
 import com.appsmith.server.repositories.CommentThreadRepository;
 import com.appsmith.server.repositories.DatasourceRepository;
 import com.appsmith.server.repositories.NewActionRepository;
 import com.appsmith.server.repositories.NewPageRepository;
+import com.appsmith.server.repositories.ThemeRepository;
 import lombok.AllArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -33,6 +38,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.appsmith.server.acl.AclPermission.MANAGE_DATASOURCES;
+import static com.appsmith.server.acl.AclPermission.READ_THEMES;
 
 @Component
 @AllArgsConstructor
@@ -44,10 +50,13 @@ public class PolicyUtils {
     private final NewPageRepository newPageRepository;
     private final NewActionRepository newActionRepository;
     private final CommentThreadRepository commentThreadRepository;
+    private final ActionCollectionRepository actionCollectionRepository;
+    private final ThemeRepository themeRepository;
 
     public <T extends BaseDomain> T addPoliciesToExistingObject(Map<String, Policy> policyMap, T obj) {
         // Making a deep copy here so we don't modify the `policyMap` object.
         // TODO: Investigate a solution without using deep-copy.
+        // TODO: Do we need to return the domain object?
         final Map<String, Policy> policyMap1 = new HashMap<>();
         for (Map.Entry<String, Policy> entry : policyMap.entrySet()) {
             Policy entryValue = entry.getValue();
@@ -227,12 +236,37 @@ public class PolicyUtils {
                         .saveAll(updatedPages));
     }
 
+    public Flux<Theme> updateThemePolicies(Application application, Map<String, Policy> themePolicyMap, boolean addPolicyToObject) {
+        Flux<Theme> applicationThemes = themeRepository.getApplicationThemes(application.getId(), READ_THEMES);
+        if(StringUtils.hasLength(application.getEditModeThemeId())) {
+            applicationThemes = applicationThemes.concatWith(
+                    themeRepository.findById(application.getEditModeThemeId(), READ_THEMES)
+            );
+        }
+        if(StringUtils.hasLength(application.getPublishedModeThemeId())) {
+            applicationThemes = applicationThemes.concatWith(
+                    themeRepository.findById(application.getPublishedModeThemeId(), READ_THEMES)
+            );
+        }
+        return applicationThemes
+                .filter(theme -> !theme.isSystemTheme()) // skip the system themes
+                .map(theme -> {
+                    if (addPolicyToObject) {
+                        return addPoliciesToExistingObject(themePolicyMap, theme);
+                    } else {
+                        return removePoliciesFromExistingObject(themePolicyMap, theme);
+                    }
+                })
+                .collectList()
+                .flatMapMany(themeRepository::saveAll);
+    }
+
     public Flux<CommentThread> updateCommentThreadPermissions(
             String applicationId, Map<String, Policy> commentThreadPolicyMap, String username, boolean addPolicyToObject) {
 
         return
                 // fetch comment threads with read permissions
-                commentThreadRepository.findByApplicationId(applicationId, AclPermission.READ_THREAD)
+                commentThreadRepository.findByApplicationId(applicationId, AclPermission.READ_THREADS)
                 .switchIfEmpty(Mono.empty())
                 .map(thread -> {
                     if(!Boolean.TRUE.equals(thread.getIsPrivate())) {
@@ -276,7 +310,23 @@ public class PolicyUtils {
                     }
                 })
                 .collectList()
-                .flatMapMany(updatedActions -> newActionRepository.saveAll(updatedActions));
+                .flatMapMany(newActionRepository::saveAll);
+    }
+
+    public Flux<ActionCollection> updateWithPagePermissionsToAllItsActionCollections(String applicationId, Map<String, Policy> newActionPoliciesMap, boolean addPolicyToObject) {
+
+        return actionCollectionRepository
+                .findByApplicationId(applicationId)
+                .switchIfEmpty(Mono.empty())
+                .map(action -> {
+                    if (addPolicyToObject) {
+                        return addPoliciesToExistingObject(newActionPoliciesMap, action);
+                    } else {
+                        return removePoliciesFromExistingObject(newActionPoliciesMap, action);
+                    }
+                })
+                .collectList()
+                .flatMapMany(actionCollectionRepository::saveAll);
     }
 
     public Map<String, Policy> generateInheritedPoliciesFromSourcePolicies(Map<String, Policy> sourcePolicyMap,

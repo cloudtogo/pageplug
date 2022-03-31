@@ -1,17 +1,18 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import Icon, { IconName, IconSize } from "./Icon";
 import { Classes, CommonComponentProps } from "./common";
 import Text, { TextType } from "./Text";
 import { Popover, Position } from "@blueprintjs/core";
 import styled from "constants/DefaultTheme";
 import _ from "lodash";
+import { Colors } from "constants/Colors";
 
 const DropdownContainer = styled.div<{ width?: string }>`
   width: ${(props) => props.width || "260px"};
   position: relative;
 `;
 
-const Selected = styled.div<{ isOpen: boolean; disabled?: boolean }>`
+const Selected = styled.button<{ isOpen: boolean; disabled?: boolean }>`
   height: 38px;
   padding: ${(props) => props.theme.spaces[2]}px
     ${(props) => props.theme.spaces[3]}px;
@@ -26,21 +27,26 @@ const Selected = styled.div<{ isOpen: boolean; disabled?: boolean }>`
   cursor: pointer;
   ${(props) =>
     props.isOpen
-      ? `border: 1px solid ${props.theme.colors.info.main}`
+      ? `border: 1px solid var(--appsmith-input-focus-border-color)`
       : props.disabled
       ? `border: 1px solid ${props.theme.colors.dropdown.header.disabledBg}`
-      : `border: 1px solid ${props.theme.colors.dropdown.header.bg}`};
+      : `border: 1px solid ${Colors.GREY_5}`};
   ${(props) =>
     props.isOpen && !props.disabled ? "box-sizing: border-box" : null};
-  ${(props) =>
-    props.isOpen && !props.disabled
-      ? "box-shadow: 0px 0px 4px 4px rgba(203, 72, 16, 0.18)"
-      : null};
   .${Classes.TEXT} {
     ${(props) =>
       props.disabled
         ? `color: ${props.theme.colors.dropdown.header.disabledText}`
         : `color: ${props.theme.colors.dropdown.header.text}`};
+  }
+
+  &:focus {
+    border: 1px solid var(--appsmith-input-focus-border-color);
+  }
+
+  svg {
+    fill: ${Colors.DARK_GRAY};
+    margin-right: 8px;
   }
 `;
 
@@ -50,8 +56,6 @@ const DropdownWrapper = styled.div<{
   width: ${(props) => props.width || "260px"};
   z-index: 1;
   background-color: ${(props) => props.theme.colors.propertyPane.radioGroupBg};
-  box-shadow: ${(props) =>
-    `0px 2px 4px ${props.theme.colors.dropdown.menuShadow}`};
   margin-top: ${(props) => -props.theme.spaces[3]}px;
   padding: ${(props) => props.theme.spaces[3]}px 0;
 `;
@@ -69,7 +73,7 @@ const OptionWrapper = styled.div<{
     props.selected ? props.theme.colors.propertyPane.dropdownSelectBg : null};
 
   .${Classes.TEXT} {
-    color: ${(props) => props.theme.colors.propertyPane.label};
+    color: ${Colors.CHARCOAL};
   }
 
   .${Classes.ICON} {
@@ -84,11 +88,12 @@ const OptionWrapper = styled.div<{
     }
   }
 
-  &:hover {
+  &:hover,
+  &.focus {
     background-color: ${(props) => props.theme.colors.dropdown.hovered.bg};
 
     .${Classes.TEXT} {
-      color: ${(props) => props.theme.colors.textOnDarkBG};
+      color: ${Colors.CHARCOAL};
     }
 
     .${Classes.ICON} {
@@ -110,7 +115,7 @@ const LabelWrapper = styled.div<{ label?: string }>`
   }
   &:hover {
     .${Classes.TEXT} {
-      color: ${(props) => props.theme.colors.dropdown.selected.text};
+      color: ${Colors.CHARCOAL};
     }
   }
 `;
@@ -119,23 +124,28 @@ const MultiOptionWrapper = styled(OptionWrapper)`
   background-color: transparent;
   .${Classes.MULTI_SELECT_BOX} {
     background-color: ${(props) =>
-      props.selected ? props.theme.colors.dropdown.hovered.bg : "transparent"};
-    border-color: ${(props) =>
-      props.selected
-        ? props.theme.colors.dropdown.hovered.bg
-        : props.theme.colors.propertyPane.jsIconBg};
-  }
+      props.selected ? props.theme.colors.info.main : "transparent"};
+    border: 1.8px solid
+      ${(props) =>
+        props.selected
+          ? props.theme.colors.info.main
+          : props.theme.colors.checkbox.unchecked};
 
-  &:hover {
-    .${Classes.MULTI_SELECT_BOX} {
-      border-color: ${(props) =>
-        props.selected
-          ? props.theme.colors.propertyPane.multiDropdownBoxHoverBg
-          : props.theme.colors.textOnDarkBG};
-      background-color: ${(props) =>
-        props.selected
-          ? props.theme.colors.propertyPane.multiDropdownBoxHoverBg
-          : "transparent"};
+    &::after {
+      content: "";
+      position: absolute;
+      display: ${(props) => (props.selected ? "block" : "none")};
+      top: -1px;
+      left: 2.5px;
+      width: 5px;
+      height: 10px;
+      border: solid
+        ${(props) =>
+          props.selected
+            ? props.theme.colors.checkbox.normalCheck
+            : "transparent"};
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
     }
   }
 `;
@@ -144,8 +154,8 @@ const SquareBox = styled.div`
   width: 14px;
   height: 14px;
   margin-right: 8px;
-  border: 1px solid;
   box-sizing: border-box;
+  position: relative;
 `;
 
 export type DropdownOption = {
@@ -176,49 +186,121 @@ function MultiSelectDropdown(props: DropdownProps) {
     }
   }, []);
 
-  const optionClickHandler = (option: string) => {
-    const currentIndex = _.findIndex(props.selected, (value) => {
-      return value === option;
-    });
+  const [currentItemIndex, setCurrentItemIndex] = useState<number>(-1);
+  const btnRef = useRef<HTMLButtonElement>(null);
 
-    let selectedOption = [...props.selected];
+  const optionClickHandler = useCallback(
+    (option: string) => {
+      const currentIndex = _.findIndex(props.selected, (value) => {
+        return value === option;
+      });
 
-    if (currentIndex === -1) {
-      selectedOption.push(option);
-    } else {
-      selectedOption.splice(currentIndex, 1);
-    }
+      if (btnRef.current) btnRef.current.focus();
 
-    if (props.selectAll) {
-      const isAllSelectorPresent = props.selected.includes(
-        props.selectAllQuantifier as string,
-      );
-      const isAllSelectorSelected =
-        props.selectAllQuantifier && option === props.selectAllQuantifier;
+      let selectedOption = [...props.selected];
 
-      if (isAllSelectorSelected) {
-        if (isAllSelectorPresent) {
-          selectedOption = [];
-        } else {
+      if (currentIndex === -1) {
+        selectedOption.push(option);
+      } else {
+        selectedOption.splice(currentIndex, 1);
+      }
+
+      if (props.selectAll) {
+        const isAllSelectorPresent = props.selected.includes(
+          props.selectAllQuantifier as string,
+        );
+        const isAllSelectorSelected =
+          props.selectAllQuantifier && option === props.selectAllQuantifier;
+
+        if (isAllSelectorSelected) {
+          if (isAllSelectorPresent) {
+            selectedOption = [];
+          } else {
+            selectedOption = _.map(
+              props.options,
+              (item) => item.value,
+            ) as string[];
+          }
+        } else if (isAllSelectorPresent) {
+          selectedOption = selectedOption.filter(
+            (item) => item !== props.selectAllQuantifier,
+          );
+        } else if (
+          !isAllSelectorPresent &&
+          selectedOption.length === props.options.length - 1
+        ) {
           selectedOption = _.map(
             props.options,
             (item) => item.value,
           ) as string[];
         }
-      } else if (isAllSelectorPresent) {
-        selectedOption = selectedOption.filter(
-          (item) => item !== props.selectAllQuantifier,
-        );
-      } else if (
-        !isAllSelectorPresent &&
-        selectedOption.length === props.options.length - 1
-      ) {
-        selectedOption = _.map(props.options, (item) => item.value) as string[];
       }
-    }
 
-    props.onSelect && props.onSelect([...selectedOption]);
-  };
+      props.onSelect && props.onSelect([...selectedOption]);
+    },
+    [props.selected, props.selectAll, props.selectAllQuantifier],
+  );
+
+  const handleKeydown = useCallback(
+    (e: React.KeyboardEvent) => {
+      switch (e.key) {
+        case "Escape":
+        case "Esc":
+          if (isOpen) {
+            setIsOpen(false);
+            e.nativeEvent.stopImmediatePropagation();
+          }
+          break;
+        case " ":
+        case "Spacebar":
+        case "Enter":
+          if (isOpen) {
+            if (props.options[currentItemIndex]?.value) {
+              optionClickHandler(
+                props.options[currentItemIndex].value as string,
+              );
+            }
+          } else {
+            setIsOpen(true);
+            setCurrentItemIndex((prev) => (prev < 0 ? 0 : prev));
+          }
+          e.preventDefault();
+          break;
+        case "ArrowUp":
+        case "Up":
+          e.preventDefault();
+          if (isOpen) {
+            setCurrentItemIndex((prevIndex) => {
+              if (prevIndex <= 0) return props.options.length - 1;
+              return prevIndex - 1;
+            });
+          } else {
+            setCurrentItemIndex((prev) => (prev < 0 ? 0 : prev));
+            setIsOpen(true);
+          }
+          break;
+        case "ArrowDown":
+        case "Down":
+          e.preventDefault();
+          if (isOpen) {
+            setCurrentItemIndex((prevIndex) => {
+              if (prevIndex === props.options.length - 1) return 0;
+              return prevIndex + 1;
+            });
+          } else {
+            setCurrentItemIndex((prev) => (prev < 0 ? 0 : prev));
+            setIsOpen(true);
+          }
+          break;
+        case "Tab":
+          if (isOpen) {
+            setIsOpen(false);
+          }
+          break;
+      }
+    },
+    [isOpen, props.options, props.selected, currentItemIndex],
+  );
 
   const isItemSelected = (item?: string) => {
     if (!item) {
@@ -231,7 +313,6 @@ function MultiSelectDropdown(props: DropdownProps) {
     <DropdownContainer
       data-cy={props.cypressSelector}
       ref={measuredRef}
-      tabIndex={0}
       width={props.width}
     >
       <Popover
@@ -245,14 +326,21 @@ function MultiSelectDropdown(props: DropdownProps) {
           className={props.className}
           disabled={props.disabled}
           isOpen={isOpen}
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => {
+            setCurrentItemIndex(-1);
+            setIsOpen(!isOpen);
+          }}
+          onKeyDown={handleKeydown}
+          ref={btnRef}
+          role="listbox"
+          tabIndex={0}
         >
           <Text type={TextType.P1}>
             {props.selected.length
               ? `${props.selected.length} Selected`
               : "Select file types"}
           </Text>
-          <Icon name="downArrow" size={IconSize.XXS} />
+          <Icon name="expand-more" size={IconSize.XXL} />
         </Selected>
         <DropdownWrapper
           width={props.optionWidth ? props.optionWidth : containerWidth}
@@ -260,11 +348,15 @@ function MultiSelectDropdown(props: DropdownProps) {
           {props.options.map((option: DropdownOption, index: number) => {
             return (
               <MultiOptionWrapper
-                className="t--multi-dropdown-option"
+                className={`t--multi-dropdown-option ${
+                  currentItemIndex === index ? "focus" : " "
+                }`}
                 key={index}
                 onClick={() => {
                   optionClickHandler(option.value as string);
+                  setCurrentItemIndex(index);
                 }}
+                role="option"
                 selected={isItemSelected(option.value)}
               >
                 <SquareBox className={Classes.MULTI_SELECT_BOX} />

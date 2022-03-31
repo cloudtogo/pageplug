@@ -1,4 +1,8 @@
-export const HelpMap = {
+export const HelpMap: Record<string, { path: string; searchKey: string }> = {
+  AUDIO_WIDGET: {
+    path: "/widget-reference/audio",
+    searchKey: "Audio",
+  },
   CONTAINER_WIDGET: {
     path: "/widget-reference/container",
     searchKey: "Container",
@@ -23,6 +27,10 @@ export const HelpMap = {
     path: "/widget-reference/input",
     searchKey: "Input",
   },
+  INPUT_WIDGET_V2: {
+    path: "/widget-reference/input",
+    searchKey: "Input",
+  },
   DATE_PICKER_WIDGET: {
     path: "/widget-reference/datepicker",
     searchKey: "DatePicker",
@@ -43,6 +51,10 @@ export const HelpMap = {
     path: "/widget-reference/dropdown",
     searchKey: "Select",
   },
+  SELECT_WIDGET: {
+    path: "/widget-reference/dropdown",
+    searchKey: "Select",
+  },
   RADIO_GROUP_WIDGET: {
     path: "/widget-reference/radio",
     searchKey: "Radio",
@@ -60,6 +72,10 @@ export const HelpMap = {
     searchKey: "Form",
   },
   FILE_PICKER_WIDGET: {
+    path: "/widget-reference/filepicker",
+    searchKey: "File picker",
+  },
+  FILE_PICKER_WIDGET_V2: {
     path: "/widget-reference/filepicker",
     searchKey: "File picker",
   },
@@ -116,6 +132,10 @@ export const HelpMap = {
     searchKey: "Switch",
   },
   MULTI_SELECT_WIDGET: {
+    path: "",
+    searchKey: "",
+  },
+  MULTI_SELECT_WIDGET_V2: {
     path: "",
     searchKey: "",
   },
@@ -214,6 +234,42 @@ export const HelpMap = {
   TARO_FORM_WIDGET: {
     path: "/widget-reference/",
     searchKey: "Taro Form",
+  },
+  TREE_MULTI_SELECT_WIDGET: {
+    path: "/widget-reference/tree-multi-select",
+    searchKey: "Tree Multi Select",
+  },
+  TREE_SINGLE_SELECT_WIDGET: {
+    path: "/widget-reference/tree-single-select",
+    searchKey: "Tree Single Select",
+  },
+  ICON_BUTTON_WIDGET: {
+    path: "/widget-reference/icon-button",
+    searchKey: "Icon Button",
+  },
+  STATBOX_WIDGET: {
+    path: "/widget-reference/statbox",
+    searchKey: "Stat Box",
+  },
+  CHECKBOX_GROUP_WIDGET: {
+    path: "/widget-reference/checkbox-group",
+    searchKey: "Checkbox Group",
+  },
+  AUDIO_RECORDER_WIDGET: {
+    path: "/widget-reference/audio-recorder",
+    searchKey: "Audio Recorder",
+  },
+  PROGRESSBAR_WIDGET: {
+    path: "/widget-reference/progressbar",
+    searchKey: "Progress Bar",
+  },
+  SWITCH_GROUP_WIDGET: {
+    path: "/widget-reference/switch-group",
+    searchKey: "Switch Group",
+  },
+  MAP_CHART_WIDGET: {
+    path: "/widget-reference/map-chart",
+    searchKey: "Map Chart",
   },
 };
 

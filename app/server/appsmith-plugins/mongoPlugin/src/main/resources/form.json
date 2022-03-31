@@ -179,7 +179,7 @@
               "controlType": "INPUT_TEXT",
               "placeholderText": "密码",
               "encrypted": true
-              }
+            }
           ]
         }
       ]
