@@ -16,6 +16,7 @@ import { AppState } from "reducers";
 import { setThemeMode } from "actions/themeActions";
 import { StyledToastContainer } from "components/ads/Toast";
 import localStorage from "utils/localStorage";
+import "./assets/styles/index.css";
 import "./polyfills/corejs-add-on";
 import AppErrorBoundary from "./AppErrorBoundry";
 import GlobalStyles from "globalStyles";

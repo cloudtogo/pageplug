@@ -26,7 +26,7 @@ import ProvidersApi, {
 } from "api/ProvidersApi";
 import { Providers } from "constants/providerConstants";
 import { FetchProviderWithCategoryRequest } from "api/ProvidersApi";
-import { fetchActions } from "actions/actionActions";
+import { fetchActions } from "actions/pluginActionActions";
 import {
   getCurrentApplicationId,
   getPageList,
@@ -34,7 +34,7 @@ import {
 import {
   ADD_API_TO_PAGE_SUCCESS_MESSAGE,
   createMessage,
-} from "constants/messages";
+} from "@appsmith/constants/messages";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { getCurrentOrgId } from "selectors/organizationSelectors";
 import { Toaster } from "components/ads/Toast";
@@ -104,7 +104,7 @@ export function* addApiToPageSaga(
       });
 
       const applicationId = yield select(getCurrentApplicationId);
-      yield put(fetchActions(applicationId, []));
+      yield put(fetchActions({ applicationId }, []));
     }
   } catch (error) {
     yield put({

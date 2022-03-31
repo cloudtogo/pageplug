@@ -3,26 +3,30 @@ import styled from "styled-components";
 import _ from "lodash";
 import Popper from "pages/Editor/Popper";
 import ReactJson from "react-json-view";
-import { EditorTheme } from "components/editorComponents/CodeEditor/EditorConfig";
+import {
+  EditorTheme,
+  FieldEntityInformation,
+} from "components/editorComponents/CodeEditor/EditorConfig";
 import { theme } from "constants/DefaultTheme";
 import { Placement } from "popper.js";
 import ScrollIndicator from "components/ads/ScrollIndicator";
-import DebugButton from "components/editorComponents/Debugger/DebugCTA";
+import { EvaluatedValueDebugButton } from "components/editorComponents/Debugger/DebugCTA";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import Tooltip from "components/ads/Tooltip";
-import { Classes, Collapse, Icon } from "@blueprintjs/core";
+import { Toaster } from "components/ads/Toast";
+import { Classes, Collapse, Button, Icon } from "@blueprintjs/core";
 import { IconNames } from "@blueprintjs/icons";
 import { UNDEFINED_VALIDATION } from "utils/validation/common";
 import { IPopoverSharedProps } from "@blueprintjs/core";
+import { ReactComponent as CopyIcon } from "assets/icons/menu/copy-snippet.svg";
+import copy from "copy-to-clipboard";
 
-import {
-  EvaluationError,
-  PropertyEvaluationErrorType,
-} from "utils/DynamicBindingUtils";
+import { EvaluationError } from "utils/DynamicBindingUtils";
 import * as Sentry from "@sentry/react";
 import { Severity } from "@sentry/react";
 import { CodeEditorExpected } from "components/editorComponents/CodeEditor/index";
-import { Colors } from "constants/Colors";
+import { Indices, Layers } from "constants/Layers";
+import { Variant } from "components/ads/common";
 
 const modifiers: IPopoverSharedProps["modifiers"] = {
   offset: {
@@ -79,12 +83,31 @@ const ContentWrapper = styled.div<{ colorTheme: EditorTheme }>`
   border-radius: 0px;
 `;
 
+const CopyIconWrapper = styled(Button)<{ colorTheme: EditorTheme }>`
+  color: ${(props) => THEMES[props.colorTheme].textColor};
+  position: absolute;
+  right: 0;
+  top: 0;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 0;
+  display: none;
+`;
+
 const CurrentValueWrapper = styled.div<{ colorTheme: EditorTheme }>`
-  max-height: 300px;
-  overflow-y: auto;
+  // max-height: 300px;
+  min-height: 28px;
+  // overflow-y: auto;
   -ms-overflow-style: none;
   padding: ${(props) => props.theme.spaces[3]}px;
+  padding-right: 30px;
   background-color: ${(props) => THEMES[props.colorTheme].editorBackground};
+  position: relative;
+  &:hover {
+    ${CopyIconWrapper} {
+      display: flex;
+    }
+  }
 `;
 
 const CodeWrapper = styled.pre<{ colorTheme: EditorTheme }>`
@@ -135,9 +158,27 @@ const StyledTitle = styled.p`
   cursor: pointer;
 `;
 
-const StyledDebugButton = styled(DebugButton)`
-  margin-left: auto;
-`;
+function CollapseToggle(props: { isOpen: boolean }) {
+  const { isOpen } = props;
+  return (
+    <StyledIcon
+      className={isOpen ? "open-collapse" : ""}
+      icon={IconNames.CHEVRON_RIGHT}
+    />
+  );
+}
+
+function copyContent(content: any) {
+  const stringifiedContent = _.isString(content)
+    ? content
+    : JSON.stringify(content, null, 2);
+
+  copy(stringifiedContent);
+  Toaster.show({
+    text: `Evaluated value copied to clipboard`,
+    variant: Variant.success,
+  });
+}
 
 function CollapseToggle(props: { isOpen: boolean }) {
   const { isOpen } = props;
@@ -160,10 +201,14 @@ interface Props {
   useValidationMessage?: boolean;
   hideEvaluatedValue?: boolean;
   evaluationSubstitutionType?: EvaluationSubstitutionType;
+  popperPlacement?: Placement;
+  entity?: FieldEntityInformation;
+  popperZIndex?: Indices;
 }
 
 interface PopoverContentProps {
   hasError: boolean;
+  entity?: FieldEntityInformation;
   expected?: CodeEditorExpected;
   errors: EvaluationError[];
   useValidationMessage?: boolean;
@@ -202,8 +247,9 @@ export function PreparedStatementViewer(props: {
     });
     return <div />;
   }
-  const stringSegments = value.split(/\$\d/);
-  const $params = [...value.matchAll(/\$\d/g)].map((matches) => matches[0]);
+  const stringSegments = value.split(/\$\d+/);
+  const $params = [...value.matchAll(/\$\d+/g)].map((matches) => matches[0]);
+
   const paramsWithTooltips = $params.map((param) => (
     <Tooltip content={<span>{parameters[param]}</span>} key={param}>
       <PreparedStatementParameter key={param}>
@@ -301,8 +347,20 @@ export const CurrentValueViewer = memo(
           </StyledTitle>
         )}
         <Collapse isOpen={openEvaluatedValue}>
-          <CurrentValueWrapper colorTheme={props.theme}>
+          <CurrentValueWrapper
+            className="t-property-evaluated-value"
+            colorTheme={props.theme}
+          >
             {content}
+            {props.hasOwnProperty("evaluatedValue") && (
+              <CopyIconWrapper
+                colorTheme={props.theme}
+                minimal
+                onClick={() => copyContent(props.evaluatedValue)}
+              >
+                <CopyIcon height={34} />
+              </CopyIconWrapper>
+            )}
           </CurrentValueWrapper>
         </Collapse>
       </>
@@ -336,7 +394,7 @@ function PopoverContent(props: PopoverContentProps) {
     onMouseLeave,
     theme,
   } = props;
-  let error;
+  let error: EvaluationError | undefined;
   if (hasError) {
     error = errors[0];
   }
@@ -351,13 +409,13 @@ function PopoverContent(props: PopoverContentProps) {
       {hasError && error && (
         <ErrorText>
           <span className="t--evaluatedPopup-error">
-            {error.errorType === PropertyEvaluationErrorType.VALIDATION
-              ? `当前表达式不能解析成数据类型 "${expected?.type}".`
-              : error.errorMessage}
+            {/* errorMessage could be an empty string */}
+            {error.errorMessage ||
+              `当前表达式不能解析成数据类型 "${expected?.type}".`}
           </span>
-          <StyledDebugButton
-            className="evaluated-value"
-            source={"EVALUATED_VALUE"}
+          <EvaluatedValueDebugButton
+            entity={props.entity}
+            error={{ type: error.errorType, message: error.errorMessage }}
           />
         </ErrorText>
       )}
@@ -408,6 +466,7 @@ function EvaluatedValuePopup(props: Props) {
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const placement: Placement = useMemo(() => {
+    if (props.popperPlacement) return props.popperPlacement;
     if (wrapperRef.current) {
       const boundingRect = wrapperRef.current.getBoundingClientRect();
       if (boundingRect.left < theme.evaluatedValuePopup.width) {
@@ -424,9 +483,10 @@ function EvaluatedValuePopup(props: Props) {
         modifiers={modifiers}
         placement={placement}
         targetNode={wrapperRef.current || undefined}
-        zIndex={5}
+        zIndex={props.popperZIndex || Layers.evaluationPopper}
       >
         <PopoverContent
+          entity={props.entity}
           errors={props.errors}
           evaluatedValue={props.evaluatedValue}
           expected={props.expected}

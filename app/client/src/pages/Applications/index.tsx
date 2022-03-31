@@ -1,5 +1,6 @@
 import React, {
   Component,
+  useCallback,
   useContext,
   useEffect,
   useRef,
@@ -7,10 +8,14 @@ import React, {
 } from "react";
 import styled, { ThemeContext, keyframes, css } from "styled-components";
 import { connect, useDispatch, useSelector } from "react-redux";
+import MediaQuery from "react-responsive";
 import { useLocation } from "react-router-dom";
 import { AppState } from "reducers";
-import { Card, Classes as BlueprintClasses, Dialog } from "@blueprintjs/core";
-import { truncateTextUsingEllipsis } from "constants/DefaultTheme";
+import { Classes as BlueprintClasses } from "@blueprintjs/core";
+import {
+  thinScrollbar,
+  truncateTextUsingEllipsis,
+} from "constants/DefaultTheme";
 import {
   getApplicationList,
   getApplicationSearchKeyword,
@@ -29,12 +34,11 @@ import {
 } from "constants/ReduxActionConstants";
 import PageWrapper from "pages/common/PageWrapper";
 import SubHeader from "pages/common/SubHeader";
-import PageSectionDivider from "pages/common/PageSectionDivider";
 import ApplicationCard from "./ApplicationCard";
 import OrgInviteUsersForm from "pages/organization/OrgInviteUsersForm";
 import { isPermitted, PERMISSION_TYPE } from "./permissionHelpers";
 import FormDialogComponent from "components/editorComponents/form/FormDialogComponent";
-// import OnboardingHelper from "components/editorComponents/Onboarding/Helper";
+import Dialog from "components/ads/DialogComponent";
 import { User } from "constants/userConstants";
 import { getCurrentUser } from "selectors/usersSelectors";
 import { CREATE_ORGANIZATION_FORM_NAME } from "constants/forms";
@@ -42,7 +46,7 @@ import {
   DropdownOnSelectActions,
   getOnSelectAction,
 } from "pages/common/CustomizedDropdown/dropdownHelpers";
-import Button, { Size } from "components/ads/Button";
+import Button, { Size, Category } from "components/ads/Button";
 import Text, { TextType } from "components/ads/Text";
 import Icon, { IconName, IconSize } from "components/ads/Icon";
 import MenuItem from "components/ads/MenuItem";
@@ -53,8 +57,7 @@ import {
 import { Classes } from "components/ads/common";
 import Menu from "components/ads/Menu";
 import { Position } from "@blueprintjs/core/lib/esm/common/position";
-import HelpModal from "components/designSystems/appsmith/help/HelpModal";
-import { UpdateApplicationPayload, UserRoles } from "api/ApplicationApi";
+import { UpdateApplicationPayload } from "api/ApplicationApi";
 import PerformanceTracker, {
   PerformanceTransactionName,
 } from "utils/PerformanceTracker";
@@ -65,57 +68,68 @@ import EditableText, {
   SavingState,
 } from "components/ads/EditableText";
 import { notEmptyValidator } from "components/ads/TextInput";
-import { saveOrg } from "actions/orgActions";
+import { deleteOrg, saveOrg } from "actions/orgActions";
 import { leaveOrganization } from "actions/userActions";
 import CenteredWrapper from "../../components/designSystems/appsmith/CenteredWrapper";
 import NoSearchImage from "../../assets/images/NoSearchResult.svg";
 import { getNextEntityName, getRandomPaletteColor } from "utils/AppsmithUtils";
-import Spinner from "components/ads/Spinner";
-import ProfileImage from "pages/common/ProfileImage";
 import { AppIconCollection } from "components/ads/AppIcon";
-import ProductUpdatesModal from "pages/Applications/ProductUpdatesModal";
-import WelcomeHelper from "components/editorComponents/Onboarding/WelcomeHelper";
-import { useIntiateOnboarding } from "components/editorComponents/Onboarding/utils";
-import AnalyticsUtil from "utils/AnalyticsUtil";
 import { createOrganizationSubmitHandler } from "../organization/helpers";
-import UserApi from "api/UserApi";
 import ImportApplicationModal from "./ImportApplicationModal";
-import OnboardingForm from "./OnboardingForm";
-import { getAppsmithConfigs } from "configs";
-import { SIGNUP_SUCCESS_URL } from "constants/routes";
+import ImportAppViaGitModal from "pages/Editor/gitSync/ImportAppViaGitModal";
 import {
-  setOnboardingFormInProgress,
-  getOnboardingFormInProgress,
-} from "utils/storage";
+  createMessage,
+  ORGANIZATIONS_HEADING,
+  SEARCH_APPS,
+  NO_APPS_FOUND,
+} from "@appsmith/constants/messages";
+import { ReactComponent as NoAppsFoundIcon } from "assets/svg/no-apps-icon.svg";
 
-import { getIsSafeRedirectURL } from "utils/helpers";
+import { setHeaderMeta } from "actions/themeActions";
+import getFeatureFlags from "utils/featureFlags";
+import { setIsImportAppViaGitModalOpen } from "actions/gitSyncActions";
+import SharedUserList from "pages/common/SharedUserList";
+import { useIsMobileDevice } from "utils/hooks/useDeviceDetect";
+import { Indices } from "constants/Layers";
+import AnalyticsUtil from "utils/AnalyticsUtil";
+import LeftPaneBottomSection from "pages/Home/LeftPaneBottomSection";
+import { MOBILE_MAX_WIDTH } from "constants/AppConstants";
 
-const OrgDropDown = styled.div`
+const OrgDropDown = styled.div<{ isMobile?: boolean }>`
   display: flex;
-  padding: ${(props) => props.theme.spaces[4]}px
-    ${(props) => props.theme.spaces[4]}px;
+  padding: ${(props) => (props.isMobile ? `10px 16px` : `10px 10px`)};
   font-size: ${(props) => props.theme.fontSizes[1]}px;
   justify-content: space-between;
   align-items: center;
+  ${({ isMobile }) =>
+    isMobile &&
+    `
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: ${Indices.Layer8};
+  `}
 `;
 
-const ApplicationCardsWrapper = styled.div`
+const ApplicationCardsWrapper = styled.div<{ isMobile?: boolean }>`
   display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-start;
-  align-items: space-evenly;
+  flex-wrap: wrap;
+  gap: ${({ isMobile }) => (isMobile ? 12 : 20)}px;
   font-size: ${(props) => props.theme.fontSizes[4]}px;
+  padding: ${({ isMobile }) => (isMobile ? `10px 16px` : `10px`)};
 `;
 
-const OrgSection = styled.div``;
+const OrgSection = styled.div<{ isMobile?: boolean }>`
+  margin-bottom: ${({ isMobile }) => (isMobile ? `8` : `40`)}px;
+`;
 
-const PaddingWrapper = styled.div`
-  width: ${(props) => props.theme.card.minWidth + props.theme.spaces[5] * 2}px;
-  margin: ${(props) => props.theme.spaces[6] + 1}px 0px
-    ${(props) => props.theme.spaces[6] + 1}px 0px;
+const PaddingWrapper = styled.div<{ isMobile?: boolean }>`
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  width: ${(props) => props.theme.card.minWidth}px;
 
   @media screen and (min-width: 1500px) {
-    margin-right: ${(props) => props.theme.spaces[12] - 1}px;
     .bp3-card {
       width: ${(props) => props.theme.card.minWidth}px;
       height: ${(props) => props.theme.card.minHeight}px;
@@ -125,7 +139,6 @@ const PaddingWrapper = styled.div`
   @media screen and (min-width: 1500px) and (max-width: 1512px) {
     width: ${(props) =>
       props.theme.card.minWidth + props.theme.spaces[4] * 2}px;
-    margin-right: ${(props) => props.theme.spaces[12] - 1}px;
     .bp3-card {
       width: ${(props) => props.theme.card.minWidth - 5}px;
       height: ${(props) => props.theme.card.minHeight - 5}px;
@@ -134,7 +147,6 @@ const PaddingWrapper = styled.div`
   @media screen and (min-width: 1478px) and (max-width: 1500px) {
     width: ${(props) =>
       props.theme.card.minWidth + props.theme.spaces[4] * 2}px;
-    margin-right: ${(props) => props.theme.spaces[11] + 1}px;
     .bp3-card {
       width: ${(props) => props.theme.card.minWidth - 8}px;
       height: ${(props) => props.theme.card.minHeight - 8}px;
@@ -144,7 +156,6 @@ const PaddingWrapper = styled.div`
   @media screen and (min-width: 1447px) and (max-width: 1477px) {
     width: ${(props) =>
       props.theme.card.minWidth + props.theme.spaces[3] * 2}px;
-    margin-right: ${(props) => props.theme.spaces[11] - 4}px;
     .bp3-card {
       width: ${(props) => props.theme.card.minWidth - 8}px;
       height: ${(props) => props.theme.card.minHeight - 8}px;
@@ -154,7 +165,6 @@ const PaddingWrapper = styled.div`
   @media screen and (min-width: 1417px) and (max-width: 1446px) {
     width: ${(props) =>
       props.theme.card.minWidth + props.theme.spaces[3] * 2}px;
-    margin-right: ${(props) => props.theme.spaces[11] - 8}px;
     .bp3-card {
       width: ${(props) => props.theme.card.minWidth - 11}px;
       height: ${(props) => props.theme.card.minHeight - 11}px;
@@ -164,7 +174,6 @@ const PaddingWrapper = styled.div`
   @media screen and (min-width: 1400px) and (max-width: 1417px) {
     width: ${(props) =>
       props.theme.card.minWidth + props.theme.spaces[2] * 2}px;
-    margin-right: ${(props) => props.theme.spaces[11] - 12}px;
     .bp3-card {
       width: ${(props) => props.theme.card.minWidth - 15}px;
       height: ${(props) => props.theme.card.minHeight - 15}px;
@@ -174,60 +183,41 @@ const PaddingWrapper = styled.div`
   @media screen and (max-width: 1400px) {
     width: ${(props) =>
       props.theme.card.minWidth + props.theme.spaces[2] * 2}px;
-    margin-right: ${(props) => props.theme.spaces[11] - 16}px;
     .bp3-card {
       width: ${(props) => props.theme.card.minWidth - 15}px;
       height: ${(props) => props.theme.card.minHeight - 15}px;
     }
   }
-`;
 
-const StyledDialog = styled(Dialog)<{ setMaxWidth?: boolean }>`
-  && {
-    background: ${(props) => props.theme.colors.modal.bg};
-    & .${BlueprintClasses.DIALOG_HEADER} {
-      background: ${(props) => props.theme.colors.modal.bg};
-      padding: ${(props) => props.theme.spaces[4]}px
-        ${(props) => props.theme.spaces[4]}px;
-    }
-    & .${BlueprintClasses.DIALOG_FOOTER_ACTIONS} {
-      display: block;
-    }
-    ${(props) => props.setMaxWidth && `width: 100vh;`}
-
-    .${BlueprintClasses.HEADING} {
-      color: ${(props) => props.theme.colors.modal.headerText};
-    }
-  }
+  ${({ isMobile }) =>
+    isMobile &&
+    `
+    width: 100% !important;
+  `}
 `;
 
 const LeftPaneWrapper = styled.div`
-  // height: 50vh;
   overflow: auto;
-  width: 256px;
+  width: ${(props) => props.theme.homePage.sidebar}px;
+  height: 100%;
   display: flex;
   padding-left: 16px;
+  padding-top: 16px;
   flex-direction: column;
   position: fixed;
-  top: 77px;
+  top: ${(props) => props.theme.homePage.header}px;
+  box-shadow: 1px 0px 0px #ededed;
 `;
-const ApplicationContainer = styled.div`
-  height: calc(100vh - ${(props) => props.theme.homePage.search.height - 40}px);
-  overflow: auto;
+const ApplicationContainer = styled.div<{ isMobile?: boolean }>`
   padding-right: ${(props) => props.theme.homePage.leftPane.rightMargin}px;
-  margin-top: ${(props) => props.theme.homePage.search.height}px;
-  margin-left: ${(props) =>
-    props.theme.homePage.leftPane.width +
-    props.theme.homePage.leftPane.rightMargin +
-    props.theme.homePage.leftPane.leftPadding}px;
-  width: calc(
-    100% -
-      ${(props) =>
-        props.theme.homePage.leftPane.width +
-        props.theme.homePage.leftPane.rightMargin +
-        props.theme.homePage.leftPane.leftPadding}px
-  );
-  scroll-behavior: smooth;
+  padding-top: 16px;
+  ${({ isMobile }) =>
+    isMobile &&
+    `
+    margin-left: 0;
+    width: 100%;
+    padding: 0;
+  `}
 `;
 
 const ItemWrapper = styled.div`
@@ -236,24 +226,39 @@ const ItemWrapper = styled.div`
 const StyledIcon = styled(Icon)`
   margin-right: 11px;
 `;
-const UserImageContainer = styled.div`
-  display: flex;
-  margin-right: 8px;
-
-  div {
-    cursor: default;
-    margin-right: -6px;
-    width: 24px;
-    height: 24px;
-  }
-
-  div:last-child {
-    margin-right: 0px;
-  }
-`;
 const OrgShareUsers = styled.div`
   display: flex;
   align-items: center;
+
+  & .t--options-icon {
+    margin-left: 8px;
+    svg {
+      path {
+        fill: #090707;
+      }
+    }
+  }
+
+  & .t--new-button {
+    margin-left: 8px;
+  }
+
+  & button,
+  & a {
+    padding: 4px 12px;
+  }
+`;
+
+const NoAppsFound = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+
+  & > span {
+    margin-bottom: 24px;
+  }
 `;
 const AddIcon = styled(Icon)`
   position: absolute;
@@ -298,35 +303,40 @@ function Item(props: {
     </ItemWrapper>
   );
 }
+
+const LeftPaneDataSection = styled.div`
+  position: relative;
+  height: calc(100vh - ${(props) => props.theme.homePage.header + 24}px);
+`;
+
 function LeftPaneSection(props: {
   heading: string;
   children?: any;
   isFetchingApplications: boolean;
 }) {
   return (
-    <>
+    <LeftPaneDataSection>
       {/* <MenuItem text={props.heading}/> */}
       <Item
         isFetchingApplications={props.isFetchingApplications}
         label={props.heading}
-        textType={TextType.H6}
+        textType={TextType.SIDE_HEAD}
       />
       {props.children}
-    </>
+    </LeftPaneDataSection>
   );
 }
 
 const StyledAnchor = styled.a`
   position: relative;
   top: -24px;
-  // width: 0;
-  // height: 0;
 `;
 
 const WorkpsacesNavigator = styled.div`
   overflow: auto;
-  height: calc(100vh - ${(props) => props.theme.homePage.header + 36 + 25}px);
-  padding-bottom: 88px;
+  height: calc(100vh - ${(props) => props.theme.homePage.header + 252}px);
+  ${thinScrollbar};
+  /* padding-bottom: 160px; */
 `;
 
 const textIconStyles = (props: { color: string; hover: string }) => {
@@ -349,53 +359,6 @@ const textIconStyles = (props: { color: string; hover: string }) => {
   `;
 };
 
-const spreadKeyframes = (init: number) => {
-  const frames = Array.from(Array(21))
-    .map((a, i) => {
-      return `
-        ${i * 5}% { --spread: ${init + i}px; }
-      `;
-    })
-    .join("\n");
-  return keyframes`${frames}`;
-};
-
-const ApplicationAddCardWrapper = styled(Card)`
-  --spread: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background: ${(props) => props.theme.colors.applications.bg};
-  align-items: center;
-  width: ${(props) => props.theme.card.minWidth}px;
-  height: ${(props) => props.theme.card.minHeight}px;
-  position: relative;
-  box-shadow: inset 0 0 20px #dcdcdc;
-  border-radius: 6px;
-  padding: 0;
-  margin: ${(props) => props.theme.spaces[5]}px;
-  a {
-    display: block;
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: calc(100% - ${(props) => props.theme.card.titleHeight}px);
-    width: 100%;
-  }
-  cursor: pointer;
-  &:hover {
-    animation: ${spreadKeyframes(20)} 0.6s infinite;
-  }
-  .t--create-app-popup svg path {
-    color: ${(props) => props.theme.colors.applications.iconColor};
-    stroke: ${(props) => props.theme.colors.applications.iconColor};
-    fill: ${(props) => props.theme.colors.applications.iconColor};
-  }
-  .createnew {
-    color: ${(props) => props.theme.colors.applications.textColor};
-  }
-`;
-
 function OrgMenuItem({ isFetchingApplications, org, selected }: any) {
   const menuRef = useRef<HTMLAnchorElement>(null);
   useEffect(() => {
@@ -407,7 +370,9 @@ function OrgMenuItem({ isFetchingApplications, org, selected }: any) {
 
   return (
     <MenuItem
-      className={isFetchingApplications ? BlueprintClasses.SKELETON : ""}
+      containerClassName={
+        isFetchingApplications ? BlueprintClasses.SKELETON : ""
+      }
       ellipsize={20}
       href={`${window.location.pathname}#${org.organization.slug}`}
       icon="workspace"
@@ -428,6 +393,7 @@ function LeftPane() {
   const dispatch = useDispatch();
   const fetchedUserOrgs = useSelector(getUserApplicationsOrgs);
   const isFetchingApplications = useSelector(getIsFetchingApplications);
+  const isMobile = useIsMobileDevice();
   let userOrgs;
   if (!isFetchingApplications) {
     userOrgs = fetchedUserOrgs;
@@ -438,12 +404,12 @@ function LeftPane() {
   const location = useLocation();
   const urlHash = location.hash.slice(1);
 
-  const initiateOnboarding = useIntiateOnboarding();
+  if (isMobile) return null;
 
   return (
     <LeftPaneWrapper>
       <LeftPaneSection
-        heading="应用组"
+        heading={createMessage(ORGANIZATIONS_HEADING)}
         isFetchingApplications={isFetchingApplications}
       >
         <WorkpsacesNavigator data-cy="t--left-panel">
@@ -474,36 +440,8 @@ function LeftPane() {
                 selected={urlHash === org.organization.slug}
               />
             ))}
-          {/* <div style={{ marginTop: 12 }}>
-            <Item
-              isFetchingApplications={isFetchingApplications}
-              label="立即出发"
-              textType={TextType.H6}
-            />
-          </div>
-          <MenuItem
-            className={isFetchingApplications ? BlueprintClasses.SKELETON : ""}
-            icon="book"
-            onSelect={() => {
-              window.open("https://docs.appsmith.com/", "_blank");
-            }}
-            text="功能文档"
-          />
-          <MenuItem
-            className={
-              isFetchingApplications
-                ? BlueprintClasses.SKELETON
-                : "t--welcome-tour"
-            }
-            icon="shine"
-            onSelect={() => {
-              AnalyticsUtil.logEvent("WELCOME_TOUR_CLICK");
-
-              initiateOnboarding();
-            }}
-            text="新手教程"
-          /> */}
         </WorkpsacesNavigator>
+        <LeftPaneBottomSection />
       </LeftPaneSection>
     </LeftPaneWrapper>
   );
@@ -513,8 +451,8 @@ const CreateNewLabel = styled(Text)`
   margin-top: 18px;
 `;
 
-const OrgNameElement = styled(Text)`
-  max-width: 500px;
+const OrgNameElement = styled(Text)<{ isMobile?: boolean }>`
+  max-width: ${({ isMobile }) => (isMobile ? 220 : 500)}px;
   ${truncateTextUsingEllipsis}
 `;
 
@@ -524,22 +462,21 @@ const OrgNameHolder = styled(Text)`
 `;
 
 const OrgNameWrapper = styled.div<{ disabled?: boolean }>`
-cursor: ${(props) => (!props.disabled ? "pointer" : "inherit")};
-${(props) => {
-  const color = props.disabled
-    ? props.theme.colors.applications.orgColor
-    : props.theme.colors.applications.hover.orgColor;
-  return `${textIconStyles({
-    color: color,
-    hover: color,
-  })}`;
-}}
+  ${(props) => {
+    const color = props.disabled
+      ? props.theme.colors.applications.orgColor
+      : props.theme.colors.applications.hover.orgColor[9];
+    return `${textIconStyles({
+      color: color,
+      hover: color,
+    })}`;
+  }}
 
-.${Classes.ICON} {
-  display: ${(props) => (!props.disabled ? "inline" : "none")};;
-  margin-left: 8px;
-  color: ${(props) => props.theme.colors.applications.iconColor};
-}
+  .${Classes.ICON} {
+    display: ${(props) => (!props.disabled ? "inline" : "none")};
+    margin-left: 8px;
+    color: ${(props) => props.theme.colors.applications.iconColor};
+  }
 `;
 const OrgRename = styled(EditableText)`
   padding: 0 2px;
@@ -548,6 +485,30 @@ const OrgRename = styled(EditableText)`
 const NoSearchResultImg = styled.img`
   margin: 1em;
   height: 240px;
+`;
+
+const ApplicationsWrapper = styled.div<{ isMobile: boolean }>`
+  height: calc(100vh - ${(props) => props.theme.homePage.search.height - 40}px);
+  overflow: auto;
+  margin-left: ${(props) =>
+    props.theme.homePage.leftPane.width +
+    props.theme.homePage.leftPane.rightMargin +
+    props.theme.homePage.leftPane.leftPadding}px;
+  width: calc(
+    100% -
+      ${(props) =>
+        props.theme.homePage.leftPane.width +
+        props.theme.homePage.leftPane.rightMargin +
+        props.theme.homePage.leftPane.leftPadding}px
+  );
+  scroll-behavior: smooth;
+  ${({ isMobile }) =>
+    isMobile &&
+    `
+    margin-left: 0;
+    width: 100%;
+    padding: 0;
+  `}
 `;
 
 function ApplicationsSection(props: any) {
@@ -559,6 +520,7 @@ function ApplicationsSection(props: any) {
   const userOrgs = useSelector(getUserApplicationsOrgsList);
   const creatingApplicationMap = useSelector(getIsCreatingApplication);
   const currentUser = useSelector(getCurrentUser);
+  const isMobile = useIsMobileDevice();
   const deleteApplication = (applicationId: string) => {
     if (applicationId && applicationId.length > 0) {
       dispatch({
@@ -570,6 +532,7 @@ function ApplicationsSection(props: any) {
     }
   };
   const [warnLeavingOrganization, setWarnLeavingOrganization] = useState(false);
+  const [warnDeleteOrg, setWarnDeleteOrg] = useState(false);
   const [orgToOpenMenu, setOrgToOpenMenu] = useState<string | null>(null);
   const updateApplicationDispatch = (
     id: string,
@@ -595,6 +558,15 @@ function ApplicationsSection(props: any) {
     dispatch(leaveOrganization(orgId));
   };
 
+  const handleDeleteOrg = useCallback(
+    (orgId: string) => {
+      setWarnDeleteOrg(false);
+      setOrgToOpenMenu(null);
+      dispatch(deleteOrg(orgId));
+    },
+    [dispatch],
+  );
+
   const OrgNameChange = (newName: string, orgId: string) => {
     dispatch(
       saveOrg({
@@ -612,11 +584,7 @@ function ApplicationsSection(props: any) {
     const { disabled, orgName, orgSlug } = props;
 
     return (
-      <OrgNameWrapper
-        className="t--org-name"
-        disabled={disabled}
-        onClick={() => setOrgToOpenMenu(orgSlug)}
-      >
+      <OrgNameWrapper className="t--org-name-text" disabled={disabled}>
         <StyledAnchor id={orgSlug} />
         <OrgNameHolder
           className={isFetchingApplications ? BlueprintClasses.SKELETON : ""}
@@ -624,11 +592,11 @@ function ApplicationsSection(props: any) {
         >
           <OrgNameElement
             className={isFetchingApplications ? BlueprintClasses.SKELETON : ""}
+            isMobile={isMobile}
             type={TextType.H1}
           >
             {orgName}
           </OrgNameElement>
-          <Icon name="downArrow" size={IconSize.XXS} />
         </OrgNameHolder>
       </OrgNameWrapper>
     );
@@ -717,115 +685,39 @@ function ApplicationsSection(props: any) {
     updatedOrgs.length === 0
   ) {
     organizationsListComponent = (
-      <CenteredWrapper style={{ flexDirection: "column", marginTop: "-150px" }}>
-        <CreateNewLabel type={TextType.H4}>没有搜索到相关内容</CreateNewLabel>
+      <CenteredWrapper
+        style={{
+          flexDirection: "column",
+          marginTop: "-150px",
+          position: "static",
+        }}
+      >
+        <CreateNewLabel type={TextType.H4}>
+          {createMessage(NO_APPS_FOUND)}
+        </CreateNewLabel>
         <NoSearchResultImg alt="没有搜索到相关内容" src={NoSearchImage} />
       </CenteredWrapper>
     );
   } else {
     organizationsListComponent = updatedOrgs.map(
       (organizationObject: any, index: number) => {
-        const { applications, organization, userRoles } = organizationObject;
+        const { applications, organization } = organizationObject;
         const hasManageOrgPermissions = isPermitted(
           organization.userPermissions,
           PERMISSION_TYPE.MANAGE_ORGANIZATION,
         );
         return (
-          <OrgSection className="t--org-section" key={index}>
-            <OrgDropDown>
-              {(currentUser || isFetchingApplications) && (
-                <Menu
-                  className="t--org-name"
-                  cypressSelector="t--org-name"
-                  disabled={isFetchingApplications}
-                  isOpen={organization.slug === orgToOpenMenu}
-                  onClose={() => {
-                    setOrgToOpenMenu(null);
-                  }}
-                  onClosing={() => {
-                    setWarnLeavingOrganization(false);
-                  }}
-                  position={Position.BOTTOM_RIGHT}
-                  target={OrgMenuTarget({
-                    orgName: organization.name,
-                    orgSlug: organization.slug,
-                  })}
-                >
-                  {hasManageOrgPermissions && (
-                    <>
-                      <OrgRename
-                        cypressSelector="t--org-rename-input"
-                        defaultValue={organization.name}
-                        editInteractionKind={EditInteractionKind.SINGLE}
-                        fill
-                        hideEditIcon={false}
-                        isEditingDefault={false}
-                        isInvalid={(value: string) => {
-                          return notEmptyValidator(value).message;
-                        }}
-                        onBlur={(value: string) => {
-                          OrgNameChange(value, organization.id);
-                        }}
-                        placeholder="应用组名称"
-                        savingState={
-                          isSavingOrgInfo
-                            ? SavingState.STARTED
-                            : SavingState.NOT_STARTED
-                        }
-                        underline
-                      />
-                      <MenuItem
-                        cypressSelector="t--org-setting"
-                        icon="general"
-                        onSelect={() =>
-                          getOnSelectAction(DropdownOnSelectActions.REDIRECT, {
-                            path: `/org/${organization.id}/settings/general`,
-                          })
-                        }
-                        text="应用组配置"
-                      />
-                      {enableImportExport && (
-                        <MenuItem
-                          cypressSelector="t--org-import-app"
-                          icon="upload"
-                          onSelect={() =>
-                            setSelectedOrgIdForImportApplication(
-                              organization.id,
-                            )
-                          }
-                          text="导入应用"
-                        />
-                      )}
-                      <MenuItem
-                        icon="share"
-                        onSelect={() => setSelectedOrgId(organization.id)}
-                        text="分享"
-                      />
-                      <MenuItem
-                        icon="user"
-                        onSelect={() =>
-                          getOnSelectAction(DropdownOnSelectActions.REDIRECT, {
-                            path: `/org/${organization.id}/settings/members`,
-                          })
-                        }
-                        text="成员"
-                      />
-                    </>
-                  )}
-                  <MenuItem
-                    icon="logout"
-                    onSelect={() =>
-                      !warnLeavingOrganization
-                        ? setWarnLeavingOrganization(true)
-                        : leaveOrg(organization.id)
-                    }
-                    text={
-                      !warnLeavingOrganization ? "退出应用组" : "确定退出吗？"
-                    }
-                    type={!warnLeavingOrganization ? undefined : "warning"}
-                  />
-                </Menu>
-              )}
+          <OrgSection
+            className="t--org-section"
+            isMobile={isMobile}
+            key={index}
+          >
+            <OrgDropDown isMobile={isMobile}>
+              {(currentUser || isFetchingApplications) &&
+                OrgMenuTarget({
+                  orgName: organization.name,
+                  orgSlug: organization.slug,
+                })}
               {selectedOrgIdForImportApplication && (
                 <ImportApplicationModal
                   isModalOpen={
@@ -836,18 +728,15 @@ function ApplicationsSection(props: any) {
                 />
               )}
               {hasManageOrgPermissions && (
-                <StyledDialog
+                <Dialog
                   canEscapeKeyClose={false}
-                  canOutsideClickClose={false}
+                  canOutsideClickClose
                   isOpen={selectedOrgId === organization.id}
                   onClose={() => setSelectedOrgId("")}
-                  setMaxWidth
                   title={`邀请小伙伴到 ${organization.name}`}
                 >
-                  <div className={BlueprintClasses.DIALOG_BODY}>
-                    <Form orgId={organization.id} />
-                  </div>
-                </StyledDialog>
+                  <Form orgId={organization.id} />
+                </Dialog>
               )}
               {isPermitted(
                 organization.userPermissions,
@@ -855,71 +744,257 @@ function ApplicationsSection(props: any) {
               ) &&
                 !isFetchingApplications && (
                   <OrgShareUsers>
-                    <UserImageContainer>
-                      {userRoles.slice(0, 5).map((el: UserRoles) => (
-                        <ProfileImage
-                          className="org-share-user-icons"
-                          key={el.username}
-                          source={`/api/${UserApi.photoURL}/${el.username}`}
-                          userName={el.name ? el.name : el.username}
-                        />
-                      ))}
-                      {userRoles.length > 5 ? (
-                        <ProfileImage
-                          className="org-share-user-icons"
-                          commonName={`+${userRoles.length - 5}`}
-                        />
-                      ) : null}
-                    </UserImageContainer>
-                    <FormDialogComponent
-                      Form={OrgInviteUsersForm}
-                      canOutsideClickClose
-                      orgId={organization.id}
-                      title={`邀请小伙伴到 ${organization.name}`}
-                      trigger={
+                    <SharedUserList orgId={organization.id} />
+                    {!isMobile && (
+                      <FormDialogComponent
+                        Form={OrgInviteUsersForm}
+                        canOutsideClickClose
+                        orgId={organization.id}
+                        title={`Invite Users to ${organization.name}`}
+                        trigger={
+                          <Button
+                            category={Category.tertiary}
+                            icon={"share-line"}
+                            size={Size.medium}
+                            tag="button"
+                            text={"Share"}
+                          />
+                        }
+                      />
+                    )}
+                    {isPermitted(
+                      organization.userPermissions,
+                      PERMISSION_TYPE.CREATE_APPLICATION,
+                    ) &&
+                      !isMobile &&
+                      !isFetchingApplications &&
+                      applications.length !== 0 && (
                         <Button
-                          icon={"share"}
-                          size={Size.small}
-                          text={"分享"}
+                          className="t--new-button createnew"
+                          icon={"plus"}
+                          isLoading={
+                            creatingApplicationMap &&
+                            creatingApplicationMap[organization.id]
+                          }
+                          onClick={() => {
+                            if (
+                              Object.entries(creatingApplicationMap).length ===
+                                0 ||
+                              (creatingApplicationMap &&
+                                !creatingApplicationMap[organization.id])
+                            ) {
+                              createNewApplication(
+                                getNextEntityName(
+                                  "Untitled application ",
+                                  applications.map((el: any) => el.name),
+                                ),
+                                organization.id,
+                              );
+                            }
+                          }}
+                          size={Size.medium}
+                          tag="button"
+                          text={"New"}
                         />
-                      }
-                    />
+                      )}
+                    {(currentUser || isFetchingApplications) && !isMobile && (
+                      <Menu
+                        className="t--org-name"
+                        cypressSelector="t--org-name"
+                        disabled={isFetchingApplications}
+                        isOpen={organization.slug === orgToOpenMenu}
+                        onClose={() => {
+                          setOrgToOpenMenu(null);
+                        }}
+                        onClosing={() => {
+                          setWarnLeavingOrganization(false);
+                          setWarnDeleteOrg(false);
+                        }}
+                        position={Position.BOTTOM_RIGHT}
+                        target={
+                          <Icon
+                            className="t--options-icon"
+                            name="context-menu"
+                            onClick={() => setOrgToOpenMenu(organization.slug)}
+                            size={IconSize.XXXL}
+                          />
+                        }
+                      >
+                        {hasManageOrgPermissions && (
+                          <>
+                            <div className="px-3 py-2">
+                              <OrgRename
+                                cypressSelector="t--org-rename-input"
+                                defaultValue={organization.name}
+                                editInteractionKind={EditInteractionKind.SINGLE}
+                                fill
+                                hideEditIcon={false}
+                                isEditingDefault={false}
+                                isInvalid={(value: string) => {
+                                  return notEmptyValidator(value).message;
+                                }}
+                                onBlur={(value: string) => {
+                                  OrgNameChange(value, organization.id);
+                                }}
+                                placeholder="Workspace name"
+                                savingState={
+                                  isSavingOrgInfo
+                                    ? SavingState.STARTED
+                                    : SavingState.NOT_STARTED
+                                }
+                                underline
+                              />
+                            </div>
+                            <MenuItem
+                              cypressSelector="t--org-setting"
+                              icon="settings-2-line"
+                              onSelect={() =>
+                                getOnSelectAction(
+                                  DropdownOnSelectActions.REDIRECT,
+                                  {
+                                    path: `/org/${organization.id}/settings/general`,
+                                  },
+                                )
+                              }
+                              text="Settings"
+                            />
+                            {enableImportExport && (
+                              <MenuItem
+                                cypressSelector="t--org-import-app"
+                                icon="upload"
+                                onSelect={() =>
+                                  setSelectedOrgIdForImportApplication(
+                                    organization.id,
+                                  )
+                                }
+                                text="Import Application"
+                              />
+                            )}
+                            {getFeatureFlags().GIT_IMPORT && (
+                              <MenuItem
+                                cypressSelector="t--org-import-app-git"
+                                icon="upload"
+                                onSelect={() => {
+                                  AnalyticsUtil.logEvent(
+                                    "GS_IMPORT_VIA_GIT_CLICK",
+                                  );
+                                  dispatch(
+                                    setIsImportAppViaGitModalOpen({
+                                      isOpen: true,
+                                      organizationId: organization.id,
+                                    }),
+                                  );
+                                }}
+                                text="Import Via GIT"
+                              />
+                            )}
+                            <MenuItem
+                              icon="share-line"
+                              onSelect={() => setSelectedOrgId(organization.id)}
+                              text="Share"
+                            />
+                            <MenuItem
+                              icon="member"
+                              onSelect={() =>
+                                getOnSelectAction(
+                                  DropdownOnSelectActions.REDIRECT,
+                                  {
+                                    path: `/org/${organization.id}/settings/members`,
+                                  },
+                                )
+                              }
+                              text="Members"
+                            />
+                          </>
+                        )}
+                        <MenuItem
+                          icon="logout"
+                          onSelect={() =>
+                            !warnLeavingOrganization
+                              ? setWarnLeavingOrganization(true)
+                              : leaveOrg(organization.id)
+                          }
+                          text={
+                            !warnLeavingOrganization
+                              ? "Leave Organization"
+                              : "Are you sure?"
+                          }
+                          type={
+                            !warnLeavingOrganization ? undefined : "warning"
+                          }
+                        />
+                        {applications.length === 0 && hasManageOrgPermissions && (
+                          <MenuItem
+                            icon="trash"
+                            onSelect={() => {
+                              warnDeleteOrg
+                                ? handleDeleteOrg(organization.id)
+                                : setWarnDeleteOrg(true);
+                            }}
+                            text={
+                              !warnDeleteOrg
+                                ? "Delete Organization"
+                                : "Are you sure?"
+                            }
+                            type={!warnDeleteOrg ? undefined : "warning"}
+                          />
+                        )}
+                      </Menu>
+                    )}
                   </OrgShareUsers>
                 )}
             </OrgDropDown>
-            <ApplicationCardsWrapper key={organization.id}>
-              {isPermitted(
-                organization.userPermissions,
-                PERMISSION_TYPE.CREATE_APPLICATION,
-              ) &&
-                !isFetchingApplications && (
-                  <>
-                    <CreateApp
-                      orgId={organization.id}
-                      applications={applications}
-                    />
-                    <CreateApp
-                      orgId={organization.id}
-                      applications={applications}
-                      isMobile
-                    />
-                  </>
-                )}
+            <ApplicationCardsWrapper isMobile={isMobile} key={organization.id}>
               {applications.map((application: any) => {
                 return (
-                  <PaddingWrapper key={application.id}>
+                  <PaddingWrapper isMobile={isMobile} key={application.id}>
                     <ApplicationCard
                       application={application}
                       delete={deleteApplication}
                       duplicate={duplicateApplicationDispatch}
                       enableImportExport={enableImportExport}
+                      isMobile={isMobile}
                       key={application.id}
                       update={updateApplicationDispatch}
                     />
                   </PaddingWrapper>
                 );
               })}
-              <PageSectionDivider />
+              {applications.length === 0 && (
+                <NoAppsFound>
+                  <NoAppsFoundIcon />
+                  <span>There’s nothing inside this organization</span>
+                  {/* below component is duplicate. This is because of cypress test were failing */}
+                  {!isMobile && (
+                    <Button
+                      className="t--new-button createnew"
+                      icon={"plus"}
+                      isLoading={
+                        creatingApplicationMap &&
+                        creatingApplicationMap[organization.id]
+                      }
+                      onClick={() => {
+                        if (
+                          Object.entries(creatingApplicationMap).length === 0 ||
+                          (creatingApplicationMap &&
+                            !creatingApplicationMap[organization.id])
+                        ) {
+                          createNewApplication(
+                            getNextEntityName(
+                              "Untitled application ",
+                              applications.map((el: any) => el.name),
+                            ),
+                            organization.id,
+                          );
+                        }
+                      }}
+                      size={Size.medium}
+                      tag="button"
+                      text={"New"}
+                    />
+                  )}
+                </NoAppsFound>
+              )}
             </ApplicationCardsWrapper>
           </OrgSection>
         );
@@ -928,16 +1003,17 @@ function ApplicationsSection(props: any) {
   }
 
   return (
-    <ApplicationContainer className="t--applications-container">
+    <ApplicationContainer
+      className="t--applications-container"
+      isMobile={isMobile}
+    >
       {organizationsListComponent}
-      {/* <HelpModal page={"Applications"} />
-      <WelcomeHelper /> */}
+      {getFeatureFlags().GIT_IMPORT && <ImportAppViaGitModal />}
     </ApplicationContainer>
   );
 }
 type ApplicationProps = {
   applicationList: ApplicationPayload[];
-  createApplication: (appName: string) => void;
   searchApplications: (keyword: string) => void;
   isCreatingApplication: creatingApplicationMap;
   isFetchingApplications: boolean;
@@ -949,13 +1025,12 @@ type ApplicationProps = {
   userOrgs: any;
   currentUser?: User;
   searchKeyword: string | undefined;
+  setHeaderMetaData: (
+    hideHeaderShadow: boolean,
+    showHeaderSeparator: boolean,
+  ) => void;
 };
 
-const getIsFromSignup = () => {
-  return window.location?.pathname === SIGNUP_SUCCESS_URL;
-};
-
-const { onboardingFormEnabled } = getAppsmithConfigs();
 class Applications extends Component<
   ApplicationProps,
   { selectedOrgId: string; showOnboardingForm: boolean }
@@ -972,70 +1047,34 @@ class Applications extends Component<
   componentDidMount() {
     PerformanceTracker.stopTracking(PerformanceTransactionName.LOGIN_CLICK);
     PerformanceTracker.stopTracking(PerformanceTransactionName.SIGN_UP);
-    this.props.getAllApplication();
-    window.addEventListener("message", this.handleTypeFormMessage, false);
-    this.showOnboardingForm();
+    if (!this.props.userOrgs.length) {
+      this.props.getAllApplication();
+    }
+    this.props.setHeaderMetaData(true, true);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("message", this.handleTypeFormMessage);
+    this.props.setHeaderMetaData(false, false);
   }
-
-  showOnboardingForm = async () => {
-    const isFromSignUp = getIsFromSignup();
-    const isOnboardingFormInProgress = await getOnboardingFormInProgress();
-    const showOnboardingForm =
-      onboardingFormEnabled && (isFromSignUp || isOnboardingFormInProgress);
-    this.setState({
-      showOnboardingForm: !!showOnboardingForm,
-    });
-
-    // Redirect directly in case we're not showing the onboarding form
-    if (isFromSignUp && !onboardingFormEnabled) {
-      this.redirectUsingQueryParam();
-    }
-  };
-
-  redirectUsingQueryParam = () => {
-    const urlObject = new URL(window.location.href);
-    const redirectUrl = urlObject?.searchParams.get("redirectUrl");
-    if (redirectUrl) {
-      try {
-        if (getIsSafeRedirectURL(redirectUrl)) {
-          window.location.replace(redirectUrl);
-        }
-      } catch (e) {
-        console.error("Error handling the redirect url");
-      }
-    }
-  };
-
-  handleTypeFormMessage = (event: any) => {
-    if (event?.data?.type === "form-submit" && this.state.showOnboardingForm) {
-      setOnboardingFormInProgress();
-      this.redirectUsingQueryParam();
-    }
-  };
 
   public render() {
     return (
-      <PageWrapper displayName="我的应用">
-        {this.state.showOnboardingForm ? (
-          <OnboardingForm />
-        ) : (
-          <>
-            {/* <ProductUpdatesModal /> */}
-            <LeftPane />
-            <SubHeader
-              search={{
-                placeholder: "搜索应用...",
-                queryFn: this.props.searchApplications,
-                defaultValue: this.props.searchKeyword,
-              }}
-            />
-            <ApplicationsSection searchKeyword={this.props.searchKeyword} />
-          </>
-        )}
+      <PageWrapper displayName="Applications">
+        <LeftPane />
+        <MediaQuery maxWidth={MOBILE_MAX_WIDTH}>
+          {(matches: boolean) => (
+            <ApplicationsWrapper isMobile={matches}>
+              <SubHeader
+                search={{
+                  placeholder: createMessage(SEARCH_APPS),
+                  queryFn: this.props.searchApplications,
+                  defaultValue: this.props.searchKeyword,
+                }}
+              />
+              <ApplicationsSection searchKeyword={this.props.searchKeyword} />
+            </ApplicationsWrapper>
+          )}
+        </MediaQuery>
       </PageWrapper>
     );
   }
@@ -1054,15 +1093,8 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  getAllApplication: () =>
-    dispatch({ type: ReduxActionTypes.GET_ALL_APPLICATION_INIT }),
-  createApplication: (appName: string) => {
-    dispatch({
-      type: ReduxActionTypes.CREATE_APPLICATION_INIT,
-      payload: {
-        name: appName,
-      },
-    });
+  getAllApplication: () => {
+    dispatch({ type: ReduxActionTypes.GET_ALL_APPLICATION_INIT });
   },
   searchApplications: (keyword: string) => {
     dispatch({
@@ -1071,6 +1103,12 @@ const mapDispatchToProps = (dispatch: any) => ({
         keyword,
       },
     });
+  },
+  setHeaderMetaData: (
+    hideHeaderShadow: boolean,
+    showHeaderSeparator: boolean,
+  ) => {
+    dispatch(setHeaderMeta(hideHeaderShadow, showHeaderSeparator));
   },
 });
 

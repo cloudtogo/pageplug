@@ -1,10 +1,15 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { createMessage, EDIT_APP, FORK_APP, SIGN_IN } from "constants/messages";
+import {
+  createMessage,
+  EDIT_APP,
+  FORK_APP,
+  SIGN_IN,
+} from "@appsmith/constants/messages";
 import { ANONYMOUS_USERNAME } from "constants/userConstants";
 import { getTypographyByKey } from "constants/DefaultTheme";
-import Button from "components/ads/Button";
+import Button, { IconPositions } from "components/ads/Button";
 import ForkApplicationModal from "pages/Applications/ForkApplicationModal";
 import { TriggerButton } from "pages/Applications/ForkModalStyles";
 import { Size } from "components/ads/Button";
@@ -14,12 +19,15 @@ const Cta = styled(Button)`
   ${(props) => getTypographyByKey(props, "btnLarge")}
   height: 100%;
   border-radius: 0;
+  span > svg {
+    height: 10px;
+    path {
+      stroke: white;
+    }
+  }
 `;
 
 const ForkButton = styled(Cta)`
-  svg {
-    transform: rotate(-90deg);
-  }
   height: ${(props) => `calc(${props.theme.smallHeaderHeight})`};
 `;
 
@@ -35,12 +43,15 @@ function GetAppViewerHeaderCTA(props: any) {
   let CTA = null;
   const dispatch = useDispatch();
 
+  const applicationId = currentApplicationDetails?.id;
+
   if (url && canEdit) {
     CTA = (
       <Cta
         className="t--back-to-editor"
         href={url}
-        icon="arrow-left"
+        icon="chevron-left"
+        iconPosition={IconPositions.left}
         text={createMessage(EDIT_APP)}
       />
     );
@@ -53,7 +64,7 @@ function GetAppViewerHeaderCTA(props: any) {
         <ForkButton
           className="t--fork-app"
           href={forkUrl}
-          icon="fork"
+          icon="compasses-line"
           text={createMessage(FORK_APP)}
         />
       );
@@ -61,11 +72,11 @@ function GetAppViewerHeaderCTA(props: any) {
       CTA = (
         <div className="header__application-fork-btn-wrapper t--fork-btn-wrapper">
           <ForkApplicationModal
-            applicationId={currentApplicationDetails.id}
+            applicationId={applicationId}
             trigger={
               <TriggerButton
                 className="t--fork-app"
-                icon="fork"
+                icon="compasses-line"
                 onClick={() => dispatch(getAllApplications())}
                 size={Size.small}
                 text={createMessage(FORK_APP)}

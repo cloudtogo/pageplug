@@ -1,0 +1,127 @@
+@import "~normalize.css";
+@import "~@blueprintjs/core/lib/css/blueprint.css";
+@import "~@blueprintjs/icons/lib/css/blueprint-icons.css";
+@import "theme/colors.css";
+@import "theme/defaultTheme.css";
+
+body {
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #FFF !important;
+}
+
+body.dragging * {
+  cursor: grabbing !important;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+  monospace;
+}
+
+* {
+  outline: none !important;
+}
+
+div.bp3-select-popover .bp3-popover-content {
+  padding: 0;
+}
+
+span.bp3-popover-target {
+  display: flex;
+  width: 100%;
+}
+
+span.bp3-popover-target > * {
+  flex-grow: 1;
+}
+
+div.bp3-popover-arrow {
+  display: none;
+}
+
+.bp3-button.bp3-loading {
+  cursor: default !important;
+}
+
+.display-none {
+  display: none;
+}
+
+.Toastify__toast {
+  padding: 0 !important;
+  border-radius: 4px !important;
+  box-shadow: none !important;
+}
+
+.Toastify__toast-body {
+  margin: 0 !important;
+}
+
+.Toastify__progress-bar--default {
+  background: rgb(3, 179, 101) !important;
+}
+
+.t--editor-appname-menu-portal {
+  z-index: 9 !important;
+}
+
+.bp3-popover .bp3-input {
+  outline: 0;
+  box-shadow: none;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0 !important;
+}
+
+.bp3-popover .bp3-input:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.25);
+}
+
+.bp3-popover.bp3-minimal {
+  margin-top: 8px !important;
+}
+
+.layout-control.bp3-popover.bp3-minimal {
+  margin-top: 8px !important;
+}
+
+.bp3-popover.none-shadow-popover {
+  box-shadow: none;
+  border: 0px;
+}
+
+.bp3-datepicker {
+  border-radius: 0 !important;
+}
+
+/* rich text editor styles */
+.tox-tinymce {
+  border-color: #E7E7E7 !important;
+}
+
+.tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type), .tox .tox-statusbar {
+  border-color: #E7E7E7 !important;
+}
+
+.tox .tox-toolbar__primary {
+  background: white !important;
+  border-bottom: 1px solid #E7E7E7 !important;
+}
+
+/* making both the Modal layer and the Dropdown layer */
+.bp3-modal-widget, .appsmith_widget_0 > .bp3-portal {
+  z-index: 2 !important;
+}
+
+/* Portals on the Modal widget */
+.bp3-modal-widget .bp3-portal {
+  z-index: 21 !important;
+}
+
+.bp3-overlay-backdrop {
+  background-color: rgba(16, 22, 26, 0.7) !important;
+}

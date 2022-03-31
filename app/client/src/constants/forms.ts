@@ -22,3 +22,16 @@ export const SAAS_EDITOR_FORM = "SaaSEditorForm";
 export const DATASOURCE_DB_FORM = "DatasourceDBForm";
 export const DATASOURCE_REST_API_FORM = "DatasourceRestAPIForm";
 export const DATASOURCE_SAAS_FORM = "DatasourceSaaSForm";
+
+export const WELCOME_FORM_NAME = "WelcomeSetupForm";
+export const WELCOME_FORM_NAME_FIELD_NAME = "name";
+export const WELCOME_FORM_EMAIL_FIELD_NAME = "email";
+export const WELCOME_FORM_PASSWORD_FIELD_NAME = "password";
+export const WELCOME_FORM_VERIFY_PASSWORD_FIELD_NAME = "verify_password";
+export const WELCOME_FORM_ROLE_FIELD_NAME = "role";
+export const WELCOME_FORM_ROLE_NAME_FIELD_NAME = "role_name";
+export const WELCOME_FORM_USECASE_FIELD_NAME = "useCase";
+export const WELCOME_FORM_CUSTOM_USECASE_FIELD_NAME = "custom_useCase";
+
+export const SETTINGS_FORM_NAME = "SettingsForm";
+export const WELCOME_NON_SUPER_FORM_NAME = "WelcomeNonSuperSetupForm";

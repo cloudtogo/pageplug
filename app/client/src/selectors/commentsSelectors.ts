@@ -19,6 +19,8 @@ export const commentThreadsSelector = (commentThreadId: string) => (
   state: AppState,
 ) => state.ui.comments.commentThreadsMap[commentThreadId];
 
+export const getCommentsState = (state: AppState) => state.ui.comments;
+
 export const unpublishedCommentThreadSelector = (refId: string) => (
   state: AppState,
 ) => state.ui.comments.unpublishedCommentThreads[refId];
@@ -27,11 +29,10 @@ export const commentModeSelector = (state: AppState) => {
   const pathName = window.location.pathname;
   const onEditorOrViewerPage =
     matchBuilderPath(pathName) || matchViewerPath(pathName);
-  return (
-    state.ui.comments?.isCommentMode &&
-    !!onEditorOrViewerPage &&
-    areCommentsEnabledForUserAndApp()
-  );
+
+  if ((window as any).isCommentModeForced) return true;
+
+  return state.ui.comments?.isCommentMode && !!onEditorOrViewerPage;
 };
 
 export const isUnsubscribedSelector = (state: AppState) =>
@@ -40,8 +41,6 @@ export const isUnsubscribedSelector = (state: AppState) =>
 export const applicationCommentsSelector = (applicationId: string) => (
   state: AppState,
 ) => state.ui.comments.applicationCommentThreadsByRef[applicationId];
-
-export const areCommentsEnabledForUserAndApp = () => getFeatureFlags().COMMENT;
 
 /**
  * Comments are stored as a map of refs (for example widgetIds)
@@ -103,18 +102,20 @@ export const getSortedAndFilteredAppCommentThreadIds = (
       if (!commentThreadsMap[a] || !commentThreadsMap[b]) return -1;
 
       const {
+        isViewed: isAViewed,
         pinnedState: isAPinned,
         updationTime: updationTimeA,
       } = commentThreadsMap[a];
       const {
+        isViewed: isBViewed,
         pinnedState: isBPinned,
         updationTime: updationTimeB,
       } = commentThreadsMap[b];
 
-      const sortIdx = getSortIndexBool(
-        !!isAPinned?.active,
-        !!isBPinned?.active,
-      );
+      let sortIdx = getSortIndexBool(!!isAPinned?.active, !!isBPinned?.active);
+      if (sortIdx !== 0) return sortIdx;
+
+      sortIdx = getSortIndexBool(!!isBViewed, !!isAViewed);
       if (sortIdx !== 0) return sortIdx;
 
       const result = getSortIndexTime(updationTimeA, updationTimeB);
@@ -150,17 +151,27 @@ export const getSortedAndFilteredAppCommentThreadIds = (
   return result;
 };
 
+export const getLastUpdatedCommentThreadId = (applicationId: string) => (
+  state: AppState,
+) => state.ui.comments.lastUpdatedCommentThreadByAppId[applicationId];
+
 export const shouldShowResolved = (state: AppState) =>
   state.ui.comments.shouldShowResolvedAppCommentThreads;
 
 export const appCommentsFilter = (state: AppState) =>
   state.ui.comments.appCommentsFilter;
 
-export const showUnreadIndicator = (state: AppState) =>
-  state.ui.comments.unreadCommentThreadsCount > 0;
-
 export const visibleCommentThreadSelector = (state: AppState) =>
   state.ui.comments.visibleCommentThreadId;
 
 export const isIntroCarouselVisibleSelector = (state: AppState) =>
-  state.ui.comments.isIntroCarouselVisible && areCommentsEnabledForUserAndApp();
+  state.ui.comments.isIntroCarouselVisible;
+
+export const getUnpublishedThreadDraftComment = (state: AppState) =>
+  state.ui.comments.unpublishedThreadDraftComment;
+
+export const getDraftComments = (state: AppState) =>
+  state.ui.comments.draftComments;
+
+export const getCommentThreadsFetched = (state: AppState) =>
+  state.ui.comments.commentThreadsFetched;

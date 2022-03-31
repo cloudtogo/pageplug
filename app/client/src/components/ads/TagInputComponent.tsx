@@ -5,8 +5,10 @@ import { Intent } from "constants/DefaultTheme";
 import {
   createMessage,
   INVITE_USERS_VALIDATION_EMAIL_LIST,
-} from "constants/messages";
+} from "@appsmith/constants/messages";
 import { isEmail } from "utils/formhelpers";
+import { Colors } from "constants/Colors";
+
 const TagInputWrapper = styled.div<{ intent?: Intent }>`
   margin-right: 8px;
 
@@ -14,8 +16,8 @@ const TagInputWrapper = styled.div<{ intent?: Intent }>`
     .${Classes.TAG_INPUT} {
       background-color: ${(props) => props.theme.colors.tagInput.bg};
       min-height: 38px;
-      border: 1px solid ${(props) => props.theme.colors.tagInput.bg};
       border-radius: ${(props) => props.theme.borderRadius};
+      border: 1.2px solid ${Colors.ALTO2};
     }
     .${Classes.TAG_INPUT}.${Classes.ACTIVE} {
       border: 1px solid ${(props) => props.theme.colors.info.main};
@@ -33,8 +35,11 @@ const TagInputWrapper = styled.div<{ intent?: Intent }>`
       background-color: ${(props) => props.theme.colors.info.main};
       border-radius: ${(props) => props.theme.borderRadius};
       font-size: 11px;
-      line-height: 13px;
       letter-spacing: 0.4px;
+
+      .${Classes.TAG_REMOVE} {
+        margin-top: 0;
+      }
     }
   }
 `;
@@ -53,7 +58,7 @@ type TagInputProps = {
   /** Intent of the tags, which defines their color */
   intent?: Intent;
   hasError?: boolean;
-  customError: (values: any) => void;
+  customError?: (values: any) => void;
 };
 
 /**
@@ -63,19 +68,22 @@ type TagInputProps = {
  * @param props : TagInputProps
  */
 function TagInputComponent(props: TagInputProps) {
-  const _values =
+  const inputValues =
     props.input.value && props.input.value.length > 0
       ? props.input.value.split(",")
       : [];
 
-  const [values, setValues] = useState<string[]>(_values || []);
+  const [values, setValues] = useState<string[]>(inputValues || []);
   const [currentValue, setCurrentValue] = useState<string>("");
 
   useEffect(() => {
-    if (_values.length === 0 && values.length > 0) {
+    if (inputValues.length === 0 && values.length > 0) {
       setValues([]);
     }
-  }, [_values, values]);
+    if (inputValues.length > 0 && values.length === 0) {
+      setValues(inputValues);
+    }
+  }, [inputValues, values]);
 
   const validateEmail = (newValues: string[]) => {
     if (newValues && newValues.length > 0) {
@@ -85,9 +93,9 @@ function TagInputComponent(props: TagInputProps) {
           error = createMessage(INVITE_USERS_VALIDATION_EMAIL_LIST);
         }
       });
-      props.customError(error);
+      props.customError?.(error);
     } else {
-      props.customError("");
+      props.customError?.("");
     }
   };
 
@@ -95,7 +103,7 @@ function TagInputComponent(props: TagInputProps) {
     setValues(newValues);
     props.input.onChange &&
       props.input.onChange(newValues.filter(Boolean).join(","));
-    validateEmail(newValues);
+    props.type === "email" && validateEmail(newValues);
   };
 
   const onTagsChange = (values: React.ReactNode[]) => {
@@ -104,12 +112,14 @@ function TagInputComponent(props: TagInputProps) {
   };
 
   const onKeyDown = (e: any) => {
-    // Add new values to the tags on comma, return key, space and Tab press.
+    // Add new values to the tags on comma, return key, space and Tab press
+    // only if user has typed something on input
     if (
-      e.key === "," ||
-      e.key === "Enter" ||
-      e.key === " " ||
-      e.key === "Tab"
+      (e.key === "," ||
+        e.key === "Enter" ||
+        e.key === " " ||
+        e.key === "Tab") &&
+      e.target.value
     ) {
       const newValues = [...values, e.target.value];
       commitValues(newValues);
@@ -160,7 +170,7 @@ function TagInputComponent(props: TagInputProps) {
         tagProps={{
           round: true,
         }}
-        values={_values || [""]}
+        values={inputValues || [""]}
       />
     </TagInputWrapper>
   );

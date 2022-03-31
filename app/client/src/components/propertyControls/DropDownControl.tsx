@@ -2,6 +2,7 @@ import React from "react";
 import BaseControl, { ControlProps } from "./BaseControl";
 import { StyledDropDown, StyledDropDownContainer } from "./StyledControls";
 import { DropdownOption } from "components/ads/Dropdown";
+import { isNil } from "lodash";
 
 class DropDownControl extends BaseControl<DropDownControlProps> {
   render() {
@@ -28,6 +29,7 @@ class DropDownControl extends BaseControl<DropDownControlProps> {
         <StyledDropDown
           dropdownHeight={this.props.dropdownHeight}
           enableSearch={this.props.enableSearch}
+          hideSubText={this.props.hideSubText}
           onSelect={this.onItemSelect}
           optionWidth={
             this.props.optionWidth ? this.props.optionWidth : "231px"
@@ -43,7 +45,7 @@ class DropDownControl extends BaseControl<DropDownControlProps> {
   }
 
   onItemSelect = (value?: string): void => {
-    if (value) {
+    if (!isNil(value)) {
       this.updateProperty(this.props.propertyName, value);
     }
   };
@@ -65,6 +67,7 @@ export interface DropDownControlProps extends ControlProps {
   enableSearch?: boolean;
   propertyValue: string;
   optionWidth?: string;
+  hideSubText?: boolean;
 }
 
 export default DropDownControl;

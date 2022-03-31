@@ -43,9 +43,9 @@ export default [
       {
         label: "API 超时时间 (毫秒)",
         info: "容忍 API 多长时间不返回",
+        controlType: "INPUT_TEXT",
         configProperty: "actionConfiguration.timeoutInMillisecond",
-        controlType: "NUMBER_INPUT",
-        dataType: "number",
+        dataType: "NUMBER",
       },
     ],
   },

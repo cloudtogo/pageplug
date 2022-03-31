@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": "src",
     "paths": {
-      "@appsmith/*": ["enterprise/*"],
+      "@appsmith/*": ["ee/*"],
       "test/*": ["../test/*"],
       "@tarojs/components$": ["../node_modules/@tarojs/components/dist-h5/react"],
       "@tarojs/taro$": ["../node_modules/@tarojs/taro-h5/dist/index.cjs.js"]

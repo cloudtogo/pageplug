@@ -44,16 +44,10 @@ const Container = styled.div<{ isPopoverOpen: boolean }>`
     props.isPopoverOpen &&
     `
       background-color: ${props.theme.colors.navigationMenu.backgroundInactive};
-      > span {
-        background-color: ${props.theme.colors.navigationMenu.backgroundInactive};
-      }`}
+    `}
   &:hover {
     background-color: ${(props) =>
-      props.theme.colors.navigationMenu.backgroundInactive};
-    > span {
-      background-color: ${(props) =>
-        props.theme.colors.navigationMenu.backgroundInactive};
-    }
+      props.theme.colors.navigationMenu.backgroundActive};
   }
 
   > span {
@@ -69,14 +63,14 @@ const Container = styled.div<{ isPopoverOpen: boolean }>`
     cursor: pointer;
   }
   &&&& .${Classes.EDITABLE_TEXT}, &&&& .${Classes.EDITABLE_TEXT_EDITING} {
-    padding: 0 ${(props) => props.theme.spaces[0]}px;
+    padding: 0;
     width: 100%;
   }
   &&&& .${Classes.EDITABLE_TEXT_CONTENT}, &&&& .${Classes.EDITABLE_TEXT_INPUT} {
     display: block;
     ${(props) => getTypographyByKey(props, "h4")};
-    line-height: 19px !important;
-    padding: 8px 5px;
+    line-height: ${(props) => props.theme.smallHeaderHeight} !important;
+    padding: 0 ${(props) => props.theme.spaces[2]}px;
   }
   &&&& .${Classes.EDITABLE_TEXT_INPUT} {
     margin-right: 20px;
@@ -85,12 +79,8 @@ const Container = styled.div<{ isPopoverOpen: boolean }>`
 
 const StyledIcon = styled(Icon)`
   height: 100%;
-  padding-right: 10px;
+  padding-right: ${(props) => props.theme.spaces[2]}px;
   align-self: center;
-
-  svg path {
-    fill: ${(props) => props.theme.colors.navigationMenu.contentActive};
-  }
 `;
 
 const StyledMenu = styled(Menu)`
@@ -110,8 +100,17 @@ const StyledMenu = styled(Menu)`
     padding: 0;
     min-width: 120px;
 
+    .${Classes.TRANSITION_CONTAINER} {
+      margin-top: -4px;
+    }
+
     .${Classes.ICON} {
       color: ${(props) => props.theme.colors.navigationMenu.contentInactive};
+      height: 100%;
+      margin-top: 0;
+      > svg {
+        height: 100%;
+      }
     }
 
     .${Classes.POPOVER_TARGET}.${Classes.POPOVER_OPEN} > .${Classes.MENU_ITEM} {
@@ -132,7 +131,6 @@ const StyledMenu = styled(Menu)`
 
 export function EditorAppName(props: EditorAppNameProps) {
   const {
-    applicationId,
     currentDeployLink,
     defaultSavingState,
     defaultValue,
@@ -191,7 +189,6 @@ export function EditorAppName(props: EditorAppNameProps) {
   }, []);
 
   const NavigationMenuData = GetNavigationMenuData({
-    applicationId,
     currentDeployLink,
     editMode,
     deploy,
@@ -239,9 +236,9 @@ export function EditorAppName(props: EditorAppNameProps) {
         />
         {!isEditing && (
           <StyledIcon
-            fillColor={theme.colors.navigationMenu.contentInactive}
-            name="downArrow"
-            size={IconSize.XXS}
+            fillColor={theme.colors.navigationMenu.contentActive}
+            name={isPopoverOpen ? "expand-less" : "down-arrow"}
+            size={IconSize.XXL}
           />
         )}
       </Container>

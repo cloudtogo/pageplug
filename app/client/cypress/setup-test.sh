@@ -20,7 +20,7 @@ echo "$APPSMITH_SSL_KEY" > ./docker/dev.appsmith.com-key.pem
 
 echo "Going to run the nginx server"
 sudo docker pull nginx:latest
-sudo docker pull postgres:latest
+sudo docker pull appsmith/test-event-driver:latest
 
 sudo docker run --network host --name wildcard-nginx -d -p 80:80 -p 443:443 \
 	-v `pwd`/docker/nginx-root.conf:/etc/nginx/nginx.conf \
@@ -28,18 +28,26 @@ sudo docker run --network host --name wildcard-nginx -d -p 80:80 -p 443:443 \
     -v `pwd`/docker/dev.appsmith.com.pem:/etc/certificate/dev.appsmith.com.pem \
     -v `pwd`/docker/dev.appsmith.com-key.pem:/etc/certificate/dev.appsmith.com-key.pem \
     nginx:latest &
+sudo mkdir -p git-server/keys
+sudo mkdir -p git-server/repos
 
-sudo docker run --network host --name postgres -d -p 5432:5432 \
- -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
- -v `pwd`/cypress/init-pg-dump-for-test.sql:/docker-entrypoint-initdb.d/init-pg-dump-for-test.sql \
- --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5 \
- postgres:latest &
+sudo docker run --name test-event-driver -d -p 2222:22 -p 5001:5001 -p 3306:3306 \
+  -p 5432:5432 -p 28017:27017 -p 25:25 -v ~/git-server/keys:/git-server/keys \
+  -v ~/git-server/repos:/git-server/repos  appsmith/test-event-driver:latest
 
-echo "Sleeping for 30 seconds to let the servers start"
-sleep 30
+echo "Waiting for test event driver to start"
+sleep 50
 
 echo "Checking if the containers have started"
-sudo docker ps -a 
+sudo docker ps -a
+for fcid in $(sudo docker ps -a | awk '/Exited/ { print $1 }'); do
+  echo "Logs for container '$fcid'."
+  docker logs "$fcid"
+done
+if sudo docker ps -a | grep -q Exited; then
+  echo "One or more containers failed to start." >&2
+  exit 1
+fi
 
 echo "Checking if the server has started"
 status_code=$(curl -o /dev/null -s -w "%{http_code}\n" https://dev.appsmith.com/api/v1/users)
@@ -54,49 +62,13 @@ while [  "$retry_count" -le "3"  -a  "$status_code" -eq "502"  ]; do
 done
 
 echo "Checking if client and server have started"
-ps -ef |grep java 2>&1 
+ps -ef |grep java 2>&1
 ps -ef |grep  serve 2>&1
 
 if [ "$status_code" -eq "502" ]; then
   echo "Unable to connect to server"
   exit 1
 fi
-
-# Create the test user 
-curl -k --request POST -v 'https://dev.appsmith.com/api/v1/users' \
---header 'Content-Type: application/json' \
---data-raw '{
-	"name" : "'"$CYPRESS_USERNAME"'",
-	"email" : "'"$CYPRESS_USERNAME"'",
-	"source" : "FORM",
-	"state" : "ACTIVATED",
-	"isEnabled" : "true",
-	"password": "'"$CYPRESS_PASSWORD"'"
-}'
-
-#Create another testUser1
-curl -k --request POST -v 'https://dev.appsmith.com/api/v1/users' \
---header 'Content-Type: application/json' \
---data-raw '{
-	"name" : "'"$CYPRESS_TESTUSERNAME1"'",
-	"email" : "'"$CYPRESS_TESTUSERNAME1"'",
-	"source" : "FORM",
-	"state" : "ACTIVATED",
-	"isEnabled" : "true",
-	"password": "'"$CYPRESS_TESTPASSWORD1"'"
-}'
-
-#Create another testUser2
-curl -k --request POST -v 'https://dev.appsmith.com/api/v1/users' \
---header 'Content-Type: application/json' \
---data-raw '{
-	"name" : "'"$CYPRESS_TESTUSERNAME2"'",
-	"email" : "'"$CYPRESS_TESTUSERNAME2"'",
-	"source" : "FORM",
-	"state" : "ACTIVATED",
-	"isEnabled" : "true",
-	"password": "'"$CYPRESS_TESTPASSWORD2"'"
-}'
 
 # DEBUG=cypress:* $(npm bin)/cypress version
 # sed -i -e "s|api_url:.*$|api_url: $CYPRESS_URL|g" /github/home/.cache/Cypress/4.1.0/Cypress/resources/app/packages/server/config/app.yml

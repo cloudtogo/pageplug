@@ -18,6 +18,7 @@ import { GenerateCRUDEnabledPluginMap } from "../../../api/PluginApi";
 import { getGenerateCRUDEnabledPluginMap } from "../../../selectors/entitiesSelector";
 import { useSelector } from "react-redux";
 import { getIsGeneratePageInitiator } from "utils/GenerateCrudUtil";
+import { getCurrentApplicationId } from "selectors/editorSelectors";
 
 const StyledContainer = styled.div`
   flex: 1;
@@ -124,7 +125,6 @@ const CardContentWrapper = styled.div`
 `;
 
 type ApiHomeScreenProps = {
-  applicationId: string;
   createNewApiAction: (pageId: string, from: EventLocation) => void;
   history: {
     replace: (data: string) => void;
@@ -150,14 +150,9 @@ const API_ACTION = {
 };
 
 function NewApiScreen(props: Props) {
-  const {
-    applicationId,
-    createNewApiAction,
-    history,
-    isCreating,
-    pageId,
-    plugins,
-  } = props;
+  const { createNewApiAction, history, isCreating, pageId, plugins } = props;
+
+  const applicationId = useSelector(getCurrentApplicationId);
 
   const generateCRUDSupportedPlugin: GenerateCRUDEnabledPluginMap = useSelector(
     getGenerateCRUDEnabledPluginMap,
@@ -224,9 +219,10 @@ function NewApiScreen(props: Props) {
         });
 
         delete queryParams.isGeneratePageMode;
-        const curlImportURL =
-          getCurlImportPageURL(applicationId, pageId) +
-          convertToQueryParams({ from: "datasources", ...queryParams });
+        const curlImportURL = getCurlImportPageURL(applicationId, pageId, {
+          from: "datasources",
+          ...queryParams,
+        });
 
         history.push(curlImportURL);
         break;
@@ -295,7 +291,7 @@ function NewApiScreen(props: Props) {
           </ApiCard>
         )}
         {/* {plugins
-          .filter((p) => p.type === PluginType.SAAS)
+          .filter((p) => p.type === PluginType.SAAS || p.type === PluginType.REMOTE)
           .map((p) => (
             <ApiCard
               className={`t--createBlankApi-${p.packageName}`}
@@ -322,7 +318,7 @@ function NewApiScreen(props: Props) {
                     src={p.iconLocation}
                   />
                 </div>
-                <p className="textBtn">{p.name}</p>
+                <p className="t--plugin-name textBtn">{p.name}</p>
               </CardContentWrapper>
             </ApiCard>
           ))} */}
