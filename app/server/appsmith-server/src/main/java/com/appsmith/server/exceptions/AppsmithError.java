@@ -138,9 +138,9 @@ public enum AppsmithError {
     GIT_UPSTREAM_CHANGES(400, 4048, "Looks like there are pending upstream changes. To prevent you from losing history, we will pull the changes and push them to your repo.", AppsmithErrorAction.DEFAULT, null, ErrorType.GIT_ACTION_EXECUTION_ERROR, ErrorReferenceDocUrl.GIT_UPSTREAM_CHANGES),
     GENERIC_JSON_IMPORT_ERROR(400, 4049, "Unable to import application in organization {0} with error {1}", AppsmithErrorAction.DEFAULT, null, ErrorType.BAD_REQUEST, null),
     FILE_PART_DATA_BUFFER_ERROR(500, 5017, "Failed to upload file with error: {0}", AppsmithErrorAction.DEFAULT, null, ErrorType.BAD_REQUEST, null),
-    CLOUDOS_REQUEST_SYNC_API_FAILURE(500, 9001, "API获取失败: {0}", AppsmithErrorAction.LOG_EXTERNALLY, null),
-    CLOUDOS_WECHAT_ACCESS_TOKEN_FAILURE(500, 9002, "微信 access_token 获取失败: {0}", AppsmithErrorAction.LOG_EXTERNALLY, null),
-    CLOUDOS_WECHAT_PREVIEW_FAILURE(500, 9003, "微信小程序码获取失败: {0}", AppsmithErrorAction.LOG_EXTERNALLY, null),
+    CLOUDOS_REQUEST_SYNC_API_FAILURE(500, 9001, "API获取失败: {0}", AppsmithErrorAction.LOG_EXTERNALLY, null, ErrorType.BAD_REQUEST, null),
+    CLOUDOS_WECHAT_ACCESS_TOKEN_FAILURE(500, 9002, "微信 access_token 获取失败: {0}", AppsmithErrorAction.LOG_EXTERNALLY, null, ErrorType.BAD_REQUEST, null),
+    CLOUDOS_WECHAT_PREVIEW_FAILURE(500, 9003, "微信小程序码获取失败: {0}", AppsmithErrorAction.LOG_EXTERNALLY, null, ErrorType.BAD_REQUEST, null),
     ;
 
     private final Integer httpErrorCode;
