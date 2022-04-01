@@ -20,18 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.Part;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import com.appsmith.server.configurations.CloudOSConfig;
@@ -60,7 +49,6 @@ public class UserControllerCE extends BaseController<UserService, User, String> 
                             SessionUserService sessionUserService,
                             UserOrganizationService userOrganizationService,
                             UserSignup userSignup,
-                            UserDataService userDataService,
                             UserDataService userDataService,
                             CloudOSActionSolution cloudOSActionSolution) {
         super(service);
@@ -160,12 +148,14 @@ public class UserControllerCE extends BaseController<UserService, User, String> 
     public Mono<ResponseDTO<UserProfileDTO>> getUserProfile(@CookieValue(name = "token", defaultValue = "null") String tokenInCloudOS) {
         final Boolean inCloudOS = cloudOSConfig.getInCloudOS();
         if (inCloudOS) {
-            return this.cloudOSActionSolution.verifyCloudOSToken(tokenInCloudOS)
+            return cloudOSActionSolution.verifyCloudOSToken(tokenInCloudOS)
                     .flatMap(valid -> sessionUserService.getCurrentUser()
                         .map(user -> {
                             user.setCloudOSLogged(valid);
-                            return new ResponseDTO<>(HttpStatus.OK.value(), user, null);
-                        }));
+                            return user;
+                        })
+                        .flatMap(service::buildUserProfileDTO)
+                        .map(profile -> new ResponseDTO<>(HttpStatus.OK.value(), profile, null)));
         }
         return sessionUserService.getCurrentUser()
                 .flatMap(service::buildUserProfileDTO)
