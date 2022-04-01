@@ -34,9 +34,4 @@ public class UserDataServiceImpl extends UserDataServiceCEImpl implements UserDa
                 sessionUserService, assetService, releaseNotesService, featureFlagService, userChangedHandler,
                 applicationRepository);
     }
-
-    @Override
-    public Mono<Map<String, Boolean>> getFeatureFlagsForCurrentUser() {
-        return featureFlagService.getAllFeatureFlagsForUser();
-    }
 }

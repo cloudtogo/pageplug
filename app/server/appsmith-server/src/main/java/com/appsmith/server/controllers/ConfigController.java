@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(Url.CONFIG_URL)
 public class ConfigController extends ConfigControllerCE {
 
-    private final ConfigService service;
     public ConfigController(ConfigService service) {
-        this.service = service;
+        super(service);
     }
 }
