@@ -5,6 +5,7 @@ import com.appsmith.server.authentication.handlers.AccessDeniedHandler;
 import com.appsmith.server.authentication.handlers.CustomServerOAuth2AuthorizationRequestResolver;
 import com.appsmith.server.authentication.handlers.LogoutSuccessHandler;
 import com.appsmith.server.constants.FieldName;
+import com.appsmith.server.constants.Url;
 import com.appsmith.server.domains.User;
 import com.appsmith.server.helpers.RedirectHelper;
 import com.appsmith.server.services.UserService;
@@ -39,6 +40,7 @@ import org.springframework.web.server.WebFilterChain;
 import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 import org.springframework.web.server.session.CookieWebSessionIdResolver;
 import org.springframework.web.server.session.WebSessionIdResolver;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.HashSet;
@@ -145,7 +147,7 @@ public class SecurityConfig {
                 .authorizeExchange()
                 // All public URLs that should be served to anonymous users should also be defined in acl.rego file
                 // This is because the flow enters AclFilter as well and needs to be whitelisted there
-                .matchers(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, LOGIN_URL),
+                .matchers(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, Url.LOGIN_URL),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL + "/super"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL + "/forgotPassword"),
@@ -167,9 +169,9 @@ public class SecurityConfig {
                 .authenticated()
                 .and().httpBasic()
                 .and().formLogin()
-                .loginPage(LOGIN_URL)
+                .loginPage(Url.LOGIN_URL)
                 .authenticationEntryPoint(authenticationEntryPoint)
-                .requiresAuthenticationMatcher(ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, LOGIN_URL))
+                .requiresAuthenticationMatcher(ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, Url.LOGIN_URL))
                 .authenticationSuccessHandler(authenticationSuccessHandler)
                 .authenticationFailureHandler(authenticationFailureHandler)
 
@@ -181,7 +183,7 @@ public class SecurityConfig {
                 .authenticationFailureHandler(authenticationFailureHandler)
                 .authorizedClientRepository(new ClientUserRepository(userService, commonConfig))
                 .and().logout()
-                .logoutUrl(LOGOUT_URL)
+                .logoutUrl(Url.LOGOUT_URL)
                 .logoutSuccessHandler(new LogoutSuccessHandler(objectMapper))
                 .and().build();
     }

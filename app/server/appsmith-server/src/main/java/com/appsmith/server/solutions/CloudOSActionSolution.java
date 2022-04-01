@@ -393,7 +393,8 @@ public class CloudOSActionSolution {
                 apiList.add(newPageAction);
             });
             return Flux.fromIterable(apiList)
-                    .flatMap(action -> actionCollectionService.createAction(action))
+                    // fuck this shit !!!!!!!!!!!!!
+                    //.flatMap(action -> actionCollectionService.createAction(action))
                     .collectList()
                     .thenReturn(savedDataSource);
         });
