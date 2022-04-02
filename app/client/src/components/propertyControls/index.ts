@@ -58,6 +58,9 @@ import FieldControl from "./taro/FieldControl";
 import BoxShadowOptionsControl from "./BoxShadowOptionsControl";
 import BorderRadiusOptionsControl from "./BorderRadiusOptionsControl";
 import ButtonBorderRadiusOptionsControl from "./ButtonBorderRadiusControl";
+import FieldConfigurationControl from "components/propertyControls/FieldConfigurationControl";
+import JSONFormComputeControl from "./JSONFormComputeControl";
+import ButtonControl from "./ButtonControl";
 
 export const PropertyControls = {
   InputTextControl,
@@ -93,6 +96,9 @@ export const PropertyControls = {
   BoxShadowOptionsControl,
   BorderRadiusOptionsControl,
   ButtonBorderRadiusOptionsControl,
+  FieldConfigurationControl,
+  JSONFormComputeControl,
+  ButtonControl,
 };
 
 export type PropertyControlPropsType =

@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback } from "react";
+import React, { ReactNode, useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "reducers";
 import TreeDropdown, {
@@ -17,6 +17,14 @@ import {
 } from "actions/pageActions";
 import styled from "styled-components";
 import { Icon } from "@blueprintjs/core";
+import {
+  CONTEXT_EDIT_NAME,
+  CONTEXT_CLONE,
+  CONTEXT_SET_AS_HOME_PAGE,
+  CONTEXT_DELETE,
+  CONFIRM_CONTEXT_DELETE,
+  createMessage,
+} from "@appsmith/constants/messages";
 
 const CustomLabel = styled.div`
   display: flex;
@@ -36,6 +44,7 @@ export function PageContextMenu(props: {
   const inCloudOS = useSelector((state: AppState) => {
     return state.entities.app.inCloudOS;
   });
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   /**
    * delete the page
@@ -92,12 +101,12 @@ export function PageContextMenu(props: {
     {
       value: "rename",
       onSelect: editPageName,
-      label: "修改名称",
+      label: createMessage(CONTEXT_EDIT_NAME),
     },
     {
       value: "clone",
       onSelect: clonePage,
-      label: "复制",
+      label: createMessage(CONTEXT_CLONE),
     },
     {
       value: "visibility",
@@ -116,15 +125,21 @@ export function PageContextMenu(props: {
     optionTree.push({
       value: "setdefault",
       onSelect: setPageAsDefaultCallback,
-      label: "设置为主页",
+      label: createMessage(CONTEXT_SET_AS_HOME_PAGE),
     });
   }
 
   if (!props.isDefaultPage) {
     optionTree.push({
+      className: "t--apiFormDeleteBtn single-select",
+      confirmDelete: confirmDelete,
       value: "delete",
-      onSelect: deletePageCallback,
-      label: "删除",
+      onSelect: () => {
+        confirmDelete ? deletePageCallback() : setConfirmDelete(true);
+      },
+      label: confirmDelete
+        ? createMessage(CONFIRM_CONTEXT_DELETE)
+        : createMessage(CONTEXT_DELETE),
       intent: "danger",
     });
   }
@@ -136,6 +151,7 @@ export function PageContextMenu(props: {
       onSelect={noop}
       optionTree={optionTree}
       selectedValue=""
+      setConfirmDelete={setConfirmDelete}
       toggle={<ContextMenuTrigger className="t--context-menu" />}
     />
   );

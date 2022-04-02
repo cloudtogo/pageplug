@@ -51,8 +51,9 @@ export const ControlPropertyLabelContainer = styled.div`
   }
 `;
 
-export const JSToggleButton = styled.span<{ active: boolean }>`
-  margin-left: 4px;
+export const JSToggleButton = styled.button<{ active: boolean }>`
+  margin: 4px;
+  margin-top: 0px;
   cursor: pointer;
   height: auto;
   width: 28px;
@@ -329,6 +330,12 @@ export const StyledPropertyPaneButton = styled(Button)`
       fill: ${Colors.GREY_8};
       stroke: ${Colors.GREY_8};
     }
+  }
+
+  &:disabled {
+    background-color: ${Colors.GREY_1};
+    color: var(--appsmith-color-black-400);
+    border-color: ${Colors.MERCURY};
   }
 `;
 

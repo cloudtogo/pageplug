@@ -3,13 +3,10 @@ import styled, { ThemeProvider } from "styled-components";
 import classNames from "classnames";
 import { Classes as Popover2Classes } from "@blueprintjs/popover2";
 import {
-  CurrentApplicationData,
+  ApplicationPayload,
   ReduxActionTypes,
 } from "constants/ReduxActionConstants";
-import {
-  APPLICATIONS_URL,
-  getApplicationViewerPageURL,
-} from "constants/routes";
+import { APPLICATIONS_URL } from "constants/routes";
 import AppInviteUsersForm from "pages/organization/AppInviteUsersForm";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { FormDialogComponent } from "components/editorComponents/form/FormDialogComponent";
@@ -21,6 +18,7 @@ import {
   getCurrentPageId,
   getIsPublishingApplication,
   previewModeSelector,
+  selectURLSlugs,
 } from "selectors/editorSelectors";
 import { getAllUsers, getCurrentOrgId } from "selectors/organizationSelectors";
 import { connect, useDispatch, useSelector } from "react-redux";
@@ -62,11 +60,31 @@ import { OrgUser } from "constants/orgConstants";
 
 import { getIsGitConnected } from "../../selectors/gitSyncSelectors";
 import TooltipComponent from "components/ads/Tooltip";
-import moment from "moment/moment";
-import { Colors } from "constants/Colors";
-import { snipingModeSelector } from "selectors/editorSelectors";
-import { setSnipingMode as setSnipingModeAction } from "actions/propertyPaneActions";
-import { useLocation } from "react-router";
+import { Position } from "@blueprintjs/core/lib/esnext/common";
+import {
+  CLOSE_ENTITY_EXPLORER_MESSAGE,
+  createMessage,
+  DEPLOY_BUTTON_TOOLTIP,
+  LOCK_ENTITY_EXPLORER_MESSAGE,
+  LOGO_TOOLTIP,
+  RENAME_APPLICATION_TOOLTIP,
+  SHARE_BUTTON_TOOLTIP,
+  SHARE_BUTTON_TOOLTIP_WITH_USER,
+} from "@appsmith/constants/messages";
+import { TOOLTIP_HOVER_ON_DELAY } from "constants/AppConstants";
+import { ReactComponent as MenuIcon } from "assets/icons/header/hamburger.svg";
+import { getExplorerPinned } from "selectors/explorerSelector";
+import {
+  setExplorerActiveAction,
+  setExplorerPinnedAction,
+} from "actions/explorerActions";
+import { ReactComponent as UnpinIcon } from "assets/icons/ads/double-arrow-right.svg";
+import { ReactComponent as PinIcon } from "assets/icons/ads/double-arrow-left.svg";
+import { modText } from "utils/helpers";
+import Boxed from "./GuidedTour/Boxed";
+import EndTour from "./GuidedTour/EndTour";
+import { GUIDED_TOUR_STEPS } from "./GuidedTour/constants";
+import { viewerURL } from "RouteBuilder";
 
 const HeaderWrapper = styled.div`
   width: 100%;
@@ -254,12 +272,12 @@ const HamburgerContainer = styled.div`
 type EditorHeaderProps = {
   pageSaveError?: boolean;
   pageName?: string;
-  pageId?: string;
+  pageId: string;
   isPublishing: boolean;
   publishedTime?: string;
   orgId: string;
   applicationId?: string;
-  currentApplication?: CurrentApplicationData;
+  currentApplication?: ApplicationPayload;
   isSaving: boolean;
   publishApplication: (appId: string) => void;
   lightTheme: any;
@@ -399,6 +417,47 @@ export function EditorHeader(props: EditorHeaderProps) {
     );
   }
 
+  const handleClickDeploy = useCallback(
+    (fromDeploy?: boolean) => {
+      if (getFeatureFlags().GIT && isGitConnected) {
+        dispatch(showConnectGitModal());
+        AnalyticsUtil.logEvent("GS_DEPLOY_GIT_CLICK", {
+          source: fromDeploy
+            ? "Deploy button"
+            : "Application name menu (top left)",
+        });
+      } else {
+        handlePublish();
+      }
+    },
+    [getFeatureFlags().GIT, dispatch, handlePublish],
+  );
+
+  /**
+   * on hovering the menu, make the explorer active
+   */
+  const onMenuHover = useCallback(() => {
+    dispatch(setExplorerActiveAction(true));
+  }, [setExplorerActiveAction]);
+
+  /**
+   * toggles the pinned state of sidebar
+   */
+  const onPin = useCallback(() => {
+    dispatch(setExplorerPinnedAction(!pinned));
+  }, [pinned, dispatch, setExplorerPinnedAction]);
+
+  //Fetch all users for the application to show the share button tooltip
+  useEffect(() => {
+    if (orgId) {
+      dispatch(fetchUsersForOrg(orgId));
+    }
+  }, [orgId]);
+  const filteredSharedUserList = props.sharedUserList.filter(
+    (user) => user.username !== props.currentUser?.username,
+  );
+  const { applicationSlug, pageSlug } = useSelector(selectURLSlugs);
+
   return (
     <ThemeProvider theme={props.lightTheme}>
       <HeaderWrapper>
@@ -414,8 +473,9 @@ export function EditorHeader(props: EditorHeaderProps) {
             <EditorAppName
               applicationId={applicationId}
               className="t--application-name editable-application-name max-w-48"
-              currentDeployLink={getApplicationViewerPageURL({
-                applicationId: props.applicationId,
+              currentDeployLink={viewerURL({
+                applicationSlug,
+                pageSlug,
                 pageId,
               })}
               defaultSavingState={
@@ -487,8 +547,9 @@ export function EditorHeader(props: EditorHeaderProps) {
               </TooltipComponent>
 
               <DeployLinkButtonDialog
-                link={getApplicationViewerPageURL({
-                  applicationId: props.applicationId,
+                link={viewerURL({
+                  applicationSlug,
+                  pageSlug,
                   pageId,
                 })}
                 trigger={
@@ -531,8 +592,9 @@ const mapStateToProps = (state: AppState) => ({
   applicationId: getCurrentApplicationId(state),
   currentApplication: state.ui.applications.currentApplication,
   isPublishing: getIsPublishingApplication(state),
-  pageId: getCurrentPageId(state),
-  lightTheme: getThemeDetails(state, ThemeMode.LIGHT),
+  pageId: getCurrentPageId(state) as string,
+  sharedUserList: getAllUsers(state),
+  currentUser: getCurrentUser(state),
   inCloudOS: state.entities.app.inCloudOS,
 });
 
