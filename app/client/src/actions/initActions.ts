@@ -4,6 +4,7 @@ export type InitializeEditorPayload = {
   applicationId?: string;
   pageId?: string;
   branch?: string;
+  queryParams?: any;
 };
 
 export const initEditor = (
