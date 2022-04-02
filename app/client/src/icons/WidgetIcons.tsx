@@ -46,6 +46,7 @@ import { ReactComponent as MapChartIcon } from "assets/icons/widget/map-chart.sv
 import { ReactComponent as PhoneInput } from "assets/icons/widget/phoneInput.svg";
 import { ReactComponent as CurrencyInput } from "assets/icons/widget/currencyInput.svg";
 import { ReactComponent as CircularProgressIcon } from "assets/icons/widget/circular-progress.svg";
+import { ReactComponent as JSONFormIcon } from "assets/icons/widget/json-form.svg";
 
 import { ReactComponent as KeyValueIcon } from "assets/icons/widget/kv.svg";
 import { ReactComponent as SwiperIcon } from "assets/icons/widget/swiper.svg";
@@ -407,6 +408,11 @@ export const WidgetIcons: {
     <IconWrapper {...props}>
       <FormIcon />
     </IconWrapper>
+  ),
+  JSON_FORM_WIDGET: (props: IconProps) => (
+    <StyledIconWrapper {...props}>
+      <JSONFormIcon />
+    </StyledIconWrapper>
   ),
 };
 

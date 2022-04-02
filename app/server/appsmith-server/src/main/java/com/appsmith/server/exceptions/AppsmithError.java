@@ -1,8 +1,8 @@
 package com.appsmith.server.exceptions;
 
+import com.appsmith.external.constants.ErrorReferenceDocUrl;
 import com.appsmith.external.exceptions.AppsmithErrorAction;
 import com.appsmith.external.models.ErrorType;
-import com.appsmith.external.constants.ErrorReferenceDocUrl;
 import lombok.Getter;
 
 import java.text.MessageFormat;
@@ -141,6 +141,7 @@ public enum AppsmithError {
     CLOUDOS_REQUEST_SYNC_API_FAILURE(500, 9001, "API获取失败: {0}", AppsmithErrorAction.LOG_EXTERNALLY, null, ErrorType.BAD_REQUEST, null),
     CLOUDOS_WECHAT_ACCESS_TOKEN_FAILURE(500, 9002, "微信 access_token 获取失败: {0}", AppsmithErrorAction.LOG_EXTERNALLY, null, ErrorType.BAD_REQUEST, null),
     CLOUDOS_WECHAT_PREVIEW_FAILURE(500, 9003, "微信小程序码获取失败: {0}", AppsmithErrorAction.LOG_EXTERNALLY, null, ErrorType.BAD_REQUEST, null),
+    MIGRATION_ERROR(500, 5018, "This action is already migrated", AppsmithErrorAction.DEFAULT, null, ErrorType.INTERNAL_ERROR, null),
     ;
 
     private final Integer httpErrorCode;

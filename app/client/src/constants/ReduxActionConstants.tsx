@@ -3,7 +3,11 @@ import { PageAction } from "constants/AppsmithActionConstants/ActionConstants";
 import { Org } from "./orgConstants";
 import { ERROR_CODES } from "@appsmith/constants/ApiConstants";
 import { AppLayoutConfig } from "reducers/entityReducers/pageListReducer";
-import { GitApplicationMetadata } from "api/ApplicationApi";
+import {
+  ApplicationPagePayload,
+  GitApplicationMetadata,
+} from "api/ApplicationApi";
+import { ApplicationVersion } from "actions/applicationActions";
 
 export const ReduxSagaChannels = {
   WEBSOCKET_APP_LEVEL_WRITE_CHANNEL: "WEBSOCKET_APP_LEVEL_WRITE_CHANNEL",
@@ -11,6 +15,22 @@ export const ReduxSagaChannels = {
 };
 
 export const ReduxActionTypes = {
+  SHOW_RECONNECT_DATASOURCE_MODAL: "SHOW_RECONNECT_DATASOURCE_MODAL",
+  RESET_UNCONCONFIGURED_DATASOURCES_LIST_DURING_IMPORT:
+    "RESET_UNCONCONFIGURED_DATASOURCES_LIST_DURING_IMPORT",
+  RESET_DATASOURCE_CONFIG_FETCHED_FOR_IMPORT_FLAG:
+    "RESET_DATASOURCE_CONFIG_FETCHED_FOR_IMPORT_FLAG",
+  SET_UNCONFIGURED_DATASOURCES: "SET_UNCONFIGURED_DATASOURCES",
+  SET_ORG_ID_FOR_IMPORT: "SET_ORG_ID_FOR_IMPORT",
+  RESET_SSH_KEY_PAIR: "RESET_SSH_KEY_PAIR",
+  GIT_INFO_INIT: "GIT_INFO_INIT",
+  IMPORT_APPLICATION_FROM_GIT_ERROR: "IMPORT_APPLICATION_FROM_GIT_ERROR",
+  IMPORT_APPLICATION_FROM_GIT_SUCCESS: "IMPORT_APPLICATION_FROM_GIT_SUCCESS",
+  UPDATE_DATASOURCE_IMPORT_SUCCESS: "UPDATE_DATASOURCE_IMPORT_SUCCESS",
+  INIT_DATASOURCE_CONNECTION_DURING_IMPORT_REQUEST:
+    "INIT_DATASOURCE_CONNECTION_DURING_IMPORT_REQUEST",
+  INIT_DATASOURCE_CONNECTION_DURING_IMPORT_SUCCESS:
+    "INIT_DATASOURCE_CONNECTION_DURING_IMPORT_SUCCESS",
   SET_ENTITY_INFO: "SET_ENTITY_INFO",
   UPDATE_META_STATE: "UPDATE_META_STATE",
   DISCONNECT_GIT: "DISCONNECT_GIT",
@@ -265,6 +285,8 @@ export const ReduxActionTypes = {
   CONFIRM_ACTION_MODAL: "CONFIRM_ACTION_MODAL",
   CREATE_QUERY_INIT: "CREATE_QUERY_INIT",
   ONBOARDING_CREATE_APPLICATION: "ONBOARDING_CREATE_APPLICATION",
+  SET_IS_RECONNECTING_DATASOURCES_MODAL_OPEN:
+    "SET_IS_RECONNECTING_DATASOURCES_MODAL_OPEN",
   FETCH_DATASOURCES_INIT: "FETCH_DATASOURCES_INIT",
   FETCH_DATASOURCES_SUCCESS: "FETCH_DATASOURCES_SUCCESS",
   FETCH_MOCK_DATASOURCES_INIT: "FETCH_MOCK_DATASOURCES_INIT",
@@ -286,6 +308,7 @@ export const ReduxActionTypes = {
   EXPAND_DATASOURCE_ENTITY: "EXPAND_DATASOURCE_ENTITY",
   TEST_DATASOURCE_INIT: "TEST_DATASOURCE_INIT",
   TEST_DATASOURCE_SUCCESS: "TEST_DATASOURCE_SUCCESS",
+  FETCH_UNCONFIGURED_DATASOURCE_LIST: "FETCH_UNCONFIGURED_DATASOURCE_LIST",
   DELETE_DATASOURCE_DRAFT: "DELETE_DATASOURCE_DRAFT",
   UPDATE_DATASOURCE_DRAFT: "UPDATE_DATASOURCE_DRAFT",
   FETCH_PUBLISHED_PAGE_INIT: "FETCH_PUBLISHED_PAGE_INIT",
@@ -518,6 +541,7 @@ export const ReduxActionTypes = {
   FORK_APPLICATION_INIT: "FORK_APPLICATION_INIT",
   FORK_APPLICATION_SUCCESS: "FORK_APPLICATION_SUCCESS",
   IMPORT_APPLICATION_INIT: "IMPORT_APPLICATION_INIT",
+  IMPORT_APPLICATION_FROM_GIT_INIT: "IMPORT_APPLICATION_FROM_GIT_INIT",
   IMPORT_APPLICATION_SUCCESS: "IMPORT_APPLICATION_SUCCESS",
   SET_WIDGET_LOADING: "SET_WIDGET_LOADING",
   SET_GLOBAL_SEARCH_QUERY: "SET_GLOBAL_SEARCH_QUERY",
@@ -937,6 +961,7 @@ export interface Page {
   latest?: boolean;
   isHidden?: boolean;
   icon?: string;
+  slug?: string;
 }
 
 export interface ClonePageSuccessPayload {
@@ -954,10 +979,11 @@ export interface ApplicationPayload {
   color?: string;
   icon?: string;
   organizationId: string;
-  defaultPageId?: string;
+  defaultPageId: string;
   isPublic?: boolean;
   userPermissions?: string[];
   appIsExample: boolean;
+  slug?: string;
   forkingEnabled?: boolean;
   appLayout?: AppLayoutConfig;
   gitApplicationMetadata?: GitApplicationMetadata;
@@ -965,11 +991,8 @@ export interface ApplicationPayload {
   applicationId?: string;
   modifiedBy?: string;
   modifiedAt?: string;
-}
-
-export interface CurrentApplicationData extends ApplicationPayload {
-  SSHKeyPair?: string;
-  deployKeyDocUrl?: string;
+  pages: ApplicationPagePayload[];
+  applicationVersion: ApplicationVersion;
 }
 
 export type OrganizationDetails = {
@@ -984,10 +1007,3 @@ export interface LoadWidgetEditorPayload {
 export interface LoadWidgetSidebarPayload {
   cards: { [id: string]: WidgetCardProps[] };
 }
-
-export type InitializeEditorPayload = {
-  applicationId: string;
-  pageId: string;
-  queryParams: URLSearchParams;
-  branch?: string;
-};

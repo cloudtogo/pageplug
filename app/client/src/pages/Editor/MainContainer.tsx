@@ -9,7 +9,11 @@ import BottomBar from "./BottomBar";
 import { DEFAULT_ENTITY_EXPLORER_WIDTH } from "constants/AppConstants";
 import WidgetsEditor from "./WidgetsEditor";
 import { updateExplorerWidthAction } from "actions/explorerActions";
-import { BUILDER_CHECKLIST_URL, BUILDER_URL } from "constants/routes";
+import {
+  BUILDER_CHECKLIST_PATH,
+  BUILDER_PATH,
+  BUILDER_PATH_DEPRECATED,
+} from "constants/routes";
 import OnboardingChecklist from "./FirstTimeUserOnboarding/Checklist";
 import EntityExplorerSidebar from "components/editorComponents/Sidebar";
 import classNames from "classnames";
@@ -68,17 +72,20 @@ const EditorContainer = styled.div`
           className="relative flex flex-col w-full overflow-auto"
           id="app-body"
         >
-          <EditorContainer>
-            <Switch key={BUILDER_URL}>
-              <SentryRoute component={WidgetsEditor} exact path={BUILDER_URL} />
-              <SentryRoute
-                component={OnboardingChecklist}
-                exact
-                path={BUILDER_CHECKLIST_URL}
-              />
-              <SentryRoute component={EditorsRouter} />
-            </Switch>
-          </EditorContainer>
+          <Switch key={BUILDER_PATH}>
+            <SentryRoute component={WidgetsEditor} exact path={BUILDER_PATH} />
+            <SentryRoute
+              component={WidgetsEditor}
+              exact
+              path={BUILDER_PATH_DEPRECATED}
+            />
+            <SentryRoute
+              component={OnboardingChecklist}
+              exact
+              path={BUILDER_CHECKLIST_PATH}
+            />
+            <SentryRoute component={EditorsRouter} />
+          </Switch>
         </div>
       </Container>
       <BottomBar
