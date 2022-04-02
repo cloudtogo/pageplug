@@ -12,7 +12,6 @@ import {
   RenderMode,
   RenderModes,
   WidgetType,
-  WidgetTypes,
 } from "constants/WidgetConstants";
 import React, { Component, ReactNode } from "react";
 import { get, memoize } from "lodash";
@@ -317,12 +316,12 @@ abstract class BaseWidget<
 
   addTaroWrapper = (content: ReactNode, type: WidgetType) => {
     if (
-      type === WidgetTypes.TARO_BOTTOM_BAR_WIDGET ||
-      type === WidgetTypes.TARO_POPUP_WIDGET
+      type === "TARO_BOTTOM_BAR_WIDGET" ||
+      type === "TARO_POPUP_WIDGET"
     ) {
       return <div style={{ height: 0 }}>{content}</div>;
     }
-    if (type === WidgetTypes.TARO_LOADING_WIDGET) {
+    if (type === "TARO_LOADING_WIDGET") {
       return (
         <div style={{ zIndex: 10000, position: "relative" }}>{content}</div>
       );
