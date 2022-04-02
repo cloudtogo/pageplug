@@ -98,7 +98,7 @@ import MultiSelectTreeWidget, {
 } from "widgets/MultiSelectTreeWidget";
 import MultiSelectWidget, {
   CONFIG as MULTI_SELECT_WIDGET_CONFIG,
-} from "widgets/MultiSelectWidget";
+} from "widgets/MultiSelectWidget/index";
 import PhoneInputWidget, {
   CONFIG as PHONE_INPUT_WIDGET_V2_CONFIG,
 } from "widgets/PhoneInputWidget";
@@ -140,86 +140,87 @@ import VideoWidget, {
 } from "widgets/VideoWidget";
 import { registerWidget, WidgetConfiguration } from "./WidgetRegisterHelpers";
 
-import FormilyWidget, {
-  FormilyWidgetProps,
-  ProfiledFormilyWidget,
-} from "widgets/FormilyWidget";
-import PickerWidget, {
-  PickerWidgetProps,
-  ProfiledPickerWidget,
-} from "widgets/taro/PickerWidget";
-import SwiperWidget, {
-  SwiperWidgetProps,
-  ProfiledSwiperWidget,
-} from "widgets/taro/SwiperWidget";
-import GridWidget, {
-  GridWidgetProps,
-  ProfiledGridWidget,
-} from "widgets/taro/GridWidget";
-import MTextWidget, {
-  MTextWidgetProps,
-  MProfiledTextWidget,
-} from "widgets/taro/TextWidget";
-import MListWidget, {
-  MListWidgetProps,
-  MProfiledListWidget,
-} from "widgets/taro/ListWidget";
-import MPopupWidget, {
-  MPopupWidgetProps,
-  MProfiledPopupWidget,
-} from "widgets/taro/PopupWidget";
-import MImageWidget, {
-  MImageWidgetProps,
-  MProfiledImageWidget,
-} from "widgets/taro/ImageWidget";
-import MButtonWidget, {
-  MButtonWidgetProps,
-  MProfiledButtonWidget,
-} from "widgets/taro/ButtonWidget";
-import MCellWidget, {
-  MCellWidgetProps,
-  MProfiledCellWidget,
-} from "widgets/taro/CellWidget";
-import MHtmlWidget, {
-  MHtmlWidgetProps,
-  MProfiledHtmlWidget,
-} from "widgets/taro/HtmlWidget";
-import MSkuWidget, {
-  MSkuWidgetProps,
-  MProfiledSkuWidget,
-} from "widgets/taro/SkuWidget";
-import MKVWidget, {
-  MKVWidgetProps,
-  MProfiledKVWidget,
-} from "widgets/taro/KVWidget";
-import MTabsWidget, {
-  MTabsWidgetProps,
-  MProfiledTabsWidget,
-} from "widgets/taro/TabsWidget";
-import MBottomBarWidget, {
-  MBottomBarWidgetProps,
-  MProfiledBottomBarWidget,
-} from "widgets/taro/BottomBarWidget";
-import MActionBarWidget, {
-  MActionBarWidgetProps,
-  MProfiledActionBarWidget,
-} from "widgets/taro/ActionBarWidget";
-import MSearchWidget, {
-  MSearchWidgetProps,
-  MProfiledSearchWidget,
-} from "widgets/taro/SearchWidget";
-import MLoadingWidget, {
-  MLoadingWidgetProps,
-  MProfiledLoadingWidget,
-} from "widgets/taro/LoadingWidget";
-import MCheckboxWidget, {
-  MCheckboxWidgetProps,
-  MProfiledCheckboxWidget,
-} from "widgets/taro/CheckboxWidget";
-import MFormWidget, {
-  MFormWidgetProps,
-  MProfiledFormWidget,
-} from "widgets/taro/FormWidget";
+
+// import FormilyWidget, {
+//   FormilyWidgetProps,
+//   ProfiledFormilyWidget,
+// } from "widgets/FormilyWidget";
+// import PickerWidget, {
+//   PickerWidgetProps,
+//   ProfiledPickerWidget,
+// } from "widgets/taro/PickerWidget";
+// import SwiperWidget, {
+//   SwiperWidgetProps,
+//   ProfiledSwiperWidget,
+// } from "widgets/taro/SwiperWidget";
+// import GridWidget, {
+//   GridWidgetProps,
+//   ProfiledGridWidget,
+// } from "widgets/taro/GridWidget";
+// import MTextWidget, {
+//   MTextWidgetProps,
+//   MProfiledTextWidget,
+// } from "widgets/taro/TextWidget";
+// import MListWidget, {
+//   MListWidgetProps,
+//   MProfiledListWidget,
+// } from "widgets/taro/ListWidget";
+// import MPopupWidget, {
+//   MPopupWidgetProps,
+//   MProfiledPopupWidget,
+// } from "widgets/taro/PopupWidget";
+// import MImageWidget, {
+//   MImageWidgetProps,
+//   MProfiledImageWidget,
+// } from "widgets/taro/ImageWidget";
+// import MButtonWidget, {
+//   MButtonWidgetProps,
+//   MProfiledButtonWidget,
+// } from "widgets/taro/ButtonWidget";
+// import MCellWidget, {
+//   MCellWidgetProps,
+//   MProfiledCellWidget,
+// } from "widgets/taro/CellWidget";
+// import MHtmlWidget, {
+//   MHtmlWidgetProps,
+//   MProfiledHtmlWidget,
+// } from "widgets/taro/HtmlWidget";
+// import MSkuWidget, {
+//   MSkuWidgetProps,
+//   MProfiledSkuWidget,
+// } from "widgets/taro/SkuWidget";
+// import MKVWidget, {
+//   MKVWidgetProps,
+//   MProfiledKVWidget,
+// } from "widgets/taro/KVWidget";
+// import MTabsWidget, {
+//   MTabsWidgetProps,
+//   MProfiledTabsWidget,
+// } from "widgets/taro/TabsWidget";
+// import MBottomBarWidget, {
+//   MBottomBarWidgetProps,
+//   MProfiledBottomBarWidget,
+// } from "widgets/taro/BottomBarWidget";
+// import MActionBarWidget, {
+//   MActionBarWidgetProps,
+//   MProfiledActionBarWidget,
+// } from "widgets/taro/ActionBarWidget";
+// import MSearchWidget, {
+//   MSearchWidgetProps,
+//   MProfiledSearchWidget,
+// } from "widgets/taro/SearchWidget";
+// import MLoadingWidget, {
+//   MLoadingWidgetProps,
+//   MProfiledLoadingWidget,
+// } from "widgets/taro/LoadingWidget";
+// import MCheckboxWidget, {
+//   MCheckboxWidgetProps,
+//   MProfiledCheckboxWidget,
+// } from "widgets/taro/CheckboxWidget";
+// import MFormWidget, {
+//   MFormWidgetProps,
+//   MProfiledFormWidget,
+// } from "widgets/taro/FormWidget";
 
 export const ALL_WIDGETS_AND_CONFIG = [
   [CanvasWidget, CANVAS_WIDGET_CONFIG],
