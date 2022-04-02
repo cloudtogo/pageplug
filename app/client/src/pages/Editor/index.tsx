@@ -15,7 +15,11 @@ import {
   getIsPublishingApplication,
   getPublishingError,
 } from "selectors/editorSelectors";
-import { initEditor, resetEditorRequest } from "actions/initActions";
+import {
+  initEditor,
+  InitializeEditorPayload,
+  resetEditorRequest,
+} from "actions/initActions";
 import { editorInitializer } from "utils/EditorUtils";
 import CenteredWrapper from "components/designSystems/appsmith/CenteredWrapper";
 import { getCurrentUser } from "selectors/usersSelectors";
@@ -52,12 +56,7 @@ import RepoLimitExceededErrorModal from "./gitSync/RepoLimitExceededErrorModal";
 type EditorProps = {
   currentApplicationId?: string;
   currentApplicationName?: string;
-  initEditor: (
-    applicationId: string,
-    pageId: string,
-    queryParams: any,
-    branch?: string,
-  ) => void;
+  initEditor: (payload: InitializeEditorPayload) => void;
   isPublishing: boolean;
   isEditorLoading: boolean;
   isEditorInitialized: boolean;
@@ -101,7 +100,7 @@ class Editor extends Component<Props> {
     const { applicationId, pageId } = this.props.match.params;
     const queryParams = new URLSearchParams(this.props.location.search);
     queryParams.set("inCloudOS", this.props.inCloudOS ? "true" : "false");
-    if (applicationId) {
+    if (applicationId || pageId) {
       this.props.initEditor(applicationId, pageId, queryParams, branch);
     }
     this.props.handlePathUpdated(window.location);
@@ -160,8 +159,8 @@ class Editor extends Component<Props> {
     const isPageIdUpdated = pageId !== prevPageId;
 
     // to prevent re-init during connect
-    if (prevBranch && isBranchUpdated && applicationId) {
-      this.props.initEditor(applicationId, pageId, branch);
+    if (prevBranch && isBranchUpdated && (applicationId || pageId)) {
+      this.props.initEditor({ pageId, branch, applicationId });
     } else {
       /**
        * First time load is handled by init sagas
@@ -263,12 +262,8 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    initEditor: (
-      applicationId: string,
-      pageId: string,
-      queryParams: any,
-      branch?: string,
-    ) => dispatch(initEditor(applicationId, pageId, queryParams, branch)),
+    initEditor: (payload: InitializeEditorPayload) =>
+      dispatch(initEditor(payload)),
     resetEditorRequest: () => dispatch(resetEditorRequest()),
     handlePathUpdated: (location: typeof window.location) =>
       dispatch(handlePathUpdated(location)),
