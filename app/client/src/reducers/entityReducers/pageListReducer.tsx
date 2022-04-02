@@ -12,6 +12,9 @@ import { GenerateCRUDSuccess } from "actions/pageActions";
 const initialState: PageListReduxState = {
   pages: [],
   isGeneratingTemplatePage: false,
+  applicationId: "",
+  currentPageId: "",
+  defaultPageId: "",
 };
 
 export const pageListReducer = createReducer(initialState, {
@@ -102,6 +105,7 @@ export const pageListReducer = createReducer(initialState, {
       name: string;
       isHidden?: boolean;
       icon?: string;
+      slug: string;
     }>,
   ) => {
     const pages = [...state.pages];
@@ -115,6 +119,7 @@ export const pageListReducer = createReducer(initialState, {
         pageName: action.payload.name,
         isHidden: !!action.payload.isHidden,
         icon: action.payload.icon,
+        slug: action.payload.slug,
       };
       pages.splice(updatedPageIndex, 1, updatedPage);
     }
@@ -182,9 +187,9 @@ export interface AppLayoutConfig {
 
 export interface PageListReduxState {
   pages: PageListPayload;
-  applicationId?: string;
-  defaultPageId?: string;
-  currentPageId?: string;
+  applicationId: string;
+  defaultPageId: string;
+  currentPageId: string;
   appLayout?: AppLayoutConfig;
   isGeneratingTemplatePage?: boolean;
 }

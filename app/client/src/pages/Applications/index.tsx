@@ -46,7 +46,7 @@ import {
   DropdownOnSelectActions,
   getOnSelectAction,
 } from "pages/common/CustomizedDropdown/dropdownHelpers";
-import Button, { Size, Category } from "components/ads/Button";
+import Button, { Category, Size } from "components/ads/Button";
 import Text, { TextType } from "components/ads/Text";
 import Icon, { IconName, IconSize } from "components/ads/Icon";
 import MenuItem from "components/ads/MenuItem";
@@ -76,24 +76,27 @@ import { getNextEntityName, getRandomPaletteColor } from "utils/AppsmithUtils";
 import { AppIconCollection } from "components/ads/AppIcon";
 import { createOrganizationSubmitHandler } from "../organization/helpers";
 import ImportApplicationModal from "./ImportApplicationModal";
-import ImportAppViaGitModal from "pages/Editor/gitSync/ImportAppViaGitModal";
 import {
   createMessage,
+  NO_APPS_FOUND,
   ORGANIZATIONS_HEADING,
   SEARCH_APPS,
-  NO_APPS_FOUND,
 } from "@appsmith/constants/messages";
 import { ReactComponent as NoAppsFoundIcon } from "assets/svg/no-apps-icon.svg";
 
 import { setHeaderMeta } from "actions/themeActions";
 import getFeatureFlags from "utils/featureFlags";
-import { setIsImportAppViaGitModalOpen } from "actions/gitSyncActions";
 import SharedUserList from "pages/common/SharedUserList";
 import { useIsMobileDevice } from "utils/hooks/useDeviceDetect";
 import { Indices } from "constants/Layers";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import GitSyncModal from "pages/Editor/gitSync/GitSyncModal";
+import ReconnectDatasourceModal from "pages/Editor/gitSync/ReconnectDatasourceModal";
 import LeftPaneBottomSection from "pages/Home/LeftPaneBottomSection";
 import { MOBILE_MAX_WIDTH } from "constants/AppConstants";
+import {
+  DEFAULT_BASE_URL_BUILDER_PARAMS,
+  updateURLFactory,
+} from "RouteBuilder";
 
 const OrgDropDown = styled.div<{ isMobile?: boolean }>`
   display: flex;
@@ -232,6 +235,7 @@ const OrgShareUsers = styled.div`
 
   & .t--options-icon {
     margin-left: 8px;
+
     svg {
       path {
         fill: #090707;
@@ -380,6 +384,7 @@ function OrgMenuItem({ isFetchingApplications, org, selected }: any) {
       ref={menuRef}
       selected={selected}
       text={org.organization.name}
+      tooltipPos={Position.BOTTOM_LEFT}
     />
   );
 }
@@ -471,7 +476,6 @@ const OrgNameWrapper = styled.div<{ disabled?: boolean }>`
       hover: color,
     })}`;
   }}
-
   .${Classes.ICON} {
     display: ${(props) => (!props.disabled ? "inline" : "none")};
     margin-left: 8px;
@@ -540,6 +544,11 @@ function ApplicationsSection(props: any) {
   ) => {
     dispatch(updateApplication(id, data));
   };
+
+  useEffect(() => {
+    // Clears URL params cache
+    updateURLFactory(DEFAULT_BASE_URL_BUILDER_PARAMS);
+  }, []);
 
   const duplicateApplicationDispatch = (applicationId: string) => {
     dispatch(duplicateApplication(applicationId));
@@ -718,15 +727,6 @@ function ApplicationsSection(props: any) {
                   orgName: organization.name,
                   orgSlug: organization.slug,
                 })}
-              {selectedOrgIdForImportApplication && (
-                <ImportApplicationModal
-                  isModalOpen={
-                    selectedOrgIdForImportApplication === organization.id
-                  }
-                  onClose={() => setSelectedOrgIdForImportApplication("")}
-                  organizationId={selectedOrgIdForImportApplication}
-                />
-              )}
               {hasManageOrgPermissions && (
                 <Dialog
                   canEscapeKeyClose={false}
@@ -737,6 +737,15 @@ function ApplicationsSection(props: any) {
                 >
                   <Form orgId={organization.id} />
                 </Dialog>
+              )}
+              {selectedOrgIdForImportApplication && (
+                <ImportApplicationModal
+                  isModalOpen={
+                    selectedOrgIdForImportApplication === organization.id
+                  }
+                  onClose={() => setSelectedOrgIdForImportApplication("")}
+                  organizationId={selectedOrgIdForImportApplication}
+                />
               )}
               {isPermitted(
                 organization.userPermissions,
@@ -800,6 +809,7 @@ function ApplicationsSection(props: any) {
                     {(currentUser || isFetchingApplications) && !isMobile && (
                       <Menu
                         className="t--org-name"
+                        closeOnItemClick
                         cypressSelector="t--org-name"
                         disabled={isFetchingApplications}
                         isOpen={organization.slug === orgToOpenMenu}
@@ -815,7 +825,9 @@ function ApplicationsSection(props: any) {
                           <Icon
                             className="t--options-icon"
                             name="context-menu"
-                            onClick={() => setOrgToOpenMenu(organization.slug)}
+                            onClick={() => {
+                              setOrgToOpenMenu(organization.slug);
+                            }}
                             size={IconSize.XXXL}
                           />
                         }
@@ -861,31 +873,13 @@ function ApplicationsSection(props: any) {
                             {enableImportExport && (
                               <MenuItem
                                 cypressSelector="t--org-import-app"
-                                icon="upload"
+                                icon="download"
                                 onSelect={() =>
                                   setSelectedOrgIdForImportApplication(
                                     organization.id,
                                   )
                                 }
-                                text="Import Application"
-                              />
-                            )}
-                            {getFeatureFlags().GIT_IMPORT && (
-                              <MenuItem
-                                cypressSelector="t--org-import-app-git"
-                                icon="upload"
-                                onSelect={() => {
-                                  AnalyticsUtil.logEvent(
-                                    "GS_IMPORT_VIA_GIT_CLICK",
-                                  );
-                                  dispatch(
-                                    setIsImportAppViaGitModalOpen({
-                                      isOpen: true,
-                                      organizationId: organization.id,
-                                    }),
-                                  );
-                                }}
-                                text="Import Via GIT"
+                                text="Import"
                               />
                             )}
                             <MenuItem
@@ -909,11 +903,12 @@ function ApplicationsSection(props: any) {
                         )}
                         <MenuItem
                           icon="logout"
-                          onSelect={() =>
+                          onSelect={(e: React.MouseEvent) => {
+                            e.stopPropagation();
                             !warnLeavingOrganization
                               ? setWarnLeavingOrganization(true)
-                              : leaveOrg(organization.id)
-                          }
+                              : leaveOrg(organization.id);
+                          }}
                           text={
                             !warnLeavingOrganization
                               ? "Leave Organization"
@@ -926,7 +921,8 @@ function ApplicationsSection(props: any) {
                         {applications.length === 0 && hasManageOrgPermissions && (
                           <MenuItem
                             icon="trash"
-                            onSelect={() => {
+                            onSelect={(e: React.MouseEvent) => {
+                              e.stopPropagation();
                               warnDeleteOrg
                                 ? handleDeleteOrg(organization.id)
                                 : setWarnDeleteOrg(true);
@@ -1008,10 +1004,12 @@ function ApplicationsSection(props: any) {
       isMobile={isMobile}
     >
       {organizationsListComponent}
-      {getFeatureFlags().GIT_IMPORT && <ImportAppViaGitModal />}
+      {getFeatureFlags().GIT_IMPORT && <GitSyncModal isImport />}
+      <ReconnectDatasourceModal />
     </ApplicationContainer>
   );
 }
+
 type ApplicationProps = {
   applicationList: ApplicationPayload[];
   searchApplications: (keyword: string) => void;

@@ -12,7 +12,7 @@ import {
   APPLICATIONS_URL,
   matchApplicationPath,
   matchTemplatesPath,
-  TEMPLATES_URL,
+  TEMPLATES_PATH,
   TEMPLATES_ID_PATH,
   matchTemplatesIdPath,
 } from "constants/routes";
@@ -92,7 +92,7 @@ export function PageHeader(props: PageHeaderProps) {
     },
     {
       title: "Templates",
-      path: TEMPLATES_URL,
+      path: TEMPLATES_PATH,
       matcher: matchTemplatesPath,
     },
     {
@@ -138,7 +138,7 @@ export function PageHeader(props: PageHeaderProps) {
                   matchTemplatesPath(location.pathname) ||
                   matchTemplatesIdPath(location.pathname)
                 }
-                onClick={() => history.push(TEMPLATES_URL)}
+                onClick={() => history.push(TEMPLATES_PATH)}
               >
                 <div>Templates</div>
               </TabName>

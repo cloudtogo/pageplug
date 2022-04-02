@@ -16,17 +16,17 @@ import { getDatasources, getMockDatasources } from "selectors/entitiesSelector";
 import { Datasource, MockDatasource } from "entities/Datasource";
 import Text, { TextType } from "components/ads/Text";
 import scrollIntoView from "scroll-into-view-if-needed";
-import {
-  INTEGRATION_TABS,
-  INTEGRATION_EDITOR_URL,
-  INTEGRATION_EDITOR_MODES,
-} from "constants/routes";
+import { INTEGRATION_TABS, INTEGRATION_EDITOR_MODES } from "constants/routes";
 import { thinScrollbar } from "constants/DefaultTheme";
 import BackButton from "../DataSourceEditor/BackButton";
 import UnsupportedPluginDialog from "./UnsupportedPluginDialog";
 import { getQueryParams } from "utils/AppsmithUtils";
 import { getIsGeneratePageInitiator } from "utils/GenerateCrudUtil";
-import { getCurrentApplicationId } from "selectors/editorSelectors";
+import {
+  getCurrentApplicationId,
+  selectURLSlugs,
+} from "selectors/editorSelectors";
+import { integrationEditorURL } from "RouteBuilder";
 
 const HeaderFlex = styled.div`
   display: flex;
@@ -120,6 +120,8 @@ type IntegrationsHomeScreenProps = {
   dataSources: Datasource[];
   mockDatasources: MockDatasource[];
   applicationId: string;
+  applicationSlug: string;
+  pageSlug: string;
 };
 
 type IntegrationsHomeScreenState = {
@@ -337,7 +339,13 @@ class IntegrationsHomeScreen extends React.Component<
   };
 
   componentDidMount() {
-    const { applicationId, dataSources, history, pageId } = this.props;
+    const {
+      applicationSlug,
+      dataSources,
+      history,
+      pageId,
+      pageSlug,
+    } = this.props;
 
     const queryParams = getQueryParams();
     const redirectMode = queryParams.mode;
@@ -347,13 +355,13 @@ class IntegrationsHomeScreen extends React.Component<
         delete queryParams.mode;
         delete queryParams.from;
         history.replace(
-          INTEGRATION_EDITOR_URL(
-            applicationId,
+          integrationEditorURL({
+            applicationSlug,
+            pageSlug,
             pageId,
-            INTEGRATION_TABS.NEW,
-            "",
-            queryParams,
-          ),
+            selectedTab: INTEGRATION_TABS.NEW,
+            params: queryParams,
+          }),
         );
       }
     } else if (
@@ -362,12 +370,22 @@ class IntegrationsHomeScreen extends React.Component<
     ) {
       // User will be taken to active tab if there are datasources
       history.replace(
-        INTEGRATION_EDITOR_URL(applicationId, pageId, INTEGRATION_TABS.ACTIVE),
+        integrationEditorURL({
+          applicationSlug,
+          pageSlug,
+          pageId,
+          selectedTab: INTEGRATION_TABS.ACTIVE,
+        }),
       );
     } else if (redirectMode === INTEGRATION_EDITOR_MODES.MOCK) {
       // If there are no datasources -> new user
       history.replace(
-        INTEGRATION_EDITOR_URL(applicationId, pageId, INTEGRATION_TABS.NEW),
+        integrationEditorURL({
+          applicationSlug,
+          pageSlug,
+          pageId,
+          selectedTab: INTEGRATION_TABS.NEW,
+        }),
       );
       this.onSelectSecondaryMenu(
         getSecondaryMenuIds(dataSources.length > 0).MOCK_DATABASE,
@@ -379,10 +397,21 @@ class IntegrationsHomeScreen extends React.Component<
 
   componentDidUpdate(prevProps: Props) {
     this.syncActivePrimaryMenu();
-    const { applicationId, dataSources, history, pageId } = this.props;
+    const {
+      applicationSlug,
+      dataSources,
+      history,
+      pageId,
+      pageSlug,
+    } = this.props;
     if (dataSources.length === 0 && prevProps.dataSources.length > 0) {
       history.replace(
-        INTEGRATION_EDITOR_URL(applicationId, pageId, INTEGRATION_TABS.NEW),
+        integrationEditorURL({
+          applicationSlug,
+          pageSlug,
+          pageId,
+          selectedTab: INTEGRATION_TABS.NEW,
+        }),
       );
       this.onSelectSecondaryMenu(
         getSecondaryMenuIds(dataSources.length > 0).MOCK_DATABASE,
@@ -391,18 +420,26 @@ class IntegrationsHomeScreen extends React.Component<
   }
 
   onSelectPrimaryMenu = (activePrimaryMenuId: number) => {
-    const { applicationId, dataSources, history, pageId } = this.props;
+    const {
+      applicationSlug,
+      dataSources,
+      history,
+      pageId,
+      pageSlug,
+    } = this.props;
     if (activePrimaryMenuId === this.state.activePrimaryMenuId) {
       return;
     }
     history.push(
-      INTEGRATION_EDITOR_URL(
-        applicationId,
+      integrationEditorURL({
+        applicationSlug,
+        pageSlug,
         pageId,
-        activePrimaryMenuId === PRIMARY_MENU_IDS.ACTIVE
-          ? INTEGRATION_TABS.ACTIVE
-          : INTEGRATION_TABS.NEW,
-      ),
+        selectedTab:
+          activePrimaryMenuId === PRIMARY_MENU_IDS.ACTIVE
+            ? INTEGRATION_TABS.ACTIVE
+            : INTEGRATION_TABS.NEW,
+      }),
     );
     this.setState({
       activeSecondaryMenuId:
@@ -547,11 +584,14 @@ class IntegrationsHomeScreen extends React.Component<
 }
 
 const mapStateToProps = (state: AppState) => {
+  const { applicationSlug, pageSlug } = selectURLSlugs(state);
   return {
     dataSources: getDatasources(state),
     mockDatasources: getMockDatasources(state),
     isCreating: state.ui.apiPane.isCreating,
     applicationId: getCurrentApplicationId(state),
+    applicationSlug,
+    pageSlug,
   };
 };
 
