@@ -207,12 +207,6 @@ function* getDefaultPluginsSaga() {
   }
 }
 
-type GetPluginFormConfigParams = { id: string; type: string };
-
-function* getPluginFormConfig({ id }: GetPluginFormConfigParams) {
-  yield call(checkAndGetPluginFormConfigsSaga, id);
-}
-
 function* root() {
   yield all([
     takeEvery(ReduxActionTypes.FETCH_PLUGINS_REQUEST, fetchPluginsSaga),

@@ -25,7 +25,6 @@ import ApplicationApi, {
   ApplicationResponsePayload,
   FetchUnconfiguredDatasourceListResponse,
 } from "api/ApplicationApi";
-import PageApi from "api/PageApi";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 
 import { validateResponse } from "./ErrorSagas";

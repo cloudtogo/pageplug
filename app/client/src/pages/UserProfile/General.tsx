@@ -108,9 +108,7 @@ function General() {
           {!isFetchingUser && <Text type={TextType.P1}>{user?.email}</Text>}
 
           {!disableLoginForm && (
-            <ForgotPassword onClick={forgotPassword}>
-              重置密码
-            </ForgotPassword>
+            <ForgotPassword onClick={forgotPassword}>重置密码</ForgotPassword>
           )}
         </div>
       </FieldWrapper>

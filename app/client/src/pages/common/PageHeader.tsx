@@ -61,6 +61,37 @@ const PagePlugLogoImg = styled.img`
   height: 32px;
 `;
 
+const StyledTwoLineHamburger = styled(TwoLineHamburger)`
+  fill: ${Colors.BLACK};
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+`;
+
+const Tabs = styled.div`
+  display: flex;
+  font-size: 16px;
+  line-height: 24px;
+  box-sizing: border-box;
+  margin-left: ${(props) => props.theme.spaces[16]}px;
+  height: 100%;
+  gap: ${(props) => `${props.theme.spaces[0]}px ${props.theme.spaces[12]}px`};
+  flex: 1;
+  padding-top: ${(props) => props.theme.spaces[1]}px;
+`;
+const TabName = styled.div<{ isSelected: boolean }>`
+  color: ${Colors.GRAY};
+  border-bottom: 2px solid transparent;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  ${(props) =>
+    props.isSelected &&
+    `border-bottom: 2px solid ${Colors.CRUSTA};
+  color: ${Colors.COD_GRAY};`}
+  cursor: pointer;
+`;
+
 type PageHeaderProps = {
   user?: User;
   hideShadow?: boolean;

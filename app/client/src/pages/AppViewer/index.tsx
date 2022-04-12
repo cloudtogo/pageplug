@@ -32,7 +32,6 @@ import {
 } from "actions/metaActions";
 import { editorInitializer } from "utils/EditorUtils";
 import * as Sentry from "@sentry/react";
-import { getViewModePageList } from "selectors/editorSelectors";
 import { getViewModePageList, getShowTabBar } from "selectors/editorSelectors";
 import AddCommentTourComponent from "comments/tour/AddCommentTourComponent";
 import CommentShowCaseCarousel from "comments/CommentsShowcaseCarousel";

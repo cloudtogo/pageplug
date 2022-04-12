@@ -315,10 +315,7 @@ abstract class BaseWidget<
   }
 
   addTaroWrapper = (content: ReactNode, type: WidgetType) => {
-    if (
-      type === "TARO_BOTTOM_BAR_WIDGET" ||
-      type === "TARO_POPUP_WIDGET"
-    ) {
+    if (type === "TARO_BOTTOM_BAR_WIDGET" || type === "TARO_POPUP_WIDGET") {
       return <div style={{ height: 0 }}>{content}</div>;
     }
     if (type === "TARO_LOADING_WIDGET") {
@@ -328,7 +325,7 @@ abstract class BaseWidget<
     }
     return content;
   };
-  
+
   addPreviewModeWidget(content: ReactNode): React.ReactElement {
     return (
       <PreviewModeComponent isVisible={this.props.isVisible}>

@@ -74,9 +74,7 @@ function GeneratePage() {
         <Heading> {heading}</Heading>
       </HeadingContainer>
       {isGenerateFormPage ? (
-        <SubHeading>
-          自动为你的数据创建增删改查页面
-        </SubHeading>
+        <SubHeading>自动为你的数据创建增删改查页面</SubHeading>
       ) : null}
 
       <PageContent />

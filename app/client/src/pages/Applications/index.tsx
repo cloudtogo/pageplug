@@ -11,7 +11,8 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import MediaQuery from "react-responsive";
 import { useLocation } from "react-router-dom";
 import { AppState } from "reducers";
-import { Classes as BlueprintClasses } from "@blueprintjs/core";
+import Spinner from "components/ads/Spinner";
+import { Classes as BlueprintClasses, Card } from "@blueprintjs/core";
 import {
   thinScrollbar,
   truncateTextUsingEllipsis,
@@ -515,6 +516,53 @@ const ApplicationsWrapper = styled.div<{ isMobile: boolean }>`
   `}
 `;
 
+const spreadKeyframes = (init: number) => {
+  const frames = Array.from(Array(21))
+    .map((a, i) => {
+      return `
+        ${i * 5}% { --spread: ${init + i}px; }
+      `;
+    })
+    .join("\n");
+  return keyframes`${frames}`;
+};
+
+const ApplicationAddCardWrapper = styled(Card)`
+  --spread: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: ${(props) => props.theme.colors.applications.bg};
+  align-items: center;
+  width: ${(props) => props.theme.card.minWidth}px;
+  height: ${(props) => props.theme.card.minHeight}px;
+  position: relative;
+  box-shadow: inset 0 0 20px #dcdcdc;
+  border-radius: 6px;
+  padding: 0;
+  margin: ${(props) => props.theme.spaces[5]}px;
+  a {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: calc(100% - ${(props) => props.theme.card.titleHeight}px);
+    width: 100%;
+  }
+  cursor: pointer;
+  &:hover {
+    animation: ${spreadKeyframes(20)} 0.6s infinite;
+  }
+  .t--create-app-popup svg path {
+    color: ${(props) => props.theme.colors.applications.iconColor};
+    stroke: ${(props) => props.theme.colors.applications.iconColor};
+    fill: ${(props) => props.theme.colors.applications.iconColor};
+  }
+  .createnew {
+    color: ${(props) => props.theme.colors.applications.textColor};
+  }
+`;
+
 function ApplicationsSection(props: any) {
   const enableImportExport = true;
   const dispatch = useDispatch();
@@ -798,6 +846,7 @@ function ApplicationsSection(props: any) {
                                   applications.map((el: any) => el.name),
                                 ),
                                 organization.id,
+                                isMobile,
                               );
                             }
                           }}
@@ -981,6 +1030,7 @@ function ApplicationsSection(props: any) {
                               applications.map((el: any) => el.name),
                             ),
                             organization.id,
+                            isMobile,
                           );
                         }
                       }}

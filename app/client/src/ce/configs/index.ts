@@ -47,7 +47,7 @@ export interface INJECTED_CONFIGS {
   googleRecaptchaSiteKey: string;
   supportEmail: string;
   inCloudOS: boolean;
-};
+}
 declare global {
   interface Window {
     APPSMITH_FEATURE_CONFIGS: INJECTED_CONFIGS;

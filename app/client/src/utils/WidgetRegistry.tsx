@@ -143,7 +143,6 @@ import VideoWidget, {
 } from "widgets/VideoWidget";
 import { registerWidget, WidgetConfiguration } from "./WidgetRegisterHelpers";
 
-
 // import FormilyWidget, {
 //   FormilyWidgetProps,
 //   ProfiledFormilyWidget,

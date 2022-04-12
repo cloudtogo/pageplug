@@ -48,7 +48,6 @@ import MultiSwitchControl, {
 import MenuItemsControl from "./MenuItemsControl";
 import ButtonListControl from "./ButtonListControl";
 import IconSelectControl from "./IconSelectControl";
-import IconAlignControl from "./IconAlignControl";
 import FormilyControl from "./FormilyControl";
 import CellControl from "./taro/CellControl";
 import RadioControl from "./RadioControl";
@@ -86,7 +85,6 @@ export const PropertyControls = {
   MenuItemsControl,
   ButtonListControl,
   IconSelectControl,
-  IconAlignControl,
   FormilyControl,
   CellControl,
   RadioControl,
