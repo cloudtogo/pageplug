@@ -55,7 +55,7 @@ import localStorage from "utils/localStorage";
 import { Toaster } from "components/ads/Toast";
 import { Variant } from "components/ads/common";
 import log from "loglevel";
-import { getAppsmithConfigs } from "configs";
+import { getAppsmithConfigs } from "@appsmith/configs";
 
 import { getCurrentUser } from "selectors/usersSelectors";
 import {
@@ -493,20 +493,6 @@ export function* updateUsersCommentsOnboardingState(
     });
   } catch (error) {
     log.error(error);
-  }
-}
-
-function* fetchFeatureFlags() {
-  try {
-    const response: ApiResponse = yield call(UserApi.fetchFeatureFlags);
-    const isValidResponse: boolean = yield validateResponse(response);
-    if (isValidResponse) {
-      (window as any).FEATURE_FLAGS = response.data;
-      yield put(fetchFeatureFlagsSuccess());
-    }
-  } catch (error) {
-    log.error(error);
-    yield put(fetchFeatureFlagsError(error));
   }
 }
 

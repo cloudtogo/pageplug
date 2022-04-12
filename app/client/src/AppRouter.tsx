@@ -58,7 +58,7 @@ import { ERROR_CODES } from "ce/constants/ApiConstants";
 import TemplatesListLoader from "pages/Templates/loader";
 import getFeatureFlags from "utils/featureFlags";
 
-import { getAppsmithConfigs } from "configs";
+import { getAppsmithConfigs } from "@appsmith/configs";
 const { inCloudOS } = getAppsmithConfigs();
 
 const SentryRoute = Sentry.withSentryRouting(Route);

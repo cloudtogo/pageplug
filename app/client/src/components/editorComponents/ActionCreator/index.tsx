@@ -29,8 +29,6 @@ import Fields, {
   ACTION_ANONYMOUS_FUNC_REGEX,
   ACTION_TRIGGER_REGEX,
   ActionType,
-  ACTION_ANONYMOUS_FUNC_REGEX,
-  ACTION_TRIGGER_REGEX,
   FieldType,
 } from "./Fields";
 import { getDataTree } from "selectors/dataTreeSelectors";

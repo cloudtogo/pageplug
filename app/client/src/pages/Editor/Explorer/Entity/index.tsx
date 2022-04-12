@@ -104,7 +104,11 @@ export const EntityItem = styled.div<{
   border-bottom: ${(props) =>
     props.highlight ? `1px solid ${Colors.MINT_GREEN}` : "none"};
   background: ${(props) =>
-    props.active ? Colors.MINT_GREEN_LIGHT : props.isSticky ? Colors.WHITE : "none"};
+    props.active
+      ? Colors.MINT_GREEN_LIGHT
+      : props.isSticky
+      ? Colors.WHITE
+      : "none"};
   height: 36px;
   width: 100%;
   display: inline-grid;

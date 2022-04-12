@@ -16,10 +16,7 @@ import {
 import { Tabbar } from "@taroify/core";
 import { createVanIconComponent } from "@taroify/icons/van";
 import history from "utils/history";
-import {
-  BUILDER_PAGE_URL,
-  getApplicationViewerPageURL,
-} from "constants/routes";
+import { builderURL, viewerURL } from "RouteBuilder";
 
 const TabBarContainer = styled.div`
   position: fixed;
@@ -51,11 +48,13 @@ const TabBar = ({
   showTabBar,
 }: TabbarProps) => {
   const jumpTo = (target: string) => {
-    const urlBuilder =
-      mode === APP_MODE.PUBLISHED
-        ? getApplicationViewerPageURL
-        : BUILDER_PAGE_URL;
-    history.push(urlBuilder(currentApplicationDetails?.id, target));
+    const urlBuilder = mode === APP_MODE.PUBLISHED ? viewerURL : builderURL;
+    history.push(
+      urlBuilder({
+        applicationSlug: currentApplicationDetails?.slug,
+        pageId: target,
+      }),
+    );
   };
 
   if (!showTabBar) {

@@ -2,9 +2,7 @@ import React, { useEffect } from "react";
 import styled, { createGlobalStyle, withTheme } from "styled-components";
 import { Popover, Position } from "@blueprintjs/core";
 
-import DocumentationSearch, {
-  bootIntercom,
-} from "components/designSystems/appsmith/help/DocumentationSearch";
+import DocumentationSearch from "components/designSystems/appsmith/help/DocumentationSearch";
 import Icon, { IconSize } from "components/ads/Icon";
 
 import { HELP_MODAL_WIDTH } from "constants/HelpConstants";

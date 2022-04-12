@@ -38,8 +38,7 @@ class ImageWidget extends BaseWidget<ImageWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.IMAGE_URL },
           },
           {
-            helpText:
-              "设置图片填充父容器的方式",
+            helpText: "设置图片填充父容器的方式",
             propertyName: "objectFit",
             label: "图片填充方式",
             controlType: "DROP_DOWN",

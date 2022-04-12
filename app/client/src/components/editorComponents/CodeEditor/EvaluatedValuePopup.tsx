@@ -27,6 +27,7 @@ import { Severity } from "@sentry/react";
 import { CodeEditorExpected } from "components/editorComponents/CodeEditor/index";
 import { Indices, Layers } from "constants/Layers";
 import { Variant } from "components/ads/common";
+import { Colors } from "constants/Colors";
 
 const modifiers: IPopoverSharedProps["modifiers"] = {
   offset: {
@@ -178,16 +179,6 @@ function copyContent(content: any) {
     text: `Evaluated value copied to clipboard`,
     variant: Variant.success,
   });
-}
-
-function CollapseToggle(props: { isOpen: boolean }) {
-  const { isOpen } = props;
-  return (
-    <StyledIcon
-      className={isOpen ? "open-collapse" : ""}
-      icon={IconNames.CHEVRON_RIGHT}
-    />
-  );
 }
 
 interface Props {

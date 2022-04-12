@@ -6,7 +6,6 @@ import Entity, { EntityClassNames } from "../Entity";
 import { datasourceTableIcon } from "../ExplorerIcons";
 import { EntityTogglesWrapper } from "../ExplorerStyledComponents";
 import styled from "styled-components";
-import { Colors } from "constants/Colors";
 import QueryTemplates from "./QueryTemplates";
 import DatasourceField from "./DatasourceField";
 import { DatasourceTable } from "entities/Datasource";

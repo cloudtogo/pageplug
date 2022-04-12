@@ -6,7 +6,7 @@ import { Classes } from "@blueprintjs/core";
 import { AlertIcons } from "icons/AlertIcons";
 import { IconProps } from "constants/IconConstants";
 import { JSXElementConstructor } from "react";
-import { getAppsmithConfigs } from "configs";
+import { getAppsmithConfigs } from "@appsmith/configs";
 const { inCloudOS } = getAppsmithConfigs();
 import { typography, Typography, TypographyKeys } from "./typography";
 export type FontFamily = typeof FontFamilies[keyof typeof FontFamilies];
