@@ -486,6 +486,7 @@ export const entityDefinitions: Record<string, unknown> = {
     "!doc": "表单",
     "!url": "https://docs.appsmith.com/widget-reference/input",
     formData: "any",
+  },
   //TODO: fix this after development
   SINGLE_SELECT_TREE_WIDGET: {
     "!doc":

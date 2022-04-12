@@ -24,7 +24,9 @@ const SentryRoute = Sentry.withSentryRouting(Route);
 const Container = styled.div`
   display: flex;
   height: calc(
-    100vh - ${(props) => props.theme.inCloudOS ? "0px" : props.theme.smallHeaderHeight} -
+    100vh -
+      ${(props) =>
+        props.theme.inCloudOS ? "0px" : props.theme.smallHeaderHeight} -
       ${(props) => props.theme.bottomBarHeight}
   );
   background-color: ${(props) => props.theme.appBackground};
@@ -35,11 +37,11 @@ function MainContainer() {
     DEFAULT_ENTITY_EXPLORER_WIDTH,
   );
 
-const EditorContainer = styled.div`
-  position: relative;
-  width: calc(100vw - ${(props) => props.theme.sidebarWidth});
-  transform: translate(0, 0);
-`;
+  const EditorContainer = styled.div`
+    position: relative;
+    width: calc(100vw - ${(props) => props.theme.sidebarWidth});
+    transform: translate(0, 0);
+  `;
   /**
    * on entity explorer sidebar width change
    *

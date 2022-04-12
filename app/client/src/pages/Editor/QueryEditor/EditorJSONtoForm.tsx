@@ -922,9 +922,7 @@ export function EditorJSONtoForm(props: Props) {
                           renderConfig(editorConfig)
                         ) : (
                           <>
-                            <ErrorMessage>
-                              发生了意想不到的情况
-                            </ErrorMessage>
+                            <ErrorMessage>发生了意想不到的情况</ErrorMessage>
                             <Tag
                               intent="warning"
                               interactive
@@ -938,9 +936,7 @@ export function EditorJSONtoForm(props: Props) {
                         )}
                         {dataSources.length === 0 && (
                           <NoDataSourceContainer>
-                            <p className="font18">
-                              暂无数据源
-                            </p>
+                            <p className="font18">暂无数据源</p>
                             <EditorButton
                               filled
                               icon="plus"
@@ -982,7 +978,9 @@ export function EditorJSONtoForm(props: Props) {
                   <ResultsCount>
                     <Text type={TextType.P3}>
                       结果:
-                      <Text type={TextType.H5}>{`${output.length} 条记录`}</Text>
+                      <Text
+                        type={TextType.H5}
+                      >{`${output.length} 条记录`}</Text>
                     </Text>
                   </ResultsCount>
                 )}

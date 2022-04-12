@@ -9,8 +9,8 @@ import {
   BACK_TO_HOMEPAGE,
   createMessage,
   PAGE_NOT_FOUND,
-} from "constants/messages";
-import { getAppsmithConfigs } from "configs";
+} from "@appsmith/constants/messages";
+import { getAppsmithConfigs } from "@appsmith/configs";
 const { inCloudOS } = getAppsmithConfigs();
 
 const Wrapper = styled.div`

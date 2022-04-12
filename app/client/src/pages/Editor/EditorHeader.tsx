@@ -60,6 +60,7 @@ import { OrgUser } from "constants/orgConstants";
 
 import { getIsGitConnected } from "../../selectors/gitSyncSelectors";
 import TooltipComponent from "components/ads/Tooltip";
+import { IconWrapper } from "components/ads/Icon";
 import { Position } from "@blueprintjs/core/lib/esnext/common";
 import {
   CLOSE_ENTITY_EXPLORER_MESSAGE,
@@ -154,6 +155,20 @@ const PagePlugLogoImg = styled.img`
   height: 28px;
 `;
 
+const AppsmithLink = styled((props) => {
+  // we are removing non input related props before passing them in the components
+  // eslint-disable @typescript-eslint/no-unused-vars
+  return <Link {...props} />;
+})`
+  height: 20px;
+  width: 20px;
+  display: inline-block;
+  img {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
 const DeploySection = styled.div`
   display: flex;
 `;
@@ -166,29 +181,6 @@ const StyledInviteButton = styled(Button)`
   ${(props) => getTypographyByKey(props, "btnLarge")}
   padding: ${(props) => props.theme.spaces[2]}px;
   border-radius: 0;
-`;
-
-const BindingBanner = styled.div`
-  position: fixed;
-  width: 199px;
-  height: 36px;
-  left: 50%;
-  top: ${(props) => props.theme.smallHeaderHeight};
-  transform: translate(-50%, 0);
-  text-align: center;
-  background: ${Colors.DANUBE};
-
-  color: ${Colors.WHITE};
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 20px;
-  /* Depth: 01 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.1);
-  z-index: 9999;
 `;
 
 const CloudOSHeader = styled.div`
@@ -285,9 +277,9 @@ type EditorHeaderProps = {
   inCloudOS: any;
 };
 
-const GlobalSearch = lazy(() => {
-  return retryPromise(() => import("components/editorComponents/GlobalSearch"));
-});
+// const GlobalSearch = lazy(() => {
+//   return retryPromise(() => import("components/editorComponents/GlobalSearch"));
+// });
 
 export function ShareButtonComponent() {
   return (
@@ -317,9 +309,8 @@ export function EditorHeader(props: EditorHeaderProps) {
   const isErroredSavingName = useSelector(getIsErroredSavingAppName);
   const applicationList = useSelector(getApplicationList);
   const user = useSelector(getCurrentUser);
-  const [lastUpdatedTimeMessage, setLastUpdatedTimeMessage] = useState<string>(
-    "",
-  );
+  const shouldHideComments = useHideComments();
+  const isPreviewMode = useSelector(previewModeSelector);
 
   useEffect(() => {
     if (window.location.href) {
@@ -329,14 +320,6 @@ export function EditorHeader(props: EditorHeaderProps) {
       dispatch(setSnipingModeAction(updatedIsSnipingMode));
     }
   }, [location]);
-
-  const findLastUpdatedTimeMessage = () => {
-    setLastUpdatedTimeMessage(
-      lastUpdatedTime
-        ? `上次保存于 ${moment(lastUpdatedTime * 1000).fromNow()}`
-        : "",
-    );
-  };
 
   useEffect(() => {
     if (window.location.href) {
@@ -361,33 +344,6 @@ export function EditorHeader(props: EditorHeaderProps) {
     }
   };
 
-  let saveStatusIcon: React.ReactNode;
-  if (isSaving) {
-    saveStatusIcon = <ThreeDotLoading className="t--save-status-is-saving" />;
-  } else {
-    if (!pageSaveError) {
-      saveStatusIcon = (
-        <TooltipComponent content={lastUpdatedTimeMessage} hoverOpenDelay={200}>
-          <HeaderIcons.SAVE_SUCCESS
-            className="t--save-status-success header-status-icon"
-            color={"#36AB80"}
-            height={20}
-            width={20}
-          />
-        </TooltipComponent>
-      );
-    } else {
-      saveStatusIcon = (
-        <HeaderIcons.SAVE_FAILURE
-          className={"t--save-status-error header-status-icon"}
-          color={"#F69D2C"}
-          height={20}
-          width={20}
-        />
-      );
-    }
-  }
-
   const updateApplicationDispatch = (
     id: string,
     data: { name: string; currentApp: boolean },
@@ -398,24 +354,6 @@ export function EditorHeader(props: EditorHeaderProps) {
   const showAppInviteUsersDialog = useSelector(
     showAppInviteUsersDialogSelector,
   );
-
-  if (inCloudOS) {
-    return (
-      <ThemeProvider theme={props.lightTheme}>
-        <CloudOSHeader>
-          {saveStatusIcon}
-          <span style={{ color: "#8a8a8a" }}>{lastUpdatedTimeMessage}</span>
-          <StyledDeployButton
-            className="t--application-publish-btn"
-            isLoading={isPublishing}
-            onClick={handlePublish}
-            size={Size.small}
-            text={"提交"}
-          />
-        </CloudOSHeader>
-      </ThemeProvider>
-    );
-  }
 
   const handleClickDeploy = useCallback(
     (fromDeploy?: boolean) => {
@@ -458,18 +396,86 @@ export function EditorHeader(props: EditorHeaderProps) {
   );
   const { applicationSlug, pageSlug } = useSelector(selectURLSlugs);
 
+  if (inCloudOS) {
+    return (
+      <ThemeProvider theme={props.lightTheme}>
+        <CloudOSHeader>
+          <EditorSaveIndicator />
+          <span style={{ color: "#8a8a8a" }}>上次保存时间是</span>
+          <StyledDeployButton
+            className="t--application-publish-btn"
+            isLoading={isPublishing}
+            onClick={handlePublish}
+            size={Size.small}
+            text={"提交"}
+          />
+        </CloudOSHeader>
+      </ThemeProvider>
+    );
+  }
+
   return (
-    <ThemeProvider theme={props.lightTheme}>
-      <HeaderWrapper>
-        <HeaderSection>
-          <Link style={{ height: 28 }} to={APPLICATIONS_URL}>
-            <PagePlugLogoImg
-              alt="PagePlug logo"
-              className="t--appsmith-logo"
-              src={PagePlugLogo}
-            />
-          </Link>
-          <Boxed step={OnboardingStep.FINISH}>
+    <ThemeProvider theme={theme}>
+      <HeaderWrapper className="pr-3">
+        <HeaderSection className="space-x-3">
+          <HamburgerContainer className="text-gray-800 transform transition-all duration-400 relative p-0 flex items-center justify-center">
+            <TooltipComponent
+              content={
+                <div className="flex justify-between items-center">
+                  <span>
+                    {!pinned
+                      ? createMessage(LOCK_ENTITY_EXPLORER_MESSAGE)
+                      : createMessage(CLOSE_ENTITY_EXPLORER_MESSAGE)}
+                  </span>
+                  <span className="ml-4 text-xs text-gray-300">
+                    {modText()} /
+                  </span>
+                </div>
+              }
+              position="bottom-left"
+            >
+              <div
+                className="relative w-4 h-4 text-trueGray-600 group t--pin-entity-explorer"
+                onMouseEnter={onMenuHover}
+              >
+                <MenuIcon className="absolute w-4 h-4 transition-opacity fill-current cursor-pointer group-hover:opacity-0" />
+                {!pinned && (
+                  <UnpinIcon
+                    className="absolute w-4 h-4 transition-opacity opacity-0 cursor-pointer fill-current group-hover:opacity-100"
+                    onClick={onPin}
+                  />
+                )}
+                {pinned && (
+                  <PinIcon
+                    className="absolute w-4 h-4 transition-opacity opacity-0 cursor-pointer fill-current group-hover:opacity-100"
+                    onClick={onPin}
+                  />
+                )}
+              </div>
+            </TooltipComponent>
+          </HamburgerContainer>
+          <TooltipComponent
+            content={createMessage(LOGO_TOOLTIP)}
+            hoverOpenDelay={TOOLTIP_HOVER_ON_DELAY}
+            position={Position.BOTTOM_LEFT}
+          >
+            <AppsmithLink to={APPLICATIONS_URL}>
+              <PagePlugLogoImg
+                alt="PagePlug logo"
+                className="t--appsmith-logo"
+                src={PagePlugLogo}
+              />
+            </AppsmithLink>
+          </TooltipComponent>
+
+          <TooltipComponent
+            autoFocus={false}
+            content={createMessage(RENAME_APPLICATION_TOOLTIP)}
+            disabled={isPopoverOpen}
+            hoverOpenDelay={TOOLTIP_HOVER_ON_DELAY}
+            openOnTargetFocus={false}
+            position={Position.BOTTOM}
+          >
             <EditorAppName
               applicationId={applicationId}
               className="t--application-name editable-application-name max-w-48"
@@ -504,12 +510,23 @@ export function EditorHeader(props: EditorHeaderProps) {
             <ToggleModeButton showSelectedMode={!isPopoverOpen} />
           )}
         </HeaderSection>
-        <HeaderSection>{/* <HelpBar /><HelpButton /> */}</HeaderSection>
-        <HeaderSection>
-          <Boxed step={OnboardingStep.FINISH}>
-            <SaveStatusContainer className={"t--save-status-container"}>
-              {saveStatusIcon}
-            </SaveStatusContainer>
+        <HeaderSection
+          className={classNames({
+            "-translate-y-full opacity-0": isPreviewMode,
+            "translate-y-0 opacity-100": !isPreviewMode,
+            "transition-all transform duration-400": true,
+          })}
+        >
+          <HelpBar />
+          <HelpButton />
+        </HeaderSection>
+        <HeaderSection className="space-x-3">
+          <EditorSaveIndicator />
+          <Boxed
+            alternative={<EndTour />}
+            step={GUIDED_TOUR_STEPS.BUTTON_ONSUCCESS_BINDING}
+          >
+            <RealtimeAppEditors applicationId={applicationId} />
             <FormDialogComponent
               Form={AppInviteUsersForm}
               applicationId={applicationId}
@@ -522,12 +539,21 @@ export function EditorHeader(props: EditorHeaderProps) {
               orgId={orgId}
               title={currentApplication ? currentApplication.name : "分享应用"}
               trigger={
-                <Button
-                  className="t--application-share-btn header__application-share-btn"
-                  icon={"share"}
-                  size={Size.small}
-                  text={"分享"}
-                />
+                <TooltipComponent
+                  content={
+                    filteredSharedUserList.length
+                      ? createMessage(
+                          SHARE_BUTTON_TOOLTIP_WITH_USER(
+                            filteredSharedUserList.length,
+                          ),
+                        )
+                      : createMessage(SHARE_BUTTON_TOOLTIP)
+                  }
+                  hoverOpenDelay={TOOLTIP_HOVER_ON_DELAY}
+                  position={Position.BOTTOM}
+                >
+                  <ShareButtonComponent />
+                </TooltipComponent>
               }
             />
             <DeploySection>
@@ -572,8 +598,9 @@ export function EditorHeader(props: EditorHeaderProps) {
             </ProfileDropdownContainer>
           )}
         </HeaderSection>
-        <OnboardingHelper />
-        <GlobalSearch />
+        {/* <Suspense fallback={<span />}>
+          <GlobalSearch />
+        </Suspense> */}
         {isSnipingMode && (
           <BindingBanner className="t--sniping-mode-banner">
             选择一个组件绑定
