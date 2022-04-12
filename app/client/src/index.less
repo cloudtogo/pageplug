@@ -1,6 +1,8 @@
 @import "~normalize.css";
 @import "~@blueprintjs/core/lib/css/blueprint.css";
 @import "~@blueprintjs/icons/lib/css/blueprint-icons.css";
+@import "theme/colors.css";
+@import "theme/defaultTheme.css";
 @import '~antd/dist/antd.less';
 
 body {
@@ -8,6 +10,7 @@ body {
   padding: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #FFF !important;
 
   .taro-img__mode-aspectfit {
     vertical-align: top;
@@ -16,19 +19,6 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
   }
-}
-
-body.dragging *{
-  cursor: grabbing !important;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
-}
-
-* {
-  outline: none !important;
 }
 
 * ::-webkit-scrollbar {
@@ -42,19 +32,37 @@ code {
   transition: all 0.25s ease-in-out;
 }
 
+body.dragging *{
+  cursor: grabbing !important;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+  monospace;
+}
+
+* {
+  outline: none !important;
+}
+
 div.bp3-select-popover .bp3-popover-content {
   padding: 0;
 }
 
 span.bp3-popover-target {
-  display: block;
+  display: flex;
+  width: 100%;
+}
+
+span.bp3-popover-target > * {
+  flex-grow: 1;
 }
 
 div.bp3-popover-arrow {
-  display:none;
+  display: none;
 }
 
-.bp3-button.bp3-loading{
+.bp3-button.bp3-loading {
   cursor: default !important;
 }
 
@@ -65,7 +73,9 @@ div.bp3-popover-arrow {
 .Toastify__toast {
   padding: 0 !important;
   border-radius: 4px !important;
+  box-shadow: none !important;
 }
+
 .Toastify__toast-body {
   margin: 0 !important;
 }
@@ -95,26 +105,14 @@ div.bp3-popover-arrow {
   margin-top: 8px !important;
 }
 
-.bp3-popover, .bp3-popover2, .bp3-popover2 .bp3-popover2-content, .bp3-popover .bp3-popover-content {
-  border-radius: 3px !important;
-}
-
-// .bp3-overlay-backdrop {
-//   background-color: #ebfaf5ad;
-// }
-
-.bp3-dialog {
-  box-shadow: 0 0 0 6px @primary-color;
-}
-
-// .bp3-popover, .bp3-popover2, .bp3-submenu.bp3-popover > .bp3-popover-content {
-//   box-shadow: 0 0 16px rgba(0, 0, 0, 0.03) !important;
-// }
-
-.layout-control.bp3-popover.bp3-minimal{
+.layout-control.bp3-popover.bp3-minimal {
   margin-top: 8px !important;
 }
 
+.bp3-popover.none-shadow-popover {
+  box-shadow: none;
+  border: 0px;
+}
 
 .bp3-datepicker {
   border-radius: 0 !important;
@@ -125,7 +123,7 @@ div.bp3-popover-arrow {
   border-color: #E7E7E7 !important;
 }
 
-.tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type), .tox .tox-statusbar  {
+.tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type), .tox .tox-statusbar {
   border-color: #E7E7E7 !important;
 }
 
@@ -133,6 +131,7 @@ div.bp3-popover-arrow {
   background: white !important;
   border-bottom: 1px solid #E7E7E7 !important;
 }
+
 /* making both the Modal layer and the Dropdown layer */
 .bp3-modal-widget, .appsmith_widget_0 > .bp3-portal {
   z-index: 2 !important;
@@ -141,6 +140,18 @@ div.bp3-popover-arrow {
 /* Portals on the Modal widget */
 .bp3-modal-widget .bp3-portal {
   z-index: 21 !important;
+}
+
+.bp3-overlay-backdrop {
+  background-color: rgba(16, 22, 26, 0.7) !important;
+}
+
+.bp3-popover, .bp3-popover2, .bp3-popover2 .bp3-popover2-content, .bp3-popover .bp3-popover-content {
+  border-radius: 3px !important;
+}
+
+.bp3-dialog {
+  box-shadow: 0 0 0 6px @primary-color;
 }
 
 .full-height-form {

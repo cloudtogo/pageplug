@@ -13,8 +13,7 @@ export const getModalDropdownList = createSelector(
   (widgets) => {
     const modalWidgets = Object.values(widgets).filter(
       (widget: FlattenedWidgetProps) =>
-        widget.type === "MODAL_WIDGET" ||
-        widget.type === "TARO_POPUP_WIDGET",
+        widget.type === "MODAL_WIDGET" || widget.type === "TARO_POPUP_WIDGET",
     );
     if (modalWidgets.length === 0) return undefined;
 
@@ -27,9 +26,7 @@ export const getModalDropdownList = createSelector(
 );
 
 const getModalNamePrefix = (state: AppState) => {
-  const type = isMobileLayout(state)
-    ? "TARO_POPUP_WIDGET"
-    : "MODAL_WIDGET";
+  const type = isMobileLayout(state) ? "TARO_POPUP_WIDGET" : "MODAL_WIDGET";
   return getWidgetNamePrefix(state, type);
 };
 

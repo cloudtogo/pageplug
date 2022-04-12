@@ -101,7 +101,7 @@ class Editor extends Component<Props> {
     const queryParams = new URLSearchParams(this.props.location.search);
     queryParams.set("inCloudOS", this.props.inCloudOS ? "true" : "false");
     if (applicationId || pageId) {
-      this.props.initEditor(applicationId, pageId, queryParams, branch);
+      this.props.initEditor({ applicationId, pageId, queryParams, branch });
     }
     this.props.handlePathUpdated(window.location);
     this.unlisten = history.listen(this.handleHistoryChange);

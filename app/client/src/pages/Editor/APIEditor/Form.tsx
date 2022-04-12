@@ -851,16 +851,6 @@ export default connect((state: AppState, props: { pluginId: string }) => {
     suggestedWidgets = response.suggestedWidgets;
   }
 
-  const responses = getActionResponses(state);
-  let hasResponse = false;
-  let suggestedWidgets;
-  if (apiId && apiId in responses) {
-    const response = responses[apiId] || EMPTY_RESPONSE;
-    hasResponse =
-      !isEmpty(response.statusCode) && response.statusCode[0] === "2";
-    suggestedWidgets = response.suggestedWidgets;
-  }
-
   return {
     actionName,
     apiId,

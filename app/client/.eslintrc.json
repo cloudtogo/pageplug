@@ -39,7 +39,7 @@
       "error",
       { "endOfLine": "auto" }
     ],
-    "sort-destructure-keys/sort-destructure-keys": ["error", {"caseSensitive": false}],
+    "sort-destructure-keys/sort-destructure-keys": 0,
     "no-console": "warn",
     "no-debugger": "warn"
   },

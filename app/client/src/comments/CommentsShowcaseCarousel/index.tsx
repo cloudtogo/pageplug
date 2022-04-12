@@ -46,12 +46,6 @@ enum IntroStepsTypesEditor {
   PROFILE_FORM,
 }
 
-enum IntroStepsTypesEditor {
-  INTRODUCING_LIVE_COMMENTS,
-  GIVE_CONTEXTUAL_FEEDBACK,
-  PROFILE_FORM,
-}
-
 const introStepsEditor = [
   {
     title: "Introducing Live Comments",
@@ -213,8 +207,6 @@ export default function CommentsShowcaseCarousel() {
   const profileFormErrors = useSelector(
     getFormSyncErrors("PROFILE_FORM"),
   ) as Partial<typeof fieldNames>;
-
-  const [isSkipped, setIsSkipped] = useState(false);
 
   const [isSkipped, setIsSkipped] = useState(false);
 

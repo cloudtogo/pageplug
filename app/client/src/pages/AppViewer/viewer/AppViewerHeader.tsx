@@ -252,14 +252,7 @@ export function AppViewerHeader(props: AppViewerHeaderProps) {
                   isOpen={showAppInviteUsersDialog}
                   orgId={currentOrgId}
                   title={currentApplicationDetails.name}
-                  trigger={
-                    <Button
-                      className="t--application-share-btn header__application-share-btn"
-                      icon={"share"}
-                      size={Size.small}
-                      text={"分享"}
-                    />
-                  }
+                  trigger={<ShareButtonComponent />}
                 />
                 {CTA && (
                   <HeaderRightItemContainer>{CTA}</HeaderRightItemContainer>

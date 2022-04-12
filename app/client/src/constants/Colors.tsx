@@ -1,5 +1,5 @@
 // Color Names generated from http://chir.ag/projects/name-that-color
-import { getAppsmithConfigs } from "configs";
+import { getAppsmithConfigs } from "@appsmith/configs";
 import tinycolor from "tinycolor2";
 const { inCloudOS } = getAppsmithConfigs();
 const primaryColor = inCloudOS ? "#613eea" : "#2CBBA6";

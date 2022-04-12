@@ -243,26 +243,6 @@ function DatasourceCard(props: DatasourceCardProps) {
     delayConfirmDeleteToFalse();
   };
 
-  const routeToGeneratePage = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!supportTemplateGeneration) {
-      // disable button when it doesn't support page generation
-      return;
-    }
-    AnalyticsUtil.logEvent("DATASOURCE_CARD_GEN_CRUD_PAGE_ACTION");
-    history.push(
-      `${getGenerateTemplateFormURL(
-        params.applicationId,
-        params.pageId,
-      )}?datasourceId=${datasource.id}&new_page=true`,
-    );
-  };
-
-  const deleteAction = () => {
-    AnalyticsUtil.logEvent("DATASOURCE_CARD_DELETE_ACTION");
-    dispatch(deleteDatasource({ id: datasource.id }));
-  };
-
   return (
     <Wrapper
       className="t--datasource"
