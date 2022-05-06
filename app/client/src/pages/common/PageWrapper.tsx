@@ -50,7 +50,7 @@ export function PageWrapper(props: PageWrapperProps) {
     <Wrapper>
       <Helmet>
         <title>{`${props.displayName ? `${props.displayName} - ` : ""}
-         ${theme.inCloudOS ? "StarOS" : "PagePlug"}
+         ${theme.inCloudOS ? "Methodot" : "PagePlug"}
          `}</title>
       </Helmet>
       <PageBody>{props.children}</PageBody>

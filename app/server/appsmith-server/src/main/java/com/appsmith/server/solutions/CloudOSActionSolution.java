@@ -73,6 +73,7 @@ public class CloudOSActionSolution {
      */
     public Mono<Application> createOrganizationApplication(Map<String, Object> payload) {
         String name = (String) payload.get("name");
+        Boolean isMobile = (Boolean) payload.get("isMobile");
         Organization organization = new Organization();
         organization.setName(name);
         return organizationService.create(organization).flatMap(org -> {
@@ -81,6 +82,12 @@ public class CloudOSActionSolution {
             app.setColor("#EA6179");
             app.setIcon("money");
             app.setIsPublic(true);
+            Application.AppLayout layout = new Application.AppLayout(Application.AppLayout.Type.DESKTOP);
+            if (isMobile) {
+                layout.setType(Application.AppLayout.Type.MOBILE_FLUID);
+            }
+            app.setPublishedAppLayout(layout);
+            app.setUnpublishedAppLayout(layout);
             return applicationPageService.createApplication(app, org.getId());
         });
     }

@@ -222,7 +222,7 @@ class Editor extends Component<Props> {
               <meta charSet="utf-8" />
               <title>
                 {`${this.props.currentApplicationName} - ${
-                  this.props.inCloudOS ? "StarOS" : "PagePlug"
+                  this.props.inCloudOS ? "Methodot" : "PagePlug"
                 }`}
               </title>
             </Helmet>
