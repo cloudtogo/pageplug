@@ -41,6 +41,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.json.JSONObject;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.convert.MongoConverter;
@@ -421,6 +422,9 @@ public class NewActionServiceImpl extends BaseService<NewActionRepository, NewAc
     public Mono<ActionExecutionResult> executeAction(ExecuteActionDTO executeActionDTO) {
         // 1. Validate input parameters which are required for mustache replacements
         List<Param> params = executeActionDTO.getParams();
+        log.debug("执行参数");
+        log.debug(executeActionDTO.toString());
+        log.debug(new JSONObject(executeActionDTO).toString(4));
         if (!CollectionUtils.isEmpty(params)) {
             for (Param param : params) {
                 // In case the parameter values turn out to be null, set it to empty string instead to allow the
@@ -530,6 +534,8 @@ public class NewActionServiceImpl extends BaseService<NewActionRepository, NewAc
                     actionName.set(action.getName());
 
                     ActionConfiguration actionConfiguration = action.getActionConfiguration();
+                    log.debug("action 配置");
+                    log.debug(new JSONObject(actionConfiguration).toString(4));
 
                     Integer timeoutDuration = actionConfiguration.getTimeoutInMillisecond();
 
@@ -544,6 +550,8 @@ public class NewActionServiceImpl extends BaseService<NewActionRepository, NewAc
                             // Now that we have the context (connection details), execute the action.
                             .flatMap(resourceContext -> validatedDatasourceMono
                                     .flatMap(datasource1 -> {
+                                        log.debug("datasource1 配置");
+                                        log.debug(new JSONObject(datasource1).toString(4));
                                         return (Mono<ActionExecutionResult>) pluginExecutor.executeParameterized(
                                                 resourceContext.getConnection(),
                                                 executeActionDTO,
