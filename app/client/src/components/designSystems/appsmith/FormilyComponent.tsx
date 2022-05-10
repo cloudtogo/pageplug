@@ -45,6 +45,7 @@ interface FormilyComponentProps {
   showReset?: boolean;
   resetLabel?: string;
   schema: string;
+  initValue: any;
   onFormSubmit: (data: any) => void;
 }
 
@@ -126,6 +127,7 @@ const FormilyComponent = (props: FormilyComponentProps) => {
     submitLabel,
     showReset,
     resetLabel,
+    initValue,
     onFormSubmit,
   } = props;
   const schema: {
@@ -145,6 +147,14 @@ const FormilyComponent = (props: FormilyComponentProps) => {
   const submitText = submitLabel || "提交";
   const resetText = resetLabel || "重置";
   const triggerText = triggerLabel || "打开表单";
+  const initFormValue = _.isObject(initValue) ? initValue : {};
+
+  useEffect(() => {
+    try {
+      form.reset();
+      form.setValues(initFormValue);
+    } catch (e) {}
+  }, [initFormValue]);
 
   const formContent = _.isUndefined(schema.schema) ? (
     <EmptyForm>开始设计表单吧 😉</EmptyForm>
@@ -173,7 +183,7 @@ const FormilyComponent = (props: FormilyComponentProps) => {
       );
     })
       .open({
-        initialValues: {},
+        initialValues: initFormValue,
       })
       .then(onFormSubmit);
   };
@@ -190,7 +200,7 @@ const FormilyComponent = (props: FormilyComponentProps) => {
       );
     })
       .open({
-        initialValues: {},
+        initialValues: initFormValue,
       })
       .then(onFormSubmit);
   };

@@ -23,6 +23,14 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.TEXT },
           },
           {
+            propertyName: "initValue",
+            label: "表单初始值",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.OBJECT },
+          },
+          {
             helpText: "表单展示形式，支持平铺、弹窗、侧边抽屉三种形式",
             propertyName: "formType",
             label: "表单交互",
@@ -133,6 +141,7 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
       showReset,
       resetLabel,
       schema,
+      initValue,
     } = this.props;
     return (
       <FormilyComponent
@@ -145,6 +154,7 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
           showReset,
           resetLabel,
           schema,
+          initValue,
         }}
       />
     );
@@ -157,6 +167,7 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
 
 export interface FormilyWidgetProps extends WidgetProps, WithMeta {
   formType: FormType;
+  initValue?: any;
   title?: string;
   triggerLabel?: string;
   submitLabel?: string;
