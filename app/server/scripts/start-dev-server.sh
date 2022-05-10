@@ -15,4 +15,4 @@ if [ $IS_WSL ]; then
   _JAVA_OPTIONS="-Djava.net.preferIPv4Stack=true $_JAVA_OPTIONS"
 fi
 
-(cd dist && exec java -jar server-*.jar)
+(cd dist && exec java -Dfile.encoding=UTF-8 -jar server-*.jar)
