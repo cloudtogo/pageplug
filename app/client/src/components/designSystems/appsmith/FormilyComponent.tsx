@@ -147,7 +147,7 @@ const FormilyComponent = (props: FormilyComponentProps) => {
   const submitText = submitLabel || "提交";
   const resetText = resetLabel || "重置";
   const triggerText = triggerLabel || "打开表单";
-  const initFormValue = _.isObject(initValue) ? initValue : {};
+  const initFormValue = _.isObject(initValue) ? _.cloneDeep(initValue) : {};
 
   useEffect(() => {
     try {

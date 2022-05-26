@@ -244,4 +244,8 @@ const ICON_NAMES: string[] = [
   "sort",
 ];
 
+const NONE = "无";
+const SAFE_ICON_NAMES = ICON_NAMES.concat(NONE);
+
 export default ICON_NAMES;
+export { NONE, SAFE_ICON_NAMES };

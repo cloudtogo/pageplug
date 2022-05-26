@@ -9,6 +9,7 @@ import JSEditor from "./JSEditor";
 import GeneratePage from "./GeneratePage";
 import CurlImportForm from "./APIEditor/CurlImportForm";
 import ProviderTemplates from "./APIEditor/ProviderTemplates";
+import ViewerLayoutEditor from "./ViewerLayoutEditor";
 import {
   INTEGRATION_EDITOR_PATH,
   API_EDITOR_ID_PATH,
@@ -22,6 +23,7 @@ import {
   GENERATE_TEMPLATE_PATH,
   GENERATE_TEMPLATE_FORM_PATH,
   matchBuilderPath,
+  VIEWER_LAYOUT_CONFIG_PATH,
 } from "constants/routes";
 import styled from "styled-components";
 import { useShowPropertyPane } from "utils/hooks/dragResizeHooks";
@@ -155,6 +157,11 @@ function EditorsRouter() {
             component={GeneratePage}
             exact
             path={`${path}${GENERATE_TEMPLATE_FORM_PATH}`}
+          />
+          <SentryRoute
+            component={ViewerLayoutEditor}
+            exact
+            path={`${path}${VIEWER_LAYOUT_CONFIG_PATH}`}
           />
         </Switch>
       </PaneDrawer>

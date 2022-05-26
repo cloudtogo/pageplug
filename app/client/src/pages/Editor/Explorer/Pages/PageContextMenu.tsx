@@ -108,17 +108,17 @@ export function PageContextMenu(props: {
       onSelect: clonePage,
       label: createMessage(CONTEXT_CLONE),
     },
-    {
-      value: "visibility",
-      onSelect: setHiddenField,
-      // Possibly support ReactNode in TreeOption
-      label: ((
-        <CustomLabel>
-          {props.isHidden ? "显示" : "隐藏"}
-          <Icon icon={props.isHidden ? "eye-open" : "eye-off"} iconSize={14} />
-        </CustomLabel>
-      ) as ReactNode) as string,
-    },
+    // {
+    //   value: "visibility",
+    //   onSelect: setHiddenField,
+    //   // Possibly support ReactNode in TreeOption
+    //   label: ((
+    //     <CustomLabel>
+    //       {props.isHidden ? "显示" : "隐藏"}
+    //       <Icon icon={props.isHidden ? "eye-open" : "eye-off"} iconSize={14} />
+    //     </CustomLabel>
+    //   ) as ReactNode) as string,
+    // },
   ];
   // inCloudOS mode cannot set default page
   if (!props.isDefaultPage && !inCloudOS) {

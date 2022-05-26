@@ -449,4 +449,10 @@ export const base64ToBlob = (
 
   const blob = new Blob(byteArrays, { type: contentType });
   return blob;
+}
+
+export const replacePluginIcon = (url: string) => {
+  return url
+    ?.replace("https://assets.appsmith.com", "")
+    ?.replace(/\.png$/g, ".svg");
 };

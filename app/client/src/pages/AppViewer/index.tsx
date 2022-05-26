@@ -32,7 +32,11 @@ import {
 } from "actions/metaActions";
 import { editorInitializer } from "utils/EditorUtils";
 import * as Sentry from "@sentry/react";
-import { getViewModePageList, getShowTabBar } from "selectors/editorSelectors";
+import {
+  getViewModePageList,
+  getShowTabBar,
+  isMobileLayout,
+} from "selectors/editorSelectors";
 import AddCommentTourComponent from "comments/tour/AddCommentTourComponent";
 import CommentShowCaseCarousel from "comments/CommentsShowcaseCarousel";
 import { getThemeDetails, ThemeMode } from "selectors/themeSelectors";
@@ -40,6 +44,7 @@ import { Theme } from "constants/DefaultTheme";
 import GlobalHotKeys from "./GlobalHotKeys";
 import TabBar from "components/designSystems/taro/TabBar";
 import PreviewQRCode from "./PreviewQRCode";
+import AppViewerLayout from "./viewer/AppViewerLayout";
 
 import { getSearchQuery } from "utils/helpers";
 import AppViewerCommentsSidebar from "./AppViewerComemntsSidebar";
@@ -48,26 +53,17 @@ import { showPostCompletionMessage } from "selectors/onboardingSelectors";
 const SentryRoute = Sentry.withSentryRouting(Route);
 
 const AppViewerBody = styled.section<{
-  hasPages: boolean;
-  inCloudOS: boolean;
   showTabBar: boolean;
   showGuidedTourMessage: boolean;
   isEmbeded: boolean;
+  isMobile: boolean;
 }>`
   display: flex;
   flex-direction: row;
   align-items: stretch;
   justify-content: flex-start;
   height: calc(
-    100vh -
-      ${(props) =>
-        !props.hasPages
-          ? props.inCloudOS
-            ? "0px"
-            : props.theme.smallHeaderHeight
-          : props.inCloudOS
-          ? props.theme.viewHeaderTabHeight
-          : `${props.theme.smallHeaderHeight} - ${props.theme.viewHeaderTabHeight}`} -
+    100vh - ${(props) => (props.isMobile ? "0px" : "168px")} -
       ${(props) => (props.showTabBar ? "60px" : "0px")}
   );
 `;
@@ -86,9 +82,13 @@ const AppViewerBodyContainer = styled.div<{ width?: string }>`
   margin: 0 auto;
 `;
 
-const StableContainer = styled.div`
+const StableContainer = styled.div<{
+  isMobile: boolean;
+}>`
   position: relative;
   overflow: hidden;
+  background: ${(props) =>
+    props.isMobile ? "radial-gradient(#2cbba633, #ffec8f36)" : "#fff"};
 `;
 
 export type AppViewerProps = {
@@ -120,6 +120,7 @@ export type AppViewerProps = {
     widgetId: string,
     updates: BatchPropertyUpdatePayload,
   ) => void;
+  isMobile: boolean;
 } & RouteComponentProps<BuilderRouteParams>;
 
 type Props = AppViewerProps & RouteComponentProps<AppViewerRouteParams>;
@@ -173,7 +174,14 @@ class AppViewer extends Component<Props> {
   };
 
   public render() {
-    const { isInitialized, location, inCloudOS, showTabBar } = this.props;
+    const {
+      isInitialized,
+      location,
+      inCloudOS,
+      showTabBar,
+      isMobile,
+      showGuidedTourMessage,
+    } = this.props;
     const isEmbeded = location.search.indexOf("embed=true") !== -1;
     return (
       <ThemeProvider theme={this.props.lightTheme}>
@@ -186,42 +194,45 @@ class AppViewer extends Component<Props> {
               batchUpdateWidgetProperty: this.props.batchUpdateWidgetProperty,
             }}
           >
-            <StableContainer>
-              <ContainerWithComments>
-                <AppViewerCommentsSidebar />
-                <AppViewerBodyContainer>
-                  <AppViewerBody
-                    hasPages={this.props.pages.length > 1}
-                    isEmbeded={isEmbeded}
-                    showGuidedTourMessage={this.props.showGuidedTourMessage}
-                  >
-                    {isInitialized && this.state.registered && (
-                      <Switch>
-                        <SentryRoute
-                          component={AppViewerPageContainer}
-                          exact
-                          path={VIEWER_PATH}
-                        />
-                        <SentryRoute
-                          component={AppViewerPageContainer}
-                          exact
-                          path={VIEWER_PATH_DEPRECATED}
-                        />
-                        <SentryRoute
-                          component={AppViewerPageContainer}
-                          exact
-                          path={VIEWER_FORK_PATH}
-                        />
-                      </Switch>
-                    )}
-                  </AppViewerBody>
-                </AppViewerBodyContainer>
-              </ContainerWithComments>
-              <AddCommentTourComponent />
-              <CommentShowCaseCarousel />
-              <TabBar />
-              <PreviewQRCode />
-            </StableContainer>
+            <AppViewerLayout>
+              <StableContainer isMobile={isMobile}>
+                <ContainerWithComments>
+                  <AppViewerCommentsSidebar />
+                  <AppViewerBodyContainer>
+                    <AppViewerBody
+                      showTabBar={showTabBar}
+                      isMobile={isMobile}
+                      isEmbeded={isEmbeded}
+                      showGuidedTourMessage={showGuidedTourMessage}
+                    >
+                      {isInitialized && this.state.registered && (
+                        <Switch>
+                          <SentryRoute
+                            component={AppViewerPageContainer}
+                            exact
+                            path={VIEWER_PATH}
+                          />
+                          <SentryRoute
+                            component={AppViewerPageContainer}
+                            exact
+                            path={VIEWER_PATH_DEPRECATED}
+                          />
+                          <SentryRoute
+                            component={AppViewerPageContainer}
+                            exact
+                            path={VIEWER_FORK_PATH}
+                          />
+                        </Switch>
+                      )}
+                    </AppViewerBody>
+                  </AppViewerBodyContainer>
+                </ContainerWithComments>
+                <AddCommentTourComponent />
+                <CommentShowCaseCarousel />
+                <TabBar />
+                <PreviewQRCode />
+              </StableContainer>
+            </AppViewerLayout>
           </EditorContext.Provider>
         </GlobalHotKeys>
       </ThemeProvider>
@@ -236,6 +247,7 @@ const mapStateToProps = (state: AppState) => ({
   inCloudOS: state.entities.app.inCloudOS,
   showTabBar: getShowTabBar(state),
   showGuidedTourMessage: showPostCompletionMessage(state),
+  isMobile: isMobileLayout(state),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
