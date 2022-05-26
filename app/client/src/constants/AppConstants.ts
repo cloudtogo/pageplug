@@ -7,6 +7,8 @@ export const CANVAS_BACKGROUND_COLOR = "#FFFFFF";
 export const DEFAULT_ENTITY_EXPLORER_WIDTH = 256;
 export const DEFAULT_PROPERTY_PANE_WIDTH = 256;
 
+export const DEFAULT_VIEWER_LOGO = "https://img.icons8.com/doodle/2x/koala.png";
+
 const APP_STORE_NAMESPACE = "APPSMITH_LOCAL_STORE";
 
 export const getAppStoreName = (appId: string, branch?: string) =>

@@ -19,6 +19,8 @@ import { useSelector } from "react-redux";
 import { getIsGeneratePageInitiator } from "utils/GenerateCrudUtil";
 import { selectURLSlugs } from "selectors/editorSelectors";
 import { curlImportPageURL } from "RouteBuilder";
+// import { replacePluginIcon } from "utils/AppsmithUtils";
+const replacePluginIcon = (e: any) => e;
 
 const StyledContainer = styled.div`
   flex: 1;
@@ -336,9 +338,7 @@ const mapStateToProps = (state: AppState) => ({
   plugins: state.entities.plugins.list.map((p: any) => {
     return {
       ...p,
-      iconLocation: p.iconLocation
-        ?.replace("https://s3.us-east-2.amazonaws.com/assets.appsmith.com", "")
-        ?.replace(/\.png$/g, ".svg"),
+      iconLocation: replacePluginIcon(p.iconLocation),
     };
   }),
 });

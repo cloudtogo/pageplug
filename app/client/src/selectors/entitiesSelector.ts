@@ -20,6 +20,8 @@ import { AppStoreState } from "reducers/entityReducers/appReducer";
 import { JSCollectionDataState } from "reducers/entityReducers/jsActionsReducer";
 import { JSCollection } from "entities/JSCollection";
 import { DefaultPlugin, GenerateCRUDEnabledPluginMap } from "../api/PluginApi";
+import { replacePluginIcon } from "utils/AppsmithUtils";
+
 import { APP_MODE } from "entities/App";
 import getFeatureFlags from "utils/featureFlags";
 import { ExplorerFileEntity } from "pages/Editor/Explorer/helpers";
@@ -278,9 +280,7 @@ export const getPluginImages = createSelector(getPlugins, (plugins) => {
 
   plugins.forEach((plugin) => {
     pluginImages[plugin.id] =
-      plugin?.iconLocation
-        ?.replace("https://s3.us-east-2.amazonaws.com/assets.appsmith.com", "")
-        ?.replace(/\.png$/g, ".svg") ?? ImageAlt;
+      replacePluginIcon(plugin?.iconLocation || "") ?? ImageAlt;
   });
 
   return pluginImages;

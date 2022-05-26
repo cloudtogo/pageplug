@@ -8,6 +8,7 @@
   },
   "cracoConfig": "craco.dev.config.js",
   "dependencies": {
+    "@ant-design/pro-layout": "6.31.7",
     "@blueprintjs/core": "^3.36.0",
     "@blueprintjs/datetime": "^3.23.6",
     "@blueprintjs/icons": "^3.10.0",
@@ -158,6 +159,9 @@
     "react-select": "^3.0.8",
     "react-spring": "^9.4.0",
     "react-syntax-highlighter": "^15.4.4",
+    "react-sortable-tree": "2.7.1",
+    "react-sortable-tree-patch-react-17": "2.9.0",
+    "react-sortable-tree-theme-full-node-drag": "1.1.0",
     "react-table": "^7.0.0",
     "react-tabs": "^3.0.0",
     "react-timer-hook": "^3.0.4",

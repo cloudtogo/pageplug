@@ -16,6 +16,8 @@ import TooltipComponent from "components/ads/Tooltip";
 import Icon, { IconName, IconSize } from "components/ads/Icon";
 import { updateApplicationLayout } from "actions/applicationActions";
 import { ReflowBetaCard } from "./ReflowBetaCard";
+import { noop } from "utils/AppsmithUtils";
+import ToggleLayoutEditorButton from "./ToggleLayoutEditorButton";
 
 interface AppsmithLayoutConfigOption {
   name: string;
@@ -120,6 +122,7 @@ export function MainContainerLayoutControl() {
 
   return (
     <div className="px-3 space-y-2 t--layout-control-wrapper">
+      <ToggleLayoutEditorButton />
       <p className="text-sm text-gray-700">Canvas Size</p>
       <div
         className="flex justify-around"
