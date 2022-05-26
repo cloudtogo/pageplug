@@ -150,6 +150,16 @@ const applicationsReducer = createReducer(initialState, {
       appLayout: action.payload,
     },
   }),
+  [ReduxActionTypes.CURRENT_APPLICATION_VIEWER_LAYOUT_UPDATE]: (
+    state: ApplicationsReduxState,
+    action: ReduxAction<{ viewerLayout: string }>,
+  ) => ({
+    ...state,
+    currentApplication: {
+      ...state.currentApplication,
+      viewerLayout: action.payload,
+    },
+  }),
   [ReduxActionTypes.CREATE_APPLICATION_INIT]: (
     state: ApplicationsReduxState,
     action: ReduxAction<CreateApplicationFormValues>,
