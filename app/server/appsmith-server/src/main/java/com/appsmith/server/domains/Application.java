@@ -62,6 +62,8 @@ public class Application extends BaseDomain {
 
     Boolean forkingEnabled;
 
+    String viewerLayout;
+
     // This constructor is used during clone application. It only deeply copies selected fields. The rest are either
     // initialized newly or is left up to the calling function to set.
     public Application(Application application) {
@@ -74,6 +76,7 @@ public class Application extends BaseDomain {
         this.icon = application.getIcon();
         this.unpublishedAppLayout = application.getUnpublishedAppLayout() == null ? null : new AppLayout(application.getUnpublishedAppLayout().type);
         this.publishedAppLayout = application.getPublishedAppLayout() == null ? null : new AppLayout(application.getPublishedAppLayout().type);
+        this.viewerLayout = application.getViewerLayout();
     }
 
     public List<ApplicationPage> getPages() {

@@ -13,6 +13,7 @@ import Entity from "../Entity";
 import EntityPlaceholder from "../Entity/Placeholder";
 import { ExplorerURLParams } from "../helpers";
 import { INTEGRATION_TABS, INTEGRATION_EDITOR_MODES } from "constants/routes";
+import { replacePluginIcon } from "utils/AppsmithUtils";
 
 type ExplorerPluginGroupProps = {
   step: number;
@@ -39,12 +40,7 @@ const ExplorerPluginGroup = memo((props: ExplorerPluginGroupProps) => {
     return state.entities.plugins.list.map((p: any) => {
       return {
         ...p,
-        iconLocation: p.iconLocation
-          ?.replace(
-            "https://s3.us-east-2.amazonaws.com/assets.appsmith.com",
-            "",
-          )
-          ?.replace(/\.png$/g, ".svg"),
+        iconLocation: replacePluginIcon(p.iconLocation),
       };
     });
   });

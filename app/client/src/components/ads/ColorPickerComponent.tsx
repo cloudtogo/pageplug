@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import {
   Popover,
@@ -155,6 +155,9 @@ function ColorPickerComponent(props: ColorPickerProps) {
     debounce(props.changeColor, 500),
     [props.changeColor],
   );
+  useEffect(() => {
+    setColor(props.color);
+  }, [props.color]);
   const handleChangeColor = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     debouncedOnChange(value);

@@ -15,6 +15,7 @@ import {
 import { useSelector } from "store";
 import styled from "styled-components";
 import { noop } from "utils/AppsmithUtils";
+import ToggleLayoutEditorButton from "./ToggleLayoutEditorButton";
 
 interface AppsmithLayoutConfigOption {
   name: string;
@@ -112,6 +113,7 @@ export function MainContainerLayoutControl() {
   }
   return (
     <LayoutControlWrapper>
+      <ToggleLayoutEditorButton />
       <div className="layout-control t--layout-control-wrapper">
         <Dropdown
           SelectedValueNode={({ selected }) => {

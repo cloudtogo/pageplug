@@ -14,6 +14,7 @@ import DataSourceEditor from "./DataSourceEditor";
 import GeneratePage from "./GeneratePage";
 import CurlImportForm from "./APIEditor/CurlImportForm";
 import ProviderTemplates from "./APIEditor/ProviderTemplates";
+import ViewerLayoutEditor from "./ViewerLayoutEditor";
 import {
   API_EDITOR_ID_URL,
   QUERIES_EDITOR_ID_URL,
@@ -26,6 +27,7 @@ import {
   getProviderTemplatesURL,
   getGenerateTemplateURL,
   getGenerateTemplateFormURL,
+  getViewerLayoutEditorURL,
 } from "constants/routes";
 import styled from "styled-components";
 import { useShowPropertyPane } from "utils/hooks/dragResizeHooks";
@@ -178,6 +180,11 @@ class EditorsRouter extends React.Component<
               component={GeneratePage}
               exact
               path={getGenerateTemplateFormURL()}
+            />
+            <SentryRoute
+              component={ViewerLayoutEditor}
+              exact
+              path={getViewerLayoutEditorURL()}
             />
           </Switch>
         </PaneDrawer>

@@ -55,8 +55,7 @@ const WidgetConfigResponse: WidgetConfigReducerState = {
       version: 1,
     },
     IMAGE_WIDGET: {
-      defaultImage:
-        "https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201808%2F15%2F20180815150251_sflmm.jpg",
+      defaultImage: "https://img.yzcdn.cn/vant/cat.jpeg",
       imageShape: "RECTANGLE",
       maxZoomLevel: 1,
       enableRotation: false,

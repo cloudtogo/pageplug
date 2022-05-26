@@ -17,10 +17,18 @@ import {
   getCurrentPageId,
 } from "selectors/editorSelectors";
 import { calculateDynamicHeight } from "utils/WidgetPropsUtils";
-import { useWindowSizeHooks } from "./dragResizeHooks";
+import {
+  useWindowSizeHooks,
+  usePageContainerSizeHooks,
+} from "./dragResizeHooks";
 
-export const useDynamicAppLayout = () => {
-  const { height: screenHeight, width: screenWidth } = useWindowSizeHooks();
+export const useDynamicAppLayout = (isViewer?: boolean) => {
+  const { height: screenHeight, width: winWidth } = useWindowSizeHooks();
+  const { width: containerWidth } = usePageContainerSizeHooks();
+  let screenWidth = winWidth;
+  if (isViewer) {
+    screenWidth = containerWidth;
+  }
   const mainContainer = useSelector((state: AppState) =>
     getWidget(state, MAIN_CONTAINER_WIDGET_ID),
   );
@@ -38,7 +46,7 @@ export const useDynamicAppLayout = () => {
     const widthToFill =
       appMode === "EDIT"
         ? screenWidthWithBuffer - parseInt(theme.sidebarWidth)
-        : screenWidth;
+        : screenWidth - 5;
     if (layoutMaxWidth < 0) {
       return widthToFill;
     } else {

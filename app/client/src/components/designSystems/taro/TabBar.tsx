@@ -27,6 +27,7 @@ const TabBarContainer = styled.div`
   right: 0;
   bottom: 0;
   height: 60px;
+  background: #ffec8f36;
 `;
 
 const Center = styled.div`

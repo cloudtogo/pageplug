@@ -18,6 +18,7 @@ import { MAIN_CONTAINER_WIDGET_ID } from "constants/WidgetConstants";
 import { AppStoreState } from "reducers/entityReducers/appReducer";
 import { GenerateCRUDEnabledPluginMap } from "../api/PluginApi";
 import { PLUGIN_PACKAGE_NAME } from "../pages/Editor/GeneratePage/components/constants";
+import { replacePluginIcon } from "utils/AppsmithUtils";
 
 import { APP_MODE } from "entities/App";
 
@@ -210,9 +211,7 @@ export const getPluginImages = createSelector(getPlugins, (plugins) => {
 
   plugins.forEach((plugin) => {
     pluginImages[plugin.id] =
-      plugin?.iconLocation
-        ?.replace("https://s3.us-east-2.amazonaws.com/assets.appsmith.com", "")
-        ?.replace(/\.png$/g, ".svg") ?? ImageAlt;
+      replacePluginIcon(plugin?.iconLocation || "") ?? ImageAlt;
   });
 
   return pluginImages;

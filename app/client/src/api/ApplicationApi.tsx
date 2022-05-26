@@ -83,6 +83,7 @@ export type UpdateApplicationPayload = {
   name?: string;
   currentApp?: boolean;
   appLayout?: AppLayoutConfig;
+  viewerLayout?: string;
 };
 
 export type UpdateApplicationRequest = UpdateApplicationPayload & {

@@ -283,6 +283,12 @@ export function* updateApplicationSaga(
         payload: request.name,
       });
     }
+    if (isValidResponse && request.viewerLayout) {
+      yield put({
+        type: ReduxActionTypes.CURRENT_APPLICATION_VIEWER_LAYOUT_UPDATE,
+        payload: request.viewerLayout,
+      });
+    }
   } catch (error) {
     yield put({
       type: ReduxActionErrorTypes.UPDATE_APPLICATION_ERROR,

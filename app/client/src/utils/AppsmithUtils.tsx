@@ -302,3 +302,9 @@ export const retryPromise = (
 export const getRandomPaletteColor = (colorPalette: string[]) => {
   return colorPalette[Math.floor(Math.random() * colorPalette.length)];
 };
+
+export const replacePluginIcon = (url: string) => {
+  return url
+    ?.replace("https://assets.appsmith.com", "")
+    ?.replace(/\.png$/g, ".svg");
+};

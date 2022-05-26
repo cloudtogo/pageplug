@@ -16,6 +16,33 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
   }
+
+  .ant-pro-sider.ant-layout-sider-collapsed .ant-pro-sider-logo {
+    padding: 8px 8px;
+  }
+
+  .ant-pro-sider-light .ant-pro-sider-logo {
+    padding: 8px 16px;
+    background: var(--layout-header-bg-color);
+
+    h1 {
+      color: #fff;
+      font-size: 16px;
+      font-weight: normal;
+    }
+  }
+
+  .ant-pro-sider-menu .anticon {
+    font-size: 19px!important;
+  }
+
+  .ant-layout.ant-layout-has-sider {
+    z-index: 1;
+  }
+
+  .ant-pro-sider-light {
+    z-index: 2;
+  }
 }
 
 body.dragging *{
@@ -143,6 +170,10 @@ div.bp3-popover-arrow {
   z-index: 21 !important;
 }
 
+.bp3-overlay .bp3-overlay-content {
+  border-radius: 5px !important;
+}
+
 .full-height-form {
   height: 100%;
   
@@ -265,5 +296,67 @@ div.bp3-popover-arrow {
     --dn-btn-text-shadow-color: rgba(0, 0, 0, 0.12);
     --dn-btn-box-shadow-color: rgba(0, 0, 0, 0.045);
     --dn-empty-bg-color: #fff;
+  }
+}
+
+/* react-sortable-tree styles */
+.pageplug-rst {
+  .rstcustom__rowContents {
+    box-shadow: none;
+    cursor: grab;
+    border: 1px solid @primary-color;
+    border-radius: 4px;
+    background: @primary-1;
+  }
+  .rstcustom__rowWrapper {
+    padding: 10px 10px 10px 0;
+    .rstcustom__rowLandingPad::before {
+      border: 3px dashed @primary-color;
+      background: @primary-2;
+      border-radius: 4px;
+    }
+    .rstcustom__rowCancelPad::before {
+      border: 3px dashed @error-color;
+      background: @red-2;
+    }
+  }
+  .rst__placeholder::before {
+    z-index: 0;
+  }
+  .rst__lineHalfHorizontalRight::before,
+  .rst__lineFullVertical::after,
+  .rst__lineHalfVerticalTop::after,
+  .rst__lineHalfVerticalBottom::after,
+  .rstcustom__lineChildren::after {
+    background-color: #c7c7c7;
+  }
+  .rstcustom__rowWrapper:hover {
+    opacity: 1;
+    .rstcustom__rowContents {
+      background: #fff;
+      box-shadow: 0 0 0 4px @primary-1;
+    }
+  }
+  .icon-select-container {
+    display: inline-block;
+  }
+  .rst__placeholder {
+    max-width: unset;
+    &::before {
+      left: 20px;
+      right: 20px;
+    }
+    &.rst__placeholderLandingPad::before {
+      border: 3px dashed @primary-color;
+      background: @primary-2;
+      border-radius: 4px;
+    }
+    &.rst__placeholderCancelPad::before {
+      border: 3px dashed @error-color;
+      background: @red-2;
+    }
+  }
+  .rstcustom__toolbarButton {
+    margin-right: 5px;
   }
 }

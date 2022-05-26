@@ -201,6 +201,11 @@ export const QUERY_EDITOR_URL_WITH_SELECTED_PAGE_ID = (
   )}/queries?importTo=${selectedPageId}`;
 };
 
+export const getViewerLayoutEditorURL = (
+  applicationId = ":applicationId",
+  pageId = ":pageId",
+): string => `${BUILDER_PAGE_URL(applicationId, pageId)}/viewer-layout`;
+
 export const GEN_TEMPLATE_URL = "/generate-page";
 export const GEN_TEMPLATE_FORM_ROUTE = "/form";
 

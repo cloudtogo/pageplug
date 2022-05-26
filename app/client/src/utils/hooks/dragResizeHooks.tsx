@@ -142,3 +142,26 @@ export const useWindowSizeHooks = () => {
   }, []);
   return windowSize;
 };
+
+export const usePageContainerSizeHooks = () => {
+  const container = document.getElementsByClassName(
+    "ant-pro-basicLayout-content",
+  )[0];
+  const [windowSize, updateWindowSize] = useState({
+    width: container?.clientWidth || window.innerWidth,
+    height: window.innerHeight,
+  });
+  const onResize = () => {
+    updateWindowSize({
+      width: container?.clientWidth || window.innerWidth,
+      height: window.innerHeight,
+    });
+  };
+  useEffect(() => {
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+  return windowSize;
+};

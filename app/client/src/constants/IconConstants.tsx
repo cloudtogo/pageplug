@@ -10,6 +10,7 @@ export type IconProps = {
   className?: string;
   keepColors?: boolean;
   needBG?: boolean;
+  style?: any;
 };
 
 export const IconWrapper = styled.div<IconProps>`
@@ -19,6 +20,7 @@ export const IconWrapper = styled.div<IconProps>`
   display: inline-block;
   width: ${(props) => props.width}px;
   height: ${(props) => props.height}px;
+  cursor: pointer;
   ${(props) =>
     props.needBG
       ? `

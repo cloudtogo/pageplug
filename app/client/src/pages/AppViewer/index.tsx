@@ -27,7 +27,11 @@ import {
 import { editorInitializer } from "utils/EditorUtils";
 import * as Sentry from "@sentry/react";
 import log from "loglevel";
-import { getViewModePageList, getShowTabBar } from "selectors/editorSelectors";
+import {
+  getViewModePageList,
+  getShowTabBar,
+  isMobileLayout,
+} from "selectors/editorSelectors";
 import AppComments from "comments/AppComments/AppComments";
 import AddCommentTourComponent from "comments/tour/AddCommentTourComponent";
 import CommentShowCaseCarousel from "comments/CommentsShowcaseCarousel";
@@ -36,28 +40,20 @@ import { Theme } from "constants/DefaultTheme";
 import GlobalHotKeys from "./GlobalHotKeys";
 import TabBar from "components/designSystems/taro/TabBar";
 import PreviewQRCode from "./PreviewQRCode";
+import AppViewerLayout from "./viewer/AppViewerLayout";
 
 const SentryRoute = Sentry.withSentryRouting(Route);
 
 const AppViewerBody = styled.section<{
-  hasPages: boolean;
-  inCloudOS: boolean;
   showTabBar: boolean;
+  isMobile: boolean;
 }>`
   display: flex;
   flex-direction: row;
   align-items: stretch;
   justify-content: flex-start;
   height: calc(
-    100vh -
-      ${(props) =>
-        !props.hasPages
-          ? props.inCloudOS
-            ? "0px"
-            : props.theme.smallHeaderHeight
-          : props.inCloudOS
-          ? props.theme.viewHeaderTabHeight
-          : `${props.theme.smallHeaderHeight} - ${props.theme.viewHeaderTabHeight}`} -
+    100vh - ${(props) => (props.isMobile ? "0px" : "168px")} -
       ${(props) => (props.showTabBar ? "60px" : "0px")}
   );
 `;
@@ -75,9 +71,13 @@ const AppViewerBodyContainer = styled.div<{ width?: string }>`
   margin: 0 auto;
 `;
 
-const StableContainer = styled.div`
+const StableContainer = styled.div<{
+  isMobile: boolean;
+}>`
   position: relative;
   overflow: hidden;
+  background: ${(props) =>
+    props.isMobile ? "radial-gradient(#2cbba633, #ffec8f36)" : "#fff"};
 `;
 
 export type AppViewerProps = {
@@ -100,6 +100,7 @@ export type AppViewerProps = {
   lightTheme: Theme;
   inCloudOS: any;
   showTabBar: boolean;
+  isMobile: boolean;
 } & RouteComponentProps<BuilderRouteParams>;
 
 class AppViewer extends Component<
@@ -125,7 +126,7 @@ class AppViewer extends Component<
   };
 
   public render() {
-    const { isInitialized, inCloudOS, showTabBar } = this.props;
+    const { isInitialized, isMobile, showTabBar } = this.props;
     return (
       <ThemeProvider theme={this.props.lightTheme}>
         <GlobalHotKeys>
@@ -136,37 +137,35 @@ class AppViewer extends Component<
               resetChildrenMetaProperty: this.props.resetChildrenMetaProperty,
             }}
           >
-            <StableContainer>
-              <ContainerWithComments>
-                <AppComments isInline />
-                <AppViewerBodyContainer>
-                  <AppViewerBody
-                    inCloudOS={inCloudOS}
-                    hasPages={this.props.pages.length > 1}
-                    showTabBar={showTabBar}
-                  >
-                    {isInitialized && this.state.registered && (
-                      <Switch>
-                        <SentryRoute
-                          component={AppViewerPageContainer}
-                          exact
-                          path={getApplicationViewerPageURL()}
-                        />
-                        <SentryRoute
-                          component={AppViewerPageContainer}
-                          exact
-                          path={`${getApplicationViewerPageURL()}/fork`}
-                        />
-                      </Switch>
-                    )}
-                  </AppViewerBody>
-                </AppViewerBodyContainer>
-              </ContainerWithComments>
-              <AddCommentTourComponent />
-              <CommentShowCaseCarousel />
-              <TabBar />
-              <PreviewQRCode />
-            </StableContainer>
+            <AppViewerLayout>
+              <StableContainer isMobile={isMobile}>
+                <ContainerWithComments>
+                  <AppComments isInline />
+                  <AppViewerBodyContainer>
+                    <AppViewerBody showTabBar={showTabBar} isMobile={isMobile}>
+                      {isInitialized && this.state.registered && (
+                        <Switch>
+                          <SentryRoute
+                            component={AppViewerPageContainer}
+                            exact
+                            path={getApplicationViewerPageURL()}
+                          />
+                          <SentryRoute
+                            component={AppViewerPageContainer}
+                            exact
+                            path={`${getApplicationViewerPageURL()}/fork`}
+                          />
+                        </Switch>
+                      )}
+                    </AppViewerBody>
+                  </AppViewerBodyContainer>
+                </ContainerWithComments>
+                <AddCommentTourComponent />
+                <CommentShowCaseCarousel />
+                <TabBar />
+                <PreviewQRCode />
+              </StableContainer>
+            </AppViewerLayout>
           </EditorContext.Provider>
         </GlobalHotKeys>
       </ThemeProvider>
@@ -180,6 +179,7 @@ const mapStateToProps = (state: AppState) => ({
   lightTheme: getThemeDetails(state, ThemeMode.LIGHT),
   inCloudOS: state.entities.app.inCloudOS,
   showTabBar: getShowTabBar(state),
+  isMobile: isMobileLayout(state),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
