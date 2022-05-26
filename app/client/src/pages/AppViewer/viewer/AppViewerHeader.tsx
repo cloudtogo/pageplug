@@ -202,6 +202,8 @@ export function AppViewerHeader(props: AppViewerHeaderProps) {
     loginUrl,
   });
 
+  return <HtmlTitle />;
+
   if (inCloudOS) {
     return (
       <ThemeProvider theme={props.lightTheme}>

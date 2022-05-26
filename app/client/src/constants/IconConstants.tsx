@@ -12,6 +12,7 @@ export type IconProps = {
   needBG?: boolean;
   disabled?: boolean;
   cursor?: "move" | "grab" | "default";
+  style?: any;
 };
 
 export const IconWrapper = styled.div<IconProps>`
@@ -22,6 +23,7 @@ export const IconWrapper = styled.div<IconProps>`
   display: inline-flex;
   width: ${(props) => props.width}px;
   height: ${(props) => props.height}px;
+  cursor: pointer;
   ${(props) =>
     props.needBG
       ? `

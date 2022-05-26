@@ -19,7 +19,7 @@ import {
 } from "selectors/editorSelectors";
 import { APP_MODE } from "entities/App";
 import { scrollbarWidth } from "utils/helpers";
-import { useWindowSizeHooks } from "./dragResizeHooks";
+import { useWindowSizeHooks, usePageContainerSizeHooks, } from "./dragResizeHooks";
 import { getAppMode } from "selectors/entitiesSelector";
 import { updateCanvasLayoutAction } from "actions/editorActions";
 import { calculateDynamicHeight } from "utils/DSLMigrations";
@@ -27,7 +27,7 @@ import { calculateDynamicHeight } from "utils/DSLMigrations";
 const BORDERS_WIDTH = 2;
 const GUTTER_WIDTH = 72;
 
-export const useDynamicAppLayout = () => {
+export const useDynamicAppLayout = (isViewer?: boolean) => {
   const dispatch = useDispatch();
   const [initialized, setInitialized] = useState(false);
   const explorerWidth = useSelector(getExplorerWidth);
@@ -35,7 +35,12 @@ export const useDynamicAppLayout = () => {
   const appMode: APP_MODE | undefined = useSelector(getAppMode);
   const domEntityExplorer = document.querySelector(".js-entity-explorer");
   const domPropertyPane = document.querySelector(".js-property-pane-sidebar");
-  const { height: screenHeight, width: screenWidth } = useWindowSizeHooks();
+  const { height: screenHeight, width: winWidth } = useWindowSizeHooks();
+  const { width: containerWidth } = usePageContainerSizeHooks();
+  let screenWidth = winWidth;
+  if (isViewer) {
+    screenWidth = containerWidth;
+  }
   const mainContainer = useSelector(getWidgetByID(MAIN_CONTAINER_WIDGET_ID));
   const isPreviewMode = useSelector(previewModeSelector);
   const currentPageId = useSelector(getCurrentPageId);

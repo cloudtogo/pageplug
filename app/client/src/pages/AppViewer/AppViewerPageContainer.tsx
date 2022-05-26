@@ -26,7 +26,7 @@ import { DSLWidget } from "widgets/constants";
 import { builderURL } from "RouteBuilder";
 
 const Section = styled.section`
-  background: ${(props) => props.theme.colors.artboard};
+  background: #fff;
   height: max-content;
   min-height: 100%;
   margin: 0 auto;

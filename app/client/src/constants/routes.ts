@@ -35,6 +35,7 @@ export const BUILDER_PATH = `/:applicationSlug/:pageSlug(.*\-):pageId/edit`;
 export const VIEWER_PATH = `/:applicationSlug/:pageSlug(.*\-):pageId`;
 export const VIEWER_PATH_DEPRECATED = `/applications/:applicationId/(pages)?/:pageId?`;
 export const VIEWER_FORK_PATH = `${VIEWER_PATH}/fork`;
+export const getViewerLayoutEditorURL = () =>`${VIEWER_PATH}/viewer-layout`;
 export const INTEGRATION_EDITOR_PATH = `/datasources/:selectedTab`;
 export const API_EDITOR_BASE_PATH = `/api`;
 export const API_EDITOR_ID_PATH = `${API_EDITOR_BASE_PATH}/:apiId`;

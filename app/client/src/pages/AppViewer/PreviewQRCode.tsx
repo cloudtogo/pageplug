@@ -16,7 +16,7 @@ const Container = styled.div`
 
 const Card = styled.div`
   border-radius: 16px;
-  background: ${Colors.MINT_GREEN_LIGHT}45;
+  background: #fff;
   border: 2px solid ${Colors.MINT_GREEN};
   padding: 12px;
   overflow: hidden;

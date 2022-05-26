@@ -2,6 +2,7 @@
 import { getAppsmithConfigs } from "@appsmith/configs";
 import tinycolor from "tinycolor2";
 const { inCloudOS } = getAppsmithConfigs();
+// MINT_GREEN #2CBBA6
 const primaryColor = inCloudOS ? "#613eea" : "#2CBBA6";
 
 const lighten = (color: string, p: number) => {
@@ -121,7 +122,7 @@ export const Colors = {
   RATE_INACTIVE: "#F2F2F2",
   // new colors
   MINT_GREEN: primaryColor,
-  MINT_GREEN_LIGHT: lighten(primaryColor, 38),
+  MINT_GREEN_LIGHT: lighten(primaryColor, 30),
   MINT_GREEN_DARK: darken(primaryColor, 10),
   MINT_GREEN_DARKER: darken(primaryColor, 20),
   MINT_GREEN_DARKEST: desaturate(lighten(primaryColor, 30), 50),
