@@ -136,7 +136,7 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
             {dom}
           </a>
         )}
-        iconfontUrl="//at.alicdn.com/t/font_3399269_ci9l2lsaq6f.js"
+        iconfontUrl="//at.alicdn.com/t/font_3399269_yx9ykuzs72.js"
         route={{
           routes: initState.treeData,
         }}
