@@ -15681,7 +15681,7 @@ react-dnd-html5-backend@^9.3.4:
   resolved "https://registry.npmmirror.com/react-dnd-html5-backend/-/react-dnd-html5-backend-9.5.1.tgz#e6a0aed3ece800c1abe004f9ed9991513e2e644c"
   integrity sha512-wUdzjREwLqHxFkA6E+XDVL5IFjRDbBI3SHVKil9n3qrGT5dm2tA2oi1aIALdfMKsu00c+OXA9lz/LuKZCE9KXg==
   dependencies:
-    dnd-core "^9.5.1"
+    lodash "^4.2.0"
 
 react-dnd-scrollzone-patch-react-17@^1.0.2:
   version "1.0.2"
@@ -15710,9 +15710,18 @@ react-dnd-touch-backend@^9.4.0:
   resolved "https://registry.npmmirror.com/react-dnd-touch-backend/-/react-dnd-touch-backend-9.5.1.tgz#cc0a35f61acc920d91aad267a415db5f702129a3"
   integrity sha512-XpdhR/XUhjR2lsFdW9ce0Q1QNX24MGwlT6qGbWdg5G2J3rmt7rzLT8UytppdusYHTn7UbNKtuZcxfw4HOCPdKg==
   dependencies:
-    "@types/invariant" "^2.2.30"
-    dnd-core "^9.5.1"
-    invariant "^2.2.4"
+    "@react-dnd/invariant" "^2.0.0"
+    dnd-core "^11.1.3"
+
+react-dnd@11.1.3, react-dnd@^11.1.3:
+  version "11.1.3"
+  resolved "https://registry.npmmirror.com/react-dnd/-/react-dnd-11.1.3.tgz#f9844f5699ccc55dfc81462c2c19f726e670c1af"
+  integrity sha512-8rtzzT8iwHgdSC89VktwhqdKKtfXaAyC4wiqp0SywpHG12TTLvfOoL6xNEIUWXwIEWu+CFfDn4GZJyynCEuHIQ==
+  dependencies:
+    "@react-dnd/shallowequal" "^2.0.0"
+    "@types/hoist-non-react-statics" "^3.3.1"
+    dnd-core "^11.1.3"
+    hoist-non-react-statics "^3.3.0"
 
 react-dnd@2.5.4:
   version "2.5.4"
@@ -16273,7 +16282,7 @@ react-virtualized-auto-sizer@^1.0.2:
   resolved "https://registry.npmmirror.com/react-virtualized-auto-sizer/-/react-virtualized-auto-sizer-1.0.6.tgz#66c5b1c9278064c5ef1699ed40a29c11518f97ca"
   integrity sha512-7tQ0BmZqfVF6YYEWcIGuoR3OdYe8I/ZFbNclFlGOC3pMqunkYF/oL30NCjSGl9sMEb17AnzixDz98Kqc3N76HQ==
 
-react-virtualized@^9.13.0, react-virtualized@^9.19.1, react-virtualized@^9.21.2:
+react-virtualized@^9.13.0, react-virtualized@^9.21.2:
   version "9.22.3"
   resolved "https://registry.npmmirror.com/react-virtualized/-/react-virtualized-9.22.3.tgz#f430f16beb0a42db420dbd4d340403c0de334421"
   integrity sha512-MKovKMxWTcwPSxE1kK1HcheQTWfuCxAuBoSTf2gwyMM21NdX/PXUhnoP8Uc5dRKd+nKm8v41R36OellhdCpkrw==
