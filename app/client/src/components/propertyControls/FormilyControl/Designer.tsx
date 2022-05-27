@@ -1,12 +1,11 @@
 import React, { useMemo, forwardRef, useImperativeHandle } from "react";
-import { useEffect } from "react";
 import {
   Designer,
   Workspace,
   OutlineTreeWidget,
-  DragSourceWidget,
+  ResourceWidget,
   HistoryWidget,
-  MainPanel,
+  StudioPanel,
   CompositePanel,
   WorkspacePanel,
   ViewportPanel,
@@ -14,19 +13,51 @@ import {
   SettingsPanel,
   ComponentTreeWidget,
 } from "@designable/react";
-import { transformToSchema, transformToTreeNode } from "@designable/formily";
-import { SettingsForm } from "@designable/react-settings-form";
+import {
+  SettingsForm,
+  setNpmCDNRegistry,
+} from "@designable/react-settings-form";
+import {
+  transformToSchema,
+  transformToTreeNode,
+} from "@designable/formily-transformer";
 import {
   createDesigner,
   GlobalRegistry,
   WorkbenchTypes,
 } from "@designable/core";
+import { PreviewWidget } from "./PreviewWidget";
 import {
-  createDesignableField,
-  createDesignableForm,
-} from "@formily/designable-antd";
-import PreviewWidget from "./PreviewWidget";
-const CompositePanelItem: any = CompositePanel.Item;
+  Form,
+  Field,
+  Input,
+  Select,
+  TreeSelect,
+  Cascader,
+  Radio,
+  Checkbox,
+  Slider,
+  Rate,
+  NumberPicker,
+  Transfer,
+  Password,
+  DatePicker,
+  TimePicker,
+  Upload,
+  Switch,
+  Text,
+  Card,
+  ArrayCards,
+  ObjectContainer,
+  ArrayTable,
+  Space,
+  FormTab,
+  FormCollapse,
+  FormLayout,
+  FormGrid,
+} from "@designable/formily-antd";
+
+setNpmCDNRegistry("//unpkg.com");
 
 GlobalRegistry.registerDesignerLocales({
   "zh-CN": {
@@ -34,6 +65,7 @@ GlobalRegistry.registerDesignerLocales({
       Inputs: "输入控件",
       Layouts: "布局组件",
       Arrays: "自增组件",
+      Displays: "展示组件",
     },
   },
   "en-US": {
@@ -41,45 +73,28 @@ GlobalRegistry.registerDesignerLocales({
       Inputs: "Inputs",
       Layouts: "Layouts",
       Arrays: "Arrays",
+      Displays: "Displays",
     },
   },
 });
 
-const Root = createDesignableForm({
-  registryName: "Root",
-});
-
-const DesignableField = createDesignableField({
-  registryName: "DesignableField",
-});
-
 const FormilyDesigner = (props: any, ref: any) => {
-  const engine = useMemo(() => createDesigner(), []);
-  console.log("designer render");
-
-  useEffect(() => {
-    console.log("desginer init");
-    return () => {
-      console.log("desginer destory");
-    };
-  }, []);
+  const engine = useMemo(
+    () =>
+      createDesigner({
+        rootComponentName: "Form",
+      }),
+    [],
+  );
 
   useImperativeHandle(
     ref,
     () => ({
       getSchema: () => {
-        return transformToSchema(engine.getCurrentTree(), {
-          designableFieldName: "DesignableField",
-          designableFormName: "Root",
-        });
+        return transformToSchema(engine.getCurrentTree());
       },
       setSchema: (schema: any) => {
-        engine.setCurrentTree(
-          transformToTreeNode(schema, {
-            designableFieldName: "DesignableField",
-            designableFormName: "Root",
-          }),
-        );
+        engine.setCurrentTree(transformToTreeNode(schema));
       },
       toggleWorkbench: (type: WorkbenchTypes) => {
         engine.workbench.setWorkbenchType(type);
@@ -91,41 +106,94 @@ const FormilyDesigner = (props: any, ref: any) => {
 
   return (
     <Designer engine={engine}>
-      <MainPanel>
+      <StudioPanel>
         <CompositePanel>
-          <CompositePanelItem title="panels.Component" icon="Component">
-            <DragSourceWidget title="sources.Inputs" name="inputs" />
-            <DragSourceWidget title="sources.Layouts" name="layouts" />
-            <DragSourceWidget title="sources.Arrays" name="arrays" />
-          </CompositePanelItem>
-          <CompositePanelItem title="panels.OutlinedTree" icon="Outline">
+          <CompositePanel.Item title="panels.Component" icon="Component">
+            <ResourceWidget
+              title="sources.Inputs"
+              sources={[
+                Input,
+                Password,
+                NumberPicker,
+                Rate,
+                Slider,
+                Select,
+                TreeSelect,
+                Cascader,
+                Transfer,
+                Checkbox,
+                Radio,
+                DatePicker,
+                TimePicker,
+                Upload,
+                Switch,
+                ObjectContainer,
+              ]}
+            />
+            <ResourceWidget
+              title="sources.Layouts"
+              sources={[
+                Card,
+                FormGrid,
+                FormTab,
+                FormLayout,
+                FormCollapse,
+                Space,
+              ]}
+            />
+            <ResourceWidget
+              title="sources.Arrays"
+              sources={[ArrayCards, ArrayTable]}
+            />
+            <ResourceWidget title="sources.Displays" sources={[Text]} />
+          </CompositePanel.Item>
+          <CompositePanel.Item title="panels.OutlinedTree" icon="Outline">
             <OutlineTreeWidget />
-          </CompositePanelItem>
-          <CompositePanelItem title="panels.History" icon="History">
+          </CompositePanel.Item>
+          <CompositePanel.Item title="panels.History" icon="History">
             <HistoryWidget />
-          </CompositePanelItem>
+          </CompositePanel.Item>
         </CompositePanel>
         <Workspace id="form">
           <WorkspacePanel>
-            <ViewportPanel>
+            <ViewportPanel style={{ height: "100%" }}>
               <ViewPanel type="DESIGNABLE">
-                {() => {
-                  console.log("DESIGNABLE show !");
-                  return (
-                    <ComponentTreeWidget
-                      components={{
-                        Root,
-                        DesignableField,
-                      }}
-                    />
-                  );
-                }}
+                {() => (
+                  <ComponentTreeWidget
+                    components={{
+                      Form,
+                      Field,
+                      Input,
+                      Select,
+                      TreeSelect,
+                      Cascader,
+                      Radio,
+                      Checkbox,
+                      Slider,
+                      Rate,
+                      NumberPicker,
+                      Transfer,
+                      Password,
+                      DatePicker,
+                      TimePicker,
+                      Upload,
+                      Switch,
+                      Text,
+                      Card,
+                      ArrayCards,
+                      ArrayTable,
+                      Space,
+                      FormTab,
+                      FormCollapse,
+                      FormGrid,
+                      FormLayout,
+                      ObjectContainer,
+                    }}
+                  />
+                )}
               </ViewPanel>
               <ViewPanel type="PREVIEW">
-                {(tree) => {
-                  console.log("PREVIEW show !");
-                  return <PreviewWidget tree={tree} />;
-                }}
+                {(tree) => <PreviewWidget tree={tree} />}
               </ViewPanel>
             </ViewportPanel>
           </WorkspacePanel>
@@ -133,7 +201,7 @@ const FormilyDesigner = (props: any, ref: any) => {
         <SettingsPanel title="panels.PropertySettings">
           <SettingsForm uploadAction="https://www.mocky.io/v2/5cc8019d300000980a055e76" />
         </SettingsPanel>
-      </MainPanel>
+      </StudioPanel>
     </Designer>
   );
 };
