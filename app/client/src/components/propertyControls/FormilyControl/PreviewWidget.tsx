@@ -31,7 +31,16 @@ import {
 } from "@formily/antd";
 import { Card, Slider, Rate } from "antd";
 import { TreeNode } from "@designable/core";
-import { transformToSchema } from "@designable/formily";
+import { transformToSchema } from "@designable/formily-transformer";
+
+const Text: React.FC<{
+  value?: string;
+  content?: string;
+  mode?: "normal" | "h1" | "h2" | "h3" | "p";
+}> = ({ value, mode, content, ...props }) => {
+  const tagName = mode === "normal" || !mode ? "div" : mode;
+  return React.createElement(tagName, props, value || content);
+};
 
 const SchemaField = createSchemaField({
   components: {
@@ -48,6 +57,7 @@ const SchemaField = createSchemaField({
     Cascader,
     Editable,
     Input,
+    Text,
     NumberPicker,
     Switch,
     Password,
@@ -70,17 +80,12 @@ export interface IPreviewWidgetProps {
   tree: TreeNode;
 }
 
-const PreviewWidget: React.FC<IPreviewWidgetProps> = (props) => {
+export const PreviewWidget: React.FC<IPreviewWidgetProps> = (props) => {
   const form = useMemo(() => createForm(), []);
-  const { form: formProps, schema }: any = transformToSchema(props.tree, {
-    designableFormName: "Root",
-    designableFieldName: "DesignableField",
-  });
+  const { form: formProps, schema } = transformToSchema(props.tree);
   return (
     <Form {...formProps} form={form}>
       <SchemaField schema={schema} />
     </Form>
   );
 };
-
-export default PreviewWidget;
