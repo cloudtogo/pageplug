@@ -1447,10 +1447,7 @@
   resolved "https://registry.npmmirror.com/@designable/core/-/core-0.4.34.tgz#47a7b6251f17c6034f4972d71af13747d8a14dd3"
   integrity sha512-IA7+VI2ITmR2FYnvvHexYsHh49/XMumBqoxlLjwZF/jrRjCW0b2ZuFj/JfKVRjpfgvn1eY+thuz9DZb9IqxH/Q==
   dependencies:
-    "@designable/shared" "0.4.34"
-    "@formily/json-schema" "^2.0.0-beta.84"
-    "@formily/path" "^2.0.0-beta.84"
-    "@formily/reactive" "^2.0.0-beta.84"
+    "@designable/shared" "1.0.0-beta.45"
     "@juggle/resize-observer" "^3.3.1"
 
 "@designable/formily@0.4.34":
@@ -1458,10 +1455,10 @@
   resolved "https://registry.npmmirror.com/@designable/formily/-/formily-0.4.34.tgz#d73c34c925d6c40d9438130d2482e3bcc2e217a1"
   integrity sha512-MQ6nsNZACtUi7mnykbJFx5IO6BuVtej+2XHnwExuzgcMtybuOkFJAeP0i3UAHR2lUZQyl1MSgGYWWg+wjVnz0A==
   dependencies:
-    "@designable/core" "0.4.34"
-    "@designable/shared" "0.4.34"
-    "@formily/core" "^2.0.0-beta.84"
-    "@formily/json-schema" "^2.0.0-beta.84"
+    "@designable/core" "1.0.0-beta.45"
+    "@designable/formily-transformer" "1.0.0-beta.45"
+    "@designable/react" "1.0.0-beta.45"
+    "@designable/react-settings-form" "1.0.0-beta.45"
 
 "@designable/react-settings-form@0.4.34":
   version "0.4.34"
@@ -1469,15 +1466,9 @@
   integrity sha512-m2W5RkxWWB6f4/jAA8ebFZiLCfB6Bnt+RAR6newGdZezXkOZ2ITyQjICu1efXabL+8M5HFcxtfvRaeLH3kaEww==
   dependencies:
     "@babel/parser" "^7.14.7"
-    "@designable/core" "0.4.34"
-    "@designable/react" "0.4.34"
-    "@designable/shared" "0.4.34"
-    "@formily/antd" "^2.0.0-beta.84"
-    "@formily/core" "^2.0.0-beta.84"
-    "@formily/react" "^2.0.0-beta.84"
-    "@formily/reactive" "^2.0.0-beta.84"
-    "@formily/reactive-react" "^2.0.0-beta.84"
-    "@formily/shared" "^2.0.0-beta.84"
+    "@designable/core" "1.0.0-beta.45"
+    "@designable/react" "1.0.0-beta.45"
+    "@designable/shared" "1.0.0-beta.45"
     "@monaco-editor/react" "^4.2.1"
     monaco-editor "^0.25.2"
     prettier "^2.3.2"
@@ -1489,10 +1480,8 @@
   resolved "https://registry.npmmirror.com/@designable/react/-/react-0.4.34.tgz#9970a390c92c216cadbd42b5ff778e1306e6b733"
   integrity sha512-fYsrBwkEZkO1hh2eR2ad4ZQLqcdDZqUrqfeIZSEaaO/0cd45M7oTyo6tYhBfivwhoOwJKyCAapCkUaLfKr4ybA==
   dependencies:
-    "@designable/core" "0.4.34"
-    "@designable/shared" "0.4.34"
-    "@formily/reactive" "^2.0.0-beta.84"
-    "@formily/reactive-react" "^2.0.0-beta.84"
+    "@designable/core" "1.0.0-beta.45"
+    "@designable/shared" "1.0.0-beta.45"
     "@juggle/resize-observer" "^3.3.1"
     dateformat "^4.5.1"
 
@@ -1818,7 +1807,7 @@
   resolved "https://registry.npmmirror.com/@formily/reactive-react/-/reactive-react-2.0.0-beta.88.tgz#2eb87e3d1a1ce811841d6cfdbea7d94f68c5a657"
   integrity sha512-qzPjSTMYyqtrxwRaeTJ1gqGhttEYRGIepVDwQC6haiP4bcdBnio6NklZcaGA4q1XeJit+PTBryXP0I8gfVpLEQ==
   dependencies:
-    "@formily/reactive" "2.0.0-beta.88"
+    "@formily/reactive" "2.1.3"
     hoist-non-react-statics "^3.3.2"
 
 "@formily/reactive-react@2.0.18", "@formily/reactive-react@^2.0.0-beta.84":
@@ -1844,7 +1833,7 @@
   resolved "https://registry.npmmirror.com/@formily/shared/-/shared-2.0.0-beta.88.tgz#c1afebc0f5a6328737bf25e7983643246411dc31"
   integrity sha512-/bmh3TfwzZowTSI1XvITiTMq+Zvw/yBH3U1fv6uIit3tSe+7BgcHzbaDbG/CfG48IRkQ6+/0b7zFgI1McrRzQA==
   dependencies:
-    "@formily/path" "2.0.0-beta.88"
+    "@formily/path" "2.1.3"
     camel-case "^4.1.1"
     lower-case "^2.0.1"
     no-case "^3.0.4"
@@ -1870,7 +1859,7 @@
   resolved "https://registry.npmmirror.com/@formily/validator/-/validator-2.0.0-beta.88.tgz#33027b3adb75eab64ccd4137869ac152511464eb"
   integrity sha512-4m2fvprS8KLAZcBostBY2TxihM7Pp6rkKwDC78QMz7R0pnqP/WvCB3HOTT9jxVVDJ65CL1r6qYk700b0u6YVGg==
   dependencies:
-    "@formily/shared" "2.0.0-beta.88"
+    "@formily/shared" "2.1.3"
 
 "@formily/validator@2.0.18":
   version "2.0.18"
@@ -16189,7 +16178,6 @@ react-sticky-box@^0.9.3:
   resolved "https://registry.npmmirror.com/react-sticky-box/-/react-sticky-box-0.9.3.tgz#8450d4cef8e4fdd7b0351520365bc98c97da11af"
   integrity sha512-Y/qO7vTqAvXuRR6G6ZCW4fX2Bz0GZRwiiLTVeZN5CVz9wzs37ev0Xj3KSKF/PzF0jifwATivI4t24qXG8rSz4Q==
   dependencies:
-    "@babel/runtime" "^7.1.5"
     resize-observer-polyfill "^1.5.1"
 
 react-syntax-highlighter@^15.4.4:

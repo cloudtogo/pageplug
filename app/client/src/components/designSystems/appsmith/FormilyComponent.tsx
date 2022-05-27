@@ -33,9 +33,18 @@ import {
   FormDialog,
 } from "@formily/antd";
 import { Card, Slider, Rate, Button } from "antd";
-import { FormType } from "../../../widgets/FormilyWidget";
+import { FormType } from "widgets/FormilyWidget";
 import styled from "styled-components";
 import _ from "lodash";
+
+export const Text: React.FC<{
+  value?: string;
+  content?: string;
+  mode?: "normal" | "h1" | "h2" | "h3" | "p";
+}> = ({ value, mode, content, ...props }) => {
+  const tagName = mode === "normal" || !mode ? "div" : mode;
+  return React.createElement(tagName, props, value || content);
+};
 
 interface FormilyComponentProps {
   formType: FormType;
@@ -116,6 +125,7 @@ const SchemaField = createSchemaField({
     Card,
     Slider,
     Rate,
+    Text,
   },
 });
 
