@@ -21,13 +21,16 @@ import {
   getApplicationViewerPageURL,
 } from "constants/routes";
 
-const TabBarContainer = styled.div`
+const TabBarContainer = styled.div<{
+  mode: APP_MODE;
+}>`
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   height: 60px;
-  background: #ffec8f36;
+  background: ${(props) =>
+    props.mode === APP_MODE.EDIT ? "transparent" : "#ffec8f36"};
 `;
 
 const Center = styled.div`
@@ -64,7 +67,7 @@ const TabBar = ({
   }
 
   return (
-    <TabBarContainer>
+    <TabBarContainer mode={mode}>
       <Center>
         <Tabbar value={currentPageId} onChange={jumpTo}>
           {pages.map((page) => {

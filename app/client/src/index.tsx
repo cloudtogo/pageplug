@@ -63,7 +63,7 @@ const inst = createReactApp(Empty, React, ReactDOM, {});
 // );
 // add touch emulator
 import "@vant/touch-emulator";
-import "react-sortable-tree/style.css";
+import "react-sortable-tree-patch-react-17/style.css";
 
 // app init
 appInitializer();

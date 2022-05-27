@@ -7,7 +7,7 @@ import { BuilderRouteParams } from "constants/routes";
 import { AppState } from "reducers";
 import MainContainer from "./MainContainer";
 import { DndProvider } from "react-dnd";
-import TouchBackend from "react-dnd-touch-backend";
+import { TouchBackend } from "react-dnd-touch-backend";
 import {
   getCurrentApplicationId,
   getCurrentPageId,
