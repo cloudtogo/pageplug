@@ -59,6 +59,7 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
+            dependencies: ["formType"],
             hidden: (props: FormilyWidgetProps) => {
               return props.formType === "PLAIN";
             },
@@ -94,6 +95,7 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
+            dependencies: ["showReset"],
             hidden: (props: FormilyWidgetProps) => {
               return !props.showReset;
             },
