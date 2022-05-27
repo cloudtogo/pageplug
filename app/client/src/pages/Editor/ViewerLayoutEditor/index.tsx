@@ -11,7 +11,8 @@ import {
   getPageList,
 } from "selectors/editorSelectors";
 import { BUILDER_PAGE_URL } from "constants/routes";
-import SortableTree, {
+import {
+  SortableTreeWithoutDndContext as SortableTree,
   addNodeUnderParent,
   removeNodeAtPath,
   changeNodeAtPath,
