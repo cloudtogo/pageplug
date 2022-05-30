@@ -12,15 +12,13 @@ import AnalyticsUtil, { EventLocation } from "utils/AnalyticsUtil";
 import { CURL } from "constants/AppsmithActionConstants/ActionConstants";
 import { PluginType } from "entities/Action";
 import { Spinner } from "@blueprintjs/core";
-import { getQueryParams } from "utils/AppsmithUtils";
+import { getQueryParams, replacePluginIcon } from "utils/AppsmithUtils";
 import { GenerateCRUDEnabledPluginMap } from "../../../api/PluginApi";
 import { getGenerateCRUDEnabledPluginMap } from "../../../selectors/entitiesSelector";
 import { useSelector } from "react-redux";
 import { getIsGeneratePageInitiator } from "utils/GenerateCrudUtil";
 import { selectURLSlugs } from "selectors/editorSelectors";
 import { curlImportPageURL } from "RouteBuilder";
-// import { replacePluginIcon } from "utils/AppsmithUtils";
-const replacePluginIcon = (e: any) => e;
 
 const StyledContainer = styled.div`
   flex: 1;
