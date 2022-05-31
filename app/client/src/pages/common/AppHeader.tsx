@@ -12,8 +12,6 @@ import {
 import { withRouter, RouteComponentProps } from "react-router";
 import AppViewerHeader from "pages/AppViewer/viewer/AppViewerHeader";
 import AppEditorHeader from "pages/Editor/EditorHeader";
-import { getAppsmithConfigs } from "configs";
-const { inCloudOS } = getAppsmithConfigs();
 
 type Props = RouteComponentProps;
 
@@ -29,14 +27,6 @@ class AppHeader extends React.Component<Props, any> {
     headerRoot?.removeChild(this.container);
   }
   get header() {
-    if (inCloudOS) {
-      return (
-        <Switch>
-          <Route component={AppEditorHeader} path={BUILDER_URL} />
-          <Route component={AppViewerHeader} path={APP_VIEW_URL} />
-        </Switch>
-      );
-    }
     return (
       <Switch>
         <Route component={AppEditorHeader} path={BUILDER_URL} />

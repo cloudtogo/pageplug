@@ -12,11 +12,7 @@ const SentryRoute = Sentry.withSentryRouting(Route);
 
 const Container = styled.div`
   display: flex;
-  height: calc(
-    100vh -
-      ${(props) =>
-        props.theme.inCloudOS ? "0px" : props.theme.smallHeaderHeight}
-  );
+  height: calc(100vh - ${(props) => props.theme.smallHeaderHeight});
   background-color: ${(props) => props.theme.appBackground};
 `;
 

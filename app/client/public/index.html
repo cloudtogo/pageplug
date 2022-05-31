@@ -19,12 +19,6 @@
       transition: all ease-in 0.3s;
     }
   </style>
-  <script type="text/javascript">
-    if ("%REACT_APP_IN_CLOUDOS%".trim() === "true") {
-      document.querySelector(':root').style.setProperty("--loader-bar-color", "#613eea");
-      document.title = "Methodot";
-    }
-  </script>
 </head>
 
 <body>
@@ -204,10 +198,6 @@
       cloudServicesBaseUrl: parseConfig("__APPSMITH_CLOUD_SERVICES_BASE_URL__") || "https://cs.appsmith.com",
       googleRecaptchaSiteKey: parseConfig("__APPSMITH_RECAPTCHA_SITE_KEY__"),
     };
-
-    // CloudOS
-    window.CLOUDOS_LOGIN_URL = parseConfig("__PAGEPLUG_CLOUDOS_LOGIN_URL__") || "http://factory.dev.staros.local/user/login";
-
   </script>
 </body>
 

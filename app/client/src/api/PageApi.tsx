@@ -128,13 +128,6 @@ export type GenerateTemplatePageRequestResponse = ApiResponse & {
   };
 };
 
-export interface SyncCloudOSApiRequest {
-  dep_list: string[];
-  project_id: string;
-  org_id: string;
-  page_id: string;
-}
-
 export interface WxaCodeRequest {
   app_id: string;
 }
@@ -235,12 +228,6 @@ class PageApi extends Api {
     request: UpdateWidgetNameRequest,
   ): AxiosPromise<UpdateWidgetNameResponse> {
     return Api.put(PageApi.refactorLayoutURL, request);
-  }
-
-  static syncCloudOSApi(
-    request: SyncCloudOSApiRequest,
-  ): AxiosPromise<ApiResponse> {
-    return Api.post("v1/cloudos/bindDependedActions", request);
   }
 
   static getPreviewWxaCode(request: WxaCodeRequest): AxiosPromise<ApiResponse> {

@@ -369,27 +369,3 @@ export const generateTemplateToUpdatePage = ({
     },
   };
 };
-
-export type FetchCloudOSApiRequest = {
-  pageId: string;
-  depList: string[];
-  projectId: string;
-  orgId: string;
-};
-
-export const fetchCloudOSApi = (
-  pageId: string,
-  depList: string[],
-  projectId: string,
-  orgId: string,
-): ReduxAction<FetchCloudOSApiRequest> => {
-  return {
-    type: ReduxActionTypes.FETCH_CLOUDOS_API_INIT,
-    payload: {
-      pageId,
-      depList,
-      projectId,
-      orgId,
-    },
-  };
-};

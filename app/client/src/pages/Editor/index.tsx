@@ -52,7 +52,6 @@ type EditorProps = {
   lightTheme: Theme;
   resetEditorRequest: () => void;
   handlePathUpdated: (location: typeof window.location) => void;
-  inCloudOS: boolean;
 };
 
 type Props = EditorProps & RouteComponentProps<BuilderRouteParams>;
@@ -70,7 +69,6 @@ class Editor extends Component<Props> {
     });
     const { applicationId, pageId } = this.props.match.params;
     const queryParams = new URLSearchParams(this.props.location.search);
-    queryParams.set("inCloudOS", this.props.inCloudOS ? "true" : "false");
     if (applicationId && pageId) {
       this.props.initEditor(applicationId, pageId, queryParams);
     }
@@ -128,9 +126,7 @@ class Editor extends Component<Props> {
             <Helmet>
               <meta charSet="utf-8" />
               <title>
-                {`${this.props.currentApplicationName} - ${
-                  this.props.inCloudOS ? "Methodot" : "PagePlug"
-                }`}
+                {`${this.props.currentApplicationName} - ${"PagePlug"}`}
               </title>
             </Helmet>
             <GlobalHotKeys>
@@ -159,7 +155,6 @@ const mapStateToProps = (state: AppState) => ({
   creatingOnboardingDatabase: state.ui.onBoarding.showOnboardingLoader,
   lightTheme: getThemeDetails(state, ThemeMode.LIGHT),
   currentApplicationName: state.ui.applications.currentApplication?.name,
-  inCloudOS: state.entities.app.inCloudOS || false,
 });
 
 const mapDispatchToProps = (dispatch: any) => {

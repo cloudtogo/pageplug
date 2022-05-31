@@ -87,8 +87,7 @@ const RestApiForm = styled.div`
   margin-left: 10px;
   margin-right: 0px;
   height: calc(
-    100vh -
-      ${(props) => (props.theme.inCloudOS ? "0px" : props.theme.headerHeight)} -
+    100vh - ${(props) => props.theme.headerHeight} -
       ${(props) => props.theme.backBanner}
   );
   overflow: auto;

@@ -1,9 +1,6 @@
 // Color Names generated from http://chir.ag/projects/name-that-color
-import { getAppsmithConfigs } from "configs";
 import tinycolor from "tinycolor2";
-const { inCloudOS } = getAppsmithConfigs();
-// MINT_GREEN #2CBBA6
-const primaryColor = inCloudOS ? "#613eea" : "#2CBBA6";
+const primaryColor = "#2CBBA6";
 
 const lighten = (color: string, p: number) => {
   return new tinycolor(color).lighten(p).toString();

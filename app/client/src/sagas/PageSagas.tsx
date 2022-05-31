@@ -22,7 +22,6 @@ import {
   updateAndSaveLayout,
   saveLayout,
   setLastUpdatedTime,
-  FetchCloudOSApiRequest,
 } from "actions/pageActions";
 import PageApi, {
   ClonePageRequest,
@@ -901,53 +900,6 @@ export function* generateTemplatePageSaga(
   }
 }
 
-export function* fetchCloudOSApiSaga(
-  fetchApiAction: ReduxAction<FetchCloudOSApiRequest>,
-) {
-  PerformanceTracker.startAsyncTracking(
-    PerformanceTransactionName.SYNC_CLOUDOS_API,
-  );
-  try {
-    const { pageId, depList, projectId, orgId } = fetchApiAction.payload;
-    const response: FetchPageListResponse = yield call(PageApi.syncCloudOSApi, {
-      dep_list: depList,
-      project_id: projectId,
-      org_id: orgId,
-      page_id: pageId,
-    });
-    const isValidResponse: boolean = yield validateResponse(response);
-    if (isValidResponse) {
-      yield put({
-        type: ReduxActionTypes.FETCH_CLOUDOS_API_SUCCESS,
-      });
-      PerformanceTracker.stopAsyncTracking(
-        PerformanceTransactionName.SYNC_CLOUDOS_API,
-      );
-    } else {
-      PerformanceTracker.stopAsyncTracking(
-        PerformanceTransactionName.SYNC_CLOUDOS_API,
-      );
-      yield put({
-        type: ReduxActionErrorTypes.FETCH_CLOUDOS_API_ERROR,
-        payload: {
-          error: response.responseMeta.error,
-        },
-      });
-    }
-  } catch (error) {
-    PerformanceTracker.stopAsyncTracking(
-      PerformanceTransactionName.SYNC_CLOUDOS_API,
-      { failed: true },
-    );
-    yield put({
-      type: ReduxActionErrorTypes.FETCH_CLOUDOS_API_ERROR,
-      payload: {
-        error,
-      },
-    });
-  }
-}
-
 export default function* pageSagas() {
   yield all([
     takeLatest(ReduxActionTypes.FETCH_PAGE_INIT, fetchPageSaga),
@@ -971,6 +923,5 @@ export default function* pageSagas() {
       ReduxActionTypes.GENERATE_TEMPLATE_PAGE_INIT,
       generateTemplatePageSaga,
     ),
-    takeLatest(ReduxActionTypes.FETCH_CLOUDOS_API_INIT, fetchCloudOSApiSaga),
   ]);
 }

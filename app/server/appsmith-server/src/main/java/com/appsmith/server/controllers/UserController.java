@@ -125,16 +125,7 @@ public class UserController extends BaseController<UserService, User, String> {
 
     @Deprecated
     @GetMapping("/me")
-    public Mono<ResponseDTO<User>> getUserProfile(@CookieValue(name = "token", defaultValue = "null") String tokenInCloudOS) {
-        final Boolean inCloudOS = cloudOSConfig.getInCloudOS();
-        if (inCloudOS) {
-            return this.cloudOSActionSolution.verifyCloudOSToken(tokenInCloudOS)
-                    .flatMap(valid -> sessionUserService.getCurrentUser()
-                        .map(user -> {
-                            user.setCloudOSLogged(valid);
-                            return new ResponseDTO<>(HttpStatus.OK.value(), user, null);
-                        }));
-        }
+    public Mono<ResponseDTO<User>> getUserProfile() {
         return sessionUserService.getCurrentUser()
                 .map(user -> new ResponseDTO<>(HttpStatus.OK.value(), user, null));
     }

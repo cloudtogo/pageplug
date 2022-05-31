@@ -10,8 +10,6 @@ import {
   createMessage,
   PAGE_NOT_FOUND,
 } from "constants/messages";
-import { getAppsmithConfigs } from "configs";
-const { inCloudOS } = getAppsmithConfigs();
 
 const Wrapper = styled.div`
   text-align: center;
@@ -43,10 +41,6 @@ interface Props {
 
 function PageNotFound(props: Props) {
   const { flushErrorsAndRedirect } = props;
-
-  if (inCloudOS) {
-    return <Text404>404</Text404>;
-  }
 
   return (
     <Wrapper>

@@ -98,7 +98,6 @@ export type AppViewerProps = {
   resetChildrenMetaProperty: (widgetId: string) => void;
   pages: PageListPayload;
   lightTheme: Theme;
-  inCloudOS: any;
   showTabBar: boolean;
   isMobile: boolean;
 } & RouteComponentProps<BuilderRouteParams>;
@@ -177,7 +176,6 @@ const mapStateToProps = (state: AppState) => ({
   isInitialized: getIsInitialized(state),
   pages: getViewModePageList(state),
   lightTheme: getThemeDetails(state, ThemeMode.LIGHT),
-  inCloudOS: state.entities.app.inCloudOS,
   showTabBar: getShowTabBar(state),
   isMobile: isMobileLayout(state),
 });

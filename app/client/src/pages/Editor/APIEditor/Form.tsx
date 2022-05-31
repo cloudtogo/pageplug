@@ -60,8 +60,7 @@ const Form = styled.form`
   height: calc(
     100vh -
       (
-        ${(props) =>
-            props.theme.inCloudOS ? "0px" : props.theme.smallHeaderHeight} +
+        ${(props) => props.theme.smallHeaderHeight} +
           ${(props) => props.theme.backBanner}
       )
   );

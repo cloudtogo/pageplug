@@ -23,10 +23,7 @@ const QueryHomePage = styled.div`
   display: flex;
   flex-direction: column;
   height: calc(
-    100vh -
-      ${(props) =>
-        props.theme.integrationsPageUnusableHeight +
-        (props.theme.inCloudOS ? " + 21px" : "")}
+    100vh - ${(props) => props.theme.integrationsPageUnusableHeight}
   );
 
   .sectionHeader {
@@ -44,10 +41,7 @@ const CreateButton = styled(Button)`
 
 const EmptyActiveDatasource = styled.div`
   height: calc(
-    100vh -
-      ${(props) =>
-        props.theme.integrationsPageUnusableHeight +
-        (props.theme.inCloudOS ? " + 21px" : "")}
+    100vh - ${(props) => props.theme.integrationsPageUnusableHeight}
   );
   display: flex;
   align-items: center;

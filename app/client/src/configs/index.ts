@@ -45,13 +45,11 @@ export type INJECTED_CONFIGS = {
   googleRecaptchaSiteKey: string;
   onboardingFormEnabled: boolean;
   supportEmail: string;
-  inCloudOS: boolean;
 };
 declare global {
   interface Window {
     APPSMITH_FEATURE_CONFIGS: INJECTED_CONFIGS;
     Intercom: any;
-    CLOUDOS_LOGIN_URL: string;
   }
 }
 
@@ -124,7 +122,6 @@ const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
       process.env.REACT_APP_GOOGLE_RECAPTCHA_SITE_KEY || "",
     onboardingFormEnabled: !!process.env.REACT_APP_SHOW_ONBOARDING_FORM,
     supportEmail: process.env.APPSMITH_SUPPORT_EMAIL || "support@appsmith.com",
-    inCloudOS: !!process.env.REACT_APP_IN_CLOUDOS,
   };
 };
 
@@ -290,6 +287,5 @@ export const getAppsmithConfigs = (): AppsmithUIConfigs => {
       APPSMITH_FEATURE_CONFIGS.cloudServicesBaseUrl,
     onboardingFormEnabled: ENV_CONFIG.onboardingFormEnabled,
     appsmithSupportEmail: ENV_CONFIG.supportEmail,
-    inCloudOS: ENV_CONFIG.inCloudOS,
   };
 };

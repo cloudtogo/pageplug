@@ -175,25 +175,6 @@ const BindingBanner = styled.div`
   z-index: 9999;
 `;
 
-const CloudOSHeader = styled.div`
-  position: fixed;
-  right: 20px;
-  top: 8px;
-  display: flex;
-  align-items: center;
-
-  & .bp3-popover-wrapper {
-    height: 20px;
-  }
-
-  & .t--application-publish-btn {
-    height: 25px;
-    width: 60px;
-    border-radius: 3px;
-    margin-left: 16px;
-  }
-`;
-
 type EditorHeaderProps = {
   pageSaveError?: boolean;
   pageName?: string;
@@ -207,7 +188,6 @@ type EditorHeaderProps = {
   publishApplication: (appId: string) => void;
   lightTheme: any;
   lastUpdatedTime?: number;
-  inCloudOS: any;
 };
 
 export function EditorHeader(props: EditorHeaderProps) {
@@ -221,7 +201,6 @@ export function EditorHeader(props: EditorHeaderProps) {
     pageId,
     pageSaveError,
     publishApplication,
-    inCloudOS,
   } = props;
   const location = useLocation();
   const dispatch = useDispatch();
@@ -313,24 +292,6 @@ export function EditorHeader(props: EditorHeaderProps) {
   const showAppInviteUsersDialog = useSelector(
     showAppInviteUsersDialogSelector,
   );
-
-  if (inCloudOS) {
-    return (
-      <ThemeProvider theme={props.lightTheme}>
-        <CloudOSHeader>
-          {saveStatusIcon}
-          <span style={{ color: "#8a8a8a" }}>{lastUpdatedTimeMessage}</span>
-          <StyledDeployButton
-            className="t--application-publish-btn"
-            isLoading={isPublishing}
-            onClick={handlePublish}
-            size={Size.small}
-            text={"提交"}
-          />
-        </CloudOSHeader>
-      </ThemeProvider>
-    );
-  }
 
   return (
     <ThemeProvider theme={props.lightTheme}>
@@ -458,7 +419,6 @@ const mapStateToProps = (state: AppState) => ({
   isPublishing: getIsPublishingApplication(state),
   pageId: getCurrentPageId(state),
   lightTheme: getThemeDetails(state, ThemeMode.LIGHT),
-  inCloudOS: state.entities.app.inCloudOS,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({

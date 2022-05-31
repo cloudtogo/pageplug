@@ -137,20 +137,7 @@ public class SecurityConfig {
                 .addFilterBefore(new WebFilter() {
                     @Override
                     public Mono<Void> filter(ServerWebExchange serverWebExchange, WebFilterChain webFilterChain) {
-                        final Boolean inCloudOS = cloudOSConfig.getInCloudOS();
-                        if (!inCloudOS) {
-                            return webFilterChain.filter(serverWebExchange);
-                        }
-                        return userService.findByEmail("admin@cloudtogo.cn")
-                                .switchIfEmpty(Mono.error(new UsernameNotFoundException("Unable to find username: admin")))
-                                .flatMap(defaultUser -> {
-                                    UsernamePasswordAuthenticationToken token =
-                                            new UsernamePasswordAuthenticationToken(defaultUser, null, defaultUser.getAuthorities());
-                                    return ReactiveSecurityContextHolder.getContext().flatMap(context -> {
-                                        context.setAuthentication(token);
-                                        return webFilterChain.filter(serverWebExchange);
-                                    });
-                                });
+                        return webFilterChain.filter(serverWebExchange);
                     }
                 }, SecurityWebFiltersOrder.SECURITY_CONTEXT_SERVER_WEB_EXCHANGE)
                 .anonymous().principal(createAnonymousUser())

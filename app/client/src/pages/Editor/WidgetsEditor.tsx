@@ -37,9 +37,7 @@ const EditorWrapper = styled.div<{
   justify-content: flex-start;
   overflow: hidden;
   height: calc(
-    100vh -
-      ${(props) =>
-        props.theme.inCloudOS ? "0px" : props.theme.smallHeaderHeight} -
+    100vh - ${(props) => props.theme.smallHeaderHeight} -
       ${(props) => (props.showTabBar ? "60px" : "0px")}
   );
   transform: translate(0, 0);

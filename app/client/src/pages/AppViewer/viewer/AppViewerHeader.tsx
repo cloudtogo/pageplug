@@ -38,11 +38,10 @@ import { showAppInviteUsersDialogSelector } from "selectors/applicationSelectors
 
 const HeaderWrapper = styled(StyledHeader)<{
   hasPages: boolean;
-  inCloudOS?: boolean;
 }>`
   box-shadow: ${(props) => props.theme.colors.header.boxShadow};
   height: ${(props) => `
-    calc(${props.inCloudOS ? "0px" : props.theme.smallHeaderHeight}${
+    calc(${props.theme.smallHeaderHeight}${
     props.hasPages ? ` + ${props.theme.viewHeaderTabHeight}` : ""
   })`};
   padding: 0;
@@ -133,17 +132,10 @@ type AppViewerHeaderProps = {
   currentOrgId: string;
   currentUser?: User;
   lightTheme: Theme;
-  inCloudOS: any;
 };
 
 export function AppViewerHeader(props: AppViewerHeaderProps) {
-  const {
-    currentApplicationDetails,
-    currentOrgId,
-    currentUser,
-    pages,
-    inCloudOS,
-  } = props;
+  const { currentApplicationDetails, currentOrgId, currentUser, pages } = props;
   const userPermissions = currentApplicationDetails?.userPermissions ?? [];
   const permissionRequired = PERMISSION_TYPE.MANAGE_APPLICATION;
   const canEdit = isPermitted(userPermissions, permissionRequired);
@@ -179,20 +171,6 @@ export function AppViewerHeader(props: AppViewerHeaderProps) {
   });
 
   return <HtmlTitle />;
-
-  if (inCloudOS) {
-    return (
-      <ThemeProvider theme={props.lightTheme}>
-        <HeaderWrapper hasPages={pages.length > 1} inCloudOS>
-          <HtmlTitle />
-          <PageTabsContainer
-            currentApplicationDetails={currentApplicationDetails}
-            pages={pages}
-          />
-        </HeaderWrapper>
-      </ThemeProvider>
-    );
-  }
 
   return (
     <ThemeProvider theme={props.lightTheme}>
@@ -271,7 +249,6 @@ const mapStateToProps = (state: AppState): AppViewerHeaderProps => ({
   currentOrgId: getCurrentOrgId(state),
   currentUser: getCurrentUser(state),
   lightTheme: getThemeDetails(state, ThemeMode.LIGHT),
-  inCloudOS: state.entities.app.inCloudOS,
 });
 
 export default connect(mapStateToProps)(AppViewerHeader);

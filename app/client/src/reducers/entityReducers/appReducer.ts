@@ -2,8 +2,6 @@ import { createReducer } from "utils/AppsmithUtils";
 import { ReduxAction, ReduxActionTypes } from "constants/ReduxActionConstants";
 import { User } from "constants/userConstants";
 import { APP_MODE } from "entities/App";
-import { getAppsmithConfigs } from "configs";
-const { inCloudOS } = getAppsmithConfigs();
 
 export type AuthUserState = {
   username: string;
@@ -28,7 +26,6 @@ export type AppStoreState = {
 };
 
 export type AppDataState = {
-  inCloudOS?: boolean;
   mode?: APP_MODE;
   user: AuthUserState;
   URL: UrlDataState;
@@ -36,7 +33,6 @@ export type AppDataState = {
 };
 
 const initialState: AppDataState = {
-  inCloudOS,
   user: {
     username: "",
     email: "",

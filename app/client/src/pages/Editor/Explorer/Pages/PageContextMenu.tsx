@@ -29,9 +29,6 @@ export function PageContextMenu(props: {
   isHidden: boolean;
 }) {
   const dispatch = useDispatch();
-  const inCloudOS = useSelector((state: AppState) => {
-    return state.entities.app.inCloudOS;
-  });
 
   const deletePage = useCallback(
     (pageId: string, pageName: string): void => {
@@ -99,8 +96,7 @@ export function PageContextMenu(props: {
     //   ) as ReactNode) as string,
     // },
   ];
-  // inCloudOS mode cannot set default page
-  if (!props.isDefaultPage && !inCloudOS) {
+  if (!props.isDefaultPage) {
     optionTree.push({
       value: "setdefault",
       onSelect: () => setPageAsDefault(props.pageId, props.applicationId),
