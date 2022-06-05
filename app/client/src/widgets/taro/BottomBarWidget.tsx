@@ -58,7 +58,7 @@ export class MBottomBarWidget extends BaseWidget<
     childWidgetData.parentId = this.props.widgetId;
     childWidgetData.shouldScrollContents = false;
     childWidgetData.canExtend = false;
-    childWidgetData.bottomRow = childWidgetData.bottomRow;
+    childWidgetData.bottomRow = this.props.height;
     childWidgetData.isVisible = this.props.isVisible;
     childWidgetData.containerStyle = "none";
     childWidgetData.minHeight = this.props.height;
@@ -103,7 +103,7 @@ export class MBottomBarWidget extends BaseWidget<
 export interface MBottomBarWidgetProps extends WidgetProps, WithMeta {
   renderMode: RenderMode;
   children?: WidgetProps[];
-  height?: number;
+  height: number;
   showPropertyPane: (widgetId?: string) => void;
   mainContainer: WidgetProps;
 }
