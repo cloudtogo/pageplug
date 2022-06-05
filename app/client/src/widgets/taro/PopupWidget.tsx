@@ -74,7 +74,7 @@ export class MPopupWidget extends BaseWidget<MPopupWidgetProps, WidgetState> {
     childWidgetData.parentId = this.props.widgetId;
     childWidgetData.shouldScrollContents = false;
     childWidgetData.canExtend = false;
-    childWidgetData.bottomRow = childWidgetData.bottomRow;
+    childWidgetData.bottomRow = this.props.height;
     childWidgetData.isVisible = this.props.isVisible;
     childWidgetData.containerStyle = "none";
     childWidgetData.minHeight = this.props.height;
@@ -143,7 +143,7 @@ export interface MPopupWidgetProps extends WidgetProps, WithMeta {
   children?: WidgetProps[];
   canOutsideClickClose?: boolean;
   rounded?: boolean;
-  height?: number;
+  height: number;
   showPropertyPane: (widgetId?: string) => void;
   onClose: string;
   mainContainer: WidgetProps;
