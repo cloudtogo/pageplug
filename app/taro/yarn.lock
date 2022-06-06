@@ -2340,7 +2340,7 @@
   resolved "https://registry.npmmirror.com/@stencil/core/download/@stencil/core-2.4.0.tgz?cache=0&sync_timestamp=1635907563189&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40stencil%2Fcore%2Fdownload%2F%40stencil%2Fcore-2.4.0.tgz#17b45629c8986e35dcbce3f7dab7d64beede83f2"
   integrity sha1-F7RWKciYbjXcvOP32rfWS+7eg/I=
 
-"@taroify/core@^0.0.28-alpha.1":
+"@taroify/core@0.0.28-alpha.1":
   version "0.0.28-alpha.1"
   resolved "https://registry.npmmirror.com/@taroify/core/-/core-0.0.28-alpha.1.tgz#c560a9cc0e5324c6170988ae78f1daa1c7c92bf5"
   integrity sha512-NWsYkSj4IhLRRo1UCf0kbDNZfqTRteegcu1fFdkgmChRzDYSlQDtFmdNhMb94HPhqt/DYTKSPN6BsIZAPGmGfQ==
@@ -2505,10 +2505,10 @@
     webpack-format-messages "^2.0.5"
     yauzl "2.10.0"
 
-"@tarojs/plugin-html@^3.3.12":
+"@tarojs/plugin-html@3.3.12":
   version "3.3.12"
-  resolved "https://registry.npmmirror.com/@tarojs/plugin-html/download/@tarojs/plugin-html-3.3.12.tgz#6b12b30fe260d9c55f488998e86799a4b316dd83"
-  integrity sha1-axKzD+Jg2cVfSImY6GeZpLMW3YM=
+  resolved "https://registry.npmmirror.com/@tarojs/plugin-html/-/plugin-html-3.3.12.tgz#6b12b30fe260d9c55f488998e86799a4b316dd83"
+  integrity sha512-v0XkHOVEUwU8vbABm1yHXUiwQTAqzBhZOEqVOGrAfgQ0Lc8bAepAXwoG7nej+f1d0f4sQNizxE5z8JlsgN9Vew==
   dependencies:
     "@tarojs/shared" "3.3.12"
 
