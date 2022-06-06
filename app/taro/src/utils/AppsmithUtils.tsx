@@ -1,0 +1,241 @@
+import { ReduxAction } from "constants/ReduxActionConstants";
+// import FormControlRegistry from "./FormControlRegistry";
+import { getAppsmithConfigs } from "configs";
+import { Property } from "api/ActionAPI";
+import _ from "lodash";
+import { ActionDataState } from "reducers/entityReducers/actionsReducer";
+import * as log from "loglevel";
+import produce from "immer";
+import { ERROR_CODES } from "constants/ApiConstants";
+import { createMessage, ERROR_500 } from "../constants/messages";
+
+export const createReducer = (
+  initialState: any,
+  handlers: { [type: string]: (state: any, action: any) => any }
+) => {
+  return function reducer(state = initialState, action: ReduxAction<any>) {
+    if (handlers.hasOwnProperty(action.type)) {
+      return handlers[action.type](state, action);
+    } else {
+      return state;
+    }
+  };
+};
+
+export const createImmerReducer = (
+  initialState: any,
+  handlers: { [type: string]: any }
+) => {
+  return function reducer(state = initialState, action: ReduxAction<any>) {
+    if (handlers.hasOwnProperty(action.type)) {
+      return produce(handlers[action.type])(state, action);
+    } else {
+      return state;
+    }
+  };
+};
+
+export const appInitializer = () => {
+  const appsmithConfigs = getAppsmithConfigs();
+  // FormControlRegistry.registerFormControlBuilders();
+  log.setLevel(appsmithConfigs.logLevel);
+};
+
+export const transformDynamicSize = (n: number) => `${(n * 750) / 450}rpx`;
+
+export const mapToPropList = (map: Record<string, string>): Property[] => {
+  return _.map(map, (value, key) => {
+    return { key: key, value: value };
+  });
+};
+
+export const getNextEntityName = (
+  prefix: string,
+  existingNames: string[],
+  startWithoutIndex?: boolean
+) => {
+  const regex = new RegExp(`^${prefix}(\\d+)$`);
+
+  const usedIndices: number[] = existingNames.map((name) => {
+    if (name && regex.test(name)) {
+      const matches = name.match(regex);
+      const ind =
+        matches && Array.isArray(matches) ? parseInt(matches[1], 10) : 0;
+      return Number.isNaN(ind) ? 0 : ind;
+    }
+    return 0;
+  }) as number[];
+
+  const lastIndex = Math.max(...usedIndices, ...[0]);
+
+  if (startWithoutIndex && lastIndex === 0) {
+    const exactMatchFound = existingNames.some(
+      (name) => prefix && name.trim() === prefix.trim()
+    );
+    if (!exactMatchFound) {
+      return prefix.trim();
+    }
+  }
+
+  return prefix + (lastIndex + 1);
+};
+
+export const getDuplicateName = (prefix: string, existingNames: string[]) => {
+  const trimmedPrefix = prefix.replace(/ /g, "");
+  const regex = new RegExp(`^${trimmedPrefix}(\\d+)$`);
+  const usedIndices: number[] = existingNames.map((name) => {
+    if (name && regex.test(name)) {
+      const matches = name.match(regex);
+      const ind =
+        matches && Array.isArray(matches) ? parseInt(matches[1], 10) : 0;
+      return Number.isNaN(ind) ? 0 : ind;
+    }
+    return 0;
+  }) as number[];
+
+  const lastIndex = Math.max(...usedIndices, ...[0]);
+
+  return trimmedPrefix + `_${lastIndex + 1}`;
+};
+
+export const createNewApiName = (actions: ActionDataState, pageId: string) => {
+  const pageApiNames = actions
+    .filter((a) => a.config.pageId === pageId)
+    .map((a) => a.config.name);
+  return getNextEntityName("Api", pageApiNames);
+};
+
+export const noop = () => {
+  log.debug("noop");
+};
+
+export const stopEventPropagation = (e: any) => {
+  e.stopPropagation();
+};
+
+export const createNewQueryName = (
+  queries: ActionDataState,
+  pageId: string
+) => {
+  const pageApiNames = queries
+    .filter((a) => a.config.pageId === pageId)
+    .map((a) => a.config.name);
+  const newName = getNextEntityName("Query", pageApiNames);
+  return newName;
+};
+
+export const convertToString = (value: any): string => {
+  if (_.isUndefined(value)) {
+    return "";
+  }
+  if (_.isObject(value)) {
+    return JSON.stringify(value, null, 2);
+  }
+  if (_.isString(value)) return value;
+  return value.toString();
+};
+
+export const getInitialsAndColorCode = (
+  fullName: any,
+  colorPalette: string[]
+): string[] => {
+  let inits = "";
+  // if name contains space. eg: "Full Name"
+  if (fullName && fullName.includes(" ")) {
+    const namesArr = fullName.split(" ");
+    let initials = namesArr.map((name: string) => name.charAt(0));
+    initials = initials.join("").toUpperCase();
+    inits = initials.slice(0, 2);
+  } else {
+    // handle for camelCase
+    const str = fullName ? fullName.replace(/([a-z])([A-Z])/g, "$1 $2") : "";
+    const namesArr = str.split(" ");
+    let initials = namesArr.map((name: string) => name.charAt(0));
+    initials = initials.join("").toUpperCase();
+    inits = initials.slice(0, 2);
+  }
+  const colorCode = getColorCode(inits, colorPalette);
+  return [inits, colorCode];
+};
+
+export const getColorCode = (
+  initials: string,
+  colorPalette: string[]
+): string => {
+  let asciiSum = 0;
+  for (let i = 0; i < initials.length; i++) {
+    asciiSum += initials[i].charCodeAt(0);
+  }
+  return colorPalette[asciiSum % colorPalette.length];
+};
+
+export function hexToRgb(hex: string): {
+  r: number;
+  g: number;
+  b: number;
+} {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : {
+        r: -1,
+        g: -1,
+        b: -1,
+      };
+}
+
+export function getQueryParams() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const keys = urlParams.keys();
+  let key = keys.next().value;
+  const queryParams: Record<string, string> = {};
+  while (key) {
+    queryParams[key] = urlParams.get(key) as string;
+    key = keys.next().value;
+  }
+  return queryParams;
+}
+
+export function convertObjectToQueryParams(object: any): string {
+  if (!_.isNil(object)) {
+    const paramArray: string[] = _.map(_.keys(object), (key) => {
+      return encodeURIComponent(key) + "=" + encodeURIComponent(object[key]);
+    });
+    return "?" + _.join(paramArray, "&");
+  } else {
+    return "";
+  }
+}
+
+export const retryPromise = (
+  fn: () => Promise<any>,
+  retriesLeft = 5,
+  interval = 1000
+): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    fn()
+      .then(resolve)
+      .catch(() => {
+        setTimeout(() => {
+          if (retriesLeft === 1) {
+            return Promise.reject({
+              code: ERROR_CODES.SERVER_ERROR,
+              message: createMessage(ERROR_500),
+              show: false,
+            });
+          }
+
+          // Passing on "reject" is the important part
+          retryPromise(fn, retriesLeft - 1, interval).then(resolve, reject);
+        }, interval);
+      });
+  });
+};
+
+export const getRandomPaletteColor = (colorPalette: string[]) => {
+  return colorPalette[Math.floor(Math.random() * colorPalette.length)];
+};

@@ -41,7 +41,6 @@ applyPolyfills().then(() => {
   defineCustomElements(window);
 });
 // create taro runtime in React
-import { createRouter } from "@tarojs/taro";
 import { createReactApp } from "@tarojs/runtime";
 class Empty extends React.Component {
   render() {
@@ -49,18 +48,7 @@ class Empty extends React.Component {
   }
 }
 const inst = createReactApp(Empty, React, ReactDOM, {});
-// createRouter(
-//   inst,
-//   {
-//     routes: [],
-//     router: {
-//       mode: "browser",
-//       basename: "",
-//       pathname: "",
-//     },
-//   },
-//   "react",
-// );
+
 // add touch emulator
 import "@vant/touch-emulator";
 import "react-sortable-tree-patch-react-17/style.css";
