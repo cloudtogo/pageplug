@@ -453,6 +453,7 @@ export const base64ToBlob = (
 
 export const replacePluginIcon = (url: string) => {
   return url
+    ?.replace("https://s3.us-east-2.amazonaws.com/assets.appsmith.com", "")
     ?.replace("https://assets.appsmith.com", "")
     ?.replace(/\.png$/g, ".svg");
 };
