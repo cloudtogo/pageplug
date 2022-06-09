@@ -4,6 +4,7 @@ import styled from "styled-components";
 import ProLayout, { PageContainer } from "@ant-design/pro-layout";
 import history from "utils/history";
 import { withRouter, RouteComponentProps } from "react-router";
+import { getIsInitialized } from "selectors/appViewSelectors";
 import { isMobileLayout, getViewModePageList } from "selectors/editorSelectors";
 import { getCurrentApplication } from "selectors/applicationSelectors";
 import { DEFAULT_VIEWER_LOGO } from "constants/AppConstants";
@@ -61,6 +62,7 @@ type AppViewerLayoutType = {
 } & RouteComponentProps;
 
 function AppViewerLayout({ children, location }: AppViewerLayoutType) {
+  const isInitialized = useSelector(getIsInitialized);
   const isMobile = useSelector(isMobileLayout);
   const currentApp = useSelector(getCurrentApplication);
   const pages = useSelector(getViewModePageList);
@@ -110,6 +112,10 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
     }
     return init;
   }, [viewerLayout, pages]);
+
+  if (!isInitialized) {
+    return null;
+  }
 
   if (isMobile) {
     return <div>{children}</div>;
