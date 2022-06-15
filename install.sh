@@ -41,36 +41,36 @@ install_docker() {
     echo "Setting up docker repos"
 
     if [[ $package_manager == apt-get ]]; then
-        apt_cmd="apt-get --yes --quiet"
+        apt_cmd="sudo apt-get --yes --quiet"
         $apt_cmd update
         $apt_cmd install software-properties-common gnupg-agent
-        curl -fsSL "https://download.docker.com/linux/$os/gpg" | apt-key add -
-        add-apt-repository \
+        curl -fsSL "https://download.docker.com/linux/$os/gpg" | sudo apt-key add -
+        sudo add-apt-repository \
             "deb [arch=amd64] https://download.docker.com/linux/$os $(lsb_release -cs) stable"
         $apt_cmd update
         echo "Installing docker"
         $apt_cmd install docker-ce docker-ce-cli containerd.io
 
     elif [[ $package_manager == zypper ]]; then
-        zypper_cmd="zypper --quiet --no-gpg-checks --non-interactive"
+        zypper_cmd="sudo zypper --quiet --no-gpg-checks --non-interactive"
         echo "Installing docker"
         if [[ $os == sles ]]; then
             os_sp="$(cat /etc/*-release | awk -F= '$1 == "VERSION_ID" { gsub(/"/, ""); print $2; exit }')"
             os_arch="$(uname -i)"
-            SUSEConnect -p "sle-module-containers/$os_sp/$os_arch" -r ''
+            sudo SUSEConnect -p "sle-module-containers/$os_sp/$os_arch" -r ''
         fi
         $zypper_cmd install docker docker-runc containerd
-        systemctl enable docker.service
+        sudo systemctl enable docker.service
 
     else
-        yum_cmd="yum --assumeyes --quiet"
+        yum_cmd="sudo yum --assumeyes --quiet"
         $yum_cmd install yum-utils
         os_in_repo_link="$os"
         if [[ $os == rhel ]]; then
             # For RHEL, there's no separate repo link. We can use the CentOS one though.
             os_in_repo_link=centos
         fi
-        yum-config-manager --add-repo "https://download.docker.com/linux/$os_in_repo_link/docker-ce.repo"
+        sudo yum-config-manager --add-repo "https://download.docker.com/linux/$os_in_repo_link/docker-ce.repo"
         echo "Installing docker"
         $yum_cmd install docker-ce docker-ce-cli containerd.io
 
@@ -83,9 +83,9 @@ install_docker_compose() {
         if [[ ! -f /usr/bin/docker-compose ]];then
             echo "++++++++++++++++++++++++"
             echo "Installing docker-compose"
-            curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-            chmod +x /usr/local/bin/docker-compose
-            ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+            sudo curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+            sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
             echo "docker-compose installed!"
             echo ""
         fi
@@ -99,9 +99,9 @@ install_docker_compose() {
 }
 
 start_docker() {
-    if ! systemctl is-active docker.service > /dev/null; then
+    if ! sudo systemctl is-active docker.service > /dev/null; then
         echo "Starting docker service"
-        systemctl start docker.service
+        sudo systemctl start docker.service
     fi
 }
 
@@ -269,10 +269,6 @@ confirm() {
     fi
 
     [[ yY =~ $answer ]]
-}
-
-certbot_cmd() {
-    docker-compose run --rm --entrypoint "$1" certbot
 }
 
 echo_contact_support() {
@@ -487,12 +483,12 @@ rm -rf "$templates_dir"
 
 echo ""
 echo "Pulling the latest container images"
-docker-compose pull
+sudo docker-compose pull
 echo ""
 echo "Starting the Appsmith containers"
 # The docker-compose command does some nasty stuff for the `--detach` functionality. So we add a `|| true` so that the
 # script doesn't exit because this command looks like it failed to do it's thing.
-docker-compose up --detach --remove-orphans || true
+sudo docker-compose up --detach --remove-orphans || true
 
 wait_for_containers_start 60
 echo ""
@@ -501,7 +497,7 @@ if [[ $status_code -ne 401 ]]; then
     echo "+++++++++++ ERROR ++++++++++++++++++++++"
     echo "The containers didn't seem to start correctly. Please run the following command to check containers that may have errored out:"
     echo ""
-    echo -e "cd \"$install_dir\" && docker-compose ps -a"
+    echo -e "cd \"$install_dir\" && sudo docker-compose ps -a"
     echo "Please read our troubleshooting guide https://docs.appsmith.com/v/v1.2.1/troubleshooting-guide/deployment-errors"
     echo "or reach us on Discord for support https://discord.com/invite/rBTTVJp"
     echo "++++++++++++++++++++++++++++++++++++++++"
