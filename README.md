@@ -37,6 +37,8 @@ PagePlug 是基于 [AppSmith](https://github.com/appsmithorg/appsmith) 打造的
 
 - 中文界面、更简洁的 UI
 
+- 引入 antd 组件库，react 升级到 17
+
 - 简化启动步骤，支持原生Windows环境本地开发（无需WSL）  
   官方 AppSmith 前端项目第一次启动步骤繁琐，依赖非常多，并且官方支持 Windows 平台本地开发是通过 WSL 实现的，配置非常麻烦！PagePlug 优化了 Windows 环境下的运行脚本，简化了项目启动过程。[详请](#🎈-本地开发)
 
