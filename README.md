@@ -67,7 +67,7 @@ PagePlug 是基于 [AppSmith](https://github.com/appsmithorg/appsmith) 打造的
   > 最低服务器配置：4G内存 + 2核CPU
   ```
   // 获取安装脚本
-  curl -O https://raw.githubusercontent.com/cloudtogo/pageplug/master/install.sh
+  curl -O https://raw.githubusercontent.com/cloudtogo/pageplug/open/install.sh
 
   // 赋予运行权限
   chmod +x install.sh
