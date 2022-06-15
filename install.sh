@@ -284,22 +284,6 @@ bye() {  # Prints a friendly good bye message and exits the script.
     fi
 }
 
-ask_telemetry() {
-    echo ""
-    echo "+++++++++++ IMPORTANT ++++++++++++++++++++++"
-    echo -e "Thank you for installing appsmith! We want to be transparent and request that you share anonymous usage data with us."
-    echo -e "This data is purely statistical in nature and helps us understand your needs & provide better support to your self-hosted instance."
-    echo -e "You can read more about what information is collected in our documentation https://docs.appsmith.com/v/v1.2.1/setup/telemetry"
-    echo -e ""
-    if confirm y 'Would you like to share anonymous usage data and receive better support?'; then
-        disable_telemetry="false"
-    else
-        disable_telemetry="true"
-        echo "Please note that even though telemetry is disabled, your Appsmith server will connect to cloud to fetch release notes and to check for updates."
-    fi
-    echo "++++++++++++++++++++++++++++++++++++++++++++"
-}
-
 echo -e "👋 Thank you for trying out Appsmith! "
 echo ""
 
@@ -438,7 +422,8 @@ echo ""
 
 NGINX_SSL_CMNT="#"
 
-ask_telemetry
+disable_telemetry="true"
+
 echo ""
 echo "Downloading the configuration templates..."
 templates_dir="$install_dir/tmp"
