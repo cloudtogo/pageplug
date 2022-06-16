@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Select from "react-select";
 
 import { WrappedFieldInputProps } from "redux-form";
@@ -63,12 +63,23 @@ const selectStyles = {
 };
 
 export function BaseDropdown(props: DropdownProps) {
+  const [showMenu, setShowMenu] = useState(false);
   const layer = React.useContext(LayersContext);
   const { customSelectStyles, input, placeholder } = props;
   const menuPortalStyle = {
     menuPortal: (styles: any) => ({ ...styles, zIndex: layer.max }),
   };
 
+  const _onChange = (value: any) => {
+    input.onChange(value);
+    setShowMenu(false);
+  };
+  const _onFocus = () => {
+    setShowMenu(true);
+  };
+  const _onBlur = () => {
+    setShowMenu(false);
+  };
   return (
     <Select
       menuPortalTarget={document.body}
@@ -76,12 +87,18 @@ export function BaseDropdown(props: DropdownProps) {
       {...input}
       isDisabled={props.isDisabled}
       isSearchable={props.isSearchable}
-      onChange={(value) => input.onChange(value)}
       width={props.width}
       {...props}
       classNamePrefix="appsmith-select"
       menuPlacement="auto"
       placeholder={placeholder}
+      onChange={(value) => _onChange(value)}
+      onBlur={_onBlur}
+      onFocus={_onFocus}
+      openMenuOnClick
+      closeMenuOnSelect
+      blurInputOnSelect
+      menuIsOpen={showMenu}
     />
   );
 }
