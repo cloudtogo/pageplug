@@ -19,7 +19,10 @@ import {
 } from "selectors/editorSelectors";
 import { APP_MODE } from "entities/App";
 import { scrollbarWidth } from "utils/helpers";
-import { useWindowSizeHooks, usePageContainerSizeHooks, } from "./dragResizeHooks";
+import {
+  useWindowSizeHooks,
+  usePageContainerSizeHooks,
+} from "./dragResizeHooks";
 import { getAppMode } from "selectors/entitiesSelector";
 import { updateCanvasLayoutAction } from "actions/editorActions";
 import { calculateDynamicHeight } from "utils/DSLMigrations";
