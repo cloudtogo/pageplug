@@ -1,14 +1,14 @@
 import React from "react";
 import BaseWidget, { WidgetProps, WidgetState } from "../../BaseWidget";
 import { WidgetType } from "constants/WidgetConstants";
-import { SwitchComponent } from "../component";
+import SwitchComponent from "../component";
 
 import { ValidationTypes } from "constants/WidgetValidation";
 
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { DerivedPropertiesMap } from "utils/WidgetFactory";
-import { AlignWidget } from "widgets/constants";
-
+import { LabelPosition } from "components/constants";
+import { AlignWidgetTypes } from "widgets/constants";
 class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
     return [
@@ -25,6 +25,43 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
           },
+          {
+            helpText: "Sets the label position of the widget",
+            propertyName: "labelPosition",
+            label: "Position",
+            controlType: "DROP_DOWN",
+            options: [
+              { label: "Left", value: LabelPosition.Left },
+              { label: "Right", value: LabelPosition.Right },
+            ],
+            isBindProperty: false,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+          {
+            propertyName: "alignWidget",
+            helpText: "Sets the alignment of the widget",
+            label: "Alignment",
+            controlType: "LABEL_ALIGNMENT_OPTIONS",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            options: [
+              {
+                icon: "LEFT_ALIGN",
+                value: AlignWidgetTypes.LEFT,
+              },
+              {
+                icon: "RIGHT_ALIGN",
+                value: AlignWidgetTypes.RIGHT,
+              },
+            ],
+            validation: { type: ValidationTypes.TEXT },
+          },
+        ],
+      },
+      {
+        sectionName: "General",
+        children: [
           {
             propertyName: "defaultSwitchState",
             label: "默认打开",
@@ -63,30 +100,13 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
             isTriggerProperty: false,
             validation: { type: ValidationTypes.BOOLEAN },
           },
-          {
-            propertyName: "alignWidget",
-            label: "对齐方式",
-            controlType: "DROP_DOWN",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            options: [
-              {
-                label: "左对齐",
-                value: "LEFT",
-              },
-              {
-                label: "右对齐",
-                value: "RIGHT",
-              },
-            ],
-          },
         ],
       },
       {
-        sectionName: "动作",
+        sectionName: "Events",
         children: [
           {
-            helpText: "开关变化时触发",
+            helpText: "Triggers an action when the switch state is changed",
             propertyName: "onChange",
             label: "onChange",
             controlType: "ACTION_SELECTOR",
@@ -96,17 +116,117 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
           },
         ],
       },
+      {
+        sectionName: "Label Styles",
+        children: [
+          {
+            propertyName: "labelTextColor",
+            label: "Text Color",
+            controlType: "COLOR_PICKER",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: {
+              type: ValidationTypes.TEXT,
+              params: {
+                regex: /^(?![<|{{]).+/,
+              },
+            },
+          },
+          {
+            propertyName: "labelTextSize",
+            label: "Text Size",
+            controlType: "DROP_DOWN",
+            defaultValue: "0.875rem",
+            options: [
+              {
+                label: "S",
+                value: "0.875rem",
+                subText: "0.875rem",
+              },
+              {
+                label: "M",
+                value: "1rem",
+                subText: "1rem",
+              },
+              {
+                label: "L",
+                value: "1.25rem",
+                subText: "1.25rem",
+              },
+              {
+                label: "XL",
+                value: "1.875rem",
+                subText: "1.875rem",
+              },
+              {
+                label: "XXL",
+                value: "3rem",
+                subText: "3rem",
+              },
+              {
+                label: "3XL",
+                value: "3.75rem",
+                subText: "3.75rem",
+              },
+            ],
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+          {
+            propertyName: "labelStyle",
+            label: "Label Font Style",
+            controlType: "BUTTON_TABS",
+            options: [
+              {
+                icon: "BOLD_FONT",
+                value: "BOLD",
+              },
+              {
+                icon: "ITALICS_FONT",
+                value: "ITALIC",
+              },
+            ],
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+        ],
+      },
+      {
+        sectionName: "Styles",
+        children: [
+          {
+            propertyName: "accentColor",
+            helpText: "Sets the background color of the widget",
+            label: "Accent color",
+            controlType: "COLOR_PICKER",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+        ],
+      },
     ];
   }
   getPageView() {
     return (
       <SwitchComponent
-        alignWidget={this.props.alignWidget ? this.props.alignWidget : "LEFT"}
+        accentColor={this.props.accentColor}
+        alignWidget={this.props.alignWidget}
         isDisabled={this.props.isDisabled}
         isLoading={this.props.isLoading}
         isSwitchedOn={!!this.props.isSwitchedOn}
         key={this.props.widgetId}
         label={this.props.label}
+        labelPosition={this.props.labelPosition}
+        labelStyle={this.props.labelStyle}
+        labelTextColor={this.props.labelTextColor}
+        labelTextSize={this.props.labelTextSize}
         onChange={this.onChange}
         widgetId={this.props.widgetId}
       />
@@ -126,6 +246,7 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       isSwitchedOn: undefined,
+      isDirty: false,
     };
   }
 
@@ -135,7 +256,20 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
     };
   }
 
+  componentDidUpdate(prevProps: SwitchWidgetProps): void {
+    if (
+      this.props.defaultSwitchState !== prevProps.defaultSwitchState &&
+      this.props.isDirty
+    ) {
+      this.props.updateWidgetMetaProperty("isDirty", false);
+    }
+  }
+
   onChange = (isSwitchedOn: boolean) => {
+    if (!this.props.isDirty) {
+      this.props.updateWidgetMetaProperty("isDirty", true);
+    }
+
     this.props.updateWidgetMetaProperty("isSwitchedOn", isSwitchedOn, {
       triggerPropertyName: "onChange",
       dynamicString: this.props.onChange,
@@ -149,8 +283,14 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
 export interface SwitchWidgetProps extends WidgetProps {
   isSwitchedOn: boolean;
   defaultSwitchState: boolean;
-  alignWidget: AlignWidget;
+  alignWidget: AlignWidgetTypes;
+  labelPosition: LabelPosition;
   label: string;
+  accentColor: string;
+  isDirty: boolean;
+  labelTextColor?: string;
+  labelTextSize?: string;
+  labelStyle?: string;
 }
 
 export default SwitchWidget;

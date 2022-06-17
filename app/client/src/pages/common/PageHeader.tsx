@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { connect, useDispatch } from "react-redux";
-import { getCurrentUser } from "selectors/usersSelectors";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { getCurrentUser, selectFeatureFlags } from "selectors/usersSelectors";
 import styled from "styled-components";
 import StyledHeader from "components/designSystems/appsmith/StyledHeader";
 import LogoImage from "assets/images/pageplug_logo_black.svg";
@@ -28,7 +28,6 @@ import { Indices } from "constants/Layers";
 import Icon, { IconSize } from "components/ads/Icon";
 import { TemplatesTabItem } from "pages/Templates/TemplatesTabItem";
 import { getTemplateNotificationSeenAction } from "actions/templateActions";
-import getFeatureFlags from "utils/featureFlags";
 
 import { areCommentsEnabledForUserAndApp as areCommentsEnabledForUserAndAppSelector } from "selectors/commentsSelectors";
 
@@ -111,6 +110,8 @@ export function PageHeader(props: PageHeaderProps) {
     =${queryParams.get("redirectUrl")}`;
   }
 
+  const featureFlags = useSelector(selectFeatureFlags);
+
   useEffect(() => {
     dispatch(getTemplateNotificationSeenAction());
   }, []);
@@ -134,14 +135,12 @@ export function PageHeader(props: PageHeaderProps) {
   ];
 
   const showTabs = useMemo(() => {
-    return (
-      tabs.some((tab) => tab.matcher(location.pathname)) &&
-      getFeatureFlags().APP_TEMPLATE
-    );
-  }, [location.pathname]);
+    return tabs.some((tab) => tab.matcher(location.pathname));
+  }, [featureFlags, location.pathname]);
 
   return (
     <StyledPageHeader
+      data-testid="t--appsmith-page-header"
       hideShadow={props.hideShadow || false}
       isMobile={isMobile}
       showSeparator={props.showSeparator || false}

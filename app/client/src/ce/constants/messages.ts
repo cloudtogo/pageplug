@@ -6,6 +6,7 @@ export function createMessage(
 }
 
 export const YES = () => `Yes`;
+export const ARE_YOU_SURE = () => `Are you sure?`;
 export const ERROR_MESSAGE_SELECT_ACTION = () => `Please select an action`;
 export const ERROR_MESSAGE_SELECT_ACTION_TYPE = () =>
   `Please select an action type`;
@@ -25,6 +26,7 @@ export const VALID_FUNCTION_NAME_ERROR = () =>
   `Must be a valid variable name (camelCase)`;
 export const UNIQUE_NAME_ERROR = () => `Name must be unique`;
 export const NAME_SPACE_ERROR = () => `Name must not have spaces`;
+export const SPECIAL_CHARACTER_ERROR = () => `Name must be alphanumeric`;
 
 export const FORM_VALIDATION_EMPTY_EMAIL = () => `Please enter an email`;
 export const FORM_VALIDATION_INVALID_EMAIL = () =>
@@ -320,7 +322,7 @@ export const OMNIBAR_PLACEHOLDER_SNIPPETS = () => "Search code snippets";
 export const OMNIBAR_PLACEHOLDER_NAV = () => "Search widgets and queries";
 export const OMNIBAR_PLACEHOLDER_DOC = () => "Search documentation";
 export const CREATE_NEW_OMNIBAR_PLACEHOLDER = () =>
-  "Create a new Query, API or JSObject";
+  "Create a new Query, API or JS Object";
 export const HELPBAR_PLACEHOLDER = () => "Quick search & navigation";
 export const NO_SEARCH_DATA_TEXT = () => "No results found";
 
@@ -392,6 +394,8 @@ export const ACTION_CONFIGURATION_UPDATED = () => "Configuration updated";
 export const WIDGET_PROPERTIES_UPDATED = () => "Widget properties were updated";
 export const EMPTY_RESPONSE_FIRST_HALF = () => "🙌 Click on";
 export const EMPTY_RESPONSE_LAST_HALF = () => "to get a response";
+export const EMPTY_JS_RESPONSE_LAST_HALF = () =>
+  "to view response of selected function";
 export const INVALID_EMAIL = () => "Please enter a valid email";
 export const DEBUGGER_INTERCOM_TEXT = (text: string) =>
   `Hi, \nI'm facing the following error on Appsmith, can you please help? \n\n${text}`;
@@ -442,6 +446,7 @@ export const PARSE_JS_FUNCTION_ERROR = (message: string) =>
   `Syntax error: ${message}`;
 
 export const EXECUTING_FUNCTION = () => `Executing function`;
+export const UPDATING_JS_COLLECTION = () => `Updating...`;
 export const EMPTY_JS_OBJECT = () =>
   `Nothing to show, write some code to get response`;
 export const EXPORT_DEFAULT_BEGINNING = () =>
@@ -450,33 +455,42 @@ export const JS_EXECUTION_SUCCESS = () => "JS Function executed successfully";
 export const JS_EXECUTION_FAILURE = () => "JS Function execution failed";
 export const JS_EXECUTION_FAILURE_TOASTER = () =>
   "There was an error while executing function";
-export const JS_SETTINGS_ONPAGELOAD = () => "Run Function on Page load";
+export const JS_SETTINGS_ONPAGELOAD = () => "Run function on page load (Beta)";
+export const JS_EXECUTION_SUCCESS_TOASTER = (actionName: string) =>
+  `${actionName} ran successfully`;
 export const JS_SETTINGS_ONPAGELOAD_SUBTEXT = () =>
   "Will refresh data every time page is reloaded";
 export const JS_SETTINGS_CONFIRM_EXECUTION = () =>
-  "Request confirmation before calling Function?";
+  "Request confirmation before calling function?";
 export const JS_SETTINGS_CONFIRM_EXECUTION_SUBTEXT = () =>
   "Ask confirmation from the user every time before refreshing data";
 export const JS_SETTINGS_EXECUTE_TIMEOUT = () =>
   "Function Timeout (in milliseconds)";
+export const ASYNC_FUNCTION_SETTINGS_HEADING = () => "Async Function Settings";
+export const NO_ASYNC_FUNCTIONS = () =>
+  "There is no asynchronous function in this JSObject";
+export const NO_JS_FUNCTION_TO_RUN = (JSObjectName: string) =>
+  `${JSObjectName} has no function`;
+export const NO_JS_FUNCTION_RETURN_VALUE = (JSFunctionName: string) =>
+  `${JSFunctionName} did not return any data. Did you add a return statement?`;
 
 // Import/Export Application features
 export const IMPORT_APPLICATION_MODAL_TITLE = () => "Import application";
 export const IMPORT_APPLICATION_MODAL_LABEL = () =>
   "Where would you like to import your application from?";
 export const IMPORT_APP_FROM_FILE_TITLE = () => "Import from file";
+export const UPLOADING_JSON = () => "Uploading JSON file";
+export const UPLOADING_APPLICATION = () => "Uploading application";
 export const IMPORT_APP_FROM_GIT_TITLE = () => "Import from a Git repo (Beta)";
 export const IMPORT_APP_FROM_FILE_MESSAGE = () =>
   "Drag and drop your file or upload from your computer";
 export const IMPORT_APP_FROM_GIT_MESSAGE = () =>
   "Import an application from its git repository using its SSH URL";
-export const IMPORT_FROM_GIT_REPOSITORY = () => "Import from Git Repository";
-export const IMPORT_FROM_GIT_REPOSITORY_MESSAGE = () =>
-  "While importing Appsmith will does not import the datasource credentials to prevent a breach. After a successfull import you can add the credentials manually so the application behaves normally!";
+export const IMPORT_FROM_GIT_REPOSITORY = () => "Import from git repository";
 export const RECONNECT_MISSING_DATASOURCE_CREDENTIALS = () =>
   "Reconnect missing datasource credentials";
 export const RECONNECT_MISSING_DATASOURCE_CREDENTIALS_DESCRIPTION = () =>
-  "Fill these with utmost care as the application will not behave normally otherwsie";
+  "Fill these with utmost care as the application will not behave normally otherwise";
 export const RECONNECT_DATASOURCE_SUCCESS_MESSAGE1 = () =>
   "These datasources were imported successfully!";
 export const RECONNECT_DATASOURCE_SUCCESS_MESSAGE2 = () =>
@@ -503,7 +517,8 @@ export const JS_FUNCTION_UPDATE_SUCCESS = () =>
 export const JS_FUNCTION_DELETE_SUCCESS = () =>
   "JS function deleted successfully";
 export const JS_OBJECT_BODY_INVALID = () => "JS object could not be parsed";
-
+export const JS_ACTION_EXECUTION_ERROR = (jsFunctionName: string) =>
+  `An error occured while trying to execute ${jsFunctionName}, please check error logs to debug`;
 //Editor Page
 export const EDITOR_HEADER_SAVE_INDICATOR = () => "Saved";
 
@@ -522,8 +537,7 @@ export const BULK_WIDGET_ADDED = (widgetName: string) =>
 export const UNSUPPORTED_PLUGIN_DIALOG_TITLE = () =>
   `Couldn't auto generate a page from this datasource.`;
 
-export const UNSUPPORTED_PLUGIN_DIALOG_SUBTITLE = () =>
-  `You can continue building your app with it using our drag & Drop
+export const UNSUPPORTED_PLUGIN_DIALOG_SUBTITLE = () => `You can continue building your app with it using our drag & Drop
   builder`;
 export const UNSUPPORTED_PLUGIN_DIALOG_MAIN_HEADING = () => `Heads up`;
 
@@ -567,6 +581,7 @@ export const WELCOME_TOUR_STICKY_BUTTON_TEXT = () => "Next mission";
 
 // Data Sources pane
 export const EMPTY_ACTIVE_DATA_SOURCES = () => "No active datasources found.";
+export const SCHEMA_NOT_AVAILABLE = () => "Schema not available";
 
 export const SNIPPET_EXECUTION_SUCCESS = () => `Snippet executed successfully.`;
 
@@ -589,7 +604,6 @@ export const GIT_DISCONNECT_POPUP_MAIN_HEADING = () => `Are you sure ?`;
 
 export const GIT_CONNECTION = () => "Git Connection";
 export const GIT_IMPORT = () => "Git Import";
-export const DEPLOY = () => "Deploy";
 export const MERGE = () => "Merge";
 export const GIT_SETTINGS = () => "Git Settings";
 export const CONNECT_TO_GIT = () => "Connect to git repository";
@@ -598,6 +612,7 @@ export const CONNECT_TO_GIT_SUBTITLE = () =>
 export const REMOTE_URL = () => "Remote URL";
 export const REMOTE_URL_INFO = () =>
   `Create an empty git repository and paste the remote URL here.`;
+export const IMPORT_URL_INFO = () => `Paste the remote URL here:`;
 export const REMOTE_URL_VIA = () => "Remote URL via";
 
 export const USER_PROFILE_SETTINGS_TITLE = () => "User settings";
@@ -619,7 +634,6 @@ export const CHECK_DP = () => "CHECK";
 export const DEPLOY_TO_CLOUD = () => "Deploy to cloud";
 export const DEPLOY_WITHOUT_GIT = () =>
   "Deploy your application without version control";
-export const DEPLOY_YOUR_APPLICATION = () => "Deploy your application";
 export const COMMIT_CHANGES = () => "Commit changes";
 export const COMMIT_TO = () => "Commit to";
 export const COMMIT_AND_PUSH = () => "Commit & push";
@@ -634,8 +648,12 @@ export const REGENERATE_KEY_CONFIRM_MESSAGE = () =>
 export const DEPLOY_KEY_USAGE_GUIDE_MESSAGE = () =>
   "Paste this key in your repository settings and give it write access.";
 export const COMMITTING_AND_PUSHING_CHANGES = () =>
-  "COMMITTING AND PUSHING CHANGES...";
-export const IS_MERGING = () => "MERGING CHANGES...";
+  "Committing and pushing changes...";
+export const DISCARDING_AND_PULLING_CHANGES = () =>
+  "Discarding and pulling changes...";
+export const DISCARD_SUCCESS = () => "Discarded changes successfully.";
+
+export const IS_MERGING = () => "Merging changes...";
 
 export const MERGE_CHANGES = () => "Merge changes";
 export const SELECT_BRANCH_TO_MERGE = () => "Select branch to merge";
@@ -648,7 +666,7 @@ export const SUBMIT = () => "SUBMIT";
 export const GIT_USER_UPDATED_SUCCESSFULLY = () =>
   "Git user updated successfully";
 export const REMOTE_URL_INPUT_PLACEHOLDER = () =>
-  "git://example.com:user/repo.git";
+  "ssh://example.com:user/repo.git";
 export const GIT_COMMIT_MESSAGE_PLACEHOLDER = () => "Your commit message here";
 export const COPIED_SSH_KEY = () => "Copied SSH Key";
 export const INVALID_USER_DETAILS_MSG = () => "Please enter valid user details";
@@ -691,6 +709,10 @@ export const CONTACT_SALES_MESSAGE_ON_INTERCOM = (orgName: string) =>
 export const REPOSITORY_LIMIT_REACHED = () => "Repository Limit Reached";
 export const REPOSITORY_LIMIT_REACHED_INFO = () =>
   "Adding and using upto 3 repositories is free. To add more repositories kindly upgrade.";
+export const APPLICATION_IMPORT_SUCCESS = (username: string) =>
+  `${username}! Your application is ready to use.`;
+export const APPLICATION_IMPORT_SUCCESS_DESCRIPTION = () =>
+  "All your datasources are configuered and ready to use.";
 export const NONE_REVERSIBLE_MESSAGE = () =>
   "This action is non reversible. Proceed with caution.";
 export const CONTACT_SUPPORT_TO_UPGRADE = () =>
@@ -710,8 +732,8 @@ export const GIT_TYPE_REPO_NAME_FOR_REVOKING_ACCESS = (name: string) =>
 export const APPLICATION_NAME = () => "Application name";
 export const NOT_OPTIONS = () => "Not Options!";
 export const OPEN_REPO = () => "OPEN REPO";
-export const CONNECTING_REPO = () => "CONNECTING TO GIT REPO";
-export const IMPORTING_APP_FROM_GIT = () => "IMPORTING APPLICATION FROM GIT";
+export const CONNECTING_REPO = () => "Connecting to git repo";
+export const IMPORTING_APP_FROM_GIT = () => "Importing application from git";
 export const ERROR_CONNECTING = () => "Error while connecting";
 export const ERROR_COMMITTING = () => "Error while committing";
 export const CONFIRM_SSH_KEY = () => "Make sure your SSH Key has write access.";
@@ -735,6 +757,43 @@ export const CONNECTING_TO_REPO_DISABLED = () =>
   "Connecting to a git repo is disabled";
 export const DURING_ONBOARDING_TOUR = () => "during the onboarding tour";
 export const MERGED_SUCCESSFULLY = () => "Merged successfully";
+export const DISCARD_CHANGES_WARNING = () =>
+  "Discarding these changes will pull previous changes from Git.";
+export const DISCARD_CHANGES = () => "Discard changes";
+
+// GIT DEPLOY begin
+export const DEPLOY = () => "Deploy";
+export const DEPLOY_YOUR_APPLICATION = () => "Deploy your application";
+export const CHANGES_ONLY_USER = () => "Changes since last commit";
+export const CHANGES_MADE_SINCE_LAST_COMMIT = () =>
+  "Changes made since last commit";
+export const CHANGES_ONLY_MIGRATION = () =>
+  "Appsmith update changes since last commit";
+export const CHANGES_USER_AND_MIGRATION = () =>
+  "Appsmith update and user changes since last commit";
+// GIT DEPLOY end
+
+// GIT DELETE BRANCH begin
+export const DELETE = () => "Delete";
+export const LOCAL_BRANCHES = () => "Local branches";
+export const REMOTE_BRANCHES = () => "Remote branches";
+
+export const DELETE_BRANCH_SUCCESS = (branchName: string) =>
+  `Successfully deleted branch: ${branchName}`;
+
+// warnings
+export const DELETE_BRANCH_WARNING_CHECKED_OUT = (currentBranchName: string) =>
+  `Cannot delete checked out branch. Please check out other branch before deleting ${currentBranchName}.`;
+export const DELETE_BRANCH_WARNING_DEFAULT = (defaultBranchName: string) =>
+  `Cannot delete default branch: ${defaultBranchName}`;
+// GIT DELETE BRANCH end
+
+// GIT ERRORS begin
+export const ERROR_GIT_AUTH_FAIL = () =>
+  "Please make sure that regenerated SSH key is added and has write access to the repo.";
+export const ERROR_GIT_INVALID_REMOTE = () =>
+  "Remote repo doesn't exist or is unreachable.";
+// GIT ERRORS end
 
 // JS Snippets
 export const SNIPPET_DESCRIPTION = () =>
@@ -810,8 +869,8 @@ export const ONBOARDING_CHECKLIST_CONNECT_DATA_TO_WIDGET = {
 };
 
 export const ONBOARDING_CHECKLIST_DEPLOY_APPLICATIONS = {
-  bold: () => "Deploy your application",
-  normal: () => ",and see your creation live.",
+  bold: () => "Deploy your application,",
+  normal: () => "and see your creation live.",
 };
 
 export const ONBOARDING_CHECKLIST_FOOTER = () =>
@@ -859,7 +918,7 @@ export const ONBOARDING_TASK_DATASOURCE_BODY = () =>
   "Adding a datasource makes creating applications more powerful. Don’t worry if you don’t have any data on hand, we have a sample dataset that you can use.";
 export const ONBOARDING_TASK_DATASOURCE_BUTTON = () => "+ Add a datasource";
 export const ONBOARDING_TASK_DATASOURCE_FOOTER_ACTION = () => "Add a widget";
-export const ONBOARDING_TASK_DATASOURCE_FOOTER = () => "First.";
+export const ONBOARDING_TASK_DATASOURCE_FOOTER = () => "first.";
 //2. query
 export const ONBOARDING_TASK_QUERY_HEADER = () => "Next, create a query";
 export const ONBOARDING_TASK_QUERY_BODY = () =>
@@ -901,9 +960,11 @@ export const WELCOME_FORM_EMAIL_ID = () => "Email Id";
 export const WELCOME_FORM_CREATE_PASSWORD = () => "Create Password";
 export const WELCOME_FORM_VERIFY_PASSWORD = () => "Verify Password";
 export const WELCOME_FORM_ROLE_DROPDOWN = () => "What Role Do You Play?";
+export const WELCOME_FORM_ROLE_DROPDOWN_PLACEHOLDER = () => "- Select a role -";
 export const WELCOME_FORM_ROLE = () => "Role";
 export const WELCOME_FORM_CUSTOM_USE_CASE = () => "Use case";
 export const WELCOME_FORM_USE_CASE = () => "Tell Us About Your Use Case";
+export const WELCOME_FORM_USE_CASE_PLACEHOLDER = () => "- Select a use case -";
 export const WELCOME_FORM_DATA_COLLECTION_HEADER = () =>
   "Usage data preference";
 export const WELCOME_FORM_DATA_COLLECTION_BODY = () =>
@@ -955,26 +1016,22 @@ export const DELETE_TOOLTIP = () => "Delete";
 export const SETTINGS_TOOLTIP = () => "Settings";
 //settings
 export const ADMIN_SETTINGS = () => "Admin Settings";
-export const RESTART_BANNER_BODY = () => "We will notify you once we are done!";
-export const RESTART_BANNER_HEADER = () => "Restarting Server";
+export const RESTART_BANNER_BODY = () =>
+  "Hang in there. This should be done soon.";
+export const RESTART_BANNER_HEADER = () => "Restarting your server";
 export const RESTART_ERROR_BODY = () =>
-  "Something went wrong. Please contact your administrator.";
-export const RESTART_ERROR_HEADER = () => "Restart failed";
+  "You can try restarting the server again for the settings to take place.";
+export const RESTART_ERROR_HEADER = () => "Restarting failed";
+export const RETRY_BUTTON = () => "Retry";
 export const INFO_VERSION_MISMATCH_FOUND_RELOAD_REQUEST = () =>
   "Hey! There is a new version of Appsmith available. Please consider refreshing your window.";
 export const TEST_EMAIL_SUCCESS = (email: string) => () =>
   `Test email sent, please check the inbox of ${email}`;
 export const TEST_EMAIL_SUCCESS_TROUBLESHOOT = () => "Troubleshoot";
 export const TEST_EMAIL_FAILURE = () => "Sending Test Email Failed";
-//Reflow Beta Screen
-export const REFLOW_BETA_CHECKBOX_LABEL = () =>
-  "Turn on new drag & drop experience";
-export const REFLOW_INFO_CARD_HEADER = () => "New Drag & Drop Experience";
-export const REFLOW_INFO_CARD_CONTENT_1 = () =>
-  "When dropping a new widget, other widgets now automatically move out of the way.";
-export const REFLOW_INFO_CARD_CONTENT_2 = () =>
-  "Widgets next to the canvas edge will shrink to make space for the new widget.";
-export const REFLOW_LEARN_MORE = () => "LEARN MORE";
+export const DISCONNECT_AUTH_ERROR = () =>
+  "Cannot disconnect the only connected authentication method.";
+export const MANDATORY_FIELDS_ERROR = () => "Mandatory fields cannot be empty";
 //
 export const WELCOME_FORM_NON_SUPER_USER_ROLE_DROPDOWN = () =>
   "Tell us more about what you do at work?";
@@ -986,6 +1043,9 @@ export const QUERY_CONFIRMATION_MODAL_MESSAGE = () =>
 export const ENTITY_EXPLORER_TITLE = () => "NAVIGATION";
 export const MULTI_SELECT_PROPERTY_PANE_MESSAGE = () =>
   `Select a widget to see it's properties`;
+export const WIDGET_DEPRECATION_WARNING = (widgetName: string) =>
+  `A new version of the ${widgetName}widget is available. Upgrade to enjoy an enhanced experience.`;
+export const WIDGET_DEPRECATION_WARNING_HEADER = () => "Stay up-to-date";
 export const LOCK_ENTITY_EXPLORER_MESSAGE = () => `Lock sidebar open`;
 export const CLOSE_ENTITY_EXPLORER_MESSAGE = () => `Close sidebar`;
 
@@ -997,7 +1057,20 @@ export const TABLE_WIDGET_TOTAL_RECORD_TOOLTIP = () =>
 export const CREATE_DATASOURCE_TOOLTIP = () => "Add a new datasource";
 export const ADD_QUERY_JS_TOOLTIP = () => "Create New";
 
+// Add datasource
+export const GENERATE_APPLICATION_TITLE = () => "Generate Page";
+export const GENERATE_APPLICATION_DESCRIPTION = () =>
+  "Quickly generate a page to perform CRUD operations on your database tables";
 export const DELETE_ORG_SUCCESSFUL = () => "Organization deleted successfully";
+// theming
+export const CHANGE_APP_THEME = (name: string) => `Theme ${name} Applied`;
+export const SAVE_APP_THEME = (name: string) => `Theme ${name} Saved`;
+export const DELETE_APP_THEME = (name: string) => `Theme ${name} Deleted`;
+export const DELETE_APP_THEME_WARNING = () =>
+  `Do you really want to delete this theme? This process cannot be undone.`;
+export const APP_THEME_BETA_CARD_HEADING = () => `🎨 Theme your app`;
+export const APP_THEME_BETA_CARD_CONTENT = () =>
+  `Customize your app's look through global styles. Full widget support coming soon`;
 
 export const UPGRADE_TO_EE = (authLabel: string) =>
   `Hello, I would like to upgrade and start using ${authLabel} authentication.`;
@@ -1113,7 +1186,7 @@ export const REQUEST_TEMPLATE = () => "Request for a template";
 export const SEARCH_TEMPLATES = () => "Search templates";
 export const INTRODUCING_TEMPLATES = () => "Introducing Templates";
 export const TEMPLATE_NOTIFICATION_DESCRIPTION = () =>
-  "You can browse, fork, and make them your own here";
+  "Use these templates to learn, create, and build apps even faster";
 export const GO_BACK = () => "GO BACK";
 export const OVERVIEW = () => "Overview";
 export const FUNCTION = () => "Function";
@@ -1123,11 +1196,15 @@ export const NOTE = () => "Note:";
 export const NOTE_MESSAGE = () => "You can add your datasources as well";
 export const WIDGET_USED = () => "Widgets Used";
 export const SIMILAR_TEMPLATES = () => "Similar Templates";
+export const VIEW_ALL_TEMPLATES = () => "VIEW ALL TEMPLATES";
+export const FILTERS = () => "FILTERS";
 
 export const IMAGE_LOAD_ERROR = () => "Unable to display the image";
 
 export const REDIRECT_URL_TOOLTIP = () =>
   "This URL will be used while configuring your Identity Provider's Callback/Redirect URL";
+export const ENTITY_ID_TOOLTIP = () =>
+  "This URL will be used while configuring your Identity Provider's Entity ID URL";
 
 export const FORK_APP_MODAL_LOADING_TITLE = () =>
   "Fetching organisations to fork to...";
@@ -1141,4 +1218,12 @@ export const CLEAN_URL_UPDATE = {
   name: () => "Update URLs",
   shortDesc: () =>
     "All URLs in your applications will update to a new readable format that includes the application and page names.",
+  description: [
+    () =>
+      "All URLs in your applications will be updated to match our new style. This will make your apps easier to find, and URLs easier to remember.",
+    (url: string) =>
+      `The current app’s URL will be:<br /><code style="line-break: anywhere; padding: 2px 4px; line-height: 22px">${url}</code>`,
+  ],
+  disclaimer: () =>
+    "Existing references to <strong>appsmith.URL.fullpath</strong> and <strong>appsmith.URL.pathname</strong> properties will behave differently.",
 };

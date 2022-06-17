@@ -11,7 +11,7 @@ import com.appsmith.server.domains.Application;
 import com.appsmith.server.domains.GitApplicationMetadata;
 import com.appsmith.server.domains.Layout;
 import com.appsmith.server.domains.NewAction;
-import com.appsmith.server.domains.Organization;
+import com.appsmith.server.domains.Workspace;
 import com.appsmith.server.domains.Plugin;
 import com.appsmith.server.domains.PluginType;
 import com.appsmith.server.domains.User;
@@ -29,7 +29,7 @@ import com.appsmith.server.exceptions.AppsmithException;
 import com.appsmith.server.helpers.MockPluginExecutor;
 import com.appsmith.server.helpers.PluginExecutorHelper;
 import com.appsmith.server.repositories.NewActionRepository;
-import com.appsmith.server.repositories.OrganizationRepository;
+import com.appsmith.server.repositories.WorkspaceRepository;
 import com.appsmith.server.repositories.PluginRepository;
 import com.appsmith.server.solutions.ImportExportApplicationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -89,10 +89,10 @@ public class LayoutActionServiceTest {
     UserService userService;
 
     @Autowired
-    OrganizationService organizationService;
+    WorkspaceService workspaceService;
 
     @Autowired
-    OrganizationRepository organizationRepository;
+    WorkspaceRepository workspaceRepository;
 
     @Autowired
     PluginRepository pluginRepository;
@@ -145,13 +145,13 @@ public class LayoutActionServiceTest {
         newPageService.deleteAll();
         User apiUser = userService.findByEmail("api_user").block();
         orgId = apiUser.getOrganizationIds().iterator().next();
-        Organization organization = organizationService.getById(orgId).block();
+        Workspace workspace = workspaceService.getById(orgId).block();
 
         if (testApp == null && testPage == null) {
             //Create application and page which will be used by the tests to create actions for.
             Application application = new Application();
             application.setName(UUID.randomUUID().toString());
-            testApp = applicationPageService.createApplication(application, organization.getId()).block();
+            testApp = applicationPageService.createApplication(application, workspace.getId()).block();
 
             final String pageId = testApp.getPages().get(0).getId();
 
@@ -202,7 +202,7 @@ public class LayoutActionServiceTest {
                                 .zipWhen(application1 -> importExportApplicationService.exportApplicationById(application1.getId(), gitData.getBranchName()));
                     })
                     // Assign the branchName to all the resources connected to the application
-                    .flatMap(tuple -> importExportApplicationService.importApplicationInOrganization(orgId, tuple.getT2(), tuple.getT1().getId(), gitData.getBranchName()))
+                    .flatMap(tuple -> importExportApplicationService.importApplicationInWorkspace(orgId, tuple.getT2(), tuple.getT1().getId(), gitData.getBranchName()))
                     .block();
 
             gitConnectedPage = newPageService.findPageById(gitConnectedApp.getPages().get(0).getId(), READ_PAGES, false).block();
@@ -210,8 +210,8 @@ public class LayoutActionServiceTest {
             branchName = gitConnectedApp.getGitApplicationMetadata().getBranchName();
         }
 
-        Organization testOrg = organizationRepository.findByName("Another Test Organization", AclPermission.READ_ORGANIZATIONS).block();
-        orgId = testOrg.getId();
+        Workspace testWorkspace = workspaceRepository.findByName("Another Test Workspace", AclPermission.READ_ORGANIZATIONS).block();
+        orgId = testWorkspace.getId();
         datasource = new Datasource();
         datasource.setName("Default Database");
         datasource.setOrganizationId(orgId);
@@ -1163,16 +1163,29 @@ public class LayoutActionServiceTest {
         action1.setActionConfiguration(actionConfiguration1);
         action1.setDatasource(datasource);
 
-        // Gen action which does not get used anywhere but depends implicitly on first action
+        // Gen action which does not get used anywhere but depends implicitly on first action and has been set to run on load
         ActionDTO action2 = new ActionDTO();
         action2.setName("secondAction");
         action2.setPageId(testPage.getId());
         ActionConfiguration actionConfiguration2 = new ActionConfiguration();
         actionConfiguration2.setHttpMethod(HttpMethod.GET);
-        actionConfiguration2.setBody("{{ firstWidget.data }}");
+        actionConfiguration2.setBody("{{ firstAction.data }}");
+        action2.setUserSetOnLoad(true);
         action2.setActionConfiguration(actionConfiguration2);
         action2.setDynamicBindingPathList(List.of(new Property("body", null)));
         action2.setDatasource(datasource);
+
+        // Gen action which does not get used anywhere but has been set to run on load
+        ActionDTO action3 = new ActionDTO();
+        action3.setName("thirdAction");
+        action3.setPageId(testPage.getId());
+        ActionConfiguration actionConfiguration3 = new ActionConfiguration();
+        actionConfiguration3.setHttpMethod(HttpMethod.GET);
+        actionConfiguration3.setBody("irrelevantValue");
+        action3.setUserSetOnLoad(true);
+        action3.setActionConfiguration(actionConfiguration3);
+        action3.setDynamicBindingPathList(List.of(new Property("body", null)));
+        action3.setDatasource(datasource);
 
         JSONObject parentDsl = new JSONObject(objectMapper.readValue(DEFAULT_PAGE_LAYOUT, new TypeReference<HashMap<String, Object>>() {
         }));
@@ -1193,18 +1206,39 @@ public class LayoutActionServiceTest {
         layout.setDsl(parentDsl);
 
         ActionDTO createdAction1 = layoutActionService.createSingleAction(action1).block();
-        ActionDTO createdAction2 = layoutActionService.createSingleAction(action2).block();
+        ActionDTO createdAction2 = layoutActionService.createSingleAction(action2)
+                .flatMap(savedAction -> {
+                    ActionDTO updates = new ActionDTO();
+
+                    // Configure action to execute on page load.
+                    updates.setExecuteOnLoad(true);
+
+                    // Save updated configuration and re-compute on page load actions.
+                    return layoutActionService.updateSingleAction(savedAction.getId(), updates);
+                }).block();
+        ActionDTO createdAction3 = layoutActionService.createSingleAction(action3)
+                .flatMap(savedAction -> {
+                    ActionDTO updates = new ActionDTO();
+
+                    // Configure action to execute on page load.
+                    updates.setExecuteOnLoad(true);
+
+                    // Save updated configuration and re-compute on page load actions.
+                    return layoutActionService.updateSingleAction(savedAction.getId(), updates);
+                }).block();
 
         Mono<LayoutDTO> updateLayoutMono = layoutActionService.updateLayout(testPage.getId(), layout.getId(), layout);
 
         StepVerifier.create(updateLayoutMono)
                 .assertNext(updatedLayout -> {
 
-                    assertThat(updatedLayout.getLayoutOnLoadActions().size()).isEqualTo(1);
+                    assertThat(updatedLayout.getLayoutOnLoadActions().size()).isEqualTo(2);
 
-                    // Assert that both the actions dont belong to the same set. They should be run iteratively.
-                    DslActionDTO actionDTO = updatedLayout.getLayoutOnLoadActions().get(0).iterator().next();
-                    assertThat(actionDTO.getName()).isEqualTo("firstAction");
+                    // Assert that all three the actions dont belong to the same set
+                    final Set<DslActionDTO> firstSet = updatedLayout.getLayoutOnLoadActions().get(0);
+                    assertThat(firstSet).allMatch(actionDTO -> Set.of("firstAction", "thirdAction").contains(actionDTO.getName()));
+                    final DslActionDTO secondSetAction = updatedLayout.getLayoutOnLoadActions().get(1).iterator().next();
+                    assertThat(secondSetAction.getName()).isEqualTo("secondAction");
 
                 })
                 .verifyComplete();

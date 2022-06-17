@@ -1,7 +1,8 @@
 import React from "react";
 import equal from "fast-deep-equal/es6";
 import { connect } from "react-redux";
-import { debounce, difference, isEmpty, noop } from "lodash";
+import { debounce, difference, isEmpty, noop, merge } from "lodash";
+import { klona } from "klona";
 
 import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import JSONFormComponent from "../component";
@@ -12,7 +13,12 @@ import {
   EventType,
   ExecuteTriggerPayload,
 } from "constants/AppsmithActionConstants/ActionConstants";
-import { FieldState, ROOT_SCHEMA_KEY, Schema } from "../constants";
+import {
+  FieldState,
+  FieldThemeStylesheet,
+  ROOT_SCHEMA_KEY,
+  Schema,
+} from "../constants";
 import {
   ComputedSchemaStatus,
   computeSchema,
@@ -46,6 +52,7 @@ export interface JSONFormWidgetProps extends WidgetProps {
   submitButtonLabel: string;
   submitButtonStyles: ButtonStyleProps;
   title: string;
+  childStylesheet: FieldThemeStylesheet;
 }
 
 export type MetaInternalFieldState = FieldState<{
@@ -66,12 +73,17 @@ class JSONFormWidget extends BaseWidget<
   WidgetState & JSONFormWidgetState
 > {
   debouncedParseAndSaveFieldState: any;
+  isWidgetMounting: boolean;
+
   constructor(props: JSONFormWidgetProps) {
     super(props);
+
     this.debouncedParseAndSaveFieldState = debounce(
       this.parseAndSaveFieldState,
       SAVE_FIELD_STATE_DEBOUNCE_TIMEOUT,
     );
+
+    this.isWidgetMounting = true;
   }
 
   state = {
@@ -103,6 +115,7 @@ class JSONFormWidget extends BaseWidget<
 
   componentDidMount() {
     this.constructAndSaveSchemaIfRequired();
+    this.isWidgetMounting = false;
   }
 
   componentDidUpdate(prevProps: JSONFormWidgetProps) {
@@ -114,8 +127,11 @@ class JSONFormWidget extends BaseWidget<
       this.state.resetObserverCallback(this.props.schema);
     }
 
-    this.constructAndSaveSchemaIfRequired(prevProps);
-    this.debouncedParseAndSaveFieldState();
+    const { schema } = this.constructAndSaveSchemaIfRequired(prevProps);
+    this.debouncedParseAndSaveFieldState(
+      this.state.metaInternalFieldState,
+      schema,
+    );
   }
 
   computeDynamicPropertyPathList = (schema: Schema) => {
@@ -151,7 +167,11 @@ class JSONFormWidget extends BaseWidget<
    * So it will always stay 1 step behind the actual value.
    */
   constructAndSaveSchemaIfRequired = (prevProps?: JSONFormWidgetProps) => {
-    if (!this.props.autoGenerateForm) return;
+    if (!this.props.autoGenerateForm)
+      return {
+        status: ComputedSchemaStatus.UNCHANGED,
+        schema: prevProps?.schema || {},
+      };
 
     const widget = this.props.canvasWidgets[
       this.props.widgetId
@@ -159,29 +179,28 @@ class JSONFormWidget extends BaseWidget<
     const prevSourceData = this.getPreviousSourceData(prevProps);
     const currSourceData = this.props?.sourceData;
 
-    const { dynamicPropertyPathList, schema, status } = computeSchema({
+    const computedSchema = computeSchema({
       currentDynamicPropertyPathList: this.props.dynamicPropertyPathList,
       currSourceData,
       prevSchema: widget.schema,
       prevSourceData,
       widgetName: widget.widgetName,
+      fieldThemeStylesheets: widget.childStylesheet,
     });
-
-    if (status === ComputedSchemaStatus.UNCHANGED) return;
+    const { dynamicPropertyPathList, schema, status } = computedSchema;
 
     if (
       status === ComputedSchemaStatus.LIMIT_EXCEEDED &&
       !this.props.fieldLimitExceeded
     ) {
       this.updateWidgetProperty("fieldLimitExceeded", true);
-      return;
-    }
-
-    if (status === ComputedSchemaStatus.UPDATED) {
+    } else if (status === ComputedSchemaStatus.UPDATED) {
       this.batchUpdateWidgetProperty({
         modify: { schema, dynamicPropertyPathList, fieldLimitExceeded: false },
       });
     }
+
+    return computedSchema;
   };
 
   updateFormData = (values: any, skipConversion = false) => {
@@ -198,14 +217,35 @@ class JSONFormWidget extends BaseWidget<
     this.props.updateWidgetMetaProperty("formData", formData);
   };
 
-  parseAndSaveFieldState = () => {
-    const fieldState = generateFieldState(
-      this.props.schema,
-      this.state.metaInternalFieldState,
-    );
+  parseAndSaveFieldState = (
+    metaInternalFieldState: MetaInternalFieldState,
+    schema: Schema,
+    afterUpdateAction?: ExecuteTriggerPayload,
+  ) => {
+    const fieldState = generateFieldState(schema, metaInternalFieldState);
+    const action = klona(afterUpdateAction);
+
+    /**
+     * globalContext from the afterUpdateAction takes precedence as it may have a different
+     * fieldState value than the one returned from generateFieldState.
+     * */
+    if (action) {
+      action.globalContext = merge(
+        {
+          fieldState,
+        },
+        action?.globalContext,
+      );
+    }
+
+    const actionPayload = action && this.applyGlobalContextToAction(action);
 
     if (!equal(fieldState, this.props.fieldState)) {
-      this.props.updateWidgetMetaProperty("fieldState", fieldState);
+      this.props.updateWidgetMetaProperty(
+        "fieldState",
+        fieldState,
+        actionPayload,
+      );
     }
   };
 
@@ -235,8 +275,31 @@ class JSONFormWidget extends BaseWidget<
     });
   };
 
+  applyGlobalContextToAction = (actionPayload: ExecuteTriggerPayload) => {
+    const payload = klona(actionPayload);
+    const { globalContext } = payload;
+
+    /**
+     * globalContext from the actionPayload takes precedence as it may have latest
+     * values compared the ones coming from props
+     * */
+    payload.globalContext = merge(
+      {},
+      {
+        formData: this.props.formData,
+        fieldState: this.props.fieldState,
+        sourceData: this.props.sourceData,
+      },
+      globalContext,
+    );
+
+    return payload;
+  };
+
   onExecuteAction = (actionPayload: ExecuteTriggerPayload) => {
-    super.executeAction(actionPayload);
+    const payload = this.applyGlobalContextToAction(actionPayload);
+
+    super.executeAction(payload);
   };
 
   onUpdateWidgetProperty = (propertyName: string, propertyValue: any) => {
@@ -248,9 +311,20 @@ class JSONFormWidget extends BaseWidget<
   };
 
   setMetaInternalFieldState = (
-    cb: (prevState: JSONFormWidgetState) => JSONFormWidgetState,
+    updateCallback: (prevState: JSONFormWidgetState) => JSONFormWidgetState,
+    afterUpdateAction?: ExecuteTriggerPayload,
   ) => {
-    this.setState(cb);
+    this.setState((prevState) => {
+      const newState = updateCallback(prevState);
+
+      this.parseAndSaveFieldState(
+        newState.metaInternalFieldState,
+        this.props.schema,
+        afterUpdateAction,
+      );
+
+      return newState;
+    });
   };
 
   registerResetObserver = (callback: () => void) => {
@@ -262,6 +336,10 @@ class JSONFormWidget extends BaseWidget<
   };
 
   getFormData = () => this.props.formData;
+
+  onFormValidityUpdate = (isValid: boolean) => {
+    this.props.updateWidgetMetaProperty("isValid", isValid);
+  };
 
   getPageView() {
     return (
@@ -281,6 +359,8 @@ class JSONFormWidget extends BaseWidget<
         fixedFooter={this.props.fixedFooter}
         getFormData={this.getFormData}
         isSubmitting={this.state.isSubmitting}
+        isWidgetMounting={this.isWidgetMounting}
+        onFormValidityUpdate={this.onFormValidityUpdate}
         onSubmit={this.onSubmit}
         registerResetObserver={this.registerResetObserver}
         renderMode={this.props.renderMode}

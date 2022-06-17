@@ -5,7 +5,7 @@ import { Classes as Popover2Classes } from "@blueprintjs/popover2";
 import {
   ApplicationPayload,
   ReduxActionTypes,
-} from "constants/ReduxActionConstants";
+} from "@appsmith/constants/ReduxActionConstants";
 import { APPLICATIONS_URL } from "constants/routes";
 import AppInviteUsersForm from "pages/organization/AppInviteUsersForm";
 import AnalyticsUtil from "utils/AnalyticsUtil";
@@ -20,7 +20,10 @@ import {
   previewModeSelector,
   selectURLSlugs,
 } from "selectors/editorSelectors";
-import { getAllUsers, getCurrentOrgId } from "selectors/organizationSelectors";
+import {
+  getAllUsers,
+  getCurrentOrgId,
+} from "@appsmith/selectors/organizationSelectors";
 import { connect, useDispatch, useSelector } from "react-redux";
 import DeployLinkButtonDialog from "components/designSystems/appsmith/header/DeployLinkButton";
 import { EditInteractionKind, SavingState } from "components/ads/EditableText";
@@ -33,7 +36,7 @@ import {
 } from "selectors/applicationSelectors";
 import EditorAppName from "./EditorAppName";
 import ProfileDropdown from "pages/common/ProfileDropdown";
-import { getCurrentUser } from "selectors/usersSelectors";
+import { getCurrentUser, selectFeatureFlags } from "selectors/usersSelectors";
 import { ANONYMOUS_USERNAME, User } from "constants/userConstants";
 import Button, { Size } from "components/ads/Button";
 import Icon, { IconSize } from "components/ads/Icon";
@@ -52,13 +55,12 @@ import { useLocation } from "react-router";
 import { showConnectGitModal } from "actions/gitSyncActions";
 import RealtimeAppEditors from "./RealtimeAppEditors";
 import { EditorSaveIndicator } from "./EditorSaveIndicator";
-import getFeatureFlags from "utils/featureFlags";
 
 import { retryPromise } from "utils/AppsmithUtils";
 import { fetchUsersForOrg } from "actions/orgActions";
 import { OrgUser } from "constants/orgConstants";
 
-import { getIsGitConnected } from "../../selectors/gitSyncSelectors";
+import { getIsGitConnected } from "selectors/gitSyncSelectors";
 import TooltipComponent from "components/ads/Tooltip";
 import { IconWrapper } from "components/ads/Icon";
 import { Position } from "@blueprintjs/core/lib/esnext/common";
@@ -355,9 +357,11 @@ export function EditorHeader(props: EditorHeaderProps) {
     showAppInviteUsersDialogSelector,
   );
 
+  const featureFlags = useSelector(selectFeatureFlags);
+
   const handleClickDeploy = useCallback(
     (fromDeploy?: boolean) => {
-      if (getFeatureFlags().GIT && isGitConnected) {
+      if (featureFlags.GIT && isGitConnected) {
         dispatch(showConnectGitModal());
         AnalyticsUtil.logEvent("GS_DEPLOY_GIT_CLICK", {
           source: fromDeploy
@@ -368,7 +372,7 @@ export function EditorHeader(props: EditorHeaderProps) {
         handlePublish();
       }
     },
-    [getFeatureFlags().GIT, dispatch, handlePublish],
+    [featureFlags.GIT, dispatch, handlePublish],
   );
 
   /**
@@ -395,6 +399,7 @@ export function EditorHeader(props: EditorHeaderProps) {
     (user) => user.username !== props.currentUser?.username,
   );
   const { applicationSlug, pageSlug } = useSelector(selectURLSlugs);
+  const showModes = !shouldHideComments;
 
   if (inCloudOS) {
     return (
@@ -416,12 +421,12 @@ export function EditorHeader(props: EditorHeaderProps) {
 
   return (
     <ThemeProvider theme={theme}>
-      <HeaderWrapper className="pr-3">
+      <HeaderWrapper className="pr-3" data-testid="t--appsmith-editor-header">
         <HeaderSection className="space-x-3">
-          <HamburgerContainer className="text-gray-800 transform transition-all duration-400 relative p-0 flex items-center justify-center">
+          <HamburgerContainer className="relative flex items-center justify-center p-0 text-gray-800 transition-all transform duration-400">
             <TooltipComponent
               content={
-                <div className="flex justify-between items-center">
+                <div className="flex items-center justify-between">
                   <span>
                     {!pinned
                       ? createMessage(LOCK_ENTITY_EXPLORER_MESSAGE)
@@ -438,7 +443,7 @@ export function EditorHeader(props: EditorHeaderProps) {
                 className="relative w-4 h-4 text-trueGray-600 group t--pin-entity-explorer"
                 onMouseEnter={onMenuHover}
               >
-                <MenuIcon className="absolute w-4 h-4 transition-opacity fill-current cursor-pointer group-hover:opacity-0" />
+                <MenuIcon className="absolute w-4 h-4 transition-opacity cursor-pointer fill-current group-hover:opacity-0" />
                 {!pinned && (
                   <UnpinIcon
                     className="absolute w-4 h-4 transition-opacity opacity-0 cursor-pointer fill-current group-hover:opacity-100"
@@ -506,9 +511,7 @@ export function EditorHeader(props: EditorHeaderProps) {
               setIsPopoverOpen={setIsPopoverOpen}
             />
           </TooltipComponent>
-          {!shouldHideComments && (
-            <ToggleModeButton showSelectedMode={!isPopoverOpen} />
-          )}
+          {showModes && <ToggleModeButton showSelectedMode={!isPopoverOpen} />}
         </HeaderSection>
         <HeaderSection
           className={classNames({

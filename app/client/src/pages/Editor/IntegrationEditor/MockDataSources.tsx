@@ -5,10 +5,10 @@ import { MockDatasource } from "entities/Datasource";
 import { getPluginImages } from "selectors/entitiesSelector";
 import { Colors } from "constants/Colors";
 import { addMockDatasourceToOrg } from "actions/datasourceActions";
-import { getCurrentOrgId } from "selectors/organizationSelectors";
-import { getQueryParams } from "../../../utils/AppsmithUtils";
-import { AppState } from "../../../reducers";
-import AnalyticsUtil from "../../../utils/AnalyticsUtil";
+import { getCurrentOrgId } from "@appsmith/selectors/organizationSelectors";
+import { getQueryParams } from "utils/AppsmithUtils";
+import { AppState } from "reducers";
+import AnalyticsUtil from "utils/AnalyticsUtil";
 
 const MockDataSourceWrapper = styled.div`
   overflow: auto;

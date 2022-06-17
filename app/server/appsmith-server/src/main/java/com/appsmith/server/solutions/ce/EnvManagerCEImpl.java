@@ -1,9 +1,11 @@
 package com.appsmith.server.solutions.ce;
 
+import com.appsmith.external.models.Policy;
 import com.appsmith.server.acl.AclPermission;
 import com.appsmith.server.configurations.CommonConfig;
 import com.appsmith.server.configurations.EmailConfig;
 import com.appsmith.server.configurations.GoogleRecaptchaConfig;
+import com.appsmith.external.constants.AnalyticsEvents;
 import com.appsmith.server.constants.EnvVariables;
 import com.appsmith.server.domains.User;
 import com.appsmith.server.dtos.EnvChangesResponseDTO;
@@ -12,13 +14,16 @@ import com.appsmith.server.exceptions.AppsmithError;
 import com.appsmith.server.exceptions.AppsmithException;
 import com.appsmith.server.helpers.FileUtils;
 import com.appsmith.server.helpers.PolicyUtils;
+import com.appsmith.server.helpers.TextUtils;
+import com.appsmith.server.helpers.ValidationUtils;
 import com.appsmith.server.notifications.EmailSender;
+import com.appsmith.server.repositories.UserRepository;
 import com.appsmith.server.services.SessionUserService;
 import com.appsmith.server.services.UserService;
+import com.appsmith.server.services.AnalyticsService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.HttpHeaders;
@@ -28,7 +33,9 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -38,6 +45,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.HashMap;
@@ -46,6 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -66,6 +75,8 @@ import static com.appsmith.server.constants.EnvVariables.APPSMITH_RECAPTCHA_SITE
 import static com.appsmith.server.constants.EnvVariables.APPSMITH_REPLY_TO;
 import static com.appsmith.server.constants.EnvVariables.APPSMITH_SIGNUP_ALLOWED_DOMAINS;
 import static com.appsmith.server.constants.EnvVariables.APPSMITH_SIGNUP_DISABLED;
+import static com.appsmith.server.constants.EnvVariables.APPSMITH_OAUTH2_GOOGLE_CLIENT_ID;
+import static com.appsmith.server.constants.EnvVariables.APPSMITH_OAUTH2_GITHUB_CLIENT_ID;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -74,6 +85,8 @@ public class EnvManagerCEImpl implements EnvManagerCE {
 
     private final SessionUserService sessionUserService;
     private final UserService userService;
+    private final AnalyticsService analyticsService;
+    private final UserRepository userRepository;
     private final PolicyUtils policyUtils;
     private final EmailSender emailSender;
 
@@ -152,8 +165,28 @@ public class EnvManagerCEImpl implements EnvManagerCE {
         return outLines;
     }
 
+    private Mono<Void> validateChanges(User user, Map<String, String> changes) {
+        if(changes.containsKey(APPSMITH_ADMIN_EMAILS.name())) {
+            String emailCsv = StringUtils.trimAllWhitespace(changes.get(APPSMITH_ADMIN_EMAILS.name()));
+
+            // validate input is in the format email,email,email and is not empty
+            if(!ValidationUtils.validateEmailCsv(emailCsv)) {
+                return Mono.error(new AppsmithException(AppsmithError.INVALID_PARAMETER, "Admin Email"));
+            } else { // make sure user is not removing own email
+                Set<String> adminEmails = TextUtils.csvToSet(emailCsv);
+                if(!adminEmails.contains(user.getEmail())) { // user can not remove own email address
+                    return Mono.error(new AppsmithException(
+                            AppsmithError.GENERIC_BAD_REQUEST, "Removing own email from Admin Email is not allowed"
+                    ));
+                }
+            }
+        }
+        return Mono.empty();
+    }
+
     public Mono<EnvChangesResponseDTO> applyChanges(Map<String, String> changes) {
         return verifyCurrentUserIsSuper()
+                .flatMap(user -> validateChanges(user, changes).thenReturn(user))
                 .flatMap(user -> {
                     // Write the changes to the env file.
                     final String originalContent;
@@ -165,19 +198,22 @@ public class EnvManagerCEImpl implements EnvManagerCE {
                         log.error("Unable to read env file " + envFilePath, e);
                         return Mono.error(e);
                     }
-
+                    Map<String, String> originalVariables = parseToMap(originalContent);
                     final List<String> changedContent = transformEnvContent(originalContent, changes);
 
                     try {
                         Files.write(envFilePath, changedContent);
+                        sendAnalyticsEvent(user, originalVariables, changes);
                     } catch (IOException e) {
                         log.error("Unable to write to env file " + envFilePath, e);
                         return Mono.error(e);
                     }
 
-                    return Mono.just(user);
+                    return Mono.just(originalVariables);
                 })
-                .flatMap(user -> {
+                .flatMap(originalValues -> {
+                    Mono<Void> dependentTasks = Mono.empty();
+
                     // Try and update any at runtime, that can be.
                     final Map<String, String> changesCopy = new HashMap<>(changes);
 
@@ -195,6 +231,8 @@ public class EnvManagerCEImpl implements EnvManagerCE {
 
                     if (changesCopy.containsKey(APPSMITH_ADMIN_EMAILS.name())) {
                         commonConfig.setAdminEmails(changesCopy.remove(APPSMITH_ADMIN_EMAILS.name()));
+                        String oldAdminEmailsCsv = originalValues.get(APPSMITH_ADMIN_EMAILS.name());
+                        dependentTasks = dependentTasks.then(updateAdminUserPolicies(oldAdminEmailsCsv));
                     }
 
                     if (changesCopy.containsKey(APPSMITH_MAIL_FROM.name())) {
@@ -244,14 +282,127 @@ public class EnvManagerCEImpl implements EnvManagerCE {
                     // Ideally, we should only need a restart here if `changesCopy` is not empty. However, some of these
                     // env variables are also used in client code, which means restart might be necessary there. So, to
                     // provide a more uniform and predictable experience, we always restart.
-
                     Mono.delay(Duration.ofSeconds(1))
-                            .flatMap(ignored -> restart())
+                            .then(dependentTasks)
+                            .then(restart())
                             .subscribeOn(Schedulers.boundedElastic())
                             .subscribe();
 
                     return Mono.just(new EnvChangesResponseDTO(true));
                 });
+    }
+
+    /**
+     * Sends analytics events after a new authentication method is added or removed.
+     * @param user
+     * @param originalVariables Already existing env variables
+     * @param changes Changes in the env variables
+     * @return
+     */
+    private Mono<Void> sendAnalyticsEvent(User user, Map<String, String> originalVariables, Map<String, String> changes) {
+        // Generate analytics event properties template(s) according to the env variable changes
+        List<Map> analyticsEvents = getAnalyticsEvents(originalVariables, changes, new ArrayList<>());
+
+        for (Map analyticsEvent : analyticsEvents) {
+            analyticsService.sendEvent(AnalyticsEvents.AUTHENTICATION_METHOD_CONFIGURATION.getEventName(), user.getUsername(), analyticsEvent);
+        }
+
+        return Mono.empty();
+    }
+
+    /**
+     * Generates analytics event properties template(s) according to the env variable changes.
+     * @param originalVariables Already existing env variables
+     * @param changes Changes in the env variables
+     * @param extraAuthEnvs To incorporate extra authentication methods in enterprise edition
+     * @return
+     */
+    public List<Map> getAnalyticsEvents(Map<String, String> originalVariables, Map<String, String> changes, List<String> extraAuthEnvs){
+        List<String> authEnvs = new ArrayList<>(List.of(APPSMITH_OAUTH2_GOOGLE_CLIENT_ID.name(), APPSMITH_OAUTH2_GITHUB_CLIENT_ID.name()));
+
+        // Add extra authentication methods
+        authEnvs.addAll(extraAuthEnvs);
+
+        // Generate analytics event(s) properties
+        List<Map> analyticsEvents = new ArrayList<>();
+        for (String authEnv : authEnvs) {
+            if (changes.containsKey(authEnv)) {
+                Map<String, String> properties = new HashMap<>(){{
+                    put("provider", authEnv);
+                }};
+                properties = setAnalyticsEventAction(properties, changes.get(authEnv), originalVariables.get(authEnv), authEnv);
+                if(properties.containsKey("action")){
+                    analyticsEvents.add(properties);
+                }
+            }
+        }
+
+        return analyticsEvents;
+    }
+
+    /**
+     * Sets the correct action to analytics event properties template(s) according to the env variable changes
+     * @param properties
+     * @param newVariable Updated env variable value
+     * @param originalVariable Already existing env variable value
+     * @param authEnv Env variable name
+     * @return
+     */
+    public Map<String, String> setAnalyticsEventAction(Map<String, String> properties, String newVariable, String originalVariable, String authEnv){
+        // Authentication configuration added
+        if (!newVariable.isEmpty() && originalVariable.isEmpty()) {
+            properties.put("action", "Added");
+        }
+        // Authentication configuration removed
+        else if (newVariable.isEmpty() && !originalVariable.isEmpty()) {
+            properties.put("action", "Removed");
+        }
+
+        return properties;
+    }
+
+    /**
+     * Adds or removes admin user policy from users.
+     * If an email is removed from admin emails, it'll remove the policy from that user.
+     * If a new email is added as admin email, it'll add the policy to that user
+     * @param oldAdminEmailsCsv comma separated email addresses that was set as admin email earlier
+     */
+    private Mono<Void> updateAdminUserPolicies(String oldAdminEmailsCsv) {
+        Set<String> oldAdminEmails = TextUtils.csvToSet(oldAdminEmailsCsv);
+        Set<String> newAdminEmails = commonConfig.getAdminEmails();
+
+        // we need to find out the removed emails and new emails
+        Set<String> removedUsers = new HashSet<>(oldAdminEmails);
+        removedUsers.removeAll(newAdminEmails);
+        Set<String> newUsers = new HashSet<>(newAdminEmails);
+        newUsers.removeAll(oldAdminEmails);
+
+        Flux<User> removedUserFlux = Flux.fromIterable(removedUsers).flatMap(userService::findByEmail)
+                .flatMap(user -> {
+                    Map<String, Policy> policyMap = policyUtils.generatePolicyFromPermission(
+                            Set.of(AclPermission.MANAGE_INSTANCE_ENV), user.getUsername()
+                    );
+                    policyUtils.removePoliciesFromExistingObject(policyMap, user);
+                    return userRepository.save(user);
+                });
+
+        Flux<User> newUsersFlux = Flux.fromIterable(newUsers).flatMap(userService::findByEmail)
+                .flatMap(user -> {
+                    Map<String, Policy> policyMap =  policyUtils.generatePolicyFromPermission(
+                            Set.of(AclPermission.MANAGE_INSTANCE_ENV), user.getUsername()
+                    );
+                    policyUtils.addPoliciesToExistingObject(policyMap, user);
+                    return userRepository.save(user);
+                });
+
+        /*
+         * we need to run these two flux immediately because server will be restarted and these changes
+         * should be persisted to DB before that
+         */
+        return Mono.whenDelayError(
+                removedUserFlux.then(),
+                newUsersFlux.then()
+        );
     }
 
     public Map<String, String> parseToMap(String content) {
@@ -277,6 +428,8 @@ public class EnvManagerCEImpl implements EnvManagerCE {
                     final String originalContent;
                     try {
                         originalContent = Files.readString(Path.of(commonConfig.getEnvFilePath()));
+                    } catch (NoSuchFileException e) {
+                        return Mono.error(new AppsmithException(AppsmithError.ENV_FILE_NOT_FOUND));
                     } catch (IOException e) {
                         log.error("Unable to read env file " + commonConfig.getEnvFilePath(), e);
                         return Mono.error(e);
@@ -336,7 +489,7 @@ public class EnvManagerCEImpl implements EnvManagerCE {
                     props.put("mail.smtp.starttls.enable", "true");
                     props.put("mail.smtp.timeout", 7000); // 7 seconds
 
-                    if(!StringUtils.isEmpty(requestDTO.getUsername())) {
+                    if(StringUtils.hasLength(requestDTO.getUsername())) {
                         props.put("mail.smtp.auth", "true");
                         mailSender.setUsername(requestDTO.getUsername());
                         mailSender.setPassword(requestDTO.getPassword());

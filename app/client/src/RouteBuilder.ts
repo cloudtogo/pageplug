@@ -14,6 +14,10 @@ import { APP_MODE } from "entities/App";
 import getQueryParamsObject from "utils/getQueryParamsObject";
 import { matchPath } from "react-router";
 import { ApplicationVersion } from "actions/applicationActions";
+import {
+  ApplicationPayload,
+  Page,
+} from "@appsmith/constants/ReduxActionConstants";
 
 export function convertToQueryParams(
   params: Record<string, string> = {},
@@ -41,6 +45,16 @@ const fetchParamsToPersist = () => {
     params = { a: "b", ...params };
   }
   return params;
+};
+
+export const fillPathname = (
+  pathname: string,
+  application: ApplicationPayload,
+  page: Page,
+) => {
+  return pathname
+    .replace(`/applications/${application.id}`, `/app/${application.slug}`)
+    .replace(`/pages/${page.pageId}`, `/${page.slug}-${page.pageId}`);
 };
 
 type Optional<T extends { [k in keyof T]: T[k] }> = {
@@ -79,6 +93,8 @@ let BASE_URL_BUILDER_PARAMS = DEFAULT_BASE_URL_BUILDER_PARAMS;
 export function updateURLFactory(params: Optional<BaseURLBuilderParams>) {
   BASE_URL_BUILDER_PARAMS = { ...BASE_URL_BUILDER_PARAMS, ...params };
 }
+
+export const getRouteBuilderParams = () => BASE_URL_BUILDER_PARAMS;
 
 /**
  * Do not export this method directly. Please write wrappers for your URLs.
@@ -131,7 +147,7 @@ function baseURLBuilder(
       PLACEHOLDER_APP_SLUG;
     pageSlug =
       pageSlug || BASE_URL_BUILDER_PARAMS.pageSlug || PLACEHOLDER_PAGE_SLUG;
-    basePath = `/${applicationSlug}/${pageSlug}-${pageId}`;
+    basePath = `/app/${applicationSlug}/${pageSlug}-${pageId}`;
   }
   basePath += mode === APP_MODE.EDIT ? "/edit" : "";
 
@@ -285,14 +301,12 @@ export const viewerURL = (props?: Optional<URLBuilderParams>): string => {
 
 export function adminSettingsCategoryUrl({
   category,
-  subCategory,
+  selected,
 }: {
   category: string;
-  subCategory?: string;
+  selected?: string;
 }) {
-  return `${ADMIN_SETTINGS_PATH}/${category}${
-    subCategory ? "/" + subCategory : ""
-  }`;
+  return `${ADMIN_SETTINGS_PATH}/${category}${selected ? "/" + selected : ""}`;
 }
 
 export const templateIdUrl = ({ id }: { id: string }): string =>

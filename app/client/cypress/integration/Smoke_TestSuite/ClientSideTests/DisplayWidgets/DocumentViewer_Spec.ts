@@ -1,20 +1,21 @@
-import { AggregateHelper } from "../../../../support/Pages/AggregateHelper";
-import { CommonLocators } from "../../../../support/Objects/CommonLocators";
+import { ObjectsRegistry } from "../../../../support/Objects/Registry"
 
-const agHelper = new AggregateHelper();
-const locator = new CommonLocators();
+let agHelper = ObjectsRegistry.AggregateHelper,
+    ee = ObjectsRegistry.EntityExplorer,
+    locator = ObjectsRegistry.CommonLocators,
+    deployMode = ObjectsRegistry.DeployMode,
+    propPane = ObjectsRegistry.PropertyPane;
 
 describe("DocumentViewer Widget Functionality", () => {
   it("1. Add new DocumentViewer and verify in canvas", () => {
-    agHelper.DragDropWidgetNVerify("documentviewerwidget", 300, 300);
+    ee.DragDropWidgetNVerify("documentviewerwidget", 300, 300);
   });
 
   it("2. Modify visibility & Publish app & verify", () => {
-    agHelper.NavigateToExplorer();
-    agHelper.expandCollapseEntity("WIDGETS"); //to expand widgets
-    agHelper.SelectEntityByName("DocumentViewer1");
-    agHelper.ToggleOrDisable("visible", false);
-    agHelper.DeployApp();
+    ee.NavigateToSwitcher('explorer')
+    ee.SelectEntityByName("DocumentViewer1", 'WIDGETS');
+    propPane.ToggleOnOrOff("Visible", 'Off');
+    deployMode.DeployApp();
     cy.get(locator._widgetInDeployed("documentviewerwidget")).should(
       "not.exist",
     );
@@ -22,10 +23,9 @@ describe("DocumentViewer Widget Functionality", () => {
   });
 
   it("3. Change visibility & Publish app & verify again", () => {
-    agHelper.expandCollapseEntity("WIDGETS"); //to expand widgets
-    agHelper.SelectEntityByName("DocumentViewer1");
-    agHelper.ToggleOrDisable("visible");
-    agHelper.DeployApp();
+    ee.SelectEntityByName("DocumentViewer1", 'WIDGETS');
+    propPane.ToggleOnOrOff("Visible", 'On');
+    deployMode.DeployApp();
     cy.get(locator._widgetInDeployed("documentviewerwidget")).should("exist");
   });
 });

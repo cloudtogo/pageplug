@@ -52,6 +52,10 @@ import { loading } from "selectors/onboardingSelectors";
 import GuidedTourModal from "./GuidedTour/DeviationModal";
 import { getPageLevelSocketRoomId } from "sagas/WebsocketSagas/utils";
 import RepoLimitExceededErrorModal from "./gitSync/RepoLimitExceededErrorModal";
+import ImportedApplicationSuccessModal from "./gitSync/ImportedAppSuccessModal";
+import { getIsBranchUpdated } from "../utils";
+import { APP_MODE } from "entities/App";
+import { GIT_BRANCH_QUERY_KEY } from "constants/routes";
 
 type EditorProps = {
   currentApplicationId?: string;
@@ -95,14 +99,19 @@ class Editor extends Component<Props> {
     const {
       location: { search },
     } = this.props;
-    const branch = getSearchQuery(search, "branch");
+    const branch = getSearchQuery(search, GIT_BRANCH_QUERY_KEY);
 
     const { applicationId, pageId } = this.props.match.params;
     const queryParams = new URLSearchParams(this.props.location.search);
     queryParams.set("inCloudOS", this.props.inCloudOS ? "true" : "false");
-    if (applicationId || pageId) {
-      this.props.initEditor({ applicationId, pageId, queryParams, branch });
-    }
+    if (pageId)
+      this.props.initEditor({
+        applicationId,
+        pageId,
+        branch,
+        mode: APP_MODE.EDIT,
+        queryParams,
+      });
     this.props.handlePathUpdated(window.location);
     this.unlisten = history.listen(this.handleHistoryChange);
 
@@ -113,22 +122,11 @@ class Editor extends Component<Props> {
     }
   }
 
-  getIsBranchUpdated(props1: Props, props2: Props) {
-    const {
-      location: { search: search1 },
-    } = props1;
-    const {
-      location: { search: search2 },
-    } = props2;
-
-    const branch1 = getSearchQuery(search1, "branch");
-    const branch2 = getSearchQuery(search2, "branch");
-
-    return branch1 !== branch2;
-  }
-
   shouldComponentUpdate(nextProps: Props, nextState: { registered: boolean }) {
-    const isBranchUpdated = this.getIsBranchUpdated(this.props, nextProps);
+    const isBranchUpdated = getIsBranchUpdated(
+      this.props.location,
+      nextProps.location,
+    );
 
     return (
       isBranchUpdated ||
@@ -151,16 +149,30 @@ class Editor extends Component<Props> {
   componentDidUpdate(prevProps: Props) {
     const { applicationId, pageId } = this.props.match.params || {};
     const { pageId: prevPageId } = prevProps.match.params || {};
-    const isBranchUpdated = this.getIsBranchUpdated(this.props, prevProps);
+    const isBranchUpdated = getIsBranchUpdated(
+      this.props.location,
+      prevProps.location,
+    );
 
-    const branch = getSearchQuery(this.props.location.search, "branch");
-    const prevBranch = getSearchQuery(prevProps.location.search, "branch");
+    const branch = getSearchQuery(
+      this.props.location.search,
+      GIT_BRANCH_QUERY_KEY,
+    );
+    const prevBranch = getSearchQuery(
+      prevProps.location.search,
+      GIT_BRANCH_QUERY_KEY,
+    );
 
     const isPageIdUpdated = pageId !== prevPageId;
 
     // to prevent re-init during connect
-    if (prevBranch && isBranchUpdated && (applicationId || pageId)) {
-      this.props.initEditor({ pageId, branch, applicationId });
+    if (prevBranch && isBranchUpdated && pageId) {
+      this.props.initEditor({
+        applicationId,
+        pageId,
+        branch,
+        mode: APP_MODE.EDIT,
+      });
     } else {
       /**
        * First time load is handled by init sagas
@@ -185,7 +197,7 @@ class Editor extends Component<Props> {
     const {
       location: { search },
     } = this.props;
-    const branch = getSearchQuery(search, "branch");
+    const branch = getSearchQuery(search, GIT_BRANCH_QUERY_KEY);
     this.props.resetEditorRequest();
     if (typeof this.unlisten === "function") this.unlisten();
     this.props.collabStopSharingPointerEvent(
@@ -235,6 +247,7 @@ class Editor extends Component<Props> {
               <ConcurrentPageEditorToast />
               <GuidedTourModal />
               <RepoLimitExceededErrorModal />
+              <ImportedApplicationSuccessModal />
             </GlobalHotKeys>
           </div>
           <RequestConfirmationModal />

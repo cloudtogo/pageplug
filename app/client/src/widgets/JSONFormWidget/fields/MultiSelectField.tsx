@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import React, { useCallback, useContext, useMemo, useRef } from "react";
 import styled from "styled-components";
 import {
   DefaultValueType,
@@ -22,10 +22,14 @@ import {
 import { DropdownOption } from "widgets/MultiSelectTreeWidget/widget";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { isPrimitive, validateOptions } from "../helper";
+import { Colors } from "constants/Colors";
+import { BASE_LABEL_TEXT_SIZE } from "../component/FieldLabel";
 
 type MultiSelectComponentProps = FieldComponentBaseProps &
   FieldEventProps & {
+    boxShadow?: string;
     allowSelectAll?: boolean;
+    borderRadius?: string;
     defaultValue?: string[];
     isFilterable: boolean;
     onFilterChange?: string;
@@ -33,6 +37,7 @@ type MultiSelectComponentProps = FieldComponentBaseProps &
     onOptionChange?: string;
     options: DropdownOption[];
     placeholderText?: string;
+    accentColor?: string;
     serverSideFiltering: boolean;
   };
 
@@ -40,12 +45,16 @@ export type MultiSelectFieldProps = BaseFieldComponentProps<
   MultiSelectComponentProps
 >;
 
+const DEFAULT_ACCENT_COLOR = Colors.GREEN;
+const DEFAULT_BORDER_RADIUS = "0";
+
 const COMPONENT_DEFAULT_VALUES: MultiSelectComponentProps = {
   isDisabled: false,
   isFilterable: false,
   isRequired: false,
   isVisible: true,
   label: "",
+  labelTextSize: BASE_LABEL_TEXT_SIZE,
   serverSideFiltering: false,
   options: [
     { label: "Blue", value: "BLUE" },
@@ -93,8 +102,8 @@ function MultiSelectField({
     onBlur: onBlurDynamicString,
     onFocus: onFocusDynamicString,
   } = schemaItem;
-  const { executeAction, updateWidgetMetaProperty } = useContext(FormContext);
-  const [filterText, setFilterText] = useState<string>();
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const { executeAction } = useContext(FormContext);
 
   const {
     field: { onBlur, onChange, value },
@@ -120,9 +129,8 @@ function MultiSelectField({
     fieldType,
   });
 
-  useUpdateInternalMetaState({
+  const [updateFilterText] = useUpdateInternalMetaState({
     propertyName: `${name}.filterText`,
-    propertyValue: filterText,
   });
 
   const fieldDefaultValue = useMemo(() => {
@@ -155,10 +163,10 @@ function MultiSelectField({
 
   const onFilterChange = useCallback(
     (value: string) => {
-      setFilterText(value);
-
-      if (schemaItem.onFilterUpdate) {
-        executeAction({
+      if (!schemaItem.onFilterUpdate) {
+        updateFilterText(value);
+      } else {
+        updateFilterText(value, {
           triggerPropertyName: "onFilterUpdate",
           dynamicString: schemaItem.onFilterUpdate,
           event: {
@@ -167,7 +175,7 @@ function MultiSelectField({
         });
       }
     },
-    [updateWidgetMetaProperty, executeAction, schemaItem.onFilterUpdate],
+    [executeAction, schemaItem.onFilterUpdate],
   );
 
   const onOptionChange = useCallback(
@@ -187,18 +195,22 @@ function MultiSelectField({
     [executeAction, schemaItem.onOptionChange],
   );
 
+  const dropdownWidth = wrapperRef.current?.clientWidth;
   const fieldComponent = useMemo(() => {
     return (
-      <StyledMultiSelectWrapper>
+      <StyledMultiSelectWrapper ref={wrapperRef}>
         <MultiSelect
+          accentColor={schemaItem.accentColor || DEFAULT_ACCENT_COLOR}
           allowSelectAll={schemaItem.allowSelectAll}
+          borderRadius={schemaItem.borderRadius || DEFAULT_BORDER_RADIUS}
+          boxShadow={schemaItem.boxShadow}
           compactMode={false}
           disabled={schemaItem.isDisabled}
-          dropDownWidth={90}
+          dropDownWidth={dropdownWidth || 100}
           dropdownStyle={DEFAULT_DROPDOWN_STYLES}
-          filterText={filterText}
           isFilterable={schemaItem.isFilterable}
           isValid={isDirty ? isValueValid : true}
+          labelText=""
           loading={false}
           onBlur={onBlurHandler}
           onChange={onOptionChange}
@@ -208,27 +220,30 @@ function MultiSelectField({
           placeholder={schemaItem.placeholderText || ""}
           serverSideFiltering={schemaItem.serverSideFiltering}
           value={componentValues}
-          widgetId={name}
-          width={100}
+          widgetId={fieldClassName}
+          width={10}
         />
       </StyledMultiSelectWrapper>
     );
   }, [
     componentValues,
-    filterText,
     isDirty,
     isValueValid,
-    name,
     onBlurHandler,
     onFilterChange,
     onFocusHandler,
     onOptionChange,
+    schemaItem.accentColor,
+    schemaItem.boxShadow,
+    schemaItem.borderRadius,
     schemaItem.allowSelectAll,
     schemaItem.isDisabled,
     schemaItem.isFilterable,
     schemaItem.options,
     schemaItem.placeholderText,
     schemaItem.serverSideFiltering,
+    dropdownWidth,
+    fieldClassName,
   ]);
 
   return (

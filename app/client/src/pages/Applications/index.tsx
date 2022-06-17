@@ -32,7 +32,7 @@ import {
 import {
   ApplicationPayload,
   ReduxActionTypes,
-} from "constants/ReduxActionConstants";
+} from "@appsmith/constants/ReduxActionConstants";
 import PageWrapper from "pages/common/PageWrapper";
 import SubHeader from "pages/common/SubHeader";
 import ApplicationCard from "./ApplicationCard";
@@ -41,7 +41,7 @@ import { isPermitted, PERMISSION_TYPE } from "./permissionHelpers";
 import FormDialogComponent from "components/editorComponents/form/FormDialogComponent";
 import Dialog from "components/ads/DialogComponent";
 import { User } from "constants/userConstants";
-import { getCurrentUser } from "selectors/usersSelectors";
+import { getCurrentUser, selectFeatureFlags } from "selectors/usersSelectors";
 import { CREATE_ORGANIZATION_FORM_NAME } from "constants/forms";
 import {
   DropdownOnSelectActions,
@@ -71,11 +71,11 @@ import EditableText, {
 import { notEmptyValidator } from "components/ads/TextInput";
 import { deleteOrg, saveOrg } from "actions/orgActions";
 import { leaveOrganization } from "actions/userActions";
-import CenteredWrapper from "../../components/designSystems/appsmith/CenteredWrapper";
-import NoSearchImage from "../../assets/images/NoSearchResult.svg";
+import CenteredWrapper from "components/designSystems/appsmith/CenteredWrapper";
+import NoSearchImage from "assets/images/NoSearchResult.svg";
 import { getNextEntityName, getRandomPaletteColor } from "utils/AppsmithUtils";
 import { AppIconCollection } from "components/ads/AppIcon";
-import { createOrganizationSubmitHandler } from "../organization/helpers";
+import { createOrganizationSubmitHandler } from "pages/organization/helpers";
 import ImportApplicationModal from "./ImportApplicationModal";
 import {
   createMessage,
@@ -86,7 +86,6 @@ import {
 import { ReactComponent as NoAppsFoundIcon } from "assets/svg/no-apps-icon.svg";
 
 import { setHeaderMeta } from "actions/themeActions";
-import getFeatureFlags from "utils/featureFlags";
 import SharedUserList from "pages/common/SharedUserList";
 import { useIsMobileDevice } from "utils/hooks/useDeviceDetect";
 import { Indices } from "constants/Layers";
@@ -379,9 +378,9 @@ function OrgMenuItem({ isFetchingApplications, org, selected }: any) {
         isFetchingApplications ? BlueprintClasses.SKELETON : ""
       }
       ellipsize={20}
-      href={`${window.location.pathname}#${org.organization.slug}`}
+      href={`${window.location.pathname}#${org.organization.id}`}
       icon="workspace"
-      key={org.organization.slug}
+      key={org.organization.id}
       ref={menuRef}
       selected={selected}
       text={org.organization.name}
@@ -441,9 +440,9 @@ function LeftPane() {
             userOrgs.map((org: any) => (
               <OrgMenuItem
                 isFetchingApplications={isFetchingApplications}
-                key={org.organization.slug}
+                key={org.organization.id}
                 org={org}
-                selected={urlHash === org.organization.slug}
+                selected={urlHash === org.organization.id}
               />
             ))}
         </WorkpsacesNavigator>
@@ -592,6 +591,7 @@ function ApplicationsSection(props: any) {
   ) => {
     dispatch(updateApplication(id, data));
   };
+  const featureFlags = useSelector(selectFeatureFlags);
 
   useEffect(() => {
     // Clears URL params cache
@@ -745,7 +745,6 @@ function ApplicationsSection(props: any) {
       <CenteredWrapper
         style={{
           flexDirection: "column",
-          marginTop: "-150px",
           position: "static",
         }}
       >
@@ -773,7 +772,7 @@ function ApplicationsSection(props: any) {
               {(currentUser || isFetchingApplications) &&
                 OrgMenuTarget({
                   orgName: organization.name,
-                  orgSlug: organization.slug,
+                  orgSlug: organization.id,
                 })}
               {hasManageOrgPermissions && (
                 <Dialog
@@ -861,7 +860,7 @@ function ApplicationsSection(props: any) {
                         closeOnItemClick
                         cypressSelector="t--org-name"
                         disabled={isFetchingApplications}
-                        isOpen={organization.slug === orgToOpenMenu}
+                        isOpen={organization.id === orgToOpenMenu}
                         onClose={() => {
                           setOrgToOpenMenu(null);
                         }}
@@ -875,7 +874,7 @@ function ApplicationsSection(props: any) {
                             className="t--options-icon"
                             name="context-menu"
                             onClick={() => {
-                              setOrgToOpenMenu(organization.slug);
+                              setOrgToOpenMenu(organization.id);
                             }}
                             size={IconSize.XXXL}
                           />
@@ -1054,7 +1053,7 @@ function ApplicationsSection(props: any) {
       isMobile={isMobile}
     >
       {organizationsListComponent}
-      {getFeatureFlags().GIT_IMPORT && <GitSyncModal isImport />}
+      {featureFlags.GIT_IMPORT && <GitSyncModal isImport />}
       <ReconnectDatasourceModal />
     </ApplicationContainer>
   );

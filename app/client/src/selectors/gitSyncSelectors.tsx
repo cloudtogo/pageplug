@@ -24,6 +24,9 @@ export const getIsGitRepoSetup = (state: AppState) => {
 export const getIsCommittingInProgress = (state: AppState) =>
   state.ui.gitSync.isCommitting;
 
+export const getIsDiscardInProgress = (state: AppState) =>
+  state.ui.gitSync.isDiscarding;
+
 export const getIsCommitSuccessful = (state: AppState) =>
   state.ui.gitSync.isCommitSuccessful;
 
@@ -86,7 +89,14 @@ export const getIsGitConnected = createSelector(
   getCurrentAppGitMetaData,
   (gitMetaData) => !!(gitMetaData && gitMetaData.remoteUrl),
 );
-export const getGitBranches = (state: AppState) => state.ui.gitSync.branches;
+
+/**
+ * getGitBranches: returns list of git branches in redux store
+ * @param state {AppState}
+ * @return Branch[]
+ */
+export const getGitBranches = (state: AppState): Branch[] =>
+  state.ui.gitSync.branches;
 
 export const getGitBranchNames = createSelector(getGitBranches, (branches) =>
   branches.map((branchObj) => branchObj.branchName),
@@ -101,7 +111,7 @@ export const getDefaultGitBranchName = createSelector(
 export const getFetchingBranches = (state: AppState) =>
   state.ui.gitSync.fetchingBranches;
 
-export const getCurrentGitBranch = (state: AppState) => {
+export const getCurrentGitBranch = (state: AppState): string | undefined => {
   const { gitApplicationMetadata } = getCurrentApplication(state) || {};
   return gitApplicationMetadata?.branchName;
 };
@@ -134,7 +144,10 @@ export const getUseGlobalProfile = (state: AppState) =>
   state.ui.gitSync.useGlobalProfile;
 
 const FALLBACK_GIT_SYNC_DOCS_URL =
-  "https://docs.appsmith.com/core-concepts/git-sync";
+  "https://docs.appsmith.com/core-concepts/version-control-with-git";
+
+export const getDiscardDocUrl = (state: AppState) =>
+  state.ui.gitSync.gitStatus?.discardDocUrl || FALLBACK_GIT_SYNC_DOCS_URL;
 
 // git connect ssh key deploy url
 export const getSSHKeyDeployDocUrl = (state: AppState) =>
@@ -170,3 +183,6 @@ export const getSshKeyPair = (state: AppState) => state.ui.gitSync.SSHKeyPair;
 
 export const getIsImportingApplicationViaGit = (state: AppState) =>
   state.ui.gitSync.isImportingApplicationViaGit;
+
+export const getDeleteBranchWarning = (state: AppState) =>
+  state.ui.gitSync.deleteBranchWarning;

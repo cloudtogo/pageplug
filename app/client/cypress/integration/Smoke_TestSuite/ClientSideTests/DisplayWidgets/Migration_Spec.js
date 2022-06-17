@@ -35,32 +35,12 @@ describe("Migration Validate", function() {
       const uuid = () => Cypress._.random(0, 1e4);
       const name = uuid();
       cy.wait(2000);
-      cy.get(homePage.applicationName)
-        .clear()
-        .type(`app${name}`);
+      cy.AppSetupForRename();
+      cy.get(homePage.applicationName).type(`app${name}`);
       cy.wrap(`app${name}`).as("appname");
       cy.wait(2000);
 
       // Validating data binding for the imported application - Page1
-
-      //Validating Latitude & Longitude are hidden columns:
-      cy.xpath(
-        "//div[@class='tableWrap']//div[@class='thead']//div[@class='tr'][1]//div[@role='columnheader']//div[text()='latitude']/parent::div/parent::div",
-      )
-        .invoke("attr", "class")
-        .then((classes) => {
-          cy.log("classes are:" + classes);
-          expect(classes).includes("hidden-header");
-        });
-
-      cy.xpath(
-        "//div[@class='tableWrap']//div[@class='thead']//div[@class='tr'][1]//div[@role='columnheader']//div[text()='longitude']/parent::div/parent::div",
-      )
-        .invoke("attr", "class")
-        .then((classes) => {
-          cy.log("classes are:" + classes);
-          expect(classes).includes("hidden-header");
-        });
 
       //Validating order of header row!
       cy.xpath(
@@ -74,9 +54,28 @@ describe("Migration Validate", function() {
           cy.log("header set is:" + x);
         });
 
+      //Validating Latitude & Longitude are hidden columns:
+      cy.xpath(
+        "//div[@class='tableWrap']//div[@class='thead']//div[@class='tr'][1]//div[@role='columnheader']//span[text()='latitude']/parent::div/parent::div/parent::div",
+      )
+        .invoke("attr", "class")
+        .then((classes) => {
+          cy.log("classes are:" + classes);
+          expect(classes).includes("hidden-header");
+        });
+
+      cy.xpath(
+        "//div[@class='tableWrap']//div[@class='thead']//div[@class='tr'][1]//div[@role='columnheader']//span[text()='longitude']/parent::div/parent::div/parent::div",
+      )
+        .invoke("attr", "class")
+        .then((classes) => {
+          cy.log("classes are:" + classes);
+          expect(classes).includes("hidden-header");
+        });
+
       //Validating Id column sorting happens as Datatype is Number in app!
       cy.xpath(
-        "//div[@class='tableWrap']//div[@class='thead']//div[@class='tr'][1]//div[@role='columnheader']//div[text()='id']",
+        "//div[@class='tableWrap']//div[@class='thead']//div[@class='tr'][1]//div[@role='columnheader']//span[text()='id']",
       )
         .click()
         .wait(2000);
@@ -95,7 +94,7 @@ describe("Migration Validate", function() {
 
       //Revert the Id column sorting!
       cy.xpath(
-        "//div[@class='tableWrap']//div[@class='thead']//div[@class='tr'][1]//div[@role='columnheader']//div[text()='id']",
+        "//div[@class='tableWrap']//div[@class='thead']//div[@class='tr'][1]//div[@role='columnheader']//span[text()='id']",
       )
         .click()
         .wait(2000);
@@ -164,9 +163,7 @@ describe("Migration Validate", function() {
         cy.waitUntil(
           () =>
             cy
-              .xpath("//div[contains(@class, ' t--widget-textwidget')][2]", {
-                timeout: 50000,
-              })
+              .xpath("//div[contains(@class, ' t--widget-textwidget')][2]")
               .eq(0)
               .contains("State:", { timeout: 30000 })
               .should("exist"),
@@ -202,11 +199,11 @@ describe("Migration Validate", function() {
           });
         });
 
-        cy.get(selector + " span.bp3-popover-target span")
+        cy.get(selector + " span")
           .invoke("text")
           .then((url) => {
-            cy.get(selector + " span.bp3-popover-target")
-              .click()
+            cy.get(selector + " span")
+              .click({ force: true })
               .wait(2000);
             cy.wait("@postExecute");
             cy.url().should("contain", url);
@@ -217,14 +214,11 @@ describe("Migration Validate", function() {
       // cy.wait(4000);
       // cy.get("div.tableWrap").should("be.visible"); //wait for page load!
 
-      cy.waitUntil(
-        () => cy.get("div.tableWrap", { timeout: 50000 }).should("be.visible"),
-        {
-          errorMsg: "Page is not loaded evn after 10 secs",
-          timeout: 30000,
-          interval: 2000,
-        },
-      ).then(() => cy.wait(1000)); //wait for page load!
+      cy.waitUntil(() => cy.get("div.tableWrap").should("be.visible"), {
+        errorMsg: "Page is not loaded evn after 10 secs",
+        timeout: 30000,
+        interval: 2000,
+      }).then(() => cy.wait(1000)); //wait for page load!
 
       cy.isSelectRow(2); //as aft refresh row selection is also gone
       cy.getTableDataSelector("2", "18").then((selector) => {
@@ -383,11 +377,11 @@ describe("Migration Validate", function() {
           });
         });
 
-        cy.get(selector + " span.bp3-popover-target span")
+        cy.get(selector + " span")
           .invoke("text")
           .then((url) => {
-            cy.get(selector + " span.bp3-popover-target")
-              .click()
+            cy.get(selector + " span")
+              .click({ force: true })
               .wait(2000);
             cy.wait("@postExecute");
             cy.url().should("contain", url);
@@ -398,14 +392,11 @@ describe("Migration Validate", function() {
       //cy.wait(4000);
       //cy.get("div.tableWrap").should("be.visible");
 
-      cy.waitUntil(
-        () => cy.get("div.tableWrap", { timeout: 50000 }).should("be.visible"),
-        {
-          errorMsg: "Page is not loaded evn after 10 secs",
-          timeout: 30000,
-          interval: 2000,
-        },
-      ).then(() => cy.wait(1000)); //wait for page load!
+      cy.waitUntil(() => cy.get("div.tableWrap").should("be.visible"), {
+        errorMsg: "Page is not loaded evn after 10 secs",
+        timeout: 30000,
+        interval: 2000,
+      }).then(() => cy.wait(1000)); //wait for page load!
 
       //Manu Btn validation: - 1st menu item
       cy.isSelectRow(4); //as aft refresh row selection is also gone
@@ -510,7 +501,7 @@ describe("Migration Validate", function() {
       .first()
       .invoke("attr", "value")
       .should("contain", "#FFC13D");
-    cy.get(widgetsPage.selectedTextSize).should("have.text", "24px");
+    cy.validateCodeEditorContent(".t--property-control-textsize", "1.5rem");
   });
 
   // it("2. Add dsl and Validate Migration on pageload", function () {
