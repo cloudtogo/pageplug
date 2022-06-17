@@ -40,13 +40,13 @@ describe("Entity explorer datasource structure", function() {
       200,
     );
 
-    cy.get(explorer.datasourceStructure)
-      .first()
-      .find(explorer.collapse)
-      .click();
-    cy.get(explorer.datasourceColumn)
-      .first()
-      .click();
+    // cy.get(explorer.datasourceStructure)
+    //   .first()
+    //   .find(explorer.collapse)
+    //   .click();
+    // cy.get(explorer.datasourceColumn)
+    //   .first()
+    //   .click();
     cy.get(".bp3-popover-content").should("be.visible");
 
     cy.get(explorer.templateMenuIcon)
@@ -63,10 +63,11 @@ describe("Entity explorer datasource structure", function() {
     );
 
     cy.deleteQueryUsingContext();
-
     cy.CheckAndUnfoldEntityItem("QUERIES/JS");
     cy.GlobalSearchEntity("MyQuery");
-    cy.get(`.t--entity-name:contains(MyQuery)`).click();
+    cy.get(`.t--entity-name:contains(MyQuery)`)
+      .scrollIntoView()
+      .click();
     cy.deleteQueryUsingContext();
 
     cy.get(commonlocators.entityExplorersearch).clear({ force: true });
@@ -94,7 +95,7 @@ describe("Entity explorer datasource structure", function() {
       .replace(/[^a-z]+/g, "");
     cy.typeValueNValidate(`CREATE TABLE public.${tableName} ( ID int );`);
     cy.onlyQueryRun();
-    cy.wait("@postExecute", { timeout: 8000 }).then(({ response }) => {
+    cy.wait("@postExecute").then(({ response }) => {
       expect(response.body.data.request.requestParams.Query.value).to.contain(
         tableName,
       );

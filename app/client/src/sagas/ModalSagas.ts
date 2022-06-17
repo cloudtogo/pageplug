@@ -23,7 +23,7 @@ import {
   ReduxActionTypes,
   ReduxAction,
   WidgetReduxActionTypes,
-} from "constants/ReduxActionConstants";
+} from "@appsmith/constants/ReduxActionConstants";
 
 import {
   getWidget,
@@ -38,7 +38,7 @@ import {
   CanvasWidgetsReduxState,
   FlattenedWidgetProps,
 } from "reducers/entityReducers/canvasWidgetsReducer";
-import { updateWidgetMetaProperty } from "actions/metaActions";
+import { updateWidgetMetaPropAndEval } from "actions/metaActions";
 import { focusWidget } from "actions/widgetActions";
 import log from "loglevel";
 import { flatten } from "lodash";
@@ -48,6 +48,10 @@ import { isMobileLayout } from "selectors/editorSelectors";
 import WidgetFactory from "utils/WidgetFactory";
 import { Toaster } from "components/ads/Toast";
 import { deselectAllInitAction } from "actions/widgetSelectionActions";
+import { navigateToCanvas } from "pages/Editor/Explorer/Widgets/utils";
+import { getCurrentPageId } from "selectors/editorSelectors";
+import { APP_MODE } from "entities/App";
+import { getAppMode } from "selectors/applicationSelectors";
 const WidgetTypes = WidgetFactory.widgetTypes;
 
 export function* createModalSaga(action: ReduxAction<{ modalName: string }>) {
@@ -135,6 +139,12 @@ export function* showModalSaga(action: ReduxAction<{ modalId: string }>) {
     },
   });
 
+  const pageId: string = yield select(getCurrentPageId);
+  const appMode: APP_MODE = yield select(getAppMode);
+
+  if (appMode === APP_MODE.EDIT)
+    navigateToCanvas({ pageId, widgetId: action.payload.modalId });
+
   yield put({
     type: ReduxActionTypes.SELECT_WIDGET_INIT,
     payload: { widgetId: action.payload.modalId },
@@ -145,7 +155,7 @@ export function* showModalSaga(action: ReduxAction<{ modalId: string }>) {
   if (!metaProps || !metaProps.isVisible) {
     // Then show the modal we would like to show.
     yield put(
-      updateWidgetMetaProperty(action.payload.modalId, "isVisible", true),
+      updateWidgetMetaPropAndEval(action.payload.modalId, "isVisible", true),
     );
     yield delay(1000);
   }
@@ -202,7 +212,7 @@ export function* closeModalSaga(
         flatten(
           widgetIds.map((widgetId: string) => {
             return [
-              put(updateWidgetMetaProperty(widgetId, "isVisible", false)),
+              put(updateWidgetMetaPropAndEval(widgetId, "isVisible", false)),
             ];
           }),
         ),

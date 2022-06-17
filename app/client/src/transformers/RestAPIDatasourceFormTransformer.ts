@@ -40,10 +40,10 @@ export const datasourceToFormValues = (
     organizationId: datasource.organizationId,
     pluginId: datasource.pluginId,
     isValid: datasource.isValid,
-    url: datasource.datasourceConfiguration.url,
-    headers: cleanupProperties(datasource.datasourceConfiguration.headers),
+    url: datasource.datasourceConfiguration?.url,
+    headers: cleanupProperties(datasource.datasourceConfiguration?.headers),
     queryParameters: cleanupProperties(
-      datasource.datasourceConfiguration.queryParameters,
+      datasource.datasourceConfiguration?.queryParameters,
     ),
     isSendSessionEnabled: isSendSessionEnabled,
     sessionSignatureKey: sessionSignatureKey,
@@ -189,7 +189,7 @@ const datasourceToFormAuthentication = (
       resource: authentication.resource || "",
       sendScopeWithRefreshToken: authentication.sendScopeWithRefreshToken || "",
       refreshTokenClientCredentialsLocation:
-        authentication.refreshTokenClientCredentialsLocation || "",
+        authentication.refreshTokenClientCredentialsLocation || "BODY",
     };
     if (isClientCredentials(authType, authentication)) {
       return {

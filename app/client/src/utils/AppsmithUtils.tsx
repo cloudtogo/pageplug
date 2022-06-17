@@ -2,11 +2,11 @@ import {
   ApplicationPayload,
   Page,
   ReduxAction,
-} from "constants/ReduxActionConstants";
+} from "@appsmith/constants/ReduxActionConstants";
 import { getAppsmithConfigs } from "@appsmith/configs";
 import * as Sentry from "@sentry/react";
 import AnalyticsUtil from "./AnalyticsUtil";
-import FormControlRegistry from "./FormControlRegistry";
+import FormControlRegistry from "./formControl/FormControlRegistry";
 import { Property } from "api/ActionAPI";
 import _ from "lodash";
 import { ActionDataState } from "reducers/entityReducers/actionsReducer";
@@ -21,6 +21,7 @@ import { APP_MODE } from "entities/App";
 import { trimQueryString } from "./helpers";
 import { PLACEHOLDER_APP_SLUG, PLACEHOLDER_PAGE_SLUG } from "constants/routes";
 import { builderURL, viewerURL } from "RouteBuilder";
+import { osName } from "react-device-detect";
 
 export const createReducer = (
   initialState: any,
@@ -413,11 +414,13 @@ export const getPageURL = (
     );
   }
 
-  return builderURL({
-    applicationSlug: currentApplicationDetails?.slug || PLACEHOLDER_APP_SLUG,
-    pageSlug: page.slug || PLACEHOLDER_PAGE_SLUG,
-    pageId: page.pageId,
-  });
+  return trimQueryString(
+    builderURL({
+      applicationSlug: currentApplicationDetails?.slug || PLACEHOLDER_APP_SLUG,
+      pageSlug: page.slug || PLACEHOLDER_PAGE_SLUG,
+      pageId: page.pageId,
+    }),
+  );
 };
 
 /**
@@ -456,4 +459,9 @@ export const replacePluginIcon = (url: string) => {
     ?.replace("https://s3.us-east-2.amazonaws.com/assets.appsmith.com", "")
     ?.replace("https://assets.appsmith.com", "")
     ?.replace(/\.png$/g, ".svg");
+};
+
+// util function to detect current os is Mac
+export const isMacOs = () => {
+  return osName === "Mac OS";
 };

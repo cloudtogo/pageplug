@@ -1,34 +1,25 @@
-import React, { Component } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
-import { connect } from "react-redux";
-import { withRouter, RouteComponentProps, Route } from "react-router";
-import { Switch } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { withRouter, RouteComponentProps } from "react-router";
 import { AppState } from "reducers";
 import {
   AppViewerRouteParams,
   BuilderRouteParams,
   GIT_BRANCH_QUERY_KEY,
-  VIEWER_FORK_PATH,
-  VIEWER_PATH,
-  VIEWER_PATH_DEPRECATED,
 } from "constants/routes";
 import {
-  PageListPayload,
-  ReduxActionTypes,
-} from "constants/ReduxActionConstants";
-import { getIsInitialized } from "selectors/appViewSelectors";
+  getIsInitialized,
+  getAppViewHeaderHeight,
+} from "selectors/appViewSelectors";
 import { executeTrigger } from "actions/widgetActions";
 import { ExecuteTriggerPayload } from "constants/AppsmithActionConstants/ActionConstants";
-import {
-  BatchPropertyUpdatePayload,
-  batchUpdateWidgetProperty,
-  updateWidgetPropertyRequest,
-} from "actions/controlActions";
 import { EditorContext } from "components/editorComponents/EditorContextProvider";
 import AppViewerPageContainer from "./AppViewerPageContainer";
 import {
   resetChildrenMetaProperty,
-  updateWidgetMetaProperty,
+  syncUpdateWidgetMetaProperty,
+  triggerEvalOnMetaUpdate,
 } from "actions/metaActions";
 import { editorInitializer } from "utils/EditorUtils";
 import * as Sentry from "@sentry/react";
@@ -40,23 +31,36 @@ import {
 import AddCommentTourComponent from "comments/tour/AddCommentTourComponent";
 import CommentShowCaseCarousel from "comments/CommentsShowcaseCarousel";
 import { getThemeDetails, ThemeMode } from "selectors/themeSelectors";
-import { Theme } from "constants/DefaultTheme";
 import GlobalHotKeys from "./GlobalHotKeys";
 import TabBar from "components/designSystems/taro/TabBar";
 import PreviewQRCode from "./PreviewQRCode";
 import AppViewerLayout from "./viewer/AppViewerLayout";
 
+import webfontloader from "webfontloader";
 import { getSearchQuery } from "utils/helpers";
 import AppViewerCommentsSidebar from "./AppViewerComemntsSidebar";
+import { getSelectedAppTheme } from "selectors/appThemingSelectors";
+import { useSelector } from "react-redux";
+import BrandingBadge from "./BrandingBadge";
+import {
+  BatchPropertyUpdatePayload,
+  batchUpdateWidgetProperty,
+} from "actions/controlActions";
+import { setAppViewHeaderHeight } from "actions/appViewActions";
 import { showPostCompletionMessage } from "selectors/onboardingSelectors";
-
-const SentryRoute = Sentry.withSentryRouting(Route);
+import { fetchPublishedPage } from "actions/pageActions";
+import usePrevious from "utils/hooks/usePrevious";
+import { getIsBranchUpdated } from "../utils";
+import { APP_MODE } from "entities/App";
+import { initAppViewer } from "actions/initActions";
+import { getShowBrandingBadge } from "@appsmith/selectors/organizationSelectors";
 
 const AppViewerBody = styled.section<{
   showTabBar: boolean;
-  showGuidedTourMessage: boolean;
-  isEmbeded: boolean;
   isMobile: boolean;
+  hasPages: boolean;
+  headerHeight: number;
+  showGuidedTourMessage: boolean;
 }>`
   display: flex;
   flex-direction: row;
@@ -76,10 +80,14 @@ const ContainerWithComments = styled.div`
   background: ${(props) => props.theme.colors.artboard};
 `;
 
-const AppViewerBodyContainer = styled.div<{ width?: string }>`
+const AppViewerBodyContainer = styled.div<{
+  width?: string;
+  backgroundColor: string;
+}>`
   flex: 1;
   overflow: auto;
   margin: 0 auto;
+  background: ${({ backgroundColor }) => backgroundColor};
 `;
 
 const StableContainer = styled.div<{
@@ -91,200 +99,209 @@ const StableContainer = styled.div<{
     props.isMobile ? "radial-gradient(#2cbba633, #ffec8f36)" : "#fff"};
 `;
 
-export type AppViewerProps = {
-  initializeAppViewer: (params: {
-    applicationId?: string;
-    pageId?: string;
-    branch?: string;
-  }) => void;
-  isInitialized: boolean;
-  showGuidedTourMessage: boolean;
-  isInitializeError: boolean;
-  executeAction: (actionPayload: ExecuteTriggerPayload) => void;
-  updateWidgetProperty: (
-    widgetId: string,
-    propertyName: string,
-    propertyValue: any,
-  ) => void;
-  updateWidgetMetaProperty: (
-    widgetId: string,
-    propertyName: string,
-    propertyValue: any,
-  ) => void;
-  resetChildrenMetaProperty: (widgetId: string) => void;
-  pages: PageListPayload;
-  lightTheme: Theme;
-  inCloudOS: any;
-  showTabBar: boolean;
-  batchUpdateWidgetProperty: (
-    widgetId: string,
-    updates: BatchPropertyUpdatePayload,
-  ) => void;
-  isMobile: boolean;
-} & RouteComponentProps<BuilderRouteParams>;
+export type AppViewerProps = RouteComponentProps<BuilderRouteParams>;
 
 type Props = AppViewerProps & RouteComponentProps<AppViewerRouteParams>;
 
-class AppViewer extends Component<Props> {
-  public state = {
-    registered: false,
-    isSideNavOpen: true,
-  };
-  componentDidMount() {
+const DEFAULT_FONT_NAME = "System Default";
+
+function AppViewer(props: Props) {
+  const dispatch = useDispatch();
+  const { pathname, search } = props.location;
+  const { applicationId, pageId } = props.match.params;
+  const [registered, setRegistered] = useState(false);
+  const isInitialized = useSelector(getIsInitialized);
+  const pages = useSelector(getViewModePageList);
+  const selectedTheme = useSelector(getSelectedAppTheme);
+  const lightTheme = useSelector((state: AppState) =>
+    getThemeDetails(state, ThemeMode.LIGHT),
+  );
+  const showGuidedTourMessage = useSelector(showPostCompletionMessage);
+  const headerHeight = useSelector(getAppViewHeaderHeight);
+  const showBrandingBadge = useSelector(getShowBrandingBadge);
+  const branch = getSearchQuery(search, GIT_BRANCH_QUERY_KEY);
+  const prevValues = usePrevious({ branch, location: props.location, pageId });
+  const inCloudOS = useSelector(
+    (state: AppState) => state.entities.app.inCloudOS,
+  );
+  const showTabBar = useSelector(getShowTabBar);
+  const isMobile = useSelector(isMobileLayout);
+
+  /**
+   * initializes the widgets factory and registers all widgets
+   */
+  useEffect(() => {
     editorInitializer().then(() => {
-      this.setState({ registered: true });
+      setRegistered(true);
     });
 
-    const { applicationId, pageId } = this.props.match.params;
-    const {
-      location: { search },
-    } = this.props;
-    const branch = getSearchQuery(search, GIT_BRANCH_QUERY_KEY);
+    // onMount initPage
+    if (applicationId || pageId) {
+      dispatch(
+        initAppViewer({
+          applicationId,
+          branch,
+          pageId,
+          mode: APP_MODE.PUBLISHED,
+        }),
+      );
+    }
+  }, []);
 
-    this.props.initializeAppViewer({
-      branch: branch,
-      applicationId,
-      pageId,
-    });
-  }
+  /**
+   * initialize the app if branch, pageId or application is changed
+   */
+  useEffect(() => {
+    const prevBranch = prevValues?.branch;
+    const prevLocation = prevValues?.location;
+    const prevPageId = prevValues?.pageId;
+    let isBranchUpdated = false;
+    if (prevBranch && prevLocation) {
+      isBranchUpdated = getIsBranchUpdated(props.location, prevLocation);
+    }
 
-  componentDidUpdate(prevProps: Props) {
-    const { applicationId, pageId } = this.props.match.params;
-    const {
-      location: { search: prevSearch },
-    } = prevProps;
-    const {
-      location: { search },
-    } = this.props;
+    const isPageIdUpdated = pageId !== prevPageId;
 
-    const prevBranch = getSearchQuery(prevSearch, GIT_BRANCH_QUERY_KEY);
-    const branch = getSearchQuery(search, GIT_BRANCH_QUERY_KEY);
+    if (prevBranch && isBranchUpdated && (applicationId || pageId)) {
+      dispatch(
+        initAppViewer({
+          applicationId,
+          branch,
+          pageId,
+          mode: APP_MODE.PUBLISHED,
+        }),
+      );
+    } else {
+      /**
+       * First time load is handled by init sagas
+       * If we don't check for `prevPageId`: fetch page is retriggered
+       * when redirected to the default page
+       */
+      if (prevPageId && pageId && isPageIdUpdated) {
+        dispatch(fetchPublishedPage(pageId, true));
+      }
+    }
+  }, [branch, pageId, applicationId, pathname]);
 
-    if (branch && branch !== prevBranch && (applicationId || pageId)) {
-      this.props.initializeAppViewer({
-        applicationId,
-        pageId,
-        branch: branch,
+  useEffect(() => {
+    const header = document.querySelector(".js-appviewer-header");
+
+    dispatch(setAppViewHeaderHeight(header?.clientHeight || 0));
+  }, [pages.length, isInitialized]);
+
+  /**
+   * returns the font to be used for the canvas
+   */
+  const appFontFamily =
+    selectedTheme.properties.fontFamily.appFont === DEFAULT_FONT_NAME
+      ? "inherit"
+      : selectedTheme.properties.fontFamily.appFont;
+
+  /**
+   * loads font for canvas based on theme
+   */
+  useEffect(() => {
+    if (selectedTheme.properties.fontFamily.appFont !== DEFAULT_FONT_NAME) {
+      webfontloader.load({
+        google: {
+          families: [
+            `${selectedTheme.properties.fontFamily.appFont}:300,400,500,700`,
+          ],
+        },
       });
     }
-  }
 
-  toggleCollapse = (open: boolean) => {
-    this.setState({ isSideNavOpen: open });
-  };
+    document.body.style.fontFamily = appFontFamily;
+  }, [selectedTheme.properties.fontFamily.appFont]);
 
-  public render() {
-    const {
-      isInitialized,
-      location,
-      inCloudOS,
-      showTabBar,
-      isMobile,
-      showGuidedTourMessage,
-    } = this.props;
-    const isEmbeded = location.search.indexOf("embed=true") !== -1;
-    return (
-      <ThemeProvider theme={this.props.lightTheme}>
-        <GlobalHotKeys>
-          <EditorContext.Provider
-            value={{
-              executeAction: this.props.executeAction,
-              updateWidgetMetaProperty: this.props.updateWidgetMetaProperty,
-              resetChildrenMetaProperty: this.props.resetChildrenMetaProperty,
-              batchUpdateWidgetProperty: this.props.batchUpdateWidgetProperty,
-            }}
-          >
-            <AppViewerLayout>
-              <StableContainer isMobile={isMobile}>
-                <ContainerWithComments>
-                  <AppViewerCommentsSidebar />
-                  <AppViewerBodyContainer>
-                    <AppViewerBody
-                      showTabBar={showTabBar}
-                      isMobile={isMobile}
-                      isEmbeded={isEmbeded}
-                      showGuidedTourMessage={showGuidedTourMessage}
-                    >
-                      {isInitialized && this.state.registered && (
-                        <Switch>
-                          <SentryRoute
-                            component={AppViewerPageContainer}
-                            exact
-                            path={VIEWER_PATH}
-                          />
-                          <SentryRoute
-                            component={AppViewerPageContainer}
-                            exact
-                            path={VIEWER_PATH_DEPRECATED}
-                          />
-                          <SentryRoute
-                            component={AppViewerPageContainer}
-                            exact
-                            path={VIEWER_FORK_PATH}
-                          />
-                        </Switch>
-                      )}
-                    </AppViewerBody>
-                  </AppViewerBodyContainer>
-                </ContainerWithComments>
-                <AddCommentTourComponent />
-                <CommentShowCaseCarousel />
-                <TabBar />
-                <PreviewQRCode />
-              </StableContainer>
-            </AppViewerLayout>
-          </EditorContext.Provider>
-        </GlobalHotKeys>
-      </ThemeProvider>
-    );
-  }
+  /**
+   * callback for executing an action
+   */
+  const executeActionCallback = useCallback(
+    (actionPayload: ExecuteTriggerPayload) =>
+      dispatch(executeTrigger(actionPayload)),
+    [executeTrigger, dispatch],
+  );
+
+  /**
+   * callback for initializing app
+   */
+  const resetChildrenMetaPropertyCallback = useCallback(
+    (widgetId: string) => dispatch(resetChildrenMetaProperty(widgetId)),
+    [resetChildrenMetaProperty, dispatch],
+  );
+
+  /**
+   * callback for updating widget meta property in batch
+   */
+  const batchUpdateWidgetPropertyCallback = useCallback(
+    (widgetId: string, updates: BatchPropertyUpdatePayload) =>
+      dispatch(batchUpdateWidgetProperty(widgetId, updates)),
+    [batchUpdateWidgetProperty, dispatch],
+  );
+
+  /**
+   * callback for updating widget meta property
+   */
+  const syncUpdateWidgetMetaPropertyCallback = useCallback(
+    (widgetId: string, propertyName: string, propertyValue: unknown) =>
+      dispatch(
+        syncUpdateWidgetMetaProperty(widgetId, propertyName, propertyValue),
+      ),
+    [syncUpdateWidgetMetaProperty, dispatch],
+  );
+
+  /**
+   * callback for triggering evaluation
+   */
+  const triggerEvalOnMetaUpdateCallback = useCallback(
+    () => dispatch(triggerEvalOnMetaUpdate()),
+    [triggerEvalOnMetaUpdate, dispatch],
+  );
+
+  return (
+    <ThemeProvider theme={lightTheme}>
+      <GlobalHotKeys>
+        <EditorContext.Provider
+          value={{
+            executeAction: executeActionCallback,
+            resetChildrenMetaProperty: resetChildrenMetaPropertyCallback,
+            batchUpdateWidgetProperty: batchUpdateWidgetPropertyCallback,
+            syncUpdateWidgetMetaProperty: syncUpdateWidgetMetaPropertyCallback,
+            triggerEvalOnMetaUpdate: triggerEvalOnMetaUpdateCallback,
+          }}
+        >
+          <AppViewerLayout>
+            <StableContainer isMobile={isMobile}>
+              <ContainerWithComments>
+                <AppViewerCommentsSidebar />
+                <AppViewerBodyContainer
+                  backgroundColor={
+                    selectedTheme.properties.colors.backgroundColor
+                  }
+                >
+                  <AppViewerBody
+                    showTabBar={showTabBar}
+                    isMobile={isMobile}
+                    hasPages={pages.length > 1}
+                    headerHeight={headerHeight}
+                    showGuidedTourMessage={showGuidedTourMessage}
+                  >
+                    {isInitialized && registered && <AppViewerPageContainer />}
+                  </AppViewerBody>
+                  {showBrandingBadge && <BrandingBadge />}
+                </AppViewerBodyContainer>
+              </ContainerWithComments>
+              <AddCommentTourComponent />
+              <CommentShowCaseCarousel />
+              <TabBar />
+              <PreviewQRCode />
+            </StableContainer>
+          </AppViewerLayout>
+        </EditorContext.Provider>
+      </GlobalHotKeys>
+    </ThemeProvider>
+  );
 }
 
-const mapStateToProps = (state: AppState) => ({
-  isInitialized: getIsInitialized(state),
-  pages: getViewModePageList(state),
-  lightTheme: getThemeDetails(state, ThemeMode.LIGHT),
-  inCloudOS: state.entities.app.inCloudOS,
-  showTabBar: getShowTabBar(state),
-  showGuidedTourMessage: showPostCompletionMessage(state),
-  isMobile: isMobileLayout(state),
-});
-
-const mapDispatchToProps = (dispatch: any) => ({
-  executeAction: (actionPayload: ExecuteTriggerPayload) =>
-    dispatch(executeTrigger(actionPayload)),
-  updateWidgetProperty: (
-    widgetId: string,
-    propertyName: string,
-    propertyValue: any,
-  ) =>
-    dispatch(
-      updateWidgetPropertyRequest(widgetId, propertyName, propertyValue),
-    ),
-  updateWidgetMetaProperty: (
-    widgetId: string,
-    propertyName: string,
-    propertyValue: any,
-  ) =>
-    dispatch(updateWidgetMetaProperty(widgetId, propertyName, propertyValue)),
-  resetChildrenMetaProperty: (widgetId: string) =>
-    dispatch(resetChildrenMetaProperty(widgetId)),
-  initializeAppViewer: (params: {
-    applicationId?: string;
-    pageId?: string;
-    branch?: string;
-  }) => {
-    dispatch({
-      type: ReduxActionTypes.INITIALIZE_PAGE_VIEWER,
-      payload: params,
-    });
-  },
-  batchUpdateWidgetProperty: (
-    widgetId: string,
-    updates: BatchPropertyUpdatePayload,
-  ) => dispatch(batchUpdateWidgetProperty(widgetId, updates)),
-});
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(Sentry.withProfiler(AppViewer)),
-);
+export default withRouter(Sentry.withProfiler(AppViewer));

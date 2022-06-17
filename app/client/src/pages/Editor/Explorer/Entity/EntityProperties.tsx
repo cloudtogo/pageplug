@@ -14,10 +14,10 @@ import { getPropsForJSActionEntity } from "utils/autocomplete/EntityDefinitions"
 import { isEmpty } from "lodash";
 import { getCurrentPageId } from "selectors/editorSelectors";
 import classNames from "classnames";
-import { JSCollection } from "entities/JSCollection";
 import styled from "styled-components";
 import { ControlIcons } from "icons/ControlIcons";
-import { ReduxActionTypes } from "constants/ReduxActionConstants";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { JSCollectionData } from "reducers/entityReducers/jsActionsReducer";
 
 const CloseIcon = ControlIcons.CLOSE_CONTROL;
 
@@ -30,8 +30,6 @@ const EntityInfoContainer = styled.div`
   max-width: 400px;
   max-height: ${BindingContainerMaxHeight}px;
   overflow-y: hidden;
-  border: 1px solid rgba(229, 231, 235, var(--tw-border-opacity));
-  box-shadow: 4px 0px 10px 2px #ebebeb;
 `;
 
 const selectEntityInfo = (state: AppState) => state.ui.explorer.entityInfo;
@@ -122,15 +120,15 @@ export function EntityProperties() {
   if (!entity) return null;
   switch (entityType) {
     case ENTITY_TYPE.JSACTION:
-      const jsAction = entity.config as JSCollection;
-      const properties = getPropsForJSActionEntity(jsAction);
+      const jsCollection = entity as JSCollectionData;
+      const properties = getPropsForJSActionEntity(jsCollection);
       if (properties) {
         entityProperties = Object.keys(properties).map(
           (actionProperty: string) => {
             const value = properties[actionProperty];
             return {
               propertyName: actionProperty,
-              entityName: jsAction.name,
+              entityName: jsCollection.config.name,
               value: value,
             };
           },
@@ -199,7 +197,7 @@ export function EntityProperties() {
   return (
     <EntityInfoContainer
       className={classNames({
-        "absolute overflow-y-auto overflow-x-hidden bg-white pb-4 flex flex-col justify-center z-10 delay-150 transition-all": true,
+        "absolute bp3-popover overflow-y-auto overflow-x-hidden bg-white pb-4 flex flex-col justify-center z-10 delay-150 transition-all": true,
         "-left-100": !show,
       })}
       ref={ref}

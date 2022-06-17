@@ -11,7 +11,7 @@ import {
   WINDOW_OBJECT_PROPERTIES,
 } from "constants/WidgetValidation";
 import { GLOBAL_FUNCTIONS } from "./autocomplete/EntityDefinitions";
-import { get, set } from "lodash";
+import { get, set, isNil } from "lodash";
 import { Org } from "constants/orgConstants";
 import {
   isPermitted,
@@ -606,6 +606,28 @@ export function getLogToSentryFromResponse(response?: ApiResponse) {
   return response && response?.responseMeta?.status >= 500;
 }
 
+const BLACKLIST_COLORS = ["#ffffff"];
+const HEX_REGEX = /#[0-9a-fA-F]{6}/gi;
+const RGB_REGEX = /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)/gi;
+
+/**
+ * extract colors from string
+ *
+ * @param text
+ * @returns
+ */
+export function extractColorsFromString(text: string) {
+  const colors = new Set();
+
+  [...(text.match(RGB_REGEX) || []), ...(text.match(HEX_REGEX) || [])]
+    .filter((d) => BLACKLIST_COLORS.indexOf(d.toLowerCase()) === -1)
+    .forEach((color) => {
+      colors.add(color.toLowerCase());
+    });
+
+  return Array.from(colors) as Array<string>;
+}
+
 /*
  *  Function to merge property pane config of a widget
  *
@@ -665,6 +687,15 @@ export const captureInvalidDynamicBindingPath = (
   return currentDSL;
 };
 
+/*
+ * Check if a value is null / undefined / empty string
+ *
+ * @param value: any
+ */
+export const isEmptyOrNill = (value: any) => {
+  return isNil(value) || (isString(value) && value === "");
+};
+
 export const isURLDeprecated = (url: string) => {
   return !!matchPath(url, {
     path: [
@@ -701,6 +732,8 @@ export const getUpdatedRoute = (
 
 export const updateSlugNamesInURL = (params: Record<string, string>) => {
   const { pathname, search } = window.location;
+  // Do not update old URLs
+  if (isURLDeprecated(pathname)) return;
   const newURL = getUpdatedRoute(pathname, params);
   history.replace(newURL + search);
 };

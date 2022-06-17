@@ -1,5 +1,5 @@
 import { Icon } from "@blueprintjs/core";
-import { ReduxActionTypes } from "constants/ReduxActionConstants";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { useIsWidgetActionConnectionPresent } from "pages/Editor/utils";
 import React, { SyntheticEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,7 +33,6 @@ import {
   ONBOARDING_STATUS_STEPS_THIRD_ALT,
 } from "@appsmith/constants/messages";
 import { getTypographyByKey } from "constants/DefaultTheme";
-
 import { Colors } from "constants/Colors";
 import { onboardingCheckListUrl } from "RouteBuilder";
 

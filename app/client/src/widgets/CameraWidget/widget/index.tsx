@@ -142,6 +142,33 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
           },
         ],
       },
+      {
+        sectionName: "Styles",
+        children: [
+          {
+            propertyName: "borderRadius",
+            label: "Border Radius",
+            helpText:
+              "Rounds the corners of the icon button's outer border edge",
+            controlType: "BORDER_RADIUS_OPTIONS",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+          {
+            propertyName: "boxShadow",
+            label: "Box Shadow",
+            helpText:
+              "Enables you to cast a drop shadow from the frame of the widget",
+            controlType: "BOX_SHADOW_OPTIONS",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+        ],
+      },
     ];
   }
 
@@ -160,10 +187,10 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
       imageDataURL: undefined,
       imageRawBinary: undefined,
       mediaCaptureStatus: MediaCaptureStatusTypes.IMAGE_DEFAULT,
-      timer: undefined,
       videoBlobURL: undefined,
       videoDataURL: undefined,
       videoRawBinary: undefined,
+      isDirty: false,
     };
   }
 
@@ -191,6 +218,8 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
 
     return (
       <CameraComponent
+        borderRadius={this.props.borderRadius}
+        boxShadow={this.props.boxShadow}
         disabled={isDisabled}
         height={height}
         mirrored={isMirrored}
@@ -215,6 +244,11 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
       this.props.updateWidgetMetaProperty("imageRawBinary", undefined);
       return;
     }
+    // Set isDirty to true when an image is caputured
+    if (!this.props.isDirty) {
+      this.props.updateWidgetMetaProperty("isDirty", true);
+    }
+
     const base64Data = image.split(",")[1];
     const imageBlob = base64ToBlob(base64Data, "image/webp");
     const blobURL = URL.createObjectURL(imageBlob);
@@ -251,6 +285,10 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
   };
 
   handleRecordingStart = () => {
+    if (!this.props.isDirty) {
+      this.props.updateWidgetMetaProperty("isDirty", true);
+    }
+
     if (this.props.onRecordingStart) {
       super.executeAction({
         triggerPropertyName: "onRecordingStart",
@@ -319,6 +357,9 @@ export interface CameraWidgetProps extends WidgetProps {
   onRecordingStop?: string;
   onVideoSave?: string;
   videoBlobURL?: string;
+  borderRadius: string;
+  boxShadow: string;
+  isDirty: boolean;
 }
 
 export default CameraWidget;

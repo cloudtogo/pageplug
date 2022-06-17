@@ -5,6 +5,8 @@ import Widget from "./widget";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "Circular Progress",
+  hideCard: true,
+  isDeprecated: true,
   iconSVG: IconSVG,
   defaults: {
     counterClockWise: false,

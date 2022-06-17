@@ -3,7 +3,7 @@ import {
   ReduxAction,
   EvaluationReduxAction,
   ReduxActionErrorTypes,
-} from "constants/ReduxActionConstants";
+} from "@appsmith/constants/ReduxActionConstants";
 import { JSCollection } from "entities/JSCollection";
 import { CreateJSCollectionRequest } from "api/JSActionAPI";
 
@@ -131,6 +131,12 @@ export const fetchJSCollectionsForPageSuccess = (actions: JSCollection[]) => {
   return {
     type: ReduxActionTypes.FETCH_JS_ACTIONS_FOR_PAGE_SUCCESS,
     payload: actions,
+  };
+};
+
+export const fetchJSCollectionsForPageError = () => {
+  return {
+    type: ReduxActionErrorTypes.FETCH_JS_ACTIONS_FOR_PAGE_ERROR,
   };
 };
 

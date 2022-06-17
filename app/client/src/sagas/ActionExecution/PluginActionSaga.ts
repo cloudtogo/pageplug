@@ -11,7 +11,7 @@ import {
   ReduxAction,
   ReduxActionErrorTypes,
   ReduxActionTypes,
-} from "constants/ReduxActionConstants";
+} from "@appsmith/constants/ReduxActionConstants";
 import ActionAPI, {
   ActionExecutionResponse,
   ActionResponse,
@@ -21,6 +21,7 @@ import ActionAPI, {
 import {
   getAction,
   getCurrentPageNameByActionId,
+  getPlugin,
   isActionDirty,
   isActionSaving,
   getJSCollection,
@@ -91,7 +92,6 @@ import {
 } from "sagas/ActionExecution/errorUtils";
 import { trimQueryString } from "utils/helpers";
 import { JSCollection } from "entities/JSCollection";
-import { executeJSFunction } from "actions/jsPaneActions";
 import {
   executeAppAction,
   TriggerMeta,
@@ -103,6 +103,9 @@ import { CURL_IMPORT_FORM } from "constants/forms";
 import { submitCurlImportForm } from "actions/importActions";
 import { getBasePath } from "pages/Editor/Explorer/helpers";
 import { isTrueObject } from "workers/evaluationUtils";
+import { handleExecuteJSFunctionSaga } from "sagas/JSPaneSagas";
+import { Plugin } from "api/PluginApi";
+import { setDefaultActionDisplayFormat } from "./PluginActionSagaUtils";
 
 enum ActionResponseDataTypes {
   BINARY = "BINARY",
@@ -245,10 +248,13 @@ function* evaluateActionParams(
       }
     }
 
-    if (typeof value === "object") value = JSON.stringify(value);
+    if (typeof value === "object") {
+      value = JSON.stringify(value);
+    }
     if (isBlobUrl(value)) {
       value = yield call(readBlob, value);
     }
+    value = new Blob([value], { type: "text/plain" });
 
     formData.append(encodeURIComponent(key), value);
   }
@@ -601,13 +607,31 @@ function* executeOnPageLoadJSAction(pageAction: PageAction) {
     );
     const jsAction = collection.actions.find((d) => d.id === pageAction.id);
     if (!!jsAction) {
-      yield put(
-        executeJSFunction({
-          collectionName: collection.name,
-          action: jsAction,
-          collectionId: collectionId,
-        }),
-      );
+      if (jsAction.confirmBeforeExecute) {
+        const modalPayload = {
+          name: pageAction.name,
+          modalOpen: true,
+          modalType: ModalType.RUN_ACTION,
+        };
+
+        const confirmed = yield call(
+          requestModalConfirmationSaga,
+          modalPayload,
+        );
+        if (!confirmed) {
+          yield put({
+            type: ReduxActionTypes.RUN_ACTION_CANCELLED,
+            payload: { id: pageAction.id },
+          });
+          throw new UserCancelledActionExecutionError();
+        }
+      }
+      const data = {
+        collectionName: collection.name,
+        action: jsAction,
+        collectionId: collectionId,
+      };
+      yield call(handleExecuteJSFunctionSaga, data);
     }
   }
 }
@@ -750,7 +774,7 @@ function* executePluginActionSaga(
     pluginAction = yield select(getAction, actionOrActionId);
     actionId = actionOrActionId;
   } else {
-    pluginAction = actionOrActionId;
+    pluginAction = yield select(getAction, actionOrActionId.id);
     actionId = actionOrActionId.id;
   }
 
@@ -806,12 +830,21 @@ function* executePluginActionSaga(
   try {
     yield validateResponse(response);
     const payload = createActionExecutionResponse(response);
+
     yield put(
       executePluginActionSuccess({
         id: actionId,
         response: payload,
       }),
     );
+    let plugin: Plugin | undefined;
+    if (!!pluginAction.pluginId) {
+      plugin = yield select(getPlugin, pluginAction.pluginId);
+    }
+
+    // sets the default display format for action response e.g Raw, Json or Table
+    yield setDefaultActionDisplayFormat(actionId, plugin, payload);
+
     return {
       payload,
       isError: isErrorResponse(response),

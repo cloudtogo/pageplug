@@ -1,10 +1,15 @@
-import { ReduxActionTypes, ReduxAction } from "constants/ReduxActionConstants";
+import { APP_MODE } from "entities/App";
+import {
+  ReduxActionTypes,
+  ReduxAction,
+} from "@appsmith/constants/ReduxActionConstants";
 
 export type InitializeEditorPayload = {
   applicationId?: string;
   pageId?: string;
   branch?: string;
   queryParams?: any;
+  mode: APP_MODE;
 };
 
 export const initEditor = (
@@ -12,6 +17,28 @@ export const initEditor = (
 ): ReduxAction<InitializeEditorPayload> => ({
   type: ReduxActionTypes.INITIALIZE_EDITOR,
   payload,
+});
+
+export type InitAppViewerPayload = {
+  branch: string;
+  applicationId: string;
+  pageId: string;
+  mode: APP_MODE;
+};
+
+export const initAppViewer = ({
+  applicationId,
+  branch,
+  mode,
+  pageId,
+}: InitAppViewerPayload) => ({
+  type: ReduxActionTypes.INITIALIZE_PAGE_VIEWER,
+  payload: {
+    branch: branch,
+    applicationId,
+    pageId,
+    mode,
+  },
 });
 
 export const resetEditorRequest = () => ({

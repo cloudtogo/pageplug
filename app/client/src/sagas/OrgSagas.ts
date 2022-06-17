@@ -4,7 +4,7 @@ import {
   ReduxAction,
   ReduxActionErrorTypes,
   ReduxActionWithPromise,
-} from "constants/ReduxActionConstants";
+} from "@appsmith/constants/ReduxActionConstants";
 import {
   validateResponse,
   callAPI,
@@ -27,7 +27,7 @@ import OrgApi, {
 import { ApiResponse } from "api/ApiResponses";
 import { Toaster } from "components/ads/Toast";
 import { Variant } from "components/ads/common";
-import { getCurrentOrg } from "selectors/organizationSelectors";
+import { getCurrentOrg } from "@appsmith/selectors/organizationSelectors";
 import { getCurrentUser } from "selectors/usersSelectors";
 import { Org } from "constants/orgConstants";
 import history from "utils/history";
@@ -258,8 +258,8 @@ export function* createOrgSaga(
     }
 
     // get created org in focus
-    const slug = response.data.slug;
-    history.push(`${window.location.pathname}#${slug}`);
+    const orgId = response.data.id;
+    history.push(`${window.location.pathname}#${orgId}`);
   } catch (error) {
     yield call(reject, { _error: error.message });
     yield put({

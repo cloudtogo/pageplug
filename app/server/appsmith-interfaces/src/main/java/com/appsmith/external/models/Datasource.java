@@ -28,6 +28,11 @@ public class Datasource extends BaseDomain {
 
     String pluginId;
 
+    // name of the plugin. used to log analytics events where pluginName is a required attribute
+    // It'll be null if not set
+    @Transient
+    String pluginName;
+
     String organizationId;
 
     String templateName;
@@ -65,6 +70,9 @@ public class Datasource extends BaseDomain {
      * which are not configured. This way user can configure those datasource, which may have been introduced as part of git import.
      */
     Boolean isConfigured;
+
+    @Transient
+    Boolean isRecentlyCreated;
 
     /**
      * This method is here so that the JSON version of this class' instances have a `isValid` field, for backwards

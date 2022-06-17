@@ -4,7 +4,7 @@ import {
   ReduxActionWithPromise,
   ReduxActionTypes,
   ReduxActionErrorTypes,
-} from "constants/ReduxActionConstants";
+} from "@appsmith/constants/ReduxActionConstants";
 import { reset } from "redux-form";
 import UserApi, {
   CreateUserRequest,
@@ -14,11 +14,9 @@ import UserApi, {
   TokenPasswordUpdateRequest,
   UpdateUserRequest,
   LeaveOrgRequest,
-} from "api/UserApi";
+} from "@appsmith/api/UserApi";
 import {
-  APPLICATIONS_URL,
   AUTH_LOGIN_URL,
-  BASE_URL,
   matchBuilderPath,
   SETUP,
 } from "constants/routes";
@@ -38,7 +36,6 @@ import {
   invitedUserSignupSuccess,
   fetchFeatureFlagsSuccess,
   fetchFeatureFlagsError,
-  fetchFeatureFlagsInit,
 } from "actions/userActions";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { INVITE_USERS_TO_ORG_FORM } from "constants/forms";
@@ -138,11 +135,6 @@ export function* getCurrentUserSaga() {
         }
         AnalyticsUtil.identifyUser(response.data);
         enableTelemetry && AnalyticsUtil.identifyUser(response.data);
-        // make fetch feature call only if logged in
-        yield put(fetchFeatureFlagsInit());
-      } else {
-        // reset the flagsFetched flag
-        yield put(fetchFeatureFlagsSuccess());
       }
       yield put({
         type: ReduxActionTypes.FETCH_USER_DETAILS_SUCCESS,
@@ -150,12 +142,6 @@ export function* getCurrentUserSaga() {
       });
       if (response.data.emptyInstance) {
         history.replace(SETUP);
-      } else if (window.location.pathname === BASE_URL) {
-        if (response.data.isAnonymous) {
-          history.replace(AUTH_LOGIN_URL);
-        } else {
-          history.replace(APPLICATIONS_URL);
-        }
       }
       PerformanceTracker.stopAsyncTracking(
         PerformanceTransactionName.USER_ME_API,
@@ -174,7 +160,7 @@ export function* getCurrentUserSaga() {
     });
 
     yield put({
-      type: ReduxActionTypes.SAFE_CRASH_APPSMITH,
+      type: ReduxActionTypes.SAFE_CRASH_APPSMITH_REQUEST,
       payload: {
         code: ERROR_CODES.SERVER_ERROR,
       },
@@ -454,8 +440,7 @@ function* fetchFeatureFlags() {
     const response: ApiResponse = yield call(UserApi.fetchFeatureFlags);
     const isValidResponse: boolean = yield validateResponse(response);
     if (isValidResponse) {
-      (window as any).FEATURE_FLAGS = response.data;
-      yield put(fetchFeatureFlagsSuccess());
+      yield put(fetchFeatureFlagsSuccess(response.data));
     }
   } catch (error) {
     log.error(error);
