@@ -3,7 +3,7 @@ import {
   ReduxActionTypes,
   ReduxActionErrorTypes,
   ReduxAction,
-} from "constants/ReduxActionConstants";
+} from "@appsmith/constants/ReduxActionConstants";
 import log from "loglevel";
 import history from "utils/history";
 import { ApiResponse } from "api/ApiResponses";
@@ -28,7 +28,7 @@ import {
 } from "@appsmith/constants/messages";
 
 import * as Sentry from "@sentry/react";
-import { axiosConnectionAbortedCode } from "../api/ApiUtils";
+import { axiosConnectionAbortedCode } from "api/ApiUtils";
 
 /**
  * making with error message with action name
@@ -238,7 +238,9 @@ function* safeCrashSagaRequest(action: ReduxAction<{ code?: string }>) {
     get(user, "email") === ANONYMOUS_USERNAME &&
     code === ERROR_CODES.PAGE_NOT_FOUND
   ) {
-    window.location.href = `${AUTH_LOGIN_URL}?redirectUrl=${window.location.href}`;
+    window.location.href = `${AUTH_LOGIN_URL}?redirectUrl=${encodeURIComponent(
+      window.location.href,
+    )}`;
 
     return false;
   }

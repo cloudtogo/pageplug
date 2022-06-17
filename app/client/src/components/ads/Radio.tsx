@@ -18,6 +18,9 @@ export type RadioProps = CommonComponentProps & {
   onSelect?: (value: string) => void;
   options: OptionProps[];
   backgroundColor?: string;
+  // To prevent interference when there are multiple radio groups,
+  // options corresponding to the same radio should have same name, which is different from others.
+  name?: string;
 };
 
 const RadioGroup = styled.div<{

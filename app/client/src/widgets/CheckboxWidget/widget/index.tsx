@@ -5,7 +5,8 @@ import CheckboxComponent from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { DerivedPropertiesMap } from "utils/WidgetFactory";
-import { AlignWidget } from "widgets/constants";
+import { LabelPosition } from "components/constants";
+import { AlignWidgetTypes } from "widgets/constants";
 
 class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
@@ -23,6 +24,43 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
           },
+          {
+            helpText: "Sets the label position of the widget",
+            propertyName: "labelPosition",
+            label: "Position",
+            controlType: "DROP_DOWN",
+            options: [
+              { label: "Left", value: LabelPosition.Left },
+              { label: "Right", value: LabelPosition.Right },
+            ],
+            isBindProperty: false,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+          {
+            propertyName: "alignWidget",
+            helpText: "Sets the alignment of the widget",
+            label: "Alignment",
+            controlType: "LABEL_ALIGNMENT_OPTIONS",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            options: [
+              {
+                icon: "LEFT_ALIGN",
+                value: AlignWidgetTypes.LEFT,
+              },
+              {
+                icon: "RIGHT_ALIGN",
+                value: AlignWidgetTypes.RIGHT,
+              },
+            ],
+            validation: { type: ValidationTypes.TEXT },
+          },
+        ],
+      },
+      {
+        sectionName: "General",
+        children: [
           {
             propertyName: "defaultCheckedState",
             label: "默认选中",
@@ -74,37 +112,125 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
             isTriggerProperty: false,
             validation: { type: ValidationTypes.BOOLEAN },
           },
-          {
-            propertyName: "alignWidget",
-            helpText: "组件对齐方式",
-            label: "对齐方式",
-            controlType: "DROP_DOWN",
-            options: [
-              {
-                label: "左对齐",
-                value: "LEFT",
-              },
-              {
-                label: "右对齐",
-                value: "RIGHT",
-              },
-            ],
-            isBindProperty: true,
-            isTriggerProperty: false,
-          },
         ],
       },
       {
-        sectionName: "动作",
+        sectionName: "Events",
         children: [
           {
-            helpText: "当选中状态变化时触发",
+            helpText: "Triggers an action when the check state is changed",
             propertyName: "onCheckChange",
             label: "onCheckChange",
             controlType: "ACTION_SELECTOR",
             isJSConvertible: true,
             isBindProperty: true,
             isTriggerProperty: true,
+          },
+        ],
+      },
+      {
+        sectionName: "Label Styles",
+        children: [
+          {
+            propertyName: "labelTextColor",
+            label: "Text Color",
+            controlType: "COLOR_PICKER",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: {
+              type: ValidationTypes.TEXT,
+              params: {
+                regex: /^(?![<|{{]).+/,
+              },
+            },
+          },
+          {
+            propertyName: "labelTextSize",
+            label: "Text Size",
+            controlType: "DROP_DOWN",
+            defaultValue: "0.875rem",
+            options: [
+              {
+                label: "S",
+                value: "0.875rem",
+                subText: "0.875rem",
+              },
+              {
+                label: "M",
+                value: "1rem",
+                subText: "1rem",
+              },
+              {
+                label: "L",
+                value: "1.25rem",
+                subText: "1.25rem",
+              },
+              {
+                label: "XL",
+                value: "1.875rem",
+                subText: "1.875rem",
+              },
+              {
+                label: "XXL",
+                value: "3rem",
+                subText: "3rem",
+              },
+              {
+                label: "3XL",
+                value: "3.75rem",
+                subText: "3.75rem",
+              },
+            ],
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+          {
+            propertyName: "labelStyle",
+            label: "Label Font Style",
+            controlType: "BUTTON_TABS",
+            options: [
+              {
+                icon: "BOLD_FONT",
+                value: "BOLD",
+              },
+              {
+                icon: "ITALICS_FONT",
+                value: "ITALIC",
+              },
+            ],
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+        ],
+      },
+      {
+        sectionName: "Styles",
+        children: [
+          {
+            propertyName: "accentColor",
+            helpText: "Sets the checked state color of the checkbox",
+            label: "Accent Color",
+            controlType: "COLOR_PICKER",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+          {
+            propertyName: "borderRadius",
+            label: "Border Radius",
+            helpText:
+              "Rounds the corners of the icon button's outer border edge",
+            controlType: "BORDER_RADIUS_OPTIONS",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
           },
         ],
       },
@@ -127,19 +253,35 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       isChecked: undefined,
+      isDirty: false,
     };
+  }
+
+  componentDidUpdate(prevProps: CheckboxWidgetProps) {
+    if (
+      this.props.defaultCheckedState !== prevProps.defaultCheckedState &&
+      this.props.isDirty
+    ) {
+      this.props.updateWidgetMetaProperty("isDirty", false);
+    }
   }
 
   getPageView() {
     return (
       <CheckboxComponent
+        accentColor={this.props.accentColor}
         alignWidget={this.props.alignWidget}
+        borderRadius={this.props.borderRadius}
         isChecked={!!this.props.isChecked}
         isDisabled={this.props.isDisabled}
         isLoading={this.props.isLoading}
         isRequired={this.props.isRequired}
         key={this.props.widgetId}
         label={this.props.label}
+        labelPosition={this.props.labelPosition}
+        labelStyle={this.props.labelStyle}
+        labelTextColor={this.props.labelTextColor}
+        labelTextSize={this.props.labelTextSize}
         onCheckChange={this.onCheckChange}
         rowSpace={this.props.parentRowSpace}
         widgetId={this.props.widgetId}
@@ -148,6 +290,10 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
   }
 
   onCheckChange = (isChecked: boolean) => {
+    if (!this.props.isDirty) {
+      this.props.updateWidgetMetaProperty("isDirty", true);
+    }
+
     this.props.updateWidgetMetaProperty("isChecked", isChecked, {
       triggerPropertyName: "onCheckChange",
       dynamicString: this.props.onCheckChange,
@@ -169,7 +315,13 @@ export interface CheckboxWidgetProps extends WidgetProps {
   isDisabled?: boolean;
   onCheckChange?: string;
   isRequired?: boolean;
-  alignWidget: AlignWidget;
+  accentColor: string;
+  borderRadius: string;
+  alignWidget: AlignWidgetTypes;
+  labelPosition: LabelPosition;
+  labelTextColor?: string;
+  labelTextSize?: string;
+  labelStyle?: string;
 }
 
 export default CheckboxWidget;

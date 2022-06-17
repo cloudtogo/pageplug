@@ -5,7 +5,7 @@ import {
   getAllRoles,
   getCurrentOrg,
   getOrgLoadingStates,
-} from "selectors/organizationSelectors";
+} from "@appsmith/selectors/organizationSelectors";
 import PageSectionHeader from "pages/common/PageSectionHeader";
 import OrgInviteUsersForm from "pages/organization/OrgInviteUsersForm";
 import { RouteComponentProps } from "react-router";
@@ -383,7 +383,7 @@ export default function MemberSettings(props: PageProps) {
                   <UserCard key={index}>
                     <ProfileImage
                       className="avatar"
-                      side={71}
+                      size={71}
                       source={`/api/${USER_PHOTO_URL}/${user.username}`}
                       userName={user.name || user.username}
                     />

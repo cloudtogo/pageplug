@@ -1,9 +1,10 @@
-import React, { createRef, useEffect, useState } from "react";
+import React, { createRef, memo, useEffect, useState } from "react";
 import { Tooltip } from "@blueprintjs/core";
 import { CellWrapper, ColumnWrapper } from "./TableStyledWrappers";
 import { CellLayoutProperties, ColumnTypes } from "./Constants";
 import { ReactComponent as OpenNewTabIcon } from "assets/icons/control/open-new-tab.svg";
 import styled from "styled-components";
+import isEqual from "fast-deep-equal";
 
 const TooltipContentWrapper = styled.div<{ width: number }>`
   word-break: break-all;
@@ -12,8 +13,14 @@ const TooltipContentWrapper = styled.div<{ width: number }>`
 
 export const OpenNewTabIconWrapper = styled.div`
   left: 4px;
-  top: 2px;
+  height: 28px;
+  align-items: center;
   position: relative;
+`;
+
+export const Content = styled.span`
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 interface Props {
@@ -37,20 +44,21 @@ function LinkWrapper(props: Props) {
     } else {
       updateToolTip(false);
     }
-  }, [ref]);
+  }, [props.children, ref.current]);
   return (
     <CellWrapper
       cellProperties={props.cellProperties}
       isCellVisible={props.isCellVisible}
       isHidden={props.isHidden}
       isHyperLink
+      isPadding
       isTextType
       onClick={() => {
         window.open(props.title, "_blank");
       }}
       useLinkToolTip={useToolTip}
     >
-      <div className="link-text" ref={ref}>
+      <div className="link-text">
         {useToolTip && props.children ? (
           <Tooltip
             autoFocus={false}
@@ -62,10 +70,10 @@ function LinkWrapper(props: Props) {
             hoverOpenDelay={1000}
             position="top"
           >
-            {props.children}
+            {<Content ref={ref}>{props.children}</Content>}
           </Tooltip>
         ) : (
-          props.children
+          <Content ref={ref}>{props.children}</Content>
         )}
       </div>
       <OpenNewTabIconWrapper className="hidden-icon">
@@ -85,7 +93,7 @@ function AutoToolTipComponent(props: Props) {
     } else {
       updateToolTip(false);
     }
-  }, [ref]);
+  }, [props.children, ref.current]);
   if (props.columnType === ColumnTypes.URL && props.title) {
     return <LinkWrapper {...props} />;
   }
@@ -97,7 +105,6 @@ function AutoToolTipComponent(props: Props) {
         isHidden={props.isHidden}
         isPadding={!props.noPadding}
         isTextType
-        ref={ref}
       >
         {useToolTip && props.children ? (
           <Tooltip
@@ -110,15 +117,24 @@ function AutoToolTipComponent(props: Props) {
             hoverOpenDelay={1000}
             position="top"
           >
-            {props.children}
+            <Content ref={ref}>{props.children}</Content>
           </Tooltip>
         ) : (
-          props.children
+          <Content ref={ref}>{props.children}</Content>
         )}
       </CellWrapper>
-      {useToolTip && props.children && "..."}
     </ColumnWrapper>
   );
 }
-
-export default AutoToolTipComponent;
+export default memo(
+  AutoToolTipComponent,
+  (prev, next) =>
+    isEqual(prev.cellProperties, next.cellProperties) &&
+    prev.isHidden === next.isHidden &&
+    prev.isCellVisible === next.isCellVisible &&
+    prev.noPadding === next.noPadding &&
+    prev.children === next.children &&
+    prev.title === next.title &&
+    prev.tableWidth === next.tableWidth &&
+    prev.columnType === next.columnType,
+);

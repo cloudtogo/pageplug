@@ -1,12 +1,19 @@
 /* eslint-disable  @typescript-eslint/ban-ts-comment */
 import _ from "lodash";
 import { put, debounce, takeEvery, all } from "redux-saga/effects";
-import { ReduxAction, ReduxActionTypes } from "constants/ReduxActionConstants";
+import {
+  ReduxAction,
+  ReduxActionTypes,
+} from "@appsmith/constants/ReduxActionConstants";
 import { batchActionSuccess } from "actions/batchActions";
 import * as log from "loglevel";
 
 const BATCH_PRIORITY = {
-  [ReduxActionTypes.SET_META_PROP]: {
+  [ReduxActionTypes.META_UPDATE_DEBOUNCED_EVAL]: {
+    priority: 0,
+    needsSaga: false,
+  },
+  [ReduxActionTypes.SET_META_PROP_AND_EVAL]: {
     priority: 0,
     needsSaga: false,
   },

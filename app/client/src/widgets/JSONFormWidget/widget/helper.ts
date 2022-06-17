@@ -1,6 +1,7 @@
 import equal from "fast-deep-equal/es6";
 import { difference, isEmpty } from "lodash";
 import log from "loglevel";
+import AnalyticsUtil from "utils/AnalyticsUtil";
 
 import { isDynamicValue } from "utils/DynamicBindingUtils";
 import { MetaInternalFieldState } from ".";
@@ -8,6 +9,7 @@ import {
   ARRAY_ITEM_KEY,
   AUTO_JS_ENABLED_FIELDS,
   FieldState,
+  FieldThemeStylesheet,
   FieldType,
   JSON,
   MAX_ALLOWED_FIELDS,
@@ -30,7 +32,7 @@ type MetaFieldState = FieldState<FieldStateItem>;
 type PathList = Array<{ key: string }>;
 type ComputedSchema = {
   status: ComputedSchemaStatus;
-  schema?: Schema;
+  schema: Schema;
   dynamicPropertyPathList?: PathList;
 };
 
@@ -40,6 +42,7 @@ type ComputeSchemaProps = {
   prevSchema?: Schema;
   widgetName: string;
   currentDynamicPropertyPathList?: PathList;
+  fieldThemeStylesheets?: FieldThemeStylesheet;
 };
 
 export enum ComputedSchemaStatus {
@@ -250,7 +253,8 @@ const computeDynamicPropertyPathList = (
 export const computeSchema = ({
   currentDynamicPropertyPathList,
   currSourceData,
-  prevSchema,
+  fieldThemeStylesheets,
+  prevSchema = {},
   prevSourceData,
   widgetName,
 }: ComputeSchemaProps): ComputedSchema => {
@@ -258,19 +262,36 @@ export const computeSchema = ({
   if (isEmpty(currSourceData) || equal(prevSourceData, currSourceData)) {
     return {
       status: ComputedSchemaStatus.UNCHANGED,
+      schema: prevSchema,
     };
   }
 
   const count = countFields(currSourceData);
   if (count > MAX_ALLOWED_FIELDS) {
+    AnalyticsUtil.logEvent("WIDGET_PROPERTY_UPDATE", {
+      widgetType: "JSON_FORM_WIDGET",
+      widgetName,
+      propertyName: "sourceData",
+      updatedValue: currSourceData,
+      metaInfo: {
+        limitExceeded: true,
+        currentLimit: MAX_ALLOWED_FIELDS,
+      },
+    });
+
     return {
       status: ComputedSchemaStatus.LIMIT_EXCEEDED,
+      schema: prevSchema,
     };
   }
 
   const start = performance.now();
 
-  const schema = SchemaParser.parse(widgetName, currSourceData, prevSchema);
+  const schema = SchemaParser.parse(widgetName, {
+    fieldThemeStylesheets,
+    currSourceData,
+    schema: prevSchema,
+  });
 
   log.debug(
     "JSONForm widget schema parsing took",

@@ -12,10 +12,11 @@ import {
   ReduxAction,
   ReduxActionTypes,
   ReduxActionErrorTypes,
-} from "constants/ReduxActionConstants";
+} from "@appsmith/constants/ReduxActionConstants";
 import {
   getCurrentApplicationId,
   getCurrentPageId,
+  getIsSavingEntity,
 } from "selectors/editorSelectors";
 import { getJSCollection, getJSCollections } from "selectors/entitiesSelector";
 import { JSCollectionData } from "reducers/entityReducers/jsActionsReducer";
@@ -30,19 +31,20 @@ import {
   JSUpdate,
   pushLogsForObjectUpdate,
   createDummyJSCollectionActions,
-} from "../utils/JSPaneUtils";
+} from "utils/JSPaneUtils";
 import JSActionAPI, {
   RefactorAction,
   SetFunctionPropertyPayload,
-} from "../api/JSActionAPI";
+} from "api/JSActionAPI";
 import ActionAPI from "api/ActionAPI";
 import {
   updateJSCollectionSuccess,
   refactorJSCollectionAction,
   updateJSCollectionBodySuccess,
   updateJSFunction,
+  executeJSFunctionInit,
 } from "actions/jsPaneActions";
-import { getCurrentOrgId } from "selectors/organizationSelectors";
+import { getCurrentOrgId } from "@appsmith/selectors/organizationSelectors";
 import { getPluginIdOfPackageName } from "sagas/selectors";
 import { PluginType } from "entities/Action";
 import { Toaster } from "components/ads/Toast";
@@ -53,6 +55,7 @@ import {
   JS_EXECUTION_SUCCESS,
   JS_EXECUTION_FAILURE,
   JS_EXECUTION_FAILURE_TOASTER,
+  JS_EXECUTION_SUCCESS_TOASTER,
   JS_FUNCTION_CREATE_SUCCESS,
   JS_FUNCTION_DELETE_SUCCESS,
   JS_FUNCTION_UPDATE_SUCCESS,
@@ -67,6 +70,11 @@ export const JS_PLUGIN_PACKAGE_NAME = "js-plugin";
 import { set } from "lodash";
 import { updateReplayEntity } from "actions/pageActions";
 import { jsCollectionIdURL } from "RouteBuilder";
+import { ModalType } from "reducers/uiReducers/modalActionReducer";
+import { requestModalConfirmationSaga } from "sagas/UtilSagas";
+import { UserCancelledActionExecutionError } from "sagas/ActionExecution/errorUtils";
+import { APP_MODE } from "entities/App";
+import { getAppMode } from "selectors/applicationSelectors";
 
 function* handleCreateNewJsActionSaga(action: ReduxAction<{ pageId: string }>) {
   const organizationId: string = yield select(getCurrentOrgId);
@@ -118,7 +126,9 @@ function* handleJSCollectionCreatedSaga(
   history.push(
     jsCollectionIdURL({
       collectionId: id,
-      params: {},
+      params: {
+        editName: true,
+      },
     }),
   );
 }
@@ -253,7 +263,12 @@ function* updateJSCollection(data: {
             createMessage(JS_FUNCTION_DELETE_SUCCESS),
           );
         }
-        yield put(updateJSCollectionSuccess({ data: response?.data }));
+
+        yield put(
+          updateJSCollectionSuccess({
+            data: response?.data,
+          }),
+        );
       }
     }
   } catch (error) {
@@ -293,23 +308,46 @@ function* handleJSObjectNameChangeSuccessSaga(
   }
 }
 
-export function* handleExecuteJSFunctionSaga(
-  data: ReduxAction<{
-    collectionName: string;
-    action: JSAction;
-    collectionId: string;
-  }>,
-): any {
-  const { action, collectionId, collectionName } = data.payload;
+export function* handleExecuteJSFunctionSaga(data: {
+  collectionName: string;
+  action: JSAction;
+  collectionId: string;
+}): any {
+  const { action, collectionId, collectionName } = data;
   const actionId = action.id;
+  const appMode: APP_MODE = yield select(getAppMode);
+  yield put(
+    executeJSFunctionInit({
+      collectionName,
+      action,
+      collectionId,
+    }),
+  );
+
+  const isEntitySaving = yield select(getIsSavingEntity);
+
+  /**
+   * Only start executing when no entity in the application is saving
+   * This ensures that execution doesn't get carried out on stale values
+   * This includes other entities which might be bound in the JS Function
+   */
+  if (isEntitySaving) {
+    yield take(ReduxActionTypes.ENTITY_UPDATE_SUCCESS);
+  }
+
   try {
-    const result = yield call(executeFunction, collectionName, action);
+    const { isDirty, result } = yield call(
+      executeFunction,
+      collectionName,
+      action,
+    );
     yield put({
       type: ReduxActionTypes.EXECUTE_JS_FUNCTION_SUCCESS,
       payload: {
         results: result,
         collectionId,
         actionId,
+        isDirty,
       },
     });
     AppsmithConsole.info({
@@ -321,6 +359,12 @@ export function* handleExecuteJSFunctionSaga(
       },
       state: { response: result },
     });
+    appMode === APP_MODE.EDIT &&
+      !isDirty &&
+      Toaster.show({
+        text: createMessage(JS_EXECUTION_SUCCESS_TOASTER, action.name),
+        variant: Variant.success,
+      });
   } catch (e) {
     AppsmithConsole.addError({
       id: actionId,
@@ -344,6 +388,39 @@ export function* handleExecuteJSFunctionSaga(
       showDebugButton: true,
     });
   }
+}
+
+export function* handleStartExecuteJSFunctionSaga(
+  data: ReduxAction<{
+    collectionName: string;
+    action: JSAction;
+    collectionId: string;
+  }>,
+): any {
+  const { action, collectionId, collectionName } = data.payload;
+  const actionId = action.id;
+  if (action.confirmBeforeExecute) {
+    const modalPayload = {
+      name: collectionName + "." + action.name,
+      modalOpen: true,
+      modalType: ModalType.RUN_ACTION,
+    };
+
+    const confirmed = yield call(requestModalConfirmationSaga, modalPayload);
+
+    if (!confirmed) {
+      yield put({
+        type: ReduxActionTypes.RUN_ACTION_CANCELLED,
+        payload: { id: actionId },
+      });
+      throw new UserCancelledActionExecutionError();
+    }
+  }
+  yield call(handleExecuteJSFunctionSaga, {
+    collectionName: collectionName,
+    action: action,
+    collectionId: collectionId,
+  });
 }
 
 function* handleUpdateJSCollectionBody(
@@ -571,8 +648,8 @@ export default function* root() {
       handleJSObjectNameChangeSuccessSaga,
     ),
     takeEvery(
-      ReduxActionTypes.EXECUTE_JS_FUNCTION_INIT,
-      handleExecuteJSFunctionSaga,
+      ReduxActionTypes.START_EXECUTE_JS_FUNCTION,
+      handleStartExecuteJSFunctionSaga,
     ),
     takeEvery(
       ReduxActionTypes.REFACTOR_JS_ACTION_NAME,

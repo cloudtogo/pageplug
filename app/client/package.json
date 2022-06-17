@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": "^14.15.4",
-    "npm": "^6.14.10"
+    "node": "^16.14.0",
+    "npm": "^8.5.5"
   },
   "cracoConfig": "craco.dev.config.js",
   "dependencies": {
@@ -48,6 +48,7 @@
     "@types/styled-components": "^5.1.3",
     "@types/tinycolor2": "^1.4.2",
     "@types/zipcelx": "^1.5.0",
+    "@types/webfontloader": "^1.6.33",
     "@uppy/core": "^1.16.0",
     "@uppy/dashboard": "^1.16.0",
     "@uppy/file-input": "^1.4.22",
@@ -83,6 +84,7 @@
     "fast-deep-equal": "^3.1.1",
     "fast-xml-parser": "^3.17.5",
     "flow-bin": "^0.148.0",
+    "focus-trap-react": "^8.9.2",
     "fuse.js": "^3.4.5",
     "fusioncharts": "^3.18.0",
     "fusionmaps": "^3.18.0",
@@ -97,6 +99,7 @@
     "js-sha256": "^0.9.0",
     "jshint": "^2.13.4",
     "json-fn": "^1.1.1",
+    "klona": "^2.0.5",
     "libphonenumber-js": "^1.9.44",
     "lint-staged": "^9.2.5",
     "localforage": "^1.7.3",
@@ -108,10 +111,12 @@
     "mammoth": "^1.4.19",
     "marked": "^2.0.0",
     "memoize-one": "^5.2.1",
+    "micro-memoize": "^4.0.10",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.27",
     "nanoid": "^2.0.4",
-    "node-forge": "^1.0.0",
+    "node-forge": "^1.3.0",
+    "node-sass": "^7.0.1",
     "normalizr": "^3.3.0",
     "path-to-regexp": "^6.2.0",
     "popper.js": "^1.15.0",
@@ -127,6 +132,7 @@
     "react-base-table": "^1.9.1",
     "react-beautiful-dnd": "^12.2.0",
     "react-custom-scrollbars": "^4.2.1",
+    "react-device-detect": "^2.2.2",
     "react-documents": "^1.0.4",
     "react-dnd": "11.1.3",
     "react-dnd-html5-backend": "11.1.3",
@@ -173,7 +179,6 @@
     "redux-saga": "^1.1.3",
     "remixicon-react": "^1.0.0",
     "reselect": "^4.0.0",
-    "rfdc": "^1.3.0",
     "scroll-into-view-if-needed": "^2.2.26",
     "shallowequal": "^1.1.0",
     "showdown": "^1.9.1",
@@ -189,6 +194,7 @@
     "typescript": "^4.1.3",
     "unescape-js": "^1.1.4",
     "url-search-params-polyfill": "^8.0.0",
+    "webfontloader": "^1.6.28",
     "worker-loader": "^3.0.2",
     "yjs": "^13.5.12",
     "zipcelx": "^1.6.2"
@@ -317,6 +323,7 @@
     "factory.ts": "^0.5.1",
     "fork-ts-checker-webpack-plugin": "^7.2.0",
     "jest-canvas-mock": "^2.3.1",
+    "jest-styled-components": "^7.0.8",
     "mocha": "^7.1.0",
     "mocha-junit-reporter": "^1.23.3",
     "mochawesome": "^7.1.2",
@@ -346,6 +353,7 @@
     }
   },
   "resolutions": {
-    "react-error-overlay": "6.0.9"
+    "react-error-overlay": "6.0.9",
+    "focus-trap-react/**/tabbable": "5.2.1"
   }
 }

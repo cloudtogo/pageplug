@@ -6,6 +6,7 @@ import { Position } from "@blueprintjs/core/lib/esm/common/position";
 import { PopperModifiers } from "@blueprintjs/core";
 
 export type MenuProps = CommonComponentProps & {
+  autoFocus?: boolean;
   children?: ReactNode[];
   closeOnItemClick?: boolean;
   target: JSX.Element;
@@ -18,6 +19,13 @@ export type MenuProps = CommonComponentProps & {
   canEscapeKeyClose?: boolean;
   canOutsideClickClose?: boolean;
   menuItemWrapperWidth?: string;
+
+  /**
+   * (optional) dontUsePortal {boolean}
+   * For Popover usePortal=true by default.
+   * All existing Menu usages don't need to change if we signal usePortal=false via dontUsePortal=true.
+   */
+  dontUsePortal?: boolean;
 };
 
 const MenuWrapper = styled.div<{ width?: string }>`
@@ -34,6 +42,7 @@ const MenuOption = styled.div`
 function Menu(props: MenuProps) {
   return (
     <Popover
+      autoFocus={props.autoFocus}
       canEscapeKeyClose={props.canEscapeKeyClose}
       className={props.className}
       data-cy={props.cypressSelector}
@@ -46,6 +55,7 @@ function Menu(props: MenuProps) {
       onOpening={props.onOpening}
       portalClassName={props.className}
       position={props.position || Position.BOTTOM}
+      usePortal={!props.dontUsePortal}
     >
       {props.target}
       <MenuWrapper width={props.menuItemWrapperWidth}>
