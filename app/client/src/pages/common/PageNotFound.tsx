@@ -44,7 +44,7 @@ interface Props {
 
 function PageNotFound(props: Props) {
   const { flushErrorsAndRedirect } = props;
-  
+
   useEffect(() => {
     AnalyticsUtil.logEvent("PAGE_NOT_FOUND");
   }, []);

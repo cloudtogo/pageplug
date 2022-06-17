@@ -34,7 +34,7 @@ import { getThemeDetails, ThemeMode } from "selectors/themeSelectors";
 import GlobalHotKeys from "./GlobalHotKeys";
 import TabBar from "components/designSystems/taro/TabBar";
 import PreviewQRCode from "./PreviewQRCode";
-import AppViewerLayout from "./viewer/AppViewerLayout";
+import AppViewerLayout from "./AppViewerLayout";
 
 import webfontloader from "webfontloader";
 import { getSearchQuery } from "utils/helpers";
