@@ -344,5 +344,8 @@
     "hooks": {
       "pre-commit": ""
     }
+  },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
   }
 }

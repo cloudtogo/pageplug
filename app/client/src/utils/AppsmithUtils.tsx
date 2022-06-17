@@ -449,7 +449,7 @@ export const base64ToBlob = (
 
   const blob = new Blob(byteArrays, { type: contentType });
   return blob;
-}
+};
 
 export const replacePluginIcon = (url: string) => {
   return url
