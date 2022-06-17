@@ -10,7 +10,7 @@ import {
   getCurrentPageId,
   getPageList,
 } from "selectors/editorSelectors";
-import { BUILDER_PAGE_URL } from "constants/routes";
+import { builderURL } from "RouteBuilder";
 import {
   SortableTreeWithoutDndContext as SortableTree,
   addNodeUnderParent,
@@ -219,7 +219,7 @@ function PagesEditor() {
   }, [pages]);
 
   const onClose = useCallback(() => {
-    history.push(BUILDER_PAGE_URL(applicationId, pageId));
+    history.push(builderURL());
   }, []);
 
   const getNodeKey = ({ treeIndex }: any) => treeIndex;
