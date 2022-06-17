@@ -8,7 +8,10 @@ import {
   getCurrentPage,
   isMobileLayout,
 } from "selectors/editorSelectors";
-import { Page, ReduxActionTypes } from "constants/ReduxActionConstants";
+import {
+  Page,
+  ReduxActionTypes,
+} from "@appsmith/constants/ReduxActionConstants";
 import Switch from "components/ads/Switch";
 import EditablePageName from "pages/Editor/Explorer/Entity/Name";
 import Loader from "pages/Editor/Explorer/Entity/Loader";

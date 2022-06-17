@@ -15,11 +15,7 @@ import UserApi, {
   UpdateUserRequest,
   LeaveOrgRequest,
 } from "@appsmith/api/UserApi";
-import {
-  AUTH_LOGIN_URL,
-  matchBuilderPath,
-  SETUP,
-} from "constants/routes";
+import { AUTH_LOGIN_URL, matchBuilderPath, SETUP } from "constants/routes";
 import history from "utils/history";
 import { ApiResponse } from "api/ApiResponses";
 import {
