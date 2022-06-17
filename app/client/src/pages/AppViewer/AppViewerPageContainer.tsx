@@ -1,17 +1,15 @@
-import React, { Component } from "react";
-import { Link, RouteComponentProps } from "react-router-dom";
-import { connect } from "react-redux";
+import React, { useMemo } from "react";
+import { Link, RouteComponentProps, withRouter } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { getIsFetchingPage } from "selectors/appViewSelectors";
 import styled from "styled-components";
 import { AppViewerRouteParams } from "constants/routes";
-import { AppState } from "reducers";
 import { theme } from "constants/DefaultTheme";
 import { Icon, NonIdealState, Spinner } from "@blueprintjs/core";
 import Centered from "components/designSystems/appsmith/CenteredWrapper";
 import AppPage from "./AppPage";
 import {
   getCanvasWidgetDsl,
-  getCurrentApplicationId,
   getCurrentPageName,
   selectURLSlugs,
 } from "selectors/editorSelectors";
@@ -21,14 +19,14 @@ import {
   isPermitted,
   PERMISSION_TYPE,
 } from "../Applications/permissionHelpers";
-import { fetchPublishedPage } from "actions/pageActions";
-import { DSLWidget } from "widgets/constants";
 import { builderURL } from "RouteBuilder";
 
-const Section = styled.section`
+const Section = styled.section<{
+  height: number;
+}>`
   background: #fff;
-  height: max-content;
-  min-height: 100%;
+  height: 100%;
+  min-height: ${({ height }) => height}px;
   margin: 0 auto;
   position: relative;
   overflow-x: auto;
@@ -41,46 +39,36 @@ const SafeFixedArea = styled.div<{
   margin-bottom: ${(props) => props.height}px;
 `;
 
-type AppViewerPageContainerProps = {
-  isFetchingPage: boolean;
-  widgets?: DSLWidget;
-  currentPageName?: string;
-  currentAppName?: string;
-  fetchPage: (pageId: string, bustCache?: boolean) => void;
-  currentAppPermissions?: string[];
-  hasFixedWidget?: any;
-  applicationId: string;
-  applicationSlug: string;
-  pageSlug: string;
-} & RouteComponentProps<AppViewerRouteParams>;
+type AppViewerPageContainerProps = RouteComponentProps<AppViewerRouteParams>;
 
-class AppViewerPageContainer extends Component<AppViewerPageContainerProps> {
-  componentDidUpdate(previously: AppViewerPageContainerProps) {
-    const { pageId } = this.props.match.params;
+function AppViewerPageContainer(props: AppViewerPageContainerProps) {
+  const currentPageName = useSelector(getCurrentPageName);
+  const widgets = useSelector(getCanvasWidgetDsl);
+  const isFetchingPage = useSelector(getIsFetchingPage);
+  const currentApplication = useSelector(getCurrentApplication);
+  const { match } = props;
+  const { applicationSlug, pageSlug } = useSelector(selectURLSlugs);
+  const hasFixedWidget = widgets.children?.find(
+    (w) => w.type === "TARO_BOTTOM_BAR_WIDGET",
+  );
+
+  // get appsmith editr link
+  const appsmithEditorLink = useMemo(() => {
     if (
-      pageId &&
-      previously.location.pathname !== this.props.location.pathname
-    ) {
-      this.props.fetchPage(pageId);
-    }
-  }
-  render() {
-    let appsmithEditorLink;
-    if (
-      this.props.currentAppPermissions &&
+      currentApplication?.userPermissions &&
       isPermitted(
-        this.props.currentAppPermissions,
+        currentApplication?.userPermissions,
         PERMISSION_TYPE.MANAGE_APPLICATION,
       )
     ) {
-      appsmithEditorLink = (
+      return (
         <p>
           想给页面添加组件？立即前往&nbsp;
           <Link
             to={builderURL({
-              applicationSlug: this.props.applicationSlug,
-              pageSlug: this.props.pageSlug,
-              pageId: this.props.match.params.pageId as string,
+              applicationSlug: applicationSlug,
+              pageSlug: pageSlug,
+              pageId: props.match.params.pageId as string,
             })}
           >
             页面编辑
@@ -88,77 +76,48 @@ class AppViewerPageContainer extends Component<AppViewerPageContainerProps> {
         </p>
       );
     }
-    const pageNotFound = (
-      <Centered isInheritedHeight>
-        <NonIdealState
-          description={appsmithEditorLink}
-          icon={
-            <Icon
-              color={theme.colors.primaryOld}
-              icon="page-layout"
-              iconSize={theme.fontSizes[9]}
-            />
-          }
-          title="页面空空如也😅"
-        />
-      </Centered>
-    );
-    const pageLoading = (
-      <Centered isInheritedHeight>
-        <Spinner />
-      </Centered>
-    );
-    if (this.props.isFetchingPage) {
-      return pageLoading;
-    } else if (!this.props.isFetchingPage && this.props.widgets) {
-      const { hasFixedWidget } = this.props;
-      return (
-        <Section id="art-board">
-          {!(
-            this.props.widgets.children &&
-            this.props.widgets.children.length > 0
-          ) && pageNotFound}
-          <AppPage
-            appName={this.props.currentAppName}
-            dsl={this.props.widgets}
-            pageId={this.props.match.params.pageId}
-            pageName={this.props.currentPageName}
+  }, [currentApplication?.userPermissions]);
+
+  const pageNotFound = (
+    <Centered>
+      <NonIdealState
+        description={appsmithEditorLink}
+        icon={
+          <Icon
+            color={theme.colors.primaryOld}
+            icon="page-layout"
+            iconSize={theme.fontSizes[9]}
           />
-          <RequestConfirmationModal />
-          {hasFixedWidget ? (
-            <SafeFixedArea height={hasFixedWidget?.height || 0} />
-          ) : null}
-        </Section>
-      );
-    }
-  }
+        }
+        title="页面空空如也😅"
+      />
+    </Centered>
+  );
+
+  const pageLoading = (
+    <Centered>
+      <Spinner />
+    </Centered>
+  );
+
+  if (isFetchingPage) return pageLoading;
+
+  if (!(widgets.children && widgets.children.length > 0)) return pageNotFound;
+
+  return (
+    <Section height={widgets.bottomRow}>
+      <AppPage
+        appName={currentApplication?.name}
+        dsl={widgets}
+        pageId={match.params.pageId}
+        pageName={currentPageName}
+      />
+      <RequestConfirmationModal />
+      {hasFixedWidget ? (
+        <SafeFixedArea height={hasFixedWidget?.height || 0} />
+      ) : null}
+    </Section>
+  );
 }
 
-const mapStateToProps = (state: AppState) => {
-  const currentApp = getCurrentApplication(state);
-  const widgets = getCanvasWidgetDsl(state);
-  const { applicationSlug, pageSlug } = selectURLSlugs(state);
-  return {
-    isFetchingPage: getIsFetchingPage(state),
-    widgets,
-    currentPageName: getCurrentPageName(state),
-    currentAppName: currentApp?.name,
-    currentAppPermissions: currentApp?.userPermissions,
-    hasFixedWidget: widgets.children?.find(
-      (w) => w.type === "TARO_BOTTOM_BAR_WIDGET",
-    ),
-    applicationId: getCurrentApplicationId(state),
-    applicationSlug,
-    pageSlug,
-  };
-};
-
-const mapDispatchToProps = (dispatch: any) => ({
-  fetchPage: (pageId: string, bustCache = false) =>
-    dispatch(fetchPublishedPage(pageId, bustCache)),
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AppViewerPageContainer);
+export default withRouter(AppViewerPageContainer);

@@ -31,12 +31,12 @@ export const SIGNUP_SUCCESS_URL = `/signup-success`;
 export const ORG_INVITE_USERS_PAGE_URL = `${ORG_URL}/invite`;
 export const ORG_SETTINGS_PAGE_URL = `${ORG_URL}/settings`;
 export const BUILDER_PATH_DEPRECATED = `/applications/:applicationId/(pages)?/:pageId?/edit`;
-export const BUILDER_PATH = `/:applicationSlug/:pageSlug(.*\-):pageId/edit`;
-export const VIEWER_PATH = `/:applicationSlug/:pageSlug(.*\-):pageId`;
+export const BUILDER_PATH = `/app/:applicationSlug/:pageSlug(.*\-):pageId/edit`;
+export const VIEWER_PATH = `/app/:applicationSlug/:pageSlug(.*\-):pageId`;
 export const VIEWER_PATH_DEPRECATED = `/applications/:applicationId/(pages)?/:pageId?`;
-export const VIEWER_FORK_PATH = `${VIEWER_PATH}/fork`;
 export const VIEWER_LAYOUT_CONFIG_PATH = `/viewer-layout`;
 export const getViewerLayoutEditorURL = () => `${VIEWER_PATH}/viewer-layout`;
+export const VIEWER_FORK_PATH = `/fork`;
 export const INTEGRATION_EDITOR_PATH = `/datasources/:selectedTab`;
 export const API_EDITOR_BASE_PATH = `/api`;
 export const API_EDITOR_ID_PATH = `${API_EDITOR_BASE_PATH}/:apiId`;
@@ -56,7 +56,9 @@ export const GENERATE_TEMPLATE_FORM_PATH = `${GENERATE_TEMPLATE_PATH}${GEN_TEMPL
 export const BUILDER_CHECKLIST_PATH = `/checklist`;
 export const ADMIN_SETTINGS_PATH = "/settings";
 export const ADMIN_SETTINGS_CATEGORY_DEFAULT_PATH = "/settings/general";
-export const ADMIN_SETTINGS_CATEGORY_PATH = "/settings/:category/:subCategory?";
+export const ADMIN_SETTINGS_CATEGORY_PATH = "/settings/:category/:selected?";
+export const BUILDER_PATCH_PATH = `/:applicationSlug/:pageSlug(.*\-):pageId/edit`;
+export const VIEWER_PATCH_PATH = `/:applicationSlug/:pageSlug(.*\-):pageId`;
 
 export const matchApplicationPath = match(APPLICATIONS_URL);
 export const matchApiBasePath = match(API_EDITOR_BASE_PATH);
@@ -69,9 +71,14 @@ export const matchBuilderPath = (pathName: string) =>
 export const matchJSObjectPath = match(JS_COLLECTION_ID_PATH);
 export const matchViewerPath = (pathName: string) =>
   match(VIEWER_PATH)(pathName) || match(VIEWER_PATH_DEPRECATED)(pathName);
-export const matchViewerForkPath = match(VIEWER_FORK_PATH);
+export const matchViewerForkPath = (pathName: string) =>
+  match(`${VIEWER_PATH}${VIEWER_FORK_PATH}`)(pathName) ||
+  match(`${VIEWER_PATH_DEPRECATED}${VIEWER_FORK_PATH}`)(pathName);
 export const matchTemplatesPath = match(TEMPLATES_PATH);
 export const matchTemplatesIdPath = match(TEMPLATES_ID_PATH);
+export const matchGeneratePagePath = (pathName: string) =>
+  match(`${BUILDER_PATH}${GENERATE_TEMPLATE_PATH}`)(pathName) ||
+  match(`${BUILDER_PATH_DEPRECATED}${GENERATE_TEMPLATE_PATH}`)(pathName);
 
 export const addBranchParam = (branch: string) => {
   const url = new URL(window.location.href);
@@ -101,7 +108,8 @@ export type ProviderViewerRouteParams = {
 
 export type QueryEditorRouteParams = {
   pageId: string;
-  queryId: string;
+  queryId?: string;
+  apiId?: string;
 };
 
 export type JSEditorRouteParams = {

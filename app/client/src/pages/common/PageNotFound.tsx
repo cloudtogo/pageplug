@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { APPLICATIONS_URL } from "constants/routes";
@@ -12,6 +12,7 @@ import {
 } from "@appsmith/constants/messages";
 import { getAppsmithConfigs } from "@appsmith/configs";
 const { inCloudOS } = getAppsmithConfigs();
+import AnalyticsUtil from "utils/AnalyticsUtil";
 
 const Wrapper = styled.div`
   text-align: center;
@@ -43,6 +44,10 @@ interface Props {
 
 function PageNotFound(props: Props) {
   const { flushErrorsAndRedirect } = props;
+  
+  useEffect(() => {
+    AnalyticsUtil.logEvent("PAGE_NOT_FOUND");
+  }, []);
 
   if (inCloudOS) {
     return <Text404>404</Text404>;

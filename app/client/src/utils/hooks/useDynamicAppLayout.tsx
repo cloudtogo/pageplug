@@ -1,12 +1,11 @@
 import { debounce, get } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { getWidgetByID, getWidgets } from "sagas/selectors";
+import { useCallback, useEffect, useMemo } from "react";
+import { getWidgets } from "sagas/selectors";
 
 import {
   DefaultLayoutType,
   layoutConfigurations,
-  MAIN_CONTAINER_WIDGET_ID,
 } from "constants/WidgetConstants";
 import {
   getExplorerPinned,
@@ -15,6 +14,7 @@ import {
 import {
   getCurrentApplicationLayout,
   getCurrentPageId,
+  getMainCanvasProps,
   previewModeSelector,
 } from "selectors/editorSelectors";
 import { APP_MODE } from "entities/App";
@@ -26,36 +26,35 @@ import {
 import { getAppMode } from "selectors/entitiesSelector";
 import { updateCanvasLayoutAction } from "actions/editorActions";
 import { calculateDynamicHeight } from "utils/DSLMigrations";
+import { getIsCanvasInitialized } from "selectors/mainCanvasSelectors";
 
 const BORDERS_WIDTH = 2;
 const GUTTER_WIDTH = 72;
 
 export const useDynamicAppLayout = (isViewer?: boolean) => {
   const dispatch = useDispatch();
-  const [initialized, setInitialized] = useState(false);
   const explorerWidth = useSelector(getExplorerWidth);
   const isExplorerPinned = useSelector(getExplorerPinned);
   const appMode: APP_MODE | undefined = useSelector(getAppMode);
-  const domEntityExplorer = document.querySelector(".js-entity-explorer");
-  const domPropertyPane = document.querySelector(".js-property-pane-sidebar");
   const { height: screenHeight, width: winWidth } = useWindowSizeHooks();
   const { width: containerWidth } = usePageContainerSizeHooks();
   let screenWidth = winWidth;
   if (isViewer) {
     screenWidth = containerWidth;
   }
-  const mainContainer = useSelector(getWidgetByID(MAIN_CONTAINER_WIDGET_ID));
+  const mainCanvasProps = useSelector(getMainCanvasProps);
   const isPreviewMode = useSelector(previewModeSelector);
   const currentPageId = useSelector(getCurrentPageId);
   const canvasWidgets = useSelector(getWidgets);
+  const isCanvasInitialized = useSelector(getIsCanvasInitialized);
   const appLayout = useSelector(getCurrentApplicationLayout);
 
   /**
    * calculates min height
    */
   const calculatedMinHeight = useMemo(() => {
-    return calculateDynamicHeight(canvasWidgets, mainContainer?.minHeight);
-  }, [mainContainer]);
+    return calculateDynamicHeight(canvasWidgets, mainCanvasProps?.height);
+  }, [mainCanvasProps]);
 
   /**
    * app layout range i.e minWidth and maxWidth for the current layout
@@ -95,6 +94,8 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
    * @returns
    */
   const calculateCanvasWidth = () => {
+    const domEntityExplorer = document.querySelector(".js-entity-explorer");
+    const domPropertyPane = document.querySelector(".js-property-pane-sidebar");
     const { maxWidth, minWidth } = layoutWidthRange;
     let calculatedWidth = screenWidth - scrollbarWidth();
 
@@ -105,8 +106,8 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
       calculatedWidth -= propertyPaneWidth;
     }
 
-    // if explorer is unpinned or its preview mode, we don't need to subtract the EE width
-    if (isExplorerPinned === true && isPreviewMode === false) {
+    // if explorer is closed or its preview mode, we don't need to subtract the EE width
+    if (isExplorerPinned === true && !isPreviewMode) {
       const explorerWidth = domEntityExplorer?.clientWidth || 0;
 
       calculatedWidth -= explorerWidth;
@@ -116,10 +117,12 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
       case maxWidth < 0:
       case appLayout?.type === "FLUID":
       case calculatedWidth < maxWidth && calculatedWidth > minWidth:
+        const totalWidthToSubtract = BORDERS_WIDTH + GUTTER_WIDTH;
+        // NOTE: gutter + border width will be only substracted when theme mode and preview mode are off
         return (
           calculatedWidth -
           (appMode === APP_MODE.EDIT && !isPreviewMode
-            ? BORDERS_WIDTH + GUTTER_WIDTH
+            ? totalWidthToSubtract
             : 0)
         );
       case calculatedWidth < minWidth:
@@ -139,17 +142,17 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
    */
   const resizeToLayout = () => {
     const calculatedWidth = calculateCanvasWidth();
-    const { rightColumn } = mainContainer || {};
+    const { width: rightColumn } = mainCanvasProps || {};
 
-    if (rightColumn !== calculatedWidth) {
+    if (rightColumn !== calculatedWidth || !isCanvasInitialized) {
       dispatch(
-        updateCanvasLayoutAction(calculatedWidth, mainContainer?.minHeight),
+        updateCanvasLayoutAction(calculatedWidth, mainCanvasProps?.height),
       );
     }
   };
 
   const debouncedResize = useCallback(debounce(resizeToLayout, 250), [
-    mainContainer,
+    mainCanvasProps,
     screenWidth,
   ]);
 
@@ -157,18 +160,15 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
    * when screen height is changed, update canvas layout
    */
   useEffect(() => {
-    if (calculatedMinHeight !== mainContainer?.minHeight) {
+    if (calculatedMinHeight !== mainCanvasProps?.height) {
       dispatch(
-        updateCanvasLayoutAction(
-          mainContainer?.rightColumn,
-          calculatedMinHeight,
-        ),
+        updateCanvasLayoutAction(mainCanvasProps?.width, calculatedMinHeight),
       );
     }
-  }, [screenHeight, mainContainer?.minHeight]);
+  }, [screenHeight, mainCanvasProps?.height]);
 
   useEffect(() => {
-    debouncedResize();
+    if (isCanvasInitialized) debouncedResize();
   }, [screenWidth]);
 
   /**
@@ -179,23 +179,18 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
    *  - preview mode
    *  - explorer width
    *  - explorer is pinned
+   *  - theme mode is turned on
    */
   useEffect(() => {
     resizeToLayout();
   }, [
     appLayout,
     currentPageId,
-    mainContainer?.rightColumn,
+    mainCanvasProps?.width,
     isPreviewMode,
     explorerWidth,
     isExplorerPinned,
-    initialized,
   ]);
 
-  /**
-   * calling the setInitialized here so that property pane width is initialized
-   */
-  useEffect(() => {
-    setInitialized(true);
-  });
+  return isCanvasInitialized;
 };

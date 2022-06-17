@@ -1,10 +1,10 @@
-import { EMAIL_SETUP_DOC } from "../../../constants/ThirdPartyConstants";
-import { isEmail } from "../../../utils/formhelpers";
+import { EMAIL_SETUP_DOC } from "constants/ThirdPartyConstants";
+import { isEmail } from "utils/formhelpers";
 import { Dispatch } from "react";
 import {
   ReduxAction,
   ReduxActionTypes,
-} from "../../../constants/ReduxActionConstants";
+} from "@appsmith/constants/ReduxActionConstants";
 import { isNil, omitBy } from "lodash";
 import {
   AdminConfigType,
@@ -62,6 +62,21 @@ export const config: AdminConfigType = {
       },
       subText:
         "You will need to verify your from email address to begin sending emails",
+    },
+    {
+      id: "APPSMITH_REPLY_TO",
+      category: SettingCategories.EMAIL,
+      controlType: SettingTypes.TEXTINPUT,
+      controlSubType: SettingSubtype.TEXT,
+      label: "Reply-To Address",
+      placeholder: "admin@appsmith.com",
+      validate: (value: string) => {
+        if (value && !isEmail(value)) {
+          return "Please enter a valid email id";
+        }
+      },
+      subText:
+        "You will need to verify your to email address to begin receiving emails",
     },
     {
       id: "APPSMITH_MAIL_SMTP_TLS_ENABLED",

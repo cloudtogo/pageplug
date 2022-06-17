@@ -44,6 +44,7 @@ const TagInputWrapper = styled.div<{ intent?: Intent }>`
   }
 `;
 type TagInputProps = {
+  autofocus?: boolean;
   /** TagInput Placeholder */
   placeholder: string;
   /** TagInput value and onChange handler */
@@ -160,6 +161,7 @@ function TagInputComponent(props: TagInputProps) {
           type: props.type,
           value: currentValue,
           onBlur: handleInputBlur,
+          autoFocus: props.autofocus,
         }}
         large={false}
         onChange={onTagsChange}
@@ -167,9 +169,10 @@ function TagInputComponent(props: TagInputProps) {
         onKeyDown={onKeyDown}
         placeholder={props.placeholder}
         separator={props.separator || ","}
-        tagProps={{
+        tagProps={(tag) => ({
+          className: tag + "_tag",
           round: true,
-        }}
+        })}
         values={inputValues || [""]}
       />
     </TagInputWrapper>

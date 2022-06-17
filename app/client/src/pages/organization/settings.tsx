@@ -6,7 +6,7 @@ import {
   Link,
   Route,
 } from "react-router-dom";
-import { getCurrentOrg } from "selectors/organizationSelectors";
+import { getCurrentOrg } from "@appsmith/selectors/organizationSelectors";
 import { useSelector, useDispatch } from "react-redux";
 import { TabComponent, TabProp } from "components/ads/Tabs";
 import Text, { TextType } from "components/ads/Text";
@@ -106,7 +106,7 @@ export default function Settings() {
           let newUrl = "";
 
           if (hasSlash) {
-            newUrl = `${location.pathname.substr(0, settingsEndIndex)}/${
+            newUrl = `${location.pathname.slice(0, settingsEndIndex)}/${
               tabArr[index].key
             }`;
           } else {

@@ -28,8 +28,9 @@ import { Severity } from "entities/AppsmithConsole";
 import { ParsedBody, ParsedJSSubAction } from "utils/JSPaneUtils";
 import { Variable } from "entities/JSCollection";
 import { PluginType } from "entities/Action";
-const clone = require("rfdc/default");
+import { klona } from "klona/full";
 import { warn as logWarn } from "loglevel";
+import { EvalMetaUpdates } from "./DataTreeEvaluator/types";
 
 // Dropdown1.options[1].value -> Dropdown1.options[1]
 // Dropdown1.options[1] -> Dropdown1.options
@@ -96,7 +97,7 @@ export function getEntityNameAndPropertyPath(
 
 //these paths are not required to go through evaluate tree as these are internal properties
 const ignorePathsForEvalRegex =
-  ".(bindingPaths|triggerPaths|validationPaths|dynamicBindingPathList)";
+  ".(reactivePaths|bindingPaths|triggerPaths|validationPaths|dynamicBindingPathList)";
 
 //match if paths are part of ignorePathsForEvalRegex
 const isUninterestingChangeForDependencyUpdate = (path: string) => {
@@ -155,7 +156,32 @@ export const translateDiffEventToDataTreeDiffEvent = (
           typeof difference.lhs === "string" && isDynamicValue(difference.lhs);
       }
 
-      if (rhsChange || lhsChange) {
+      // JsObject function renaming
+      // remove .data from a String instance manually
+      // since it won't be identified when calculating diffs
+      // source for .data in a String instance -> `updateLocalUnEvalTree`
+      if (
+        isJsAction &&
+        rhsChange &&
+        difference.lhs instanceof String &&
+        _.get(difference.lhs, "data")
+      ) {
+        result = [
+          {
+            event: DataTreeDiffEvent.DELETE,
+            payload: {
+              propertyPath: `${propertyPath}.data`,
+            },
+          },
+          {
+            event: DataTreeDiffEvent.EDIT,
+            payload: {
+              propertyPath,
+              value: difference.rhs,
+            },
+          },
+        ];
+      } else if (rhsChange || lhsChange) {
         result.event = DataTreeDiffEvent.EDIT;
         result.payload = {
           propertyPath,
@@ -164,11 +190,17 @@ export const translateDiffEventToDataTreeDiffEvent = (
       } else if (difference.lhs === undefined || difference.rhs === undefined) {
         // Handle static value changes that change structure that can lead to
         // old bindings being eligible
-        if (difference.lhs === undefined && isTrueObject(difference.rhs)) {
+        if (
+          difference.lhs === undefined &&
+          (isTrueObject(difference.rhs) || Array.isArray(difference.rhs))
+        ) {
           result.event = DataTreeDiffEvent.NEW;
           result.payload = { propertyPath };
         }
-        if (difference.rhs === undefined && isTrueObject(difference.lhs)) {
+        if (
+          difference.rhs === undefined &&
+          (isTrueObject(difference.lhs) || Array.isArray(difference.lhs))
+        ) {
           result.event = DataTreeDiffEvent.DELETE;
           result.payload = { propertyPath };
         }
@@ -426,7 +458,10 @@ export function getValidatedTree(tree: DataTree) {
       const safeEvaluatedValue = removeFunctions(evaluatedValue);
       _.set(
         parsedEntity,
-        getEvalValuePath(`${entityKey}.${property}`, false),
+        getEvalValuePath(`${entityKey}.${property}`, {
+          isPopulated: false,
+          fullPath: false,
+        }),
         safeEvaluatedValue,
       );
       if (!isValid) {
@@ -440,7 +475,10 @@ export function getValidatedTree(tree: DataTree) {
         addErrorToEntityProperty(
           evalErrors,
           tree,
-          getEvalErrorPath(`${entityKey}.${property}`, false),
+          getEvalErrorPath(`${entityKey}.${property}`, {
+            isPopulated: false,
+            fullPath: false,
+          }),
         );
       }
     });
@@ -590,7 +628,7 @@ export const isDynamicLeaf = (unEvalTree: DataTree, propertyPath: string) => {
     return false;
   const relativePropertyPath = convertPathToString(propPathEls);
   return (
-    relativePropertyPath in entity.bindingPaths ||
+    relativePropertyPath in entity.reactivePaths ||
     (isWidget(entity) && relativePropertyPath in entity.triggerPaths)
   );
 };
@@ -630,14 +668,15 @@ export const updateJSCollectionInDataTree = (
           );
         }
       } else {
-        const bindingPaths = jsCollection.bindingPaths;
-        bindingPaths[action.name] = EvaluationSubstitutionType.SMART_SUBSTITUTE;
-        bindingPaths[`${action.name}.data`] =
+        const reactivePaths = jsCollection.reactivePaths;
+        reactivePaths[action.name] =
+          EvaluationSubstitutionType.SMART_SUBSTITUTE;
+        reactivePaths[`${action.name}.data`] =
           EvaluationSubstitutionType.TEMPLATE;
         _.set(
           modifiedDataTree,
-          `${jsCollection.name}.bindingPaths`,
-          bindingPaths,
+          `${jsCollection.name}.reactivePaths`,
+          reactivePaths,
         );
         const dynamicBindingPathList = jsCollection.dynamicBindingPathList;
         dynamicBindingPathList.push({ key: action.name });
@@ -685,12 +724,12 @@ export const updateJSCollectionInDataTree = (
         (js: ParsedJSSubAction) => js.name === preAction,
       );
       if (!existed) {
-        const bindingPaths = jsCollection.bindingPaths;
-        delete bindingPaths[preAction];
+        const reactivePaths = jsCollection.reactivePaths;
+        delete reactivePaths[preAction];
         _.set(
           modifiedDataTree,
-          `${jsCollection.name}.bindingPaths`,
-          bindingPaths,
+          `${jsCollection.name}.reactivePaths`,
+          reactivePaths,
         );
         let dynamicBindingPathList = jsCollection.dynamicBindingPathList;
         dynamicBindingPathList = dynamicBindingPathList.filter(
@@ -784,12 +823,12 @@ export const removeFunctionsAndVariableJSCollection = (
   }
   //remove functions
   let dynamicBindingPathList = entity.dynamicBindingPathList;
-  const bindingPaths = entity.bindingPaths;
+  const reactivePaths = entity.reactivePaths;
   const meta = entity.meta;
   let dependencyMap = entity.dependencyMap["body"];
   for (let i = 0; i < functionsList.length; i++) {
     const actionName = functionsList[i];
-    delete bindingPaths[actionName];
+    delete reactivePaths[actionName];
     delete meta[actionName];
     delete modifiedDataTree[`${entity.name}`][`${actionName}`];
     dynamicBindingPathList = dynamicBindingPathList.filter(
@@ -797,7 +836,7 @@ export const removeFunctionsAndVariableJSCollection = (
     );
     dependencyMap = dependencyMap.filter((item: any) => item !== actionName);
   }
-  _.set(modifiedDataTree, `${entity.name}.bindingPaths`, bindingPaths);
+  _.set(modifiedDataTree, `${entity.name}.reactivePaths`, reactivePaths);
   _.set(
     modifiedDataTree,
     `${entity.name}.dynamicBindingPathList`,
@@ -875,14 +914,30 @@ export const getDataTreeWithoutPrivateWidgets = (
   const treeWithoutPrivateWidgets = _.omit(dataTree, privateWidgetNames);
   return treeWithoutPrivateWidgets;
 };
-
-export const overrideWidgetProperties = (
-  entity: DataTreeWidget,
-  propertyPath: string,
-  value: unknown,
-  currentTree: DataTree,
-) => {
-  const clonedValue = clone(value);
+/**
+ *  overrideWidgetProperties method has logic to update overriddenPropertyPaths when overridingPropertyPaths are evaluated.
+ *
+ *  when we evaluate widget's overridingPropertyPaths for example defaultText of input widget,
+ *  we override the values like text and meta.text in dataTree, these values are called as overriddenPropertyPaths
+ *
+ * @param {{
+ *   entity: DataTreeWidget;
+ *   propertyPath: string;
+ *   value: unknown;
+ *   currentTree: DataTree;
+ *   evalMetaUpdates: EvalMetaUpdates;
+ * }} params
+ * @return {*}
+ */
+export const overrideWidgetProperties = (params: {
+  entity: DataTreeWidget;
+  propertyPath: string;
+  value: unknown;
+  currentTree: DataTree;
+  evalMetaUpdates: EvalMetaUpdates;
+}) => {
+  const { currentTree, entity, evalMetaUpdates, propertyPath, value } = params;
+  const clonedValue = klona(value);
   if (propertyPath in entity.overridingPropertyPaths) {
     const overridingPropertyPaths =
       entity.overridingPropertyPaths[propertyPath];
@@ -894,18 +949,30 @@ export const overrideWidgetProperties = (
         [entity.widgetName, ...overriddenPropertyPathArray],
         clonedValue,
       );
+      // evalMetaUpdates has all updates from property which overrides meta values.
+      if (
+        propertyPath.split(".")[0] !== "meta" &&
+        overriddenPropertyPathArray[0] === "meta"
+      ) {
+        const metaPropertyPath = overriddenPropertyPathArray.slice(1);
+        evalMetaUpdates.push({
+          widgetId: entity.widgetId,
+          metaPropertyPath,
+          value: clonedValue,
+        });
+      }
     });
   } else if (
     propertyPath in entity.propertyOverrideDependency &&
     clonedValue === undefined
   ) {
-    // when value is undefined and has default value then set value to default value.
-    // this is for resetForm
+    // When a reset a widget its meta value becomes undefined, ideally they should reset to default value.
+    // below we handle logic to reset meta values to default values.
     const propertyOverridingKeyMap =
       entity.propertyOverrideDependency[propertyPath];
     if (propertyOverridingKeyMap.DEFAULT) {
       const defaultValue = entity[propertyOverridingKeyMap.DEFAULT];
-      const clonedDefaultValue = clone(defaultValue);
+      const clonedDefaultValue = klona(defaultValue);
       if (defaultValue !== undefined) {
         const propertyPathArray = propertyPath.split(".");
         _.set(
@@ -913,6 +980,7 @@ export const overrideWidgetProperties = (
           [entity.widgetName, ...propertyPathArray],
           clonedDefaultValue,
         );
+
         return {
           overwriteParsedValue: true,
           newValue: clonedDefaultValue,

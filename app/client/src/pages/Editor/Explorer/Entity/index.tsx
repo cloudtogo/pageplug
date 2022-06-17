@@ -5,6 +5,7 @@ import React, {
   useRef,
   forwardRef,
   useCallback,
+  RefObject,
 } from "react";
 import styled, { css } from "styled-components";
 import { Colors } from "constants/Colors";
@@ -18,7 +19,7 @@ import { Classes, Position } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import useClick from "utils/hooks/useClick";
-import { ReduxActionTypes } from "constants/ReduxActionConstants";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import TooltipComponent from "components/ads/Tooltip";
 import { TOOLTIP_HOVER_ON_DELAY } from "constants/AppConstants";
 import { inGuidedTour } from "selectors/onboardingSelectors";
@@ -123,11 +124,18 @@ export const EntityItem = styled.div<{
     background: ${Colors.MINT_GREEN_LIGHT}66;
   }
 
+  scroll-margin-top: 36px;
+  scroll-snap-margin-top: 36px;
+
   & .${EntityClassNames.TOOLTIP} {
     ${entityTooltipCSS}
     .${Classes.POPOVER_TARGET} {
       ${entityTooltipCSS}
     }
+  }
+
+  .file-ops {
+    height: 36px;
   }
 
   & .${EntityClassNames.COLLAPSE_TOGGLE} {
@@ -225,6 +233,8 @@ export type EntityProps = {
   preRightIcon?: ReactNode;
   onClickPreRightIcon?: () => void;
   isSticky?: boolean;
+  collapseRef?: RefObject<HTMLDivElement> | null;
+  customAddButton?: ReactNode;
 };
 
 export const Entity = forwardRef(
@@ -237,11 +247,11 @@ export const Entity = forwardRef(
 
     /* eslint-disable react-hooks/exhaustive-deps */
     useEffect(() => {
-      if (props.isDefaultExpanded) {
+      if (props.isDefaultExpanded || props.searchKeyword) {
         open(true);
         props.onToggle && props.onToggle(true);
       }
-    }, [props.isDefaultExpanded]);
+    }, [props.isDefaultExpanded, props.searchKeyword]);
     useEffect(() => {
       if (!props.searchKeyword && !props.isDefaultExpanded) {
         open(false);
@@ -298,6 +308,22 @@ export const Entity = forwardRef(
     const itemRef = useRef<HTMLDivElement | null>(null);
     useClick(itemRef, handleClick, noop);
 
+    const addButton = props.customAddButton || (
+      <TooltipComponent
+        boundary="viewport"
+        className={EntityClassNames.TOOLTIP}
+        content={props.addButtonHelptext || ""}
+        disabled={!props.addButtonHelptext}
+        hoverOpenDelay={TOOLTIP_HOVER_ON_DELAY}
+        position={Position.RIGHT}
+      >
+        <AddButton
+          className={`${EntityClassNames.ADD_BUTTON} ${props.className}`}
+          onClick={props.onCreate}
+        />
+      </TooltipComponent>
+    );
+
     return (
       <Boxed
         show={props.name === "updateCustomerInfo"}
@@ -315,6 +341,7 @@ export const Entity = forwardRef(
               props.active ? "active" : ""
             } t--entity-item`}
             data-guided-tour-id={`explorer-entity-${props.name}`}
+            data-guided-tour-iid={props.name}
             highlight={!!props.highlight}
             id={"entity-" + props.entityId}
             isSticky={props.isSticky === true}
@@ -359,31 +386,18 @@ export const Entity = forwardRef(
                 {props.rightIcon}
               </IconWrapper>
             )}
-            {props.addButtonHelptext ? (
-              <TooltipComponent
-                boundary="viewport"
-                className={EntityClassNames.TOOLTIP}
-                content={props.addButtonHelptext}
-                hoverOpenDelay={TOOLTIP_HOVER_ON_DELAY}
-                position={Position.RIGHT}
-              >
-                <AddButton
-                  className={`${EntityClassNames.ADD_BUTTON} ${props.className}`}
-                  onClick={props.onCreate}
-                />
-              </TooltipComponent>
-            ) : (
-              <AddButton
-                className={`${EntityClassNames.ADD_BUTTON} ${props.className}`}
-                onClick={props.onCreate}
-              />
-            )}
+            {addButton}
             {props.contextMenu && (
               <ContextMenuWrapper>{props.contextMenu}</ContextMenuWrapper>
             )}
             <Loader isVisible={isUpdating} />
           </EntityItem>
-          <Collapse active={props.active} isOpen={isOpen} step={props.step}>
+          <Collapse
+            active={props.active}
+            collapseRef={props.collapseRef}
+            isOpen={isOpen}
+            step={props.step}
+          >
             {props.children}
           </Collapse>
         </Wrapper>

@@ -1,7 +1,7 @@
 package com.appsmith.server.services.ce;
 
 import com.appsmith.server.domains.InviteUser;
-import com.appsmith.server.domains.Organization;
+import com.appsmith.server.domains.Workspace;
 import com.appsmith.server.domains.User;
 import com.appsmith.server.dtos.InviteUsersDTO;
 import com.appsmith.server.dtos.ResetUserPasswordDTO;
@@ -19,7 +19,7 @@ public interface UserServiceCE extends CrudService<User, String> {
 
     Mono<User> findByEmail(String email);
 
-    Mono<User> switchCurrentOrganization(String orgId);
+    Mono<User> switchCurrentWorkspace(String workspaceId);
 
     Mono<Boolean> forgotPasswordTokenGenerate(ResetUserPasswordDTO resetUserPasswordDTO);
 
@@ -31,13 +31,13 @@ public interface UserServiceCE extends CrudService<User, String> {
 
     Mono<UserSignupDTO> createUserAndSendEmail(User user, String originHeader);
 
-    Mono<User> userCreate(User user);
+    Mono<User> userCreate(User user, boolean isAdminUser);
 
     Mono<List<User>> inviteUsers(InviteUsersDTO inviteUsersDTO, String originHeader);
 
     Mono<User> updateCurrentUser(UserUpdateDTO updates, ServerWebExchange exchange);
 
-    Map<String, String> getEmailParams(Organization organization, User inviterUser, String inviteUrl, boolean isNewUser);
+    Map<String, String> getEmailParams(Workspace workspace, User inviterUser, String inviteUrl, boolean isNewUser);
 
     Mono<Boolean> isUsersEmpty();
 

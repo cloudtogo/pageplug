@@ -24,6 +24,7 @@ import {
   GENERATE_TEMPLATE_FORM_PATH,
   matchBuilderPath,
   VIEWER_LAYOUT_CONFIG_PATH,
+  BUILDER_CHECKLIST_PATH,
 } from "constants/routes";
 import styled from "styled-components";
 import { useShowPropertyPane } from "utils/hooks/dragResizeHooks";
@@ -39,6 +40,7 @@ import { useWidgetSelection } from "utils/hooks/useWidgetSelection";
 import PagesEditor from "./PagesEditor";
 import { builderURL } from "RouteBuilder";
 import history from "utils/history";
+import OnboardingChecklist from "./FirstTimeUserOnboarding/Checklist";
 
 const Wrapper = styled.div<{ isVisible: boolean }>`
   position: absolute;
@@ -98,6 +100,11 @@ function EditorsRouter() {
             component={IntegrationEditor}
             exact
             path={`${path}${INTEGRATION_EDITOR_PATH}`}
+          />
+          <SentryRoute
+            component={OnboardingChecklist}
+            exact
+            path={`${path}${BUILDER_CHECKLIST_PATH}`}
           />
           <SentryRoute
             component={ApiEditor}

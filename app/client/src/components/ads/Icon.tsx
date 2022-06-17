@@ -70,9 +70,10 @@ import { ReactComponent as WorkspaceIcon } from "assets/icons/ads/organizationIc
 import { ReactComponent as SettingIcon } from "assets/icons/control/settings.svg";
 import { ReactComponent as DropdownIcon } from "assets/icons/ads/dropdown.svg";
 import { ReactComponent as ChatIcon } from "assets/icons/ads/app-icons/chat.svg";
+import { ReactComponent as JsIcon } from "assets/icons/ads/js.svg";
 
 import styled from "styled-components";
-import { CommonComponentProps, Classes } from "./common";
+import { Classes, CommonComponentProps } from "./common";
 import { noop } from "lodash";
 import { theme } from "constants/DefaultTheme";
 import Spinner from "./Spinner";
@@ -90,6 +91,7 @@ import CheckLineIcon from "remixicon-react/CheckLineIcon";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import CloseCircleIcon from "remixicon-react/CloseCircleFillIcon";
 import CommentContextMenu from "remixicon-react/More2FillIcon";
+import More2FillIcon from "remixicon-react/More2FillIcon";
 import CompassesLine from "remixicon-react/CompassesLineIcon";
 import ContextMenuIcon from "remixicon-react/MoreFillIcon";
 import CreateNewIcon from "remixicon-react/AddLineIcon";
@@ -102,8 +104,10 @@ import Download from "remixicon-react/DownloadCloud2LineIcon";
 import DuplicateIcon from "remixicon-react/FileCopyLineIcon";
 import EditIcon from "remixicon-react/PencilFillIcon";
 import EditLineIcon from "remixicon-react/EditLineIcon";
+import EditUnderlineIcon from "remixicon-react/EditLineIcon";
 import Emoji from "remixicon-react/EmotionLineIcon";
 import ExpandMore from "remixicon-react/ArrowDownSLineIcon";
+import DownArrowIcon from "remixicon-react/ArrowDownSLineIcon";
 import ExpandLess from "remixicon-react/ArrowUpSLineIcon";
 import EyeOn from "remixicon-react/EyeLineIcon";
 import EyeOff from "remixicon-react/EyeOffLineIcon";
@@ -122,12 +126,12 @@ import KeyIcon from "remixicon-react/Key2LineIcon";
 import LeftArrowIcon2 from "remixicon-react/ArrowLeftSLineIcon";
 import Link2 from "remixicon-react/LinkIcon";
 import LeftArrowIcon from "remixicon-react/ArrowLeftLineIcon";
-import More2FillIcon from "remixicon-react/More2FillIcon";
 import NewsPaperLine from "remixicon-react/NewspaperLineIcon";
 import OvalCheck from "remixicon-react/CheckboxCircleLineIcon";
 import OvalCheckFill from "remixicon-react/CheckboxCircleFillIcon";
 import Pin3 from "remixicon-react/Pushpin2FillIcon";
 import QueryIcon from "remixicon-react/CodeSSlashLineIcon";
+import RemoveIcon from "remixicon-react/SubtractLineIcon";
 import RightArrowIcon from "remixicon-react/ArrowRightLineIcon";
 import RightArrowIcon2 from "remixicon-react/ArrowRightSLineIcon";
 import RocketIcon from "remixicon-react/RocketLineIcon";
@@ -137,10 +141,8 @@ import Trash from "remixicon-react/DeleteBinLineIcon";
 import UpArrow from "remixicon-react/ArrowUpSFillIcon";
 import WarningIcon from "remixicon-react/ErrorWarningFillIcon";
 import WarningLineIcon from "remixicon-react/ErrorWarningLineIcon";
-import EditUnderlineIcon from "remixicon-react/EditLineIcon";
 import LogoutIcon from "remixicon-react/LogoutBoxRLineIcon";
 import ShareLineIcon from "remixicon-react/ShareLineIcon";
-import DownArrowIcon from "remixicon-react/ArrowDownSLineIcon";
 import LoaderLineIcon from "remixicon-react/LoaderLineIcon";
 import WidgetIcon from "remixicon-react/FunctionLineIcon";
 import RefreshLineIcon from "remixicon-react/RefreshLineIcon";
@@ -149,6 +151,7 @@ import EditBoxLineIcon from "remixicon-react/EditBoxLineIcon";
 import StarLineIcon from "remixicon-react/StarLineIcon";
 import StarFillIcon from "remixicon-react/StarFillIcon";
 import Settings2LineIcon from "remixicon-react/Settings2LineIcon";
+import DownloadIcon from "remixicon-react/DownloadLineIcon";
 import UploadCloud2LineIcon from "remixicon-react/UploadCloud2LineIcon";
 import DownloadLineIcon from "remixicon-react/DownloadLineIcon";
 import FileListLineIcon from "remixicon-react/FileListLineIcon";
@@ -156,6 +159,7 @@ import HamburgerIcon from "remixicon-react/MenuLineIcon";
 import MagicLineIcon from "remixicon-react/MagicLineIcon";
 import UserHeartLineIcon from "remixicon-react/UserHeartLineIcon";
 import DvdLineIcon from "remixicon-react/DvdLineIcon";
+import Group2LineIcon from "remixicon-react/Group2LineIcon";
 
 export enum IconSize {
   XXS = "extraExtraSmall",
@@ -196,7 +200,8 @@ export const IconWrapper = styled.span<IconProps>`
 
   display: flex;
   align-items: center;
-
+  cursor: ${(props) =>
+    props.disabled ? "not-allowed" : props.clickable ? "pointer" : "default"};
   svg {
     width: ${(props) => sizeHandler(props.size)}px;
     height: ${(props) => sizeHandler(props.size)}px;
@@ -215,7 +220,6 @@ export const IconWrapper = styled.span<IconProps>`
     ${(props) => (props.invisible ? `visibility: hidden;` : null)};
 
     &:hover {
-      cursor: ${(props) => (props.clickable ? "pointer" : "default")};
       ${(props) =>
         !props.keepColors
           ? `
@@ -314,6 +318,7 @@ const ICON_LOOKUP = {
   "warning-line": <WarningLineIcon />,
   "warning-triangle": <WarningTriangleIcon />,
   "chat-help": <ChatIcon />,
+  "group-2-line": <Group2LineIcon />,
   billing: <BillingIcon />,
   book: <BookIcon />,
   bug: <BugIcon />,
@@ -344,6 +349,7 @@ const ICON_LOOKUP = {
   hamburger: <HamburgerIcon />,
   help: <HelpIcon />,
   info: <InfoIcon />,
+  js: <JsIcon />,
   key: <KeyIcon />,
   lightning: <LightningIcon />,
   link: <LinkIcon />,
@@ -351,6 +357,7 @@ const ICON_LOOKUP = {
   logout: <LogoutIcon />,
   manage: <ManageIcon />,
   member: <UserHeartLineIcon />,
+  minus: <RemoveIcon />,
   mobile: <MobileIcon />,
   open: <OpenIcon />,
   pin: <Pin />,
@@ -378,6 +385,7 @@ const ICON_LOOKUP = {
   warning: <WarningIcon />,
   widget: <WidgetIcon />,
   workspace: <WorkspaceIcon />,
+  download2: <DownloadIcon />,
   upgrade: <DvdLineIcon />,
 };
 
@@ -396,10 +404,14 @@ export type IconProps = {
   keepColors?: boolean;
   loaderWithIconWrapper?: boolean;
   clickable?: boolean;
+  disabled?: boolean;
 };
 
 const Icon = forwardRef(
-  (props: IconProps & CommonComponentProps, ref: Ref<HTMLSpanElement>) => {
+  (
+    { onClick, ...props }: IconProps & CommonComponentProps,
+    ref: Ref<HTMLSpanElement>,
+  ) => {
     const iconName = props.name;
     const returnIcon =
       ICON_LOOKUP[iconName as keyof typeof ICON_LOOKUP] || null;
@@ -420,9 +432,9 @@ const Icon = forwardRef(
         className={`${Classes.ICON} ${props.className}`}
         clickable={clickable}
         data-cy={props.cypressSelector}
+        onClick={props.disabled ? noop : onClick}
         ref={ref}
         {...props}
-        onClick={props.onClick || noop}
       >
         {returnIcon}
       </IconWrapper>
@@ -434,4 +446,4 @@ const Icon = forwardRef(
 
 Icon.displayName = "Icon";
 
-export default Icon;
+export default React.memo(Icon);

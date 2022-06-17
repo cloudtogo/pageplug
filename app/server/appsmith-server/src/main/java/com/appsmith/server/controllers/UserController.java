@@ -4,7 +4,7 @@ import com.appsmith.server.constants.Url;
 import com.appsmith.server.controllers.ce.UserControllerCE;
 import com.appsmith.server.services.SessionUserService;
 import com.appsmith.server.services.UserDataService;
-import com.appsmith.server.services.UserOrganizationService;
+import com.appsmith.server.services.UserWorkspaceService;
 import com.appsmith.server.services.UserService;
 import com.appsmith.server.solutions.UserSignup;
 import com.appsmith.server.solutions.CloudOSActionSolution;
@@ -19,11 +19,11 @@ public class UserController extends UserControllerCE {
 
     public UserController(UserService service,
                           SessionUserService sessionUserService,
-                          UserOrganizationService userOrganizationService,
+                          UserWorkspaceService userWorkspaceService,
                           UserSignup userSignup,
                           UserDataService userDataService,
                           CloudOSActionSolution cloudOSActionSolution) {
 
-        super(service, sessionUserService, userOrganizationService, userSignup, userDataService, cloudOSActionSolution);
+        super(service, sessionUserService, userWorkspaceService, userSignup, userDataService, cloudOSActionSolution);
     }
 }

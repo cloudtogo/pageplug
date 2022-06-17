@@ -5,7 +5,10 @@ import {
   deleteErrorLog,
   LogDebuggerErrorAnalyticsPayload,
 } from "actions/debuggerActions";
-import { ReduxAction, ReduxActionTypes } from "constants/ReduxActionConstants";
+import {
+  ReduxAction,
+  ReduxActionTypes,
+} from "@appsmith/constants/ReduxActionConstants";
 import { ENTITY_TYPE, Log, LogActionPayload } from "entities/AppsmithConsole";
 import {
   all,
@@ -311,7 +314,7 @@ function* logDebuggerErrorAnalyticsSaga(
         payload.entityId,
       );
       const plugin: Plugin = yield select(getPlugin, action.pluginId);
-      const pluginName = plugin.name.replace(/ /g, "");
+      const pluginName = plugin?.name?.replace(/ /g, "");
 
       // Sending plugin name for actions
       AnalyticsUtil.logEvent(payload.eventName, {
