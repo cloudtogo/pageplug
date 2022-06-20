@@ -37,7 +37,7 @@ public class CloudOSActionSolution {
 
     private static final String RESTAPI_PLUGIN = "restapi-plugin";
 
-    private final OrganizationService organizationService;
+    private final WorkspaceService workspaceService;
     private final DatasourceService datasourceService;
     private final DatasourceRepository datasourceRepository;
     private final ApplicationPageService applicationPageService;
@@ -74,9 +74,9 @@ public class CloudOSActionSolution {
     public Mono<Application> createOrganizationApplication(Map<String, Object> payload) {
         String name = (String) payload.get("name");
         Boolean isMobile = (Boolean) payload.get("isMobile");
-        Organization organization = new Organization();
+        Workspace organization = new Workspace();
         organization.setName(name);
-        return organizationService.create(organization).flatMap(org -> {
+        return workspaceService.create(organization).flatMap(org -> {
             Application app = new Application();
             app.setName(name);
             app.setColor("#EA6179");
@@ -201,10 +201,10 @@ public class CloudOSActionSolution {
         String orgName = (String) payload.get("org_name");
         String appId = (String) payload.get("lowcode_id");
 
-        Organization organization = new Organization();
+        Workspace organization = new Workspace();
         organization.setName(orgName);
-        return organizationService.create(organization)
-                .flatMap(org -> applicationForkingService.forkApplicationToOrganization(appId, org.getId()))
+        return workspaceService.create(organization)
+                .flatMap(org -> applicationForkingService.forkApplicationToWorkspace(appId, org.getId()))
                 .flatMap(application -> {
                     return Mono.just("/org/" + application.getOrganizationId() + "/applications/" + application.getId() + "/pages/" + application.getPages().get(0).getId());
                 });
@@ -222,10 +222,10 @@ public class CloudOSActionSolution {
         String appId = (String) payload.get("lowcode_id");
         List<LinkedHashMap<String, String>> instanceList = (List<LinkedHashMap<String, String>>) payload.get("instance_list");
 
-        Organization organization = new Organization();
+        Workspace organization = new Workspace();
         organization.setName(deployId);
-        return organizationService.create(organization)
-                .flatMap(org -> applicationForkingService.forkApplicationToOrganization(appId, org.getId()))
+        return workspaceService.create(organization)
+                .flatMap(org -> applicationForkingService.forkApplicationToWorkspace(appId, org.getId()))
                 .flatMap(application ->
                         Flux.fromIterable(instanceList)
                                 .flatMap(instance -> updateDatasourceUrl(instance, application))

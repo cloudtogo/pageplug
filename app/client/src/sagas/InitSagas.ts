@@ -209,7 +209,7 @@ function* initiateApplication(payload: InitializeEditorPayload) {
   const { applicationId, mode, pageId, queryParams } = payload;
 
   // sync CloudOS api
-  if (queryParams.get("inCloudOS") === "true") {
+  if (queryParams && queryParams.get("inCloudOS") === "true") {
     const depList = queryParams.get("depList") || "";
     const projectId = queryParams.get("projectId");
     const orgId = queryParams.get("orgId");
