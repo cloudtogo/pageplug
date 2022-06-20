@@ -153,6 +153,8 @@ class Editor extends Component<Props> {
       this.props.location,
       prevProps.location,
     );
+    const queryParams = new URLSearchParams(this.props.location.search);
+    queryParams.set("inCloudOS", this.props.inCloudOS ? "true" : "false");
 
     const branch = getSearchQuery(
       this.props.location.search,
@@ -172,6 +174,7 @@ class Editor extends Component<Props> {
         pageId,
         branch,
         mode: APP_MODE.EDIT,
+        queryParams,
       });
     } else {
       /**
@@ -209,7 +212,7 @@ class Editor extends Component<Props> {
     this.props.handlePathUpdated(location);
   };
 
-  public render() {
+  render() {
     if (
       !this.props.isEditorInitialized ||
       !this.state.registered ||
