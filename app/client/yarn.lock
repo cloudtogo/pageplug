@@ -1354,7 +1354,24 @@
   resolved "https://registry.npmmirror.com/@blueprintjs/colors/-/colors-4.0.2.tgz#ab3e589d70ecc67e963eb72d5e3e5f90b46a84a2"
   integrity sha512-+luoTHBcdUD5y5SGCxk9CAHPfa9WeGdHuTRGABFanoyXZwrtzh5a8hlN/g3B5xeseGdoz50uMtmeanF8Atx0fg==
 
-"@blueprintjs/core@^3.36.0", "@blueprintjs/core@^3.43.0", "@blueprintjs/core@^3.54.0":
+"@blueprintjs/core@3.36.0":
+  version "3.36.0"
+  resolved "https://registry.npmmirror.com/@blueprintjs/core/-/core-3.36.0.tgz#0a271092050c17b84f29426594708180a1b5401a"
+  integrity sha512-7VUyF+qWelDysajK0Xowlou+iqbGAFfGaM3znpmm7OEEIli5XRWjG9rhNuEk3sP7zbdOJpyqh5PAPDQvm5Sxmg==
+  dependencies:
+    "@blueprintjs/icons" "^3.23.0"
+    "@types/dom4" "^2.0.1"
+    classnames "^2.2"
+    dom4 "^2.1.5"
+    normalize.css "^8.0.1"
+    popper.js "^1.16.1"
+    react-lifecycles-compat "^3.0.4"
+    react-popper "^1.3.7"
+    react-transition-group "^2.9.0"
+    resize-observer-polyfill "^1.5.1"
+    tslib "~1.13.0"
+
+"@blueprintjs/core@^3.43.0", "@blueprintjs/core@^3.54.0":
   version "3.54.0"
   resolved "https://registry.npmmirror.com/@blueprintjs/core/-/core-3.54.0.tgz#7269f34eccdf0d2874377c5ad973ca2a31562221"
   integrity sha512-u2c1s6MNn0ocxhnC6CuiG5g3KV6b4cKUvSobznepA9SC3/AL1s3XOvT7DLWoHRv2B/vBOHFYEDzLw2/vlcGGZg==
@@ -1383,7 +1400,7 @@
     react-lifecycles-compat "^3.0.4"
     tslib "~2.3.1"
 
-"@blueprintjs/icons@^3.10.0", "@blueprintjs/icons@^3.33.0":
+"@blueprintjs/icons@^3.10.0", "@blueprintjs/icons@^3.23.0", "@blueprintjs/icons@^3.33.0":
   version "3.33.0"
   resolved "https://registry.npmmirror.com/@blueprintjs/icons/-/icons-3.33.0.tgz#4dacdb7731abdf08d1ab240f3a23a185df60918b"
   integrity sha512-Q6qoSDIm0kRYQZISm59UUcDCpV3oeHulkLuh3bSlw0HhcSjvEQh2PSYbtaifM60Q4aK4PCd6bwJHg7lvF1x5fQ==
