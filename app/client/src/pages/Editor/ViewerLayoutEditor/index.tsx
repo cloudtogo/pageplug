@@ -170,6 +170,7 @@ function PagesEditor() {
   const initState = useMemo(() => {
     let init = {
       logoUrl: "",
+      name: "",
       color: Colors.MINT_GREEN,
       treeData: pages.map((p) => ({
         title: p.pageName,
@@ -192,6 +193,7 @@ function PagesEditor() {
   }, [currentLayout]);
 
   const [logoUrl, setLogoUrl] = useState(initState.logoUrl);
+  const [name, setName] = useState(initState.name);
   const [color, setColor] = useState(initState.color);
   const [treeData, setTreeData] = useState<any>(initState.treeData);
   const [outsiderTree, setOutsiderTree] = useState<any>(initState.outsiderTree);
@@ -320,9 +322,11 @@ function PagesEditor() {
 
   const saveConfig = async () => {
     const data = {
+      name: name,
       viewerLayout: JSON.stringify({
         color,
         logoUrl,
+        name,
         treeData,
         outsiderTree,
       }),
@@ -368,6 +372,9 @@ function PagesEditor() {
 
       <ConfigContainer>
         <Form labelCol={{ span: 4 }} wrapperCol={{ span: 12 }}>
+          <Form.Item label="应用名称">
+            <Input value={name} onChange={(e) => setName(e.target.value)} />
+          </Form.Item>
           <Form.Item label="Logo地址">
             <Input
               value={logoUrl}
@@ -383,7 +390,7 @@ function PagesEditor() {
         </Form>
         <NavPreview color={color}>
           <img src={logoUrl.trim() || DEFAULT_VIEWER_LOGO} />
-          <h2>{appName}</h2>
+          <h2>{name}</h2>
         </NavPreview>
       </ConfigContainer>
 
