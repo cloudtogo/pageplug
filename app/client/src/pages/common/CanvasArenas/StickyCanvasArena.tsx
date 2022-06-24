@@ -96,7 +96,13 @@ export const StickyCanvasArena = forwardRef(
     };
     const observeSlider = () => {
       interSectionObserver.current.disconnect();
-      interSectionObserver.current.observe(slidingArenaRef.current);
+      if (slidingArenaRef.current) {
+        interSectionObserver.current.observe(slidingArenaRef.current);
+      }
+    };
+    const observeSliderHoc = (slidingArena: Element) => () => {
+      interSectionObserver.current.disconnect();
+      interSectionObserver.current.observe(slidingArena);
     };
 
     useEffect(() => {
@@ -105,16 +111,18 @@ export const StickyCanvasArena = forwardRef(
 
     useEffect(() => {
       let parentCanvas: Element | null;
-      if (slidingArenaRef.current) {
-        parentCanvas = getRelativeScrollingParent(slidingArenaRef.current);
-        parentCanvas?.addEventListener("scroll", observeSlider, false);
-        parentCanvas?.addEventListener("mouseover", observeSlider, false);
+      const slidingArena = slidingArenaRef.current;
+      const observerCallback = observeSliderHoc(slidingArena);
+      if (slidingArena) {
+        parentCanvas = getRelativeScrollingParent(slidingArena);
+        parentCanvas?.addEventListener("scroll", observerCallback, false);
+        parentCanvas?.addEventListener("mouseover", observerCallback, false);
       }
-      resizeObserver.current.observe(slidingArenaRef.current);
+      resizeObserver.current.observe(slidingArena);
       return () => {
-        parentCanvas?.removeEventListener("scroll", observeSlider);
-        parentCanvas?.removeEventListener("mouseover", observeSlider);
-        resizeObserver.current.unobserve(slidingArenaRef.current);
+        parentCanvas?.removeEventListener("scroll", observerCallback);
+        parentCanvas?.removeEventListener("mouseover", observerCallback);
+        resizeObserver.current.unobserve(slidingArena);
       };
     }, []);
 

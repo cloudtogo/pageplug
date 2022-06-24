@@ -198,7 +198,7 @@ export class DataTreeFactory {
     const endWidgets = performance.now();
 
     dataTree.pageList = pageList;
-    dataTree.global = {
+    dataTree.global = dataTree.appsmith = {
       ...appData,
       // combine both persistent and transient state with the transient state
       // taking precedence in case the key is the same
