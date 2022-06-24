@@ -16,6 +16,7 @@ export const useCanvasDragToScroll = (
       let scrollDirection = 0;
       let scrollByPixels = 0;
       let speed = 0;
+      const canvasElm = canvasRef.current;
       const clearScrollStacks = () => {
         if (scrollTimeOut.length) {
           scrollTimeOut.forEach((each) => {
@@ -29,9 +30,7 @@ export const useCanvasDragToScroll = (
         if (!canScroll.current) {
           scrollDirection = 0;
         }
-        const scrollParent: Element | null = getNearestParentCanvas(
-          canvasRef.current,
-        );
+        const scrollParent: Element | null = getNearestParentCanvas(canvasElm);
         if (
           isDragging &&
           isCurrentDraggedCanvas &&
@@ -53,16 +52,16 @@ export const useCanvasDragToScroll = (
       const checkIfNeedsScroll = (e: any) => {
         if (isDragging && isCurrentDraggedCanvas) {
           const scrollParent: Element | null = getNearestParentCanvas(
-            canvasRef.current,
+            canvasElm,
           );
-          if (canvasRef.current && scrollParent) {
+          if (canvasElm && scrollParent) {
             const scrollObj = getScrollByPixels(
               {
                 top: e.offsetY,
                 height: 0,
               },
               scrollParent,
-              canvasRef.current,
+              canvasElm,
             );
             scrollByPixels = scrollObj.scrollAmount;
             speed = scrollObj.speed;
@@ -81,14 +80,10 @@ export const useCanvasDragToScroll = (
           }
         }
       };
-      canvasRef.current?.addEventListener(
-        "mousemove",
-        checkIfNeedsScroll,
-        false,
-      );
+      canvasElm?.addEventListener("mousemove", checkIfNeedsScroll, false);
       return () => {
         clearScrollStacks();
-        canvasRef.current?.removeEventListener("mousemove", checkIfNeedsScroll);
+        canvasElm?.removeEventListener("mousemove", checkIfNeedsScroll);
       };
     }
   }, [isCurrentDraggedCanvas, isDragging, snapRows, canExtend]);

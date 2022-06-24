@@ -38,22 +38,23 @@ function useFixedFooter<
   };
 
   useLayoutEffect(() => {
+    const bodyElm = bodyRef.current;
     const onScrollOrResize = throttle(() => {
-      if (fixedFooter && footerRef.current && bodyRef.current) {
-        const hasScrolledToBottom = scrolledToBottom(bodyRef.current);
+      if (fixedFooter && footerRef.current && bodyElm) {
+        const hasScrolledToBottom = scrolledToBottom(bodyElm);
         applyScrollClass(footerRef.current, !hasScrolledToBottom);
       }
     }, THROTTLE_TIMEOUT);
 
-    if (bodyRef.current) {
+    if (bodyElm) {
       const resizeObserver = new ResizeObserver(onScrollOrResize);
-      resizeObserver.observe(bodyRef.current);
-      bodyRef.current.addEventListener("scroll", onScrollOrResize);
+      resizeObserver.observe(bodyElm);
+      bodyElm.addEventListener("scroll", onScrollOrResize);
     }
 
     return () => {
-      if (bodyRef.current) {
-        bodyRef.current.removeEventListener("scroll", onScrollOrResize);
+      if (bodyElm) {
+        bodyElm.removeEventListener("scroll", onScrollOrResize);
       }
     };
   }, []);
