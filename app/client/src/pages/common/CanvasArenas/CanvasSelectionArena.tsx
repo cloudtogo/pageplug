@@ -172,6 +172,7 @@ export function CanvasSelectionArena({
       let selectionRectangle: SelectedArenaDimensions = initRectangle();
       let isMultiSelect = false;
       let isDragging = false;
+      const slidingArena = slidingArenaRef.current;
 
       const getSelectionDimensions = () => {
         return {
@@ -404,43 +405,21 @@ export function CanvasSelectionArena({
       };
 
       const addEventListeners = () => {
-        slidingArenaRef.current?.addEventListener("click", onClick, false);
-        slidingArenaRef.current?.addEventListener(
-          "mousedown",
-          onMouseDown,
-          false,
-        );
-        slidingArenaRef.current?.addEventListener("mouseup", onMouseUp, false);
-        slidingArenaRef.current?.addEventListener(
-          "mousemove",
-          onMouseMove,
-          false,
-        );
-        slidingArenaRef.current?.addEventListener(
-          "mouseleave",
-          onMouseLeave,
-          false,
-        );
-        slidingArenaRef.current?.addEventListener(
-          "mouseenter",
-          onMouseEnter,
-          false,
-        );
+        slidingArena?.addEventListener("click", onClick, false);
+        slidingArena?.addEventListener("mousedown", onMouseDown, false);
+        slidingArena?.addEventListener("mouseup", onMouseUp, false);
+        slidingArena?.addEventListener("mousemove", onMouseMove, false);
+        slidingArena?.addEventListener("mouseleave", onMouseLeave, false);
+        slidingArena?.addEventListener("mouseenter", onMouseEnter, false);
         scrollParent?.addEventListener("scroll", onScroll, false);
       };
       const removeEventListeners = () => {
-        slidingArenaRef.current?.removeEventListener("mousedown", onMouseDown);
-        slidingArenaRef.current?.removeEventListener("mouseup", onMouseUp);
-        slidingArenaRef.current?.removeEventListener("mousemove", onMouseMove);
-        slidingArenaRef.current?.removeEventListener(
-          "mouseleave",
-          onMouseLeave,
-        );
-        slidingArenaRef.current?.removeEventListener(
-          "mouseenter",
-          onMouseEnter,
-        );
-        slidingArenaRef.current?.removeEventListener("click", onClick);
+        slidingArena?.removeEventListener("mousedown", onMouseDown);
+        slidingArena?.removeEventListener("mouseup", onMouseUp);
+        slidingArena?.removeEventListener("mousemove", onMouseMove);
+        slidingArena?.removeEventListener("mouseleave", onMouseLeave);
+        slidingArena?.removeEventListener("mouseenter", onMouseEnter);
+        slidingArena?.removeEventListener("click", onClick);
         scrollParent?.removeEventListener("scroll", onScroll);
       };
       const init = () => {

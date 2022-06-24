@@ -57,15 +57,16 @@ function useBlurAndFocusEvents<TElement extends BaseEvents>({
   }, [executeAction, onFocusDynamicString]);
 
   useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.addEventListener("blur", onBlurHandler);
-      inputRef.current.addEventListener("focus", onFocusHandler);
+    const inputElm = inputRef.current;
+    if (inputElm) {
+      inputElm.addEventListener("blur", onBlurHandler);
+      inputElm.addEventListener("focus", onFocusHandler);
     }
 
     return () => {
-      if (inputRef.current) {
-        inputRef.current.removeEventListener("blur", onBlurHandler);
-        inputRef.current.removeEventListener("focus", onFocusHandler);
+      if (inputElm) {
+        inputElm.removeEventListener("blur", onBlurHandler);
+        inputElm.removeEventListener("focus", onFocusHandler);
       }
     };
   }, [inputRef.current, onBlurHandler, onFocusHandler]);
