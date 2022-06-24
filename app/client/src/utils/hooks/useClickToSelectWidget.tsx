@@ -62,6 +62,7 @@ export function ClickContentToOpenPropPane({
   const clickToSelectFn = useCallback(
     (e) => {
       clickToSelectWidget(e, widgetId);
+      e.stopPropagation();
     },
     [widgetId, clickToSelectWidget],
   );
@@ -86,8 +87,9 @@ export function ClickContentToOpenPropPane({
 
   return (
     <div
-      onClick={stopEventPropagation}
-      onClickCapture={clickToSelectFn}
+      // onClick={stopEventPropagation}
+      // onClickCapture={clickToSelectFn}
+      onClick={clickToSelectFn}
       onMouseOver={handleMouseOver}
       style={{
         width: "100%",

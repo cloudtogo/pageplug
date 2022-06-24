@@ -225,6 +225,7 @@ export const useCanvasDragging = (
         leftColumn: 0,
         topRow: 0,
       };
+      const slidingArena = slidingArenaRef.current;
 
       const resetCanvasState = () => {
         throttledStopReflowing();
@@ -761,24 +762,12 @@ export const useCanvasDragging = (
         startDragging();
 
         return () => {
-          slidingArenaRef.current?.removeEventListener(
-            "mousemove",
-            onMouseMove,
-          );
-          slidingArenaRef.current?.removeEventListener("mouseup", onMouseUp);
+          slidingArena?.removeEventListener("mousemove", onMouseMove);
+          slidingArena?.removeEventListener("mouseup", onMouseUp);
           scrollParent?.removeEventListener("scroll", onScroll);
-          slidingArenaRef.current?.removeEventListener(
-            "mouseover",
-            onMouseOver,
-          );
-          slidingArenaRef.current?.removeEventListener(
-            "mouseout",
-            resetCanvasState,
-          );
-          slidingArenaRef.current?.removeEventListener(
-            "mouseleave",
-            resetCanvasState,
-          );
+          slidingArena?.removeEventListener("mouseover", onMouseOver);
+          slidingArena?.removeEventListener("mouseout", resetCanvasState);
+          slidingArena?.removeEventListener("mouseleave", resetCanvasState);
           document.body.removeEventListener("mouseup", onMouseUp);
           window.removeEventListener("mouseup", onMouseUp);
           window.removeEventListener("mousemove", captureMousePosition);

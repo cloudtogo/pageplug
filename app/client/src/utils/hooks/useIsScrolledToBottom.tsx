@@ -9,17 +9,18 @@ const useIsScrolledToBottom = (
 ) => {
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
   useEffect(() => {
+    const target = ref?.current;
     const calculateIsScrolledToBottom = (e: any) => {
       if (!e.target) return;
       const { offsetHeight, scrollHeight, scrollTop } = e.target;
       setIsScrolledToBottom(scrollHeight - (offsetHeight + scrollTop) < 10);
     };
 
-    ref?.current?.addEventListener("scroll", calculateIsScrolledToBottom);
-    calculateIsScrolledToBottom({ target: ref.current });
+    target?.addEventListener("scroll", calculateIsScrolledToBottom);
+    calculateIsScrolledToBottom({ target });
 
     return () => {
-      ref?.current?.removeEventListener("scroll", calculateIsScrolledToBottom);
+      target?.removeEventListener("scroll", calculateIsScrolledToBottom);
     };
   }, [ref?.current, ...deps]);
 

@@ -935,18 +935,16 @@ function CameraComponent(props: CameraComponentProps) {
   }, [image]);
 
   useEffect(() => {
-    if (videoBlobURL && videoElementRef.current) {
-      videoElementRef.current.src = videoBlobURL;
-      videoElementRef.current.addEventListener("ended", handlePlayerEnded);
-      videoElementRef.current.addEventListener("timeupdate", handleTimeUpdate);
+    const videoElm = videoElementRef.current;
+    if (videoBlobURL && videoElm) {
+      videoElm.src = videoBlobURL;
+      videoElm.addEventListener("ended", handlePlayerEnded);
+      videoElm.addEventListener("timeupdate", handleTimeUpdate);
     }
 
     return () => {
-      videoElementRef.current?.removeEventListener("ended", handlePlayerEnded);
-      videoElementRef.current?.removeEventListener(
-        "timeupdate",
-        handleTimeUpdate,
-      );
+      videoElm?.removeEventListener("ended", handlePlayerEnded);
+      videoElm?.removeEventListener("timeupdate", handleTimeUpdate);
     };
   }, [videoBlobURL, videoElementRef.current]);
 

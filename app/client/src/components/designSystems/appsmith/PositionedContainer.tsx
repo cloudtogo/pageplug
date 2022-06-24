@@ -126,6 +126,7 @@ export function PositionedContainer(props: PositionedContainerProps) {
   const onClickFn = useCallback(
     (e) => {
       clickToSelectWidget(e, props.widgetId);
+      stopEventPropagation(e);
     },
     [props.widgetId, clickToSelectWidget],
   );
@@ -142,8 +143,9 @@ export function PositionedContainer(props: PositionedContainerProps) {
       id={props.widgetId}
       key={`positioned-container-${props.widgetId}`}
       // Positioned Widget is the top enclosure for all widgets and clicks on/inside the widget should not be propogated/bubbled out of this Container.
-      onClick={stopEventPropagation}
-      onClickCapture={onClickFn}
+      // onClick={stopEventPropagation}
+      // onClickCapture={onClickFn}
+      onClick={onClickFn}
       //Before you remove: This is used by property pane to reference the element
       style={containerStyle}
       zIndexOnHover={onHoverZIndex}
