@@ -206,7 +206,12 @@ public class CloudOSActionSolution {
         return workspaceService.create(organization)
                 .flatMap(org -> applicationForkingService.forkApplicationToWorkspace(appId, org.getId()))
                 .flatMap(application -> {
-                    return Mono.just("/org/" + application.getOrganizationId() + "/applications/" + application.getId() + "/pages/" + application.getPages().get(0).getId());
+                    return Mono.just("/org/" + application.getOrganizationId() + "/applications/" + application.getId() + "/pages/" +
+                            application.getPages().stream()
+                                .filter(ApplicationPage::isDefault)
+                                .map(ApplicationPage::getId)
+                                .findFirst()
+                                .orElse(""));
                 });
     }
 
@@ -230,7 +235,12 @@ public class CloudOSActionSolution {
                         Flux.fromIterable(instanceList)
                                 .flatMap(instance -> updateDatasourceUrl(instance, application))
                                 .collectList()
-                                .thenReturn("/applications/" + application.getId() + "/pages/" + application.getPages().get(0).getId())
+                                .thenReturn("/applications/" + application.getId() + "/pages/" +
+                                    application.getPages().stream()
+                                        .filter(ApplicationPage::isDefault)
+                                        .map(ApplicationPage::getId)
+                                        .findFirst()
+                                        .orElse(""))
                 );
     }
 
