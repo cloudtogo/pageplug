@@ -43,7 +43,7 @@ export class EntityExplorer {
 
   public SelectEntityByName(
     entityNameinLeftSidebar: string,
-    section: "WIDGETS" | "QUERIES/JS" | "DATASOURCES" | "" = "",
+    section: "组件" | "查询/JS" | "数据源" | "" = "",
   ) {
     if (section) this.expandCollapseEntity(section); //to expand respective section
     cy.xpath(this._entityNameInExplorer(entityNameinLeftSidebar))

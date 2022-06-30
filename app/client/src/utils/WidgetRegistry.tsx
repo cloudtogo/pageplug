@@ -147,10 +147,10 @@ import ProgressWidget, {
 import { registerWidget } from "./WidgetRegisterHelpers";
 import { WidgetConfiguration } from "widgets/constants";
 
-// import FormilyWidget, {
-//   FormilyWidgetProps,
-//   ProfiledFormilyWidget,
-// } from "widgets/FormilyWidget";
+import FormilyWidget, {
+  CONFIG as FORMILY_WIDGET_CONFIG,
+} from "widgets/FormilyWidget";
+
 // import PickerWidget, {
 //   PickerWidgetProps,
 //   ProfiledPickerWidget,
@@ -273,6 +273,8 @@ export const ALL_WIDGETS_AND_CONFIG = [
   [PhoneInputWidget, PHONE_INPUT_WIDGET_V2_CONFIG],
   [CurrencyInputWidget, CURRENCY_INPUT_WIDGET_V2_CONFIG],
   [JSONFormWidget, JSON_FORM_WIDGET_CONFIG],
+
+  [FormilyWidget, FORMILY_WIDGET_CONFIG],
 
   //Deprecated Widgets
   [InputWidget, INPUT_WIDGET_CONFIG],
