@@ -64,7 +64,6 @@ public class Application extends BaseDomain {
 
     private String slug;
 
-    @JsonIgnore
     AppLayout unpublishedAppLayout;
 
     AppLayout publishedAppLayout;

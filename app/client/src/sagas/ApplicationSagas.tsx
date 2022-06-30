@@ -532,7 +532,7 @@ export function* createApplicationSaga(
       yield put(resetCurrentApplication());
 
       const layout: AppLayoutConfig = {
-        type: isMobile ? "MOBILE_FLUID" : "DESKTOP",
+        type: isMobile ? "MOBILE_FLUID" : "FLUID",
       };
       const request: CreateApplicationRequest = {
         name: applicationName,
@@ -578,8 +578,9 @@ export function* createApplicationSaga(
         let pageURL;
 
         if (
-          isFirstTimeUserOnboardingEnabled &&
-          FirstTimeUserOnboardingApplicationId === ""
+          isMobile ||
+          (isFirstTimeUserOnboardingEnabled &&
+            FirstTimeUserOnboardingApplicationId === "")
         ) {
           yield put({
             type:
@@ -592,7 +593,6 @@ export function* createApplicationSaga(
             applicationSlug: application.slug as string,
             pageSlug: defaultPageSlug,
             pageId: application.defaultPageId as string,
-            isMobile,
           });
         } else {
           pageURL = generateTemplateURL({
@@ -601,7 +601,6 @@ export function* createApplicationSaga(
             applicationSlug: application.slug as string,
             pageSlug: defaultPageSlug,
             pageId: application.defaultPageId as string,
-            isMobile,
           });
         }
         history.push(pageURL);

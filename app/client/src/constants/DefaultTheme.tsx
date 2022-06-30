@@ -2598,7 +2598,7 @@ export const light: ColorType = {
     },
   },
   applications: {
-    bg: `repeating-radial-gradient( circle at 50% 36%, rgba(0, 0, 0, 0) 0,#ffffff var(--spread) ),repeating-linear-gradient( #d8d8d808,#d8d8d836 )`,
+    bg: `repeating-radial-gradient( circle at 50% 36%, rgba(0, 0, 0, 0) 0,#ffffff23 var(--spread) ),repeating-linear-gradient( ${Colors.MINT_GREEN},${Colors.MINT_GREEN} )`,
     textColor: Colors.MINT_GREEN,
     orgColor: Colors.MINT_GREEN,
     iconColor: Colors.MINT_GREEN,
