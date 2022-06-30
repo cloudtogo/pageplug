@@ -1,11 +1,9 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "./BaseWidget";
-import { WidgetType, WidgetTypes } from "constants/WidgetConstants";
-import FormilyComponent from "components/designSystems/appsmith/FormilyComponent";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import { WidgetType } from "constants/WidgetConstants";
+import FormilyComponent from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import * as Sentry from "@sentry/react";
-import withMeta, { WithMeta } from "./MetaHOC";
 
 class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
@@ -162,12 +160,12 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
     );
   }
 
-  getWidgetType(): WidgetType {
-    return WidgetTypes.FORMILY_WIDGET;
+  static getWidgetType(): WidgetType {
+    return "FORMILY_WIDGET";
   }
 }
 
-export interface FormilyWidgetProps extends WidgetProps, WithMeta {
+export interface FormilyWidgetProps extends WidgetProps {
   formType: FormType;
   initValue?: any;
   title?: string;
@@ -182,6 +180,3 @@ export interface FormilyWidgetProps extends WidgetProps, WithMeta {
 export type FormType = "PLAIN" | "MODAL" | "DRAWER";
 
 export default FormilyWidget;
-export const ProfiledFormilyWidget = Sentry.withProfiler(
-  withMeta(FormilyWidget),
-);

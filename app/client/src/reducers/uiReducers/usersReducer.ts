@@ -188,16 +188,6 @@ const usersReducer = createReducer(initialState, {
       commentOnboardingState: action.payload,
     },
   }),
-  [ReduxActionTypes.FETCH_FEATURE_FLAGS_SUCCESS]: (state: UsersReduxState) => ({
-    ...state,
-    featureFlagFetched: true,
-  }),
-  [ReduxActionErrorTypes.FETCH_FEATURE_FLAGS_ERROR]: (
-    state: UsersReduxState,
-  ) => ({
-    ...state,
-    featureFlagFetched: true,
-  }),
 });
 
 export interface PropertyPanePositionConfig {

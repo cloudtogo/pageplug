@@ -33,7 +33,7 @@ import {
   FormDialog,
 } from "@formily/antd";
 import { Card, Slider, Rate, Button } from "antd";
-import { FormType } from "widgets/FormilyWidget";
+import { FormType } from "widgets/FormilyWidget/widget";
 import styled from "styled-components";
 import _ from "lodash";
 

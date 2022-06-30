@@ -108,7 +108,7 @@ const Datasources = React.memo(() => {
       icon={null}
       isDefaultExpanded={isDatasourcesOpen === null ? true : isDatasourcesOpen}
       isSticky
-      name="DATASOURCES"
+      name="数据源"
       onCreate={addDatasource}
       onToggle={onDatasourcesToggle}
       searchKeyword={""}
