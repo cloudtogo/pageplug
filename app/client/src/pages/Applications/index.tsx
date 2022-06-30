@@ -264,27 +264,6 @@ const NoAppsFound = styled.div`
     margin-bottom: 24px;
   }
 `;
-const AddIcon = styled(Icon)`
-  position: absolute;
-  top: ${(props) => (props.isMobile ? "12" : "10")}px;
-  left: 50%;
-  margin-left: -4.5px;
-
-  & svg {
-    width: 9px;
-    height: 9px;
-  }
-`;
-const AddTypeIcon = styled(Icon)`
-  & svg {
-    width: 39px;
-    height: 39px;
-  }
-`;
-
-const IconGroup = styled.div`
-  position: relative;
-`;
 
 function Item(props: {
   label: string;
@@ -426,7 +405,7 @@ function LeftPane() {
                 submitCreateOrganizationForm(
                   {
                     name: getNextEntityName(
-                      "未命名应用组 ",
+                      "应用组 ",
                       fetchedUserOrgs.map((el: any) => el.organization.name),
                     ),
                   },
@@ -526,39 +505,16 @@ const spreadKeyframes = (init: number) => {
   return keyframes`${frames}`;
 };
 
-const ApplicationAddCardWrapper = styled(Card)`
+const SpreadButton = styled(Button)`
   --spread: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background: ${(props) => props.theme.colors.applications.bg};
-  align-items: center;
-  width: ${(props) => props.theme.card.minWidth}px;
-  height: ${(props) => props.theme.card.minHeight}px;
-  position: relative;
-  box-shadow: inset 0 0 20px #dcdcdc;
-  border-radius: 6px;
-  padding: 0;
-  margin: ${(props) => props.theme.spaces[5]}px;
-  a {
-    display: block;
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: calc(100% - ${(props) => props.theme.card.titleHeight}px);
-    width: 100%;
-  }
-  cursor: pointer;
   &:hover {
     animation: ${spreadKeyframes(20)} 0.6s infinite;
+    background: ${(props) => props.theme.colors.applications.bg};
   }
-  .t--create-app-popup svg path {
-    color: ${(props) => props.theme.colors.applications.iconColor};
-    stroke: ${(props) => props.theme.colors.applications.iconColor};
-    fill: ${(props) => props.theme.colors.applications.iconColor};
-  }
-  .createnew {
-    color: ${(props) => props.theme.colors.applications.textColor};
+
+  & svg {
+    width: 18px;
+    height: 18px;
   }
 `;
 
@@ -682,48 +638,29 @@ function ApplicationsSection(props: any) {
 
   const CreateApp = ({ isMobile, orgId, applications }: any) => {
     return (
-      <PaddingWrapper>
-        <ApplicationAddCardWrapper
-          onClick={() => {
-            if (
-              Object.entries(creatingApplicationMap).length === 0 ||
-              (creatingApplicationMap && !creatingApplicationMap[orgId])
-            ) {
-              createNewApplication(
-                getNextEntityName(
-                  "未命名应用 ",
-                  applications.map((el: any) => el.name),
-                ),
-                orgId,
-                isMobile,
-              );
-            }
-          }}
-        >
-          {creatingApplicationMap && creatingApplicationMap[orgId] ? (
-            <Spinner size={IconSize.XXXL} />
-          ) : (
-            <>
-              <IconGroup>
-                <AddTypeIcon
-                  className="t--create-app-popup"
-                  name={isMobile ? "mobile" : "desktop"}
-                  size={IconSize.LARGE}
-                />
-                <AddIcon
-                  className="t--create-app-popup"
-                  name={"plus"}
-                  size={IconSize.LARGE}
-                  isMobile={isMobile}
-                />
-              </IconGroup>
-              <CreateNewLabel className="createnew" type={TextType.H4}>
-                新建{isMobile ? "移动" : "桌面"}应用
-              </CreateNewLabel>
-            </>
-          )}
-        </ApplicationAddCardWrapper>
-      </PaddingWrapper>
+      <SpreadButton
+        className="t--new-button createnew"
+        icon={"plus"}
+        isLoading={creatingApplicationMap && creatingApplicationMap[orgId]}
+        onClick={() => {
+          if (
+            Object.entries(creatingApplicationMap).length === 0 ||
+            (creatingApplicationMap && !creatingApplicationMap[orgId])
+          ) {
+            createNewApplication(
+              getNextEntityName(
+                "应用 ",
+                applications.map((el: any) => el.name),
+              ),
+              orgId,
+              isMobile,
+            );
+          }
+        }}
+        size={Size.medium}
+        tag="button"
+        text={`创建${isMobile ? "移动" : "桌面"}应用`}
+      />
     );
   };
 
@@ -806,14 +743,14 @@ function ApplicationsSection(props: any) {
                         Form={OrgInviteUsersForm}
                         canOutsideClickClose
                         orgId={organization.id}
-                        title={`Invite Users to ${organization.name}`}
+                        title={`邀请小伙伴到应用组 ${organization.name}`}
                         trigger={
                           <Button
                             category={Category.tertiary}
                             icon={"share-line"}
                             size={Size.medium}
                             tag="button"
-                            text={"Share"}
+                            text={"分享"}
                           />
                         }
                       />
@@ -824,36 +761,19 @@ function ApplicationsSection(props: any) {
                     ) &&
                       !isMobile &&
                       !isFetchingApplications &&
-                      applications.length !== 0 && (
-                        <Button
-                          className="t--new-button createnew"
-                          icon={"plus"}
-                          isLoading={
-                            creatingApplicationMap &&
-                            creatingApplicationMap[organization.id]
-                          }
-                          onClick={() => {
-                            if (
-                              Object.entries(creatingApplicationMap).length ===
-                                0 ||
-                              (creatingApplicationMap &&
-                                !creatingApplicationMap[organization.id])
-                            ) {
-                              createNewApplication(
-                                getNextEntityName(
-                                  "Untitled application ",
-                                  applications.map((el: any) => el.name),
-                                ),
-                                organization.id,
-                                isMobile,
-                              );
-                            }
-                          }}
-                          size={Size.medium}
-                          tag="button"
-                          text={"New"}
-                        />
-                      )}
+                      applications.length !== 0 && [
+                        <CreateApp
+                          key="pc"
+                          orgId={organization.id}
+                          applications={applications}
+                        />,
+                        <CreateApp
+                          key="mobile"
+                          orgId={organization.id}
+                          applications={applications}
+                          isMobile
+                        />,
+                      ]}
                     {(currentUser || isFetchingApplications) && !isMobile && (
                       <Menu
                         className="t--org-name"
@@ -896,7 +816,7 @@ function ApplicationsSection(props: any) {
                                 onBlur={(value: string) => {
                                   OrgNameChange(value, organization.id);
                                 }}
-                                placeholder="Workspace name"
+                                placeholder="应用组名称"
                                 savingState={
                                   isSavingOrgInfo
                                     ? SavingState.STARTED
@@ -916,7 +836,7 @@ function ApplicationsSection(props: any) {
                                   },
                                 )
                               }
-                              text="Settings"
+                              text="配置"
                             />
                             {enableImportExport && (
                               <MenuItem
@@ -927,13 +847,13 @@ function ApplicationsSection(props: any) {
                                     organization.id,
                                   )
                                 }
-                                text="Import"
+                                text="导入"
                               />
                             )}
                             <MenuItem
                               icon="share-line"
                               onSelect={() => setSelectedOrgId(organization.id)}
-                              text="Share"
+                              text="分享"
                             />
                             <MenuItem
                               icon="member"
@@ -945,7 +865,7 @@ function ApplicationsSection(props: any) {
                                   },
                                 )
                               }
-                              text="Members"
+                              text="成员"
                             />
                           </>
                         )}
@@ -959,8 +879,8 @@ function ApplicationsSection(props: any) {
                           }}
                           text={
                             !warnLeavingOrganization
-                              ? "Leave Organization"
-                              : "Are you sure?"
+                              ? "退出应用组"
+                              : "确定退出应用组吗？"
                           }
                           type={
                             !warnLeavingOrganization ? undefined : "warning"
@@ -977,8 +897,8 @@ function ApplicationsSection(props: any) {
                             }}
                             text={
                               !warnDeleteOrg
-                                ? "Delete Organization"
-                                : "Are you sure?"
+                                ? "删除应用组"
+                                : "确定删除应用组吗？"
                             }
                             type={!warnDeleteOrg ? undefined : "warning"}
                           />
@@ -1007,36 +927,25 @@ function ApplicationsSection(props: any) {
               {applications.length === 0 && (
                 <NoAppsFound>
                   <NoAppsFoundIcon />
-                  <span>There’s nothing inside this organization</span>
+                  <span>应用组是空的</span>
                   {/* below component is duplicate. This is because of cypress test were failing */}
                   {!isMobile && (
-                    <Button
-                      className="t--new-button createnew"
-                      icon={"plus"}
-                      isLoading={
-                        creatingApplicationMap &&
-                        creatingApplicationMap[organization.id]
-                      }
-                      onClick={() => {
-                        if (
-                          Object.entries(creatingApplicationMap).length === 0 ||
-                          (creatingApplicationMap &&
-                            !creatingApplicationMap[organization.id])
-                        ) {
-                          createNewApplication(
-                            getNextEntityName(
-                              "Untitled application ",
-                              applications.map((el: any) => el.name),
-                            ),
-                            organization.id,
-                            isMobile,
-                          );
-                        }
-                      }}
-                      size={Size.medium}
-                      tag="button"
-                      text={"New"}
-                    />
+                    <div
+                      className="flex justify-between"
+                      style={{ width: 272 }}
+                    >
+                      <CreateApp
+                        key="pc"
+                        orgId={organization.id}
+                        applications={applications}
+                      />
+                      <CreateApp
+                        key="mobile"
+                        orgId={organization.id}
+                        applications={applications}
+                        isMobile
+                      />
+                    </div>
                   )}
                 </NoAppsFound>
               )}

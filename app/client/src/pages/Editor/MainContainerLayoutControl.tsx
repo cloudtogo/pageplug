@@ -30,12 +30,12 @@ export const AppsmithDefaultLayout: AppLayoutConfig = {
 
 const AppsmithLayouts: AppsmithLayoutConfigOption[] = [
   {
-    name: "Fluid Width",
+    name: "自适应宽度",
     type: "FLUID",
     icon: "fluid",
   },
   {
-    name: "Desktop",
+    name: "桌面宽度",
     type: "DESKTOP",
     icon: "desktop",
   },
@@ -54,11 +54,6 @@ const AppsmithLayouts: AppsmithLayoutConfigOption[] = [
   //   type: "MOBILE",
   //   icon: "mobile",
   // },
-  {
-    name: "Mobile Device",
-    type: "MOBILE",
-    icon: "mobile",
-  },
 ];
 
 export function MainContainerLayoutControl() {
