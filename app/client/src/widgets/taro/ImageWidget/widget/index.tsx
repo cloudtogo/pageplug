@@ -1,10 +1,10 @@
 import * as React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { WidgetType } from "constants/WidgetConstants";
-import ImageComponent from "components/designSystems/taro/ImageComponent";
+import ImageComponent from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import LoadingWrapper from "./LoadingWrapper";
+import LoadingWrapper from "../../LoadingWrapper";
 
 class MImageWidget extends BaseWidget<MImageWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
@@ -107,7 +107,7 @@ class MImageWidget extends BaseWidget<MImageWidgetProps, WidgetState> {
     }
   };
 
-  getWidgetType(): WidgetType {
+  static getWidgetType(): WidgetType {
     return "TARO_IMAGE_WIDGET";
   }
 }
@@ -122,4 +122,3 @@ export interface MImageWidgetProps extends WidgetProps {
 }
 
 export default MImageWidget;
-export const MProfiledImageWidget = MImageWidget;
