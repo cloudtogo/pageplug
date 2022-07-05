@@ -160,6 +160,12 @@ import MActionBarWidget, {
 import MBottomBarWidget, {
   CONFIG as TARO_BOTTOM_BAR_WIDGET_CONFIG,
 } from "widgets/taro/BottomBarWidget";
+import MCellWidget, {
+  CONFIG as TARO_CELL_WIDGET_CONFIG,
+} from "widgets/taro/CellWidget";
+import MCheckboxWidget, {
+  CONFIG as TARO_CHECKBOX_WIDGET_CONFIG,
+} from "widgets/taro/CheckboxWidget";
 
 // import PickerWidget, {
 //   PickerWidgetProps,
@@ -190,10 +196,7 @@ import MBottomBarWidget, {
 //   MImageWidgetProps,
 //   MProfiledImageWidget,
 // } from "widgets/taro/ImageWidget";
-// import MCellWidget, {
-//   MCellWidgetProps,
-//   MProfiledCellWidget,
-// } from "widgets/taro/CellWidget";
+
 // import MHtmlWidget, {
 //   MHtmlWidgetProps,
 //   MProfiledHtmlWidget,
@@ -219,10 +222,7 @@ import MBottomBarWidget, {
 //   MLoadingWidgetProps,
 //   MProfiledLoadingWidget,
 // } from "widgets/taro/LoadingWidget";
-// import MCheckboxWidget, {
-//   MCheckboxWidgetProps,
-//   MProfiledCheckboxWidget,
-// } from "widgets/taro/CheckboxWidget";
+
 // import MFormWidget, {
 //   MFormWidgetProps,
 //   MProfiledFormWidget,
@@ -279,6 +279,8 @@ export const ALL_WIDGETS_AND_CONFIG = [
   [MButtonWidget, TARO_BUTTON_WIDGET_CONFIG],
   [MActionBarWidget, TARO_ACITON_BAR_WIDGET_CONFIG],
   [MBottomBarWidget, TARO_BOTTOM_BAR_WIDGET_CONFIG],
+  [MCellWidget, TARO_CELL_WIDGET_CONFIG],
+  [MCheckboxWidget, TARO_CHECKBOX_WIDGET_CONFIG],
 
   //Deprecated Widgets
   [InputWidget, INPUT_WIDGET_CONFIG],
