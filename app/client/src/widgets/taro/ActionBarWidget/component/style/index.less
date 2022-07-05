@@ -1,0 +1,104 @@
+@import './var.less';
+
+.@{rv-prefix}-action-bar {
+  --rv-action-bar-theme-color: @red;
+  --rv-action-bar-background-color: @action-bar-background-color;
+  --rv-action-bar-height: @action-bar-height;
+  --rv-action-bar-button-height: @action-bar-button-height;
+  --rv-action-bar-icon-width: @action-bar-icon-width;
+  --rv-action-bar-icon-height: @action-bar-icon-height;
+  --rv-action-bar-icon-color: @action-bar-icon-color;
+  --rv-action-bar-icon-size: @action-bar-icon-size;
+  --rv-action-bar-icon-font-size: @action-bar-icon-font-size;
+  --rv-action-bar-icon-active-color: @action-bar-icon-active-color;
+  --rv-action-bar-icon-text-color: @action-bar-icon-text-color;
+  --rv-action-bar-icon-background-color: @action-bar-icon-background-color;
+
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  box-sizing: content-box;
+  height: var(--rv-action-bar-height);
+  background-color: var(--rv-action-bar-background-color);
+}
+
+.@{rv-prefix}-action-bar-button {
+  flex: 1;
+  height: var(--rv-action-bar-button-height);
+  font-weight: @font-weight-bold;
+  font-size: @font-size-md;
+  border: none;
+  border-radius: 0;
+
+  &--first {
+    margin-left: 5 * @hd;
+    border-top-left-radius: @border-radius-max;
+    border-bottom-left-radius: @border-radius-max;
+  }
+
+  &--last {
+    margin-right: 5 * @hd;
+    border-top-right-radius: @border-radius-max;
+    border-bottom-right-radius: @border-radius-max;
+  }
+
+  &--warning {
+    background: transparent;
+    color: var(--rv-action-bar-theme-color);
+
+    &::after {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      content: ' ';
+      transform: translate(-50%, -50%);
+      background: currentColor;
+      opacity: 0.2;
+      border-color: currentColor;
+      border-style: inherit;
+      border-width: inherit;
+      border-radius: inherit;
+    }
+  }
+
+  &--danger {
+    background: var(--rv-action-bar-theme-color);
+  }
+
+  @media (max-width: 321px) {
+    font-size: 13 * @hd;
+  }
+}
+
+.@{rv-prefix}-action-bar-icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: var(--rv-action-bar-icon-width);
+  height: var(--rv-action-bar-icon-height);
+  color: var(--rv-action-bar-icon-text-color);
+  font-size: var(--rv-action-bar-icon-font-size);
+  line-height: 1;
+  text-align: center;
+  background-color: var(--rv-action-bar-icon-background-color);
+  cursor: pointer;
+
+  & > .taroify-badge-wrapper {
+    align-self: center;
+  }
+
+  &:active {
+    background-color: var(--rv-action-bar-icon-active-color);
+  }
+
+  &__icon {
+    margin: 0 auto @padding-base;
+    color: var(--rv-action-bar-icon-color);
+    font-size: var(--rv-action-bar-icon-size);
+  }
+}

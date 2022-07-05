@@ -154,6 +154,9 @@ import FormilyWidget, {
 import MButtonWidget, {
   CONFIG as TARO_BUTTON_WIDGET_CONFIG,
 } from "widgets/taro/ButtonWidget";
+import MActionBarWidget, {
+  CONFIG as TARO_ACITON_BAR_WIDGET_CONFIG,
+} from "widgets/taro/ActionBarWidget";
 
 // import PickerWidget, {
 //   PickerWidgetProps,
@@ -208,10 +211,7 @@ import MButtonWidget, {
 //   MBottomBarWidgetProps,
 //   MProfiledBottomBarWidget,
 // } from "widgets/taro/BottomBarWidget";
-// import MActionBarWidget, {
-//   MActionBarWidgetProps,
-//   MProfiledActionBarWidget,
-// } from "widgets/taro/ActionBarWidget";
+
 // import MSearchWidget, {
 //   MSearchWidgetProps,
 //   MProfiledSearchWidget,
@@ -278,6 +278,7 @@ export const ALL_WIDGETS_AND_CONFIG = [
   [FormilyWidget, FORMILY_WIDGET_CONFIG],
 
   [MButtonWidget, TARO_BUTTON_WIDGET_CONFIG],
+  [MActionBarWidget, TARO_ACITON_BAR_WIDGET_CONFIG],
 
   //Deprecated Widgets
   [InputWidget, INPUT_WIDGET_CONFIG],
