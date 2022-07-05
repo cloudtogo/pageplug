@@ -1,20 +1,15 @@
 import React, { ReactNode } from "react";
 import { connect } from "react-redux";
-import { ReduxActionTypes } from "constants/ReduxActionConstants";
-import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import WidgetFactory from "utils/WidgetFactory";
 import { ValidationTypes } from "constants/WidgetValidation";
-import ModalComponent from "components/designSystems/taro/PopoverComponent";
-import {
-  WidgetTypes,
-  RenderMode,
-  MAIN_CONTAINER_WIDGET_ID,
-} from "constants/WidgetConstants";
+import ModalComponent from "../component";
+import { RenderMode } from "constants/WidgetConstants";
 import { generateClassName } from "utils/generators";
-import withMeta, { WithMeta } from "../MetaHOC";
 import { AppState } from "reducers";
-import { getWidget } from "sagas/selectors";
+import { getCanvasWidth } from "selectors/editorSelectors";
 
 export class MPopupWidget extends BaseWidget<MPopupWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
@@ -66,10 +61,6 @@ export class MPopupWidget extends BaseWidget<MPopupWidgetProps, WidgetState> {
     ];
   }
 
-  getModalWidth() {
-    return this.props.mainContainer.rightColumn;
-  }
-
   renderChildWidget = (childWidgetData: WidgetProps): ReactNode => {
     childWidgetData.parentId = this.props.widgetId;
     childWidgetData.shouldScrollContents = false;
@@ -78,7 +69,7 @@ export class MPopupWidget extends BaseWidget<MPopupWidgetProps, WidgetState> {
     childWidgetData.isVisible = this.props.isVisible;
     childWidgetData.containerStyle = "none";
     childWidgetData.minHeight = this.props.height;
-    childWidgetData.rightColumn = this.getModalWidth();
+    childWidgetData.rightColumn = this.props.mainCanvasWidth;
     return WidgetFactory.createWidget(childWidgetData, this.props.renderMode);
   };
 
@@ -133,12 +124,12 @@ export class MPopupWidget extends BaseWidget<MPopupWidgetProps, WidgetState> {
     return this.makeModalComponent(children);
   }
 
-  getWidgetType() {
-    return WidgetTypes.TARO_POPUP_WIDGET;
+  static getWidgetType() {
+    return "TARO_POPUP_WIDGET";
   }
 }
 
-export interface MPopupWidgetProps extends WidgetProps, WithMeta {
+export interface MPopupWidgetProps extends WidgetProps {
   renderMode: RenderMode;
   children?: WidgetProps[];
   canOutsideClickClose?: boolean;
@@ -146,7 +137,7 @@ export interface MPopupWidgetProps extends WidgetProps, WithMeta {
   height: number;
   showPropertyPane: (widgetId?: string) => void;
   onClose: string;
-  mainContainer: WidgetProps;
+  mainCanvasWidth: number;
 }
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -167,12 +158,8 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 const mapStateToProps = (state: AppState) => {
   const props = {
-    mainContainer: getWidget(state, MAIN_CONTAINER_WIDGET_ID),
+    mainCanvasWidth: getCanvasWidth(state),
   };
   return props;
 };
-export default MPopupWidget;
-export const MProfiledPopupWidget = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(withMeta(MPopupWidget));
+export default connect(mapStateToProps, mapDispatchToProps)(MPopupWidget);

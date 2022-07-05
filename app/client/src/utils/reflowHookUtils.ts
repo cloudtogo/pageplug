@@ -15,11 +15,9 @@ export function collisionCheckPostReflow(
 
     if (widgets[widgetId].parentId !== parentId) return false;
 
-    if (
-      widgets[widgetId].type === "MODAL_WIDGET" ||
-      widgets[widgetId].type === "TARO_BOTTOM_BAR_WIDGET"
-    )
-      return false;
+    if (widgets[widgetId].detachFromLayout) return false;
+
+    if (widgets[widgetId].type === "MODAL_WIDGET") return false;
 
     return true;
   });

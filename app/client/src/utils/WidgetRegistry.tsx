@@ -187,6 +187,9 @@ import MListWidget, {
 import MLoadingWidget, {
   CONFIG as TARO_LOADING_WIDGET_CONFIG,
 } from "widgets/taro/LoadingWidget";
+import MPopupWidget, {
+  CONFIG as TARO_POPUP_WIDGET_CONFIG,
+} from "widgets/taro/PopupWidget";
 
 // import PickerWidget, {
 //   PickerWidgetProps,
@@ -202,11 +205,6 @@ import MLoadingWidget, {
 //   MTextWidgetProps,
 //   MProfiledTextWidget,
 // } from "widgets/taro/TextWidget";
-
-// import MPopupWidget, {
-//   MPopupWidgetProps,
-//   MProfiledPopupWidget,
-// } from "widgets/taro/PopupWidget";
 
 // import MSkuWidget, {
 //   MSkuWidgetProps,
@@ -283,6 +281,7 @@ export const ALL_WIDGETS_AND_CONFIG = [
   [MKVWidget, TARO_KV_WIDGET_CONFIG],
   [MListWidget, TARO_LIST_WIDGET_CONFIG],
   [MLoadingWidget, TARO_LOADING_WIDGET_CONFIG],
+  [MPopupWidget, TARO_POPUP_WIDGET_CONFIG],
 
   //Deprecated Widgets
   [InputWidget, INPUT_WIDGET_CONFIG],
