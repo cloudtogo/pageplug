@@ -175,6 +175,9 @@ import MGridWidget, {
 import MHtmlWidget, {
   CONFIG as TARO_HTML_WIDGET_CONFIG,
 } from "widgets/taro/HtmlWidget";
+import MImageWidget, {
+  CONFIG as TARO_IMAGE_WIDGET_CONFIG,
+} from "widgets/taro/ImageWidget";
 
 // import PickerWidget, {
 //   PickerWidgetProps,
@@ -198,10 +201,6 @@ import MHtmlWidget, {
 //   MPopupWidgetProps,
 //   MProfiledPopupWidget,
 // } from "widgets/taro/PopupWidget";
-// import MImageWidget, {
-//   MImageWidgetProps,
-//   MProfiledImageWidget,
-// } from "widgets/taro/ImageWidget";
 
 // import MSkuWidget, {
 //   MSkuWidgetProps,
@@ -281,6 +280,7 @@ export const ALL_WIDGETS_AND_CONFIG = [
   [MFormWidget, TARO_FORM_WIDGET_CONFIG],
   [MGridWidget, TARO_GRID_WIDGET_CONFIG],
   [MHtmlWidget, TARO_HTML_WIDGET_CONFIG],
+  [MImageWidget, TARO_IMAGE_WIDGET_CONFIG],
 
   //Deprecated Widgets
   [InputWidget, INPUT_WIDGET_CONFIG],
