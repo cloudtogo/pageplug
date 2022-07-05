@@ -1,16 +1,13 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
-import { WidgetType, WidgetTypes } from "constants/WidgetConstants";
-import GridComponent, {
-  GridComponentProps,
-} from "components/designSystems/taro/GridComponent";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import { WidgetType } from "constants/WidgetConstants";
+import GridComponent, { GridComponentProps } from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import { View } from "@tarojs/components";
 import { Skeleton } from "@taroify/core";
 import styled from "styled-components";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import withMeta, { WithMeta } from "../MetaHOC";
 
 const LoadingContainer = styled(View)<{
   cols?: number;
@@ -361,15 +358,11 @@ class GridWidget extends BaseWidget<GridWidgetProps, WidgetState> {
     );
   }
 
-  getWidgetType(): WidgetType {
-    return WidgetTypes.TARO_GRID_WIDGET;
+  static getWidgetType(): WidgetType {
+    return "TARO_GRID_WIDGET";
   }
 }
 
-export interface GridWidgetProps
-  extends WidgetProps,
-    GridComponentProps,
-    WithMeta {}
+export interface GridWidgetProps extends WidgetProps, GridComponentProps {}
 
 export default GridWidget;
-export const ProfiledGridWidget = withMeta(GridWidget);
