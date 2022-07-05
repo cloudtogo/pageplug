@@ -1,5 +1,5 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { View } from "@tarojs/components";
 import { Checkbox } from "@taroify/core";
 import { WidgetType } from "constants/WidgetConstants";
@@ -7,8 +7,7 @@ import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { DerivedPropertiesMap } from "utils/WidgetFactory";
 import { ValidationTypes } from "constants/WidgetValidation";
 import styled from "styled-components";
-import withMeta, { WithMeta } from "../MetaHOC";
-import LoadingWrapper from "./LoadingWrapper";
+import LoadingWrapper from "../../LoadingWrapper";
 
 const Container = styled(View)`
   width: 100%;
@@ -135,12 +134,12 @@ class MCheckboxWidget extends BaseWidget<MCheckboxWidgetProps, WidgetState> {
     );
   }
 
-  getWidgetType(): WidgetType {
+  static getWidgetType(): WidgetType {
     return "TARO_CHECKBOX_WIDGET";
   }
 }
 
-export interface MCheckboxWidgetProps extends WidgetProps, WithMeta {
+export interface MCheckboxWidgetProps extends WidgetProps {
   label: string;
   defaultCheckedState: boolean;
   isChecked?: boolean;
@@ -149,4 +148,3 @@ export interface MCheckboxWidgetProps extends WidgetProps, WithMeta {
 }
 
 export default MCheckboxWidget;
-export const MProfiledCheckboxWidget = withMeta(MCheckboxWidget);
