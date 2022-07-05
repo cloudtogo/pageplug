@@ -295,7 +295,9 @@ export const nextAvailableRowInContainer = (
   canvasWidgets: { [widgetId: string]: FlattenedWidgetProps },
 ) => {
   const filteredCanvasWidgets = omitBy(canvasWidgets, (widget) => {
-    return widget.type === "MODAL_WIDGET";
+    return (
+      widget.type === "MODAL_WIDGET" || widget.type === "TARO_BOTTOM_BAR_WIDGET"
+    );
   });
 
   return (
