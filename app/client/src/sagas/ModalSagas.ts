@@ -120,7 +120,7 @@ export function* showIfModalSaga(
 ) {
   if (
     action.payload.type === "MODAL_WIDGET" ||
-    action.payload.type === WidgetTypes.TARO_POPUP_WIDGET
+    action.payload.type === "TARO_POPUP_WIDGET"
   ) {
     yield put({
       type: ReduxActionTypes.SHOW_MODAL,
