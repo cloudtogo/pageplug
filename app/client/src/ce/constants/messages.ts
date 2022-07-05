@@ -354,8 +354,8 @@ export const DEBUGGER_SEARCH_SNIPPET = () => "查看代码片段";
 export const DEBUGGER_APPSMITH_SUPPORT = () => "获取官方支持";
 
 //action creator menu
-export const NO_ACTION = () => `暂无动作`;
-export const EXECUTE_A_QUERY = () => `执行动作`;
+export const NO_ACTION = () => `无动作`;
+export const EXECUTE_A_QUERY = () => `执行查询`;
 export const NAVIGATE_TO = () => `跳转到`;
 export const SHOW_MESSAGE = () => `消息提示`;
 export const OPEN_MODAL = () => `打开弹窗`;
