@@ -169,9 +169,12 @@ import MCheckboxWidget, {
 import MFormWidget, {
   CONFIG as TARO_FORM_WIDGET_CONFIG,
 } from "widgets/taro/FormWidget";
-import GridWidget, {
+import MGridWidget, {
   CONFIG as TARO_GRID_WIDGET_CONFIG,
 } from "widgets/taro/GridWidget";
+import MHtmlWidget, {
+  CONFIG as TARO_HTML_WIDGET_CONFIG,
+} from "widgets/taro/HtmlWidget";
 
 // import PickerWidget, {
 //   PickerWidgetProps,
@@ -200,10 +203,6 @@ import GridWidget, {
 //   MProfiledImageWidget,
 // } from "widgets/taro/ImageWidget";
 
-// import MHtmlWidget, {
-//   MHtmlWidgetProps,
-//   MProfiledHtmlWidget,
-// } from "widgets/taro/HtmlWidget";
 // import MSkuWidget, {
 //   MSkuWidgetProps,
 //   MProfiledSkuWidget,
@@ -280,7 +279,8 @@ export const ALL_WIDGETS_AND_CONFIG = [
   [MCellWidget, TARO_CELL_WIDGET_CONFIG],
   [MCheckboxWidget, TARO_CHECKBOX_WIDGET_CONFIG],
   [MFormWidget, TARO_FORM_WIDGET_CONFIG],
-  [GridWidget, TARO_GRID_WIDGET_CONFIG],
+  [MGridWidget, TARO_GRID_WIDGET_CONFIG],
+  [MHtmlWidget, TARO_HTML_WIDGET_CONFIG],
 
   //Deprecated Widgets
   [InputWidget, INPUT_WIDGET_CONFIG],
