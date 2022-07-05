@@ -169,6 +169,9 @@ import MCheckboxWidget, {
 import MFormWidget, {
   CONFIG as TARO_FORM_WIDGET_CONFIG,
 } from "widgets/taro/FormWidget";
+import GridWidget, {
+  CONFIG as TARO_GRID_WIDGET_CONFIG,
+} from "widgets/taro/GridWidget";
 
 // import PickerWidget, {
 //   PickerWidgetProps,
@@ -179,10 +182,7 @@ import MFormWidget, {
 //   SwiperWidgetProps,
 //   ProfiledSwiperWidget,
 // } from "widgets/taro/SwiperWidget";
-// import GridWidget, {
-//   GridWidgetProps,
-//   ProfiledGridWidget,
-// } from "widgets/taro/GridWidget";
+
 // import MTextWidget, {
 //   MTextWidgetProps,
 //   MProfiledTextWidget,
@@ -280,6 +280,7 @@ export const ALL_WIDGETS_AND_CONFIG = [
   [MCellWidget, TARO_CELL_WIDGET_CONFIG],
   [MCheckboxWidget, TARO_CHECKBOX_WIDGET_CONFIG],
   [MFormWidget, TARO_FORM_WIDGET_CONFIG],
+  [GridWidget, TARO_GRID_WIDGET_CONFIG],
 
   //Deprecated Widgets
   [InputWidget, INPUT_WIDGET_CONFIG],
