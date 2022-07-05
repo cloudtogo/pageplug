@@ -1,19 +1,14 @@
 import React, { ReactNode } from "react";
 import { connect } from "react-redux";
-import { ReduxActionTypes } from "constants/ReduxActionConstants";
-import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import WidgetFactory from "utils/WidgetFactory";
 import { ValidationTypes } from "constants/WidgetValidation";
-import BottomBarComponent from "components/designSystems/taro/BottomBarComponent";
-import {
-  WidgetTypes,
-  RenderMode,
-  MAIN_CONTAINER_WIDGET_ID,
-} from "constants/WidgetConstants";
+import BottomBarComponent from "../component";
+import { RenderMode } from "constants/WidgetConstants";
 import { generateClassName } from "utils/generators";
-import withMeta, { WithMeta } from "../MetaHOC";
+import { getCanvasWidth } from "selectors/editorSelectors";
 import { AppState } from "reducers";
-import { getWidget } from "sagas/selectors";
 
 export class MBottomBarWidget extends BaseWidget<
   MBottomBarWidgetProps,
@@ -50,10 +45,6 @@ export class MBottomBarWidget extends BaseWidget<
     ];
   }
 
-  getModalWidth() {
-    return this.props.mainContainer.rightColumn;
-  }
-
   renderChildWidget = (childWidgetData: WidgetProps): ReactNode => {
     childWidgetData.parentId = this.props.widgetId;
     childWidgetData.shouldScrollContents = false;
@@ -62,7 +53,7 @@ export class MBottomBarWidget extends BaseWidget<
     childWidgetData.isVisible = this.props.isVisible;
     childWidgetData.containerStyle = "none";
     childWidgetData.minHeight = this.props.height;
-    childWidgetData.rightColumn = this.getModalWidth();
+    childWidgetData.rightColumn = this.props.mainCanvasWidth;
     return WidgetFactory.createWidget(childWidgetData, this.props.renderMode);
   };
 
@@ -76,7 +67,7 @@ export class MBottomBarWidget extends BaseWidget<
   makeModalComponent(content: ReactNode) {
     return (
       <BottomBarComponent
-        className={`t--modal-widget ${generateClassName(this.props.widgetId)}`}
+        className={`${generateClassName(this.props.widgetId)}`}
         height={this.props.height}
       >
         {content}
@@ -95,17 +86,17 @@ export class MBottomBarWidget extends BaseWidget<
     return this.makeModalComponent(children);
   }
 
-  getWidgetType() {
-    return WidgetTypes.TARO_BOTTOM_BAR_WIDGET;
+  static getWidgetType() {
+    return "TARO_BOTTOM_BAR_WIDGET";
   }
 }
 
-export interface MBottomBarWidgetProps extends WidgetProps, WithMeta {
+export interface MBottomBarWidgetProps extends WidgetProps {
   renderMode: RenderMode;
   children?: WidgetProps[];
   height: number;
   showPropertyPane: (widgetId?: string) => void;
-  mainContainer: WidgetProps;
+  mainCanvasWidth: number;
 }
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -126,12 +117,8 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 const mapStateToProps = (state: AppState) => {
   const props = {
-    mainContainer: getWidget(state, MAIN_CONTAINER_WIDGET_ID),
+    mainCanvasWidth: getCanvasWidth(state),
   };
   return props;
 };
-export default MBottomBarWidget;
-export const MProfiledBottomBarWidget = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(withMeta(MBottomBarWidget));
+export default connect(mapStateToProps, mapDispatchToProps)(MBottomBarWidget);
