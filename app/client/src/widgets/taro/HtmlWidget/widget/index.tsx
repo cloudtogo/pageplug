@@ -1,5 +1,5 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { ScrollView, RichText } from "@tarojs/components";
 import { WidgetType } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
@@ -45,7 +45,7 @@ class MHtmlWidget extends BaseWidget<MHtmlWidgetProps, WidgetState> {
     );
   }
 
-  getWidgetType(): WidgetType {
+  static getWidgetType(): WidgetType {
     return "TARO_HTML_WIDGET";
   }
 }
@@ -55,4 +55,3 @@ export interface MHtmlWidgetProps extends WidgetProps {
 }
 
 export default MHtmlWidget;
-export const MProfiledHtmlWidget = MHtmlWidget;
