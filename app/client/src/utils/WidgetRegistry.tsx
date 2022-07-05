@@ -157,6 +157,9 @@ import MButtonWidget, {
 import MActionBarWidget, {
   CONFIG as TARO_ACITON_BAR_WIDGET_CONFIG,
 } from "widgets/taro/ActionBarWidget";
+import MBottomBarWidget, {
+  CONFIG as TARO_BOTTOM_BAR_WIDGET_CONFIG,
+} from "widgets/taro/BottomBarWidget";
 
 // import PickerWidget, {
 //   PickerWidgetProps,
@@ -207,10 +210,6 @@ import MActionBarWidget, {
 //   MTabsWidgetProps,
 //   MProfiledTabsWidget,
 // } from "widgets/taro/TabsWidget";
-// import MBottomBarWidget, {
-//   MBottomBarWidgetProps,
-//   MProfiledBottomBarWidget,
-// } from "widgets/taro/BottomBarWidget";
 
 // import MSearchWidget, {
 //   MSearchWidgetProps,
@@ -279,6 +278,7 @@ export const ALL_WIDGETS_AND_CONFIG = [
 
   [MButtonWidget, TARO_BUTTON_WIDGET_CONFIG],
   [MActionBarWidget, TARO_ACITON_BAR_WIDGET_CONFIG],
+  [MBottomBarWidget, TARO_BOTTOM_BAR_WIDGET_CONFIG],
 
   //Deprecated Widgets
   [InputWidget, INPUT_WIDGET_CONFIG],

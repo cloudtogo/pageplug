@@ -1297,7 +1297,9 @@ export const isSelectedWidgetsColliding = function*(
 
   const widgetsArray = Object.values(widgetsWithSameParent).filter(
     (widget) =>
-      widget.parentId === pastingIntoWidgetId && widget.type !== "MODAL_WIDGET",
+      widget.parentId === pastingIntoWidgetId &&
+      widget.type !== "MODAL_WIDGET" &&
+      widget.type !== "TARO_BOTTOM_BAR_WIDGET",
   );
 
   for (let i = 0; i < widgetsArray.length; i++) {

@@ -48,7 +48,7 @@ class CanvasWidget extends ContainerWidget {
     if (
       childWidgetData.detachFromLayout &&
       !childWidgetData.isVisible &&
-      childWidgetData.type !== WidgetTypes.TARO_BOTTOM_BAR_WIDGET
+      childWidgetData.type !== "TARO_BOTTOM_BAR_WIDGET"
     ) {
       return null;
     }
