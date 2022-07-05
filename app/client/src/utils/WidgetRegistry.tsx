@@ -184,6 +184,9 @@ import MKVWidget, {
 import MListWidget, {
   CONFIG as TARO_LIST_WIDGET_CONFIG,
 } from "widgets/taro/ListWidget";
+import MLoadingWidget, {
+  CONFIG as TARO_LOADING_WIDGET_CONFIG,
+} from "widgets/taro/LoadingWidget";
 
 // import PickerWidget, {
 //   PickerWidgetProps,
@@ -219,10 +222,6 @@ import MListWidget, {
 //   MSearchWidgetProps,
 //   MProfiledSearchWidget,
 // } from "widgets/taro/SearchWidget";
-// import MLoadingWidget, {
-//   MLoadingWidgetProps,
-//   MProfiledLoadingWidget,
-// } from "widgets/taro/LoadingWidget";
 
 export const ALL_WIDGETS_AND_CONFIG = [
   [CanvasWidget, CANVAS_WIDGET_CONFIG],
@@ -283,6 +282,7 @@ export const ALL_WIDGETS_AND_CONFIG = [
   [MImageWidget, TARO_IMAGE_WIDGET_CONFIG],
   [MKVWidget, TARO_KV_WIDGET_CONFIG],
   [MListWidget, TARO_LIST_WIDGET_CONFIG],
+  [MLoadingWidget, TARO_LOADING_WIDGET_CONFIG],
 
   //Deprecated Widgets
   [InputWidget, INPUT_WIDGET_CONFIG],
