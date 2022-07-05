@@ -1,18 +1,18 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { Backdrop, Loading } from "@taroify/core";
 import { View } from "@tarojs/components";
 import { WidgetType } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { ReduxActionTypes } from "constants/ReduxActionConstants";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { generateClassName } from "utils/generators";
 import { selectWidgetInitAction } from "actions/widgetSelectionActions";
 
 const Container = styled(View)`
   position: fixed;
-  top: 27px;
+  top: 60px;
   width: 0;
   height: 0;
 `;
@@ -130,7 +130,7 @@ class MLoadingWidget extends BaseWidget<MLoadingWidgetProps, WidgetState> {
     return this.getBackdrop();
   }
 
-  getWidgetType(): WidgetType {
+  static getWidgetType(): WidgetType {
     return "TARO_LOADING_WIDGET";
   }
 }
@@ -150,8 +150,4 @@ const mapDispatchToProps = (dispatch: any) => ({
   },
 });
 
-export default MLoadingWidget;
-export const MProfiledLoadingWidget = connect(
-  null,
-  mapDispatchToProps,
-)(MLoadingWidget);
+export default connect(null, mapDispatchToProps)(MLoadingWidget);
