@@ -1,10 +1,9 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { WidgetType } from "constants/WidgetConstants";
-import ActionBar from "components/designSystems/taro/ActionBar";
+import ActionBar from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
-import withMeta, { WithMeta } from "../MetaHOC";
 import { get } from "lodash";
 
 const noMeSubField = (
@@ -214,12 +213,12 @@ class MActionBarWidget extends BaseWidget<MActionBarWidgetProps, WidgetState> {
     );
   }
 
-  getWidgetType(): WidgetType {
+  static getWidgetType(): WidgetType {
     return "TARO_ACTION_BAR_WIDGET";
   }
 }
 
-export interface MActionBarWidgetProps extends WidgetProps, WithMeta {
+export interface MActionBarWidgetProps extends WidgetProps {
   actionsObj: Record<
     string,
     {
@@ -239,4 +238,3 @@ export interface MActionBarWidgetProps extends WidgetProps, WithMeta {
 }
 
 export default MActionBarWidget;
-export const MProfiledActionBarWidget = withMeta(MActionBarWidget);
