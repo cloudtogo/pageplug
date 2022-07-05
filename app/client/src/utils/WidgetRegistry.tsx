@@ -151,10 +151,15 @@ import FormilyWidget, {
   CONFIG as FORMILY_WIDGET_CONFIG,
 } from "widgets/FormilyWidget";
 
+import MButtonWidget, {
+  CONFIG as TARO_BUTTON_WIDGET_CONFIG,
+} from "widgets/taro/ButtonWidget";
+
 // import PickerWidget, {
 //   PickerWidgetProps,
 //   ProfiledPickerWidget,
 // } from "widgets/taro/PickerWidget";
+
 // import SwiperWidget, {
 //   SwiperWidgetProps,
 //   ProfiledSwiperWidget,
@@ -179,10 +184,6 @@ import FormilyWidget, {
 //   MImageWidgetProps,
 //   MProfiledImageWidget,
 // } from "widgets/taro/ImageWidget";
-// import MButtonWidget, {
-//   MButtonWidgetProps,
-//   MProfiledButtonWidget,
-// } from "widgets/taro/ButtonWidget";
 // import MCellWidget, {
 //   MCellWidgetProps,
 //   MProfiledCellWidget,
@@ -275,6 +276,8 @@ export const ALL_WIDGETS_AND_CONFIG = [
   [JSONFormWidget, JSON_FORM_WIDGET_CONFIG],
 
   [FormilyWidget, FORMILY_WIDGET_CONFIG],
+
+  [MButtonWidget, TARO_BUTTON_WIDGET_CONFIG],
 
   //Deprecated Widgets
   [InputWidget, INPUT_WIDGET_CONFIG],
