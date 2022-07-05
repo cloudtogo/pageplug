@@ -1,10 +1,9 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { WidgetType } from "constants/WidgetConstants";
-import CellComponent from "components/designSystems/taro/CellComponent";
+import CellComponent from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
-import withMeta, { WithMeta } from "../MetaHOC";
 import { get } from "lodash";
 
 const noMeSubField = (
@@ -260,12 +259,12 @@ class MCellWidget extends BaseWidget<MCellWidgetProps, WidgetState> {
     );
   }
 
-  getWidgetType(): WidgetType {
+  static getWidgetType(): WidgetType {
     return "TARO_CELL_WIDGET";
   }
 }
 
-export interface MCellWidgetProps extends WidgetProps, WithMeta {
+export interface MCellWidgetProps extends WidgetProps {
   title?: string;
   inset: boolean;
   bordered: boolean;
@@ -292,4 +291,3 @@ export interface MCellWidgetProps extends WidgetProps, WithMeta {
 }
 
 export default MCellWidget;
-export const MProfiledCellWidget = withMeta(MCellWidget);
