@@ -1,9 +1,7 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
-import { WidgetType, WidgetTypes } from "constants/WidgetConstants";
-import ListComponent, {
-  ListComponentProps,
-} from "components/designSystems/taro/ListComponent";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import { WidgetType } from "constants/WidgetConstants";
+import ListComponent, { ListComponentProps } from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { DerivedPropertiesMap } from "utils/WidgetFactory";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
@@ -11,7 +9,6 @@ import { View } from "@tarojs/components";
 import { Skeleton } from "@taroify/core";
 import styled from "styled-components";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import withMeta, { WithMeta } from "../MetaHOC";
 
 const LoadingContainer = styled(View)`
   height: 100%;
@@ -499,15 +496,11 @@ class ListWidget extends BaseWidget<MListWidgetProps, WidgetState> {
     );
   }
 
-  getWidgetType(): WidgetType {
-    return WidgetTypes.TARO_LIST_WIDGET;
+  static getWidgetType(): WidgetType {
+    return "TARO_LIST_WIDGET";
   }
 }
 
-export interface MListWidgetProps
-  extends WidgetProps,
-    ListComponentProps,
-    WithMeta {}
+export interface MListWidgetProps extends WidgetProps, ListComponentProps {}
 
 export default ListWidget;
-export const MProfiledListWidget = withMeta(ListWidget);
