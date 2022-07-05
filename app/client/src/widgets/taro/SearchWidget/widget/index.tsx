@@ -1,11 +1,10 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { View } from "@tarojs/components";
 import { Search } from "@taroify/core";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { WidgetType } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
-import withMeta, { WithMeta } from "../MetaHOC";
 
 class MSearchWidget extends BaseWidget<MSearchWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
@@ -177,12 +176,12 @@ class MSearchWidget extends BaseWidget<MSearchWidgetProps, WidgetState> {
     );
   }
 
-  getWidgetType(): WidgetType {
+  static getWidgetType(): WidgetType {
     return "TARO_SEARCH_WIDGET";
   }
 }
 
-export interface MSearchWidgetProps extends WidgetProps, WithMeta {
+export interface MSearchWidgetProps extends WidgetProps {
   text: string;
   rounded?: boolean;
   showButton?: boolean;
@@ -195,4 +194,3 @@ export interface MSearchWidgetProps extends WidgetProps, WithMeta {
 }
 
 export default MSearchWidget;
-export const MProfiledSearchWidget = withMeta(MSearchWidget);
