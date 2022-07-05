@@ -166,6 +166,9 @@ import MCellWidget, {
 import MCheckboxWidget, {
   CONFIG as TARO_CHECKBOX_WIDGET_CONFIG,
 } from "widgets/taro/CheckboxWidget";
+import MFormWidget, {
+  CONFIG as TARO_FORM_WIDGET_CONFIG,
+} from "widgets/taro/FormWidget";
 
 // import PickerWidget, {
 //   PickerWidgetProps,
@@ -223,11 +226,6 @@ import MCheckboxWidget, {
 //   MProfiledLoadingWidget,
 // } from "widgets/taro/LoadingWidget";
 
-// import MFormWidget, {
-//   MFormWidgetProps,
-//   MProfiledFormWidget,
-// } from "widgets/taro/FormWidget";
-
 export const ALL_WIDGETS_AND_CONFIG = [
   [CanvasWidget, CANVAS_WIDGET_CONFIG],
   [SkeletonWidget, SKELETON_WIDGET_CONFIG],
@@ -281,6 +279,7 @@ export const ALL_WIDGETS_AND_CONFIG = [
   [MBottomBarWidget, TARO_BOTTOM_BAR_WIDGET_CONFIG],
   [MCellWidget, TARO_CELL_WIDGET_CONFIG],
   [MCheckboxWidget, TARO_CHECKBOX_WIDGET_CONFIG],
+  [MFormWidget, TARO_FORM_WIDGET_CONFIG],
 
   //Deprecated Widgets
   [InputWidget, INPUT_WIDGET_CONFIG],
