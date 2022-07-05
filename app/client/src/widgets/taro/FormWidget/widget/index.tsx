@@ -1,5 +1,5 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { WidgetType } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
@@ -7,7 +7,6 @@ import FormComponent, {
   FormComponentProps,
 } from "components/designSystems/taro/FormComponent";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import withMeta, { WithMeta } from "../MetaHOC";
 import { get, isArray } from "lodash";
 
 const noMeSubField = (
@@ -368,15 +367,11 @@ class MFormWidget extends BaseWidget<MFormWidgetProps, WidgetState> {
     );
   }
 
-  getWidgetType(): WidgetType {
+  static getWidgetType(): WidgetType {
     return "TARO_FORM_WIDGET";
   }
 }
 
-export interface MFormWidgetProps
-  extends WidgetProps,
-    FormComponentProps,
-    WithMeta {}
+export interface MFormWidgetProps extends WidgetProps, FormComponentProps {}
 
 export default MFormWidget;
-export const MProfiledFormWidget = withMeta(MFormWidget);
