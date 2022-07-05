@@ -20,6 +20,7 @@ export interface WidgetConfiguration {
     meta: Record<string, any>;
     derived: DerivedPropertiesMap;
   };
+  isMobile?: boolean;
 }
 
 export const GRID_DENSITY_MIGRATION_V1 = 4;

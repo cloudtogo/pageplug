@@ -34,6 +34,7 @@ export interface WidgetConfig
   key: string;
   isCanvas?: boolean;
   needsMeta?: boolean;
+  isMobile?: boolean;
 }
 
 export interface WidgetConfigReducerState {

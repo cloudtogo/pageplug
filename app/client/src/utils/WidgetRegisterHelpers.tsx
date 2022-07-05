@@ -59,6 +59,7 @@ export const configureWidget = (config: WidgetConfiguration) => {
     key: generateReactKey(),
     iconSVG: config.iconSVG,
     isCanvas: config.isCanvas,
+    isMobile: config.isMobile,
   };
 
   store.dispatch({
