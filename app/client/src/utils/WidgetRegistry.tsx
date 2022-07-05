@@ -178,6 +178,9 @@ import MHtmlWidget, {
 import MImageWidget, {
   CONFIG as TARO_IMAGE_WIDGET_CONFIG,
 } from "widgets/taro/ImageWidget";
+import MKVWidget, {
+  CONFIG as TARO_KV_WIDGET_CONFIG,
+} from "widgets/taro/KVWidget";
 
 // import PickerWidget, {
 //   PickerWidgetProps,
@@ -206,10 +209,7 @@ import MImageWidget, {
 //   MSkuWidgetProps,
 //   MProfiledSkuWidget,
 // } from "widgets/taro/SkuWidget";
-// import MKVWidget, {
-//   MKVWidgetProps,
-//   MProfiledKVWidget,
-// } from "widgets/taro/KVWidget";
+
 // import MTabsWidget, {
 //   MTabsWidgetProps,
 //   MProfiledTabsWidget,
@@ -281,6 +281,7 @@ export const ALL_WIDGETS_AND_CONFIG = [
   [MGridWidget, TARO_GRID_WIDGET_CONFIG],
   [MHtmlWidget, TARO_HTML_WIDGET_CONFIG],
   [MImageWidget, TARO_IMAGE_WIDGET_CONFIG],
+  [MKVWidget, TARO_KV_WIDGET_CONFIG],
 
   //Deprecated Widgets
   [InputWidget, INPUT_WIDGET_CONFIG],
