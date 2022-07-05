@@ -1,10 +1,9 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { WidgetType } from "constants/WidgetConstants";
-import ButtonComponent from "components/designSystems/taro/ButtonComponent";
+import ButtonComponent from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
-import withMeta, { WithMeta } from "../MetaHOC";
 
 class MButtonWidget extends BaseWidget<MButtonWidgetProps, ButtonWidgetState> {
   state = {
@@ -163,12 +162,12 @@ class MButtonWidget extends BaseWidget<MButtonWidgetProps, ButtonWidgetState> {
     );
   }
 
-  getWidgetType(): WidgetType {
+  static getWidgetType(): WidgetType {
     return "TARO_BUTTON_WIDGET";
   }
 }
 
-export interface MButtonWidgetProps extends WidgetProps, WithMeta {
+export interface MButtonWidgetProps extends WidgetProps {
   text?: string;
   color?: string;
   textColor?: string;
@@ -184,4 +183,3 @@ interface ButtonWidgetState extends WidgetState {
 }
 
 export default MButtonWidget;
-export const MProfiledButtonWidget = withMeta(MButtonWidget);
