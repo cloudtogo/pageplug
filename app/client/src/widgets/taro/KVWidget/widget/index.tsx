@@ -1,87 +1,15 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { WidgetType } from "constants/WidgetConstants";
-import KVComponent from "components/designSystems/taro/KVComponent";
+import KVComponent from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
-import withMeta, { WithMeta } from "../MetaHOC";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import LoadingWrapper from "./LoadingWrapper";
-
-const textSizeOptions = [
-  {
-    label: "一级标题",
-    value: "HEADING1",
-    subText: "24px",
-    icon: "HEADING_ONE",
-  },
-  {
-    label: "二级标题",
-    value: "HEADING2",
-    subText: "18px",
-    icon: "HEADING_TWO",
-  },
-  {
-    label: "三级标题",
-    value: "HEADING3",
-    subText: "16px",
-    icon: "HEADING_THREE",
-  },
-  {
-    label: "一级段落",
-    value: "PARAGRAPH",
-    subText: "14px",
-    icon: "PARAGRAPH",
-  },
-  {
-    label: "二级段落",
-    value: "PARAGRAPH2",
-    subText: "12px",
-    icon: "PARAGRAPH_TWO",
-  },
-];
-
-const textAlignOptions = [
-  {
-    icon: "LEFT_ALIGN",
-    value: "LEFT",
-  },
-  {
-    icon: "CENTER_ALIGN",
-    value: "CENTER",
-  },
-  {
-    icon: "RIGHT_ALIGN",
-    value: "RIGHT",
-  },
-];
-
-const demoLayoutProps: any = {
-  list: [
-    {
-      key: "晚来天欲雪",
-      value: "能饮一杯无",
-    },
-  ],
-  kKey: "key",
-  vKey: "value",
-  layout: "v",
-  inset: false,
-  kColor: "#999",
-  kSize: "PARAGRAPH",
-  kBold: false,
-  kAlign: "LEFT",
-  vColor: "#000",
-  vSize: "PARAGRAPH",
-  vBold: false,
-  vAlign: "LEFT",
-  style: {
-    borderRadius: "4px",
-    padding: "1px 12px",
-    marginBottom: "8px",
-    background: "#f7f8f9",
-    border: "2px solid #ccc",
-  },
-};
+import LoadingWrapper from "../../LoadingWrapper";
+import {
+  textSizeOptions,
+  textAlignOptions,
+  demoLayoutProps,
+} from "../constants";
 
 class MKVWidget extends BaseWidget<MKVWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
@@ -289,12 +217,12 @@ class MKVWidget extends BaseWidget<MKVWidgetProps, WidgetState> {
     );
   }
 
-  getWidgetType(): WidgetType {
+  static getWidgetType(): WidgetType {
     return "TARO_KV_WIDGET";
   }
 }
 
-export interface MKVWidgetProps extends WidgetProps, WithMeta {
+export interface MKVWidgetProps extends WidgetProps {
   list: any[];
   kKey: string;
   vKey: string;
@@ -303,4 +231,3 @@ export interface MKVWidgetProps extends WidgetProps, WithMeta {
 }
 
 export default MKVWidget;
-export const MProfiledKVWidget = withMeta(MKVWidget);
