@@ -3,7 +3,6 @@ import { ScrollView, Text } from "@tarojs/components";
 import { Cell, Image } from "@taroify/core";
 import { Arrow, PhotoFail } from "@taroify/icons";
 import { createVanIconComponent } from "@taroify/icons/van";
-import _ from "lodash";
 
 export interface CellComponentProps {
   cells: Array<{
