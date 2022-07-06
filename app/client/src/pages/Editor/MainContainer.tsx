@@ -3,7 +3,6 @@ import * as Sentry from "@sentry/react";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useState, useCallback } from "react";
 import { Route, Switch } from "react-router";
-import TabBar from "components/designSystems/taro/TabBar";
 import EditorsRouter from "./routes";
 import BottomBar from "./BottomBar";
 import { DEFAULT_ENTITY_EXPLORER_WIDTH } from "constants/AppConstants";
