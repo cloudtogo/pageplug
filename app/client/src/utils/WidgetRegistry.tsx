@@ -199,6 +199,9 @@ import MSkuWidget, {
 import MSwiperWidget, {
   CONFIG as TARO_SWIPER_WIDGET_CONFIG,
 } from "widgets/taro/SwiperWidget";
+import MTabsWidget, {
+  CONFIG as TARO_TABS_WIDGET_CONFIG,
+} from "widgets/taro/TabsWidget";
 
 // import PickerWidget, {
 //   PickerWidgetProps,
@@ -209,11 +212,6 @@ import MSwiperWidget, {
 //   MTextWidgetProps,
 //   MProfiledTextWidget,
 // } from "widgets/taro/TextWidget";
-
-// import MTabsWidget, {
-//   MTabsWidgetProps,
-//   MProfiledTabsWidget,
-// } from "widgets/taro/TabsWidget";
 
 export const ALL_WIDGETS_AND_CONFIG = [
   [CanvasWidget, CANVAS_WIDGET_CONFIG],
@@ -279,6 +277,7 @@ export const ALL_WIDGETS_AND_CONFIG = [
   [MSearchWidget, TARO_SEARCH_WIDGET_CONFIG],
   [MSkuWidget, TARO_SKU_WIDGET_CONFIG],
   [MSwiperWidget, TARO_SWIPER_WIDGET_CONFIG],
+  [MTabsWidget, TARO_TABS_WIDGET_CONFIG],
 
   //Deprecated Widgets
   [InputWidget, INPUT_WIDGET_CONFIG],
