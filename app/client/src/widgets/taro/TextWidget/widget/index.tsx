@@ -1,10 +1,10 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { WidgetType, TextSize } from "constants/WidgetConstants";
-import TextComponent from "components/designSystems/taro/TextComponent";
+import TextComponent from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { DerivedPropertiesMap } from "utils/WidgetFactory";
-import LoadingWrapper from "./LoadingWrapper";
+import LoadingWrapper from "../../LoadingWrapper";
 
 class TextWidget extends BaseWidget<MTextWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
@@ -175,7 +175,7 @@ class TextWidget extends BaseWidget<MTextWidgetProps, WidgetState> {
     };
   }
 
-  getWidgetType(): WidgetType {
+  static getWidgetType(): WidgetType {
     return "TARO_TEXT_WIDGET";
   }
 }
@@ -197,4 +197,3 @@ export interface MTextWidgetProps extends WidgetProps, TextStyles {
 }
 
 export default TextWidget;
-export const MProfiledTextWidget = TextWidget;
