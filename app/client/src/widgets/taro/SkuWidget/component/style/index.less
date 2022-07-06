@@ -1,0 +1,324 @@
+@import './var.less';
+
+.@{rv-prefix}-sku {
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: 100%;
+    overflow-y: visible;
+    font-size: @font-size-md;
+  }
+
+  &__body {
+    flex: 1 1 auto;
+    min-height: 44px;
+  }
+
+  &__header {
+    display: flex;
+    flex-shrink: 0;
+    margin: 0 @padding-md;
+
+    &__img-wrap {
+      flex-shrink: 0;
+      width: 96px;
+      height: 96px;
+      margin: @padding-sm @padding-sm @padding-sm 0;
+      overflow: hidden;
+      border-radius: @border-radius-md;
+    }
+
+    &__goods-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: @padding-sm 20px @padding-sm 0;
+    }
+  }
+
+  &__header-item {
+    margin-top: @padding-xs;
+    color: @gray-6;
+    font-size: @font-size-sm;
+    line-height: 16px;
+  }
+
+  &__price-symbol {
+    font-size: @font-size-lg;
+    vertical-align: bottom;
+  }
+
+  &__price-num {
+    font-weight: @font-weight-bold;
+    font-size: 22px;
+    vertical-align: bottom;
+    word-wrap: break-word;
+  }
+
+  &__goods-price {
+    // for price align
+    margin-left: -2px;
+    color: @sku-theme-color;
+  }
+
+  &__price-tag {
+    position: relative;
+    display: inline-block;
+    margin-left: @padding-xs;
+    padding: 0 5px;
+    overflow: hidden;
+    color: @sku-theme-color;
+    font-size: @font-size-sm;
+    line-height: 16px;
+    border-radius: 8px;
+
+    &::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: currentColor;
+      opacity: 0.1;
+      content: '';
+    }
+  }
+
+  &__group-container {
+    padding-top: @padding-sm;
+
+    &--hide-soldout {
+      .@{rv-prefix}-sku-row__item--disabled {
+        display: none;
+      }
+    }
+  }
+
+  /* sku row */
+  &-row {
+    margin: 0 @padding-md @padding-sm;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &__item,
+    &__image-item {
+      position: relative;
+      overflow: hidden;
+      color: @text-color;
+      border-radius: @border-radius-md;
+      cursor: pointer;
+
+      &::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: @sku-item-background-color;
+        content: '';
+      }
+
+      &--active {
+        color: @sku-theme-color;
+
+        &::before {
+          background: currentColor;
+          opacity: 0.1;
+        }
+      }
+    }
+
+    &__item {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 40px;
+      margin: 0 @padding-sm @padding-sm 0;
+      font-size: 13px;
+      line-height: 16px;
+      vertical-align: middle;
+
+      &-img {
+        z-index: 1;
+        width: 24px;
+        height: 24px;
+        margin: 4px 0 4px 4px;
+        object-fit: cover;
+        border-radius: @border-radius-sm;
+      }
+
+      &-name {
+        z-index: 1;
+        padding: @padding-xs;
+      }
+
+      &--disabled {
+        color: @gray-5;
+        background: @active-color;
+        cursor: not-allowed;
+
+        .@{rv-prefix}-sku-row__item-img {
+          opacity: 0.3;
+        }
+      }
+    }
+
+    &__image {
+      margin-right: 0;
+
+      &-item {
+        display: flex;
+        flex-direction: column;
+        width: 110px;
+        margin: 0 4px 4px 0;
+        border: 1px solid transparent;
+
+        &:last-child {
+          margin-right: 0;
+        }
+
+        &-img {
+          width: 100%;
+          height: 110px;
+
+          &-icon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 3;
+            width: 18px;
+            height: 18px;
+            color: #fff;
+            line-height: 18px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-bottom-left-radius: @border-radius-md;
+          }
+        }
+
+        &-name {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-sizing: border-box;
+          height: 40px;
+          padding: @padding-base;
+          font-size: 12px;
+          line-height: 16px;
+
+          span {
+            word-wrap: break-word;
+          }
+        }
+
+        &--active {
+          border-color: currentColor;
+        }
+
+        &--disabled {
+          color: @gray-5;
+          cursor: not-allowed;
+
+          &::before {
+            z-index: 2;
+            background: @active-color;
+            opacity: 0.4;
+          }
+        }
+      }
+    }
+
+    &__title {
+      padding-bottom: @padding-sm;
+    }
+
+    &__title-multiple {
+      color: @gray-6;
+    }
+
+    &__scroller {
+      margin: 0 -@padding-md;
+      overflow-x: scroll;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    &__row {
+      display: inline-flex;
+      margin-bottom: 4px;
+      padding: 0 @padding-md;
+    }
+
+    &__indicator {
+      width: 40px;
+      height: 4px;
+      background: @gray-3;
+      border-radius: 2px;
+
+      &-wrapper {
+        display: flex;
+        justify-content: center;
+        padding-bottom: 16px;
+      }
+
+      &-slider {
+        width: 50%;
+        height: 100%;
+        background-color: @red;
+        border-radius: 2px;
+      }
+    }
+  }
+
+  &__stepper-stock {
+    padding: @padding-sm @padding-md;
+    overflow: hidden;
+    line-height: 30px;
+  }
+
+  &__stepper {
+    float: right;
+    padding-left: @padding-base;
+
+    &-title {
+      float: left;
+    }
+
+    &-quota {
+      float: right;
+      color: @red;
+      font-size: @font-size-sm;
+    }
+  }
+
+  &__stock {
+    display: inline-block;
+    margin-right: @padding-xs;
+    color: @gray-6;
+    font-size: @font-size-sm;
+
+    &-num--highlight {
+      color: @red;
+    }
+  }
+
+  &__actions {
+    flex-shrink: 0;
+    padding: 0 @padding-md;
+    .@{rv-prefix}-action-bar {
+      position: relative;
+      .@{rv-prefix}-button {
+        margin: 0;
+      }
+    }
+  }
+}

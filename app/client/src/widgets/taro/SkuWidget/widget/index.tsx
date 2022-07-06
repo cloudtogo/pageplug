@@ -1,10 +1,9 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { WidgetType } from "constants/WidgetConstants";
-import SkuComponent from "components/designSystems/taro/SkuComponent";
+import SkuComponent from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
-import withMeta, { WithMeta } from "../MetaHOC";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import _ from "lodash";
 import Taro from "@tarojs/taro";
@@ -362,12 +361,12 @@ class MSkuWidget extends BaseWidget<MSkuWidgetProps, MSkuWidgetState> {
     );
   }
 
-  getWidgetType(): WidgetType {
+  static getWidgetType(): WidgetType {
     return "TARO_SKU_WIDGET";
   }
 }
 
-export interface MSkuWidgetProps extends WidgetProps, WithMeta {
+export interface MSkuWidgetProps extends WidgetProps {
   goodsId: string;
   price: number;
   pic: string;
@@ -385,4 +384,3 @@ interface MSkuWidgetState extends WidgetState {
 }
 
 export default MSkuWidget;
-export const MProfiledSkuWidget = withMeta(MSkuWidget);
