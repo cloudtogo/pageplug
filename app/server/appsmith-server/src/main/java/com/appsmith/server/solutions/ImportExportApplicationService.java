@@ -20,6 +20,7 @@ import com.appsmith.server.domains.NewPage;
 import com.appsmith.server.domains.PluginType;
 import com.appsmith.server.domains.User;
 import com.appsmith.server.dtos.ActionDTO;
+import com.appsmith.server.dtos.ApplicationAccessDTO;
 import com.appsmith.server.dtos.PageDTO;
 import com.appsmith.server.exceptions.AppsmithError;
 import com.appsmith.server.exceptions.AppsmithException;
@@ -502,6 +503,15 @@ public class ImportExportApplicationService {
                 return Flux.fromIterable(importedNewPageList)
                     .flatMap(newPageService::save)
                     .then(applicationService.update(importedApplication.getId(), importedApplication));
+            })
+            .flatMap(savedApplication -> {
+                final Application.AppLayout appLayout = savedApplication.getPublishedAppLayout();
+                if (appLayout != null && appLayout.getType() == Application.AppLayout.Type.MOBILE_FLUID) {
+                    final ApplicationAccessDTO applicationAccessDTO = new ApplicationAccessDTO();
+                    applicationAccessDTO.setPublicAccess(true);
+                    return applicationService.changeViewAccess(savedApplication.getId(), applicationAccessDTO);
+                }
+                return Mono.just(savedApplication);
             });
     }
 
