@@ -51,6 +51,7 @@ import static com.appsmith.server.constants.Url.APPLICATION_URL;
 import static com.appsmith.server.constants.Url.PAGE_URL;
 import static com.appsmith.server.constants.Url.THEME_URL;
 import static com.appsmith.server.constants.Url.USER_URL;
+import static com.appsmith.server.constants.Url.CLOUDOS_URL;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @EnableWebFluxSecurity
@@ -162,7 +163,8 @@ public class SecurityConfig {
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, PAGE_URL + "/**"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, APPLICATION_URL + "/**"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, THEME_URL + "/**"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, ACTION_URL + "/execute")
+                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, ACTION_URL + "/execute"),
+                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, CLOUDOS_URL + "/getMiniPreview")
                 )
                 .permitAll()
                 .pathMatchers("/public/**", "/oauth2/**").permitAll()
