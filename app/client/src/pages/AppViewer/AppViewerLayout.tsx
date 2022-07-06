@@ -69,6 +69,8 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
   const appId = currentApp?.id || "";
   const appName = currentApp?.name;
   const viewerLayout = currentApp?.viewerLayout;
+  const queryParams = new URLSearchParams(window.location.search);
+  const isEmbed = !!queryParams.get("embed");
 
   const initState = useMemo(() => {
     let init = {
@@ -117,7 +119,7 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
     return null;
   }
 
-  if (isMobile) {
+  if (isMobile || isEmbed) {
     return <div>{children}</div>;
   }
 
