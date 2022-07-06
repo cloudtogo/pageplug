@@ -126,6 +126,7 @@ function AppViewer(props: Props) {
   );
   const showTabBar = useSelector(getShowTabBar);
   const isMobile = useSelector(isMobileLayout);
+  const isEmbed = !!getSearchQuery(search, "embed");
 
   /**
    * initializes the widgets factory and registers all widgets
@@ -282,7 +283,7 @@ function AppViewer(props: Props) {
                 >
                   <AppViewerBody
                     showTabBar={showTabBar}
-                    isMobile={isMobile}
+                    isMobile={isMobile || isEmbed}
                     hasPages={pages.length > 1}
                     headerHeight={headerHeight}
                     showGuidedTourMessage={showGuidedTourMessage}
