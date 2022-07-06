@@ -1,5 +1,5 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { WidgetType } from "constants/WidgetConstants";
 import NavTabComponent from "components/designSystems/taro/NavTabComponent";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
@@ -7,7 +7,6 @@ import {
   ValidationResponse,
   ValidationTypes,
 } from "constants/WidgetValidation";
-import withMeta, { WithMeta } from "../MetaHOC";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import { AutocompleteDataType } from "utils/autocomplete/TernServer";
 import _ from "lodash";
@@ -51,7 +50,7 @@ export function selectedTabValidation(
         return {
           isValid: false,
           parsed: 0,
-          message: `索引值必须是非负整数`,
+          messages: [`索引值必须是非负整数`],
         };
       }
     }
@@ -64,7 +63,7 @@ export function selectedTabValidation(
       return {
         isValid: false,
         parsed,
-        message: `索引值超出数组范围`,
+        messages: [`索引值超出数组范围`],
       };
     }
 
@@ -73,7 +72,7 @@ export function selectedTabValidation(
     return {
       isValid: false,
       parsed: value,
-      message: `校验失败`,
+      messages: [`校验失败`],
     };
   }
 }
@@ -264,12 +263,12 @@ class MTabsWidget extends BaseWidget<MTabsWidgetProps, WidgetState> {
     );
   }
 
-  getWidgetType(): WidgetType {
+  static getWidgetType(): WidgetType {
     return "TARO_TABS_WIDGET";
   }
 }
 
-export interface MTabsWidgetProps extends WidgetProps, WithMeta {
+export interface MTabsWidgetProps extends WidgetProps {
   list: any[];
   nameKey: string;
   defaultNum?: string | number;
@@ -279,4 +278,3 @@ export interface MTabsWidgetProps extends WidgetProps, WithMeta {
 }
 
 export default MTabsWidget;
-export const MProfiledTabsWidget = withMeta(MTabsWidget);
