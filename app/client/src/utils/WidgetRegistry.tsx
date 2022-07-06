@@ -193,6 +193,9 @@ import MPopupWidget, {
 import MSearchWidget, {
   CONFIG as TARO_SEARCH_WIDGET_CONFIG,
 } from "widgets/taro/SearchWidget";
+import MSkuWidget, {
+  CONFIG as TARO_SKU_WIDGET_CONFIG,
+} from "widgets/taro/SkuWidget";
 
 // import PickerWidget, {
 //   PickerWidgetProps,
@@ -208,11 +211,6 @@ import MSearchWidget, {
 //   MTextWidgetProps,
 //   MProfiledTextWidget,
 // } from "widgets/taro/TextWidget";
-
-// import MSkuWidget, {
-//   MSkuWidgetProps,
-//   MProfiledSkuWidget,
-// } from "widgets/taro/SkuWidget";
 
 // import MTabsWidget, {
 //   MTabsWidgetProps,
@@ -281,6 +279,7 @@ export const ALL_WIDGETS_AND_CONFIG = [
   [MLoadingWidget, TARO_LOADING_WIDGET_CONFIG],
   [MPopupWidget, TARO_POPUP_WIDGET_CONFIG],
   [MSearchWidget, TARO_SEARCH_WIDGET_CONFIG],
+  [MSkuWidget, TARO_SKU_WIDGET_CONFIG],
 
   //Deprecated Widgets
   [InputWidget, INPUT_WIDGET_CONFIG],
