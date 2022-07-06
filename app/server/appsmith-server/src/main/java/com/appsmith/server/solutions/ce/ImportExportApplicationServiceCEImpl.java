@@ -26,10 +26,7 @@ import com.appsmith.server.domains.NewAction;
 import com.appsmith.server.domains.NewPage;
 import com.appsmith.server.domains.Theme;
 import com.appsmith.server.domains.User;
-import com.appsmith.server.dtos.ActionCollectionDTO;
-import com.appsmith.server.dtos.ActionDTO;
-import com.appsmith.server.dtos.ApplicationImportDTO;
-import com.appsmith.server.dtos.PageDTO;
+import com.appsmith.server.dtos.*;
 import com.appsmith.server.exceptions.AppsmithError;
 import com.appsmith.server.exceptions.AppsmithException;
 import com.appsmith.server.helpers.DefaultResourcesUtils;
@@ -1126,6 +1123,15 @@ public class ImportExportApplicationServiceCEImpl implements ImportExportApplica
                                 analyticsService.sendEvent(AnalyticsEvents.UNIT_EXECUTION_TIME.getEventName(), tuple.getT2().getUsername(), data);
                                 return application;
                             });
+                })
+                .flatMap(savedApplication -> {
+                    final Application.AppLayout appLayout = savedApplication.getPublishedAppLayout();
+                    if (appLayout != null && appLayout.getType() == Application.AppLayout.Type.MOBILE_FLUID) {
+                        final ApplicationAccessDTO applicationAccessDTO = new ApplicationAccessDTO();
+                        applicationAccessDTO.setPublicAccess(true);
+                        return applicationService.changeViewAccess(savedApplication.getId(), applicationAccessDTO);
+                    }
+                    return Mono.just(savedApplication);
                 });
 
         // Import Application is currently a slow API because it needs to import and create application, pages, actions

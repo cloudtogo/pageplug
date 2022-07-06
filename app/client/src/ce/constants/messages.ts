@@ -45,7 +45,7 @@ export const LOGIN_PAGE_INVALID_CREDS_FORGOT_PASSWORD_LINK = () => `重置密码
 export const NEW_TO_APPSMITH = () => `是新朋友吗？`;
 
 export const LOGIN_PAGE_LOGIN_BUTTON_TEXT = () => `登录`;
-export const LOGIN_PAGE_FORGOT_PASSWORD_TEXT = () => `忘记秘密`;
+export const LOGIN_PAGE_FORGOT_PASSWORD_TEXT = () => `忘记密码`;
 export const LOGIN_PAGE_REMEMBER_ME_LABEL = () => `记住我`;
 export const LOGIN_PAGE_SIGN_UP_LINK_TEXT = () => `注册`;
 export const SIGNUP_PAGE_TITLE = () => `注册免费账号`;

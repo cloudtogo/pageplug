@@ -270,7 +270,8 @@ public class ApplicationServiceCEImpl extends BaseService<ApplicationRepository,
 
                     if (application.getIsPublic().equals(applicationAccessDTO.getPublicAccess())) {
                         // No change. The required public access is the same as current public access. Do nothing
-                        return Mono.just(application);
+                        // need force update when importing app from json
+                        // return Mono.just(application);
                     }
 
                     if (application.getIsPublic() == null && applicationAccessDTO.getPublicAccess().equals(false)) {
