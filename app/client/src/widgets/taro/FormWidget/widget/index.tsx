@@ -3,9 +3,7 @@ import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { WidgetType } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import FormComponent, {
-  FormComponentProps,
-} from "components/designSystems/taro/FormComponent";
+import FormComponent, { FormComponentProps } from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { get, isArray } from "lodash";
 
