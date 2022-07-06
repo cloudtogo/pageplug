@@ -100,6 +100,7 @@ export type AppViewerProps = {
   lightTheme: Theme;
   showTabBar: boolean;
   isMobile: boolean;
+  isEmbed: boolean;
 } & RouteComponentProps<BuilderRouteParams>;
 
 class AppViewer extends Component<
@@ -125,7 +126,7 @@ class AppViewer extends Component<
   };
 
   public render() {
-    const { isInitialized, isMobile, showTabBar } = this.props;
+    const { isInitialized, isMobile, showTabBar, isEmbed } = this.props;
     return (
       <ThemeProvider theme={this.props.lightTheme}>
         <GlobalHotKeys>
@@ -141,7 +142,10 @@ class AppViewer extends Component<
                 <ContainerWithComments>
                   <AppComments isInline />
                   <AppViewerBodyContainer>
-                    <AppViewerBody showTabBar={showTabBar} isMobile={isMobile}>
+                    <AppViewerBody
+                      showTabBar={showTabBar}
+                      isMobile={isMobile || isEmbed}
+                    >
                       {isInitialized && this.state.registered && (
                         <Switch>
                           <SentryRoute
@@ -178,6 +182,7 @@ const mapStateToProps = (state: AppState) => ({
   lightTheme: getThemeDetails(state, ThemeMode.LIGHT),
   showTabBar: getShowTabBar(state),
   isMobile: isMobileLayout(state),
+  isEmbed: !!new URLSearchParams(window.location.search).get("embed"),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
