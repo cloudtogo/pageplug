@@ -1,7 +1,7 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "../BaseWidget";
-import { WidgetType, WidgetTypes } from "constants/WidgetConstants";
-import SwiperComponent from "components/designSystems/taro/SwiperComponent";
+import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import { WidgetType } from "constants/WidgetConstants";
+import SwiperComponent from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import _ from "lodash";
@@ -49,8 +49,8 @@ class SwiperWidget extends BaseWidget<SwiperWidgetProps, WidgetState> {
     );
   }
 
-  getWidgetType(): WidgetType {
-    return WidgetTypes.TARO_SWIPER_WIDGET;
+  static getWidgetType(): WidgetType {
+    return "TARO_SWIPER_WIDGET";
   }
 }
 
@@ -60,4 +60,3 @@ export interface SwiperWidgetProps extends WidgetProps {
 }
 
 export default SwiperWidget;
-export const ProfiledSwiperWidget = SwiperWidget;
