@@ -120,7 +120,7 @@ export function PageContextMenu(props: {
     //   ) as ReactNode) as string,
     // },
   ];
-  // inCloudOS mode cannot set default page
+  // inCloudOS mode cannot set default page, because the first default page created by blueprint cannot be deleted!
   if (!props.isDefaultPage && !inCloudOS) {
     optionTree.push({
       value: "setdefault",
