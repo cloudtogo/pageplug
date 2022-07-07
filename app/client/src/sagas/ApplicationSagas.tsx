@@ -748,7 +748,7 @@ export function* importApplicationSaga(
           if (guidedTour) return;
 
           Toaster.show({
-            text: "Application imported successfully",
+            text: "应用导入成功！",
             variant: Variant.success,
           });
         }
