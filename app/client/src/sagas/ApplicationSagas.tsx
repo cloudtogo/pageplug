@@ -573,7 +573,7 @@ export function* importApplicationSaga(
         const pageURL = BUILDER_PAGE_URL(appId, defaultPage[0].id);
         history.push(pageURL);
         Toaster.show({
-          text: "Application imported successfully",
+          text: "应用导入成功！",
           variant: Variant.success,
         });
       }

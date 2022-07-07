@@ -184,11 +184,11 @@ export function Login(props: LoginFormProps) {
           />
         </FormActions>
       </SpacedSubmitForm>
-      <ForgotPasswordLink>
+      {/* <ForgotPasswordLink>
         <Link to={forgotPasswordURL}>
           {createMessage(LOGIN_PAGE_FORGOT_PASSWORD_TEXT)}
         </Link>
-      </ForgotPasswordLink>
+      </ForgotPasswordLink> */}
     </>
   );
 }

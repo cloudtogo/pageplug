@@ -5,6 +5,7 @@ import {
   TERMS_AND_CONDITIONS_LINK,
   createMessage,
 } from "constants/messages";
+import githubIcon from "assets/icons/help/github-icon.svg";
 
 const FooterLink = styled.a`
   cursor: pointer;
@@ -18,7 +19,7 @@ const FooterLink = styled.a`
   line-height: ${(props) => props.theme.typography.releaseList.lineHeight}px;
   letter-spacing: ${(props) =>
     props.theme.typography.releaseList.letterSpacing}px;
-  color: #9f9f9f;
+  color: #333;
 `;
 
 const FooterLinksContainer = styled.div`
@@ -30,6 +31,15 @@ const FooterLinksContainer = styled.div`
   max-width: 240px;
 `;
 
+const Red = styled.span`
+  color: red;
+`;
+
+const GithubImg = styled.img`
+  width: 24px;
+  vertical-align: bottom;
+`;
+
 function FooterLinks() {
   return (
     <FooterLinksContainer>
@@ -39,8 +49,8 @@ function FooterLinks() {
       <FooterLink href="/terms-and-conditions.html" target="_blank">
         {createMessage(TERMS_AND_CONDITIONS_LINK)}
       </FooterLink> */}
-      <FooterLink href="https://cloudtogo.cn" target="_blank">
-        行云创新 🧡 用心创造
+      <FooterLink href="https://github.com/cloudtogo/pageplug" target="_blank">
+        <GithubImg src={githubIcon} /> PagePlug <Red>❤</Red>
       </FooterLink>
     </FooterLinksContainer>
   );
