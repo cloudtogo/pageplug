@@ -209,7 +209,6 @@ export const isMobileLayout = (state: AppState) =>
 export const getShowTabBar = createSelector(
   getCurrentPage,
   isMobileLayout,
-  getPageList,
   (page: any, isMobile: boolean) => {
     return isMobile && !!page?.icon;
   },
