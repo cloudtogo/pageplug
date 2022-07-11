@@ -576,15 +576,15 @@ export function* createPageSaga(
           getIsFirstTimeUserOnboardingEnabled,
         );
         if (
-          firstTimeUserOnboardingApplicationId ==
+          (firstTimeUserOnboardingApplicationId ==
             createPageAction.payload.applicationId &&
-          isFirstTimeUserOnboardingEnabled
+            isFirstTimeUserOnboardingEnabled) ||
+          isMobile
         ) {
           history.push(
             builderURL({
               pageSlug: response.data.slug,
               pageId: response.data.id,
-              isMobile,
             }),
           );
         } else {
