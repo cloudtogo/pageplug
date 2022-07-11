@@ -9,6 +9,9 @@ import { connect } from "react-redux";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { generateClassName } from "utils/generators";
 import { selectWidgetInitAction } from "actions/widgetSelectionActions";
+import { commentModeSelector } from "selectors/commentsSelectors";
+import { previewModeSelector } from "selectors/editorSelectors";
+import { AppState } from "reducers";
 
 const Container = styled(View)`
   position: fixed;
@@ -118,9 +121,11 @@ class MLoadingWidget extends BaseWidget<MLoadingWidgetProps, WidgetState> {
     return (
       <Container className={generateClassName(this.props.widgetId)}>
         {backdrop}
-        <Indicator onClick={this.openPropertyPane}>
-          <Loading type="spinner" />
-        </Indicator>
+        {this.props.isPreviewMode ? null : (
+          <Indicator onClick={this.openPropertyPane}>
+            <Loading type="spinner" />
+          </Indicator>
+        )}
         {widgetName}
       </Container>
     );
@@ -138,6 +143,7 @@ class MLoadingWidget extends BaseWidget<MLoadingWidgetProps, WidgetState> {
 export interface MLoadingWidgetProps extends WidgetProps {
   showLoading?: boolean;
   showPropertyPane?: (widgetId?: string) => void;
+  isPreviewMode: boolean;
 }
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -150,4 +156,9 @@ const mapDispatchToProps = (dispatch: any) => ({
   },
 });
 
-export default connect(null, mapDispatchToProps)(MLoadingWidget);
+export default connect(
+  (state: AppState) => ({
+    isPreviewMode: previewModeSelector(state) || commentModeSelector(state),
+  }),
+  mapDispatchToProps,
+)(MLoadingWidget);
