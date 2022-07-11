@@ -6,7 +6,9 @@ import {
   getViewModePageList,
   getCurrentPageId,
   getShowTabBar,
+  previewModeSelector,
 } from "selectors/editorSelectors";
+import { getSelectedAppTheme } from "selectors/appThemingSelectors";
 import { getAppMode } from "selectors/applicationSelectors";
 import { APP_MODE } from "entities/App";
 import {
@@ -20,6 +22,7 @@ import { builderURL, viewerURL } from "RouteBuilder";
 
 const TabBarContainer = styled.div<{
   mode?: APP_MODE;
+  editorModeColor: string;
 }>`
   position: ${(props) => (props.mode === APP_MODE.EDIT ? "unset" : "fixed")};
   left: 0;
@@ -27,7 +30,7 @@ const TabBarContainer = styled.div<{
   bottom: 0;
   height: ${(props) => props.theme.tabbarHeight};
   background: ${(props) =>
-    props.mode === APP_MODE.EDIT ? "transparent" : "#ffec8f36"};
+    props.mode === APP_MODE.EDIT ? props.editorModeColor : "#ffec8f36"};
   overflow-y: scroll;
 `;
 
@@ -43,6 +46,8 @@ export type TabbarProps = {
   currentPageId?: string;
   mode?: APP_MODE;
   showTabBar: boolean;
+  isPreviewMode: boolean;
+  themeBackground: string;
 };
 
 const TabBar = ({
@@ -51,7 +56,10 @@ const TabBar = ({
   currentPageId,
   mode,
   showTabBar,
+  isPreviewMode,
+  themeBackground,
 }: TabbarProps) => {
+  const editorModeColor = isPreviewMode ? themeBackground : "transparent";
   const jumpTo = (target: string) => {
     const urlBuilder = mode === APP_MODE.PUBLISHED ? viewerURL : builderURL;
     history.push(
@@ -67,7 +75,7 @@ const TabBar = ({
   }
 
   return (
-    <TabBarContainer mode={mode}>
+    <TabBarContainer mode={mode} editorModeColor={editorModeColor}>
       <Center>
         <Tabbar value={currentPageId} onChange={jumpTo}>
           {pages.map((page) => {
@@ -91,6 +99,8 @@ const mapStateToProps = (state: AppState) => ({
   currentPageId: getCurrentPageId(state),
   mode: getAppMode(state),
   showTabBar: getShowTabBar(state),
+  themeBackground: getSelectedAppTheme(state).properties.colors.backgroundColor,
+  isPreviewMode: previewModeSelector(state),
 });
 
 export default connect(mapStateToProps)(TabBar);
