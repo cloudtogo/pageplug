@@ -212,7 +212,7 @@ function Pages() {
         entityId="Pages"
         icon={""}
         isDefaultExpanded={isPagesOpen === null ? true : isPagesOpen}
-        name="PAGES"
+        name="页面"
         onClickPreRightIcon={onPin}
         onClickRightIcon={onClickRightIcon}
         onCreate={createPageCallback}

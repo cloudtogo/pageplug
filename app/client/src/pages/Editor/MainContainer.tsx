@@ -26,12 +26,6 @@ const Container = styled.div`
   background-color: ${(props) => props.theme.appBackground};
 `;
 
-const EditorContainer = styled.div`
-  position: relative;
-  width: calc(100vw - ${(props) => props.theme.sidebarWidth});
-  transform: translate(0, 0);
-`;
-
 function MainContainer() {
   const dispatch = useDispatch();
   const [sidebarWidth, setSidebarWidth] = useState(
