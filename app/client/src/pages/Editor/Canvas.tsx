@@ -20,7 +20,7 @@ import { getIsPageLevelSocketConnected } from "selectors/websocketSelectors";
 import { getCurrentGitBranch } from "selectors/gitSyncSelectors";
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
 import { getPageLevelSocketRoomId } from "sagas/WebsocketSagas/utils";
-import { previewModeSelector } from "selectors/editorSelectors";
+import { previewModeSelector, isMobileLayout } from "selectors/editorSelectors";
 
 interface CanvasProps {
   dsl: DSLWidget;
@@ -76,6 +76,7 @@ const Canvas = memo((props: CanvasProps) => {
   const { pageId } = props;
   const isPreviewMode = useSelector(previewModeSelector);
   const selectedTheme = useSelector(getSelectedAppTheme);
+  const isMobile = useSelector(isMobileLayout);
 
   const shareMousePointer = useShareMousePointerEvent();
   const isWebsocketConnected = useSelector(getIsPageLevelSocketConnected);
@@ -96,7 +97,7 @@ const Canvas = memo((props: CanvasProps) => {
   let backgroundForCanvas;
 
   if (isPreviewMode) {
-    backgroundForCanvas = "initial";
+    backgroundForCanvas = isMobile ? "white" : "initial";
   } else {
     backgroundForCanvas = selectedTheme.properties.colors.backgroundColor;
   }
