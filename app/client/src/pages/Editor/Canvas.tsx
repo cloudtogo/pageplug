@@ -128,7 +128,7 @@ const Canvas = memo((props: CanvasProps) => {
         {isMultiplayerEnabledForUser && (
           <CanvasMultiPointerArena pageId={pageId} />
         )}
-        <TabBarIconPicker />
+        {isPreviewMode ? null : <TabBarIconPicker />}
       </Container>
     );
   } catch (error) {
