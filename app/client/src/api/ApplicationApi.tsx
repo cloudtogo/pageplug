@@ -27,6 +27,7 @@ export interface ApplicationPagePayload {
   isDefault: boolean;
   slug?: string;
   isHidden?: boolean;
+  icon?: string;
 }
 
 export type GitApplicationMetadata =

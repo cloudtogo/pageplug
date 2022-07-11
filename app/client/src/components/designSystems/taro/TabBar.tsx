@@ -21,11 +21,11 @@ import { builderURL, viewerURL } from "RouteBuilder";
 const TabBarContainer = styled.div<{
   mode?: APP_MODE;
 }>`
-  position: fixed;
+  position: ${(props) => (props.mode === APP_MODE.EDIT ? "unset" : "fixed")};
   left: 0;
   right: 0;
   bottom: 0;
-  height: 60px;
+  height: ${(props) => props.theme.tabbarHeight};
   background: ${(props) =>
     props.mode === APP_MODE.EDIT ? "transparent" : "#ffec8f36"};
 `;
