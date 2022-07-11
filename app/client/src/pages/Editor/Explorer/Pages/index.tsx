@@ -112,7 +112,7 @@ function Pages() {
 
   const createPageCallback = useCallback(() => {
     const name = getNextEntityName(
-      "Page",
+      "页面",
       pages.map((page: Page) => page.pageName),
     );
     // Default layout is extracted by adding dynamically computed properties like min-height.
