@@ -28,11 +28,12 @@ const TabBarContainer = styled.div<{
   height: ${(props) => props.theme.tabbarHeight};
   background: ${(props) =>
     props.mode === APP_MODE.EDIT ? "transparent" : "#ffec8f36"};
+  overflow-y: scroll;
 `;
 
 const Center = styled.div`
   height: 100%;
-  width: 455px;
+  width: 450px;
   margin: 0 auto;
 `;
 
