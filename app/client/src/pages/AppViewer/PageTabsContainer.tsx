@@ -1,4 +1,10 @@
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
 import styled from "styled-components";
 import {
   ApplicationPayload,
@@ -8,6 +14,7 @@ import Icon, { IconSize } from "components/ads/Icon";
 import PageTabs from "./PageTabs";
 import useThrottledRAF from "utils/hooks/useThrottledRAF";
 import { Colors } from "constants/Colors";
+import _ from "lodash";
 
 const Container = styled.div`
   width: 100%;
@@ -61,15 +68,18 @@ export function PageTabsContainer(props: AppViewerHeaderProps) {
   const { currentApplicationDetails, pages } = props;
 
   // Mark default page as first page
-  const appPages = pages;
-  if (appPages.length > 1) {
-    appPages.forEach((item, i) => {
-      if (item.isDefault) {
-        appPages.splice(i, 1);
-        appPages.unshift(item);
-      }
-    });
-  }
+  const appPages = useMemo(() => {
+    const list = _.clone(pages);
+    if (list.length > 1) {
+      list.forEach((item, i) => {
+        if (item.isDefault) {
+          list.splice(i, 1);
+          list.unshift(item);
+        }
+      });
+    }
+    return list;
+  }, [pages]);
 
   const tabsRef = useRef<HTMLElement | null>(null);
   const [tabsScrollable, setTabsScrollable] = useState(false);
