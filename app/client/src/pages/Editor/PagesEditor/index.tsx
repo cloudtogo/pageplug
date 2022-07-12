@@ -147,14 +147,14 @@ function PagesEditor() {
               width={20}
             />
           </Action>
-          <h1>Page Properties</h1>
+          <h1>页面配置</h1>
         </div>
         <NewPageButton
           icon="plus"
           onClick={createPageCallback}
           size={Size.medium}
           tag="button"
-          text="New Page"
+          text="新建页面"
           type="button"
         />
       </Header>
