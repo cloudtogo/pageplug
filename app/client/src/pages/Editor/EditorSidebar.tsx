@@ -324,7 +324,7 @@ class EditorSidebar extends React.Component<Props, State> {
                 value: search,
                 onChange: this.handleSearchChange,
               }}
-              placeholder="Search"
+              placeholder="搜索"
             />
           </Controls>
           <DragDropContext
@@ -362,7 +362,7 @@ class EditorSidebar extends React.Component<Props, State> {
                             />
                             {page.items.length === 0 && (
                               <NoItemMessage>
-                                {"No APIs on this page yet"}
+                                {"当前页面没有 API"}
                               </NoItemMessage>
                             )}
                             {page.items.map((item: Item, index) => (
@@ -399,7 +399,7 @@ class EditorSidebar extends React.Component<Props, State> {
                                           {
                                             value: "copy",
                                             onSelect: () => null,
-                                            label: "Copy to",
+                                            label: "复制到",
                                             children: pageWiseList.map((p) => ({
                                               label: p.name,
                                               id: p.id,
@@ -414,7 +414,7 @@ class EditorSidebar extends React.Component<Props, State> {
                                           {
                                             value: "move",
                                             onSelect: () => null,
-                                            label: "Move to",
+                                            label: "移动到",
                                             children: pageWiseList
                                               .filter((p) => p.id !== page.id)
                                               .map((p) => ({
@@ -436,7 +436,7 @@ class EditorSidebar extends React.Component<Props, State> {
                                                 item.name,
                                                 page.name,
                                               ),
-                                            label: "Delete",
+                                            label: "删除",
                                             intent: "danger",
                                           },
                                         ]}

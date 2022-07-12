@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   ApplicationPayload,
   PageListPayload,
@@ -21,6 +21,7 @@ import BrandingBadge from "./BrandingBadgeMobile";
 import { getAppViewHeaderHeight } from "selectors/appViewSelectors";
 import { useOnClickOutside } from "utils/hooks/useOnClickOutside";
 import { getShowBrandingBadge } from "@appsmith/selectors/organizationSelectors";
+import _ from "lodash";
 
 type AppViewerHeaderProps = {
   isOpen?: boolean;
@@ -59,15 +60,18 @@ export function PageMenu(props: AppViewerHeaderProps) {
   }, [location.search]);
 
   // Mark default page as first page
-  const appPages = pages;
-  if (appPages.length > 1) {
-    appPages.forEach((item, i) => {
-      if (item.isDefault) {
-        appPages.splice(i, 1);
-        appPages.unshift(item);
-      }
-    });
-  }
+  const appPages = useMemo(() => {
+    const list = _.clone(pages);
+    if (list.length > 1) {
+      list.forEach((item, i) => {
+        if (item.isDefault) {
+          list.splice(i, 1);
+          list.unshift(item);
+        }
+      });
+    }
+    return list;
+  }, [pages]);
 
   return (
     <>
