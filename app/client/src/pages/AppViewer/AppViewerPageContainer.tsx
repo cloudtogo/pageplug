@@ -12,6 +12,7 @@ import {
   getCanvasWidgetDsl,
   getCurrentPageName,
   selectURLSlugs,
+  isMobileLayout,
 } from "selectors/editorSelectors";
 import RequestConfirmationModal from "pages/Editor/RequestConfirmationModal";
 import { getCurrentApplication } from "selectors/applicationSelectors";
@@ -23,8 +24,9 @@ import { builderURL } from "RouteBuilder";
 
 const Section = styled.section<{
   height: number;
+  isMobile: boolean;
 }>`
-  background: #fff;
+  background: ${({ isMobile }) => (isMobile ? "#fff" : "transparent")};
   height: 100%;
   min-height: ${({ height }) => height}px;
   margin: 0 auto;
@@ -51,6 +53,7 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
   const hasFixedWidget = widgets.children?.find(
     (w) => w.type === "TARO_BOTTOM_BAR_WIDGET",
   );
+  const isMobile = useSelector(isMobileLayout);
 
   // get appsmith editr link
   const appsmithEditorLink = useMemo(() => {
@@ -105,7 +108,7 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
   if (!(widgets.children && widgets.children.length > 0)) return pageNotFound;
 
   return (
-    <Section height={widgets.bottomRow}>
+    <Section height={widgets.bottomRow} isMobile={isMobile}>
       <AppPage
         appName={currentApplication?.name}
         dsl={widgets}
