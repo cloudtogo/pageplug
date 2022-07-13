@@ -90,13 +90,9 @@ const AppViewerBodyContainer = styled.div<{
   background: ${({ backgroundColor }) => backgroundColor};
 `;
 
-const StableContainer = styled.div<{
-  isMobile: boolean;
-}>`
+const StableContainer = styled.div`
   position: relative;
   overflow: hidden;
-  background: ${(props) =>
-    props.isMobile ? "radial-gradient(#2cbba633, #ffec8f36)" : "#fff"};
 `;
 
 export type AppViewerProps = RouteComponentProps<BuilderRouteParams>;
@@ -273,12 +269,14 @@ function AppViewer(props: Props) {
           }}
         >
           <AppViewerLayout>
-            <StableContainer isMobile={isMobile}>
+            <StableContainer>
               <ContainerWithComments>
                 <AppViewerCommentsSidebar />
                 <AppViewerBodyContainer
                   backgroundColor={
-                    selectedTheme.properties.colors.backgroundColor
+                    isMobile
+                      ? "radial-gradient(#2cbba633, #ffec8f36)"
+                      : selectedTheme.properties.colors.backgroundColor
                   }
                 >
                   <AppViewerBody
