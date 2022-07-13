@@ -137,6 +137,10 @@ export type FetchPublishedPageResponse = ApiResponse<
   FetchPublishedPageResponseData
 >;
 
+export interface WxaCodeRequest {
+  app_id: string;
+}
+
 class PageApi extends Api {
   static url = "v1/pages";
   static refactorLayoutURL = "v1/layouts/refactor";
@@ -254,6 +258,10 @@ class PageApi extends Api {
 
   static fetchAppAndPages(params: any): AxiosPromise<FetchApplicationResponse> {
     return Api.get(PageApi.url, params);
+  }
+
+  static getPreviewWxaCode(request: WxaCodeRequest): AxiosPromise<ApiResponse> {
+    return Api.post("v1/cloudos/getMiniPreview", request);
   }
 }
 
