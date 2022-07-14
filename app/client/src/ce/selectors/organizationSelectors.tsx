@@ -59,5 +59,5 @@ export const getCurrentError = (state: AppState) => {
 };
 
 export const getShowBrandingBadge = () => {
-  return true;
+  return false;
 };
