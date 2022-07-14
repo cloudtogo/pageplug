@@ -105,6 +105,7 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
     <Section
       height={widgets.bottomRow + (hasFixedWidget?.height || 0)}
       isMobile={isMobile}
+      id="art-board"
     >
       <AppPage
         appName={currentApplication?.name}
