@@ -428,7 +428,7 @@ export const IMPORT_FROM_GIT_REPOSITORY = () => "从 git 仓库导入";
 export const RECONNECT_MISSING_DATASOURCE_CREDENTIALS = () =>
   "重新连接需要数据源鉴权信息";
 export const RECONNECT_MISSING_DATASOURCE_CREDENTIALS_DESCRIPTION = () =>
-  "请认真填写，否则应用可能会运行异常";
+  "请仔细填写，否则应用可能会运行异常";
 export const RECONNECT_DATASOURCE_SUCCESS_MESSAGE1 = () => "数据源导入成功！";
 export const RECONNECT_DATASOURCE_SUCCESS_MESSAGE2 = () => "请填写缺失的数据源";
 export const ADD_MISSING_DATASOURCES = () => "添加缺失的数据源";
