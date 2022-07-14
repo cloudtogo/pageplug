@@ -35,12 +35,6 @@ const Section = styled.section<{
   overflow-y: auto;
 `;
 
-const SafeFixedArea = styled.div<{
-  height: number;
-}>`
-  margin-bottom: ${(props) => props.height}px;
-`;
-
 type AppViewerPageContainerProps = RouteComponentProps<AppViewerRouteParams>;
 
 function AppViewerPageContainer(props: AppViewerPageContainerProps) {
@@ -108,7 +102,10 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
   if (!(widgets.children && widgets.children.length > 0)) return pageNotFound;
 
   return (
-    <Section height={widgets.bottomRow} isMobile={isMobile}>
+    <Section
+      height={widgets.bottomRow + (hasFixedWidget?.height || 0)}
+      isMobile={isMobile}
+    >
       <AppPage
         appName={currentApplication?.name}
         dsl={widgets}
@@ -116,9 +113,6 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
         pageName={currentPageName}
       />
       <RequestConfirmationModal />
-      {hasFixedWidget ? (
-        <SafeFixedArea height={hasFixedWidget?.height || 0} />
-      ) : null}
     </Section>
   );
 }
