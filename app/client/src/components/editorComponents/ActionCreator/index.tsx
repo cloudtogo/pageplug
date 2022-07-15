@@ -15,6 +15,7 @@ import { getWidgetOptionsTree } from "sagas/selectors";
 import {
   getCurrentApplicationId,
   getCurrentPageId,
+  isMobileLayout,
 } from "selectors/editorSelectors";
 import {
   getActionsForCurrentPage,
@@ -127,7 +128,7 @@ const baseOptions: { label: string; value: string }[] = [
   },
 ];
 
-const getBaseOptions = (featureFlags: FeatureFlags) => {
+const getBaseOptions = (featureFlags: FeatureFlags, isMobile?: boolean) => {
   const { JS_EDITOR: isJSEditorEnabled } = featureFlags;
   if (isJSEditorEnabled) {
     const jsOption = baseOptions.find(
@@ -140,6 +141,13 @@ const getBaseOptions = (featureFlags: FeatureFlags) => {
       });
     }
   }
+  if (isMobile) {
+    // hide some actions in mobile app
+    return baseOptions.filter(
+      (o: any) =>
+        o.value !== ActionType.download && o.value !== ActionType.resetWidget,
+    );
+  }
   return baseOptions;
 };
 
@@ -147,6 +155,7 @@ function getFieldFromValue(
   value: string | undefined,
   getParentValue?: Function,
   dataTree?: DataTree,
+  isMobile?: boolean,
 ): any[] {
   const fields: any[] = [];
   if (!value) {
@@ -199,6 +208,7 @@ function getFieldFromValue(
             );
           },
           dataTree,
+          isMobile,
         );
         successFields[0].label = "onSuccess";
         fields.push(successFields);
@@ -225,6 +235,7 @@ function getFieldFromValue(
             );
           },
           dataTree,
+          isMobile,
         );
         errorFields[0].label = "onError";
         fields.push(errorFields);
@@ -542,16 +553,17 @@ function useIntegrationsOptionTree() {
   const pluginGroups: any = useMemo(() => keyBy(plugins, "id"), [plugins]);
   const actions = useSelector(getActionsForCurrentPage);
   const jsActions = useSelector(getJSCollectionsForCurrentPage);
+  const isMobile = useSelector(isMobileLayout);
 
   return getIntegrationOptionsWithChildren(
     pageId,
     applicationId,
     pluginGroups,
-    getBaseOptions(featureFlags),
+    getBaseOptions(featureFlags, isMobile),
     actions,
     jsActions,
     {
-      label: "New Query",
+      label: "新建查询",
       value: "datasources",
       id: "create",
       icon: "plus",
@@ -581,7 +593,8 @@ export function ActionCreator(props: ActionCreatorProps) {
   const widgetOptionTree = useSelector(getWidgetOptionsTree);
   const modalDropdownList = useModalDropdownList();
   const pageDropdownOptions = useSelector(getPageListAsOptions);
-  const fields = getFieldFromValue(props.value, undefined, dataTree);
+  const isMobile = useSelector(isMobileLayout);
+  const fields = getFieldFromValue(props.value, undefined, dataTree, isMobile);
   return (
     <TreeStructure>
       <Fields
