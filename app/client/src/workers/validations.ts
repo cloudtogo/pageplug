@@ -28,7 +28,7 @@ import { countOccurrences, findDuplicateIndex } from "./helpers";
 export const UNDEFINED_VALIDATION = "UNDEFINED_VALIDATION";
 export const VALIDATION_ERROR_COUNT_THRESHOLD = 10;
 const MAX_ALLOWED_LINE_BREAKS = 1000; // Rendering performance deteriorates beyond this number.
-const LINE_BREAKS_ERROR_MESSAGE = `Warning: New lines in the text exceed ${MAX_ALLOWED_LINE_BREAKS}. The text displayed will not contain any new lines.`;
+const LINE_BREAKS_ERROR_MESSAGE = `注意: 文本行数超过了上限 ${MAX_ALLOWED_LINE_BREAKS}，新加的文本行将不再展示。`;
 
 const flat = (array: Record<string, any>[], uniqueParam: string) => {
   let result: { value: string }[] = [];
@@ -547,8 +547,6 @@ export const VALIDATORS: Record<ValidationTypes, Validator> = {
     ) {
       if (parsed > Number(config.params.max)) {
         return {
-          parsed: config.params?.default || "",
-          message: "Value is not allowed",
           isValid: false,
           parsed: config.params.max || parsed || 0,
           messages: [`Maximum allowed value: ${config.params.max}`],
