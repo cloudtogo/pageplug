@@ -128,6 +128,14 @@ const baseOptions: { label: string; value: string }[] = [
   },
 ];
 
+const mobileHiddenActionMap = {
+  [ActionType.download]: true,
+  [ActionType.resetWidget]: true,
+  [ActionType.getGeolocation]: true,
+  [ActionType.watchGeolocation]: true,
+  [ActionType.stopWatchGeolocation]: true,
+};
+
 const getBaseOptions = (featureFlags: FeatureFlags, isMobile?: boolean) => {
   const { JS_EDITOR: isJSEditorEnabled } = featureFlags;
   if (isJSEditorEnabled) {
@@ -143,10 +151,7 @@ const getBaseOptions = (featureFlags: FeatureFlags, isMobile?: boolean) => {
   }
   if (isMobile) {
     // hide some actions in mobile app
-    return baseOptions.filter(
-      (o: any) =>
-        o.value !== ActionType.download && o.value !== ActionType.resetWidget,
-    );
+    return baseOptions.filter((o: any) => !mobileHiddenActionMap[o.value]);
   }
   return baseOptions;
 };
