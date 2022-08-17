@@ -10,6 +10,9 @@ import {
   TriggerFailureError,
 } from "sagas/ActionExecution/errorUtils";
 import { getType, Types } from "utils/TypeHelpers";
+import { select } from "redux-saga/effects";
+import { isMobileLayout } from "selectors/editorSelectors";
+import Taro from "@tarojs/taro";
 
 export default function* showAlertSaga(
   payload: ShowAlertActionDescription["payload"],
@@ -22,6 +25,16 @@ export default function* showAlertSaga(
       getType(payload.message),
     );
   }
+
+  const isMobile = yield select(isMobileLayout);
+  if (isMobile) {
+    Taro.showToast({
+      icon: payload.style,
+      title: payload.message,
+    });
+    return;
+  }
+
   let variant;
   switch (payload.style) {
     case "info":
