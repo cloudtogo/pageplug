@@ -6,8 +6,9 @@ import { TextAlign } from "../widget";
 import {
   FontStyleTypes,
   TextSize,
-  TEXT_SIZES,
+  DEFAULT_FONT_SIZE,
 } from "constants/WidgetConstants";
+import { fontSizeUtility } from "widgets/WidgetUtils";
 
 export const TextContainer = styled(View)`
   height: 100%;
@@ -45,7 +46,8 @@ export const StyledText = styled(Text)<{
       : ""};
   font-weight: ${(props) =>
     props?.fontStyle?.includes(FontStyleTypes.BOLD) ? "bold" : "normal"};
-  font-size: ${(props) => props?.fontSize && TEXT_SIZES[props?.fontSize]};
+  font-size: ${({ fontSize }) =>
+    fontSizeUtility(fontSize) || DEFAULT_FONT_SIZE};
 `;
 
 export interface TextComponentProps extends ComponentProps {
