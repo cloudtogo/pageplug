@@ -1,3 +1,4 @@
+import { DEFAULT_FONT_SIZE } from "constants/WidgetConstants";
 import Widget from "./widget";
 import IconSVG from "./icon.svg";
 
@@ -11,7 +12,7 @@ export const CONFIG = {
   defaults: {
     widgetName: "text",
     text: "文本",
-    fontSize: "PARAGRAPH",
+    fontSize: DEFAULT_FONT_SIZE,
     textAlign: "LEFT",
     textColor: "#333",
     rows: 4,
