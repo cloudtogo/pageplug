@@ -111,6 +111,7 @@ export const Colors = {
   GALLERY_2: "#EDEDED",
   Galliano: "#E0B30E",
   ROYAL_BLUE: "#457AE6",
+  ROYAL_BLUE_2: "#553DE9",
   ALTO2: "#E0DEDE",
   SEA_SHELL: "#F1F1F1",
   DANUBE: "#6A86CE",
@@ -190,6 +191,7 @@ export const Colors = {
   GREY_10: "#090707",
   GREY_11: "#9F9F9F",
   GREY_200: "#E7E7E7",
+  GREY_600: "#6B6B6B",
   GREY_800: "#393939",
   GREY_900: "#191919",
 

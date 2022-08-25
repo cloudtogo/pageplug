@@ -13,29 +13,30 @@ let homePage = ObjectsRegistry.HomePage,
 
 describe("AForce - Community Issues page validations", function() {
   before(function() {
-    agHelper.clearLocalStorageCache();
+    agHelper.ClearLocalStorageCache();
   });
 
   beforeEach(() => {
-    agHelper.restoreLocalStorageCache();
+    agHelper.RestoreLocalStorageCache();
   });
 
   afterEach(() => {
-    agHelper.saveLocalStorageCache();
+    agHelper.SaveLocalStorageCache();
   });
 
   let selectedRow: number;
   it("1. Import application json and validate headers", () => {
-    cy.visit("/applications");
+    homePage.NavigateToHome();
     homePage.ImportApp("CommunityIssuesExport.json");
     cy.wait("@importNewApplication").then((interception: any) => {
       agHelper.Sleep();
       const { isPartialImport } = interception.response.body.data;
       if (isPartialImport) {
         // should reconnect modal
-        dataSources.ReconnectDataSourcePostgres("AForceDB");
+        dataSources.ReconnectDataSource("AForceDB", "PostgreSQL");
+        homePage.AssertNCloseImport();
       } else {
-        homePage.AssertImport();
+        homePage.AssertImportToast();
       }
       //Validate table is not empty!
       table.WaitUntilTableLoad();
@@ -104,7 +105,7 @@ describe("AForce - Community Issues page validations", function() {
   });
 
   it("3. Validate table navigation with Server Side pagination disabled with Default selected row selection", () => {
-    agHelper.NavigateBacktoEditor();
+    deployMode.NavigateBacktoEditor();
     table.WaitUntilTableLoad();
     ee.SelectEntityByName("Table1", "WIDGETS");
     propPane.ToggleOnOrOff("serversidepagination", "Off");
@@ -112,14 +113,14 @@ describe("AForce - Community Issues page validations", function() {
     table.WaitUntilTableLoad();
     table.AssertPageNumber(1, "Off");
     table.AssertSelectedRow(selectedRow);
-    agHelper.NavigateBacktoEditor();
+    deployMode.NavigateBacktoEditor();
     table.WaitUntilTableLoad();
     ee.SelectEntityByName("Table1", "WIDGETS");
     propPane.ToggleOnOrOff("serversidepagination", "On");
   });
 
   it("4. Change Default selected row in table and verify", () => {
-    jsEditor.EnterJSContext("Default Selected Row", "1");
+    propPane.UpdatePropertyFieldValue("Default Selected Row", "1");
     deployMode.DeployApp();
     table.WaitUntilTableLoad();
     table.AssertPageNumber(1);
@@ -127,37 +128,41 @@ describe("AForce - Community Issues page validations", function() {
     table.NavigateToNextPage(); //page 2
     table.AssertPageNumber(2);
     table.AssertSelectedRow(1);
-    agHelper.NavigateBacktoEditor();
+    deployMode.NavigateBacktoEditor();
     table.WaitUntilTableLoad();
   });
 
   it.skip("5. Verify Default search text in table as per 'Default Search Text' property set + Bug 12228", () => {
     ee.SelectEntityByName("Table1", "WIDGETS");
-    jsEditor.EnterJSContext("Default Search Text", "Bug", false);
+    //jsEditor.EnterJSContext("Default Search Text", "Bug", false);
+    propPane.TypeTextIntoField("Default Search Text", "Bug");
     deployMode.DeployApp();
     table.AssertSearchText("Bug");
     table.WaitUntilTableLoad();
     table.WaitUntilTableLoad();
-    agHelper.NavigateBacktoEditor();
+    deployMode.NavigateBacktoEditor();
 
     ee.SelectEntityByName("Table1", "WIDGETS");
-    jsEditor.EnterJSContext("Default Search Text", "Question", false);
+    //jsEditor.EnterJSContext("Default Search Text", "Question", false);
+    propPane.TypeTextIntoField("Default Search Text", "Question");
+
     deployMode.DeployApp();
     table.AssertSearchText("Question");
     table.WaitUntilTableLoad();
-    agHelper.NavigateBacktoEditor();
+    deployMode.NavigateBacktoEditor();
     table.WaitUntilTableLoad();
 
     ee.SelectEntityByName("Table1", "WIDGETS");
-    jsEditor.EnterJSContext("Default Search Text", "Epic", false); //Bug 12228 - Searching based on hidden column value should not be allowed
+    //jsEditor.EnterJSContext("Default Search Text", "Epic", false);
+    propPane.TypeTextIntoField("Default Search Text", "Epic"); //Bug 12228 - Searching based on hidden column value should not be allowed
     deployMode.DeployApp();
     table.AssertSearchText("Epic");
     table.WaitForTableEmpty();
-    agHelper.NavigateBacktoEditor();
+    deployMode.NavigateBacktoEditor();
     table.WaitUntilTableLoad();
 
     ee.SelectEntityByName("Table1", "WIDGETS");
-    jsEditor.RemoveText("defaultsearchtext");
+    propPane.RemoveText("defaultsearchtext");
     table.WaitUntilTableLoad();
   });
 
@@ -176,7 +181,7 @@ describe("AForce - Community Issues page validations", function() {
     table.WaitUntilTableLoad();
     cy.xpath(table._searchBoxCross).click();
 
-    agHelper.NavigateBacktoEditor();
+    deployMode.NavigateBacktoEditor();
     table.WaitUntilTableLoad();
 
     ee.SelectEntityByName("Table1", "WIDGETS");
@@ -193,7 +198,7 @@ describe("AForce - Community Issues page validations", function() {
     table.WaitForTableEmpty();
     cy.xpath(table._searchBoxCross).click();
 
-    agHelper.NavigateBacktoEditor();
+    deployMode.NavigateBacktoEditor();
     table.WaitUntilTableLoad();
     ee.SelectEntityByName("Table1", "WIDGETS");
     propPane.ToggleOnOrOff("enableclientsidesearch", "On");

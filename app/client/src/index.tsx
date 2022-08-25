@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import "./index.less";
 import { ThemeProvider, taroifyTheme } from "constants/DefaultTheme";
-import { appInitializer } from "utils/AppsmithUtils";
+import { appInitializer } from "utils/AppUtils";
 import { Slide } from "react-toastify";
 import store from "./store";
 import { LayersContext, Layers } from "constants/Layers";
@@ -68,6 +68,12 @@ import "react-sortable-tree-patch-react-17/style.css";
 
 // app init
 appInitializer();
+
+if (process.env.NODE_ENV === "development") {
+  import("./mocks/browser").then(({ worker }) => {
+    worker.start();
+  });
+}
 
 function App() {
   return (

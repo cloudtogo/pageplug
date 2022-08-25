@@ -225,7 +225,7 @@ public class NewPageServiceCEImpl extends BaseService<NewPageRepository, NewPage
                 }).flatMap(application -> {
                     if(markApplicationAsRecentlyAccessed) {
                         // add this application and workspace id to the recently used list in UserData
-                        return userDataService.updateLastUsedAppAndOrgList(application)
+                        return userDataService.updateLastUsedAppAndWorkspaceList(application)
                                 .thenReturn(application);
                     } else {
                         return Mono.just(application);
@@ -314,6 +314,7 @@ public class NewPageServiceCEImpl extends BaseService<NewPageRepository, NewPage
                         pageNameIdDTO.setName(pageDTO.getName());
                         pageNameIdDTO.setIsHidden(pageDTO.getIsHidden());
                         pageNameIdDTO.setSlug(pageDTO.getSlug());
+                        pageNameIdDTO.setCustomSlug(pageDTO.getCustomSlug());
                         pageNameIdDTO.setIcon(pageDTO.getIcon());
 
                         if (pageNameIdDTO.getId().equals(defaultPageId)) {
@@ -340,7 +341,7 @@ public class NewPageServiceCEImpl extends BaseService<NewPageRepository, NewPage
                     application.setPublishedPages(null);
                     List<PageNameIdDTO> nameIdDTOList = tuple.getT2();
                     ApplicationPagesDTO applicationPagesDTO = new ApplicationPagesDTO();
-                    applicationPagesDTO.setOrganizationId(application.getOrganizationId());
+                    applicationPagesDTO.setWorkspaceId(application.getWorkspaceId());
                     applicationPagesDTO.setPages(nameIdDTOList);
                     applicationPagesDTO.setApplication(application);
                     return applicationPagesDTO;
@@ -372,7 +373,7 @@ public class NewPageServiceCEImpl extends BaseService<NewPageRepository, NewPage
                     Application application = tuple.getT1();
                     List<PageNameIdDTO> nameIdDTOList = tuple.getT2();
                     ApplicationPagesDTO applicationPagesDTO = new ApplicationPagesDTO();
-                    applicationPagesDTO.setOrganizationId(application.getOrganizationId());
+                    applicationPagesDTO.setWorkspaceId(application.getWorkspaceId());
                     applicationPagesDTO.setPages(nameIdDTOList);
                     return applicationPagesDTO;
                 });
