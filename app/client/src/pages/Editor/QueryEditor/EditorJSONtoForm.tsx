@@ -22,7 +22,7 @@ import ActionSettings from "pages/Editor/ActionSettings";
 import log from "loglevel";
 import Callout from "components/ads/Callout";
 import { Variant } from "components/ads/common";
-import Text, { TextType } from "components/ads/Text";
+import { Text, TextType } from "design-system";
 import styled from "constants/DefaultTheme";
 import { TabComponent } from "components/ads/Tabs";
 import AdsIcon, { IconSize } from "components/ads/Icon";
@@ -40,7 +40,14 @@ import CloseEditor from "components/editorComponents/CloseEditor";
 import { setGlobalSearchQuery } from "actions/globalSearchActions";
 import { toggleShowGlobalSearchModal } from "actions/globalSearchActions";
 import EntityDeps from "components/editorComponents/Debugger/EntityDependecies";
-import { isHidden } from "components/formControls/utils";
+import {
+  checkIfSectionCanRender,
+  checkIfSectionIsEnabled,
+  extractConditionalOutput,
+  isHidden,
+  modifySectionConfig,
+  updateEvaluatedSectionConfig,
+} from "components/formControls/utils";
 import {
   createMessage,
   DEBUGGER_ERRORS,
@@ -49,13 +56,21 @@ import {
   DOCUMENTATION,
   DOCUMENTATION_TOOLTIP,
   INSPECT_ENTITY,
-  EMPTY_RESPONSE_FIRST_HALF,
+  ACTION_EXECUTION_MESSAGE,
+  UNEXPECTED_ERROR,
+  NO_DATASOURCE_FOR_QUERY,
+  ACTION_EDITOR_REFRESH,
+  EXPECTED_ERROR,
+  INVALID_FORM_CONFIGURATION,
+  ACTION_RUN_BUTTON_MESSAGE_FIRST_HALF,
+  ACTION_RUN_BUTTON_MESSAGE_SECOND_HALF,
+  CREATE_NEW_DATASOURCE,
 } from "@appsmith/constants/messages";
 import { useParams } from "react-router";
 import { AppState } from "reducers";
 import { ExplorerURLParams } from "../Explorer/helpers";
 import MoreActionsMenu from "../Explorer/Actions/MoreActionsMenu";
-import Button, { Size } from "components/ads/Button";
+import Button, { Size, Category } from "components/ads/Button";
 import { thinScrollbar } from "constants/DefaultTheme";
 import ActionRightPane, {
   useEntityDependencies,
@@ -63,7 +78,7 @@ import ActionRightPane, {
 import { SuggestedWidget } from "api/ActionAPI";
 import { Plugin } from "api/PluginApi";
 import { UIComponentTypes } from "../../../api/PluginApi";
-import TooltipComponent from "components/ads/Tooltip";
+import { TooltipComponent } from "design-system";
 import * as Sentry from "@sentry/react";
 import { ENTITY_TYPE } from "entities/DataTree/dataTreeFactory";
 import SearchSnippets from "components/ads/SnippetButton";
@@ -77,14 +92,21 @@ import { inGuidedTour } from "selectors/onboardingSelectors";
 import { EDITOR_TABS } from "constants/QueryEditorConstants";
 import Spinner from "components/ads/Spinner";
 import {
-  ConditionalOutput,
   FormEvalOutput,
+  isValidFormConfig,
 } from "reducers/evaluationReducers/formEvaluationReducer";
 import {
   responseTabComponent,
   InlineButton,
   TableCellHeight,
+  SectionDivider,
+  CancelRequestButton,
+  LoadingOverlayContainer,
+  handleCancelActionExecution,
+  ActionExecutionResizerHeight,
 } from "components/editorComponents/ApiResponseView";
+import LoadingOverlayScreen from "components/editorComponents/LoadingOverlayScreen";
+import { EditorTheme } from "components/editorComponents/CodeEditor/EditorConfig";
 
 const QueryFormContainer = styled.form`
   flex: 1;
@@ -286,6 +308,15 @@ const DropdownSelect = styled.div`
 
     & > div {
       height: 100%;
+    }
+
+    & .appsmith-select__input > input {
+      position: relative;
+      bottom: 4px;
+    }
+
+    & .appsmith-select__input > input[value=""] {
+      caret-color: transparent;
     }
   }
 `;
@@ -502,7 +533,7 @@ export function EditorJSONtoForm(props: Props) {
         <components.MenuList {...props}>{props.children}</components.MenuList>
         <CreateDatasource onClick={() => onCreateDatasourceClick()}>
           <Icon className="createIcon" icon="plus" iconSize={11} />
-          新建数据源
+          {createMessage(CREATE_NEW_DATASOURCE)}
         </CreateDatasource>
       </>
     );
@@ -579,7 +610,9 @@ export function EditorJSONtoForm(props: Props) {
       Sentry.captureException(e);
       return (
         <>
-          <ErrorMessage>Invalid form configuration</ErrorMessage>
+          <ErrorMessage>
+            {createMessage(INVALID_FORM_CONFIGURATION)}
+          </ErrorMessage>
           <Tag
             intent="warning"
             interactive
@@ -587,73 +620,11 @@ export function EditorJSONtoForm(props: Props) {
             onClick={() => window.location.reload()}
             round
           >
-            Refresh
+            {createMessage(ACTION_EDITOR_REFRESH)}
           </Tag>
         </>
       );
     }
-  };
-
-  // Extract the output of conditionals attached to the form from the state
-  const extractConditionalOutput = (section: any): ConditionalOutput => {
-    let conditionalOutput: ConditionalOutput = {};
-    if (
-      section.hasOwnProperty("propertyName") &&
-      props.formEvaluationState.hasOwnProperty(section.propertyName)
-    ) {
-      conditionalOutput = props?.formEvaluationState[section.propertyName];
-    } else if (
-      section.hasOwnProperty("configProperty") &&
-      props.formEvaluationState.hasOwnProperty(section.configProperty)
-    ) {
-      conditionalOutput = props?.formEvaluationState[section.configProperty];
-    } else if (
-      section.hasOwnProperty("identifier") &&
-      !!section.identifier &&
-      props.formEvaluationState.hasOwnProperty(section.identifier)
-    ) {
-      conditionalOutput = props?.formEvaluationState[section.identifier];
-    }
-    return conditionalOutput;
-  };
-
-  // Function to check if the section config is allowed to render (Only for UQI forms)
-  const checkIfSectionCanRender = (conditionalOutput: ConditionalOutput) => {
-    // By default, allow the section to render. This is to allow for the case where no conditional is provided.
-    // The evaluation state disallows the section to render if the condition is not met. (Checkout formEval.ts)
-    let allowToRender = true;
-    if (
-      conditionalOutput.hasOwnProperty("visible") &&
-      typeof conditionalOutput.visible === "boolean"
-    ) {
-      allowToRender = conditionalOutput.visible;
-    }
-    return allowToRender;
-  };
-
-  // Function to check if the section config is enabled (Only for UQI forms)
-  const checkIfSectionIsEnabled = (conditionalOutput: ConditionalOutput) => {
-    // By default, the section is enabled. This is to allow for the case where no conditional is provided.
-    // The evaluation state disables the section if the condition is not met. (Checkout formEval.ts)
-    let enabled = true;
-    if (
-      conditionalOutput.hasOwnProperty("enabled") &&
-      typeof conditionalOutput.enabled === "boolean"
-    ) {
-      enabled = conditionalOutput.enabled;
-    }
-    return enabled;
-  };
-
-  // Function to modify the section config based on the output of evaluations
-  const modifySectionConfig = (section: any, enabled: boolean): any => {
-    if (!enabled) {
-      section.disabled = true;
-    } else {
-      section.disabled = false;
-    }
-
-    return section;
   };
 
   // Render function to render the V2 of form editor type (UQI)
@@ -662,19 +633,40 @@ export function EditorJSONtoForm(props: Props) {
     let enabled = true;
     if (!!section) {
       // If the section is a nested component, recursively check for conditional statements
-      if ("schema" in section && section.schema.length > 0) {
-        section.schema.forEach((subSection: any) => {
-          const conditionalOutput = extractConditionalOutput({
-            ...subSection,
-          });
+      if (
+        "schema" in section &&
+        Array.isArray(section.schema) &&
+        section.schema.length > 0
+      ) {
+        section.schema = section.schema.map((subSection: any) => {
+          const conditionalOutput = extractConditionalOutput(
+            subSection,
+            props.formEvaluationState,
+          );
+          if (!checkIfSectionCanRender(conditionalOutput)) {
+            subSection.hidden = true;
+          } else {
+            subSection.hidden = false;
+          }
           enabled = checkIfSectionIsEnabled(conditionalOutput);
-          subSection = modifySectionConfig(subSection, enabled);
+          subSection = updateEvaluatedSectionConfig(
+            subSection,
+            conditionalOutput,
+            enabled,
+          );
+          if (!isValidFormConfig(subSection)) return null;
+          return subSection;
         });
       }
       // If the component is not allowed to render, return null
-      const conditionalOutput = extractConditionalOutput(section);
+      const conditionalOutput = extractConditionalOutput(
+        section,
+        props.formEvaluationState,
+      );
       if (!checkIfSectionCanRender(conditionalOutput)) return null;
+      section = updateEvaluatedSectionConfig(section, conditionalOutput);
       enabled = checkIfSectionIsEnabled(conditionalOutput);
+      if (!isValidFormConfig(section)) return null;
     }
     if (section.hasOwnProperty("controlType")) {
       // If component is type section, render it's children
@@ -779,7 +771,7 @@ export function EditorJSONtoForm(props: Props) {
             <ErrorContainer>
               <AdsIcon keepColors name="warning-triangle" />
               <Text style={{ color: "#F22B2B" }} type={TextType.H3}>
-                发现错误
+                {createMessage(EXPECTED_ERROR)}
               </Text>
 
               <ErrorDescriptionText
@@ -830,7 +822,7 @@ export function EditorJSONtoForm(props: Props) {
             <NoResponseContainer>
               <AdsIcon name="no-response" />
               <Text type={TextType.P1}>
-                {EMPTY_RESPONSE_FIRST_HALF()}
+                {createMessage(ACTION_RUN_BUTTON_MESSAGE_FIRST_HALF)}
                 <InlineButton
                   isLoading={isRunning}
                   onClick={responeTabOnRunClick}
@@ -839,7 +831,7 @@ export function EditorJSONtoForm(props: Props) {
                   text="运行"
                   type="button"
                 />
-                执行你的查询
+                {createMessage(ACTION_RUN_BUTTON_MESSAGE_SECOND_HALF)}
               </Text>
             </NoResponseContainer>
           )}
@@ -869,11 +861,26 @@ export function EditorJSONtoForm(props: Props) {
 
   const pluginImages = useSelector(getPluginImages);
 
-  const DATASOURCES_OPTIONS = dataSources.map((dataSource) => ({
-    label: dataSource.name,
-    value: dataSource.id,
-    image: pluginImages[dataSource.pluginId],
-  }));
+  type DATASOURCES_OPTIONS_TYPE = {
+    label: string;
+    value: string;
+    image: string;
+  };
+
+  // Filtering the datasources for listing the similar datasources only rather than having all the active datasources in the list, which on switching resulted in error.
+  const DATASOURCES_OPTIONS: Array<DATASOURCES_OPTIONS_TYPE> = dataSources.reduce(
+    (acc: Array<DATASOURCES_OPTIONS_TYPE>, dataSource: Datasource) => {
+      if (dataSource.pluginId === plugin?.id) {
+        acc.push({
+          label: dataSource.name,
+          value: dataSource.id,
+          image: pluginImages[dataSource.pluginId],
+        });
+      }
+      return acc;
+    },
+    [],
+  );
 
   // when switching between different redux forms, make sure this redux form has been initialized before rendering anything.
   // the initialized prop below comes from redux-form.
@@ -963,7 +970,9 @@ export function EditorJSONtoForm(props: Props) {
                           renderConfig(editorConfig)
                         ) : (
                           <>
-                            <ErrorMessage>发生了意想不到的情况</ErrorMessage>
+                            <ErrorMessage>
+                              {createMessage(UNEXPECTED_ERROR)}
+                            </ErrorMessage>
                             <Tag
                               intent="warning"
                               interactive
@@ -971,13 +980,15 @@ export function EditorJSONtoForm(props: Props) {
                               onClick={() => window.location.reload()}
                               round
                             >
-                              刷新
+                              {createMessage(ACTION_EDITOR_REFRESH)}
                             </Tag>
                           </>
                         )}
                         {dataSources.length === 0 && (
                           <NoDataSourceContainer>
-                            <p className="font18">暂无数据源</p>
+                            <p className="font18">
+                              {createMessage(NO_DATASOURCE_FOR_QUERY)}
+                            </p>
                             <EditorButton
                               filled
                               icon="plus"
@@ -1009,12 +1020,39 @@ export function EditorJSONtoForm(props: Props) {
 
             <TabbedViewContainer ref={panelRef}>
               <Resizable
+                openResizer={isRunning}
                 panelRef={panelRef}
                 setContainerDimensions={(height: number) =>
                   // TableCellHeight in this case is the height of one table cell in pixels.
                   setTableBodyHeightHeight(height - TableCellHeight)
                 }
+                snapToHeight={ActionExecutionResizerHeight}
               />
+              <SectionDivider />
+              {isRunning && (
+                <>
+                  <LoadingOverlayScreen theme={EditorTheme.LIGHT} />
+                  <LoadingOverlayContainer>
+                    <div>
+                      <Text textAlign={"center"} type={TextType.P1}>
+                        {createMessage(ACTION_EXECUTION_MESSAGE, "Query")}
+                      </Text>
+                      <CancelRequestButton
+                        category={Category.tertiary}
+                        className={`t--cancel-action-button`}
+                        onClick={() => {
+                          handleCancelActionExecution();
+                        }}
+                        size={Size.medium}
+                        tag="button"
+                        text="Cancel Request"
+                        type="button"
+                      />
+                    </div>
+                  </LoadingOverlayContainer>
+                </>
+              )}
+
               {output && !!output.length && (
                 <ResultsCount>
                   <Text type={TextType.P3}>

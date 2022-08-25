@@ -1,3 +1,4 @@
+import { IconNames } from "@blueprintjs/icons";
 import { PropertyPaneConfig } from "constants/PropertyControlConstants";
 import { WidgetConfigProps } from "reducers/entityReducers/widgetConfigReducer";
 import { DerivedPropertiesMap } from "utils/WidgetFactory";
@@ -11,11 +12,15 @@ export interface WidgetConfiguration {
   defaults: Partial<WidgetProps> & WidgetConfigProps;
   hideCard?: boolean;
   isDeprecated?: boolean;
+  replacement?: string;
   isCanvas?: boolean;
   needsMeta?: boolean;
   features?: WidgetFeatures;
+  searchTags?: string[];
   properties: {
     config: PropertyPaneConfig[];
+    contentConfig?: PropertyPaneConfig[];
+    styleConfig?: PropertyPaneConfig[];
     default: Record<string, string>;
     meta: Record<string, any>;
     derived: DerivedPropertiesMap;
@@ -158,3 +163,9 @@ export const JSON_FORM_WIDGET_CHILD_STYLESHEET = {
     boxShadow: "none",
   },
 };
+
+export const YOUTUBE_URL_REGEX = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\?v=)([^#&?]*).*/;
+
+export const ICON_NAMES = Object.keys(IconNames).map(
+  (name: string) => IconNames[name as keyof typeof IconNames],
+);
