@@ -11,7 +11,6 @@ import AppPage from "./AppPage";
 import {
   getCanvasWidgetDsl,
   getCurrentPageName,
-  selectURLSlugs,
   isMobileLayout,
 } from "selectors/editorSelectors";
 import RequestConfirmationModal from "pages/Editor/RequestConfirmationModal";
@@ -28,6 +27,7 @@ const Section = styled.section<{
 }>`
   background: ${({ isMobile }) => (isMobile ? "#fff" : "transparent")};
   height: 100%;
+  width: 100%;
   min-height: ${({ height }) => height}px;
   margin: 0 auto;
   position: relative;
@@ -43,7 +43,6 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
   const isFetchingPage = useSelector(getIsFetchingPage);
   const currentApplication = useSelector(getCurrentApplication);
   const { match } = props;
-  const { applicationSlug, pageSlug } = useSelector(selectURLSlugs);
   const hasFixedWidget = widgets.children?.find(
     (w) => w.type === "TARO_BOTTOM_BAR_WIDGET",
   );
@@ -63,8 +62,6 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
           想给页面添加组件？立即前往&nbsp;
           <Link
             to={builderURL({
-              applicationSlug: applicationSlug,
-              pageSlug: pageSlug,
               pageId: props.match.params.pageId as string,
             })}
           >

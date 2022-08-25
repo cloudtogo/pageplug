@@ -16,8 +16,7 @@ export const bindingHint: HintHelper = (editor, dataTree, customDataTree) => {
   }
 
   editor.setOption("extraKeys", {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore: No types available
+    // @ts-expect-error: Types are not available
     ...editor.options.extraKeys,
     [KeyboardShortcuts.CodeEditor.OpenAutocomplete]: (cm: CodeMirror.Editor) =>
       checkIfCursorInsideBinding(cm) && TernServer.complete(cm),
@@ -29,8 +28,20 @@ export const bindingHint: HintHelper = (editor, dataTree, customDataTree) => {
     },
   });
   return {
-    showHint: (editor: CodeMirror.Editor, entityInformation): boolean => {
-      TernServer.setEntityInformation(entityInformation);
+    showHint: (
+      editor: CodeMirror.Editor,
+      entityInformation,
+      additionalData,
+    ): boolean => {
+      if (additionalData && additionalData.blockCompletions) {
+        TernServer.setEntityInformation({
+          ...entityInformation,
+          blockCompletions: additionalData.blockCompletions,
+        });
+      } else {
+        TernServer.setEntityInformation(entityInformation);
+      }
+
       const entityType = entityInformation?.entityType;
       let shouldShow = false;
       if (entityType === ENTITY_TYPE.JSACTION) {
@@ -43,8 +54,7 @@ export const bindingHint: HintHelper = (editor, dataTree, customDataTree) => {
         TernServer.complete(editor);
         return true;
       }
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore: No types available
+      // @ts-expect-error: Types are not available
       editor.closeHint();
       return shouldShow;
     },

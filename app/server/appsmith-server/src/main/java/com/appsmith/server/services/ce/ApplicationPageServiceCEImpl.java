@@ -42,6 +42,7 @@ import com.appsmith.server.services.NewActionService;
 import com.appsmith.server.services.NewPageService;
 import com.appsmith.server.services.SessionUserService;
 import com.appsmith.server.services.ThemeService;
+import com.appsmith.server.services.WorkspaceService;
 import com.google.common.base.Strings;
 import com.mongodb.client.result.UpdateResult;
 import lombok.RequiredArgsConstructor;
@@ -68,7 +69,7 @@ import static com.appsmith.external.helpers.AppsmithBeanUtils.copyNestedNonNullP
 import static com.appsmith.server.acl.AclPermission.MANAGE_ACTIONS;
 import static com.appsmith.server.acl.AclPermission.MANAGE_APPLICATIONS;
 import static com.appsmith.server.acl.AclPermission.MANAGE_PAGES;
-import static com.appsmith.server.acl.AclPermission.ORGANIZATION_MANAGE_APPLICATIONS;
+import static com.appsmith.server.acl.AclPermission.WORKSPACE_MANAGE_APPLICATIONS;
 import static com.appsmith.server.acl.AclPermission.READ_APPLICATIONS;
 import static com.appsmith.server.acl.AclPermission.READ_PAGES;
 import static org.apache.commons.lang.ObjectUtils.defaultIfNull;
@@ -78,6 +79,7 @@ import static org.apache.commons.lang.ObjectUtils.defaultIfNull;
 @RequiredArgsConstructor
 public class ApplicationPageServiceCEImpl implements ApplicationPageServiceCE {
 
+    private final WorkspaceService workspaceService;
     private final ApplicationService applicationService;
     private final SessionUserService sessionUserService;
     private final WorkspaceRepository workspaceRepository;
@@ -234,7 +236,9 @@ public class ApplicationPageServiceCEImpl implements ApplicationPageServiceCE {
 
         AclPermission permission = viewMode ? READ_PAGES : MANAGE_PAGES;
         return newPageService.findByBranchNameAndDefaultPageId(branchName, defaultPageId, permission)
-                .flatMap(newPage -> getPage(newPage.getId(), viewMode))
+                .flatMap(newPage -> {
+                    return sendPageViewAnalyticsEvent(newPage, viewMode).then(getPage(newPage.getId(), viewMode));
+                })
                 .map(responseUtils::updatePageDTOWithDefaultResources);
     }
 
@@ -295,17 +299,17 @@ public class ApplicationPageServiceCEImpl implements ApplicationPageServiceCE {
 
     @Override
     public Mono<Application> createApplication(Application application) {
-        return createApplication(application, application.getOrganizationId());
+        return createApplication(application, application.getWorkspaceId());
     }
 
     @Override
-    public Mono<Application> createApplication(Application application, String orgId) {
+    public Mono<Application> createApplication(Application application, String workspaceId) {
         if (application.getName() == null || application.getName().trim().isEmpty()) {
             return Mono.error(new AppsmithException(AppsmithError.INVALID_PARAMETER, FieldName.NAME));
         }
 
-        if (orgId == null || orgId.isEmpty()) {
-            return Mono.error(new AppsmithException(AppsmithError.INVALID_PARAMETER, FieldName.ORGANIZATION_ID));
+        if (workspaceId == null || workspaceId.isEmpty()) {
+            return Mono.error(new AppsmithException(AppsmithError.INVALID_PARAMETER, FieldName.WORKSPACE_ID));
         }
 
         application.setPublishedPages(new ArrayList<>());
@@ -315,7 +319,7 @@ public class ApplicationPageServiceCEImpl implements ApplicationPageServiceCE {
         application.setApplicationVersion(ApplicationVersion.LATEST_VERSION);
 
         Mono<User> userMono = sessionUserService.getCurrentUser().cache();
-        Mono<Application> applicationWithPoliciesMono = setApplicationPolicies(userMono, orgId, application);
+        Mono<Application> applicationWithPoliciesMono = setApplicationPolicies(userMono, workspaceId, application);
 
         return applicationWithPoliciesMono
                 .zipWith(userMono)
@@ -369,11 +373,11 @@ public class ApplicationPageServiceCEImpl implements ApplicationPageServiceCE {
     public Mono<Application> setApplicationPolicies(Mono<User> userMono, String workspaceId, Application application) {
         return userMono
                 .flatMap(user -> {
-                    Mono<Workspace> workspaceMono = workspaceRepository.findById(workspaceId, ORGANIZATION_MANAGE_APPLICATIONS)
+                    Mono<Workspace> workspaceMono = workspaceRepository.findById(workspaceId, WORKSPACE_MANAGE_APPLICATIONS)
                             .switchIfEmpty(Mono.error(new AppsmithException(AppsmithError.NO_RESOURCE_FOUND, FieldName.WORKSPACE, workspaceId)));
 
                     return workspaceMono.map(org -> {
-                        application.setOrganizationId(org.getId());
+                        application.setWorkspaceId(org.getId());
                         Set<Policy> documentPolicies = policyGenerator.getAllChildPolicies(org.getPolicies(), Workspace.class, Application.class);
                         application.setPolicies(documentPolicies);
                         return application;
@@ -711,7 +715,7 @@ public class ApplicationPageServiceCEImpl implements ApplicationPageServiceCE {
 
         // Find the name for the cloned application which wouldn't lead to duplicate key exception
         Mono<String> newAppNameMono = applicationMono
-                .flatMap(application -> applicationService.findAllApplicationsByOrganizationId(application.getOrganizationId())
+                .flatMap(application -> applicationService.findAllApplicationsByWorkspaceId(application.getWorkspaceId())
                         .map(Application::getName)
                         .collect(Collectors.toSet())
                         .map(appNames -> {
@@ -748,7 +752,7 @@ public class ApplicationPageServiceCEImpl implements ApplicationPageServiceCE {
 
                     Mono<User> userMono = sessionUserService.getCurrentUser().cache();
                     // First set the correct policies for the new cloned application
-                    return setApplicationPolicies(userMono, sourceApplication.getOrganizationId(), newApplication)
+                    return setApplicationPolicies(userMono, sourceApplication.getWorkspaceId(), newApplication)
                             // Create the cloned application with the new name and policies before proceeding further.
                             .zipWith(userMono)
                             .flatMap(applicationUserTuple2 -> {
@@ -791,12 +795,13 @@ public class ApplicationPageServiceCEImpl implements ApplicationPageServiceCE {
                                                         application.getId(), editModeThemeId, publishedModeThemeId, MANAGE_APPLICATIONS
                                                 ).thenReturn(application);
                                             })
-                            );
+                            )
+                            .flatMap(application -> sendCloneApplicationAnalyticsEvent(sourceApplication, application));
                 });
 
         // Clone Application is currently a slow API because it needs to create application, clone all the pages, and then
         // clone all the actions. This process may take time and the client may cancel the request. This leads to the flow
-        // getting stopped mid way producing corrupted clones. The following ensures that even though the client may have
+        // getting stopped midway producing corrupted clones. The following ensures that even though the client may have
         // cancelled the flow, the cloning of the application should proceed uninterrupted and whenever the user refreshes
         // the page, the cloned application is available and is in sane state.
         // To achieve this, we use a synchronous sink which does not take subscription cancellations into account. This
@@ -1004,19 +1009,16 @@ public class ApplicationPageServiceCEImpl implements ApplicationPageServiceCE {
                 .flatMap(actionCollectionService::save)
                 .collectList();
 
-        return Mono.when(
-                        publishApplicationAndPages,
-                        publishedActionsListMono,
-                        publishedActionCollectionsListMono,
-                        publishThemeMono
-                )
-                .then(sendApplicationPublishedEvent(publishApplicationAndPages, publishedActionsListMono, publishedActionCollectionsListMono, applicationId));
+        return publishApplicationAndPages
+                .flatMap(newPages -> Mono.zip(publishedActionsListMono, publishedActionCollectionsListMono, publishThemeMono))
+                .then(sendApplicationPublishedEvent(publishApplicationAndPages, publishedActionsListMono, publishedActionCollectionsListMono, applicationId, isPublishedManually));
     }
 
     private Mono<Application> sendApplicationPublishedEvent(Mono<List<NewPage>> publishApplicationAndPages,
                                                             Mono<List<NewAction>> publishedActionsFlux,
                                                             Mono<List<ActionCollection>> publishedActionsCollectionFlux,
-                                                            String applicationId) {
+                                                            String applicationId,
+                                                            boolean isPublishedManually) {
         return Mono.zip(
                         publishApplicationAndPages,
                         publishedActionsFlux,
@@ -1032,7 +1034,8 @@ public class ApplicationPageServiceCEImpl implements ApplicationPageServiceCE {
                     extraProperties.put("actionCollectionCount", objects.getT3().size());
                     extraProperties.put("appId", defaultIfNull(application.getId(), ""));
                     extraProperties.put("appName", defaultIfNull(application.getName(), ""));
-                    extraProperties.put("orgId", defaultIfNull(application.getOrganizationId(), ""));
+                    extraProperties.put("orgId", defaultIfNull(application.getWorkspaceId(), ""));
+                    extraProperties.put("isManual", defaultIfNull(isPublishedManually, ""));
                     extraProperties.put("publishedAt", defaultIfNull(application.getLastDeployedAt(), ""));
 
                     return analyticsService.sendObjectEvent(AnalyticsEvents.PUBLISH_APPLICATION, application, extraProperties);
@@ -1096,7 +1099,7 @@ public class ApplicationPageServiceCEImpl implements ApplicationPageServiceCE {
         application.setName(actualName);
 
         Mono<User> userMono = sessionUserService.getCurrentUser().cache();
-        Mono<Application> applicationWithPoliciesMono = this.setApplicationPolicies(userMono, application.getOrganizationId(), application);
+        Mono<Application> applicationWithPoliciesMono = this.setApplicationPolicies(userMono, application.getWorkspaceId(), application);
 
         return applicationWithPoliciesMono
                 .zipWith(userMono)
@@ -1115,5 +1118,51 @@ public class ApplicationPageServiceCEImpl implements ApplicationPageServiceCE {
                 });
     }
 
+    /**
+     * To send analytics event for cloning an application
+     * @param sourceApplication The application from which cloning is done
+     * @param application The newly created application by cloning
+     * @return The newly created application by cloning
+     */
+    private Mono<Application> sendCloneApplicationAnalyticsEvent(Application sourceApplication, Application application) {
+        return workspaceService.getById(application.getWorkspaceId())
+                .flatMap(workspace -> {
+                    final Map<String, Object> eventData = Map.of(
+                            FieldName.SOURCE_APPLICATION, sourceApplication,
+                            FieldName.APPLICATION, application,
+                            FieldName.WORKSPACE, workspace
+                    );
 
+                    final Map<String, Object> data = Map.of(
+                            FieldName.SOURCE_APPLICATION_ID, sourceApplication.getId(),
+                            FieldName.APPLICATION_ID, application.getId(),
+                            FieldName.WORKSPACE_ID, workspace.getId(),
+                            FieldName.EVENT_DATA, eventData
+                    );
+
+                    return analyticsService.sendObjectEvent(AnalyticsEvents.CLONE, application, data);
+                });
+    }
+
+    /**
+     * To send analytics event for page views
+     * @param newPage Page being accessed
+     * @param viewMode Page is accessed in view mode or not
+     * @return NewPage
+     */
+    private Mono<NewPage> sendPageViewAnalyticsEvent(NewPage newPage, boolean viewMode) {
+        if (!viewMode) {
+            return Mono.empty();
+        }
+
+        final Map<String, Object> eventData = Map.of(
+                FieldName.PAGE, newPage
+        );
+
+        final Map<String, Object> data = Map.of(
+                FieldName.EVENT_DATA, eventData
+        );
+
+        return analyticsService.sendObjectEvent(AnalyticsEvents.VIEW, newPage, data);
+    }
 }
