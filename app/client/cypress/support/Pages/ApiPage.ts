@@ -39,9 +39,10 @@ export class ApiPage {
   private _onPageLoad = "input[name='executeOnLoad'][type='checkbox']";
   private _confirmBeforeRunningAPI =
     "input[name='confirmBeforeExecute'][type='checkbox']";
+  _saveAsDS = ".t--store-as-datasource";
 
   CreateApi(
-    apiName: string = "",
+    apiName = "",
     apiVerb: "GET" | "POST" | "PUT" | "DELETE" | "PATCH" = "GET",
   ) {
     cy.get(this.locator._createNew).click({ force: true });
@@ -66,11 +67,11 @@ export class ApiPage {
 
   CreateAndFillApi(
     url: string,
-    apiname: string = "",
+    apiName = "",
     apiVerb: "GET" | "POST" | "PUT" | "DELETE" | "PATCH" = "GET",
     queryTimeout = 30000,
   ) {
-    this.CreateApi(apiname, apiVerb);
+    this.CreateApi(apiName, apiVerb);
     this.EnterURL(url);
     this.agHelper.AssertAutoSave();
     //this.agHelper.Sleep(2000);// Added because api name edit takes some time to reflect in api sidebar after the call passes.
@@ -165,12 +166,12 @@ export class ApiPage {
     this.SelectPaneTab("Settings");
     cy.xpath(this._queryTimeout)
       .clear()
-      .type(timeout.toString());
+      .type(timeout.toString(), { delay: 0 }); //Delay 0 to work like paste!
     this.agHelper.AssertAutoSave();
     this.SelectPaneTab("Headers");
   }
 
-  OnPageLoadRun(enable = true || false) {
+  ToggleOnPageLoadRun(enable = true || false) {
     this.SelectPaneTab("Settings");
     if (enable)
       cy.get(this._onPageLoad).check({
@@ -182,7 +183,7 @@ export class ApiPage {
       });
   }
 
-  ConfirmBeforeRunningApi(enable = true || false) {
+  ToggleConfirmBeforeRunningApi(enable = true || false) {
     this.SelectPaneTab("Settings");
     if (enable)
       cy.get(this._confirmBeforeRunningAPI).check({

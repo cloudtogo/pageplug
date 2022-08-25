@@ -5,23 +5,27 @@ export interface ICreateJSObjectOptions {
   completeReplace: boolean;
   toRun: boolean;
   shouldCreateNewJSObj: boolean;
+  lineNumber?: number;
+  prettify?: boolean;
 }
 const DEFAULT_CREATE_JS_OBJECT_OPTIONS = {
   paste: true,
   completeReplace: false,
   toRun: true,
   shouldCreateNewJSObj: true,
+  lineNumber: 4,
 };
 
 export class JSEditor {
   public agHelper = ObjectsRegistry.AggregateHelper;
   public locator = ObjectsRegistry.CommonLocators;
   public ee = ObjectsRegistry.EntityExplorer;
+  public propPane = ObjectsRegistry.PropertyPane;
 
   //#region Element locators
-  private _runButton = "button.run-js-action";
-  private _settingsTab = ".tab-title:contains('Settings')";
-  private _codeTab = ".tab-title:contains('Code')";
+  _runButton = "button.run-js-action";
+  _settingsTab = ".tab-title:contains('Settings')";
+  _codeTab = ".tab-title:contains('Code')";
   private _jsObjectParseErrorCallout =
     "div.t--js-response-parse-error-call-out";
   private _jsFunctionExecutionParseErrorCallout =
@@ -77,8 +81,11 @@ export class JSEditor {
     jsFuncName +
     "')]";
   _funcDropdown = ".t--formActionButtons div[role='listbox']";
-  _funcDropdownOptions = ".ads-dropdown-options-wrapper div > div";
-
+  _funcDropdownOptions = ".ads-dropdown-options-wrapper div > span div";
+  _getJSFunctionSettingsId = (JSFunctionName: string) =>
+    `${JSFunctionName}-settings`;
+  _asyncJSFunctionSettings = `.t--async-js-function-settings`;
+  _debugCTA = `button.js-editor-debug-cta`;
   //#endregion
 
   //#region constants
@@ -106,7 +113,7 @@ export class JSEditor {
     cy.get(this._jsObjTxt).should("not.exist");
 
     //cy.waitUntil(() => cy.get(this.locator._toastMsg).should('not.be.visible')) // fails sometimes
-    //this.agHelper.WaitUntilToastDisappear('created successfully')
+    this.agHelper.WaitUntilToastDisappear("created successfully"); //to not hinder with other toast msgs!
     this.agHelper.Sleep();
   }
 
@@ -114,58 +121,57 @@ export class JSEditor {
     JSCode: string,
     options: ICreateJSObjectOptions = DEFAULT_CREATE_JS_OBJECT_OPTIONS,
   ) {
-    const { completeReplace, paste, shouldCreateNewJSObj, toRun } = options;
+    const {
+      completeReplace,
+      lineNumber = 4,
+      paste,
+      prettify = true,
+      shouldCreateNewJSObj,
+      toRun,
+    } = options;
 
     shouldCreateNewJSObj && this.NavigateToNewJSEditor();
     if (!completeReplace) {
+      const downKeys = "{downarrow}".repeat(lineNumber);
       cy.get(this.locator._codeMirrorTextArea)
         .first()
         .focus()
-        .type("{downarrow}{downarrow}{downarrow}{downarrow}  ");
+        .type(`${downKeys}  `);
     } else {
       cy.get(this.locator._codeMirrorTextArea)
         .first()
         .focus()
         .type(this.selectAllJSObjectContentShortcut)
         .type("{backspace}", { force: true });
-
-      // .type("{uparrow}", { force: true })
-      // .type("{ctrl}{shift}{downarrow}", { force: true })
-      // .type("{del}",{ force: true });
-
-      // cy.get(this.locator._codthis.eeditorTarget).contains('export').click().closest(this.locator._codthis.eeditorTarget)
-      //   .type("{uparrow}", { force: true })
-      //   .type("{ctrl}{shift}{downarrow}", { force: true })
-      //   .type("{backspace}",{ force: true });
-      //.type("{downarrow}{downarrow}{downarrow}{downarrow}{downarrow}{downarrow}{downarrow}{downarrow}{downarrow}{downarrow} ")
     }
 
     cy.get(this.locator._codeMirrorTextArea)
       .first()
       .then((el: any) => {
-        const input = cy.get(el);
         if (paste) {
           //input.invoke("val", value);
           this.agHelper.Paste(el, JSCode);
         } else {
-          input.type(JSCode, {
+          cy.get(el).type(JSCode, {
             parseSpecialCharSequences: false,
-            delay: 150,
+            delay: 100,
             force: true,
           });
         }
       });
 
-    this.agHelper.AssertAutoSave(); //Ample wait due to open bug # 10284
-    //this.agHelper.Sleep(5000)//Ample wait due to open bug # 10284
+    this.agHelper.AssertAutoSave();
+    // Ample wait due to open bug # 10284
+    if (prettify) {
+      this.agHelper.ActionContextMenuWithInPane("Prettify Code");
+      this.agHelper.AssertAutoSave();
+    }
 
     if (toRun) {
-      //clicking 1 times & waits for 3 second for result to be populated!
+      //clicking 1 times & waits for 2 second for result to be populated!
       Cypress._.times(1, () => {
-        cy.get(this._runButton)
-          .first()
-          .click()
-          .wait(3000);
+        this.agHelper.GetNClick(this._runButton);
+        this.agHelper.Sleep(2000);
       });
       cy.get(this.locator._empty).should("not.exist");
     }
@@ -181,28 +187,41 @@ export class JSEditor {
       .then((el: JQuery<HTMLElement>) => {
         this.agHelper.Paste(el, newContent);
       });
+    this.agHelper.AssertAutoSave();
+  }
+
+  public DisableJSContext(endp: string) {
+    cy.get(this.locator._jsToggle(endp.replace(/ +/g, "").toLowerCase()))
+      .invoke("attr", "class")
+      .then((classes: any) => {
+        if (classes.includes("is-active"))
+          cy.get(this.locator._jsToggle(endp.replace(/ +/g, "").toLowerCase()))
+            .first()
+            .click({ force: true });
+        else this.agHelper.Sleep(500);
+      });
   }
 
   public EnterJSContext(
     endp: string,
     value: string,
+    toToggleOnJS = true,
     paste = true,
-    toToggleOnJS = false,
-    notField = false,
   ) {
-    if (toToggleOnJS) {
-      cy.get(this.locator._jsToggle(endp.replace(/ +/g, "").toLowerCase()))
-        .invoke("attr", "class")
-        .then((classes: any) => {
-          if (!classes.includes("is-active")) {
-            cy.get(
-              this.locator._jsToggle(endp.replace(/ +/g, "").toLowerCase()),
-            )
-              .first()
-              .click({ force: true });
-          }
-        });
-    }
+    cy.get(this.locator._jsToggle(endp.replace(/ +/g, "").toLowerCase()))
+      .invoke("attr", "class")
+      .then((classes: any) => {
+        if (toToggleOnJS && !classes.includes("is-active"))
+          cy.get(this.locator._jsToggle(endp.replace(/ +/g, "").toLowerCase()))
+            .first()
+            .click({ force: true });
+        else if (!toToggleOnJS && classes.includes("is-active"))
+          cy.get(this.locator._jsToggle(endp.replace(/ +/g, "").toLowerCase()))
+            .first()
+            .click({ force: true });
+        else this.agHelper.Sleep(500);
+      });
+
     // cy.get(this.locator._propertyControl + endp + " " + this.locator._codeMirrorTextArea)
     //   .first()
     //   .focus()
@@ -212,27 +231,8 @@ export class JSEditor {
     //   // .type("{ctrl}{shift}{downarrow}", { force: true })
     //   .type("{del}", { force: true });
 
-    if (paste) {
-      this.agHelper.EnterValue(value, {
-        propFieldName: endp,
-        directInput: notField,
-        inputFieldName: "",
-      });
-    } else {
-      cy.get(
-        this.locator._propertyControl +
-          endp.replace(/ +/g, "").toLowerCase() +
-          " " +
-          this.locator._codeMirrorTextArea,
-      )
-        .first()
-        .then((el: any) => {
-          const input = cy.get(el);
-          input.type(value, {
-            parseSpecialCharSequences: false,
-          });
-        });
-    }
+    if (paste) this.propPane.UpdatePropertyFieldValue(endp, value);
+    else this.propPane.TypeTextIntoField(endp, value);
 
     // cy.focused().then(($cm: any) => {
     //   if ($cm.contents != "") {
@@ -267,22 +267,7 @@ export class JSEditor {
     this.agHelper.AssertAutoSave(); //Allowing time for Evaluate value to capture value
   }
 
-  public RemoveText(endp: string) {
-    cy.get(
-      this.locator._propertyControl +
-        endp +
-        " " +
-        this.locator._codeMirrorTextArea,
-    )
-      .first()
-      .focus()
-      .type("{uparrow}", { force: true })
-      .type("{ctrl}{shift}{downarrow}", { force: true })
-      .type("{del}", { force: true });
-    this.agHelper.AssertAutoSave();
-  }
-
-  public RenameJSObjFromForm(renameVal: string) {
+  public RenameJSObjFromPane(renameVal: string) {
     cy.get(this._jsObjName).click({ force: true });
     cy.get(this._jsObjTxt)
       .clear()
@@ -307,7 +292,7 @@ export class JSEditor {
       .then((text) => cy.wrap(text).as("jsObjName"));
   }
 
-  public validateDefaultJSObjProperties(jsObjName: string) {
+  public ValidateDefaultJSObjProperties(jsObjName: string) {
     this.ee.ActionContextMenuByEntityName(jsObjName, "Show Bindings");
     cy.get(this._propertyList).then(function($lis) {
       const bindingsLength = $lis.length;
@@ -381,8 +366,8 @@ export class JSEditor {
     // Return to code tab
     this.agHelper.GetNClick(this._codeTab);
   }
+
   /**
- *
   There are two types of parse errors in the JS Editor
   1. Parse errors that render the JS Object invalid and all functions unrunnable
   2. Parse errors within functions that throw errors when executing those functions
@@ -401,6 +386,11 @@ export class JSEditor {
         ? _jsFunctionExecutionParseErrorCallout
         : _jsObjectParseErrorCallout,
     ).should(exists ? "exist" : "not.exist");
+  }
+
+  public SelectFunctionDropdown(funName: string) {
+    cy.get(this._funcDropdown).click();
+    this.agHelper.GetNClickByContains(this.locator._dropdownText, funName);
   }
 
   //#endregion

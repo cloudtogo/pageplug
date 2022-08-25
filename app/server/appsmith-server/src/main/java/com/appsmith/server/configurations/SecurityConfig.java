@@ -8,6 +8,7 @@ import com.appsmith.server.constants.FieldName;
 import com.appsmith.server.constants.Url;
 import com.appsmith.server.domains.User;
 import com.appsmith.server.helpers.RedirectHelper;
+import com.appsmith.server.services.AnalyticsService;
 import com.appsmith.server.services.UserService;
 import com.appsmith.server.configurations.CloudOSConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -61,6 +62,9 @@ public class SecurityConfig {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private AnalyticsService analyticsService;
 
     @Autowired
     private CommonConfig commonConfig;
@@ -187,7 +191,7 @@ public class SecurityConfig {
                 .authorizedClientRepository(new ClientUserRepository(userService, commonConfig))
                 .and().logout()
                 .logoutUrl(Url.LOGOUT_URL)
-                .logoutSuccessHandler(new LogoutSuccessHandler(objectMapper))
+                .logoutSuccessHandler(new LogoutSuccessHandler(objectMapper, analyticsService))
                 .and().build();
     }
 
@@ -210,8 +214,8 @@ public class SecurityConfig {
         User user = new User();
         user.setName(FieldName.ANONYMOUS_USER);
         user.setEmail(FieldName.ANONYMOUS_USER);
-        user.setCurrentOrganizationId("");
-        user.setOrganizationIds(new HashSet<>());
+        user.setCurrentWorkspaceId("");
+        user.setWorkspaceIds(new HashSet<>());
         user.setIsAnonymous(true);
         return user;
     }

@@ -28,17 +28,13 @@ import {
   getShowTabBar,
   isMobileLayout,
 } from "selectors/editorSelectors";
-import AddCommentTourComponent from "comments/tour/AddCommentTourComponent";
-import CommentShowCaseCarousel from "comments/CommentsShowcaseCarousel";
 import { getThemeDetails, ThemeMode } from "selectors/themeSelectors";
-import GlobalHotKeys from "./GlobalHotKeys";
 import TabBar from "components/designSystems/taro/TabBar";
 import PreviewQRCode from "./PreviewQRCode";
 import AppViewerLayout from "./AppViewerLayout";
 
 import webfontloader from "webfontloader";
 import { getSearchQuery } from "utils/helpers";
-import AppViewerCommentsSidebar from "./AppViewerComemntsSidebar";
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
 import { useSelector } from "react-redux";
 import BrandingBadge from "./BrandingBadge";
@@ -48,12 +44,14 @@ import {
 } from "actions/controlActions";
 import { setAppViewHeaderHeight } from "actions/appViewActions";
 import { showPostCompletionMessage } from "selectors/onboardingSelectors";
+import { CANVAS_SELECTOR } from "constants/WidgetConstants";
 import { fetchPublishedPage } from "actions/pageActions";
 import usePrevious from "utils/hooks/usePrevious";
 import { getIsBranchUpdated } from "../utils";
 import { APP_MODE } from "entities/App";
 import { initAppViewer } from "actions/initActions";
-import { getShowBrandingBadge } from "@appsmith/selectors/organizationSelectors";
+import { WidgetGlobaStyles } from "globalStyles/WidgetGlobalStyles";
+import { getAppsmithConfigs } from "@appsmith/configs";
 
 const AppViewerBody = styled.section<{
   showTabBar: boolean;
@@ -68,16 +66,10 @@ const AppViewerBody = styled.section<{
   justify-content: flex-start;
   height: calc(
     100vh - ${(props) => (props.isMobile ? "0px" : "168px")} -
-      ${(props) => (props.showTabBar ? "60px" : "0px")}
+      ${(props) => (props.showTabBar ? "60px" : "0px")} -
+      ${({ headerHeight }) => headerHeight}px
   );
-`;
-
-const ContainerWithComments = styled.div`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  transform: translate(0, 0);
-  background: ${(props) => props.theme.colors.artboard};
+  --view-mode-header-height: ${({ headerHeight }) => headerHeight}px;
 `;
 
 const AppViewerBodyContainer = styled.div<{
@@ -114,7 +106,6 @@ function AppViewer(props: Props) {
   );
   const showGuidedTourMessage = useSelector(showPostCompletionMessage);
   const headerHeight = useSelector(getAppViewHeaderHeight);
-  const showBrandingBadge = useSelector(getShowBrandingBadge);
   const branch = getSearchQuery(search, GIT_BRANCH_QUERY_KEY);
   const prevValues = usePrevious({ branch, location: props.location, pageId });
   const inCloudOS = useSelector(
@@ -123,6 +114,7 @@ function AppViewer(props: Props) {
   const showTabBar = useSelector(getShowTabBar);
   const isMobile = useSelector(isMobileLayout);
   const isEmbed = !!getSearchQuery(search, "embed");
+  const { hideWatermark } = getAppsmithConfigs();
 
   /**
    * initializes the widgets factory and registers all widgets
@@ -209,6 +201,10 @@ function AppViewer(props: Props) {
     }
 
     document.body.style.fontFamily = appFontFamily;
+
+    return function reset() {
+      document.body.style.fontFamily = "inherit";
+    };
   }, [selectedTheme.properties.fontFamily.appFont]);
 
   /**
@@ -258,47 +254,52 @@ function AppViewer(props: Props) {
 
   return (
     <ThemeProvider theme={lightTheme}>
-      <GlobalHotKeys>
-        <EditorContext.Provider
-          value={{
-            executeAction: executeActionCallback,
-            resetChildrenMetaProperty: resetChildrenMetaPropertyCallback,
-            batchUpdateWidgetProperty: batchUpdateWidgetPropertyCallback,
-            syncUpdateWidgetMetaProperty: syncUpdateWidgetMetaPropertyCallback,
-            triggerEvalOnMetaUpdate: triggerEvalOnMetaUpdateCallback,
-          }}
-        >
-          <AppViewerLayout>
-            <StableContainer>
-              <ContainerWithComments>
-                <AppViewerCommentsSidebar />
-                <AppViewerBodyContainer
-                  backgroundColor={
-                    isMobile
-                      ? "radial-gradient(#2cbba633, #ffec8f36)"
-                      : selectedTheme.properties.colors.backgroundColor
-                  }
+      <EditorContext.Provider
+        value={{
+          executeAction: executeActionCallback,
+          resetChildrenMetaProperty: resetChildrenMetaPropertyCallback,
+          batchUpdateWidgetProperty: batchUpdateWidgetPropertyCallback,
+          syncUpdateWidgetMetaProperty: syncUpdateWidgetMetaPropertyCallback,
+          triggerEvalOnMetaUpdate: triggerEvalOnMetaUpdateCallback,
+        }}
+      >
+        <WidgetGlobaStyles
+          fontFamily={selectedTheme.properties.fontFamily.appFont}
+          primaryColor={selectedTheme.properties.colors.primaryColor}
+        />
+        <AppViewerLayout>
+          <StableContainer>
+            <AppViewerBodyContainer
+              backgroundColor={
+                isMobile
+                  ? "radial-gradient(#2cbba633, #ffec8f36)"
+                  : selectedTheme.properties.colors.backgroundColor
+              }
+            >
+              <AppViewerBody
+                className={CANVAS_SELECTOR}
+                showTabBar={showTabBar}
+                isMobile={isMobile || isEmbed}
+                hasPages={pages.length > 1}
+                headerHeight={headerHeight}
+                showGuidedTourMessage={showGuidedTourMessage}
+              >
+                {isInitialized && registered && <AppViewerPageContainer />}
+              </AppViewerBody>
+              {!hideWatermark && (
+                <a
+                  className="fixed hidden right-8 bottom-4 z-2 hover:no-underline md:flex"
+                  href="https://appsmith.com"
+                  rel="noreferrer"
+                  target="_blank"
                 >
-                  <AppViewerBody
-                    showTabBar={showTabBar}
-                    isMobile={isMobile || isEmbed}
-                    hasPages={pages.length > 1}
-                    headerHeight={headerHeight}
-                    showGuidedTourMessage={showGuidedTourMessage}
-                  >
-                    {isInitialized && registered && <AppViewerPageContainer />}
-                  </AppViewerBody>
-                  {showBrandingBadge && <BrandingBadge />}
-                </AppViewerBodyContainer>
-              </ContainerWithComments>
-              <AddCommentTourComponent />
-              <CommentShowCaseCarousel />
-              <TabBar />
-              <PreviewQRCode />
-            </StableContainer>
-          </AppViewerLayout>
-        </EditorContext.Provider>
-      </GlobalHotKeys>
+                  <BrandingBadge />
+                </a>
+              )}
+            </AppViewerBodyContainer>
+          </StableContainer>
+        </AppViewerLayout>
+      </EditorContext.Provider>
     </ThemeProvider>
   );
 }

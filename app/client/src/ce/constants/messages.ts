@@ -7,8 +7,6 @@ export function createMessage(
 
 export const YES = () => `是的`;
 export const ARE_YOU_SURE = () => `确定吗？`;
-export const ERROR_MESSAGE_SELECT_ACTION = () => `请选择一个动作`;
-export const ERROR_MESSAGE_SELECT_ACTION_TYPE = () => `请选择一种动作类型`;
 export const ERROR_ADD_API_INVALID_URL = () =>
   `创建 API 失败！请给你的数据源添加地址`;
 export const ERROR_MESSAGE_NAME_EMPTY = () => `请选择一个名字`;
@@ -17,8 +15,14 @@ export const APPLICATION_NAME_UPDATE = () => `应用名称已更新`;
 export const ERROR_EMPTY_APPLICATION_NAME = () => `应用名称不能为空`;
 export const API_PATH_START_WITH_SLASH_ERROR = () => `路径不能以 / 开头`;
 export const FIELD_REQUIRED_ERROR = () => `必填字段`;
-export const INPUT_DEFAULT_TEXT_MAX_CHAR_ERROR = () =>
-  `默认字符长度必须小于最大字符数`;
+export const INPUT_DEFAULT_TEXT_MAX_CHAR_ERROR = (max: number) =>
+  `默认字符最大长度为 ${max}`;
+export const INPUT_TEXT_MAX_CHAR_ERROR = (max: number) =>
+  `文本长度必须小于 ${max}`;
+export const INPUT_DEFAULT_TEXT_MAX_NUM_ERROR = () =>
+  `默认文本长度超出最大值`;
+export const INPUT_DEFAULT_TEXT_MIN_NUM_ERROR = () =>
+  `默认文本长度超出最小值`;
 export const VALID_FUNCTION_NAME_ERROR = () => `函数名不符合规范（驼峰式）`;
 export const UNIQUE_NAME_ERROR = () => `名字必须唯一`;
 export const NAME_SPACE_ERROR = () => `名字中间不能包含空格`;
@@ -95,10 +99,6 @@ export const TERMS_AND_CONDITIONS_LINK = () => `条款协议`;
 export const ERROR_500 = () => `抱歉，服务端出错了，我们正在拼命修复`;
 export const ERROR_0 = () => `无法连接到服务端，请检查你的网络连接`;
 export const ERROR_401 = () => `鉴权失败！请重新登录`;
-export const ERROR_403 = () => `拒绝访问！请联系你的管理员给你开通访问权限`;
-export const URL_HTTP_VALIDATION_ERROR = () => `请输入有效 URL 地址`;
-export const NAVIGATE_TO_VALIDATION_ERROR = () =>
-  `请输入有效 URL 地址或者有效页面名称`;
 export const PAGE_NOT_FOUND_ERROR = () => `页面不存在`;
 export const INVALID_URL_ERROR = () => `无效地址`;
 
@@ -111,29 +111,17 @@ export const INVITE_USERS_ROLE_SELECT_LABEL = () => `角色`;
 export const INVITE_USERS_EMAIL_LIST_LABEL = () => `邮箱`;
 export const INVITE_USERS_ADD_EMAIL_LIST_FIELD = () => `添加`;
 export const INVITE_USERS_SUBMIT_BUTTON_TEXT = () => `邀请小伙伴`;
-export const INVITE_USERS_SUBMIT_ERROR = () => `邀请失败，请稍后重试`;
 export const INVITE_USERS_SUBMIT_SUCCESS = () => `邀请成功`;
 export const INVITE_USER_SUBMIT_SUCCESS = () => `邀请成功`;
 export const INVITE_USERS_VALIDATION_EMAILS_EMPTY = () =>
   `请输入小伙伴们的邮箱`;
 
-export const CREATE_PASSWORD_PAGE_PASSWORD_INPUT_LABEL = () => `新密码`;
-export const CREATE_PASSWORD_PAGE_PASSWORD_INPUT_PLACEHOLDER = () => `新密码`;
-export const CREATE_PASSWORD_LOGIN_LINK_TEXT = () => `已经有密码了？立即登录`;
-export const CREATE_PASSWORD_PAGE_TITLE = () => `设置密码`;
-export const CREATE_PASSWORD_SUBMIT_BUTTON_TEXT = () => `创建`;
-export const CREATE_PASSWORD_PAGE_SUBTITLE = () => `设置新密码 `;
-
-export const CREATE_PASSWORD_RESET_SUCCESS = () => `重置成功`;
+export const CREATE_PASSWORD_RESET_SUCCESS = () => `密码重置成功`;
 export const CREATE_PASSWORD_RESET_SUCCESS_LOGIN_LINK = () => `登录`;
-
-export const CREATE_PASSWORD_EXPIRED_TOKEN = () => `邀请链接已失效，请重新邀请`;
-export const CREATE_PASSWORD_INVALID_TOKEN = () => `邀请链接无效，请重新邀请`;
 
 export const DELETING_APPLICATION = () => `正在删除应用...`;
 export const DUPLICATING_APPLICATION = () => `正在拷贝应用...`;
 
-export const CURL_IMPORT_SUCCESS = () => `Curl 命令导入成功`;
 export const FORGOT_PASSWORD_PAGE_LOGIN_LINK = () => `返回登录`;
 export const ADD_API_TO_PAGE_SUCCESS_MESSAGE = (actionName: string) =>
   `${actionName} API 添加成功`;
@@ -173,7 +161,6 @@ export const LIGHTNING_MENU_OPTION_JS = () => `写 JS`;
 export const LIGHTNING_MENU_OPTION_HTML = () => `写 HTML`;
 export const CHECK_REQUEST_BODY = () => `请检查你的请求配置参数`;
 export const DONT_SHOW_THIS_AGAIN = () => `不再提示`;
-export const SHOW_REQUEST = () => `查看请求`;
 
 export const TABLE_FILTER_COLUMN_TYPE_CALLOUT = () => `修改列类型显示过滤操作`;
 
@@ -234,6 +221,16 @@ export const OAUTH_2_0 = () => "OAuth 2.0";
 export const ENABLE = () => "启用";
 export const UPGRADE = () => "升级";
 export const EDIT = () => "编辑";
+export const UNEXPECTED_ERROR = () => "出现了意外的错误";
+export const EXPECTED_ERROR = () => "出错了";
+export const NO_DATASOURCE_FOR_QUERY = () =>
+  `你还没有用来创建查询的数据源`;
+export const ACTION_EDITOR_REFRESH = () => "刷新";
+export const INVALID_FORM_CONFIGURATION = () => "无效表单配置";
+export const ACTION_RUN_BUTTON_MESSAGE_FIRST_HALF = () => "🙌 点击";
+export const ACTION_RUN_BUTTON_MESSAGE_SECOND_HALF = () =>
+  "在添加你的查询之后";
+export const CREATE_NEW_DATASOURCE = () => "新建数据源";
 
 export const ERROR_EVAL_ERROR_GENERIC = () => `应用解析出错了`;
 
@@ -281,40 +278,10 @@ export const BACK_TO_HOMEPAGE = () => "回到主页";
 
 export const PAGE_NOT_FOUND = () => "未找到页面";
 
-export const RESOLVE = () => "解决";
-export const UNRESOLVE = () => "待解决";
-
 // comments
-export const ADD_COMMENT_PLACEHOLDER = () => "添加评论，用 @ 提醒小伙伴";
-export const PIN_COMMENT = () => "固定住评论";
-export const UNPIN_COMMENT = () => "取消固定评论";
-export const COPY_LINK = () => "复制链接";
-export const DELETE_COMMENT = () => "删除评论";
-export const COMMENT_HAS_BEEN_DELETED = () => "没有找到评论";
-export const DELETE_THREAD = () => "删除讨论";
-export const EDIT_COMMENT = () => "编辑评论";
-export const COMMENTS = () => "评论";
-export const VIEW_LATEST = () => "查询最新";
 export const POST = () => "提交";
 export const CANCEL = () => "取消";
-export const NO_COMMENTS_CLICK_ON_CANVAS_TO_ADD = () =>
-  `暂无评论 \n 点击画布任意地方 \n开始添加评论`;
-export const LINK_COPIED_SUCCESSFULLY = () => "复制成功";
-export const FULL_NAME = () => "全名";
-export const DISPLAY_NAME = () => "昵称";
-export const EMAIL_ADDRESS = () => "邮箱地址";
-export const FIRST_AND_LAST_NAME = () => "姓名";
-export const MARK_ALL_AS_READ = () => "将所有标记未已读";
-export const INVITE_A_NEW_USER = () => "邀请新伙伴";
 export const REMOVE = () => "删除";
-export const NO_NOTIFICATIONS_TO_SHOW = () => "暂无通知";
-export const UNREAD_MESSAGE = () => "未读信息";
-export const UNSUBSCRIBE_EMAIL_SUCCESS = () => "成功取消订阅讨论";
-export const UNSUBSCRIBE_EMAIL_MSG_1 = () => "你不会再收到对应讨论的邮件通知了";
-export const UNSUBSCRIBE_EMAIL_MSG_2 = () =>
-  "请注意，如果哪个小可爱@你，或者你回复了某条评论，你将会再次订阅该讨论";
-export const UNSUBSCRIBE_EMAIL_CONFIRM_MSG = () => "确定取消订阅吗？";
-export const UNSUBSCRIBE_BUTTON_LABEL = () => "取消订阅";
 
 // Showcase Carousel
 export const NEXT = () => "下一步";
@@ -323,7 +290,7 @@ export const SKIP = () => "跳过";
 
 // Debugger
 export const CLICK_ON = () => "🙌 点击 ";
-export const PRESS = () => "🎉 按住 ";
+export const PRESS = () => "🎉 点一下 ";
 export const OPEN_THE_DEBUGGER = () => " 显示/隐藏调试器";
 export const DEBUGGER_QUERY_RESPONSE_SECOND_HALF = () =>
   " 在调试器中显示更多信息";
@@ -423,8 +390,8 @@ export const IMPORT_APP_FROM_GIT_TITLE = () => "从 Git 仓库导入（测试版
 export const IMPORT_APP_FROM_FILE_MESSAGE = () =>
   "将文件拖拽到这里，或者点击选择上传";
 export const IMPORT_APP_FROM_GIT_MESSAGE = () =>
-  "通过 SSH URL 从 git 仓库导入应用";
-export const IMPORT_FROM_GIT_REPOSITORY = () => "从 git 仓库导入";
+  "通过 SSH URL 从 Git 仓库导入应用";
+export const IMPORT_FROM_GIT_REPOSITORY = () => "从 Git 仓库导入";
 export const RECONNECT_MISSING_DATASOURCE_CREDENTIALS = () =>
   "重新连接需要数据源鉴权信息";
 export const RECONNECT_MISSING_DATASOURCE_CREDENTIALS_DESCRIPTION = () =>
@@ -514,10 +481,10 @@ export const SNIPPET_EXECUTE = () => `按 ⏎ 运行`;
 export const APPLY_SEARCH_CATEGORY = () => `⏎ 跳转`;
 
 // Git sync
-export const CONNECTED_TO_GIT = () => "已连接到 git";
+export const CONNECTED_TO_GIT = () => "已连接到 Git";
 
 export const GIT_DISCONNECT_POPUP_TITLE = () =>
-  `这会取消当前应用与 git 仓库的连接`;
+  `这会取消当前应用与 Git 仓库的连接`;
 
 export const GIT_DISCONNECT_POPUP_SUBTITLE = () =>
   `Git 相关功能不会在应用中展示`;
@@ -531,7 +498,7 @@ export const CONNECT_TO_GIT = () => "连接到 Git 仓库";
 export const CONNECT_TO_GIT_SUBTITLE = () => "查看分支、提交、部署应用";
 export const REMOTE_URL = () => "远程地址";
 export const REMOTE_URL_INFO = () =>
-  `新建一个空的 git 仓库，然后把地址粘贴到这里`;
+  `新建一个空的 Git 仓库，然后把地址粘贴到这里`;
 export const IMPORT_URL_INFO = () => `代码库地址粘贴到这里：`;
 export const REMOTE_URL_VIA = () => "代码库地址通过";
 
@@ -557,8 +524,11 @@ export const COMMIT_CHANGES = () => "提交更新";
 export const COMMIT_TO = () => "提交到";
 export const COMMIT_AND_PUSH = () => "提交 & 推送";
 export const PULL_CHANGES = () => "拉取更新";
-export const DEPLOY_KEY_TITLE = () => "已部署 Key";
-export const REGENERATE_SSH_KEY = () => "重新生成 SSH Key";
+export const REGENERATE_SSH_KEY = (keyType: string, keySize: number) =>
+  `重新生成 ${keyType} ${keySize} key`;
+export const GENERATE_SSH_KEY = (keyType: string, keySize: number) =>
+  `${keyType} ${keySize} key`;
+export const SSH_KEY_PLATFORM = (name: string) => ` (${name})`;
 export const SSH_KEY = () => "SSH Key";
 export const COPY_SSH_KEY = () => "复制 SSH Key";
 export const SSH_KEY_GENERATED = () => "SSH Key 已生成";
@@ -582,7 +552,7 @@ export const ERROR_WHILE_PULLING_CHANGES = () => "拉取时出错了";
 export const SUBMIT = () => "提交";
 export const GIT_USER_UPDATED_SUCCESSFULLY = () => "Git 用户更新成功";
 export const REMOTE_URL_INPUT_PLACEHOLDER = () =>
-  "ssh://example.com:user/repo.git";
+  "git@example.com:user/repo.git";
 export const GIT_COMMIT_MESSAGE_PLACEHOLDER = () => "你的提交信息";
 export const COPIED_SSH_KEY = () => "复制的 SSH Key";
 export const INVALID_USER_DETAILS_MSG = () => "请输入有效用户信息";
@@ -600,7 +570,7 @@ export const GIT_UPSTREAM_CHANGES = () =>
   "上游仓库有更新，我们将拉取更新并推送到你的仓库";
 export const GIT_CONFLICTING_INFO = () => "请在你的仓库中手动解决冲突";
 export const CANNOT_PULL_WITH_LOCAL_UNCOMMITTED_CHANGES = () =>
-  "你还有未提交的更新，请在拉取前提交更新";
+  "你还有未提交的更新，请在拉取前提交更新.";
 export const CANNOT_MERGE_DUE_TO_UNCOMMITTED_CHANGES = () =>
   "你当前分支还有未提交的更新，请在合并之前提交更新";
 
@@ -615,8 +585,8 @@ export const DISCONNECT_EXISTING_REPOSITORIES = () => "与现有仓库断开连�
 export const DISCONNECT_EXISTING_REPOSITORIES_INFO = () =>
   "你可以删除现有的仓库来给新的仓库腾出空间";
 export const CONTACT_SUPPORT = () => "联系我们";
-export const CONTACT_SALES_MESSAGE_ON_INTERCOM = (orgName: string) =>
-  `你好！如果你想为你的团队 ${orgName} 扩充私有仓库数量，请告诉我们你想扩充多少个仓库以及扩充的原因，我们会很快回复你。`;
+export const CONTACT_SALES_MESSAGE_ON_INTERCOM = (workspaceName: string) =>
+  `你好！如果你想为你的团队 ${workspaceName} 扩充私有仓库数量，请告诉我们你想扩充多少个仓库以及扩充的原因，我们会很快回复你。`;
 export const REPOSITORY_LIMIT_REACHED = () => "仓库数量达到限制";
 export const REPOSITORY_LIMIT_REACHED_INFO = () =>
   "最多免费使用 3 个仓库，如需使用更多仓库请升级";
@@ -670,12 +640,25 @@ export const DISCARD_CHANGES = () => "丢弃修改";
 // GIT DEPLOY begin
 export const DEPLOY = () => "发布";
 export const DEPLOY_YOUR_APPLICATION = () => "发布你的应用";
+export const CHANGES_SINCE_LAST_DEPLOYMENT = () =>
+  "上次发布以来的修改";
 export const CHANGES_ONLY_USER = () => "上次提交以来的用户修改";
 export const CHANGES_MADE_SINCE_LAST_COMMIT = () => "上次提交以来的修改";
 export const CHANGES_ONLY_MIGRATION = () => "上次提交以来 Appsmith 的更新";
 export const CHANGES_USER_AND_MIGRATION = () =>
   "上次提交以来 Appsmith 的更新和用户修改";
+export const CURRENT_PAGE_DISCARD_WARNING = (page: string) =>
+  `当前页面 (${page}) 在丢弃列表中`;
 // GIT DEPLOY end
+
+// GIT CHANGE LIST begin
+export const CHANGES_FROM_APPSMITH = () =>
+  "Some changes are platform upgrades from Appsmith.";
+export const TRY_TO_PULL = () =>
+  "We will try to pull before pushing your changes.";
+export const NOT_PUSHED_YET = () =>
+  "These are the commits that haven't been pushed to remote yet.";
+// GIT CHANGE LIST end
 
 // GIT DELETE BRANCH begin
 export const DELETE = () => "删除";
@@ -844,6 +827,8 @@ export const API_EDITOR_TAB_TITLES = {
   AUTHENTICATION: () => "鉴权",
   SETTINGS: () => "设置",
 };
+export const ACTION_EXECUTION_MESSAGE = (actionType: string) =>
+  `Sending the ${actionType} request`;
 
 export const WELCOME_FORM_HEADER = () => "让我们更好的了解你！";
 export const WELCOME_FORM_FULL_NAME = () => "姓名";
@@ -927,11 +912,17 @@ export const QUERY_CONFIRMATION_MODAL_MESSAGE = () => `确定运行吗？`;
 export const ENTITY_EXPLORER_TITLE = () => "导航";
 export const MULTI_SELECT_PROPERTY_PANE_MESSAGE = () =>
   `选择组件查看它的各种属性`;
-export const WIDGET_DEPRECATION_WARNING = (widgetName: string) =>
-  `发现新版本的 ${widgetName} 组件！请升级 PagePlug 来体验新功能`;
-export const WIDGET_DEPRECATION_WARNING_HEADER = () => "保持最新";
+export const WIDGET_DEPRECATION_MESSAGE = (widgetName: string) =>
+  `${widgetName} 组件已经被废弃`;
+export const DEPRECATION_WIDGET_REPLACEMENT_MESSAGE = (
+  replacingWidgetName: string,
+) =>
+  ` 你可以拖拽一个 ${replacingWidgetName} 组件来替换已废弃的组件`;
 export const LOCK_ENTITY_EXPLORER_MESSAGE = () => `固定侧边栏`;
 export const CLOSE_ENTITY_EXPLORER_MESSAGE = () => `关闭侧边栏`;
+export const JS_TOGGLE_DISABLED_MESSAGE = "清空字段回退";
+export const PROPERTY_PANE_EMPTY_SEARCH_RESULT_MESSAGE =
+  "没有发现任何属性";
 
 // API Pane
 export const API_PANE_NO_BODY = () => "当前请求没有请求体";
@@ -945,7 +936,7 @@ export const ADD_QUERY_JS_TOOLTIP = () => "新建";
 export const GENERATE_APPLICATION_TITLE = () => "新建页面";
 export const GENERATE_APPLICATION_DESCRIPTION = () =>
   "用你的数据库表快速生成一个增删改查页面";
-export const DELETE_ORG_SUCCESSFUL = () => "应用组删除成功";
+export const DELETE_WORKSPACE_SUCCESSFUL = () => "应用组删除成功";
 // theming
 export const CHANGE_APP_THEME = (name: string) => `已切换为 ${name} 风格主题`;
 export const SAVE_APP_THEME = (name: string) => `风格主题 ${name} 已保存`;
@@ -958,6 +949,7 @@ export const APP_THEME_BETA_CARD_CONTENT = () =>
 
 export const UPGRADE_TO_EE = (authLabel: string) =>
   `你好，我想升级并且开始使用 ${authLabel} 鉴权`;
+export const UPGRADE_TO_EE_GENERIC = () => `你好，我想升级`;
 export const ADMIN_AUTH_SETTINGS_TITLE = () => "选择鉴权方式";
 export const ADMIN_AUTH_SETTINGS_SUBTITLE = () => "选择一个鉴权协议";
 export const DANGER_ZONE = () => "危险操作";
@@ -1049,7 +1041,7 @@ export const EMPTY_DATASOURCE_BUTTON_TEXT = () => "添加数据源";
 export const MORE = () => "更多";
 export const SHOW_LESS = () => "收起";
 export const CHOOSE_WHERE_TO_FORK = () => "选择把模板克隆到哪里";
-export const SELECT_ORGANISATION = () => "选择应用组";
+export const SELECT_WORKSPACE = () => "选择应用组";
 export const FORK_TEMPLATE = () => "克隆模板";
 export const TEMPLATES = () => "模板";
 export const FORK_THIS_TEMPLATE = () => "克隆这个模板";

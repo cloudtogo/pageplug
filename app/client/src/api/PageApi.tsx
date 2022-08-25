@@ -40,6 +40,7 @@ export type FetchPageResponseData = {
   applicationId: string;
   layouts: Array<PageLayout>;
   lastUpdatedTime: number;
+  customSlug?: string;
 };
 
 export type FetchPublishedPageResponseData = FetchPageResponseData;
@@ -64,8 +65,9 @@ export type CreatePageRequest = Omit<
 
 export type UpdatePageRequest = {
   id: string;
-  name: string;
+  name?: string;
   isHidden?: boolean;
+  customSlug?: string;
   icon?: string;
 };
 
@@ -75,7 +77,7 @@ export type SetPageOrderRequest = {
   applicationId: string;
 };
 
-export type CreatePageResponse = ApiResponse<unknown>;
+export type CreatePageResponse = ApiResponse;
 
 export type FetchPageListResponseData = {
   pages: Array<{
@@ -87,7 +89,7 @@ export type FetchPageListResponseData = {
     slug?: string;
     icon?: string;
   }>;
-  organizationId: string;
+  workspaceId: string;
 };
 
 export interface DeletePageRequest {
