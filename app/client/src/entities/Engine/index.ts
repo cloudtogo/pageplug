@@ -1,5 +1,12 @@
-import { fetchApplication } from "actions/applicationActions";
-import { setAppMode, updateAppPersistentStore } from "actions/pageActions";
+import {
+  fetchApplication,
+  fetchApplicationPreviewWxaCode,
+} from "actions/applicationActions";
+import {
+  setAppMode,
+  updateAppPersistentStore,
+  fetchCloudOSApi,
+} from "actions/pageActions";
 import {
   ApplicationPayload,
   ReduxActionErrorTypes,
@@ -12,6 +19,7 @@ import { call, put, select } from "redux-saga/effects";
 import { failFastApiCalls } from "sagas/InitSagas";
 import { getDefaultPageId } from "sagas/selectors";
 import { getCurrentApplication } from "selectors/applicationSelectors";
+import { isMobileLayout } from "selectors/editorSelectors";
 import history from "utils/history";
 import URLRedirect from "entities/URLRedirect/index";
 import URLGeneratorFactory from "entities/URLRedirect/factory";
@@ -22,6 +30,7 @@ export type AppEnginePayload = {
   pageId?: string;
   branch?: string;
   mode: APP_MODE;
+  queryParams?: any;
 };
 
 export interface IAppEngine {
@@ -54,7 +63,32 @@ export default abstract class AppEngine {
   abstract completeChore(): any;
 
   *loadAppData(payload: AppEnginePayload) {
-    const { applicationId, branch, pageId } = payload;
+    const { applicationId, branch, pageId, queryParams } = payload;
+
+    // sync CloudOS api
+    if (queryParams && queryParams.get("inCloudOS") === "true") {
+      const depList = queryParams.get("depList") || "";
+      const projectId = queryParams.get("projectId");
+      const orgId = queryParams.get("orgId");
+      if (projectId && orgId) {
+        yield failFastApiCalls(
+          [fetchCloudOSApi(pageId || "", depList.split(","), projectId, orgId)],
+          [ReduxActionTypes.FETCH_CLOUDOS_API_SUCCESS],
+          [ReduxActionErrorTypes.FETCH_CLOUDOS_API_ERROR],
+        );
+      }
+    }
+
+    // get weapp WxaCode preview image
+    const isMobile = yield select(isMobileLayout);
+    if (isMobile) {
+      yield failFastApiCalls(
+        [fetchApplicationPreviewWxaCode(applicationId)],
+        [ReduxActionTypes.FETCH_APPLICATION_PREVIEW_SUCCESS],
+        [ReduxActionErrorTypes.FETCH_APPLICATION_PREVIEW_ERROR],
+      );
+    }
+
     const apiCalls: boolean = yield failFastApiCalls(
       [fetchApplication({ applicationId, pageId, mode: this._mode })],
       [
