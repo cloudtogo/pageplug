@@ -88,7 +88,7 @@ PagePlug 代码位于 /app 目录下，主要目录分别是：
 PagePlug 前端项目使用 Nginx 作为网关，并且 Nginx 使用 Docker 运行，所以在运行之前请确保已安装 [Docker](https://www.docker.com/get-started/) ，下面的启动命令仅针对 **Windows** 环境，非Windows环境请参考[官方指南](/contributions/ClientSetup.md)。
 ```
 // 配置 host
-127.0.0.1 dev.appsmith.com
+127.0.0.1 lowcode.cloudtogo.cn
 
 // 环境变量
 cp .env.example .env
@@ -101,7 +101,7 @@ yarn start-proxy
 yarn
 yarn start-win
 ```
-顺利启动后，访问 [https://dev.appsmith.com](https://dev.appsmith.com/) 预览效果。
+顺利启动后，访问 [https://lowcode.cloudtogo.cn](https://lowcode.cloudtogo.cn) 预览效果。
 
 #### PagePlug 后端启动
 PagePlug 后端启动需要 Jdk11、Maven3、一个Mongo实例和一个Redis实例，具体操作请参考[官方指南](/contributions/ServerSetup.md)。下面的启动命令仅针对 **Windows** 环境，Windows环境运行脚本需要借助 bash 命令，非 Windows 环境下直接运行脚本即可。  
@@ -153,7 +153,7 @@ yarn dev:weapp
 - [中文社区](https://appsmith-fans.cn/)
 
 ## 贡献者
-[AppSmith团队](https://github.com/appsmithorg/appsmith)、[王昆](https://github.com/lifeneedspassion)
+[AppSmith团队](https://github.com/appsmithorg/appsmith)、[王昆](https://github.com/lifeneedspassion)、[Joel Wen](https://github.com/LaoP1)
 
 ## 感谢这些巨人
 PagePlug 代码中使用到的才华横溢的开源项目，感谢这些开源项目让世界更美好！
