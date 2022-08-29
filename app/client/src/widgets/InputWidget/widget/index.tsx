@@ -558,7 +558,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Icon Options",
+        sectionName: "图标配置",
         hidden: (props: InputWidgetProps) => {
           const { inputType } = props;
           return inputType === "CURRENCY" || inputType === "PHONE_NUMBER";

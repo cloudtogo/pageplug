@@ -165,7 +165,7 @@ class ButtonGroupWidget extends BaseWidget<
                   ],
                 },
                 {
-                  sectionName: "Icon Options",
+                  sectionName: "图标配置",
                   children: [
                     {
                       propertyName: "iconName",
@@ -308,7 +308,7 @@ class ButtonGroupWidget extends BaseWidget<
                             ],
                           },
                           {
-                            sectionName: "Icon Options",
+                            sectionName: "图标配置",
                             children: [
                               {
                                 propertyName: "iconName",

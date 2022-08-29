@@ -118,7 +118,7 @@ export default {
             ],
           },
           {
-            sectionName: "Icon Options",
+            sectionName: "图标配置",
             children: [
               {
                 propertyName: "iconName",

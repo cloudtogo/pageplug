@@ -474,7 +474,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                   ],
                 },
                 {
-                  sectionName: "Icon Options",
+                  sectionName: "图标配置",
                   children: [
                     {
                       propertyName: "iconName",
