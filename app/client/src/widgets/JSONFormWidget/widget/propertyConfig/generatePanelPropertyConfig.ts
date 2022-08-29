@@ -177,7 +177,7 @@ function generatePanelPropertyConfig(
         },
       },
       {
-        sectionName: "Validation",
+        sectionName: "校验",
         children: [
           ...INPUT_PROPERTIES.content.validation,
           ...DATE_PROPERTIES.content.validation,

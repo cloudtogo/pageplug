@@ -535,7 +535,7 @@ class FilePickerWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Validation",
+        sectionName: "校验",
         children: [
           {
             propertyName: "isRequired",
