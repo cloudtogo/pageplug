@@ -364,7 +364,7 @@ const PROPERTIES = {
     {
       helpText: "Sets the input validity based on a JS expression",
       propertyName: "validation",
-      label: "Valid",
+      label: "普通校验",
       controlType: "JSON_FORM_COMPUTE_VALUE",
       placeholderText: "{{ Input1.text.length > 0 }}",
       inputType: "TEXT",
@@ -716,7 +716,7 @@ const PROPERTIES = {
       {
         propertyName: "validation",
         helpText: "Sets the input validity based on a JS expression",
-        label: "Valid",
+        label: "普通校验",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: "{{ Input1.text.length > 0 }}",
         inputType: "TEXT",
