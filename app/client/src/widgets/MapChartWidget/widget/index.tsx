@@ -307,7 +307,7 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
   static getPropertyPaneContentConfig() {
     return [
       {
-        sectionName: "Data",
+        sectionName: "数据",
         children: [
           {
             helpText: "Sets the map type",

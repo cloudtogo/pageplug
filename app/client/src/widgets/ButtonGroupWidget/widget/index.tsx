@@ -508,7 +508,7 @@ class ButtonGroupWidget extends BaseWidget<
   static getPropertyPaneContentConfig() {
     return [
       {
-        sectionName: "Data",
+        sectionName: "数据",
         children: [
           {
             helpText: "Group Buttons",
@@ -536,7 +536,7 @@ class ButtonGroupWidget extends BaseWidget<
               },
               contentChildren: [
                 {
-                  sectionName: "Data",
+                  sectionName: "数据",
                   children: [
                     {
                       propertyName: "buttonType",

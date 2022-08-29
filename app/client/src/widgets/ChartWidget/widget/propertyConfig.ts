@@ -349,7 +349,7 @@ export default [
 
 export const contentConfig = [
   {
-    sectionName: "Data",
+    sectionName: "数据",
     children: [
       {
         helpText: "Changes the visualisation of the chart data",
