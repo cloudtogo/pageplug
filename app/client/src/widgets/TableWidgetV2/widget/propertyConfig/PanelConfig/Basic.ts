@@ -122,7 +122,7 @@ export default {
               {
                 propertyName: "isVisible",
                 helpText: "Controls the visibility of the widget",
-                label: "Visible",
+                label: "是否显示",
                 controlType: "SWITCH",
                 customJSControl: "TABLE_COMPUTE_VALUE",
                 isJSConvertible: true,

@@ -349,7 +349,7 @@ export default [
         helpText: "Controls the visibility of the widget",
         propertyName: "isVisible",
         isJSConvertible: true,
-        label: "Visible",
+        label: "是否显示",
         controlType: "SWITCH",
         isBindProperty: true,
         isTriggerProperty: false,

@@ -269,7 +269,7 @@ class TabsWidget extends BaseWidget<
                   children: [
                     {
                       propertyName: "isVisible",
-                      label: "Visible",
+                      label: "是否显示",
                       helpText: "Controls the visibility of the tab",
                       controlType: "SWITCH",
                       useValidationMessage: true,
@@ -311,7 +311,7 @@ class TabsWidget extends BaseWidget<
         children: [
           {
             propertyName: "isVisible",
-            label: "Visible",
+            label: "是否显示",
             helpText: "Controls the visibility of the widget",
             controlType: "SWITCH",
             isJSConvertible: true,
