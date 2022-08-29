@@ -540,7 +540,7 @@ class MultiSelectWidget extends BaseWidget<
           },
           {
             propertyName: "accentColor",
-            label: "Accent Color",
+            label: "强调色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -928,7 +928,7 @@ class MultiSelectWidget extends BaseWidget<
           },
           {
             propertyName: "accentColor",
-            label: "Accent Color",
+            label: "强调色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
