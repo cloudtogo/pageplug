@@ -49,7 +49,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             defaultValue: true,
@@ -190,7 +190,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "title",
@@ -204,7 +204,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             defaultValue: true,

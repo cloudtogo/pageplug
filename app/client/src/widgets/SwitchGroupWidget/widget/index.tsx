@@ -20,7 +20,7 @@ class SwitchGroupWidget extends BaseWidget<
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             helpText:
@@ -126,7 +126,7 @@ class SwitchGroupWidget extends BaseWidget<
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             defaultValue: true,
@@ -484,7 +484,7 @@ class SwitchGroupWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "isVisible",
@@ -519,7 +519,7 @@ class SwitchGroupWidget extends BaseWidget<
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             defaultValue: true,
@@ -626,7 +626,7 @@ class SwitchGroupWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "alignment",

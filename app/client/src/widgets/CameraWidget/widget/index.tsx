@@ -19,7 +19,7 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "mode",
@@ -173,7 +173,7 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
   static getPropertyPaneContentConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "mode",

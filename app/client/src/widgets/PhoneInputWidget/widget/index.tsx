@@ -72,7 +72,7 @@ class PhoneInputWidget extends BaseInputWidget<
     return mergeWidgetConfig(
       [
         {
-          sectionName: "General",
+          sectionName: "属性",
           children: [
             {
               propertyName: "allowDialCodeChange",
@@ -213,7 +213,7 @@ class PhoneInputWidget extends BaseInputWidget<
           ],
         },
         // {
-        //   sectionName: "General",
+        //   sectionName: "属性",
         //   children: [
         //     {
         //       propertyName: "allowFormatting",

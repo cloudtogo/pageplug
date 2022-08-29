@@ -34,7 +34,7 @@ class SingleSelectTreeWidget extends BaseWidget<
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             helpText:
@@ -169,7 +169,7 @@ class SingleSelectTreeWidget extends BaseWidget<
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             defaultValue: true,
@@ -581,7 +581,7 @@ class SingleSelectTreeWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             helpText: "Sets a Placeholder Text",
@@ -615,7 +615,7 @@ class SingleSelectTreeWidget extends BaseWidget<
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             defaultValue: true,

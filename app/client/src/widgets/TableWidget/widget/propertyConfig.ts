@@ -31,7 +31,7 @@ const ICON_NAMES = Object.keys(IconNames).map(
 
 export default [
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
         helpText:
@@ -1185,7 +1185,7 @@ export default [
                     ],
                     children: [
                       {
-                        sectionName: "General",
+                        sectionName: "属性",
                         children: [
                           {
                             propertyName: "label",
@@ -1473,7 +1473,7 @@ export default [
       },
       {
         propertyName: "animateLoading",
-        label: "Animate Loading",
+        label: "加载时显示动画",
         controlType: "SWITCH",
         helpText: "Controls the loading of the widget",
         defaultValue: true,
