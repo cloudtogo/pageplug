@@ -39,7 +39,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
           },
           {
             propertyName: "alignWidget",
-            helpText: "Sets the alignment of the widget",
+            helpText: "设置组件对齐方式",
             label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
             isBindProperty: true,
@@ -59,7 +59,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "属性",
+        sectionName: "基本属性",
         children: [
           {
             propertyName: "defaultCheckedState",
@@ -267,7 +267,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
           },
           {
             propertyName: "alignWidget",
-            helpText: "Sets the alignment of the widget",
+            helpText: "设置组件对齐方式",
             label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
             isBindProperty: true,
@@ -287,7 +287,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Validations",
+        sectionName: "校验",
         children: [
           {
             propertyName: "isRequired",
@@ -302,7 +302,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "属性",
+        sectionName: "基本属性",
         children: [
           {
             propertyName: "defaultCheckedState",
