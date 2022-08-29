@@ -203,7 +203,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
             propertyName: "isInline",
             helpText:
               "Whether the radio buttons are to be displayed inline horizontally",
-            label: "Inline",
+            label: "行排列",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -613,7 +613,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
             propertyName: "isInline",
             helpText:
               "Whether the radio buttons are to be displayed inline horizontally",
-            label: "Inline",
+            label: "行排列",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
