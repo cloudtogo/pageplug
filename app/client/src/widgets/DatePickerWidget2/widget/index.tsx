@@ -275,7 +275,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           },
           {
             propertyName: "labelTextSize",
-            label: "Label Text Size",
+            label: "标签文本大小",
             controlType: "DROP_DOWN",
             defaultValue: "0.875rem",
             options: [
