@@ -532,7 +532,7 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Border and Shadow",
+        sectionName: "轮廓样式",
         children: [
           {
             propertyName: "borderRadius",

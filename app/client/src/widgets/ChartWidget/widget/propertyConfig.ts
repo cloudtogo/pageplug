@@ -671,7 +671,7 @@ export const contentConfig = [
 
 export const styleConfig = [
   {
-    sectionName: "Border and Shadow",
+    sectionName: "轮廓样式",
     children: [
       {
         propertyName: "borderRadius",

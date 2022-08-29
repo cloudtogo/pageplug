@@ -172,7 +172,7 @@ class StatboxWidget extends ContainerWidget {
         ],
       },
       {
-        sectionName: "Border and Shadow",
+        sectionName: "轮廓样式",
         children: [
           {
             propertyName: "borderWidth",

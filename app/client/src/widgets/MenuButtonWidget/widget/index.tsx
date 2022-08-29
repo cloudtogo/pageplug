@@ -868,7 +868,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Border and Shadow",
+        sectionName: "轮廓样式",
         children: [
           {
             propertyName: "borderRadius",
