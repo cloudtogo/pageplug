@@ -256,8 +256,8 @@ export default [
       {
         helpText: "设置y轴标签",
         propertyName: "yAxisName",
-        placeholderText: "Revenue",
-        label: "y-axis Label",
+        placeholderText: "收入",
+        label: "y轴标签",
         controlType: "INPUT_TEXT",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -613,8 +613,8 @@ export const contentConfig = [
       {
         helpText: "设置y轴标签",
         propertyName: "yAxisName",
-        placeholderText: "Revenue",
-        label: "y-axis Label",
+        placeholderText: "收入",
+        label: "y轴标签",
         controlType: "INPUT_TEXT",
         isBindProperty: true,
         isTriggerProperty: false,
