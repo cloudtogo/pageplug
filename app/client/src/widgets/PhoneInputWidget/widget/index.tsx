@@ -198,7 +198,7 @@ class PhoneInputWidget extends BaseInputWidget<
           children: [],
         },
         {
-          sectionName: "Validation",
+          sectionName: "校验",
           children: [
             {
               propertyName: "isRequired",

@@ -401,7 +401,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
           children: [],
         },
         {
-          sectionName: "Validation",
+          sectionName: "校验",
           children: [
             {
               propertyName: "isRequired",
