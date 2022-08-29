@@ -176,7 +176,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             isTriggerProperty: false,
           },
           {
-            helpText: "Changes the type of currency",
+            helpText: "修改货币类型",
             propertyName: "currencyCountryCode",
             label: "货币",
             enableSearch: true,

@@ -113,7 +113,7 @@ class CurrencyInputWidget extends BaseInputWidget<
               validation: { type: ValidationTypes.BOOLEAN },
             },
             {
-              helpText: "Changes the type of currency",
+              helpText: "修改货币类型",
               propertyName: "defaultCurrencyCode",
               label: "货币",
               enableSearch: true,
@@ -208,7 +208,7 @@ class CurrencyInputWidget extends BaseInputWidget<
               dependencies: ["decimals"],
             },
             {
-              helpText: "Changes the type of currency",
+              helpText: "修改货币类型",
               propertyName: "defaultCurrencyCode",
               label: "货币",
               enableSearch: true,
