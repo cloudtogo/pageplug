@@ -77,10 +77,10 @@ class ButtonGroupWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Buttons",
+        sectionName: "按钮",
         children: [
           {
-            helpText: "Group Buttons",
+            helpText: "按钮组",
             propertyName: "groupButtons",
             controlType: "GROUP_BUTTONS",
             label: "",
@@ -110,7 +110,7 @@ class ButtonGroupWidget extends BaseWidget<
                     {
                       propertyName: "label",
                       helpText: "Sets the label of a menu item",
-                      label: "Label",
+                      label: "标签",
                       controlType: "INPUT_TEXT",
                       placeholderText: "Enter label",
                       isBindProperty: true,
@@ -276,7 +276,7 @@ class ButtonGroupWidget extends BaseWidget<
                               {
                                 propertyName: "label",
                                 helpText: "Sets the label of a menu item",
-                                label: "Label",
+                                label: "标签",
                                 controlType: "INPUT_TEXT",
                                 placeholderText: "Enter label",
                                 isBindProperty: true,

@@ -4,7 +4,7 @@ import { WidgetProps } from "widgets/BaseWidget";
 
 export const CheckboxFactory = Factory.Sync.makeFactory<WidgetProps>({
   isVisible: true,
-  label: "Label",
+  label: "标签",
   defaultCheckedState: true,
   type: "CHECKBOX_WIDGET",
   isLoading: false,

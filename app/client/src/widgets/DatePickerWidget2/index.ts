@@ -15,7 +15,7 @@ export const CONFIG = {
     isDisabled: false,
     datePickerType: "DATE_PICKER",
     rows: 4,
-    label: "Label",
+    label: "标签",
     labelPosition: LabelPosition.Left,
     labelAlignment: Alignment.LEFT,
     labelWidth: 5,
