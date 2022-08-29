@@ -92,8 +92,8 @@ const PROPERTIES = {
         },
         {
           propertyName: "borderRadius",
-          label: "按钮圆角",
-          helpText: "按钮圆角样式",
+          label: "边框圆角",
+          helpText: "边框圆角样式",
           controlType: "BORDER_RADIUS_OPTIONS",
           customJSControl: "JSON_FORM_COMPUTE_VALUE",
           isJSConvertible: true,
@@ -175,8 +175,8 @@ const PROPERTIES = {
         },
         {
           propertyName: "cellBorderRadius",
-          label: "按钮圆角",
-          helpText: "按钮圆角样式",
+          label: "边框圆角",
+          helpText: "边框圆角样式",
           controlType: "BORDER_RADIUS_OPTIONS",
           customJSControl: "JSON_FORM_COMPUTE_VALUE",
           isJSConvertible: true,
