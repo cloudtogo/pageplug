@@ -349,7 +349,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                 value: ButtonPlacementTypes.BETWEEN,
               },
               {
-                label: "Center",
+                label: "居中对齐",
                 value: ButtonPlacementTypes.CENTER,
               },
             ],
@@ -830,7 +830,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                 value: ButtonPlacementTypes.BETWEEN,
               },
               {
-                label: "Center",
+                label: "居中对齐",
                 value: ButtonPlacementTypes.CENTER,
               },
             ],

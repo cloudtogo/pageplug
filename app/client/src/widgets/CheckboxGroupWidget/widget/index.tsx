@@ -287,7 +287,7 @@ class CheckboxGroupWidget extends BaseWidget<
                 value: CheckboxGroupAlignmentTypes.END,
               },
               {
-                label: "Center",
+                label: "居中对齐",
                 value: CheckboxGroupAlignmentTypes.CENTER,
               },
               {
@@ -763,7 +763,7 @@ class CheckboxGroupWidget extends BaseWidget<
                 value: CheckboxGroupAlignmentTypes.END,
               },
               {
-                label: "Center",
+                label: "居中对齐",
                 value: CheckboxGroupAlignmentTypes.CENTER,
               },
               {
