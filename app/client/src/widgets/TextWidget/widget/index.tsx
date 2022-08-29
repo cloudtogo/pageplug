@@ -146,7 +146,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
             },
           },
           {
-            helpText: "Use a html color name, HEX, RGB or RGBA value",
+            helpText: "使用 html 颜色名称，HEX，RGB 或者 RGBA 值",
             placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
             propertyName: "borderColor",
             label: "Border Color",
@@ -531,7 +531,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
             },
           },
           {
-            helpText: "Use a html color name, HEX, RGB or RGBA value",
+            helpText: "使用 html 颜色名称，HEX，RGB 或者 RGBA 值",
             placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
             propertyName: "borderColor",
             label: "Border Color",
