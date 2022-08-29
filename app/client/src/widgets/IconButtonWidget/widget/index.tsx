@@ -33,7 +33,7 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "iconName",
-            label: "Icon",
+            label: "图标",
             helpText: "Sets the icon to be used for the icon button",
             controlType: "ICON_SELECT",
             defaultIconName: "plus",
@@ -191,7 +191,7 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "iconName",
-            label: "Icon",
+            label: "图标",
             helpText: "Sets the icon to be used for the icon button",
             controlType: "ICON_SELECT",
             defaultIconName: "plus",

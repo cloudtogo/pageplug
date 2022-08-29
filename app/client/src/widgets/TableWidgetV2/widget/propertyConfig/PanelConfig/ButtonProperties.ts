@@ -25,7 +25,7 @@ export default {
   children: [
     {
       propertyName: "iconName",
-      label: "Icon",
+      label: "图标",
       helpText: "Sets the icon to be used for the icon button",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(props, propertyPath, [ColumnTypes.ICON_BUTTON]);
@@ -51,7 +51,7 @@ export default {
     },
     {
       propertyName: "menuButtoniconName",
-      label: "Icon",
+      label: "图标",
       helpText: "Sets the icon to be used for the menu button",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(props, propertyPath, [ColumnTypes.MENU_BUTTON]);

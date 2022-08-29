@@ -381,7 +381,7 @@ export default {
       children: [
         {
           propertyName: "menuButtoniconName",
-          label: "Icon",
+          label: "图标",
           helpText: "Sets the icon to be used for the menu button",
           hidden: (props: TableWidgetProps, propertyPath: string) => {
             return hideByColumnType(props, propertyPath, [
@@ -815,7 +815,7 @@ export default {
           children: [
             {
               propertyName: "saveActionIconName",
-              label: "Icon",
+              label: "图标",
               helpText: "Sets the icon to be used for the save action button",
               dependencies: ["primaryColumns", "columnOrder"],
               controlType: "ICON_SELECT",
@@ -964,7 +964,7 @@ export default {
           children: [
             {
               propertyName: "discardActionIconName",
-              label: "Icon",
+              label: "图标",
               helpText:
                 "Sets the icon to be used for the discard action button",
               dependencies: ["primaryColumns", "columnOrder"],

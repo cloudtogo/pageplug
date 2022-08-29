@@ -122,7 +122,7 @@ export default {
             children: [
               {
                 propertyName: "iconName",
-                label: "Icon",
+                label: "图标",
                 helpText: "Sets the icon to be used for a menu item",
                 controlType: "ICON_SELECT",
                 isBindProperty: false,
