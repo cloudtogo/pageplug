@@ -414,7 +414,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Menu items",
+            helpText: "菜单配置",
             propertyName: "menuItems",
             controlType: "MENU_ITEMS",
             label: "Menu Items",
