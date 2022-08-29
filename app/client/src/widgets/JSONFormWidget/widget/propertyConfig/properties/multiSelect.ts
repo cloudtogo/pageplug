@@ -237,7 +237,7 @@ const PROPERTIES = {
       {
         propertyName: "defaultValue",
         helpText: "默认选中这个值",
-        label: "Default Selected Values",
+        label: "默认选中值",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: "[GREEN]",
         isBindProperty: true,
