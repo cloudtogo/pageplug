@@ -96,7 +96,7 @@ class AudioRecorderWidget extends BaseWidget<
         children: [
           {
             propertyName: "accentColor",
-            helpText: "Changes the color of the recorder button",
+            helpText: "修改录音按钮的颜色",
             label: "按钮颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
@@ -107,8 +107,7 @@ class AudioRecorderWidget extends BaseWidget<
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -118,8 +117,7 @@ class AudioRecorderWidget extends BaseWidget<
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -128,8 +126,8 @@ class AudioRecorderWidget extends BaseWidget<
           },
           {
             propertyName: "iconColor",
-            helpText: "Sets the icon color of the widget",
-            label: "Icon color",
+            helpText: "设置组件图标的颜色",
+            label: "图标颜色",
             controlType: "COLOR_PICKER",
             isBindProperty: false,
             isTriggerProperty: false,
