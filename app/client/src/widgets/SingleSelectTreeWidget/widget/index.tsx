@@ -290,7 +290,7 @@ class SingleSelectTreeWidget extends BaseWidget<
         children: [
           {
             propertyName: "accentColor",
-            label: "Accent Color",
+            label: "强调色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -745,7 +745,7 @@ class SingleSelectTreeWidget extends BaseWidget<
         children: [
           {
             propertyName: "accentColor",
-            label: "Accent Color",
+            label: "强调色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
