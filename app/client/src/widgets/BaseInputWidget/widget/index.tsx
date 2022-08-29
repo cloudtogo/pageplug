@@ -126,7 +126,7 @@ class BaseInputWidget<
           {
             helpText: "Focus input automatically on load",
             propertyName: "autoFocus",
-            label: "Auto Focus",
+            label: "自动聚焦",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -562,7 +562,7 @@ class BaseInputWidget<
           {
             helpText: "Focus input automatically on load",
             propertyName: "autoFocus",
-            label: "Auto Focus",
+            label: "自动聚焦",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
