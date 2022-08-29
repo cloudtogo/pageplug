@@ -296,7 +296,7 @@ export default [
       },
       {
         propertyName: "setAdaptiveYMin",
-        label: "Adaptive Axis",
+        label: "自适应坐标轴",
         helpText: "Define the minimum scale for X/Y axis",
         controlType: "SWITCH",
         isBindProperty: true,
@@ -591,7 +591,7 @@ export const contentConfig = [
     children: [
       {
         propertyName: "setAdaptiveYMin",
-        label: "Adaptive Axis",
+        label: "自适应坐标轴",
         helpText: "Define the minimum scale for X/Y axis",
         controlType: "SWITCH",
         isBindProperty: true,
