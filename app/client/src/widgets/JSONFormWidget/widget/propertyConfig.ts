@@ -107,7 +107,7 @@ const generateButtonStyleControlsFor = (prefix: string) => [
   {
     propertyName: `${prefix}.buttonColor`,
     helpText: "Changes the color of the button",
-    label: "Button Color",
+    label: "按钮颜色",
     controlType: "COLOR_PICKER",
     isJSConvertible: true,
     isBindProperty: true,
@@ -443,7 +443,7 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
       {
         propertyName: `${prefix}.buttonColor`,
         helpText: "Changes the color of the button",
-        label: "Button Color",
+        label: "按钮颜色",
         controlType: "COLOR_PICKER",
         isJSConvertible: true,
         isBindProperty: true,
