@@ -25,7 +25,7 @@ class FormButtonWidget extends ButtonWidget {
   static getPropertyPaneConfig() {
     const buttonPropertyPaneConfig = super.getPropertyPaneConfig().slice(1);
     buttonPropertyPaneConfig.unshift({
-      sectionName: "General",
+      sectionName: "属性",
       children: [
         {
           propertyName: "text",
@@ -59,7 +59,7 @@ class FormButtonWidget extends ButtonWidget {
         },
         {
           propertyName: "animateLoading",
-          label: "Animate Loading",
+          label: "加载时显示动画",
           controlType: "SWITCH",
           helpText: "Controls the loading of the widget",
           defaultValue: true,

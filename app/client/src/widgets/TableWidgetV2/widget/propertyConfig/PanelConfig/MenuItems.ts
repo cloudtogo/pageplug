@@ -28,7 +28,7 @@ export default {
         dependencies: ["primaryColumns", "columnOrder"],
         children: [
           {
-            sectionName: "General",
+            sectionName: "属性",
             children: [
               {
                 propertyName: "label",

@@ -11,7 +11,7 @@ import { isColumnTypeEditable } from "../../utilities";
 import { composePropertyUpdateHook } from "widgets/WidgetUtils";
 
 export default {
-  sectionName: "General",
+  sectionName: "属性",
   children: [
     {
       propertyName: "isCellVisible",
