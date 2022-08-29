@@ -67,7 +67,7 @@ class SwitchGroupWidget extends BaseWidget<
             helpText:
               "Selects values of the options checked by default. Enter comma separated values for multiple selected",
             propertyName: "defaultSelectedValues",
-            label: "Default Selected Values",
+            label: "默认选中值",
             placeholderText: "Enter option values",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
@@ -379,7 +379,7 @@ class SwitchGroupWidget extends BaseWidget<
             helpText:
               "Selects values of the options checked by default. Enter comma separated values for multiple selected",
             propertyName: "defaultSelectedValues",
-            label: "Default Selected Values",
+            label: "默认选中值",
             placeholderText: "Enter option values",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
