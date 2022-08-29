@@ -312,7 +312,7 @@ class SwitchGroupWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Actions",
+        sectionName: "动作",
         children: [
           {
             helpText:
