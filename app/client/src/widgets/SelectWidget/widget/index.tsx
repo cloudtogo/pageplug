@@ -431,7 +431,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
           },
           {
             propertyName: "accentColor",
-            label: "Accent Color",
+            label: "强调色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -803,7 +803,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "accentColor",
-            label: "Accent Color",
+            label: "强调色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,

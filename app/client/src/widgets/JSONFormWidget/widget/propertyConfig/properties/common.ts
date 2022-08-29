@@ -401,7 +401,7 @@ const COMMON_PROPERTIES = {
     {
       propertyName: "accentColor",
       helpText: "Sets the accent color",
-      label: "Accent Color",
+      label: "强调色",
       controlType: "COLOR_PICKER",
       customJSControl: "JSON_FORM_COMPUTE_VALUE",
       isJSConvertible: true,
@@ -750,7 +750,7 @@ const COMMON_PROPERTIES = {
       {
         propertyName: "accentColor",
         helpText: "Sets the accent color",
-        label: "Accent Color",
+        label: "强调色",
         controlType: "COLOR_PICKER",
         customJSControl: "JSON_FORM_COMPUTE_VALUE",
         isJSConvertible: true,
