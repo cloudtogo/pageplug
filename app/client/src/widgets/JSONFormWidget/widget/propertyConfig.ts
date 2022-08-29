@@ -211,7 +211,7 @@ const generateButtonStyleControlsFor = (prefix: string) => [
         value: ButtonPlacementTypes.BETWEEN,
       },
       {
-        label: "Center",
+        label: "居中对齐",
         value: ButtonPlacementTypes.CENTER,
       },
     ],
@@ -579,7 +579,7 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
             value: ButtonPlacementTypes.BETWEEN,
           },
           {
-            label: "Center",
+            label: "居中对齐",
             value: ButtonPlacementTypes.CENTER,
           },
         ],

@@ -289,7 +289,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
                 value: ButtonPlacementTypes.BETWEEN,
               },
               {
-                label: "Center",
+                label: "居中对齐",
                 value: ButtonPlacementTypes.CENTER,
               },
             ],
@@ -610,7 +610,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
                 value: ButtonPlacementTypes.BETWEEN,
               },
               {
-                label: "Center",
+                label: "居中对齐",
                 value: ButtonPlacementTypes.CENTER,
               },
             ],
