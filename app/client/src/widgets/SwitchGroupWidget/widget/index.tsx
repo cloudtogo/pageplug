@@ -116,7 +116,7 @@ class SwitchGroupWidget extends BaseWidget<
           },
           {
             propertyName: "isDisabled",
-            helpText: "Disables input to the widget",
+            helpText: "让组件不可交互",
             label: "禁用",
             controlType: "SWITCH",
             isJSConvertible: true,
@@ -498,7 +498,7 @@ class SwitchGroupWidget extends BaseWidget<
           },
           {
             propertyName: "isDisabled",
-            helpText: "Disables input to the widget",
+            helpText: "让组件不可交互",
             label: "禁用",
             controlType: "SWITCH",
             isJSConvertible: true,
