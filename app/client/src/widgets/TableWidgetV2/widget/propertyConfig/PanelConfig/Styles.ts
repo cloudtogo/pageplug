@@ -185,7 +185,7 @@ export default {
     },
     {
       propertyName: "textColor",
-      label: "Text Color",
+      label: "文本颜色",
       controlType: "PRIMARY_COLUMNS_COLOR_PICKER_V2",
       isJSConvertible: true,
       customJSControl: "TABLE_COMPUTE_VALUE",
