@@ -609,7 +609,7 @@ export const styleConfig = [
     children: [
       {
         propertyName: "backgroundColor",
-        helpText: "Use a html color name, HEX, RGB or RGBA value",
+        helpText: "使用 html 颜色名称，HEX，RGB 或者 RGBA 值",
         placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
         label: "背景颜色",
         controlType: "COLOR_PICKER",
@@ -620,7 +620,7 @@ export const styleConfig = [
       },
       {
         propertyName: "borderColor",
-        helpText: "Use a html color name, HEX, RGB or RGBA value",
+        helpText: "使用 html 颜色名称，HEX，RGB 或者 RGBA 值",
         placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
         label: "Border Color",
         controlType: "COLOR_PICKER",
@@ -855,7 +855,7 @@ export default [
     children: [
       {
         propertyName: "backgroundColor",
-        helpText: "Use a html color name, HEX, RGB or RGBA value",
+        helpText: "使用 html 颜色名称，HEX，RGB 或者 RGBA 值",
         placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
         label: "背景颜色",
         controlType: "COLOR_PICKER",
@@ -866,7 +866,7 @@ export default [
       },
       {
         propertyName: "borderColor",
-        helpText: "Use a html color name, HEX, RGB or RGBA value",
+        helpText: "使用 html 颜色名称，HEX，RGB 或者 RGBA 值",
         placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
         label: "Border Color",
         controlType: "COLOR_PICKER",
