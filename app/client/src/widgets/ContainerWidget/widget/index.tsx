@@ -194,7 +194,7 @@ class ContainerWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Border and Shadow",
+        sectionName: "轮廓样式",
         children: [
           {
             helpText: "Enter value for border width",
