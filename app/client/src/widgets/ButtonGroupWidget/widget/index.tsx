@@ -325,7 +325,7 @@ class ButtonGroupWidget extends BaseWidget<
                                 propertyName: "iconAlign",
                                 label: "图标对齐",
                                 helpText:
-                                  "Sets the icon alignment of a menu item",
+                                  "设置菜单项图标对齐方向",
                                 controlType: "ICON_TABS",
                                 options: [
                                   {
@@ -678,7 +678,7 @@ class ButtonGroupWidget extends BaseWidget<
                                 propertyName: "iconAlign",
                                 label: "位置",
                                 helpText:
-                                  "Sets the icon alignment of a menu item",
+                                  "设置菜单项图标对齐方向",
                                 controlType: "ICON_TABS",
                                 options: [
                                   {
