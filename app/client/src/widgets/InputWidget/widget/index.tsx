@@ -287,7 +287,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
           {
             helpText: "Sets a placeholder text for the input",
             propertyName: "placeholderText",
-            label: "Placeholder",
+            label: "占位符",
             controlType: "INPUT_TEXT",
             placeholderText: "Placeholder",
             isBindProperty: true,
