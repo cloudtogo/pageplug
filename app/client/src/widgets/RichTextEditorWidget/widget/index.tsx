@@ -128,7 +128,7 @@ class RichTextEditorWidget extends BaseWidget<
             controlType: "DROP_DOWN",
             options: [
               { label: "左", value: LabelPosition.Left },
-              { label: "Top", value: LabelPosition.Top },
+              { label: "上", value: LabelPosition.Top },
               { label: "Auto", value: LabelPosition.Auto },
             ],
             isBindProperty: false,
@@ -354,7 +354,7 @@ class RichTextEditorWidget extends BaseWidget<
             controlType: "DROP_DOWN",
             options: [
               { label: "左", value: LabelPosition.Left },
-              { label: "Top", value: LabelPosition.Top },
+              { label: "上", value: LabelPosition.Top },
               { label: "Auto", value: LabelPosition.Auto },
             ],
             isBindProperty: false,
