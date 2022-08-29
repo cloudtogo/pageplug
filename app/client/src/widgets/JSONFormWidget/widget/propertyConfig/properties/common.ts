@@ -415,7 +415,7 @@ const COMMON_PROPERTIES = {
     },
     {
       propertyName: "borderRadius",
-      label: "Border Radius",
+      label: "按钮圆角",
       helpText: "Rounds the corners of the icon button's outer border edge",
       controlType: "BORDER_RADIUS_OPTIONS",
       customJSControl: "JSON_FORM_COMPUTE_VALUE",
@@ -714,7 +714,7 @@ const COMMON_PROPERTIES = {
     borderShadow: [
       {
         propertyName: "borderRadius",
-        label: "Border Radius",
+        label: "按钮圆角",
         helpText: "Rounds the corners of the icon button's outer border edge",
         controlType: "BORDER_RADIUS_OPTIONS",
         customJSControl: "JSON_FORM_COMPUTE_VALUE",

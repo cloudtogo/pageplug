@@ -56,7 +56,7 @@ const objectStyleProperties = [
   },
   {
     propertyName: "borderRadius",
-    label: "Border Radius",
+    label: "按钮圆角",
     helpText: "Rounds the corners of the icon button's outer border edge",
     controlType: "BORDER_RADIUS_OPTIONS",
     customJSControl: "JSON_FORM_COMPUTE_VALUE",
@@ -147,7 +147,7 @@ const PROPERTIES = {
         },
         {
           propertyName: "cellBorderRadius",
-          label: "Border Radius",
+          label: "按钮圆角",
           helpText: "Rounds the corners of the icon button's outer border edge",
           controlType: "BORDER_RADIUS_OPTIONS",
           customJSControl: "JSON_FORM_COMPUTE_VALUE",
