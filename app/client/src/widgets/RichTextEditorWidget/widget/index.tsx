@@ -410,7 +410,7 @@ class RichTextEditorWidget extends BaseWidget<
         children: [
           {
             propertyName: "isRequired",
-            label: "Required",
+            label: "必填",
             helpText: "Makes input to the widget mandatory",
             controlType: "SWITCH",
             isJSConvertible: true,
