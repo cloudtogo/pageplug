@@ -64,7 +64,7 @@ export default {
               {
                 propertyName: "textColor",
                 helpText: "Sets the text color of a menu item",
-                label: "Text color",
+                label: "文本颜色",
                 controlType: "PRIMARY_COLUMNS_COLOR_PICKER_V2",
                 customJSControl: "TABLE_COMPUTE_VALUE",
                 isJSConvertible: true,
