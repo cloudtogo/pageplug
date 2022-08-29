@@ -11,7 +11,6 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import MediaQuery from "react-responsive";
 import { useLocation } from "react-router-dom";
 import { AppState } from "reducers";
-import Spinner from "components/ads/Spinner";
 import { Classes as BlueprintClasses, Card } from "@blueprintjs/core";
 import {
   thinScrollbar,
