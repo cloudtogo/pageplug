@@ -94,13 +94,13 @@ export const WIDGET_DATA_FIELD_MAP: Record<string, WidgetBindingInfo> = {
     image: "https://assets.appsmith.com/widgetSuggestion/dropdown.svg",
   },
   TEXT_WIDGET: {
-    label: "text",
+    label: "文本",
     propertyName: "text",
     widgetName: "Text",
     image: "https://assets.appsmith.com/widgetSuggestion/text.svg",
   },
   INPUT_WIDGET_V2: {
-    label: "text",
+    label: "文本",
     propertyName: "defaultText",
     widgetName: "Input",
     image: "https://assets.appsmith.com/widgetSuggestion/input.svg",

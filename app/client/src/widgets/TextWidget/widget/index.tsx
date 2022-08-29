@@ -25,7 +25,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           {
             propertyName: "text",
             helpText: "Sets the text of the widget",
-            label: "Text",
+            label: "文本",
             controlType: "INPUT_TEXT",
             placeholderText: "Name:",
             isBindProperty: true,
@@ -320,7 +320,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           {
             propertyName: "text",
             helpText: "Sets the text of the widget",
-            label: "Text",
+            label: "文本",
             controlType: "INPUT_TEXT",
             placeholderText: "Name:",
             isBindProperty: true,

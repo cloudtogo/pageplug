@@ -46,7 +46,7 @@ export default {
     },
     {
       propertyName: "buttonLabel",
-      label: "Text",
+      label: "文本",
       controlType: "TABLE_COMPUTE_VALUE",
       defaultValue: "Action",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
@@ -58,7 +58,7 @@ export default {
     },
     {
       propertyName: "menuButtonLabel",
-      label: "Text",
+      label: "文本",
       controlType: "TABLE_COMPUTE_VALUE",
       defaultValue: "Open Menu",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
@@ -96,7 +96,7 @@ export default {
               {
                 propertyName: "label",
                 helpText: "Sets the label of a menu item",
-                label: "Text",
+                label: "文本",
                 controlType: "INPUT_TEXT",
                 placeholderText: "Enter label",
                 isBindProperty: true,
