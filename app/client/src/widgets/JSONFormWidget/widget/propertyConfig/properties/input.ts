@@ -216,7 +216,7 @@ const PROPERTIES = {
       dependencies: ["schema"],
     },
     {
-      helpText: "Changes the type of currency",
+      helpText: "修改货币类型",
       propertyName: "currencyCountryCode",
       label: "货币",
       enableSearch: true,
@@ -538,7 +538,7 @@ const PROPERTIES = {
       },
       {
         propertyName: "currencyCountryCode",
-        helpText: "Changes the type of currency",
+        helpText: "修改货币类型",
         label: "货币",
         enableSearch: true,
         dropdownHeight: "195px",
