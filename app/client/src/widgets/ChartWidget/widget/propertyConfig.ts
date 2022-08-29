@@ -19,9 +19,9 @@ export default [
         validation: { type: ValidationTypes.TEXT },
       },
       {
-        helpText: "Changes the visualisation of the chart data",
+        helpText: "修改图表数据展示形态",
         propertyName: "chartType",
-        label: "Chart Type",
+        label: "图表类型",
         controlType: "DROP_DOWN",
         options: [
           {
@@ -352,9 +352,9 @@ export const contentConfig = [
     sectionName: "数据",
     children: [
       {
-        helpText: "Changes the visualisation of the chart data",
+        helpText: "修改图表数据展示形态",
         propertyName: "chartType",
-        label: "Chart Type",
+        label: "图表类型",
         controlType: "DROP_DOWN",
         options: [
           {
