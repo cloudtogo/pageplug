@@ -98,7 +98,7 @@ function generatePanelPropertyConfig(
       ...OBJECT_PROPERTIES.sections,
       ...ARRAY_PROPERTIES.sections,
       {
-        sectionName: "Actions",
+        sectionName: "动作",
         children: [
           ...INPUT_PROPERTIES.actions,
           ...CHECKBOX_PROPERTIES.actions,

@@ -836,7 +836,7 @@ export default [
     ],
   },
   {
-    sectionName: "Actions",
+    sectionName: "动作",
     children: [
       {
         propertyName: "onSubmit",
