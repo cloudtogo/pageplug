@@ -421,7 +421,7 @@ class ButtonGroupWidget extends BaseWidget<
                   ],
                 },
                 {
-                  sectionName: "Styles",
+                  sectionName: "样式",
                   children: [
                     {
                       getStylesheetValue,
@@ -442,7 +442,7 @@ class ButtonGroupWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Styles",
+        sectionName: "样式",
         children: [
           {
             propertyName: "buttonVariant",
