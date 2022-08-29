@@ -369,7 +369,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             propertyName: "isSpellCheck",
             label: "拼写检查",
             helpText:
-              "Defines whether the text input may be checked for spelling errors",
+              "是否检查拼写错误",
             controlType: "SWITCH",
             isJSConvertible: false,
             isBindProperty: true,
