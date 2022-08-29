@@ -172,7 +172,7 @@ class BaseInputWidget<
           },
           {
             helpText:
-              "Triggers an action on submit (when the enter key is pressed)",
+              "提交时触发（用户按了回车）",
             propertyName: "onSubmit",
             label: "onSubmit",
             controlType: "ACTION_SELECTOR",
@@ -590,7 +590,7 @@ class BaseInputWidget<
           },
           {
             helpText:
-              "Triggers an action on submit (when the enter key is pressed)",
+              "提交时触发（用户按了回车）",
             propertyName: "onSubmit",
             label: "onSubmit",
             controlType: "ACTION_SELECTOR",
