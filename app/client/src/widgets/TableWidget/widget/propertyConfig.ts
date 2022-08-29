@@ -1208,7 +1208,7 @@ export default [
                             propertyName: "backgroundColor",
                             helpText:
                               "Sets the background color of a menu item",
-                            label: "Background color",
+                            label: "背景颜色",
                             controlType: "PRIMARY_COLUMNS_COLOR_PICKER",
                             isJSConvertible: true,
                             isBindProperty: true,

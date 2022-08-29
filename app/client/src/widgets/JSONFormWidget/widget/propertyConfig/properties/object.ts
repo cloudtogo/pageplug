@@ -12,7 +12,7 @@ import { getStylesheetValue } from "../helper";
 const objectStyleProperties = [
   {
     propertyName: "backgroundColor",
-    label: "Background Color",
+    label: "背景颜色",
     controlType: "COLOR_PICKER",
     helpText: "Changes the background color",
     isJSConvertible: true,
@@ -103,7 +103,7 @@ const PROPERTIES = {
       children: [
         {
           propertyName: "cellBackgroundColor",
-          label: "Background Color",
+          label: "背景颜色",
           controlType: "COLOR_PICKER",
           helpText: "Changes the background color of the item",
           isJSConvertible: true,
