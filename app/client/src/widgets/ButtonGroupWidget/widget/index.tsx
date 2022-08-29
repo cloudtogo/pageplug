@@ -314,7 +314,7 @@ class ButtonGroupWidget extends BaseWidget<
                                 propertyName: "iconName",
                                 label: "图标",
                                 helpText:
-                                  "Sets the icon to be used for a menu item",
+                                  "设置菜单项的图标",
                                 controlType: "ICON_SELECT",
                                 isBindProperty: false,
                                 isTriggerProperty: false,
@@ -668,7 +668,7 @@ class ButtonGroupWidget extends BaseWidget<
                                 propertyName: "iconName",
                                 label: "图标",
                                 helpText:
-                                  "Sets the icon to be used for a menu item",
+                                  "设置菜单项的图标",
                                 controlType: "ICON_SELECT",
                                 isBindProperty: false,
                                 isTriggerProperty: false,
