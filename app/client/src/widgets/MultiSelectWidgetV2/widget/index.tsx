@@ -374,7 +374,7 @@ class MultiSelectWidget extends BaseWidget<
         sectionName: "标签",
         children: [
           {
-            helpText: "Sets the label text of the widget",
+            helpText: "设置组件标签文本",
             propertyName: "labelText",
             label: "文本",
             controlType: "INPUT_TEXT",
@@ -629,7 +629,7 @@ class MultiSelectWidget extends BaseWidget<
         sectionName: "标签",
         children: [
           {
-            helpText: "Sets the label text of the widget",
+            helpText: "设置组件标签文本",
             propertyName: "labelText",
             label: "文本",
             controlType: "INPUT_TEXT",
