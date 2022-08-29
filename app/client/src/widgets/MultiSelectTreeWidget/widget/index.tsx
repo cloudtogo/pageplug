@@ -280,7 +280,7 @@ class MultiSelectTreeWidget extends BaseWidget<
           {
             helpText: "Sets the label alignment of the widget",
             propertyName: "labelAlignment",
-            label: "Alignment",
+            label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
             options: [
               {
@@ -560,7 +560,7 @@ class MultiSelectTreeWidget extends BaseWidget<
           {
             helpText: "Sets the label alignment of the widget",
             propertyName: "labelAlignment",
-            label: "Alignment",
+            label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
             options: [
               {

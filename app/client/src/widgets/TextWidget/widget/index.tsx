@@ -565,7 +565,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "textAlign",
-            label: "Alignment",
+            label: "对齐",
             controlType: "ICON_TABS",
             options: [
               {
