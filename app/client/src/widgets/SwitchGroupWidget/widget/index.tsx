@@ -87,7 +87,7 @@ class SwitchGroupWidget extends BaseWidget<
             propertyName: "isInline",
             helpText:
               "Whether switches are to be displayed inline horizontally",
-            label: "Inline",
+            label: "行排列",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -510,7 +510,7 @@ class SwitchGroupWidget extends BaseWidget<
             propertyName: "isInline",
             helpText:
               "Whether switches are to be displayed inline horizontally",
-            label: "Inline",
+            label: "行排列",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
