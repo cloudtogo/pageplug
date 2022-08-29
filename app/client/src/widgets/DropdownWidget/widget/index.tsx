@@ -95,7 +95,7 @@ class DropdownWidget extends BaseWidget<DropdownWidgetProps, WidgetState> {
             dependencies: ["selectionType"],
           },
           {
-            helpText: "Sets a Placeholder Text",
+            helpText: "设置占位文本",
             propertyName: "placeholderText",
             label: "占位符",
             controlType: "INPUT_TEXT",

@@ -261,7 +261,7 @@ class MultiSelectWidget extends BaseWidget<
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText: "Sets a Placeholder Text",
+            helpText: "设置占位文本",
             propertyName: "placeholderText",
             label: "占位符",
             controlType: "INPUT_TEXT",
@@ -752,7 +752,7 @@ class MultiSelectWidget extends BaseWidget<
         sectionName: "属性",
         children: [
           {
-            helpText: "Sets a Placeholder Text",
+            helpText: "设置占位文本",
             propertyName: "placeholderText",
             label: "占位符",
             controlType: "INPUT_TEXT",
