@@ -136,7 +136,7 @@ const COMMON_PROPERTIES = {
       propertyName: "options",
       helpText:
         "Allows users to select from the given option(s). Values must be unique",
-      label: "Options",
+      label: "选项",
       controlType: "INPUT_TEXT",
       placeholderText: '[{ "label": "Option1", "value": "Option2" }]',
       isBindProperty: true,
@@ -494,7 +494,7 @@ const COMMON_PROPERTIES = {
         propertyName: "options",
         helpText:
           "Allows users to select from the given option(s). Values must be unique",
-        label: "Options",
+        label: "选项",
         controlType: "INPUT_TEXT",
         placeholderText: '[{ "label": "Option1", "value": "Option2" }]',
         isBindProperty: true,

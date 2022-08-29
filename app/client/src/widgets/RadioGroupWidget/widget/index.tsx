@@ -154,7 +154,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
           {
             helpText: "Displays a list of unique options",
             propertyName: "options",
-            label: "Options",
+            label: "选项",
             controlType: "OPTION_INPUT",
             isJSConvertible: true,
             isBindProperty: true,
@@ -453,7 +453,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
           {
             helpText: "Displays a list of unique options",
             propertyName: "options",
-            label: "Options",
+            label: "选项",
             controlType: "OPTION_INPUT",
             isJSConvertible: true,
             isBindProperty: true,

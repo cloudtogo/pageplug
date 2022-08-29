@@ -36,7 +36,7 @@ class DropdownWidget extends BaseWidget<DropdownWidgetProps, WidgetState> {
             helpText:
               "Allows users to select a single option. Values must be unique",
             propertyName: "options",
-            label: "Options",
+            label: "选项",
             controlType: "INPUT_TEXT",
             placeholderText: '[{ "label": "Option1", "value": "Option2" }]',
             isBindProperty: true,
