@@ -247,7 +247,7 @@ class ButtonGroupWidget extends BaseWidget<
                   },
                   children: [
                     {
-                      helpText: "Menu Items",
+                      helpText: "菜单配置",
                       propertyName: "menuItems",
                       controlType: "MENU_ITEMS",
                       label: "",
@@ -576,7 +576,7 @@ class ButtonGroupWidget extends BaseWidget<
                         return buttonType !== "MENU";
                       },
                       dependencies: ["groupButtons"],
-                      helpText: "Menu Items",
+                      helpText: "菜单配置",
                       propertyName: "menuItems",
                       controlType: "MENU_ITEMS",
                       label: "Menu Items",
