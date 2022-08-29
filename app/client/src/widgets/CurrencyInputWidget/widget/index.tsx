@@ -115,7 +115,7 @@ class CurrencyInputWidget extends BaseInputWidget<
             {
               helpText: "Changes the type of currency",
               propertyName: "defaultCurrencyCode",
-              label: "Currency",
+              label: "货币",
               enableSearch: true,
               dropdownHeight: "156px",
               controlType: "DROP_DOWN",
@@ -210,7 +210,7 @@ class CurrencyInputWidget extends BaseInputWidget<
             {
               helpText: "Changes the type of currency",
               propertyName: "defaultCurrencyCode",
-              label: "Currency",
+              label: "货币",
               enableSearch: true,
               dropdownHeight: "156px",
               controlType: "DROP_DOWN",
