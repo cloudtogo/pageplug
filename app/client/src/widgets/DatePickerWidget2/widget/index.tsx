@@ -665,7 +665,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
   static getPropertyPaneStyleConfig() {
     return [
       {
-        sectionName: "Label Styles",
+        sectionName: "标签样式",
         children: [
           {
             propertyName: "labelTextColor",

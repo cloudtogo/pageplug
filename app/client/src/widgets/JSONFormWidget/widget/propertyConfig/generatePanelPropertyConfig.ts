@@ -71,7 +71,7 @@ function generatePanelPropertyConfig(
         ],
       },
       {
-        sectionName: "Label Styles",
+        sectionName: "标签样式",
         children: [...COMMON_PROPERTIES.labelStyles],
         hidden: (props: JSONFormWidgetProps, propertyPath: string) => {
           const schemaItem: SchemaItem = get(props, propertyPath, {});
@@ -214,7 +214,7 @@ function generatePanelPropertyConfig(
     ],
     styleChildren: [
       {
-        sectionName: "Label Styles",
+        sectionName: "标签样式",
         children: [...COMMON_PROPERTIES.style.label],
       },
       {
