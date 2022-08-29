@@ -115,7 +115,7 @@ const PropertyPaneConfig = [
     ],
   },
   {
-    sectionName: "Styles",
+    sectionName: "样式",
     children: [
       {
         propertyName: "backgroundColor",

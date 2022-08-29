@@ -83,7 +83,7 @@ function generatePanelPropertyConfig(
         },
       },
       {
-        sectionName: "Styles",
+        sectionName: "样式",
         children: [...COMMON_PROPERTIES.styles],
         hidden: (props: JSONFormWidgetProps, propertyPath: string) => {
           const schemaItem: SchemaItem = get(props, propertyPath, {});

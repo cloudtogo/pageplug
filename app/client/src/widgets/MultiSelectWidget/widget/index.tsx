@@ -259,7 +259,7 @@ class MultiSelectWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Styles",
+        sectionName: "样式",
         children: [
           {
             propertyName: "accentColor",
@@ -371,7 +371,7 @@ class MultiSelectWidget extends BaseWidget<
       },
 
       {
-        sectionName: "Styles",
+        sectionName: "样式",
         children: [
           {
             propertyName: "backgroundColor",

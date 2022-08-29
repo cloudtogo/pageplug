@@ -561,7 +561,7 @@ export default [
               ],
             },
             {
-              sectionName: "Styles",
+              sectionName: "样式",
               hidden: (props: TableWidgetProps, propertyPath: string) => {
                 return hideByColumnType(
                   props,
@@ -1623,7 +1623,7 @@ export default [
     ],
   },
   {
-    sectionName: "Styles",
+    sectionName: "样式",
     children: [
       {
         propertyName: "cellBackground",

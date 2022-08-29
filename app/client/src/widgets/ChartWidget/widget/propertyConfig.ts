@@ -320,7 +320,7 @@ export default [
     ],
   },
   {
-    sectionName: "Styles",
+    sectionName: "样式",
     children: [
       {
         propertyName: "borderRadius",

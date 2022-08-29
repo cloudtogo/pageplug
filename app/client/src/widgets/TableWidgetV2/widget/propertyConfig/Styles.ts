@@ -2,7 +2,7 @@ import { ValidationTypes } from "constants/WidgetValidation";
 import { updateColumnStyles } from "../propertyUtils";
 
 export default {
-  sectionName: "Styles",
+  sectionName: "样式",
   children: [
     {
       propertyName: "cellBackground",
