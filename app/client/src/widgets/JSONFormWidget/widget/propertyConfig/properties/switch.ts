@@ -80,7 +80,7 @@ const PROPERTIES = {
       {
         propertyName: "alignWidget",
         helpText: "Sets the position of the field",
-        label: "Position",
+        label: "位置",
         controlType: "DROP_DOWN",
         isBindProperty: true,
         isTriggerProperty: false,
