@@ -480,7 +480,7 @@ const PROPERTIES = {
     },
     {
       propertyName: "onEnterKeyPress",
-      helpText: "Triggers an action on submit (when the enter key is pressed)",
+      helpText: "提交时触发（用户按了回车）",
       label: "onEnterKeyPress",
       controlType: "ACTION_SELECTOR",
       isJSConvertible: true,
@@ -776,7 +776,7 @@ const PROPERTIES = {
       {
         propertyName: "onEnterKeyPress",
         helpText:
-          "Triggers an action on submit (when the enter key is pressed)",
+          "提交时触发（用户按了回车）",
         label: "onEnterKeyPress",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
