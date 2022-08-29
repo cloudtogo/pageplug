@@ -218,7 +218,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             defaultValue: true,
@@ -439,7 +439,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
               // TODO(aswathkk): Delete the following
               children: [
                 {
-                  sectionName: "General",
+                  sectionName: "属性",
                   children: [
                     {
                       propertyName: "label",
@@ -579,7 +579,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                   ],
                 },
                 {
-                  sectionName: "General",
+                  sectionName: "属性",
                   children: [
                     {
                       propertyName: "isVisible",
@@ -673,7 +673,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "isVisible",
@@ -697,7 +697,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             defaultValue: true,
@@ -724,7 +724,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
   static getPropertyPaneStyleConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "menuVariant",

@@ -153,7 +153,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "defaultDate",
@@ -241,7 +241,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidgetProps, WidgetState> {
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             defaultValue: true,

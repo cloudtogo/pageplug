@@ -20,7 +20,7 @@ import panelConfig from "./PanelConfig";
 import { composePropertyUpdateHook } from "widgets/WidgetUtils";
 
 export default {
-  sectionName: "General",
+  sectionName: "属性",
   children: [
     {
       helpText:
@@ -241,7 +241,7 @@ export default {
     },
     {
       propertyName: "animateLoading",
-      label: "Animate Loading",
+      label: "加载时显示动画",
       controlType: "SWITCH",
       helpText: "Controls the loading of the widget",
       defaultValue: true,

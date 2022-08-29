@@ -122,7 +122,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             helpText:
@@ -229,7 +229,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             defaultValue: true,
@@ -659,7 +659,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             helpText: "Sets a Placeholder Text",
@@ -693,7 +693,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             defaultValue: true,

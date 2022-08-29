@@ -9,7 +9,7 @@ import { AutocompleteDataType } from "utils/autocomplete/TernServer";
 
 const PropertyPaneConfig = [
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
         helpText: "Takes in an array of objects to display items in the list.",
@@ -46,7 +46,7 @@ const PropertyPaneConfig = [
       },
       {
         propertyName: "animateLoading",
-        label: "Animate Loading",
+        label: "加载时显示动画",
         controlType: "SWITCH",
         helpText: "Controls the loading of the widget",
         defaultValue: true,
@@ -247,7 +247,7 @@ export const PropertyPaneContentConfig = [
     ],
   },
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
         propertyName: "isVisible",
@@ -263,7 +263,7 @@ export const PropertyPaneContentConfig = [
       },
       {
         propertyName: "animateLoading",
-        label: "Animate Loading",
+        label: "加载时显示动画",
         controlType: "SWITCH",
         helpText: "Controls the loading of the widget",
         defaultValue: true,
@@ -311,7 +311,7 @@ export const PropertyPaneContentConfig = [
 
 export const PropertyPaneStyleConfig = [
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
         helpText: "Spacing between items in Pixels",

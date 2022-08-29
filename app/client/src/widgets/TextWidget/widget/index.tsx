@@ -20,7 +20,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "text",
@@ -70,7 +70,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             defaultValue: true,
@@ -315,7 +315,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
   static getPropertyPaneContentConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "text",
@@ -365,7 +365,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             defaultValue: true,
@@ -392,7 +392,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
   static getPropertyPaneStyleConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "fontFamily",

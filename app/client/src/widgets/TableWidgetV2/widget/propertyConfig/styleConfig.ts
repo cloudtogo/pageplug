@@ -3,7 +3,7 @@ import { updateColumnStyles } from "../propertyUtils";
 
 export default [
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
         propertyName: "compactMode",

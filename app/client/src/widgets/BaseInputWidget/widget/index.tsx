@@ -24,7 +24,7 @@ class BaseInputWidget<
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             helpText:
@@ -135,7 +135,7 @@ class BaseInputWidget<
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             defaultValue: true,
@@ -506,7 +506,7 @@ class BaseInputWidget<
         ],
       },
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             helpText: "Show help text or details about current input",
@@ -550,7 +550,7 @@ class BaseInputWidget<
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             defaultValue: true,

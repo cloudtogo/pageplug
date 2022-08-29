@@ -100,7 +100,7 @@ class CurrencyInputWidget extends BaseInputWidget<
     return mergeWidgetConfig(
       [
         {
-          sectionName: "General",
+          sectionName: "属性",
           children: [
             {
               propertyName: "allowCurrencyChange",

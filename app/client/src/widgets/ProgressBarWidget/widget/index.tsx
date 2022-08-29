@@ -16,7 +16,7 @@ class ProgressBarWidget extends BaseWidget<
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             helpText: "Sets progress bar type",
