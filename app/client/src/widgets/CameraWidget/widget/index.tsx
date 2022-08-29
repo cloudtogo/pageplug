@@ -105,7 +105,7 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the video recording get started",
+            helpText: "录像开始时触发",
             propertyName: "onRecordingStart",
             label: "OnRecordingStart",
             controlType: "ACTION_SELECTOR",
@@ -259,7 +259,7 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the video recording get started",
+            helpText: "录像开始时触发",
             propertyName: "onRecordingStart",
             label: "OnRecordingStart",
             controlType: "ACTION_SELECTOR",
