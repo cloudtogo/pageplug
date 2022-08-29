@@ -61,7 +61,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
             defaultValue: TimePrecision.MINUTE,
             options: [
               {
-                label: "None",
+                label: "无",
                 value: TimePrecision.NONE,
               },
               {
@@ -452,7 +452,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
             defaultValue: TimePrecision.MINUTE,
             options: [
               {
-                label: "None",
+                label: "无",
                 value: TimePrecision.NONE,
               },
               {
