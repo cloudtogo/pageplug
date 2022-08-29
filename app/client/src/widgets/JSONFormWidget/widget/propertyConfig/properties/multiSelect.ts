@@ -148,7 +148,7 @@ const PROPERTIES = {
     {
       propertyName: "placeholderText",
       helpText: "Sets a Placeholder text",
-      label: "Placeholder",
+      label: "占位符",
       controlType: "JSON_FORM_COMPUTE_VALUE",
       placeholderText: "Search",
       isBindProperty: true,
@@ -263,7 +263,7 @@ const PROPERTIES = {
       {
         propertyName: "placeholderText",
         helpText: "Sets a Placeholder text",
-        label: "Placeholder",
+        label: "占位符",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: "Search",
         isBindProperty: true,
