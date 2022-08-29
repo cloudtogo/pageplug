@@ -226,8 +226,8 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
         children: [
           {
             propertyName: "iconName",
-            label: "Select Icon",
-            helpText: "Sets the icon to be used for the button",
+            label: "选择图标",
+            helpText: "设置按钮图标",
             controlType: "ICON_SELECT",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -572,7 +572,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           {
             propertyName: "iconName",
             label: "图标",
-            helpText: "Sets the icon to be used for the button",
+            helpText: "设置按钮图标",
             controlType: "ICON_SELECT",
             isBindProperty: false,
             isTriggerProperty: false,
