@@ -267,7 +267,7 @@ class SingleSelectTreeWidget extends BaseWidget<
             helpText:
               "Sets the label width of the widget as the number of columns",
             propertyName: "labelWidth",
-            label: "Width (in columns)",
+            label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
             isJSConvertible: true,
             isBindProperty: true,
@@ -547,7 +547,7 @@ class SingleSelectTreeWidget extends BaseWidget<
             helpText:
               "Sets the label width of the widget as the number of columns",
             propertyName: "labelWidth",
-            label: "Width (in columns)",
+            label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
             isJSConvertible: true,
             isBindProperty: true,
