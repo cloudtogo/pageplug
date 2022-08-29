@@ -69,7 +69,7 @@ const objectStyleProperties = [
   },
   {
     propertyName: "boxShadow",
-    label: "Box Shadow",
+    label: "阴影",
     helpText: "Enables you to cast a drop shadow from the frame of the widget",
     controlType: "BOX_SHADOW_OPTIONS",
     customJSControl: "JSON_FORM_COMPUTE_VALUE",
@@ -160,7 +160,7 @@ const PROPERTIES = {
         },
         {
           propertyName: "cellBoxShadow",
-          label: "Box Shadow",
+          label: "阴影",
           helpText:
             "Enables you to cast a drop shadow from the frame of the widget",
           controlType: "BOX_SHADOW_OPTIONS",
