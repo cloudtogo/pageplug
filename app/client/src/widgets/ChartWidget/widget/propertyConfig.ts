@@ -244,7 +244,7 @@ export default [
       {
         helpText: "设置x轴标签",
         propertyName: "xAxisName",
-        placeholderText: "Dates",
+        placeholderText: "日期",
         label: "x-axis Label",
         controlType: "INPUT_TEXT",
         isBindProperty: true,
@@ -601,7 +601,7 @@ export const contentConfig = [
       {
         helpText: "设置x轴标签",
         propertyName: "xAxisName",
-        placeholderText: "Dates",
+        placeholderText: "日期",
         label: "x-axis Label",
         controlType: "INPUT_TEXT",
         isBindProperty: true,
