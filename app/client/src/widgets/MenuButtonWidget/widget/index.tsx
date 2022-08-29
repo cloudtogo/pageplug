@@ -443,7 +443,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                   children: [
                     {
                       propertyName: "label",
-                      helpText: "Sets the label of a menu item",
+                      helpText: "设置菜单项标签",
                       label: "标签",
                       controlType: "INPUT_TEXT",
                       placeholderText: "Download",
@@ -558,7 +558,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                   children: [
                     {
                       propertyName: "label",
-                      helpText: "Sets the label of a menu item",
+                      helpText: "设置菜单项标签",
                       label: "标签",
                       controlType: "INPUT_TEXT",
                       placeholderText: "Download",
