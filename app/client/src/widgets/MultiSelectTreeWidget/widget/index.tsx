@@ -266,7 +266,7 @@ class MultiSelectTreeWidget extends BaseWidget<
           {
             helpText: "Sets the label position of the widget",
             propertyName: "labelPosition",
-            label: "Position",
+            label: "位置",
             controlType: "DROP_DOWN",
             options: [
               { label: "Left", value: LabelPosition.Left },
@@ -546,7 +546,7 @@ class MultiSelectTreeWidget extends BaseWidget<
           {
             helpText: "Sets the label position of the widget",
             propertyName: "labelPosition",
-            label: "Position",
+            label: "位置",
             controlType: "DROP_DOWN",
             options: [
               { label: "Left", value: LabelPosition.Left },

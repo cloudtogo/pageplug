@@ -619,7 +619,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                     },
                     {
                       propertyName: "iconAlign",
-                      label: "Position",
+                      label: "位置",
                       helpText: "Sets the icon alignment of a menu item",
                       controlType: "ICON_TABS",
                       options: [
@@ -793,7 +793,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
           },
           {
             propertyName: "iconAlign",
-            label: "Position",
+            label: "位置",
             helpText: "Sets the icon alignment of the menu button",
             controlType: "ICON_TABS",
             options: [
