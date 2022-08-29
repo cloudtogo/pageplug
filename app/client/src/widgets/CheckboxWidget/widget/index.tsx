@@ -240,7 +240,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
   static getPropertyPaneContentConfig() {
     return [
       {
-        sectionName: "Label",
+        sectionName: "标签",
         children: [
           {
             propertyName: "label",

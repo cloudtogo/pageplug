@@ -191,7 +191,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
         ],
       },
       {
-        sectionName: "Label",
+        sectionName: "标签",
         children: [
           {
             helpText: "Sets the label text of the widget",
@@ -482,7 +482,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
         ],
       },
       {
-        sectionName: "Label",
+        sectionName: "标签",
         children: [
           {
             helpText: "Sets the label text of the widget",

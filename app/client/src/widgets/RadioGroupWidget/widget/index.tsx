@@ -272,7 +272,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Label",
+        sectionName: "标签",
         children: [
           {
             helpText: "Sets the label text of the widget",
@@ -501,7 +501,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Label",
+        sectionName: "标签",
         children: [
           {
             helpText: "Sets the label text of the widget",

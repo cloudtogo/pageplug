@@ -600,7 +600,7 @@ class ButtonGroupWidget extends BaseWidget<
                         },
                         contentChildren: [
                           {
-                            sectionName: "Label",
+                            sectionName: "标签",
                             children: [
                               {
                                 propertyName: "label",
@@ -734,7 +734,7 @@ class ButtonGroupWidget extends BaseWidget<
                   ],
                 },
                 {
-                  sectionName: "Label",
+                  sectionName: "标签",
                   children: [
                     {
                       propertyName: "label",

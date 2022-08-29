@@ -217,7 +217,7 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
   static getPropertyPaneContentConfig() {
     return [
       {
-        sectionName: "Label",
+        sectionName: "标签",
         children: [
           {
             propertyName: "label",
