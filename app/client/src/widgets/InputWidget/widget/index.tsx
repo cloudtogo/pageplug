@@ -356,7 +356,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText: "Focus input automatically on load",
+            helpText: "加载后自动聚焦到输入框",
             propertyName: "autoFocus",
             label: "自动聚焦",
             controlType: "SWITCH",
