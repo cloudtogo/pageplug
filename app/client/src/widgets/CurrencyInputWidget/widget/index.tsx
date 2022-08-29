@@ -104,7 +104,7 @@ class CurrencyInputWidget extends BaseInputWidget<
           children: [
             {
               propertyName: "allowCurrencyChange",
-              label: "Allow currency change",
+              label: "允许修改货币",
               helpText: "Search by currency or country",
               controlType: "SWITCH",
               isJSConvertible: false,
@@ -225,7 +225,7 @@ class CurrencyInputWidget extends BaseInputWidget<
             },
             {
               propertyName: "allowCurrencyChange",
-              label: "Allow Currency Change",
+              label: "允许修改货币",
               helpText: "Search by currency or country",
               controlType: "SWITCH",
               isJSConvertible: false,
