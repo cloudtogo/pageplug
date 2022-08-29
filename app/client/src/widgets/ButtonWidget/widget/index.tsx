@@ -253,7 +253,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           {
             propertyName: "iconAlign",
             label: "位置",
-            helpText: "Sets the icon alignment of the button",
+            helpText: "设置按钮图标对齐方向",
             controlType: "ICON_TABS",
             options: [
               {
@@ -633,7 +633,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           {
             propertyName: "iconAlign",
             label: "图标对齐",
-            helpText: "Sets the icon alignment of the button",
+            helpText: "设置按钮图标对齐方向",
             controlType: "ICON_TABS",
             options: [
               {
