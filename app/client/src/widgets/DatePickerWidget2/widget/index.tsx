@@ -553,7 +553,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
         ],
       },
       {
-        sectionName: "Validation",
+        sectionName: "校验",
         children: [
           {
             propertyName: "isRequired",

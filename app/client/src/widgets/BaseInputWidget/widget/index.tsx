@@ -444,7 +444,7 @@ class BaseInputWidget<
         ],
       },
       {
-        sectionName: "Validation",
+        sectionName: "校验",
         children: [
           {
             helpText: "对输入进行正则校验，校验失败时显示错误",
