@@ -40,7 +40,7 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
           },
           {
             propertyName: "alignWidget",
-            helpText: "Sets the alignment of the widget",
+            helpText: "设置组件对齐方式",
             label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
             isBindProperty: true,
@@ -244,7 +244,7 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
           },
           {
             propertyName: "alignWidget",
-            helpText: "Sets the alignment of the widget",
+            helpText: "设置组件对齐方式",
             label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
             isBindProperty: true,
