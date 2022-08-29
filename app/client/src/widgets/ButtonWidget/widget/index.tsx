@@ -48,7 +48,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Triggers an action when the button is clicked",
+            helpText: "点击按钮时触发",
             propertyName: "onClick",
             label: "onClick",
             controlType: "ACTION_SELECTOR",
@@ -488,7 +488,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
         sectionName: "事件",
         children: [
           {
-            helpText: "Triggers an action when the button is clicked",
+            helpText: "点击按钮时触发",
             propertyName: "onClick",
             label: "onClick",
             controlType: "ACTION_SELECTOR",
