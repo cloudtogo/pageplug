@@ -194,7 +194,7 @@ class PhoneInputWidget extends BaseInputWidget<
           ],
         },
         {
-          sectionName: "Label",
+          sectionName: "标签",
           children: [],
         },
         {

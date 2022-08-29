@@ -519,7 +519,7 @@ class FilePickerWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Label",
+        sectionName: "标签",
         children: [
           {
             propertyName: "label",
