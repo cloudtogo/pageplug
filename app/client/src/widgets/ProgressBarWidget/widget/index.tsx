@@ -98,7 +98,7 @@ class ProgressBarWidget extends BaseWidget<
           {
             helpText: "Controls the progress color of progress bar",
             propertyName: "fillColor",
-            label: "Fill Color",
+            label: "填充颜色",
             controlType: "COLOR_PICKER",
             defaultColor: Colors.GREEN,
             isBindProperty: true,

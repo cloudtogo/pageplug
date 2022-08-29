@@ -120,7 +120,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
           {
             helpText: "Sets the color of the progress indicator",
             propertyName: "fillColor",
-            label: "Fill Color",
+            label: "填充颜色",
             controlType: "COLOR_PICKER",
             defaultColor: Colors.GREEN,
             isBindProperty: true,
@@ -259,7 +259,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
           {
             helpText: "Sets the color of the progress indicator",
             propertyName: "fillColor",
-            label: "Fill Color",
+            label: "填充颜色",
             controlType: "COLOR_PICKER",
             defaultColor: Colors.GREEN,
             isBindProperty: true,
