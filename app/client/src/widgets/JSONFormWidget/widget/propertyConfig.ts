@@ -150,8 +150,8 @@ const generateButtonStyleControlsFor = (prefix: string) => [
   },
   {
     propertyName: `${prefix}.borderRadius`,
-    label: "按钮圆角",
-    helpText: "按钮圆角样式",
+    label: "边框圆角",
+    helpText: "边框圆角样式",
     controlType: "BORDER_RADIUS_OPTIONS",
     isJSConvertible: true,
     isBindProperty: true,
@@ -486,8 +486,8 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
       },
       {
         propertyName: `${prefix}.borderRadius`,
-        label: "按钮圆角",
-        helpText: "按钮圆角样式",
+        label: "边框圆角",
+        helpText: "边框圆角样式",
         controlType: "BORDER_RADIUS_OPTIONS",
         isJSConvertible: true,
         isBindProperty: true,
@@ -647,7 +647,7 @@ export const styleConfig = [
       {
         propertyName: "borderRadius",
         helpText: "Enter value for border radius",
-        label: "按钮圆角",
+        label: "边框圆角",
         controlType: "BORDER_RADIUS_OPTIONS",
         isJSConvertible: true,
         isBindProperty: true,
@@ -888,7 +888,7 @@ export default [
       {
         propertyName: "borderRadius",
         helpText: "Enter value for border radius",
-        label: "按钮圆角",
+        label: "边框圆角",
         controlType: "BORDER_RADIUS_OPTIONS",
         isJSConvertible: true,
         isBindProperty: true,

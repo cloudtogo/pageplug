@@ -123,7 +123,7 @@ export default {
     },
     {
       propertyName: "saveBorderRadius",
-      label: "按钮圆角",
+      label: "边框圆角",
       customJSControl: "TABLE_COMPUTE_VALUE",
       isJSConvertible: true,
       helpText: "Rounds the corners of the save button's outer border edge",
