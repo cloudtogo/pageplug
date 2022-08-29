@@ -151,7 +151,7 @@ const generateButtonStyleControlsFor = (prefix: string) => [
   {
     propertyName: `${prefix}.borderRadius`,
     label: "按钮圆角",
-    helpText: "Rounds the corners of the icon button's outer border edge",
+    helpText: "按钮圆角样式",
     controlType: "BORDER_RADIUS_OPTIONS",
     isJSConvertible: true,
     isBindProperty: true,
@@ -487,7 +487,7 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
       {
         propertyName: `${prefix}.borderRadius`,
         label: "按钮圆角",
-        helpText: "Rounds the corners of the icon button's outer border edge",
+        helpText: "按钮圆角样式",
         controlType: "BORDER_RADIUS_OPTIONS",
         isJSConvertible: true,
         isBindProperty: true,
