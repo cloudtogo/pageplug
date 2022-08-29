@@ -382,7 +382,7 @@ class ButtonGroupWidget extends BaseWidget<
                               },
                               {
                                 propertyName: "textColor",
-                                helpText: "Sets the text color of a menu item",
+                                helpText: "设置菜单项文本颜色",
                                 label: "文本颜色",
                                 controlType: "COLOR_PICKER",
                                 isBindProperty: false,
@@ -720,7 +720,7 @@ class ButtonGroupWidget extends BaseWidget<
                               },
                               {
                                 propertyName: "textColor",
-                                helpText: "Sets the text color of a menu item",
+                                helpText: "设置菜单项文本颜色",
                                 label: "文本颜色",
                                 controlType: "COLOR_PICKER",
                                 isBindProperty: false,
