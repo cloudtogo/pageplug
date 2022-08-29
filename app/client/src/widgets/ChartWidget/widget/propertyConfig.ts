@@ -254,7 +254,7 @@ export default [
         dependencies: ["chartType"],
       },
       {
-        helpText: "Specifies the label of the y-axis",
+        helpText: "设置y轴标签",
         propertyName: "yAxisName",
         placeholderText: "Revenue",
         label: "y-axis Label",
@@ -611,7 +611,7 @@ export const contentConfig = [
         dependencies: ["chartType"],
       },
       {
-        helpText: "Specifies the label of the y-axis",
+        helpText: "设置y轴标签",
         propertyName: "yAxisName",
         placeholderText: "Revenue",
         label: "y-axis Label",
