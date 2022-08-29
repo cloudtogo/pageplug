@@ -53,7 +53,7 @@ class MultiSelectTreeWidget extends BaseWidget<
           {
             helpText: "Mode to Display options",
             propertyName: "mode",
-            label: "Mode",
+            label: "模式",
             controlType: "DROP_DOWN",
             options: [
               {
@@ -622,7 +622,7 @@ class MultiSelectTreeWidget extends BaseWidget<
           {
             helpText: "Mode to Display options",
             propertyName: "mode",
-            label: "Mode",
+            label: "模式",
             controlType: "DROP_DOWN",
             options: [
               {
