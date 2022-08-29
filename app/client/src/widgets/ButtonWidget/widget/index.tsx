@@ -276,7 +276,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           },
           {
             propertyName: "placement",
-            label: "Placement",
+            label: "排列方式",
             controlType: "DROP_DOWN",
             helpText: "Sets the space between items",
             options: [
@@ -597,7 +597,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           },
           {
             propertyName: "placement",
-            label: "Placement",
+            label: "排列方式",
             controlType: "DROP_DOWN",
             helpText: "Sets the space between items",
             options: [
