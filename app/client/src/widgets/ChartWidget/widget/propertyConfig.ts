@@ -9,8 +9,8 @@ export default [
     sectionName: "属性",
     children: [
       {
-        helpText: "Adds a title to the chart",
-        placeholderText: "Sales Report",
+        helpText: "给图表添加标题",
+        placeholderText: "销售报告",
         propertyName: "chartName",
         label: "标题",
         controlType: "INPUT_TEXT",
@@ -543,8 +543,8 @@ export const contentConfig = [
     sectionName: "属性",
     children: [
       {
-        helpText: "Adds a title to the chart",
-        placeholderText: "Sales Report",
+        helpText: "给图表添加标题",
+        placeholderText: "销售报告",
         propertyName: "chartName",
         label: "标题",
         controlType: "INPUT_TEXT",
