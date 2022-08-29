@@ -69,7 +69,7 @@ export default {
       isTriggerProperty: false,
     },
     {
-      helpText: "Menu items",
+      helpText: "菜单配置",
       propertyName: "menuItems",
       controlType: "MENU_ITEMS",
       label: "Menu Items",
