@@ -285,7 +285,7 @@ export default [
             value: LabelOrientation.SLANT,
           },
           {
-            label: "Rotate",
+            label: "旋转",
             value: LabelOrientation.ROTATE,
           },
           {
@@ -642,7 +642,7 @@ export const contentConfig = [
             value: LabelOrientation.SLANT,
           },
           {
-            label: "Rotate",
+            label: "旋转",
             value: LabelOrientation.ROTATE,
           },
           {
