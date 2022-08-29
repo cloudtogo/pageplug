@@ -144,7 +144,7 @@ class MultiSelectTreeWidget extends BaseWidget<
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText: "Selects the option with value by default",
+            helpText: "默认选中这个值",
             propertyName: "defaultOptionValue",
             label: "Default Value",
             controlType: "INPUT_TEXT",
@@ -509,7 +509,7 @@ class MultiSelectTreeWidget extends BaseWidget<
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText: "Selects the option with value by default",
+            helpText: "默认选中这个值",
             propertyName: "defaultOptionValue",
             label: "Default Selected Values",
             controlType: "INPUT_TEXT",

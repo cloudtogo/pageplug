@@ -79,7 +79,7 @@ const PROPERTIES = {
   general: [
     {
       propertyName: "defaultValue",
-      helpText: "Selects the option with value by default",
+      helpText: "默认选中这个值",
       label: "Default Value",
       controlType: "JSON_FORM_COMPUTE_VALUE",
       placeholderText: '{ "label": "Option1", "value": "Option2" }',
@@ -179,7 +179,7 @@ const PROPERTIES = {
     data: [
       {
         propertyName: "defaultValue",
-        helpText: "Selects the option with value by default",
+        helpText: "默认选中这个值",
         label: "Default Selected Value",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: '{ "label": "Option1", "value": "Option2" }',
