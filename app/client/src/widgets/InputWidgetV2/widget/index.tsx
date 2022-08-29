@@ -489,7 +489,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
     return mergeWidgetConfig(
       [
         {
-          sectionName: "Icon",
+          sectionName: "图标配置",
           children: [
             {
               propertyName: "iconName",

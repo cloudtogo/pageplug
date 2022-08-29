@@ -510,7 +510,7 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
     ],
   },
   {
-    sectionName: "Icon",
+    sectionName: "图标配置",
     collapsible: false,
     children: [
       {

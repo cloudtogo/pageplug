@@ -222,7 +222,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
         ],
       },
       {
-        sectionName: "Icon",
+        sectionName: "图标配置",
         children: [
           {
             propertyName: "iconName",
