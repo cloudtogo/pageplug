@@ -187,7 +187,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
         children: [
           {
             propertyName: "buttonVariant",
-            label: "Button Variant",
+            label: "按钮类型",
             controlType: "DROP_DOWN",
             helpText: "Sets the variant of the icon button",
             options: [
@@ -513,7 +513,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           },
           {
             propertyName: "buttonVariant",
-            label: "Button Variant",
+            label: "按钮类型",
             controlType: "DROP_DOWN",
             helpText: "Sets the variant of the icon button",
             options: [
