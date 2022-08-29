@@ -83,7 +83,7 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
           },
           {
             propertyName: "borderRadius",
-            label: "Border Radius",
+            label: "按钮圆角",
             helpText:
               "Rounds the corners of the icon button's outer border edge",
             controlType: "BORDER_RADIUS_OPTIONS",
@@ -171,7 +171,7 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "borderRadius",
-            label: "Border Radius",
+            label: "按钮圆角",
             helpText:
               "Rounds the corners of the icon button's outer border edge",
             controlType: "BORDER_RADIUS_OPTIONS",
