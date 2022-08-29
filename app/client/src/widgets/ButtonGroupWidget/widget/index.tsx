@@ -119,16 +119,16 @@ class ButtonGroupWidget extends BaseWidget<
                     },
                     {
                       propertyName: "buttonType",
-                      label: "Button Type",
+                      label: "按钮类型",
                       controlType: "DROP_DOWN",
-                      helpText: "Sets button type",
+                      helpText: "设置按钮类型",
                       options: [
                         {
-                          label: "Simple",
+                          label: "普通按钮",
                           value: "SIMPLE",
                         },
                         {
-                          label: "Menu",
+                          label: "菜单按钮",
                           value: "MENU",
                         },
                       ],
@@ -540,16 +540,16 @@ class ButtonGroupWidget extends BaseWidget<
                   children: [
                     {
                       propertyName: "buttonType",
-                      label: "Button Type",
+                      label: "按钮类型",
                       controlType: "DROP_DOWN",
-                      helpText: "Sets button type",
+                      helpText: "设置按钮类型",
                       options: [
                         {
-                          label: "Simple",
+                          label: "普通按钮",
                           value: "SIMPLE",
                         },
                         {
-                          label: "Menu",
+                          label: "菜单按钮",
                           value: "MENU",
                         },
                       ],
