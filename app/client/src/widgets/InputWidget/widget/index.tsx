@@ -348,7 +348,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
           {
             helpText: "Clears the input value after submit",
             propertyName: "resetOnSubmit",
-            label: "Reset on submit",
+            label: "提交后重置",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
