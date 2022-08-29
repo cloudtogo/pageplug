@@ -114,7 +114,7 @@ class BaseInputWidget<
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText: "Clears the input value after submit",
+            helpText: "提交后清空输入信息",
             propertyName: "resetOnSubmit",
             label: "提交后重置",
             controlType: "SWITCH",
@@ -607,7 +607,7 @@ class BaseInputWidget<
             isTriggerProperty: true,
           },
           {
-            helpText: "Clears the input value after submit",
+            helpText: "提交后清空输入信息",
             propertyName: "resetOnSubmit",
             label: "提交后重置",
             controlType: "SWITCH",
