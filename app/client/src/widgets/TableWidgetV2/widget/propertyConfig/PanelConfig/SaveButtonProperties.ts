@@ -160,7 +160,7 @@ export default {
     },
     {
       propertyName: "saveIconAlign",
-      label: "Icon Alignment",
+      label: "图标对齐",
       helpText: "Sets the icon alignment of the save button",
       controlType: "ICON_TABS",
       defaultValue: "left",

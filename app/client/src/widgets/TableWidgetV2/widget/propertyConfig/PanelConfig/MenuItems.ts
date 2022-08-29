@@ -141,7 +141,7 @@ export default {
               },
               {
                 propertyName: "iconAlign",
-                label: "Icon alignment",
+                label: "图标对齐",
                 helpText: "Sets the icon alignment of a menu item",
                 controlType: "ICON_TABS",
                 options: [
