@@ -214,7 +214,7 @@ class ButtonGroupWidget extends BaseWidget<
                     {
                       propertyName: "iconAlign",
                       label: "图标对齐",
-                      helpText: "Sets the icon alignment of a button",
+                      helpText: "设置按钮图标的对齐位置",
                       controlType: "ICON_TABS",
                       options: [
                         {
@@ -815,7 +815,7 @@ class ButtonGroupWidget extends BaseWidget<
                     {
                       propertyName: "iconAlign",
                       label: "位置",
-                      helpText: "Sets the icon alignment of a button",
+                      helpText: "设置按钮图标的对齐位置",
                       controlType: "ICON_TABS",
                       options: [
                         {
