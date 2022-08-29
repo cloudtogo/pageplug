@@ -199,7 +199,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
           },
           {
             propertyName: "isRequired",
-            label: "Required",
+            label: "必填",
             helpText: "Makes input to the widget mandatory",
             controlType: "SWITCH",
             isJSConvertible: true,
@@ -648,7 +648,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "isRequired",
-            label: "Required",
+            label: "必填",
             helpText: "Makes input to the widget mandatory",
             controlType: "SWITCH",
             isJSConvertible: true,
