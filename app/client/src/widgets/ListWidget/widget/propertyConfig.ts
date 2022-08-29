@@ -192,7 +192,7 @@ const PropertyPaneConfig = [
 
 export const PropertyPaneContentConfig = [
   {
-    sectionName: "Data",
+    sectionName: "数据",
     children: [
       {
         helpText: "Takes in an array of objects to display items in the list.",

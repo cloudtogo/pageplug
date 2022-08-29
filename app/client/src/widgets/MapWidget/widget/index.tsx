@@ -259,7 +259,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
   static getPropertyPaneContentConfig() {
     return [
       {
-        sectionName: "Data",
+        sectionName: "数据",
         children: [
           {
             propertyName: "mapCenter",

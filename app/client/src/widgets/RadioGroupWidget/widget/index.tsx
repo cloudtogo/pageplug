@@ -448,7 +448,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
   static getPropertyPaneContentConfig() {
     return [
       {
-        sectionName: "Data",
+        sectionName: "数据",
         children: [
           {
             helpText: "Displays a list of unique options",
