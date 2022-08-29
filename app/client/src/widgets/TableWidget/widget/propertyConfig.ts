@@ -1340,7 +1340,7 @@ export default [
                         children: [
                           {
                             helpText:
-                              "Triggers an action when the menu item is clicked",
+                              "点击菜单项时触发",
                             propertyName: "onClick",
                             label: "onItemClick",
                             controlType: "ACTION_SELECTOR",
