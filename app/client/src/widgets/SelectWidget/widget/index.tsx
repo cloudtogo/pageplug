@@ -128,7 +128,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
             helpText:
               "Allows users to select a single option. Values must be unique",
             propertyName: "options",
-            label: "Options",
+            label: "选项",
             controlType: "INPUT_TEXT",
             placeholderText: '[{ "label": "label1", "value": "value1" }]',
             isBindProperty: true,
@@ -475,7 +475,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
             helpText:
               "Allows users to select a single option. Values must be unique",
             propertyName: "options",
-            label: "Options",
+            label: "选项",
             controlType: "INPUT_TEXT",
             placeholderText: '[{ "label": "label1", "value": "value1" }]',
             isBindProperty: true,

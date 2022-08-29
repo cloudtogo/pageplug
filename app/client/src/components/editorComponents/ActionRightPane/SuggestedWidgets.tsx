@@ -88,7 +88,7 @@ export const WIDGET_DATA_FIELD_MAP: Record<string, WidgetBindingInfo> = {
     image: "https://assets.appsmith.com/widgetSuggestion/chart.svg",
   },
   SELECT_WIDGET: {
-    label: "options",
+    label: "选项",
     propertyName: "options",
     widgetName: "Select",
     image: "https://assets.appsmith.com/widgetSuggestion/dropdown.svg",

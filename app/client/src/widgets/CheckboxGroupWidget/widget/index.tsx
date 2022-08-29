@@ -63,7 +63,7 @@ class CheckboxGroupWidget extends BaseWidget<
           {
             helpText: "Displays a list of unique checkbox options",
             propertyName: "options",
-            label: "Options",
+            label: "选项",
             controlType: "OPTION_INPUT",
             isJSConvertible: true,
             isBindProperty: true,
@@ -435,7 +435,7 @@ class CheckboxGroupWidget extends BaseWidget<
           {
             helpText: "Displays a list of unique checkbox options",
             propertyName: "options",
-            label: "Options",
+            label: "选项",
             controlType: "OPTION_INPUT",
             isJSConvertible: true,
             isBindProperty: true,
