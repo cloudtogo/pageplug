@@ -25,27 +25,27 @@ export default [
         controlType: "DROP_DOWN",
         options: [
           {
-            label: "Line Chart",
+            label: "折线图",
             value: "LINE_CHART",
           },
           {
-            label: "Bar Chart",
+            label: "水平柱状图",
             value: "BAR_CHART",
           },
           {
-            label: "Pie Chart",
+            label: "饼图",
             value: "PIE_CHART",
           },
           {
-            label: "Column Chart",
+            label: "垂直柱状图",
             value: "COLUMN_CHART",
           },
           {
-            label: "Area Chart",
+            label: "面积图",
             value: "AREA_CHART",
           },
           {
-            label: "Custom Chart",
+            label: "自定义图表",
             value: "CUSTOM_FUSION_CHART",
           },
         ],
@@ -358,27 +358,27 @@ export const contentConfig = [
         controlType: "DROP_DOWN",
         options: [
           {
-            label: "Line Chart",
+            label: "折线图",
             value: "LINE_CHART",
           },
           {
-            label: "Bar Chart",
+            label: "水平柱状图",
             value: "BAR_CHART",
           },
           {
-            label: "Pie Chart",
+            label: "饼图",
             value: "PIE_CHART",
           },
           {
-            label: "Column Chart",
+            label: "垂直柱状图",
             value: "COLUMN_CHART",
           },
           {
-            label: "Area Chart",
+            label: "面积图",
             value: "AREA_CHART",
           },
           {
-            label: "Custom Chart",
+            label: "自定义图表",
             value: "CUSTOM_FUSION_CHART",
           },
         ],
