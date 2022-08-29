@@ -40,7 +40,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           {
             propertyName: "text",
             label: "标签",
-            helpText: "Sets the label of the button",
+            helpText: "设置按钮标签",
             controlType: "INPUT_TEXT",
             placeholderText: "Submit",
             isBindProperty: true,
@@ -366,7 +366,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           {
             propertyName: "text",
             label: "标签",
-            helpText: "Sets the label of the button",
+            helpText: "设置按钮标签",
             controlType: "INPUT_TEXT",
             placeholderText: "Submit",
             isBindProperty: true,
