@@ -102,7 +102,7 @@ class CheckboxGroupWidget extends BaseWidget<
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText: "Sets the values of the options checked by default",
+            helpText: "设置默认勾选的选项",
             propertyName: "defaultSelectedValues",
             label: "默认选中值",
             placeholderText: '["apple", "orange"]',
@@ -159,7 +159,7 @@ class CheckboxGroupWidget extends BaseWidget<
           },
           {
             propertyName: "isInline",
-            label: "Inline",
+            label: "行排列",
             controlType: "SWITCH",
             helpText: "Displays the checkboxes horizontally",
             isJSConvertible: true,
@@ -474,7 +474,7 @@ class CheckboxGroupWidget extends BaseWidget<
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText: "Sets the values of the options checked by default",
+            helpText: "设置默认勾选的选项",
             propertyName: "defaultSelectedValues",
             label: "默认选中值",
             placeholderText: '["apple", "orange"]',
@@ -612,7 +612,7 @@ class CheckboxGroupWidget extends BaseWidget<
           },
           {
             propertyName: "isInline",
-            label: "Inline",
+            label: "行排列",
             controlType: "SWITCH",
             helpText: "Displays the checkboxes horizontally",
             isJSConvertible: true,
