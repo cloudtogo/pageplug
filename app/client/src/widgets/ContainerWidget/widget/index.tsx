@@ -90,7 +90,7 @@ class ContainerWidget extends BaseWidget<
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Enter value for border width",
+            helpText: "输入边框厚度",
             propertyName: "borderWidth",
             label: "边框厚度",
             placeholderText: "Enter value in px",
@@ -197,7 +197,7 @@ class ContainerWidget extends BaseWidget<
         sectionName: "轮廓样式",
         children: [
           {
-            helpText: "Enter value for border width",
+            helpText: "输入边框厚度",
             propertyName: "borderWidth",
             label: "Border Width",
             placeholderText: "Enter value in px",
