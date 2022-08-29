@@ -511,10 +511,10 @@ class ButtonGroupWidget extends BaseWidget<
         sectionName: "数据",
         children: [
           {
-            helpText: "Group Buttons",
+            helpText: "按钮组",
             propertyName: "groupButtons",
             controlType: "GROUP_BUTTONS",
-            label: "Buttons",
+            label: "按钮",
             isBindProperty: false,
             isTriggerProperty: false,
             dependencies: ["childStylesheet"],
@@ -579,7 +579,7 @@ class ButtonGroupWidget extends BaseWidget<
                       helpText: "菜单配置",
                       propertyName: "menuItems",
                       controlType: "MENU_ITEMS",
-                      label: "Menu Items",
+                      label: "菜单项",
                       isBindProperty: false,
                       isTriggerProperty: false,
                       panelConfig: {
