@@ -170,7 +170,7 @@ class ButtonGroupWidget extends BaseWidget<
                     {
                       propertyName: "iconName",
                       label: "图标",
-                      helpText: "Sets the icon to be used for a button",
+                      helpText: "选择按钮图标",
                       controlType: "ICON_SELECT",
                       isBindProperty: false,
                       isTriggerProperty: false,
@@ -178,7 +178,7 @@ class ButtonGroupWidget extends BaseWidget<
                     },
                     {
                       propertyName: "placement",
-                      label: "Placement",
+                      label: "排列方式",
                       controlType: "DROP_DOWN",
                       helpText: "Sets the space between items",
                       options: [
@@ -806,7 +806,7 @@ class ButtonGroupWidget extends BaseWidget<
                     {
                       propertyName: "iconName",
                       label: "图标",
-                      helpText: "Sets the icon to be used for a button",
+                      helpText: "选择按钮图标",
                       controlType: "ICON_SELECT",
                       isBindProperty: false,
                       isTriggerProperty: false,
@@ -833,7 +833,7 @@ class ButtonGroupWidget extends BaseWidget<
                     },
                     {
                       propertyName: "placement",
-                      label: "Placement",
+                      label: "排列方式",
                       controlType: "DROP_DOWN",
                       helpText: "Sets the space between items",
                       options: [
