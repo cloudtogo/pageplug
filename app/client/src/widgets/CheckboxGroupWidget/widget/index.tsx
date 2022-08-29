@@ -61,7 +61,7 @@ class CheckboxGroupWidget extends BaseWidget<
         sectionName: "属性",
         children: [
           {
-            helpText: "Displays a list of unique checkbox options",
+            helpText: "展示一列值唯一的勾选选项",
             propertyName: "options",
             label: "选项",
             controlType: "OPTION_INPUT",
@@ -433,7 +433,7 @@ class CheckboxGroupWidget extends BaseWidget<
         sectionName: "数据",
         children: [
           {
-            helpText: "Displays a list of unique checkbox options",
+            helpText: "展示一列值唯一的勾选选项",
             propertyName: "options",
             label: "选项",
             controlType: "OPTION_INPUT",
