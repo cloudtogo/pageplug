@@ -183,7 +183,7 @@ class BaseInputWidget<
         ],
       },
       {
-        sectionName: "Label",
+        sectionName: "标签",
         children: [
           {
             helpText: "Sets the label text of the widget",
@@ -373,7 +373,7 @@ class BaseInputWidget<
   static getPropertyPaneContentConfig() {
     return [
       {
-        sectionName: "Label",
+        sectionName: "标签",
         children: [
           {
             helpText: "Sets the label text of the widget",

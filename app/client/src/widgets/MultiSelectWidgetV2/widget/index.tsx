@@ -371,7 +371,7 @@ class MultiSelectWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Label",
+        sectionName: "标签",
         children: [
           {
             helpText: "Sets the label text of the widget",
@@ -626,7 +626,7 @@ class MultiSelectWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Label",
+        sectionName: "标签",
         children: [
           {
             helpText: "Sets the label text of the widget",

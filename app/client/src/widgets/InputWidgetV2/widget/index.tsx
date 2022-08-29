@@ -397,7 +397,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
           ],
         },
         {
-          sectionName: "Label",
+          sectionName: "标签",
           children: [],
         },
         {
