@@ -206,7 +206,7 @@ class SwitchGroupWidget extends BaseWidget<
           },
           {
             helpText:
-              "Sets the label width of the widget as the number of columns",
+              "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
@@ -448,7 +448,7 @@ class SwitchGroupWidget extends BaseWidget<
           },
           {
             helpText:
-              "Sets the label width of the widget as the number of columns",
+              "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
