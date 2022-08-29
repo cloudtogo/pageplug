@@ -299,7 +299,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
           children: [
             {
               propertyName: "iconName",
-              label: "Icon",
+              label: "图标",
               helpText: "Sets the icon to be used in input field",
               controlType: "ICON_SELECT",
               isBindProperty: true,
@@ -493,7 +493,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
           children: [
             {
               propertyName: "iconName",
-              label: "Icon",
+              label: "图标",
               helpText: "Sets the icon to be used in input field",
               controlType: "ICON_SELECT",
               isBindProperty: true,
