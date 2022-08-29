@@ -401,7 +401,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             label: "位置",
             controlType: "DROP_DOWN",
             options: [
-              { label: "Left", value: LabelPosition.Left },
+              { label: "左", value: LabelPosition.Left },
               { label: "Top", value: LabelPosition.Top },
               { label: "Auto", value: LabelPosition.Auto },
             ],
