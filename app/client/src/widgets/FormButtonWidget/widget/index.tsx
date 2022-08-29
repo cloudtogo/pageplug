@@ -40,7 +40,7 @@ class FormButtonWidget extends ButtonWidget {
         {
           helpText: "Show helper text with button on hover",
           propertyName: "tooltip",
-          label: "Tooltip",
+          label: "提示",
           controlType: "INPUT_TEXT",
           placeholderText: "Enter tooltip text",
           isBindProperty: true,

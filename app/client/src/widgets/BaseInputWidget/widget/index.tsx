@@ -76,7 +76,7 @@ class BaseInputWidget<
           {
             helpText: "Show help text or details about current input",
             propertyName: "tooltip",
-            label: "Tooltip",
+            label: "提示",
             controlType: "INPUT_TEXT",
             placeholderText: "Value must be atleast 6 chars",
             isBindProperty: true,
@@ -511,7 +511,7 @@ class BaseInputWidget<
           {
             helpText: "Show help text or details about current input",
             propertyName: "tooltip",
-            label: "Tooltip",
+            label: "提示",
             controlType: "INPUT_TEXT",
             placeholderText: "Value must be atleast 6 chars",
             isBindProperty: true,
