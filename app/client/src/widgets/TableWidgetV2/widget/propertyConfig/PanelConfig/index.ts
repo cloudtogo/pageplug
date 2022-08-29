@@ -442,7 +442,7 @@ export default {
       children: [
         {
           propertyName: "textSize",
-          label: "Text Size",
+          label: "字体大小",
           controlType: "DROP_DOWN",
           isJSConvertible: true,
           customJSControl: "TABLE_COMPUTE_VALUE",
