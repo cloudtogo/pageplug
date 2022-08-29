@@ -97,7 +97,7 @@ class AudioRecorderWidget extends BaseWidget<
           {
             propertyName: "accentColor",
             helpText: "Changes the color of the recorder button",
-            label: "Button Color",
+            label: "按钮颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,

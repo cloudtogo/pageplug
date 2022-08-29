@@ -615,7 +615,7 @@ export default {
       children: [
         {
           propertyName: "buttonColor",
-          label: "Button Color",
+          label: "按钮颜色",
           controlType: "PRIMARY_COLUMNS_COLOR_PICKER_V2",
           helpText: "Changes the color of the button",
           isJSConvertible: true,
@@ -643,7 +643,7 @@ export default {
           propertyName: "menuColor",
           helpText:
             "Sets the custom color preset based on the menu button variant",
-          label: "Button Color",
+          label: "按钮颜色",
           controlType: "PRIMARY_COLUMNS_COLOR_PICKER_V2",
           customJSControl: "TABLE_COMPUTE_VALUE",
           isJSConvertible: true,
@@ -731,7 +731,7 @@ export default {
           children: [
             {
               propertyName: "saveButtonColor",
-              label: "Button Color",
+              label: "按钮颜色",
               controlType: "PRIMARY_COLUMNS_COLOR_PICKER_V2",
               helpText: "Changes the color of the button",
               isJSConvertible: true,
@@ -880,7 +880,7 @@ export default {
           children: [
             {
               propertyName: "discardButtonColor",
-              label: "Button Color",
+              label: "按钮颜色",
               controlType: "PRIMARY_COLUMNS_COLOR_PICKER_V2",
               helpText: "Changes the color of the button",
               isJSConvertible: true,

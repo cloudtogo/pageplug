@@ -63,7 +63,7 @@ export default {
     },
     {
       propertyName: "saveButtonColor",
-      label: "Button Color",
+      label: "按钮颜色",
       controlType: "PRIMARY_COLUMNS_COLOR_PICKER_V2",
       helpText: "Changes the color of the button",
       isJSConvertible: true,
