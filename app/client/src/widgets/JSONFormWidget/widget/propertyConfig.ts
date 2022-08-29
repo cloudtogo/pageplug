@@ -330,7 +330,7 @@ export const contentConfig = [
     children: [
       {
         propertyName: "title",
-        label: "Title",
+        label: "标题",
         helpText: "Sets the title of the form",
         controlType: "INPUT_TEXT",
         placeholderText: "Update Order",
@@ -685,7 +685,7 @@ export default [
     children: [
       {
         propertyName: "title",
-        label: "Title",
+        label: "标题",
         helpText: "Sets the title of the form",
         controlType: "INPUT_TEXT",
         placeholderText: "Update Order",
