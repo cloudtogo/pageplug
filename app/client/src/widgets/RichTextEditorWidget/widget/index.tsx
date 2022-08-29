@@ -267,7 +267,7 @@ class RichTextEditorWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Styles",
+        sectionName: "样式",
         children: [
           {
             propertyName: "borderRadius",

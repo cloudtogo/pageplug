@@ -141,7 +141,7 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Styles",
+        sectionName: "样式",
         children: [
           {
             propertyName: "borderRadius",

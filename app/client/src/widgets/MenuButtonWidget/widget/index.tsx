@@ -165,7 +165,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                   ],
                 },
                 {
-                  sectionName: "Styles",
+                  sectionName: "样式",
                   children: [
                     {
                       propertyName: "iconColor",
@@ -523,7 +523,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                   ],
                 },
                 {
-                  sectionName: "Styles",
+                  sectionName: "样式",
                   children: [
                     {
                       propertyName: "iconColor",

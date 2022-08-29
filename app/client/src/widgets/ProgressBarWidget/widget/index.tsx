@@ -93,7 +93,7 @@ class ProgressBarWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Styles",
+        sectionName: "样式",
         children: [
           {
             helpText: "Controls the progress color of progress bar",
