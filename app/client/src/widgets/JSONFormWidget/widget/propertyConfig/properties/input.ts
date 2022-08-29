@@ -350,7 +350,7 @@ const PROPERTIES = {
       helpText:
         "Adds a validation to the input which displays an error on failure",
       propertyName: "regex",
-      label: "Regex",
+      label: "正则校验",
       controlType: "JSON_FORM_COMPUTE_VALUE",
       placeholderText: "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$",
       inputType: "TEXT",
@@ -702,7 +702,7 @@ const PROPERTIES = {
         propertyName: "regex",
         helpText:
           "Adds a validation to the input which displays an error on failure",
-        label: "Regex",
+        label: "正则校验",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$",
         inputType: "TEXT",
