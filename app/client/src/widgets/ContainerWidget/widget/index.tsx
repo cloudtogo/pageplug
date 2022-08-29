@@ -56,7 +56,7 @@ class ContainerWidget extends BaseWidget<
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText: "Enables scrolling for content inside the widget",
+            helpText: "允许组件内部内容滚动",
             propertyName: "shouldScrollContents",
             label: "是否滚动内容",
             controlType: "SWITCH",
@@ -142,7 +142,7 @@ class ContainerWidget extends BaseWidget<
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText: "Enables scrolling for content inside the widget",
+            helpText: "允许组件内部内容滚动",
             propertyName: "shouldScrollContents",
             label: "Scroll Contents",
             controlType: "SWITCH",
