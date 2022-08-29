@@ -203,7 +203,7 @@ const generateButtonStyleControlsFor = (prefix: string) => [
     helpText: "设置图标与标签的排列方式",
     options: [
       {
-        label: "Start",
+        label: "向前对齐",
         value: ButtonPlacementTypes.START,
       },
       {
@@ -571,7 +571,7 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
         helpText: "设置图标与标签的排列方式",
         options: [
           {
-            label: "Start",
+            label: "向前对齐",
             value: ButtonPlacementTypes.START,
           },
           {
