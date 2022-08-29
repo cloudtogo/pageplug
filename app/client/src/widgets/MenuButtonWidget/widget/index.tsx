@@ -345,7 +345,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                 value: ButtonPlacementTypes.START,
               },
               {
-                label: "Between",
+                label: "两边对齐",
                 value: ButtonPlacementTypes.BETWEEN,
               },
               {
@@ -826,7 +826,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                 value: ButtonPlacementTypes.START,
               },
               {
-                label: "Between",
+                label: "两边对齐",
                 value: ButtonPlacementTypes.BETWEEN,
               },
               {

@@ -285,7 +285,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
                 value: ButtonPlacementTypes.START,
               },
               {
-                label: "Between",
+                label: "两边对齐",
                 value: ButtonPlacementTypes.BETWEEN,
               },
               {
@@ -606,7 +606,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
                 value: ButtonPlacementTypes.START,
               },
               {
-                label: "Between",
+                label: "两边对齐",
                 value: ButtonPlacementTypes.BETWEEN,
               },
               {
