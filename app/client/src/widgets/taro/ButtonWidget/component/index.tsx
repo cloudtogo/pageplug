@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@taroify/core";
-import { FontWeight } from "components/ads/Text";
+import { FontWeight } from "design-system";
 
 interface ButtonComponentProps {
   text?: string;

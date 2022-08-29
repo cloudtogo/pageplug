@@ -496,7 +496,7 @@ function RecorderRight(props: RecorderRightProps) {
           rel="noreferrer"
           target="_blank"
         >
-          Know more
+          详情
         </a>
       ) : (
         <div className="controls">

@@ -20,7 +20,6 @@ import { getIsPageLevelSocketConnected } from "selectors/websocketSelectors";
 import { getCurrentGitBranch } from "selectors/gitSyncSelectors";
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
 import { getPageLevelSocketRoomId } from "sagas/WebsocketSagas/utils";
-import { commentModeSelector } from "selectors/commentsSelectors";
 import { previewModeSelector, isMobileLayout } from "selectors/editorSelectors";
 
 interface CanvasProps {
@@ -78,7 +77,6 @@ const Canvas = memo((props: CanvasProps) => {
   const isPreviewMode = useSelector(previewModeSelector);
   const selectedTheme = useSelector(getSelectedAppTheme);
   const isMobile = useSelector(isMobileLayout);
-  const isCommentMode = useSelector(commentModeSelector);
 
   const shareMousePointer = useShareMousePointerEvent();
   const isWebsocketConnected = useSelector(getIsPageLevelSocketConnected);
@@ -130,7 +128,7 @@ const Canvas = memo((props: CanvasProps) => {
         {isMultiplayerEnabledForUser && (
           <CanvasMultiPointerArena pageId={pageId} />
         )}
-        {isPreviewMode || isCommentMode ? null : <TabBarIconPicker />}
+        {isPreviewMode ? null : <TabBarIconPicker />}
       </Container>
     );
   } catch (error) {

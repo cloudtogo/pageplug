@@ -298,9 +298,7 @@ function WorkspaceInviteUsersForm(props: any) {
     <WorkspaceInviteWrapper>
       {isApplicationInvite && (
         <WorkspaceInviteTitle>
-          <Text type={TextType.H5}>
-            邀请小伙伴到 {currentWorkspace?.name}{" "}
-          </Text>
+          <Text type={TextType.H5}>邀请小伙伴到 {currentWorkspace?.name} </Text>
         </WorkspaceInviteTitle>
       )}
       <StyledForm
