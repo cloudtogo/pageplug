@@ -44,7 +44,7 @@ export default {
               {
                 propertyName: "backgroundColor",
                 helpText: "Sets the background color of a menu item",
-                label: "Background color",
+                label: "背景颜色",
                 controlType: "PRIMARY_COLUMNS_COLOR_PICKER_V2",
                 customJSControl: "TABLE_COMPUTE_VALUE",
                 isJSConvertible: true,
