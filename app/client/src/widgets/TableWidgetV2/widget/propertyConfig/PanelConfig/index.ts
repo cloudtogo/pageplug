@@ -377,7 +377,7 @@ export default {
       ],
     },
     {
-      sectionName: "Icon",
+      sectionName: "图标配置",
       children: [
         {
           propertyName: "menuButtoniconName",
@@ -810,7 +810,7 @@ export default {
           ],
         },
         {
-          sectionName: "Icon",
+          sectionName: "图标配置",
           collapsible: false,
           children: [
             {
@@ -959,7 +959,7 @@ export default {
           ],
         },
         {
-          sectionName: "Icon",
+          sectionName: "图标配置",
           collapsible: false,
           children: [
             {
