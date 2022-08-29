@@ -244,7 +244,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "label",
-            label: "Text",
+            label: "文本",
             controlType: "INPUT_TEXT",
             helpText: "Displays a label next to the widget",
             placeholderText: "I agree to the T&C",

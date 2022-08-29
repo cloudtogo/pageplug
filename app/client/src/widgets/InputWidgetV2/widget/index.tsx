@@ -186,7 +186,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               controlType: "DROP_DOWN",
               options: [
                 {
-                  label: "Text",
+                  label: "文本",
                   value: "TEXT",
                 },
                 {
@@ -353,7 +353,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               controlType: "DROP_DOWN",
               options: [
                 {
-                  label: "Text",
+                  label: "文本",
                   value: "TEXT",
                 },
                 {

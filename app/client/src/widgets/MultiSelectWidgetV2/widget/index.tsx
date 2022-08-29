@@ -376,7 +376,7 @@ class MultiSelectWidget extends BaseWidget<
           {
             helpText: "Sets the label text of the widget",
             propertyName: "labelText",
-            label: "Text",
+            label: "文本",
             controlType: "INPUT_TEXT",
             placeholderText: "Enter label text",
             isBindProperty: true,
@@ -631,7 +631,7 @@ class MultiSelectWidget extends BaseWidget<
           {
             helpText: "Sets the label text of the widget",
             propertyName: "labelText",
-            label: "Text",
+            label: "文本",
             controlType: "INPUT_TEXT",
             placeholderText: "Enter label text",
             isBindProperty: true,

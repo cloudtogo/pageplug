@@ -118,7 +118,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "Text",
+                label: "文本",
                 value: "TEXT",
               },
               {
@@ -388,7 +388,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
           {
             helpText: "Sets the label text of the widget",
             propertyName: "label",
-            label: "Text",
+            label: "文本",
             controlType: "INPUT_TEXT",
             placeholderText: "Name:",
             isBindProperty: true,
