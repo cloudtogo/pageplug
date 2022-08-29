@@ -250,7 +250,7 @@ export default {
       },
     },
     {
-      helpText: "Triggers an action when the button is clicked",
+      helpText: "点击按钮时触发",
       propertyName: "onClick",
       label: "onClick",
       controlType: "ACTION_SELECTOR",
