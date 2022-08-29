@@ -160,7 +160,7 @@ class SingleSelectTreeWidget extends BaseWidget<
           {
             propertyName: "isDisabled",
             label: "禁用",
-            helpText: "Disables input to this widget",
+            helpText: "让组件不可交互",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -606,7 +606,7 @@ class SingleSelectTreeWidget extends BaseWidget<
           {
             propertyName: "isDisabled",
             label: "禁用",
-            helpText: "Disables input to this widget",
+            helpText: "让组件不可交互",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
