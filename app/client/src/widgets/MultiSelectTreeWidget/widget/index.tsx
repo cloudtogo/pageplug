@@ -76,7 +76,7 @@ class MultiSelectTreeWidget extends BaseWidget<
             helpText:
               "Allows users to select multiple options. Values must be unique",
             propertyName: "options",
-            label: "Options",
+            label: "选项",
             controlType: "INPUT_TEXT",
             placeholderText: "Enter option value",
             isBindProperty: true,
@@ -441,7 +441,7 @@ class MultiSelectTreeWidget extends BaseWidget<
             helpText:
               "Allows users to select multiple options. Values must be unique",
             propertyName: "options",
-            label: "Options",
+            label: "选项",
             controlType: "INPUT_TEXT",
             placeholderText: "Enter option value",
             isBindProperty: true,

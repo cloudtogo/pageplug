@@ -55,7 +55,7 @@ class MultiSelectWidget extends BaseWidget<
             helpText:
               "Allows users to select multiple options. Values must be unique",
             propertyName: "options",
-            label: "Options",
+            label: "选项",
             controlType: "INPUT_TEXT",
             placeholderText: '[{ "label": "Option1", "value": "Option2" }]',
             isBindProperty: true,
