@@ -162,7 +162,7 @@ export default {
             ],
           },
           {
-            sectionName: "Events",
+            sectionName: "事件",
             children: [
               {
                 helpText: "Triggers an action when the menu item is clicked",

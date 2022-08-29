@@ -1,5 +1,5 @@
 export default {
-  sectionName: "Events",
+  sectionName: "事件",
   children: [
     {
       helpText: "Triggers an action when a table row is selected",

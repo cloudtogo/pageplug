@@ -198,7 +198,7 @@ function generatePanelPropertyConfig(
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           ...CHECKBOX_PROPERTIES.actions,
           ...DATE_PROPERTIES.content.events,

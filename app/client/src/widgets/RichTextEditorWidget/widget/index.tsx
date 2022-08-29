@@ -253,7 +253,7 @@ class RichTextEditorWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             helpText: "文本变化时触发",
@@ -467,7 +467,7 @@ class RichTextEditorWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             helpText: "Triggers an action when the text is changed",
