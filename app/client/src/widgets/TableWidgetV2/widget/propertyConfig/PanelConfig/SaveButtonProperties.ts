@@ -83,7 +83,7 @@ export default {
     },
     {
       propertyName: "saveButtonVariant",
-      label: "Button Variant",
+      label: "按钮类型",
       controlType: "DROP_DOWN",
       customJSControl: "TABLE_COMPUTE_VALUE",
       isJSConvertible: true,

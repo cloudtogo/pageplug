@@ -728,7 +728,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "menuVariant",
-            label: "Button Variant",
+            label: "按钮类型",
             controlType: "DROP_DOWN",
             helpText: "Sets the variant of the menu button",
             options: [
