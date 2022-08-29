@@ -169,7 +169,7 @@ class ButtonGroupWidget extends BaseWidget<
                   children: [
                     {
                       propertyName: "iconName",
-                      label: "Icon",
+                      label: "图标",
                       helpText: "Sets the icon to be used for a button",
                       controlType: "ICON_SELECT",
                       isBindProperty: false,
@@ -312,7 +312,7 @@ class ButtonGroupWidget extends BaseWidget<
                             children: [
                               {
                                 propertyName: "iconName",
-                                label: "Icon",
+                                label: "图标",
                                 helpText:
                                   "Sets the icon to be used for a menu item",
                                 controlType: "ICON_SELECT",
@@ -666,7 +666,7 @@ class ButtonGroupWidget extends BaseWidget<
                             children: [
                               {
                                 propertyName: "iconName",
-                                label: "Icon",
+                                label: "图标",
                                 helpText:
                                   "Sets the icon to be used for a menu item",
                                 controlType: "ICON_SELECT",
@@ -805,7 +805,7 @@ class ButtonGroupWidget extends BaseWidget<
                   children: [
                     {
                       propertyName: "iconName",
-                      label: "Icon",
+                      label: "图标",
                       helpText: "Sets the icon to be used for a button",
                       controlType: "ICON_SELECT",
                       isBindProperty: false,

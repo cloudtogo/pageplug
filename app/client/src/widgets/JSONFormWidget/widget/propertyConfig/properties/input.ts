@@ -418,7 +418,7 @@ const PROPERTIES = {
     },
     {
       propertyName: "iconName",
-      label: "Icon",
+      label: "图标",
       helpText: "Sets the icon to be used in input field",
       controlType: "ICON_SELECT",
       isBindProperty: true,
@@ -793,7 +793,7 @@ const PROPERTIES = {
     icon: [
       {
         propertyName: "iconName",
-        label: "Icon",
+        label: "图标",
         helpText: "Sets the icon to be used in input field",
         controlType: "ICON_SELECT",
         isBindProperty: true,
