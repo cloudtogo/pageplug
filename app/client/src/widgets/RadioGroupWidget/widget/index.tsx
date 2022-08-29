@@ -428,7 +428,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             helpText:
@@ -634,7 +634,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             helpText:

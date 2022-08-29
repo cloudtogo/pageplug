@@ -420,7 +420,7 @@ export const contentConfig = [
     ],
   },
   {
-    sectionName: "Events",
+    sectionName: "事件",
     children: [
       {
         propertyName: "onSubmit",

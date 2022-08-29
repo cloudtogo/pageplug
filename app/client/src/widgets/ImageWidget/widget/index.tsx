@@ -330,7 +330,7 @@ class ImageWidget extends BaseWidget<ImageWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             helpText:

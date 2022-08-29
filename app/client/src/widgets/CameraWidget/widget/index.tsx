@@ -233,7 +233,7 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             helpText: "Triggers an action when the image is captured",

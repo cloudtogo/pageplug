@@ -78,7 +78,7 @@ class AudioWidget extends BaseWidget<AudioWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             helpText: "Triggers an action when the audio is played",
@@ -177,7 +177,7 @@ class AudioWidget extends BaseWidget<AudioWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             helpText: "Triggers an action when the audio is played",
