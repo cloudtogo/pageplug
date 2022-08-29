@@ -173,7 +173,7 @@ const generateButtonStyleControlsFor = (prefix: string) => [
   {
     propertyName: `${prefix}.iconName`,
     label: "图标",
-    helpText: "Sets the icon to be used for the button",
+    helpText: "设置按钮图标",
     controlType: "ICON_SELECT",
     isJSConvertible: true,
     isBindProperty: true,
@@ -516,7 +516,7 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
       {
         propertyName: `${prefix}.iconName`,
         label: "图标",
-        helpText: "Sets the icon to be used for the button",
+        helpText: "设置按钮图标",
         controlType: "ICON_SELECT",
         isJSConvertible: true,
         isBindProperty: true,
