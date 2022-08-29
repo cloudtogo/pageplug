@@ -106,7 +106,7 @@ const generateFormCTADisabled = (widgetProps: JSONFormWidgetProps) =>
 const generateButtonStyleControlsFor = (prefix: string) => [
   {
     propertyName: `${prefix}.buttonColor`,
-    helpText: "Changes the color of the button",
+    helpText: "修改按钮颜色",
     label: "按钮颜色",
     controlType: "COLOR_PICKER",
     isJSConvertible: true,
@@ -442,7 +442,7 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
     children: [
       {
         propertyName: `${prefix}.buttonColor`,
-        helpText: "Changes the color of the button",
+        helpText: "修改按钮颜色",
         label: "按钮颜色",
         controlType: "COLOR_PICKER",
         isJSConvertible: true,

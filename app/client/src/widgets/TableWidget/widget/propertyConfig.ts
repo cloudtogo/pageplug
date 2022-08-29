@@ -907,7 +907,7 @@ export default [
                   getStylesheetValue: getPrimaryColumnStylesheetValue,
                   label: "按钮颜色",
                   controlType: "PRIMARY_COLUMNS_COLOR_PICKER",
-                  helpText: "Changes the color of the button",
+                  helpText: "修改按钮颜色",
                   isJSConvertible: true,
                   customJSControl: "COMPUTE_VALUE",
                   updateHook: updateDerivedColumnsHook,

@@ -65,7 +65,7 @@ export default {
       propertyName: "saveButtonColor",
       label: "按钮颜色",
       controlType: "PRIMARY_COLUMNS_COLOR_PICKER_V2",
-      helpText: "Changes the color of the button",
+      helpText: "修改按钮颜色",
       isJSConvertible: true,
       customJSControl: "TABLE_COMPUTE_VALUE",
       dependencies: ["primaryColumns"],
