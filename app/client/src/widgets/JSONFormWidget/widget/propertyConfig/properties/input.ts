@@ -816,7 +816,7 @@ const PROPERTIES = {
       },
       {
         propertyName: "iconAlign",
-        label: "Position",
+        label: "位置",
         helpText: "Sets the icon position of input field",
         controlType: "ICON_TABS",
         options: [
