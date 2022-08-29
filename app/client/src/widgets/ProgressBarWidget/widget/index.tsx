@@ -71,9 +71,9 @@ class ProgressBarWidget extends BaseWidget<
             dependencies: ["barType"],
           },
           {
-            helpText: "Controls the visibility of progress value",
+            helpText: "显示进度值",
             propertyName: "showResult",
-            label: "Show result",
+            label: "显示进度值",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,

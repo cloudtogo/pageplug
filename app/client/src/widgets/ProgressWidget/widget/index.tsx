@@ -79,7 +79,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
           {
             propertyName: "counterClockwise",
             helpText: "Whether to rotate in counterclockwise direction",
-            label: "Counterclockwise",
+            label: "逆时针",
             controlType: "SWITCH",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -93,7 +93,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
             helpText:
               "Controls the visibility with the value of progress indicator",
             propertyName: "showResult",
-            label: "Show Result",
+            label: "显示进度值",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -223,7 +223,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
           {
             propertyName: "counterClockwise",
             helpText: "Whether to rotate in counterclockwise direction",
-            label: "Counterclockwise",
+            label: "逆时针",
             controlType: "SWITCH",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -237,7 +237,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
             helpText:
               "Controls the visibility with the value of progress indicator",
             propertyName: "showResult",
-            label: "Show Result",
+            label: "显示进度值",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
