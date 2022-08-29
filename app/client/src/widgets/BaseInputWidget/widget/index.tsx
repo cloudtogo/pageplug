@@ -56,7 +56,7 @@ class BaseInputWidget<
             propertyName: "errorMessage",
             label: "错误信息",
             controlType: "INPUT_TEXT",
-            placeholderText: "Not a valid value!",
+            placeholderText: "输入不符合规范",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -66,7 +66,7 @@ class BaseInputWidget<
             propertyName: "placeholderText",
             label: "占位符",
             controlType: "INPUT_TEXT",
-            placeholderText: "Placeholder",
+            placeholderText: "占位符",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -171,8 +171,7 @@ class BaseInputWidget<
             isTriggerProperty: true,
           },
           {
-            helpText:
-              "提交时触发（用户按了回车）",
+            helpText: "提交时触发（用户按了回车）",
             propertyName: "onSubmit",
             label: "onSubmit",
             controlType: "ACTION_SELECTOR",
@@ -232,8 +231,7 @@ class BaseInputWidget<
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
@@ -422,8 +420,7 @@ class BaseInputWidget<
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
@@ -476,7 +473,7 @@ class BaseInputWidget<
             propertyName: "errorMessage",
             label: "错误信息",
             controlType: "INPUT_TEXT",
-            placeholderText: "Not a valid value!",
+            placeholderText: "输入不符合规范",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -515,7 +512,7 @@ class BaseInputWidget<
             propertyName: "placeholderText",
             label: "占位符",
             controlType: "INPUT_TEXT",
-            placeholderText: "Placeholder",
+            placeholderText: "占位符",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -589,8 +586,7 @@ class BaseInputWidget<
             isTriggerProperty: true,
           },
           {
-            helpText:
-              "提交时触发（用户按了回车）",
+            helpText: "提交时触发（用户按了回车）",
             propertyName: "onSubmit",
             label: "onSubmit",
             controlType: "ACTION_SELECTOR",

@@ -289,7 +289,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             propertyName: "placeholderText",
             label: "占位符",
             controlType: "INPUT_TEXT",
-            placeholderText: "Placeholder",
+            placeholderText: "占位符",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
