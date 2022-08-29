@@ -283,7 +283,7 @@ class CheckboxGroupWidget extends BaseWidget<
                 value: CheckboxGroupAlignmentTypes.START,
               },
               {
-                label: "End",
+                label: "向后对齐",
                 value: CheckboxGroupAlignmentTypes.END,
               },
               {
@@ -295,7 +295,7 @@ class CheckboxGroupWidget extends BaseWidget<
                 value: CheckboxGroupAlignmentTypes.SPACE_BETWEEN,
               },
               {
-                label: "Around",
+                label: "均匀对齐",
                 value: CheckboxGroupAlignmentTypes.SPACE_AROUND,
               },
             ],
@@ -318,7 +318,7 @@ class CheckboxGroupWidget extends BaseWidget<
           },
           {
             propertyName: "labelTextColor",
-            label: "Label Text Color",
+            label: "标签文本颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -759,7 +759,7 @@ class CheckboxGroupWidget extends BaseWidget<
                 value: CheckboxGroupAlignmentTypes.START,
               },
               {
-                label: "End",
+                label: "向后对齐",
                 value: CheckboxGroupAlignmentTypes.END,
               },
               {
@@ -771,7 +771,7 @@ class CheckboxGroupWidget extends BaseWidget<
                 value: CheckboxGroupAlignmentTypes.SPACE_BETWEEN,
               },
               {
-                label: "Around",
+                label: "均匀对齐",
                 value: CheckboxGroupAlignmentTypes.SPACE_AROUND,
               },
             ],
