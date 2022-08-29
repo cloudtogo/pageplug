@@ -338,7 +338,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
             propertyName: "placement",
             label: "排列方式",
             controlType: "DROP_DOWN",
-            helpText: "Sets the space between items",
+            helpText: "设置图标与标签的排列方式",
             options: [
               {
                 label: "Start",
@@ -819,7 +819,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
             propertyName: "placement",
             label: "排列方式",
             controlType: "DROP_DOWN",
-            helpText: "Sets the space between items",
+            helpText: "设置图标与标签的排列方式",
             options: [
               {
                 label: "Start",
