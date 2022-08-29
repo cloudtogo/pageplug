@@ -32,7 +32,7 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
             controlType: "DROP_DOWN",
             options: [
               { label: "左", value: LabelPosition.Left },
-              { label: "Right", value: LabelPosition.Right },
+              { label: "右", value: LabelPosition.Right },
             ],
             isBindProperty: false,
             isTriggerProperty: false,
@@ -236,7 +236,7 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
             controlType: "DROP_DOWN",
             options: [
               { label: "左", value: LabelPosition.Left },
-              { label: "Right", value: LabelPosition.Right },
+              { label: "右", value: LabelPosition.Right },
             ],
             isBindProperty: false,
             isTriggerProperty: false,
