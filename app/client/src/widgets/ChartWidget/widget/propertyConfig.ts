@@ -289,7 +289,7 @@ export default [
             value: LabelOrientation.ROTATE,
           },
           {
-            label: "Stagger",
+            label: "交错",
             value: LabelOrientation.STAGGER,
           },
         ],
@@ -646,7 +646,7 @@ export const contentConfig = [
             value: LabelOrientation.ROTATE,
           },
           {
-            label: "Stagger",
+            label: "交错",
             value: LabelOrientation.STAGGER,
           },
         ],
