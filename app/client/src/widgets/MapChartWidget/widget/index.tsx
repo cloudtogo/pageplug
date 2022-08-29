@@ -277,7 +277,7 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
             propertyName: "boxShadow",
             label: "阴影",
             helpText:
-              "Enables you to cast a drop shadow from the frame of the widget",
+              "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -549,7 +549,7 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
             propertyName: "boxShadow",
             label: "阴影",
             helpText:
-              "Enables you to cast a drop shadow from the frame of the widget",
+              "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
