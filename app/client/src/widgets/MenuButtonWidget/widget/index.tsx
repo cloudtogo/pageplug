@@ -208,7 +208,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
           },
           {
             propertyName: "isVisible",
-            helpText: "Controls the visibility of the widget",
+            helpText: "控制组件的显示/隐藏",
             label: "是否显示",
             controlType: "SWITCH",
             isJSConvertible: true,
@@ -463,7 +463,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                     },
                     {
                       propertyName: "isVisible",
-                      helpText: "Controls the visibility of the widget",
+                      helpText: "控制组件的显示/隐藏",
                       label: "是否显示",
                       controlType: "SWITCH",
                       isJSConvertible: true,
@@ -583,7 +583,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                   children: [
                     {
                       propertyName: "isVisible",
-                      helpText: "Controls the visibility of the widget",
+                      helpText: "控制组件的显示/隐藏",
                       label: "是否显示",
                       controlType: "SWITCH",
                       isJSConvertible: true,
@@ -677,7 +677,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "isVisible",
-            helpText: "Controls the visibility of the widget",
+            helpText: "控制组件的显示/隐藏",
             label: "是否显示",
             controlType: "SWITCH",
             isJSConvertible: true,
