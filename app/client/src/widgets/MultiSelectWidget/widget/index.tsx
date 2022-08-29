@@ -57,7 +57,7 @@ class MultiSelectWidget extends BaseWidget<
             propertyName: "options",
             label: "选项",
             controlType: "INPUT_TEXT",
-            placeholderText: '[{ "label": "Option1", "value": "Option2" }]',
+            placeholderText: '[{ "label": "选项1", "value": "选项2" }]',
             isBindProperty: true,
             isTriggerProperty: false,
             isJSConvertible: false,
