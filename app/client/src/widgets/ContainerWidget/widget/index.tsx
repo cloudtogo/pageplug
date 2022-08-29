@@ -93,7 +93,7 @@ class ContainerWidget extends BaseWidget<
             helpText: "输入边框厚度",
             propertyName: "borderWidth",
             label: "边框厚度",
-            placeholderText: "Enter value in px",
+            placeholderText: "输入值以 px 为单位",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -102,8 +102,7 @@ class ContainerWidget extends BaseWidget<
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -113,8 +112,7 @@ class ContainerWidget extends BaseWidget<
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -200,7 +198,7 @@ class ContainerWidget extends BaseWidget<
             helpText: "输入边框厚度",
             propertyName: "borderWidth",
             label: "Border Width",
-            placeholderText: "Enter value in px",
+            placeholderText: "输入值以 px 为单位",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -209,8 +207,7 @@ class ContainerWidget extends BaseWidget<
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -220,8 +217,7 @@ class ContainerWidget extends BaseWidget<
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
