@@ -75,7 +75,7 @@ export default {
     },
     {
       propertyName: "iconAlign",
-      label: "Icon Alignment",
+      label: "图标对齐",
       helpText: "Sets the icon alignment of the menu button",
       controlType: "ICON_TABS",
       options: [
