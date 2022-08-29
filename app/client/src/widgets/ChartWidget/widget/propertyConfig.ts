@@ -309,7 +309,7 @@ export default [
     sectionName: "事件",
     children: [
       {
-        helpText: "Triggers an action when the chart data point is clicked",
+        helpText: "点击数据点时触发",
         propertyName: "onDataPointClick",
         label: "onDataPointClick",
         controlType: "ACTION_SELECTOR",
@@ -657,7 +657,7 @@ export const contentConfig = [
     sectionName: "事件",
     children: [
       {
-        helpText: "Triggers an action when the chart data point is clicked",
+        helpText: "点击数据点时触发",
         propertyName: "onDataPointClick",
         label: "onDataPointClick",
         controlType: "ACTION_SELECTOR",
