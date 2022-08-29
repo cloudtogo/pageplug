@@ -317,7 +317,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           {
             propertyName: "buttonColor",
             helpText: "Changes the color of the button",
-            label: "Button Color",
+            label: "按钮颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -504,7 +504,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           {
             propertyName: "buttonColor",
             helpText: "Changes the color of the button",
-            label: "Button Color",
+            label: "按钮颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
