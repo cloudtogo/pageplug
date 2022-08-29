@@ -266,7 +266,7 @@ export default [
         dependencies: ["chartType"],
       },
       {
-        helpText: "Changes the x-axis label orientation",
+        helpText: "修改x轴标签方向",
         propertyName: "labelOrientation",
         label: "x轴标签方向",
         hidden: (x: ChartWidgetProps) =>
@@ -623,7 +623,7 @@ export const contentConfig = [
         dependencies: ["chartType"],
       },
       {
-        helpText: "Changes the x-axis label orientation",
+        helpText: "修改x轴标签方向",
         propertyName: "labelOrientation",
         label: "x轴标签方向",
         hidden: (x: ChartWidgetProps) =>
