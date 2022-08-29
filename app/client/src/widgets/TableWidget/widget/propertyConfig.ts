@@ -1154,7 +1154,7 @@ export default [
               ],
             },
             {
-              sectionName: "Menu Items",
+              sectionName: "菜单配置",
               hidden: (props: TableWidgetProps, propertyPath: string) => {
                 return hideByColumnType(
                   props,
