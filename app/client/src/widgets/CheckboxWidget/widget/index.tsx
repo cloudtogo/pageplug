@@ -118,7 +118,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
         sectionName: "事件",
         children: [
           {
-            helpText: "Triggers an action when the check state is changed",
+            helpText: "选中态改变时触发",
             propertyName: "onCheckChange",
             label: "onCheckChange",
             controlType: "ACTION_SELECTOR",
@@ -213,7 +213,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "accentColor",
-            helpText: "Sets the checked state color of the checkbox",
+            helpText: "设置勾选框选中态颜色",
             label: "强调色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
@@ -351,7 +351,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
         sectionName: "事件",
         children: [
           {
-            helpText: "Triggers an action when the check state is changed",
+            helpText: "选中态改变时触发",
             propertyName: "onCheckChange",
             label: "onCheckChange",
             controlType: "ACTION_SELECTOR",
@@ -451,7 +451,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "accentColor",
-            helpText: "Sets the checked state color of the checkbox",
+            helpText: "设置勾选框选中态颜色",
             label: "强调色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
