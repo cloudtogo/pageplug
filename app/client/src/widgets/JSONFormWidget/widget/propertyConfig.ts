@@ -233,7 +233,7 @@ const generateButtonStyleControlsFor = (prefix: string) => [
   },
   {
     propertyName: `${prefix}.iconAlign`,
-    label: "Icon Alignment",
+    label: "图标对齐",
     helpText: "Sets the icon alignment of the button",
     controlType: "ICON_TABS",
     options: [
