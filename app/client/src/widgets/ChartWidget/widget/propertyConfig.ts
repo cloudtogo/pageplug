@@ -281,7 +281,7 @@ export default [
             value: LabelOrientation.AUTO,
           },
           {
-            label: "Slant",
+            label: "倾斜",
             value: LabelOrientation.SLANT,
           },
           {
@@ -638,7 +638,7 @@ export const contentConfig = [
             value: LabelOrientation.AUTO,
           },
           {
-            label: "Slant",
+            label: "倾斜",
             value: LabelOrientation.SLANT,
           },
           {
