@@ -470,7 +470,7 @@ class RichTextEditorWidget extends BaseWidget<
         sectionName: "事件",
         children: [
           {
-            helpText: "Triggers an action when the text is changed",
+            helpText: "文本输入改变时触发",
             propertyName: "onTextChange",
             label: "onTextChanged",
             controlType: "ACTION_SELECTOR",
