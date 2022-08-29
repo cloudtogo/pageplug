@@ -341,7 +341,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
             helpText: "设置图标与标签的排列方式",
             options: [
               {
-                label: "Start",
+                label: "向前对齐",
                 value: ButtonPlacementTypes.START,
               },
               {
@@ -822,7 +822,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
             helpText: "设置图标与标签的排列方式",
             options: [
               {
-                label: "Start",
+                label: "向前对齐",
                 value: ButtonPlacementTypes.START,
               },
               {

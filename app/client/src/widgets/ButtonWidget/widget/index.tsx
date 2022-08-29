@@ -281,7 +281,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
             helpText: "设置图标与标签的排列方式",
             options: [
               {
-                label: "Start",
+                label: "向前对齐",
                 value: ButtonPlacementTypes.START,
               },
               {
@@ -602,7 +602,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
             helpText: "设置图标与标签的排列方式",
             options: [
               {
-                label: "Start",
+                label: "向前对齐",
                 value: ButtonPlacementTypes.START,
               },
               {
