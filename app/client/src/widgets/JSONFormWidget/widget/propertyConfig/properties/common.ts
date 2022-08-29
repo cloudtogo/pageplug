@@ -243,7 +243,7 @@ const COMMON_PROPERTIES = {
     {
       propertyName: "isVisible",
       helpText: "Controls the visibility of the field",
-      label: "Visible",
+      label: "是否显示",
       controlType: "SWITCH",
       defaultValue: true,
       isJSConvertible: true,
@@ -567,7 +567,7 @@ const COMMON_PROPERTIES = {
       {
         propertyName: "isVisible",
         helpText: "Controls the visibility of the field",
-        label: "Visible",
+        label: "是否显示",
         controlType: "SWITCH",
         defaultValue: true,
         isJSConvertible: true,
