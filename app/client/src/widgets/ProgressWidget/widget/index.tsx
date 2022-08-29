@@ -46,7 +46,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
           {
             helpText: "Sets the value of the progress indicator",
             propertyName: "progress",
-            label: "Progress",
+            label: "进度",
             controlType: "INPUT_TEXT",
             placeholderText: "Enter progress value",
             isBindProperty: true,
@@ -175,7 +175,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
           {
             helpText: "Sets the value of the progress indicator",
             propertyName: "progress",
-            label: "Progress",
+            label: "进度",
             controlType: "INPUT_TEXT",
             placeholderText: "Enter progress value",
             isBindProperty: true,

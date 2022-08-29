@@ -25,7 +25,7 @@ class CircularProgressWidget extends BaseWidget<
           {
             propertyName: "progress",
             helpText: "Sets the progress value of the widget",
-            label: "Progress",
+            label: "进度",
             controlType: "INPUT_TEXT",
             placeholderText: "Value:",
             isBindProperty: true,
