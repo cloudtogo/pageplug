@@ -218,17 +218,17 @@ class DividerWidget extends BaseWidget<DividerWidgetProps, WidgetState> {
         sectionName: "属性",
         children: [
           {
-            helpText: "Controls widget orientation",
+            helpText: "设置组件排列方向",
             propertyName: "orientation",
             label: "Direction",
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "Horizontal",
+                label: "水平",
                 value: "horizontal",
               },
               {
-                label: "Vertical",
+                label: "垂直",
                 value: "vertical",
               },
             ],

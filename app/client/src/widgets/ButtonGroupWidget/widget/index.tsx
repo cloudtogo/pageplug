@@ -25,17 +25,17 @@ class ButtonGroupWidget extends BaseWidget<
         sectionName: "属性",
         children: [
           {
-            helpText: "Controls widget orientation",
+            helpText: "设置组件排列方向",
             propertyName: "orientation",
-            label: "Orientation",
+            label: "排列方向",
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "Horizontal",
+                label: "水平",
                 value: "horizontal",
               },
               {
-                label: "Vertical",
+                label: "垂直",
                 value: "vertical",
               },
             ],
@@ -968,17 +968,17 @@ class ButtonGroupWidget extends BaseWidget<
             },
           },
           {
-            helpText: "Controls widget orientation",
+            helpText: "设置组件排列方向",
             propertyName: "orientation",
-            label: "Orientation",
+            label: "排列方向",
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "Horizontal",
+                label: "水平",
                 value: "horizontal",
               },
               {
-                label: "Vertical",
+                label: "垂直",
                 value: "vertical",
               },
             ],
