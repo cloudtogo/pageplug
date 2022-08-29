@@ -228,7 +228,7 @@ export default [
       {
         helpText: "Enables scrolling inside the chart",
         propertyName: "allowScroll",
-        label: "Allow scroll",
+        label: "允许滚动",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -576,7 +576,7 @@ export const contentConfig = [
       {
         helpText: "Enables scrolling inside the chart",
         propertyName: "allowScroll",
-        label: "Allow scroll",
+        label: "允许滚动",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
