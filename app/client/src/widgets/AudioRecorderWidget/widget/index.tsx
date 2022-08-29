@@ -35,7 +35,7 @@ class AudioRecorderWidget extends BaseWidget<
             propertyName: "isDisabled",
             label: "禁用",
             controlType: "SWITCH",
-            helpText: "Disables input to this widget",
+            helpText: "让组件不可交互",
             isJSConvertible: true,
             isBindProperty: true,
             isTriggerProperty: false,

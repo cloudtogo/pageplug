@@ -325,7 +325,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText: "Disables input to this widget",
+            helpText: "让组件不可交互",
             propertyName: "isDisabled",
             label: "禁用",
             controlType: "SWITCH",
