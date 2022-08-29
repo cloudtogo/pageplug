@@ -188,7 +188,7 @@ class BaseInputWidget<
           {
             helpText: "Sets the label text of the widget",
             propertyName: "label",
-            label: "Text",
+            label: "文本",
             controlType: "INPUT_TEXT",
             placeholderText: "Name:",
             isBindProperty: true,
@@ -378,7 +378,7 @@ class BaseInputWidget<
           {
             helpText: "Sets the label text of the widget",
             propertyName: "label",
-            label: "Text",
+            label: "文本",
             controlType: "INPUT_TEXT",
             placeholderText: "Name:",
             isBindProperty: true,

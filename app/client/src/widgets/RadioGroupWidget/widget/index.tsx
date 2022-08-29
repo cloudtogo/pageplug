@@ -277,7 +277,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
           {
             helpText: "Sets the label text of the widget",
             propertyName: "label",
-            label: "Text",
+            label: "文本",
             controlType: "INPUT_TEXT",
             placeholderText: "Enter label text",
             isBindProperty: true,
@@ -506,7 +506,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
           {
             helpText: "Sets the label text of the widget",
             propertyName: "label",
-            label: "Text",
+            label: "文本",
             controlType: "INPUT_TEXT",
             placeholderText: "Enter label text",
             isBindProperty: true,

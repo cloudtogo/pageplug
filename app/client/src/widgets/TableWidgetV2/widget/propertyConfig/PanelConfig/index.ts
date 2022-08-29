@@ -62,7 +62,7 @@ export default {
           children: [
             {
               propertyName: "saveActionLabel",
-              label: "Text",
+              label: "文本",
               controlType: "TABLE_COMPUTE_VALUE",
               dependencies: ["primaryColumns"],
               isBindProperty: true,
@@ -144,7 +144,7 @@ export default {
           children: [
             {
               propertyName: "discardActionLabel",
-              label: "Text",
+              label: "文本",
               controlType: "TABLE_COMPUTE_VALUE",
               dependencies: ["primaryColumns"],
               isBindProperty: true,

@@ -93,7 +93,7 @@ class FilePickerWidget extends BaseWidget<
                 value: "audio/*",
               },
               {
-                label: "Text",
+                label: "文本",
                 value: "text/*",
               },
               {

@@ -200,7 +200,7 @@ class CheckboxGroupWidget extends BaseWidget<
           {
             helpText: "Sets the label text of the widget",
             propertyName: "labelText",
-            label: "Text",
+            label: "文本",
             controlType: "INPUT_TEXT",
             placeholderText: "Enter label text",
             isBindProperty: true,
@@ -501,7 +501,7 @@ class CheckboxGroupWidget extends BaseWidget<
           {
             helpText: "Sets the label text of the widget",
             propertyName: "labelText",
-            label: "Text",
+            label: "文本",
             controlType: "INPUT_TEXT",
             placeholderText: "Enter label text",
             isBindProperty: true,

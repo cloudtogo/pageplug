@@ -268,7 +268,7 @@ class FilePickerWidget extends BaseWidget<
                 value: "audio/*",
               },
               {
-                label: "Text",
+                label: "文本",
                 value: "text/*",
               },
               {
@@ -451,7 +451,7 @@ class FilePickerWidget extends BaseWidget<
                 value: "audio/*",
               },
               {
-                label: "Text",
+                label: "文本",
                 value: "text/*",
               },
               {
@@ -523,7 +523,7 @@ class FilePickerWidget extends BaseWidget<
         children: [
           {
             propertyName: "label",
-            label: "Text",
+            label: "文本",
             controlType: "INPUT_TEXT",
             helpText: "Sets the label of the button",
             placeholderText: "Select Files",
