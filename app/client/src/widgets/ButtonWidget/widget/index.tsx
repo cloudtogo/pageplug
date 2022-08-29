@@ -192,7 +192,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
             helpText: "Sets the variant of the icon button",
             options: [
               {
-                label: "Primary",
+                label: "主按钮",
                 value: ButtonVariantTypes.PRIMARY,
               },
               {
@@ -518,7 +518,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
             helpText: "Sets the variant of the icon button",
             options: [
               {
-                label: "Primary",
+                label: "主按钮",
                 value: ButtonVariantTypes.PRIMARY,
               },
               {

@@ -167,7 +167,7 @@ export default {
       dependencies: ["primaryColumns", "columnOrder"],
       options: [
         {
-          label: "Primary",
+          label: "主按钮",
           value: ButtonVariantTypes.PRIMARY,
         },
         {
@@ -279,7 +279,7 @@ export default {
       helpText: "Sets the variant of the menu button",
       options: [
         {
-          label: "Primary",
+          label: "主按钮",
           value: ButtonVariantTypes.PRIMARY,
         },
         {
