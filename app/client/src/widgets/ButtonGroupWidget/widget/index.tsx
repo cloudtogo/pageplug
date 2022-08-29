@@ -364,7 +364,7 @@ class ButtonGroupWidget extends BaseWidget<
                               {
                                 propertyName: "iconColor",
                                 helpText: "Sets the icon color of a menu item",
-                                label: "Icon color",
+                                label: "图标颜色",
                                 controlType: "COLOR_PICKER",
                                 isBindProperty: false,
                                 isTriggerProperty: false,
@@ -713,7 +713,7 @@ class ButtonGroupWidget extends BaseWidget<
                               {
                                 propertyName: "iconColor",
                                 helpText: "Sets the icon color of a menu item",
-                                label: "Icon Color",
+                                label: "图标颜色",
                                 controlType: "COLOR_PICKER",
                                 isBindProperty: false,
                                 isTriggerProperty: false,
