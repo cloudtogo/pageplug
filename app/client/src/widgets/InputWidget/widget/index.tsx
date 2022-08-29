@@ -576,7 +576,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
           },
           {
             propertyName: "iconAlign",
-            label: "Icon alignment",
+            label: "图标对齐",
             helpText: "Sets the icon alignment of input field",
             controlType: "ICON_TABS",
             options: [
