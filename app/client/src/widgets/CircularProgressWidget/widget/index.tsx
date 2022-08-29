@@ -24,10 +24,10 @@ class CircularProgressWidget extends BaseWidget<
         children: [
           {
             propertyName: "progress",
-            helpText: "Sets the progress value of the widget",
+            helpText: "设置组件进度值",
             label: "进度",
             controlType: "INPUT_TEXT",
-            placeholderText: "Value:",
+            placeholderText: "进度值：",
             isBindProperty: true,
             isTriggerProperty: false,
             isJSConvertible: true,
@@ -35,8 +35,8 @@ class CircularProgressWidget extends BaseWidget<
           },
           {
             propertyName: "counterClockwise",
-            helpText: "Counter clock wise",
-            label: "CounterClockWise",
+            helpText: "逆时针方向",
+            label: "逆时针",
             controlType: "SWITCH",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -44,8 +44,8 @@ class CircularProgressWidget extends BaseWidget<
           },
           {
             propertyName: "showResult",
-            helpText: "Controls the visibility of progress value",
-            label: "Show result",
+            helpText: "显示进度值",
+            label: "显示进度值",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
