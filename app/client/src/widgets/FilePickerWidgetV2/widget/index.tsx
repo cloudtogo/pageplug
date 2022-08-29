@@ -208,7 +208,7 @@ class FilePickerWidget extends BaseWidget<
         children: [
           {
             propertyName: "label",
-            label: "Label",
+            label: "标签",
             controlType: "INPUT_TEXT",
             helpText: "Sets the label of the button",
             placeholderText: "Select Files",

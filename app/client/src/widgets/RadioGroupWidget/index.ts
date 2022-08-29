@@ -13,7 +13,7 @@ export const CONFIG = {
     rows: 4,
     columns: 20,
     animateLoading: true,
-    label: "Label",
+    label: "标签",
     labelPosition: LabelPosition.Left,
     labelAlignment: Alignment.LEFT,
     labelTextSize: "0.875rem",

@@ -10,7 +10,7 @@ export const CONFIG = {
   needsMeta: true,
   searchTags: ["boolean"],
   defaults: {
-    label: "Label",
+    label: "标签",
     rows: 4,
     columns: 12,
     defaultSwitchState: true,
