@@ -74,7 +74,7 @@ class BaseInputWidget<
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Show help text or details about current input",
+            helpText: "显示帮助信息或者当前输入的详情",
             propertyName: "tooltip",
             label: "提示",
             controlType: "INPUT_TEXT",
@@ -509,7 +509,7 @@ class BaseInputWidget<
         sectionName: "属性",
         children: [
           {
-            helpText: "Show help text or details about current input",
+            helpText: "显示帮助信息或者当前输入的详情",
             propertyName: "tooltip",
             label: "提示",
             controlType: "INPUT_TEXT",
