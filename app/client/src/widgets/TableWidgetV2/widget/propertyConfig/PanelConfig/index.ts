@@ -791,7 +791,7 @@ export default {
             },
             {
               propertyName: "saveBorderRadius",
-              label: "按钮圆角",
+              label: "边框圆角",
               customJSControl: "TABLE_COMPUTE_VALUE",
               isJSConvertible: true,
               helpText:
@@ -940,7 +940,7 @@ export default {
             },
             {
               propertyName: "discardBorderRadius",
-              label: "按钮圆角",
+              label: "边框圆角",
               customJSControl: "TABLE_COMPUTE_VALUE",
               isJSConvertible: true,
               helpText:
@@ -1018,10 +1018,10 @@ export default {
       children: [
         {
           propertyName: "borderRadius",
-          label: "按钮圆角",
+          label: "边框圆角",
           customJSControl: "TABLE_COMPUTE_VALUE",
           isJSConvertible: true,
-          helpText: "按钮圆角样式",
+          helpText: "边框圆角样式",
           controlType: "BORDER_RADIUS_OPTIONS",
           hidden: (props: TableWidgetProps, propertyPath: string) => {
             return hideByColumnType(props, propertyPath, [

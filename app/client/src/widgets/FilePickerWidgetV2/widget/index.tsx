@@ -395,9 +395,9 @@ class FilePickerWidget extends BaseWidget<
           },
           {
             propertyName: "borderRadius",
-            label: "按钮圆角",
+            label: "边框圆角",
             helpText:
-              "按钮圆角样式",
+              "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
 
             isJSConvertible: true,
@@ -639,9 +639,9 @@ class FilePickerWidget extends BaseWidget<
         children: [
           {
             propertyName: "borderRadius",
-            label: "按钮圆角",
+            label: "边框圆角",
             helpText:
-              "按钮圆角样式",
+              "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
 
             isJSConvertible: true,
