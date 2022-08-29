@@ -207,7 +207,7 @@ export default [
                 },
                 {
                   propertyName: "isDisabled",
-                  label: "Disabled",
+                  label: "禁用",
                   updateHook: updateDerivedColumnsHook,
                   defaultValue: false,
                   controlType: "SWITCH",
@@ -1240,7 +1240,7 @@ export default [
                           {
                             propertyName: "isDisabled",
                             helpText: "Disables input to the widget",
-                            label: "Disabled",
+                            label: "禁用",
                             controlType: "SWITCH",
                             isJSConvertible: true,
                             isBindProperty: true,

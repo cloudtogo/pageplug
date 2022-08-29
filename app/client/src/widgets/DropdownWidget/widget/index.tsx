@@ -126,7 +126,7 @@ class DropdownWidget extends BaseWidget<DropdownWidgetProps, WidgetState> {
           },
           {
             propertyName: "isDisabled",
-            label: "Disabled",
+            label: "禁用",
             helpText: "Disables input to this widget",
             controlType: "SWITCH",
             isJSConvertible: true,

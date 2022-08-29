@@ -292,7 +292,7 @@ class MultiSelectWidget extends BaseWidget<
           },
           {
             propertyName: "isDisabled",
-            label: "Disabled",
+            label: "禁用",
             helpText: "Disables input to this widget",
             controlType: "SWITCH",
             isJSConvertible: true,
@@ -773,7 +773,7 @@ class MultiSelectWidget extends BaseWidget<
           },
           {
             propertyName: "isDisabled",
-            label: "Disabled",
+            label: "禁用",
             helpText: "Disables input to this widget",
             controlType: "SWITCH",
             isJSConvertible: true,

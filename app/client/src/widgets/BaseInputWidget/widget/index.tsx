@@ -106,7 +106,7 @@ class BaseInputWidget<
           {
             helpText: "Disables input to this widget",
             propertyName: "isDisabled",
-            label: "Disabled",
+            label: "禁用",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -541,7 +541,7 @@ class BaseInputWidget<
           {
             helpText: "Disables input to this widget",
             propertyName: "isDisabled",
-            label: "Disabled",
+            label: "禁用",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,

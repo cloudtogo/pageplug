@@ -117,7 +117,7 @@ class SwitchGroupWidget extends BaseWidget<
           {
             propertyName: "isDisabled",
             helpText: "Disables input to the widget",
-            label: "Disabled",
+            label: "禁用",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -499,7 +499,7 @@ class SwitchGroupWidget extends BaseWidget<
           {
             propertyName: "isDisabled",
             helpText: "Disables input to the widget",
-            label: "Disabled",
+            label: "禁用",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
