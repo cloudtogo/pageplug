@@ -109,8 +109,8 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
         children: [
           {
             propertyName: "googleRecaptchaKey",
-            label: "Google reCAPTCHA Key",
-            helpText: "Sets Google reCAPTCHA site key for the button",
+            label: "Google reCAPTCHA 键值",
+            helpText: "为按钮设置 Google reCAPTCHA 键值",
             controlType: "INPUT_TEXT",
             placeholderText: "reCAPTCHA Key",
             isBindProperty: true,
@@ -119,9 +119,9 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           },
           {
             propertyName: "recaptchaType",
-            label: "Google reCAPTCHA Version",
+            label: "Google reCAPTCHA 版本",
             controlType: "DROP_DOWN",
-            helpText: "Select reCAPTCHA version",
+            helpText: "选择 reCAPTCHA 版本",
             options: [
               {
                 label: "reCAPTCHA v3",
