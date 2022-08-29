@@ -306,7 +306,7 @@ export default [
     ],
   },
   {
-    sectionName: "Events",
+    sectionName: "事件",
     children: [
       {
         helpText: "Triggers an action when the chart data point is clicked",
@@ -654,7 +654,7 @@ export const contentConfig = [
     ],
   },
   {
-    sectionName: "Events",
+    sectionName: "事件",
     children: [
       {
         helpText: "Triggers an action when the chart data point is clicked",

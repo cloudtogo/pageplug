@@ -212,7 +212,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             helpText: "Triggers an action when the video is played",

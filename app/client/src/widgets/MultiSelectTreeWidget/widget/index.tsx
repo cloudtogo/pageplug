@@ -237,7 +237,7 @@ class MultiSelectTreeWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             helpText: "Triggers an action when a user selects an option",
@@ -705,7 +705,7 @@ class MultiSelectTreeWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             helpText: "Triggers an action when a user selects an option",

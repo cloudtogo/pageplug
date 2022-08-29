@@ -181,7 +181,7 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             helpText: "评分变化时触发",
@@ -321,7 +321,7 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             helpText: "Triggers an action when the rate is changed",

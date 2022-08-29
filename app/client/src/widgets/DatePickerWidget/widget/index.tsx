@@ -295,7 +295,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             propertyName: "onDateSelected",

@@ -454,7 +454,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             helpText: "Triggers an action when the text is changed",

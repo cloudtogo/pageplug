@@ -508,7 +508,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                   ],
                 },
                 {
-                  sectionName: "Events",
+                  sectionName: "事件",
                   children: [
                     {
                       helpText:
