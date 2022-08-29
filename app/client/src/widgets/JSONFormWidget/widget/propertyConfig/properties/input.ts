@@ -218,7 +218,7 @@ const PROPERTIES = {
     {
       helpText: "Changes the type of currency",
       propertyName: "currencyCountryCode",
-      label: "Currency",
+      label: "货币",
       enableSearch: true,
       dropdownHeight: "195px",
       controlType: "DROP_DOWN",
@@ -539,7 +539,7 @@ const PROPERTIES = {
       {
         propertyName: "currencyCountryCode",
         helpText: "Changes the type of currency",
-        label: "Currency",
+        label: "货币",
         enableSearch: true,
         dropdownHeight: "195px",
         controlType: "DROP_DOWN",
