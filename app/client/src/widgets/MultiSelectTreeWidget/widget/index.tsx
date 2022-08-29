@@ -164,7 +164,7 @@ class MultiSelectTreeWidget extends BaseWidget<
             },
           },
           {
-            helpText: "Sets a Placeholder Text",
+            helpText: "设置占位文本",
             propertyName: "placeholderText",
             label: "占位符",
             controlType: "INPUT_TEXT",
@@ -642,7 +642,7 @@ class MultiSelectTreeWidget extends BaseWidget<
             isTriggerProperty: false,
           },
           {
-            helpText: "Sets a Placeholder Text",
+            helpText: "设置占位文本",
             propertyName: "placeholderText",
             label: "占位符",
             controlType: "INPUT_TEXT",
