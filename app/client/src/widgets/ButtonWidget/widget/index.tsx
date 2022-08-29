@@ -64,7 +64,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           {
             helpText: "Show helper text with button on hover",
             propertyName: "tooltip",
-            label: "Tooltip",
+            label: "提示",
             controlType: "INPUT_TEXT",
             placeholderText: "Submits Form",
             isBindProperty: true,
@@ -376,7 +376,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           {
             helpText: "Show helper text with button on hover",
             propertyName: "tooltip",
-            label: "Tooltip",
+            label: "提示",
             controlType: "INPUT_TEXT",
             placeholderText: "Submits Form",
             isBindProperty: true,

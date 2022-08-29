@@ -274,7 +274,7 @@ const COMMON_PROPERTIES = {
     {
       propertyName: "tooltip",
       helpText: "Show help text or details about current field",
-      label: "Tooltip",
+      label: "提示",
       controlType: "JSON_FORM_COMPUTE_VALUE",
       placeholderText: "Passwords must be at-least 6 chars",
       isBindProperty: true,
@@ -539,7 +539,7 @@ const COMMON_PROPERTIES = {
       {
         propertyName: "tooltip",
         helpText: "Show help text or details about current field",
-        label: "Tooltip",
+        label: "提示",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: "Passwords must be at-least 6 chars",
         isBindProperty: true,

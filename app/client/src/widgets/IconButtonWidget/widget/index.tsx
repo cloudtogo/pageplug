@@ -51,7 +51,7 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
           {
             helpText: "Show helper text with button on hover",
             propertyName: "tooltip",
-            label: "Tooltip",
+            label: "提示",
             controlType: "INPUT_TEXT",
             placeholderText: "Add Input Field",
             isBindProperty: true,
@@ -223,7 +223,7 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
           {
             helpText: "Show helper text with button on hover",
             propertyName: "tooltip",
-            label: "Tooltip",
+            label: "提示",
             controlType: "INPUT_TEXT",
             placeholderText: "Add Input Field",
             isBindProperty: true,

@@ -297,7 +297,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
           {
             helpText: "Show help text or details about current input",
             propertyName: "tooltip",
-            label: "Tooltip",
+            label: "提示",
             controlType: "INPUT_TEXT",
             placeholderText: "Passwords must be atleast 6 chars",
             isBindProperty: true,
