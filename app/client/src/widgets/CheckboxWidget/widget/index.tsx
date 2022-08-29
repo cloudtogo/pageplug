@@ -447,7 +447,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Color",
+        sectionName: "颜色配置",
         children: [
           {
             propertyName: "accentColor",

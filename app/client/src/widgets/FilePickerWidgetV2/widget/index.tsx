@@ -620,7 +620,7 @@ class FilePickerWidget extends BaseWidget<
   static getPropertyPaneStyleConfig() {
     return [
       {
-        sectionName: "Color",
+        sectionName: "颜色配置",
         children: [
           {
             propertyName: "buttonColor",

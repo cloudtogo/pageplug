@@ -605,7 +605,7 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
 
 export const styleConfig = [
   {
-    sectionName: "Color",
+    sectionName: "颜色配置",
     children: [
       {
         propertyName: "backgroundColor",
