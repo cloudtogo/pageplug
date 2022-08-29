@@ -222,7 +222,7 @@ const PROPERTIES = {
       enableSearch: true,
       dropdownHeight: "195px",
       controlType: "DROP_DOWN",
-      searchPlaceholderText: "Search by code or name",
+      searchPlaceholderText: "通过名称或者编号搜索",
       options: CurrencyDropdownOptions,
       hidden: (...args: HiddenFnParams) =>
         getSchemaItem(...args).fieldTypeNotMatches(FieldType.CURRENCY_INPUT),
@@ -543,7 +543,7 @@ const PROPERTIES = {
         enableSearch: true,
         dropdownHeight: "195px",
         controlType: "DROP_DOWN",
-        searchPlaceholderText: "Search by code or name",
+        searchPlaceholderText: "通过名称或者编号搜索",
         options: CurrencyDropdownOptions,
         hidden: (...args: HiddenFnParams) =>
           getSchemaItem(...args).fieldTypeNotMatches(FieldType.CURRENCY_INPUT),
