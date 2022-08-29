@@ -154,8 +154,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
         ) => widgetParentProps?.type !== FormWidget.getWidgetType(),
         children: [
           {
-            helpText:
-              "当按钮位于表单下，表单必须校验成功时按钮才可以点击",
+            helpText: "当按钮位于表单下，表单必须校验成功时按钮才可以点击",
             propertyName: "disabledWhenInvalid",
             label: "表单校验不成功时禁用",
             controlType: "SWITCH",
@@ -165,8 +164,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText:
-              "当按钮位于表单下，表单提交成功后重置表单",
+            helpText: "当按钮位于表单下，表单提交成功后重置表单",
             propertyName: "resetFormOnClick",
             label: "提交成功后重置表单",
             controlType: "SWITCH",
@@ -332,8 +330,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isBindProperty: true,
             isJSConvertible: true,
@@ -345,8 +342,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -461,8 +457,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
         ) => widgetParentProps?.type !== FormWidget.getWidgetType(),
         children: [
           {
-            helpText:
-              "Disabled if the form is invalid, if this widget exists directly within a Form widget.",
+            helpText: "当按钮位于表单下，表单必须校验成功时按钮才可以点击",
             propertyName: "disabledWhenInvalid",
             label: "表单校验不成功时禁用",
             controlType: "SWITCH",
@@ -472,8 +467,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText:
-              "当按钮位于表单下，表单提交成功后重置表单",
+            helpText: "当按钮位于表单下，表单提交成功后重置表单",
             propertyName: "resetFormOnClick",
             label: "提交成功后重置表单",
             controlType: "SWITCH",
@@ -548,8 +542,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isBindProperty: true,
             isJSConvertible: true,
@@ -561,8 +554,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
