@@ -66,7 +66,7 @@ class ContainerWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Styles",
+        sectionName: "样式",
         children: [
           {
             helpText: "Use a html color name, HEX, RGB or RGBA value",

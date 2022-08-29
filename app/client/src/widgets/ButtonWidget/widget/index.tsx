@@ -499,7 +499,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
         ],
       },
       {
-        sectionName: "Styles",
+        sectionName: "样式",
         children: [
           {
             propertyName: "buttonColor",

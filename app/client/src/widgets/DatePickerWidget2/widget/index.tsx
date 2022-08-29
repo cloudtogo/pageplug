@@ -262,7 +262,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
         ],
       },
       {
-        sectionName: "Styles",
+        sectionName: "样式",
         children: [
           {
             propertyName: "labelTextColor",
@@ -351,7 +351,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
       },
 
       {
-        sectionName: "Styles",
+        sectionName: "样式",
         children: [
           {
             propertyName: "accentColor",

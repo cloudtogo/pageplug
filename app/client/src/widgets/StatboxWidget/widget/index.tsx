@@ -42,7 +42,7 @@ class StatboxWidget extends ContainerWidget {
         ],
       },
       {
-        sectionName: "Styles",
+        sectionName: "样式",
         children: [
           {
             propertyName: "backgroundColor",

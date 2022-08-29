@@ -187,7 +187,7 @@ const PROPERTIES = {
        * This is for an edge case where an array item is an object
        * Here we only want to change the cell** styles
        */
-      sectionName: "Styles",
+      sectionName: "样式",
       children: objectStyleProperties,
       hidden: (props: JSONFormWidgetProps, propertyPath: string) => {
         const schemaItem: SchemaItem = get(props, propertyPath, {});

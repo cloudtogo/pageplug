@@ -198,7 +198,7 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Styles",
+        sectionName: "样式",
         children: [
           {
             helpText:
