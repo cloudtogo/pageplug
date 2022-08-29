@@ -84,7 +84,7 @@ export default {
               {
                 propertyName: "isDisabled",
                 helpText: "Disables input to the widget",
-                label: "Disabled",
+                label: "禁用",
                 controlType: "SWITCH",
                 customJSControl: "TABLE_COMPUTE_VALUE",
                 isJSConvertible: true,

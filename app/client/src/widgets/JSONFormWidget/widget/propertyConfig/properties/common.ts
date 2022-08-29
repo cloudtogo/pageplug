@@ -261,7 +261,7 @@ const COMMON_PROPERTIES = {
     {
       propertyName: "isDisabled",
       helpText: "Disables the field",
-      label: "Disabled",
+      label: "禁用",
       controlType: "SWITCH",
       isJSConvertible: true,
       isBindProperty: true,
@@ -585,7 +585,7 @@ const COMMON_PROPERTIES = {
       {
         propertyName: "isDisabled",
         helpText: "Disables the field",
-        label: "Disabled",
+        label: "禁用",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,

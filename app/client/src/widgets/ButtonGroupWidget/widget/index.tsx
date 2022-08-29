@@ -55,7 +55,7 @@ class ButtonGroupWidget extends BaseWidget<
           },
           {
             propertyName: "isDisabled",
-            label: "Disabled",
+            label: "禁用",
             controlType: "SWITCH",
             helpText: "Disables clicks to this widget",
             isJSConvertible: true,
@@ -145,7 +145,7 @@ class ButtonGroupWidget extends BaseWidget<
                     {
                       propertyName: "isDisabled",
                       helpText: "Disables input to the widget",
-                      label: "Disabled",
+                      label: "禁用",
                       controlType: "SWITCH",
                       isJSConvertible: true,
                       isBindProperty: true,
@@ -287,7 +287,7 @@ class ButtonGroupWidget extends BaseWidget<
                               {
                                 propertyName: "isDisabled",
                                 helpText: "Disables menu item",
-                                label: "Disabled",
+                                label: "禁用",
                                 controlType: "SWITCH",
                                 isJSConvertible: true,
                                 isBindProperty: true,
@@ -633,7 +633,7 @@ class ButtonGroupWidget extends BaseWidget<
                               {
                                 propertyName: "isDisabled",
                                 helpText: "Disables menu item",
-                                label: "Disabled",
+                                label: "禁用",
                                 controlType: "SWITCH",
                                 isJSConvertible: true,
                                 isBindProperty: true,
@@ -764,7 +764,7 @@ class ButtonGroupWidget extends BaseWidget<
                     {
                       propertyName: "isDisabled",
                       helpText: "Disables input to the widget",
-                      label: "Disabled",
+                      label: "禁用",
                       controlType: "SWITCH",
                       isJSConvertible: true,
                       isBindProperty: true,
@@ -904,7 +904,7 @@ class ButtonGroupWidget extends BaseWidget<
           },
           {
             propertyName: "isDisabled",
-            label: "Disabled",
+            label: "禁用",
             controlType: "SWITCH",
             helpText: "Disables clicks to this widget",
             isJSConvertible: true,
