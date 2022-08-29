@@ -206,7 +206,7 @@ public class CloudOSActionSolution {
         return workspaceService.create(organization)
                 .flatMap(org -> applicationForkingService.forkApplicationToWorkspace(appId, org.getId()))
                 .flatMap(application -> {
-                    return Mono.just("/org/" + application.getOrganizationId() + "/applications/" + application.getId() + "/pages/" +
+                    return Mono.just("/org/" + application.getWorkspaceId() + "/applications/" + application.getId() + "/pages/" +
                             application.getPages().stream()
                                 .filter(ApplicationPage::isDefault)
                                 .map(ApplicationPage::getId)
@@ -250,7 +250,7 @@ public class CloudOSActionSolution {
         String serviceAddress = instance.get("service_address");
         String datasourceName = componentName == null ? componentId : componentName;
         String dbPrefix = cloudOSConfig.getDbUrl();
-        return datasourceService.findByNameAndOrganizationId(datasourceName, application.getOrganizationId(), AclPermission.MANAGE_DATASOURCES)
+        return datasourceService.findByNameAndWorkspaceId(datasourceName, application.getWorkspaceId(), AclPermission.MANAGE_DATASOURCES)
                 .flatMap(datasource -> {
                     final String oldUrl = datasource.getDatasourceConfiguration().getUrl();
                     if (oldUrl.contains(dbPrefix)) {
@@ -373,7 +373,7 @@ public class CloudOSActionSolution {
 
         // create new datasource
         Datasource newSource = new Datasource();
-        newSource.setOrganizationId(orgId);
+        newSource.setWorkspaceId(orgId);
         newSource.setPluginId(pluginId);
         newSource.setName(componentDisplay);
 
@@ -396,7 +396,7 @@ public class CloudOSActionSolution {
                 final String body = (String) ca.get("body");
                 final ActionDTO newPageAction = new ActionDTO();
                 newPageAction.setName(apiName + "_" + componentDisplay);
-                newPageAction.setOrganizationId(orgId);
+                newPageAction.setWorkspaceId(orgId);
                 newPageAction.setDatasource(savedDataSource);
                 newPageAction.setPluginId(pluginId);
                 newPageAction.setPageId(pageId);

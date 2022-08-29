@@ -9,7 +9,6 @@ import { connect } from "react-redux";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { generateClassName } from "utils/generators";
 import { selectWidgetInitAction } from "actions/widgetSelectionActions";
-import { commentModeSelector } from "selectors/commentsSelectors";
 import { previewModeSelector } from "selectors/editorSelectors";
 import { AppState } from "reducers";
 
@@ -158,7 +157,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 
 export default connect(
   (state: AppState) => ({
-    isPreviewMode: previewModeSelector(state) || commentModeSelector(state),
+    isPreviewMode: previewModeSelector(state),
   }),
   mapDispatchToProps,
 )(MLoadingWidget);

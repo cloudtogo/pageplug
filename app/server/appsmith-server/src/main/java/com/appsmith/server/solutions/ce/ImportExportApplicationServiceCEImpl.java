@@ -33,6 +33,7 @@ import com.appsmith.server.dtos.ApplicationImportDTO;
 import com.appsmith.server.dtos.ApplicationJson;
 import com.appsmith.server.dtos.ExportFileDTO;
 import com.appsmith.server.dtos.PageDTO;
+import com.appsmith.server.dtos.ApplicationAccessDTO;
 import com.appsmith.server.exceptions.AppsmithError;
 import com.appsmith.server.exceptions.AppsmithException;
 import com.appsmith.server.helpers.DefaultResourcesUtils;
@@ -1130,7 +1131,7 @@ public class ImportExportApplicationServiceCEImpl implements ImportExportApplica
                                 stopwatch.stopAndLogTimeInMillis();
                                 final Map<String, Object> data = Map.of(
                                         FieldName.APPLICATION_ID, application.getId(),
-                                        FieldName.ORGANIZATION_ID, application.getWorkspaceId(),
+                                        FieldName.WORKSPACE_ID, application.getWorkspaceId(),
                                         "pageCount", applicationJson.getPageList().size(),
                                         "actionCount", applicationJson.getActionList().size(),
                                         "JSObjectCount", applicationJson.getActionCollectionList().size(),
