@@ -173,7 +173,7 @@ const PROPERTIES = {
     },
     {
       propertyName: "serverSideFiltering",
-      helpText: "Enables server side filtering of the data",
+      helpText: "开启服务端数据过滤",
       label: "服务端过滤",
       controlType: "SWITCH",
       isJSConvertible: true,
@@ -320,7 +320,7 @@ const PROPERTIES = {
       },
       {
         propertyName: "serverSideFiltering",
-        helpText: "Enables server side filtering of the data",
+        helpText: "开启服务端数据过滤",
         label: "服务端过滤",
         controlType: "SWITCH",
         isJSConvertible: true,
