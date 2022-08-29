@@ -121,7 +121,7 @@ export default {
             children: [
               {
                 propertyName: "isVisible",
-                helpText: "Controls the visibility of the widget",
+                helpText: "控制组件的显示/隐藏",
                 label: "是否显示",
                 controlType: "SWITCH",
                 customJSControl: "TABLE_COMPUTE_VALUE",

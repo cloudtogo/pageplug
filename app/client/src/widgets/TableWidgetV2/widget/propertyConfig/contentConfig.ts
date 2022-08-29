@@ -346,7 +346,7 @@ export default [
     sectionName: "属性",
     children: [
       {
-        helpText: "Controls the visibility of the widget",
+        helpText: "控制组件的显示/隐藏",
         propertyName: "isVisible",
         isJSConvertible: true,
         label: "是否显示",

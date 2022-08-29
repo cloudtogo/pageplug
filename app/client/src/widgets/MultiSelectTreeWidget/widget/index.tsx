@@ -184,7 +184,7 @@ class MultiSelectTreeWidget extends BaseWidget<
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText: "Controls the visibility of the widget",
+            helpText: "控制组件的显示/隐藏",
             propertyName: "isVisible",
             label: "是否显示",
             controlType: "SWITCH",
@@ -652,7 +652,7 @@ class MultiSelectTreeWidget extends BaseWidget<
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Controls the visibility of the widget",
+            helpText: "控制组件的显示/隐藏",
             propertyName: "isVisible",
             label: "是否显示",
             controlType: "SWITCH",
