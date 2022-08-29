@@ -191,7 +191,7 @@ class ButtonGroupWidget extends BaseWidget<
                           value: ButtonPlacementTypes.BETWEEN,
                         },
                         {
-                          label: "Center",
+                          label: "居中对齐",
                           value: ButtonPlacementTypes.CENTER,
                         },
                       ],
@@ -846,7 +846,7 @@ class ButtonGroupWidget extends BaseWidget<
                           value: ButtonPlacementTypes.BETWEEN,
                         },
                         {
-                          label: "Center",
+                          label: "居中对齐",
                           value: ButtonPlacementTypes.CENTER,
                         },
                       ],
