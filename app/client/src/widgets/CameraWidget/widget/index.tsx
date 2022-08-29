@@ -93,7 +93,7 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the image is saved",
+            helpText: "图片保存时触发",
             propertyName: "onImageSave",
             label: "OnImageSave",
             controlType: "ACTION_SELECTOR",
@@ -247,7 +247,7 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the image is saved",
+            helpText: "图片保存时触发",
             propertyName: "onImageSave",
             label: "onImageCapture",
             controlType: "ACTION_SELECTOR",
