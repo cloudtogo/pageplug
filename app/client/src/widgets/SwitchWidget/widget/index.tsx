@@ -26,7 +26,7 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Sets the label position of the widget",
+            helpText: "设置组件标签位置",
             propertyName: "labelPosition",
             label: "位置",
             controlType: "DROP_DOWN",
@@ -230,7 +230,7 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Sets the label position of the widget",
+            helpText: "设置组件标签位置",
             propertyName: "labelPosition",
             label: "位置",
             controlType: "DROP_DOWN",
