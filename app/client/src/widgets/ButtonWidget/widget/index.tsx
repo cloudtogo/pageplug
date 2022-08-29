@@ -83,7 +83,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           },
           {
             propertyName: "isDisabled",
-            label: "Disabled",
+            label: "禁用",
             controlType: "SWITCH",
             helpText: "Disables clicks to this widget",
             isJSConvertible: true,
@@ -430,7 +430,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           },
           {
             propertyName: "isDisabled",
-            label: "Disabled",
+            label: "禁用",
             controlType: "SWITCH",
             helpText: "Disables clicks to this widget",
             isJSConvertible: true,

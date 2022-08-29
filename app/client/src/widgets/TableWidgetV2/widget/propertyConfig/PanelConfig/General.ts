@@ -33,7 +33,7 @@ export default {
     },
     {
       propertyName: "isDisabled",
-      label: "Disabled",
+      label: "禁用",
       defaultValue: false,
       controlType: "SWITCH",
       customJSControl: "TABLE_COMPUTE_VALUE",

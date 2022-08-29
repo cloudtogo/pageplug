@@ -326,7 +326,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
           },
           {
             propertyName: "isDisabled",
-            label: "Disabled",
+            label: "禁用",
             controlType: "SWITCH",
             helpText: "Disables input to this widget",
             isJSConvertible: true,
