@@ -233,7 +233,7 @@ class ButtonGroupWidget extends BaseWidget<
                   ],
                 },
                 {
-                  sectionName: "Menu Items",
+                  sectionName: "菜单配置",
                   hidden: (
                     props: ButtonGroupWidgetProps,
                     propertyPath: string,
