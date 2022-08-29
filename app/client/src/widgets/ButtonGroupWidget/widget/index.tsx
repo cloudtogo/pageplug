@@ -455,11 +455,11 @@ class ButtonGroupWidget extends BaseWidget<
                 value: ButtonVariantTypes.PRIMARY,
               },
               {
-                label: "Secondary",
+                label: "次级按钮",
                 value: ButtonVariantTypes.SECONDARY,
               },
               {
-                label: "Tertiary",
+                label: "文本按钮",
                 value: ButtonVariantTypes.TERTIARY,
               },
             ],
@@ -944,11 +944,11 @@ class ButtonGroupWidget extends BaseWidget<
                 value: ButtonVariantTypes.PRIMARY,
               },
               {
-                label: "Secondary",
+                label: "次级按钮",
                 value: ButtonVariantTypes.SECONDARY,
               },
               {
-                label: "Tertiary",
+                label: "文本按钮",
                 value: ButtonVariantTypes.TERTIARY,
               },
             ],
