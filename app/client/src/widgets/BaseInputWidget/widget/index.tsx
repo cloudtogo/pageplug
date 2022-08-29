@@ -620,7 +620,7 @@ class BaseInputWidget<
         children: [
           {
             propertyName: "labelTextColor",
-            label: "Font Color",
+            label: "字体颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
