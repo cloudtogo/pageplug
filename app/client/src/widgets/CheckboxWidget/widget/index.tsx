@@ -30,7 +30,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
             label: "位置",
             controlType: "DROP_DOWN",
             options: [
-              { label: "Left", value: LabelPosition.Left },
+              { label: "左", value: LabelPosition.Left },
               { label: "Right", value: LabelPosition.Right },
             ],
             isBindProperty: false,
@@ -258,7 +258,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
             label: "位置",
             controlType: "DROP_DOWN",
             options: [
-              { label: "Left", value: LabelPosition.Left },
+              { label: "左", value: LabelPosition.Left },
               { label: "Right", value: LabelPosition.Right },
             ],
             isBindProperty: false,
