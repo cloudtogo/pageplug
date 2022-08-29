@@ -253,7 +253,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             helpText:
               "Adds a validation to the input which displays an error on failure",
             propertyName: "regex",
-            label: "Regex",
+            label: "正则校验",
             controlType: "INPUT_TEXT",
             placeholderText: "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$",
             inputType: "TEXT",
