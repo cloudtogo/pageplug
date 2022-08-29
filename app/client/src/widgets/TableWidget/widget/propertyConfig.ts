@@ -618,7 +618,7 @@ export default [
                 },
                 {
                   propertyName: "textSize",
-                  label: "Text Size",
+                  label: "字体大小",
                   controlType: "DROP_DOWN",
                   isJSConvertible: true,
                   customJSControl: "COMPUTE_VALUE",
@@ -1659,7 +1659,7 @@ export default [
       },
       {
         propertyName: "textSize",
-        label: "Text Size",
+        label: "字体大小",
         controlType: "DROP_DOWN",
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns", "derivedColumns"],
