@@ -446,7 +446,7 @@ class MultiSelectWidget extends BaseWidget<
         children: [
           {
             propertyName: "labelTextColor",
-            label: "Label Text Color",
+            label: "标签文本颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
