@@ -291,7 +291,7 @@ class CheckboxGroupWidget extends BaseWidget<
                 value: CheckboxGroupAlignmentTypes.CENTER,
               },
               {
-                label: "Between",
+                label: "两边对齐",
                 value: CheckboxGroupAlignmentTypes.SPACE_BETWEEN,
               },
               {
@@ -767,7 +767,7 @@ class CheckboxGroupWidget extends BaseWidget<
                 value: CheckboxGroupAlignmentTypes.CENTER,
               },
               {
-                label: "Between",
+                label: "两边对齐",
                 value: CheckboxGroupAlignmentTypes.SPACE_BETWEEN,
               },
               {

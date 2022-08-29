@@ -187,7 +187,7 @@ class ButtonGroupWidget extends BaseWidget<
                           value: ButtonPlacementTypes.START,
                         },
                         {
-                          label: "Between",
+                          label: "两边对齐",
                           value: ButtonPlacementTypes.BETWEEN,
                         },
                         {
@@ -842,7 +842,7 @@ class ButtonGroupWidget extends BaseWidget<
                           value: ButtonPlacementTypes.START,
                         },
                         {
-                          label: "Between",
+                          label: "两边对齐",
                           value: ButtonPlacementTypes.BETWEEN,
                         },
                         {
