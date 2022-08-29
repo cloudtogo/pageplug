@@ -218,7 +218,7 @@ function generatePanelPropertyConfig(
         children: [...COMMON_PROPERTIES.style.label],
       },
       {
-        sectionName: "Icon",
+        sectionName: "图标配置",
         children: [...INPUT_PROPERTIES.style.icon],
         hidden: (props: JSONFormWidgetProps, propertyPath: string) => {
           const schemaItem: SchemaItem = get(props, propertyPath, {});

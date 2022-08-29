@@ -606,7 +606,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
               ],
               styleChildren: [
                 {
-                  sectionName: "Icon",
+                  sectionName: "图标配置",
                   children: [
                     {
                       propertyName: "iconName",
@@ -763,7 +763,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Icon",
+        sectionName: "图标配置",
         children: [
           {
             propertyName: "iconName",
