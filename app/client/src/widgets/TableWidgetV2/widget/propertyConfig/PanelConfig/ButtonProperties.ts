@@ -103,7 +103,7 @@ export default {
     },
     {
       propertyName: "buttonLabel",
-      label: "Label",
+      label: "标签",
       controlType: "TABLE_COMPUTE_VALUE",
       defaultValue: "Action",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
@@ -115,7 +115,7 @@ export default {
     },
     {
       propertyName: "menuButtonLabel",
-      label: "Label",
+      label: "标签",
       controlType: "TABLE_COMPUTE_VALUE",
       defaultValue: "Open Menu",
       hidden: (props: TableWidgetProps, propertyPath: string) => {

@@ -12,7 +12,7 @@ export const CONFIG = {
   defaults: {
     rows: 4,
     columns: 7,
-    label: "Label",
+    label: "标签",
     defaultCheckedState: true,
     widgetName: "Checkbox",
     version: 1,
