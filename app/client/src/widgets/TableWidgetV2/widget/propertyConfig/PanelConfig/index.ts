@@ -407,7 +407,7 @@ export default {
         },
         {
           propertyName: "iconAlign",
-          label: "Position",
+          label: "位置",
           helpText: "Sets the icon alignment of the menu button",
           controlType: "ICON_TABS",
           options: [
@@ -835,7 +835,7 @@ export default {
             },
             {
               propertyName: "saveIconAlign",
-              label: "Position",
+              label: "位置",
               helpText: "Sets the icon alignment of the save button",
               controlType: "ICON_TABS",
               defaultValue: "left",
@@ -985,7 +985,7 @@ export default {
             },
             {
               propertyName: "discardIconAlign",
-              label: "Position",
+              label: "位置",
               helpText: "Sets the icon alignment of the discard button",
               controlType: "ICON_TABS",
               defaultValue: "left",
