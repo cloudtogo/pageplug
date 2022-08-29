@@ -40,7 +40,7 @@ class ProgressBarWidget extends BaseWidget<
           {
             helpText: "Provide progress value",
             propertyName: "progress",
-            label: "Progress",
+            label: "进度",
             controlType: "INPUT_TEXT",
             placeholderText: "Enter progress value",
             isBindProperty: true,
