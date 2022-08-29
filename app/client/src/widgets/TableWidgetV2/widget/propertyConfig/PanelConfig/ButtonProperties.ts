@@ -202,7 +202,7 @@ export default {
       label: "按钮圆角",
       customJSControl: "TABLE_COMPUTE_VALUE",
       isJSConvertible: true,
-      helpText: "Rounds the corners of the icon button's outer border edge",
+      helpText: "按钮圆角样式",
       controlType: "BORDER_RADIUS_OPTIONS",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(props, propertyPath, [

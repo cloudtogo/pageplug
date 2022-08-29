@@ -352,7 +352,7 @@ class BaseInputWidget<
             propertyName: "borderRadius",
             label: "按钮圆角",
             helpText:
-              "Rounds the corners of the icon button's outer border edge",
+              "按钮圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -719,7 +719,7 @@ class BaseInputWidget<
             propertyName: "borderRadius",
             label: "按钮圆角",
             helpText:
-              "Rounds the corners of the icon button's outer border edge",
+              "按钮圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
