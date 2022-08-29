@@ -38,7 +38,7 @@ class FormButtonWidget extends ButtonWidget {
           validation: { type: ValidationTypes.TEXT },
         },
         {
-          helpText: "Show helper text with button on hover",
+          helpText: "鼠标交互时显示的提示信息",
           propertyName: "tooltip",
           label: "提示",
           controlType: "INPUT_TEXT",
