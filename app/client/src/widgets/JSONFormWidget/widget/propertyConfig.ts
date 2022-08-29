@@ -260,7 +260,7 @@ const generateButtonStyleControlsFor = (prefix: string) => [
 
 export const contentConfig = [
   {
-    sectionName: "Data",
+    sectionName: "数据",
     children: [
       {
         propertyName: "sourceData",

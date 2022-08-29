@@ -22,7 +22,7 @@ import { PropertyPaneConfig } from "constants/PropertyControlConstants";
 
 export default [
   {
-    sectionName: "Data",
+    sectionName: "数据",
     children: [
       {
         helpText:

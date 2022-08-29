@@ -193,7 +193,7 @@ class ImageWidget extends BaseWidget<ImageWidgetProps, WidgetState> {
   static getPropertyPaneContentConfig() {
     return [
       {
-        sectionName: "Data",
+        sectionName: "数据",
         children: [
           {
             helpText: "Sets the image to be displayed",

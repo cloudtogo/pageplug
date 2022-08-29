@@ -142,7 +142,7 @@ class PhoneInputWidget extends BaseInputWidget<
     return mergeWidgetConfig(
       [
         {
-          sectionName: "Data",
+          sectionName: "数据",
           children: [
             {
               helpText:

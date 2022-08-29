@@ -124,7 +124,7 @@ function generatePanelPropertyConfig(
     // And make use of them in PanelPropertiesEditor
     contentChildren: [
       {
-        sectionName: "Data",
+        sectionName: "数据",
         children: [
           ...COMMON_PROPERTIES.content.data,
           ...INPUT_PROPERTIES.content.data,
