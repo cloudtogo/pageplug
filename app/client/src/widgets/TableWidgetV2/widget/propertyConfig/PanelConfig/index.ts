@@ -210,7 +210,7 @@ export default {
       ],
     },
     {
-      sectionName: "Events",
+      sectionName: "事件",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         if (showByColumnType(props, propertyPath, [ColumnTypes.IMAGE], true)) {
           return false;

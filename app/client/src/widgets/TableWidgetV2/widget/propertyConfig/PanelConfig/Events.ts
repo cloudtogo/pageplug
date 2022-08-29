@@ -3,7 +3,7 @@ import { get } from "lodash";
 import { getBasePropertyPath, hideByColumnType } from "../../propertyUtils";
 
 export default {
-  sectionName: "Events",
+  sectionName: "事件",
   hidden: (props: TableWidgetProps, propertyPath: string) => {
     if (
       !hideByColumnType(

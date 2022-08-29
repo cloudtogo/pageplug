@@ -204,7 +204,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             propertyName: "onMarkerClick",
@@ -437,7 +437,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             propertyName: "onMarkerClick",

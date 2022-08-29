@@ -531,7 +531,7 @@ class SwitchGroupWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             helpText:

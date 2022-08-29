@@ -216,7 +216,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             helpText: "Triggers an action when the source URL is changed",

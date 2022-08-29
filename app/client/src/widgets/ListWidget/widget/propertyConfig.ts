@@ -58,7 +58,7 @@ const PropertyPaneConfig = [
     ],
   },
   {
-    sectionName: "Events",
+    sectionName: "事件",
     children: [
       {
         helpText: "Triggers an action when a grid list item is clicked",
@@ -275,7 +275,7 @@ export const PropertyPaneContentConfig = [
     ],
   },
   {
-    sectionName: "Events",
+    sectionName: "事件",
     children: [
       {
         helpText: "Triggers an action when a grid list item is clicked",

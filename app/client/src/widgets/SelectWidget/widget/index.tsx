@@ -261,7 +261,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             helpText: "Triggers an action when a user selects an option",
@@ -705,7 +705,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
             helpText: "Triggers an action when a user selects an option",
