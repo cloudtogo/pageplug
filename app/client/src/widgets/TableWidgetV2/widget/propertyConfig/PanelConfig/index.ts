@@ -285,7 +285,7 @@ export default {
       children: [
         {
           propertyName: "buttonVariant",
-          label: "Button Variant",
+          label: "按钮类型",
           controlType: "DROP_DOWN",
           customJSControl: "TABLE_COMPUTE_VALUE",
           isJSConvertible: true,
@@ -331,7 +331,7 @@ export default {
         },
         {
           propertyName: "menuVariant",
-          label: "Button Variant",
+          label: "按钮类型",
           controlType: "DROP_DOWN",
           customJSControl: "TABLE_COMPUTE_VALUE",
           helpText: "Sets the variant of the menu button",
@@ -751,7 +751,7 @@ export default {
             },
             {
               propertyName: "saveButtonVariant",
-              label: "Button Variant",
+              label: "按钮类型",
               controlType: "DROP_DOWN",
               customJSControl: "TABLE_COMPUTE_VALUE",
               isJSConvertible: true,
@@ -900,7 +900,7 @@ export default {
             },
             {
               propertyName: "discardButtonVariant",
-              label: "Button Variant",
+              label: "按钮类型",
               controlType: "DROP_DOWN",
               customJSControl: "TABLE_COMPUTE_VALUE",
               isJSConvertible: true,
