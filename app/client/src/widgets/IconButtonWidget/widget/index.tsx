@@ -49,7 +49,7 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
             },
           },
           {
-            helpText: "Show helper text with button on hover",
+            helpText: "鼠标交互时显示的提示信息",
             propertyName: "tooltip",
             label: "提示",
             controlType: "INPUT_TEXT",
@@ -221,7 +221,7 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
         sectionName: "属性",
         children: [
           {
-            helpText: "Show helper text with button on hover",
+            helpText: "鼠标交互时显示的提示信息",
             propertyName: "tooltip",
             label: "提示",
             controlType: "INPUT_TEXT",
