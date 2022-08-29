@@ -67,7 +67,7 @@ export default [
         },
       },
       {
-        helpText: "Configure a Custom FusionChart see docs.appsmith.com",
+        helpText: "完整配置请查阅 Fusion 官方文档",
         placeholderText: `Fusion 图表配置`,
         propertyName: "customFusionChartConfig",
         label: "自定义 Fusion 图表",
@@ -400,7 +400,7 @@ export const contentConfig = [
         },
       },
       {
-        helpText: "Configure a Custom FusionChart see docs.appsmith.com",
+        helpText: "完整配置请查阅 Fusion 官方文档",
         placeholderText: `Fusion 图表配置`,
         propertyName: "customFusionChartConfig",
         label: "自定义 Fusion 图表",
