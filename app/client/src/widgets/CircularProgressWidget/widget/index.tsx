@@ -69,7 +69,7 @@ class CircularProgressWidget extends BaseWidget<
         children: [
           {
             propertyName: "fillColor",
-            label: "Fill Color",
+            label: "填充颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
