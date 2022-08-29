@@ -417,7 +417,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
             helpText: "菜单配置",
             propertyName: "menuItems",
             controlType: "MENU_ITEMS",
-            label: "Menu Items",
+            label: "菜单项",
             isBindProperty: false,
             isTriggerProperty: false,
             panelConfig: {
