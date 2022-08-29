@@ -605,7 +605,7 @@ class ButtonGroupWidget extends BaseWidget<
                               {
                                 propertyName: "label",
                                 helpText: "Sets the label of a menu item",
-                                label: "Text",
+                                label: "文本",
                                 controlType: "INPUT_TEXT",
                                 placeholderText: "Enter label",
                                 isBindProperty: true,
@@ -739,7 +739,7 @@ class ButtonGroupWidget extends BaseWidget<
                     {
                       propertyName: "label",
                       helpText: "Sets the label of a menu item",
-                      label: "Text",
+                      label: "文本",
                       controlType: "INPUT_TEXT",
                       placeholderText: "Enter label",
                       isBindProperty: true,
