@@ -56,7 +56,7 @@ class BaseInputWidget<
             helpText:
               "The error message to display if the regex or valid property check fails",
             propertyName: "errorMessage",
-            label: "Error Message",
+            label: "错误信息",
             controlType: "INPUT_TEXT",
             placeholderText: "Not a valid value!",
             isBindProperty: true,
@@ -481,7 +481,7 @@ class BaseInputWidget<
             helpText:
               "The error message to display if the regex or valid property check fails",
             propertyName: "errorMessage",
-            label: "Error Message",
+            label: "错误信息",
             controlType: "INPUT_TEXT",
             placeholderText: "Not a valid value!",
             isBindProperty: true,
