@@ -241,7 +241,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
           {
             propertyName: "isFilterable",
             label: "支持过滤",
-            helpText: "Makes the dropdown list filterable",
+            helpText: "让下拉列表支持数据过滤",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -613,7 +613,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
           {
             propertyName: "isFilterable",
             label: "Allow Searching",
-            helpText: "Makes the dropdown list filterable",
+            helpText: "让下拉列表支持数据过滤",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
