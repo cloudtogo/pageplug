@@ -406,7 +406,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
           {
             propertyName: "label",
             helpText: "Sets the label of a menu",
-            label: "Label",
+            label: "标签",
             controlType: "INPUT_TEXT",
             placeholderText: "Open",
             isBindProperty: true,
@@ -444,7 +444,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                     {
                       propertyName: "label",
                       helpText: "Sets the label of a menu item",
-                      label: "Label",
+                      label: "标签",
                       controlType: "INPUT_TEXT",
                       placeholderText: "Download",
                       isBindProperty: true,
@@ -559,7 +559,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                     {
                       propertyName: "label",
                       helpText: "Sets the label of a menu item",
-                      label: "Label",
+                      label: "标签",
                       controlType: "INPUT_TEXT",
                       placeholderText: "Download",
                       isBindProperty: true,

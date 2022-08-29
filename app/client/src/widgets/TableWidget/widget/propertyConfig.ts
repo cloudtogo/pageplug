@@ -866,7 +866,7 @@ export default [
                 },
                 {
                   propertyName: "buttonLabel",
-                  label: "Label",
+                  label: "标签",
                   controlType: "COMPUTE_VALUE",
                   defaultValue: "Action",
                   updateHook: updateDerivedColumnsHook,
@@ -885,7 +885,7 @@ export default [
                 },
                 {
                   propertyName: "menuButtonLabel",
-                  label: "Label",
+                  label: "标签",
                   controlType: "COMPUTE_VALUE",
                   defaultValue: "Open Menu",
                   updateHook: updateDerivedColumnsHook,
@@ -1190,7 +1190,7 @@ export default [
                           {
                             propertyName: "label",
                             helpText: "Sets the label of a menu item",
-                            label: "Label",
+                            label: "标签",
                             controlType: "INPUT_TEXT",
                             placeholderText: "Enter label",
                             isBindProperty: true,
