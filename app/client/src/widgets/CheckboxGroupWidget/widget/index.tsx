@@ -279,7 +279,7 @@ class CheckboxGroupWidget extends BaseWidget<
                 value: CheckboxGroupAlignmentTypes.NONE,
               },
               {
-                label: "Start",
+                label: "向前对齐",
                 value: CheckboxGroupAlignmentTypes.START,
               },
               {
@@ -755,7 +755,7 @@ class CheckboxGroupWidget extends BaseWidget<
                 value: CheckboxGroupAlignmentTypes.NONE,
               },
               {
-                label: "Start",
+                label: "向前对齐",
                 value: CheckboxGroupAlignmentTypes.START,
               },
               {
