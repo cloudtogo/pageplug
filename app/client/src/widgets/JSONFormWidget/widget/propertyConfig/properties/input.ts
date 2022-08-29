@@ -377,7 +377,7 @@ const PROPERTIES = {
     },
     {
       helpText:
-        "The error message to display if the regex or valid property check fails",
+        "普通校验或正则校验失败后显示的错误信息",
       propertyName: "errorMessage",
       label: "错误信息",
       controlType: "JSON_FORM_COMPUTE_VALUE",
@@ -733,7 +733,7 @@ const PROPERTIES = {
       {
         propertyName: "errorMessage",
         helpText:
-          "The error message to display if the regex or valid property check fails",
+          "普通校验或正则校验失败后显示的错误信息",
         label: "错误信息",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: "Not a valid email!",
