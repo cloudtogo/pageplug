@@ -32,7 +32,7 @@ class FormButtonWidget extends ButtonWidget {
           label: "标签",
           helpText: "设置按钮标签",
           controlType: "INPUT_TEXT",
-          placeholderText: "Enter label text",
+          placeholderText: "请输入文本内容",
           isBindProperty: true,
           isTriggerProperty: false,
           validation: { type: ValidationTypes.TEXT },
