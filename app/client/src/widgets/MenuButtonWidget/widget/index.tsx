@@ -259,7 +259,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
             helpText: "Sets the variant of the menu button",
             options: [
               {
-                label: "Primary",
+                label: "主按钮",
                 value: ButtonVariantTypes.PRIMARY,
               },
               {
@@ -733,7 +733,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
             helpText: "Sets the variant of the menu button",
             options: [
               {
-                label: "Primary",
+                label: "主按钮",
                 value: ButtonVariantTypes.PRIMARY,
               },
               {
