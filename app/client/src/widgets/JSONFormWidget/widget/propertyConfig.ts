@@ -636,7 +636,7 @@ export const styleConfig = [
     children: [
       {
         propertyName: "borderWidth",
-        helpText: "Enter value for border width",
+        helpText: "输入边框厚度",
         label: "Border Width",
         placeholderText: "Enter value in px",
         controlType: "INPUT_TEXT",
@@ -877,7 +877,7 @@ export default [
       },
       {
         propertyName: "borderWidth",
-        helpText: "Enter value for border width",
+        helpText: "输入边框厚度",
         label: "Border Width",
         placeholderText: "Enter value in px",
         controlType: "INPUT_TEXT",
