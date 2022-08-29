@@ -195,7 +195,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           {
             propertyName: "title",
             helpText: "Label the content of the page to embed",
-            label: "Title",
+            label: "标题",
             controlType: "INPUT_TEXT",
             placeholderText: "Documentation",
             isBindProperty: true,
