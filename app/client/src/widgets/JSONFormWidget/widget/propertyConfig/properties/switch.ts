@@ -25,7 +25,7 @@ const PROPERTIES = {
     {
       propertyName: "alignWidget",
       helpText: "Sets the alignment of the field",
-      label: "Alignment",
+      label: "对齐",
       controlType: "DROP_DOWN",
       isBindProperty: true,
       isTriggerProperty: false,

@@ -315,7 +315,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
           {
             helpText: "Sets the label alignment of the widget",
             propertyName: "labelAlignment",
-            label: "Alignment",
+            label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
             options: [
               {
@@ -566,7 +566,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
           {
             helpText: "Sets the label alignment of the widget",
             propertyName: "labelAlignment",
-            label: "Alignment",
+            label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
             options: [
               {
