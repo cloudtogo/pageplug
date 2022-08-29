@@ -27,8 +27,7 @@ class BaseInputWidget<
         sectionName: "属性",
         children: [
           {
-            helpText:
-              "对输入进行正则校验，校验失败时显示错误",
+            helpText: "对输入进行正则校验，校验失败时显示错误",
             propertyName: "regex",
             label: "正则校验",
             controlType: "INPUT_TEXT",
@@ -53,8 +52,7 @@ class BaseInputWidget<
             },
           },
           {
-            helpText:
-              "普通校验或正则校验失败后显示的错误信息",
+            helpText: "普通校验或正则校验失败后显示的错误信息",
             propertyName: "errorMessage",
             label: "错误信息",
             controlType: "INPUT_TEXT",
@@ -147,8 +145,7 @@ class BaseInputWidget<
           {
             propertyName: "isSpellCheck",
             label: "拼写检查",
-            helpText:
-              "Defines whether the text input may be checked for spelling errors",
+            helpText: "是否检查拼写错误",
             controlType: "SWITCH",
             isJSConvertible: false,
             isBindProperty: true,
@@ -351,8 +348,7 @@ class BaseInputWidget<
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -362,8 +358,7 @@ class BaseInputWidget<
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -452,8 +447,7 @@ class BaseInputWidget<
         sectionName: "Validation",
         children: [
           {
-            helpText:
-              "对输入进行正则校验，校验失败时显示错误",
+            helpText: "对输入进行正则校验，校验失败时显示错误",
             propertyName: "regex",
             label: "正则校验",
             controlType: "INPUT_TEXT",
@@ -478,8 +472,7 @@ class BaseInputWidget<
             },
           },
           {
-            helpText:
-              "普通校验或正则校验失败后显示的错误信息",
+            helpText: "普通校验或正则校验失败后显示的错误信息",
             propertyName: "errorMessage",
             label: "错误信息",
             controlType: "INPUT_TEXT",
@@ -491,8 +484,7 @@ class BaseInputWidget<
           {
             propertyName: "isSpellCheck",
             label: "拼写检查",
-            helpText:
-              "Defines whether the text input may be checked for spelling errors",
+            helpText: "是否检查拼写错误",
             controlType: "SWITCH",
             isJSConvertible: false,
             isBindProperty: true,
@@ -718,8 +710,7 @@ class BaseInputWidget<
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -729,8 +720,7 @@ class BaseInputWidget<
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
