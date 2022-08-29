@@ -33,7 +33,7 @@ class StatboxWidget extends ContainerWidget {
           },
           {
             propertyName: "shouldScrollContents",
-            helpText: "Enables scrolling for content inside the widget",
+            helpText: "允许组件内部内容滚动",
             label: "Scroll Contents",
             controlType: "SWITCH",
             isBindProperty: false,
@@ -120,7 +120,7 @@ class StatboxWidget extends ContainerWidget {
           },
           {
             propertyName: "shouldScrollContents",
-            helpText: "Enables scrolling for content inside the widget",
+            helpText: "允许组件内部内容滚动",
             label: "Scroll Contents",
             controlType: "SWITCH",
             isBindProperty: false,
