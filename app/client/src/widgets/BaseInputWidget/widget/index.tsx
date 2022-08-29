@@ -40,7 +40,7 @@ class BaseInputWidget<
           {
             helpText: "Sets the input validity based on a JS expression",
             propertyName: "validation",
-            label: "Valid",
+            label: "普通校验",
             controlType: "INPUT_TEXT",
             placeholderText: "{{ Input1.text.length > 0 }}",
             isBindProperty: true,
@@ -465,7 +465,7 @@ class BaseInputWidget<
           {
             helpText: "Sets the input validity based on a JS expression",
             propertyName: "validation",
-            label: "Valid",
+            label: "普通校验",
             controlType: "INPUT_TEXT",
             placeholderText: "{{ Input1.text.length > 0 }}",
             isBindProperty: true,
