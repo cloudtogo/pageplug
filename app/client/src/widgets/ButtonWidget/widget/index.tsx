@@ -105,7 +105,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
         ],
       },
       {
-        sectionName: "Validation",
+        sectionName: "校验",
         children: [
           {
             propertyName: "googleRecaptchaKey",
