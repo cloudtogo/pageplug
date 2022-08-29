@@ -211,7 +211,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
             options: [
               { label: "左", value: LabelPosition.Left },
               { label: "上", value: LabelPosition.Top },
-              { label: "Auto", value: LabelPosition.Auto },
+              { label: "自动", value: LabelPosition.Auto },
             ],
             isBindProperty: false,
             isTriggerProperty: false,
@@ -502,7 +502,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
             options: [
               { label: "左", value: LabelPosition.Left },
               { label: "上", value: LabelPosition.Top },
-              { label: "Auto", value: LabelPosition.Auto },
+              { label: "自动", value: LabelPosition.Auto },
             ],
             isBindProperty: false,
             isTriggerProperty: false,
