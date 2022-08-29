@@ -416,7 +416,7 @@ const COMMON_PROPERTIES = {
     {
       propertyName: "borderRadius",
       label: "按钮圆角",
-      helpText: "Rounds the corners of the icon button's outer border edge",
+      helpText: "按钮圆角样式",
       controlType: "BORDER_RADIUS_OPTIONS",
       customJSControl: "JSON_FORM_COMPUTE_VALUE",
       isJSConvertible: true,
@@ -715,7 +715,7 @@ const COMMON_PROPERTIES = {
       {
         propertyName: "borderRadius",
         label: "按钮圆角",
-        helpText: "Rounds the corners of the icon button's outer border edge",
+        helpText: "按钮圆角样式",
         controlType: "BORDER_RADIUS_OPTIONS",
         customJSControl: "JSON_FORM_COMPUTE_VALUE",
         isJSConvertible: true,
