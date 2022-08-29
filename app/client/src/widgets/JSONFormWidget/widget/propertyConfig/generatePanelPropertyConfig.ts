@@ -155,7 +155,7 @@ function generatePanelPropertyConfig(
         ],
       },
       {
-        sectionName: "Label",
+        sectionName: "标签",
         children: [
           ...COMMON_PROPERTIES.content.label,
           ...CHECKBOX_PROPERTIES.content.label,

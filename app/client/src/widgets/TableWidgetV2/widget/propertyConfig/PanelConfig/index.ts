@@ -57,7 +57,7 @@ export default {
       },
       children: [
         {
-          sectionName: "Label",
+          sectionName: "标签",
           collapsible: false,
           children: [
             {
@@ -139,7 +139,7 @@ export default {
       },
       children: [
         {
-          sectionName: "Label",
+          sectionName: "标签",
           collapsible: false,
           children: [
             {
