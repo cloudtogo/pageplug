@@ -644,7 +644,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Validations",
+        sectionName: "校验",
         children: [
           {
             propertyName: "isRequired",

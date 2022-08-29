@@ -564,7 +564,7 @@ class CheckboxGroupWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Validations",
+        sectionName: "校验",
         children: [
           {
             propertyName: "isRequired",

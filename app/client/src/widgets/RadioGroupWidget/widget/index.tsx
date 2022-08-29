@@ -253,7 +253,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
           },
           {
             propertyName: "alignment",
-            helpText: "Sets the alignment of the widget",
+            helpText: "设置组件对齐方式",
             label: "对齐",
             controlType: "DROP_DOWN",
             isBindProperty: true,
@@ -572,7 +572,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Validations",
+        sectionName: "校验",
         children: [
           {
             propertyName: "isRequired",
@@ -733,7 +733,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "alignment",
-            helpText: "Sets the alignment of the widget",
+            helpText: "设置组件对齐方式",
             label: "对齐",
             controlType: "DROP_DOWN",
             isBindProperty: true,
