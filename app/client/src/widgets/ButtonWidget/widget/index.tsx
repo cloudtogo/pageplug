@@ -385,8 +385,8 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           },
           {
             propertyName: "googleRecaptchaKey",
-            label: "Google reCAPTCHA Key",
-            helpText: "Sets Google reCAPTCHA site key for the button",
+            label: "Google reCAPTCHA 键值",
+            helpText: "为按钮设置 Google reCAPTCHA 键值",
             controlType: "INPUT_TEXT",
             placeholderText: "reCAPTCHA Key",
             isBindProperty: true,
@@ -395,9 +395,9 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           },
           {
             propertyName: "recaptchaType",
-            label: "Google reCAPTCHA Version",
+            label: "Google reCAPTCHA 版本",
             controlType: "DROP_DOWN",
-            helpText: "Select reCAPTCHA version",
+            helpText: "Select reCAPTCHA 版本",
             options: [
               {
                 label: "reCAPTCHA v3",
@@ -453,7 +453,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
       },
       // TODO: refactor widgetParentProps implementation when we address #10659
       {
-        sectionName: "Form options",
+        sectionName: "表单配置",
         hidden: (
           props: ButtonWidgetProps,
           propertyPath: string,
@@ -464,7 +464,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
             helpText:
               "Disabled if the form is invalid, if this widget exists directly within a Form widget.",
             propertyName: "disabledWhenInvalid",
-            label: "Disabled Invalid Forms",
+            label: "表单校验不成功时禁用",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
