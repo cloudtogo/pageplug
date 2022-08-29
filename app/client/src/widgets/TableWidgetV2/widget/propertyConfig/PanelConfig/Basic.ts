@@ -163,7 +163,7 @@ export default {
               {
                 propertyName: "iconName",
                 label: "图标",
-                helpText: "Sets the icon to be used for a menu item",
+                helpText: "设置菜单项的图标",
                 controlType: "ICON_SELECT",
                 isBindProperty: false,
                 isTriggerProperty: false,
