@@ -54,7 +54,7 @@ class BaseInputWidget<
           },
           {
             helpText:
-              "The error message to display if the regex or valid property check fails",
+              "普通校验或正则校验失败后显示的错误信息",
             propertyName: "errorMessage",
             label: "错误信息",
             controlType: "INPUT_TEXT",
@@ -479,7 +479,7 @@ class BaseInputWidget<
           },
           {
             helpText:
-              "The error message to display if the regex or valid property check fails",
+              "普通校验或正则校验失败后显示的错误信息",
             propertyName: "errorMessage",
             label: "错误信息",
             controlType: "INPUT_TEXT",
