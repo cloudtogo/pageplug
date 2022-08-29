@@ -268,7 +268,7 @@ export default [
       {
         helpText: "Changes the x-axis label orientation",
         propertyName: "labelOrientation",
-        label: "x-axis Label Orientation",
+        label: "x轴标签方向",
         hidden: (x: ChartWidgetProps) =>
           !isLabelOrientationApplicableFor(x.chartType),
         isBindProperty: false,
@@ -625,7 +625,7 @@ export const contentConfig = [
       {
         helpText: "Changes the x-axis label orientation",
         propertyName: "labelOrientation",
-        label: "x-axis Label Orientation",
+        label: "x轴标签方向",
         hidden: (x: ChartWidgetProps) =>
           !isLabelOrientationApplicableFor(x.chartType),
         isBindProperty: false,
