@@ -98,7 +98,7 @@ export default {
                 helpText: "设置菜单项标签",
                 label: "文本",
                 controlType: "INPUT_TEXT",
-                placeholderText: "Enter label",
+                placeholderText: "请输入标签",
                 isBindProperty: true,
                 isTriggerProperty: false,
                 validation: { type: ValidationTypes.TEXT },

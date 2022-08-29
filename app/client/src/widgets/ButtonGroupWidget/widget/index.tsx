@@ -112,7 +112,7 @@ class ButtonGroupWidget extends BaseWidget<
                       helpText: "设置菜单项标签",
                       label: "标签",
                       controlType: "INPUT_TEXT",
-                      placeholderText: "Enter label",
+                      placeholderText: "请输入标签",
                       isBindProperty: true,
                       isTriggerProperty: false,
                       validation: { type: ValidationTypes.TEXT },
@@ -278,7 +278,7 @@ class ButtonGroupWidget extends BaseWidget<
                                 helpText: "设置菜单项标签",
                                 label: "标签",
                                 controlType: "INPUT_TEXT",
-                                placeholderText: "Enter label",
+                                placeholderText: "请输入标签",
                                 isBindProperty: true,
                                 isTriggerProperty: false,
                                 validation: { type: ValidationTypes.TEXT },
@@ -286,7 +286,7 @@ class ButtonGroupWidget extends BaseWidget<
 
                               {
                                 propertyName: "isDisabled",
-                                helpText: "Disables menu item",
+                                helpText: "禁用菜单项",
                                 label: "禁用",
                                 controlType: "SWITCH",
                                 isJSConvertible: true,
@@ -297,7 +297,7 @@ class ButtonGroupWidget extends BaseWidget<
                               {
                                 propertyName: "isVisible",
                                 helpText:
-                                  "Controls the visibility of menu item",
+                                  "控制菜单项是否显示",
                                 label: "是否显示",
                                 controlType: "SWITCH",
                                 isJSConvertible: true,
@@ -607,7 +607,7 @@ class ButtonGroupWidget extends BaseWidget<
                                 helpText: "设置菜单项标签",
                                 label: "文本",
                                 controlType: "INPUT_TEXT",
-                                placeholderText: "Enter label",
+                                placeholderText: "请输入标签",
                                 isBindProperty: true,
                                 isTriggerProperty: false,
                                 validation: { type: ValidationTypes.TEXT },
@@ -620,7 +620,7 @@ class ButtonGroupWidget extends BaseWidget<
                               {
                                 propertyName: "isVisible",
                                 helpText:
-                                  "Controls the visibility of menu item",
+                                  "控制菜单项是否显示",
                                 label: "是否显示",
                                 controlType: "SWITCH",
                                 isJSConvertible: true,
@@ -632,7 +632,7 @@ class ButtonGroupWidget extends BaseWidget<
                               },
                               {
                                 propertyName: "isDisabled",
-                                helpText: "Disables menu item",
+                                helpText: "禁用菜单项",
                                 label: "禁用",
                                 controlType: "SWITCH",
                                 isJSConvertible: true,
@@ -741,7 +741,7 @@ class ButtonGroupWidget extends BaseWidget<
                       helpText: "设置菜单项标签",
                       label: "文本",
                       controlType: "INPUT_TEXT",
-                      placeholderText: "Enter label",
+                      placeholderText: "请输入标签",
                       isBindProperty: true,
                       isTriggerProperty: false,
                       validation: { type: ValidationTypes.TEXT },
