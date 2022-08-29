@@ -60,7 +60,7 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             helpText: "Sets the map type",
@@ -410,7 +410,7 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             helpText: "Sets the map title",
@@ -465,7 +465,7 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
   static getPropertyPaneStyleConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             helpText:

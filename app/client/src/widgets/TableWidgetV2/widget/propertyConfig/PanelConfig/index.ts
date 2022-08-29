@@ -71,7 +71,7 @@ export default {
           ],
         },
         {
-          sectionName: "General",
+          sectionName: "属性",
           collapsible: false,
           children: [
             {
@@ -153,7 +153,7 @@ export default {
           ],
         },
         {
-          sectionName: "General",
+          sectionName: "属性",
           collapsible: false,
           children: [
             {
@@ -281,7 +281,7 @@ export default {
   ],
   styleChildren: [
     {
-      sectionName: "General",
+      sectionName: "属性",
       children: [
         {
           propertyName: "buttonVariant",
@@ -726,7 +726,7 @@ export default {
       },
       children: [
         {
-          sectionName: "General",
+          sectionName: "属性",
           collapsible: false,
           children: [
             {
@@ -875,7 +875,7 @@ export default {
       },
       children: [
         {
-          sectionName: "General",
+          sectionName: "属性",
           collapsible: false,
           children: [
             {

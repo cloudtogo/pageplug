@@ -36,7 +36,7 @@ function generatePanelPropertyConfig(
     panelIdPropertyName: "identifier",
     children: [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           ...COMMON_PROPERTIES.fieldType,
           ...COMMON_PROPERTIES.customField,
@@ -185,7 +185,7 @@ function generatePanelPropertyConfig(
         hidden: isFieldTypeArrayOrObject,
       },
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           ...COMMON_PROPERTIES.content.general,
           ...INPUT_PROPERTIES.content.general,

@@ -22,7 +22,7 @@ class ButtonGroupWidget extends BaseWidget<
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             helpText: "Controls widget orientation",
@@ -65,7 +65,7 @@ class ButtonGroupWidget extends BaseWidget<
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             defaultValue: true,
@@ -105,7 +105,7 @@ class ButtonGroupWidget extends BaseWidget<
               },
               children: [
                 {
-                  sectionName: "General",
+                  sectionName: "属性",
                   children: [
                     {
                       propertyName: "label",
@@ -271,7 +271,7 @@ class ButtonGroupWidget extends BaseWidget<
                         },
                         children: [
                           {
-                            sectionName: "General",
+                            sectionName: "属性",
                             children: [
                               {
                                 propertyName: "label",
@@ -615,7 +615,7 @@ class ButtonGroupWidget extends BaseWidget<
                             ],
                           },
                           {
-                            sectionName: "General",
+                            sectionName: "属性",
                             children: [
                               {
                                 propertyName: "isVisible",
@@ -749,7 +749,7 @@ class ButtonGroupWidget extends BaseWidget<
                   ],
                 },
                 {
-                  sectionName: "General",
+                  sectionName: "属性",
                   children: [
                     {
                       propertyName: "isVisible",
@@ -890,7 +890,7 @@ class ButtonGroupWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             helpText: "Controls the visibility of the widget",
@@ -914,7 +914,7 @@ class ButtonGroupWidget extends BaseWidget<
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             defaultValue: true,
@@ -931,7 +931,7 @@ class ButtonGroupWidget extends BaseWidget<
   static getPropertyPaneStyleConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "buttonVariant",

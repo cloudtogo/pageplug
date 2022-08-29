@@ -326,7 +326,7 @@ export const contentConfig = [
     ],
   },
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
         propertyName: "title",
@@ -350,7 +350,7 @@ export const contentConfig = [
       },
       {
         propertyName: "animateLoading",
-        label: "Animate Loading",
+        label: "加载时显示动画",
         controlType: "SWITCH",
         helpText: "Controls the loading of the widget",
         defaultValue: true,
@@ -437,7 +437,7 @@ export const contentConfig = [
 
 const generateButtonStyleControlsV2For = (prefix: string) => [
   {
-    sectionName: "General",
+    sectionName: "属性",
     collapsible: false,
     children: [
       {
@@ -681,7 +681,7 @@ export const styleConfig = [
 
 export default [
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
         propertyName: "title",
@@ -767,7 +767,7 @@ export default [
       },
       {
         propertyName: "animateLoading",
-        label: "Animate Loading",
+        label: "加载时显示动画",
         controlType: "SWITCH",
         helpText: "Controls the loading of the widget",
         defaultValue: true,

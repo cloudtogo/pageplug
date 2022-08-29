@@ -6,7 +6,7 @@ import { isLabelOrientationApplicableFor } from "../component";
 
 export default [
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
         helpText: "Adds a title to the chart",
@@ -216,7 +216,7 @@ export default [
       },
       {
         propertyName: "animateLoading",
-        label: "Animate Loading",
+        label: "加载时显示动画",
         controlType: "SWITCH",
         helpText: "Controls the loading of the widget",
         defaultValue: true,
@@ -540,7 +540,7 @@ export const contentConfig = [
     ],
   },
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
         helpText: "Adds a title to the chart",
@@ -564,7 +564,7 @@ export const contentConfig = [
       },
       {
         propertyName: "animateLoading",
-        label: "Animate Loading",
+        label: "加载时显示动画",
         controlType: "SWITCH",
         helpText: "Controls the loading of the widget",
         defaultValue: true,

@@ -117,7 +117,7 @@ export default {
             ],
           },
           {
-            sectionName: "General",
+            sectionName: "属性",
             children: [
               {
                 propertyName: "isVisible",
