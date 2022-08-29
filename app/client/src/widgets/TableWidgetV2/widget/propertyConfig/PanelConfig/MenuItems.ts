@@ -132,7 +132,7 @@ export default {
               },
               {
                 propertyName: "iconColor",
-                helpText: "Sets the icon color of a menu item",
+                helpText: "设置菜单项图标颜色",
                 label: "图标颜色",
                 controlType: "PRIMARY_COLUMNS_COLOR_PICKER_V2",
                 isBindProperty: false,
