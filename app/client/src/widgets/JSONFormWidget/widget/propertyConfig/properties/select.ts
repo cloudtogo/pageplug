@@ -103,7 +103,7 @@ const PROPERTIES = {
     },
     {
       propertyName: "placeholderText",
-      label: "Placeholder",
+      label: "占位符",
       controlType: "JSON_FORM_COMPUTE_VALUE",
       placeholderText: "Enter placeholder text",
       isBindProperty: true,
@@ -205,7 +205,7 @@ const PROPERTIES = {
     general: [
       {
         propertyName: "placeholderText",
-        label: "Placeholder",
+        label: "占位符",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: "Enter placeholder text",
         isBindProperty: true,

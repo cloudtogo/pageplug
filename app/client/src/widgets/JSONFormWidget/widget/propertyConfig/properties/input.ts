@@ -393,7 +393,7 @@ const PROPERTIES = {
     {
       helpText: "Sets a placeholder text for the input",
       propertyName: "placeholderText",
-      label: "Placeholder",
+      label: "占位符",
       controlType: "JSON_FORM_COMPUTE_VALUE",
       placeholderText: "Placeholder",
       isBindProperty: true,
@@ -608,7 +608,7 @@ const PROPERTIES = {
       {
         propertyName: "placeholderText",
         helpText: "Sets a placeholder text for the input",
-        label: "Placeholder",
+        label: "占位符",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: "Placeholder",
         isBindProperty: true,
