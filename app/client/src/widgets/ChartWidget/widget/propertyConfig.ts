@@ -143,7 +143,7 @@ export default [
         evaluationSubstitutionType: EvaluationSubstitutionType.SMART_SUBSTITUTE,
       },
       {
-        helpText: "Populates the chart with the data",
+        helpText: "给图表添加数据",
         propertyName: "chartData",
         placeholderText: '[{ "x": "2021", "y": "94000" }]',
         label: "图表序列",
@@ -476,7 +476,7 @@ export const contentConfig = [
         evaluationSubstitutionType: EvaluationSubstitutionType.SMART_SUBSTITUTE,
       },
       {
-        helpText: "Populates the chart with the data",
+        helpText: "给图表添加数据",
         propertyName: "chartData",
         placeholderText: '[{ "x": "2021", "y": "94000" }]',
         label: "图表序列",
