@@ -512,7 +512,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                   children: [
                     {
                       helpText:
-                        "Triggers an action when the menu item is clicked",
+                        "点击菜单项时触发",
                       propertyName: "onClick",
                       label: "onClick",
                       controlType: "ACTION_SELECTOR",
@@ -568,7 +568,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                     },
                     {
                       helpText:
-                        "Triggers an action when the menu item is clicked",
+                        "点击菜单项时触发",
                       propertyName: "onClick",
                       label: "onClick",
                       controlType: "ACTION_SELECTOR",

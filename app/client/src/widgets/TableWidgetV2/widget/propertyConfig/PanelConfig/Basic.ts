@@ -105,7 +105,7 @@ export default {
                 dependencies: ["primaryColumns", "columnOrder"],
               },
               {
-                helpText: "Triggers an action when the menu item is clicked",
+                helpText: "点击菜单项时触发",
                 propertyName: "onClick",
                 label: "onClick",
                 controlType: "ACTION_SELECTOR",
