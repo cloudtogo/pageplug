@@ -127,7 +127,7 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the video recording is saved",
+            helpText: "录像保存时触发",
             propertyName: "onVideoSave",
             label: "OnVideoSave",
             controlType: "ACTION_SELECTOR",
@@ -281,7 +281,7 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the video recording is saved",
+            helpText: "录像保存时触发",
             propertyName: "onVideoSave",
             label: "onVideoSave",
             controlType: "ACTION_SELECTOR",
