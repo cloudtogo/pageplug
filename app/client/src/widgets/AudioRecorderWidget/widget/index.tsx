@@ -72,7 +72,7 @@ class AudioRecorderWidget extends BaseWidget<
         sectionName: "事件",
         children: [
           {
-            helpText: "Triggers an action when the recording starts",
+            helpText: "录音开始时触发",
             propertyName: "onRecordingStart",
             label: "onRecordingStart",
             controlType: "ACTION_SELECTOR",
@@ -81,7 +81,7 @@ class AudioRecorderWidget extends BaseWidget<
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the recording ends",
+            helpText: "录音结束后触发",
             propertyName: "onRecordingComplete",
             label: "onRecordingComplete",
             controlType: "ACTION_SELECTOR",
