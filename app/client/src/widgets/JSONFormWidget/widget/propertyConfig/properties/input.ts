@@ -467,7 +467,7 @@ const PROPERTIES = {
   actions: [
     {
       propertyName: "onTextChanged",
-      helpText: "Triggers an action when the text is changed",
+      helpText: "文本输入改变时触发",
       label: "onTextChanged",
       controlType: "ACTION_SELECTOR",
       isJSConvertible: true,
@@ -762,7 +762,7 @@ const PROPERTIES = {
     events: [
       {
         propertyName: "onTextChanged",
-        helpText: "Triggers an action when the text is changed",
+        helpText: "文本输入改变时触发",
         label: "onTextChanged",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
