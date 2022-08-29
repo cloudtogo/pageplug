@@ -171,9 +171,9 @@ class CheckboxGroupWidget extends BaseWidget<
           },
           {
             propertyName: "isSelectAll",
-            label: "Select All Options",
+            label: "全选",
             controlType: "SWITCH",
-            helpText: "Controls whether select all option is shown",
+            helpText: "显示所有选项是否都被选中",
             isJSConvertible: true,
             isBindProperty: true,
             isTriggerProperty: false,
@@ -272,10 +272,10 @@ class CheckboxGroupWidget extends BaseWidget<
             propertyName: "optionAlignment",
             label: "对齐",
             controlType: "DROP_DOWN",
-            helpText: "Sets alignment between options.",
+            helpText: "选项之间的对齐方式",
             options: [
               {
-                label: "None",
+                label: "无",
                 value: CheckboxGroupAlignmentTypes.NONE,
               },
               {
@@ -624,9 +624,9 @@ class CheckboxGroupWidget extends BaseWidget<
           },
           {
             propertyName: "isSelectAll",
-            label: "Select All Options",
+            label: "全选",
             controlType: "SWITCH",
-            helpText: "Controls whether select all option is shown",
+            helpText: "显示所有选项是否都被选中",
             isJSConvertible: true,
             isBindProperty: true,
             isTriggerProperty: false,
@@ -748,10 +748,10 @@ class CheckboxGroupWidget extends BaseWidget<
             propertyName: "optionAlignment",
             label: "对齐",
             controlType: "DROP_DOWN",
-            helpText: "Sets alignment between options.",
+            helpText: "选项之间的对齐方式",
             options: [
               {
-                label: "None",
+                label: "无",
                 value: CheckboxGroupAlignmentTypes.NONE,
               },
               {

@@ -499,7 +499,7 @@ class DatasourceRestAPIEditor extends React.Component<
             "authType",
             [
               {
-                label: "None",
+                label: "无",
                 value: AuthType.NONE,
               },
               {
