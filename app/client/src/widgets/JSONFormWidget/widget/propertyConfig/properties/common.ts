@@ -224,7 +224,7 @@ const COMMON_PROPERTIES = {
     {
       label: "必填",
       propertyName: "isRequired",
-      helpText: "Makes input to the widget mandatory",
+      helpText: "强制用户填写",
       controlType: "SWITCH",
       isJSConvertible: true,
       isBindProperty: true,

@@ -203,7 +203,7 @@ class PhoneInputWidget extends BaseInputWidget<
             {
               propertyName: "isRequired",
               label: "必填",
-              helpText: "Makes input to the widget mandatory",
+              helpText: "强制用户填写",
               controlType: "SWITCH",
               isJSConvertible: true,
               isBindProperty: true,
