@@ -121,7 +121,7 @@ const generateButtonStyleControlsFor = (prefix: string) => [
     helpText: "Sets the variant of the icon button",
     options: [
       {
-        label: "Primary",
+        label: "主按钮",
         value: ButtonVariantTypes.PRIMARY,
       },
       {
@@ -457,7 +457,7 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
         helpText: "Sets the variant of the icon button",
         options: [
           {
-            label: "Primary",
+            label: "主按钮",
             value: ButtonVariantTypes.PRIMARY,
           },
           {
