@@ -401,7 +401,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
   static getPropertyPaneContentConfig() {
     return [
       {
-        sectionName: "Basic",
+        sectionName: "属性",
         children: [
           {
             propertyName: "label",
@@ -554,7 +554,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
               ],
               contentChildren: [
                 {
-                  sectionName: "Basic",
+                  sectionName: "属性",
                   children: [
                     {
                       propertyName: "label",

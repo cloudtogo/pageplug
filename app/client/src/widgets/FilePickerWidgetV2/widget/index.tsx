@@ -424,7 +424,7 @@ class FilePickerWidget extends BaseWidget<
   static getPropertyPaneContentConfig() {
     return [
       {
-        sectionName: "Basic",
+        sectionName: "属性",
         children: [
           {
             propertyName: "allowedFileTypes",

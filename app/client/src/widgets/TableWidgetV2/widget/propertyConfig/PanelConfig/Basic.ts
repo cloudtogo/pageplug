@@ -8,7 +8,7 @@ import { hideByColumnType, updateIconAlignment } from "../../propertyUtils";
 import { IconNames } from "@blueprintjs/icons";
 
 export default {
-  sectionName: "Basic",
+  sectionName: "属性",
   hidden: (props: TableWidgetProps, propertyPath: string) => {
     return hideByColumnType(
       props,
@@ -91,7 +91,7 @@ export default {
         dependencies: ["primaryColumns", "columnOrder"],
         contentChildren: [
           {
-            sectionName: "Basic",
+            sectionName: "属性",
             children: [
               {
                 propertyName: "label",
