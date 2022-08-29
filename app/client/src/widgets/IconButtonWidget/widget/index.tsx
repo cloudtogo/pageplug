@@ -159,9 +159,9 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
           },
           {
             propertyName: "borderRadius",
-            label: "按钮圆角",
+            label: "边框圆角",
             helpText:
-              "按钮圆角样式",
+              "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -332,9 +332,9 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "borderRadius",
-            label: "按钮圆角",
+            label: "边框圆角",
             helpText:
-              "按钮圆角样式",
+              "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
