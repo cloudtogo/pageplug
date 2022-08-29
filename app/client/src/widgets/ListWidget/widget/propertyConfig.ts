@@ -119,7 +119,7 @@ const PropertyPaneConfig = [
     children: [
       {
         propertyName: "backgroundColor",
-        label: "Background Color",
+        label: "背景颜色",
         controlType: "COLOR_PICKER",
         isJSConvertible: true,
         isBindProperty: true,
@@ -350,7 +350,7 @@ export const PropertyPaneStyleConfig = [
       },
       {
         propertyName: "backgroundColor",
-        label: "Background Color",
+        label: "背景颜色",
         controlType: "COLOR_PICKER",
         isJSConvertible: true,
         isBindProperty: true,
