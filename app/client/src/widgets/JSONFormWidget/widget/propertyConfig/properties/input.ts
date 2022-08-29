@@ -391,7 +391,7 @@ const PROPERTIES = {
       dependencies: ["schema"],
     },
     {
-      helpText: "Sets a placeholder text for the input",
+      helpText: "输入为空时显示的占位字符",
       propertyName: "placeholderText",
       label: "占位符",
       controlType: "JSON_FORM_COMPUTE_VALUE",
@@ -607,7 +607,7 @@ const PROPERTIES = {
     general: [
       {
         propertyName: "placeholderText",
-        helpText: "Sets a placeholder text for the input",
+        helpText: "输入为空时显示的占位字符",
         label: "占位符",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: "Placeholder",

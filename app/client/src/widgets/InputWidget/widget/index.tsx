@@ -285,7 +285,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Sets a placeholder text for the input",
+            helpText: "输入为空时显示的占位字符",
             propertyName: "placeholderText",
             label: "占位符",
             controlType: "INPUT_TEXT",
