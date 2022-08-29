@@ -34,7 +34,7 @@ const PropertyPaneConfig = [
       },
       {
         propertyName: "isVisible",
-        label: "Visible",
+        label: "是否显示",
         helpText: "Controls the visibility of the widget",
         controlType: "SWITCH",
         isJSConvertible: true,
@@ -251,7 +251,7 @@ export const PropertyPaneContentConfig = [
     children: [
       {
         propertyName: "isVisible",
-        label: "Visible",
+        label: "是否显示",
         helpText: "Controls the visibility of the widget",
         controlType: "SWITCH",
         isJSConvertible: true,

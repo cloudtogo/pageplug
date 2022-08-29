@@ -154,7 +154,7 @@ export default {
     {
       propertyName: "isCellVisible",
       dependencies: ["primaryColumns", "columnType"],
-      label: "Visible",
+      label: "是否显示",
       helpText: "Controls the visibility of the cell in the column",
       defaultValue: true,
       controlType: "SWITCH",

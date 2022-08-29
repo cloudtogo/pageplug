@@ -93,7 +93,7 @@ class DocumentViewerWidget extends BaseWidget<
           {
             helpText: "Controls visibility of the widget",
             propertyName: "isVisible",
-            label: "Visible",
+            label: "是否显示",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -150,7 +150,7 @@ class DocumentViewerWidget extends BaseWidget<
           {
             helpText: "Controls visibility of the widget",
             propertyName: "isVisible",
-            label: "Visible",
+            label: "是否显示",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,

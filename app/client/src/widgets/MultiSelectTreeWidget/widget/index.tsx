@@ -186,7 +186,7 @@ class MultiSelectTreeWidget extends BaseWidget<
           {
             helpText: "Controls the visibility of the widget",
             propertyName: "isVisible",
-            label: "Visible",
+            label: "是否显示",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -654,7 +654,7 @@ class MultiSelectTreeWidget extends BaseWidget<
           {
             helpText: "Controls the visibility of the widget",
             propertyName: "isVisible",
-            label: "Visible",
+            label: "是否显示",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,

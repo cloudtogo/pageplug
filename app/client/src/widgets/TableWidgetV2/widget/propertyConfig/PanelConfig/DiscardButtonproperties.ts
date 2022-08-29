@@ -21,7 +21,7 @@ export default {
     {
       propertyName: "isDiscardVisible",
       dependencies: ["primaryColumns"],
-      label: "Visible",
+      label: "是否显示",
       helpText: "Controls the visibility of the discard button",
       defaultValue: true,
       controlType: "SWITCH",
