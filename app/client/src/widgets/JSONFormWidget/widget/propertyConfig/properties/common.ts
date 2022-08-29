@@ -303,7 +303,7 @@ const COMMON_PROPERTIES = {
     },
     {
       propertyName: "labelTextSize",
-      label: "Text Size",
+      label: "字体大小",
       defaultValue: "0.875rem",
       controlType: "DROP_DOWN",
       options: [
