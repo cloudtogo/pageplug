@@ -18,7 +18,7 @@ import {
   changeNodeAtPath,
   getNodeAtPath,
   walk,
-} from "react-sortable-tree-patch-react-17";
+} from "react-sortable-tree-patch-react-17/dist/index.cjs.js";
 import FileExplorerTheme from "react-sortable-tree-theme-full-node-drag";
 import IconSelect from "./IconSelect";
 import { Button, Input, Form, message } from "antd";

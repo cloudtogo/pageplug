@@ -19,10 +19,8 @@ export const INPUT_DEFAULT_TEXT_MAX_CHAR_ERROR = (max: number) =>
   `默认字符最大长度为 ${max}`;
 export const INPUT_TEXT_MAX_CHAR_ERROR = (max: number) =>
   `文本长度必须小于 ${max}`;
-export const INPUT_DEFAULT_TEXT_MAX_NUM_ERROR = () =>
-  `默认文本长度超出最大值`;
-export const INPUT_DEFAULT_TEXT_MIN_NUM_ERROR = () =>
-  `默认文本长度超出最小值`;
+export const INPUT_DEFAULT_TEXT_MAX_NUM_ERROR = () => `默认文本长度超出最大值`;
+export const INPUT_DEFAULT_TEXT_MIN_NUM_ERROR = () => `默认文本长度超出最小值`;
 export const VALID_FUNCTION_NAME_ERROR = () => `函数名不符合规范（驼峰式）`;
 export const UNIQUE_NAME_ERROR = () => `名字必须唯一`;
 export const NAME_SPACE_ERROR = () => `名字中间不能包含空格`;
@@ -144,7 +142,7 @@ export const SIGN_IN = () => `登录`;
 export const CREATE_NEW_APPLICATION = () => `新建应用`;
 export const SEARCH_APPS = () => `搜索应用`;
 export const GETTING_STARTED = () => `马上开始`;
-export const ORGANIZATIONS_HEADING = () => `应用组`;
+export const WORKSPACES_HEADING = () => `应用组`;
 export const WELCOME_TOUR = () => `欢迎光临`;
 export const NO_APPS_FOUND = () => `没有发现相关应用`;
 
@@ -223,13 +221,11 @@ export const UPGRADE = () => "升级";
 export const EDIT = () => "编辑";
 export const UNEXPECTED_ERROR = () => "出现了意外的错误";
 export const EXPECTED_ERROR = () => "出错了";
-export const NO_DATASOURCE_FOR_QUERY = () =>
-  `你还没有用来创建查询的数据源`;
+export const NO_DATASOURCE_FOR_QUERY = () => `你还没有用来创建查询的数据源`;
 export const ACTION_EDITOR_REFRESH = () => "刷新";
 export const INVALID_FORM_CONFIGURATION = () => "无效表单配置";
 export const ACTION_RUN_BUTTON_MESSAGE_FIRST_HALF = () => "🙌 点击";
-export const ACTION_RUN_BUTTON_MESSAGE_SECOND_HALF = () =>
-  "在添加你的查询之后";
+export const ACTION_RUN_BUTTON_MESSAGE_SECOND_HALF = () => "在添加你的查询之后";
 export const CREATE_NEW_DATASOURCE = () => "新建数据源";
 
 export const ERROR_EVAL_ERROR_GENERIC = () => `应用解析出错了`;
@@ -640,8 +636,7 @@ export const DISCARD_CHANGES = () => "丢弃修改";
 // GIT DEPLOY begin
 export const DEPLOY = () => "发布";
 export const DEPLOY_YOUR_APPLICATION = () => "发布你的应用";
-export const CHANGES_SINCE_LAST_DEPLOYMENT = () =>
-  "上次发布以来的修改";
+export const CHANGES_SINCE_LAST_DEPLOYMENT = () => "上次发布以来的修改";
 export const CHANGES_ONLY_USER = () => "上次提交以来的用户修改";
 export const CHANGES_MADE_SINCE_LAST_COMMIT = () => "上次提交以来的修改";
 export const CHANGES_ONLY_MIGRATION = () => "上次提交以来 Appsmith 的更新";
@@ -916,13 +911,11 @@ export const WIDGET_DEPRECATION_MESSAGE = (widgetName: string) =>
   `${widgetName} 组件已经被废弃`;
 export const DEPRECATION_WIDGET_REPLACEMENT_MESSAGE = (
   replacingWidgetName: string,
-) =>
-  ` 你可以拖拽一个 ${replacingWidgetName} 组件来替换已废弃的组件`;
+) => ` 你可以拖拽一个 ${replacingWidgetName} 组件来替换已废弃的组件`;
 export const LOCK_ENTITY_EXPLORER_MESSAGE = () => `固定侧边栏`;
 export const CLOSE_ENTITY_EXPLORER_MESSAGE = () => `关闭侧边栏`;
 export const JS_TOGGLE_DISABLED_MESSAGE = "清空字段回退";
-export const PROPERTY_PANE_EMPTY_SEARCH_RESULT_MESSAGE =
-  "没有发现任何属性";
+export const PROPERTY_PANE_EMPTY_SEARCH_RESULT_MESSAGE = "没有发现任何属性";
 
 // API Pane
 export const API_PANE_NO_BODY = () => "当前请求没有请求体";

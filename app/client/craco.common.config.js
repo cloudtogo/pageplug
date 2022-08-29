@@ -1,10 +1,10 @@
 const CracoAlias = require("craco-alias");
 const CracoLessPlugin = require('craco-less');
 const { DefinePlugin, EnvironmentPlugin } = require("webpack");
-const pxtorem = require("./craco.postcss.pxtorem");
 
 module.exports = {
   devServer: {
+    open: false,
     client: {
       webSocketURL: {
         hostname: "127.0.0.1",
@@ -45,6 +45,23 @@ module.exports = {
         },
       ],
     },
+    plugins: [
+      new DefinePlugin({
+        ENABLE_INNER_HTML: true,
+        ENABLE_ADJACENT_HTML: true,
+        ENABLE_TEMPLATE_CONTENT: true,
+        ENABLE_CLONE_NODE: true,
+        ENABLE_SIZE_APIS: false
+      }),
+      new EnvironmentPlugin({
+        TARO_ENV: 'h5',
+      }),
+    ]
+  },
+  style: {
+    postcss: {
+      mode: 'file',
+    }
   },
   plugins: [
     {
@@ -80,31 +97,6 @@ module.exports = {
       },
     },
   ],
-  webpack: {
-    plugins: [
-      new DefinePlugin({
-        ENABLE_INNER_HTML: true,
-        ENABLE_ADJACENT_HTML: true,
-        ENABLE_TEMPLATE_CONTENT: true,
-        ENABLE_CLONE_NODE: true,
-        ENABLE_SIZE_APIS: false
-      }),
-      new EnvironmentPlugin({
-        TARO_ENV: 'h5',
-      }),
-    ]
-  },
-  style: {
-    postcss: {
-      plugins: [
-        require("tailwindcss"),
-        require("autoprefixer"),
-        pxtorem({
-          h5Width: 450,
-        })
-      ]
-    }
-  },
   typescript: {
     enableTypeChecking: false
   },

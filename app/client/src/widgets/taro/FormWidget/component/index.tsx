@@ -105,7 +105,7 @@ const FormComponent = (props: FormComponentProps) => {
               placeholder,
               uploadMax,
             } = field;
-            let props: any = { label, name, required, placeholder, key: index };
+            let props: any = { label, name, required, placeholder };
             if (fieldType === "input") {
               props = {
                 label,
@@ -113,15 +113,14 @@ const FormComponent = (props: FormComponentProps) => {
                 required,
                 inputType,
                 placeholder,
-                key: index,
               };
-              return <InputField {...props} />;
+              return <InputField {...props} key={index} />;
             } else if (fieldType === "switch") {
-              return <SwitchField {...props} />;
+              return <SwitchField {...props} key={index} />;
             } else if (fieldType === "rate") {
-              return <RateField {...props} />;
+              return <RateField {...props} key={index} />;
             } else if (fieldType === "stepper") {
-              return <StepperField {...props} />;
+              return <StepperField {...props} key={index} />;
             } else if (fieldType === "radio") {
               props = {
                 label,
@@ -129,9 +128,8 @@ const FormComponent = (props: FormComponentProps) => {
                 required,
                 placeholder,
                 options,
-                key: index,
               };
-              return <RadioField {...props} />;
+              return <RadioField {...props} key={index} />;
             } else if (fieldType === "checkbox") {
               props = {
                 label,
@@ -139,11 +137,10 @@ const FormComponent = (props: FormComponentProps) => {
                 required,
                 placeholder,
                 options,
-                key: index,
               };
-              return <CheckboxField {...props} />;
+              return <CheckboxField {...props} key={index} />;
             } else if (fieldType === "address") {
-              return <AddressField {...props} />;
+              return <AddressField {...props} key={index} />;
             } else if (fieldType === "picker") {
               props = {
                 label,
@@ -151,12 +148,11 @@ const FormComponent = (props: FormComponentProps) => {
                 required,
                 placeholder,
                 options,
-                key: index,
               };
-              return <PickerField {...props} />;
+              return <PickerField {...props} key={index} />;
             } else if (fieldType === "uploader") {
-              props = { label, name, required, uploadMax, key: index };
-              return <UploaderField {...props} />;
+              props = { label, name, required, uploadMax };
+              return <UploaderField {...props} key={index} />;
             }
             return null;
           })}

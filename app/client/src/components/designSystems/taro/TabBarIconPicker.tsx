@@ -21,7 +21,7 @@ import {
   useEntityEditState,
 } from "pages/Editor/Explorer/hooks";
 import Icon, { IconSize } from "components/ads/Icon";
-import TooltipComponent from "components/ads/Tooltip";
+import { TooltipComponent } from "design-system";
 import { Alignment } from "@blueprintjs/core";
 import { Position } from "@blueprintjs/core/lib/esm/common/position";
 import IconSelectControl from "components/propertyControls/taro/IconSelectControl";

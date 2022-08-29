@@ -1,5 +1,5 @@
 {
-  "name": "appsmith",
+  "name": "PagePlug",
   "version": "0.1.0",
   "private": true,
   "engines": {
@@ -14,7 +14,7 @@
     "@blueprintjs/icons": "^3.10.0",
     "@blueprintjs/popover2": "^0.5.0",
     "@blueprintjs/select": "^3.10.0",
-    "@craco/craco": "^7.0.0-alpha.3",
+    "@craco/craco": "^7.0.0-alpha.7",
     "@designable/formily-antd": "^1.0.0-beta.45",
     "@draft-js-plugins/editor": "^4.1.0",
     "@draft-js-plugins/mention": "^4.5.1",
@@ -53,7 +53,7 @@
     "copy-to-clipboard": "^3.3.1",
     "core-js": "^3.9.1",
     "craco-alias": "^2.1.1",
-    "craco-less": "^1.17.1",
+    "craco-less": "2.1.0-alpha.0",
     "cypress-log-to-output": "^1.1.2",
     "dayjs": "^1.10.6",
     "deep-diff": "^1.0.2",
@@ -182,7 +182,7 @@
     "analyze": "yarn cra-bundle-analyzer",
     "start-proxy": "bash ./start-nginx-docker.sh",
     "start-win-log": "set BROWSER=none && set EXTEND_ESLINT=true && set REACT_APP_ENVIRONMENT=DEVELOPMENT && set REACT_APP_CLIENT_LOG_LEVEL=debug&& craco start",
-    "start-win": "set BROWSER=none && set EXTEND_ESLINT=true && set REACT_APP_ENVIRONMENT=DEVELOPMENT && craco start",
+    "start-win": "set BROWSER=none && set EXTEND_ESLINT=true && set REACT_APP_ENVIRONMENT=DEVELOPMENT && craco --max_old_space_size=4096 start",
     "start-cloudos": "set BROWSER=none && set EXTEND_ESLINT=true && set REACT_APP_ENVIRONMENT=DEVELOPMENT && set REACT_APP_IN_CLOUDOS=true && craco start",
     "start": "BROWSER=none EXTEND_ESLINT=true REACT_APP_ENVIRONMENT=DEVELOPMENT REACT_APP_CLIENT_LOG_LEVEL=debug HOST=dev.appsmith.com craco start",
     "build": "./build.sh",
@@ -198,8 +198,8 @@
     "test:unit": "$(npm bin)/jest -b --colors --no-cache --silent --coverage --collectCoverage=true --coverageDirectory='../../' --coverageReporters='json-summary'",
     "test:jest": "$(npm bin)/jest --watch",
     "generate:widget": "plop --plopfile generators/index.js",
-    "postinstall": "patch-package && CURRENT_SCOPE=client node ../shared/install-dependencies.js",
-    "preinstall": "CURRENT_SCOPE=client node ../shared/build-shared-dep.js"
+    "postinstall": "patch-package && set CURRENT_SCOPE=client&& node ../shared/install-dependencies.js",
+    "preinstall": "set CURRENT_SCOPE=client&&node ../shared/build-shared-dep.js"
   },
   "browserslist": [
     ">0.2%",
@@ -290,6 +290,7 @@
     "msw": "^0.28.0",
     "patch-package": "^6.4.7",
     "plop": "^3.1.1",
+    "postcss-pageplug-pxtorem": "^0.0.1",
     "postinstall-postinstall": "^2.1.0",
     "raw-loader": "^4.0.2",
     "react-is": "^16.12.0",
