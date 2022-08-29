@@ -54,7 +54,7 @@ class ImageWidget extends BaseWidget<ImageWidgetProps, WidgetState> {
                 value: "cover",
               },
               {
-                label: "Auto",
+                label: "自动",
                 value: "auto",
               },
             ],
@@ -237,7 +237,7 @@ class ImageWidget extends BaseWidget<ImageWidgetProps, WidgetState> {
                 value: "cover",
               },
               {
-                label: "Auto",
+                label: "自动",
                 value: "auto",
               },
             ],
