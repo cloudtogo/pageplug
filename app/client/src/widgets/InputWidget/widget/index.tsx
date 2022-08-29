@@ -134,7 +134,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
                 value: "EMAIL",
               },
               {
-                label: "Currency",
+                label: "货币",
                 value: "CURRENCY",
               },
               {
@@ -178,7 +178,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
           {
             helpText: "Changes the type of currency",
             propertyName: "currencyCountryCode",
-            label: "Currency",
+            label: "货币",
             enableSearch: true,
             dropdownHeight: "195px",
             controlType: "DROP_DOWN",
