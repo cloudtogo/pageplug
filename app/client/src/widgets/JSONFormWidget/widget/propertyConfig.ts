@@ -363,7 +363,7 @@ export const contentConfig = [
         propertyName: "disabledWhenInvalid",
         helpText:
           "Disables the submit button when the parent form has a required widget that is not filled",
-        label: "Disabled Invalid Forms",
+        label: "表单校验不成功时禁用",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -758,7 +758,7 @@ export default [
         propertyName: "disabledWhenInvalid",
         helpText:
           "Disables the submit button when the parent form has a required widget that is not filled",
-        label: "Disabled Invalid Forms",
+        label: "表单校验不成功时禁用",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
