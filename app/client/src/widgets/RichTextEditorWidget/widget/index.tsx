@@ -136,7 +136,7 @@ class RichTextEditorWidget extends BaseWidget<
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Sets the label alignment of the widget",
+            helpText: "设置组件标签的对齐方式",
             propertyName: "labelAlignment",
             label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
@@ -362,7 +362,7 @@ class RichTextEditorWidget extends BaseWidget<
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Sets the label alignment of the widget",
+            helpText: "设置组件标签的对齐方式",
             propertyName: "labelAlignment",
             label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
