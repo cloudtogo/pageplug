@@ -146,7 +146,7 @@ export default [
         helpText: "Populates the chart with the data",
         propertyName: "chartData",
         placeholderText: '[{ "x": "2021", "y": "94000" }]',
-        label: "Chart Series",
+        label: "图表序列",
         controlType: "CHART_DATA",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -157,7 +157,7 @@ export default [
           {
             helpText: "Series data",
             propertyName: "data",
-            label: "Series Data",
+            label: "序列数据",
             controlType: "INPUT_TEXT_AREA",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -196,7 +196,7 @@ export default [
           {
             helpText: "Series Name",
             propertyName: "seriesName",
-            label: "Series Name",
+            label: "序列名称",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -479,7 +479,7 @@ export const contentConfig = [
         helpText: "Populates the chart with the data",
         propertyName: "chartData",
         placeholderText: '[{ "x": "2021", "y": "94000" }]',
-        label: "Chart Series",
+        label: "图表序列",
         controlType: "CHART_DATA",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -490,7 +490,7 @@ export const contentConfig = [
           {
             helpText: "Series data",
             propertyName: "data",
-            label: "Series Data",
+            label: "序列数据",
             controlType: "INPUT_TEXT_AREA",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -529,7 +529,7 @@ export const contentConfig = [
           {
             helpText: "Series Name",
             propertyName: "seriesName",
-            label: "Series Name",
+            label: "序列名称",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
