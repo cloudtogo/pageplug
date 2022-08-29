@@ -68,7 +68,7 @@ export default [
       },
       {
         helpText: "Configure a Custom FusionChart see docs.appsmith.com",
-        placeholderText: `Fusion Chart Config`,
+        placeholderText: `Fusion 图表配置`,
         propertyName: "customFusionChartConfig",
         label: "Custom Fusion Chart",
         controlType: "INPUT_TEXT",
@@ -401,7 +401,7 @@ export const contentConfig = [
       },
       {
         helpText: "Configure a Custom FusionChart see docs.appsmith.com",
-        placeholderText: `Fusion Chart Config`,
+        placeholderText: `Fusion 图表配置`,
         propertyName: "customFusionChartConfig",
         label: "Custom Fusion Chart",
         controlType: "INPUT_TEXT",
