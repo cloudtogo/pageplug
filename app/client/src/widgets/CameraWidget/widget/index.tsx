@@ -23,7 +23,7 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "mode",
-            label: "Mode",
+            label: "模式",
             controlType: "DROP_DOWN",
             helpText: "Whether a picture is taken or a video is recorded",
             options: [
@@ -177,7 +177,7 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "mode",
-            label: "Mode",
+            label: "模式",
             controlType: "DROP_DOWN",
             helpText: "Whether a picture is taken or a video is recorded",
             options: [
