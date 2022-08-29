@@ -297,7 +297,7 @@ export default [
       {
         propertyName: "setAdaptiveYMin",
         label: "自适应坐标轴",
-        helpText: "Define the minimum scale for X/Y axis",
+        helpText: "定义坐标轴最小刻度",
         controlType: "SWITCH",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -592,7 +592,7 @@ export const contentConfig = [
       {
         propertyName: "setAdaptiveYMin",
         label: "自适应坐标轴",
-        helpText: "Define the minimum scale for X/Y axis",
+        helpText: "定义坐标轴最小刻度",
         controlType: "SWITCH",
         isBindProperty: true,
         isTriggerProperty: false,
