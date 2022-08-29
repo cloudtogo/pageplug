@@ -222,7 +222,7 @@ const COMMON_PROPERTIES = {
       dependencies: ["schema", "sourceData"],
     },
     {
-      label: "Required",
+      label: "必填",
       propertyName: "isRequired",
       helpText: "Makes input to the widget mandatory",
       controlType: "SWITCH",
