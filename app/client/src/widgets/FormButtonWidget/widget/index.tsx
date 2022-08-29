@@ -61,7 +61,7 @@ class FormButtonWidget extends ButtonWidget {
           propertyName: "animateLoading",
           label: "加载时显示动画",
           controlType: "SWITCH",
-          helpText: "Controls the loading of the widget",
+          helpText: "组件依赖的数据加载时显示加载动画",
           defaultValue: true,
           isJSConvertible: true,
           isBindProperty: true,
