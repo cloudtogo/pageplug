@@ -936,7 +936,7 @@ export default [
                 },
                 {
                   propertyName: "buttonVariant",
-                  label: "Button Variant",
+                  label: "按钮类型",
                   controlType: "DROP_DOWN",
                   customJSControl: "COMPUTE_VALUE",
                   defaultValue: ButtonVariantTypes.PRIMARY,

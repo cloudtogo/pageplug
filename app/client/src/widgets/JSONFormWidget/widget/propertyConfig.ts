@@ -116,7 +116,7 @@ const generateButtonStyleControlsFor = (prefix: string) => [
   },
   {
     propertyName: `${prefix}.buttonVariant`,
-    label: "Button Variant",
+    label: "按钮类型",
     controlType: "DROP_DOWN",
     helpText: "Sets the variant of the icon button",
     options: [
@@ -452,7 +452,7 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
       },
       {
         propertyName: `${prefix}.buttonVariant`,
-        label: "Button Variant",
+        label: "按钮类型",
         controlType: "DROP_DOWN",
         helpText: "Sets the variant of the icon button",
         options: [
