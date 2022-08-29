@@ -277,7 +277,7 @@ export default [
         controlType: "DROP_DOWN",
         options: [
           {
-            label: "Auto",
+            label: "自动",
             value: LabelOrientation.AUTO,
           },
           {
@@ -634,7 +634,7 @@ export const contentConfig = [
         controlType: "DROP_DOWN",
         options: [
           {
-            label: "Auto",
+            label: "自动",
             value: LabelOrientation.AUTO,
           },
           {
