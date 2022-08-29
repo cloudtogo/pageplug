@@ -226,7 +226,7 @@ export default [
         validation: { type: ValidationTypes.BOOLEAN },
       },
       {
-        helpText: "Enables scrolling inside the chart",
+        helpText: "允许图表内部滚动",
         propertyName: "allowScroll",
         label: "允许滚动",
         controlType: "SWITCH",
@@ -574,7 +574,7 @@ export const contentConfig = [
         validation: { type: ValidationTypes.BOOLEAN },
       },
       {
-        helpText: "Enables scrolling inside the chart",
+        helpText: "允许图表内部滚动",
         propertyName: "allowScroll",
         label: "允许滚动",
         controlType: "SWITCH",
