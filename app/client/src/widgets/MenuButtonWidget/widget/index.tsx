@@ -186,7 +186,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                     {
                       propertyName: "textColor",
                       helpText: "Sets the text color of a menu item",
-                      label: "Text color",
+                      label: "文本颜色",
                       controlType: "COLOR_PICKER",
                       isBindProperty: false,
                       isTriggerProperty: false,
@@ -544,7 +544,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                     {
                       propertyName: "textColor",
                       helpText: "Sets the text color of a menu item",
-                      label: "Text color",
+                      label: "文本颜色",
                       controlType: "COLOR_PICKER",
                       isBindProperty: false,
                       isTriggerProperty: false,
@@ -652,7 +652,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                     {
                       propertyName: "textColor",
                       helpText: "Sets the text color of a menu item",
-                      label: "Text color",
+                      label: "文本颜色",
                       controlType: "COLOR_PICKER",
                       isBindProperty: false,
                       isTriggerProperty: false,

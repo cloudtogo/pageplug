@@ -161,7 +161,7 @@ export default [
       },
       {
         propertyName: "textColor",
-        label: "Text Color",
+        label: "文本颜色",
         controlType: "COLOR_PICKER",
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns"],

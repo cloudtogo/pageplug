@@ -735,7 +735,7 @@ export default [
                 },
                 {
                   propertyName: "textColor",
-                  label: "Text Color",
+                  label: "文本颜色",
                   controlType: "PRIMARY_COLUMNS_COLOR_PICKER",
                   isJSConvertible: true,
                   customJSControl: "COMPUTE_VALUE",
@@ -1225,7 +1225,7 @@ export default [
                           {
                             propertyName: "textColor",
                             helpText: "Sets the text color of a menu item",
-                            label: "Text color",
+                            label: "文本颜色",
                             controlType: "PRIMARY_COLUMNS_COLOR_PICKER",
                             isBindProperty: false,
                             isTriggerProperty: false,
@@ -1648,7 +1648,7 @@ export default [
       },
       {
         propertyName: "textColor",
-        label: "Text Color",
+        label: "文本颜色",
         controlType: "COLOR_PICKER",
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns", "derivedColumns"],
