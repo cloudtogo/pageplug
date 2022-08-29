@@ -242,7 +242,7 @@ export default [
     sectionName: "Axis",
     children: [
       {
-        helpText: "Specifies the label of the x-axis",
+        helpText: "设置x轴标签",
         propertyName: "xAxisName",
         placeholderText: "Dates",
         label: "x-axis Label",
@@ -599,7 +599,7 @@ export const contentConfig = [
         validation: { type: ValidationTypes.BOOLEAN },
       },
       {
-        helpText: "Specifies the label of the x-axis",
+        helpText: "设置x轴标签",
         propertyName: "xAxisName",
         placeholderText: "Dates",
         label: "x-axis Label",
