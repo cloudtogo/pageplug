@@ -145,7 +145,7 @@ class StatboxWidget extends ContainerWidget {
   static getPropertyPaneStyleConfig() {
     return [
       {
-        sectionName: "Color",
+        sectionName: "颜色配置",
         children: [
           {
             propertyName: "backgroundColor",

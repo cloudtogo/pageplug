@@ -193,7 +193,7 @@ export default {
             ],
           },
           {
-            sectionName: "Color",
+            sectionName: "颜色配置",
             children: [
               {
                 propertyName: "textColor",

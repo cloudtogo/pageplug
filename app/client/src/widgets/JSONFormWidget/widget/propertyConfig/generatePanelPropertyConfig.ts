@@ -231,7 +231,7 @@ function generatePanelPropertyConfig(
         },
       },
       {
-        sectionName: "Color",
+        sectionName: "颜色配置",
         children: [...COMMON_PROPERTIES.style.color],
         hidden: isFieldTypeArrayOrObject,
       },

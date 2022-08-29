@@ -168,7 +168,7 @@ class ContainerWidget extends BaseWidget<
   static getPropertyPaneStyleConfig() {
     return [
       {
-        sectionName: "Color",
+        sectionName: "颜色配置",
         children: [
           {
             helpText: "Use a html color name, HEX, RGB or RGBA value",
