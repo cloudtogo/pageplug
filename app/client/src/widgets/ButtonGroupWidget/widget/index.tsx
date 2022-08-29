@@ -296,8 +296,7 @@ class ButtonGroupWidget extends BaseWidget<
                               },
                               {
                                 propertyName: "isVisible",
-                                helpText:
-                                  "控制菜单项是否显示",
+                                helpText: "控制菜单项是否显示",
                                 label: "是否显示",
                                 controlType: "SWITCH",
                                 isJSConvertible: true,
@@ -313,8 +312,7 @@ class ButtonGroupWidget extends BaseWidget<
                               {
                                 propertyName: "iconName",
                                 label: "图标",
-                                helpText:
-                                  "设置菜单项的图标",
+                                helpText: "设置菜单项的图标",
                                 controlType: "ICON_SELECT",
                                 isBindProperty: false,
                                 isTriggerProperty: false,
@@ -324,8 +322,7 @@ class ButtonGroupWidget extends BaseWidget<
                               {
                                 propertyName: "iconAlign",
                                 label: "图标对齐",
-                                helpText:
-                                  "设置菜单项图标对齐方向",
+                                helpText: "设置菜单项图标对齐方向",
                                 controlType: "ICON_TABS",
                                 options: [
                                   {
@@ -347,8 +344,7 @@ class ButtonGroupWidget extends BaseWidget<
                             sectionName: "事件",
                             children: [
                               {
-                                helpText:
-                                  "点击菜单项时触发",
+                                helpText: "点击菜单项时触发",
                                 propertyName: "onClick",
                                 label: "onClick",
                                 controlType: "ACTION_SELECTOR",
@@ -371,8 +367,7 @@ class ButtonGroupWidget extends BaseWidget<
                               },
                               {
                                 propertyName: "backgroundColor",
-                                helpText:
-                                  "设置菜单项背景颜色",
+                                helpText: "设置菜单项背景颜色",
                                 label: "背景颜色",
                                 controlType: "COLOR_PICKER",
                                 isJSConvertible: true,
@@ -481,8 +476,7 @@ class ButtonGroupWidget extends BaseWidget<
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -492,8 +486,7 @@ class ButtonGroupWidget extends BaseWidget<
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -619,8 +612,7 @@ class ButtonGroupWidget extends BaseWidget<
                             children: [
                               {
                                 propertyName: "isVisible",
-                                helpText:
-                                  "控制菜单项是否显示",
+                                helpText: "控制菜单项是否显示",
                                 label: "是否显示",
                                 controlType: "SWITCH",
                                 isJSConvertible: true,
@@ -648,8 +640,7 @@ class ButtonGroupWidget extends BaseWidget<
                             sectionName: "事件",
                             children: [
                               {
-                                helpText:
-                                  "点击菜单项时触发",
+                                helpText: "点击菜单项时触发",
                                 propertyName: "onClick",
                                 label: "onClick",
                                 controlType: "ACTION_SELECTOR",
@@ -667,8 +658,7 @@ class ButtonGroupWidget extends BaseWidget<
                               {
                                 propertyName: "iconName",
                                 label: "图标",
-                                helpText:
-                                  "设置菜单项的图标",
+                                helpText: "设置菜单项的图标",
                                 controlType: "ICON_SELECT",
                                 isBindProperty: false,
                                 isTriggerProperty: false,
@@ -677,8 +667,7 @@ class ButtonGroupWidget extends BaseWidget<
                               {
                                 propertyName: "iconAlign",
                                 label: "位置",
-                                helpText:
-                                  "设置菜单项图标对齐方向",
+                                helpText: "设置菜单项图标对齐方向",
                                 controlType: "ICON_TABS",
                                 options: [
                                   {
@@ -701,8 +690,7 @@ class ButtonGroupWidget extends BaseWidget<
                             children: [
                               {
                                 propertyName: "backgroundColor",
-                                helpText:
-                                  "设置菜单项背景颜色",
+                                helpText: "设置菜单项背景颜色",
                                 label: "背景颜色",
                                 controlType: "COLOR_PICKER",
                                 isJSConvertible: true,
@@ -994,8 +982,7 @@ class ButtonGroupWidget extends BaseWidget<
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -1005,8 +992,7 @@ class ButtonGroupWidget extends BaseWidget<
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
