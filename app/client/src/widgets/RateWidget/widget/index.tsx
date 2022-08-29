@@ -223,7 +223,7 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
   static getPropertyPaneContentConfig() {
     return [
       {
-        sectionName: "Data",
+        sectionName: "数据",
         children: [
           {
             propertyName: "maxCount",

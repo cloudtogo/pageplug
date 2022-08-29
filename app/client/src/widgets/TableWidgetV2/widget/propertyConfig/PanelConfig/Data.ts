@@ -17,7 +17,7 @@ import { AutocompleteDataType } from "utils/autocomplete/TernServer";
 import { composePropertyUpdateHook } from "widgets/WidgetUtils";
 
 export default {
-  sectionName: "Data",
+  sectionName: "数据",
   children: [
     {
       propertyName: "columnType",

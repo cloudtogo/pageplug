@@ -344,7 +344,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
     return mergeWidgetConfig(
       [
         {
-          sectionName: "Data",
+          sectionName: "数据",
           children: [
             {
               helpText: "Changes the type of data captured in the input",
