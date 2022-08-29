@@ -362,7 +362,7 @@ const PROPERTIES = {
       dependencies: ["schema"],
     },
     {
-      helpText: "Sets the input validity based on a JS expression",
+      helpText: "使用 JS 表达式来校验输入的是否合法",
       propertyName: "validation",
       label: "普通校验",
       controlType: "JSON_FORM_COMPUTE_VALUE",
@@ -715,7 +715,7 @@ const PROPERTIES = {
       },
       {
         propertyName: "validation",
-        helpText: "Sets the input validity based on a JS expression",
+        helpText: "使用 JS 表达式来校验输入的是否合法",
         label: "普通校验",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: "{{ Input1.text.length > 0 }}",

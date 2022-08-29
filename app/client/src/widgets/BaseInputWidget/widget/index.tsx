@@ -38,7 +38,7 @@ class BaseInputWidget<
             validation: { type: ValidationTypes.REGEX },
           },
           {
-            helpText: "Sets the input validity based on a JS expression",
+            helpText: "使用 JS 表达式来校验输入的是否合法",
             propertyName: "validation",
             label: "普通校验",
             controlType: "INPUT_TEXT",
@@ -463,7 +463,7 @@ class BaseInputWidget<
             validation: { type: ValidationTypes.REGEX },
           },
           {
-            helpText: "Sets the input validity based on a JS expression",
+            helpText: "使用 JS 表达式来校验输入的是否合法",
             propertyName: "validation",
             label: "普通校验",
             controlType: "INPUT_TEXT",
