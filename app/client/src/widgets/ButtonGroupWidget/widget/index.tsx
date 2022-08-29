@@ -697,7 +697,7 @@ class ButtonGroupWidget extends BaseWidget<
                             ],
                           },
                           {
-                            sectionName: "Color",
+                            sectionName: "颜色配置",
                             children: [
                               {
                                 propertyName: "backgroundColor",
@@ -869,7 +869,7 @@ class ButtonGroupWidget extends BaseWidget<
                   ],
                 },
                 {
-                  sectionName: "Color",
+                  sectionName: "颜色配置",
                   children: [
                     {
                       getStylesheetValue,

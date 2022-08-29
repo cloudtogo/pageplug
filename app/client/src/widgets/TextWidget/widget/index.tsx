@@ -495,7 +495,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Color",
+        sectionName: "颜色配置",
         children: [
           {
             propertyName: "textColor",
