@@ -240,7 +240,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
           },
           {
             propertyName: "isFilterable",
-            label: "Filterable",
+            label: "支持过滤",
             helpText: "Makes the dropdown list filterable",
             controlType: "SWITCH",
             isJSConvertible: true,
