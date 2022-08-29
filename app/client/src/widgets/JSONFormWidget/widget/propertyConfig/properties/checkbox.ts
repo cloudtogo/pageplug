@@ -46,7 +46,7 @@ const PROPERTIES = {
   ],
   actions: [
     {
-      helpText: "Triggers an action when the check state is changed",
+      helpText: "选中态改变时触发",
       propertyName: "onCheckChange",
       label: "onCheckChange",
       controlType: "ACTION_SELECTOR",
