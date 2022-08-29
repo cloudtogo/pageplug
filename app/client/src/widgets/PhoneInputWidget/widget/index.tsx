@@ -124,7 +124,7 @@ class PhoneInputWidget extends BaseInputWidget<
             {
               propertyName: "allowFormatting",
               label: "手机号格式化",
-              helpText: "Formats the phone number as per the country selected",
+              helpText: "按各个国家的规则格式化手机号",
               controlType: "SWITCH",
               isJSConvertible: true,
               isBindProperty: true,
@@ -218,7 +218,7 @@ class PhoneInputWidget extends BaseInputWidget<
         //     {
         //       propertyName: "allowFormatting",
         //       label: "手机号格式化",
-        //       helpText: "Formats the phone number as per the country selected",
+        //       helpText: "按各个国家的规则格式化手机号",
         //       controlType: "SWITCH",
         //       isJSConvertible: true,
         //       isBindProperty: true,
