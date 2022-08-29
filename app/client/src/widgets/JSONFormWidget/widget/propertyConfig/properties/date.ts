@@ -136,7 +136,7 @@ const PROPERTIES = {
       defaultValue: TimePrecision.MINUTE,
       options: [
         {
-          label: "None",
+          label: "无",
           value: TimePrecision.NONE,
         },
         {
@@ -298,7 +298,7 @@ const PROPERTIES = {
         defaultValue: TimePrecision.MINUTE,
         options: [
           {
-            label: "None",
+            label: "无",
             value: TimePrecision.NONE,
           },
           {
