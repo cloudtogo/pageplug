@@ -40,7 +40,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
           {
             propertyName: "alignWidget",
             helpText: "Sets the alignment of the widget",
-            label: "Alignment",
+            label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -268,7 +268,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
           {
             propertyName: "alignWidget",
             helpText: "Sets the alignment of the widget",
-            label: "Alignment",
+            label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
             isBindProperty: true,
             isTriggerProperty: false,
