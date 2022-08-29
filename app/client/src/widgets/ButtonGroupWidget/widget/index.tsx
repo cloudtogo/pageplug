@@ -44,7 +44,7 @@ class ButtonGroupWidget extends BaseWidget<
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Controls the visibility of the widget",
+            helpText: "控制组件的显示/隐藏",
             propertyName: "isVisible",
             label: "是否显示",
             controlType: "SWITCH",
@@ -154,7 +154,7 @@ class ButtonGroupWidget extends BaseWidget<
                     },
                     {
                       propertyName: "isVisible",
-                      helpText: "Controls the visibility of the widget",
+                      helpText: "控制组件的显示/隐藏",
                       label: "是否显示",
                       controlType: "SWITCH",
                       isJSConvertible: true,
@@ -753,7 +753,7 @@ class ButtonGroupWidget extends BaseWidget<
                   children: [
                     {
                       propertyName: "isVisible",
-                      helpText: "Controls the visibility of the widget",
+                      helpText: "控制组件的显示/隐藏",
                       label: "是否显示",
                       controlType: "SWITCH",
                       isJSConvertible: true,
@@ -893,7 +893,7 @@ class ButtonGroupWidget extends BaseWidget<
         sectionName: "属性",
         children: [
           {
-            helpText: "Controls the visibility of the widget",
+            helpText: "控制组件的显示/隐藏",
             propertyName: "isVisible",
             label: "是否显示",
             controlType: "SWITCH",

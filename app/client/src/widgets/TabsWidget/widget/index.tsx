@@ -312,7 +312,7 @@ class TabsWidget extends BaseWidget<
           {
             propertyName: "isVisible",
             label: "是否显示",
-            helpText: "Controls the visibility of the widget",
+            helpText: "控制组件的显示/隐藏",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
