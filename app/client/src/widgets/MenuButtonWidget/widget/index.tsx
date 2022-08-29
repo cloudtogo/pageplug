@@ -178,7 +178,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                     {
                       propertyName: "backgroundColor",
                       helpText: "Sets the background color of a menu item",
-                      label: "Background color",
+                      label: "背景颜色",
                       controlType: "COLOR_PICKER",
                       isBindProperty: false,
                       isTriggerProperty: false,
@@ -536,7 +536,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                     {
                       propertyName: "backgroundColor",
                       helpText: "Sets the background color of a menu item",
-                      label: "Background color",
+                      label: "背景颜色",
                       controlType: "COLOR_PICKER",
                       isBindProperty: false,
                       isTriggerProperty: false,
@@ -660,7 +660,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                     {
                       propertyName: "backgroundColor",
                       helpText: "Sets the background color of a menu item",
-                      label: "Background color",
+                      label: "背景颜色",
                       controlType: "COLOR_PICKER",
                       isBindProperty: false,
                       isTriggerProperty: false,
