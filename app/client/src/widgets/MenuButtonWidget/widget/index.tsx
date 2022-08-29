@@ -170,7 +170,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                     {
                       propertyName: "iconColor",
                       helpText: "Sets the icon color of a menu item",
-                      label: "Icon color",
+                      label: "图标颜色",
                       controlType: "COLOR_PICKER",
                       isBindProperty: false,
                       isTriggerProperty: false,
@@ -528,7 +528,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                     {
                       propertyName: "iconColor",
                       helpText: "Sets the icon color of a menu item",
-                      label: "Icon color",
+                      label: "图标颜色",
                       controlType: "COLOR_PICKER",
                       isBindProperty: false,
                       isTriggerProperty: false,
@@ -644,7 +644,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                     {
                       propertyName: "iconColor",
                       helpText: "Sets the icon color of a menu item",
-                      label: "Icon color",
+                      label: "图标颜色",
                       controlType: "COLOR_PICKER",
                       isBindProperty: false,
                       isTriggerProperty: false,
