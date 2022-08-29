@@ -239,7 +239,7 @@ export default [
     ],
   },
   {
-    sectionName: "Axis",
+    sectionName: "坐标轴配置",
     children: [
       {
         helpText: "设置x轴标签",
@@ -587,7 +587,7 @@ export const contentConfig = [
     ],
   },
   {
-    sectionName: "Axis",
+    sectionName: "坐标轴配置",
     children: [
       {
         propertyName: "setAdaptiveYMin",
