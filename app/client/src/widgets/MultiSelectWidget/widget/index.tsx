@@ -344,7 +344,7 @@ class MultiSelectWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Actions",
+        sectionName: "动作",
         children: [
           {
             helpText: "Triggers an action when a user selects an option",

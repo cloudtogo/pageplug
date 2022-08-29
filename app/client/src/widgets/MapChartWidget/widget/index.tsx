@@ -287,7 +287,7 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Actions",
+        sectionName: "动作",
         children: [
           {
             helpText:

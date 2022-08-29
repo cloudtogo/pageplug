@@ -159,7 +159,7 @@ class BaseInputWidget<
         ],
       },
       {
-        sectionName: "Actions",
+        sectionName: "动作",
         children: [
           {
             helpText: "Triggers an action when the text is changed",
