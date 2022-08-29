@@ -202,7 +202,7 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
           {
             propertyName: "accentColor",
             helpText: "Sets the background color of the widget",
-            label: "Accent color",
+            label: "强调色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -415,7 +415,7 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
           {
             propertyName: "accentColor",
             helpText: "Sets the background color of the widget",
-            label: "Accent Color",
+            label: "强调色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,

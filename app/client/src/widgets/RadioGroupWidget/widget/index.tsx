@@ -418,7 +418,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
           {
             propertyName: "accentColor",
             helpText: "Sets the accent color of the widget",
-            label: "Accent color",
+            label: "强调色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -757,7 +757,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
           {
             propertyName: "accentColor",
             helpText: "Sets the accent color of the widget",
-            label: "Accent color",
+            label: "强调色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
