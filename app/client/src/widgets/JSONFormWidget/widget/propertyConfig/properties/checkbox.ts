@@ -63,7 +63,7 @@ const PROPERTIES = {
     data: [
       {
         propertyName: "defaultValue",
-        label: "Default State",
+        label: "默认选中",
         helpText: "Sets the default checked state of the field",
         controlType: "SWITCH",
         isJSConvertible: true,
