@@ -426,7 +426,7 @@ class ButtonGroupWidget extends BaseWidget<
                     {
                       getStylesheetValue,
                       propertyName: "buttonColor",
-                      helpText: "Changes the color of the button",
+                      helpText: "修改按钮颜色",
                       label: "按钮颜色",
                       controlType: "COLOR_PICKER",
                       isJSConvertible: true,
@@ -874,7 +874,7 @@ class ButtonGroupWidget extends BaseWidget<
                     {
                       getStylesheetValue,
                       propertyName: "buttonColor",
-                      helpText: "Changes the color of the button",
+                      helpText: "修改按钮颜色",
                       label: "按钮颜色",
                       controlType: "COLOR_PICKER",
                       isJSConvertible: true,
