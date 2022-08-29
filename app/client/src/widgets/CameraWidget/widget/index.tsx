@@ -25,14 +25,14 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
             propertyName: "mode",
             label: "模式",
             controlType: "DROP_DOWN",
-            helpText: "Whether a picture is taken or a video is recorded",
+            helpText: "选择拍照模式还是录像模式",
             options: [
               {
-                label: "Image",
+                label: "拍照",
                 value: "CAMERA",
               },
               {
-                label: "Video",
+                label: "录像",
                 value: "VIDEO",
               },
             ],
@@ -67,8 +67,8 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
           },
           {
             propertyName: "isMirrored",
-            label: "Mirrored",
-            helpText: "Show camera preview and get the screenshot mirrored",
+            label: "显示镜像",
+            helpText: "是否显示镜像效果",
             controlType: "SWITCH",
             dependencies: ["mode"],
             isJSConvertible: true,
@@ -82,7 +82,7 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
         sectionName: "动作",
         children: [
           {
-            helpText: "Triggers an action when the image is captured",
+            helpText: "拍照时触发",
             propertyName: "onImageCapture",
             label: "OnImageCapture",
             controlType: "ACTION_SELECTOR",
@@ -179,14 +179,14 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
             propertyName: "mode",
             label: "模式",
             controlType: "DROP_DOWN",
-            helpText: "Whether a picture is taken or a video is recorded",
+            helpText: "选择拍照模式还是录像模式",
             options: [
               {
-                label: "Image",
+                label: "拍照",
                 value: "CAMERA",
               },
               {
-                label: "Video",
+                label: "录像",
                 value: "VIDEO",
               },
             ],
@@ -221,8 +221,8 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
           },
           {
             propertyName: "isMirrored",
-            label: "Mirrored",
-            helpText: "Show camera preview and get the screenshot mirrored",
+            label: "显示镜像",
+            helpText: "是否显示镜像效果",
             controlType: "SWITCH",
             dependencies: ["mode"],
             isJSConvertible: true,
@@ -236,7 +236,7 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
         sectionName: "事件",
         children: [
           {
-            helpText: "Triggers an action when the image is captured",
+            helpText: "拍照时触发",
             propertyName: "onImageCapture",
             label: "OnImageCapture",
             controlType: "ACTION_SELECTOR",
