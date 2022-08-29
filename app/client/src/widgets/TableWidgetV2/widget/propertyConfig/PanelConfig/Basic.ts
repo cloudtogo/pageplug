@@ -158,7 +158,7 @@ export default {
         ],
         styleChildren: [
           {
-            sectionName: "Icon",
+            sectionName: "图标配置",
             children: [
               {
                 propertyName: "iconName",
