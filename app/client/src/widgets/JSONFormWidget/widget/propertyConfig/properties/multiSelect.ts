@@ -147,7 +147,7 @@ const PROPERTIES = {
     },
     {
       propertyName: "placeholderText",
-      helpText: "Sets a Placeholder text",
+      helpText: "设置占位文本",
       label: "占位符",
       controlType: "JSON_FORM_COMPUTE_VALUE",
       placeholderText: "Search",
@@ -262,7 +262,7 @@ const PROPERTIES = {
     general: [
       {
         propertyName: "placeholderText",
-        helpText: "Sets a Placeholder text",
+        helpText: "设置占位文本",
         label: "占位符",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: "Search",
