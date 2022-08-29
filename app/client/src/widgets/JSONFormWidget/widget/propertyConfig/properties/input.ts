@@ -206,7 +206,7 @@ const PROPERTIES = {
     {
       propertyName: "allowCurrencyChange",
       label: "允许修改货币",
-      helpText: "Search by currency or country",
+      helpText: "通过国家或者货币搜索",
       controlType: "SWITCH",
       isBindProperty: true,
       isTriggerProperty: false,
@@ -569,7 +569,7 @@ const PROPERTIES = {
       {
         propertyName: "allowCurrencyChange",
         label: "允许修改货币",
-        helpText: "Search by currency or country",
+        helpText: "通过国家或者货币搜索",
         controlType: "SWITCH",
         isBindProperty: true,
         isTriggerProperty: false,
