@@ -273,7 +273,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Trigger an action on change of filterText",
+            helpText: "过滤关键字更改时触发",
             hidden: (props: SelectWidgetProps) => !props.serverSideFiltering,
             dependencies: ["serverSideFiltering"],
             propertyName: "onFilterUpdate",
@@ -631,7 +631,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText: "Trigger an action on change of filterText",
+            helpText: "过滤关键字更改时触发",
             hidden: (props: SelectWidgetProps) => !props.serverSideFiltering,
             dependencies: ["serverSideFiltering"],
             propertyName: "onFilterUpdate",
