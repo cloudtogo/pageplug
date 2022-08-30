@@ -191,12 +191,12 @@ export default [
     ],
   },
   {
-    sectionName: "Search & Filters",
+    sectionName: "搜索过滤",
     children: [
       {
         propertyName: "isVisibleSearch",
         helpText: "Toggle visibility of the search box",
-        label: "Allow Searching",
+        label: "允许搜索",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,

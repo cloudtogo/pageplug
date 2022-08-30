@@ -690,11 +690,11 @@ class MultiSelectWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "Search & Filters",
+        sectionName: "搜索过滤",
         children: [
           {
             propertyName: "isFilterable",
-            label: "Allow Searching",
+            label: "允许搜索",
             helpText: "让下拉列表支持数据过滤",
             controlType: "SWITCH",
             isJSConvertible: true,
