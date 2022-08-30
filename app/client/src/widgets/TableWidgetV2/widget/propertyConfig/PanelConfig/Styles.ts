@@ -142,7 +142,7 @@ export default {
     },
     {
       propertyName: "verticalAlignment",
-      label: "Vertical Alignment",
+      label: "垂直对齐",
       controlType: "ICON_TABS",
       options: [
         {
@@ -212,7 +212,7 @@ export default {
     },
     {
       propertyName: "cellBackground",
-      label: "Cell Background",
+      label: "单元格背景颜色",
       controlType: "PRIMARY_COLUMNS_COLOR_PICKER_V2",
       isJSConvertible: true,
       customJSControl: "TABLE_COMPUTE_VALUE",
