@@ -9,7 +9,7 @@ const PROPERTIES = {
   general: [
     {
       helpText:
-        "Sets the default value of the field. The array is updated when the default value changes",
+        "字段默认值，默认值修改后会自动更新字段当前值",
       propertyName: "defaultValue",
       label: "默认值",
       controlType: "JSON_FORM_COMPUTE_VALUE",
@@ -27,8 +27,8 @@ const PROPERTIES = {
   accessibility: [
     {
       propertyName: "isCollapsible",
-      label: "Collapsible",
-      helpText: "Makes the array items collapsible",
+      label: "可折叠",
+      helpText: "让数组元素可折叠",
       controlType: "SWITCH",
       isJSConvertible: true,
       isBindProperty: true,
@@ -43,14 +43,14 @@ const PROPERTIES = {
 
   sections: [
     {
-      sectionName: "Array Styles",
+      sectionName: "数组样式",
       isDefaultOpen: false,
       children: [
         {
           propertyName: "backgroundColor",
           label: "背景颜色",
           controlType: "COLOR_PICKER",
-          helpText: "Changes the background color",
+          helpText: "修改背景颜色",
           isJSConvertible: true,
           isBindProperty: true,
           isTriggerProperty: false,
@@ -65,8 +65,8 @@ const PROPERTIES = {
         },
         {
           propertyName: "borderWidth",
-          helpText: "输入边框厚度",
-          label: "Border Width",
+          helpText: "输入边框宽度",
+          label: "边框宽度",
           placeholderText: "以 px 为单位",
           controlType: "INPUT_TEXT",
           isBindProperty: true,
@@ -149,7 +149,7 @@ const PROPERTIES = {
         {
           propertyName: "cellBorderWidth",
           helpText: "Enter value for border width of the item",
-          label: "Border Width",
+          label: "边框宽度",
           placeholderText: "以 px 为单位",
           controlType: "INPUT_TEXT",
           isBindProperty: true,
@@ -214,7 +214,7 @@ const PROPERTIES = {
     data: [
       {
         helpText:
-          "Sets the default value of the field. The array is updated when the default value changes",
+          "字段默认值，默认值修改后会自动更新字段当前值",
         propertyName: "defaultValue",
         label: "默认值",
         controlType: "JSON_FORM_COMPUTE_VALUE",
@@ -232,8 +232,8 @@ const PROPERTIES = {
     general: [
       {
         propertyName: "isCollapsible",
-        label: "Collapsible",
-        helpText: "Makes the array items collapsible",
+        label: "可折叠",
+        helpText: "让数组元素可折叠",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
