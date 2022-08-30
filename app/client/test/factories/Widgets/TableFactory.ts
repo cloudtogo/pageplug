@@ -4,7 +4,7 @@ import { WidgetProps } from "widgets/BaseWidget";
 
 export const TableFactory = Factory.Sync.makeFactory<WidgetProps>({
   isVisible: true,
-  label: "Data",
+  label: "数据",
   widgetName: Factory.each((i) => `Table${i + 1}`),
 
   searchKey: "",
