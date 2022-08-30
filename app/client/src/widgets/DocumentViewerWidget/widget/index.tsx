@@ -71,9 +71,9 @@ class DocumentViewerWidget extends BaseWidget<
         children: [
           {
             helpText:
-              "Document url for preview. for URL, supported extensions are txt, pdf, docx, ppt, pptx, xlsx. ppt is currently not supported by base64.",
+              "需要预览文档的链接。如果是 URL，支持的文件扩展名包括 txt、pdf、docx、ppt、pptx 和 xlsx；如果是 base64，不支持 ppt。",
             propertyName: "docUrl",
-            label: "Document Link",
+            label: "文档链接",
             controlType: "INPUT_TEXT",
             placeholderText: "URL / Base64",
             isBindProperty: true,
@@ -91,7 +91,7 @@ class DocumentViewerWidget extends BaseWidget<
             },
           },
           {
-            helpText: "Controls visibility of the widget",
+            helpText: "控制组件显示/隐藏",
             propertyName: "isVisible",
             label: "是否显示",
             controlType: "SWITCH",
@@ -123,9 +123,9 @@ class DocumentViewerWidget extends BaseWidget<
         children: [
           {
             helpText:
-              "Document url for preview. for URL, supported extensions are txt, pdf, docx, ppt, pptx, xlsx. ppt is currently not supported by base64.",
+              "需要预览文档的链接。如果是 URL，支持的文件扩展名包括 txt、pdf、docx、ppt、pptx 和 xlsx；如果是 base64，不支持 ppt。",
             propertyName: "docUrl",
-            label: "Document Link",
+            label: "文档链接",
             controlType: "INPUT_TEXT",
             placeholderText: "URL / Base64",
             isBindProperty: true,
@@ -148,7 +148,7 @@ class DocumentViewerWidget extends BaseWidget<
         sectionName: "属性",
         children: [
           {
-            helpText: "Controls visibility of the widget",
+            helpText: "控制组件显示/隐藏",
             propertyName: "isVisible",
             label: "是否显示",
             controlType: "SWITCH",
