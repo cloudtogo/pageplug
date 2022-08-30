@@ -183,7 +183,7 @@ const PROPERTIES = {
       helpText:
         "Sets the default text of the field. The text is updated if the default text changes",
       propertyName: "defaultValue",
-      label: "Default Value",
+      label: "默认值",
       controlType: "JSON_FORM_COMPUTE_VALUE",
       placeholderText: "John Doe",
       isBindProperty: true,
@@ -499,7 +499,7 @@ const PROPERTIES = {
         propertyName: "defaultValue",
         helpText:
           "Sets the default text of the field. The text is updated if the default text changes",
-        label: "Default Value",
+        label: "默认值",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: "John Doe",
         isBindProperty: true,
