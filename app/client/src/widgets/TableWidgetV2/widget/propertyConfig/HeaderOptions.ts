@@ -6,8 +6,8 @@ export default {
   children: [
     {
       propertyName: "isVisibleSearch",
-      helpText: "Toggle visibility of the search box",
-      label: "Search",
+      helpText: "是否显示的搜索框",
+      label: "搜索",
       controlType: "SWITCH",
       isJSConvertible: true,
       isBindProperty: true,
@@ -16,8 +16,8 @@ export default {
     },
     {
       propertyName: "isVisibleFilters",
-      helpText: "Toggle visibility of the filters",
-      label: "Filters",
+      helpText: "是否显示过滤器",
+      label: "过滤",
       controlType: "SWITCH",
       isJSConvertible: true,
       isBindProperty: true,
