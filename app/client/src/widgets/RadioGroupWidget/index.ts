@@ -19,8 +19,8 @@ export const CONFIG = {
     labelTextSize: "0.875rem",
     labelWidth: 5,
     options: [
-      { label: "Yes", value: "Y" },
-      { label: "No", value: "N" },
+      { label: "是", value: "Y" },
+      { label: "不是", value: "N" },
     ],
     defaultOptionValue: "Y",
     isRequired: false,

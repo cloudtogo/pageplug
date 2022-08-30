@@ -38,7 +38,7 @@ export const CONFIG = {
                   },
                   position: { top: 0, left: 1 },
                   props: {
-                    text: "Page Views",
+                    text: "页面访问量",
                     fontSize: "0.75rem",
                     textColor: "#999999",
                     version: 1,
@@ -55,7 +55,7 @@ export const CONFIG = {
                     left: 1,
                   },
                   props: {
-                    text: "2.6 M",
+                    text: "2.6 万",
                     fontSize: THEMEING_TEXT_SIZES.lg,
                     fontStyle: "BOLD",
                     version: 1,
@@ -72,7 +72,7 @@ export const CONFIG = {
                     left: 1,
                   },
                   props: {
-                    text: "21% more than last month",
+                    text: "同比提升 21%",
                     fontSize: "0.75rem",
                     textColor: Colors.GREEN,
                     version: 1,

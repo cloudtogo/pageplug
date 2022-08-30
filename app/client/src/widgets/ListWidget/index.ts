@@ -77,17 +77,17 @@ export const CONFIG = {
     listData: [
       {
         id: "001",
-        name: "Blue",
+        name: "蓝",
         img: "https://assets.appsmith.com/widgets/default.png",
       },
       {
         id: "002",
-        name: "Green",
+        name: "绿",
         img: "https://assets.appsmith.com/widgets/default.png",
       },
       {
         id: "003",
-        name: "Red",
+        name: "红",
         img: "https://assets.appsmith.com/widgets/default.png",
       },
     ],

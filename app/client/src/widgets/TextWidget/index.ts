@@ -9,7 +9,7 @@ export const CONFIG = {
   iconSVG: IconSVG,
   searchTags: ["typography", "paragraph", "label"],
   defaults: {
-    text: "Label",
+    text: "文本",
     fontSize: DEFAULT_FONT_SIZE,
     fontStyle: "BOLD",
     textAlign: "LEFT",

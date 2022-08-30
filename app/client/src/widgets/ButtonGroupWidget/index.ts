@@ -24,7 +24,7 @@ export const CONFIG = {
     animateLoading: true,
     groupButtons: {
       groupButton1: {
-        label: "Favorite",
+        label: "喜欢",
         iconName: "heart",
         id: "groupButton1",
         widgetId: "",
@@ -36,7 +36,7 @@ export const CONFIG = {
         menuItems: {},
       },
       groupButton2: {
-        label: "Add",
+        label: "添加",
         iconName: "add",
         id: "groupButton2",
         buttonType: "SIMPLE",
@@ -48,7 +48,7 @@ export const CONFIG = {
         menuItems: {},
       },
       groupButton3: {
-        label: "More",
+        label: "更多",
         iconName: "more",
         id: "groupButton3",
         buttonType: "MENU",
@@ -59,7 +59,7 @@ export const CONFIG = {
         index: 2,
         menuItems: {
           menuItem1: {
-            label: "First Option",
+            label: "第一项",
             backgroundColor: "#FFFFFF",
             id: "menuItem1",
             widgetId: "",
@@ -69,7 +69,7 @@ export const CONFIG = {
             index: 0,
           },
           menuItem2: {
-            label: "Second Option",
+            label: "第二项",
             backgroundColor: "#FFFFFF",
             id: "menuItem2",
             widgetId: "",
@@ -79,7 +79,7 @@ export const CONFIG = {
             index: 1,
           },
           menuItem3: {
-            label: "Delete",
+            label: "删除",
             iconName: "trash",
             iconColor: "#FFFFFF",
             iconAlign: "right",

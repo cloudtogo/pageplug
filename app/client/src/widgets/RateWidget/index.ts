@@ -20,7 +20,7 @@ export const CONFIG = {
     isRequired: false,
     isAllowHalf: false,
     isDisabled: false,
-    tooltips: ["Terrible", "Bad", "Neutral", "Good", "Great"],
+    tooltips: ["烂透了", "不好", "一般", "好", "好极了"],
     widgetName: "Rating",
   },
   properties: {
