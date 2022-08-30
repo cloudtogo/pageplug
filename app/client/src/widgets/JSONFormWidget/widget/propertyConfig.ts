@@ -316,7 +316,7 @@ export const contentConfig = [
       {
         propertyName: `schema.${ROOT_SCHEMA_KEY}.children`,
         helpText: "Field configuration",
-        label: "Field Configuration",
+        label: "字段配置",
         controlType: "FIELD_CONFIGURATION",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -747,7 +747,7 @@ export default [
       {
         propertyName: `schema.${ROOT_SCHEMA_KEY}.children`,
         helpText: "Field configuration",
-        label: "Field Configuration",
+        label: "字段配置",
         controlType: "FIELD_CONFIGURATION",
         isBindProperty: false,
         isTriggerProperty: false,
