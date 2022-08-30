@@ -151,8 +151,7 @@ class CurrencyInputWidget extends BaseInputWidget<
               isTriggerProperty: false,
             },
             {
-              helpText:
-                "设置组件默认值，当默认值改变后，组件当前值会自动更新",
+              helpText: "设置组件默认值，当默认值改变后，组件当前值会自动更新",
               propertyName: "defaultText",
               label: "默认值",
               controlType: "INPUT_TEXT",
@@ -186,8 +185,7 @@ class CurrencyInputWidget extends BaseInputWidget<
           sectionName: "数据",
           children: [
             {
-              helpText:
-                "设置组件默认值，当默认值改变后，组件当前值会自动更新",
+              helpText: "设置组件默认值，当默认值改变后，组件当前值会自动更新",
               propertyName: "defaultText",
               label: "默认值",
               controlType: "INPUT_TEXT",
