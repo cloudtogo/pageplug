@@ -15,53 +15,53 @@ export const CONFIG = {
     columns: 24,
     widgetName: "Chart",
     chartType: "COLUMN_CHART",
-    chartName: "Sales Report",
+    chartName: "销售报告",
     allowScroll: false,
     version: 1,
     animateLoading: true,
     chartData: {
       [generateReactKey()]: {
-        seriesName: "Sales",
+        seriesName: "销售额",
         data: [
           {
-            x: "Product1",
+            x: "产品1",
             y: 20000,
           },
           {
-            x: "Product2",
+            x: "产品2",
             y: 22000,
           },
           {
-            x: "Product3",
+            x: "产品3",
             y: 32000,
           },
         ],
       },
     },
-    xAxisName: "Product Line",
-    yAxisName: "Revenue($)",
+    xAxisName: "产品线",
+    yAxisName: "收入（元）",
     labelOrientation: LabelOrientation.AUTO,
     customFusionChartConfig: {
       type: "column2d",
       dataSource: {
         data: [
           {
-            label: "Product1",
+            label: "产品1",
             value: 20000,
           },
           {
-            label: "Product2",
+            label: "产品2",
             value: 22000,
           },
           {
-            label: "Product3",
+            label: "产品3",
             value: 32000,
           },
         ],
         chart: {
-          caption: "Sales Report",
-          xAxisName: "Product Line",
-          yAxisName: "Revenue($)",
+          caption: "销售报告",
+          xAxisName: "产品线",
+          yAxisName: "收入（元）",
           theme: "fusion",
           alignCaptionWithCanvas: 1,
           // Caption styling =======================

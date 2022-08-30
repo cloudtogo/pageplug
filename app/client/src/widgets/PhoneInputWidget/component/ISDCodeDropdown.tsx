@@ -121,9 +121,9 @@ const getISDCodeOptions = (): Array<DropdownOption> => {
 export const ISDCodeDropdownOptions = getISDCodeOptions();
 
 export const getDefaultISDCode = () => ({
-  name: "United States",
-  dial_code: "+1",
-  code: "US",
+  name: "中国",
+  dial_code: "+86",
+  code: "CHN",
 });
 
 export const getSelectedISDCode = (dialCode?: string): DropdownOption => {

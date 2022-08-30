@@ -14,7 +14,7 @@ export const CONFIG = {
   searchTags: ["click", "submit"],
   defaults: {
     animateLoading: true,
-    text: "Submit",
+    text: "提交",
     buttonVariant: ButtonVariantTypes.PRIMARY,
     placement: ButtonPlacementTypes.CENTER,
     rows: 4,

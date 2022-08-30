@@ -38,7 +38,7 @@ export const CONFIG = {
                   },
                   position: { top: 1, left: 1.5 },
                   props: {
-                    text: "Form",
+                    text: "表单",
                     fontSize: "1.25rem",
                     version: 1,
                   },
@@ -54,7 +54,7 @@ export const CONFIG = {
                     left: 46,
                   },
                   props: {
-                    text: "Submit",
+                    text: "提交",
                     buttonVariant: ButtonVariantTypes.PRIMARY,
                     disabledWhenInvalid: true,
                     resetFormOnClick: true,
@@ -73,7 +73,7 @@ export const CONFIG = {
                     left: 30,
                   },
                   props: {
-                    text: "Reset",
+                    text: "重置",
                     buttonVariant: ButtonVariantTypes.SECONDARY,
                     disabledWhenInvalid: false,
                     resetFormOnClick: true,

@@ -14,7 +14,7 @@ export const CONFIG = {
     rows: 4,
     columns: 12,
     widgetName: "FormButton",
-    text: "Submit",
+    text: "提交",
     isDefaultClickDisabled: true,
     recaptchaType: RecaptchaTypes.V3,
     version: 1,
