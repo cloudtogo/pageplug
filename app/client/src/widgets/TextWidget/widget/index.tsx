@@ -266,7 +266,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "fontStyle",
-            label: "Font Style",
+            label: "字体样式",
             controlType: "BUTTON_TABS",
             options: [
               {
