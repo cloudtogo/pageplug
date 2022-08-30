@@ -57,8 +57,8 @@ export default {
     },
     {
       propertyName: "isCompact",
-      helpText: "Decides if menu items will consume lesser space",
-      label: "Compact",
+      helpText: "菜单项占用更少的空间",
+      label: "紧凑模式",
       controlType: "SWITCH",
       customJSControl: "TABLE_COMPUTE_VALUE",
       isJSConvertible: true,
