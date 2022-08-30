@@ -79,7 +79,7 @@ class TabsMigratorWidget extends BaseWidget<
               params: {
                 fn: selectedTabValidation,
                 expected: {
-                  type: "Tab Name (string)",
+                  type: "标签页名称 (string)",
                   example: "Tab 1",
                   autocompleteDataType: AutocompleteDataType.STRING,
                 },
