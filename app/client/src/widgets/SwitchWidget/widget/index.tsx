@@ -20,7 +20,7 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
             label: "文本",
             controlType: "INPUT_TEXT",
             helpText: "组件旁的标签",
-            placeholderText: "Enable Option",
+            placeholderText: "开启新时代",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -224,7 +224,7 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
             label: "文本",
             controlType: "INPUT_TEXT",
             helpText: "组件旁的标签",
-            placeholderText: "Enable Option",
+            placeholderText: "开启新时代",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -268,9 +268,8 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "defaultSwitchState",
-            label: "默认选中",
-            helpText:
-              "On / Off the Switch by default. Changes to the default selection update the widget state",
+            label: "默认开启",
+            helpText: "设置开关的默认状态，设置默认值会更新开关当前状态",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
