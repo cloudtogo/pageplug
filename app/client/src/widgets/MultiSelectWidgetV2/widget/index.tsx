@@ -335,7 +335,7 @@ class MultiSelectWidget extends BaseWidget<
             helpText:
               "Controls the visibility of select all option in dropdown.",
             propertyName: "allowSelectAll",
-            label: "Allow Select All",
+            label: "允许全选",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -796,7 +796,7 @@ class MultiSelectWidget extends BaseWidget<
             helpText:
               "Controls the visibility of select all option in dropdown.",
             propertyName: "allowSelectAll",
-            label: "Allow Select All",
+            label: "允许全选",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
