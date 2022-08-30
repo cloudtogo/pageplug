@@ -324,7 +324,7 @@ class RichTextEditorWidget extends BaseWidget<
           {
             propertyName: "defaultText",
             helpText:
-              "Sets the default text of the widget. The text is updated if the default text changes",
+              "设置组件默认值，当默认值改变后，组件当前值会自动更新",
             label: "Default Value",
             controlType: "INPUT_TEXT",
             placeholderText: "<b>Hello World</b>",

@@ -229,7 +229,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
           },
           {
             helpText:
-              "Sets the default text of the widget. The text is updated if the default text changes",
+              "设置组件默认值，当默认值改变后，组件当前值会自动更新",
             propertyName: "defaultText",
             label: "默认值",
             controlType: "INPUT_TEXT",
