@@ -438,7 +438,7 @@ export default {
       ],
     },
     {
-      sectionName: "Text Formatting",
+      sectionName: "文本样式",
       children: [
         {
           propertyName: "textSize",
