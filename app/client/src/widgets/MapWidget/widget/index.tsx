@@ -52,7 +52,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "mapCenter",
-            label: "Initial location",
+            label: "初始位置",
             isJSConvertible: true,
             controlType: "LOCATION_SEARCH",
             isBindProperty: true,
@@ -87,10 +87,10 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
           },
           {
             propertyName: "defaultMarkers",
-            label: "Default markers",
+            label: "默认标记",
             controlType: "INPUT_TEXT",
             inputType: "ARRAY",
-            helpText: "Sets the default markers on the map",
+            helpText: "设置地图的默认标记",
             placeholderText: '[{ "lat": "val1", "long": "val2" }]',
             isBindProperty: true,
             isTriggerProperty: false,
@@ -140,9 +140,9 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
           },
           {
             propertyName: "isClickedMarkerCentered",
-            label: "Map & Marker centering",
+            label: "居中标记",
             helpText:
-              "Controls whether the clicked marker is centered on the map",
+              "是否将选中的标记在地图上居中显示",
             controlType: "SWITCH",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -263,7 +263,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "mapCenter",
-            label: "Initial location",
+            label: "初始位置",
             isJSConvertible: true,
             controlType: "LOCATION_SEARCH",
             isBindProperty: true,
@@ -298,10 +298,10 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
           },
           {
             propertyName: "defaultMarkers",
-            label: "Default markers",
+            label: "默认标记",
             controlType: "INPUT_TEXT",
             inputType: "ARRAY",
-            helpText: "Sets the default markers on the map",
+            helpText: "设置地图的默认标记",
             placeholderText: '[{ "lat": "val1", "long": "val2" }]',
             isBindProperty: true,
             isTriggerProperty: false,
@@ -394,9 +394,9 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
           },
           {
             propertyName: "isClickedMarkerCentered",
-            label: "Map & Marker centering",
+            label: "居中标记",
             helpText:
-              "Controls whether the clicked marker is centered on the map",
+              "是否将选中的标记在地图上居中显示",
             controlType: "SWITCH",
             isBindProperty: false,
             isTriggerProperty: false,
