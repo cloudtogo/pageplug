@@ -68,8 +68,8 @@ class StatboxWidget extends ContainerWidget {
           },
           {
             propertyName: "borderWidth",
-            helpText: "输入边框厚度",
-            label: "Border Width",
+            helpText: "输入边框宽度",
+            label: "边框宽度",
             placeholderText: "以 px 为单位",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
@@ -176,8 +176,8 @@ class StatboxWidget extends ContainerWidget {
         children: [
           {
             propertyName: "borderWidth",
-            helpText: "输入边框厚度",
-            label: "Border Width",
+            helpText: "输入边框宽度",
+            label: "边框宽度",
             placeholderText: "以 px 为单位",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
