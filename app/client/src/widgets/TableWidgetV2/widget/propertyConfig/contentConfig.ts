@@ -122,7 +122,7 @@ export default [
     children: [
       {
         propertyName: "isVisiblePagination",
-        helpText: "Toggle visibility of the pagination",
+        helpText: "是否显示分页器",
         label: "Show Pagination",
         controlType: "SWITCH",
         isJSConvertible: true,
@@ -380,10 +380,10 @@ export default [
       },
       {
         propertyName: "delimiter",
-        label: "CSV Separator",
+        label: "CSV 分隔符",
         controlType: "INPUT_TEXT",
-        placeholderText: "Enter CSV separator",
-        helpText: "The character used for separating the CSV download file.",
+        placeholderText: "输入 CSV 分隔符",
+        helpText: "用于分隔 CSV 下载文件的字符",
         isBindProperty: true,
         isTriggerProperty: false,
         defaultValue: ",",
