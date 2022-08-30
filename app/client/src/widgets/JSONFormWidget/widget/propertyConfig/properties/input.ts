@@ -273,7 +273,7 @@ const PROPERTIES = {
     {
       helpText: "Changes the country code",
       propertyName: "dialCode",
-      label: "Default Country Code",
+      label: "默认国家编号",
       enableSearch: true,
       dropdownHeight: "195px",
       controlType: "DROP_DOWN",
@@ -522,7 +522,7 @@ const PROPERTIES = {
       {
         propertyName: "dialCode",
         helpText: "Changes the country code",
-        label: "Default Country Code",
+        label: "默认国家编号",
         enableSearch: true,
         dropdownHeight: "195px",
         controlType: "DROP_DOWN",

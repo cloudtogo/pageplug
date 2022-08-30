@@ -87,7 +87,7 @@ class PhoneInputWidget extends BaseInputWidget<
             {
               helpText: "Changes the country code",
               propertyName: "defaultDialCode",
-              label: "Default Country Code",
+              label: "默认国家编号",
               enableSearch: true,
               dropdownHeight: "156px",
               controlType: "DROP_DOWN",
@@ -168,7 +168,7 @@ class PhoneInputWidget extends BaseInputWidget<
             {
               helpText: "Changes the country code",
               propertyName: "defaultDialCode",
-              label: "Default Country Code",
+              label: "默认国家编号",
               enableSearch: true,
               dropdownHeight: "156px",
               controlType: "DROP_DOWN",
