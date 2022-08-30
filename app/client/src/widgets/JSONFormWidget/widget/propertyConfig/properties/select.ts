@@ -158,7 +158,7 @@ const PROPERTIES = {
     },
     {
       propertyName: "onFilterUpdate",
-      helpText: "Trigger an action on change of filterText",
+      helpText: "过滤关键字更改时触发",
       label: "onFilterUpdate",
       controlType: "ACTION_SELECTOR",
       isJSConvertible: true,
@@ -262,7 +262,7 @@ const PROPERTIES = {
       },
       {
         propertyName: "onFilterUpdate",
-        helpText: "Trigger an action on change of filterText",
+        helpText: "过滤关键字更改时触发",
         label: "onFilterUpdate",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,

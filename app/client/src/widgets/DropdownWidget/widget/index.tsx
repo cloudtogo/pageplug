@@ -326,7 +326,7 @@ class DropdownWidget extends BaseWidget<DropdownWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Trigger an action on change of filterText",
+            helpText: "过滤关键字更改时触发",
             hidden: (props: DropdownWidgetProps) => !props.serverSideFiltering,
             dependencies: ["serverSideFiltering"],
             propertyName: "onFilterUpdate",

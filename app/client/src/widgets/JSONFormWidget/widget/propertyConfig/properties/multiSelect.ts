@@ -214,7 +214,7 @@ const PROPERTIES = {
         getSchemaItem(...args).fieldTypeNotMatches(FieldType.MULTISELECT),
     },
     {
-      helpText: "Trigger an action on change of filterText",
+      helpText: "过滤关键字更改时触发",
       propertyName: "onFilterUpdate",
       label: "onFilterUpdate",
       controlType: "ACTION_SELECTOR",
@@ -333,7 +333,7 @@ const PROPERTIES = {
           getSchemaItem(...args).fieldTypeNotMatches(FieldType.MULTISELECT),
       },
       {
-        helpText: "Trigger an action on change of filterText",
+        helpText: "过滤关键字更改时触发",
         propertyName: "onFilterUpdate",
         label: "onFilterUpdate",
         controlType: "ACTION_SELECTOR",
