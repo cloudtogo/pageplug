@@ -98,8 +98,8 @@ class RichTextEditorWidget extends BaseWidget<
           },
           {
             propertyName: "isToolbarHidden",
-            label: "Hide toolbar",
-            helpText: "Controls the visibility of the toolbar",
+            label: "隐藏工具栏",
+            helpText: "设置是否隐藏工具栏",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -158,8 +158,7 @@ class RichTextEditorWidget extends BaseWidget<
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
@@ -272,8 +271,7 @@ class RichTextEditorWidget extends BaseWidget<
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
 
             isJSConvertible: true,
@@ -284,8 +282,7 @@ class RichTextEditorWidget extends BaseWidget<
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -304,9 +301,8 @@ class RichTextEditorWidget extends BaseWidget<
         children: [
           {
             propertyName: "inputType",
-            helpText:
-              "Sets the input type of the default text property in widget.",
-            label: "Input Type",
+            helpText: "内容输入方式，支持HTML和Markdown",
+            label: "输入格式",
             controlType: "DROP_DOWN",
             options: [
               {
@@ -323,8 +319,7 @@ class RichTextEditorWidget extends BaseWidget<
           },
           {
             propertyName: "defaultText",
-            helpText:
-              "设置组件默认值，当默认值改变后，组件当前值会自动更新",
+            helpText: "设置组件默认值，当默认值改变后，组件当前值会自动更新",
             label: "默认值",
             controlType: "INPUT_TEXT",
             placeholderText: "<b>Hello World</b>",
@@ -384,8 +379,7 @@ class RichTextEditorWidget extends BaseWidget<
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
@@ -456,8 +450,8 @@ class RichTextEditorWidget extends BaseWidget<
           },
           {
             propertyName: "isToolbarHidden",
-            label: "Hide toolbar",
-            helpText: "Controls the visibility of the toolbar",
+            label: "隐藏工具栏",
+            helpText: "设置是否隐藏工具栏",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -564,8 +558,7 @@ class RichTextEditorWidget extends BaseWidget<
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
 
             isJSConvertible: true,
@@ -576,8 +569,7 @@ class RichTextEditorWidget extends BaseWidget<
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
