@@ -34,7 +34,7 @@ export function documentUrlValidation(value: unknown): ValidationResponse {
         return {
           isValid: false,
           parsed: "",
-          messages: ["Provided URL / Base64 is invalid."],
+          messages: ["填写的 URL / Base64 无效"],
         };
       }
     } else if (base64Regex.test(value as string)) {
@@ -48,7 +48,7 @@ export function documentUrlValidation(value: unknown): ValidationResponse {
       return {
         isValid: false,
         parsed: "",
-        messages: ["Provided URL / Base64 is invalid."],
+        messages: ["填写的 URL / Base64 无效"],
       };
     }
   }
