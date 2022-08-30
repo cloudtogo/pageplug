@@ -180,7 +180,7 @@ const PROPERTIES = {
       {
         propertyName: "defaultValue",
         helpText: "默认选中这个值",
-        label: "Default Selected Value",
+        label: "默认选中值",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: '{ "label": "Option1", "value": "Option2" }',
         isBindProperty: true,
