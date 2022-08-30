@@ -192,7 +192,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             isTriggerProperty: false,
           },
           {
-            helpText: "No. of decimals in currency input",
+            helpText: "货币精确到小数点后几位",
             propertyName: "decimalsInCurrency",
             label: "小数位",
             controlType: "DROP_DOWN",
