@@ -568,7 +568,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           {
             propertyName: "minDate",
             label: "最小日期",
-            helpText: "Defines the min date for this widget",
+            helpText: "设置组件最小日期",
             controlType: "DATE_PICKER",
             useValidationMessage: true,
             isJSConvertible: true,
