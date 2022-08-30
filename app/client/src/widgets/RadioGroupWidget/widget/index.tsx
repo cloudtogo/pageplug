@@ -260,11 +260,11 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
             isTriggerProperty: false,
             options: [
               {
-                label: "Left",
+                label: "左对齐",
                 value: Alignment.LEFT,
               },
               {
-                label: "Right",
+                label: "右对齐",
                 value: Alignment.RIGHT,
               },
             ],
@@ -740,11 +740,11 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
             isTriggerProperty: false,
             options: [
               {
-                label: "Left",
+                label: "左对齐",
                 value: Alignment.LEFT,
               },
               {
-                label: "Right",
+                label: "右对齐",
                 value: Alignment.RIGHT,
               },
             ],
