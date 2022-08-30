@@ -160,13 +160,13 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             dependencies: ["inputType"],
           },
           {
-            helpText: "Changes the country code",
+            helpText: "修改默认的电话国家编号",
             propertyName: "phoneNumberCountryCode",
             label: "默认国家编号",
             enableSearch: true,
             dropdownHeight: "195px",
             controlType: "DROP_DOWN",
-            searchPlaceholderText: "Search by code or country name",
+            searchPlaceholderText: "通过国家名称或编号搜索",
             options: ISDCodeDropdownOptions,
             hidden: (props: InputWidgetProps) => {
               return props.inputType !== InputTypes.PHONE_NUMBER;
