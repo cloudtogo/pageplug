@@ -96,7 +96,7 @@ export default [
                       value: "url",
                     },
                     {
-                      label: "Number",
+                      label: "数字",
                       value: "number",
                     },
                     {
