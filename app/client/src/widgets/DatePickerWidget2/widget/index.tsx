@@ -398,7 +398,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           {
             helpText: "Sets the format of the selected date",
             propertyName: "dateFormat",
-            label: "Date Format",
+            label: "日期格式",
             controlType: "DROP_DOWN",
             isJSConvertible: true,
             optionWidth: "340px",
