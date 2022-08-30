@@ -271,13 +271,13 @@ const PROPERTIES = {
       validation: { type: ValidationTypes.BOOLEAN },
     },
     {
-      helpText: "Changes the country code",
+      helpText: "修改默认的电话国家编号",
       propertyName: "dialCode",
       label: "默认国家编号",
       enableSearch: true,
       dropdownHeight: "195px",
       controlType: "DROP_DOWN",
-      searchPlaceholderText: "Search by code or country name",
+      searchPlaceholderText: "通过国家名称或编号搜索",
       options: ISDCodeDropdownOptions,
       hidden: (...args: HiddenFnParams) =>
         getSchemaItem(...args).fieldTypeNotMatches(
@@ -521,12 +521,12 @@ const PROPERTIES = {
       },
       {
         propertyName: "dialCode",
-        helpText: "Changes the country code",
+        helpText: "修改默认的电话国家编号",
         label: "默认国家编号",
         enableSearch: true,
         dropdownHeight: "195px",
         controlType: "DROP_DOWN",
-        searchPlaceholderText: "Search by code or country name",
+        searchPlaceholderText: "通过国家名称或编号搜索",
         options: ISDCodeDropdownOptions,
         hidden: (...args: HiddenFnParams) =>
           getSchemaItem(...args).fieldTypeNotMatches(
