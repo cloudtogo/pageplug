@@ -137,7 +137,7 @@ const PropertyPaneConfig = [
       },
       {
         propertyName: "itemBackgroundColor",
-        label: "Item Background Color",
+        label: "列表项背景颜色",
         controlType: "COLOR_PICKER",
         isJSConvertible: true,
         isBindProperty: true,
@@ -155,10 +155,10 @@ const PropertyPaneConfig = [
         },
       },
       {
-        helpText: "Spacing between items in Pixels",
+        helpText: "列表项之间的像素距离",
         placeholderText: "0",
         propertyName: "gridGap",
-        label: "Item Spacing (px)",
+        label: "列表项间距 (px)",
         controlType: "INPUT_TEXT",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -178,8 +178,7 @@ const PropertyPaneConfig = [
       {
         propertyName: "boxShadow",
         label: "阴影",
-        helpText:
-          "组件轮廓投影",
+        helpText: "组件轮廓投影",
         controlType: "BOX_SHADOW_OPTIONS",
         isJSConvertible: true,
         isBindProperty: true,
@@ -314,10 +313,10 @@ export const PropertyPaneStyleConfig = [
     sectionName: "属性",
     children: [
       {
-        helpText: "Spacing between items in Pixels",
+        helpText: "列表项之间的像素距离",
         placeholderText: "0",
         propertyName: "gridGap",
-        label: "Item Spacing (px)",
+        label: "列表项间距 (px)",
         controlType: "INPUT_TEXT",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -331,7 +330,7 @@ export const PropertyPaneStyleConfig = [
     children: [
       {
         propertyName: "itemBackgroundColor",
-        label: "Item Background Color",
+        label: "列表项背景颜色",
         controlType: "COLOR_PICKER",
         isJSConvertible: true,
         isBindProperty: true,
@@ -384,8 +383,7 @@ export const PropertyPaneStyleConfig = [
       {
         propertyName: "boxShadow",
         label: "阴影",
-        helpText:
-          "组件轮廓投影",
+        helpText: "组件轮廓投影",
         controlType: "BOX_SHADOW_OPTIONS",
         isJSConvertible: true,
         isBindProperty: true,
