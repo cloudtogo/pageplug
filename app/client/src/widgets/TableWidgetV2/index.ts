@@ -22,7 +22,7 @@ export const CONFIG = {
     animateLoading: true,
     defaultSelectedRowIndex: 0,
     defaultSelectedRowIndices: [0],
-    label: "Data",
+    label: "数据",
     widgetName: "Table",
     searchKey: "",
     textSize: "0.875rem",

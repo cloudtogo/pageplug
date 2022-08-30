@@ -122,8 +122,8 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
             },
           },
           {
-            helpText: "Sets the map title",
-            placeholderText: "Enter title",
+            helpText: "地图标题",
+            placeholderText: "输入标题",
             propertyName: "mapTitle",
             label: "标题",
             controlType: "INPUT_TEXT",
@@ -144,12 +144,12 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Map Chart Data",
+        sectionName: "地图图表数据",
         children: [
           {
-            helpText: "Populates the map with the data",
+            helpText: "地图数据",
             propertyName: "data",
-            label: "Data",
+            label: "数据",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -187,8 +187,8 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
           },
           {
             propertyName: "showLabels",
-            label: "Show Labels",
-            helpText: "Sets whether entity labels will be shown or hidden",
+            label: "显示标签",
+            helpText: "设置是否显示标签",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -201,12 +201,11 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
         sectionName: "样式",
         children: [
           {
-            helpText:
-              "Defines ranges for categorizing entities on a map based on their data values.",
+            helpText: "设置地图数据项的颜色范围",
             propertyName: "colorRange",
-            label: "Color Range",
+            label: "颜色范围",
             controlType: "INPUT_TEXT",
-            placeholderText: "Color range object",
+            placeholderText: "颜色范围对象",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: {
@@ -265,8 +264,7 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -276,8 +274,7 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -290,8 +287,7 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
         sectionName: "动作",
         children: [
           {
-            helpText:
-              "Triggers an action when the map chart data point is clicked",
+            helpText: "点击地图图表数据点时触发",
             propertyName: "onDataPointClick",
             label: "onDataPointClick",
             controlType: "ACTION_SELECTOR",
@@ -369,7 +365,7 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
             },
           },
           {
-            helpText: "Populates the map with the data",
+            helpText: "地图数据",
             propertyName: "data",
             label: "Chart Data",
             controlType: "INPUT_TEXT",
@@ -413,8 +409,8 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
         sectionName: "属性",
         children: [
           {
-            helpText: "Sets the map title",
-            placeholderText: "Enter title",
+            helpText: "地图标题",
+            placeholderText: "输入标题",
             propertyName: "mapTitle",
             label: "标题",
             controlType: "INPUT_TEXT",
@@ -434,8 +430,8 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
           },
           {
             propertyName: "showLabels",
-            label: "Show Labels",
-            helpText: "Sets whether entity labels will be shown or hidden",
+            label: "显示标签",
+            helpText: "设置是否显示标签",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -448,8 +444,7 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
         sectionName: "事件",
         children: [
           {
-            helpText:
-              "Triggers an action when the map chart data point is clicked",
+            helpText: "点击地图图表数据点时触发",
             propertyName: "onDataPointClick",
             label: "onDataPointClick",
             controlType: "ACTION_SELECTOR",
@@ -468,12 +463,11 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
         sectionName: "属性",
         children: [
           {
-            helpText:
-              "Defines ranges for categorizing entities on a map based on their data values.",
+            helpText: "设置地图数据项的颜色范围",
             propertyName: "colorRange",
-            label: "Color Range",
+            label: "颜色范围",
             controlType: "INPUT_TEXT",
-            placeholderText: "Color range object",
+            placeholderText: "颜色范围对象",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: {
@@ -537,8 +531,7 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -548,8 +541,7 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,

@@ -21,7 +21,7 @@ export const CONFIG = {
     columns: 34,
     animateLoading: true,
     defaultSelectedRow: "0",
-    label: "Data",
+    label: "数据",
     widgetName: "Table",
     searchKey: "",
     textSize: "0.875rem",
