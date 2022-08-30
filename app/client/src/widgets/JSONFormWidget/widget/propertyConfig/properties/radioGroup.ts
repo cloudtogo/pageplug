@@ -53,7 +53,7 @@ const PROPERTIES = {
     {
       propertyName: "options",
       helpText:
-        "Allows users to select from the given option(s). Values must be unique",
+        "用户可选项，选项值必须唯一",
       label: "选项",
       controlType: "INPUT_TEXT",
       placeholderText: '[{ "label": "选项1", "value": "选项2" }]',
@@ -119,7 +119,7 @@ const PROPERTIES = {
       {
         propertyName: "options",
         helpText:
-          "Allows users to select from the given option(s). Values must be unique",
+          "用户可选项，选项值必须唯一",
         label: "选项",
         controlType: "INPUT_TEXT",
         placeholderText: '[{ "label": "选项1", "value": "选项2" }]',

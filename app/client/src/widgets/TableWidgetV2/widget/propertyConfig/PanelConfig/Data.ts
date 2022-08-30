@@ -77,7 +77,7 @@ export default {
     {
       helpText: "The alias that you use in selectedrow",
       propertyName: "alias",
-      label: "Property Name",
+      label: "属性名",
       controlType: "INPUT_TEXT",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         const columnId = propertyPath.match(/primaryColumns\.(.*)\.alias/);

@@ -119,7 +119,7 @@ const COMMON_PROPERTIES = {
   fieldType: [
     {
       propertyName: "fieldType",
-      label: "Field Type",
+      label: "字段类型",
       controlType: "DROP_DOWN",
       isBindProperty: false,
       isTriggerProperty: false,
@@ -134,8 +134,7 @@ const COMMON_PROPERTIES = {
   options: [
     {
       propertyName: "options",
-      helpText:
-        "Allows users to select from the given option(s). Values must be unique",
+      helpText: "用户可选项，选项值必须唯一",
       label: "选项",
       controlType: "INPUT_TEXT",
       placeholderText: '[{ "label": "选项1", "value": "选项2" }]',
@@ -180,9 +179,8 @@ const COMMON_PROPERTIES = {
   customField: [
     {
       propertyName: "accessor",
-      helpText:
-        "Sets the property name of the field which can be used to access the value in formData and fieldState.",
-      label: "Property Name",
+      helpText: "设置字段属性名让用户可以在表单数据中访问到对应的值",
+      label: "属性名",
       controlType: "INPUT_TEXT",
       placeholderText: "name",
       isBindProperty: true,
@@ -211,7 +209,7 @@ const COMMON_PROPERTIES = {
   accessibility: [
     {
       propertyName: "label",
-      helpText: "Sets the label text of the field",
+      helpText: "设置字段标签文本",
       label: "标签",
       controlType: "INPUT_TEXT",
       placeholderText: "名称：",
@@ -242,7 +240,7 @@ const COMMON_PROPERTIES = {
     },
     {
       propertyName: "isVisible",
-      helpText: "Controls the visibility of the field",
+      helpText: "设置字段是否显示",
       label: "是否显示",
       controlType: "SWITCH",
       defaultValue: true,
@@ -260,7 +258,7 @@ const COMMON_PROPERTIES = {
     },
     {
       propertyName: "isDisabled",
-      helpText: "Disables the field",
+      helpText: "禁用字段",
       label: "禁用",
       controlType: "SWITCH",
       isJSConvertible: true,
@@ -273,10 +271,10 @@ const COMMON_PROPERTIES = {
     },
     {
       propertyName: "tooltip",
-      helpText: "Show help text or details about current field",
+      helpText: "当前字段的帮助信息",
       label: "提示",
       controlType: "JSON_FORM_COMPUTE_VALUE",
-      placeholderText: "Passwords must be at-least 6 chars",
+      placeholderText: "密码必须不少于6位",
       isBindProperty: true,
       isTriggerProperty: false,
       validation: { type: ValidationTypes.TEXT },
@@ -368,7 +366,7 @@ const COMMON_PROPERTIES = {
   actions: [
     {
       propertyName: "onFocus",
-      helpText: "Triggers an action when focused.",
+      helpText: "聚焦时触发",
       label: "onFocus",
       controlType: "ACTION_SELECTOR",
       isJSConvertible: true,
@@ -383,7 +381,7 @@ const COMMON_PROPERTIES = {
     },
     {
       propertyName: "onBlur",
-      helpText: "Triggers an action when the field loses focus.",
+      helpText: "失焦时触发",
       label: "onBlur",
       controlType: "ACTION_SELECTOR",
       isJSConvertible: true,
@@ -400,7 +398,7 @@ const COMMON_PROPERTIES = {
   styles: [
     {
       propertyName: "accentColor",
-      helpText: "Sets the accent color",
+      helpText: "设置强调色",
       label: "强调色",
       controlType: "COLOR_PICKER",
       customJSControl: "JSON_FORM_COMPUTE_VALUE",
@@ -431,8 +429,7 @@ const COMMON_PROPERTIES = {
     {
       propertyName: "boxShadow",
       label: "阴影",
-      helpText:
-        "组件轮廓投影",
+      helpText: "组件轮廓投影",
       controlType: "BOX_SHADOW_OPTIONS",
       customJSControl: "JSON_FORM_COMPUTE_VALUE",
       isJSConvertible: true,
@@ -450,7 +447,7 @@ const COMMON_PROPERTIES = {
     data: [
       {
         propertyName: "fieldType",
-        label: "Field Type",
+        label: "字段类型",
         controlType: "DROP_DOWN",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -463,9 +460,8 @@ const COMMON_PROPERTIES = {
       },
       {
         propertyName: "accessor",
-        helpText:
-          "Sets the property name of the field which can be used to access the value in formData and fieldState.",
-        label: "Property Name",
+        helpText: "设置字段属性名让用户可以在表单数据中访问到对应的值",
+        label: "属性名",
         controlType: "INPUT_TEXT",
         placeholderText: "name",
         isBindProperty: true,
@@ -492,8 +488,7 @@ const COMMON_PROPERTIES = {
       },
       {
         propertyName: "options",
-        helpText:
-          "Allows users to select from the given option(s). Values must be unique",
+        helpText: "用户可选项，选项值必须唯一",
         label: "选项",
         controlType: "INPUT_TEXT",
         placeholderText: '[{ "label": "选项1", "value": "选项2" }]',
@@ -538,10 +533,10 @@ const COMMON_PROPERTIES = {
     general: [
       {
         propertyName: "tooltip",
-        helpText: "Show help text or details about current field",
+        helpText: "当前字段的帮助信息",
         label: "提示",
         controlType: "JSON_FORM_COMPUTE_VALUE",
-        placeholderText: "Passwords must be at-least 6 chars",
+        placeholderText: "密码必须不少于6位",
         isBindProperty: true,
         isTriggerProperty: false,
         validation: { type: ValidationTypes.TEXT },
@@ -552,7 +547,7 @@ const COMMON_PROPERTIES = {
     label: [
       {
         propertyName: "label",
-        helpText: "Sets the label text of the field",
+        helpText: "设置字段标签文本",
         label: "文本",
         controlType: "INPUT_TEXT",
         placeholderText: "名称：",
@@ -566,7 +561,7 @@ const COMMON_PROPERTIES = {
     generalSwitch: [
       {
         propertyName: "isVisible",
-        helpText: "Controls the visibility of the field",
+        helpText: "设置字段是否显示",
         label: "是否显示",
         controlType: "SWITCH",
         defaultValue: true,
@@ -584,7 +579,7 @@ const COMMON_PROPERTIES = {
       },
       {
         propertyName: "isDisabled",
-        helpText: "Disables the field",
+        helpText: "禁用字段",
         label: "禁用",
         controlType: "SWITCH",
         isJSConvertible: true,
@@ -599,7 +594,7 @@ const COMMON_PROPERTIES = {
     events: [
       {
         propertyName: "onFocus",
-        helpText: "Triggers an action when focused.",
+        helpText: "聚焦时触发",
         label: "onFocus",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
@@ -614,7 +609,7 @@ const COMMON_PROPERTIES = {
       },
       {
         propertyName: "onBlur",
-        helpText: "Triggers an action when the field loses focus.",
+        helpText: "失焦时触发",
         label: "onBlur",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
@@ -732,8 +727,7 @@ const COMMON_PROPERTIES = {
       {
         propertyName: "boxShadow",
         label: "阴影",
-        helpText:
-          "组件轮廓投影",
+        helpText: "组件轮廓投影",
         controlType: "BOX_SHADOW_OPTIONS",
         customJSControl: "JSON_FORM_COMPUTE_VALUE",
         isJSConvertible: true,
@@ -749,7 +743,7 @@ const COMMON_PROPERTIES = {
     color: [
       {
         propertyName: "accentColor",
-        helpText: "Sets the accent color",
+        helpText: "设置强调色",
         label: "强调色",
         controlType: "COLOR_PICKER",
         customJSControl: "JSON_FORM_COMPUTE_VALUE",
