@@ -42,7 +42,7 @@ class FormButtonWidget extends ButtonWidget {
           propertyName: "tooltip",
           label: "提示",
           controlType: "INPUT_TEXT",
-          placeholderText: "Enter tooltip text",
+          placeholderText: "请输入提示信息",
           isBindProperty: true,
           isTriggerProperty: false,
           validation: { type: ValidationTypes.TEXT },
@@ -71,18 +71,18 @@ class FormButtonWidget extends ButtonWidget {
         {
           propertyName: "googleRecaptchaKey",
           label: "Google Recaptcha Key",
-          helpText: "Sets Google Recaptcha v3 site key for button",
+          helpText: "给按钮设置 Google Recaptcha v3 site key",
           controlType: "INPUT_TEXT",
-          placeholderText: "Enter google recaptcha key",
+          placeholderText: "请输入 google recaptcha key",
           isBindProperty: true,
           isTriggerProperty: false,
           validation: { type: ValidationTypes.TEXT },
         },
         {
           propertyName: "recaptchaType",
-          label: "Google reCAPTCHA Version",
+          label: "Google reCAPTCHA 版本",
           controlType: "DROP_DOWN",
-          helpText: "Select reCAPTCHA version",
+          helpText: "请选择 reCAPTCHA 版本",
           options: [
             {
               label: "reCAPTCHA v3",
