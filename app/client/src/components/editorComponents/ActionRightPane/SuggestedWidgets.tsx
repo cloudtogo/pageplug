@@ -64,7 +64,7 @@ type WidgetBindingInfo = {
 
 export const WIDGET_DATA_FIELD_MAP: Record<string, WidgetBindingInfo> = {
   LIST_WIDGET: {
-    label: "items",
+    label: "数据项",
     propertyName: "listData",
     widgetName: "List",
     image: "https://assets.appsmith.com/widgetSuggestion/list.svg",

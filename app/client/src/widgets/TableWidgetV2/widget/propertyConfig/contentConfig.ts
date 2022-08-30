@@ -134,7 +134,7 @@ export default [
         helpText:
           "Bind the Table.pageNo property in your API and call it onPageChange",
         propertyName: "serverSidePaginationEnabled",
-        label: "Server Side Pagination",
+        label: "服务端分页",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
