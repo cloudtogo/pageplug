@@ -226,7 +226,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               helpText:
                 "Sets the default text of the widget. The text is updated if the default text changes",
               propertyName: "defaultText",
-              label: "Default Text",
+              label: "默认值",
               controlType: "INPUT_TEXT",
               placeholderText: "John Doe",
               isBindProperty: true,
