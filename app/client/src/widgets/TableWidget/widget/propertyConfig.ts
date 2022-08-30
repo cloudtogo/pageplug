@@ -1566,9 +1566,9 @@ export default [
     sectionName: "标题配置",
     children: [
       {
-        helpText: "Toggle visibility of the search box",
+        helpText: "是否显示的搜索框",
         propertyName: "isVisibleSearch",
-        label: "Search",
+        label: "搜索",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -1576,9 +1576,9 @@ export default [
         validation: { type: ValidationTypes.BOOLEAN },
       },
       {
-        helpText: "Toggle visibility of the filters",
+        helpText: "是否显示过滤器",
         propertyName: "isVisibleFilters",
-        label: "Filters",
+        label: "过滤",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
