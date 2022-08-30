@@ -187,8 +187,8 @@ const PROPERTIES = {
     },
     {
       propertyName: "allowSelectAll",
-      helpText: "Controls the visibility of select all option in dropdown.",
-      label: "Allow Select All",
+      helpText: "在下拉列表中显示全选选项",
+      label: "允许全选",
       controlType: "SWITCH",
       isJSConvertible: true,
       isBindProperty: true,
@@ -277,8 +277,8 @@ const PROPERTIES = {
     toggles: [
       {
         propertyName: "allowSelectAll",
-        helpText: "Controls the visibility of select all option in dropdown.",
-        label: "Allow Select All",
+        helpText: "在下拉列表中显示全选选项",
+        label: "允许全选",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
