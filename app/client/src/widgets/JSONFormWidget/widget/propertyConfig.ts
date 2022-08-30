@@ -331,7 +331,7 @@ export const contentConfig = [
       {
         propertyName: "title",
         label: "标题",
-        helpText: "Sets the title of the form",
+        helpText: "表单标题",
         controlType: "INPUT_TEXT",
         placeholderText: "Update Order",
         isBindProperty: true,
@@ -361,8 +361,7 @@ export const contentConfig = [
       },
       {
         propertyName: "disabledWhenInvalid",
-        helpText:
-          "Disables the submit button when the parent form has a required widget that is not filled",
+        helpText: "父级表单校验不通过时禁用提交按钮",
         label: "表单校验不成功时禁用",
         controlType: "SWITCH",
         isJSConvertible: true,
@@ -372,8 +371,8 @@ export const contentConfig = [
       },
       {
         propertyName: "fixedFooter",
-        helpText: "Makes the footer always stick to the bottom of the form",
-        label: "Fixed Footer",
+        helpText: "让底部信息固定在表单底部",
+        label: "固定底部",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -382,8 +381,8 @@ export const contentConfig = [
       },
       {
         propertyName: "scrollContents",
-        helpText: "Allows scrolling of the form",
-        label: "Scroll Contents",
+        helpText: "允许表单的内容滚动",
+        label: "允许内容滚动",
         controlType: "SWITCH",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -391,8 +390,8 @@ export const contentConfig = [
       },
       {
         propertyName: "showReset",
-        helpText: "Show/Hide reset form button",
-        label: "Show Reset",
+        helpText: "显示或隐藏表单重置按钮",
+        label: "显示重置按钮",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -401,8 +400,8 @@ export const contentConfig = [
       },
       {
         propertyName: "submitButtonLabel",
-        helpText: "Changes the label of the submit button",
-        label: "Submit Button Label",
+        helpText: "修改提交按钮文案",
+        label: "提交按钮文案",
         controlType: "INPUT_TEXT",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -410,8 +409,8 @@ export const contentConfig = [
       },
       {
         propertyName: "resetButtonLabel",
-        helpText: "Changes the label of the reset button",
-        label: "Reset Button Label",
+        helpText: "修改重置按钮文案",
+        label: "重置按钮文案",
         controlType: "INPUT_TEXT",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -424,7 +423,7 @@ export const contentConfig = [
     children: [
       {
         propertyName: "onSubmit",
-        helpText: "Triggers an action when the submit button is clicked",
+        helpText: "点击提交按钮时触发",
         label: "onSubmit",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
@@ -497,8 +496,7 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
       {
         propertyName: `${prefix}.boxShadow`,
         label: "阴影",
-        helpText:
-          "组件轮廓投影",
+        helpText: "组件轮廓投影",
         controlType: "BOX_SHADOW_OPTIONS",
         isJSConvertible: true,
         isBindProperty: true,
@@ -657,8 +655,7 @@ export const styleConfig = [
       {
         propertyName: "boxShadow",
         label: "阴影",
-        helpText:
-          "组件轮廓投影",
+        helpText: "组件轮廓投影",
         controlType: "BOX_SHADOW_OPTIONS",
         isJSConvertible: true,
         isBindProperty: true,
@@ -668,11 +665,11 @@ export const styleConfig = [
     ],
   },
   {
-    sectionName: "Submit Button Styles",
+    sectionName: "提交按钮样式",
     children: generateButtonStyleControlsV2For("submitButtonStyles"),
   },
   {
-    sectionName: "Reset Button Styles",
+    sectionName: "重置按钮样式",
     children: generateButtonStyleControlsV2For("resetButtonStyles"),
     dependencies: ["showReset"],
     hidden: (props: JSONFormWidgetProps) => !props.showReset,
@@ -686,7 +683,7 @@ export default [
       {
         propertyName: "title",
         label: "标题",
-        helpText: "Sets the title of the form",
+        helpText: "表单标题",
         controlType: "INPUT_TEXT",
         placeholderText: "Update Order",
         isBindProperty: true,
@@ -756,8 +753,7 @@ export default [
       },
       {
         propertyName: "disabledWhenInvalid",
-        helpText:
-          "Disables the submit button when the parent form has a required widget that is not filled",
+        helpText: "父级表单校验不通过时禁用提交按钮",
         label: "表单校验不成功时禁用",
         controlType: "SWITCH",
         isJSConvertible: true,
@@ -778,8 +774,8 @@ export default [
       },
       {
         propertyName: "fixedFooter",
-        helpText: "Makes the footer always stick to the bottom of the form",
-        label: "Fixed Footer",
+        helpText: "让底部信息固定在表单底部",
+        label: "固定底部",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -798,8 +794,8 @@ export default [
       },
       {
         propertyName: "scrollContents",
-        helpText: "Allows scrolling of the form",
-        label: "Scroll Contents",
+        helpText: "允许表单的内容滚动",
+        label: "允许内容滚动",
         controlType: "SWITCH",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -807,8 +803,8 @@ export default [
       },
       {
         propertyName: "showReset",
-        helpText: "Show/Hide reset form button",
-        label: "Show Reset",
+        helpText: "显示或隐藏表单重置按钮",
+        label: "显示重置按钮",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -817,8 +813,8 @@ export default [
       },
       {
         propertyName: "submitButtonLabel",
-        helpText: "Changes the label of the submit button",
-        label: "Submit Button Label",
+        helpText: "修改提交按钮文案",
+        label: "提交按钮文案",
         controlType: "INPUT_TEXT",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -826,8 +822,8 @@ export default [
       },
       {
         propertyName: "resetButtonLabel",
-        helpText: "Changes the label of the reset button",
-        label: "Reset Button Label",
+        helpText: "修改重置按钮文案",
+        label: "重置按钮文案",
         controlType: "INPUT_TEXT",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -840,7 +836,7 @@ export default [
     children: [
       {
         propertyName: "onSubmit",
-        helpText: "Triggers an action when the submit button is clicked",
+        helpText: "点击提交按钮时触发",
         label: "onSubmit",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
@@ -898,8 +894,7 @@ export default [
       {
         propertyName: "boxShadow",
         label: "阴影",
-        helpText:
-          "组件轮廓投影",
+        helpText: "组件轮廓投影",
         controlType: "BOX_SHADOW_OPTIONS",
         isJSConvertible: true,
         isBindProperty: true,
@@ -909,12 +904,12 @@ export default [
     ],
   },
   {
-    sectionName: "Submit Button Styles",
+    sectionName: "提交按钮样式",
     isDefaultOpen: false,
     children: generateButtonStyleControlsFor("submitButtonStyles"),
   },
   {
-    sectionName: "Reset Button Styles",
+    sectionName: "重置按钮样式",
     isDefaultOpen: false,
     children: generateButtonStyleControlsFor("resetButtonStyles"),
     dependencies: ["showReset"],

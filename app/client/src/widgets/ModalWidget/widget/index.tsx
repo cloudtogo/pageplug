@@ -27,7 +27,7 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
           {
             helpText: "允许组件内部内容滚动",
             propertyName: "shouldScrollContents",
-            label: "Scroll Contents",
+            label: "允许内容滚动",
             controlType: "SWITCH",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -106,7 +106,7 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
           {
             helpText: "允许组件内部内容滚动",
             propertyName: "shouldScrollContents",
-            label: "Scroll Contents",
+            label: "允许内容滚动",
             controlType: "SWITCH",
             isBindProperty: false,
             isTriggerProperty: false,
