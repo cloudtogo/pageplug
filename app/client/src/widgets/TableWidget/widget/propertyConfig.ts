@@ -1414,15 +1414,15 @@ export default [
         isTriggerProperty: false,
         options: [
           {
-            label: "Short",
+            label: "矮",
             value: "SHORT",
           },
           {
-            label: "Default",
+            label: "默认",
             value: "DEFAULT",
           },
           {
-            label: "Tall",
+            label: "高",
             value: "TALL",
           },
         ],
