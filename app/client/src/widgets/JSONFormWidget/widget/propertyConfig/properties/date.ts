@@ -168,8 +168,8 @@ const PROPERTIES = {
     },
     {
       propertyName: "closeOnSelection",
-      label: "Close On Selection",
-      helpText: "Calender should close when a date is selected",
+      label: "选中后关闭",
+      helpText: "选中日期后自动关闭日期选择器",
       controlType: "SWITCH",
       isJSConvertible: false,
       isBindProperty: true,
@@ -182,8 +182,8 @@ const PROPERTIES = {
     },
     {
       propertyName: "shortcuts",
-      label: "Show Shortcuts",
-      helpText: "Choose to show shortcut menu",
+      label: "显示快捷菜单",
+      helpText: "是否在日期选择器中显示快捷菜单",
       controlType: "SWITCH",
       isJSConvertible: false,
       isBindProperty: true,
@@ -379,8 +379,8 @@ const PROPERTIES = {
       },
       {
         propertyName: "shortcuts",
-        label: "Show Shortcuts",
-        helpText: "Choose to show shortcut menu",
+        label: "显示快捷菜单",
+        helpText: "是否在日期选择器中显示快捷菜单",
         controlType: "SWITCH",
         isJSConvertible: false,
         isBindProperty: true,
@@ -393,8 +393,8 @@ const PROPERTIES = {
       },
       {
         propertyName: "closeOnSelection",
-        label: "Close On Selection",
-        helpText: "Calender should close when a date is selected",
+        label: "选中后关闭",
+        helpText: "选中日期后自动关闭日期选择器",
         controlType: "SWITCH",
         isJSConvertible: false,
         isBindProperty: true,
