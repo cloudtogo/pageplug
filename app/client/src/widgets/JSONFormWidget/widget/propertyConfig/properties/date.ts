@@ -132,7 +132,7 @@ const PROPERTIES = {
       propertyName: "timePrecision",
       label: "时间精度",
       controlType: "DROP_DOWN",
-      helpText: "Sets the different time picker or hide.",
+      helpText: "显示时间的精度",
       defaultValue: TimePrecision.MINUTE,
       options: [
         {
@@ -294,7 +294,7 @@ const PROPERTIES = {
         propertyName: "timePrecision",
         label: "时间精度",
         controlType: "DROP_DOWN",
-        helpText: "Sets the different time picker or hide.",
+        helpText: "显示时间的精度",
         defaultValue: TimePrecision.MINUTE,
         options: [
           {
