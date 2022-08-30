@@ -76,7 +76,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "动作",
+        sectionName: "事件",
         children: [
           {
             helpText: "视频开始播放后触发",
@@ -123,8 +123,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -134,8 +133,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -154,9 +152,9 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "url",
-            label: "URL",
+            label: "URL地址",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter URL",
+            placeholderText: "请输入视频地址",
             inputType: "TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -179,9 +177,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "autoPlay",
-            label: "Autoplay",
-            helpText:
-              "Video will be automatically played, by enabling this feature, video will be muted by default.",
+            label: "自动播放",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -215,7 +211,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
         sectionName: "事件",
         children: [
           {
-            helpText: "Triggers an action when the video is played",
+            helpText: "视频开始播放后触发",
             propertyName: "onPlay",
             label: "onPlay",
             controlType: "ACTION_SELECTOR",
@@ -224,7 +220,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the video is paused",
+            helpText: "视频暂停后触发",
             propertyName: "onPause",
             label: "onPause",
             controlType: "ACTION_SELECTOR",
@@ -233,7 +229,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the video ends",
+            helpText: "视频播放结束后触发",
             propertyName: "onEnd",
             label: "onEnd",
             controlType: "ACTION_SELECTOR",
@@ -269,8 +265,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -280,8 +275,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
