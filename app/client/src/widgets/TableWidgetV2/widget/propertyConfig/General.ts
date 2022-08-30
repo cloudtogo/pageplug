@@ -24,9 +24,9 @@ export default {
   children: [
     {
       helpText:
-        "Takes in an array of objects to display rows in the table. Bind data from an API using {{}}",
+        "表格数组数据",
       propertyName: "tableData",
-      label: "Table Data",
+      label: "数据",
       controlType: "INPUT_TEXT",
       placeholderText: '[{ "name": "John" }]',
       inputType: "ARRAY",
@@ -41,10 +41,10 @@ export default {
       evaluationSubstitutionType: EvaluationSubstitutionType.SMART_SUBSTITUTE,
     },
     {
-      helpText: "Columns",
+      helpText: "表格数据列定义",
       propertyName: "primaryColumns",
       controlType: "PRIMARY_COLUMNS_V2",
-      label: "Columns",
+      label: "数据列",
       updateHook: composePropertyUpdateHook([
         updateColumnOrderHook,
         updateInlineEditingOptionDropdownVisibilityHook,

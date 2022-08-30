@@ -21,15 +21,15 @@ import { isColumnTypeEditable } from "../../utilities";
 import { composePropertyUpdateHook } from "widgets/WidgetUtils";
 
 export default {
-  sectionName: "Column Control",
+  sectionName: "列控件",
   children: [
     {
       propertyName: "columnType",
-      label: "Column Type",
+      label: "列类型",
       controlType: "DROP_DOWN",
       options: [
         {
-          label: "Plain Text",
+          label: "文本",
           value: "text",
         },
         {
@@ -41,27 +41,27 @@ export default {
           value: "number",
         },
         {
-          label: "Image",
+          label: "图片",
           value: "image",
         },
         {
-          label: "Video",
+          label: "视频",
           value: "video",
         },
         {
-          label: "Date",
+          label: "日期",
           value: "date",
         },
         {
-          label: "Button",
+          label: "按钮",
           value: "button",
         },
         {
-          label: "Menu Button",
+          label: "菜单按钮",
           value: "menuButton",
         },
         {
-          label: "Icon Button",
+          label: "图标按钮",
           value: "iconButton",
         },
       ],
@@ -80,7 +80,7 @@ export default {
     },
     {
       propertyName: "displayText",
-      label: "Display Text",
+      label: "显示文本",
       controlType: "TABLE_COMPUTE_VALUE",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         const baseProperty = getBasePropertyPath(propertyPath);

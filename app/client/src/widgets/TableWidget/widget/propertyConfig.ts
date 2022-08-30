@@ -35,9 +35,9 @@ export default [
     children: [
       {
         helpText:
-          "Takes in an array of objects to display rows in the table. Bind data from an API using {{}}",
+          "表格数组数据",
         propertyName: "tableData",
-        label: "Table Data",
+        label: "数据",
         controlType: "INPUT_TEXT",
         placeholderText: '[{ "name": "John" }]',
         inputType: "ARRAY",
@@ -52,10 +52,10 @@ export default [
         evaluationSubstitutionType: EvaluationSubstitutionType.SMART_SUBSTITUTE,
       },
       {
-        helpText: "Columns",
+        helpText: "表格数据列定义",
         propertyName: "primaryColumns",
         controlType: "PRIMARY_COLUMNS",
-        label: "Columns",
+        label: "数据列",
         updateHook: updateDerivedColumnsHook,
         dependencies: ["derivedColumns", "columnOrder", "childStylesheet"],
         isBindProperty: false,
@@ -65,7 +65,7 @@ export default [
           params: {
             fn: uniqueColumnNameValidation,
             expected: {
-              type: "Unique Column Names",
+              type: "不重复的列名",
               example: "abc",
               autocompleteDataType: AutocompleteDataType.STRING,
             },
@@ -79,16 +79,16 @@ export default [
           dependencies: ["primaryColumns", "derivedColumns", "columnOrder"],
           children: [
             {
-              sectionName: "Column Control",
+              sectionName: "列控件",
               children: [
                 {
                   propertyName: "columnType",
-                  label: "Column Type",
+                  label: "列类型",
                   controlType: "DROP_DOWN",
                   customJSControl: "COMPUTE_VALUE",
                   options: [
                     {
-                      label: "Plain Text",
+                      label: "文本",
                       value: "text",
                     },
                     {
@@ -100,27 +100,27 @@ export default [
                       value: "number",
                     },
                     {
-                      label: "Image",
+                      label: "图片",
                       value: "image",
                     },
                     {
-                      label: "Video",
+                      label: "视频",
                       value: "video",
                     },
                     {
-                      label: "Date",
+                      label: "日期",
                       value: "date",
                     },
                     {
-                      label: "Button",
+                      label: "按钮",
                       value: "button",
                     },
                     {
-                      label: "Menu Button",
+                      label: "菜单按钮",
                       value: "menuButton",
                     },
                     {
-                      label: "Icon Button",
+                      label: "图标按钮",
                       value: "iconButton",
                     },
                   ],
@@ -136,7 +136,7 @@ export default [
                 },
                 {
                   propertyName: "displayText",
-                  label: "Display Text",
+                  label: "显示文本",
                   controlType: "COMPUTE_VALUE",
                   customJSControl: "COMPUTE_VALUE",
                   updateHook: updateDerivedColumnsHook,
