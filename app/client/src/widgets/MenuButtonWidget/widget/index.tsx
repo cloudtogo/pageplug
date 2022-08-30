@@ -244,8 +244,8 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "menuColor",
-            helpText: "Sets the style of the Menu button",
-            label: "Menu Color",
+            helpText: "设置菜单按钮颜色",
+            label: "菜单颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -857,7 +857,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "menuColor",
-            helpText: "Sets the style of the Menu button",
+            helpText: "设置菜单按钮颜色",
             label: "按钮颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
