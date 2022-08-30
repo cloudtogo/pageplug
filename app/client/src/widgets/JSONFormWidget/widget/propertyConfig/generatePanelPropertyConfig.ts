@@ -53,7 +53,7 @@ function generatePanelPropertyConfig(
           ...ARRAY_PROPERTIES.accessibility,
           {
             propertyName: "children",
-            label: "Field Configuration",
+            label: "字段配置",
             controlType: "FIELD_CONFIGURATION",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -137,7 +137,7 @@ function generatePanelPropertyConfig(
           ...ARRAY_PROPERTIES.content.data,
           {
             propertyName: "children",
-            label: "Field Configuration",
+            label: "字段配置",
             controlType: "FIELD_CONFIGURATION",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -163,7 +163,7 @@ function generatePanelPropertyConfig(
         ],
       },
       {
-        sectionName: "Search and Filters",
+        sectionName: "搜索过滤",
         children: [
           ...SELECT_PROPERTIES.content.searchAndFilters,
           ...MULTI_SELECT_PROPERTIES.content.searchAndFilters,
