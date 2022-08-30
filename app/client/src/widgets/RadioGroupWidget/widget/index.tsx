@@ -152,7 +152,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
         sectionName: "属性",
         children: [
           {
-            helpText: "Displays a list of unique options",
+            helpText: "选项值唯一的数组",
             propertyName: "options",
             label: "选项",
             controlType: "OPTION_INPUT",
@@ -201,8 +201,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
           },
           {
             propertyName: "isInline",
-            helpText:
-              "Whether the radio buttons are to be displayed inline horizontally",
+            helpText: "单向框是否水平排列",
             label: "行排列",
             controlType: "SWITCH",
             isJSConvertible: true,
@@ -321,8 +320,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
@@ -417,7 +415,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
           },
           {
             propertyName: "accentColor",
-            helpText: "Sets the accent color of the widget",
+            helpText: "设置单选框选中态的颜色",
             label: "强调色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
@@ -431,8 +429,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
         sectionName: "事件",
         children: [
           {
-            helpText:
-              "Triggers an action when a user changes the selected option",
+            helpText: "选中项改变时触发",
             propertyName: "onSelectionChange",
             label: "onSelectionChange",
             controlType: "ACTION_SELECTOR",
@@ -451,7 +448,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
         sectionName: "数据",
         children: [
           {
-            helpText: "Displays a list of unique options",
+            helpText: "选项值唯一的数组",
             propertyName: "options",
             label: "选项",
             controlType: "OPTION_INPUT",
@@ -550,8 +547,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
@@ -611,8 +607,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
           },
           {
             propertyName: "isInline",
-            helpText:
-              "Whether the radio buttons are to be displayed inline horizontally",
+            helpText: "单向框是否水平排列",
             label: "行排列",
             controlType: "SWITCH",
             isJSConvertible: true,
@@ -637,8 +632,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
         sectionName: "事件",
         children: [
           {
-            helpText:
-              "Triggers an action when a user changes the selected option",
+            helpText: "选中项改变时触发",
             propertyName: "onSelectionChange",
             label: "onSelectionChange",
             controlType: "ACTION_SELECTOR",
@@ -756,7 +750,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "accentColor",
-            helpText: "Sets the accent color of the widget",
+            helpText: "设置单选框选中态的颜色",
             label: "强调色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
