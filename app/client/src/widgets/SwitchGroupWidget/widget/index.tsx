@@ -301,7 +301,7 @@ class SwitchGroupWidget extends BaseWidget<
           },
           {
             propertyName: "accentColor",
-            helpText: "Sets the background color of the widget",
+            helpText: "设置组件背景颜色",
             label: "强调色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
@@ -653,7 +653,7 @@ class SwitchGroupWidget extends BaseWidget<
         children: [
           {
             propertyName: "accentColor",
-            helpText: "Sets the background color of the widget",
+            helpText: "设置组件背景颜色",
             label: "强调色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,

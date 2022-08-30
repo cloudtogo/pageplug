@@ -419,7 +419,7 @@ const PROPERTIES = {
     {
       propertyName: "iconName",
       label: "图标",
-      helpText: "Sets the icon to be used in input field",
+      helpText: "设置输入框的图标",
       controlType: "ICON_SELECT",
       isBindProperty: true,
       isTriggerProperty: false,
@@ -442,7 +442,7 @@ const PROPERTIES = {
     {
       propertyName: "iconAlign",
       label: "图标对齐",
-      helpText: "Sets the icon alignment of input field",
+      helpText: "设置输入框图标的对齐方式",
       controlType: "ICON_TABS",
       options: [
         {
@@ -794,7 +794,7 @@ const PROPERTIES = {
       {
         propertyName: "iconName",
         label: "图标",
-        helpText: "Sets the icon to be used in input field",
+        helpText: "设置输入框的图标",
         controlType: "ICON_SELECT",
         isBindProperty: true,
         isTriggerProperty: false,

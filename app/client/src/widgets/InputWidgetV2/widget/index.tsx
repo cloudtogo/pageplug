@@ -300,7 +300,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
             {
               propertyName: "iconName",
               label: "图标",
-              helpText: "Sets the icon to be used in input field",
+              helpText: "设置输入框的图标",
               controlType: "ICON_SELECT",
               isBindProperty: true,
               isTriggerProperty: false,
@@ -315,7 +315,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
             {
               propertyName: "iconAlign",
               label: "图标对齐",
-              helpText: "Sets the icon alignment of input field",
+              helpText: "设置输入框图标的对齐方式",
               controlType: "ICON_TABS",
               options: [
                 {
@@ -494,7 +494,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
             {
               propertyName: "iconName",
               label: "图标",
-              helpText: "Sets the icon to be used in input field",
+              helpText: "设置输入框的图标",
               controlType: "ICON_SELECT",
               isBindProperty: true,
               isTriggerProperty: false,
@@ -509,7 +509,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
             {
               propertyName: "iconAlign",
               label: "位置",
-              helpText: "Sets the icon alignment of input field",
+              helpText: "设置输入框图标的对齐方式",
               controlType: "ICON_TABS",
               options: [
                 {
