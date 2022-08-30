@@ -254,9 +254,9 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
           },
           {
             propertyName: "menuVariant",
-            label: "Menu Variant",
+            label: "菜单按钮类型",
             controlType: "DROP_DOWN",
-            helpText: "Sets the variant of the menu button",
+            helpText: "设置菜单按钮的风格类型",
             options: [
               {
                 label: "主按钮",
@@ -289,8 +289,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -300,8 +299,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -405,7 +403,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "label",
-            helpText: "Sets the label of a menu",
+            helpText: "设置菜单标签",
             label: "标签",
             controlType: "INPUT_TEXT",
             placeholderText: "Open",
@@ -511,8 +509,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                   sectionName: "事件",
                   children: [
                     {
-                      helpText:
-                        "点击菜单项时触发",
+                      helpText: "点击菜单项时触发",
                       propertyName: "onClick",
                       label: "onClick",
                       controlType: "ACTION_SELECTOR",
@@ -567,8 +564,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                       validation: { type: ValidationTypes.TEXT },
                     },
                     {
-                      helpText:
-                        "点击菜单项时触发",
+                      helpText: "点击菜单项时触发",
                       propertyName: "onClick",
                       label: "onClick",
                       controlType: "ACTION_SELECTOR",
@@ -730,7 +726,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
             propertyName: "menuVariant",
             label: "按钮类型",
             controlType: "DROP_DOWN",
-            helpText: "Sets the variant of the menu button",
+            helpText: "设置菜单按钮的风格类型",
             options: [
               {
                 label: "主按钮",
@@ -768,7 +764,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
           {
             propertyName: "iconName",
             label: "图标",
-            helpText: "Sets the icon to be used for the menu button",
+            helpText: "设置菜单按钮图标",
             controlType: "ICON_SELECT",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -794,7 +790,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
           {
             propertyName: "iconAlign",
             label: "位置",
-            helpText: "Sets the icon alignment of the menu button",
+            helpText: "设置菜单按钮图标对齐方式",
             controlType: "ICON_TABS",
             options: [
               {
@@ -873,8 +869,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -884,8 +879,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
