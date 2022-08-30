@@ -73,7 +73,7 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "backgroundColor",
-            helpText: "Sets the background color of the widget",
+            helpText: "设置组件背景颜色",
             label: "背景颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
@@ -156,7 +156,7 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "backgroundColor",
-            helpText: "Sets the background color of the widget",
+            helpText: "设置组件背景颜色",
             label: "背景颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
