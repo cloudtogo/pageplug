@@ -52,8 +52,7 @@ class MultiSelectWidget extends BaseWidget<
         sectionName: "属性",
         children: [
           {
-            helpText:
-              "允许用户多选，每选项的值必须唯一",
+            helpText: "允许用户多选，每选项的值必须唯一",
             propertyName: "options",
             label: "选项",
             controlType: "INPUT_TEXT",
@@ -175,8 +174,7 @@ class MultiSelectWidget extends BaseWidget<
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText:
-              "Controls the visibility of select all option in dropdown.",
+            helpText: "是否下拉列表中展示全选选项",
             propertyName: "allowSelectAll",
             label: "允许全选",
             controlType: "SWITCH",
@@ -237,8 +235,7 @@ class MultiSelectWidget extends BaseWidget<
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
