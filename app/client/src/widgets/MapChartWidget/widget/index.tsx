@@ -63,9 +63,9 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
         sectionName: "属性",
         children: [
           {
-            helpText: "Sets the map type",
+            helpText: "设置地图类型",
             propertyName: "mapType",
-            label: "Map Type",
+            label: "地图类型",
             controlType: "DROP_DOWN",
             options: [
               {
@@ -310,9 +310,9 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
         sectionName: "数据",
         children: [
           {
-            helpText: "Sets the map type",
+            helpText: "设置地图类型",
             propertyName: "mapType",
-            label: "Map Type",
+            label: "地图类型",
             controlType: "DROP_DOWN",
             options: [
               {
