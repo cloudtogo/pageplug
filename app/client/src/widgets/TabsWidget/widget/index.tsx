@@ -185,8 +185,7 @@ class TabsWidget extends BaseWidget<
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
 
             isJSConvertible: true,
@@ -197,8 +196,7 @@ class TabsWidget extends BaseWidget<
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -218,7 +216,7 @@ class TabsWidget extends BaseWidget<
           {
             propertyName: "tabsObj",
             isJSConvertible: false,
-            label: "Tabs",
+            label: "标签页列表",
             controlType: "TABS_INPUT",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -270,7 +268,7 @@ class TabsWidget extends BaseWidget<
                     {
                       propertyName: "isVisible",
                       label: "是否显示",
-                      helpText: "Controls the visibility of the tab",
+                      helpText: "标签页是否可见",
                       controlType: "SWITCH",
                       useValidationMessage: true,
                       isJSConvertible: true,
@@ -285,9 +283,8 @@ class TabsWidget extends BaseWidget<
           },
           {
             propertyName: "defaultTab",
-            helpText: "Selects a tab name specified by default",
-            placeholderText: "Tab 1",
-            label: "Default Tab",
+            placeholderText: "输入标签页名称",
+            label: "默认标签页",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -340,9 +337,8 @@ class TabsWidget extends BaseWidget<
           },
           {
             propertyName: "shouldShowTabs",
-            helpText:
-              "Hides the tabs so that different widgets can be displayed based on the default tab",
-            label: "Show Tabs",
+            helpText: "隐藏标签头后，标签页不可切换，只展示默认标签页",
+            label: "显示标签头",
             controlType: "SWITCH",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -374,8 +370,7 @@ class TabsWidget extends BaseWidget<
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
 
             isJSConvertible: true,
@@ -386,8 +381,7 @@ class TabsWidget extends BaseWidget<
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
