@@ -29,7 +29,7 @@ const objectStyleProperties = [
   },
   {
     propertyName: "borderColor",
-    label: "Border Color",
+    label: "边框颜色",
     helpText: "Changes the border color of Object",
     controlType: "COLOR_PICKER",
     isJSConvertible: true,
@@ -120,7 +120,7 @@ const PROPERTIES = {
         },
         {
           propertyName: "cellBorderColor",
-          label: "Border Color",
+          label: "边框颜色",
           helpText: "Changes the border color of the item",
           controlType: "COLOR_PICKER",
           isJSConvertible: true,
