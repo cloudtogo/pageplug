@@ -53,7 +53,7 @@ export const TableFactory = Factory.Sync.makeFactory<WidgetProps>({
       enableSort: true,
       isVisible: true,
       isDerived: false,
-      label: "email",
+      label: "邮箱",
       computedValue: "",
     },
     userName: {
