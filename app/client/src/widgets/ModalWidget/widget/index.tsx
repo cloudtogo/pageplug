@@ -54,7 +54,7 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "动作",
+        sectionName: "事件",
         children: [
           {
             helpText: "弹窗关闭后触发",
@@ -84,8 +84,7 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
 
             isJSConvertible: true,
@@ -124,8 +123,8 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
           },
           {
             propertyName: "canOutsideClickClose",
-            label: "Quick Dismiss",
-            helpText: "Allows dismissing the modal when user taps outside",
+            label: "点击背景关闭",
+            helpText: "点击背景时关闭弹窗",
             controlType: "SWITCH",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -136,7 +135,7 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
         sectionName: "事件",
         children: [
           {
-            helpText: "Triggers an action when the modal is closed",
+            helpText: "弹窗关闭后触发",
             propertyName: "onClose",
             label: "onClose",
             controlType: "ACTION_SELECTOR",
@@ -172,8 +171,7 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
 
             isJSConvertible: true,
