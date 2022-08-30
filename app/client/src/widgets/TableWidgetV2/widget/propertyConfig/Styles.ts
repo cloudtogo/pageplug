@@ -6,7 +6,7 @@ export default {
   children: [
     {
       propertyName: "cellBackground",
-      label: "Cell Background Color",
+      label: "单元格背景颜色",
       controlType: "COLOR_PICKER",
       updateHook: updateColumnStyles,
       dependencies: ["primaryColumns"],
