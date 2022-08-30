@@ -51,21 +51,21 @@ class MultiSelectTreeWidget extends BaseWidget<
         sectionName: "属性",
         children: [
           {
-            helpText: "Mode to Display options",
+            helpText: "选项显示模式",
             propertyName: "mode",
             label: "模式",
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "Display only parent items",
+                label: "只显示父级选项",
                 value: "SHOW_PARENT",
               },
               {
-                label: "Display only child items",
+                label: "只显示子级选项",
                 value: "SHOW_CHILD",
               },
               {
-                label: "Display all items",
+                label: "显示所有选项",
                 value: "SHOW_ALL",
               },
             ],
@@ -73,8 +73,7 @@ class MultiSelectTreeWidget extends BaseWidget<
             isTriggerProperty: false,
           },
           {
-            helpText:
-              "允许用户多选，每选项的值必须唯一",
+            helpText: "允许用户多选，每选项的值必须唯一",
             propertyName: "options",
             label: "选项",
             controlType: "INPUT_TEXT",
@@ -300,8 +299,7 @@ class MultiSelectTreeWidget extends BaseWidget<
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
@@ -337,8 +335,7 @@ class MultiSelectTreeWidget extends BaseWidget<
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
 
             isJSConvertible: true,
@@ -349,8 +346,7 @@ class MultiSelectTreeWidget extends BaseWidget<
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -438,8 +434,7 @@ class MultiSelectTreeWidget extends BaseWidget<
         sectionName: "数据",
         children: [
           {
-            helpText:
-              "允许用户多选，每选项的值必须唯一",
+            helpText: "允许用户多选，每选项的值必须唯一",
             propertyName: "options",
             label: "选项",
             controlType: "INPUT_TEXT",
@@ -580,8 +575,7 @@ class MultiSelectTreeWidget extends BaseWidget<
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
@@ -620,21 +614,21 @@ class MultiSelectTreeWidget extends BaseWidget<
         sectionName: "属性",
         children: [
           {
-            helpText: "Mode to Display options",
+            helpText: "选项显示模式",
             propertyName: "mode",
             label: "模式",
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "Display only parent items",
+                label: "只显示父级选项",
                 value: "SHOW_PARENT",
               },
               {
-                label: "Display only child items",
+                label: "只显示子级选项",
                 value: "SHOW_CHILD",
               },
               {
-                label: "Display all items",
+                label: "显示所有选项",
                 value: "SHOW_ALL",
               },
             ],
@@ -814,8 +808,7 @@ class MultiSelectTreeWidget extends BaseWidget<
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
 
             isJSConvertible: true,
@@ -826,8 +819,7 @@ class MultiSelectTreeWidget extends BaseWidget<
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
