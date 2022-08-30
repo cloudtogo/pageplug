@@ -190,7 +190,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
                   value: "TEXT",
                 },
                 {
-                  label: "Number",
+                  label: "数字",
                   value: "NUMBER",
                 },
                 {
@@ -357,7 +357,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
                   value: "TEXT",
                 },
                 {
-                  label: "Number",
+                  label: "数字",
                   value: "NUMBER",
                 },
                 {

@@ -122,7 +122,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
                 value: "TEXT",
               },
               {
-                label: "Number",
+                label: "数字",
                 value: "NUMBER",
               },
               {
