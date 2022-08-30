@@ -85,7 +85,7 @@ const objectStyleProperties = [
 const PROPERTIES = {
   sections: [
     {
-      sectionName: "Object Styles",
+      sectionName: "对象样式",
       isDefaultOpen: false,
       children: objectStyleProperties,
       hidden: (props: JSONFormWidgetProps, propertyPath: string) => {
@@ -98,14 +98,14 @@ const PROPERTIES = {
       },
     },
     {
-      sectionName: "数组项样式",
+      sectionName: "数据项样式",
       isDefaultOpen: false,
       children: [
         {
           propertyName: "cellBackgroundColor",
           label: "背景颜色",
           controlType: "COLOR_PICKER",
-          helpText: "修改数组项背景颜色",
+          helpText: "修改数据项背景颜色",
           isJSConvertible: true,
           isBindProperty: true,
           isTriggerProperty: false,
@@ -121,7 +121,7 @@ const PROPERTIES = {
         {
           propertyName: "cellBorderColor",
           label: "边框颜色",
-          helpText: "修改数组项边框颜色",
+          helpText: "修改数据项边框颜色",
           controlType: "COLOR_PICKER",
           isJSConvertible: true,
           isBindProperty: true,
@@ -137,7 +137,7 @@ const PROPERTIES = {
         },
         {
           propertyName: "cellBorderWidth",
-          helpText: "修改数组项边框宽度",
+          helpText: "修改数据项边框宽度",
           label: "边框宽度",
           placeholderText: "以 px 为单位",
           controlType: "INPUT_TEXT",
@@ -161,8 +161,7 @@ const PROPERTIES = {
         {
           propertyName: "cellBoxShadow",
           label: "阴影",
-          helpText:
-            "组件轮廓投影",
+          helpText: "组件轮廓投影",
           controlType: "BOX_SHADOW_OPTIONS",
           customJSControl: "JSON_FORM_COMPUTE_VALUE",
           isJSConvertible: true,
