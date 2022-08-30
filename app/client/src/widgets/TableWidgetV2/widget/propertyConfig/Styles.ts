@@ -149,8 +149,7 @@ export default {
     {
       propertyName: "boxShadow",
       label: "阴影",
-      helpText:
-        "组件轮廓投影",
+      helpText: "组件轮廓投影",
       controlType: "BOX_SHADOW_OPTIONS",
       isJSConvertible: true,
       isBindProperty: true,

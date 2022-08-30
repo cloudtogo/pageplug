@@ -31,7 +31,7 @@ export default [
     ],
   },
   {
-    sectionName: "Text Formatting",
+    sectionName: "文本样式",
     children: [
       {
         propertyName: "textSize",
@@ -188,8 +188,7 @@ export default [
       {
         propertyName: "boxShadow",
         label: "阴影",
-        helpText:
-          "组件轮廓投影",
+        helpText: "组件轮廓投影",
         controlType: "BOX_SHADOW_OPTIONS",
         isJSConvertible: true,
         isBindProperty: true,
