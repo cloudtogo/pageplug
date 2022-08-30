@@ -37,7 +37,7 @@ export default {
       isTriggerProperty: true,
     },
     {
-      helpText: "Triggers an action when a table column is sorted",
+      helpText: "表格列排序时触发",
       propertyName: "onSort",
       label: "onSort",
       controlType: "ACTION_SELECTOR",
