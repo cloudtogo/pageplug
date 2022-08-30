@@ -141,8 +141,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
           {
             propertyName: "isClickedMarkerCentered",
             label: "居中标记",
-            helpText:
-              "是否将选中的标记在地图上居中显示",
+            helpText: "是否将选中的标记在地图上居中显示",
             controlType: "SWITCH",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -194,9 +193,9 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
           },
           {
             propertyName: "zoomLevel",
-            label: "Zoom Level",
+            label: "缩放比例",
             controlType: "STEP",
-            helpText: "Changes the default zoom of the map",
+            helpText: "设置地图默认缩放比例",
             stepType: "ZOOM_PERCENTAGE",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -231,8 +230,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
 
             isJSConvertible: true,
@@ -243,8 +241,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -356,9 +353,9 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "zoomLevel",
-            label: "Zoom Level",
+            label: "缩放比例",
             controlType: "STEP",
-            helpText: "Changes the default zoom of the map",
+            helpText: "设置地图默认缩放比例",
             stepType: "ZOOM_PERCENTAGE",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -395,8 +392,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
           {
             propertyName: "isClickedMarkerCentered",
             label: "居中标记",
-            helpText:
-              "是否将选中的标记在地图上居中显示",
+            helpText: "是否将选中的标记在地图上居中显示",
             controlType: "SWITCH",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -460,8 +456,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
 
             isJSConvertible: true,
@@ -472,8 +467,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
