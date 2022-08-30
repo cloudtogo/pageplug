@@ -17,7 +17,7 @@ export default {
       propertyName: "isCellVisible",
       dependencies: ["primaryColumns", "columnType"],
       label: "是否显示",
-      helpText: "Controls the visibility of the cell in the column",
+      helpText: "控制当前列是否显示",
       defaultValue: true,
       controlType: "SWITCH",
       customJSControl: "TABLE_COMPUTE_VALUE",
