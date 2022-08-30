@@ -125,8 +125,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
         sectionName: "属性",
         children: [
           {
-            helpText:
-              "让用户选择一项，选项值必须唯一",
+            helpText: "让用户选择一项，选项值必须唯一",
             propertyName: "options",
             label: "选项",
             controlType: "INPUT_TEXT",
@@ -335,8 +334,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
@@ -442,8 +440,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -453,8 +450,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -472,8 +468,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
         sectionName: "数据",
         children: [
           {
-            helpText:
-              "让用户选择一项，选项值必须唯一",
+            helpText: "让用户选择一项，选项值必须唯一",
             propertyName: "options",
             label: "选项",
             controlType: "INPUT_TEXT",
@@ -586,8 +581,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
@@ -608,11 +602,11 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Search & Filters",
+        sectionName: "搜索过滤",
         children: [
           {
             propertyName: "isFilterable",
-            label: "Allow Searching",
+            label: "允许搜索",
             helpText: "让下拉列表支持数据过滤",
             controlType: "SWITCH",
             isJSConvertible: true,
@@ -799,7 +793,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Colors",
+        sectionName: "颜色",
         children: [
           {
             propertyName: "accentColor",
@@ -819,8 +813,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -830,8 +823,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
