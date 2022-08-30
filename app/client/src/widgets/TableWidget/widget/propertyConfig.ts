@@ -159,9 +159,9 @@ export default [
                 },
                 {
                   helpText:
-                    "The value computed & shown in each cell. Use {{currentRow}} to reference each row in the table. This property is not accessible outside the column settings.",
+                    "每个单元格计算后的值，使用 {{currentRow}} 引用当前行数据，这个属性不能在这个列之外访问到",
                   propertyName: "computedValue",
-                  label: "Computed Value",
+                  label: "计算值",
                   controlType: "COMPUTE_VALUE",
                   updateHook: updateDerivedColumnsHook,
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
@@ -190,7 +190,7 @@ export default [
                     "columnType",
                   ],
                   label: "是否显示",
-                  helpText: "Controls the visibility of the cell in the column",
+                  helpText: "控制当前列是否显示",
                   updateHook: updateDerivedColumnsHook,
                   defaultValue: true,
                   controlType: "SWITCH",
