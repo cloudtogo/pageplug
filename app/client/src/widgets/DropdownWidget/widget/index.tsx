@@ -33,8 +33,7 @@ class DropdownWidget extends BaseWidget<DropdownWidgetProps, WidgetState> {
         sectionName: "属性",
         children: [
           {
-            helpText:
-              "让用户选择一项，选项值必须唯一",
+            helpText: "让用户选择一项，选项值必须唯一",
             propertyName: "options",
             label: "选项",
             controlType: "INPUT_TEXT",
@@ -217,8 +216,7 @@ class DropdownWidget extends BaseWidget<DropdownWidgetProps, WidgetState> {
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
