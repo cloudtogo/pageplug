@@ -206,9 +206,9 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               isTriggerProperty: false,
             },
             {
-              helpText: "Sets maximum allowed text length",
+              helpText: "设置最大输入字符长度",
               propertyName: "maxChars",
-              label: "Max Chars",
+              label: "最大字符数",
               controlType: "INPUT_TEXT",
               placeholderText: "255",
               isBindProperty: true,
@@ -414,7 +414,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               validation: { type: ValidationTypes.BOOLEAN },
             },
             {
-              helpText: "Sets maximum allowed text length",
+              helpText: "设置最大输入字符长度",
               propertyName: "maxChars",
               label: "Max Characters",
               controlType: "INPUT_TEXT",
