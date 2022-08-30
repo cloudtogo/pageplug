@@ -26,7 +26,7 @@ export default {
     {
       propertyName: "iconName",
       label: "图标",
-      helpText: "Sets the icon to be used for the icon button",
+      helpText: "设置按钮图标",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(props, propertyPath, [ColumnTypes.ICON_BUTTON]);
       },
