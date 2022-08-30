@@ -169,7 +169,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
           {
             helpText: "默认选中这个值",
             propertyName: "defaultOptionValue",
-            label: "Default Value",
+            label: "默认值",
             controlType: "INPUT_TEXT",
             placeholderText: '{ "label": "label1", "value": "value1" }',
             isBindProperty: true,
