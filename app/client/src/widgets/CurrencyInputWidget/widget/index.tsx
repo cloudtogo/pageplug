@@ -131,7 +131,7 @@ class CurrencyInputWidget extends BaseInputWidget<
             {
               helpText: "No. of decimals in currency input",
               propertyName: "decimals",
-              label: "Decimals",
+              label: "小数位",
               controlType: "DROP_DOWN",
               options: [
                 {
