@@ -97,8 +97,7 @@ const PROPERTIES = {
     {
       propertyName: "defaultValue",
       label: "默认日期",
-      helpText:
-        "设置默认日期，默认日期修改后，组件当前日期会自动更新",
+      helpText: "设置默认日期，默认日期修改后，组件当前日期会自动更新",
       controlType: "DATE_PICKER",
       placeholderText: "Enter Default Date",
       useValidationMessage: true,
@@ -196,9 +195,8 @@ const PROPERTIES = {
     },
     {
       propertyName: "convertToISO",
-      label: "Convert to ISO format",
-      helpText:
-        "Enabling this always converts the value in ISO form in the formData irrespective of the 'Date Format' selected",
+      label: "转换成 ISO 格式",
+      helpText: "开启后日期都会转换成 ISO 格式",
       controlType: "SWITCH",
       isJSConvertible: false,
       isBindProperty: true,
@@ -212,7 +210,7 @@ const PROPERTIES = {
     {
       propertyName: "minDate",
       label: "最小日期",
-      helpText: "Defines the min date for the field",
+      helpText: "字段最小日期",
       controlType: "DATE_PICKER",
       useValidationMessage: true,
       isJSConvertible: true,
@@ -227,7 +225,7 @@ const PROPERTIES = {
     {
       propertyName: "maxDate",
       label: "最大日期",
-      helpText: "Defines the max date for the field",
+      helpText: "字段最大日期",
       controlType: "DATE_PICKER",
       useValidationMessage: true,
       isJSConvertible: true,
@@ -276,8 +274,7 @@ const PROPERTIES = {
       {
         propertyName: "defaultValue",
         label: "默认日期",
-        helpText:
-          "设置默认日期，默认日期修改后，组件当前日期会自动更新",
+        helpText: "设置默认日期，默认日期修改后，组件当前日期会自动更新",
         controlType: "DATE_PICKER",
         placeholderText: "Enter Default Date",
         useValidationMessage: true,
@@ -333,7 +330,7 @@ const PROPERTIES = {
       {
         propertyName: "minDate",
         label: "最小日期",
-        helpText: "Defines the min date for the field",
+        helpText: "字段最小日期",
         controlType: "DATE_PICKER",
         useValidationMessage: true,
         isJSConvertible: true,
@@ -348,7 +345,7 @@ const PROPERTIES = {
       {
         propertyName: "maxDate",
         label: "最大日期",
-        helpText: "Defines the max date for the field",
+        helpText: "字段最大日期",
         controlType: "DATE_PICKER",
         useValidationMessage: true,
         isJSConvertible: true,
@@ -364,9 +361,8 @@ const PROPERTIES = {
     general: [
       {
         propertyName: "convertToISO",
-        label: "Convert to ISO format",
-        helpText:
-          "Enabling this always converts the value in ISO form in the formData irrespective of the 'Date Format' selected",
+        label: "转换成 ISO 格式",
+        helpText: "开启后日期都会转换成 ISO 格式",
         controlType: "SWITCH",
         isJSConvertible: false,
         isBindProperty: true,
