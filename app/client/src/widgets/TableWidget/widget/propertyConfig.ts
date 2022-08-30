@@ -1586,9 +1586,9 @@ export default [
         validation: { type: ValidationTypes.BOOLEAN },
       },
       {
-        helpText: "Toggle visibility of the data download",
+        helpText: "是否显示下载按钮",
         propertyName: "isVisibleDownload",
-        label: "Download",
+        label: "下载",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
