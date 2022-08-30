@@ -13,7 +13,7 @@ const ICON_NAMES = Object.keys(IconNames).map(
 );
 
 export default {
-  sectionName: "Button Properties",
+  sectionName: "按钮属性",
   hidden: (props: TableWidgetProps, propertyPath: string) => {
     return hideByColumnType(
       props,
@@ -105,7 +105,7 @@ export default {
       propertyName: "buttonLabel",
       label: "标签",
       controlType: "TABLE_COMPUTE_VALUE",
-      defaultValue: "Action",
+      defaultValue: "动作",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(props, propertyPath, [ColumnTypes.BUTTON]);
       },
@@ -117,7 +117,7 @@ export default {
       propertyName: "menuButtonLabel",
       label: "标签",
       controlType: "TABLE_COMPUTE_VALUE",
-      defaultValue: "Open Menu",
+      defaultValue: "打开菜单",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(props, propertyPath, [ColumnTypes.MENU_BUTTON]);
       },
@@ -157,7 +157,7 @@ export default {
       controlType: "DROP_DOWN",
       customJSControl: "TABLE_COMPUTE_VALUE",
       isJSConvertible: true,
-      helpText: "Sets the variant",
+      helpText: "设置按钮类型",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(props, propertyPath, [
           ColumnTypes.ICON_BUTTON,

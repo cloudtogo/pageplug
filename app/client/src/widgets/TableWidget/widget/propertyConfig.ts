@@ -696,7 +696,7 @@ export default [
                 },
                 {
                   propertyName: "verticalAlignment",
-                  label: "Vertical Alignment",
+                  label: "垂直对齐",
                   controlType: "ICON_TABS",
                   options: [
                     {
@@ -759,7 +759,7 @@ export default [
                 },
                 {
                   propertyName: "cellBackground",
-                  label: "Cell Background",
+                  label: "单元格背景颜色",
                   controlType: "PRIMARY_COLUMNS_COLOR_PICKER",
                   isJSConvertible: true,
                   customJSControl: "COMPUTE_VALUE",
@@ -784,7 +784,7 @@ export default [
               ],
             },
             {
-              sectionName: "Button Properties",
+              sectionName: "按钮属性",
               hidden: (props: TableWidgetProps, propertyPath: string) => {
                 return hideByColumnType(
                   props,
@@ -868,7 +868,7 @@ export default [
                   propertyName: "buttonLabel",
                   label: "标签",
                   controlType: "COMPUTE_VALUE",
-                  defaultValue: "Action",
+                  defaultValue: "动作",
                   updateHook: updateDerivedColumnsHook,
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
                     return hideByColumnType(props, propertyPath, [
@@ -887,7 +887,7 @@ export default [
                   propertyName: "menuButtonLabel",
                   label: "标签",
                   controlType: "COMPUTE_VALUE",
-                  defaultValue: "Open Menu",
+                  defaultValue: "打开菜单",
                   updateHook: updateDerivedColumnsHook,
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
                     return hideByColumnType(props, propertyPath, [
@@ -941,7 +941,7 @@ export default [
                   customJSControl: "COMPUTE_VALUE",
                   defaultValue: ButtonVariantTypes.PRIMARY,
                   isJSConvertible: true,
-                  helpText: "Sets the variant",
+                  helpText: "设置按钮类型",
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
                     return hideByColumnType(props, propertyPath, [
                       ColumnTypes.BUTTON,
@@ -1735,7 +1735,7 @@ export default [
       },
       {
         propertyName: "verticalAlignment",
-        label: "Vertical Alignment",
+        label: "垂直对齐",
         controlType: "ICON_TABS",
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns", "derivedColumns"],
