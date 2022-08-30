@@ -370,7 +370,7 @@ export default [
       },
       {
         propertyName: "isVisibleDownload",
-        helpText: "Toggle visibility of the data download",
+        helpText: "是否显示下载按钮",
         label: "Allow Download",
         controlType: "SWITCH",
         isJSConvertible: true,
