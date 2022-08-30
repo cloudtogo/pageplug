@@ -181,7 +181,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
                 fn: allowedRange,
                 expected: {
                   type:
-                    "0 : sunday\n1 : monday\n2 : tuesday\n3 : wednesday\n4 : thursday\n5 : friday\n6 : saturday",
+                    "0 : 星期天\n1 : 星期一\n2 : 星期二\n3 : 星期三\n4 : 星期四\n5 : 星期五\n6 : 星期六",
                   example: "0",
                   autocompleteDataType: AutocompleteDataType.STRING,
                 },
@@ -437,7 +437,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
                 fn: allowedRange,
                 expected: {
                   type:
-                    "0 : sunday\n1 : monday\n2 : tuesday\n3 : wednesday\n4 : thursday\n5 : friday\n6 : saturday",
+                    "0 : 星期天\n1 : 星期一\n2 : 星期二\n3 : 星期三\n4 : 星期四\n5 : 星期五\n6 : 星期六",
                   example: "0",
                   autocompleteDataType: AutocompleteDataType.STRING,
                 },
