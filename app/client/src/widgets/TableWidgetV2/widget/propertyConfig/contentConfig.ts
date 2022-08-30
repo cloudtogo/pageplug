@@ -132,7 +132,7 @@ export default [
       },
       {
         helpText:
-          "Bind the Table.pageNo property in your API and call it onPageChange",
+          "在 API 请求参数中绑定页号 Table.pageNo，onPageChange 换页的时候调用 API",
         propertyName: "serverSidePaginationEnabled",
         label: "服务端分页",
         controlType: "SWITCH",
@@ -146,7 +146,7 @@ export default [
         propertyName: "totalRecordsCount",
         label: "Total Records",
         controlType: "INPUT_TEXT",
-        placeholderText: "Enter total record count",
+        placeholderText: "配置表格总行数",
         isBindProperty: true,
         isTriggerProperty: false,
         validation: {
@@ -315,7 +315,7 @@ export default [
     sectionName: "Sorting",
     children: [
       {
-        helpText: "Controls sorting in View Mode",
+        helpText: "是否支持按列排序",
         propertyName: "isSortable",
         isJSConvertible: true,
         label: "Column Sorting",
