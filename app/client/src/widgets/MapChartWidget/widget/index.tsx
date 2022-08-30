@@ -69,35 +69,35 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "World",
+                label: "世界地图",
                 value: MapTypes.WORLD,
               },
               {
-                label: "World with Antarctica",
+                label: "世界地图（包括南极）",
                 value: MapTypes.WORLD_WITH_ANTARCTICA,
               },
               {
-                label: "Europe",
+                label: "欧洲",
                 value: MapTypes.EUROPE,
               },
               {
-                label: "North America",
+                label: "北美",
                 value: MapTypes.NORTH_AMERICA,
               },
               {
-                label: "South America",
+                label: "南美",
                 value: MapTypes.SOURTH_AMERICA,
               },
               {
-                label: "Asia",
+                label: "亚洲",
                 value: MapTypes.ASIA,
               },
               {
-                label: "Oceania",
+                label: "大洋洲",
                 value: MapTypes.OCEANIA,
               },
               {
-                label: "Africa",
+                label: "非洲",
                 value: MapTypes.AFRICA,
               },
             ],
@@ -316,35 +316,35 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "World",
+                label: "世界地图",
                 value: MapTypes.WORLD,
               },
               {
-                label: "World with Antarctica",
+                label: "世界地图（包括南极）",
                 value: MapTypes.WORLD_WITH_ANTARCTICA,
               },
               {
-                label: "Europe",
+                label: "欧洲",
                 value: MapTypes.EUROPE,
               },
               {
-                label: "North America",
+                label: "北美",
                 value: MapTypes.NORTH_AMERICA,
               },
               {
-                label: "South America",
+                label: "南美",
                 value: MapTypes.SOURTH_AMERICA,
               },
               {
-                label: "Asia",
+                label: "亚洲",
                 value: MapTypes.ASIA,
               },
               {
-                label: "Oceania",
+                label: "大洋洲",
                 value: MapTypes.OCEANIA,
               },
               {
-                label: "Africa",
+                label: "非洲",
                 value: MapTypes.AFRICA,
               },
             ],
