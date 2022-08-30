@@ -333,7 +333,7 @@ class MultiSelectWidget extends BaseWidget<
           },
           {
             helpText:
-              "Controls the visibility of select all option in dropdown.",
+              "是否下拉列表中展示全选选项",
             propertyName: "allowSelectAll",
             label: "允许全选",
             controlType: "SWITCH",
@@ -794,7 +794,7 @@ class MultiSelectWidget extends BaseWidget<
           },
           {
             helpText:
-              "Controls the visibility of select all option in dropdown.",
+              "是否下拉列表中展示全选选项",
             propertyName: "allowSelectAll",
             label: "允许全选",
             controlType: "SWITCH",
