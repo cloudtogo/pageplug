@@ -249,7 +249,7 @@ export default {
     },
     {
       propertyName: "menuColor",
-      helpText: "Sets the custom color preset based on the menu button variant",
+      helpText: "自定义菜单按钮颜色",
       label: "菜单颜色",
       controlType: "PRIMARY_COLUMNS_COLOR_PICKER_V2",
       customJSControl: "TABLE_COMPUTE_VALUE",
