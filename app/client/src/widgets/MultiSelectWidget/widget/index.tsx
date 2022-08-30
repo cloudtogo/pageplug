@@ -356,7 +356,7 @@ class MultiSelectWidget extends BaseWidget<
             isTriggerProperty: true,
           },
           {
-            helpText: "Trigger an action on change of filterText",
+            helpText: "过滤关键字更改时触发",
             hidden: (props: MultiSelectWidgetProps) =>
               !props.serverSideFiltering,
             dependencies: ["serverSideFiltering"],
