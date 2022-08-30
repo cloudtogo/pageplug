@@ -194,7 +194,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
           {
             helpText: "No. of decimals in currency input",
             propertyName: "decimalsInCurrency",
-            label: "Decimals",
+            label: "小数位",
             controlType: "DROP_DOWN",
             options: [
               {
