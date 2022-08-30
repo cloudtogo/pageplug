@@ -228,7 +228,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               propertyName: "defaultText",
               label: "默认值",
               controlType: "INPUT_TEXT",
-              placeholderText: "John Doe",
+              placeholderText: "John Wick",
               isBindProperty: true,
               isTriggerProperty: false,
               validation: {
@@ -378,7 +378,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               propertyName: "defaultText",
               label: "默认值",
               controlType: "INPUT_TEXT",
-              placeholderText: "John Doe",
+              placeholderText: "John Wick",
               isBindProperty: true,
               isTriggerProperty: false,
               validation: {
