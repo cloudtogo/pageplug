@@ -42,7 +42,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "Scroll contents",
+                label: "允许内容滚动",
                 value: OverflowTypes.SCROLL,
               },
               {
@@ -337,7 +337,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "Scroll contents",
+                label: "允许内容滚动",
                 value: OverflowTypes.SCROLL,
               },
               {
