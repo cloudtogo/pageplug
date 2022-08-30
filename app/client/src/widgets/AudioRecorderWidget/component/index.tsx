@@ -233,7 +233,7 @@ function PlayerButton(props: PlayerButtonProps) {
           onClick={onClick}
           outlined
           small
-          title="play"
+          title="开始"
         />
       );
 
@@ -245,7 +245,7 @@ function PlayerButton(props: PlayerButtonProps) {
           onClick={onClick}
           outlined
           small
-          title="pause"
+          title="暂停"
         />
       );
 
@@ -257,7 +257,7 @@ function PlayerButton(props: PlayerButtonProps) {
           onClick={onClick}
           outlined
           small
-          title="stop"
+          title="停止"
         />
       );
 
@@ -269,7 +269,7 @@ function PlayerButton(props: PlayerButtonProps) {
           onClick={onClick}
           outlined
           small
-          title="discard"
+          title="丢弃"
         />
       );
   }
