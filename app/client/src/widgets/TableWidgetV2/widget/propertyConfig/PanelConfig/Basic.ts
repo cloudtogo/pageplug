@@ -48,7 +48,7 @@ export default {
       propertyName: "buttonLabel",
       label: "文本",
       controlType: "TABLE_COMPUTE_VALUE",
-      defaultValue: "Action",
+      defaultValue: "动作",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(props, propertyPath, [ColumnTypes.BUTTON]);
       },
@@ -60,7 +60,7 @@ export default {
       propertyName: "menuButtonLabel",
       label: "文本",
       controlType: "TABLE_COMPUTE_VALUE",
-      defaultValue: "Open Menu",
+      defaultValue: "打开菜单",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(props, propertyPath, [ColumnTypes.MENU_BUTTON]);
       },

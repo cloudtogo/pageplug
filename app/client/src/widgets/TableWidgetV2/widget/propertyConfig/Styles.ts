@@ -114,7 +114,7 @@ export default {
     },
     {
       propertyName: "verticalAlignment",
-      label: "Vertical Alignment",
+      label: "垂直对齐",
       controlType: "ICON_TABS",
       updateHook: updateColumnStyles,
       dependencies: ["primaryColumns"],
