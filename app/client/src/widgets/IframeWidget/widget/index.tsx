@@ -269,7 +269,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "borderWidth",
-            label: "Border Width (px)",
+            label: "边框宽度 (px)",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -281,7 +281,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           },
           {
             propertyName: "borderOpacity",
-            label: "Border Opacity (%)",
+            label: "边框透明度 (%)",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
