@@ -165,7 +165,7 @@ export default [
         dependencies: ["serverSidePaginationEnabled", "isVisiblePagination"],
       },
       {
-        helpText: "Triggers an action when a table page is changed",
+        helpText: "表格换页时触发",
         propertyName: "onPageChange",
         label: "onPageChange",
         controlType: "ACTION_SELECTOR",
@@ -177,7 +177,7 @@ export default [
         dependencies: ["isVisiblePagination", "serverSidePaginationEnabled"],
       },
       {
-        helpText: "Triggers an action when a table page size is changed",
+        helpText: "表格页大小改变时触发",
         propertyName: "onPageSizeChange",
         label: "onPageSizeChange",
         controlType: "ACTION_SELECTOR",
