@@ -15,21 +15,21 @@ export const CONFIG = {
     animateLoading: true,
     options: [
       {
-        label: "Blue",
+        label: "蓝",
         value: "BLUE",
         children: [
           {
-            label: "Dark Blue",
+            label: "深蓝",
             value: "DARK BLUE",
           },
           {
-            label: "Light Blue",
+            label: "浅蓝",
             value: "LIGHT BLUE",
           },
         ],
       },
-      { label: "Green", value: "GREEN" },
-      { label: "Red", value: "RED" },
+      { label: "绿", value: "GREEN" },
+      { label: "红", value: "RED" },
     ],
     widgetName: "TreeSelect",
     defaultOptionValue: "BLUE",
@@ -39,8 +39,8 @@ export const CONFIG = {
     isDisabled: false,
     allowClear: false,
     expandAll: false,
-    placeholderText: "Select option",
-    labelText: "Label",
+    placeholderText: "请选择",
+    labelText: "标签",
     labelPosition: LabelPosition.Left,
     labelAlignment: Alignment.LEFT,
     labelWidth: 5,

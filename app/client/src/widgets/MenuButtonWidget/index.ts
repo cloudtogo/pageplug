@@ -7,7 +7,7 @@ export const CONFIG = {
   name: "Menu Button",
   iconSVG: IconSVG,
   defaults: {
-    label: "Open Menu",
+    label: "打开菜单",
     menuVariant: ButtonVariantTypes.PRIMARY,
     placement: ButtonPlacementTypes.CENTER,
     isCompact: false,
@@ -16,7 +16,7 @@ export const CONFIG = {
     animateLoading: true,
     menuItems: {
       menuItem1: {
-        label: "First Menu Item",
+        label: "第一项",
         id: "menuItem1",
         widgetId: "",
         isVisible: true,
@@ -24,7 +24,7 @@ export const CONFIG = {
         index: 0,
       },
       menuItem2: {
-        label: "Second Menu Item",
+        label: "第二项",
         id: "menuItem2",
         widgetId: "",
         isVisible: true,
@@ -32,7 +32,7 @@ export const CONFIG = {
         index: 1,
       },
       menuItem3: {
-        label: "Third Menu Item",
+        label: "第三项",
         id: "menuItem3",
         widgetId: "",
         isVisible: true,

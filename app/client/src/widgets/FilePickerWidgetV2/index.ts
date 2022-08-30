@@ -13,7 +13,7 @@ export const CONFIG = {
     files: [],
     selectedFiles: [],
     allowedFileTypes: [],
-    label: "Select Files",
+    label: "选择文件",
     columns: 16,
     maxNumFiles: 1,
     maxFileSize: 5,

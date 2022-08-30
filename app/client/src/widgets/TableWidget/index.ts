@@ -66,7 +66,7 @@ export const CONFIG = {
         isVisible: true,
         isCellVisible: true,
         isDerived: false,
-        label: "step",
+        label: "步骤",
         computedValue:
           "{{Table1.sanitizedTableData.map((currentRow) => ( currentRow.step))}}",
       },
@@ -83,7 +83,7 @@ export const CONFIG = {
         isVisible: true,
         isCellVisible: true,
         isDerived: false,
-        label: "task",
+        label: "任务",
         computedValue:
           "{{Table1.sanitizedTableData.map((currentRow) => ( currentRow.task))}}",
       },
@@ -100,7 +100,7 @@ export const CONFIG = {
         isVisible: true,
         isCellVisible: true,
         isDerived: false,
-        label: "status",
+        label: "状态",
         computedValue:
           "{{Table1.sanitizedTableData.map((currentRow) => ( currentRow.status))}}",
       },
@@ -118,7 +118,7 @@ export const CONFIG = {
         isCellVisible: true,
         isDisabled: false,
         isDerived: false,
-        label: "action",
+        label: "操作",
         onClick:
           "{{currentRow.step === '#1' ? showAlert('Done', 'success') : currentRow.step === '#2' ? navigateTo('https://docs.appsmith.com/core-concepts/connecting-to-data-sources/querying-a-database',undefined,'NEW_WINDOW') : navigateTo('https://docs.appsmith.com/core-concepts/displaying-data-read/display-data-tables',undefined,'NEW_WINDOW')}}",
         computedValue:
@@ -129,19 +129,19 @@ export const CONFIG = {
     tableData: [
       {
         step: "#1",
-        task: "Drop a table",
+        task: "拖拽一个表格组件到画布",
         status: "✅",
         action: "",
       },
       {
         step: "#2",
-        task: "Create a query fetch_users with the Mock DB",
+        task: "使用样例数据库创建查询 fetch_users",
         status: "--",
         action: "",
       },
       {
         step: "#3",
-        task: "Bind the query using => fetch_users.data",
+        task: "通过 fetch_users.data 绑定查询数据",
         status: "--",
         action: "",
       },
