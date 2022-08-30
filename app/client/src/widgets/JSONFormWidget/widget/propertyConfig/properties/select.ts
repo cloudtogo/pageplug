@@ -234,7 +234,7 @@ const PROPERTIES = {
     searchAndFilters: [
       {
         propertyName: "isFilterable",
-        label: "Allow Searching",
+        label: "允许搜索",
         helpText: "让下拉列表支持数据过滤",
         controlType: "SWITCH",
         isJSConvertible: true,
