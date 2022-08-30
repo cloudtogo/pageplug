@@ -67,7 +67,7 @@ export default {
         params: {
           fn: uniqueColumnNameValidation,
           expected: {
-            type: "Unique Column Names",
+            type: "唯一列名",
             example: "abc",
             autocompleteDataType: AutocompleteDataType.STRING,
           },
@@ -77,8 +77,8 @@ export default {
     },
     {
       propertyName: "inlineEditingSaveOption",
-      helpText: "Choose the save experience to save the edited cell",
-      label: "Update Mode",
+      helpText: "选择如何保存编辑的单元格数据",
+      label: "更新模式",
       controlType: "DROP_DOWN",
       isBindProperty: true,
       isTriggerProperty: false,
@@ -98,11 +98,11 @@ export default {
       ],
       options: [
         {
-          label: "Row level",
+          label: "行更新",
           value: InlineEditingSaveOptions.ROW_LEVEL,
         },
         {
-          label: "Custom",
+          label: "自定义更新",
           value: InlineEditingSaveOptions.CUSTOM,
         },
       ],
@@ -131,7 +131,7 @@ export default {
     {
       helpText: "默认选中行的序号或序号数组",
       propertyName: "defaultSelectedRowIndices",
-      label: "Default Selected Rows",
+      label: "默认选中行",
       controlType: "INPUT_TEXT",
       placeholderText: "[0]",
       isBindProperty: true,
