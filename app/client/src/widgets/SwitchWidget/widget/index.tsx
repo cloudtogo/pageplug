@@ -106,7 +106,7 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
         sectionName: "事件",
         children: [
           {
-            helpText: "Triggers an action when the switch state is changed",
+            helpText: "开关状态改变时触发",
             propertyName: "onChange",
             label: "onChange",
             controlType: "ACTION_SELECTOR",
@@ -314,7 +314,7 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
         sectionName: "事件",
         children: [
           {
-            helpText: "Triggers an action when the switch state is changed",
+            helpText: "开关状态改变时触发",
             propertyName: "onChange",
             label: "onChange",
             controlType: "ACTION_SELECTOR",
