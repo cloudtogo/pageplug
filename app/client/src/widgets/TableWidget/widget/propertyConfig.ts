@@ -263,15 +263,15 @@ export default [
                 },
                 {
                   propertyName: "inputFormat",
-                  label: "Original Date Format",
+                  label: "原始日期类型",
                   controlType: "DROP_DOWN",
                   options: [
                     {
-                      label: "UNIX timestamp (s)",
+                      label: "UNIX 时间戳 (s)",
                       value: "Epoch",
                     },
                     {
-                      label: "UNIX timestamp (ms)",
+                      label: "UNIX 时间戳 (ms)",
                       value: "Milliseconds",
                     },
                     {
@@ -400,17 +400,17 @@ export default [
                 },
                 {
                   propertyName: "outputFormat",
-                  label: "Display Date Format",
+                  label: "展示日期格式",
                   controlType: "DROP_DOWN",
                   customJSControl: "COMPUTE_VALUE",
                   isJSConvertible: true,
                   options: [
                     {
-                      label: "UNIX timestamp (s)",
+                      label: "UNIX 时间戳 (s)",
                       value: "Epoch",
                     },
                     {
-                      label: "UNIX timestamp (ms)",
+                      label: "UNIX 时间戳 (ms)",
                       value: "Milliseconds",
                     },
                     {
@@ -579,7 +579,7 @@ export default [
               children: [
                 {
                   propertyName: "horizontalAlignment",
-                  label: "Text Align",
+                  label: "文本对齐方式",
                   controlType: "ICON_TABS",
                   options: [
                     {
@@ -1711,7 +1711,7 @@ export default [
       },
       {
         propertyName: "horizontalAlignment",
-        label: "Text Align",
+        label: "文本对齐方式",
         controlType: "ICON_TABS",
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns", "derivedColumns"],
