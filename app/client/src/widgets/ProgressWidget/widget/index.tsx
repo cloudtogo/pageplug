@@ -27,7 +27,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
           {
             helpText: "Determines the shape of the progress indicator",
             propertyName: "progressType",
-            label: "Type",
+            label: "类型",
             controlType: "DROP_DOWN",
             options: [
               {
@@ -48,7 +48,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
             propertyName: "progress",
             label: "进度",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter progress value",
+            placeholderText: "请输入进度值",
             isBindProperty: true,
             isTriggerProperty: false,
             isJSConvertible: true,
@@ -63,9 +63,9 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
           {
             helpText: "Sets the number of steps",
             propertyName: "steps",
-            label: "Number of steps",
+            label: "步数",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter number of steps",
+            placeholderText: "请输入步数",
             isBindProperty: true,
             isTriggerProperty: false,
             isJSConvertible: true,
@@ -156,7 +156,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
           {
             helpText: "Determines the shape of the progress indicator",
             propertyName: "progressType",
-            label: "Type",
+            label: "类型",
             controlType: "DROP_DOWN",
             options: [
               {
@@ -177,7 +177,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
             propertyName: "progress",
             label: "进度",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter progress value",
+            placeholderText: "请输入进度值",
             isBindProperty: true,
             isTriggerProperty: false,
             isJSConvertible: true,
@@ -197,9 +197,9 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
           {
             helpText: "Sets the number of steps",
             propertyName: "steps",
-            label: "Number of Steps",
+            label: "步数",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter number of steps",
+            placeholderText: "请输入步数",
             isBindProperty: true,
             isTriggerProperty: false,
             isJSConvertible: true,
