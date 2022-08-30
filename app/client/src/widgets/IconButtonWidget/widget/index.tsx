@@ -34,7 +34,7 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
           {
             propertyName: "iconName",
             label: "图标",
-            helpText: "Sets the icon to be used for the icon button",
+            helpText: "设置按钮图标",
             controlType: "ICON_SELECT",
             defaultIconName: "plus",
             isJSConvertible: true,
@@ -53,7 +53,7 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
             propertyName: "tooltip",
             label: "提示",
             controlType: "INPUT_TEXT",
-            placeholderText: "Add Input Field",
+            placeholderText: "添加输入字段",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -110,7 +110,7 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "buttonColor",
-            helpText: "Sets the style of the icon button",
+            helpText: "设置按钮颜色",
             label: "按钮颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
@@ -160,8 +160,7 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -171,8 +170,7 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -192,7 +190,7 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
           {
             propertyName: "iconName",
             label: "图标",
-            helpText: "Sets the icon to be used for the icon button",
+            helpText: "设置按钮图标",
             controlType: "ICON_SELECT",
             defaultIconName: "plus",
             isJSConvertible: true,
@@ -225,7 +223,7 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
             propertyName: "tooltip",
             label: "提示",
             controlType: "INPUT_TEXT",
-            placeholderText: "Add Input Field",
+            placeholderText: "添加输入字段",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -312,7 +310,7 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "buttonColor",
-            helpText: "Sets the style of the icon button",
+            helpText: "设置按钮颜色",
             label: "按钮颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
@@ -333,8 +331,7 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -344,8 +341,7 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
