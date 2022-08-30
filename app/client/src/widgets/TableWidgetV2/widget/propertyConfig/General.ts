@@ -110,10 +110,10 @@ export default {
     },
     {
       helpText:
-        "Assigns a unique column which helps maintain selectedRows and triggeredRows based on value",
+        "数据主键值唯一，用于表格的 selectedRows 和 triggeredRows",
       propertyName: "primaryColumnId",
       dependencies: ["primaryColumns"],
-      label: "Primary key column",
+      label: "主键列",
       controlType: "PRIMARY_COLUMNS_DROPDOWN",
       isBindProperty: true,
       isTriggerProperty: false,
@@ -121,7 +121,7 @@ export default {
     },
     {
       propertyName: "defaultSearchText",
-      label: "Default Search Text",
+      label: "默认搜索内容",
       controlType: "INPUT_TEXT",
       placeholderText: "{{appsmith.user.name}}",
       isBindProperty: true,
@@ -129,7 +129,7 @@ export default {
       validation: { type: ValidationTypes.TEXT },
     },
     {
-      helpText: "Selects row(s) by default",
+      helpText: "默认选中行的序号或序号数组",
       propertyName: "defaultSelectedRowIndices",
       label: "Default Selected Rows",
       controlType: "INPUT_TEXT",
@@ -156,7 +156,7 @@ export default {
     {
       helpText: "Selects row by default",
       propertyName: "defaultSelectedRowIndex",
-      label: "Default Selected Row",
+      label: "默认选中行",
       controlType: "INPUT_TEXT",
       placeholderText: "0",
       isBindProperty: true,
@@ -175,8 +175,8 @@ export default {
     },
     {
       propertyName: "compactMode",
-      helpText: "Selects row height",
-      label: "Default Row Height",
+      helpText: "选择行高",
+      label: "默认行高",
       controlType: "DROP_DOWN",
       defaultValue: "DEFAULT",
       isBindProperty: true,
