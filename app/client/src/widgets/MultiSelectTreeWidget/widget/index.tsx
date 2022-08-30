@@ -74,7 +74,7 @@ class MultiSelectTreeWidget extends BaseWidget<
           },
           {
             helpText:
-              "Allows users to select multiple options. Values must be unique",
+              "允许用户多选，每选项的值必须唯一",
             propertyName: "options",
             label: "选项",
             controlType: "INPUT_TEXT",
@@ -439,7 +439,7 @@ class MultiSelectTreeWidget extends BaseWidget<
         children: [
           {
             helpText:
-              "Allows users to select multiple options. Values must be unique",
+              "允许用户多选，每选项的值必须唯一",
             propertyName: "options",
             label: "选项",
             controlType: "INPUT_TEXT",
