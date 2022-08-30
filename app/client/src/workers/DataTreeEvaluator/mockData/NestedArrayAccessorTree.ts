@@ -175,7 +175,7 @@ export const nestedArrayAccessorCyclicDependency: Record<string, DataTree> = {
           params: {
             regex: {},
             expected: {
-              type: "string (HTML color name or HEX value)",
+              type: "string (HTML 颜色名称，HEX 值)",
               example: "red | #9C0D38",
               autocompleteDataType: "STRING",
             },
@@ -472,7 +472,7 @@ export const nestedArrayAccessorCyclicDependency: Record<string, DataTree> = {
           params: {
             regex: {},
             expected: {
-              type: "string (HTML color name or HEX value)",
+              type: "string (HTML 颜色名称，HEX 值)",
               example: "red | #9C0D38",
               autocompleteDataType: "STRING",
             },
@@ -692,7 +692,7 @@ export const nestedArrayAccessorCyclicDependency: Record<string, DataTree> = {
           params: {
             regex: {},
             expected: {
-              type: "string (HTML color name or HEX value)",
+              type: "string (HTML 颜色名称，HEX 值)",
               example: "red | #9C0D38",
               autocompleteDataType: "STRING",
             },
@@ -963,7 +963,7 @@ export const nestedArrayAccessorCyclicDependency: Record<string, DataTree> = {
           params: {
             regex: {},
             expected: {
-              type: "string (HTML color name or HEX value)",
+              type: "string (HTML 颜色名称，HEX 值)",
               example: "red | #9C0D38",
               autocompleteDataType: "STRING",
             },
@@ -1236,7 +1236,7 @@ export const nestedArrayAccessorCyclicDependency: Record<string, DataTree> = {
           params: {
             regex: {},
             expected: {
-              type: "string (HTML color name or HEX value)",
+              type: "string (HTML 颜色名称，HEX 值)",
               example: "red | #9C0D38",
               autocompleteDataType: "STRING",
             },

@@ -24,7 +24,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "text",
-            helpText: "Sets the text of the widget",
+            helpText: "设置文本内容",
             label: "文本",
             controlType: "INPUT_TEXT",
             placeholderText: "名称：",
@@ -37,8 +37,8 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "overflow",
-            label: "Overflow",
-            helpText: "Controls the text behavior when length of text exceeds",
+            label: "内容超出",
+            helpText: "设置文本内容超出组件区域时如何展示",
             controlType: "DROP_DOWN",
             options: [
               {
@@ -46,11 +46,11 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
                 value: OverflowTypes.SCROLL,
               },
               {
-                label: "Truncate text",
+                label: "截断文本",
                 value: OverflowTypes.TRUNCATE,
               },
               {
-                label: "No overflow",
+                label: "默认效果",
                 value: OverflowTypes.NONE,
               },
             ],
@@ -81,8 +81,8 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "disableLink",
-            helpText: "Controls parsing text as Link",
-            label: "Disable Link",
+            helpText: "不将文本解析成链接",
+            label: "不解析链接",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -106,7 +106,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
               params: {
                 regex: /^((?![<|{{]).+){0,1}/,
                 expected: {
-                  type: "string (HTML color name or HEX value)",
+                  type: "string (HTML 颜色名称，HEX 值)",
                   example: `red | #9C0D38`,
                   autocompleteDataType: AutocompleteDataType.STRING,
                 },
@@ -129,7 +129,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "truncateButtonColor",
-            label: "Truncate Button Color",
+            label: "截断按钮颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -156,8 +156,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText:
-              "Enter value for border width which can also use as margin",
+            helpText: "设置边框宽度，也可以用作外间距",
             propertyName: "borderWidth",
             label: "边框宽度",
             placeholderText: "以 px 为单位",
@@ -212,11 +211,11 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "fontFamily",
-            label: "Font Family",
+            label: "字体",
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "System Default",
+                label: "系统默认字体",
                 value: "System Default",
               },
               {
@@ -319,7 +318,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "text",
-            helpText: "Sets the text of the widget",
+            helpText: "设置文本内容",
             label: "文本",
             controlType: "INPUT_TEXT",
             placeholderText: "名称：",
@@ -332,8 +331,8 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "overflow",
-            label: "Overflow Text",
-            helpText: "Controls the text behavior when length of text exceeds",
+            label: "内容超出",
+            helpText: "设置文本内容超出组件区域时如何展示",
             controlType: "DROP_DOWN",
             options: [
               {
@@ -341,11 +340,11 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
                 value: OverflowTypes.SCROLL,
               },
               {
-                label: "Truncate text",
+                label: "截断文本",
                 value: OverflowTypes.TRUNCATE,
               },
               {
-                label: "No overflow",
+                label: "默认效果",
                 value: OverflowTypes.NONE,
               },
             ],
@@ -376,8 +375,8 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "disableLink",
-            helpText: "Controls parsing text as Link",
-            label: "Disable Link",
+            helpText: "不将文本解析成链接",
+            label: "不解析链接",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -396,11 +395,11 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "fontFamily",
-            label: "Font Family",
+            label: "字体",
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "System Default",
+                label: "系统默认字体",
                 value: "System Default",
               },
               {
@@ -523,7 +522,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
               params: {
                 regex: /^((?![<|{{]).+){0,1}/,
                 expected: {
-                  type: "string (HTML color name or HEX value)",
+                  type: "string (HTML 颜色名称，HEX 值)",
                   example: `red | #9C0D38`,
                   autocompleteDataType: AutocompleteDataType.STRING,
                 },
@@ -542,7 +541,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "truncateButtonColor",
-            label: "Truncate Button Color",
+            label: "截断按钮颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -612,8 +611,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
         sectionName: "轮廓样式",
         children: [
           {
-            helpText:
-              "Enter value for border width which can also use as margin",
+            helpText: "设置边框宽度，也可以用作外间距",
             propertyName: "borderWidth",
             label: "边框宽度",
             placeholderText: "以 px 为单位",
