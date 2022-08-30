@@ -114,7 +114,7 @@ const PROPERTIES = {
     {
       helpText: "Sets the format of the selected date",
       propertyName: "dateFormat",
-      label: "Date Format",
+      label: "日期格式",
       controlType: "DROP_DOWN",
       isJSConvertible: true,
       customJSControl: "JSON_FORM_COMPUTE_VALUE",
@@ -259,7 +259,7 @@ const PROPERTIES = {
       {
         helpText: "Sets the format of the selected date",
         propertyName: "dateFormat",
-        label: "Date Format",
+        label: "日期格式",
         controlType: "DROP_DOWN",
         isJSConvertible: true,
         customJSControl: "JSON_FORM_COMPUTE_VALUE",
