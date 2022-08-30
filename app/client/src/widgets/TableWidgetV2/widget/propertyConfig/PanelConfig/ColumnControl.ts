@@ -294,15 +294,15 @@ export default {
     },
     {
       propertyName: "inputFormat",
-      label: "Original Date Format",
+      label: "原始日期类型",
       controlType: "DROP_DOWN",
       options: [
         {
-          label: "UNIX timestamp (s)",
+          label: "UNIX 时间戳 (s)",
           value: DateInputFormat.EPOCH,
         },
         {
-          label: "UNIX timestamp (ms)",
+          label: "UNIX 时间戳 (ms)",
           value: DateInputFormat.MILLISECONDS,
         },
         {
@@ -422,17 +422,17 @@ export default {
     },
     {
       propertyName: "outputFormat",
-      label: "Display Date Format",
+      label: "展示日期格式",
       controlType: "DROP_DOWN",
       customJSControl: "TABLE_COMPUTE_VALUE",
       isJSConvertible: true,
       options: [
         {
-          label: "UNIX timestamp (s)",
+          label: "UNIX 时间戳 (s)",
           value: DateInputFormat.EPOCH,
         },
         {
-          label: "UNIX timestamp (ms)",
+          label: "UNIX 时间戳 (ms)",
           value: DateInputFormat.MILLISECONDS,
         },
         {

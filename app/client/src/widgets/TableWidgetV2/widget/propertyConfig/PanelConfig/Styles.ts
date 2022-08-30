@@ -16,7 +16,7 @@ export default {
   children: [
     {
       propertyName: "horizontalAlignment",
-      label: "Text Align",
+      label: "文本对齐方式",
       controlType: "ICON_TABS",
       options: [
         {
