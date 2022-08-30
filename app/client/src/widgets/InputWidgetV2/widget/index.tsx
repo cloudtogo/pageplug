@@ -194,11 +194,11 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
                   value: "NUMBER",
                 },
                 {
-                  label: "Password",
+                  label: "密码",
                   value: "PASSWORD",
                 },
                 {
-                  label: "Email",
+                  label: "邮箱",
                   value: "EMAIL",
                 },
               ],
@@ -361,11 +361,11 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
                   value: "NUMBER",
                 },
                 {
-                  label: "Password",
+                  label: "密码",
                   value: "PASSWORD",
                 },
                 {
-                  label: "Email",
+                  label: "邮箱",
                   value: "EMAIL",
                 },
               ],
