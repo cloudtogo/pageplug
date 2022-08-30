@@ -2,7 +2,7 @@ import { ValidationTypes } from "constants/WidgetValidation";
 import { TableWidgetProps } from "widgets/TableWidgetV2/constants";
 
 export default {
-  sectionName: "Header options",
+  sectionName: "标题配置",
   children: [
     {
       propertyName: "isVisibleSearch",
