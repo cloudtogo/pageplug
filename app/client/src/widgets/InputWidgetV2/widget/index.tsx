@@ -180,9 +180,9 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
           sectionName: "属性",
           children: [
             {
-              helpText: "Changes the type of data captured in the input",
+              helpText: "输入的数据类型",
               propertyName: "inputType",
-              label: "Data Type",
+              label: "数据类型",
               controlType: "DROP_DOWN",
               options: [
                 {
@@ -347,9 +347,9 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
           sectionName: "数据",
           children: [
             {
-              helpText: "Changes the type of data captured in the input",
+              helpText: "输入的数据类型",
               propertyName: "inputType",
-              label: "Data Type",
+              label: "数据类型",
               controlType: "DROP_DOWN",
               options: [
                 {
