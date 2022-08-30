@@ -216,7 +216,7 @@ class MultiSelectTreeWidget extends BaseWidget<
           {
             propertyName: "allowClear",
             label: "Clear all Selections",
-            helpText: "Enables Icon to clear all Selections",
+            helpText: "显示清空按钮用来清空选择",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -225,8 +225,8 @@ class MultiSelectTreeWidget extends BaseWidget<
           },
           {
             propertyName: "expandAll",
-            label: "Expand all by default",
-            helpText: "Expand All nested options",
+            label: "默认展开",
+            helpText: "默认展开所有层级的选项",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -678,8 +678,8 @@ class MultiSelectTreeWidget extends BaseWidget<
           },
           {
             propertyName: "allowClear",
-            label: "Allow Clearing Value",
-            helpText: "Enables Icon to clear all Selections",
+            label: "允许清空",
+            helpText: "显示清空按钮用来清空选择",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -688,8 +688,8 @@ class MultiSelectTreeWidget extends BaseWidget<
           },
           {
             propertyName: "expandAll",
-            label: "Expand all by Default",
-            helpText: "Expand All nested options",
+            label: "默认展开",
+            helpText: "默认展开所有层级的选项",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
