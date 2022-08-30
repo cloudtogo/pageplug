@@ -204,7 +204,7 @@ class SingleSelectTreeWidget extends BaseWidget<
         sectionName: "事件",
         children: [
           {
-            helpText: "Triggers an action when a user selects an option",
+            helpText: "用户选中一个选项时触发",
             propertyName: "onOptionChange",
             label: "onOptionChange",
             controlType: "ACTION_SELECTOR",
@@ -650,7 +650,7 @@ class SingleSelectTreeWidget extends BaseWidget<
         sectionName: "事件",
         children: [
           {
-            helpText: "Triggers an action when a user selects an option",
+            helpText: "用户选中一个选项时触发",
             propertyName: "onOptionChange",
             label: "onOptionChange",
             controlType: "ACTION_SELECTOR",
