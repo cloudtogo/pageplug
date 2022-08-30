@@ -241,7 +241,7 @@ class MultiSelectWidget extends BaseWidget<
           {
             helpText: "Selects the option(s) with value by default",
             propertyName: "defaultOptionValue",
-            label: "Default Value",
+            label: "默认值",
             controlType: "INPUT_TEXT",
             placeholderText: "[GREEN]",
             isBindProperty: true,

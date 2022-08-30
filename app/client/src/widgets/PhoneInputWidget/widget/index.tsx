@@ -148,7 +148,7 @@ class PhoneInputWidget extends BaseInputWidget<
               helpText:
                 "设置组件默认值，当默认值改变后，组件当前值会自动更新",
               propertyName: "defaultText",
-              label: "Default Value",
+              label: "默认值",
               controlType: "INPUT_TEXT",
               placeholderText: "(000) 000-0000",
               isBindProperty: true,
