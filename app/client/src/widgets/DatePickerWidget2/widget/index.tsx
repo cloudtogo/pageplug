@@ -410,7 +410,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           },
           {
             propertyName: "defaultDate",
-            label: "Default Date",
+            label: "默认日期",
             helpText:
               "Sets the default date of the widget. The date is updated if the default date changes",
             controlType: "DATE_PICKER",
