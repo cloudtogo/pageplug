@@ -264,8 +264,8 @@ export const contentConfig = [
     children: [
       {
         propertyName: "sourceData",
-        helpText: "Input JSON sample for default form layout",
-        label: "Source Data",
+        helpText: "样例 JSON 数据",
+        label: "源数据",
         controlType: "INPUT_TEXT",
         placeholderText: '{ "name": "John", "age": 24 }',
         isBindProperty: true,
@@ -286,8 +286,8 @@ export const contentConfig = [
       {
         propertyName: "autoGenerateForm",
         helpText:
-          "Caution: When auto generate form is enabled, the form fields would regenerate if there is any change of source data (keys change or value type changes eg from string to number). If disabled then the fields and their configuration won't change with the change of source data.",
-        label: "Auto Generate Form",
+          "注意：如果开启了自动生成表单，在源数据发生改变的时候，所有的表单字段都会重新生成。",
+        label: "自动生成表单",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -301,7 +301,7 @@ export const contentConfig = [
         controlType: "BUTTON",
         isJSConvertible: false,
         isBindProperty: false,
-        buttonLabel: "Generate Form",
+        buttonLabel: "生成表单",
         onClick: onGenerateFormClick,
         isDisabled: generateFormCTADisabled,
         isTriggerProperty: false,
@@ -315,7 +315,7 @@ export const contentConfig = [
       },
       {
         propertyName: `schema.${ROOT_SCHEMA_KEY}.children`,
-        helpText: "Field configuration",
+        helpText: "字段配置",
         label: "字段配置",
         controlType: "FIELD_CONFIGURATION",
         isBindProperty: false,
@@ -695,8 +695,8 @@ export default [
       },
       {
         propertyName: "sourceData",
-        helpText: "Input JSON sample for default form layout",
-        label: "Source Data",
+        helpText: "样例 JSON 数据",
+        label: "源数据",
         controlType: "INPUT_TEXT",
         placeholderText: '{ "name": "John", "age": 24 }',
         isBindProperty: true,
@@ -717,8 +717,8 @@ export default [
       {
         propertyName: "autoGenerateForm",
         helpText:
-          "Caution: When auto generate form is enabled, the form fields would regenerate if there is any change of source data (keys change or value type changes eg from string to number). If disabled then the fields and their configuration won't change with the change of source data.",
-        label: "Auto Generate Form",
+          "注意：如果开启了自动生成表单，在源数据发生改变的时候，所有的表单字段都会重新生成。",
+        label: "自动生成表单",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -732,7 +732,7 @@ export default [
         controlType: "BUTTON",
         isJSConvertible: false,
         isBindProperty: false,
-        buttonLabel: "Generate Form",
+        buttonLabel: "生成表单",
         onClick: onGenerateFormClick,
         isDisabled: generateFormCTADisabled,
         isTriggerProperty: false,
@@ -746,7 +746,7 @@ export default [
       },
       {
         propertyName: `schema.${ROOT_SCHEMA_KEY}.children`,
-        helpText: "Field configuration",
+        helpText: "字段配置",
         label: "字段配置",
         controlType: "FIELD_CONFIGURATION",
         isBindProperty: false,
