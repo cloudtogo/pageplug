@@ -140,11 +140,11 @@ const PROPERTIES = {
           value: TimePrecision.NONE,
         },
         {
-          label: "Minute",
+          label: "分钟",
           value: TimePrecision.MINUTE,
         },
         {
-          label: "Second",
+          label: "秒",
           value: TimePrecision.SECOND,
         },
       ],
@@ -302,11 +302,11 @@ const PROPERTIES = {
             value: TimePrecision.NONE,
           },
           {
-            label: "Minute",
+            label: "分钟",
             value: TimePrecision.MINUTE,
           },
           {
-            label: "Second",
+            label: "秒",
             value: TimePrecision.SECOND,
           },
         ],
