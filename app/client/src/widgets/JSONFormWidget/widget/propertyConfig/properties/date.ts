@@ -211,7 +211,7 @@ const PROPERTIES = {
     },
     {
       propertyName: "minDate",
-      label: "Min Date",
+      label: "最小日期",
       helpText: "Defines the min date for the field",
       controlType: "DATE_PICKER",
       useValidationMessage: true,
@@ -332,7 +332,7 @@ const PROPERTIES = {
     validation: [
       {
         propertyName: "minDate",
-        label: "Min Date",
+        label: "最小日期",
         helpText: "Defines the min date for the field",
         controlType: "DATE_PICKER",
         useValidationMessage: true,
