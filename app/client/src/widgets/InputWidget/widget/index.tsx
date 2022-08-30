@@ -228,12 +228,11 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             dependencies: ["inputType"],
           },
           {
-            helpText:
-              "设置组件默认值，当默认值改变后，组件当前值会自动更新",
+            helpText: "设置组件默认值，当默认值改变后，组件当前值会自动更新",
             propertyName: "defaultText",
             label: "默认值",
             controlType: "INPUT_TEXT",
-            placeholderText: "John Doe",
+            placeholderText: "John Wick",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: {
@@ -250,8 +249,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             dependencies: ["inputType"],
           },
           {
-            helpText:
-              "对输入进行正则校验，校验失败时显示错误",
+            helpText: "对输入进行正则校验，校验失败时显示错误",
             propertyName: "regex",
             label: "正则校验",
             controlType: "INPUT_TEXT",
@@ -273,12 +271,11 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText:
-              "普通校验或正则校验失败后显示的错误信息",
+            helpText: "普通校验或正则校验失败后显示的错误信息",
             propertyName: "errorMessage",
             label: "错误信息",
             controlType: "INPUT_TEXT",
-            placeholderText: "Not a valid email!",
+            placeholderText: "邮箱格式有误",
             inputType: "TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -299,7 +296,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             propertyName: "tooltip",
             label: "提示",
             controlType: "INPUT_TEXT",
-            placeholderText: "Passwords must be atleast 6 chars",
+            placeholderText: "密码不少于6位",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -368,8 +365,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
           {
             propertyName: "isSpellCheck",
             label: "拼写检查",
-            helpText:
-              "是否检查拼写错误",
+            helpText: "是否检查拼写错误",
             controlType: "SWITCH",
             isJSConvertible: false,
             isBindProperty: true,
@@ -432,8 +428,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
@@ -466,8 +461,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText:
-              "提交时触发（用户按了回车）",
+            helpText: "提交时触发（用户按了回车）",
             propertyName: "onSubmit",
             label: "onSubmit",
             controlType: "ACTION_SELECTOR",
