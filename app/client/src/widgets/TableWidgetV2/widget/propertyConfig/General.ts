@@ -23,8 +23,7 @@ export default {
   sectionName: "属性",
   children: [
     {
-      helpText:
-        "表格数组数据",
+      helpText: "表格数组数据",
       propertyName: "tableData",
       label: "数据",
       controlType: "INPUT_TEXT",
@@ -109,8 +108,7 @@ export default {
       updateHook: updateInlineEditingSaveOptionHook,
     },
     {
-      helpText:
-        "数据主键值唯一，用于表格的 selectedRows 和 triggeredRows",
+      helpText: "数据主键值唯一，用于表格的 selectedRows 和 triggeredRows",
       propertyName: "primaryColumnId",
       dependencies: ["primaryColumns"],
       label: "主键列",
@@ -129,7 +127,7 @@ export default {
       validation: { type: ValidationTypes.TEXT },
     },
     {
-      helpText: "默认选中行的序号或序号数组",
+      helpText: "默认选中行的序号数组",
       propertyName: "defaultSelectedRowIndices",
       label: "默认选中行",
       controlType: "INPUT_TEXT",
@@ -154,7 +152,7 @@ export default {
       dependencies: ["multiRowSelection"],
     },
     {
-      helpText: "Selects row by default",
+      helpText: "默认选中行的序号",
       propertyName: "defaultSelectedRowIndex",
       label: "默认选中行",
       controlType: "INPUT_TEXT",
