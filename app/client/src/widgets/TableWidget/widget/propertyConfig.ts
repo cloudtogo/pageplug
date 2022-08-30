@@ -34,8 +34,7 @@ export default [
     sectionName: "属性",
     children: [
       {
-        helpText:
-          "表格数组数据",
+        helpText: "表格数组数据",
         propertyName: "tableData",
         label: "数据",
         controlType: "INPUT_TEXT",
@@ -990,8 +989,7 @@ export default [
                   customJSControl: "COMPUTE_VALUE",
                   isJSConvertible: true,
                   getStylesheetValue: getPrimaryColumnStylesheetValue,
-                  helpText:
-                    "边框圆角样式",
+                  helpText: "边框圆角样式",
                   controlType: "BORDER_RADIUS_OPTIONS",
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
                     return hideByColumnType(props, propertyPath, [
@@ -1017,8 +1015,7 @@ export default [
                 {
                   propertyName: "boxShadow",
                   label: "阴影",
-                  helpText:
-                    "组件轮廓投影",
+                  helpText: "组件轮廓投影",
                   controlType: "BOX_SHADOW_OPTIONS",
                   customJSControl: "COMPUTE_VALUE",
                   isJSConvertible: true,
@@ -1046,8 +1043,7 @@ export default [
                 },
                 {
                   propertyName: "menuColor",
-                  helpText:
-                    "自定义菜单按钮颜色",
+                  helpText: "自定义菜单按钮颜色",
                   label: "菜单颜色",
                   controlType: "PRIMARY_COLUMNS_COLOR_PICKER",
                   customJSControl: "COMPUTE_VALUE",
@@ -1206,8 +1202,7 @@ export default [
                           },
                           {
                             propertyName: "backgroundColor",
-                            helpText:
-                              "设置菜单项背景颜色",
+                            helpText: "设置菜单项背景颜色",
                             label: "背景颜色",
                             controlType: "PRIMARY_COLUMNS_COLOR_PICKER",
                             isJSConvertible: true,
@@ -1279,8 +1274,7 @@ export default [
                           {
                             propertyName: "iconName",
                             label: "图标",
-                            helpText:
-                              "设置菜单项的图标",
+                            helpText: "设置菜单项的图标",
                             controlType: "ICON_SELECT",
                             isBindProperty: false,
                             isTriggerProperty: false,
@@ -1339,8 +1333,7 @@ export default [
                         sectionName: "事件",
                         children: [
                           {
-                            helpText:
-                              "点击菜单项时触发",
+                            helpText: "点击菜单项时触发",
                             propertyName: "onClick",
                             label: "onItemClick",
                             controlType: "ACTION_SELECTOR",
@@ -1364,8 +1357,7 @@ export default [
         },
       },
       {
-        helpText:
-          "数据主键值唯一，用于表格的 selectedRows 和 triggeredRows",
+        helpText: "数据主键值唯一，用于表格的 selectedRows 和 triggeredRows",
         propertyName: "primaryColumnId",
         dependencies: ["primaryColumns"],
         label: "主键列",
@@ -1627,7 +1619,7 @@ export default [
     children: [
       {
         propertyName: "cellBackground",
-        label: "Cell Background Color",
+        label: "单元格背景颜色",
         controlType: "COLOR_PICKER",
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns", "derivedColumns"],
@@ -1770,8 +1762,7 @@ export default [
       {
         propertyName: "boxShadow",
         label: "阴影",
-        helpText:
-          "组件轮廓投影",
+        helpText: "组件轮廓投影",
         controlType: "BOX_SHADOW_OPTIONS",
         isJSConvertible: true,
         isBindProperty: true,
