@@ -14,9 +14,9 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           {
             propertyName: "source",
             helpText: "页面地址",
-            label: "地址",
+            label: "URL",
             controlType: "INPUT_TEXT",
-            placeholderText: "请输入嵌入的页面地址",
+            placeholderText: "https://www.example.com",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: {
@@ -28,8 +28,8 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           },
           {
             propertyName: "srcDoc",
-            helpText: "Inline HTML to embed, overriding the src attribute",
-            label: "srcDoc",
+            helpText: "直接写 HTML",
+            label: "HTML",
             controlType: "INPUT_TEXT",
             placeholderText: "<p>Inline HTML</p>",
             isBindProperty: true,
@@ -64,7 +64,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
         sectionName: "动作",
         children: [
           {
-            helpText: "地址变化时触发",
+            helpText: "URL 变化时触发",
             propertyName: "onURLChanged",
             label: "onURLChanged",
             controlType: "ACTION_SELECTOR",
@@ -73,7 +73,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the srcDoc is changed",
+            helpText: "内联 HTML 变化时触发",
             propertyName: "onSrcDocChanged",
             label: "onSrcDocChanged",
             controlType: "ACTION_SELECTOR",
@@ -82,7 +82,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when a message event is received",
+            helpText: "收到消息时触发",
             propertyName: "onMessageReceived",
             label: "onMessageReceived",
             controlType: "ACTION_SELECTOR",
@@ -131,8 +131,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -142,8 +141,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -162,10 +160,10 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "source",
-            helpText: "The URL of the page to embed",
+            helpText: "嵌入页面的地址",
             label: "URL",
             controlType: "INPUT_TEXT",
-            placeholderText: "https://docs.appsmith.com",
+            placeholderText: "https://www.example.com",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: {
@@ -177,8 +175,8 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           },
           {
             propertyName: "srcDoc",
-            helpText: "Inline HTML to embed, overriding the src attribute",
-            label: "srcDoc",
+            helpText: "直接写 HTML",
+            label: "HTML",
             controlType: "INPUT_TEXT",
             placeholderText: "<p>Inline HTML</p>",
             isBindProperty: true,
@@ -194,7 +192,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "title",
-            helpText: "Label the content of the page to embed",
+            helpText: "页面标题",
             label: "标题",
             controlType: "INPUT_TEXT",
             placeholderText: "Documentation",
@@ -219,7 +217,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
         sectionName: "事件",
         children: [
           {
-            helpText: "Triggers an action when the source URL is changed",
+            helpText: "URL 变化时触发",
             propertyName: "onURLChanged",
             label: "onURLChanged",
             controlType: "ACTION_SELECTOR",
@@ -228,7 +226,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the srcDoc is changed",
+            helpText: "内联 HTML 变化时触发",
             propertyName: "onSrcDocChanged",
             label: "onSrcDocChanged",
             controlType: "ACTION_SELECTOR",
@@ -237,7 +235,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when a message event is received",
+            helpText: "收到消息时触发",
             propertyName: "onMessageReceived",
             label: "onMessageReceived",
             controlType: "ACTION_SELECTOR",
@@ -257,7 +255,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "borderColor",
-            label: "Border Color",
+            label: "边框颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -296,8 +294,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -307,8 +304,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
