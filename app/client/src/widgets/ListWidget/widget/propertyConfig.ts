@@ -61,7 +61,7 @@ const PropertyPaneConfig = [
     sectionName: "事件",
     children: [
       {
-        helpText: "Triggers an action when a grid list item is clicked",
+        helpText: "点击列表项时触发",
         propertyName: "onListItemClick",
         label: "onListItemClick",
         controlType: "ACTION_SELECTOR",
@@ -89,7 +89,7 @@ const PropertyPaneConfig = [
         dependencies: ["listData"],
       },
       {
-        helpText: "Triggers an action when a list page is changed",
+        helpText: "列表页切换时触发",
         propertyName: "onPageChange",
         label: "onPageChange",
         controlType: "ACTION_SELECTOR",
@@ -101,7 +101,7 @@ const PropertyPaneConfig = [
         dependencies: ["serverSidePaginationEnabled"],
       },
       {
-        helpText: "Triggers an action when a list page size is changed",
+        helpText: "列表页大小改变时触发",
         propertyName: "onPageSizeChange",
         label: "onPageSizeChange",
         controlType: "ACTION_SELECTOR",
@@ -221,7 +221,7 @@ export const PropertyPaneContentConfig = [
         isTriggerProperty: false,
       },
       {
-        helpText: "Triggers an action when a list page is changed",
+        helpText: "列表页切换时触发",
         propertyName: "onPageChange",
         label: "onPageChange",
         controlType: "ACTION_SELECTOR",
@@ -233,7 +233,7 @@ export const PropertyPaneContentConfig = [
         dependencies: ["serverSidePaginationEnabled"],
       },
       {
-        helpText: "Triggers an action when a list page size is changed",
+        helpText: "列表页大小改变时触发",
         propertyName: "onPageSizeChange",
         label: "onPageSizeChange",
         controlType: "ACTION_SELECTOR",
@@ -278,7 +278,7 @@ export const PropertyPaneContentConfig = [
     sectionName: "事件",
     children: [
       {
-        helpText: "Triggers an action when a grid list item is clicked",
+        helpText: "点击列表项时触发",
         propertyName: "onListItemClick",
         label: "onListItemClick",
         controlType: "ACTION_SELECTOR",
