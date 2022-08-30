@@ -832,7 +832,7 @@ export default [
                 {
                   propertyName: "iconAlign",
                   label: "图标对齐",
-                  helpText: "Sets the icon alignment of the menu button",
+                  helpText: "设置菜单按钮图标对齐方式",
                   controlType: "ICON_TABS",
                   options: [
                     {
@@ -1080,9 +1080,9 @@ export default [
                 },
                 {
                   propertyName: "menuVariant",
-                  label: "Menu Variant",
+                  label: "菜单按钮类型",
                   controlType: "DROP_DOWN",
-                  helpText: "Sets the variant of the menu button",
+                  helpText: "设置菜单按钮的风格类型",
                   options: [
                     {
                       label: "主按钮",
