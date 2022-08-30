@@ -12,9 +12,9 @@ const PropertyPaneConfig = [
     sectionName: "属性",
     children: [
       {
-        helpText: "Takes in an array of objects to display items in the list.",
+        helpText: "列表展示的数据对象",
         propertyName: "listData",
-        label: "Items",
+        label: "数据项",
         controlType: "INPUT_TEXT",
         placeholderText: '[{ "name": "John" }]',
         inputType: "ARRAY",
@@ -25,9 +25,9 @@ const PropertyPaneConfig = [
       },
       {
         helpText:
-          "Bind the List.pageNo property in your API and call it onPageChange",
+          "在你 API 中绑定当前页 List.pageNo，然后在换页的时候调用 API 即可",
         propertyName: "serverSidePaginationEnabled",
-        label: "Server Side Pagination",
+        label: "服务端分页",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -195,9 +195,9 @@ export const PropertyPaneContentConfig = [
     sectionName: "数据",
     children: [
       {
-        helpText: "Takes in an array of objects to display items in the list.",
+        helpText: "列表展示的数据对象",
         propertyName: "listData",
-        label: "Items",
+        label: "数据项",
         controlType: "INPUT_TEXT",
         placeholderText: '[{ "name": "John" }]',
         inputType: "ARRAY",
@@ -213,9 +213,9 @@ export const PropertyPaneContentConfig = [
     children: [
       {
         helpText:
-          "Bind the List.pageNo property in your API and call it onPageChange",
+          "在你 API 中绑定当前页 List.pageNo，然后在换页的时候调用 API 即可",
         propertyName: "serverSidePaginationEnabled",
-        label: "Server Side Pagination",
+        label: "服务端分页",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
