@@ -26,8 +26,8 @@ export default {
     },
     {
       propertyName: "isVisibleDownload",
-      helpText: "Toggle visibility of the data download",
-      label: "Download",
+      helpText: "是否显示下载按钮",
+      label: "下载",
       controlType: "SWITCH",
       isJSConvertible: true,
       isBindProperty: true,
