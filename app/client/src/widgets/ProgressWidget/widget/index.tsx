@@ -15,27 +15,26 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
         sectionName: "属性",
         children: [
           {
-            helpText:
-              "Determines if progress indicator will be determinate or not",
+            helpText: "是否显示循环加载动画",
             propertyName: "isIndeterminate",
-            label: "Infinite Loading",
+            label: "循环加载",
             controlType: "SWITCH",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText: "Determines the shape of the progress indicator",
+            helpText: "设置进度条形状",
             propertyName: "progressType",
             label: "类型",
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "Circular",
+                label: "环形",
                 value: ProgressType.CIRCULAR,
               },
               {
-                label: "Linear",
+                label: "线形",
                 value: ProgressType.LINEAR,
               },
             ],
@@ -44,7 +43,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
             isTriggerProperty: false,
           },
           {
-            helpText: "Sets the value of the progress indicator",
+            helpText: "设置进度值",
             propertyName: "progress",
             label: "进度",
             controlType: "INPUT_TEXT",
@@ -61,7 +60,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
             dependencies: ["isIndeterminate"],
           },
           {
-            helpText: "Sets the number of steps",
+            helpText: "整体进度分成若干步骤，设置步骤的数量",
             propertyName: "steps",
             label: "步数",
             controlType: "INPUT_TEXT",
@@ -78,7 +77,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
           },
           {
             propertyName: "counterClockwise",
-            helpText: "Whether to rotate in counterclockwise direction",
+            helpText: "设置进度方向是顺时针还是逆时针",
             label: "逆时针",
             controlType: "SWITCH",
             isBindProperty: true,
@@ -90,8 +89,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
             dependencies: ["isIndeterminate", "progressType"],
           },
           {
-            helpText:
-              "Controls the visibility with the value of progress indicator",
+            helpText: "同步显示进度值",
             propertyName: "showResult",
             label: "显示进度值",
             controlType: "SWITCH",
@@ -118,7 +116,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
         sectionName: "样式",
         children: [
           {
-            helpText: "Sets the color of the progress indicator",
+            helpText: "设置进度条的填充颜色",
             propertyName: "fillColor",
             label: "填充颜色",
             controlType: "COLOR_PICKER",
@@ -144,27 +142,26 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
         sectionName: "属性",
         children: [
           {
-            helpText:
-              "Determines if progress indicator will be determinate or not",
+            helpText: "是否显示循环加载动画",
             propertyName: "isIndeterminate",
-            label: "Infinite Loading",
+            label: "循环加载",
             controlType: "SWITCH",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText: "Determines the shape of the progress indicator",
+            helpText: "设置进度条形状",
             propertyName: "progressType",
             label: "类型",
             controlType: "DROP_DOWN",
             options: [
               {
-                label: "Circular",
+                label: "环形",
                 value: ProgressType.CIRCULAR,
               },
               {
-                label: "Linear",
+                label: "线形",
                 value: ProgressType.LINEAR,
               },
             ],
@@ -173,7 +170,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
             isTriggerProperty: false,
           },
           {
-            helpText: "Sets the value of the progress indicator",
+            helpText: "设置进度值",
             propertyName: "progress",
             label: "进度",
             controlType: "INPUT_TEXT",
@@ -195,7 +192,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
         sectionName: "属性",
         children: [
           {
-            helpText: "Sets the number of steps",
+            helpText: "整体进度分成若干步骤，设置步骤的数量",
             propertyName: "steps",
             label: "步数",
             controlType: "INPUT_TEXT",
@@ -222,7 +219,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
           },
           {
             propertyName: "counterClockwise",
-            helpText: "Whether to rotate in counterclockwise direction",
+            helpText: "设置进度方向是顺时针还是逆时针",
             label: "逆时针",
             controlType: "SWITCH",
             isBindProperty: true,
@@ -234,8 +231,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
             dependencies: ["isIndeterminate", "progressType"],
           },
           {
-            helpText:
-              "Controls the visibility with the value of progress indicator",
+            helpText: "同步显示进度值",
             propertyName: "showResult",
             label: "显示进度值",
             controlType: "SWITCH",
@@ -257,7 +253,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
         sectionName: "颜色配置",
         children: [
           {
-            helpText: "Sets the color of the progress indicator",
+            helpText: "设置进度条的填充颜色",
             propertyName: "fillColor",
             label: "填充颜色",
             controlType: "COLOR_PICKER",
