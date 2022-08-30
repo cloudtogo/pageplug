@@ -301,7 +301,7 @@ export default [
         isTriggerProperty: false,
       },
       {
-        helpText: "Triggers an action when a table row is selected",
+        helpText: "选中行时触发",
         propertyName: "onRowSelected",
         label: "onRowSelected",
         controlType: "ACTION_SELECTOR",
