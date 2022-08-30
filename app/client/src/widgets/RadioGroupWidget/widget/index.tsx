@@ -175,9 +175,9 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText: "Sets a default selected option",
+            helpText: "设置默认选中的选项",
             propertyName: "defaultOptionValue",
-            label: "Default Selected Value",
+            label: "默认选中值",
             placeholderText: "Y",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
@@ -474,9 +474,9 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText: "Sets a default selected option",
+            helpText: "设置默认选中的选项",
             propertyName: "defaultOptionValue",
-            label: "Default Selected Value",
+            label: "默认选中值",
             placeholderText: "Y",
             controlType: "INPUT_TEXT",
             isBindProperty: true,

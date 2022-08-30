@@ -77,8 +77,8 @@ const PROPERTIES = {
     },
     {
       propertyName: "defaultValue",
-      helpText: "Sets a default selected option",
-      label: "Default Selected Value",
+      helpText: "设置默认选中的选项",
+      label: "默认选中值",
       placeholderText: "Y",
       controlType: "JSON_FORM_COMPUTE_VALUE",
       isBindProperty: true,
@@ -143,8 +143,8 @@ const PROPERTIES = {
       },
       {
         propertyName: "defaultValue",
-        helpText: "Sets a default selected option",
-        label: "Default Selected Value",
+        helpText: "设置默认选中的选项",
+        label: "默认选中值",
         placeholderText: "Y",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         isBindProperty: true,
