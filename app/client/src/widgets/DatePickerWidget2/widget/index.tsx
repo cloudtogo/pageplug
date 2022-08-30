@@ -578,7 +578,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           },
           {
             propertyName: "maxDate",
-            label: "Max Date",
+            label: "最大日期",
             helpText: "Defines the max date for this widget",
             controlType: "DATE_PICKER",
             useValidationMessage: true,

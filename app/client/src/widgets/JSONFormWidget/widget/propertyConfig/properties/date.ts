@@ -226,7 +226,7 @@ const PROPERTIES = {
     },
     {
       propertyName: "maxDate",
-      label: "Max Date",
+      label: "最大日期",
       helpText: "Defines the max date for the field",
       controlType: "DATE_PICKER",
       useValidationMessage: true,
@@ -347,7 +347,7 @@ const PROPERTIES = {
       },
       {
         propertyName: "maxDate",
-        label: "Max Date",
+        label: "最大日期",
         helpText: "Defines the max date for the field",
         controlType: "DATE_PICKER",
         useValidationMessage: true,
