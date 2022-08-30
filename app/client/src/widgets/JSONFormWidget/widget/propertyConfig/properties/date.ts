@@ -112,7 +112,7 @@ const PROPERTIES = {
       dependencies: ["schema"],
     },
     {
-      helpText: "Sets the format of the selected date",
+      helpText: "设置所选日期的格式",
       propertyName: "dateFormat",
       label: "日期格式",
       controlType: "DROP_DOWN",
@@ -257,7 +257,7 @@ const PROPERTIES = {
   content: {
     data: [
       {
-        helpText: "Sets the format of the selected date",
+        helpText: "设置所选日期的格式",
         propertyName: "dateFormat",
         label: "日期格式",
         controlType: "DROP_DOWN",
