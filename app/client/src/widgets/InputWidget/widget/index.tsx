@@ -126,11 +126,11 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
                 value: "NUMBER",
               },
               {
-                label: "Password",
+                label: "密码",
                 value: "PASSWORD",
               },
               {
-                label: "Email",
+                label: "邮箱",
                 value: "EMAIL",
               },
               {
@@ -138,7 +138,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
                 value: "CURRENCY",
               },
               {
-                label: "Phone Number",
+                label: "手机号",
                 value: "PHONE_NUMBER",
               },
             ],
@@ -162,7 +162,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
           {
             helpText: "Changes the country code",
             propertyName: "phoneNumberCountryCode",
-            label: "Default Country Code",
+            label: "默认国家编号",
             enableSearch: true,
             dropdownHeight: "195px",
             controlType: "DROP_DOWN",
