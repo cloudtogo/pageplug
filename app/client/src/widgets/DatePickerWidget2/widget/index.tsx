@@ -167,8 +167,8 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           },
           {
             propertyName: "firstDayOfWeek",
-            label: "First Day Of Week",
-            helpText: "Defines the first day of the week for calendar",
+            label: "每周第一天",
+            helpText: "设置每周的第一天是星期几",
             controlType: "INPUT_TEXT",
             defaultValue: "0",
             inputType: "INTEGER",
@@ -423,8 +423,8 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           },
           {
             propertyName: "firstDayOfWeek",
-            label: "First Day Of Week",
-            helpText: "Defines the first day of the week for calendar",
+            label: "每周第一天",
+            helpText: "设置每周的第一天是星期几",
             controlType: "INPUT_TEXT",
             defaultValue: "0",
             inputType: "INTEGER",
