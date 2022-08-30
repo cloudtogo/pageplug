@@ -25,8 +25,7 @@ export default [
     sectionName: "数据",
     children: [
       {
-        helpText:
-          "表格数组数据",
+        helpText: "表格数组数据",
         propertyName: "tableData",
         label: "数据",
         controlType: "INPUT_TEXT",
@@ -63,7 +62,7 @@ export default [
           params: {
             fn: uniqueColumnNameValidation,
             expected: {
-              type: "Unique Column Names",
+              type: "唯一列名",
               example: "abc",
               autocompleteDataType: AutocompleteDataType.STRING,
             },
@@ -73,8 +72,8 @@ export default [
       },
       {
         propertyName: "inlineEditingSaveOption",
-        helpText: "Choose the save experience to save the edited cell",
-        label: "Update Mode",
+        helpText: "选择如何保存编辑的单元格数据",
+        label: "更新模式",
         controlType: "DROP_DOWN",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -94,19 +93,18 @@ export default [
         ],
         options: [
           {
-            label: "Row level",
+            label: "行更新",
             value: InlineEditingSaveOptions.ROW_LEVEL,
           },
           {
-            label: "Custom",
+            label: "自定义更新",
             value: InlineEditingSaveOptions.CUSTOM,
           },
         ],
         updateHook: updateInlineEditingSaveOptionHook,
       },
       {
-        helpText:
-          "数据主键值唯一，用于表格的 selectedRows 和 triggeredRows",
+        helpText: "数据主键值唯一，用于表格的 selectedRows 和 triggeredRows",
         propertyName: "primaryColumnId",
         dependencies: ["primaryColumns"],
         label: "主键列",
@@ -118,12 +116,12 @@ export default [
     ],
   },
   {
-    sectionName: "Pagination",
+    sectionName: "分页配置",
     children: [
       {
         propertyName: "isVisiblePagination",
         helpText: "是否显示分页器",
-        label: "Show Pagination",
+        label: "显示分页器",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -144,7 +142,7 @@ export default [
       {
         helpText: createMessage(TABLE_WIDGET_TOTAL_RECORD_TOOLTIP),
         propertyName: "totalRecordsCount",
-        label: "Total Records",
+        label: "总行数",
         controlType: "INPUT_TEXT",
         placeholderText: "配置表格总行数",
         isBindProperty: true,
@@ -205,7 +203,7 @@ export default [
       },
       {
         propertyName: "enableClientSideSearch",
-        label: "Client Side Search",
+        label: "前端搜索",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -236,7 +234,7 @@ export default [
       {
         propertyName: "isVisibleFilters",
         helpText: "是否显示过滤器",
-        label: "Allow Filtering",
+        label: "支持过滤",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -246,12 +244,12 @@ export default [
     ],
   },
   {
-    sectionName: "Row Selection",
+    sectionName: "勾选行配置",
     children: [
       {
-        helpText: "默认选中行的序号或序号数组",
+        helpText: "默认选中行的序号数组",
         propertyName: "defaultSelectedRowIndices",
-        label: "Default Selected Rows",
+        label: "默认选中多行",
         controlType: "INPUT_TEXT",
         placeholderText: "[0]",
         isBindProperty: true,
@@ -274,7 +272,7 @@ export default [
         dependencies: ["multiRowSelection"],
       },
       {
-        helpText: "Selects row by default",
+        helpText: "默认选中行的序号",
         propertyName: "defaultSelectedRowIndex",
         label: "默认选中行",
         controlType: "INPUT_TEXT",
@@ -295,7 +293,7 @@ export default [
       },
       {
         propertyName: "multiRowSelection",
-        label: "Enable Multi-row Selection",
+        label: "支持多选",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -312,13 +310,13 @@ export default [
     ],
   },
   {
-    sectionName: "Sorting",
+    sectionName: "排序",
     children: [
       {
         helpText: "是否支持按列排序",
         propertyName: "isSortable",
         isJSConvertible: true,
-        label: "Column Sorting",
+        label: "列排序",
         controlType: "SWITCH",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -371,7 +369,7 @@ export default [
       {
         propertyName: "isVisibleDownload",
         helpText: "是否显示下载按钮",
-        label: "Allow Download",
+        label: "支持下载",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,

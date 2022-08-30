@@ -208,7 +208,7 @@ export const PropertyPaneContentConfig = [
     ],
   },
   {
-    sectionName: "Pagination",
+    sectionName: "分页配置",
     children: [
       {
         helpText:
