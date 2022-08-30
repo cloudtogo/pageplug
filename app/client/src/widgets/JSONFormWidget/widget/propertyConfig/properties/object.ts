@@ -30,7 +30,7 @@ const objectStyleProperties = [
   {
     propertyName: "borderColor",
     label: "边框颜色",
-    helpText: "Changes the border color of Object",
+    helpText: "修改边框颜色",
     controlType: "COLOR_PICKER",
     isJSConvertible: true,
     isBindProperty: true,
@@ -98,14 +98,14 @@ const PROPERTIES = {
       },
     },
     {
-      sectionName: "Item Styles",
+      sectionName: "数组项样式",
       isDefaultOpen: false,
       children: [
         {
           propertyName: "cellBackgroundColor",
           label: "背景颜色",
           controlType: "COLOR_PICKER",
-          helpText: "Changes the background color of the item",
+          helpText: "修改数组项背景颜色",
           isJSConvertible: true,
           isBindProperty: true,
           isTriggerProperty: false,
@@ -121,7 +121,7 @@ const PROPERTIES = {
         {
           propertyName: "cellBorderColor",
           label: "边框颜色",
-          helpText: "Changes the border color of the item",
+          helpText: "修改数组项边框颜色",
           controlType: "COLOR_PICKER",
           isJSConvertible: true,
           isBindProperty: true,
@@ -137,7 +137,7 @@ const PROPERTIES = {
         },
         {
           propertyName: "cellBorderWidth",
-          helpText: "Enter value for border width of the item",
+          helpText: "修改数组项边框宽度",
           label: "边框宽度",
           placeholderText: "以 px 为单位",
           controlType: "INPUT_TEXT",
