@@ -180,8 +180,7 @@ export function maxValueValidation(
 const PROPERTIES = {
   general: [
     {
-      helpText:
-        "Sets the default text of the field. The text is updated if the default text changes",
+      helpText: "修改默认值会更新当前值",
       propertyName: "defaultValue",
       label: "默认值",
       controlType: "JSON_FORM_COMPUTE_VALUE",
@@ -257,8 +256,8 @@ const PROPERTIES = {
     },
     {
       propertyName: "allowDialCodeChange",
-      label: "Allow country code change",
-      helpText: "Search by country",
+      label: "允许修改国家编码",
+      helpText: "使用国家名搜索",
       controlType: "SWITCH",
       isJSConvertible: false,
       isBindProperty: true,
@@ -347,8 +346,7 @@ const PROPERTIES = {
       dependencies: ["schema"],
     },
     {
-      helpText:
-        "对输入进行正则校验，校验失败时显示错误",
+      helpText: "对输入进行正则校验，校验失败时显示错误",
       propertyName: "regex",
       label: "正则校验",
       controlType: "JSON_FORM_COMPUTE_VALUE",
@@ -376,8 +374,7 @@ const PROPERTIES = {
       dependencies: ["schema"],
     },
     {
-      helpText:
-        "普通校验或正则校验失败后显示的错误信息",
+      helpText: "普通校验或正则校验失败后显示的错误信息",
       propertyName: "errorMessage",
       label: "错误信息",
       controlType: "JSON_FORM_COMPUTE_VALUE",
@@ -406,8 +403,7 @@ const PROPERTIES = {
     {
       propertyName: "isSpellCheck",
       label: "拼写检查",
-      helpText:
-        "是否检查拼写错误",
+      helpText: "是否检查拼写错误",
       controlType: "SWITCH",
       isBindProperty: true,
       isTriggerProperty: false,
@@ -497,8 +493,7 @@ const PROPERTIES = {
     data: [
       {
         propertyName: "defaultValue",
-        helpText:
-          "Sets the default text of the field. The text is updated if the default text changes",
+        helpText: "修改默认值会更新当前值",
         label: "默认值",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: "John Wick",
@@ -553,8 +548,8 @@ const PROPERTIES = {
       },
       {
         propertyName: "allowDialCodeChange",
-        label: "Allow Country Code Change",
-        helpText: "Search by country",
+        label: "允许修改国家编码",
+        helpText: "使用国家名搜索",
         controlType: "SWITCH",
         isJSConvertible: false,
         isBindProperty: true,
@@ -700,8 +695,7 @@ const PROPERTIES = {
       },
       {
         propertyName: "regex",
-        helpText:
-          "对输入进行正则校验，校验失败时显示错误",
+        helpText: "对输入进行正则校验，校验失败时显示错误",
         label: "正则校验",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$",
@@ -732,8 +726,7 @@ const PROPERTIES = {
       },
       {
         propertyName: "errorMessage",
-        helpText:
-          "普通校验或正则校验失败后显示的错误信息",
+        helpText: "普通校验或正则校验失败后显示的错误信息",
         label: "错误信息",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: "邮箱格式有误",
@@ -748,8 +741,7 @@ const PROPERTIES = {
       {
         propertyName: "isSpellCheck",
         label: "拼写检查",
-        helpText:
-          "是否检查拼写错误",
+        helpText: "是否检查拼写错误",
         controlType: "SWITCH",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -775,8 +767,7 @@ const PROPERTIES = {
       },
       {
         propertyName: "onEnterKeyPress",
-        helpText:
-          "提交时触发（用户按了回车）",
+        helpText: "提交时触发（用户按了回车）",
         label: "onEnterKeyPress",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
@@ -816,8 +807,8 @@ const PROPERTIES = {
       },
       {
         propertyName: "iconAlign",
-        label: "位置",
-        helpText: "Sets the icon position of input field",
+        label: "图标对齐",
+        helpText: "设置图标对齐方式",
         controlType: "ICON_TABS",
         options: [
           {

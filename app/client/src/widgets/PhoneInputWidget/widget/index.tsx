@@ -76,8 +76,8 @@ class PhoneInputWidget extends BaseInputWidget<
           children: [
             {
               propertyName: "allowDialCodeChange",
-              label: "Allow country code change",
-              helpText: "Search by country",
+              label: "允许修改国家编码",
+              helpText: "使用国家名搜索",
               controlType: "SWITCH",
               isJSConvertible: false,
               isBindProperty: true,
@@ -183,8 +183,8 @@ class PhoneInputWidget extends BaseInputWidget<
             },
             {
               propertyName: "allowDialCodeChange",
-              label: "Allow Country Code Change",
-              helpText: "Search by country",
+              label: "允许修改国家编码",
+              helpText: "使用国家名搜索",
               controlType: "SWITCH",
               isJSConvertible: false,
               isBindProperty: true,
