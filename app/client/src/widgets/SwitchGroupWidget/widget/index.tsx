@@ -23,8 +23,7 @@ class SwitchGroupWidget extends BaseWidget<
         sectionName: "属性",
         children: [
           {
-            helpText:
-              "Displays a list of options for a user to select. Values must be unique",
+            helpText: "选项值唯一的选项数组",
             propertyName: "options",
             label: "选项",
             controlType: "INPUT_TEXT",
@@ -64,11 +63,10 @@ class SwitchGroupWidget extends BaseWidget<
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText:
-              "Selects values of the options checked by default. Enter comma separated values for multiple selected",
+            helpText: "默认选中项，多选用逗号分隔",
             propertyName: "defaultSelectedValues",
             label: "默认选中值",
-            placeholderText: "Enter option values",
+            placeholderText: "请输入选中项的值",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -85,8 +83,7 @@ class SwitchGroupWidget extends BaseWidget<
           },
           {
             propertyName: "isInline",
-            helpText:
-              "Whether switches are to be displayed inline horizontally",
+            helpText: "是否水平排列",
             label: "行排列",
             controlType: "SWITCH",
             isJSConvertible: true,
@@ -205,8 +202,7 @@ class SwitchGroupWidget extends BaseWidget<
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
@@ -315,8 +311,7 @@ class SwitchGroupWidget extends BaseWidget<
         sectionName: "动作",
         children: [
           {
-            helpText:
-              "Triggers an action when a switch state inside the group is changed",
+            helpText: "开关变化时触发",
             propertyName: "onSelectionChange",
             label: "onSelectionChange",
             controlType: "ACTION_SELECTOR",
@@ -335,8 +330,7 @@ class SwitchGroupWidget extends BaseWidget<
         sectionName: "数据",
         children: [
           {
-            helpText:
-              "Displays a list of options for a user to select. Values must be unique",
+            helpText: "选项值唯一的选项数组",
             propertyName: "options",
             label: "选项",
             controlType: "INPUT_TEXT",
@@ -376,11 +370,10 @@ class SwitchGroupWidget extends BaseWidget<
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText:
-              "Selects values of the options checked by default. Enter comma separated values for multiple selected",
+            helpText: "默认选中项，多选用逗号分隔",
             propertyName: "defaultSelectedValues",
             label: "默认选中值",
-            placeholderText: "Enter option values",
+            placeholderText: "请输入选中项的值",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -447,8 +440,7 @@ class SwitchGroupWidget extends BaseWidget<
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
@@ -508,8 +500,7 @@ class SwitchGroupWidget extends BaseWidget<
           },
           {
             propertyName: "isInline",
-            helpText:
-              "Whether switches are to be displayed inline horizontally",
+            helpText: "是否水平排列",
             label: "行排列",
             controlType: "SWITCH",
             isJSConvertible: true,
@@ -534,8 +525,7 @@ class SwitchGroupWidget extends BaseWidget<
         sectionName: "事件",
         children: [
           {
-            helpText:
-              "Triggers an action when a switch state inside the group is changed",
+            helpText: "开关变化时触发",
             propertyName: "onSelectionChange",
             label: "onSelectionChange",
             controlType: "ACTION_SELECTOR",
