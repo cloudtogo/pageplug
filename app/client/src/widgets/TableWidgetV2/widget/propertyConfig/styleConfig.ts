@@ -7,8 +7,8 @@ export default [
     children: [
       {
         propertyName: "compactMode",
-        helpText: "Selects row height",
-        label: "Default Row Height",
+        helpText: "选择行高",
+        label: "默认行高",
         controlType: "DROP_DOWN",
         defaultValue: "DEFAULT",
         isBindProperty: true,
