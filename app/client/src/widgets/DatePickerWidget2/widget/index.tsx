@@ -138,7 +138,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           },
           {
             propertyName: "shortcuts",
-            label: "显示快捷键",
+            label: "显示快捷菜单",
             controlType: "SWITCH",
             isJSConvertible: false,
             isBindProperty: true,
@@ -240,8 +240,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
@@ -366,8 +365,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -377,8 +375,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -411,8 +408,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           {
             propertyName: "defaultDate",
             label: "默认日期",
-            helpText:
-              "设置默认日期，默认日期修改后，组件当前日期会自动更新",
+            helpText: "设置默认日期，默认日期修改后，组件当前日期会自动更新",
             controlType: "DATE_PICKER",
             placeholderText: "Enter Default Date",
             useValidationMessage: true,
@@ -531,8 +527,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
@@ -625,8 +620,8 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           },
           {
             propertyName: "shortcuts",
-            label: "Show Shortcuts",
-            helpText: "Choose to show shortcut menu",
+            label: "显示快捷菜单",
+            helpText: "是否在日期选择器中显示快捷菜单",
             controlType: "SWITCH",
             isJSConvertible: false,
             isBindProperty: true,
@@ -635,8 +630,8 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           },
           {
             propertyName: "closeOnSelection",
-            label: "Close On Selection",
-            helpText: "Calender should close when a date is selected",
+            label: "选中后关闭",
+            helpText: "选中日期后自动关闭日期选择器",
             controlType: "SWITCH",
             defaultValue: true,
             isJSConvertible: false,
@@ -755,8 +750,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -766,8 +760,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
