@@ -197,7 +197,7 @@ class MultiSelectWidget extends BaseWidget<
         children: [
           {
             helpText:
-              "允许用户多选，每选项的值必须唯一",
+              "允许用户多选，每个选项的值必须唯一",
             propertyName: "options",
             label: "选项",
             controlType: "INPUT_TEXT",
@@ -560,7 +560,7 @@ class MultiSelectWidget extends BaseWidget<
         children: [
           {
             helpText:
-              "允许用户多选，每选项的值必须唯一",
+              "允许用户多选，每个选项的值必须唯一",
             propertyName: "options",
             label: "选项",
             controlType: "INPUT_TEXT",
