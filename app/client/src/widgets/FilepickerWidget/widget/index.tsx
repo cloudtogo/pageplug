@@ -70,7 +70,7 @@ class FilePickerWidget extends BaseWidget<
           },
           {
             propertyName: "allowedFileTypes",
-            helpText: "Restricts the type of files which can be uploaded",
+            helpText: "限制那些类型的文件可以上传",
             label: "支持文件类型",
             controlType: "DROP_DOWN",
             isMultiSelect: true,
@@ -81,15 +81,15 @@ class FilePickerWidget extends BaseWidget<
                 value: "*",
               },
               {
-                label: "Images",
+                label: "图片",
                 value: "image/*",
               },
               {
-                label: "Videos",
+                label: "视频",
                 value: "video/*",
               },
               {
-                label: "Audio",
+                label: "音频",
                 value: "audio/*",
               },
               {
@@ -97,7 +97,7 @@ class FilePickerWidget extends BaseWidget<
                 value: "text/*",
               },
               {
-                label: "MS Word",
+                label: "Word文档",
                 value: ".doc",
               },
               {
