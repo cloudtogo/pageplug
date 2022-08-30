@@ -55,7 +55,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           },
           {
             propertyName: "timePrecision",
-            label: "Time precision",
+            label: "时间精度",
             controlType: "DROP_DOWN",
             helpText: "Sets the different time picker or hide.",
             defaultValue: TimePrecision.MINUTE,
@@ -446,7 +446,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           },
           {
             propertyName: "timePrecision",
-            label: "Time Precision",
+            label: "时间精度",
             controlType: "DROP_DOWN",
             helpText: "Sets the different time picker or hide.",
             defaultValue: TimePrecision.MINUTE,
