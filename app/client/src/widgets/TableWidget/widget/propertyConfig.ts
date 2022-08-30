@@ -1429,7 +1429,7 @@ export default [
       },
       {
         helpText:
-          "Bind the Table.pageNo property in your API and call it onPageChange",
+          "在 API 请求参数中绑定页号 Table.pageNo，onPageChange 换页的时候调用 API",
         propertyName: "serverSidePaginationEnabled",
         label: "服务端分页",
         controlType: "SWITCH",
@@ -1439,9 +1439,9 @@ export default [
       {
         helpText: createMessage(TABLE_WIDGET_TOTAL_RECORD_TOOLTIP),
         propertyName: "totalRecordsCount",
-        label: "Total Record Count",
+        label: "总行数",
         controlType: "INPUT_TEXT",
-        placeholderText: "Enter total record count",
+        placeholderText: "配置表格总行数",
         isBindProperty: true,
         isTriggerProperty: false,
         validation: {
@@ -1483,10 +1483,10 @@ export default [
         validation: { type: ValidationTypes.BOOLEAN },
       },
       {
-        helpText: "Controls sorting in View Mode",
+        helpText: "是否支持按列排序",
         propertyName: "isSortable",
         isJSConvertible: true,
-        label: "Sortable",
+        label: "支持排序",
         controlType: "SWITCH",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -1499,14 +1499,14 @@ export default [
       },
       {
         propertyName: "multiRowSelection",
-        label: "Enable multi row selection",
+        label: "支持多选",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
       },
       {
         propertyName: "enableClientSideSearch",
-        label: "Enable client side search",
+        label: "支持前端搜索",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
