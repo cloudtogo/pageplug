@@ -562,7 +562,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
           {
             propertyName: "iconName",
             label: "图标",
-            helpText: "Sets the icon to be used in input field",
+            helpText: "设置输入框的图标",
             controlType: "ICON_SELECT",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -571,7 +571,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
           {
             propertyName: "iconAlign",
             label: "图标对齐",
-            helpText: "Sets the icon alignment of input field",
+            helpText: "设置输入框图标的对齐方式",
             controlType: "ICON_TABS",
             options: [
               {
@@ -596,7 +596,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "backgroundColor",
-            helpText: "Sets the background color of the widget",
+            helpText: "设置组件背景颜色",
             label: "背景颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
