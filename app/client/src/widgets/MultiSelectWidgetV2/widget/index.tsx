@@ -196,8 +196,7 @@ class MultiSelectWidget extends BaseWidget<
         sectionName: "属性",
         children: [
           {
-            helpText:
-              "允许用户多选，每个选项的值必须唯一",
+            helpText: "允许用户多选，每个选项的值必须唯一",
             propertyName: "options",
             label: "选项",
             controlType: "INPUT_TEXT",
@@ -239,7 +238,7 @@ class MultiSelectWidget extends BaseWidget<
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText: "Selects the option(s) with value by default",
+            helpText: "设置默认选中的选项值",
             propertyName: "defaultOptionValue",
             label: "默认值",
             controlType: "INPUT_TEXT",
@@ -332,8 +331,7 @@ class MultiSelectWidget extends BaseWidget<
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText:
-              "是否下拉列表中展示全选选项",
+            helpText: "是否下拉列表中展示全选选项",
             propertyName: "allowSelectAll",
             label: "允许全选",
             controlType: "SWITCH",
@@ -420,8 +418,7 @@ class MultiSelectWidget extends BaseWidget<
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
@@ -517,8 +514,7 @@ class MultiSelectWidget extends BaseWidget<
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isBindProperty: true,
             isJSConvertible: true,
@@ -530,8 +526,7 @@ class MultiSelectWidget extends BaseWidget<
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -559,8 +554,7 @@ class MultiSelectWidget extends BaseWidget<
         sectionName: "数据",
         children: [
           {
-            helpText:
-              "允许用户多选，每个选项的值必须唯一",
+            helpText: "允许用户多选，每个选项的值必须唯一",
             propertyName: "options",
             label: "选项",
             controlType: "INPUT_TEXT",
@@ -602,7 +596,7 @@ class MultiSelectWidget extends BaseWidget<
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText: "Selects the option(s) with value by default",
+            helpText: "设置默认选中的选项值",
             propertyName: "defaultOptionValue",
             label: "默认选中值",
             controlType: "INPUT_TEXT",
@@ -675,8 +669,7 @@ class MultiSelectWidget extends BaseWidget<
             dependencies: ["labelPosition"],
           },
           {
-            helpText:
-              "设置组件标签占用的列数",
+            helpText: "设置组件标签占用的列数",
             propertyName: "labelWidth",
             label: "宽度（所占列数）",
             controlType: "NUMERIC_INPUT",
@@ -793,8 +786,7 @@ class MultiSelectWidget extends BaseWidget<
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText:
-              "是否下拉列表中展示全选选项",
+            helpText: "是否下拉列表中展示全选选项",
             propertyName: "allowSelectAll",
             label: "允许全选",
             controlType: "SWITCH",
@@ -905,8 +897,7 @@ class MultiSelectWidget extends BaseWidget<
           {
             propertyName: "borderRadius",
             label: "边框圆角",
-            helpText:
-              "边框圆角样式",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isBindProperty: true,
             isJSConvertible: true,
@@ -918,8 +909,7 @@ class MultiSelectWidget extends BaseWidget<
           {
             propertyName: "boxShadow",
             label: "阴影",
-            helpText:
-              "组件轮廓投影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
