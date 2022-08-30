@@ -90,7 +90,7 @@ class ContainerWidget extends BaseWidget<
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "输入边框厚度",
+            helpText: "输入边框宽度",
             propertyName: "borderWidth",
             label: "边框厚度",
             placeholderText: "以 px 为单位",
@@ -195,9 +195,9 @@ class ContainerWidget extends BaseWidget<
         sectionName: "轮廓样式",
         children: [
           {
-            helpText: "输入边框厚度",
+            helpText: "输入边框宽度",
             propertyName: "borderWidth",
-            label: "Border Width",
+            label: "边框宽度",
             placeholderText: "以 px 为单位",
             controlType: "INPUT_TEXT",
             isBindProperty: true,

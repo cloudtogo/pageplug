@@ -14,7 +14,7 @@ const objectStyleProperties = [
     propertyName: "backgroundColor",
     label: "背景颜色",
     controlType: "COLOR_PICKER",
-    helpText: "Changes the background color",
+    helpText: "修改背景颜色",
     isJSConvertible: true,
     isBindProperty: true,
     isTriggerProperty: false,
@@ -46,8 +46,8 @@ const objectStyleProperties = [
   },
   {
     propertyName: "borderWidth",
-    helpText: "输入边框厚度",
-    label: "Border Width",
+    helpText: "输入边框宽度",
+    label: "边框宽度",
     placeholderText: "以 px 为单位",
     controlType: "INPUT_TEXT",
     isBindProperty: true,
@@ -138,7 +138,7 @@ const PROPERTIES = {
         {
           propertyName: "cellBorderWidth",
           helpText: "Enter value for border width of the item",
-          label: "Border Width",
+          label: "边框宽度",
           placeholderText: "以 px 为单位",
           controlType: "INPUT_TEXT",
           isBindProperty: true,
