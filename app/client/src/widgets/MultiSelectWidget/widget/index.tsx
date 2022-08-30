@@ -347,7 +347,7 @@ class MultiSelectWidget extends BaseWidget<
         sectionName: "动作",
         children: [
           {
-            helpText: "Triggers an action when a user selects an option",
+            helpText: "用户选中一个选项时触发",
             propertyName: "onOptionChange",
             label: "onOptionChange",
             controlType: "ACTION_SELECTOR",
