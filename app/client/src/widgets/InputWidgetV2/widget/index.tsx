@@ -223,8 +223,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               dependencies: ["inputType"],
             },
             {
-              helpText:
-                "设置组件默认值，当默认值改变后，组件当前值会自动更新",
+              helpText: "设置组件默认值，当默认值改变后，组件当前值会自动更新",
               propertyName: "defaultText",
               label: "默认值",
               controlType: "INPUT_TEXT",
@@ -245,9 +244,9 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               dependencies: ["inputType"],
             },
             {
-              helpText: "Sets the minimum allowed value",
+              helpText: "设置最小输入长度",
               propertyName: "minNum",
-              label: "Min",
+              label: "最小输入长度",
               controlType: "INPUT_TEXT",
               placeholderText: "1",
               isBindProperty: true,
@@ -269,9 +268,9 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               dependencies: ["inputType"],
             },
             {
-              helpText: "Sets the maximum allowed value",
+              helpText: "设置最大输入长度",
               propertyName: "maxNum",
-              label: "Max",
+              label: "最大输入长度",
               controlType: "INPUT_TEXT",
               placeholderText: "100",
               isBindProperty: true,
@@ -373,8 +372,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               isTriggerProperty: false,
             },
             {
-              helpText:
-                "设置组件默认值，当默认值改变后，组件当前值会自动更新",
+              helpText: "设置组件默认值，当默认值改变后，组件当前值会自动更新",
               propertyName: "defaultText",
               label: "默认值",
               controlType: "INPUT_TEXT",
@@ -416,7 +414,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
             {
               helpText: "设置最大输入字符长度",
               propertyName: "maxChars",
-              label: "Max Characters",
+              label: "最大输入长度",
               controlType: "INPUT_TEXT",
               placeholderText: "255",
               isBindProperty: true,
@@ -431,9 +429,9 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               dependencies: ["inputType"],
             },
             {
-              helpText: "Sets the minimum allowed value",
+              helpText: "设置最小输入长度",
               propertyName: "minNum",
-              label: "Min",
+              label: "最小输入长度",
               controlType: "INPUT_TEXT",
               placeholderText: "1",
               isBindProperty: true,
@@ -455,9 +453,9 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               dependencies: ["inputType"],
             },
             {
-              helpText: "Sets the maximum allowed value",
+              helpText: "设置最大输入长度",
               propertyName: "maxNum",
-              label: "Max",
+              label: "最大输入长度",
               controlType: "INPUT_TEXT",
               placeholderText: "100",
               isBindProperty: true,
