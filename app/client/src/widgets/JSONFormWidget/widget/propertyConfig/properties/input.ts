@@ -288,9 +288,9 @@ const PROPERTIES = {
       isTriggerProperty: false,
     },
     {
-      helpText: "Sets maximum allowed text length",
+      helpText: "设置最大输入字符长度",
       propertyName: "maxChars",
-      label: "Max Chars",
+      label: "最大字符数",
       controlType: "JSON_FORM_COMPUTE_VALUE",
       placeholderText: "255",
       isBindProperty: true,
@@ -641,8 +641,8 @@ const PROPERTIES = {
       },
       {
         propertyName: "maxChars",
-        helpText: "Sets maximum allowed text length",
-        label: "Max Chars",
+        helpText: "设置最大输入字符长度",
+        label: "最大字符数",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: "255",
         isBindProperty: true,

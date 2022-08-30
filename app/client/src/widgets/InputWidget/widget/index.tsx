@@ -214,9 +214,9 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             isTriggerProperty: false,
           },
           {
-            helpText: "Sets maximum allowed text length",
+            helpText: "设置最大输入字符长度",
             propertyName: "maxChars",
-            label: "Max Chars",
+            label: "最大字符数",
             controlType: "INPUT_TEXT",
             placeholderText: "255",
             isBindProperty: true,
