@@ -6,7 +6,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Chart",
+  name: "图表",
   iconSVG: IconSVG,
   needsMeta: true,
   searchTags: ["graph", "visuals", "visualisations"],

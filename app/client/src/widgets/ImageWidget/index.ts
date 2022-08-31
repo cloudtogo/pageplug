@@ -3,7 +3,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Image",
+  name: "图片",
   iconSVG: IconSVG,
   defaults: {
     defaultImage: "https://assets.appsmith.com/widgets/default.png",

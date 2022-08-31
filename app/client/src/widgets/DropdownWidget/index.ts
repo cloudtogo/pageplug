@@ -5,7 +5,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Select",
+  name: "下拉单选",
   iconSVG: IconSVG,
   needsMeta: true,
   hideCard: true,

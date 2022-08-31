@@ -13,7 +13,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "List",
+  name: "列表",
   iconSVG: IconSVG,
   needsMeta: true,
   isCanvas: true,

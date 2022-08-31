@@ -2,7 +2,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "TabsMigrator",
+  name: "旧版标签页",
   needsMeta: true,
 
   defaults: {

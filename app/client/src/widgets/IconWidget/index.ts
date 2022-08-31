@@ -3,7 +3,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Icon",
+  name: "图标",
   iconSVG: IconSVG,
   hideCard: true,
   isDeprecated: true,

@@ -6,7 +6,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Stats Box",
+  name: "统计框",
   iconSVG: IconSVG,
   needsMeta: true,
   isCanvas: true,

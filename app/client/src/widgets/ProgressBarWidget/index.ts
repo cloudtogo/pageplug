@@ -4,7 +4,7 @@ import { BarType } from "./constants";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Progress Bar", // The display name which will be made in uppercase and show in the widgets panel ( can have spaces )
+  name: "进度条", // The display name which will be made in uppercase and show in the widgets panel ( can have spaces )
   hideCard: true,
   isDeprecated: true,
   replacement: "PROGRESS_WIDGET",
