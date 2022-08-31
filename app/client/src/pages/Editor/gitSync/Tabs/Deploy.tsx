@@ -120,8 +120,8 @@ const Container = styled.div`
   }
 `;
 
-const FIRST_COMMIT = "First Commit";
-const NO_CHANGES_TO_COMMIT = "No changes to commit";
+const FIRST_COMMIT = "第一次提交";
+const NO_CHANGES_TO_COMMIT = "没有需要提交的内容";
 
 function SubmitWrapper(props: {
   children: React.ReactNode;
@@ -333,7 +333,7 @@ function Deploy() {
             fill
             height={`${Math.min(autogrowHeight, 80)}px`}
             onChange={setCommitMessage}
-            placeholder={"Your commit message here"}
+            placeholder={"简单描述一下这次提交"}
             ref={commitInputRef}
             style={{ resize: "none" }}
             trimValue={false}

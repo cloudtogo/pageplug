@@ -5,7 +5,6 @@ import { Provider } from "react-redux";
 import { ThemeProvider, taroifyTheme } from "constants/DefaultTheme";
 import { appInitializer } from "utils/AppUtils";
 import { Slide } from "react-toastify";
-import "./index.less";
 import store from "./store";
 import { LayersContext, Layers } from "constants/Layers";
 import AppRouter from "./AppRouter";
@@ -17,6 +16,7 @@ import { setThemeMode } from "actions/themeActions";
 import { StyledToastContainer } from "components/ads/Toast";
 import localStorage from "utils/localStorage";
 import "./assets/styles/index.css";
+import "./index.less";
 import "design-system/build/css/design-system.css";
 import "./polyfills/corejs-add-on";
 import AppErrorBoundary from "./AppErrorBoundry";
@@ -70,11 +70,11 @@ import "react-sortable-tree-patch-react-17/style.css";
 // app init
 appInitializer();
 
-if (process.env.NODE_ENV === "development") {
-  import("./mocks/browser").then(({ worker }) => {
-    worker.start();
-  });
-}
+// if (process.env.NODE_ENV === "development") {
+//   import("./mocks/browser").then(({ worker }) => {
+//     worker.start();
+//   });
+// }
 
 function App() {
   return (

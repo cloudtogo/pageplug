@@ -96,10 +96,8 @@ export function DebuggerTrigger() {
 
   const tooltipContent =
     totalMessageCount > 0
-      ? `View details for ${totalMessageCount} ${
-          totalMessageCount > 1 ? "errors" : "error"
-        }`
-      : "View logs";
+      ? `查看 ${totalMessageCount} 个错误的详情`
+      : "查看日志";
 
   if (hideDebuggerIcon) return null;
 

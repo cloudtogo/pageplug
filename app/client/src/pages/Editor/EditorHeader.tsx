@@ -287,7 +287,7 @@ export function ShareButtonComponent() {
   return (
     <ShareButton className="flex items-center t--application-share-btn header__application-share-btn">
       <StyledSharedIcon name="share-line" />
-      <StyledShareText>SHARE</StyledShareText>
+      <StyledShareText>共享应用</StyledShareText>
     </ShareButton>
   );
 }
@@ -511,8 +511,8 @@ export function EditorHeader(props: EditorHeaderProps) {
             "transition-all transform duration-400": true,
           })}
         >
-          <HelpBar />
-          <HelpButton />
+          {/* <HelpBar />
+          <HelpButton /> */}
         </HeaderSection>
         <HeaderSection className="space-x-3">
           <EditorSaveIndicator />
