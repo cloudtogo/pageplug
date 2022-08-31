@@ -526,7 +526,7 @@ const ColorPickerComponent = React.forwardRef(
             }
             onChange={handleChangeColor}
             onClick={handleInputClick}
-            placeholder="enter color name or hex"
+            placeholder="颜色名称 / 编码"
             value={color}
           />
 

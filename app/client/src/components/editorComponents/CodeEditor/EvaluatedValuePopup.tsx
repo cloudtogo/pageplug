@@ -177,7 +177,7 @@ function copyContent(content: any) {
 
   copy(stringifiedContent);
   Toaster.show({
-    text: `Evaluated value copied to clipboard`,
+    text: `解析值已复制`,
     variant: Variant.success,
   });
 }
@@ -304,6 +304,7 @@ export const CurrentValueViewer = memo(
             displayDataTypes: false,
             style: {
               fontSize: "12px",
+              fontFamily: "auto",
             },
             collapsed: 2,
             collapseStringsAfterLength: 20,

@@ -131,7 +131,7 @@ function MultiSelectComponent({
             alignIndicator="left"
             checked={isSelectAll}
             className={`all-options ${isSelectAll ? "selected" : ""}`}
-            label="Select all"
+            label="全选"
             onChange={handleSelectAll}
           />
         ) : null}

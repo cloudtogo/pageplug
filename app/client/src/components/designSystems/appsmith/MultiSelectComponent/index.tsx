@@ -81,7 +81,7 @@ function MultiSelectComponent({
           <StyledCheckbox
             alignIndicator="left"
             checked={isSelectAll}
-            label="Select all"
+            label="全选"
             onChange={handleSelectAll}
           />
         ) : null}
