@@ -39,21 +39,21 @@ const AppsmithLayouts: AppsmithLayoutConfigOption[] = [
     type: "DESKTOP",
     icon: "desktop",
   },
-  // {
-  //   name: "Tablet(Large)",
-  //   type: "TABLET_LARGE",
-  //   icon: "tablet",
-  // },
+  {
+    name: "大平板宽度",
+    type: "TABLET_LARGE",
+    icon: "tablet",
+  },
   {
     name: "平板宽度",
     type: "TABLET",
     icon: "tablet",
   },
-  // {
-  //   name: "手机宽度",
-  //   type: "MOBILE",
-  //   icon: "mobile",
-  // },
+  {
+    name: "手机宽度",
+    type: "MOBILE",
+    icon: "mobile",
+  },
 ];
 
 export function MainContainerLayoutControl() {

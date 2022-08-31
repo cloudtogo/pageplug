@@ -55,6 +55,12 @@ const PopoverStyles = createGlobalStyle`
 }
 `;
 
+const FOOL_TRANSLATE: any = {
+  "App Font": "应用字体",
+  "App Border Radius": "应用圆角",
+  "App Box Shadow": "应用阴影",
+};
+
 function ThemeEditor() {
   const dispatch = useDispatch();
   const applicationId = useSelector(getCurrentApplicationId);
@@ -157,19 +163,20 @@ function ThemeEditor() {
                 className="t--change-theme-btn"
                 onClick={onClickChangeThemeButton}
                 size={Size.medium}
-                text="修改主题"
+                text="选择主题"
               />
             </aside>
           </ThemeCard>
         </header>
         <main className="mt-1">
           {/* FONT  */}
-          <SettingSection className="px-3 py-3" isDefaultOpen title="Font">
+          <SettingSection className="px-3 py-3" isDefaultOpen title="字体">
             {Object.keys(selectedTheme.config.fontFamily).map(
               (fontFamilySectionName: string, index: number) => {
+                const itemName = startCase(fontFamilySectionName);
                 return (
                   <section className="space-y-2" key={index}>
-                    <h3>{startCase(fontFamilySectionName)}</h3>
+                    <h3>{FOOL_TRANSLATE[itemName] || itemName}</h3>
                     <ThemeFontControl
                       options={get(
                         selectedTheme,
@@ -211,9 +218,10 @@ function ThemeEditor() {
           >
             {Object.keys(selectedTheme.config.borderRadius).map(
               (borderRadiusSectionName: string, index: number) => {
+                const itemName = startCase(borderRadiusSectionName);
                 return (
                   <section className="space-y-2" key={index}>
-                    <h3>{startCase(borderRadiusSectionName)}</h3>
+                    <h3>{FOOL_TRANSLATE[itemName] || itemName}</h3>
                     <ThemeBorderRadiusControl
                       options={get(
                         selectedTheme,
@@ -242,9 +250,10 @@ function ThemeEditor() {
           >
             {Object.keys(selectedTheme.config.boxShadow).map(
               (boxShadowSectionName: string, index: number) => {
+                const itemName = startCase(boxShadowSectionName);
                 return (
                   <section className="space-y-2" key={index}>
-                    <h3>{startCase(boxShadowSectionName)}</h3>
+                    <h3>{FOOL_TRANSLATE[itemName] || itemName}</h3>
                     <ThemeBoxShadowControl
                       options={get(
                         selectedTheme,
