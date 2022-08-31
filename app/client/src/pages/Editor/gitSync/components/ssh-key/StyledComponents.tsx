@@ -11,7 +11,7 @@ export const TooltipWrapper = styled.div`
 export const DeployedKeyContainer = styled.div<{ $marginTop: number }>`
   margin-top: ${(props) => `${props.theme.spaces[props.$marginTop]}px`};
   margin-bottom: 8px;
-  height: 35px;
+  min-height: 35px;
   width: calc(100% - 30px);
   border: 1px solid ${Colors.ALTO_3};
   padding: ${(props) =>

@@ -206,7 +206,7 @@ export function EntityProperties() {
     >
       <div className="h-auto overflow-y-auto overflow-x-hidden relative">
         <div className="sticky top-0 text-sm px-3 bg-white z-5 pt-4 pb-1 font-medium flex flex-row items-center justify-between w-[100%]">
-          BINDINGS
+          可绑定变量
           <CloseIcon
             className="t--entity-property-close"
             color="black"

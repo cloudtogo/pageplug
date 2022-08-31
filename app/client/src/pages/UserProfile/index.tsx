@@ -48,7 +48,7 @@ function UserProfile() {
   if (featureFlags.GIT) {
     tabs.push({
       key: "gitConfig",
-      title: "Git user config",
+      title: "Git 用户信息",
       panelComponent: <GitConfig />,
       icon: "git-branch",
     });
