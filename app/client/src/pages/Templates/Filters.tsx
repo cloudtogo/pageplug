@@ -18,7 +18,7 @@ import AnalyticsUtil from "utils/AnalyticsUtil";
 
 const FilterWrapper = styled.div`
   overflow: auto;
-  height: calc(100vh - ${(props) => props.theme.homePage.header + 200}px);
+  height: calc(100vh - ${(props) => props.theme.homePage.header + 24}px);
   ${thinScrollbar}
 
   .more {

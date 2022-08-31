@@ -140,17 +140,17 @@ function Templates() {
   const dispatch = useDispatch();
   let resultsText =
     templates.length > 1
-      ? `Showing all ${templates.length} templates`
+      ? `找到 ${templates.length} 个模板`
       : templates.length === 1
-      ? "Showing 1 template"
-      : "No templates to show";
+      ? "找到 1 个模板"
+      : "没有找到模板";
 
   if (templates.length) {
     resultsText +=
       filterCount > 1
-        ? ` matching ${filterCount} filters`
+        ? `，匹配 ${filterCount} 个过滤条件`
         : filterCount === 1
-        ? " matching 1 filter"
+        ? "，匹配 1 个过滤条件"
         : "";
   }
 

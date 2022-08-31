@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { theme } from "constants/DefaultTheme";
 
 const Wrapper = styled.section`
+  margin-top: 48px;
   && .fade {
     position: relative;
   }
