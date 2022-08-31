@@ -145,7 +145,7 @@ function PropertyPaneView(
   }> => {
     return [
       {
-        tooltipContent: "Copy Widget",
+        tooltipContent: "复制组件",
         tooltipPosition: "bottom-right",
         icon: (
           <button
@@ -158,7 +158,7 @@ function PropertyPaneView(
         ),
       },
       {
-        tooltipContent: "Delete Widget",
+        tooltipContent: "删除组件",
         tooltipPosition: "bottom-right",
         icon: (
           <button
