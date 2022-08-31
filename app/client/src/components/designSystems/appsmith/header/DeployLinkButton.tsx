@@ -106,7 +106,7 @@ export const DeployLinkButton = withTheme((props: Props) => {
               <IconWrapper>
                 <GitBranchIcon />
               </IconWrapper>
-              <DeployUrl>Connect to Git Repository</DeployUrl>
+              <DeployUrl>连接 Git 仓库</DeployUrl>
             </DeployLink>
           )}
 
@@ -122,7 +122,7 @@ export const DeployLinkButton = withTheme((props: Props) => {
                 icon="share"
               />
             </IconWrapper>
-            <DeployUrl>Current deployed version</DeployUrl>
+            <DeployUrl>最新发布版本</DeployUrl>
           </DeployLink>
         </DeployLinkDialog>
       }

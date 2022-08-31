@@ -286,7 +286,7 @@ export const SKIP = () => "跳过";
 
 // Debugger
 export const CLICK_ON = () => "🙌 点击 ";
-export const PRESS = () => "🎉 点一下 ";
+export const PRESS = () => "🎉 按 ";
 export const OPEN_THE_DEBUGGER = () => " 显示/隐藏调试器";
 export const DEBUGGER_QUERY_RESPONSE_SECOND_HALF = () =>
   " 在调试器中显示更多信息";

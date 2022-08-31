@@ -166,7 +166,7 @@ export function ThemeCard(props: ThemeCard) {
             />
             <section className="flex justify-between px-3 pt-3">
               <MainText backgroundColor={backgroundColor} className="text-base">
-                AaBbCc
+                主题
               </MainText>
               <div className="flex items-center space-x-2">
                 {Object.keys(userDefinedColors).map((colorKey, index) => (
@@ -189,7 +189,7 @@ export function ThemeCard(props: ThemeCard) {
                   boxShadow={primaryBoxShadow}
                   className="px-3 py-0.5 text-sm"
                 >
-                  Button
+                  按钮
                 </ThemeColorButton>
                 <ThemeColorButton
                   backgroundColor="white"
@@ -198,7 +198,7 @@ export function ThemeCard(props: ThemeCard) {
                   boxShadow={primaryBoxShadow}
                   className="px-3 py-0.5 border text-sm"
                 >
-                  Button
+                  按钮
                 </ThemeColorButton>
               </div>
             </section>
@@ -209,7 +209,7 @@ export function ThemeCard(props: ThemeCard) {
             }`}
           >
             <div className="py-1 text-xs tracking-wide text-white uppercase">
-              Apply Theme
+              使用这个主题
             </div>
           </aside>
           {props.children}

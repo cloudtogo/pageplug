@@ -45,19 +45,19 @@ function ThemeSelector() {
           type="button"
         >
           <ArrowLeft className="w-4 h-4 transition-all transform" />
-          <h3 className="text-xs font-medium uppercase">Back</h3>
+          <h3 className="text-xs font-medium uppercase">返回</h3>
         </button>
         <SettingSection
           className="px-3 py-3 border-t border-b"
           isDefaultOpen={false}
-          title="Applied Theme"
+          title="当前主题"
         >
           <ThemeCard theme={selectedTheme} />
         </SettingSection>
       </section>
       {userSavedThemes.length > 0 && (
         <section className="relative px-3 py-3 space-y-3">
-          <h3 className="text-base font-medium capitalize">Your Themes</h3>
+          <h3 className="text-base font-medium capitalize">你的主题</h3>
           {userSavedThemes.map((theme) => (
             <ThemeCard
               deletable={!theme.isSystemTheme}
@@ -69,7 +69,7 @@ function ThemeSelector() {
         </section>
       )}
       <section className="relative px-3 py-3 space-y-3">
-        <h3 className="text-base font-medium capitalize">Featured Themes</h3>
+        <h3 className="text-base font-medium capitalize">特色主题</h3>
         {systemThemes.map((theme) => (
           <ThemeCard
             deletable={!theme.isSystemTheme}
