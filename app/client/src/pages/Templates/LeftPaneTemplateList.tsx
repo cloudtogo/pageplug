@@ -31,7 +31,7 @@ const TempelateListWrapper = styled.div`
   .list-wrapper {
     margin-top: ${(props) => props.theme.spaces[4]}px;
     overflow: auto;
-    height: calc(100vh - ${(props) => props.theme.homePage.header + 244}px);
+    height: calc(100vh - ${(props) => props.theme.homePage.header + 24}px);
     ${thinScrollbar}
   }
 `;
