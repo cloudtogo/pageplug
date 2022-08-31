@@ -439,7 +439,7 @@ function getIntegrationOptionsWithChildren(
 ) {
   const { JS_EDITOR: isJSEditorEnabled } = featureFlags;
   const createJSObject: TreeDropdownOption = {
-    label: "New JS Object",
+    label: "新建 JS 对象",
     value: "JSObject",
     id: "create",
     icon: "plus",
