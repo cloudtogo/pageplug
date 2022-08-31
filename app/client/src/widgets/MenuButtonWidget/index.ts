@@ -4,7 +4,7 @@ import { ButtonPlacementTypes, ButtonVariantTypes } from "components/constants";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Menu Button",
+  name: "菜单按钮",
   iconSVG: IconSVG,
   defaults: {
     label: "打开菜单",

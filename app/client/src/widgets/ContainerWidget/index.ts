@@ -4,7 +4,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Container",
+  name: "容器",
   iconSVG: IconSVG,
   isCanvas: true,
   searchTags: ["div", "parent", "group"],

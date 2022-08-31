@@ -3,7 +3,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Video",
+  name: "视频",
   iconSVG: IconSVG,
   needsMeta: true,
   searchTags: ["youtube"],

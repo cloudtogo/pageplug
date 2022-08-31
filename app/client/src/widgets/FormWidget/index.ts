@@ -5,7 +5,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Form",
+  name: "表单",
   iconSVG: IconSVG,
   needsMeta: true,
   isCanvas: true,

@@ -5,7 +5,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Tabs",
+  name: "标签页",
   iconSVG: IconSVG,
   needsMeta: true,
   isCanvas: true,

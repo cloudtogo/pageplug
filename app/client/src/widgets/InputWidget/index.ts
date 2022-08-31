@@ -5,7 +5,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Input",
+  name: "输入框",
   iconSVG: IconSVG,
   needsMeta: true,
   hideCard: true,

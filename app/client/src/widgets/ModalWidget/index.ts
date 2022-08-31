@@ -16,7 +16,7 @@ import { THEMEING_TEXT_SIZES } from "constants/ThemeConstants";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Modal",
+  name: "弹窗",
   iconSVG: IconSVG,
   needsMeta: true,
   isCanvas: true,

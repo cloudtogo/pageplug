@@ -3,7 +3,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Map",
+  name: "地图",
   iconSVG: IconSVG,
   needsMeta: true,
   defaults: {
