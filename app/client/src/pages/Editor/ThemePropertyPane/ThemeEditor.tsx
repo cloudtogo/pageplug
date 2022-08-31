@@ -120,9 +120,7 @@ function ThemeEditor() {
         <header className="px-3 space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <h3 className="text-sm font-normal capitalize">
-                Theme Properties
-              </h3>
+              <h3 className="text-sm font-normal capitalize">主题配置</h3>
               <BetaCard />
             </div>
             <div>
@@ -137,13 +135,13 @@ function ThemeEditor() {
                     className="flex items-center"
                     icon={<Save2LineIcon className="w-4 h-4" />}
                     onClick={onOpenSaveModal}
-                    text="Save theme"
+                    text="保存主题"
                   />
                   <DropdownItem
                     className="flex items-center"
                     icon={<ArrowGoBackIcon className="w-4 h-4" />}
                     onClick={onResetTheme}
-                    text="Reset widget styles"
+                    text="重置主题"
                   />
                 </DropdownList>
               </DropdownV2>
@@ -159,7 +157,7 @@ function ThemeEditor() {
                 className="t--change-theme-btn"
                 onClick={onClickChangeThemeButton}
                 size={Size.medium}
-                text="Change Theme"
+                text="修改主题"
               />
             </aside>
           </ThemeCard>
@@ -195,7 +193,7 @@ function ThemeEditor() {
           <SettingSection
             className="px-3 py-3 border-t"
             isDefaultOpen
-            title="Color"
+            title="颜色"
           >
             <section className="space-y-2">
               <ThemeColorControl
@@ -209,7 +207,7 @@ function ThemeEditor() {
           <SettingSection
             className="px-3 py-3 border-t "
             isDefaultOpen
-            title="Border"
+            title="边框"
           >
             {Object.keys(selectedTheme.config.borderRadius).map(
               (borderRadiusSectionName: string, index: number) => {
@@ -240,7 +238,7 @@ function ThemeEditor() {
           <SettingSection
             className="px-3 py-3 border-t "
             isDefaultOpen
-            title="Shadow"
+            title="阴影"
           >
             {Object.keys(selectedTheme.config.boxShadow).map(
               (boxShadowSectionName: string, index: number) => {
