@@ -30,12 +30,12 @@ function ExplorerContent() {
     () => [
       {
         id: "explorer",
-        text: "Explorer",
+        text: "资源管理",
         action: () => dispatch(forceOpenWidgetPanel(false)),
       },
       {
         id: "widgets",
-        text: "Widgets",
+        text: "添加组件",
         action: () => {
           if (
             !(trimQueryString(builderURL({ pageId })) === location.pathname)

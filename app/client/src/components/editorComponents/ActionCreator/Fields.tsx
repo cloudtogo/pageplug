@@ -821,11 +821,11 @@ function renderField(props: {
       } else if (fieldType === FieldType.DOWNLOAD_FILE_NAME_FIELD) {
         fieldLabel = "完整文件名（带扩展名）";
       } else if (fieldType === FieldType.COPY_TEXT_FIELD) {
-        fieldLabel = "Text to be copied to clipboard";
+        fieldLabel = "需要复制的内容";
       } else if (fieldType === FieldType.CALLBACK_FUNCTION_FIELD) {
-        fieldLabel = "Callback function";
+        fieldLabel = "回调函数";
       } else if (fieldType === FieldType.DELAY_FIELD) {
-        fieldLabel = "Delay (ms)";
+        fieldLabel = "延迟 (ms)";
       } else if (fieldType === FieldType.ID_FIELD) {
         fieldLabel = "Id";
       } else if (fieldType === FieldType.CLEAR_INTERVAL_ID_FIELD) {

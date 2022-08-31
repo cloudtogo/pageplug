@@ -104,9 +104,9 @@ export type SnippetBody = {
 export type FilterEntity = WidgetType | ENTITY_TYPE;
 
 export const filterEntityTypeLabels: Partial<Record<ENTITY_TYPE, string>> = {
-  ACTION: "All Queries",
-  WIDGET: "All Widgets",
-  JSACTION: "JS Objects",
+  ACTION: "所有查询",
+  WIDGET: "所有组件",
+  JSACTION: "JS对象",
 };
 
 export const getSnippetFilterLabel = (state: AppState, label: string) => {
@@ -339,22 +339,22 @@ export type ActionOperation = {
 
 export const actionOperations: ActionOperation[] = [
   {
-    title: "New Blank API",
-    desc: "Create a new API",
+    title: "新建 API",
+    desc: "创建一个新的 API",
     kind: SEARCH_ITEM_TYPES.actionOperation,
     action: (pageId: string, location: EventLocation) =>
       createNewApiAction(pageId, location),
   },
   {
-    title: "New JS Object",
-    desc: "Create a new JS Object",
+    title: "新建 JS 对象",
+    desc: "创建一个新的 JS 对象",
     kind: SEARCH_ITEM_TYPES.actionOperation,
     icon: JsFileIconV2,
     action: (pageId: string) => createNewJSCollection(pageId),
   },
   {
-    title: "New cURL Import",
-    desc: "Import a cURL Request",
+    title: "新建 cURL 导入",
+    desc: "通过 cURL 请求导入",
     kind: SEARCH_ITEM_TYPES.actionOperation,
     icon: <CurlIconV2 />,
     redirect: (pageId: string, from: EventLocation) => {
