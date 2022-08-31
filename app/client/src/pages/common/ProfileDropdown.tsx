@@ -141,9 +141,9 @@ export default function ProfileDropdown(props: TagProps) {
             path: PROFILE,
           });
         }}
-        text="Edit Profile"
+        text="个人信息"
       />
-      {user?.isSuperUser && user?.isConfigurable && (
+      {/* {user?.isSuperUser && user?.isConfigurable && (
         <StyledMenuItem
           className={`t--admin-settings-menu ${BlueprintClasses.POPOVER_DISMISS}`}
           icon="setting"
@@ -154,7 +154,7 @@ export default function ProfileDropdown(props: TagProps) {
           }}
           text={createMessage(ADMIN_SETTINGS)}
         />
-      )}
+      )} */}
       <StyledMenuItem
         className="t--logout-icon"
         icon="logout"
@@ -163,7 +163,7 @@ export default function ProfileDropdown(props: TagProps) {
             type: ReduxActionTypes.LOGOUT_USER_INIT,
           })
         }
-        text="Sign Out"
+        text="退出登录"
       />
     </Menu>
   );
