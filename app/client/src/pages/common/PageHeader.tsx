@@ -28,16 +28,14 @@ import Icon, { IconSize } from "components/ads/Icon";
 import { TemplatesTabItem } from "pages/Templates/TemplatesTabItem";
 import { getTemplateNotificationSeenAction } from "actions/templateActions";
 
-import { areCommentsEnabledForUserAndApp as areCommentsEnabledForUserAndAppSelector } from "selectors/commentsSelectors";
-
 const StyledPageHeader = styled(StyledHeader)`
-  background: ${Colors.MINT_GREEN};
+  justify-content: normal;
+  background: white;
   height: 48px;
   color: white;
-  flex-direction: row;
-  position: relative;
+  position: fixed;
   top: 0;
-  z-index: 10;
+  z-index: 9;
   box-shadow: ${(props) => props.theme.colors.header.boxShadow};
 `;
 
@@ -85,7 +83,7 @@ const TabName = styled.div<{ isSelected: boolean }>`
   align-items: center;
   ${(props) =>
     props.isSelected &&
-    `border-bottom: 2px solid ${Colors.CRUSTA};
+    `border-bottom: 2px solid ${Colors.MINT_GREEN};
   color: ${Colors.COD_GRAY};`}
   cursor: pointer;
 `;
@@ -117,17 +115,17 @@ export function PageHeader(props: PageHeaderProps) {
 
   const tabs = [
     {
-      title: "Apps",
+      title: "应用",
       path: APPLICATIONS_URL,
       matcher: matchApplicationPath,
     },
     {
-      title: "Templates",
+      title: "模板",
       path: TEMPLATES_PATH,
       matcher: matchTemplatesPath,
     },
     {
-      title: "Templates id",
+      title: "模板 id",
       path: TEMPLATES_ID_PATH,
       matcher: matchTemplatesIdPath,
     },
@@ -158,7 +156,7 @@ export function PageHeader(props: PageHeaderProps) {
               isSelected={matchApplicationPath(location.pathname)}
               onClick={() => history.push(APPLICATIONS_URL)}
             >
-              <div>Apps</div>
+              <div>应用</div>
             </TabName>
             <TemplatesTabItem>
               <TabName
@@ -169,7 +167,7 @@ export function PageHeader(props: PageHeaderProps) {
                 }
                 onClick={() => history.push(TEMPLATES_PATH)}
               >
-                <div>Templates</div>
+                <div>模板</div>
               </TabName>
             </TemplatesTabItem>
           </>

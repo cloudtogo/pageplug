@@ -52,6 +52,8 @@ function LeftPaneBottomSection() {
   const { appVersion } = getAppsmithConfigs();
   const howMuchTimeBefore = howMuchTimeBeforeText(appVersion.releaseDate);
 
+  return null;
+
   return (
     <Wrapper>
       <MenuItem
