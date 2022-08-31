@@ -123,11 +123,11 @@ export enum ReadOnlyColumnTypes {
 
 export const DEFAULT_BUTTON_COLOR = "rgb(3, 179, 101)";
 
-export const DEFAULT_BUTTON_LABEL = "Action";
+export const DEFAULT_BUTTON_LABEL = "动作";
 
 export const DEFAULT_MENU_VARIANT = "PRIMARY";
 
-export const DEFAULT_MENU_BUTTON_LABEL = "Open menu";
+export const DEFAULT_MENU_BUTTON_LABEL = "打开菜单";
 
 export type TransientDataPayload = {
   [key: string]: string | number;
