@@ -116,6 +116,7 @@ const CodeWrapper = styled.pre<{ colorTheme: EditorTheme }>`
   background-color: ${(props) => THEMES[props.colorTheme].editorBackground};
   color: ${(props) => THEMES[props.colorTheme].editorColor};
   font-size: 12px;
+  font-family: auto;
   -ms-overflow-style: none;
   white-space: pre-wrap;
   word-break: break-all;
