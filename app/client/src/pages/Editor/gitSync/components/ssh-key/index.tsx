@@ -131,9 +131,7 @@ function Keys(props: KeysProps) {
           >
             {isMenuOpen && !showConfirmation && (
               <>
-                <RegenerateOptionsHeader>
-                  Regenerate keys
-                </RegenerateOptionsHeader>
+                <RegenerateOptionsHeader>重新生成 KEY</RegenerateOptionsHeader>
                 {getMenuItems(
                   supportedKeys,
                   setShowConfirmation,

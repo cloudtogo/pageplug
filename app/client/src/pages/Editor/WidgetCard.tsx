@@ -97,7 +97,7 @@ function WidgetCard(props: CardProps) {
       onDragStart={onDragStart}
     >
       <div>
-        <IconWrapper needBG>
+        <IconWrapper>
           <img className="w-6 h-6" src={props.details.icon} />
         </IconWrapper>
         <IconLabel>{props.details.displayName}</IconLabel>
