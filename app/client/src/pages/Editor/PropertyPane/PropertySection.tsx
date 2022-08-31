@@ -20,7 +20,6 @@ const SectionTitle = styled.div`
   display: grid;
   grid-template-columns: 1fr 30px;
   cursor: pointer;
-  border-top: 1px solid #f2f2f2;
   & span {
     color: ${(props) => props.theme.colors.propertyPane.title};
     padding: ${(props) => props.theme.spaces[2]}px 0;

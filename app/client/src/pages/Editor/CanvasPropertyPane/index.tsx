@@ -11,7 +11,7 @@ type Props = {
 export function CanvasPropertyPane(props: Props) {
   return (
     <div className="relative ">
-      <h3 className="px-3 py-3 text-sm font-medium uppercase">画布属性</h3>
+      <h3 className="px-3 py-3 text-sm font-medium uppercase">全局配置</h3>
 
       <div className="mt-3 space-y-6">
         <div className="px-3 space-y-2">
