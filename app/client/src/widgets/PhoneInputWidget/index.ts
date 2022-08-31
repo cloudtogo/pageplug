@@ -5,7 +5,7 @@ import { getDefaultISDCode } from "./component/ISDCodeDropdown";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Phone Input",
+  name: "手机号输入框",
   iconSVG: IconSVG,
   needsMeta: true,
   searchTags: ["call"],

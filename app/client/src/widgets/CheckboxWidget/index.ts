@@ -5,7 +5,7 @@ import { AlignWidgetTypes } from "widgets/constants";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Checkbox",
+  name: "勾选",
   iconSVG: IconSVG,
   needsMeta: true,
   searchTags: ["boolean"],

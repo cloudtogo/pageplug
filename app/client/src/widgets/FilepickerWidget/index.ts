@@ -4,7 +4,7 @@ import FileDataTypes from "./widget/FileDataTypes";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "FilePicker",
+  name: "文件上传",
   iconSVG: IconSVG,
   needsMeta: true,
   hideCard: true,

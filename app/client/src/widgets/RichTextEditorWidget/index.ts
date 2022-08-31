@@ -5,7 +5,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Rich Text Editor",
+  name: "富文本编辑器",
   iconSVG: IconSVG,
   needsMeta: true,
   searchTags: ["input", "rte"],

@@ -5,7 +5,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Checkbox Group",
+  name: "勾选组",
   iconSVG: IconSVG,
   needsMeta: true,
   defaults: {

@@ -13,7 +13,7 @@ import { escapeString } from "./widget/utilities";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Table",
+  name: "表格",
   iconSVG: IconSVG,
   needsMeta: true,
   defaults: {

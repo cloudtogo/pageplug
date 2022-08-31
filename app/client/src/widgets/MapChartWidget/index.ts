@@ -4,7 +4,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Map Chart", // The display name which will be made in uppercase and show in the widgets panel ( can have spaces )
+  name: "地图图表", // The display name which will be made in uppercase and show in the widgets panel ( can have spaces )
   iconSVG: IconSVG,
   needsMeta: true, // Defines if this widget adds any meta properties
   isCanvas: false, // Defines if this widget has a canvas within in which we can drop other widgets

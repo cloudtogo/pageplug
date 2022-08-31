@@ -4,7 +4,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "FormButton",
+  name: "表单按钮",
   iconSVG: IconSVG,
   hideCard: true,
   isDeprecated: true,

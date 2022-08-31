@@ -5,7 +5,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Text",
+  name: "文本",
   iconSVG: IconSVG,
   searchTags: ["typography", "paragraph", "label"],
   defaults: {

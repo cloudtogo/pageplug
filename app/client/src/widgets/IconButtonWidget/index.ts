@@ -5,7 +5,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Icon Button",
+  name: "图标按钮",
   iconSVG: IconSVG,
   searchTags: ["click", "submit"],
   defaults: {

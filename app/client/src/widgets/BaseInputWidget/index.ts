@@ -5,7 +5,7 @@ import { Alignment } from "@blueprintjs/core";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Input",
+  name: "输入框",
   hideCard: true,
   iconSVG: IconSVG,
   needsMeta: true,

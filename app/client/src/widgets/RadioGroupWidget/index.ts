@@ -5,7 +5,7 @@ import { LabelPosition } from "components/constants";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Radio Group",
+  name: "单选组",
   iconSVG: IconSVG,
   needsMeta: true,
   searchTags: ["choice"],
