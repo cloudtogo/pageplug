@@ -203,7 +203,7 @@ const CloudOSHeader = styled.div`
 
 const StyledDeployButton = styled(StyledInviteButton)`
   margin-right: 0px;
-  height: 20px;
+  height: 30px;
 `;
 
 const BindingBanner = styled.div`
@@ -228,12 +228,12 @@ const BindingBanner = styled.div`
 `;
 
 const StyledDeployIcon = styled(Icon)`
-  height: 20px;
+  height: 30px;
   width: 20px;
   align-self: center;
   background: ${(props) => props.theme.colors.header.shareBtnHighlight};
   &:hover {
-    background: rgb(191, 65, 9);
+    background: rgb(80, 80, 80);
   }
 `;
 

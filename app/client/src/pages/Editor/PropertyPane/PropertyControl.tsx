@@ -589,7 +589,7 @@ const PropertyControl = memo((props: Props) => {
             {isPropertyDeviatedFromTheme && (
               <>
                 <TooltipComponent
-                  content="Value deviated from theme"
+                  content="当前设置不符合主题"
                   openOnTargetFocus={false}
                 >
                   <div className="w-2 h-2 rounded-full bg-primary-500" />
@@ -600,7 +600,7 @@ const PropertyControl = memo((props: Props) => {
                 >
                   <TooltipComponent
                     boundary="viewport"
-                    content="Reset value"
+                    content="按主题重置"
                     openOnTargetFocus={false}
                     position="top-right"
                   >

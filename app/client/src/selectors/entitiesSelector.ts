@@ -682,11 +682,11 @@ export const selectFilesForExplorer = createSelector(
       (acc, file) => {
         let group = "";
         if (file.config.pluginType === PluginType.JS) {
-          group = "JS Objects";
+          group = "JS 对象";
         } else if (file.config.pluginType === PluginType.API) {
           group = isEmbeddedRestDatasource(file.config.datasource)
-            ? "APIs"
-            : datasourceIdToNameMap[file.config.datasource.id] ?? "APIs";
+            ? "API 接口"
+            : datasourceIdToNameMap[file.config.datasource.id] ?? "API 接口";
         } else {
           group = datasourceIdToNameMap[file.config.datasource.id];
         }
