@@ -116,7 +116,7 @@ function SelectAll(props: SelectAllProps) {
           labelPosition={LabelPosition.Left}
           labelTextColor={disabled ? Colors.GREY_8 : "inherit"}
         >
-          Select all
+          全选
         </CheckboxLabel>
       }
       onChange={onChange}
