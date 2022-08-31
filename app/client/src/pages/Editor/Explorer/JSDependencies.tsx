@@ -86,19 +86,16 @@ function JSDependencies() {
     [],
   );
   const showDocs = React.useCallback((e: any) => {
-    window.open(
-      "https://docs.appsmith.com/v/v1.2.1/core-concepts/writing-code/ext-libraries",
-      "appsmith-docs:working-with-js-libraries",
-    );
+    window.open("https://docs.appsmith-fans.cn/bian-xie-dai-ma/wai-bu-ku");
     e.stopPropagation();
     e.preventDefault();
   }, []);
 
   const TooltipContent = (
     <div>
-      <span>Access these JS libraries to transform data within </span>
+      <span>在数据绑定 </span>
       <BindingText>{`{{ }}`}</BindingText>
-      <span>. Try </span>
+      <span> 中使用这些 JS 库来处理数据，例如 </span>
       <BindingText>{`{{ _.add(1,1) }}`}</BindingText>
     </div>
   );
@@ -112,7 +109,7 @@ function JSDependencies() {
           isVisible={!!dependencyList}
           onClick={toggleDependencies}
         />
-        <span className="text-gray-900 ml-1 font-medium">DEPENDENCIES</span>
+        <span className="text-gray-900 ml-1 font-medium">工具库</span>
         <TooltipComponent content={TooltipContent} hoverOpenDelay={200}>
           <Icon
             className="t--help-icon"
