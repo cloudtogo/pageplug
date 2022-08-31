@@ -5,7 +5,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "MultiSelect",
+  name: "下拉多选",
   iconSVG: IconSVG,
   needsMeta: true,
   hideCard: true,

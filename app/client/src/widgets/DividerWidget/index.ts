@@ -4,7 +4,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Divider",
+  name: "分隔线",
   iconSVG: IconSVG,
   searchTags: ["line"],
   defaults: {

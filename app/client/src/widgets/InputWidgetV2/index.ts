@@ -4,7 +4,7 @@ import { CONFIG as BaseConfig } from "widgets/BaseInputWidget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Input",
+  name: "输入框",
   iconSVG: IconSVG,
   needsMeta: true,
   searchTags: ["form", "text input", "number", "textarea"],

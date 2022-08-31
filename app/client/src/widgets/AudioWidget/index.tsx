@@ -3,7 +3,7 @@ import IconSVG from "./icon.svg";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Audio",
+  name: "音频",
   iconSVG: IconSVG,
   needsMeta: true,
   searchTags: ["mp3", "sound", "wave", "player"],

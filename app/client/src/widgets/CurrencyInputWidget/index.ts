@@ -5,7 +5,7 @@ import { getDefaultCurrency } from "./component/CurrencyCodeDropdown";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Currency Input",
+  name: "货币输入框",
   iconSVG: IconSVG,
   needsMeta: true,
   searchTags: ["amount", "total"],

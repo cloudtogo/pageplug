@@ -4,7 +4,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "DatePicker",
+  name: "日期选择器",
   iconSVG: IconSVG,
   hideCard: true,
   isDeprecated: true,

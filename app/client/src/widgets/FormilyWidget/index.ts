@@ -3,7 +3,7 @@ import IconSVG from "./icon.svg";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "复杂表单",
+  name: "Formily表单",
   iconSVG: IconSVG,
   needsMeta: true,
   isCanvas: false,

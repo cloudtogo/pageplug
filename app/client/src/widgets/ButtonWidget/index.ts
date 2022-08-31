@@ -8,7 +8,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Button",
+  name: "按钮",
   iconSVG: IconSVG,
   needsMeta: true,
   searchTags: ["click", "submit"],

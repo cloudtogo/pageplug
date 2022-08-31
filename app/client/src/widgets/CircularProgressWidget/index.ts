@@ -4,7 +4,7 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Circular Progress",
+  name: "环形进度条",
   hideCard: true,
   isDeprecated: true,
   replacement: "PROGRESS_WIDGET",
