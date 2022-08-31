@@ -18,6 +18,11 @@ const ColorBox = styled.div<{
   background: ${({ background }) => background};
 `;
 
+const FOOL_TRANSLATE: any = {
+  "Primary Color": "应用主题色",
+  "Background Color": "应用背景色",
+};
+
 function ThemeColorControl(props: ThemeColorControlProps) {
   const { theme, updateTheme } = props;
   const [autoFocus, setAutoFocus] = useState(false);
@@ -29,8 +34,12 @@ function ThemeColorControl(props: ThemeColorControlProps) {
       <div className="flex space-x-2">
         {Object.keys(theme.properties.colors).map(
           (colorName: string, index: number) => {
+            const itemName = startCase(colorName);
             return (
-              <TooltipComponent content={startCase(colorName)} key={index}>
+              <TooltipComponent
+                content={FOOL_TRANSLATE[itemName] || itemName}
+                key={index}
+              >
                 <ColorBox
                   background={userDefinedColors[colorName]}
                   className={classNames({
@@ -51,7 +60,10 @@ function ThemeColorControl(props: ThemeColorControlProps) {
       </div>
       {selectedColor && (
         <div className="pt-1 space-y-1">
-          <h3 className="text-gray-700">{startCase(selectedColor)}</h3>
+          <h3 className="text-gray-700">
+            {FOOL_TRANSLATE[startCase(selectedColor)] ||
+              startCase(selectedColor)}
+          </h3>
           <ColorPickerComponent
             autoFocus={autoFocus}
             changeColor={(color: string) => {

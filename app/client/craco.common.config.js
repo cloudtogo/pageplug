@@ -5,7 +5,6 @@ const { DefinePlugin, EnvironmentPlugin } = require("webpack");
 module.exports = {
   devServer: {
     open: false,
-    hot: false,
     client: {
       webSocketURL: {
         hostname: "127.0.0.1",

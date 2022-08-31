@@ -119,7 +119,7 @@ class ButtonListControl extends BaseControl<ControlProps, State> {
             onClick={this.addOption}
             size={Size.medium}
             tag="button"
-            text="Add new Button"
+            text="添加按钮"
             type="button"
           />
         </StyledPropertyPaneButtonWrapper>
