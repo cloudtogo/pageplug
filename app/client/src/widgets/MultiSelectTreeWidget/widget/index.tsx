@@ -215,7 +215,7 @@ class MultiSelectTreeWidget extends BaseWidget<
           },
           {
             propertyName: "allowClear",
-            label: "Clear all Selections",
+            label: "清空选择",
             helpText: "显示清空按钮用来清空选择",
             controlType: "SWITCH",
             isJSConvertible: true,
