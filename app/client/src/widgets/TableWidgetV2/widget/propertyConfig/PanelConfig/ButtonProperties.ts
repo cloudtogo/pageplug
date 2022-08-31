@@ -224,8 +224,7 @@ export default {
     {
       propertyName: "boxShadow",
       label: "阴影",
-      helpText:
-        "组件轮廓投影",
+      helpText: "组件轮廓投影",
       controlType: "BOX_SHADOW_OPTIONS",
       customJSControl: "TABLE_COMPUTE_VALUE",
       isJSConvertible: true,
