@@ -846,7 +846,7 @@ export default [
     ],
   },
   {
-    sectionName: "Form Styles",
+    sectionName: "表单样式",
     isDefaultOpen: false,
     children: [
       {

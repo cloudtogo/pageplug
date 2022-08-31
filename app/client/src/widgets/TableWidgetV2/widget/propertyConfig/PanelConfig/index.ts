@@ -641,8 +641,7 @@ export default {
         },
         {
           propertyName: "menuColor",
-          helpText:
-            "自定义菜单按钮颜色",
+          helpText: "自定义菜单按钮颜色",
           label: "按钮颜色",
           controlType: "PRIMARY_COLUMNS_COLOR_PICKER_V2",
           customJSControl: "TABLE_COMPUTE_VALUE",
@@ -1043,8 +1042,7 @@ export default {
         {
           propertyName: "boxShadow",
           label: "阴影",
-          helpText:
-            "组件轮廓投影",
+          helpText: "组件轮廓投影",
           controlType: "BOX_SHADOW_OPTIONS",
           customJSControl: "TABLE_COMPUTE_VALUE",
           isJSConvertible: true,
