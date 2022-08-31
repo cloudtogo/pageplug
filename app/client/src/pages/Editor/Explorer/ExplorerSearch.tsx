@@ -67,7 +67,7 @@ export const ExplorerSearch = forwardRef(
             onBlur={() => setFocussed(false)}
             onChange={onChange}
             onFocus={() => setFocussed(true)}
-            placeholder="Search Widgets"
+            placeholder="搜索组件"
             ref={ref}
             type="text"
           />
