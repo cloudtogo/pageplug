@@ -134,8 +134,8 @@ export const generateQuickCommands = (
   entityId: any,
   propertyPath: any,
 ) => {
-  const suggestionsHeader: CommandsCompletion = commandsHeader("Bind Data");
-  const createNewHeader: CommandsCompletion = commandsHeader("Create a Query");
+  const suggestionsHeader: CommandsCompletion = commandsHeader("绑定数据");
+  const createNewHeader: CommandsCompletion = commandsHeader("新建查询");
   recentEntities.reverse();
   const newBinding: CommandsCompletion = generateCreateNewCommand({
     text: "{{}}",
@@ -145,7 +145,7 @@ export const generateQuickCommands = (
   });
   const insertSnippet: CommandsCompletion = generateCreateNewCommand({
     text: "",
-    displayText: "Insert Snippet",
+    displayText: "快捷插入",
     shortcut: Shortcuts.FUNCTION,
     action: () =>
       executeCommand({
