@@ -27,7 +27,6 @@ const Section = styled.section<{
 }>`
   background: ${({ isMobile }) => (isMobile ? "#fff" : "transparent")};
   height: 100%;
-  width: 100%;
   min-height: ${({ height }) => height}px;
   margin: 0 auto;
   position: relative;

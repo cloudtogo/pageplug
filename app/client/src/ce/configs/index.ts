@@ -276,7 +276,9 @@ export const getAppsmithConfigs = (): AppsmithUIConfigs => {
       APPSMITH_FEATURE_CONFIGS.cloudServicesBaseUrl,
     appsmithSupportEmail: ENV_CONFIG.supportEmail,
     hideWatermark:
-      ENV_CONFIG.hideWatermark || APPSMITH_FEATURE_CONFIGS.hideWatermark,
+      true ||
+      ENV_CONFIG.hideWatermark ||
+      APPSMITH_FEATURE_CONFIGS.hideWatermark,
     inCloudOS: ENV_CONFIG.inCloudOS,
   };
 };
