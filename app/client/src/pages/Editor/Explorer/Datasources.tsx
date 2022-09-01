@@ -134,7 +134,7 @@ const Datasources = React.memo(() => {
       )}
       {otherDS.length ? (
         <ShowAll onClick={listDatasource}>
-          Show all datasources
+          查看所有数据源
           <ArrowRightLineIcon color={Colors.DOVE_GRAY2} size={"14px"} />
         </ShowAll>
       ) : null}
