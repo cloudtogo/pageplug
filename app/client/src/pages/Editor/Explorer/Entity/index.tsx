@@ -46,23 +46,6 @@ const ContextMenuWrapper = styled.div`
 
 const Wrapper = styled.div<{ active: boolean }>`
   line-height: ${(props) => props.theme.lineHeights[2]}px;
-
-  &.${EntityClassNames.PAGE} {
-    margin: 12px 0;
-    border-radius: ${(props) => props.theme.borderRadius};
-    border: ${(props) =>
-      props.active
-        ? `2px solid ${props.theme.colors.primary}`
-        : `1px solid ${props.theme.colors.primary}`};
-    box-shadow: ${(props) =>
-      props.active
-        ? `0 0 0 4px ${props.theme.colors.primary}22
-      `
-        : `
-      0 1px 3px 0 rgb(0 0 0 / 10%),
-      0 1px 2px 0 rgb(0 0 0 / 6%)
-    `};
-  }
   ${ContextMenuWrapper} {
     width: 0;
   }
