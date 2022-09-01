@@ -30,7 +30,7 @@ import { resolveAsSpaceChar } from "utils/helpers";
 import { getExplorerPinned } from "selectors/explorerSelector";
 import { setExplorerPinnedAction } from "actions/explorerActions";
 import { selectAllPages } from "selectors/entitiesSelector";
-import { builderURL, pageListEditorURL } from "RouteBuilder";
+import { builderURL, pageListEditorURL, viewerLayoutEditorURL } from "RouteBuilder";
 import { saveExplorerStatus, getExplorerStatus } from "../helpers";
 import { tailwindLayers } from "constants/Layers";
 import useResize, {
@@ -147,6 +147,24 @@ function Pages() {
     [],
   );
 
+  const viewerMenuEditIcon = React.useMemo(
+    () => (
+      <TooltipComponent
+        boundary="viewport"
+        content={`设计项目菜单`}
+        hoverOpenDelay={TOOLTIP_HOVER_ON_DELAY}
+        position="bottom"
+      >
+        {settingsIcon}
+      </TooltipComponent>
+    ),
+    [],
+  );
+
+  const navToLayoutEditor = useCallback(() => {
+    history.push(viewerLayoutEditorURL({ pageId: currentPageId }));
+  }, [currentPageId]);
+
   /**
    * toggles the pinned state of sidebar
    */
@@ -224,12 +242,14 @@ function Pages() {
         icon={""}
         isDefaultExpanded={isPagesOpen === null ? true : isPagesOpen}
         name="页面"
-        onClickPreRightIcon={onPin}
+        // onClickPreRightIcon={onPin}
         onClickRightIcon={onClickRightIcon}
         onCreate={createPageCallback}
         onToggle={onPageToggle}
         pagesSize={ENTITY_HEIGHT * pages.length}
         rightIcon={settingsIconWithTooltip}
+        onClickPreRightIcon={navToLayoutEditor}
+        preRightIcon={viewerMenuEditIcon}
         searchKeyword={""}
         step={0}
       >
