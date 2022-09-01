@@ -4,47 +4,47 @@ import { JSActionDropdownOption } from "./utils";
 
 export const RUN_BUTTON_DEFAULTS = {
   HEIGHT: "30px",
-  CTA_TEXT: "RUN",
+  CTA_TEXT: "运行",
   // space between button and dropdown
   GAP_SIZE: "10px",
   DROPDOWN_HIGHLIGHT_BG: "#E7E7E7",
 };
 export const NO_SELECTION_DROPDOWN_OPTION: JSActionDropdownOption = {
-  label: "No function selected",
+  label: "未选中函数",
   value: "",
   data: null,
 };
 export const NO_FUNCTION_DROPDOWN_OPTION: JSActionDropdownOption = {
-  label: "No function available",
+  label: "目前没有定义函数",
   value: "",
   data: null,
 };
 export const SETTINGS_HEADINGS = [
   {
-    text: "Function Name",
+    text: "函数名",
     hasInfo: false,
     key: "func_name",
   },
   {
-    text: "Run on page load",
+    text: "页面加载后执行",
     hasInfo: true,
-    info: "Allow function run when page loads",
+    info: "页面加载后立即执行该函数",
     key: "run_on_pageload",
   },
   {
-    text: "Confirm before calling ",
+    text: "执行函数前确认",
     hasInfo: true,
-    info: "Ask for confirmation before executing function",
+    info: "执行函数前向用户弹窗提醒确认执行",
     key: "run_before_calling",
   },
 ];
 export const RADIO_OPTIONS: OptionProps[] = [
   {
-    label: "Yes",
+    label: "是",
     value: "true",
   },
   {
-    label: "No",
+    label: "否",
     value: "false",
   },
 ];

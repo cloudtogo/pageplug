@@ -225,10 +225,10 @@ function JSEditorForm({ jsCollection: currentJSCollection }: Props) {
                 name={currentJSCollection.name}
                 pageId={pageId}
               />
-              <SearchSnippets
+              {/* <SearchSnippets
                 entityId={currentJSCollection?.id}
                 entityType={ENTITY_TYPE.JSACTION}
-              />
+              /> */}
               <JSFunctionRun
                 disabled={disableRunFunctionality}
                 isLoading={isExecutingCurrentJSAction}
@@ -249,7 +249,7 @@ function JSEditorForm({ jsCollection: currentJSCollection }: Props) {
                 tabs={[
                   {
                     key: "code",
-                    title: "Code",
+                    title: "代码",
                     panelComponent: (
                       <CodeEditor
                         blockCompletions={blockCompletions}
@@ -265,7 +265,7 @@ function JSEditorForm({ jsCollection: currentJSCollection }: Props) {
                         }}
                         isJSObject
                         mode={EditorModes.JAVASCRIPT}
-                        placeholder="Let's write some code!"
+                        placeholder="让我们开始快乐的写代码吧!"
                         showLightningMenu={false}
                         showLineNumbers
                         size={EditorSize.EXTENDED}
@@ -276,7 +276,7 @@ function JSEditorForm({ jsCollection: currentJSCollection }: Props) {
                   },
                   {
                     key: "settings",
-                    title: "Settings",
+                    title: "设置",
                     panelComponent: (
                       <JSFunctionSettingsView actions={jsActions} />
                     ),

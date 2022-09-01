@@ -594,10 +594,10 @@ function ApiEditorForm(props: Props) {
                 name={currentActionConfig ? currentActionConfig.name : ""}
                 pageId={pageId}
               />
-              <SearchSnippets
+              {/* <SearchSnippets
                 entityId={currentActionConfig?.id}
                 entityType={ENTITY_TYPE.ACTION}
-              />
+              /> */}
               <Button
                 className="t--apiFormRunBtn"
                 isLoading={isRunning}
