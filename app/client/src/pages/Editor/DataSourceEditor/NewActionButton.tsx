@@ -84,7 +84,7 @@ function NewActionButton(props: NewActionButtonProps) {
           actionConfiguration:
             pluginType === PluginType.API ? defaultApiActionConfig : {},
           eventData: {
-            actionType: pluginType === PluginType.DB ? "Query" : "API",
+            actionType: pluginType === PluginType.DB ? "查询" : "API",
             from: props.eventFrom,
             dataSource: datasource?.name,
           },
@@ -103,7 +103,7 @@ function NewActionButton(props: NewActionButtonProps) {
       iconPosition={IconPositions.left}
       isLoading={isSelected || props.isLoading}
       onClick={createQueryAction}
-      text={pluginType === PluginType.DB ? "New Query" : "New API"}
+      text={pluginType === PluginType.DB ? "新建查询" : "新建 API"}
     />
   );
 }

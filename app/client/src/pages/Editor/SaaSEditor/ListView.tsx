@@ -131,7 +131,7 @@ class ListView extends React.Component<Props> {
     }
     return (
       <IntegrationHomePage>
-        <p className="sectionHeader">Select a datasource or create a new one</p>
+        <p className="sectionHeader">选择或者添加一个数据源</p>
         <Boundary />
 
         <AddDatasource
@@ -140,7 +140,7 @@ class ListView extends React.Component<Props> {
           icon={"plus"}
           minimal
           onClick={() => this.handleCreateNewDatasource(plugin.id)}
-          text="New Datasource"
+          text="添加数据源"
         />
 
         {datasources.map((datasource) => {
@@ -174,7 +174,7 @@ class ListView extends React.Component<Props> {
     return (
       <IntegrationHomePage>
         <NotFound
-          buttonText="Go back to Datasources"
+          buttonText="返回数据源"
           onBackButton={() =>
             history.push(
               integrationEditorURL({
@@ -183,7 +183,7 @@ class ListView extends React.Component<Props> {
               }),
             )
           }
-          title="Datasources/Queries Not found"
+          title="没有找到数据源和查询"
         />
       </IntegrationHomePage>
     );

@@ -823,7 +823,7 @@ export const API_EDITOR_TAB_TITLES = {
   SETTINGS: () => "设置",
 };
 export const ACTION_EXECUTION_MESSAGE = (actionType: string) =>
-  `Sending the ${actionType} request`;
+  `正在请求 ${actionType}`;
 
 export const WELCOME_FORM_HEADER = () => "让我们更好的了解你！";
 export const WELCOME_FORM_FULL_NAME = () => "姓名";
@@ -1009,7 +1009,7 @@ export const END_DESCRIPTION = () => "看看各个查询、组件的属性配置
 export const END_BUTTON_TEXT = () => "开始构建应用";
 
 export const CONTEXT_EDIT_NAME = () => "编辑名称";
-export const CONTEXT_SHOW_BINDING = () => "展示绑定";
+export const CONTEXT_SHOW_BINDING = () => "可绑定变量";
 export const CONTEXT_MOVE = () => "移动到页面";
 export const CONTEXT_COPY = () => "复制到页面";
 export const CONTEXT_DELETE = () => "删除";

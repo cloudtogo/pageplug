@@ -70,7 +70,7 @@ function ActiveDataSources(props: ActiveDataSourcesProps) {
             onClick={props.onCreateNew}
             size={Size.medium}
             tag="button"
-            text="Create New"
+            text="新建"
           />
         </Text>
       </EmptyActiveDatasource>
