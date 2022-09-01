@@ -32,7 +32,7 @@ export const AuthCard = styled(Card)`
   width: ${(props) => props.theme.authCard.width}px;
   border: none;
   box-shadow: ${(props) => props.theme.colors.auth.boxShadow};
-  border-radius: 0;
+  border-radius: 6px;
   h1 {
     text-align: center;
     padding: 0;
