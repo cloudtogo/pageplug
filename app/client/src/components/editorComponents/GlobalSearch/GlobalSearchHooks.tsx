@@ -39,7 +39,7 @@ export const useFilteredFileOperations = (query = "") => {
     (plugin) => plugin.type === PluginType.API,
   );
   const newApiActionIdx = actionOperations.findIndex(
-    (op) => op.title === "New Blank API",
+    (op) => op.title === "新建 API",
   );
   if (newApiActionIdx > -1) {
     actionOperations[newApiActionIdx].pluginId = restApiPlugin?.id;
@@ -93,7 +93,7 @@ export const useFilteredFileOperations = (query = "") => {
       fileOperations = [
         ...fileOperations,
         {
-          title: "CREATE A QUERY",
+          title: "新建查询",
           kind: SEARCH_ITEM_TYPES.sectionTitle,
         },
       ];
@@ -102,9 +102,9 @@ export const useFilteredFileOperations = (query = "") => {
       fileOperations = [
         ...fileOperations,
         ...filteredAppWideDS.map((ds) => ({
-          title: `New ${ds.name} Query`,
-          shortTitle: `${ds.name} Query`,
-          desc: `Create a query in ${ds.name}`,
+          title: `新建 ${ds.name} 查询`,
+          shortTitle: `${ds.name} 查询`,
+          desc: `创建一次对 ${ds.name} 的数据查询`,
           pluginId: ds.pluginId,
           kind: SEARCH_ITEM_TYPES.actionOperation,
           action: (pageId: string, from: EventLocation) =>
@@ -116,9 +116,9 @@ export const useFilteredFileOperations = (query = "") => {
       fileOperations = [
         ...fileOperations,
         ...otherFilteredDS.map((ds) => ({
-          title: `New ${ds.name} Query`,
-          shortTitle: `${ds.name} Query`,
-          desc: `Create a query in ${ds.name}`,
+          title: `新建 ${ds.name} 查询`,
+          shortTitle: `${ds.name} 查询`,
+          desc: `创建一次对 ${ds.name} 的数据查询`,
           kind: SEARCH_ITEM_TYPES.actionOperation,
           pluginId: ds.pluginId,
           action: (pageId: string, from: EventLocation) =>
@@ -129,7 +129,7 @@ export const useFilteredFileOperations = (query = "") => {
     fileOperations = [
       ...fileOperations,
       {
-        title: "New Datasource",
+        title: "添加数据源",
         icon: (
           <EntityIcon>
             <AddLineIcon size={22} />

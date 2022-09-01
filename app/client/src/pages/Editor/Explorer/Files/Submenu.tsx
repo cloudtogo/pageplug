@@ -138,9 +138,7 @@ export default function ExplorerSubMenu({
           handleUpKey={handleUpKey}
         >
           <SubMenuContainer className="bg-white overflow-y-auto overflow-x-hidden flex flex-col justify-start z-10 delay-150 transition-all">
-            <div className="px-4 py-2 text-sm font-medium text-gray">
-              Create New
-            </div>
+            <div className="px-4 py-2 text-sm font-medium text-gray">新建</div>
             <div className="flex items-center space-x-2 px-4">
               <SearchIcon className="box-content w-4 h-4" />
               <input
@@ -148,7 +146,7 @@ export default function ExplorerSubMenu({
                 autoFocus
                 className="flex-grow text-sm py-2 text-gray-800 bg-transparent placeholder-trueGray-500"
                 onChange={onChange}
-                placeholder="Search datasources"
+                placeholder="搜索数据源"
                 type="text"
                 value={query}
               />
