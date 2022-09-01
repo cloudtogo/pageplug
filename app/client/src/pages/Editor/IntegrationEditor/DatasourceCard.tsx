@@ -333,7 +333,7 @@ function DatasourceCard(props: DatasourceCardProps) {
                     className="t--datasource-option-edit"
                     icon="edit"
                     onSelect={editDatasource}
-                    text="Edit"
+                    text="编辑"
                   />
                   <RedMenuItem
                     className="t--datasource-option-delete"
@@ -358,7 +358,7 @@ function DatasourceCard(props: DatasourceCardProps) {
                 category={Category.tertiary}
                 className="t--reconnect-btn"
                 onClick={editDatasource}
-                text="RECONNECT"
+                text="重新连接"
               />
 
               <MenuWrapper
