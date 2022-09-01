@@ -142,14 +142,14 @@ export const GetNavigationMenuData = ({
       isVisible: true,
       children: [
         {
-          text: "Undo",
+          text: "撤回",
           labelElement: undoShortCut(),
           onClick: () => dispatch(undoAction()),
           type: MenuTypes.MENU,
           isVisible: true,
         },
         {
-          text: "Redo",
+          text: "重做",
           labelElement: redoShortCut(),
           onClick: () => dispatch(redoAction()),
           type: MenuTypes.MENU,
@@ -158,7 +158,7 @@ export const GetNavigationMenuData = ({
       ],
     },
     {
-      text: "页面",
+      text: "页面配置",
       onClick: () => {
         history.push(pageListEditorURL({ pageId: params.pageId }));
       },
@@ -172,42 +172,42 @@ export const GetNavigationMenuData = ({
       children: deployOptions,
       className: "t--app-name-menu-deploy-parent",
     },
-    {
-      text: "帮助",
-      type: MenuTypes.PARENT,
-      isVisible: true,
-      children: [
-        {
-          text: "Community Forum",
-          onClick: () => openExternalLink("https://community.appsmith.com/"),
-          type: MenuTypes.MENU,
-          isVisible: true,
-          isOpensNewWindow: true,
-        },
-        {
-          text: "Discord Channel",
-          onClick: () => openExternalLink("https://discord.gg/rBTTVJp"),
-          type: MenuTypes.MENU,
-          isVisible: true,
-          isOpensNewWindow: true,
-        },
-        {
-          text: "Github",
-          onClick: () =>
-            openExternalLink("https://github.com/appsmithorg/appsmith/"),
-          type: MenuTypes.MENU,
-          isVisible: true,
-          isOpensNewWindow: true,
-        },
-        {
-          text: "Documentation",
-          onClick: () => openExternalLink("https://docs.appsmith.com/"),
-          type: MenuTypes.MENU,
-          isVisible: true,
-          isOpensNewWindow: true,
-        },
-      ],
-    },
+    // {
+    //   text: "帮助",
+    //   type: MenuTypes.PARENT,
+    //   isVisible: true,
+    //   children: [
+    //     {
+    //       text: "Community Forum",
+    //       onClick: () => openExternalLink("https://community.appsmith.com/"),
+    //       type: MenuTypes.MENU,
+    //       isVisible: true,
+    //       isOpensNewWindow: true,
+    //     },
+    //     {
+    //       text: "Discord Channel",
+    //       onClick: () => openExternalLink("https://discord.gg/rBTTVJp"),
+    //       type: MenuTypes.MENU,
+    //       isVisible: true,
+    //       isOpensNewWindow: true,
+    //     },
+    //     {
+    //       text: "Github",
+    //       onClick: () =>
+    //         openExternalLink("https://github.com/appsmithorg/appsmith/"),
+    //       type: MenuTypes.MENU,
+    //       isVisible: true,
+    //       isOpensNewWindow: true,
+    //     },
+    //     {
+    //       text: "Documentation",
+    //       onClick: () => openExternalLink("https://docs.appsmith.com/"),
+    //       type: MenuTypes.MENU,
+    //       isVisible: true,
+    //       isOpensNewWindow: true,
+    //     },
+    //   ],
+    // },
     {
       text: "导出应用",
       onClick: () =>

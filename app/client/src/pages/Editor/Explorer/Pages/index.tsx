@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getCurrentApplicationId,
   getCurrentPageId,
+  isMobileLayout,
 } from "selectors/editorSelectors";
 import Entity, { EntityClassNames } from "../Entity";
 import history from "utils/history";
@@ -87,6 +88,7 @@ function Pages() {
   const storedHeightKey = "pagesContainerHeight_" + applicationId;
   const storedHeight = localStorage.getItem(storedHeightKey);
   const location = useLocation();
+  const isMobile = useSelector(isMobileLayout);
 
   const resizeAfterCallback = (data: CallbackResponseType) => {
     localStorage.setItem(storedHeightKey, data.height.toString());
@@ -253,7 +255,7 @@ function Pages() {
         pagesSize={ENTITY_HEIGHT * pages.length}
         rightIcon={settingsIconWithTooltip}
         onClickPreRightIcon={navToLayoutEditor}
-        preRightIcon={viewerMenuEditIcon}
+        preRightIcon={isMobile ? null : viewerMenuEditIcon}
         searchKeyword={""}
         step={0}
       >
