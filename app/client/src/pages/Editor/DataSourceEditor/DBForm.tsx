@@ -123,7 +123,7 @@ class DatasourceDBEditor extends JSONtoForm<Props> {
         {!this.props.hiddenHeader && (
           <Header>
             <FormTitleContainer>
-              <PluginImage alt="Datasource" src={this.props.pluginImage} />
+              <PluginImage alt="数据源" src={this.props.pluginImage} />
               <FormTitle focusOnMount={this.props.isNewDatasource} />
             </FormTitleContainer>
             {viewMode && (
@@ -136,7 +136,7 @@ class DatasourceDBEditor extends JSONtoForm<Props> {
                     false,
                   );
                 }}
-                text="EDIT"
+                text="编辑"
               />
             )}
           </Header>
