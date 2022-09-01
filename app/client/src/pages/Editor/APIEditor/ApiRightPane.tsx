@@ -232,7 +232,7 @@ function ApiRightPane(props: any) {
           tabs={[
             {
               key: "datasources",
-              title: "Datasources",
+              title: "数据源",
               panelComponent:
                 props.datasources && props.datasources.length > 0 ? (
                   <DataSourceListWrapper
@@ -252,7 +252,7 @@ function ApiRightPane(props: any) {
                             <IconContainer>
                               {d?.id === props.currentActionDatasourceId && (
                                 <SelectedDatasourceInfoContainer>
-                                  <p>In use</p>
+                                  <p>使用中</p>
                                 </SelectedDatasourceInfoContainer>
                               )}
                               <Icon
@@ -302,14 +302,14 @@ function ApiRightPane(props: any) {
                       type={TextType.H5}
                       weight={FontWeight.NORMAL}
                     >
-                      When you save a datasource, it will show up here.
+                      保存的数据源将会展示在这里
                     </Text>
                   </EmptyDatasourceContainer>
                 ),
             },
             {
               key: "Connections",
-              title: "Connections",
+              title: "连接",
               panelComponent: (
                 <SomeWrapper>
                   <ActionRightPane

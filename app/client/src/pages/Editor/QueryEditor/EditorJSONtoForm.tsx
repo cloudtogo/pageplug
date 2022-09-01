@@ -904,11 +904,11 @@ export function EditorJSONtoForm(props: Props) {
               name={currentActionConfig ? currentActionConfig.name : ""}
               pageId={pageId}
             />
-            <SearchSnippets
+            {/* <SearchSnippets
               className="search-snippets"
               entityId={currentActionConfig?.id}
               entityType={ENTITY_TYPE.ACTION}
-            />
+            /> */}
             <DropdownSelect>
               <DropdownField
                 className={"t--switch-datasource"}
@@ -1045,7 +1045,7 @@ export function EditorJSONtoForm(props: Props) {
                         }}
                         size={Size.medium}
                         tag="button"
-                        text="Cancel Request"
+                        text="取消请求"
                         type="button"
                       />
                     </div>

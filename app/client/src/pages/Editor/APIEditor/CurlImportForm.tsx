@@ -123,7 +123,7 @@ class CurlImportForm extends React.Component<Props> {
               <CurlIconWrapper>
                 <img alt="CURL" src={CurlLogo} />
               </CurlIconWrapper>
-              <CurlImportText className="text">Import from CURL</CurlImportText>
+              <CurlImportText className="text">CURL 导入</CurlImportText>
             </div>
             <ActionButtons className="t--formActionButtons">
               <Button
@@ -132,17 +132,16 @@ class CurlImportForm extends React.Component<Props> {
                 onClick={handleSubmit(curlImportSubmitHandler)}
                 size={Size.medium}
                 tag="button"
-                text="Import"
+                text="导入"
                 type="button"
               />
             </ActionButtons>
           </FormRow>
         </MainConfiguration>
         <StyledForm onSubmit={handleSubmit(curlImportSubmitHandler)}>
-          <label className="inputLabel">Paste CURL Code Here</label>
+          <label className="inputLabel">复制 CURL 命令到这里</label>
           <CurlHintText>
-            Hint: Try typing in the following curl command and then click on the
-            &apos;Import&apos; button: curl -X GET
+            温馨提示:试试粘贴这条 curl 命令并且点击导入按钮: curl -X GET
             https://mock-api.appsmith.com/users
           </CurlHintText>
           <CurlImportFormContainer>
