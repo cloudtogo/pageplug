@@ -87,6 +87,13 @@ const StableContainer = styled.div`
   overflow: hidden;
 `;
 
+const ContainerForBottom = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transform: translate(0, 0);
+`;
+
 export type AppViewerProps = RouteComponentProps<BuilderRouteParams>;
 
 type Props = AppViewerProps & RouteComponentProps<AppViewerRouteParams>;
@@ -269,34 +276,38 @@ function AppViewer(props: Props) {
         />
         <AppViewerLayout>
           <StableContainer>
-            <AppViewerBodyContainer
-              backgroundColor={
-                isMobile
-                  ? "radial-gradient(#2cbba633, #ffec8f36)"
-                  : selectedTheme.properties.colors.backgroundColor
-              }
-            >
-              <AppViewerBody
-                className={CANVAS_SELECTOR}
-                showTabBar={showTabBar}
-                isMobile={isMobile || isEmbed}
-                hasPages={pages.length > 1}
-                headerHeight={headerHeight}
-                showGuidedTourMessage={showGuidedTourMessage}
+            <ContainerForBottom>
+              <AppViewerBodyContainer
+                backgroundColor={
+                  isMobile
+                    ? "radial-gradient(#2cbba633, #ffec8f36)"
+                    : selectedTheme.properties.colors.backgroundColor
+                }
               >
-                {isInitialized && registered && <AppViewerPageContainer />}
-              </AppViewerBody>
-              {!hideWatermark && (
-                <a
-                  className="fixed hidden right-8 bottom-4 z-2 hover:no-underline md:flex"
-                  href="https://appsmith.com"
-                  rel="noreferrer"
-                  target="_blank"
+                <AppViewerBody
+                  className={CANVAS_SELECTOR}
+                  showTabBar={showTabBar}
+                  isMobile={isMobile || isEmbed}
+                  hasPages={pages.length > 1}
+                  headerHeight={headerHeight}
+                  showGuidedTourMessage={showGuidedTourMessage}
                 >
-                  <BrandingBadge />
-                </a>
-              )}
-            </AppViewerBodyContainer>
+                  {isInitialized && registered && <AppViewerPageContainer />}
+                </AppViewerBody>
+                {!hideWatermark && (
+                  <a
+                    className="fixed hidden right-8 bottom-4 z-2 hover:no-underline md:flex"
+                    href="https://appsmith.com"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    <BrandingBadge />
+                  </a>
+                )}
+              </AppViewerBodyContainer>
+            </ContainerForBottom>
+            <TabBar />
+            <PreviewQRCode />
           </StableContainer>
         </AppViewerLayout>
       </EditorContext.Provider>
