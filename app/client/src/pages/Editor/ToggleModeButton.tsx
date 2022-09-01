@@ -75,7 +75,7 @@ function EditModeReset() {
     <TooltipComponent
       content={
         <>
-          Edit Mode
+          编辑模式
           <span style={{ color: "#fff", marginLeft: 20 }}>V</span>
         </>
       }
@@ -92,7 +92,7 @@ function ViewModeReset() {
     <TooltipComponent
       content={
         <>
-          View Mode
+          视图模式
           <span style={{ color: "#fff", marginLeft: 20 }}>V</span>
         </>
       }
@@ -145,7 +145,7 @@ function ToggleModeButton({ showSelectedMode = true }) {
           <TooltipComponent
             content={
               <>
-                Preview Mode
+                预览模式
                 <span style={{ color: "#fff", marginLeft: 20 }}>P</span>
               </>
             }
