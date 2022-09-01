@@ -104,7 +104,7 @@ class DatasourceSaaSEditor extends JSONtoForm<Props> {
         {!hiddenHeader && (
           <Header>
             <FormTitleContainer>
-              <PluginImage alt="Datasource" src={this.props.pluginImage} />
+              <PluginImage alt="数据源" src={this.props.pluginImage} />
               <FormTitle focusOnMount={this.props.isNewDatasource} />
             </FormTitleContainer>
 
@@ -124,7 +124,7 @@ class DatasourceSaaSEditor extends JSONtoForm<Props> {
                     }),
                   );
                 }}
-                text="EDIT"
+                text="编辑"
               />
             )}
           </Header>

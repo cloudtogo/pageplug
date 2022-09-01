@@ -301,7 +301,7 @@ class DatasourceRestAPIEditor extends React.Component<
       !datasource.datasourceConfiguration.url
     ) {
       Toaster.show({
-        text: "Unable to create API. Try adding a url to the datasource",
+        text: "无法创建 API, 请添加数据源地址",
         variant: Variant.danger,
       });
       return;
@@ -362,7 +362,7 @@ class DatasourceRestAPIEditor extends React.Component<
     return !hiddenHeader ? (
       <Header>
         <FormTitleContainer>
-          <PluginImage alt="Datasource" src={pluginImage} />
+          <PluginImage alt="数据源" src={pluginImage} />
           <FormTitle focusOnMount={isNewDatasource} />
         </FormTitleContainer>
       </Header>
@@ -550,9 +550,7 @@ class DatasourceRestAPIEditor extends React.Component<
                   )
                 }
                 size="small"
-                text={
-                  isAuthorized ? "Save and Re-Authorize" : "Save and Authorize"
-                }
+                text={isAuthorized ? "保存并重新鉴权" : "保存并鉴权"}
               />
             </FormInputContainer>
           )}
