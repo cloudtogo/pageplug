@@ -97,6 +97,7 @@ const NavPreview = styled.div<{
   padding: 8px 16px;
 
   img {
+    display: inline-block;
     width: 32px;
     height: 32px;
   }
@@ -193,7 +194,7 @@ function PagesEditor() {
   }, [currentLayout]);
 
   const [logoUrl, setLogoUrl] = useState(initState.logoUrl);
-  const [name, setName] = useState(initState.name);
+  const [name, setName] = useState(initState.name || appName);
   const [color, setColor] = useState(initState.color);
   const [treeData, setTreeData] = useState<any>(initState.treeData);
   const [outsiderTree, setOutsiderTree] = useState<any>(initState.outsiderTree);
@@ -221,8 +222,8 @@ function PagesEditor() {
   }, [pages]);
 
   const onClose = useCallback(() => {
-    history.push(builderURL());
-  }, []);
+    history.push(builderURL({ pageId }));
+  }, [pageId]);
 
   const getNodeKey = ({ treeIndex }: any) => treeIndex;
 
