@@ -8,6 +8,7 @@ import { getIsInitialized } from "selectors/appViewSelectors";
 import { isMobileLayout, getViewModePageList } from "selectors/editorSelectors";
 import { getCurrentApplication } from "selectors/applicationSelectors";
 import { DEFAULT_VIEWER_LOGO } from "constants/AppConstants";
+import { viewerURL } from "RouteBuilder";
 
 const StaticHeader = styled.div`
   background: var(--layout-header-bg-color);
@@ -34,7 +35,9 @@ const makeRouteNode = (pagesMap: any, newTree: any[], appId: string) => (
       item = {
         name: pagesMap[node.pageId].pageName,
         icon,
-        path: `/applications/${appId}/pages/${node.pageId}`,
+        path: viewerURL({
+          pageId: node.pageId,
+        }),
       };
       pagesMap[node.pageId].visited = true;
     }
@@ -79,7 +82,9 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
       treeData: pages.map((p) => ({
         name: p.pageName,
         icon: getIconType(p.icon),
-        path: `/applications/${appId}/pages/${p.pageId}`,
+        path: viewerURL({
+          pageId: p.pageId,
+        }),
       })),
     };
     if (viewerLayout && pages.length) {
@@ -100,7 +105,9 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
           .map((p: any) => ({
             name: p.pageName,
             icon: getIconType(p.icon),
-            path: `/applications/${appId}/pages/${p.pageId}`,
+            path: viewerURL({
+              pageId: p.pageId,
+            }),
           }));
 
         init = {
