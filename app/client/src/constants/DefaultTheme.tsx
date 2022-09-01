@@ -701,7 +701,7 @@ const lightShades = [
   "#EBEBEB",
   "#858282",
   "#000000",
-  "#F86A2B",
+  Colors.MINT_GREEN,
   "#FFDEDE",
   "#575757",
   "#191919",
@@ -2389,7 +2389,7 @@ export const light: ColorType = {
     hoverBg: Colors.MINT_GREEN_LIGHT,
     warning: {
       color: Colors.WHITE,
-      bg: Colors.MINT_RED,
+      bg: Colors.MINT_RED_LIGHT,
     },
   },
   colorSelector: {
