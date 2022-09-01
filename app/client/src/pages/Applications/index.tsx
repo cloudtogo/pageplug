@@ -1029,7 +1029,7 @@ class Applications extends Component<
 
   public render() {
     return (
-      <PageWrapper displayName="Applications">
+      <PageWrapper displayName="应用管理">
         <LeftPane />
         <MediaQuery maxWidth={MOBILE_MAX_WIDTH}>
           {(matches: boolean) => (
