@@ -79,16 +79,6 @@ export default abstract class AppEngine {
       }
     }
 
-    // get weapp WxaCode preview image
-    const isMobile = yield select(isMobileLayout);
-    if (isMobile) {
-      yield failFastApiCalls(
-        [fetchApplicationPreviewWxaCode(applicationId)],
-        [ReduxActionTypes.FETCH_APPLICATION_PREVIEW_SUCCESS],
-        [ReduxActionErrorTypes.FETCH_APPLICATION_PREVIEW_ERROR],
-      );
-    }
-
     const apiCalls: boolean = yield failFastApiCalls(
       [fetchApplication({ applicationId, pageId, mode: this._mode })],
       [
@@ -106,6 +96,17 @@ export default abstract class AppEngine {
     yield put(
       updateAppPersistentStore(getPersistentAppStore(application.id, branch)),
     );
+
+    // get weapp WxaCode preview image
+    const isMobile = yield select(isMobileLayout);
+    if (isMobile) {
+      yield failFastApiCalls(
+        [fetchApplicationPreviewWxaCode(application.id)],
+        [ReduxActionTypes.FETCH_APPLICATION_PREVIEW_SUCCESS],
+        [ReduxActionErrorTypes.FETCH_APPLICATION_PREVIEW_ERROR],
+      );
+    }
+
     const toLoadPageId: string = pageId || (yield select(getDefaultPageId));
     this._urlRedirect = URLGeneratorFactory.create(
       application.applicationVersion,
