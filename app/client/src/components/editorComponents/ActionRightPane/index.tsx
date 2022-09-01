@@ -270,7 +270,7 @@ function ActionSidebar({
         />
       )}
       {hasResponse && Object.keys(widgets).length > 1 && (
-        <Collapsible label="Connect Widget">
+        <Collapsible label="绑定到组件">
           {/*<div className="description">Go to canvas and select widgets</div>*/}
           <SnipingWrapper>
             <Button
@@ -279,7 +279,7 @@ function ActionSidebar({
               onClick={handleBindData}
               size={Size.medium}
               tag="button"
-              text="Select Widget"
+              text="选择组件"
               type="button"
               variant={Variant.info}
             />
