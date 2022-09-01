@@ -596,15 +596,12 @@ export const howMuchTimeBeforeText = (
   const hours = now.diff(checkDate, "hours");
   const minutes = now.diff(checkDate, "minutes");
   const seconds = now.diff(checkDate, "seconds");
-  if (years > 0) return `${years} yr${years > 1 ? "s" : ""}`;
-  else if (months > 0) return `${months} mth${months > 1 ? "s" : ""}`;
-  else if (days > 0) return `${days} day${days > 1 ? "s" : ""}`;
-  else if (hours > 0) return `${hours} hr${hours > 1 ? "s" : ""}`;
-  else if (minutes > 0) return `${minutes} min${minutes > 1 ? "s" : ""}`;
-  else
-    return lessThanAMinute
-      ? "less than a minute"
-      : `${seconds} sec${seconds > 1 ? "s" : ""}`;
+  if (years > 0) return `${years} 年`;
+  else if (months > 0) return `${months} 月`;
+  else if (days > 0) return `${days} 天`;
+  else if (hours > 0) return `${hours} 小时`;
+  else if (minutes > 0) return `${minutes} 分钟`;
+  else return lessThanAMinute ? "少于一分钟" : `${seconds} 秒`;
 };
 
 /**

@@ -86,7 +86,6 @@ const NameWrapper = styled((props: HTMLDivProps & NameWrapperProps) => (
     props.showOverlay &&
     `
       {
-        background-color: ${props.theme.colors.card.hoverBorder}};
         border-radius: 6px;
         justify-content: center;
         align-items: center;
@@ -194,10 +193,9 @@ const Wrapper = styled(
       #ffffff 12px
     ),
     repeating-linear-gradient(
-      ${(props) => props.backgroundColor}08,
-      ${(props) => props.backgroundColor}22
+      ${(props) => props.backgroundColor}11,
+      ${(props) => props.backgroundColor}66
     );
-  margin: ${(props) => props.theme.spaces[5]}px;
   .overlay {
     display: block;
     position: absolute;
@@ -281,8 +279,6 @@ const Control = styled.div<{ fixed?: boolean }>`
 const MoreOptionsContainer = styled.div`
   width: 22px;
   height: 22px;
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -363,7 +359,8 @@ const CardFooter = styled.div`
 const IconScrollWrapper = styled.div`
   position: relative;
   .t--icon-selected {
-    background-color: rgba(248, 106, 43, 0.2);
+    background-color: ${(props) =>
+      props.theme.colors.applications.cardMenuIcon}22;
     border: 1px solid ${(props) => props.theme.colors.applications.cardMenuIcon};
     svg {
       path {
@@ -734,8 +731,8 @@ export function ApplicationCard(props: ApplicationCardProps) {
 
     //assuming modifiedAt will be always available
     editedOn = howMuchTimeBeforeText(editedOn);
-    editedOn = editedOn !== "" ? editedOn + " ago" : "";
-    return editedBy + " edited " + editedOn;
+    editedOn = editedOn !== "" ? editedOn + "前" : "";
+    return editedBy + " 编辑于 " + editedOn;
   };
 
   function setURLParams() {
