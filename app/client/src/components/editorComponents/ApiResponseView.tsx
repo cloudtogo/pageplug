@@ -388,7 +388,7 @@ function ApiResponseView(props: Props) {
   const tabs = [
     {
       key: "response",
-      title: "Response",
+      title: "返回结果",
       panelComponent: (
         <ResponseTabWrapper>
           {Array.isArray(messages) && messages.length > 0 && (
@@ -424,7 +424,7 @@ function ApiResponseView(props: Props) {
                     onClick={onRunClick}
                     size={Size.medium}
                     tag="button"
-                    text="Run"
+                    text="运行"
                     type="button"
                   />
                   {EMPTY_RESPONSE_LAST_HALF()}
@@ -460,7 +460,7 @@ function ApiResponseView(props: Props) {
     },
     {
       key: "headers",
-      title: "Headers",
+      title: "请求头",
       panelComponent: (
         <ResponseTabWrapper>
           {hasFailed && !isRunning && (
@@ -556,7 +556,7 @@ function ApiResponseView(props: Props) {
                 }}
                 size={Size.medium}
                 tag="button"
-                text="Cancel Request"
+                text="取消请求"
                 type="button"
               />
             </div>

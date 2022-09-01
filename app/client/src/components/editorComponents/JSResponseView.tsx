@@ -213,7 +213,7 @@ function JSResponseView(props: Props) {
   const tabs = [
     {
       key: "response",
-      title: "Response",
+      title: "返回结果",
       panelComponent: (
         <>
           {(hasExecutionParseErrors || hasJSObjectParseError) && (
@@ -260,7 +260,7 @@ function JSResponseView(props: Props) {
                         onClick={onButtonClick}
                         size={Size.medium}
                         tag="button"
-                        text="Run"
+                        text="运行"
                         type="button"
                       />
                       {createMessage(EMPTY_JS_RESPONSE_LAST_HALF)}

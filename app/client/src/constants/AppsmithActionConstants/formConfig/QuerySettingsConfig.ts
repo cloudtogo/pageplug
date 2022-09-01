@@ -4,16 +4,16 @@ export default [
     id: 1,
     children: [
       {
-        label: "Run query on page load",
+        label: "页面加载后立即执行查询",
         configProperty: "executeOnLoad",
         controlType: "SWITCH",
-        info: "Will refresh data each time the page is loaded",
+        info: "页面每次加载都会执行查询",
       },
       {
-        label: "Request confirmation before running query",
+        label: "执行前确认",
         configProperty: "confirmBeforeExecute",
         controlType: "SWITCH",
-        info: "Ask confirmation from the user each time before refreshing data",
+        info: "执行前弹窗提醒用户确认执行",
       },
       // {
       //   label: "Cache response",
@@ -27,8 +27,8 @@ export default [
       //   dataType: "NUMBER",
       // },
       {
-        label: "Query timeout (in milliseconds)",
-        info: "Maximum time after which the query will return",
+        label: "超时时间 (毫秒)",
+        info: "最多忍受查询多久返回",
         configProperty: "actionConfiguration.timeoutInMillisecond",
         controlType: "INPUT_TEXT",
         dataType: "NUMBER",
