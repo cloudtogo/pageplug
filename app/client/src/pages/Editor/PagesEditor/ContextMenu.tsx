@@ -174,10 +174,10 @@ function ContextMenu(props: Props) {
             </Actions>
           </Header>
           <main>
-            <h4>General</h4>
+            <h4>通用</h4>
             {!page.isDefault && (
               <MenuItem>
-                <div>Set Homepage</div>
+                <div>设置为主页</div>
                 <MenuItemToggle
                   onToggle={() => onSetPageDefault(page.pageId, applicationId)}
                   value={page.isDefault}
@@ -186,7 +186,7 @@ function ContextMenu(props: Props) {
             )}
 
             <MenuItem>
-              <div>Visible</div>
+              <div>显示</div>
               <MenuItemToggle
                 onToggle={onSetPageHidden}
                 value={!page.isHidden}

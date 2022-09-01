@@ -15,8 +15,6 @@ import {
 import { TooltipComponent } from "design-system";
 import Icon, { IconName, IconSize } from "components/ads/Icon";
 import { updateApplicationLayout } from "actions/applicationActions";
-import { noop } from "utils/AppsmithUtils";
-import ToggleLayoutEditorButton from "./ToggleLayoutEditorButton";
 
 interface AppsmithLayoutConfigOption {
   name: string;
@@ -116,7 +114,6 @@ export function MainContainerLayoutControl() {
 
   return (
     <div className="space-y-2 t--layout-control-wrapper">
-      <ToggleLayoutEditorButton />
       <div
         className="flex justify-around"
         onBlur={() => setFocusedIndex(selectedIndex)}

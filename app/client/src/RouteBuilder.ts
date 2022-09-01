@@ -49,6 +49,13 @@ export function getQueryStringfromObject(
   return queryParams.length ? "?" + queryParams.join("&") : "";
 }
 
+export const viewerLayoutEditorURL = (props: URLBuilderParams): string => {
+  return urlBuilder.build({
+    ...props,
+    suffix: "viewer-layout",
+  });
+};
+
 export const pageListEditorURL = (props: URLBuilderParams): string => {
   return urlBuilder.build({
     ...props,

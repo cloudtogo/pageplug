@@ -864,7 +864,7 @@ export const SHARE_BUTTON_TOOLTIP = () => "邀请你的团队到 PagePlug";
 export const SHARE_BUTTON_TOOLTIP_WITH_USER = (length: number) => () =>
   `和 ${length} 位小伙伴共享`;
 export const DEBUGGER_TOOLTIP = () => "打开调试器";
-export const PAGE_PROPERTIES_TOOLTIP = () => "页面属性";
+export const PAGE_PROPERTIES_TOOLTIP = () => "页面配置";
 export const CLEAR_LOG_TOOLTIP = () => "清空日志";
 export const ADD_JS_ACTION = () => "新建 JS 对象";
 export const ENTITY_MORE_ACTIONS_TOOLTIP = () => "更多操作";
@@ -1016,7 +1016,7 @@ export const CONTEXT_DELETE = () => "删除";
 export const CONFIRM_CONTEXT_DELETE = () => "确定删除吗？";
 export const CONTEXT_NO_PAGE = () => "暂无页面";
 export const CONTEXT_REFRESH = () => "刷新";
-export const CONTEXT_CLONE = () => "克隆";
+export const CONTEXT_CLONE = () => "克隆页面";
 export const CONTEXT_SET_AS_HOME_PAGE = () => "设置为主页";
 
 // Entity explorer
