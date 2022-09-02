@@ -1,0 +1,5 @@
+*
+!./app/server/dist
+!./app/client/build
+!./app/rts
+!./deploy/docker
