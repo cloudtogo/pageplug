@@ -23,6 +23,8 @@
     "typescript": "^4.2.3"
   },
   "scripts": {
+    "preinstall-win": "set CURRENT_SCOPE=rts && node ../shared/build-shared-dep.js",
+    "postinstall-win": "set CURRENT_SCOPE=rts && node ../shared/install-dependencies.js",
     "preinstall": "CURRENT_SCOPE=rts node ../shared/build-shared-dep.js",
     "postinstall": "CURRENT_SCOPE=rts node ../shared/install-dependencies.js"
   }
