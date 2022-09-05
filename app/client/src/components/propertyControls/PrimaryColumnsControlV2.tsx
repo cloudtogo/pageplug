@@ -202,13 +202,13 @@ class PrimaryColumnsControlV2 extends BaseControl<ControlProps, State> {
     return (
       <>
         <div className="flex pt-2 pb-2 justify-between">
-          <div>{Object.values(reorderedColumns).length} columns</div>
+          <div>{Object.values(reorderedColumns).length} 列</div>
           {this.state.hasEditableColumn && (
             <EdtiableCheckboxWrapper
               className="flex t--uber-editable-checkbox"
               rightPadding={this.state.hasScrollableList}
             >
-              <span className="mr-2">Editable</span>
+              <span className="mr-2 whitespace-nowrap">支持编辑</span>
               <Checkbox
                 backgroundColor={Colors.GREY_600}
                 isDefaultChecked={this.isAllColumnsEditable()}
@@ -251,7 +251,7 @@ class PrimaryColumnsControlV2 extends BaseControl<ControlProps, State> {
             onClick={this.addNewColumn}
             size={Size.medium}
             tag="button"
-            text="Add a new column"
+            text="添加一列"
             type="button"
           />
         </TabsWrapper>

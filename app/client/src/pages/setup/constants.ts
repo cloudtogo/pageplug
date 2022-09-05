@@ -5,46 +5,46 @@ export type OptionType = {
 
 export const roleOptions: OptionType[] = [
   {
-    label: "Engineer",
+    label: "工程师",
     value: "engineer",
   },
   {
-    label: "Product manager",
+    label: "产品经理",
     value: "product manager",
   },
   {
-    label: "Founder",
+    label: "创始人",
     value: "founder",
   },
   {
-    label: "Operations",
+    label: "运维人员",
     value: "operations",
   },
   {
-    label: "Business Analyst",
+    label: "商业分析师",
     value: "business analyst",
   },
   {
-    label: "Other",
+    label: "其他",
     value: "other",
   },
 ];
 
 export const useCaseOptions: OptionType[] = [
   {
-    label: "Just Exploring",
+    label: "随便看看",
     value: "just exploring",
   },
   {
-    label: "Personal Project",
+    label: "个人项目",
     value: "personal project",
   },
   {
-    label: "Work Project",
+    label: "公司项目",
     value: "work project",
   },
   {
-    label: "Other",
+    label: "其他",
     value: "other",
   },
 ];

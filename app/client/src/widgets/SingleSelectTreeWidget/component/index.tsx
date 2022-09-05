@@ -198,7 +198,7 @@ function SingleSelectTreeComponent({
             leftIcon="search"
             onChange={onQueryChange}
             onKeyDown={onKeyDown}
-            placeholder="Filter..."
+            placeholder="过滤"
             rightElement={clearButton as JSX.Element}
             small
             type="text"
