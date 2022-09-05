@@ -190,6 +190,7 @@
     "build-cloudos": "set REACT_APP_IN_CLOUDOS=true && bash ./build.sh",
     "build-local": "craco --max-old-space-size=4096 build --config craco.build.config.js",
     "build-staging": "REACT_APP_ENVIRONMENT=STAGING craco --max-old-space-size=4096 build --config craco.build.config.js",
+    "shlf": "prettier --end-of-line lf --write './**/*.sh'",
     "test": "CYPRESS_BASE_URL=https://dev.appsmith.com cypress/test.sh",
     "test:ci": "CYPRESS_BASE_URL=https://dev.appsmith.com cypress/test.sh --env=ci",
     "eject": "react-scripts eject",

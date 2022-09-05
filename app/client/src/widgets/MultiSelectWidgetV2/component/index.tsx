@@ -248,7 +248,7 @@ function MultiSelectComponent({
             leftIcon="search"
             onChange={onQueryChange}
             onKeyDown={onKeyDown}
-            placeholder="Filter..."
+            placeholder="过滤"
             // ref={inputRef}
             rightElement={clearButton as JSX.Element}
             small

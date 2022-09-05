@@ -57,12 +57,7 @@ export default function DetailsForm(
           className="t--welcome-form-full-name"
           label={createMessage(WELCOME_FORM_FULL_NAME)}
         >
-          <FormTextField
-            autoFocus
-            name="name"
-            placeholder="John Doe"
-            type="text"
-          />
+          <FormTextField autoFocus name="name" placeholder="张三" type="text" />
         </StyledFormGroup>
         <StyledFormGroup
           className="t--welcome-form-email"
@@ -70,7 +65,7 @@ export default function DetailsForm(
         >
           <FormTextField
             name="email"
-            placeholder="How can we reach you?"
+            placeholder="请填写有效邮箱"
             type="email"
           />
         </StyledFormGroup>
@@ -80,7 +75,7 @@ export default function DetailsForm(
         >
           <FormTextField
             name="password"
-            placeholder="Make it strong!"
+            placeholder="不要被轻易猜到"
             type="password"
           />
         </StyledFormGroup>
@@ -91,7 +86,7 @@ export default function DetailsForm(
           <FormTextField
             data-testid="verifyPassword"
             name="verifyPassword"
-            placeholder="Type correctly"
+            placeholder="确认你的密码"
             type="password"
           />
         </StyledFormGroup>
@@ -143,7 +138,7 @@ export default function DetailsForm(
             onClick={props.onNext}
             size={Size.medium}
             tag="button"
-            text="Next"
+            text="下一步"
             type="button"
           />
         </ButtonWrapper>

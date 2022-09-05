@@ -92,9 +92,9 @@ export default {
       isTriggerProperty: false,
     },
     {
-      helpText: "The alias that you use in selectedrow",
+      helpText: "在 selectedrow 中使用的别名",
       propertyName: "alias",
-      label: "属性名",
+      label: "别名",
       controlType: "INPUT_TEXT",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         const columnId = propertyPath.match(/primaryColumns\.(.*)\.alias/);
@@ -172,8 +172,8 @@ export default {
     {
       propertyName: "allowCellWrapping",
       dependencies: ["primaryColumns", "columnType"],
-      label: "Cell Wrapping",
-      helpText: "Allows content of the cell to be wrapped",
+      label: "单元格换行",
+      helpText: "允许单元格内容换行",
       defaultValue: true,
       controlType: "SWITCH",
       customJSControl: "TABLE_COMPUTE_VALUE",
@@ -204,8 +204,8 @@ export default {
         "childStylesheet",
         "inlineEditingSaveOption",
       ],
-      label: "Editable",
-      helpText: "Controls the cell's editablity",
+      label: "支持编辑",
+      helpText: "让表格单元格可以编辑",
       defaultValue: false,
       controlType: "SWITCH",
       customJSControl: "TABLE_COMPUTE_VALUE",
@@ -275,8 +275,8 @@ export default {
     },
     {
       propertyName: "selectOptions",
-      helpText: "Options to be shown on the select dropdown",
-      label: "Select Options",
+      helpText: "下拉选择框的可选选项",
+      label: "选项",
       controlType: "INPUT_TEXT",
       isJSConvertible: false,
       isBindProperty: true,
