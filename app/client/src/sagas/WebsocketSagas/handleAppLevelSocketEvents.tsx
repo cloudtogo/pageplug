@@ -22,12 +22,12 @@ export default function* handleAppLevelSocketEvents(event: any) {
     case APP_LEVEL_SOCKET_EVENTS.RELEASE_VERSION_NOTIFICATION: {
       const { appVersion } = getAppsmithConfigs();
       if (appVersion.id != event.payload[0]) {
-        Toaster.show({
-          text: createMessage(INFO_VERSION_MISMATCH_FOUND_RELOAD_REQUEST),
-          variant: Variant.info,
-          actionElement: <span onClick={() => location.reload()}>REFRESH</span>,
-          autoClose: false,
-        });
+        // Toaster.show({
+        //   text: createMessage(INFO_VERSION_MISMATCH_FOUND_RELOAD_REQUEST),
+        //   variant: Variant.info,
+        //   actionElement: <span onClick={() => location.reload()}>刷新</span>,
+        //   autoClose: false,
+        // });
       }
       return;
     }

@@ -57,6 +57,8 @@ export const DropdownStyles = createGlobalStyle<{
   accentColor: string;
   borderRadius: string;
 }>`
+#root {
+
 ${({ dropDownWidth, id }) => `
   .treeselect-popover-width-${id} {
     min-width: ${dropDownWidth}px !important;
@@ -544,7 +546,7 @@ ${({ dropDownWidth, id }) => `
   }
 }
 .rc-tree-select-tree-node-selected {
-	background-color: none;
+	background: none;
 	box-shadow: 0 0 0 0 #ffb951;
 	opacity: 1;
 
@@ -600,6 +602,7 @@ ${({ dropDownWidth, id }) => `
 	display: inline-block;
 }
 
+}
 `;
 
 export const TreeSelectContainer = styled.div<{
@@ -697,11 +700,12 @@ export const TreeSelectContainer = styled.div<{
     &:hover {
       .rc-tree-select-selector {
         border: 1.2px solid
-          ${(props) => (props.isValid ? Colors.GREY_5 : Colors.DANGER_SOLID)};
+          ${(props) =>
+            props.isValid ? Colors.GREY_5 : Colors.DANGER_SOLID}!important;
       }
     }
   }
-  .rc-tree-select-single .rc-tree-select-selector {
+  && .rc-tree-select-single .rc-tree-select-selector {
     display: flex;
     flex-wrap: wrap;
     padding-right: 42px;
@@ -882,11 +886,11 @@ export const TreeSelectContainer = styled.div<{
       ${(props) =>
         props.isValid
           ? `
-          border: 1px solid ${props.accentColor};
+          border: 1px solid ${props.accentColor}!important;
           box-shadow: 0px 0px 0px 3px ${lightenColor(
             props.isValid ? props.accentColor : Colors.DANGER_SOLID,
           )} !important;`
-          : `border: 1px solid ${Colors.DANGER_SOLID};`}
+          : `border: 1px solid ${Colors.DANGER_SOLID}!important;`}
     }
   }
   .rc-tree-select-show-arrow {
@@ -937,9 +941,9 @@ export const TreeSelectContainer = styled.div<{
         ${(props) =>
           props.isValid
             ? `
-            border: 1px solid ${props.accentColor};
+            border: 1px solid ${props.accentColor}!important;
             box-shadow: 0px 0px 0px 2px ${props.accentColor};`
-            : `border: 1px solid ${Colors.DANGER_SOLID};`}
+            : `border: 1px solid ${Colors.DANGER_SOLID}!important;`}
       }
     }
   }

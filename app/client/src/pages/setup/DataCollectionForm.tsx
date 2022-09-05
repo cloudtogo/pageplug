@@ -35,7 +35,7 @@ const StyledLink = styled(Link)`
 `;
 
 export default memo(function DataCollectionForm() {
-  const [allowCollection, setAllowCollection] = useState(true);
+  const [allowCollection, setAllowCollection] = useState(false);
   return (
     <DataCollectionFormWrapper>
       <FormHeaderWrapper className="relative flex flex-col items-start">

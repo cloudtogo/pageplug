@@ -27,7 +27,7 @@ export const StyledButton = styled(Button)`
 `;
 
 const NewsletterContainer = styled.div`
-  widht: 100%;
+  width: 100%;
   position: relative;
   padding-left: ${(props) => props.theme.spaces[17] * 2}px;
   margin-top: ${(props) => props.theme.spaces[12] * 2}px;
