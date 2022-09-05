@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import DataCollectionForm from "./DataCollectionForm";
 import DetailsForm from "./DetailsForm";
 import NewsletterForm from "./NewsletterForm";
-import AppsmithLogo from "assets/images/appsmith_logo.png";
+import AppsmithLogo from "assets/images/pageplug_logo_mint.svg";
 import {
   WELCOME_FORM_USECASE_FIELD_NAME,
   WELCOME_FORM_EMAIL_FIELD_NAME,
@@ -59,7 +59,7 @@ const LogoContainer = styled.div`
 `;
 
 const AppsmithLogoImg = styled.img`
-  max-width: 170px;
+  max-width: 120px;
 `;
 
 const SpaceFiller = styled.div`
@@ -80,35 +80,35 @@ export type DetailsFormValues = {
 const validate = (values: DetailsFormValues) => {
   const errors: DetailsFormValues = {};
   if (!values.name) {
-    errors.name = "Please enter a valid Full Name";
+    errors.name = "请输入有效名称";
   }
 
   if (!values.email || !isEmail(values.email)) {
-    errors.email = "Please enter a valid Email address";
+    errors.email = "请输入有效邮箱";
   }
 
   if (!values.password || !isStrongPassword(values.password)) {
-    errors.password = "Please enter a strong password";
+    errors.password = "请输入强密码";
   }
 
   if (!values.verifyPassword || values.password != values.verifyPassword) {
-    errors.verifyPassword = "Please reenter the password";
+    errors.verifyPassword = "请重新输入密码";
   }
 
   if (!values.role) {
-    errors.role = "Please select a role";
+    errors.role = "请选择角色";
   }
 
   if (values.role == "other" && !values.role_name) {
-    errors.role_name = "Please enter a role";
+    errors.role_name = "请输入角色";
   }
 
   if (!values.useCase) {
-    errors.useCase = "Please select a use case";
+    errors.useCase = "请选择使用场景";
   }
 
   if (values.useCase === "other" && !values.custom_useCase)
-    errors.custom_useCase = "Please enter a use case";
+    errors.custom_useCase = "请输入使用场景";
 
   return errors;
 };

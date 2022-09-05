@@ -10,7 +10,6 @@ export const BUILDER_CUSTOM_PATH = `/app/:customSlug(.*\-):pageId/edit`;
 export const VIEWER_CUSTOM_PATH = `/app/:customSlug(.*\-):pageId`;
 export const VIEWER_PATH_DEPRECATED = `/applications/:applicationId/pages/:pageId`;
 export const VIEWER_LAYOUT_CONFIG_PATH = `/viewer-layout`;
-export const getViewerLayoutEditorURL = () => `${VIEWER_PATH}/viewer-layout`;
 export const VIEWER_FORK_PATH = `/fork`;
 export const INTEGRATION_EDITOR_PATH = `/datasources/:selectedTab`;
 export const API_EDITOR_BASE_PATH = `/api`;

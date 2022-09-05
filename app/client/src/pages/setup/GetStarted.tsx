@@ -72,13 +72,13 @@ const validate = (values: any) => {
   const errors: any = {};
 
   if (!values.role) {
-    errors.role = "Please select a role";
+    errors.role = "请选择角色";
   }
   if (values.role === "other" && !values.role_name) {
-    errors.role_name = "Please enter a role";
+    errors.role_name = "请输入角色";
   }
   if (!values.useCase) {
-    errors.useCase = "Please select an useCase";
+    errors.useCase = "请选择使用场景";
   }
 
   return errors;

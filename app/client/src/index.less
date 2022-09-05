@@ -52,17 +52,20 @@ body {
   .ant-pro-sider-light {
     z-index: 2;
   }
-}
 
-* ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-
-* ::-webkit-scrollbar-thumb {
-  background-color: @primary-color;
-  border-radius: 0;
-  transition: all 0.25s ease-in-out;
+  .rc-tree-select-tree {
+    border: none;
+  }
+  .rc-tree-select-dropdown {
+    border: none;
+  }
+  .rc-tree-select-tree .rc-tree-select-tree-treenode span.rc-tree-select-tree-switcher,
+  .rc-tree-select-tree .rc-tree-select-tree-treenode span.rc-tree-select-tree-checkbox{
+    background-image: none!important;
+  }
+  .rc-tree-select-single:not(.rc-tree-select-customize-input) .rc-tree-select-selector {
+    padding: 0;
+  }
 }
 
 body.dragging *{

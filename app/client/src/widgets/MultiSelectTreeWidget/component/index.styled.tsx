@@ -58,6 +58,8 @@ export const DropdownStyles = createGlobalStyle<{
   accentColor: string;
   borderRadius: string;
 }>`
+#root {
+
 ${({ dropDownWidth, id }) => `
   .multiselecttree-popover-width-${id} {
     min-width: ${dropDownWidth}px !important;
@@ -585,6 +587,7 @@ border: 1px solid #E8E8E8;
 }
 
   }
+}
 `;
 
 export const TreeSelectContainer = styled.div<{
@@ -871,11 +874,11 @@ export const TreeSelectContainer = styled.div<{
       ${(props) =>
         props.isValid
           ? `
-      border: 1px solid  ${props.accentColor};
+      border: 1px solid  ${props.accentColor}!important;
       box-shadow: 0px 0px 0px 3px ${lightenColor(
         props.accentColor,
       )} !important;`
-          : `border: 1.2px solid ${Colors.DANGER_SOLID};`}
+          : `border: 1.2px solid ${Colors.DANGER_SOLID}!important;`}
     }
   }
   .rc-tree-select-show-arrow {
