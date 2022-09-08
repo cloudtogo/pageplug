@@ -389,7 +389,7 @@ export const IMPORT_APP_FROM_GIT_MESSAGE = () =>
   "通过 SSH URL 从 Git 仓库导入应用";
 export const IMPORT_FROM_GIT_REPOSITORY = () => "从 Git 仓库导入";
 export const RECONNECT_MISSING_DATASOURCE_CREDENTIALS = () =>
-  "重新连接需要数据源鉴权信息";
+  "重新配置数据源信息";
 export const RECONNECT_MISSING_DATASOURCE_CREDENTIALS_DESCRIPTION = () =>
   "请仔细填写，否则应用可能会运行异常";
 export const RECONNECT_DATASOURCE_SUCCESS_MESSAGE1 = () => "数据源导入成功！";
@@ -397,8 +397,8 @@ export const RECONNECT_DATASOURCE_SUCCESS_MESSAGE2 = () => "请填写缺失的�
 export const ADD_MISSING_DATASOURCES = () => "添加缺失的数据源";
 export const SKIP_TO_APPLICATION_TOOLTIP_HEADER = () => "这个操作是不可逆的";
 export const SKIP_TO_APPLICATION_TOOLTIP_DESCRIPTION = () =>
-  `你可以随时重连数据源，只是应用可能会无法使用`;
-export const SKIP_TO_APPLICATION = () => "跳过应用";
+  `你可以随时重连数据源，只是你的应用可能会无法使用`;
+export const SKIP_TO_APPLICATION = () => "跳过设置";
 export const SELECT_A_METHOD_TO_ADD_CREDENTIALS = () => "选择一种鉴权方式";
 export const DELETE_CONFIRMATION_MODAL_TITLE = () => `确认`;
 export const DELETE_CONFIRMATION_MODAL_SUBTITLE = (name?: string | null) =>

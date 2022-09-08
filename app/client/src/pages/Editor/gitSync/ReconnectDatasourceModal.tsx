@@ -416,7 +416,7 @@ function ReconnectDatasourceModal() {
   const menuOptions = [
     {
       key: "RECONNECT_DATASOURCES",
-      title: "Reconnect Datasources",
+      title: "重连数据源",
     },
   ];
 
