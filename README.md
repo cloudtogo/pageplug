@@ -50,13 +50,13 @@ PagePlug 是基于 [AppSmith](https://github.com/appsmithorg/appsmith) 打造的
   PagePlug 制作的完整电商小程序案例，支持注册、登录、二级商品分类、商品搜索、商品详情、购物车、购买下单、收货地址管理、订单管理等功能。后端接口使用开源后台 [litmall](https://github.com/linlinjava/litemall) 的一个部署实例（实例来自 [flutter_mall](https://github.com/youxinLu/flutter_mall)，实名感谢！）
 
 - 工程管理系统（PC web应用）  
-  [体验地址](https://lowcode.cloudtogo.cn/applications/62a1aae112168d652db26a3b/pages/62a1aae112168d652db26a47)  
+  [体验地址](https://lowcode.methodot.com/applications/62a1aae112168d652db26a3b/pages/62a1aae112168d652db26a47)  
   PagePlug 制作的一个典型CRUD项目，实现了基本增删改查、后端分页、搜索过滤、弹窗表单、复杂表单等功能
 
 <div id="quickStart" />
 
 ## 快速开始
-- 🚀 [立即体验](https://lowcode.cloudtogo.cn)（可使用任意邮箱注册登录）  
+- 🚀 [立即体验](https://lowcode.methodot.com)（可使用任意邮箱注册登录）  
   > **注意**：体验环境数据没有做持久化，只作功能演示使用，如果需要长期使用，请使用我们推荐的SaaS版本  
 
 - 🌈 稳定SaaS版本，Methodot（推荐）  
