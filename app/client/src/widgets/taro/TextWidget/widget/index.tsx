@@ -5,6 +5,7 @@ import TextComponent from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { DerivedPropertiesMap } from "utils/WidgetFactory";
 import LoadingWrapper from "../../LoadingWrapper";
+import { ControlIcons } from "icons/ControlIcons";
 
 class TextWidget extends BaseWidget<MTextWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
@@ -117,7 +118,7 @@ class TextWidget extends BaseWidget<MTextWidgetProps, WidgetState> {
                 value: "ITALIC",
               },
               {
-                icon: "LINETHROUGH_FONT",
+                icon: <ControlIcons.LINETHROUGH_FONT />,
                 value: "LINETHROUGH",
               },
             ],
