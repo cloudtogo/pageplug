@@ -99,7 +99,8 @@ export default abstract class AppEngine {
 
     // get weapp WxaCode preview image
     const isMobile = yield select(isMobileLayout);
-    if (isMobile) {
+    const isPublishedMode = this._mode === APP_MODE.PUBLISHED;
+    if (isMobile && isPublishedMode) {
       yield failFastApiCalls(
         [fetchApplicationPreviewWxaCode(application.id)],
         [ReduxActionTypes.FETCH_APPLICATION_PREVIEW_SUCCESS],
