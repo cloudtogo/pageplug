@@ -45,13 +45,13 @@ export function ThemeBetaCard() {
         <Button
           category={Category.tertiary}
           size={Size.small}
-          text="Learn more"
+          text="了解更多"
         />
         <StyledButton
           category={Category.primary}
           onClick={closeThemeBetaCard}
           size={Size.small}
-          text="Got it"
+          text="好的"
           variant={Variant.success}
         />
       </div>

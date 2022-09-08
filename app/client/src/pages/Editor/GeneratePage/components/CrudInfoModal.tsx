@@ -144,7 +144,7 @@ function InfoContent({
             onClose();
           }}
           size={Size.medium}
-          text="GOT IT"
+          text="好的"
         />
       </ActionButtonWrapper>
     </>

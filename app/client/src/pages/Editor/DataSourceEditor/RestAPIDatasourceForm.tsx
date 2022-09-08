@@ -526,7 +526,7 @@ class DatasourceRestAPIEditor extends React.Component<
           )}
         </FormInputContainer>
         {this.renderAuthFields()}
-        <Collapsible title="Advanced Settings">
+        <Collapsible title="高级配置">
           {this.renderOauth2AdvancedSettings()}
         </Collapsible>
         {this.renderSelfSignedCertificateFields()}
@@ -562,7 +562,7 @@ class DatasourceRestAPIEditor extends React.Component<
     const { connection } = this.props.formData;
     if (connection?.ssl.authType === SSLType.SELF_SIGNED_CERTIFICATE) {
       return (
-        <Collapsible defaultIsOpen title="Certificate Details">
+        <Collapsible defaultIsOpen title="证书详情">
           {this.renderFilePickerControlViaFormControl(
             "connection.ssl.certificateFile",
             "上传证书",
@@ -910,15 +910,15 @@ class DatasourceRestAPIEditor extends React.Component<
             "connection.ssl.authType",
             [
               {
-                label: "No",
+                label: "不",
                 value: "DEFAULT",
               },
               {
-                label: "Yes",
+                label: "是",
                 value: "SELF_SIGNED_CERTIFICATE",
               },
             ],
-            "Use Self-signed certificate",
+            "使用自签名证书",
             "",
             true,
             "",
@@ -929,7 +929,7 @@ class DatasourceRestAPIEditor extends React.Component<
           <FormInputContainer data-replay-id={btoa("selfsignedcert")}>
             {this.renderCheckboxViaFormControl(
               "authentication.useSelfSignedCert",
-              "Use Self-Signed Certificate for Authorization requests",
+              "使用自签名证书来给请求鉴权",
               "",
               false,
             )}
