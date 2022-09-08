@@ -255,7 +255,7 @@ function DatasourceAuth({
           className="t--test-datasource"
           loading={isTesting}
           onClick={handleDatasourceTest}
-          text="Test"
+          text="测试"
         />
       ),
       [DatasourceButtonType.SAVE]: (
@@ -267,7 +267,7 @@ function DatasourceAuth({
           loading={isSaving}
           onClick={handleDefaultAuthDatasourceSave}
           size="small"
-          text="Save"
+          text="保存"
         />
       ),
       [DatasourceButtonType.SAVE_AND_AUTHORIZE]: (
@@ -280,7 +280,7 @@ function DatasourceAuth({
           loading={isSaving}
           onClick={handleOauthDatasourceSave}
           size="small"
-          text={isAuthorized ? "Save and Re-authorize" : "Save and Authorize"}
+          text={isAuthorized ? "保存并重新鉴权" : "保存并鉴权"}
         />
       ),
     }[buttonType];

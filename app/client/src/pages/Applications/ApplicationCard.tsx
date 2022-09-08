@@ -555,7 +555,7 @@ export function ApplicationCard(props: ApplicationCardProps) {
     }
     setIsMenuOpen(false);
     Toaster.show({
-      text: `Successfully exported ${props.application.name}`,
+      text: `成功导出 ${props.application.name}`,
       variant: Variant.success,
     });
   };
