@@ -725,7 +725,7 @@ function* importAppFromGitSaga(action: ConnectToGitReduxAction) {
           });
           history.push(pageURL);
           Toaster.show({
-            text: "Application imported successfully",
+            text: "应用导入成功",
             variant: Variant.success,
           });
         }
