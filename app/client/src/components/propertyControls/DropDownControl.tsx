@@ -38,7 +38,7 @@ class DropDownControl extends BaseControl<DropDownControlProps> {
 
   render() {
     let defaultSelected: DropdownOption | DropdownOption[] = {
-      label: "No selection.",
+      label: "未选择",
       value: undefined,
     };
 
