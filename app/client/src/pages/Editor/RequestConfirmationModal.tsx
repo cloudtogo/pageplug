@@ -92,7 +92,7 @@ class RequestConfirmationModal extends React.Component<Props> {
             maxHeight={"80vh"}
             noModalBodyMarginTop
             onClose={() => this.handleClose(modalInfo)}
-            title="Confirmation Dialog"
+            title="确认"
             width={"580px"}
           >
             <ModalBody>
@@ -109,7 +109,7 @@ class RequestConfirmationModal extends React.Component<Props> {
                 }}
                 size={Size.large}
                 tag="button"
-                text="No"
+                text="不行"
                 type="button"
               />
               <Button
@@ -118,7 +118,7 @@ class RequestConfirmationModal extends React.Component<Props> {
                 onClick={() => this.onConfirm(modalInfo)}
                 size={Size.large}
                 tag="button"
-                text="Yes"
+                text="确定"
                 type="button"
               />
             </ModalFooter>

@@ -54,7 +54,7 @@ class PrimaryColumnDropdownControl extends BaseControl<ControlProps> {
     }
 
     let defaultSelected: DropdownOption = {
-      label: "No selection.",
+      label: "未选择",
       value: undefined,
     };
 

@@ -114,23 +114,20 @@ function SaveThemeModal(props: SaveThemeModalProps) {
       canOutsideClickClose
       isOpen={isOpen}
       onClose={onClose}
-      title="Save Theme"
+      title="保存主题"
     >
       <form data-cy="save-theme-form" noValidate onSubmit={onSubmit}>
         <div className="pb-6 space-y-3">
-          <p>
-            You can save your custom themes to use across applications and use
-            them when you need.
-          </p>
+          <p>你可以保存你的自定义主题给其他应用使用</p>
           <div className="mt-6 space-y-2">
-            <h3 className="text-gray-700">Your theme name</h3>
+            <h3 className="text-gray-700">你的主题名称</h3>
             <TextInput
               autoFocus
               errorMsg={!inputValidator.isValid ? inputValidator.message : ""}
               fill
               name="name"
               onChange={onChangeName}
-              placeholder="My theme"
+              placeholder="我的主题"
             />
           </div>
         </div>
@@ -140,14 +137,14 @@ function SaveThemeModal(props: SaveThemeModalProps) {
               category={Category.tertiary}
               onClick={onClose}
               size={Size.medium}
-              text="Cancel"
+              text="取消"
             />
             <Button
               category={Category.primary}
               disabled={!name}
               onClick={onSubmit}
               size={Size.medium}
-              text="Save theme"
+              text="保存主题"
               type="submit"
             />
           </div>
