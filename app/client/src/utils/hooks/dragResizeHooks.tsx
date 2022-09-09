@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { useCallback, useEffect, useState } from "react";
 import { snipingModeSelector } from "selectors/editorSelectors";
+import { getIsCanvasInitialized } from "selectors/mainCanvasSelectors";
 
 export const useShowPropertyPane = () => {
   const dispatch = useDispatch();
@@ -180,24 +181,32 @@ export const useWindowSizeHooks = () => {
 };
 
 export const usePageContainerSizeHooks = () => {
-  const container = document.getElementsByClassName(
-    "ant-pro-basicLayout-content",
-  )[0];
+  const isCanvasInitialized = useSelector(getIsCanvasInitialized);
   const [windowSize, updateWindowSize] = useState({
-    width: container?.clientWidth || window.innerWidth,
+    width: window.innerWidth,
     height: window.innerHeight,
   });
+
   const onResize = () => {
+    const container = document.getElementsByClassName(
+      "ant-pro-basicLayout-content",
+    )[0];
     updateWindowSize({
       width: container?.clientWidth || window.innerWidth,
       height: window.innerHeight,
     });
   };
+
   useEffect(() => {
     window.addEventListener("resize", onResize);
     return () => {
       window.removeEventListener("resize", onResize);
     };
   }, []);
+
+  useEffect(() => {
+    onResize();
+  }, [isCanvasInitialized]);
+
   return windowSize;
 };
