@@ -25,25 +25,23 @@ const ColorfulLayout = styled.div<{
 
 const getIconType = (icon: any) => (icon ? `icon-${icon}` : undefined);
 
-const makeRouteNode = (pagesMap: any, newTree: any[], appId: string) => (
-  node: any,
-) => {
+const makeRouteNode = (pagesMap: any, newTree: any[]) => (node: any) => {
   let item: any;
   const icon = getIconType(node.icon);
   if (node.isPage) {
-    if (pagesMap[node.pageId]) {
+    if (pagesMap[node.title]) {
       item = {
-        name: pagesMap[node.pageId].pageName,
+        name: node.title,
         icon,
         path: viewerURL({
-          pageId: node.pageId,
+          pageId: pagesMap[node.title].pageId,
         }),
       };
-      pagesMap[node.pageId].visited = true;
+      pagesMap[node.title].visited = true;
     }
   } else if (node.children) {
     const routes: any = [];
-    node.children.forEach(makeRouteNode(pagesMap, routes, appId));
+    node.children.forEach(makeRouteNode(pagesMap, routes));
     item = {
       name: node.title,
       icon,
@@ -69,7 +67,6 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
   const isMobile = useSelector(isMobileLayout);
   const currentApp = useSelector(getCurrentApplication);
   const pages = useSelector(getViewModePageList);
-  const appId = currentApp?.id || "";
   const appName = currentApp?.name;
   const viewerLayout = currentApp?.viewerLayout;
   const queryParams = new URLSearchParams(window.location.search);
@@ -91,15 +88,13 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
       try {
         const current = JSON.parse(viewerLayout);
         const pagesMap = pages.reduce((a: any, c: any) => {
-          a[c.pageId] = { ...c };
+          a[c.pageName] = { ...c };
           return a;
         }, {});
         const newMenuTree: any = [];
         const newOuterTree: any = [];
-        current.treeData.forEach(makeRouteNode(pagesMap, newMenuTree, appId));
-        current.outsiderTree.forEach(
-          makeRouteNode(pagesMap, newOuterTree, appId),
-        );
+        current.treeData.forEach(makeRouteNode(pagesMap, newMenuTree));
+        current.outsiderTree.forEach(makeRouteNode(pagesMap, newOuterTree));
         const newPages = Object.values(pagesMap)
           .filter((p: any) => !p.visited)
           .map((p: any) => ({
