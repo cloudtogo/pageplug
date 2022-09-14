@@ -1144,7 +1144,9 @@ public class ImportExportApplicationServiceCEImpl implements ImportExportApplica
                 })
                 .flatMap(savedApplication -> {
                     final Application.AppLayout appLayout = savedApplication.getPublishedAppLayout();
-                    if (appLayout != null && appLayout.getType() == Application.AppLayout.Type.MOBILE_FLUID) {
+                    final boolean isMiniApp = appLayout != null && appLayout.getType() == Application.AppLayout.Type.MOBILE_FLUID;
+                    final boolean alreadyPublic = savedApplication.getIsPublic();
+                    if (isMiniApp || alreadyPublic) {
                         final ApplicationAccessDTO applicationAccessDTO = new ApplicationAccessDTO();
                         applicationAccessDTO.setPublicAccess(true);
                         return applicationService.changeViewAccess(savedApplication.getId(), applicationAccessDTO);

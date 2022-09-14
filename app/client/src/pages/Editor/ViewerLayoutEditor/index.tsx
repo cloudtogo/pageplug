@@ -158,6 +158,21 @@ const updateMenuTree = (pagesMap: any, newTree: any[]) => (node: any) => {
   }
 };
 
+const updateJsonPageId: any = (pagesMap: any, list: any[]) => {
+  return list.map((item: any) => {
+    if (item.children) {
+      return {
+        ...item,
+        children: updateJsonPageId(pagesMap, item.children),
+      };
+    }
+    return {
+      ...item,
+      pageId: pagesMap[item.title],
+    };
+  });
+};
+
 function PagesEditor() {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -182,9 +197,16 @@ function PagesEditor() {
     };
     if (currentLayout) {
       try {
+        const pagesMap = pages.reduce((a: any, p: any) => {
+          a[p.pageName] = p.pageId;
+          return a;
+        }, {});
         const current = JSON.parse(currentLayout);
         init = {
           ...current,
+          name: appName?.startsWith(current.name) ? appName : current.name,
+          treeData: updateJsonPageId(pagesMap, current.treeData),
+          outsiderTree: updateJsonPageId(pagesMap, current.outsiderTree),
         };
       } catch (e) {
         console.log(e);
