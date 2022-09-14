@@ -384,9 +384,8 @@ export const UPLOADING_JSON = () => "上传 JSON 文件";
 export const UPLOADING_APPLICATION = () => "正在上传应用";
 export const IMPORT_APP_FROM_GIT_TITLE = () => "从 Git 仓库导入（测试版）";
 export const IMPORT_APP_FROM_FILE_MESSAGE = () =>
-  "将文件拖拽到这里，或者点击选择上传";
-export const IMPORT_APP_FROM_GIT_MESSAGE = () =>
-  "通过 SSH URL 从 Git 仓库导入应用";
+  "将文件拖拽到这里，或点击上传";
+export const IMPORT_APP_FROM_GIT_MESSAGE = () => "填写 Git 仓库地址导入应用";
 export const IMPORT_FROM_GIT_REPOSITORY = () => "从 Git 仓库导入";
 export const RECONNECT_MISSING_DATASOURCE_CREDENTIALS = () =>
   "重新配置数据源信息";
