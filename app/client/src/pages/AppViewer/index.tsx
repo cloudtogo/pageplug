@@ -115,9 +115,6 @@ function AppViewer(props: Props) {
   const headerHeight = useSelector(getAppViewHeaderHeight);
   const branch = getSearchQuery(search, GIT_BRANCH_QUERY_KEY);
   const prevValues = usePrevious({ branch, location: props.location, pageId });
-  const inCloudOS = useSelector(
-    (state: AppState) => state.entities.app.inCloudOS,
-  );
   const showTabBar = useSelector(getShowTabBar);
   const isMobile = useSelector(isMobileLayout);
   const isEmbed = !!getSearchQuery(search, "embed");

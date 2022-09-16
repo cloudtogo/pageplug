@@ -183,7 +183,7 @@
     "start-proxy": "bash ./start-nginx-docker.sh",
     "start-win-log": "set BROWSER=none && set EXTEND_ESLINT=true && set REACT_APP_ENVIRONMENT=DEVELOPMENT && set REACT_APP_CLIENT_LOG_LEVEL=debug&& craco start",
     "start-win": "set BROWSER=none && set EXTEND_ESLINT=true && set REACT_APP_ENVIRONMENT=DEVELOPMENT && craco --max_old_space_size=4096 start",
-    "start-cloudos": "set BROWSER=none && set EXTEND_ESLINT=true && set REACT_APP_ENVIRONMENT=DEVELOPMENT && set REACT_APP_IN_CLOUDOS=true && craco start",
+    "start-cloudos": "set BROWSER=none && set EXTEND_ESLINT=true && set REACT_APP_ENVIRONMENT=DEVELOPMENT && set REACT_APP_IN_CLOUDOS=true && craco --max_old_space_size=4096 start",
     "start": "BROWSER=none EXTEND_ESLINT=true REACT_APP_ENVIRONMENT=DEVELOPMENT REACT_APP_CLIENT_LOG_LEVEL=debug HOST=dev.appsmith.com craco start",
     "build": "./build.sh",
     "build-win": "bash ./build.sh",
