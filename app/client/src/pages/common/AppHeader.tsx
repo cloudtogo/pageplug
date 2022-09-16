@@ -17,7 +17,6 @@ import {
   BUILDER_CUSTOM_PATH,
 } from "constants/routes";
 import { withRouter, RouteComponentProps } from "react-router";
-import AppViewerHeader from "pages/AppViewer/AppViewerHeader";
 import AppEditorHeader from "pages/Editor/EditorHeader";
 import { getAppsmithConfigs } from "@appsmith/configs";
 const { inCloudOS } = getAppsmithConfigs();
@@ -39,8 +38,9 @@ class AppHeader extends React.Component<Props, any> {
     if (inCloudOS) {
       return (
         <Switch>
-          <Route component={AppEditorHeader} path={BUILDER_URL} />
-          <Route component={AppViewerHeader} path={APP_VIEW_URL} />
+          <Route component={AppEditorHeader} path={BUILDER_PATH_DEPRECATED} />
+          <Route component={AppEditorHeader} path={BUILDER_PATH} />
+          <Route component={AppEditorHeader} path={BUILDER_CUSTOM_PATH} />
         </Switch>
       );
     }

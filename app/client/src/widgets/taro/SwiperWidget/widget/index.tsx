@@ -10,29 +10,35 @@ class SwiperWidget extends BaseWidget<SwiperWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
     return [
       {
-        helpText: "轮播数据列表，通过 {{}} 进行数据绑定",
-        propertyName: "list",
-        label: "数据",
-        controlType: "INPUT_TEXT",
-        placeholderText: '例如 [{ "url": "val1", link: "val2" }]',
-        inputType: "ARRAY",
-        isBindProperty: true,
-        isTriggerProperty: false,
-        validation: {
-          type: ValidationTypes.OBJECT_ARRAY,
-          params: {
-            default: [],
+        sectionName: "属性",
+        children: [
+          {
+            helpText: "轮播数据列表，通过 {{}} 进行数据绑定",
+            propertyName: "list",
+            label: "数据",
+            controlType: "INPUT_TEXT",
+            placeholderText: '例如 [{ "url": "val1", link: "val2" }]',
+            inputType: "ARRAY",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: {
+              type: ValidationTypes.OBJECT_ARRAY,
+              params: {
+                default: [],
+              },
+            },
+            evaluationSubstitutionType:
+              EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
-        },
-        evaluationSubstitutionType: EvaluationSubstitutionType.SMART_SUBSTITUTE,
-      },
-      {
-        propertyName: "urlKey",
-        label: "图片字段",
-        controlType: "INPUT_TEXT",
-        isBindProperty: true,
-        isTriggerProperty: false,
-        validation: { type: ValidationTypes.TEXT },
+          {
+            propertyName: "urlKey",
+            label: "图片字段",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+        ],
       },
     ];
   }
