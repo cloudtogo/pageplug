@@ -44,7 +44,7 @@ public class CloudOSActionSolution {
     private final ApplicationForkingService applicationForkingService;
     private final NewActionService newActionService;
     private final PluginService pluginService;
-    private final ActionCollectionService actionCollectionService;
+    private final LayoutActionService layoutActionService;
     private final CloudOSConfig cloudOSConfig;
 
     /**
@@ -291,6 +291,43 @@ public class CloudOSActionSolution {
                 });
     }
 
+    /**
+     * This method is used by CloudOS Factory.
+     * It refresh a datasource and sync APIs defined in CloudOS to it.
+     * @param payload
+     * @return
+     */
+    public Mono<String> refreshTheCloudOSApiData(Map<String, Object> payload) {
+        log.debug("recieved payload.", payload);
+        List<String> depList = (List<String>) payload.get("dep_list");
+        String projectId = (String) payload.get("project_id");
+        String orgId = (String) payload.get("org_id");
+        String pageId = (String) payload.get("page_id");
+        String uid = (String) payload.get("uid");
+        log.debug("projectId："+projectId);
+        log.debug("orgId："+orgId);
+
+        // clean attached datasource and actions
+        final MultiValueMap<String, String> actionParams = new LinkedMultiValueMap<>();
+        actionParams.add("pageId", pageId);
+        final HashSet dcHash = new HashSet();
+        if (depList.stream().count() == 0) {
+            return fetchCloudOSApiData(projectId, depList, orgId, pageId);
+        } else {
+            return newActionService.getUnpublishedActions(actionParams)
+                    .filter(action -> action.getPluginType() == PluginType.API)
+                    .flatMap(action -> {
+                        dcHash.add(action.getDatasource().getId());
+                        return newActionService.deleteUnpublishedAction(action.getId());
+                    })
+                    .flatMap(action -> {
+                        return Flux.fromIterable(dcHash).flatMap(dcId -> datasourceRepository.archiveById(dcId.toString()));
+                    })
+                    .collectList()
+                    .then(fetchCloudOSApiData(projectId, depList, orgId, pageId));
+        }
+    }
+
     private Mono<String> refreshCloudOSApiData(String projectId, List<String> depList, String orgId, String pageId) {
         // clean attached datasource and actions
         final MultiValueMap<String, String> actionParams = new LinkedMultiValueMap<>();
@@ -410,8 +447,7 @@ public class CloudOSActionSolution {
                 apiList.add(newPageAction);
             });
             return Flux.fromIterable(apiList)
-                    // fuck this shit !!!!!!!!!!!!!
-                    //.flatMap(action -> actionCollectionService.createAction(action))
+                    .flatMap(action -> layoutActionService.createAction(action))
                     .collectList()
                     .thenReturn(savedDataSource);
         });

@@ -37,20 +37,6 @@ const ApiHomePage = styled.div`
   font-size: 20px;
   padding: 20px 20px 0 20px;
   /* margin-left: 10px; */
-  min-height: calc(
-    100vh - 66px
-      ${(props) =>
-        props.theme.inCloudOS
-          ? " + 1px + " + props.theme.smallHeaderHeight
-          : ""}
-  );
-  max-height: calc(
-    100vh - 66px
-      ${(props) =>
-        props.theme.inCloudOS
-          ? " + 1px + " + props.theme.smallHeaderHeight
-          : ""}
-  );
   flex: 1;
   overflow: hidden !important;
   .closeBtn {
@@ -90,12 +76,6 @@ const NewIntegrationsContainer = styled.div`
   ${thinScrollbar};
   scrollbar-width: thin;
   overflow: auto;
-  max-height: calc(
-    100vh -
-      ${(props) =>
-        props.theme.integrationsPageUnusableHeight +
-        (props.theme.inCloudOS ? " + 21px" : "")}
-  );
   flex: 1;
   & > div {
     margin-bottom: 20px;

@@ -22,9 +22,7 @@ const SentryRoute = Sentry.withSentryRouting(Route);
 const Container = styled.div`
   display: flex;
   height: calc(
-    100vh -
-      ${(props) =>
-        props.theme.inCloudOS ? "0px" : props.theme.smallHeaderHeight} -
+    100vh - ${(props) => props.theme.smallHeaderHeight} -
       ${(props) => props.theme.bottomBarHeight}
   );
   background-color: ${(props) => props.theme.appBackground};
