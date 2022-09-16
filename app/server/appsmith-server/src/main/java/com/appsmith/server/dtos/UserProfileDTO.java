@@ -47,6 +47,8 @@ public class UserProfileDTO {
 
     Map<String, Object> idToken = new HashMap<>();
 
+    boolean cloudOSLogged;
+
     public boolean isAccountNonExpired() {
         return this.isEnabled;
     }
