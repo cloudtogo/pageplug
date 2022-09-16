@@ -963,6 +963,7 @@ public class UserServiceCEImpl extends BaseService<UserRepository, User, String>
                     profile.setUseCase(userData.getUseCase());
                     profile.setPhotoId(userData.getProfilePhotoAssetId());
                     profile.setEnableTelemetry(!commonConfig.isTelemetryDisabled());
+                    profile.setCloudOSLogged(user.getCloudOSLogged());
 
                     profile.setSuperUser(policyUtils.isPermissionPresentForUser(
                             userFromDb.getPolicies(),
