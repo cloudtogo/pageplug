@@ -60,4 +60,11 @@ public class CloudOSController {
                 .map(url -> new ResponseDTO<>(HttpStatus.OK.value(), url, null));
     }
 
+    @PostMapping("/refreshTheCloudOSApiData")
+    public Mono<ResponseDTO<String>> refreshCloudOSApiData(@RequestBody Map<String, Object> data) {
+        log.debug("refresh cloudos api data");
+        return cloudOSActionSolution.refreshTheCloudOSApiData(data)
+                .map(url -> new ResponseDTO<>(HttpStatus.OK.value(), url, null));
+    }
+
 }

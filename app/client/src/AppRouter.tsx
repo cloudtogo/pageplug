@@ -119,16 +119,26 @@ function AppRouter(props: {
           <>
             <AppHeader />
             <Switch>
-              <SentryRoute component={EditorLoader} path={BUILDER_PATH} />
               <SentryRoute
                 component={EditorLoader}
                 path={BUILDER_PATH_DEPRECATED}
               />
-              <SentryRoute component={AppViewerLoader} path={VIEWER_PATH} />
               <SentryRoute
                 component={AppViewerLoader}
                 path={VIEWER_PATH_DEPRECATED}
               />
+              <SentryRoute component={EditorLoader} path={BUILDER_PATH} />
+              <SentryRoute
+                component={EditorLoader}
+                path={BUILDER_CUSTOM_PATH}
+              />
+              <SentryRoute component={AppViewerLoader} path={VIEWER_PATH} />
+              <SentryRoute
+                component={AppViewerLoader}
+                path={VIEWER_CUSTOM_PATH}
+              />
+              <Redirect from={BUILDER_PATCH_PATH} to={BUILDER_PATH} />
+              <Redirect from={VIEWER_PATCH_PATH} to={VIEWER_PATH} />
               <SentryRoute component={PageNotFound} />
             </Switch>
           </>

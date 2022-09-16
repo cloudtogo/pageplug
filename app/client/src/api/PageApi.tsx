@@ -139,6 +139,13 @@ export type FetchPublishedPageResponse = ApiResponse<
   FetchPublishedPageResponseData
 >;
 
+export interface SyncCloudOSApiRequest {
+  dep_list: string[];
+  project_id: string;
+  org_id: string;
+  page_id: string;
+}
+
 export interface WxaCodeRequest {
   app_id: string;
 }
@@ -260,6 +267,12 @@ class PageApi extends Api {
 
   static fetchAppAndPages(params: any): AxiosPromise<FetchApplicationResponse> {
     return Api.get(PageApi.url, params);
+  }
+
+  static syncCloudOSApi(
+    request: SyncCloudOSApiRequest,
+  ): AxiosPromise<ApiResponse> {
+    return Api.post("v1/cloudos/bindDependedActions", request);
   }
 
   static getPreviewWxaCode(request: WxaCodeRequest): AxiosPromise<ApiResponse> {

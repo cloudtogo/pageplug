@@ -69,6 +69,7 @@ import {
   RENAME_APPLICATION_TOOLTIP,
   SHARE_BUTTON_TOOLTIP,
   SHARE_BUTTON_TOOLTIP_WITH_USER,
+  EDITOR_HEADER_SAVE_INDICATOR,
 } from "@appsmith/constants/messages";
 import { TOOLTIP_HOVER_ON_DELAY } from "constants/AppConstants";
 import { ReactComponent as MenuIcon } from "assets/icons/header/hamburger.svg";
@@ -85,6 +86,7 @@ import EndTour from "./GuidedTour/EndTour";
 import { GUIDED_TOUR_STEPS } from "./GuidedTour/constants";
 import { viewerURL } from "RouteBuilder";
 import { useHref } from "./utils";
+import moment from "moment/moment";
 
 const HeaderWrapper = styled.div`
   width: 100%;
@@ -180,25 +182,6 @@ const StyledInviteButton = styled(Button)`
   ${(props) => getTypographyByKey(props, "btnLarge")}
   padding: ${(props) => props.theme.spaces[2]}px;
   border-radius: 0;
-`;
-
-const CloudOSHeader = styled.div`
-  position: fixed;
-  right: 20px;
-  top: 8px;
-  display: flex;
-  align-items: center;
-
-  & .bp3-popover-wrapper {
-    height: 20px;
-  }
-
-  & .t--application-publish-btn {
-    height: 25px;
-    width: 60px;
-    border-radius: 3px;
-    margin-left: 16px;
-  }
 `;
 
 const StyledDeployButton = styled(StyledInviteButton)`
@@ -313,6 +296,9 @@ export function EditorHeader(props: EditorHeaderProps) {
   const user = useSelector(getCurrentUser);
   const isPreviewMode = useSelector(previewModeSelector);
   const deployLink = useHref(viewerURL, { pageId });
+  const lastUpdatedTime = useSelector(
+    (state: AppState) => state.ui.editor.lastUpdatedTime,
+  );
 
   useEffect(() => {
     if (window.location.href) {
@@ -391,19 +377,78 @@ export function EditorHeader(props: EditorHeaderProps) {
   );
 
   if (inCloudOS) {
+    const savedMessage = createMessage(EDITOR_HEADER_SAVE_INDICATOR);
+    const savedTime = lastUpdatedTime
+      ? `${savedMessage} ${moment(lastUpdatedTime * 1000).fromNow()}`
+      : savedMessage;
     return (
-      <ThemeProvider theme={props.lightTheme}>
-        <CloudOSHeader>
-          <EditorSaveIndicator />
-          <span style={{ color: "#8a8a8a" }}>上次保存时间是</span>
-          <StyledDeployButton
-            className="t--application-publish-btn"
-            isLoading={isPublishing}
-            onClick={handlePublish}
-            size={Size.small}
-            text={"提交"}
+      <ThemeProvider theme={theme}>
+        <HeaderWrapper className="pr-3">
+          <HeaderSection className="space-x-3">
+            <HamburgerContainer
+              className={classNames({
+                "relative flex items-center justify-center p-0 text-gray-800 transition-all transform duration-400": true,
+                "-translate-x-full opacity-0": isPreviewMode,
+                "translate-x-0 opacity-100": !isPreviewMode,
+              })}
+            >
+              <TooltipComponent
+                content={
+                  <div className="flex items-center justify-between">
+                    <span>
+                      {!pinned
+                        ? createMessage(LOCK_ENTITY_EXPLORER_MESSAGE)
+                        : createMessage(CLOSE_ENTITY_EXPLORER_MESSAGE)}
+                    </span>
+                    <span className="ml-4 text-xs text-gray-300">
+                      {modText()} /
+                    </span>
+                  </div>
+                }
+                position="bottom-left"
+              >
+                <div
+                  className="relative w-4 h-4 text-trueGray-600 group t--pin-entity-explorer"
+                  onMouseEnter={onMenuHover}
+                >
+                  <MenuIcon className="absolute w-4 h-4 transition-opacity cursor-pointer fill-current group-hover:opacity-0" />
+                  {!pinned && (
+                    <UnpinIcon
+                      className="absolute w-4 h-4 transition-opacity opacity-0 cursor-pointer fill-current group-hover:opacity-100"
+                      onClick={onPin}
+                    />
+                  )}
+                  {pinned && (
+                    <PinIcon
+                      className="absolute w-4 h-4 transition-opacity opacity-0 cursor-pointer fill-current group-hover:opacity-100"
+                      onClick={onPin}
+                    />
+                  )}
+                </div>
+              </TooltipComponent>
+            </HamburgerContainer>
+            <ToggleModeButton showSelectedMode={!isPopoverOpen} />
+          </HeaderSection>
+          <HeaderSection
+            className={classNames({
+              "-translate-y-full opacity-0": isPreviewMode,
+              "translate-y-0 opacity-100": !isPreviewMode,
+              "transition-all transform duration-400": true,
+            })}
           />
-        </CloudOSHeader>
+          <HeaderSection className="space-x-3">
+            <EditorSaveIndicator />
+            <span style={{ color: "#8a8a8a" }}>{savedTime}</span>
+            <StyledDeployButton
+              className="t--application-publish-btn"
+              isLoading={isPublishing}
+              onClick={handlePublish}
+              size={Size.small}
+              text={"提交"}
+              style={{ padding: "6px 20px" }}
+            />
+          </HeaderSection>
+        </HeaderWrapper>
       </ThemeProvider>
     );
   }
