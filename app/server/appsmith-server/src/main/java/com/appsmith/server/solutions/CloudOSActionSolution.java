@@ -7,7 +7,6 @@ import com.appsmith.server.domains.*;
 import com.appsmith.server.dtos.ActionDTO;
 import com.appsmith.server.exceptions.AppsmithError;
 import com.appsmith.server.exceptions.AppsmithException;
-import com.appsmith.server.repositories.DatasourceRepository;
 import com.appsmith.server.services.*;
 import com.google.gson.GsonBuilder;
 import io.jsonwebtoken.lang.Strings;
@@ -39,7 +38,6 @@ public class CloudOSActionSolution {
 
     private final WorkspaceService workspaceService;
     private final DatasourceService datasourceService;
-    private final DatasourceRepository datasourceRepository;
     private final ApplicationPageService applicationPageService;
     private final ApplicationForkingService applicationForkingService;
     private final NewActionService newActionService;
@@ -203,6 +201,7 @@ public class CloudOSActionSolution {
 
         Workspace organization = new Workspace();
         organization.setName(orgName);
+        log.debug("fork app: " + appId);
         return workspaceService.create(organization)
                 .flatMap(org -> applicationForkingService.forkApplicationToWorkspace(appId, org.getId()))
                 .flatMap(application -> {
@@ -298,51 +297,40 @@ public class CloudOSActionSolution {
      * @return
      */
     public Mono<String> refreshTheCloudOSApiData(Map<String, Object> payload) {
-        log.debug("recieved payload.", payload);
+        log.debug("received payload: " + payload);
         List<String> depList = (List<String>) payload.get("dep_list");
         String projectId = (String) payload.get("project_id");
         String orgId = (String) payload.get("org_id");
         String pageId = (String) payload.get("page_id");
-        String uid = (String) payload.get("uid");
-        log.debug("projectId："+projectId);
-        log.debug("orgId："+orgId);
 
         // clean attached datasource and actions
-        final MultiValueMap<String, String> actionParams = new LinkedMultiValueMap<>();
-        actionParams.add("pageId", pageId);
-        final HashSet dcHash = new HashSet();
+        final HashSet<String> dcHash = new HashSet();
         if (depList.stream().count() == 0) {
             return fetchCloudOSApiData(projectId, depList, orgId, pageId);
         } else {
-            return newActionService.getUnpublishedActions(actionParams)
+            return newActionService.findByPageId(pageId)
                     .filter(action -> action.getPluginType() == PluginType.API)
                     .flatMap(action -> {
-                        dcHash.add(action.getDatasource().getId());
-                        return newActionService.deleteUnpublishedAction(action.getId());
-                    })
-                    .flatMap(action -> {
-                        return Flux.fromIterable(dcHash).flatMap(dcId -> datasourceRepository.archiveById(dcId.toString()));
+                        dcHash.add(action.getUnpublishedAction().getDatasource().getId());
+                        return newActionService.archive(action);
                     })
                     .collectList()
+                    .thenMany(Flux.fromIterable(dcHash).flatMap(datasourceService::archiveById))
                     .then(fetchCloudOSApiData(projectId, depList, orgId, pageId));
         }
     }
 
     private Mono<String> refreshCloudOSApiData(String projectId, List<String> depList, String orgId, String pageId) {
         // clean attached datasource and actions
-        final MultiValueMap<String, String> actionParams = new LinkedMultiValueMap<>();
-        actionParams.add("pageId", pageId);
-        final HashSet dcHash = new HashSet();
-        return newActionService.getUnpublishedActions(actionParams)
+        final HashSet<String> dcHash = new HashSet();
+        return newActionService.findByPageId(pageId)
                 .filter(action -> action.getPluginType() == PluginType.API)
                 .flatMap(action -> {
-                    dcHash.add(action.getDatasource().getId());
-                    return newActionService.deleteUnpublishedAction(action.getId());
-                })
-                .flatMap(action -> {
-                    return Flux.fromIterable(dcHash).flatMap(dcId -> datasourceRepository.archiveById(dcId.toString()));
+                    dcHash.add(action.getUnpublishedAction().getDatasource().getId());
+                    return newActionService.archive(action);
                 })
                 .collectList()
+                .thenMany(Flux.fromIterable(dcHash).flatMap(datasourceService::archiveById))
                 .then(fetchCloudOSApiData(projectId, depList, orgId, pageId));
     }
 
@@ -480,7 +468,7 @@ public class CloudOSActionSolution {
         return datasourceService.create(datasource)
                 .onErrorResume(DuplicateKeyException.class, error -> {
                     if (error.getMessage() != null
-                            && error.getMessage().contains("organization_datasource_deleted_compound_index")) {
+                            && error.getMessage().contains("workspace_datasource_deleted_compound_index")) {
                         return createSuffixedDatasource(datasource, name, 1 + suffix);
                     }
                     throw error;
