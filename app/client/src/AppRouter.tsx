@@ -61,9 +61,6 @@ import { fetchFeatureFlagsInit } from "actions/userActions";
 import FeatureFlags from "entities/FeatureFlags";
 import WDSPage from "components/wds/Showcase";
 
-import { getAppsmithConfigs } from "@appsmith/configs";
-const { inCloudOS } = getAppsmithConfigs();
-
 const SentryRoute = Sentry.withSentryRouting(Route);
 
 const loadingIndicator = <PageLoadingBar />;
@@ -114,33 +111,6 @@ function AppRouter(props: {
           <>
             <ErrorPageHeader />
             <ErrorPage code={props.safeCrashCode} />
-          </>
-        ) : inCloudOS ? (
-          <>
-            <AppHeader />
-            <Switch>
-              <SentryRoute
-                component={EditorLoader}
-                path={BUILDER_PATH_DEPRECATED}
-              />
-              <SentryRoute
-                component={AppViewerLoader}
-                path={VIEWER_PATH_DEPRECATED}
-              />
-              <SentryRoute component={EditorLoader} path={BUILDER_PATH} />
-              <SentryRoute
-                component={EditorLoader}
-                path={BUILDER_CUSTOM_PATH}
-              />
-              <SentryRoute component={AppViewerLoader} path={VIEWER_PATH} />
-              <SentryRoute
-                component={AppViewerLoader}
-                path={VIEWER_CUSTOM_PATH}
-              />
-              <Redirect from={BUILDER_PATCH_PATH} to={BUILDER_PATH} />
-              <Redirect from={VIEWER_PATCH_PATH} to={VIEWER_PATH} />
-              <SentryRoute component={PageNotFound} />
-            </Switch>
           </>
         ) : (
           <>
