@@ -17,11 +17,7 @@ import {
   ReduxActionWithoutPayload,
 } from "@appsmith/constants/ReduxActionConstants";
 import { ERROR_CODES } from "@appsmith/constants/ApiConstants";
-import {
-  resetApplicationWidgets,
-  resetPageList,
-  fetchCloudOSApi,
-} from "actions/pageActions";
+import { resetApplicationWidgets, resetPageList } from "actions/pageActions";
 import {
   resetCurrentApplication,
   fetchApplicationPreviewWxaCode,
