@@ -41,9 +41,6 @@ export function PageContextMenu(props: {
   isHidden: boolean;
 }) {
   const dispatch = useDispatch();
-  const inCloudOS = useSelector((state: AppState) => {
-    return state.entities.app.inCloudOS;
-  });
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   /**
@@ -120,8 +117,7 @@ export function PageContextMenu(props: {
     //   ) as ReactNode) as string,
     // },
   ];
-  // inCloudOS mode cannot set default page, because the first default page created by blueprint cannot be deleted!
-  if (!props.isDefaultPage && !inCloudOS) {
+  if (!props.isDefaultPage) {
     optionTree.push({
       value: "setdefault",
       onSelect: setPageAsDefaultCallback,
