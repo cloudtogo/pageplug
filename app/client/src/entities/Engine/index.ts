@@ -5,7 +5,6 @@ import {
 import {
   setAppMode,
   updateAppPersistentStore,
-  fetchCloudOSApi,
 } from "actions/pageActions";
 import {
   ApplicationPayload,

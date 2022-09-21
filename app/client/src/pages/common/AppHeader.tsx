@@ -18,8 +18,6 @@ import {
 } from "constants/routes";
 import { withRouter, RouteComponentProps } from "react-router";
 import AppEditorHeader from "pages/Editor/EditorHeader";
-import { getAppsmithConfigs } from "@appsmith/configs";
-const { inCloudOS } = getAppsmithConfigs();
 
 type Props = RouteComponentProps;
 
@@ -35,15 +33,6 @@ class AppHeader extends React.Component<Props, any> {
     headerRoot?.removeChild(this.container);
   }
   get header() {
-    if (inCloudOS) {
-      return (
-        <Switch>
-          <Route component={AppEditorHeader} path={BUILDER_PATH_DEPRECATED} />
-          <Route component={AppEditorHeader} path={BUILDER_PATH} />
-          <Route component={AppEditorHeader} path={BUILDER_CUSTOM_PATH} />
-        </Switch>
-      );
-    }
     return (
       <Switch>
         <Route component={PageHeader} path={ADMIN_SETTINGS_CATEGORY_PATH} />
