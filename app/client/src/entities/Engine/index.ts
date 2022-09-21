@@ -63,21 +63,7 @@ export default abstract class AppEngine {
   abstract completeChore(): any;
 
   *loadAppData(payload: AppEnginePayload) {
-    const { applicationId, branch, pageId, queryParams } = payload;
-
-    // sync CloudOS api
-    if (queryParams && queryParams.get("inCloudOS") === "true") {
-      const depList = queryParams.get("depList") || "";
-      const projectId = queryParams.get("projectId");
-      const orgId = queryParams.get("orgId");
-      if (projectId && orgId) {
-        yield failFastApiCalls(
-          [fetchCloudOSApi(pageId || "", depList.split(","), projectId, orgId)],
-          [ReduxActionTypes.FETCH_CLOUDOS_API_SUCCESS],
-          [ReduxActionErrorTypes.FETCH_CLOUDOS_API_ERROR],
-        );
-      }
-    }
+    const { applicationId, branch, pageId } = payload;
 
     const apiCalls: boolean = yield failFastApiCalls(
       [fetchApplication({ applicationId, pageId, mode: this._mode })],

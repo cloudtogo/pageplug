@@ -492,30 +492,6 @@ export interface ReduxActionWithExtraParams<T> extends ReduxAction<T> {
   extraParams: Record<any, any>;
 }
 
-export type FetchCloudOSApiRequest = {
-  pageId: string;
-  depList: string[];
-  projectId: string;
-  orgId: string;
-};
-
-export const fetchCloudOSApi = (
-  pageId: string,
-  depList: string[],
-  projectId: string,
-  orgId: string,
-): ReduxAction<FetchCloudOSApiRequest> => {
-  return {
-    type: ReduxActionTypes.FETCH_CLOUDOS_API_INIT,
-    payload: {
-      pageId,
-      depList,
-      projectId,
-      orgId,
-    },
-  };
-};
-
 export const resetPageList = () => ({
   type: ReduxActionTypes.RESET_PAGE_LIST,
 });
