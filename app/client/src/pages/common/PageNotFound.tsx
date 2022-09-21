@@ -10,8 +10,6 @@ import {
   createMessage,
   PAGE_NOT_FOUND,
 } from "@appsmith/constants/messages";
-import { getAppsmithConfigs } from "@appsmith/configs";
-const { inCloudOS } = getAppsmithConfigs();
 import AnalyticsUtil from "utils/AnalyticsUtil";
 
 const Wrapper = styled.div`
@@ -29,15 +27,6 @@ const Wrapper = styled.div`
   }
 `;
 
-const Text404 = styled.div`
-  text-align: center;
-  line-height: 200px;
-  font-size: 100px;
-  font-family: fantasy;
-  filter: drop-shadow(2px 4px #ff0000) drop-shadow(2px 4px #00ff00)
-    drop-shadow(-2px -4px #0000ff);
-`;
-
 interface Props {
   flushErrorsAndRedirect?: any;
 }
@@ -48,10 +37,6 @@ function PageNotFound(props: Props) {
   useEffect(() => {
     AnalyticsUtil.logEvent("PAGE_NOT_FOUND");
   }, []);
-
-  if (inCloudOS) {
-    return <Text404>404</Text404>;
-  }
 
   return (
     <Wrapper className="space-y-6">
