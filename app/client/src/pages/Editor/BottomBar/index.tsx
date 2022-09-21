@@ -6,9 +6,6 @@ import { DebuggerTrigger } from "components/editorComponents/Debugger";
 import { Colors } from "constants/Colors";
 import ManualUpgrades from "./ManualUpgrades";
 
-import { getAppsmithConfigs } from "@appsmith/configs";
-const { inCloudOS } = getAppsmithConfigs();
-
 const Container = styled.div`
   width: 100%;
   height: ${(props) => props.theme.bottomBarHeight};
@@ -23,7 +20,7 @@ const Container = styled.div`
 export default function BottomBar(props: { className?: string }) {
   return (
     <Container className={props.className ?? ""}>
-      {inCloudOS ? <span /> : <QuickGitActions />}
+      <QuickGitActions />
       <div className="flex justify-between items-center gap-4">
         <ManualUpgrades />
         <DebuggerTrigger />

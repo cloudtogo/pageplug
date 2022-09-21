@@ -68,7 +68,6 @@ type EditorProps = {
   lightTheme: Theme;
   resetEditorRequest: () => void;
   handlePathUpdated: (location: typeof window.location) => void;
-  inCloudOS: boolean;
   fetchPage: (pageId: string) => void;
   updateCurrentPage: (pageId: string) => void;
   handleBranchChange: (branch: string) => void;
@@ -100,7 +99,6 @@ class Editor extends Component<Props> {
 
     const { applicationId, pageId } = this.props.match.params;
     const queryParams = new URLSearchParams(this.props.location.search);
-    queryParams.set("inCloudOS", this.props.inCloudOS ? "true" : "false");
     if (pageId)
       this.props.initEditor({
         applicationId,
@@ -151,7 +149,6 @@ class Editor extends Component<Props> {
       prevProps.location,
     );
     const queryParams = new URLSearchParams(this.props.location.search);
-    queryParams.set("inCloudOS", this.props.inCloudOS ? "true" : "false");
 
     const branch = getSearchQuery(
       this.props.location.search,
@@ -232,11 +229,7 @@ class Editor extends Component<Props> {
           <div>
             <Helmet>
               <meta charSet="utf-8" />
-              <title>
-                {`${this.props.currentApplicationName} - ${
-                  this.props.inCloudOS ? "Methodot" : "PagePlug"
-                }`}
-              </title>
+              <title>{`${this.props.currentApplicationName} - PagePlug`}</title>
             </Helmet>
             <GlobalHotKeys>
               <MainContainer />
@@ -264,7 +257,6 @@ const mapStateToProps = (state: AppState) => ({
   isEditorInitialized: getIsEditorInitialized(state),
   user: getCurrentUser(state),
   currentApplicationName: state.ui.applications.currentApplication?.name,
-  inCloudOS: state.entities.app.inCloudOS || false,
   currentPageId: getCurrentPageId(state),
   isPageLevelSocketConnected: getIsPageLevelSocketConnected(state),
   loadingGuidedTour: loading(state),
