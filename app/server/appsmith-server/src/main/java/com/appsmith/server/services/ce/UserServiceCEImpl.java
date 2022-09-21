@@ -951,12 +951,7 @@ public class UserServiceCEImpl extends BaseService<UserRepository, User, String>
                     final UserProfileDTO profile = new UserProfileDTO();
 
                     profile.setEmail(userFromDb.getEmail());
-                    // inCloudOS
-                    if (user.getCloudOSLogged() != null) {
-                        profile.setCloudOSLogged(user.getCloudOSLogged());
-                    } else {
-                        profile.setWorkspaceIds(userFromDb.getWorkspaceIds());
-                    }
+                    profile.setWorkspaceIds(userFromDb.getWorkspaceIds());
                     profile.setUsername(userFromDb.getUsername());
                     profile.setName(userFromDb.getName());
                     profile.setGender(userFromDb.getGender());
