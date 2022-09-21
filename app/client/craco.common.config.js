@@ -90,7 +90,7 @@ module.exports = {
         lessLoaderOptions: {
           lessOptions: {
             // MINT_GREEN #2CBBA6
-            modifyVars: { '@primary-color': process.env.REACT_APP_IN_CLOUDOS ? '#613eea' : '#2CBBA6' },
+            modifyVars: { '@primary-color': '#2CBBA6' },
             javascriptEnabled: true,
           },
         },

@@ -19,12 +19,6 @@
       transition: all ease-in 0.3s;
     }
   </style>
-  <script type="text/javascript">
-    if ("%REACT_APP_IN_CLOUDOS%".trim() === "true") {
-      document.querySelector(':root').style.setProperty("--loader-bar-color", "#613eea");
-      document.title = "Methodot";
-    }
-  </script>
   <script>
     // '' (empty strings), 'false' are falsy
     // could return either boolean or string based on value
@@ -220,10 +214,6 @@
       googleRecaptchaSiteKey: parseConfig("__APPSMITH_RECAPTCHA_SITE_KEY__"),
       hideWatermark: parseConfig("__APPSMITH_HIDE_WATERMARK__")
     };
-
-    // CloudOS
-    window.CLOUDOS_LOGIN_URL = parseConfig("__PAGEPLUG_CLOUDOS_LOGIN_URL__") || "http://factory.dev.staros.local/user/login";
-
   </script>
 </body>
 

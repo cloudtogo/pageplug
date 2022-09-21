@@ -47,7 +47,6 @@ export interface INJECTED_CONFIGS {
   googleRecaptchaSiteKey: string;
   supportEmail: string;
   hideWatermark: boolean;
-  inCloudOS: boolean;
 }
 
 const capitalizeText = (text: string) => {
@@ -129,7 +128,6 @@ export const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
     hideWatermark: process.env.APPSMITH_HIDE_WATERMARK
       ? process.env.APPSMITH_HIDE_WATERMARK.length > 0
       : false,
-    inCloudOS: !!process.env.REACT_APP_IN_CLOUDOS,
   };
 };
 
@@ -279,6 +277,5 @@ export const getAppsmithConfigs = (): AppsmithUIConfigs => {
       true ||
       ENV_CONFIG.hideWatermark ||
       APPSMITH_FEATURE_CONFIGS.hideWatermark,
-    inCloudOS: ENV_CONFIG.inCloudOS,
   };
 };
