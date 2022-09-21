@@ -45,7 +45,6 @@ import localStorage from "utils/localStorage";
 import { Toaster } from "components/ads/Toast";
 import { Variant } from "components/ads/common";
 import log from "loglevel";
-import { getAppsmithConfigs } from "@appsmith/configs";
 
 import { getCurrentUser } from "selectors/usersSelectors";
 import {
@@ -58,8 +57,6 @@ import {
   getFirstTimeUserOnboardingIntroModalVisibility,
 } from "utils/storage";
 import { initializeAnalyticsAndTrackers } from "utils/AppsmithUtils";
-
-const { inCloudOS } = getAppsmithConfigs();
 
 export function* createUserSaga(
   action: ReduxActionWithPromise<CreateUserRequest>,
@@ -122,14 +119,6 @@ export function* getCurrentUserSaga() {
         //@ts-expect-error: response is of type unknown
         response.data.username !== ANONYMOUS_USERNAME
       ) {
-        if (
-          inCloudOS &&
-          !response.data.cloudOSLogged &&
-          matchBuilderPath(window.location.pathname)
-        ) {
-          window.location.href = window.CLOUDOS_LOGIN_URL;
-          return;
-        }
         //@ts-expect-error: response is of type unknown
         enableTelemetry && AnalyticsUtil.identifyUser(response.data);
       }
