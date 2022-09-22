@@ -2,7 +2,7 @@
   <img src="static/pageplug/pageplug_logo_banner.svg" width="360" height="160" alt="PagePlug">
 </p>
 
-<h2 align="center">为开发者而生的开源前端低代码【中国版AppSmith】</h2>
+<h2 align="center">更快、更快乐的开源前端低代码【中国版Appsmith】</h2>
 
 <h3 align="center" style="margin-bottom: 32px">
   <a href="#quickStart">快速开始</a>
@@ -12,10 +12,13 @@
   <a href="https://appsmith-fans.cn/" target="_blank">中文社区</a>
 </h3>
 
-PagePlug 是基于 [AppSmith](https://github.com/appsmithorg/appsmith) 打造的更适合中国开发者的开源前端低代码项目。  
-无需侵入客户架构，直接连接数据源（API、DB），无需学习任何第三方概念，使用基础 js 知识就可以快速生成多平台前端应用，包括 PC 端 web 应用、微信小程序等。
+## PagePlug 是什么？
+PagePlug 是 [Appsmith](https://github.com/appsmithorg/appsmith) 的超集，是一个更适合中国开发者的开源前端低代码平台，可以用来制作 web 应用、微信小程序。适合有基础开发经验的开发者：程序员、运维工程师、计算机类师生、数据分析师、产品经理等。
 
-> 当前版本基于 AppSmith v1.7.14 版本，最新版本正在开发中，敬请期待。
+> 当前版本基于 Appsmith v1.7.14 版本，最新版本正在开发中，敬请期待。
+
+## PagePlug 和其他低代码有什么不同？
+PagePlug 无需侵入客户架构，直接连接数据源（API、DB），任何的后端数据都变成了 JS 变量，可以随意转换、并配置到任意的视图组件，整个过程符合开发者心流，前端开发变得不仅更快了、而且更快乐了！
 
 <p>
   <img src="static/pageplug/gifs/overview.gif" width="100%">
