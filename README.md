@@ -60,28 +60,21 @@ PagePlug 无需侵入客户架构，直接连接数据源（API、DB），任何
   [体验地址](https://lowcode.methodot.com/applications/6322a1453892ca140cb874d5/pages/6322a1453892ca140cb874e3)  
   PagePlug 制作的一个典型CRUD项目，实现了基本增删改查、后端分页、搜索过滤、弹窗表单、复杂表单等功能
 
+- 企业CRM系统（PC web应用）  
+  [体验地址](https://lowcode.methodot.com/applications/6322a6d63892ca140cb87551/pages/6322a6d63892ca140cb87555?embed=1)  
+  PagePlug 制作的简单CRM项目，实现了线索、商机和客户的信息管理
+
+## 如何导入 DEMO 项目？
+
 <div id="quickStart" />
 
 ## 快速开始
-- 🚀 [立即体验](https://lowcode.methodot.com)（可使用任意邮箱注册登录）  
-  > **注意**：体验环境数据没有做持久化，只作功能演示使用，如果需要长期使用，请使用我们推荐的SaaS版本  
+- 🚀 [立即体验](https://lowcode.methodot.com)  
+  > **注意**：体验环境数据没有做持久化，只作功能演示使用
 
-- 🌈 稳定SaaS版本，Methodot（推荐）  
-  [https://methodot.com](https://methodot.com)  
-  Methodot 是一站式云原生在线开发协作平台，它通过独创的在线应用架构图，深度集成了 PagePlug 的前端低代码功能，还支持通过 WebIDE 进行传统方式的应用开发，实现了 procode + lowcode 的深度结合，一键编译、构建、发布、运维你的应用。
-
-- 🌱 私有部署【Docker】（推荐）  
+- 🌱 [私有部署【Docker】](https://lowcode.methodot.com/app/pageplug/page1-63160074cb370d532de7f2af?embed=1)（推荐）  
   > 最低服务器配置：4G内存 + 2核CPU
-  ```
-  // 获取安装脚本
-  curl -O https://raw.githubusercontent.com/cloudtogo/pageplug/open/install.sh
-
-  // 赋予运行权限
-  chmod +x install.sh
-
-  // 执行安装脚本
-  ./install.sh
-  ```
+  
 
 <div id="dev" />
 
