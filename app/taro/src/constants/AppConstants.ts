@@ -1,0 +1,38 @@
+import Taro from "@tarojs/taro";
+
+export const CANVAS_DEFAULT_HEIGHT_PX = 1292;
+export const CANVAS_DEFAULT_GRID_HEIGHT_PX = 1;
+export const CANVAS_DEFAULT_GRID_WIDTH_PX = 1;
+export const CANVAS_BACKGROUND_COLOR = "#FFFFFF";
+export const DEFAULT_ENTITY_EXPLORER_WIDTH = 256;
+export const DEFAULT_PROPERTY_PANE_WIDTH = 256;
+
+export const DEFAULT_VIEWER_LOGO = "https://img.icons8.com/doodle/2x/koala.png";
+
+const APP_STORE_NAMESPACE = "APPSMITH_LOCAL_STORE";
+
+export const getAppStoreName = (appId: string, branch?: string) =>
+  branch
+    ? `${APP_STORE_NAMESPACE}-${appId}-${branch}`
+    : `${APP_STORE_NAMESPACE}-${appId}`;
+
+export const getPersistentAppStore = (appId: string, branch?: string) => {
+  const appStoreName = getAppStoreName(appId, branch);
+  let storeString = "{}";
+  const appStore = Taro.getStorageSync(appStoreName);
+  if (appStore) storeString = appStore;
+  let store;
+  try {
+    store = JSON.parse(storeString);
+  } catch (e) {
+    store = {};
+  }
+  return store;
+};
+
+export const TOOLTIP_HOVER_ON_DELAY = 1000;
+
+export const MOBILE_MAX_WIDTH = 767;
+export const TABLET_MIN_WIDTH = 768;
+export const TABLET_MAX_WIDTH = 991;
+export const DESKTOP_MIN_WIDTH = 992;

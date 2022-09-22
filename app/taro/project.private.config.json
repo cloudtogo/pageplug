@@ -1,0 +1,69 @@
+{
+    "setting": {
+        "urlCheck": true
+    },
+    "condition": {
+        "miniprogram": {
+            "list": [
+                {
+                    "name": "组件测试",
+                    "pathName": "pages/index/index",
+                    "query": "scene=62bafe9abfd6485d40bb271e",
+                    "launchMode": "default",
+                    "scene": null
+                },
+                {
+                    "name": "行云严选",
+                    "pathName": "pages/index/index",
+                    "query": "scene=63047f8d8eecf64c3a699893",
+                    "launchMode": "default",
+                    "scene": null
+                },
+                {
+                    "name": "默认应用（升级）",
+                    "pathName": "pages/index/index",
+                    "query": "scene=6305c02b13c4fb6bd34113e6",
+                    "launchMode": "default",
+                    "scene": null
+                },
+                {
+                    "name": "默认应用",
+                    "pathName": "pages/index/index",
+                    "query": "scene=63047fbc8eecf64c3a6998ef",
+                    "launchMode": "default",
+                    "scene": null
+                },
+                {
+                    "name": "外网 - 全功能测试",
+                    "pathName": "pages/index/index",
+                    "query": "scene=6317584bcb370d532de7f597",
+                    "launchMode": "default",
+                    "scene": null
+                },
+                {
+                    "name": "外网 - 默认应用",
+                    "pathName": "pages/index/index",
+                    "query": "scene=6232da990d7f85176a44c1f3",
+                    "launchMode": "default",
+                    "scene": null
+                },
+                {
+                    "name": "外网 - 行云严选",
+                    "pathName": "pages/index/index",
+                    "query": "scene=6317563ccb370d532de7f530",
+                    "launchMode": "default",
+                    "scene": null
+                },
+                {
+                    "name": "外网 - 旧行云严选",
+                    "pathName": "pages/index/index",
+                    "query": "scene=62381ecd6d28f663ab8ce90b",
+                    "launchMode": "default",
+                    "scene": null
+                }
+            ]
+        }
+    },
+    "description": "项目私有配置文件。此文件中的内容将覆盖 project.config.json 中的相同字段。项目的改动优先同步到此文件中。详见文档：https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html",
+    "libVersion": "2.25.4"
+}
