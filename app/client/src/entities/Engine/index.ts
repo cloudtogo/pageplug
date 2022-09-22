@@ -2,10 +2,7 @@ import {
   fetchApplication,
   fetchApplicationPreviewWxaCode,
 } from "actions/applicationActions";
-import {
-  setAppMode,
-  updateAppPersistentStore,
-} from "actions/pageActions";
+import { setAppMode, updateAppPersistentStore } from "actions/pageActions";
 import {
   ApplicationPayload,
   ReduxActionErrorTypes,
