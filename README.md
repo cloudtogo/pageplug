@@ -64,7 +64,11 @@ PagePlug 无需侵入客户架构，直接连接数据源（API、DB），任何
   [体验地址](https://lowcode.methodot.com/applications/6322a6d63892ca140cb87551/pages/6322a6d63892ca140cb87555?embed=1)  
   PagePlug 制作的简单CRM项目，实现了线索、商机和客户的信息管理
 
+
 ## 如何导入 DEMO 项目？
+通过文件方式导入demo项目到应用组，demo项目 JSON 文件在 /demo 目录下
+<img src="static/pageplug/gifs/import.gif" width="100%">
+
 
 <div id="quickStart" />
 
@@ -74,7 +78,7 @@ PagePlug 无需侵入客户架构，直接连接数据源（API、DB），任何
 
 - 🌱 [私有部署【Docker】](https://lowcode.methodot.com/app/pageplug/page1-63160074cb370d532de7f2af?embed=1)（推荐）  
   > 最低服务器配置：4G内存 + 2核CPU
-  
+
 
 <div id="dev" />
 
@@ -117,6 +121,10 @@ cp envs/dev.env.example .env
 APPSMITH_MONGODB_URI="你的Mongo实例地址"
 APPSMITH_REDIS_URL="你的Redis实例地址"
 
+//【可选】如果需要小程序预览功能，需要配置你的小程序信息
+CLOUDOS_WECHAT_APPID=""
+CLOUDOS_WECHAT_SECRET=""
+
 // 构建 java 服务
 mvn clean compile
 bash ./build.sh -DskipTests
@@ -136,7 +144,7 @@ cd app/taro
 // PagePlug 后端接口地址，本地开发时需要填写本机IP地址
 API_BASE_URL: '"http://192.168.xxx.xxx:8080/api/"'
 
-// 小程序默认展示的应用ID，你可以从应用的url中找到应用ID：/app/[应用ID]/page/[页面ID]
+// 小程序默认展示的应用ID
 DEFAULT_APP: '"应用ID"'
 
 // 启动 Taro 项目
@@ -157,7 +165,7 @@ yarn dev:weapp
 
 ## 感谢这些巨人
 PagePlug 代码中使用到的才华横溢的开源项目，感谢这些开源项目让世界更美好！
-- [AppSmith](https://github.com/appsmithorg/appsmith)（低代码原型）
+- [Appsmith](https://github.com/appsmithorg/appsmith)（低代码原型）
 - [Taro](https://github.com/NervJS/taro)（移动端跨端解决方案）
 - [Formily](https://github.com/alibaba/formily)（表单解决方案）
 - [Taroify](https://github.com/mallfoundry/taroify)（Taro UI组件库）
