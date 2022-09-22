@@ -24,6 +24,10 @@ PagePlug 无需侵入客户架构，直接连接数据源（API、DB），任何
   <img src="static/pageplug/gifs/overview.gif" width="100%">
 </p>
 
+<p>
+  <img src="static/pageplug/gifs/overview2.gif" width="100%">
+</p>
+
 ## 功能特色
 
 - 支持移动端！一分钟制作一个小程序，并生成小程序码进行分享！
