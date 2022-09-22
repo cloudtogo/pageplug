@@ -54,10 +54,10 @@ PagePlug 无需侵入客户架构，直接连接数据源（API、DB），任何
 - 严选小程序（微信小程序）  
   <img src="static/pageplug/weapp_demo.png" width="200" />
 
-  PagePlug 制作的完整电商小程序案例，支持注册、登录、二级商品分类、商品搜索、商品详情、购物车、购买下单、收货地址管理、订单管理等功能。后端接口使用开源后台 [litmall](https://github.com/linlinjava/litemall) 的一个部署实例
+  PagePlug 制作的完整电商小程序案例，支持注册、登录、二级商品分类、商品搜索、商品详情、购物车、购买下单、收货地址管理、订单管理等功能。后端接口使用开源商城后台 [litmall](https://github.com/linlinjava/litemall) 
 
 - 工程管理系统（PC web应用）  
-  [体验地址](https://lowcode.methodot.com/applications/62a1aae112168d652db26a3b/pages/62a1aae112168d652db26a47)  
+  [体验地址](https://lowcode.methodot.com/applications/6322a1453892ca140cb874d5/pages/6322a1453892ca140cb874e3)  
   PagePlug 制作的一个典型CRUD项目，实现了基本增删改查、后端分页、搜索过滤、弹窗表单、复杂表单等功能
 
 <div id="quickStart" />
