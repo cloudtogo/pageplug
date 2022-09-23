@@ -60,7 +60,18 @@ module.exports = {
   },
   style: {
     postcss: {
-      mode: 'file',
+      loaderOptions: {
+        postcssOptions: {
+          ident: 'postcss',
+          plugins: [
+            'tailwindcss',
+            'autoprefixer',
+            ['postcss-pageplug-pxtorem', {
+              h5Width: 450,
+            }],
+          ]
+        }
+      }
     }
   },
   plugins: [
