@@ -38,7 +38,7 @@ export type AppDataState = {
   store: AppStoreState;
   geolocation: {
     canBeRequested: boolean;
-    currentPosition?: GeolocationPosition;
+    currentPosition?: Partial<GeolocationPosition>;
   };
 };
 
@@ -65,6 +65,7 @@ const initialState: AppDataState = {
   },
   geolocation: {
     canBeRequested: "geolocation" in navigator,
+    currentPosition: {},
   },
 };
 

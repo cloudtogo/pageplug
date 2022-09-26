@@ -5,13 +5,12 @@ import styled from "constants/DefaultTheme";
 import FormRow from "components/editorComponents/FormRow";
 import { PaginationType } from "entities/Action";
 import RadioFieldGroup from "components/editorComponents/form/fields/RadioGroupField";
-import { Text, Case, TextType } from "design-system";
-import Button, { Category, Size } from "components/ads/Button";
+import { Button, Category, Size, Text, TextType } from "design-system";
 import {
   CodeEditorBorder,
   EditorTheme,
 } from "components/editorComponents/CodeEditor/EditorConfig";
-import GifPlayerComponent from "components/ads/GifPlayerComponent";
+import { GifPlayer } from "design-system";
 import { Classes } from "components/ads/common";
 import lightmodeGif from "assets/icons/gifs/config_pagination_lightmode.gif";
 import darkmodeGif from "assets/icons/gifs/config_pagination_darkmode.gif";
@@ -33,12 +32,6 @@ const PaginationFieldWrapper = styled.div`
   }
 `;
 
-const Description = styled(Text)`
-  display: block;
-  margin-bottom: ${(props) => props.theme.spaces[6]}px;
-  color: ${(props) => props.theme.colors.apiPane.pagination.description};
-`;
-
 const Step = styled(Text)`
   display: block;
   margin-bottom: ${(props) => props.theme.spaces[5]}px;
@@ -54,22 +47,11 @@ const StepTitle = styled.div`
   }
 `;
 
-const NumberBox = styled.div`
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${(props) =>
-    props.theme.colors.apiPane.pagination.numberBg};
-  color: ${(props) => props.theme.colors.apiPane.pagination.numberColor};
-  margin-right: 8px;
-`;
-
 const PaginationTypeView = styled.div`
-  margin-left: 20px;
+  margin-left: 28px;
   display: flex;
   justify-content: space-between;
+  margin-bottom: ${(props) => props.theme.spaces[11]}px;
 `;
 
 const PaginationSection = styled.div`
@@ -134,137 +116,137 @@ export default function Pagination(props: PaginationProps) {
           ]}
           placeholder="Method"
           rows={3}
+          selectedOptionElements={[
+            null,
+            <PaginationTypeView key={PaginationType.PAGE_NO}>
+              <div>
+                <StepTitle>
+                  <Text type={TextType.P1}>
+                    1. 配置表格分页
+                  </Text>
+                </StepTitle>
+                <Step type={TextType.P1}>1. 打开服务端分页</Step>
+                <Step type={TextType.P1}>2. 配置 OnPageChange 动作</Step>
+                <StepTitle>
+                  <Text type={TextType.P1}>
+                    2. 配置请求参数
+                  </Text>
+                </StepTitle>
+                <Step style={{ width: "336px" }} type={TextType.P1}>
+                  1. 在你的请求头或者请求参数中配置 UsersTable 的页号
+                </Step>
+                <Example type={TextType.P2}>
+                  例如：<i>pageNo</i> 或者其他类似值
+                </Example>
+                <BindingKey>
+                  <Text type={TextType.P2}>{"{{UsersTable.pageNo}}"}</Text>
+                </BindingKey>
+              </div>
+              <GifContainer>
+                <GifPlayer
+                  gif={
+                    props.theme === EditorTheme.LIGHT
+                      ? lightmodeGif
+                      : darkmodeGif
+                  }
+                  thumbnail={
+                    props.theme === EditorTheme.LIGHT
+                      ? lightmodeThumbnail
+                      : darkmodeThumbnail
+                  }
+                />
+                <Text type={TextType.P3}>
+                  1. 如何配置表格分页
+                </Text>
+              </GifContainer>
+            </PaginationTypeView>,
+            <PaginationTypeView key={PaginationType.URL}>
+              <div>
+                <StepTitle>
+                  <Text type={TextType.P1}>
+                    1. 配置表格分页
+                  </Text>
+                </StepTitle>
+                <Step type={TextType.P1}>1. 打开服务端分页</Step>
+                <Step type={TextType.P1}>2. 配置 OnPageChange 动作</Step>
+                <StepTitle>
+                  <Text type={TextType.P1}>
+                    2. 配置请求参数
+                  </Text>
+                </StepTitle>
+                <Step type={TextType.P1}>配置上一页、下一页 url </Step>
+                <Step type={TextType.P1}>上一页 url</Step>
+                <PaginationFieldWrapper
+                  data-replay-id={btoa("actionConfiguration.prev")}
+                >
+                  <DynamicTextField
+                    border={CodeEditorBorder.ALL_SIDE}
+                    className="t--apiFormPaginationPrev"
+                    fill={!!true}
+                    height="100%"
+                    name="actionConfiguration.prev"
+                    theme={props.theme}
+                  />
+                  <Button
+                    category={Category.tertiary}
+                    className="t--apiFormPaginationPrevTest"
+                    height="auto"
+                    onClick={() => {
+                      props.onTestClick("PREV");
+                    }}
+                    size={Size.medium}
+                    tag="button"
+                    text={"Test"}
+                    type="button"
+                  />
+                </PaginationFieldWrapper>
+                <Step type={TextType.P1}>下一页 url</Step>
+                <PaginationFieldWrapper
+                  data-replay-id={btoa("actionConfiguration.next")}
+                >
+                  <DynamicTextField
+                    border={CodeEditorBorder.ALL_SIDE}
+                    className="t--apiFormPaginationNext"
+                    fill={!!true}
+                    height="100%"
+                    name="actionConfiguration.next"
+                    theme={props.theme}
+                  />
+                  <Button
+                    category={Category.tertiary}
+                    className="t--apiFormPaginationNextTest"
+                    height="auto"
+                    onClick={() => {
+                      props.onTestClick("NEXT");
+                    }}
+                    size={Size.medium}
+                    tag="button"
+                    text={"Test"}
+                    type="button"
+                  />
+                </PaginationFieldWrapper>
+              </div>
+              <GifContainer>
+                <GifPlayer
+                  gif={
+                    props.theme === EditorTheme.LIGHT
+                      ? lightmodeGif
+                      : darkmodeGif
+                  }
+                  thumbnail={
+                    props.theme === EditorTheme.LIGHT
+                      ? lightmodeThumbnail
+                      : darkmodeThumbnail
+                  }
+                />
+                <Text type={TextType.P3}>
+                  1. 如何配置表格分页
+                </Text>
+              </GifContainer>
+            </PaginationTypeView>,
+          ]}
         />
       </FormRow>
-
-      {props.paginationType === PaginationType.URL && (
-        <PaginationTypeView>
-          <div>
-            <Description case={Case.UPPERCASE} type={TextType.H6}>
-              上一页下一页
-            </Description>
-            <StepTitle>
-              <NumberBox>1</NumberBox>
-              <Text type={TextType.P1}>配置表格</Text>
-            </StepTitle>
-            <Step type={TextType.P1}>1. 打开服务端分页</Step>
-            <Step type={TextType.P1}>2. 配置 OnPageChange 动作</Step>
-            <StepTitle>
-              <NumberBox>2</NumberBox>
-              <Text type={TextType.P1}>配置请求参数</Text>
-            </StepTitle>
-            <Step type={TextType.P1}>Configure Next and Previous URL </Step>
-            <Step type={TextType.P1}>Previous url</Step>
-            <PaginationFieldWrapper
-              data-replay-id={btoa("actionConfiguration.prev")}
-            >
-              <DynamicTextField
-                border={CodeEditorBorder.ALL_SIDE}
-                className="t--apiFormPaginationPrev"
-                fill={!!true}
-                height="100%"
-                name="actionConfiguration.prev"
-                theme={props.theme}
-              />
-              <Button
-                category={Category.tertiary}
-                className="t--apiFormPaginationPrevTest"
-                height="auto"
-                onClick={() => {
-                  props.onTestClick("PREV");
-                }}
-                size={Size.medium}
-                tag="button"
-                text={"测试"}
-                type="button"
-              />
-            </PaginationFieldWrapper>
-            <Step type={TextType.P1}>Next url</Step>
-            <PaginationFieldWrapper
-              data-replay-id={btoa("actionConfiguration.next")}
-            >
-              <DynamicTextField
-                border={CodeEditorBorder.ALL_SIDE}
-                className="t--apiFormPaginationNext"
-                fill={!!true}
-                height="100%"
-                name="actionConfiguration.next"
-                theme={props.theme}
-              />
-              <Button
-                category={Category.tertiary}
-                className="t--apiFormPaginationNextTest"
-                height="auto"
-                onClick={() => {
-                  props.onTestClick("NEXT");
-                }}
-                size={Size.medium}
-                tag="button"
-                text={"测试"}
-                type="button"
-              />
-            </PaginationFieldWrapper>
-          </div>
-          {/* <GifContainer>
-            <GifPlayerComponent
-              gif={
-                props.theme === EditorTheme.LIGHT ? lightmodeGif : darkmodeGif
-              }
-              thumbnail={
-                props.theme === EditorTheme.LIGHT
-                  ? lightmodeThumbnail
-                  : darkmodeThumbnail
-              }
-            />
-            <Text type={TextType.P3}>
-              1. How to Configure Table for Pagination
-            </Text>
-          </GifContainer> */}
-        </PaginationTypeView>
-      )}
-      {props.paginationType === PaginationType.PAGE_NO && (
-        <PaginationTypeView>
-          <div>
-            <Description case={Case.UPPERCASE} type={TextType.H6}>
-              使用表格页号分页
-            </Description>
-            <StepTitle>
-              <NumberBox>1</NumberBox>
-              <Text type={TextType.P1}>配置表格</Text>
-            </StepTitle>
-            <Step type={TextType.P1}>1. 打开服务端分页</Step>
-            <Step type={TextType.P1}>2. 配置 OnPageChange 动作</Step>
-            <StepTitle>
-              <NumberBox>2</NumberBox>
-              <Text type={TextType.P1}>配置请求参数</Text>
-            </StepTitle>
-            <Step style={{ width: "336px" }} type={TextType.P1}>
-              绑定 UsersTable 的页号到请求参数或请求头中
-            </Step>
-            <Example type={TextType.P2}>
-              例如 - 绑定表格的 <i>pageNo</i>
-            </Example>
-            <BindingKey>
-              <Text type={TextType.P2}>{"{{UsersTable.pageNo}}"}</Text>
-            </BindingKey>
-          </div>
-          {/* <GifContainer>
-            <GifPlayerComponent
-              gif={
-                props.theme === EditorTheme.LIGHT ? lightmodeGif : darkmodeGif
-              }
-              thumbnail={
-                props.theme === EditorTheme.LIGHT
-                  ? lightmodeThumbnail
-                  : darkmodeThumbnail
-              }
-            />
-            <Text type={TextType.P3}>
-              1. How to Configure Table for Pagination
-            </Text>
-          </GifContainer> */}
-        </PaginationTypeView>
-      )}
     </PaginationSection>
   );
 }

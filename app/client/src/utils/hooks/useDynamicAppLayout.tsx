@@ -24,8 +24,8 @@ import {
 } from "./dragResizeHooks";
 import { getAppMode } from "selectors/entitiesSelector";
 import { updateCanvasLayoutAction } from "actions/editorActions";
-import { calculateDynamicHeight } from "utils/DSLMigrations";
 import { getIsCanvasInitialized } from "selectors/mainCanvasSelectors";
+import { calculateDynamicHeight } from "utils/DSLMigrations";
 
 const BORDERS_WIDTH = 2;
 const GUTTER_WIDTH = 72;

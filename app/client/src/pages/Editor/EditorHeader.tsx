@@ -12,7 +12,7 @@ import AnalyticsUtil from "utils/AnalyticsUtil";
 import { FormDialogComponent } from "components/editorComponents/form/FormDialogComponent";
 import PagePlugLogo from "assets/images/pageplug_icon_mint.svg";
 import { Link } from "react-router-dom";
-import { AppState } from "reducers";
+import { AppState } from "@appsmith/reducers";
 import {
   getCurrentApplicationId,
   getCurrentPageId,
@@ -37,8 +37,7 @@ import EditorAppName from "./EditorAppName";
 import ProfileDropdown from "pages/common/ProfileDropdown";
 import { getCurrentUser, selectFeatureFlags } from "selectors/usersSelectors";
 import { ANONYMOUS_USERNAME, User } from "constants/userConstants";
-import Button, { Size } from "components/ads/Button";
-import Icon, { IconSize } from "components/ads/Icon";
+import { Button, Icon, IconSize, Size, TooltipComponent } from "design-system";
 import { Profile } from "pages/common/ProfileImage";
 import { getTypographyByKey } from "constants/DefaultTheme";
 import HelpBar from "components/editorComponents/GlobalSearch/HelpBar";
@@ -58,12 +57,13 @@ import { fetchUsersForWorkspace } from "actions/workspaceActions";
 import { WorkspaceUser } from "constants/workspaceConstants";
 
 import { getIsGitConnected } from "selectors/gitSyncSelectors";
-import { TooltipComponent } from "design-system";
 import { IconWrapper } from "components/ads/Icon";
 import {
   CLOSE_ENTITY_EXPLORER_MESSAGE,
   createMessage,
   DEPLOY_BUTTON_TOOLTIP,
+  INVITE_USERS_MESSAGE,
+  INVITE_USERS_PLACEHOLDER,
   LOCK_ENTITY_EXPLORER_MESSAGE,
   LOGO_TOOLTIP,
   RENAME_APPLICATION_TOOLTIP,
@@ -86,6 +86,7 @@ import EndTour from "./GuidedTour/EndTour";
 import { GUIDED_TOUR_STEPS } from "./GuidedTour/constants";
 import { viewerURL } from "RouteBuilder";
 import { useHref } from "./utils";
+import { inviteModalLinks } from "@appsmith/constants/forms";
 import moment from "moment/moment";
 
 const HeaderWrapper = styled.div`
@@ -575,6 +576,9 @@ export function EditorHeader(props: EditorHeaderProps) {
                 bgColor: Colors.GEYSER_LIGHT,
               }}
               isOpen={showAppInviteUsersDialog}
+              links={inviteModalLinks}
+              message={createMessage(INVITE_USERS_MESSAGE)}
+              placeholder={createMessage(INVITE_USERS_PLACEHOLDER)}
               title={currentApplication ? currentApplication.name : "分享应用"}
               trigger={
                 <TooltipComponent

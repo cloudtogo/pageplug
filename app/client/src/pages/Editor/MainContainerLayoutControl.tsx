@@ -12,8 +12,7 @@ import {
   AppLayoutConfig,
   SupportedLayouts,
 } from "reducers/entityReducers/pageListReducer";
-import { TooltipComponent } from "design-system";
-import Icon, { IconName, IconSize } from "components/ads/Icon";
+import { TooltipComponent, Icon, IconName, IconSize } from "design-system";
 import { updateApplicationLayout } from "actions/applicationActions";
 
 interface AppsmithLayoutConfigOption {
@@ -38,12 +37,12 @@ const AppsmithLayouts: AppsmithLayoutConfigOption[] = [
     icon: "desktop",
   },
   {
-    name: "大平板宽度",
+    name: "平板宽度（横向）",
     type: "TABLET_LARGE",
-    icon: "tablet",
+    icon: "tabletLandscape",
   },
   {
-    name: "平板宽度",
+    name: "平板宽度（竖向）",
     type: "TABLET",
     icon: "tablet",
   },

@@ -60,7 +60,7 @@ function ThemeColorControl(props: ThemeColorControlProps) {
       </div>
       {selectedColor && (
         <div className="pt-1 space-y-1">
-          <h3 className="text-gray-700">
+          <h3>
             {FOOL_TRANSLATE[startCase(selectedColor)] ||
               startCase(selectedColor)}
           </h3>

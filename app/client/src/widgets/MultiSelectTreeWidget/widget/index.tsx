@@ -2,13 +2,13 @@ import React, { ReactNode } from "react";
 import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { TextSize, WidgetType } from "constants/WidgetConstants";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import { isArray, findIndex, xor } from "lodash";
+import { isArray, xor } from "lodash";
 import {
   ValidationResponse,
   ValidationTypes,
 } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import { DefaultValueType } from "rc-select/lib/interface/generator";
+import { DefaultValueType } from "rc-tree-select/lib/interface";
 import { Layers } from "constants/Layers";
 import { CheckedStrategy } from "rc-tree-select/lib/utils/strategyUtil";
 import { GRID_DENSITY_MIGRATION_V1, MinimumPopupRows } from "widgets/constants";
@@ -16,6 +16,7 @@ import { AutocompleteDataType } from "utils/autocomplete/TernServer";
 import MultiTreeSelectComponent from "../component";
 import { LabelPosition } from "components/constants";
 import { Alignment } from "@blueprintjs/core";
+import derivedProperties from "./parseDerivedProperties";
 
 function defaultOptionValueValidation(value: unknown): ValidationResponse {
   let values: string[] = [];
@@ -833,11 +834,11 @@ class MultiSelectTreeWidget extends BaseWidget<
 
   static getDerivedPropertiesMap() {
     return {
-      selectedOptionLabels: `{{ this.selectedLabel }}`,
-      selectedOptionValues:
-        '{{ this.selectedOptionValueArr.filter((o) => JSON.stringify(this.options).match(new RegExp(`"value":"${o}"`, "g")) )}}',
-      isValid: `{{ this.isRequired  ? this.selectedOptionValues?.length > 0 : true}}`,
       value: `{{this.selectedOptionValues}}`,
+      isValid: `{{(()=>{${derivedProperties.getIsValid}})()}}`,
+      flattenedOptions: `{{(()=>{${derivedProperties.getFlattenedOptions}})()}}`,
+      selectedOptionValues: `{{(()=>{${derivedProperties.getSelectedOptionValues}})()}}`,
+      selectedOptionLabels: `{{(()=>{${derivedProperties.getSelectedOptionLabels}})()}}`,
     };
   }
 
@@ -851,7 +852,7 @@ class MultiSelectTreeWidget extends BaseWidget<
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       selectedOptionValueArr: undefined,
-      selectedLabel: [],
+      selectedLabel: undefined,
       isDirty: false,
     };
   }
@@ -867,17 +868,7 @@ class MultiSelectTreeWidget extends BaseWidget<
   }
 
   getPageView() {
-    const options =
-      isArray(this.props.options) &&
-      !this.props.__evaluation__?.errors.options.length
-        ? this.props.options
-        : [];
-
-    const values = isArray(this.props.selectedOptionValueArr)
-      ? this.props.selectedOptionValueArr
-      : [];
-
-    const filteredValue = this.filterValues(values);
+    const options = isArray(this.props.options) ? this.props.options : [];
     const dropDownWidth = MinimumPopupRows * this.props.parentColumnSpace;
     const { componentWidth } = this.getComponentDimensions();
     const isInvalid =
@@ -916,7 +907,7 @@ class MultiSelectTreeWidget extends BaseWidget<
         options={options}
         placeholder={this.props.placeholderText as string}
         renderMode={this.props.renderMode}
-        value={filteredValue}
+        value={this.props.selectedOptionValues}
         widgetId={this.props.widgetId}
         width={componentWidth}
       />
@@ -939,27 +930,6 @@ class MultiSelectTreeWidget extends BaseWidget<
       this.props.updateWidgetMetaProperty("isDirty", true);
     }
   };
-
-  flat(array: DropdownOption[]) {
-    let result: { value: string }[] = [];
-    array.forEach((a) => {
-      result.push({ value: a.value });
-      if (Array.isArray(a.children)) {
-        result = result.concat(this.flat(a.children));
-      }
-    });
-    return result;
-  }
-
-  filterValues(values: string[] | undefined) {
-    const options = this.props.options ? this.flat(this.props.options) : [];
-    if (isArray(values)) {
-      return values.filter((o) => {
-        const index = findIndex(options, { value: o });
-        return index > -1;
-      });
-    }
-  }
 
   static getWidgetType(): WidgetType {
     return "MULTI_SELECT_TREE_WIDGET";

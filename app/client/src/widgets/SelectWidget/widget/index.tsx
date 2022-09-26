@@ -16,12 +16,12 @@ import { AutocompleteDataType } from "utils/autocomplete/TernServer";
 import {
   findIndex,
   isArray,
-  isEqual,
   isNil,
   isNumber,
   isString,
   LoDashStatic,
 } from "lodash";
+import equal from "fast-deep-equal/es6";
 import derivedProperties from "./parseDerivedProperties";
 
 export function defaultOptionValueValidation(
@@ -169,7 +169,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
             helpText: "默认选中这个值",
             propertyName: "defaultOptionValue",
             label: "默认值",
-            controlType: "INPUT_TEXT",
+            controlType: "SELECT_DEFAULT_VALUE_CONTROL",
             placeholderText: '{ "label": "label1", "value": "value1" }',
             isBindProperty: true,
             isTriggerProperty: false,
@@ -512,7 +512,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
             helpText: "默认选中这个值",
             propertyName: "defaultOptionValue",
             label: "默认选中值",
-            controlType: "INPUT_TEXT",
+            controlType: "SELECT_DEFAULT_VALUE_CONTROL",
             placeholderText: '{ "label": "label1", "value": "value1" }',
             isBindProperty: true,
             isTriggerProperty: false,
@@ -869,7 +869,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
   componentDidUpdate(prevProps: SelectWidgetProps): void {
     // Reset isDirty to false if defaultOptionValue changes
     if (
-      !isEqual(this.props.defaultOptionValue, prevProps.defaultOptionValue) &&
+      !equal(this.props.defaultOptionValue, prevProps.defaultOptionValue) &&
       this.props.isDirty
     ) {
       this.props.updateWidgetMetaProperty("isDirty", false);

@@ -9,7 +9,7 @@ import { Icon, NonIdealState, Spinner } from "@blueprintjs/core";
 import Centered from "components/designSystems/appsmith/CenteredWrapper";
 import AppPage from "./AppPage";
 import {
-  getCanvasWidgetDsl,
+  getCanvasWidth,
   getCurrentPageName,
   isMobileLayout,
 } from "selectors/editorSelectors";
@@ -20,6 +20,8 @@ import {
   PERMISSION_TYPE,
 } from "../Applications/permissionHelpers";
 import { builderURL } from "RouteBuilder";
+import { getCanvasWidgetsStructure } from "selectors/entitiesSelector";
+import equal from "fast-deep-equal/es6";
 
 const Section = styled.section<{
   height: number;
@@ -38,7 +40,8 @@ type AppViewerPageContainerProps = RouteComponentProps<AppViewerRouteParams>;
 
 function AppViewerPageContainer(props: AppViewerPageContainerProps) {
   const currentPageName = useSelector(getCurrentPageName);
-  const widgets = useSelector(getCanvasWidgetDsl);
+  const widgetsStructure = useSelector(getCanvasWidgetsStructure, equal);
+  const canvasWidth = useSelector(getCanvasWidth);
   const isFetchingPage = useSelector(getIsFetchingPage);
   const currentApplication = useSelector(getCurrentApplication);
   const { match } = props;
@@ -95,7 +98,8 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
 
   if (isFetchingPage) return pageLoading;
 
-  if (!(widgets.children && widgets.children.length > 0)) return pageNotFound;
+  if (!(widgetsStructure.children && widgetsStructure.children.length > 0))
+    return pageNotFound;
 
   return (
     <Section
@@ -105,9 +109,10 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
     >
       <AppPage
         appName={currentApplication?.name}
-        dsl={widgets}
+        canvasWidth={canvasWidth}
         pageId={match.params.pageId}
         pageName={currentPageName}
+        widgetsStructure={widgetsStructure}
       />
       <RequestConfirmationModal />
     </Section>
