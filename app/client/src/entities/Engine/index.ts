@@ -11,7 +11,7 @@ import {
   ApplicationPayload,
   ReduxActionErrorTypes,
   ReduxActionTypes,
-} from "ce/constants/ReduxActionConstants";
+} from "@appsmith/constants/ReduxActionConstants";
 import { getPersistentAppStore } from "constants/AppConstants";
 import { APP_MODE } from "entities/App";
 import log from "loglevel";

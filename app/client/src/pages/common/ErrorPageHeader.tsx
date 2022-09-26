@@ -5,7 +5,7 @@ import { getCurrentUser } from "selectors/usersSelectors";
 import styled from "styled-components";
 import StyledHeader from "components/designSystems/appsmith/StyledHeader";
 import PagePlugLogo from "assets/images/pageplug_logo_black.svg";
-import { AppState } from "reducers";
+import { AppState } from "@appsmith/reducers";
 import { User, ANONYMOUS_USERNAME } from "constants/userConstants";
 import { AUTH_LOGIN_URL, APPLICATIONS_URL } from "constants/routes";
 import Button from "components/editorComponents/Button";

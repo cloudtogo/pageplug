@@ -1,7 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
-import { AppState } from "reducers";
-import { Hotkey, Hotkeys, HotkeysTarget } from "@blueprintjs/core";
+import { AppState } from "@appsmith/reducers";
+import { Hotkey, Hotkeys } from "@blueprintjs/core";
+import { HotkeysTarget } from "@blueprintjs/core/lib/esnext/components/hotkeys/hotkeysTarget.js";
 import {
   closePropertyPane,
   closeTableFilterPane,
@@ -17,7 +18,7 @@ import {
 } from "actions/widgetSelectionActions";
 import { setGlobalSearchCategory } from "actions/globalSearchActions";
 import { isMacOrIOS } from "utils/helpers";
-import { getSelectedWidget, getSelectedWidgets } from "selectors/ui";
+import { getLastSelectedWidget, getSelectedWidgets } from "selectors/ui";
 import { MAIN_CONTAINER_WIDGET_ID } from "constants/WidgetConstants";
 import { getSelectedText } from "utils/helpers";
 import AnalyticsUtil from "utils/AnalyticsUtil";
@@ -382,7 +383,7 @@ class GlobalHotKeys extends React.Component<Props> {
 }
 
 const mapStateToProps = (state: AppState) => ({
-  selectedWidget: getSelectedWidget(state),
+  selectedWidget: getLastSelectedWidget(state),
   selectedWidgets: getSelectedWidgets(state),
   isDebuggerOpen: state.ui.debugger.isOpen,
   appMode: getAppMode(state),

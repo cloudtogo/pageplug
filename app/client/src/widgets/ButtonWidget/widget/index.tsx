@@ -18,7 +18,6 @@ import {
   ButtonPlacementTypes,
   ButtonPlacement,
 } from "components/constants";
-import FormWidget from "widgets/FormWidget/widget";
 
 class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
   onButtonClickBound: (event: React.MouseEvent<HTMLElement>) => void;
@@ -147,11 +146,6 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
       // TODO: refactor widgetParentProps implementation when we address #10659
       {
         sectionName: "表单设置",
-        hidden: (
-          props: ButtonWidgetProps,
-          propertyPath: string,
-          widgetParentProps?: WidgetProps,
-        ) => widgetParentProps?.type !== FormWidget.getWidgetType(),
         children: [
           {
             helpText: "当按钮位于表单下，表单必须校验成功时按钮才可以点击",
@@ -450,11 +444,6 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
       // TODO: refactor widgetParentProps implementation when we address #10659
       {
         sectionName: "表单配置",
-        hidden: (
-          props: ButtonWidgetProps,
-          propertyPath: string,
-          widgetParentProps?: WidgetProps,
-        ) => widgetParentProps?.type !== FormWidget.getWidgetType(),
         children: [
           {
             helpText: "当按钮位于表单下，表单必须校验成功时按钮才可以点击",

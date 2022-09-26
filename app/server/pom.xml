@@ -25,6 +25,7 @@
         <!-- By default skip the dockerization step. Only activate if necessary -->
         <skipDockerBuild>true</skipDockerBuild>
         <log4j2.version>2.17.1</log4j2.version>
+        <h2.version>2.1.210</h2.version>
     </properties>
 
     <build>
@@ -68,11 +69,11 @@
     </build>
 
     <modules>
+        <module>reactive-caching</module>
         <module>appsmith-interfaces</module>
         <module>appsmith-plugins</module>
         <module>appsmith-server</module>
         <module>appsmith-git</module>
-        <module>reactive-caching</module>
     </modules>
 
 </project>
