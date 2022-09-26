@@ -29,7 +29,7 @@ import saaSPaneSagas from "sagas/SaaSPaneSagas";
 import actionExecutionChangeListeners from "sagas/WidgetLoadingSaga";
 import globalSearchSagas from "sagas/GlobalSearchSagas";
 import recentEntitiesSagas from "sagas/RecentEntitiesSagas";
-import websocketSagas from "sagas/WebsocketSagas/WebsocketSagas";
+// import websocketSagas from "sagas/WebsocketSagas/WebsocketSagas";
 import debuggerSagas from "sagas/DebuggerSagas";
 import replaySaga from "sagas/ReplaySaga";
 import selectionCanvasSagas from "sagas/CanvasSagas/SelectionCanvasSagas";
@@ -72,7 +72,7 @@ export const sagas = [
   utilSagas,
   globalSearchSagas,
   recentEntitiesSagas,
-  websocketSagas,
+  // websocketSagas,
   debuggerSagas,
   saaSPaneSagas,
   selectionCanvasSagas,
