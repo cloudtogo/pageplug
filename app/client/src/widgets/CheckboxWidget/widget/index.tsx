@@ -524,7 +524,6 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
         labelTextColor={this.props.labelTextColor}
         labelTextSize={this.props.labelTextSize}
         onCheckChange={this.onCheckChange}
-        rowSpace={this.props.parentRowSpace}
         widgetId={this.props.widgetId}
       />
     );

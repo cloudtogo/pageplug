@@ -5,6 +5,16 @@ export function createMessage(
   return format(...args);
 }
 
+/*
+  For self hosted, it displays the string "Appsmith Community v1.10.0" or "Appsmith Business v1.10.0".
+  For cloud hosting, it displays "Appsmith v1.10.0". 
+  This is because Appsmith Cloud doesn't support business features yet.
+ */
+export const APPSMITH_DISPLAY_VERSION = (
+  edition: string,
+  version: string,
+  cloudHosting: boolean,
+) => `Appsmith ${!cloudHosting ? edition : ""} ${version}`;
 export const YES = () => `是的`;
 export const ARE_YOU_SURE = () => `确定吗？`;
 export const ERROR_ADD_API_INVALID_URL = () =>
@@ -24,7 +34,8 @@ export const INPUT_DEFAULT_TEXT_MIN_NUM_ERROR = () => `默认文本长度超出�
 export const VALID_FUNCTION_NAME_ERROR = () => `函数名不符合规范（驼峰式）`;
 export const UNIQUE_NAME_ERROR = () => `名字必须唯一`;
 export const NAME_SPACE_ERROR = () => `名字中间不能包含空格`;
-export const SPECIAL_CHARACTER_ERROR = () => `名字只能包含字母和数字`;
+export const APLHANUMERIC_HYPHEN_SLASH_SPACE_ERROR = () =>
+  `名字只能包含字母、数字、连字符（-）、斜杠（/）和空格`;
 
 export const FORM_VALIDATION_EMPTY_EMAIL = () => `请填写邮箱地址`;
 export const FORM_VALIDATION_INVALID_EMAIL = () => `请填写有效的邮箱地址`;
@@ -108,6 +119,8 @@ export const INVITE_USERS_ROLE_SELECT_PLACEHOLDER = () => `请选择角色`;
 export const INVITE_USERS_ROLE_SELECT_LABEL = () => `角色`;
 export const INVITE_USERS_EMAIL_LIST_LABEL = () => `邮箱`;
 export const INVITE_USERS_ADD_EMAIL_LIST_FIELD = () => `添加`;
+export const INVITE_USERS_MESSAGE = () => `邀请小伙伴`;
+export const INVITE_USERS_PLACEHOLDER = () => `请输入邮箱地址`;
 export const INVITE_USERS_SUBMIT_BUTTON_TEXT = () => `邀请小伙伴`;
 export const INVITE_USERS_SUBMIT_SUCCESS = () => `邀请成功`;
 export const INVITE_USER_SUBMIT_SUCCESS = () => `邀请成功`;
@@ -182,6 +195,8 @@ export const ERROR_DATEPICKER_MAX_DATE = () => `超出最大日期限制`;
 export const ERROR_WIDGET_DOWNLOAD = (err: string) => `下载失败！ ${err}`;
 export const ERROR_PLUGIN_ACTION_EXECUTE = (actionName: string) =>
   `${actionName} 动作运行失败`;
+export const ACTION_EXECUTION_CANCELLED = (actionName: string) =>
+  `${actionName} 已取消`;
 export const ERROR_FAIL_ON_PAGE_LOAD_ACTIONS = () =>
   `页面加载后关联的动作运行失败`;
 export const ERROR_ACTION_EXECUTE_FAIL = (actionName: string) =>
@@ -290,6 +305,10 @@ export const PRESS = () => "🎉 按 ";
 export const OPEN_THE_DEBUGGER = () => " 显示/隐藏调试器";
 export const DEBUGGER_QUERY_RESPONSE_SECOND_HALF = () =>
   " 在调试器中显示更多信息";
+export const LOGS_FILTER_OPTION_ALL = () => "所有日志";
+export const LOGS_FILTER_OPTION_ERROR = () => "错误日志";
+export const LOGS_FILTER_OPTION_CONSOLE = () => "控制台日志";
+export const LOGS_FILTER_OPTION_SYSTEM = () => "系统日志";
 export const NO_LOGS = () => "暂无日志";
 export const NO_ERRORS = () => "🌈 一切顺利！";
 export const DEBUGGER_ERRORS = () => "错误";
@@ -310,8 +329,6 @@ export const DEBUGGER_TRIGGER_ERROR = (propertyName: string) =>
   `解析触发器 ${propertyName} 时出错了`;
 
 export const TROUBLESHOOT_ISSUE = () => "答疑解惑";
-export const DEBUGGER_SEARCH_GOOGLE = () => "求助搜索引擎";
-export const DEBUGGER_COPY_MESSAGE = () => "复制";
 export const DEBUGGER_OPEN_DOCUMENTATION = () => "打开文档";
 export const DEBUGGER_SEARCH_SNIPPET = () => "查看代码片段";
 export const DEBUGGER_APPSMITH_SUPPORT = () => "获取官方支持";
@@ -1081,3 +1098,5 @@ export const CLEAN_URL_UPDATE = {
   disclaimer: () =>
     "引用了 <strong>appsmith.URL.fullpath</strong> 和 <strong>appsmith.URL.pathname</strong> 的属性会有显示出变化",
 };
+
+export const MEMBERS_TAB_TITLE = (length: number) => `Users (${length})`;

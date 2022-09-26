@@ -1,5 +1,5 @@
 import { createModalAction } from "actions/widgetActions";
-import { TreeDropdownOption } from "components/ads/TreeDropdown";
+import { TreeDropdownOption } from "design-system";
 import TreeStructure from "components/utils/TreeStructure";
 import { PluginType } from "entities/Action";
 import { isString, keyBy } from "lodash";
@@ -8,9 +8,9 @@ import {
   JsFileIconV2,
   jsFunctionIcon,
 } from "pages/Editor/Explorer/ExplorerIcons";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppState } from "reducers";
+import { AppState } from "@appsmith/reducers";
 import { getWidgetOptionsTree } from "sagas/selectors";
 import {
   getCurrentApplicationId,
@@ -20,7 +20,6 @@ import {
 import {
   getActionsForCurrentPage,
   getJSCollectionsForCurrentPage,
-  getPageListAsOptions,
 } from "selectors/entitiesSelector";
 import {
   getModalDropdownList,
@@ -62,6 +61,8 @@ import { filterCategories, SEARCH_CATEGORY_ID } from "../GlobalSearch/utils";
 import { ActionDataState } from "reducers/entityReducers/actionsReducer";
 import { selectFeatureFlags } from "selectors/usersSelectors";
 import FeatureFlags from "entities/FeatureFlags";
+import { connect } from "react-redux";
+import { isValidURL } from "utils/URLUtils";
 
 /* eslint-disable @typescript-eslint/ban-types */
 /* TODO: Function and object types need to be updated to enable the lint rule */
@@ -156,8 +157,15 @@ const getBaseOptions = (featureFlags: FeatureFlags, isMobile?: boolean) => {
   return baseOptions;
 };
 
+type Switch = {
+  id: string;
+  text: string;
+  action: () => void;
+};
+
 function getFieldFromValue(
   value: string | undefined,
+  activeTabNavigateTo: Switch,
   getParentValue?: Function,
   dataTree?: DataTree,
   isMobile?: boolean,
@@ -197,6 +205,7 @@ function getFieldFromValue(
         }
         const successFields = getFieldFromValue(
           successValue,
+          activeTabNavigateTo,
           (changeValue: string) => {
             const matches = [...value.matchAll(ACTION_TRIGGER_REGEX)];
             const args = [
@@ -224,6 +233,7 @@ function getFieldFromValue(
         }
         const errorFields = getFieldFromValue(
           errorValue,
+          activeTabNavigateTo,
           (changeValue: string) => {
             const matches = [...value.matchAll(ACTION_TRIGGER_REGEX)];
             const args = [
@@ -296,9 +306,20 @@ function getFieldFromValue(
   });
   if (value.indexOf("navigateTo") !== -1) {
     fields.push({
-      field: FieldType.URL_FIELD,
-      isMobile,
+      field: FieldType.PAGE_NAME_AND_URL_TAB_SELECTOR_FIELD,
     });
+
+    if (activeTabNavigateTo.id === NAVIGATE_TO_TAB_OPTIONS.PAGE_NAME) {
+      fields.push({
+        field: FieldType.PAGE_SELECTOR_FIELD,
+      });
+    } else {
+      fields.push({
+        field: FieldType.URL_FIELD,
+        isMobile,
+      });
+    }
+
     fields.push({
       field: FieldType.QUERY_PARAMS_FIELD,
     });
@@ -445,7 +466,7 @@ function getIntegrationOptionsWithChildren(
     icon: "plus",
     className: "t--create-js-object-btn",
     onSelect: () => {
-      dispatch(createNewJSCollection(pageId));
+      dispatch(createNewJSCollection(pageId, "ACTION_SELECTOR"));
     },
   };
   const queries = actions.filter(
@@ -497,14 +518,14 @@ function getIntegrationOptionsWithChildren(
     jsOption.children = [createJSObject];
     jsActions.forEach((jsAction) => {
       if (jsAction.config.actions && jsAction.config.actions.length > 0) {
-        const jsObject = {
+        const jsObject = ({
           label: jsAction.config.name,
           id: jsAction.config.id,
           value: jsAction.config.name,
           type: jsOption.value,
           icon: JsFileIconV2,
-        } as TreeDropdownOption;
-        (jsOption.children as TreeDropdownOption[]).push(jsObject);
+        } as unknown) as TreeDropdownOption;
+        ((jsOption.children as unknown) as TreeDropdownOption[]).push(jsObject);
         if (jsObject) {
           //don't remove this will be used soon
           // const createJSFunction: TreeDropdownOption = {
@@ -537,7 +558,7 @@ function getIntegrationOptionsWithChildren(
               args: argValue,
             };
             (jsObject.children as TreeDropdownOption[]).push(
-              jsFunction as TreeDropdownOption,
+              (jsFunction as unknown) as TreeDropdownOption,
             );
           });
         }
@@ -590,33 +611,75 @@ type ActionCreatorProps = {
   value: string;
   onValueChange: (newValue: string, isUpdatedViaKeyboard: boolean) => void;
   additionalAutoComplete?: Record<string, Record<string, unknown>>;
+  pageDropdownOptions: TreeDropdownOption[];
 };
 
-export const ActionCreator = React.forwardRef(
+const NAVIGATE_TO_TAB_OPTIONS = {
+  PAGE_NAME: "page-name",
+  URL: "url",
+};
+
+const isValueValidURL = (value: string) => {
+  if (value) {
+    const indices = [];
+    for (let i = 0; i < value.length; i++) {
+      if (value[i] === "'") {
+        indices.push(i);
+      }
+    }
+    const str = value.substring(indices[0], indices[1] + 1);
+    return isValidURL(str);
+  }
+};
+
+const ActionCreator = React.forwardRef(
   (props: ActionCreatorProps, ref: any) => {
+    const NAVIGATE_TO_TAB_SWITCHER: Array<Switch> = [
+      {
+        id: "page-name",
+        text: "Page Name",
+        action: () => {
+          setActiveTabNavigateTo(NAVIGATE_TO_TAB_SWITCHER[0]);
+        },
+      },
+      {
+        id: "url",
+        text: "URL",
+        action: () => {
+          setActiveTabNavigateTo(NAVIGATE_TO_TAB_SWITCHER[1]);
+        },
+      },
+    ];
+
+    const [activeTabNavigateTo, setActiveTabNavigateTo] = useState(
+      NAVIGATE_TO_TAB_SWITCHER[isValueValidURL(props.value) ? 1 : 0],
+    );
     const dataTree = useSelector(getDataTree);
     const integrationOptionTree = useIntegrationsOptionTree();
     const widgetOptionTree = useSelector(getWidgetOptionsTree);
     const modalDropdownList = useModalDropdownList();
-    const pageDropdownOptions = useSelector(getPageListAsOptions);
     const isMobile = useSelector(isMobileLayout);
     const fields = getFieldFromValue(
       props.value,
+      activeTabNavigateTo,
       undefined,
       dataTree,
       isMobile,
     );
+
     return (
       <TreeStructure ref={ref}>
         <Fields
+          activeNavigateToTab={activeTabNavigateTo}
           additionalAutoComplete={props.additionalAutoComplete}
           depth={1}
           fields={fields}
           integrationOptionTree={integrationOptionTree}
           maxDepth={1}
           modalDropdownList={modalDropdownList}
+          navigateToSwitches={NAVIGATE_TO_TAB_SWITCHER}
           onValueChange={props.onValueChange}
-          pageDropdownOptions={pageDropdownOptions}
+          pageDropdownOptions={props.pageDropdownOptions}
           value={props.value}
           widgetOptionTree={widgetOptionTree}
         />
@@ -624,3 +687,17 @@ export const ActionCreator = React.forwardRef(
     );
   },
 );
+
+const getPageListAsOptions = (state: AppState) => {
+  return state.entities.pageList.pages.map((page) => ({
+    label: page.pageName,
+    id: page.pageId,
+    value: `'${page.pageName}'`,
+  }));
+};
+
+const mapStateToProps = (state: AppState) => ({
+  pageDropdownOptions: getPageListAsOptions(state),
+});
+
+export default connect(mapStateToProps)(ActionCreator);

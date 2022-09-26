@@ -1,5 +1,5 @@
 import CanvasWidgetsNormalizer from "normalizers/CanvasWidgetsNormalizer";
-import { AppState } from "reducers";
+import { AppState } from "@appsmith/reducers";
 import {
   Page,
   ReduxAction,
@@ -503,7 +503,9 @@ function* savePageSaga(action: ReduxAction<{ isRetry?: boolean }>) {
           correctWidget: JSON.stringify(normalizedWidgets),
         });
         yield put(
-          updateAndSaveLayout(normalizedWidgets.entities.canvasWidgets, true),
+          updateAndSaveLayout(normalizedWidgets.entities.canvasWidgets, {
+            isRetry: true,
+          }),
         );
       }
     }
@@ -815,6 +817,7 @@ export function* updateWidgetNameSaga(
       // @ts-expect-error parentId can be undefined
       widgets[parentId] = parent;
       // Update and save the new widgets
+      //TODO Identify the updated widgets and pass the values
       yield put(updateAndSaveLayout(widgets));
       // Send a update saying that we've successfully updated the name
       yield put(updateWidgetNameSuccess());

@@ -149,6 +149,9 @@ import { WidgetConfiguration } from "widgets/constants";
 import TableWidgetV2, {
   CONFIG as TABLE_WIDGET_CONFIG_V2,
 } from "widgets/TableWidgetV2";
+import CodeScannerWidget, {
+  CONFIG as CODE_SCANNER_WIDGET_CONFIG,
+} from "widgets/CodeScannerWidget";
 
 import FormilyWidget, {
   CONFIG as FORMILY_WIDGET_CONFIG,
@@ -260,6 +263,7 @@ export const ALL_WIDGETS_AND_CONFIG = [
   [CurrencyInputWidget, CURRENCY_INPUT_WIDGET_V2_CONFIG],
   [JSONFormWidget, JSON_FORM_WIDGET_CONFIG],
   [TableWidgetV2, TABLE_WIDGET_CONFIG_V2],
+  [CodeScannerWidget, CODE_SCANNER_WIDGET_CONFIG],
 
   [FormilyWidget, FORMILY_WIDGET_CONFIG],
 
