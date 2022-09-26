@@ -726,21 +726,6 @@ function ApplicationsSection(props: any) {
             PERMISSION_TYPE.CREATE_APPLICATION,
           ) && !isMobile;
 
-        const onClickAddNewButton = (workspaceId: string) => {
-          if (
-            Object.entries(creatingApplicationMap).length === 0 ||
-            (creatingApplicationMap && !creatingApplicationMap[workspaceId])
-          ) {
-            createNewApplication(
-              getNextEntityName(
-                "Untitled application ",
-                applications.map((el: any) => el.name),
-              ),
-              workspaceId,
-            );
-          }
-        };
-
         return (
           <WorkspaceSection
             className="t--workspace-section"
