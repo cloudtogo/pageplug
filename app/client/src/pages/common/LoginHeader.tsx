@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { getCurrentUser } from "selectors/usersSelectors";
 import styled from "styled-components";
 import StyledHeader from "components/designSystems/appsmith/StyledHeader";
-import { AppState } from "reducers";
+import { AppState } from "@appsmith/reducers";
 import { BASE_URL } from "constants/routes";
 import { Colors } from "constants/Colors";
 import LogoImage from "assets/images/pageplug_logo_black.svg";

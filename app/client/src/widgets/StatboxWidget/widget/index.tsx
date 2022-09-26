@@ -1,5 +1,4 @@
 import { WidgetType } from "constants/WidgetConstants";
-import { WidgetProps } from "widgets/BaseWidget";
 import ContainerWidget from "widgets/ContainerWidget";
 
 import { ValidationTypes } from "constants/WidgetValidation";
@@ -205,17 +204,6 @@ class StatboxWidget extends ContainerWidget {
         ],
       },
     ];
-  }
-
-  renderChildWidget(childWidgetData: WidgetProps): React.ReactNode {
-    if (childWidgetData.children) {
-      childWidgetData.children.forEach((grandChild: WidgetProps) => {
-        if (grandChild.type === "ICON_BUTTON_WIDGET" && !!grandChild.onClick) {
-          grandChild.boxShadow = "VARIANT1";
-        }
-      });
-    }
-    return super.renderChildWidget(childWidgetData);
   }
 
   static getWidgetType(): WidgetType {

@@ -3,24 +3,15 @@ import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { WidgetType } from "constants/WidgetConstants";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import derivedProperties from "./parseDerivedProperties";
-import {
-  isArray,
-  isEqual,
-  isFinite,
-  isString,
-  LoDashStatic,
-  xorWith,
-} from "lodash";
+import { isArray, isFinite, isString, LoDashStatic, xorWith } from "lodash";
+import equal from "fast-deep-equal/es6";
 import {
   ValidationResponse,
   ValidationTypes,
 } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import MultiSelectComponent from "../component";
-import {
-  DefaultValueType,
-  LabelValueType,
-} from "rc-select/lib/interface/generator";
+import { DraftValueType, LabelInValueType } from "rc-select/lib/Select";
 import { Layers } from "constants/Layers";
 import { MinimumPopupRows, GRID_DENSITY_MIGRATION_V1 } from "widgets/constants";
 import { LabelPosition } from "components/constants";
@@ -241,7 +232,7 @@ class MultiSelectWidget extends BaseWidget<
             helpText: "设置默认选中的选项值",
             propertyName: "defaultOptionValue",
             label: "默认值",
-            controlType: "INPUT_TEXT",
+            controlType: "SELECT_DEFAULT_VALUE_CONTROL",
             placeholderText: "[GREEN]",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -256,8 +247,7 @@ class MultiSelectWidget extends BaseWidget<
                 },
               },
             },
-            evaluationSubstitutionType:
-              EvaluationSubstitutionType.SMART_SUBSTITUTE,
+            dependencies: ["serverSideFiltering", "options"],
           },
           {
             helpText: "设置占位文本",
@@ -599,7 +589,7 @@ class MultiSelectWidget extends BaseWidget<
             helpText: "设置默认选中的选项值",
             propertyName: "defaultOptionValue",
             label: "默认选中值",
-            controlType: "INPUT_TEXT",
+            controlType: "SELECT_DEFAULT_VALUE_CONTROL",
             placeholderText: "[GREEN]",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -614,8 +604,7 @@ class MultiSelectWidget extends BaseWidget<
                 },
               },
             },
-            evaluationSubstitutionType:
-              EvaluationSubstitutionType.SMART_SUBSTITUTE,
+            dependencies: ["serverSideFiltering", "options"],
           },
         ],
       },
@@ -958,6 +947,7 @@ class MultiSelectWidget extends BaseWidget<
     // Check if defaultOptionValue is string
     let isStringArray = false;
     if (
+      this.props.defaultOptionValue &&
       this.props.defaultOptionValue.some(
         (value: any) => isString(value) || isFinite(value),
       )
@@ -969,12 +959,12 @@ class MultiSelectWidget extends BaseWidget<
       ? xorWith(
           this.props.defaultOptionValue as string[],
           prevProps.defaultOptionValue as string[],
-          isEqual,
+          equal,
         ).length > 0
       : xorWith(
           this.props.defaultOptionValue as OptionValue[],
           prevProps.defaultOptionValue as OptionValue[],
-          isEqual,
+          equal,
         ).length > 0;
 
     if (hasChanges && this.props.isDirty) {
@@ -1031,7 +1021,7 @@ class MultiSelectWidget extends BaseWidget<
     );
   }
 
-  onOptionChange = (value: DefaultValueType) => {
+  onOptionChange = (value: DraftValueType) => {
     this.props.updateWidgetMetaProperty("selectedOptions", value, {
       triggerPropertyName: "onOptionChange",
       dynamicString: this.props.onOptionChange,
@@ -1045,7 +1035,7 @@ class MultiSelectWidget extends BaseWidget<
   };
 
   // { label , value } is needed in the widget
-  mergeLabelAndValue = (): LabelValueType[] => {
+  mergeLabelAndValue = (): LabelInValueType[] => {
     const labels = [...this.props.selectedOptionLabels];
     const values = [...this.props.selectedOptionValues];
     return values.map((value, index) => ({
@@ -1091,7 +1081,7 @@ export interface MultiSelectWidgetProps extends WidgetProps {
   defaultOptionValue: string[] | OptionValue[];
   isRequired: boolean;
   isLoading: boolean;
-  selectedOptions: LabelValueType[];
+  selectedOptions: LabelInValueType[];
   filterText: string;
   selectedOptionValues: string[];
   selectedOptionLabels: string[];

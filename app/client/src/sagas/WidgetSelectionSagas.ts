@@ -24,13 +24,13 @@ import {
   SELECT_ALL_WIDGETS_MSG,
 } from "@appsmith/constants/messages";
 import { Variant } from "components/ads/common";
-import { getSelectedWidget, getSelectedWidgets } from "selectors/ui";
+import { getLastSelectedWidget, getSelectedWidgets } from "selectors/ui";
 import {
   CanvasWidgetsReduxState,
   FlattenedWidgetProps,
 } from "reducers/entityReducers/canvasWidgetsReducer";
 import { getWidgetChildrenIds } from "./WidgetOperationUtils";
-import { AppState } from "reducers";
+import { AppState } from "@appsmith/reducers";
 import { checkIsDropTarget } from "components/designSystems/appsmith/PositionedContainer";
 import WidgetFactory from "utils/WidgetFactory";
 import { showModal } from "actions/widgetActions";
@@ -105,7 +105,7 @@ function* getDroppingCanvasOfWidget(widgetLastSelected: FlattenedWidgetProps) {
 }
 
 function* getLastSelectedCanvas() {
-  const lastSelectedWidget: string = yield select(getSelectedWidget);
+  const lastSelectedWidget: string = yield select(getLastSelectedWidget);
   const canvasWidgets: CanvasWidgetsReduxState = yield select(getWidgets);
   const widgetLastSelected =
     lastSelectedWidget && canvasWidgets[lastSelectedWidget];
@@ -131,7 +131,7 @@ const isChildOfDropDisabledCanvas = (
 };
 
 function* getAllSelectableChildren() {
-  const lastSelectedWidget: string = yield select(getSelectedWidget);
+  const lastSelectedWidget: string = yield select(getLastSelectedWidget);
   const canvasWidgets: CanvasWidgetsReduxState = yield select(getWidgets);
   const widgetLastSelected = canvasWidgets[lastSelectedWidget];
   const canvasId: string = yield call(getLastSelectedCanvas);
@@ -258,7 +258,7 @@ function* shiftSelectWidgetsSaga(
   try {
     const { siblingWidgets, widgetId } = action.payload;
     const selectedWidgets: string[] = yield select(getSelectedWidgets);
-    const lastSelectedWidget: string = yield select(getSelectedWidget);
+    const lastSelectedWidget: string = yield select(getLastSelectedWidget);
     const lastSelectedWidgetIndex = siblingWidgets.indexOf(lastSelectedWidget);
     const isWidgetSelected = selectedWidgets.includes(widgetId);
     if (!isWidgetSelected && lastSelectedWidgetIndex > -1) {

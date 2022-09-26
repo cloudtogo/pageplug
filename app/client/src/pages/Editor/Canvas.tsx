@@ -3,7 +3,7 @@ import * as Sentry from "@sentry/react";
 import TabBarIconPicker from "components/designSystems/taro/TabBarIconPicker";
 import styled from "styled-components";
 import store, { useSelector } from "store";
-import { DSLWidget } from "widgets/constants";
+import { CanvasWidgetStructure } from "widgets/constants";
 import WidgetFactory from "utils/WidgetFactory";
 import React, { memo, useCallback, useEffect } from "react";
 
@@ -23,8 +23,9 @@ import { getPageLevelSocketRoomId } from "sagas/WebsocketSagas/utils";
 import { previewModeSelector, isMobileLayout } from "selectors/editorSelectors";
 
 interface CanvasProps {
-  dsl: DSLWidget;
+  widgetsStructure: CanvasWidgetStructure;
   pageId: string;
+  canvasWidth: number;
 }
 
 type PointerEventDataType = {
@@ -73,7 +74,7 @@ const useShareMousePointerEvent = () => {
 
 // TODO(abhinav): get the render mode from context
 const Canvas = memo((props: CanvasProps) => {
-  const { pageId } = props;
+  const { canvasWidth, pageId } = props;
   const isPreviewMode = useSelector(previewModeSelector);
   const selectedTheme = useSelector(getSelectedAppTheme);
   const isMobile = useSelector(isMobileLayout);
@@ -120,11 +121,14 @@ const Canvas = memo((props: CanvasProps) => {
           !!data && delayedShareMousePointer(data);
         }}
         style={{
-          width: props.dsl.rightColumn,
+          width: canvasWidth,
         }}
       >
-        {props.dsl.widgetId &&
-          WidgetFactory.createWidget(props.dsl, RenderModes.CANVAS)}
+        {props.widgetsStructure.widgetId &&
+          WidgetFactory.createWidget(
+            props.widgetsStructure,
+            RenderModes.CANVAS,
+          )}
         {isMultiplayerEnabledForUser && (
           <CanvasMultiPointerArena pageId={pageId} />
         )}

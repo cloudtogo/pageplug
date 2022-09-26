@@ -5,7 +5,7 @@ import { Property } from "api/ActionAPI";
 import _ from "lodash";
 import { ActionDataState } from "reducers/entityReducers/actionsReducer";
 import * as log from "loglevel";
-import { AppIconCollection, AppIconName } from "components/ads/AppIcon";
+import { AppIconCollection, AppIconName } from "design-system";
 import { ERROR_CODES } from "@appsmith/constants/ApiConstants";
 import { createMessage, ERROR_500 } from "@appsmith/constants/messages";
 import { JSCollectionData } from "reducers/entityReducers/jsActionsReducer";
@@ -404,3 +404,17 @@ export const replacePluginIcon = (url: string) => {
 export const isMacOs = () => {
   return osName === "Mac OS";
 };
+
+/**
+ * checks if array of strings are equal regardless of order
+ * @param arr1
+ * @param arr2
+ * @returns
+ */
+export function areArraysEqual(arr1: string[], arr2: string[]) {
+  if (arr1.length !== arr2.length) return false;
+
+  if (arr1.sort().join(",") === arr2.sort().join(",")) return true;
+
+  return false;
+}
