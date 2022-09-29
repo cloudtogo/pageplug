@@ -121,16 +121,12 @@ export default function Pagination(props: PaginationProps) {
             <PaginationTypeView key={PaginationType.PAGE_NO}>
               <div>
                 <StepTitle>
-                  <Text type={TextType.P1}>
-                    1. 配置表格分页
-                  </Text>
+                  <Text type={TextType.P1}>1. 配置表格分页</Text>
                 </StepTitle>
                 <Step type={TextType.P1}>1. 打开服务端分页</Step>
                 <Step type={TextType.P1}>2. 配置 OnPageChange 动作</Step>
                 <StepTitle>
-                  <Text type={TextType.P1}>
-                    2. 配置请求参数
-                  </Text>
+                  <Text type={TextType.P1}>2. 配置请求参数</Text>
                 </StepTitle>
                 <Step style={{ width: "336px" }} type={TextType.P1}>
                   1. 在你的请求头或者请求参数中配置 UsersTable 的页号
@@ -155,24 +151,18 @@ export default function Pagination(props: PaginationProps) {
                       : darkmodeThumbnail
                   }
                 />
-                <Text type={TextType.P3}>
-                  1. 如何配置表格分页
-                </Text>
+                <Text type={TextType.P3}>1. 如何配置表格分页</Text>
               </GifContainer>
             </PaginationTypeView>,
             <PaginationTypeView key={PaginationType.URL}>
               <div>
                 <StepTitle>
-                  <Text type={TextType.P1}>
-                    1. 配置表格分页
-                  </Text>
+                  <Text type={TextType.P1}>1. 配置表格分页</Text>
                 </StepTitle>
                 <Step type={TextType.P1}>1. 打开服务端分页</Step>
                 <Step type={TextType.P1}>2. 配置 OnPageChange 动作</Step>
                 <StepTitle>
-                  <Text type={TextType.P1}>
-                    2. 配置请求参数
-                  </Text>
+                  <Text type={TextType.P1}>2. 配置请求参数</Text>
                 </StepTitle>
                 <Step type={TextType.P1}>配置上一页、下一页 url </Step>
                 <Step type={TextType.P1}>上一页 url</Step>
@@ -239,9 +229,7 @@ export default function Pagination(props: PaginationProps) {
                       : darkmodeThumbnail
                   }
                 />
-                <Text type={TextType.P3}>
-                  1. 如何配置表格分页
-                </Text>
+                <Text type={TextType.P3}>1. 如何配置表格分页</Text>
               </GifContainer>
             </PaginationTypeView>,
           ]}

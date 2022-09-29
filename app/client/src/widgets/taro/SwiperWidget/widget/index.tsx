@@ -4,7 +4,6 @@ import { WidgetType } from "constants/WidgetConstants";
 import SwiperComponent from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import _ from "lodash";
 
 class SwiperWidget extends BaseWidget<SwiperWidgetProps, WidgetState> {
   static getPropertyPaneConfig() {
@@ -22,7 +21,7 @@ class SwiperWidget extends BaseWidget<SwiperWidgetProps, WidgetState> {
             isBindProperty: true,
             isTriggerProperty: false,
             validation: {
-              type: ValidationTypes.OBJECT_ARRAY,
+              type: ValidationTypes.ARRAY,
               params: {
                 default: [],
               },

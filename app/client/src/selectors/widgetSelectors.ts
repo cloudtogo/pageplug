@@ -6,7 +6,6 @@ import {
 } from "reducers/entityReducers/canvasWidgetsReducer";
 import { getExistingWidgetNames } from "sagas/selectors";
 import { getNextEntityName } from "utils/AppsmithUtils";
-import { isMobileLayout } from "selectors/editorSelectors";
 
 import WidgetFactory from "utils/WidgetFactory";
 import {
@@ -43,11 +42,6 @@ export const getModalDropdownList = createSelector(
     }));
   },
 );
-
-const getModalNamePrefix = (state: AppState) => {
-  const type = isMobileLayout(state) ? "TARO_POPUP_WIDGET" : "MODAL_WIDGET";
-  return getWidgetNamePrefix(state, type);
-};
 
 export const getNextModalName = createSelector(
   getExistingWidgetNames,

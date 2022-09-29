@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { ActionBarButtonProps } from "./PropsType";
 import { Button } from "@taroify/core";
 import ActionBarContext from "./ActionBarContext";
-import { BEM, createBEM } from "../../rvStyle/bem";
+import { createBEM } from "../../rvStyle/bem";
 
 const ActionBarButton: React.FC<ActionBarButtonProps> = (props) => {
   const { type, icon, text, color, loading, disabled, index } = props;

@@ -293,7 +293,7 @@ export const ResizableComponent = memo(function ResizableComponent(
       <VisibilityContainer
         padding={props.paddingOffset}
         visible={!!props.isVisible}
-        isWidgetActive={isWidgetActive}
+        isWidgetActive={isSelected}
       >
         {props.children}
       </VisibilityContainer>

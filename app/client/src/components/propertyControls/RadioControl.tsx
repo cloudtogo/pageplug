@@ -1,6 +1,6 @@
 import React from "react";
 import BaseControl, { ControlProps } from "./BaseControl";
-import RadioGroup, { OptionProps } from "components/ads/Radio";
+import { Radio, OptionProps } from "design-system";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -20,7 +20,7 @@ class RadioControl extends BaseControl<RadioControlProps> {
     const { options, propertyValue, columns, name } = this.props;
     return (
       <Wrapper>
-        <RadioGroup
+        <Radio
           name={name}
           columns={columns}
           options={options}

@@ -92,6 +92,8 @@ export const isParentVisible = (
         : false;
     case "MODAL_WIDGET":
       return !!parentWidgetData.isVisible;
+    case "TARO_POPUP_WIDGET":
+      return !!parentWidgetData.isVisible;
     default:
       return parentWidgetData.isVisible
         ? isParentVisible(parentWidgetData, canvasWidgets, dataTree)

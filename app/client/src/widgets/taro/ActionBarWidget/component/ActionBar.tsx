@@ -1,8 +1,8 @@
-import React, { useContext, useMemo } from "react";
+import React, { useMemo } from "react";
 import clsx from "clsx";
 import { ActionBarProps } from "./PropsType";
 import ActionBarContext from "./ActionBarContext";
-import { BEM, createBEM } from "../../rvStyle/bem";
+import { createBEM } from "../../rvStyle/bem";
 
 const ActionBar: React.FC<ActionBarProps> = (props: any) => {
   const bem = createBEM("rv-action-bar");

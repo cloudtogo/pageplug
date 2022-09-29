@@ -74,7 +74,8 @@ function withWidgetProps(WrappedWidget: typeof BaseWidget) {
        */
       widgetProps.isVisible =
         canvasWidgetProps.isVisible ??
-        canvasWidgetProps.type !== "MODAL_WIDGET";
+        (canvasWidgetProps.type !== "MODAL_WIDGET" &&
+          canvasWidgetProps.type !== "TARO_POPUP_WIDGET");
 
       if (
         props.type === "CANVAS_WIDGET" &&

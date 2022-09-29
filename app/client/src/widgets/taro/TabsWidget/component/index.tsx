@@ -1,7 +1,6 @@
 import React from "react";
 import { ScrollView } from "@tarojs/components";
 import { Sidebar, Tabs } from "@taroify/core";
-import _ from "lodash";
 import styled from "styled-components";
 
 const FillTabs = styled(Tabs)`
