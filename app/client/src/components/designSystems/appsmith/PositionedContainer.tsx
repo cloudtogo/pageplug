@@ -1,4 +1,4 @@
-import React, { CSSProperties, ReactNode, useMemo } from "react";
+import React, { useCallback, CSSProperties, ReactNode, useMemo } from "react";
 import { BaseStyle } from "widgets/BaseWidget";
 import {
   CONTAINER_GRID_PADDING,

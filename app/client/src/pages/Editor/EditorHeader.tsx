@@ -57,7 +57,7 @@ import { fetchUsersForWorkspace } from "actions/workspaceActions";
 import { WorkspaceUser } from "constants/workspaceConstants";
 
 import { getIsGitConnected } from "selectors/gitSyncSelectors";
-import { IconWrapper } from "components/ads/Icon";
+import { IconWrapper } from "design-system";
 import {
   CLOSE_ENTITY_EXPLORER_MESSAGE,
   createMessage,

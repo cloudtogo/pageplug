@@ -12,7 +12,7 @@ import { generateReactKey } from "utils/generators";
 import { DroppableComponent } from "components/ads/DraggableListComponent";
 import { getNextEntityName } from "utils/AppsmithUtils";
 import _, { debounce } from "lodash";
-import { Category, Size } from "components/ads/Button";
+import { Category, Size } from "design-system";
 
 const StyledPropertyPaneButtonWrapper = styled.div`
   display: flex;
