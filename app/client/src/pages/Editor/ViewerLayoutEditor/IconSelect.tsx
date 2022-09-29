@@ -1,6 +1,6 @@
 import * as React from "react";
-import styled, { createGlobalStyle } from "styled-components";
-import { Alignment, Button, Menu, MenuItem } from "@blueprintjs/core";
+import styled from "styled-components";
+import { Button, Menu, MenuItem } from "@blueprintjs/core";
 import { ItemListRenderer, ItemRenderer, Select } from "@blueprintjs/select";
 import { createVanIconComponent } from "@taroify/icons/van";
 import {

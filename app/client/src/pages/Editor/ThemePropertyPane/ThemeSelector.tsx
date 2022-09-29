@@ -75,9 +75,7 @@ function ThemeSelector() {
         </section>
       )}
       <section className="relative p-4 space-y-3">
-        <Title className="text-sm font-medium capitalize">
-          特色主题
-        </Title>
+        <Title className="text-sm font-medium capitalize">特色主题</Title>
         {systemThemes.map((theme) => (
           <ThemeCard
             deletable={!theme.isSystemTheme}

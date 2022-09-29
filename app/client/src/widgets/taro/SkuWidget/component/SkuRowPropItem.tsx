@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import cls from "clsx";
-import { BEM, createBEM } from "../../rvStyle/bem";
+import { createBEM } from "../../rvStyle/bem";
 
 type SkuRowPropItemProps = {
   multiple?: boolean;

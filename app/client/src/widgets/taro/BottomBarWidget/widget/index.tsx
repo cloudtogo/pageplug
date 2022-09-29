@@ -8,7 +8,7 @@ import BottomBarComponent from "../component";
 import { RenderMode } from "constants/WidgetConstants";
 import { generateClassName } from "utils/generators";
 import { getCanvasWidth } from "selectors/editorSelectors";
-import { AppState } from "reducers";
+import { AppState } from "@appsmith/reducers";
 
 export class MBottomBarWidget extends BaseWidget<
   MBottomBarWidgetProps,
@@ -46,15 +46,15 @@ export class MBottomBarWidget extends BaseWidget<
   }
 
   renderChildWidget = (childWidgetData: WidgetProps): ReactNode => {
-    childWidgetData.parentId = this.props.widgetId;
-    childWidgetData.shouldScrollContents = false;
-    childWidgetData.canExtend = false;
-    childWidgetData.bottomRow = this.props.height;
-    childWidgetData.isVisible = this.props.isVisible;
-    childWidgetData.containerStyle = "none";
-    childWidgetData.minHeight = this.props.height;
-    childWidgetData.rightColumn = this.props.mainCanvasWidth;
-    return WidgetFactory.createWidget(childWidgetData, this.props.renderMode);
+    const childWidget = { ...childWidgetData };
+    childWidget.parentId = this.props.widgetId;
+    childWidget.shouldScrollContents = false;
+    childWidget.canExtend = false;
+    childWidget.bottomRow = this.props.height;
+    childWidget.containerStyle = "none";
+    childWidget.minHeight = this.props.height;
+    childWidget.rightColumn = this.props.mainCanvasWidth;
+    return WidgetFactory.createWidget(childWidget, this.props.renderMode);
   };
 
   getChildren(): ReactNode {
