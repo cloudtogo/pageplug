@@ -45,7 +45,7 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
   const isFetchingPage = useSelector(getIsFetchingPage);
   const currentApplication = useSelector(getCurrentApplication);
   const { match } = props;
-  const hasFixedWidget = widgets.children?.find(
+  const hasFixedWidget = widgetsStructure.children?.find(
     (w) => w.type === "TARO_BOTTOM_BAR_WIDGET",
   );
   const isMobile = useSelector(isMobileLayout);
@@ -103,7 +103,7 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
 
   return (
     <Section
-      height={widgets.bottomRow + (hasFixedWidget?.height || 0)}
+      height={widgetsStructure.bottomRow + (hasFixedWidget?.height || 0)}
       isMobile={isMobile}
       id="art-board"
     >

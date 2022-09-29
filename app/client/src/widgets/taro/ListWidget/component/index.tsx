@@ -180,6 +180,7 @@ const ListComponent = (props: ListComponentProps) => {
   };
 
   const onClickItem = (item: any) => (e: any) => {
+    console.log(e);
     onItemClicked(item, "ITEM");
   };
 

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { connect, useDispatch, useSelector } from "react-redux";
-import { AppState } from "reducers";
+import { AppState } from "@appsmith/reducers";
 import { updatePage } from "actions/pageActions";
 import {
   getViewModePageList,
@@ -12,7 +12,6 @@ import {
   Page,
   ReduxActionTypes,
 } from "@appsmith/constants/ReduxActionConstants";
-import Switch from "components/ads/Switch";
 import EditablePageName from "pages/Editor/Explorer/Entity/Name";
 import Loader from "pages/Editor/Explorer/Entity/Loader";
 import { resolveAsSpaceChar } from "utils/helpers";
@@ -20,7 +19,7 @@ import {
   useEntityUpdateState,
   useEntityEditState,
 } from "pages/Editor/Explorer/hooks";
-import Icon, { IconSize } from "components/ads/Icon";
+import { Icon, IconSize, Switch } from "design-system";
 import { TooltipComponent } from "design-system";
 import { Alignment } from "@blueprintjs/core";
 import { Position } from "@blueprintjs/core/lib/esm/common/position";

@@ -751,7 +751,8 @@ export function getContainerIdForCanvas(canvasId: string) {
  */
 export function getCanvasIdForContainer(layoutWidget: WidgetProps) {
   const selector =
-    layoutWidget.type === "MODAL_WIDGET"
+    layoutWidget.type === "MODAL_WIDGET" ||
+    layoutWidget.type === "TARO_POPUP_WIDGET"
       ? `.${getBaseWidgetClassName(layoutWidget.widgetId)}`
       : `.${POSITIONED_WIDGET}.${getBaseWidgetClassName(
           layoutWidget.widgetId,
@@ -1355,6 +1356,7 @@ export const isSelectedWidgetsColliding = function*(
     (widget) =>
       widget.parentId === pastingIntoWidgetId &&
       widget.type !== "MODAL_WIDGET" &&
+      widget.type !== "TARO_POPUP_WIDGET" &&
       widget.type !== "TARO_BOTTOM_BAR_WIDGET",
   );
 

@@ -17,15 +17,8 @@ import {
   ReduxActionWithoutPayload,
 } from "@appsmith/constants/ReduxActionConstants";
 import { ERROR_CODES } from "@appsmith/constants/ApiConstants";
-import {
-  resetApplicationWidgets,
-  resetPageList,
-  fetchCloudOSApi,
-} from "actions/pageActions";
-import {
-  resetCurrentApplication,
-  fetchApplicationPreviewWxaCode,
-} from "actions/applicationActions";
+import { resetApplicationWidgets, resetPageList } from "actions/pageActions";
+import { resetCurrentApplication } from "actions/applicationActions";
 import log from "loglevel";
 import * as Sentry from "@sentry/react";
 import { resetRecentEntities } from "actions/globalSearchActions";
@@ -34,7 +27,6 @@ import {
   getCurrentPageId,
   getIsEditorInitialized,
   selectCurrentApplicationSlug,
-  isMobileLayout,
 } from "selectors/editorSelectors";
 import { getIsInitialized as getIsViewerInitialized } from "selectors/appViewSelectors";
 import { enableGuidedTour } from "actions/onboardingActions";

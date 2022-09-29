@@ -866,6 +866,7 @@ export function ApplicationCard(props: ApplicationCardProps) {
                   )}
                   {!isMenuOpen && (
                     <Button
+                      style={{ padding: "0 15.2px" }}
                       category={Category.tertiary}
                       className="t--application-view-link"
                       fill

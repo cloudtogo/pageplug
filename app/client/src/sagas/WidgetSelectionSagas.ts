@@ -177,7 +177,8 @@ function* selectAllWidgetsInCanvasSaga() {
         return (
           each &&
           canvasWidgets[each] &&
-          canvasWidgets[each].type === WidgetTypes.MODAL_WIDGET
+          (canvasWidgets[each].type === WidgetTypes.MODAL_WIDGET ||
+            canvasWidgets[each].type === WidgetTypes.TARO_POPUP_WIDGET)
         );
       });
       if (isAnyModalSelected) {
@@ -305,7 +306,8 @@ function* selectMultipleWidgetsSaga(
       return;
     } else if (
       widgetIds.length === 1 &&
-      allWidgets[widgetIds[0]]?.type === "MODAL_WIDGET"
+      (allWidgets[widgetIds[0]]?.type === "MODAL_WIDGET" ||
+        allWidgets[widgetIds[0]]?.type === "TARO_POPUP_WIDGET")
     ) {
       yield put(showModal(widgetIds[0]));
     } else {

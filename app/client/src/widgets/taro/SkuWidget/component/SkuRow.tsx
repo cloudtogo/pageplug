@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 import cls from "clsx";
-import { BEM, createBEM } from "../../rvStyle/bem";
+import { createBEM } from "../../rvStyle/bem";
 import { BORDER_BOTTOM } from "./constants";
 
 type SkuRowProps = {

@@ -933,7 +933,8 @@ const getNewPositions = function*(
   if (
     copiedWidgetGroups.length === 1 &&
     copiedWidgetGroups[0].list[0] &&
-    copiedWidgetGroups[0].list[0].type === "MODAL_WIDGET"
+    (copiedWidgetGroups[0].list[0].type === "MODAL_WIDGET" ||
+      copiedWidgetGroups[0].list[0].type === "TARO_POPUP_WIDGET")
   )
     return {};
 

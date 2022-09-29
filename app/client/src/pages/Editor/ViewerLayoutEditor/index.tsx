@@ -22,7 +22,7 @@ import {
 import FileExplorerTheme from "react-sortable-tree-theme-full-node-drag";
 import IconSelect from "./IconSelect";
 import { Button, Input, Form, message } from "antd";
-import ColorPickerComponent from "components/ads/ColorPickerComponent";
+import ColorPickerComponent from "components/ads/ColorPickerComponentV2";
 import { updateApplication } from "actions/applicationActions";
 import { Colors } from "constants/Colors";
 import { DEFAULT_VIEWER_LOGO } from "constants/AppConstants";
@@ -408,6 +408,8 @@ function PagesEditor() {
             <ColorPicker
               changeColor={(c: string) => setColor(c)}
               color={color}
+              showApplicationColors
+              showThemeColors
             />
           </Form.Item>
         </Form>
