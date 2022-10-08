@@ -77,14 +77,14 @@ export function PropertyPaneTab(props: PropertyPaneTabProps) {
     if (props.contentComponent) {
       arr.push({
         key: "content",
-        title: "CONTENT",
+        title: "内容",
         panelComponent: props.contentComponent,
       });
     }
     if (props.styleComponent) {
       arr.push({
         key: "style",
-        title: "STYLE",
+        title: "样式",
         panelComponent: props.styleComponent,
       });
     }
@@ -97,12 +97,12 @@ export function PropertyPaneTab(props: PropertyPaneTabProps) {
         <TabList>
           {props.contentComponent && (
             <Tab>
-              <TabTitle className="tab-title">CONTENT</TabTitle>
+              <TabTitle className="tab-title">内容</TabTitle>
             </Tab>
           )}
           {props.styleComponent && (
             <Tab>
-              <TabTitle className="tab-title">STYLE</TabTitle>
+              <TabTitle className="tab-title">样式</TabTitle>
             </Tab>
           )}
         </TabList>
