@@ -147,9 +147,9 @@ function ColorPickerPopup(props: ColorPickerPopupProps) {
     >
       {showThemeColors && (
         <div className="space-y-2">
-          <h2 className="pb-2 font-semibold border-b">Color Styles</h2>
+          <h2 className="pb-2 font-semibold border-b">颜色</h2>
           <section className="space-y-2">
-            <h3 className="text-xs">Theme Colors</h3>
+            <h3 className="text-xs">主题颜色</h3>
             <div className="grid grid-cols-10 gap-2">
               {Object.keys(themeColors).map((colorKey, colorIndex) => (
                 <div
@@ -179,7 +179,7 @@ function ColorPickerPopup(props: ColorPickerPopupProps) {
       )}
       {showApplicationColors && applicationColors.length > 0 && (
         <section className="space-y-2">
-          <h3 className="text-xs">Application Colors</h3>
+          <h3 className="text-xs">应用颜色</h3>
           <div className="grid grid-cols-10 gap-2">
             {Object.values(applicationColors).map(
               (colorCode: string, colorIndex) => (
@@ -203,7 +203,7 @@ function ColorPickerPopup(props: ColorPickerPopupProps) {
       )}
 
       <section className="space-y-2">
-        <h3 className="text-xs">All Colors</h3>
+        <h3 className="text-xs">所有颜色</h3>
         <div className="grid grid-cols-10 gap-2">
           {Object.keys(TAILWIND_COLORS).map((colorKey, rowIndex) =>
             Object.keys(get(TAILWIND_COLORS, `${colorKey}`)).map(
