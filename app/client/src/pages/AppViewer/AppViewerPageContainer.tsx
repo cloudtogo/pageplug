@@ -20,7 +20,10 @@ import {
   PERMISSION_TYPE,
 } from "../Applications/permissionHelpers";
 import { builderURL } from "RouteBuilder";
-import { getCanvasWidgetsStructure } from "selectors/entitiesSelector";
+import {
+  getCanvasWidgetsStructure,
+  getCanvasWidgets,
+} from "selectors/entitiesSelector";
 import equal from "fast-deep-equal/es6";
 
 const Section = styled.section<{
@@ -41,6 +44,7 @@ type AppViewerPageContainerProps = RouteComponentProps<AppViewerRouteParams>;
 function AppViewerPageContainer(props: AppViewerPageContainerProps) {
   const currentPageName = useSelector(getCurrentPageName);
   const widgetsStructure = useSelector(getCanvasWidgetsStructure, equal);
+  const widgetsConfig = useSelector(getCanvasWidgets);
   const canvasWidth = useSelector(getCanvasWidth);
   const isFetchingPage = useSelector(getIsFetchingPage);
   const currentApplication = useSelector(getCurrentApplication);
@@ -48,6 +52,10 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
   const hasFixedWidget = widgetsStructure.children?.find(
     (w) => w.type === "TARO_BOTTOM_BAR_WIDGET",
   );
+  let fixedHeight = 0;
+  if (hasFixedWidget) {
+    fixedHeight = parseInt(widgetsConfig[hasFixedWidget?.widgetId]?.height);
+  }
   const isMobile = useSelector(isMobileLayout);
 
   // get appsmith editr link
@@ -103,7 +111,7 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
 
   return (
     <Section
-      height={widgetsStructure.bottomRow + (hasFixedWidget?.height || 0)}
+      height={widgetsStructure.bottomRow + fixedHeight}
       isMobile={isMobile}
       id="art-board"
     >

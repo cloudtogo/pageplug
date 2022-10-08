@@ -196,7 +196,7 @@ export const Colors = {
   GREY_800: "#393939",
   GREY_900: "#191919",
 
-  PRIMARY_ORANGE: "#F86A2B",
+  PRIMARY_ORANGE: primaryColor,
 
   GREEN_SOLID: "#50AF6C",
   MIRAGE: "#182026",
