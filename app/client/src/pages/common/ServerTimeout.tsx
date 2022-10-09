@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import AppTimeoutImage from "assets/images/timeout-image.png";
-import { Colors } from "constants/Colors";
+import { Button, Size } from "design-system";
 
 const Wrapper = styled.div`
   display: flex;
@@ -22,31 +22,27 @@ const Wrapper = styled.div`
   }
 `;
 
-const RetryButton = styled.button`
-  background-color: ${Colors.MINT_GREEN};
-  border-radius: ${(props) => props.theme.borderRadius};
-  color: white;
-  height: 40px;
-  width: 300px;
-  border: none;
-  cursor: pointer;
-  font-size: 16px;
-`;
-
 function ServerTimeout() {
   return (
-    <Wrapper>
+    <Wrapper className="space-y-6">
       <img
         alt="Page Unavailable"
         className="page-unavailable-img"
         src={AppTimeoutImage}
       />
-      <div>
+      <div className="space-y-2">
         <p className="bold-text">服务器长时间无响应</p>
         <p>请稍后重试</p>
-        <RetryButton onClick={() => window.location.reload()}>
-          {"重试"}
-        </RetryButton>
+        <Button
+          category="primary"
+          className="button-position"
+          fill="true"
+          onClick={() => window.location.reload()}
+          size={Size.large}
+          tag="button"
+          text="重试"
+          variant="info"
+        />
       </div>
     </Wrapper>
   );
