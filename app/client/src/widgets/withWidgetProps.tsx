@@ -107,7 +107,11 @@ function withWidgetProps(WrappedWidget: typeof BaseWidget) {
     widgetProps = { ...props, ...widgetProps, renderMode };
 
     // isVisible prop defines whether to render a detached widget
-    if (widgetProps.detachFromLayout && !widgetProps.isVisible) {
+    if (
+      widgetProps.detachFromLayout &&
+      !widgetProps.isVisible &&
+      widgetProps.type !== "TARO_BOTTOM_BAR_WIDGET"
+    ) {
       return null;
     }
 
