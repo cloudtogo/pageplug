@@ -37,6 +37,20 @@ import PreviewModeComponent from "components/editorComponents/PreviewModeCompone
 import { CanvasWidgetStructure } from "./constants";
 import { DataTreeWidget } from "entities/DataTree/dataTreeFactory";
 import Skeleton from "./Skeleton";
+import styled, { css } from "styled-components";
+
+const HiddenDetachWidgetWrapper = styled.div<{
+  isVisible: boolean;
+}>`
+  ${(props) =>
+    !props.isVisible
+      ? css`
+          && div[type="CANVAS_WIDGET"] > * {
+            opacity: 0.6;
+          }
+        `
+      : ""};
+`;
 
 /***
  * BaseWidget
@@ -324,6 +338,14 @@ abstract class BaseWidget<
     return content;
   };
 
+  addHiddenWrapper(content: ReactNode, isVisible: boolean) {
+    return (
+      <HiddenDetachWidgetWrapper isVisible={isVisible}>
+        {content}
+      </HiddenDetachWidgetWrapper>
+    );
+  }
+
   addPreviewModeWidget(content: ReactNode): React.ReactElement {
     return (
       <PreviewModeComponent isVisible={this.props.isVisible}>
@@ -367,6 +389,13 @@ abstract class BaseWidget<
           // NOTE: In sniping mode we are not blocking onClick events from PositionWrapper.
           content = this.makePositioned(content);
         } else {
+          // add opacity css when TARO_BOTTOM_BAR_WIDGET is hidden
+          if (this.props.type === "TARO_BOTTOM_BAR_WIDGET") {
+            content = this.addHiddenWrapper(
+              content,
+              this.props.isVisible ?? true,
+            );
+          }
           content = this.addTaroWrapper(content, this.props.type);
         }
         return content;
