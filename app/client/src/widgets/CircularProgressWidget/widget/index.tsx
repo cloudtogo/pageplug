@@ -30,7 +30,6 @@ class CircularProgressWidget extends BaseWidget<
             placeholderText: "进度值：",
             isBindProperty: true,
             isTriggerProperty: false,
-            isJSConvertible: true,
             validation: { type: ValidationTypes.NUMBER },
           },
           {
