@@ -64,7 +64,7 @@ export class MBottomBarWidget extends BaseWidget<
     }
   }
 
-  makeModalComponent(content: ReactNode) {
+  makeComponent(content: ReactNode) {
     return (
       <BottomBarComponent
         className={`${generateClassName(this.props.widgetId)}`}
@@ -78,12 +78,12 @@ export class MBottomBarWidget extends BaseWidget<
   getCanvasView() {
     let children = this.getChildren();
     children = this.showWidgetName(children, true);
-    return this.makeModalComponent(children);
+    return this.makeComponent(children);
   }
 
   getPageView() {
     const children = this.getChildren();
-    return this.makeModalComponent(children);
+    return this.makeComponent(children);
   }
 
   static getWidgetType() {
