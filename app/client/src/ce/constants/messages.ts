@@ -7,7 +7,7 @@ export function createMessage(
 
 /*
   For self hosted, it displays the string "Appsmith Community v1.10.0" or "Appsmith Business v1.10.0".
-  For cloud hosting, it displays "Appsmith v1.10.0". 
+  For cloud hosting, it displays "Appsmith v1.10.0".
   This is because Appsmith Cloud doesn't support business features yet.
  */
 export const APPSMITH_DISPLAY_VERSION = (
@@ -373,6 +373,8 @@ export const EXECUTING_FUNCTION = () => `执行函数`;
 export const UPDATING_JS_COLLECTION = () => `正在更新...`;
 export const EMPTY_JS_OBJECT = () => `空空如也。写点 js 代码试试`;
 export const EXPORT_DEFAULT_BEGINNING = () => `对象用 export default 开头`;
+export const ACTION_EXECUTION_FAILED = (actionName: string) =>
+  `"${actionName}" 执行失败`;
 export const JS_EXECUTION_SUCCESS = () => "JS 函数执行成功";
 export const JS_EXECUTION_FAILURE = () => "JS 函数执行失败";
 export const JS_EXECUTION_FAILURE_TOASTER = () => "函数执行时出错了";
@@ -913,6 +915,12 @@ export const TEST_EMAIL_SUCCESS_TROUBLESHOOT = () => "疑难杂症";
 export const TEST_EMAIL_FAILURE = () => "测试邮件发送失败";
 export const DISCONNECT_AUTH_ERROR = () => "不能断开唯一已连接的鉴权方式";
 export const MANDATORY_FIELDS_ERROR = () => "必填字段不能为空";
+
+// Audit logs begin
+export const AUDIT_LOGS = () => "审计日志";
+export const TRY_AGAIN_WITH_YOUR_FILTER = () => "用过滤器重试一下";
+// Audit logs end
+
 //
 export const WELCOME_FORM_NON_SUPER_USER_ROLE_DROPDOWN = () =>
   "请告诉我们你的工作角色是？";
@@ -948,6 +956,8 @@ export const GENERATE_APPLICATION_DESCRIPTION = () =>
 export const DELETE_WORKSPACE_SUCCESSFUL = () => "应用组删除成功";
 // theming
 export const CHANGE_APP_THEME = (name: string) => `已切换为 ${name} 风格主题`;
+export const SET_DEFAULT_SELECTED_THEME = (name: string) =>
+  `找不到自定义主题，切换到 ${name} 风格主题`;
 export const SAVE_APP_THEME = (name: string) => `风格主题 ${name} 已保存`;
 export const DELETE_APP_THEME = (name: string) => `风格主题 ${name} 已删除`;
 export const DELETE_APP_THEME_WARNING = () =>
@@ -1100,3 +1110,11 @@ export const CLEAN_URL_UPDATE = {
 };
 
 export const MEMBERS_TAB_TITLE = (length: number) => `Users (${length})`;
+
+// Alert options and labels for showMessage types
+export const ALERT_STYLE_OPTIONS = [
+  { label: "Info", value: "'info'", id: "info" },
+  { label: "Success", value: "'success'", id: "success" },
+  { label: "Error", value: "'error'", id: "error" },
+  { label: "Warning", value: "'warning'", id: "warning" },
+];
