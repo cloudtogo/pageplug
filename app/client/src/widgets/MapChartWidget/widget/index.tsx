@@ -605,6 +605,7 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
           caption={mapTitle}
           colorRange={colorRange}
           data={data}
+          fontFamily={this.props.fontFamily ?? "Nunito Sans"}
           isVisible={isVisible}
           onDataPointClick={this.handleDataPointClick}
           showLabels={showLabels}
@@ -623,6 +624,7 @@ export interface MapChartWidgetProps extends WidgetProps {
   colorRange: MapColorObject[];
   borderRadius?: string;
   boxShadow?: string;
+  fontFamily?: string;
 }
 
 export default MapChartWidget;

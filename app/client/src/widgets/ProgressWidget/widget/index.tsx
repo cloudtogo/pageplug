@@ -50,7 +50,6 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
             placeholderText: "请输入进度值",
             isBindProperty: true,
             isTriggerProperty: false,
-            isJSConvertible: true,
             defaultValue: 50,
             validation: {
               type: ValidationTypes.NUMBER,
@@ -67,7 +66,6 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
             placeholderText: "请输入步数",
             isBindProperty: true,
             isTriggerProperty: false,
-            isJSConvertible: true,
             validation: {
               type: ValidationTypes.NUMBER,
               params: { min: 1, max: 100, default: 1, natural: true },
@@ -177,7 +175,6 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
             placeholderText: "请输入进度值",
             isBindProperty: true,
             isTriggerProperty: false,
-            isJSConvertible: true,
             defaultValue: 50,
             validation: {
               type: ValidationTypes.NUMBER,
@@ -199,7 +196,6 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
             placeholderText: "请输入步数",
             isBindProperty: true,
             isTriggerProperty: false,
-            isJSConvertible: true,
             validation: {
               type: ValidationTypes.NUMBER,
               params: { min: 1, max: 100, default: 1, natural: true },
