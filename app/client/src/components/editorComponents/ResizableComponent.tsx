@@ -48,7 +48,6 @@ import {
   isWidgetSelected,
   isMultiSelectedWidget,
 } from "selectors/widgetSelectors";
-import { PropertyPaneReduxState } from "reducers/uiReducers/propertyPaneReducer";
 
 export type ResizableComponentProps = WidgetProps & {
   paddingOffset: number;

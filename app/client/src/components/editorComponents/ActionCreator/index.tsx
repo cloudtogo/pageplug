@@ -637,7 +637,7 @@ const ActionCreator = React.forwardRef(
     const NAVIGATE_TO_TAB_SWITCHER: Array<Switch> = [
       {
         id: "page-name",
-        text: "Page Name",
+        text: "页面名称",
         action: () => {
           setActiveTabNavigateTo(NAVIGATE_TO_TAB_SWITCHER[0]);
         },

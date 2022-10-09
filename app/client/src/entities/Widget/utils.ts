@@ -296,7 +296,9 @@ export const nextAvailableRowInContainer = (
 ) => {
   const filteredCanvasWidgets = omitBy(canvasWidgets, (widget) => {
     return (
-      widget.type === "MODAL_WIDGET" || widget.type === "TARO_BOTTOM_BAR_WIDGET"
+      widget.type === "MODAL_WIDGET" ||
+      widget.type === "TARO_POPUP_WIDGET" ||
+      widget.type === "TARO_BOTTOM_BAR_WIDGET"
     );
   });
 

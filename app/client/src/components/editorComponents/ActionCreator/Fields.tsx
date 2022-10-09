@@ -824,7 +824,7 @@ function renderField(props: {
       viewElement = (view as (props: TabViewProps) => JSX.Element)({
         activeObj: props.activeNavigateToTab,
         switches: props.navigateToSwitches,
-        label: "Type",
+        label: "类型",
         value: props.value,
       });
       break;

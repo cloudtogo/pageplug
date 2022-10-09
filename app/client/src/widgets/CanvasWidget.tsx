@@ -46,14 +46,6 @@ class CanvasWidget extends ContainerWidget {
 
   renderChildWidget(childWidgetData: CanvasWidgetStructure): React.ReactNode {
     if (!childWidgetData) return null;
-    // For now, isVisible prop defines whether to render a detached widget
-    // if (
-    //   childWidgetData.detachFromLayout &&
-    //   !childWidgetData.isVisible &&
-    //   childWidgetData.type !== "TARO_BOTTOM_BAR_WIDGET"
-    // ) {
-    //   return null;
-    // }
 
     const childWidget = { ...childWidgetData };
 
