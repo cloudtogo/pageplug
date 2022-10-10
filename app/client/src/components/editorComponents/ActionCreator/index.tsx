@@ -130,11 +130,11 @@ const baseOptions: { label: string; value: string }[] = [
 ];
 
 const mobileHiddenActionMap = {
-  [ActionType.download]: true,
-  [ActionType.resetWidget]: true,
-  [ActionType.getGeolocation]: true,
-  [ActionType.watchGeolocation]: true,
-  [ActionType.stopWatchGeolocation]: true,
+  [AppsmithFunction.download]: true,
+  [AppsmithFunction.resetWidget]: true,
+  [AppsmithFunction.getGeolocation]: true,
+  [AppsmithFunction.watchGeolocation]: true,
+  [AppsmithFunction.stopWatchGeolocation]: true,
 };
 
 const getBaseOptions = (featureFlags: FeatureFlags, isMobile?: boolean) => {
@@ -299,9 +299,11 @@ function getFieldFromValue(
     value,
   });
   if (value.indexOf("navigateTo") !== -1) {
-    fields.push({
-      field: FieldType.PAGE_NAME_AND_URL_TAB_SELECTOR_FIELD,
-    });
+    if (!isMobile) {
+      fields.push({
+        field: FieldType.PAGE_NAME_AND_URL_TAB_SELECTOR_FIELD,
+      });
+    }
 
     if (activeTabNavigateTo.id === NAVIGATE_TO_TAB_OPTIONS.PAGE_NAME) {
       fields.push({

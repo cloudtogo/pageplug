@@ -1,6 +1,6 @@
 import React from "react";
 import BaseControl, { ControlProps } from "./BaseControl";
-import { Radio, OptionProps } from "design-system";
+import { RadioComponent, OptionProps } from "design-system";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -17,11 +17,10 @@ class RadioControl extends BaseControl<RadioControlProps> {
     }
   };
   render() {
-    const { options, propertyValue, columns, name } = this.props;
+    const { options, propertyValue, columns } = this.props;
     return (
       <Wrapper>
-        <Radio
-          name={name}
+        <RadioComponent
           columns={columns}
           options={options}
           onSelect={this.selectOption}
