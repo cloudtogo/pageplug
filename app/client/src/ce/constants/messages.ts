@@ -1113,8 +1113,8 @@ export const MEMBERS_TAB_TITLE = (length: number) => `Users (${length})`;
 
 // Alert options and labels for showMessage types
 export const ALERT_STYLE_OPTIONS = [
-  { label: "Info", value: "'info'", id: "info" },
-  { label: "Success", value: "'success'", id: "success" },
-  { label: "Error", value: "'error'", id: "error" },
-  { label: "Warning", value: "'warning'", id: "warning" },
+  { label: "信息", value: "'info'", id: "info" },
+  { label: "成功", value: "'success'", id: "success" },
+  { label: "错误", value: "'error'", id: "error" },
+  { label: "警告", value: "'warning'", id: "warning" },
 ];
