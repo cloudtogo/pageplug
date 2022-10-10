@@ -31,8 +31,8 @@ export const RESET_CHILDREN_OPTIONS = [
 ];
 
 export const FILE_TYPE_OPTIONS = [
-  { label: "Select file type (optional)", value: "", id: "" },
-  { label: "Plain text", value: "'text/plain'", id: "text/plain" },
+  { label: "选择文件类型 (可选)", value: "", id: "" },
+  { label: "纯文本", value: "'text/plain'", id: "text/plain" },
   { label: "HTML", value: "'text/html'", id: "text/html" },
   { label: "CSV", value: "'text/csv'", id: "text/csv" },
   { label: "JSON", value: "'application/json'", id: "application/json" },
@@ -43,12 +43,12 @@ export const FILE_TYPE_OPTIONS = [
 
 export const NAVIGATION_TARGET_FIELD_OPTIONS = [
   {
-    label: "Same window",
+    label: "当前窗口",
     value: "'SAME_WINDOW'",
     id: "SAME_WINDOW",
   },
   {
-    label: "New window",
+    label: "新窗口",
     value: "'NEW_WINDOW'",
     id: "NEW_WINDOW",
   },
