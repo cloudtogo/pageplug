@@ -74,7 +74,7 @@ function InputText(props: InputTextProp) {
         placeholder={placeholder}
         promptMessage={
           <PromptMessage>
-            Access the current cell using <CurlyBraces>{"{{"}</CurlyBraces>
+            你可以这样访问当前行数据：<CurlyBraces>{"{{"}</CurlyBraces>
             currentRow.columnName
             <CurlyBraces>{"}}"}</CurlyBraces>
           </PromptMessage>

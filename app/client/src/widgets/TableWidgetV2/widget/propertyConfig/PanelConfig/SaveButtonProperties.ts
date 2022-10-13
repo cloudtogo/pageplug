@@ -8,7 +8,7 @@ import { ButtonVariantTypes } from "components/constants";
 import { hideByColumnType } from "../../propertyUtils";
 
 export default {
-  sectionName: "Save Button",
+  sectionName: "保存按钮",
   hidden: (props: TableWidgetProps, propertyPath: string) => {
     return hideByColumnType(
       props,
@@ -22,7 +22,7 @@ export default {
       propertyName: "isSaveVisible",
       dependencies: ["primaryColumns"],
       label: "是否显示",
-      helpText: "Controls the visibility of the save button",
+      helpText: "是否显示按钮",
       defaultValue: true,
       controlType: "SWITCH",
       customJSControl: "TABLE_COMPUTE_VALUE",
@@ -55,7 +55,7 @@ export default {
     },
     {
       propertyName: "saveActionLabel",
-      label: "Action label",
+      label: "动作标签",
       controlType: "TABLE_COMPUTE_VALUE",
       dependencies: ["primaryColumns"],
       isBindProperty: true,
@@ -87,7 +87,7 @@ export default {
       controlType: "DROP_DOWN",
       customJSControl: "TABLE_COMPUTE_VALUE",
       isJSConvertible: true,
-      helpText: "Sets the variant of the save button",
+      helpText: "设置按钮类型",
       dependencies: ["primaryColumns"],
       options: [
         {
@@ -126,7 +126,7 @@ export default {
       label: "边框圆角",
       customJSControl: "TABLE_COMPUTE_VALUE",
       isJSConvertible: true,
-      helpText: "Rounds the corners of the save button's outer border edge",
+      helpText: "按钮边框圆角半径",
       controlType: "BORDER_RADIUS_OPTIONS",
       dependencies: ["primaryColumns"],
       isBindProperty: true,
@@ -140,8 +140,8 @@ export default {
     },
     {
       propertyName: "saveActionIconName",
-      label: "Action Icon",
-      helpText: "Sets the icon to be used for the save action button",
+      label: "图标",
+      helpText: "设置按钮图标",
       dependencies: ["primaryColumns", "columnOrder"],
       controlType: "ICON_SELECT",
       customJSControl: "TABLE_COMPUTE_VALUE",
@@ -161,7 +161,7 @@ export default {
     {
       propertyName: "saveIconAlign",
       label: "图标对齐",
-      helpText: "Sets the icon alignment of the save button",
+      helpText: "按钮图标对齐方式",
       controlType: "ICON_TABS",
       defaultValue: "left",
       options: [
