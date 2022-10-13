@@ -49,7 +49,7 @@ export default {
     General,
     Validations,
     {
-      sectionName: "Save Button",
+      sectionName: "保存按钮",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(
           props,
@@ -95,7 +95,7 @@ export default {
               propertyName: "isSaveVisible",
               dependencies: ["primaryColumns"],
               label: "是否显示",
-              helpText: "Controls the visibility of the save button",
+              helpText: "是否显示保存按钮",
               defaultValue: true,
               controlType: "SWITCH",
               customJSControl: "TABLE_COMPUTE_VALUE",
@@ -131,7 +131,7 @@ export default {
       ],
     },
     {
-      sectionName: "Discard Button",
+      sectionName: "丢弃按钮",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(
           props,
@@ -177,7 +177,7 @@ export default {
               propertyName: "isDiscardVisible",
               dependencies: ["primaryColumns"],
               label: "是否显示",
-              helpText: "Controls the visibility of the discard button",
+              helpText: "是否显示丢弃按钮",
               defaultValue: true,
               controlType: "SWITCH",
               customJSControl: "TABLE_COMPUTE_VALUE",
@@ -757,7 +757,7 @@ export default {
       ],
     },
     {
-      sectionName: "Save Button",
+      sectionName: "保存按钮",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(
           props,
@@ -797,7 +797,7 @@ export default {
               controlType: "DROP_DOWN",
               customJSControl: "TABLE_COMPUTE_VALUE",
               isJSConvertible: true,
-              helpText: "Sets the variant of the save button",
+              helpText: "设置按钮类型",
               dependencies: ["primaryColumns"],
               options: [
                 {
@@ -836,8 +836,7 @@ export default {
               label: "边框圆角",
               customJSControl: "TABLE_COMPUTE_VALUE",
               isJSConvertible: true,
-              helpText:
-                "Rounds the corners of the save button's outer border edge",
+              helpText: "按钮边框圆角半径",
               controlType: "BORDER_RADIUS_OPTIONS",
               dependencies: ["primaryColumns"],
               isBindProperty: true,
@@ -858,7 +857,7 @@ export default {
             {
               propertyName: "saveActionIconName",
               label: "图标",
-              helpText: "Sets the icon to be used for the save action button",
+              helpText: "按钮图标",
               dependencies: ["primaryColumns", "columnOrder"],
               controlType: "ICON_SELECT",
               customJSControl: "TABLE_COMPUTE_VALUE",
@@ -878,7 +877,7 @@ export default {
             {
               propertyName: "saveIconAlign",
               label: "位置",
-              helpText: "Sets the icon alignment of the save button",
+              helpText: "按钮图标位置",
               controlType: "ICON_TABS",
               defaultValue: "left",
               options: [
@@ -906,7 +905,7 @@ export default {
       ],
     },
     {
-      sectionName: "Discard Button",
+      sectionName: "丢弃按钮",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(
           props,
@@ -946,7 +945,7 @@ export default {
               controlType: "DROP_DOWN",
               customJSControl: "TABLE_COMPUTE_VALUE",
               isJSConvertible: true,
-              helpText: "Sets the variant of the discard button",
+              helpText: "设置按钮类型",
               dependencies: ["primaryColumns"],
               options: [
                 {
@@ -985,8 +984,7 @@ export default {
               label: "边框圆角",
               customJSControl: "TABLE_COMPUTE_VALUE",
               isJSConvertible: true,
-              helpText:
-                "Rounds the corners of the discard button's outer border edge",
+              helpText: "按钮边框圆角半径",
               controlType: "BORDER_RADIUS_OPTIONS",
               dependencies: ["primaryColumns"],
               isBindProperty: true,
@@ -1007,8 +1005,7 @@ export default {
             {
               propertyName: "discardActionIconName",
               label: "图标",
-              helpText:
-                "Sets the icon to be used for the discard action button",
+              helpText: "设置按钮图标",
               dependencies: ["primaryColumns", "columnOrder"],
               controlType: "ICON_SELECT",
               customJSControl: "TABLE_COMPUTE_VALUE",
@@ -1028,7 +1025,7 @@ export default {
             {
               propertyName: "discardIconAlign",
               label: "位置",
-              helpText: "Sets the icon alignment of the discard button",
+              helpText: "设置按钮图标位置",
               controlType: "ICON_TABS",
               defaultValue: "left",
               options: [
