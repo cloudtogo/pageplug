@@ -4,6 +4,7 @@ import IconSVG from "./icon.svg";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "轮播",
+  searchTags: ["swipper", "image", "picture"],
   iconSVG: IconSVG,
   needsMeta: false,
   isCanvas: false,

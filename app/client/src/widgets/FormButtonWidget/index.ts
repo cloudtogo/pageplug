@@ -8,6 +8,7 @@ export const CONFIG = {
   iconSVG: IconSVG,
   hideCard: true,
   isDeprecated: true,
+  searchTags: ["form button"],
   replacement: "BUTTON_WIDGET",
   needsMeta: true,
   defaults: {

@@ -4,6 +4,7 @@ import IconSVG from "./icon.svg";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "底部弹窗",
+  searchTags: ["popup", "dialog", "modal"],
   iconSVG: IconSVG,
   needsMeta: true,
   isCanvas: false,

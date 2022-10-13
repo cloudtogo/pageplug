@@ -5,6 +5,7 @@ import IconSVG from "./icon.svg";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "文本",
+  searchTags: ["text", "label", "文字", "标题"],
   iconSVG: IconSVG,
   needsMeta: false,
   isCanvas: false,

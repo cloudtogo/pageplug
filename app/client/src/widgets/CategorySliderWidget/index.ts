@@ -6,17 +6,17 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Category Slider",
+  name: "类别滑动条",
   needsMeta: true,
-  searchTags: ["range"],
+  searchTags: ["range", "category slider"],
   iconSVG: IconSVG,
   defaults: {
     options: [
-      { label: "Extra Small", value: "xs" },
-      { label: "Small", value: "sm" },
-      { label: "Medium", value: "md" },
-      { label: "Large", value: "lg" },
-      { label: "Extra Large", value: "xl" },
+      { label: "特别小", value: "xs" },
+      { label: "小", value: "sm" },
+      { label: "中", value: "md" },
+      { label: "大", value: "lg" },
+      { label: "特别大", value: "xl" },
     ],
     defaultOptionValue: "md",
     isVisible: true,
@@ -29,7 +29,7 @@ export const CONFIG = {
     shouldTruncate: false,
     version: 1,
     animateLoading: true,
-    labelText: "Size",
+    labelText: "尺寸",
     labelPosition: LabelPosition.Left,
     labelAlignment: Alignment.LEFT,
     labelWidth: 5,

@@ -15,6 +15,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "列表",
   iconSVG: IconSVG,
+  searchTags: ["list"],
   needsMeta: true,
   isCanvas: true,
   defaults: {

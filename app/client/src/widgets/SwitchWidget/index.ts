@@ -8,7 +8,7 @@ export const CONFIG = {
   name: "开关",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["boolean"],
+  searchTags: ["boolean", "switch"],
   defaults: {
     label: "标签",
     rows: 4,

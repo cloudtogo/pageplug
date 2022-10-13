@@ -11,12 +11,12 @@ import { CategorySliderWidgetProps } from "..";
 
 export default [
   {
-    sectionName: "Data",
+    sectionName: "数据",
     children: [
       {
-        helpText: "Displays a list of unique options",
+        helpText: "一列值唯一的选项",
         propertyName: "options",
-        label: "Options",
+        label: "选项",
         controlType: "OPTION_INPUT",
         isJSConvertible: true,
         isBindProperty: true,
@@ -35,9 +35,9 @@ export default [
         evaluationSubstitutionType: EvaluationSubstitutionType.SMART_SUBSTITUTE,
       },
       {
-        helpText: "Sets a default selected option",
+        helpText: "设置默认选中项",
         propertyName: "defaultOptionValue",
-        label: "Default Value",
+        label: "默认值",
         placeholderText: "Y",
         controlType: "INPUT_TEXT",
         isBindProperty: true,
@@ -62,22 +62,22 @@ export default [
     ],
   },
   {
-    sectionName: "Label",
+    sectionName: "标签",
     children: [
       {
-        helpText: "Sets the label text of the widget",
+        helpText: "设置组件标签文本",
         propertyName: "labelText",
-        label: "Text",
+        label: "文本",
         controlType: "INPUT_TEXT",
-        placeholderText: "Enter label text",
+        placeholderText: "请输入标签文本",
         isBindProperty: true,
         isTriggerProperty: false,
         validation: { type: ValidationTypes.TEXT },
       },
       {
-        helpText: "Sets the label position of the widget",
+        helpText: "设置组件标签位置",
         propertyName: "labelPosition",
-        label: "Position",
+        label: "位置",
         controlType: "DROP_DOWN",
         options: [
           { label: "Left", value: LabelPosition.Left },
@@ -88,9 +88,9 @@ export default [
         validation: { type: ValidationTypes.TEXT },
       },
       {
-        helpText: "Sets the label alignment of the widget",
+        helpText: "设置组件标签对齐方式",
         propertyName: "labelAlignment",
-        label: "Alignment",
+        label: "对齐",
         controlType: "LABEL_ALIGNMENT_OPTIONS",
         options: [
           {
@@ -110,9 +110,9 @@ export default [
         dependencies: ["labelPosition"],
       },
       {
-        helpText: "Sets the label width of the widget as the number of columns",
+        helpText: "设置组件标签宽度占多少列",
         propertyName: "labelWidth",
-        label: "Width (in columns)",
+        label: "宽度（所占列数）",
         controlType: "NUMERIC_INPUT",
         isJSConvertible: true,
         isBindProperty: true,
@@ -131,12 +131,12 @@ export default [
     ],
   },
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
         propertyName: "showMarksLabel",
-        helpText: "Controls the visibility of the marks Label widget",
-        label: "Show Marks",
+        helpText: "控制是否显示下标文字",
+        label: "显示下标",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -145,8 +145,8 @@ export default [
       },
       {
         propertyName: "isVisible",
-        helpText: "Controls the visibility of the widget",
-        label: "Visible",
+        helpText: "控制组件的显示/隐藏",
+        label: "是否显示",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -155,9 +155,9 @@ export default [
       },
       {
         propertyName: "isDisabled",
-        label: "Disabled",
+        label: "禁用",
         controlType: "SWITCH",
-        helpText: "Disables clicks to this widget",
+        helpText: "禁用组件交互",
         isJSConvertible: true,
         isBindProperty: true,
         isTriggerProperty: false,
@@ -165,9 +165,9 @@ export default [
       },
       {
         propertyName: "animateLoading",
-        label: "Animate Loading",
+        label: "加载时显示动画",
         controlType: "SWITCH",
-        helpText: "Controls the loading of the widget",
+        helpText: "组件依赖的数据加载时显示加载动画",
         defaultValue: true,
         isJSConvertible: true,
         isBindProperty: true,
@@ -177,10 +177,10 @@ export default [
     ],
   },
   {
-    sectionName: "Events",
+    sectionName: "事件",
     children: [
       {
-        helpText: "Triggers an action when a user changes the slider value",
+        helpText: "滑动条值变化时触发",
         propertyName: "onChange",
         label: "onChange",
         controlType: "ACTION_SELECTOR",

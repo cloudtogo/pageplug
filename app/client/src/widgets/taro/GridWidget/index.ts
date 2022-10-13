@@ -4,6 +4,7 @@ import IconSVG from "./icon.svg";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "网格",
+  searchTags: ["grid"],
   iconSVG: IconSVG,
   needsMeta: true,
   isCanvas: false,

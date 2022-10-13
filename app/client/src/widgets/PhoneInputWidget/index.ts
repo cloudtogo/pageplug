@@ -8,7 +8,7 @@ export const CONFIG = {
   name: "手机号输入框",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["call"],
+  searchTags: ["call", "phone input"],
   defaults: {
     ...BaseConfig.defaults,
     widgetName: "PhoneInput",

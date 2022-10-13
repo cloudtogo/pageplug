@@ -4,7 +4,7 @@ import { ButtonPlacementTypes } from "components/constants";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Code Scanner",
+  name: "扫码器",
   iconSVG: IconSVG,
   needsMeta: true,
   searchTags: [
@@ -12,10 +12,13 @@ export const CONFIG = {
     "qr scanner",
     "code detector",
     "barcode reader",
+    "code scanner",
+    "二维码",
+    "条形码",
   ],
   defaults: {
     rows: 4,
-    label: "Scan a QR/Barcode",
+    label: "扫描二维码/条形码",
     columns: 16,
     widgetName: "CodeScanner",
     isDefaultClickDisabled: true,

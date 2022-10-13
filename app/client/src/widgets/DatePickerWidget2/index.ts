@@ -10,7 +10,7 @@ export const CONFIG = {
   name: "日期选择器",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["calendar"],
+  searchTags: ["calendar", "date picker"],
   defaults: {
     isDisabled: false,
     datePickerType: "DATE_PICKER",

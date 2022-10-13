@@ -4,6 +4,7 @@ import Widget from "./widget";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "图标",
+  searchTags: ["icon"],
   iconSVG: IconSVG,
   hideCard: true,
   isDeprecated: true,

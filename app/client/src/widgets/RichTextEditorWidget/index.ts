@@ -8,7 +8,7 @@ export const CONFIG = {
   name: "富文本编辑器",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["input", "rte"],
+  searchTags: ["input", "rte", "rich text editor"],
   defaults: {
     defaultText: "编辑器初始<b>内容</b>",
     rows: 20,

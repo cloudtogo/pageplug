@@ -4,6 +4,7 @@ import IconSVG from "./icon.svg";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "底部面板",
+  searchTags: ["bottom bar"],
   iconSVG: IconSVG,
   needsMeta: false,
   isCanvas: true,
