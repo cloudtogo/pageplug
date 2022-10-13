@@ -527,8 +527,8 @@ export const getEditActionColumnProperties = () => ({
   isDiscardVisible: true,
   saveIconAlign: "left",
   discardIconAlign: "left",
-  saveActionLabel: "Save",
-  discardActionLabel: "Discard",
+  saveActionLabel: "保存",
+  discardActionLabel: "丢弃",
   saveButtonColor: Colors.GREEN,
   discardButtonColor: Colors.GREEN,
 });
@@ -587,7 +587,7 @@ export const createEditActionColumn = (props: TableWidgetProps) => {
     ...getEditActionColumnProperties(),
     ...themeProps,
     columnType: ColumnTypes.EDIT_ACTIONS,
-    label: "Save / Discard",
+    label: "行更新操作",
     discardButtonVariant: ButtonVariantTypes.TERTIARY,
     discardButtonColor: Colors.DANGER_SOLID,
   };
