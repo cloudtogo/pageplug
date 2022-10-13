@@ -3,14 +3,14 @@ import { PropertyPaneConfig } from "constants/PropertyControlConstants";
 
 export default [
   {
-    sectionName: "Label",
+    sectionName: "标签",
     children: [
       {
         propertyName: "label",
-        label: "Text",
+        label: "文本",
         controlType: "INPUT_TEXT",
-        helpText: "Sets the label of the button",
-        placeholderText: "Scan a QR/Barcode",
+        helpText: "扫码按钮文本",
+        placeholderText: "扫描二维码/条形码",
         inputType: "TEXT",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -19,12 +19,12 @@ export default [
     ],
   },
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
         propertyName: "isVisible",
-        label: "Visible",
-        helpText: "Controls the visibility of the widget",
+        label: "是否显示",
+        helpText: "控制组件的显示/隐藏",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -33,8 +33,8 @@ export default [
       },
       {
         propertyName: "isDisabled",
-        label: "Disabled",
-        helpText: "Disables input to this widget",
+        label: "禁用",
+        helpText: "让组件不可交互",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -43,9 +43,9 @@ export default [
       },
       {
         propertyName: "animateLoading",
-        label: "Animate Loading",
+        label: "加载时显示动画",
         controlType: "SWITCH",
-        helpText: "Controls the loading of the widget",
+        helpText: "组件依赖的数据加载时显示加载动画",
         defaultValue: true,
         isJSConvertible: true,
         isBindProperty: true,
@@ -53,11 +53,11 @@ export default [
         validation: { type: ValidationTypes.BOOLEAN },
       },
       {
-        helpText: "Show helper text with button on hover",
+        helpText: "鼠标悬浮时显示提示信息",
         propertyName: "tooltip",
-        label: "Tooltip",
+        label: "提示信息",
         controlType: "INPUT_TEXT",
-        placeholderText: "Add Input Field",
+        placeholderText: "扫一扫",
         isBindProperty: true,
         isTriggerProperty: false,
         validation: { type: ValidationTypes.TEXT },
@@ -65,10 +65,10 @@ export default [
     ],
   },
   {
-    sectionName: "Events",
+    sectionName: "事件",
     children: [
       {
-        helpText: "Triggers an action when a valid code is detected",
+        helpText: "扫码成功时触发",
         propertyName: "onCodeDetected",
         label: "onCodeDetected",
         controlType: "ACTION_SELECTOR",

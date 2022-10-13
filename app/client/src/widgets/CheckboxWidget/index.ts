@@ -8,7 +8,7 @@ export const CONFIG = {
   name: "勾选",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["boolean"],
+  searchTags: ["boolean", "checkbox"],
   defaults: {
     rows: 4,
     columns: 7,

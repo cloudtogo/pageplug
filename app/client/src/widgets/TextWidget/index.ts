@@ -7,7 +7,16 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "文本",
   iconSVG: IconSVG,
-  searchTags: ["typography", "paragraph", "label"],
+  searchTags: [
+    "typography",
+    "paragraph",
+    "label",
+    "text",
+    "文字",
+    "标题",
+    "段落",
+    "字符",
+  ],
   defaults: {
     text: "文本",
     fontSize: DEFAULT_FONT_SIZE,

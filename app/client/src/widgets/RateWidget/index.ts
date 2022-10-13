@@ -7,7 +7,7 @@ export const CONFIG = {
   name: "评分",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["stars"],
+  searchTags: ["stars", "rating"],
   defaults: {
     rows: 4,
     columns: 20,

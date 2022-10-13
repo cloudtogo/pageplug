@@ -6,9 +6,9 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Number Slider",
+  name: "数字滑动条",
   needsMeta: true,
-  searchTags: ["range"],
+  searchTags: ["range", "number slider"],
   iconSVG: IconSVG,
   defaults: {
     min: 0,
@@ -31,7 +31,7 @@ export const CONFIG = {
     shouldTruncate: false,
     version: 1,
     animateLoading: true,
-    labelText: "Percentage",
+    labelText: "百分比",
     labelPosition: LabelPosition.Left,
     labelAlignment: Alignment.LEFT,
     labelWidth: 8,

@@ -7,7 +7,7 @@ export const CONFIG = {
   name: "容器",
   iconSVG: IconSVG,
   isCanvas: true,
-  searchTags: ["div", "parent", "group"],
+  searchTags: ["div", "parent", "group", "container"],
   defaults: {
     backgroundColor: "#FFFFFF",
     rows: 40,

@@ -4,6 +4,7 @@ import IconSVG from "./icon.svg";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "标签导航",
+  searchTags: ["tabs"],
   iconSVG: IconSVG,
   needsMeta: true,
   isCanvas: false,

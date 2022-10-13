@@ -8,7 +8,7 @@ export const CONFIG = {
   name: "单选组",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["choice"],
+  searchTags: ["choice", "radio group"],
   defaults: {
     rows: 4,
     columns: 20,

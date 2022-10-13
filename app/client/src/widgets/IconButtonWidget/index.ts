@@ -7,7 +7,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "图标按钮",
   iconSVG: IconSVG,
-  searchTags: ["click", "submit"],
+  searchTags: ["click", "submit", "icon button"],
   defaults: {
     iconName: IconNames.PLUS,
     buttonVariant: ButtonVariantTypes.PRIMARY,

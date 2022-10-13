@@ -6,6 +6,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "日期选择器",
   iconSVG: IconSVG,
+  searchTags: ["calendar", "date picker"],
   hideCard: true,
   isDeprecated: true,
   replacement: "DATE_PICKER_WIDGET2",

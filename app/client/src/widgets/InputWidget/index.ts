@@ -7,6 +7,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "输入框",
   iconSVG: IconSVG,
+  searchTags: ["input"],
   needsMeta: true,
   hideCard: true,
   isDeprecated: true,
