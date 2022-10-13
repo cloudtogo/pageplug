@@ -6,7 +6,7 @@ import Widget from "./widget";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "下拉树形单选",
-  searchTags: ["dropdown"],
+  searchTags: ["dropdown", "tree select"],
   iconSVG: IconSVG,
   needsMeta: true,
   defaults: {

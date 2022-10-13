@@ -4,6 +4,7 @@ import IconSVG from "./icon.svg";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "商品规格",
+  searchTags: ["sku", "表单", "form"],
   iconSVG: IconSVG,
   needsMeta: true,
   isCanvas: false,

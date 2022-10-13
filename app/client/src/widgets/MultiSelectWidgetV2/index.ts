@@ -8,7 +8,7 @@ export const CONFIG = {
   name: "下拉多选",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["dropdown", "tags"],
+  searchTags: ["dropdown", "tags", "multi select"],
   defaults: {
     rows: 4,
     columns: 20,

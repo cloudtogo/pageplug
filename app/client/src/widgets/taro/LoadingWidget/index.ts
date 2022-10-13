@@ -4,6 +4,7 @@ import IconSVG from "./icon.svg";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "加载遮罩",
+  searchTags: ["loading"],
   iconSVG: IconSVG,
   needsMeta: false,
   isCanvas: false,

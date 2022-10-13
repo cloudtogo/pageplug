@@ -6,6 +6,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "文件上传",
   iconSVG: IconSVG,
+  searchTags: ["file picker"],
   needsMeta: true,
   hideCard: true,
   isDeprecated: true,

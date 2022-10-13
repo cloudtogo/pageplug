@@ -6,7 +6,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "分隔线",
   iconSVG: IconSVG,
-  searchTags: ["line"],
+  searchTags: ["line", "divider"],
   defaults: {
     rows: 4,
     columns: 20,

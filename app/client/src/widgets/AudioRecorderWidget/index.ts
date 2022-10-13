@@ -6,7 +6,7 @@ export const CONFIG = {
   name: "录音器",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["sound recorder", "voice recorder"],
+  searchTags: ["sound recorder", "voice recorder", "audio recorder"],
   defaults: {
     iconColor: "white",
     isDisabled: false,

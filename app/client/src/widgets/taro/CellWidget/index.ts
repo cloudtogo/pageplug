@@ -4,6 +4,7 @@ import IconSVG from "./icon.svg";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "单元格",
+  searchTags: ["cell"],
   iconSVG: IconSVG,
   needsMeta: false,
   isCanvas: false,

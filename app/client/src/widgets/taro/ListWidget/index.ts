@@ -4,6 +4,7 @@ import IconSVG from "./icon.svg";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "列表",
+  searchTags: ["list"],
   iconSVG: IconSVG,
   needsMeta: true,
   isCanvas: false,
