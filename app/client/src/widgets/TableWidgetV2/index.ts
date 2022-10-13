@@ -14,6 +14,7 @@ import { escapeString } from "./widget/utilities";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "表格",
+  searchTags: ["datagrid", "table"],
   iconSVG: IconSVG,
   needsMeta: true,
   defaults: {

@@ -8,7 +8,7 @@ export const CONFIG = {
   name: "下拉树形多选",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["dropdown"],
+  searchTags: ["dropdown", "multi tree select"],
   defaults: {
     rows: 4,
     columns: 20,

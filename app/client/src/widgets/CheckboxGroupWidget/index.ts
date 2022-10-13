@@ -8,6 +8,7 @@ export const CONFIG = {
   name: "勾选组",
   iconSVG: IconSVG,
   needsMeta: true,
+  searchTags: ["checkbox group"],
   defaults: {
     rows: 4,
     columns: 23,

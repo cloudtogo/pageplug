@@ -6,7 +6,8 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Range Slider",
+  name: "区间滑动条",
+  searchTags: ["range slider"],
   needsMeta: true,
   iconSVG: IconSVG,
   defaults: {
@@ -25,7 +26,7 @@ export const CONFIG = {
     isVisible: true,
     isDisabled: false,
     tooltipAlwaysOn: false,
-    labelText: "Percentage",
+    labelText: "百分比",
     labelPosition: LabelPosition.Left,
     labelAlignment: Alignment.LEFT,
     labelWidth: 8,

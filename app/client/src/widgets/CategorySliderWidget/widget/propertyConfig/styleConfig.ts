@@ -2,12 +2,12 @@ import { ValidationTypes } from "constants/WidgetValidation";
 
 export default [
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
-        helpText: "Controls the size of the slider",
+        helpText: "设置滑动条尺寸大小",
         propertyName: "sliderSize",
-        label: "Size",
+        label: "尺寸",
         controlType: "DROP_DOWN",
         defaultValue: "m",
         options: [
@@ -34,11 +34,11 @@ export default [
     ],
   },
   {
-    sectionName: "Label Styles",
+    sectionName: "标签样式",
     children: [
       {
         propertyName: "labelTextColor",
-        label: "Font Color",
+        label: "字体颜色",
         controlType: "COLOR_PICKER",
         isJSConvertible: true,
         isBindProperty: true,
@@ -47,7 +47,7 @@ export default [
       },
       {
         propertyName: "labelTextSize",
-        label: "Font Size",
+        label: "字体大小",
         controlType: "DROP_DOWN",
         defaultValue: "0.875rem",
         options: [
@@ -89,7 +89,7 @@ export default [
       },
       {
         propertyName: "labelStyle",
-        label: "Emphasis",
+        label: "强调",
         controlType: "BUTTON_TABS",
         options: [
           {
@@ -109,12 +109,12 @@ export default [
     ],
   },
   {
-    sectionName: "Color",
+    sectionName: "颜色",
     children: [
       {
-        helpText: "Sets the fill color of the widget",
+        helpText: "设置组件的填充色",
         propertyName: "accentColor",
-        label: "Fill Color",
+        label: "填充颜色",
         controlType: "COLOR_PICKER",
         isJSConvertible: true,
         isBindProperty: true,

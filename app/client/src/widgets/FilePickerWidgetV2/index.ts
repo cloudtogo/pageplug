@@ -7,7 +7,7 @@ export const CONFIG = {
   name: "文件上传",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["upload"],
+  searchTags: ["upload", "file picker"],
   defaults: {
     rows: 4,
     files: [],

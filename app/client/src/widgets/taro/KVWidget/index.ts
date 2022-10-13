@@ -4,6 +4,7 @@ import IconSVG from "./icon.svg";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "键值对",
+  searchTags: ["kv", "text", "文本", "field"],
   iconSVG: IconSVG,
   needsMeta: false,
   isCanvas: false,

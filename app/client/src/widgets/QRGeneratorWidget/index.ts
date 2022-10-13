@@ -5,9 +5,9 @@ import Widget from "./widget";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "QRGenerator",
+  name: "二维码生成器",
   iconSVG: IconSVG,
-  searchTags: ["typography", "paragraph", "label"],
+  searchTags: ["typography", "paragraph", "label", "qrgenerator"],
   defaults: {
     text: "Label",
     fontSize: DEFAULT_FONT_SIZE,

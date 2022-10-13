@@ -12,12 +12,12 @@ import {
 
 export default [
   {
-    sectionName: "Data",
+    sectionName: "数据",
     children: [
       {
         propertyName: "min",
-        helpText: "Sets the min value of the widget",
-        label: "Min. Value",
+        helpText: "设置滑动条最小值",
+        label: "最小值",
         controlType: "INPUT_TEXT",
         placeholderText: "0",
         isBindProperty: true,
@@ -36,8 +36,8 @@ export default [
       },
       {
         propertyName: "max",
-        helpText: "Sets the max value of the widget",
-        label: "Max. Value",
+        helpText: "设置滑动条最大值",
+        label: "最大值",
         controlType: "INPUT_TEXT",
         placeholderText: "100",
         isBindProperty: true,
@@ -56,8 +56,8 @@ export default [
       },
       {
         propertyName: "step",
-        helpText: "The amount by which the slider value should increase",
-        label: "Step Size",
+        helpText: "滑动条一格占多少值",
+        label: "步长",
         controlType: "INPUT_TEXT",
         placeholderText: "10",
         isBindProperty: true,
@@ -76,10 +76,10 @@ export default [
       },
       {
         propertyName: "defaultValue",
-        helpText: "Sets the value of the widget",
-        label: "Default Value",
+        helpText: "设置组件默认值",
+        label: "默认值",
         controlType: "INPUT_TEXT",
-        placeholderText: "Value:",
+        placeholderText: "默认值",
         isBindProperty: true,
         isTriggerProperty: false,
         validation: {
@@ -97,22 +97,22 @@ export default [
     ],
   },
   {
-    sectionName: "Label",
+    sectionName: "标签",
     children: [
       {
-        helpText: "Sets the label text of the widget",
+        helpText: "设置组件标签文本",
         propertyName: "labelText",
-        label: "Text",
+        label: "文本",
         controlType: "INPUT_TEXT",
-        placeholderText: "Enter label text",
+        placeholderText: "请输入标签文本",
         isBindProperty: true,
         isTriggerProperty: false,
         validation: { type: ValidationTypes.TEXT },
       },
       {
-        helpText: "Sets the label position of the widget",
+        helpText: "设置组件标签位置",
         propertyName: "labelPosition",
-        label: "Position",
+        label: "位置",
         controlType: "DROP_DOWN",
         options: [
           { label: "Left", value: LabelPosition.Left },
@@ -123,9 +123,9 @@ export default [
         validation: { type: ValidationTypes.TEXT },
       },
       {
-        helpText: "Sets the label alignment of the widget",
+        helpText: "设置组件标签对齐方式",
         propertyName: "labelAlignment",
-        label: "Alignment",
+        label: "对齐",
         controlType: "LABEL_ALIGNMENT_OPTIONS",
         options: [
           {
@@ -145,9 +145,9 @@ export default [
         dependencies: ["labelPosition"],
       },
       {
-        helpText: "Sets the label width of the widget as the number of columns",
+        helpText: "设置组件标签宽度占多少列",
         propertyName: "labelWidth",
-        label: "Width (in columns)",
+        label: "宽度（所占列数）",
         controlType: "NUMERIC_INPUT",
         isJSConvertible: true,
         isBindProperty: true,
@@ -166,12 +166,12 @@ export default [
     ],
   },
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
         propertyName: "showMarksLabel",
-        helpText: "Show the marks label below the slider",
-        label: "Show Marks",
+        helpText: "是否显示滑动条下标",
+        label: "显示下标",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -179,9 +179,9 @@ export default [
         validation: { type: ValidationTypes.BOOLEAN },
       },
       {
-        helpText: "Display Value Marks",
+        helpText: "滑动条下标配置",
         propertyName: "marks",
-        label: "Marks",
+        label: "下标",
         controlType: "INPUT_TEXT",
         placeholderText: '[{ "value": "20", "label": "20%" }]',
         isBindProperty: true,
@@ -221,8 +221,8 @@ export default [
       },
       {
         propertyName: "isVisible",
-        helpText: "Controls the visibility of the widget",
-        label: "Visible",
+        helpText: "控制组件的显示/隐藏",
+        label: "是否显示",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -231,9 +231,9 @@ export default [
       },
       {
         propertyName: "isDisabled",
-        label: "Disabled",
+        label: "禁用",
         controlType: "SWITCH",
-        helpText: "Disables clicks to this widget",
+        helpText: "禁用组件交互",
         isJSConvertible: true,
         isBindProperty: true,
         isTriggerProperty: false,
@@ -241,9 +241,9 @@ export default [
       },
       {
         propertyName: "animateLoading",
-        label: "Animate Loading",
+        label: "加载时显示动画",
         controlType: "SWITCH",
-        helpText: "Controls the loading of the widget",
+        helpText: "组件依赖的数据加载时显示加载动画",
         defaultValue: true,
         isJSConvertible: true,
         isBindProperty: true,
@@ -252,8 +252,8 @@ export default [
       },
       {
         propertyName: "tooltipAlwaysOn",
-        helpText: "Keep showing the tooltip with value",
-        label: "Tooltip Always On",
+        helpText: "总是显示当前值提示",
+        label: "总是显示当前值",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -263,10 +263,10 @@ export default [
     ],
   },
   {
-    sectionName: "Events",
+    sectionName: "事件",
     children: [
       {
-        helpText: "Triggers an action when a user changes the slider value",
+        helpText: "滑动条值变化时触发",
         propertyName: "onChange",
         label: "onChange",
         controlType: "ACTION_SELECTOR",

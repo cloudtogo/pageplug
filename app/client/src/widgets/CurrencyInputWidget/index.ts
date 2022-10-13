@@ -8,7 +8,7 @@ export const CONFIG = {
   name: "货币输入框",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["amount", "total"],
+  searchTags: ["amount", "total", "currency input"],
   defaults: {
     ...BaseConfig.defaults,
     widgetName: "CurrencyInput",

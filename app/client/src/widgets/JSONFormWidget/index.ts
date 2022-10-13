@@ -15,6 +15,7 @@ const RESET_BUTTON_DEFAULT_STYLES = {
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "JSON表单",
+  searchTags: ["json form"],
   iconSVG: IconSVG,
   needsMeta: true,
   defaults: {

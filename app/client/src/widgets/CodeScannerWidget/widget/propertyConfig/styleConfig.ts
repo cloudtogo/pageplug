@@ -4,12 +4,12 @@ import { updateStyles } from "../propertyUtils";
 
 export default [
   {
-    sectionName: "Icon",
+    sectionName: "图标",
     children: [
       {
         propertyName: "iconName",
-        label: "Select Icon",
-        helpText: "Sets the icon to be used for the button",
+        label: "选择图标",
+        helpText: "选择按钮图标",
         controlType: "ICON_SELECT",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -21,8 +21,8 @@ export default [
       },
       {
         propertyName: "iconAlign",
-        label: "Position",
-        helpText: "Sets the icon alignment of the button",
+        label: "位置",
+        helpText: "设置按钮图标位置",
         controlType: "ICON_TABS",
         options: [
           {
@@ -45,20 +45,20 @@ export default [
       },
       {
         propertyName: "placement",
-        label: "Placement",
+        label: "对齐",
         controlType: "DROP_DOWN",
-        helpText: "Sets the space between items",
+        helpText: "设置对齐方式",
         options: [
           {
-            label: "Start",
+            label: "左对齐",
             value: ButtonPlacementTypes.START,
           },
           {
-            label: "Between",
+            label: "两端对齐",
             value: ButtonPlacementTypes.BETWEEN,
           },
           {
-            label: "Center",
+            label: "居中对齐",
             value: ButtonPlacementTypes.CENTER,
           },
         ],
@@ -81,12 +81,12 @@ export default [
     ],
   },
   {
-    sectionName: "Color",
+    sectionName: "颜色",
     children: [
       {
         propertyName: "buttonColor",
-        helpText: "Sets the background color of the button",
-        label: "Button Color",
+        helpText: "设置按钮背景色",
+        label: "按钮颜色",
         controlType: "COLOR_PICKER",
         isJSConvertible: true,
         isBindProperty: true,
@@ -101,12 +101,12 @@ export default [
     ],
   },
   {
-    sectionName: "Border and Shadow",
+    sectionName: "边框/阴影",
     children: [
       {
         propertyName: "borderRadius",
-        label: "Border Radius",
-        helpText: "Rounds the corners of the icon button's outer border edge",
+        label: "圆角",
+        helpText: "设置边框圆角半径",
         controlType: "BORDER_RADIUS_OPTIONS",
         isJSConvertible: true,
         isBindProperty: true,
@@ -115,9 +115,8 @@ export default [
       },
       {
         propertyName: "boxShadow",
-        label: "Box Shadow",
-        helpText:
-          "Enables you to cast a drop shadow from the frame of the widget",
+        label: "阴影",
+        helpText: "设置组件轮廓阴影",
         controlType: "BOX_SHADOW_OPTIONS",
         isJSConvertible: true,
         isBindProperty: true,
