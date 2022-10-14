@@ -92,7 +92,7 @@ export default function Settings() {
 
   useEffect(() => {
     if (currentWorkspace) {
-      setPageTitle(`Members in ${currentWorkspace.name}`);
+      setPageTitle(`${currentWorkspace.name} 成员`);
     }
   }, [currentWorkspace]);
 
@@ -140,7 +140,7 @@ export default function Settings() {
     },
     {
       key: "general",
-      title: "基本",
+      title: "设置",
       panelComponent: SettingsRenderer,
       // icon: "user-2",
       // iconSize: IconSize.XL,
@@ -166,11 +166,11 @@ export default function Settings() {
         <StyledStickyHeader isMobile={isMobile}>
           <BackButton goTo="/applications" />
           <SettingsPageHeader
-            buttonText="Add users"
+            buttonText="添加用户"
             onButtonClick={onButtonClick}
             onSearch={onSearch}
             pageMenuItems={pageMenuItems}
-            searchPlaceholder="Search"
+            searchPlaceholder="搜索"
             showMoreOptions={false}
             title={pageTitle}
           />
@@ -193,7 +193,7 @@ export default function Settings() {
         canOutsideClickClose
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        title={`Invite Users to ${currentWorkspace?.name}`}
+        title={`邀请小伙伴到 ${currentWorkspace?.name}`}
         trigger
         workspaceId={workspaceId}
       />

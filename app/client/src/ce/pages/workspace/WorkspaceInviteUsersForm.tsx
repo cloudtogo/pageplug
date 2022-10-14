@@ -602,9 +602,7 @@ function WorkspaceInviteUsersForm(props: any) {
     return (
       <span data-testid="t--dropdown-label" style={{ width: "100%" }}>
         <Text type={TextType.P1}>{`${
-          selected
-            ? selectedOption[0].label
-            : `${selectedOption?.length} Selected`
+          selected ? selectedOption[0].label : `${selectedOption?.length} 已选`
         }`}</Text>
       </span>
     );
@@ -774,9 +772,7 @@ function WorkspaceInviteUsersForm(props: any) {
       <InviteModalStyles />
       {isApplicationInvite && (
         <WorkspaceInviteTitle>
-          <Text type={TextType.H5}>
-            Invite users to {currentWorkspace?.name}{" "}
-          </Text>
+          <Text type={TextType.H5}>邀请小伙伴到 {currentWorkspace?.name} </Text>
         </WorkspaceInviteTitle>
       )}
       <StyledForm
@@ -810,9 +806,9 @@ function WorkspaceInviteUsersForm(props: any) {
               }
               data-cy="t--invite-email-input"
               intent="success"
-              label="Emails"
+              label="邮箱"
               name="users"
-              placeholder={placeholder || "Enter email address"}
+              placeholder={placeholder || "请输入邮箱地址"}
               type="text"
             />
             {isMultiSelectDropdown ? (
@@ -827,7 +823,7 @@ function WorkspaceInviteUsersForm(props: any) {
                 onSelect={onSelect}
                 options={multiSelectDropdownOptions}
                 outline={false}
-                placeholder="Select a role"
+                placeholder="请选择角色"
                 removeSelectedOption={onRemoveOptions}
                 selected={selectedItems}
                 showLabelOnly
@@ -840,7 +836,7 @@ function WorkspaceInviteUsersForm(props: any) {
                 onSelect={(value, option) => setSelectedOption(option)}
                 options={styledRoles}
                 outline={false}
-                placeholder="Select a role"
+                placeholder="请选择角色"
                 renderOption={renderOption}
                 size="small"
               />
@@ -852,7 +848,7 @@ function WorkspaceInviteUsersForm(props: any) {
             isLoading={submitting && !(submitFailed && !anyTouched)}
             size={Size.large}
             tag="button"
-            text="Invite"
+            text="邀请"
             variant={Variant.info}
             width={InviteButtonWidth}
           />
@@ -864,13 +860,13 @@ function WorkspaceInviteUsersForm(props: any) {
             {!mailEnabled && !disableEmailSetup && (
               <MailConfigContainer>
                 {allUsers.length === 0 && <NoEmailConfigImage />}
-                <span>You haven’t setup any email service yet</span>
+                <span>未开通邮件服务</span>
                 <a
                   href="https://docs.appsmith.com/v/v1.2.1/setup/docker/email"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  Please configure your email service to invite people
+                  请先开通邮件服务，再邀请小伙伴进组
                 </a>
               </MailConfigContainer>
             )}

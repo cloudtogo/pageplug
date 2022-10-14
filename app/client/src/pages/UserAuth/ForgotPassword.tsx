@@ -106,14 +106,12 @@ export const ForgotPassword = withTheme(
               actions={[
                 {
                   url: "https://docs.appsmith.com/v/v1.2.1/setup/docker/email",
-                  text: "Configure Email service",
+                  text: "配置邮件服务",
                   intent: "primary",
                 },
               ]}
               intent="warning"
-              message={
-                "You haven’t setup any email service yet. Please configure your email service to receive a reset link"
-              }
+              message={"系统未开通邮件服务，不能正常发送重置邮件"}
             />
           )}
           {submitFailed && error && (
