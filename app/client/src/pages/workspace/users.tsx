@@ -9,14 +9,14 @@ export function WorkspaceMembers() {
 
   return (
     <PageSectionHeader>
-      <h2>Users</h2>
+      <h2>成员</h2>
       <Button
         filled
         icon="plus"
         iconAlignment="left"
         intent="primary"
         onClick={() => history.push(WORKSPACE_INVITE_USERS_PAGE_URL)}
-        text="Invite Users"
+        text="邀请小伙伴"
       />
     </PageSectionHeader>
   );
