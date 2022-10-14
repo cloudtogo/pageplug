@@ -397,7 +397,7 @@ export const replacePluginIcon = (url: string) => {
   return url
     ?.replace("https://s3.us-east-2.amazonaws.com/assets.appsmith.com", "")
     ?.replace("https://assets.appsmith.com", "")
-    ?.replace(/\.png$/g, ".svg");
+    ?.replace(/RestAPI\.png$/g, "RestAPI.svg");
 };
 
 // util function to detect current os is Mac

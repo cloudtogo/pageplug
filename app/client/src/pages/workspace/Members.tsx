@@ -403,7 +403,7 @@ export default function MemberSettings(props: PageProps) {
       },
     },
     {
-      Header: "Actions",
+      Header: "操作",
       accessor: "actions",
       Cell: function DeleteCell(cellProps: any) {
         return (

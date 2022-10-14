@@ -1109,7 +1109,7 @@ export const CLEAN_URL_UPDATE = {
     "引用了 <strong>appsmith.URL.fullpath</strong> 和 <strong>appsmith.URL.pathname</strong> 的属性会有显示出变化",
 };
 
-export const MEMBERS_TAB_TITLE = (length: number) => `Users (${length})`;
+export const MEMBERS_TAB_TITLE = (length: number) => `成员 (${length})`;
 
 // Alert options and labels for showMessage types
 export const ALERT_STYLE_OPTIONS = [
