@@ -9,6 +9,11 @@ WORKDIR /opt/appsmith
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
 
+# replace source
+RUN sed -i s@/archive.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list
+RUN sed -i s@/security.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list
+RUN sed -i s@/ports.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list
+
 # Update APT packages - Base Layer
 RUN apt-get update \
   && apt-get upgrade --yes \
