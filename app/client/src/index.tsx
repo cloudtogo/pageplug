@@ -19,7 +19,6 @@ import "./assets/styles/index.css";
 import "./index.less";
 import "design-system/build/css/design-system.css";
 import "./polyfills/corejs-add-on";
-import AppErrorBoundary from "./AppErrorBoundry";
 import GlobalStyles from "globalStyles";
 // locale
 import { ConfigProvider } from "antd";
@@ -29,6 +28,7 @@ import { IntlProvider } from "react-intl";
 import "moment/locale/zh-cn";
 // enable autofreeze only in development
 import { setAutoFreeze } from "immer";
+import AppErrorBoundary from "AppErrorBoundry";
 const shouldAutoFreeze = process.env.NODE_ENV === "development";
 setAutoFreeze(shouldAutoFreeze);
 // taro-components polyfills
@@ -67,14 +67,7 @@ const inst = createReactApp(Empty, React, ReactDOM, {});
 import "@vant/touch-emulator";
 import "react-sortable-tree-patch-react-17/style.css";
 
-// app init
 appInitializer();
-
-// if (process.env.NODE_ENV === "development") {
-//   import("./mocks/browser").then(({ worker }) => {
-//     worker.start();
-//   });
-// }
 
 function App() {
   return (

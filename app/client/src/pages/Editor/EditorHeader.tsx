@@ -86,7 +86,6 @@ import EndTour from "./GuidedTour/EndTour";
 import { GUIDED_TOUR_STEPS } from "./GuidedTour/constants";
 import { viewerURL } from "RouteBuilder";
 import { useHref } from "./utils";
-import { inviteModalLinks } from "@appsmith/constants/forms";
 import moment from "moment/moment";
 
 const HeaderWrapper = styled.div`
@@ -576,7 +575,6 @@ export function EditorHeader(props: EditorHeaderProps) {
                 bgColor: Colors.GEYSER_LIGHT,
               }}
               isOpen={showAppInviteUsersDialog}
-              links={inviteModalLinks}
               message={createMessage(INVITE_USERS_MESSAGE)}
               placeholder={createMessage(INVITE_USERS_PLACEHOLDER)}
               title={currentApplication ? currentApplication.name : "分享应用"}
