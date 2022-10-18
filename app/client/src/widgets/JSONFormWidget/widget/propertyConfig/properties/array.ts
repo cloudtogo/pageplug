@@ -6,207 +6,176 @@ import { JSONFormWidgetProps } from "../..";
 import { HiddenFnParams, getSchemaItem, getStylesheetValue } from "../helper";
 
 const PROPERTIES = {
-  general: [
-    {
-      helpText: "字段默认值，默认值修改后会自动更新字段当前值",
-      propertyName: "defaultValue",
-      label: "默认值",
-      controlType: "JSON_FORM_COMPUTE_VALUE",
-      placeholderText: "[]",
-      isBindProperty: true,
-      isTriggerProperty: false,
-      validation: {
-        type: ValidationTypes.ARRAY,
+  style: {
+    root: [
+      {
+        sectionName: "Array Styles",
+        children: [
+          {
+            propertyName: "backgroundColor",
+            label: "Background Color",
+            controlType: "COLOR_PICKER",
+            helpText: "Changes the background color",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            customJSControl: "JSON_FORM_COMPUTE_VALUE",
+            validation: {
+              type: ValidationTypes.TEXT,
+              params: {
+                regex: /^(?![<|{{]).+/,
+              },
+            },
+            dependencies: ["schema"],
+          },
+          {
+            propertyName: "borderWidth",
+            helpText: "Enter value for border width",
+            label: "Border Width",
+            placeholderText: "Enter value in px",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.NUMBER },
+          },
+          {
+            propertyName: "borderColor",
+            label: "Border Color",
+            helpText: "Changes the border color of Object",
+            controlType: "COLOR_PICKER",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            customJSControl: "JSON_FORM_COMPUTE_VALUE",
+            validation: {
+              type: ValidationTypes.TEXT,
+              params: {
+                regex: /^(?![<|{{]).+/,
+              },
+            },
+            dependencies: ["schema"],
+          },
+          {
+            propertyName: "borderRadius",
+            label: "Border Radius",
+            helpText:
+              "Rounds the corners of the icon button's outer border edge",
+            controlType: "BORDER_RADIUS_OPTIONS",
+            customJSControl: "JSON_FORM_COMPUTE_VALUE",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            getStylesheetValue,
+            validation: { type: ValidationTypes.TEXT },
+            dependencies: ["schema"],
+          },
+          {
+            propertyName: "boxShadow",
+            label: "Box Shadow",
+            helpText:
+              "Enables you to cast a drop shadow from the frame of the widget",
+            controlType: "BOX_SHADOW_OPTIONS",
+            customJSControl: "JSON_FORM_COMPUTE_VALUE",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            getStylesheetValue,
+            validation: { type: ValidationTypes.TEXT },
+            dependencies: ["schema"],
+          },
+        ],
+        hidden: (props: JSONFormWidgetProps, propertyPath: string) => {
+          const schemaItem: SchemaItem = get(props, propertyPath, {});
+
+          // Hidden if not ARRAY
+          return schemaItem.fieldType !== FieldType.ARRAY;
+        },
       },
-      hidden: (...args: HiddenFnParams) =>
-        getSchemaItem(...args).fieldTypeNotMatches(FieldType.ARRAY),
-      dependencies: ["schema"],
-    },
-  ],
-  accessibility: [
-    {
-      propertyName: "isCollapsible",
-      label: "可折叠",
-      helpText: "让数组元素可折叠",
-      controlType: "SWITCH",
-      isJSConvertible: true,
-      isBindProperty: true,
-      isTriggerProperty: false,
-      customJSControl: "JSON_FORM_COMPUTE_VALUE",
-      validation: { type: ValidationTypes.BOOLEAN },
-      hidden: (...args: HiddenFnParams) =>
-        getSchemaItem(...args).fieldTypeNotMatches(FieldType.ARRAY),
-      dependencies: ["schema"],
-    },
-  ],
-
-  sections: [
-    {
-      sectionName: "数组样式",
-      isDefaultOpen: false,
-      children: [
-        {
-          propertyName: "backgroundColor",
-          label: "背景颜色",
-          controlType: "COLOR_PICKER",
-          helpText: "修改背景颜色",
-          isJSConvertible: true,
-          isBindProperty: true,
-          isTriggerProperty: false,
-          customJSControl: "JSON_FORM_COMPUTE_VALUE",
-          validation: {
-            type: ValidationTypes.TEXT,
-            params: {
-              regex: /^(?![<|{{]).+/,
+      {
+        sectionName: "Item Styles",
+        children: [
+          {
+            propertyName: "cellBackgroundColor",
+            label: "Background Color",
+            controlType: "COLOR_PICKER",
+            helpText: "Changes the background color of the item",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            customJSControl: "JSON_FORM_COMPUTE_VALUE",
+            validation: {
+              type: ValidationTypes.TEXT,
+              params: {
+                regex: /^(?![<|{{]).+/,
+              },
             },
+            dependencies: ["schema"],
           },
-          dependencies: ["schema"],
-        },
-        {
-          propertyName: "borderWidth",
-          helpText: "输入边框宽度",
-          label: "边框宽度",
-          placeholderText: "以 px 为单位",
-          controlType: "INPUT_TEXT",
-          isBindProperty: true,
-          isTriggerProperty: false,
-          validation: { type: ValidationTypes.NUMBER },
-        },
-        {
-          propertyName: "borderColor",
-          label: "边框颜色",
-          helpText: "修改边框颜色",
-          controlType: "COLOR_PICKER",
-          isJSConvertible: true,
-          isBindProperty: true,
-          isTriggerProperty: false,
-          customJSControl: "JSON_FORM_COMPUTE_VALUE",
-          validation: {
-            type: ValidationTypes.TEXT,
-            params: {
-              regex: /^(?![<|{{]).+/,
+          {
+            propertyName: "cellBorderWidth",
+            helpText: "Enter value for border width of the item",
+            label: "Border Width",
+            placeholderText: "Enter value in px",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.NUMBER },
+          },
+          {
+            propertyName: "cellBorderColor",
+            label: "Border Color",
+            helpText: "Changes the border color of the item",
+            controlType: "COLOR_PICKER",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            customJSControl: "JSON_FORM_COMPUTE_VALUE",
+            validation: {
+              type: ValidationTypes.TEXT,
+              params: {
+                regex: /^(?![<|{{]).+/,
+              },
             },
+            dependencies: ["schema"],
           },
-          dependencies: ["schema"],
-        },
-        {
-          propertyName: "borderRadius",
-          label: "边框圆角",
-          helpText: "边框圆角样式",
-          controlType: "BORDER_RADIUS_OPTIONS",
-          customJSControl: "JSON_FORM_COMPUTE_VALUE",
-          isJSConvertible: true,
-          isBindProperty: true,
-          isTriggerProperty: false,
-          getStylesheetValue,
-          validation: { type: ValidationTypes.TEXT },
-          dependencies: ["schema"],
-        },
-        {
-          propertyName: "boxShadow",
-          label: "阴影",
-          helpText: "组件轮廓投影",
-          controlType: "BOX_SHADOW_OPTIONS",
-          customJSControl: "JSON_FORM_COMPUTE_VALUE",
-          isJSConvertible: true,
-          isBindProperty: true,
-          isTriggerProperty: false,
-          getStylesheetValue,
-          validation: { type: ValidationTypes.TEXT },
-          dependencies: ["schema"],
-        },
-      ],
-      hidden: (props: JSONFormWidgetProps, propertyPath: string) => {
-        const schemaItem: SchemaItem = get(props, propertyPath, {});
+          {
+            propertyName: "cellBorderRadius",
+            label: "Border Radius",
+            helpText:
+              "Rounds the corners of the icon button's outer border edge",
+            controlType: "BORDER_RADIUS_OPTIONS",
+            customJSControl: "JSON_FORM_COMPUTE_VALUE",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            getStylesheetValue,
+            validation: { type: ValidationTypes.TEXT },
+            dependencies: ["schema"],
+          },
+          {
+            propertyName: "cellBoxShadow",
+            label: "Box Shadow",
+            helpText:
+              "Enables you to cast a drop shadow from the frame of the widget",
+            controlType: "BOX_SHADOW_OPTIONS",
+            customJSControl: "JSON_FORM_COMPUTE_VALUE",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            getStylesheetValue,
+            validation: { type: ValidationTypes.TEXT },
+            dependencies: ["schema"],
+          },
+        ],
+        hidden: (props: JSONFormWidgetProps, propertyPath: string) => {
+          const schemaItem: SchemaItem = get(props, propertyPath, {});
 
-        // Hidden if not ARRAY
-        return schemaItem.fieldType !== FieldType.ARRAY;
+          // Hidden if not ARRAY
+          return schemaItem.fieldType !== FieldType.ARRAY;
+        },
       },
-    },
-    {
-      sectionName: "数组项样式",
-      isDefaultOpen: false,
-      children: [
-        {
-          propertyName: "cellBackgroundColor",
-          label: "背景颜色",
-          controlType: "COLOR_PICKER",
-          helpText: "修改数组项背景颜色",
-          isJSConvertible: true,
-          isBindProperty: true,
-          isTriggerProperty: false,
-          customJSControl: "JSON_FORM_COMPUTE_VALUE",
-          validation: {
-            type: ValidationTypes.TEXT,
-            params: {
-              regex: /^(?![<|{{]).+/,
-            },
-          },
-          dependencies: ["schema"],
-        },
-        {
-          propertyName: "cellBorderWidth",
-          helpText: "修改数组项边框宽度",
-          label: "边框宽度",
-          placeholderText: "以 px 为单位",
-          controlType: "INPUT_TEXT",
-          isBindProperty: true,
-          isTriggerProperty: false,
-          validation: { type: ValidationTypes.NUMBER },
-        },
-        {
-          propertyName: "cellBorderColor",
-          label: "边框颜色",
-          helpText: "修改数组项边框颜色",
-          controlType: "COLOR_PICKER",
-          isJSConvertible: true,
-          isBindProperty: true,
-          isTriggerProperty: false,
-          customJSControl: "JSON_FORM_COMPUTE_VALUE",
-          validation: {
-            type: ValidationTypes.TEXT,
-            params: {
-              regex: /^(?![<|{{]).+/,
-            },
-          },
-          dependencies: ["schema"],
-        },
-        {
-          propertyName: "cellBorderRadius",
-          label: "边框圆角",
-          helpText: "边框圆角样式",
-          controlType: "BORDER_RADIUS_OPTIONS",
-          customJSControl: "JSON_FORM_COMPUTE_VALUE",
-          isJSConvertible: true,
-          isBindProperty: true,
-          isTriggerProperty: false,
-          getStylesheetValue,
-          validation: { type: ValidationTypes.TEXT },
-          dependencies: ["schema"],
-        },
-        {
-          propertyName: "cellBoxShadow",
-          label: "阴影",
-          helpText: "组件轮廓投影",
-          controlType: "BOX_SHADOW_OPTIONS",
-          customJSControl: "JSON_FORM_COMPUTE_VALUE",
-          isJSConvertible: true,
-          isBindProperty: true,
-          isTriggerProperty: false,
-          getStylesheetValue,
-          validation: { type: ValidationTypes.TEXT },
-          dependencies: ["schema"],
-        },
-      ],
-      hidden: (props: JSONFormWidgetProps, propertyPath: string) => {
-        const schemaItem: SchemaItem = get(props, propertyPath, {});
-
-        // Hidden if not ARRAY
-        return schemaItem.fieldType !== FieldType.ARRAY;
-      },
-    },
-  ],
-
+    ],
+  },
   content: {
     data: [
       {
