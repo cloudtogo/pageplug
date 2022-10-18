@@ -48,6 +48,7 @@ export interface INJECTED_CONFIGS {
   googleRecaptchaSiteKey: string;
   supportEmail: string;
   hideWatermark: boolean;
+  disableIframeWidgetSandbox: boolean;
   inCloudOS: boolean;
 }
 
@@ -130,6 +131,10 @@ export const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
     supportEmail: process.env.APPSMITH_SUPPORT_EMAIL || "support@appsmith.com",
     hideWatermark: process.env.APPSMITH_HIDE_WATERMARK
       ? process.env.APPSMITH_HIDE_WATERMARK.length > 0
+      : false,
+    disableIframeWidgetSandbox: process.env
+      .APPSMITH_DISABLE_IFRAME_WIDGET_SANDBOX
+      ? process.env.APPSMITH_DISABLE_IFRAME_WIDGET_SANDBOX.length > 0
       : false,
     inCloudOS: !!process.env.REACT_APP_IN_CLOUDOS,
   };
@@ -281,6 +286,9 @@ export const getAppsmithConfigs = (): AppsmithUIConfigs => {
       true ||
       ENV_CONFIG.hideWatermark ||
       APPSMITH_FEATURE_CONFIGS.hideWatermark,
+    disableIframeWidgetSandbox:
+      ENV_CONFIG.disableIframeWidgetSandbox ||
+      APPSMITH_FEATURE_CONFIGS.disableIframeWidgetSandbox,
     inCloudOS: ENV_CONFIG.inCloudOS,
   };
 };

@@ -1147,10 +1147,6 @@ Cypress.Commands.add(
   },
 );
 
-Cypress.Commands.add("skipGenerateCRUDPage", () => {
-  cy.get(generatePage.buildFromScratchActionCard).click();
-});
-
 Cypress.Commands.add("updateMapType", (mapType) => {
   // Command to change the map chart type if the property pane of the map chart widget is opened.
   cy.get(viewWidgetsPage.mapType)
@@ -1898,3 +1894,10 @@ Cypress.Commands.add(
     });
   },
 );
+
+Cypress.Commands.add("CreatePage", () => {
+  cy.get(pages.AddPage)
+    .first()
+    .click({ force: true });
+  cy.get("[data-cy='add-page']").click();
+});
