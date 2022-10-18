@@ -69,5 +69,6 @@ export interface AppsmithUIConfigs {
   };
   appsmithSupportEmail: string;
   hideWatermark: boolean;
+  disableIframeWidgetSandbox: boolean;
   inCloudOS: boolean;
 };

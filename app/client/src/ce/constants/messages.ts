@@ -358,8 +358,6 @@ export const ERROR_JS_ACTION_COPY_FAIL = (actionName: string) =>
   `${actionName} 复制失败`;
 export const JS_ACTION_DELETE_SUCCESS = (actionName: string) =>
   `${actionName} 删除成功`;
-export const JS_ACTION_CREATED_SUCCESS = (actionName: string) =>
-  `${actionName} 创建成功`;
 export const JS_ACTION_MOVE_SUCCESS = (actionName: string, pageName: string) =>
   `成功将动作 ${actionName} 移动到页面 ${pageName}`;
 export const ERROR_JS_ACTION_MOVE_FAIL = (actionName: string) =>
@@ -625,8 +623,8 @@ export const GIT_TYPE_REPO_NAME_FOR_REVOKING_ACCESS = (name: string) =>
   `在输入框中输入 “${name}” 来取消访问`;
 export const APPLICATION_NAME = () => "应用名称";
 export const NOT_OPTIONS = () => "没有可选项！";
-export const OPEN_REPO = () => "打开仓库";
-export const CONNECTING_REPO = () => "连接到 git 仓库";
+export const OPEN_REPO = () => "打开仓库SITORY";
+export const CONNECTING_REPO = () => "连接到 git 仓库sitory";
 export const IMPORTING_APP_FROM_GIT = () => "从 git 导入应用";
 export const ERROR_CONNECTING = () => "连接时出错";
 export const ERROR_COMMITTING = () => "提交时出错";
@@ -737,7 +735,7 @@ export const ONBOARDING_CHECKLIST_BANNER_HEADER = () =>
 export const ONBOARDING_CHECKLIST_BANNER_BODY = () =>
   "你可以去主页看看你创建的应用";
 export const ONBOARDING_CHECKLIST_BANNER_BUTTON = () => "探索主页";
-
+export const ONBOARDING_SKIPPED_FIRST_TIME_USER = () => "跳过新手指引";
 export const ONBOARDING_CHECKLIST_HEADER = () => "👋 欢迎来到 PagePlug ！";
 export const ONBOARDING_CHECKLIST_BODY = () =>
   "开始你的第一个应用吧，你可以自由探索，或者跟随指引了解 PagePlug 的基本用法";
@@ -1044,6 +1042,8 @@ export const CONTEXT_NO_PAGE = () => "暂无页面";
 export const CONTEXT_REFRESH = () => "刷新";
 export const CONTEXT_CLONE = () => "克隆页面";
 export const CONTEXT_SET_AS_HOME_PAGE = () => "设置为主页";
+export const PAGE = () => "页面";
+export const PAGES = () => "页面";
 
 // Entity explorer
 export const ADD_DATASOURCE_BUTTON = () => "添加数据源";
@@ -1063,7 +1063,7 @@ export const CHOOSE_WHERE_TO_FORK = () => "选择把模板克隆到哪里";
 export const SELECT_WORKSPACE = () => "选择应用组";
 export const FORK_TEMPLATE = () => "克隆模板";
 export const TEMPLATES = () => "模板";
-export const FORK_THIS_TEMPLATE = () => "克隆这个模板";
+export const FORK_THIS_TEMPLATE = () => "使用这个模板";
 export const COULDNT_FIND_TEMPLATE = () => "找不到你想要的模板吗？";
 export const COULDNT_FIND_TEMPLATE_DESCRIPTION = () =>
   "你可以在我们的 github 上给我们提 issue ，告诉我们你想要什么模板";
@@ -1083,7 +1083,15 @@ export const WIDGET_USED = () => "用到的组件";
 export const SIMILAR_TEMPLATES = () => "类似模板";
 export const VIEW_ALL_TEMPLATES = () => "查看所有模板";
 export const FILTERS = () => "过滤";
+export const TEMPLATE_CARD_TITLE = () => "从模板开始";
+export const TEMPLATE_CARD_DESCRIPTION = () => "选择模板页面创建应用";
+export const FILTER_SELECTALL = () => "全选";
+export const FILTER_SELECT_PAGES = () => "选择页面";
+export const FORKING_TEMPLATE = () => "正在克隆模板";
+export const FETCHING_TEMPLATES = () => "正在加载模板详情";
+export const FETCHING_TEMPLATE_LIST = () => "正在加载模板列表";
 
+export const TEMPLATES_BACK_BUTTON = () => "返回模板";
 export const IMAGE_LOAD_ERROR = () => "图片加载失败";
 
 export const REDIRECT_URL_TOOLTIP = () =>
@@ -1110,6 +1118,13 @@ export const CLEAN_URL_UPDATE = {
 };
 
 export const MEMBERS_TAB_TITLE = (length: number) => `成员 (${length})`;
+
+export const CREATE_PAGE = () => "新建空白页面";
+export const CANVAS_NEW_PAGE_CARD = () => "新建页面";
+export const GENERATE_PAGE = () => "用数据库自动生成页面";
+export const GENERATE_PAGE_DESCRIPTION = () =>
+  "用数据库数据自动生成一个增删改查页面";
+export const ADD_PAGE_FROM_TEMPLATE = () => "添加模板页面";
 
 // Alert options and labels for showMessage types
 export const ALERT_STYLE_OPTIONS = [

@@ -25,7 +25,6 @@ import { ReactComponent as TwoLineHamburger } from "assets/icons/ads/two-line-ha
 import MobileSideBar from "./MobileSidebar";
 import { Indices } from "constants/Layers";
 import { Icon, IconSize } from "design-system";
-import { TemplatesTabItem } from "pages/Templates/TemplatesTabItem";
 import { getTemplateNotificationSeenAction } from "actions/templateActions";
 
 const StyledPageHeader = styled(StyledHeader)`
@@ -158,18 +157,17 @@ export function PageHeader(props: PageHeaderProps) {
             >
               <div>应用</div>
             </TabName>
-            <TemplatesTabItem>
-              <TabName
-                className="t--templates-tab"
-                isSelected={
-                  matchTemplatesPath(location.pathname) ||
-                  matchTemplatesIdPath(location.pathname)
-                }
-                onClick={() => history.push(TEMPLATES_PATH)}
-              >
-                <div>模板</div>
-              </TabName>
-            </TemplatesTabItem>
+
+            <TabName
+              className="t--templates-tab"
+              isSelected={
+                matchTemplatesPath(location.pathname) ||
+                matchTemplatesIdPath(location.pathname)
+              }
+              onClick={() => history.push(TEMPLATES_PATH)}
+            >
+              <div>模板</div>
+            </TabName>
           </>
         )}
       </Tabs>
