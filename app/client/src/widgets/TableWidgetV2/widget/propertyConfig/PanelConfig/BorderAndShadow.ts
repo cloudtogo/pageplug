@@ -6,14 +6,14 @@ import {
 } from "../../propertyUtils";
 
 export default {
-  sectionName: "Border and Shadow",
+  sectionName: "轮廓样式",
   children: [
     {
       propertyName: "borderRadius",
-      label: "Border Radius",
+      label: "边框圆角",
       customJSControl: "TABLE_COMPUTE_VALUE",
       isJSConvertible: true,
-      helpText: "Rounds the corners of the icon button's outer border edge",
+      helpText: "设置边框圆角半径",
       controlType: "BORDER_RADIUS_OPTIONS",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(props, propertyPath, [
@@ -34,9 +34,8 @@ export default {
     },
     {
       propertyName: "boxShadow",
-      label: "Box Shadow",
-      helpText:
-        "Enables you to cast a drop shadow from the frame of the widget",
+      label: "阴影",
+      helpText: "设置组件外框阴影",
       controlType: "BOX_SHADOW_OPTIONS",
       customJSControl: "TABLE_COMPUTE_VALUE",
       isJSConvertible: true,

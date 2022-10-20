@@ -13,6 +13,7 @@ import { AutocompleteDataType } from "utils/autocomplete/TernServer";
 import { WidgetProperties } from "selectors/propertyPaneSelectors";
 import { WIDGET_PADDING } from "constants/WidgetConstants";
 import derivedProperties from "./parseDerivedProperties";
+import _ from "lodash";
 
 export function selectedTabValidation(
   value: unknown,
@@ -174,7 +175,7 @@ class TabsWidget extends BaseWidget<
         sectionName: "事件",
         children: [
           {
-            helpText: "点击按钮时触发",
+            helpText: "标签页切换时触发",
             propertyName: "onTabSelected",
             label: "onTabSelected",
             controlType: "ACTION_SELECTOR",
@@ -194,8 +195,8 @@ class TabsWidget extends BaseWidget<
         children: [
           {
             propertyName: "accentColor",
-            helpText: "Sets the color of the selected tab's underline ",
-            label: "Accent Color",
+            helpText: "设置当前标签页下标颜色",
+            label: "下标颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -203,10 +204,10 @@ class TabsWidget extends BaseWidget<
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Use a html color name, HEX, RGB or RGBA value",
+            helpText: "使用 html 颜色名, HEX, RGB 或者 RGBA 颜色格式",
             placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
             propertyName: "backgroundColor",
-            label: "Background Color",
+            label: "背景颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -214,20 +215,20 @@ class TabsWidget extends BaseWidget<
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Use a html color name, HEX, RGB or RGBA value",
+            helpText: "使用 html 颜色名, HEX, RGB 或者 RGBA 颜色格式",
             placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
             propertyName: "borderColor",
-            label: "Border Color",
+            label: "边框颜色",
             controlType: "COLOR_PICKER",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Enter value for border width",
+            helpText: "设置边框宽度（px 单位）",
             propertyName: "borderWidth",
-            label: "Border Width",
-            placeholderText: "Enter value in px",
+            label: "边框宽度",
+            placeholderText: "单位是 px",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -317,7 +318,7 @@ class TabsWidget extends BaseWidget<
         return selectedTabWidgetId === item.widgetId;
       })[0],
     };
-    if (!childWidgetData) {
+    if (_.isEmpty(childWidgetData)) {
       return null;
     }
 

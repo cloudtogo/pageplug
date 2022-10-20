@@ -205,7 +205,7 @@ class FieldConfigurationControl extends BaseControl<ControlProps, State> {
         onClick={this.addNewField}
         size={Size.medium}
         tag="button"
-        text="Add a new field"
+        text="添加字段"
         type="button"
       />
     );

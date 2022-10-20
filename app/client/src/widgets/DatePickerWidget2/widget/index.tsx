@@ -21,7 +21,7 @@ function allowedRange(value: any) {
   return {
     isValid: isValid,
     parsed: isValid ? Number(value) : 0,
-    messages: isValid ? [] : ["Number should be between 0-6."],
+    messages: isValid ? [] : ["数字必须在 0 ~ 6 之间"],
   };
 }
 class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
@@ -48,7 +48,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
             label: "默认日期",
             helpText: "设置默认日期，默认日期修改后，组件当前日期会自动更新",
             controlType: "DATE_PICKER",
-            placeholderText: "Enter Default Date",
+            placeholderText: "输入默认日期",
             useValidationMessage: true,
             isJSConvertible: true,
             isBindProperty: true,
@@ -60,7 +60,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
             label: "每周第一天",
             helpText: "设置每周的第一天是星期几",
             controlType: "INPUT_TEXT",
-            defaultValue: "0",
+            defaultValue: "1",
             inputType: "INTEGER",
             isBindProperty: true,
             isTriggerProperty: false,
