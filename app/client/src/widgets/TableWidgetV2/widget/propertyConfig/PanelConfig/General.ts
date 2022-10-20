@@ -140,15 +140,15 @@ export default {
 };
 
 export const GeneralStyle = {
-  sectionName: "General",
+  sectionName: "通用配置",
   children: [
     {
       propertyName: "buttonVariant",
-      label: "Button Variant",
+      label: "按钮类型",
       controlType: "DROP_DOWN",
       customJSControl: "TABLE_COMPUTE_VALUE",
       isJSConvertible: true,
-      helpText: "Sets the variant",
+      helpText: "设置按钮样式类型",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(props, propertyPath, [
           ColumnTypes.ICON_BUTTON,
@@ -158,15 +158,15 @@ export const GeneralStyle = {
       dependencies: ["primaryColumns", "columnOrder"],
       options: [
         {
-          label: "Primary",
+          label: "主按钮",
           value: ButtonVariantTypes.PRIMARY,
         },
         {
-          label: "Secondary",
+          label: "次级按钮",
           value: ButtonVariantTypes.SECONDARY,
         },
         {
-          label: "Tertiary",
+          label: "文本按钮",
           value: ButtonVariantTypes.TERTIARY,
         },
       ],
@@ -190,21 +190,21 @@ export const GeneralStyle = {
     },
     {
       propertyName: "menuVariant",
-      label: "Button Variant",
+      label: "按钮类型",
       controlType: "DROP_DOWN",
       customJSControl: "TABLE_COMPUTE_VALUE",
       helpText: "Sets the variant of the menu button",
       options: [
         {
-          label: "Primary",
+          label: "主按钮",
           value: ButtonVariantTypes.PRIMARY,
         },
         {
-          label: "Secondary",
+          label: "次级按钮",
           value: ButtonVariantTypes.SECONDARY,
         },
         {
-          label: "Tertiary",
+          label: "文本按钮",
           value: ButtonVariantTypes.TERTIARY,
         },
       ],

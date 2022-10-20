@@ -87,7 +87,7 @@ export default {
       },
     },
     {
-      helpText: "The alias that you use in selectedrow",
+      helpText: "在 selectedrow 中使用的别名",
       propertyName: "alias",
       label: "属性名",
       controlType: "INPUT_TEXT",

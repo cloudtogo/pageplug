@@ -1370,7 +1370,7 @@ export default [
         propertyName: "defaultSearchText",
         label: "默认搜索内容",
         controlType: "INPUT_TEXT",
-        placeholderText: "{{appsmith.user.name}}",
+        placeholderText: "{{global.user.name}}",
         isBindProperty: true,
         isTriggerProperty: false,
         validation: { type: ValidationTypes.TEXT },

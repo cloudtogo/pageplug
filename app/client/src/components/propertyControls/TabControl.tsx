@@ -52,7 +52,7 @@ function AddTabButtonComponent({ widgetId }: any) {
         onClick={addOption}
         size={Size.medium}
         tag="button"
-        text="Add a Tab"
+        text="添加标签页"
         type="button"
       />
     </StyledPropertyPaneButtonWrapper>
@@ -75,7 +75,7 @@ function TabControlComponent(props: RenderComponentProps<DroppableItem>) {
       {...props}
       deleteOption={deleteOption}
       isDelete
-      placeholder="Tab Title"
+      placeholder="标签页标题"
     />
   );
 }

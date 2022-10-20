@@ -96,7 +96,7 @@ export default {
     },
     {
       propertyName: "onFilterUpdate",
-      helpText: "Trigger an action on change of filterText",
+      helpText: "过滤关键字变化时触发",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         const baseProperty = getBasePropertyPath(propertyPath);
         const columnType = get(props, `${baseProperty}.columnType`, "");

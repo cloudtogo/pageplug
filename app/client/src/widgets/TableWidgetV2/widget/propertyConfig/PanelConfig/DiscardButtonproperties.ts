@@ -183,7 +183,7 @@ export const discardButtonStyleConfig = {
       ],
     },
     {
-      sectionName: "Icon",
+      sectionName: "图标",
       collapsible: false,
       children: [
         {

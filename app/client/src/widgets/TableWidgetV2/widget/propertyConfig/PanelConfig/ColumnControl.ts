@@ -72,7 +72,7 @@ export default {
           value: ColumnTypes.VIDEO,
         },
         {
-          label: "Select",
+          label: "选择器",
           value: ColumnTypes.SELECT,
         },
       ],
