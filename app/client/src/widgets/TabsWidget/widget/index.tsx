@@ -1,5 +1,5 @@
 import React from "react";
-import { find } from "lodash";
+import { find, isEmpty } from "lodash";
 import TabsComponent from "../component";
 import BaseWidget, { WidgetState } from "../../BaseWidget";
 import WidgetFactory from "utils/WidgetFactory";
@@ -13,7 +13,6 @@ import { AutocompleteDataType } from "utils/autocomplete/TernServer";
 import { WidgetProperties } from "selectors/propertyPaneSelectors";
 import { WIDGET_PADDING } from "constants/WidgetConstants";
 import derivedProperties from "./parseDerivedProperties";
-import _ from "lodash";
 
 export function selectedTabValidation(
   value: unknown,
@@ -318,7 +317,7 @@ class TabsWidget extends BaseWidget<
         return selectedTabWidgetId === item.widgetId;
       })[0],
     };
-    if (_.isEmpty(childWidgetData)) {
+    if (isEmpty(childWidgetData)) {
       return null;
     }
 
