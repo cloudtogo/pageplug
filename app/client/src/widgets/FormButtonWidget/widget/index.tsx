@@ -28,32 +28,32 @@ class FormButtonWidget extends ButtonWidget {
   static getPropertyPaneConfig() {
     return [
       {
-        sectionName: "General",
+        sectionName: "通用配置",
         children: [
           {
             propertyName: "text",
-            label: "Label",
-            helpText: "Sets the label of the button",
+            label: "文本",
+            helpText: "设置按钮文本",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter label text",
+            placeholderText: "请输入按钮文本",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Show helper text with button on hover",
+            helpText: "鼠标悬浮时显示的提示信息",
             propertyName: "tooltip",
-            label: "Tooltip",
+            label: "提示",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter tooltip text",
+            placeholderText: "请输入提示内容",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
           },
           {
             propertyName: "isVisible",
-            label: "Visible",
-            helpText: "Controls the visibility of the widget",
+            label: "是否可见",
+            helpText: "控制组件的显示/隐藏",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -62,9 +62,9 @@ class FormButtonWidget extends ButtonWidget {
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "加载时显示动画",
             controlType: "SWITCH",
-            helpText: "Controls the loading of the widget",
+            helpText: "组件依赖的数据加载时显示加载动画",
             defaultValue: true,
             isJSConvertible: true,
             isBindProperty: true,
@@ -74,18 +74,18 @@ class FormButtonWidget extends ButtonWidget {
           {
             propertyName: "googleRecaptchaKey",
             label: "Google Recaptcha Key",
-            helpText: "Sets Google Recaptcha v3 site key for button",
+            helpText: "为按钮设置 Google Recaptcha v3 key",
             controlType: "INPUT_TEXT",
-            placeholderText: "Enter google recaptcha key",
+            placeholderText: "请输入 google recaptcha key",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
           },
           {
             propertyName: "recaptchaType",
-            label: "Google reCAPTCHA Version",
+            label: "Google reCAPTCHA 版本",
             controlType: "DROP_DOWN",
-            helpText: "Select reCAPTCHA version",
+            helpText: "选择 reCAPTCHA 版本",
             options: [
               {
                 label: "reCAPTCHA v3",
@@ -109,13 +109,12 @@ class FormButtonWidget extends ButtonWidget {
         ],
       },
       {
-        sectionName: "Form options",
+        sectionName: "表单选项",
         children: [
           {
-            helpText:
-              "Disabled if the form is invalid, if this widget exists directly within a Form widget.",
+            helpText: "如果组件在表单组件中，表单校验失败时按钮不可点击",
             propertyName: "disabledWhenInvalid",
-            label: "Disabled Invalid Forms",
+            label: "表单校验失败时禁止提交",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -123,10 +122,9 @@ class FormButtonWidget extends ButtonWidget {
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
-            helpText:
-              "Resets the fields of the form, on click, if this widget exists directly within a Form widget.",
+            helpText: "如果组件在表单组件中，表单数据提交后重置表单组件",
             propertyName: "resetFormOnClick",
-            label: "Reset Form on Success",
+            label: "表单提交成功后重置表单",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -136,10 +134,10 @@ class FormButtonWidget extends ButtonWidget {
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         children: [
           {
-            helpText: "Triggers an action when the button is clicked",
+            helpText: "点击时触发",
             propertyName: "onClick",
             label: "onClick",
             controlType: "ACTION_SELECTOR",
@@ -150,12 +148,12 @@ class FormButtonWidget extends ButtonWidget {
         ],
       },
       {
-        sectionName: "Styles",
+        sectionName: "样式",
         children: [
           {
             propertyName: "buttonColor",
-            helpText: "Changes the color of the button",
-            label: "Button Color",
+            helpText: "设置按钮颜色",
+            label: "按钮颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -164,20 +162,20 @@ class FormButtonWidget extends ButtonWidget {
           },
           {
             propertyName: "buttonVariant",
-            label: "Button Variant",
+            label: "按钮类型",
             controlType: "DROP_DOWN",
-            helpText: "Sets the variant of the icon button",
+            helpText: "设置按钮类型",
             options: [
               {
-                label: "Primary",
+                label: "主按钮",
                 value: ButtonVariantTypes.PRIMARY,
               },
               {
-                label: "Secondary",
+                label: "次级按钮",
                 value: ButtonVariantTypes.SECONDARY,
               },
               {
-                label: "Tertiary",
+                label: "文本按钮",
                 value: ButtonVariantTypes.TERTIARY,
               },
             ],
@@ -198,9 +196,8 @@ class FormButtonWidget extends ButtonWidget {
           },
           {
             propertyName: "borderRadius",
-            label: "Border Radius",
-            helpText:
-              "Rounds the corners of the icon button's outer border edge",
+            label: "边框圆角",
+            helpText: "设置边框圆角半径",
             controlType: "BORDER_RADIUS_OPTIONS",
             isBindProperty: true,
             isJSConvertible: true,
@@ -211,9 +208,8 @@ class FormButtonWidget extends ButtonWidget {
           },
           {
             propertyName: "boxShadow",
-            label: "Box Shadow",
-            helpText:
-              "Enables you to cast a drop shadow from the frame of the widget",
+            label: "阴影",
+            helpText: "设置组件外框阴影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -222,8 +218,8 @@ class FormButtonWidget extends ButtonWidget {
           },
           {
             propertyName: "iconName",
-            label: "Icon",
-            helpText: "Sets the icon to be used for the button",
+            label: "图标",
+            helpText: "设置按钮图标",
             controlType: "ICON_SELECT",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -248,20 +244,20 @@ class FormButtonWidget extends ButtonWidget {
           },
           {
             propertyName: "placement",
-            label: "Placement",
+            label: "图标对齐",
             controlType: "DROP_DOWN",
-            helpText: "Sets the space between items",
+            helpText: "设置图标对齐方式",
             options: [
               {
-                label: "Start",
+                label: "左对齐",
                 value: ButtonPlacementTypes.START,
               },
               {
-                label: "Between",
+                label: "两端对齐",
                 value: ButtonPlacementTypes.BETWEEN,
               },
               {
-                label: "Center",
+                label: "居中对齐",
                 value: ButtonPlacementTypes.CENTER,
               },
             ],
@@ -283,8 +279,8 @@ class FormButtonWidget extends ButtonWidget {
           },
           {
             propertyName: "iconAlign",
-            label: "Icon Alignment",
-            helpText: "Sets the icon alignment of the button",
+            label: "图标位置",
+            helpText: "设置图标位置",
             controlType: "ICON_TABS",
             options: [
               {

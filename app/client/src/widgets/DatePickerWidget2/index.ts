@@ -30,7 +30,7 @@ export const CONFIG = {
     isRequired: false,
     closeOnSelection: true,
     shortcuts: false,
-    firstDayOfWeek: 0,
+    firstDayOfWeek: 1,
     timePrecision: TimePrecision.MINUTE,
     animateLoading: true,
   },

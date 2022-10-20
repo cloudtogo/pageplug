@@ -175,10 +175,7 @@ function CollapseToggle(props: { isOpen: boolean }) {
   );
 }
 
-function copyContent(
-  content: any,
-  onCopyContentText = `解析值已复制`,
-) {
+function copyContent(content: any, onCopyContentText = `解析值已复制`) {
   const stringifiedContent = isString(content)
     ? content
     : JSON.stringify(content, null, 2);

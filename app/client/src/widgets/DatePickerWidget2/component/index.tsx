@@ -19,6 +19,7 @@ import { LabelPosition } from "components/constants";
 import { parseDate } from "./utils";
 import { LabelWithTooltip, labelLayoutStyles } from "design-system";
 import { lightenColor, PopoverStyles } from "widgets/WidgetUtils";
+import MomentLocaleUtils from "react-day-picker/moment";
 
 const DATEPICKER_POPUP_CLASSNAME = "datepickerwidget-popup";
 
@@ -186,6 +187,45 @@ class DatePickerComponent extends React.Component<
         ? new Date(this.state.selectedDate)
         : null;
 
+    const shortcutsConfig = [
+      { date: now.toDate(), label: "今天" },
+      {
+        date: now
+          .clone()
+          .subtract(1, "d")
+          .toDate(),
+        label: "昨天",
+      },
+      {
+        date: now
+          .clone()
+          .subtract(1, "w")
+          .toDate(),
+        label: "一周前",
+      },
+      {
+        date: now
+          .clone()
+          .subtract(1, "M")
+          .toDate(),
+        label: "一个月前",
+      },
+      {
+        date: now
+          .clone()
+          .subtract(3, "M")
+          .toDate(),
+        label: "三个月前",
+      },
+      {
+        date: now
+          .clone()
+          .subtract(1, "y")
+          .toDate(),
+        label: "一年前",
+      },
+    ];
+
     const getInitialMonth = () => {
       // None
       if (
@@ -316,7 +356,7 @@ class DatePickerComponent extends React.Component<
               className={this.props.isLoading ? "bp3-skeleton" : ""}
               closeOnSelection={this.props.closeOnSelection}
               dayPickerProps={{
-                firstDayOfWeek: this.props.firstDayOfWeek || 0,
+                firstDayOfWeek: this.props.firstDayOfWeek || 1,
               }}
               disabled={this.props.isDisabled}
               formatDate={this.formatDate}
@@ -324,11 +364,15 @@ class DatePickerComponent extends React.Component<
               inputProps={{
                 inputRef: this.props.inputRef,
               }}
+              locale="zh_CN"
+              localeUtils={MomentLocaleUtils}
+              clearButtonText="清空"
+              todayButtonText="今天"
               maxDate={maxDate}
               minDate={minDate}
               onChange={this.onDateSelected}
               parseDate={this.parseDate}
-              placeholder={"Select Date"}
+              placeholder={"选择日期"}
               popoverProps={{
                 portalContainer:
                   document.getElementById("art-board") || undefined,
@@ -336,7 +380,7 @@ class DatePickerComponent extends React.Component<
                 canEscapeKeyClose: true,
                 portalClassName: `${DATEPICKER_POPUP_CLASSNAME}-${this.props.widgetId}`,
               }}
-              shortcuts={this.props.shortcuts}
+              shortcuts={this.props.shortcuts ? shortcutsConfig : false}
               showActionsBar
               timePrecision={
                 this.props.timePrecision === TimePrecision.NONE

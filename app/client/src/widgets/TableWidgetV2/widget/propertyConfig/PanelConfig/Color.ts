@@ -3,13 +3,13 @@ import { ColumnTypes, TableWidgetProps } from "widgets/TableWidgetV2/constants";
 import { hideByColumnType } from "../../propertyUtils";
 
 export default {
-  sectionName: "Color",
+  sectionName: "颜色",
   children: [
     {
       propertyName: "buttonColor",
-      label: "Button Color",
+      label: "按钮颜色",
       controlType: "PRIMARY_COLUMNS_COLOR_PICKER_V2",
-      helpText: "Changes the color of the button",
+      helpText: "设置按钮颜色",
       isJSConvertible: true,
       customJSControl: "TABLE_COMPUTE_VALUE",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
@@ -33,8 +33,8 @@ export default {
     },
     {
       propertyName: "menuColor",
-      helpText: "Sets the custom color preset based on the menu button variant",
-      label: "Button Color",
+      helpText: "设置菜单按钮颜色",
+      label: "按钮颜色",
       controlType: "PRIMARY_COLUMNS_COLOR_PICKER_V2",
       customJSControl: "TABLE_COMPUTE_VALUE",
       isJSConvertible: true,
@@ -57,7 +57,7 @@ export default {
     },
     {
       propertyName: "cellBackground",
-      label: "Cell Background",
+      label: "单元格背景",
       controlType: "PRIMARY_COLUMNS_COLOR_PICKER_V2",
       isJSConvertible: true,
       customJSControl: "TABLE_COMPUTE_VALUE",
@@ -76,7 +76,7 @@ export default {
     },
     {
       propertyName: "textColor",
-      label: "Text Color",
+      label: "文本颜色",
       controlType: "PRIMARY_COLUMNS_COLOR_PICKER_V2",
       isJSConvertible: true,
       customJSControl: "TABLE_COMPUTE_VALUE",

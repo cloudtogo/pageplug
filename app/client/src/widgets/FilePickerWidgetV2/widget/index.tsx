@@ -23,10 +23,10 @@ import CloseIcon from "assets/icons/ads/cross.svg";
 import { Colors } from "constants/Colors";
 import Papa from "papaparse";
 
-const CSV_ARRAY_LABEL = "Array (CSVs only)";
+const CSV_ARRAY_LABEL = "Array (仅限 CSVs)";
 const CSV_FILE_TYPE_REGEX = /.+(\/csv)$/;
 
-const ARRAY_CSV_HELPER_TEXT = `All non csv filetypes will have an empty value. \n Large files used in widgets directly might slow down the app.`;
+const ARRAY_CSV_HELPER_TEXT = `注意：非 csv 类型文件数据都是空值，组件中使用大文件可能会让应用变得卡顿`;
 
 const isCSVFileType = (str: string) => CSV_FILE_TYPE_REGEX.test(str);
 
@@ -305,9 +305,8 @@ class FilePickerWidget extends BaseWidget<
           },
           {
             propertyName: "dynamicTyping",
-            label: "Infer data-types from CSV",
-            helpText:
-              "Controls if the arrays should try to infer the best possible data type based on the values in csv files",
+            label: "解析 CSV 中的数据类型",
+            helpText: "根据 csv 文件中的数据值自动推断数据类型",
             controlType: "SWITCH",
             isJSConvertible: false,
             isBindProperty: true,
@@ -391,7 +390,7 @@ class FilePickerWidget extends BaseWidget<
           },
           {
             propertyName: "isDisabled",
-            label: "Disable",
+            label: "禁用",
             helpText: "让组件不可交互",
             controlType: "SWITCH",
             isJSConvertible: true,
