@@ -115,7 +115,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "textColor",
-            label: "Text Color",
+            label: "文本颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -146,10 +146,10 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
             },
           },
           {
-            helpText: "Use a html color name, HEX, RGB or RGBA value",
+            helpText: "使用 html 颜色名, HEX, RGB 或者 RGBA 颜色格式",
             placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
             propertyName: "borderColor",
-            label: "Border Color",
+            label: "边框颜色",
             controlType: "COLOR_PICKER",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -159,8 +159,8 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
             helpText:
               "Enter value for border width which can also use as margin",
             propertyName: "borderWidth",
-            label: "Border Width",
-            placeholderText: "Enter value in px",
+            label: "边框宽度",
+            placeholderText: "单位是 px",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -499,7 +499,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "textColor",
-            label: "Text Color",
+            label: "文本颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -513,7 +513,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "backgroundColor",
-            label: "Background Color",
+            label: "背景颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -531,10 +531,10 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
             },
           },
           {
-            helpText: "Use a html color name, HEX, RGB or RGBA value",
+            helpText: "使用 html 颜色名, HEX, RGB 或者 RGBA 颜色格式",
             placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
             propertyName: "borderColor",
-            label: "Border Color",
+            label: "边框颜色",
             controlType: "COLOR_PICKER",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -615,8 +615,8 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
             helpText:
               "Enter value for border width which can also use as margin",
             propertyName: "borderWidth",
-            label: "Border Width",
-            placeholderText: "Enter value in px",
+            label: "边框宽度",
+            placeholderText: "单位是 px",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,

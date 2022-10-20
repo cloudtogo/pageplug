@@ -7,12 +7,12 @@ import {
 import { hideByColumnType, updateIconAlignment } from "../../propertyUtils";
 
 export default {
-  sectionName: "Icon",
+  sectionName: "图标",
   children: [
     {
       propertyName: "menuButtoniconName",
-      label: "Icon",
-      helpText: "Sets the icon to be used for the menu button",
+      label: "菜单按钮图标",
+      helpText: "设置菜单按钮图标",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(props, propertyPath, [ColumnTypes.MENU_BUTTON]);
       },
@@ -35,8 +35,8 @@ export default {
     },
     {
       propertyName: "iconAlign",
-      label: "Position",
-      helpText: "Sets the icon alignment of the menu button",
+      label: "图标位置",
+      helpText: "设置按钮图标位置",
       controlType: "ICON_TABS",
       options: [
         {
