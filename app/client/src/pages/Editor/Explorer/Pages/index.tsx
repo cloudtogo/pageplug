@@ -20,6 +20,7 @@ import {
   defaultPageIcon,
   settingsIcon,
   currentPageIcon,
+  appLayoutIcon,
 } from "../ExplorerIcons";
 import {
   createMessage,
@@ -172,7 +173,7 @@ function Pages() {
         hoverOpenDelay={TOOLTIP_HOVER_ON_DELAY}
         position="bottom"
       >
-        {settingsIcon}
+        {appLayoutIcon}
       </TooltipComponent>
     ),
     [],
