@@ -324,3 +324,11 @@ export function GraphQLIconV2() {
     </EntityIcon>
   );
 }
+
+export const appLayoutIcon = (
+  <Icon
+    color={Colors.CODE_GRAY}
+    icon="page-layout"
+    iconSize={ENTITY_ICON_SIZE}
+  />
+);

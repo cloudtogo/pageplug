@@ -13,6 +13,11 @@ import { thinScrollbar } from "constants/DefaultTheme";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { Colors } from "constants/Colors";
 
+const FilterNameMap: Record<string, string> = {
+  datasources: "数据源",
+  functions: "功能",
+};
+
 const FilterWrapper = styled.div`
   overflow: auto;
   height: calc(100vh - ${(props) => props.theme.homePage.header + 24}px);
@@ -108,6 +113,7 @@ function FilterCategory({
   // This indicates how many filter items do we want to show, the rest are hidden
   // behind show more.
   const FILTERS_TO_SHOW = 4;
+  const titleLabel = FilterNameMap[label] || label;
   const onSelect = (item: string, type: string) => {
     if (type === "add") {
       dispatch(filterTemplates(label, [...selectedFilters, item]));
@@ -132,7 +138,7 @@ function FilterCategory({
   return (
     <FilterCategoryWrapper>
       <StyledFilterCategory type={TextType.P4}>
-        {label.toLocaleUpperCase()}{" "}
+        {titleLabel.toLocaleUpperCase()}{" "}
         {!!selectedFilters.length && `(${selectedFilters.length})`}
       </StyledFilterCategory>
       <ListWrapper>
