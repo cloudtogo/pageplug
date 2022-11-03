@@ -60,6 +60,7 @@ import TemplatesListLoader from "pages/Templates/loader";
 import { fetchFeatureFlagsInit } from "actions/userActions";
 import FeatureFlags from "entities/FeatureFlags";
 import WDSPage from "components/wds/Showcase";
+import { getCurrentTenant } from "@appsmith/actions/tenantActions";
 
 import { getAppsmithConfigs } from "@appsmith/configs";
 const { inCloudOS } = getAppsmithConfigs();
@@ -86,12 +87,13 @@ function AppRouter(props: {
   safeCrash: boolean;
   getCurrentUser: () => void;
   getFeatureFlags: () => void;
+  getCurrentTenant: () => void;
   currentTheme: Theme;
   safeCrashCode?: ERROR_CODES;
   featureFlags: FeatureFlags;
   setTheme: (theme: ThemeMode) => void;
 }) {
-  const { getCurrentUser, getFeatureFlags } = props;
+  const { getCurrentTenant, getCurrentUser, getFeatureFlags } = props;
   useEffect(() => {
     AnalyticsUtil.logEvent("ROUTE_CHANGE", { path: window.location.pathname });
     const stopListener = history.listen((location: any) => {
@@ -100,6 +102,7 @@ function AppRouter(props: {
     });
     getCurrentUser();
     getFeatureFlags();
+    getCurrentTenant();
     return stopListener;
   }, []);
 
@@ -222,6 +225,7 @@ const mapDispatchToProps = (dispatch: any) => ({
   },
   getCurrentUser: () => dispatch(getCurrentUser()),
   getFeatureFlags: () => dispatch(fetchFeatureFlagsInit()),
+  getCurrentTenant: () => dispatch(getCurrentTenant()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppRouter);
