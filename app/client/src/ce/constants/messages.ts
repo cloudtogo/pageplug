@@ -593,8 +593,8 @@ export const AUTHENTICATION_METHOD_ENABLED = (methodName: string) => `
   ${methodName} 鉴权方式已生效
 `;
 
-export const DISCONNECT_EXISTING_REPOSITORIES = () => "与现有仓库断开连接";
-export const DISCONNECT_EXISTING_REPOSITORIES_INFO = () =>
+export const REVOKE_EXISTING_REPOSITORIES = () => "与现有仓库断开连接";
+export const REVOKE_EXISTING_REPOSITORIES_INFO = () =>
   "你可以删除现有的仓库来给新的仓库腾出空间";
 export const CONTACT_SUPPORT = () => "联系我们";
 export const CONTACT_SALES_MESSAGE_ON_INTERCOM = (workspaceName: string) =>
@@ -609,9 +609,9 @@ export const APPLICATION_IMPORT_SUCCESS_DESCRIPTION = () =>
 export const NONE_REVERSIBLE_MESSAGE = () => "这个操作是不可恢复的，请谨慎操作";
 export const CONTACT_SUPPORT_TO_UPGRADE = () =>
   "联系我们进行升级，升级版可以使用无限的私有仓库";
-export const DISCONNECT_CAUSE_APPLICATION_BREAK = () =>
+export const REVOKE_CAUSE_APPLICATION_BREAK = () =>
   "断开连接可能会导致应用出错";
-export const DISCONNECT_GIT = () => "取消访问";
+export const REVOKE_GIT = () => "取消访问";
 export const DISCONNECT = () => "断开连接";
 export const REVOKE = () => "取消";
 export const REVOKE_ACCESS = () => "取消访问";
@@ -915,8 +915,29 @@ export const DISCONNECT_AUTH_ERROR = () => "不能断开唯一已连接的鉴权
 export const MANDATORY_FIELDS_ERROR = () => "必填字段不能为空";
 
 // Audit logs begin
-export const AUDIT_LOGS = () => "审计日志";
-export const TRY_AGAIN_WITH_YOUR_FILTER = () => "用过滤器重试一下";
+export const AUDIT_LOGS = () => "Audit Logs";
+export const TRY_AGAIN_WITH_YOUR_FILTER = () => "Try again with your filter";
+
+// Audit logs Upgrade page begin
+export const INTRODUCING = (featureName: string) =>
+  `Introducing ${featureName}`;
+export const AUDIT_LOGS_UPGRADE_PAGE_SUB_HEADING = () =>
+  "See a timestamped trail of events in your workspace. Filter by type of event, user, resource ID, and time. Drill down into each event to investigate further.";
+export const SECURITY_AND_COMPLIANCE = () => "Security & Compliance";
+export const SECURITY_AND_COMPLIANCE_DETAIL1 = () =>
+  "Proactively derisk misconfigured permissions, roll back changes from a critical security event, and keep checks against your compliance policies.";
+export const SECURITY_AND_COMPLIANCE_DETAIL2 = () =>
+  "Exports to popular compliance tools coming soon";
+export const DEBUGGING = () => "Debugging";
+export const DEBUGGING_DETAIL1 = () =>
+  "Debug with a timeline of events filtered by user and resource ID, correlate them with end-user and app developer actions, and investigate back to the last known good state of your app.";
+export const INCIDENT_MANAGEMENT = () => "Incident Management";
+export const INCIDENT_MANAGEMENT_DETAIL1 = () =>
+  "Go back in time from an incident to see who did what, correlate events with breaking changes, and run RCAs to remediate incidents for now and the future.";
+export const AVAILABLE_ON_BUSINESS = () => "Available on a business plan only";
+export const EXCLUSIVE_TO_BUSINESS = (featureName: string) =>
+  `The ${featureName} feature is exclusive to workspaces on the Enterprise Plan`;
+// Audit logs Upgrade page end
 // Audit logs end
 
 //
@@ -1125,6 +1146,7 @@ export const GENERATE_PAGE = () => "用数据库自动生成页面";
 export const GENERATE_PAGE_DESCRIPTION = () =>
   "用数据库数据自动生成一个增删改查页面";
 export const ADD_PAGE_FROM_TEMPLATE = () => "添加模板页面";
+export const INVALID_URL = () => "请输入有效 URL，例如 https://example.com";
 
 // Alert options and labels for showMessage types
 export const ALERT_STYLE_OPTIONS = [
