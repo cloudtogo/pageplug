@@ -8,24 +8,24 @@
           "label": "页面加载完成后执行",
           "configProperty": "executeOnLoad",
           "controlType": "SWITCH",
-          "info": "是否在页面加载完成后执行查询"
+          "subtitle": "是否在页面加载完成后执行查询"
         },
         {
           "label": "在执行查询前确认",
           "configProperty": "confirmBeforeExecute",
           "controlType": "SWITCH",
-          "info": "在每次请求数据前向用户确认"
+          "subtitle": "在每次请求数据前向用户确认"
         },
         {
           "label": "使用预置语句",
-          "info": "使查询语句参数化，这能够有效的防止 SQL 注入",
+          "subtitle": "使查询语句参数化，这能够有效的防止 SQL 注入",
           "configProperty": "actionConfiguration.pluginSpecifiedTemplates[0].value",
           "controlType": "SWITCH",
           "initialValue": true
         },
         {
           "label": "查询超时（毫秒）",
-          "info": "查询超过最大响应时间",
+          "subtitle": "查询超过最大响应时间",
           "configProperty": "actionConfiguration.timeoutInMillisecond",
           "controlType": "INPUT_TEXT",
           "dataType": "NUMBER"

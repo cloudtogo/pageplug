@@ -2836,7 +2836,7 @@ export const theme: Theme = {
     },
     action: Colors.MINT_ORANGE,
     appBackground: Colors.WHITE,
-    artboard: "#F6F6F6",
+    artboard: "#F8FAFC",
     primary: Colors.MINT_GREEN,
     primaryOld: Colors.GREEN,
     primaryDarker: Colors.JUNGLE_GREEN,

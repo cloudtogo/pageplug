@@ -192,6 +192,29 @@ export default [
     sectionName: "轮廓样式",
     children: [
       {
+        propertyName: "variant",
+        helpText: "Selects the variant",
+        label: "Cell borders",
+        controlType: "DROP_DOWN",
+        defaultValue: "DEFAULT",
+        isBindProperty: true,
+        isTriggerProperty: false,
+        options: [
+          {
+            label: "Default",
+            value: "DEFAULT",
+          },
+          {
+            label: "No borders",
+            value: "VARIANT2",
+          },
+          {
+            label: "Horizonal borders only",
+            value: "VARIANT3",
+          },
+        ],
+      },
+      {
         propertyName: "borderRadius",
         label: "边框圆角",
         helpText: "边框圆角样式",
@@ -210,6 +233,26 @@ export default [
         isBindProperty: true,
         isTriggerProperty: false,
         validation: { type: ValidationTypes.TEXT },
+      },
+      {
+        helpText: "Use a html color name, HEX, RGB or RGBA value",
+        placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
+        propertyName: "borderColor",
+        label: "Border Color",
+        controlType: "COLOR_PICKER",
+        isBindProperty: true,
+        isTriggerProperty: false,
+        validation: { type: ValidationTypes.TEXT },
+      },
+      {
+        helpText: "Enter value for border width",
+        propertyName: "borderWidth",
+        label: "Border Width",
+        placeholderText: "Enter value in px",
+        controlType: "INPUT_TEXT",
+        isBindProperty: true,
+        isTriggerProperty: false,
+        validation: { type: ValidationTypes.NUMBER },
       },
     ],
   },
