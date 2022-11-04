@@ -9,7 +9,7 @@ import {
 } from "../StyledControls";
 import styled from "constants/DefaultTheme";
 import { generateReactKey } from "utils/generators";
-import { DroppableComponent } from "components/ads/DraggableListComponent";
+import { DroppableComponent } from "../DraggableListComponent";
 import { getNextEntityName } from "utils/AppsmithUtils";
 import _, { debounce } from "lodash";
 import { Category, Size } from "design-system";

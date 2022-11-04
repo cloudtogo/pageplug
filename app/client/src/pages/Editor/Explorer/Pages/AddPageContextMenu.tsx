@@ -32,6 +32,7 @@ import {
 } from "@appsmith/constants/messages";
 import HotKeys from "../Files/SubmenuHotkeys";
 import { selectFeatureFlags } from "selectors/usersSelectors";
+import { isMobileLayout } from "selectors/editorSelectors";
 
 const MenuItem = styled.div<{ active: boolean }>`
   display: flex;
@@ -74,6 +75,7 @@ function AddPageContextMenu({
   const { pageId } = useParams<ExplorerURLParams>();
   const [activeItemIdx, setActiveItemIdx] = useState(0);
   const featureFlags = useSelector(selectFeatureFlags);
+  const isMobile = useSelector(isMobileLayout);
 
   const menuRef = useCallback(
     (node) => {
@@ -99,6 +101,10 @@ function AddPageContextMenu({
         "data-cy": "generate-page",
       },
     ];
+
+    if (isMobile) {
+      items.pop();
+    }
 
     if (featureFlags.TEMPLATES_PHASE_2) {
       items.push({

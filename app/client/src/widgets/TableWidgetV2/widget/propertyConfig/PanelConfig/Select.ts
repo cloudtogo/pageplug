@@ -3,7 +3,7 @@ import { ColumnTypes, TableWidgetProps } from "widgets/TableWidgetV2/constants";
 import { hideByColumnType } from "../../propertyUtils";
 
 export default {
-  sectionName: "Select Properties",
+  sectionName: "选择器配置",
   hidden: (props: TableWidgetProps, propertyPath: string) => {
     return hideByColumnType(props, propertyPath, [ColumnTypes.SELECT], true);
   },
