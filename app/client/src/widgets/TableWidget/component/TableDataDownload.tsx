@@ -70,11 +70,11 @@ interface DownloadOptionProps {
 
 const dowloadOptions: DownloadOptionProps[] = [
   {
-    label: "Download as CSV",
+    label: "保存为 CSV",
     value: "CSV",
   },
   {
-    label: "Download as Excel",
+    label: "保存为 Excel",
     value: "EXCEL",
   },
 ];
@@ -187,7 +187,7 @@ function TableDataDownload(props: TableDataDownloadProps) {
         <IconWrapper color={Colors.CADET_BLUE} height={20} width={20}>
           <DownloadIcon />
         </IconWrapper>
-        <span className="action-title">Download</span>
+        <span className="action-title">下载</span>
       </TableIconWrapper>
     );
   }
@@ -204,7 +204,7 @@ function TableDataDownload(props: TableDataDownloadProps) {
         className="t--table-download-btn"
         selectMenu={selectMenu}
         selected={selected}
-        title="Download"
+        title="下载"
       >
         <DownloadIcon />
       </TableAction>

@@ -192,7 +192,7 @@ function TableHeader(props: TableHeaderProps) {
         <PaginationWrapper>
           {props.totalRecordsCount ? (
             <RowWrapper className="show-page-items">
-              {props.totalRecordsCount} Records
+              {props.totalRecordsCount} 条记录
             </RowWrapper>
           ) : null}
           <PaginationItemWrapper
@@ -208,7 +208,7 @@ function TableHeader(props: TableHeaderProps) {
           </PaginationItemWrapper>
           {props.totalRecordsCount ? (
             <RowWrapper>
-              Page&nbsp;
+              第&nbsp;
               <PaginationItemWrapper
                 accentColor={props.accentColor}
                 borderRadius={props.borderRadius}
@@ -218,7 +218,7 @@ function TableHeader(props: TableHeaderProps) {
                 {props.pageNo + 1}
               </PaginationItemWrapper>
               &nbsp;
-              <span>{`of ${props.pageCount}`}</span>
+              <span>{`页，共${props.pageCount}页`}</span>
             </RowWrapper>
           ) : (
             <PaginationItemWrapper
@@ -249,7 +249,7 @@ function TableHeader(props: TableHeaderProps) {
       {props.isVisiblePagination && !props.serverSidePaginationEnabled && (
         <PaginationWrapper>
           <RowWrapper className="show-page-items">
-            {props.tableData?.length} Records
+            {props.tableData?.length} 条记录
           </RowWrapper>
           <PaginationItemWrapper
             accentColor={props.accentColor}
@@ -265,7 +265,7 @@ function TableHeader(props: TableHeaderProps) {
             <Icon color={Colors.GRAY} icon="chevron-left" iconSize={16} />
           </PaginationItemWrapper>
           <RowWrapper>
-            Page&nbsp;
+            第&nbsp;
             <PageNumberInput
               borderRadius={props.borderRadius}
               disabled={props.pageCount === 1}
@@ -273,7 +273,7 @@ function TableHeader(props: TableHeaderProps) {
               pageNo={props.pageNo + 1}
               updatePageNo={props.updatePageNo}
             />
-            &nbsp; of {props.pageCount}
+            &nbsp;页，共{props.pageCount}页
           </RowWrapper>
           <PaginationItemWrapper
             accentColor={props.accentColor}
