@@ -64,6 +64,7 @@ class MActionBarWidget extends BaseWidget<MActionBarWidgetProps, WidgetState> {
                           value: "button",
                         },
                       ],
+                      name: "typeRadio",
                       columns: 3,
                       defaultValue: "icon",
                       isBindProperty: true,

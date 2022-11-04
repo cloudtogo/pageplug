@@ -230,7 +230,7 @@ function TableHeader(props: TableHeaderProps) {
         >
           <SearchComponent
             onSearch={props.searchTableData}
-            placeholder="Search..."
+            placeholder="搜索..."
             value={props.searchKey}
           />
         </SearchComponentWrapper>
@@ -264,7 +264,7 @@ function TableHeader(props: TableHeaderProps) {
         <PaginationWrapper>
           {props.totalRecordsCount ? (
             <TableHeaderContentWrapper className="show-page-items">
-              {props.totalRecordsCount} Records
+              {props.totalRecordsCount} 条记录
             </TableHeaderContentWrapper>
           ) : null}
           <PaginationItemWrapper
@@ -280,7 +280,7 @@ function TableHeader(props: TableHeaderProps) {
           </PaginationItemWrapper>
           {props.totalRecordsCount ? (
             <TableHeaderContentWrapper>
-              Page&nbsp;
+              第&nbsp;
               <PaginationItemWrapper
                 accentColor={props.accentColor}
                 borderRadius={props.borderRadius}
@@ -290,7 +290,7 @@ function TableHeader(props: TableHeaderProps) {
                 {props.pageNo + 1}
               </PaginationItemWrapper>
               &nbsp;
-              <span>{`of ${props.pageCount}`}</span>
+              <span>{`页，共${props.pageCount}页`}</span>
             </TableHeaderContentWrapper>
           ) : (
             <PaginationItemWrapper
@@ -320,7 +320,7 @@ function TableHeader(props: TableHeaderProps) {
       {props.isVisiblePagination && !props.serverSidePaginationEnabled && (
         <PaginationWrapper>
           <TableHeaderContentWrapper className="show-page-items">
-            {props.tableData?.length} Records
+            {props.tableData?.length} 条记录
           </TableHeaderContentWrapper>
           <PaginationItemWrapper
             accentColor={props.accentColor}
@@ -337,7 +337,7 @@ function TableHeader(props: TableHeaderProps) {
             <Icon color={Colors.GRAY} icon="chevron-left" iconSize={16} />
           </PaginationItemWrapper>
           <TableHeaderContentWrapper>
-            Page{" "}
+            第{" "}
             <PageNumberInput
               accentColor={props.accentColor}
               borderRadius={props.borderRadius}
@@ -346,7 +346,7 @@ function TableHeader(props: TableHeaderProps) {
               pageNo={props.pageNo + 1}
               updatePageNo={props.updatePageNo}
             />{" "}
-            of {props.pageCount}
+            页，共{props.pageCount}页
           </TableHeaderContentWrapper>
           <PaginationItemWrapper
             accentColor={props.accentColor}

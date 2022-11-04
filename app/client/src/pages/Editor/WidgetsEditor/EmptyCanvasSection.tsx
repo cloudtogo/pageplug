@@ -23,6 +23,7 @@ import {
   TEMPLATE_CARD_TITLE,
 } from "ce/constants/messages";
 import { selectFeatureFlags } from "selectors/usersSelectors";
+import { isMobileLayout } from "selectors/editorSelectors";
 import FeatureFlags from "entities/FeatureFlags";
 
 const Wrapper = styled.div`
@@ -79,11 +80,12 @@ const goToGenPageForm = ({ pageId }: routeId): void => {
 function CanvasTopSection() {
   const dispatch = useDispatch();
   const showCanvasTopSection = useSelector(showCanvasTopSectionSelector);
+  const isMobile = useSelector(isMobileLayout);
   const { pageId } = useParams<ExplorerURLParams>();
   const { applicationSlug, pageSlug } = useSelector(selectURLSlugs);
   const featureFlags: FeatureFlags = useSelector(selectFeatureFlags);
 
-  if (!showCanvasTopSection) return null;
+  if (!showCanvasTopSection || isMobile) return null;
 
   const showTemplatesModal = () => {
     dispatch(showTemplatesModalAction(true));

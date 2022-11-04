@@ -108,7 +108,7 @@ export const CheckboxCell = (props: CheckboxCellProps) => {
           autoFocus={false}
           content={
             <TooltipContentWrapper>
-              Save or discard the unsaved row to start editing here
+              请先保存或丢弃其他未保存的行
             </TooltipContentWrapper>
           }
           hoverOpenDelay={200}
