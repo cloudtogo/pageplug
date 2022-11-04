@@ -17,10 +17,11 @@ class RadioControl extends BaseControl<RadioControlProps> {
     }
   };
   render() {
-    const { options, propertyValue, columns } = this.props;
+    const { options, propertyValue, columns, name } = this.props;
     return (
       <Wrapper>
         <RadioComponent
+          name={name}
           columns={columns}
           options={options}
           onSelect={this.selectOption}
