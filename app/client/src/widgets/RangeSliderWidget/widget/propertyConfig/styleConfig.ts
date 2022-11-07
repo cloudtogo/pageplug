@@ -40,7 +40,7 @@ export default [
       {
         propertyName: "labelTextColor",
         label: "字体颜色",
-        helpText: "Control the color of the label associated",
+        helpText: "设置标签字体颜色",
         controlType: "COLOR_PICKER",
         isJSConvertible: true,
         isBindProperty: true,
@@ -50,7 +50,7 @@ export default [
       {
         propertyName: "labelTextSize",
         label: "字体大小",
-        helpText: "Control the font size of the label associated",
+        helpText: "设置标签字体大小",
         controlType: "DROP_DOWN",
         defaultValue: "0.875rem",
         options: [
@@ -93,7 +93,7 @@ export default [
       {
         propertyName: "labelStyle",
         label: "强调",
-        helpText: "Control if the label should be bold or italics",
+        helpText: "设置标签字体是否加粗或斜体",
         controlType: "BUTTON_TABS",
         options: [
           {
