@@ -303,7 +303,7 @@ const COMMON_PROPERTIES = {
       {
         propertyName: "labelTextColor",
         label: "字体颜色",
-        helpText: "Control the color of the label associated",
+        helpText: "设置标签字体颜色",
         controlType: "COLOR_PICKER",
         isJSConvertible: true,
         isBindProperty: true,
@@ -320,7 +320,7 @@ const COMMON_PROPERTIES = {
       {
         propertyName: "labelTextSize",
         label: "字体大小",
-        helpText: "Control the font size of the label associated",
+        helpText: "设置标签字体大小",
         defaultValue: "0.875rem",
         controlType: "DROP_DOWN",
         options: [
@@ -363,7 +363,7 @@ const COMMON_PROPERTIES = {
       {
         propertyName: "labelStyle",
         label: "强调",
-        helpText: "Control if the label should be bold or italics",
+        helpText: "设置标签字体是否加粗或斜体",
         controlType: "BUTTON_TABS",
         options: [
           {
