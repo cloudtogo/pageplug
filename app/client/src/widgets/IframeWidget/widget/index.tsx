@@ -109,6 +109,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           {
             propertyName: "borderColor",
             label: "边框颜色",
+            helpText: "Controls the color of the border",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -123,6 +124,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           {
             propertyName: "borderWidth",
             label: "边框宽度 (px)",
+            helpText: "Controls the size of the border in px",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -135,6 +137,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           {
             propertyName: "borderOpacity",
             label: "边框透明度 (%)",
+            helpText: "Controls the opacity of the border in percentage",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -230,6 +233,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
       srcDoc,
       title,
       widgetId,
+      widgetName,
     } = this.props;
 
     return (
@@ -247,6 +251,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
         srcDoc={srcDoc}
         title={title}
         widgetId={widgetId}
+        widgetName={widgetName}
       />
     );
   }

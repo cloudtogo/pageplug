@@ -24,7 +24,8 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
           {
             propertyName: "mode",
             label: "模式",
-            controlType: "DROP_DOWN",
+            controlType: "ICON_TABS",
+            fullWidth: true,
             helpText: "选择拍照模式还是录像模式",
             options: [
               {

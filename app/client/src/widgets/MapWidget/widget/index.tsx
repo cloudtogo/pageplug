@@ -213,6 +213,8 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
           {
             propertyName: "onCreateMarker",
             label: "onCreateMarker",
+            helpText:
+              "When create new marker is enabled, this event triggers upon successful marker creation",
             controlType: "ACTION_SELECTOR",
             isJSConvertible: true,
             isBindProperty: true,
@@ -230,6 +232,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
           {
             propertyName: "onMarkerClick",
             label: "onMarkerClick",
+            helpText: "Triggers an action when the user clicks on the marker",
             controlType: "ACTION_SELECTOR",
             isJSConvertible: true,
             isBindProperty: true,

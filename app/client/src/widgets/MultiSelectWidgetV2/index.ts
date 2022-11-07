@@ -10,11 +10,11 @@ export const CONFIG = {
   needsMeta: true,
   searchTags: ["dropdown", "tags", "multi select"],
   defaults: {
-    rows: 4,
+    rows: 7,
     columns: 20,
     animateLoading: true,
     labelText: "标签",
-    labelPosition: LabelPosition.Left,
+    labelPosition: LabelPosition.Top,
     labelAlignment: Alignment.LEFT,
     labelWidth: 5,
     labelTextSize: "0.875rem",

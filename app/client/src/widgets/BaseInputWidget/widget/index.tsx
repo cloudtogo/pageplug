@@ -40,11 +40,12 @@ class BaseInputWidget<
             helpText: "设置组件标签位置",
             propertyName: "labelPosition",
             label: "位置",
-            controlType: "DROP_DOWN",
+            controlType: "ICON_TABS",
+            fullWidth: true,
             options: [
+              { label: "自动", value: LabelPosition.Auto },
               { label: "左", value: LabelPosition.Left },
               { label: "上", value: LabelPosition.Top },
-              { label: "自动", value: LabelPosition.Auto },
             ],
             isBindProperty: false,
             isTriggerProperty: false,
@@ -270,6 +271,7 @@ class BaseInputWidget<
           {
             propertyName: "labelTextColor",
             label: "字体颜色",
+            helpText: "设置标签字体颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -284,6 +286,7 @@ class BaseInputWidget<
           {
             propertyName: "labelTextSize",
             label: "字体大小",
+            helpText: "设置标签字体大小",
             controlType: "DROP_DOWN",
             defaultValue: "0.875rem",
             options: [
@@ -326,6 +329,7 @@ class BaseInputWidget<
           {
             propertyName: "labelStyle",
             label: "强调",
+            helpText: "设置标签字体是否加粗或斜体",
             controlType: "BUTTON_TABS",
             options: [
               {
@@ -337,7 +341,8 @@ class BaseInputWidget<
                 value: "ITALIC",
               },
             ],
-            isBindProperty: false,
+            isJSConvertible: true,
+            isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
           },

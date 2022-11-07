@@ -47,7 +47,8 @@ const PROPERTIES = {
       {
         propertyName: "timePrecision",
         label: "时间精度",
-        controlType: "DROP_DOWN",
+        controlType: "ICON_TABS",
+        fullWidth: true,
         helpText: "显示时间的精度",
         defaultValue: TimePrecision.MINUTE,
         options: [
@@ -163,6 +164,7 @@ const PROPERTIES = {
       {
         propertyName: "onDateSelected",
         label: "onDateSelected",
+        helpText: "Triggers an action when a date is selected in the calendar",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
         isBindProperty: true,

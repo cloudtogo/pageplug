@@ -44,6 +44,7 @@ import {
   NAVIGATE_TO,
   NO_ACTION,
   OPEN_MODAL,
+  POST_MESSAGE,
   RESET_WIDGET,
   SET_INTERVAL,
   SHOW_MESSAGE,
@@ -126,6 +127,10 @@ const baseOptions: { label: string; value: string }[] = [
   {
     label: createMessage(STOP_WATCH_GEO_LOCATION),
     value: AppsmithFunction.stopWatchGeolocation,
+  },
+  {
+    label: createMessage(POST_MESSAGE),
+    value: AppsmithFunction.postMessage,
   },
 ];
 
@@ -410,6 +415,21 @@ function getFieldFromValue(
       field: FieldType.CALLBACK_FUNCTION_FIELD,
     });
   }
+
+  if (value.indexOf("postWindowMessage") !== -1) {
+    fields.push(
+      {
+        field: FieldType.MESSAGE_FIELD,
+      },
+      {
+        field: FieldType.SOURCE_FIELD,
+      },
+      {
+        field: FieldType.TARGET_ORIGIN_FIELD,
+      },
+    );
+  }
+
   return fields;
 }
 

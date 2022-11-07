@@ -6,6 +6,7 @@ import com.appsmith.server.services.SessionUserService;
 import com.appsmith.server.services.UserDataService;
 import com.appsmith.server.services.UserWorkspaceService;
 import com.appsmith.server.services.UserService;
+import com.appsmith.server.solutions.UserAndAccessManagementService;
 import com.appsmith.server.solutions.UserSignup;
 import com.appsmith.server.solutions.CloudOSActionSolution;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +23,9 @@ public class UserController extends UserControllerCE {
                           UserWorkspaceService userWorkspaceService,
                           UserSignup userSignup,
                           UserDataService userDataService,
+                          UserAndAccessManagementService userAndAccessManagementService,
                           CloudOSActionSolution cloudOSActionSolution) {
 
-        super(service, sessionUserService, userWorkspaceService, userSignup, userDataService, cloudOSActionSolution);
+        super(service, sessionUserService, userWorkspaceService, userSignup, userDataService, userAndAccessManagementService, cloudOSActionSolution);
     }
 }
