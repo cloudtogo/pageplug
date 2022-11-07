@@ -27,7 +27,8 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
             helpText: "设置进度条形状",
             propertyName: "progressType",
             label: "类型",
-            controlType: "DROP_DOWN",
+            controlType: "ICON_TABS",
+            fullWidth: true,
             options: [
               {
                 label: "环形",

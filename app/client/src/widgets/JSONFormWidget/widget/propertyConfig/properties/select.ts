@@ -107,6 +107,7 @@ const PROPERTIES = {
       {
         propertyName: "placeholderText",
         label: "占位符",
+        helpText: "Sets a placeholder text",
         controlType: "JSON_FORM_COMPUTE_VALUE",
         placeholderText: "请输入占位文本",
         isBindProperty: true,

@@ -78,7 +78,8 @@ export default [
         helpText: "设置组件标签位置",
         propertyName: "labelPosition",
         label: "位置",
-        controlType: "DROP_DOWN",
+        controlType: "ICON_TABS",
+        fullWidth: true,
         options: [
           { label: "Left", value: LabelPosition.Left },
           { label: "Top", value: LabelPosition.Top },

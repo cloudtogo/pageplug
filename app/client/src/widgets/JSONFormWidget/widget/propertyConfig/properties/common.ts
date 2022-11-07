@@ -121,6 +121,7 @@ const COMMON_PROPERTIES = {
       {
         propertyName: "fieldType",
         label: "字段类型",
+        helpText: "Type of the widget to be used corresponding to the field",
         controlType: "DROP_DOWN",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -302,6 +303,7 @@ const COMMON_PROPERTIES = {
       {
         propertyName: "labelTextColor",
         label: "字体颜色",
+        helpText: "Control the color of the label associated",
         controlType: "COLOR_PICKER",
         isJSConvertible: true,
         isBindProperty: true,
@@ -318,6 +320,7 @@ const COMMON_PROPERTIES = {
       {
         propertyName: "labelTextSize",
         label: "字体大小",
+        helpText: "Control the font size of the label associated",
         defaultValue: "0.875rem",
         controlType: "DROP_DOWN",
         options: [
@@ -360,6 +363,7 @@ const COMMON_PROPERTIES = {
       {
         propertyName: "labelStyle",
         label: "强调",
+        helpText: "Control if the label should be bold or italics",
         controlType: "BUTTON_TABS",
         options: [
           {

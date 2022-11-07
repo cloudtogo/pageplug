@@ -46,6 +46,7 @@ function generatePanelPropertyConfig(
           {
             propertyName: "children",
             label: "字段配置",
+            helpText: "字段配置",
             controlType: "FIELD_CONFIGURATION",
             isBindProperty: false,
             isTriggerProperty: false,

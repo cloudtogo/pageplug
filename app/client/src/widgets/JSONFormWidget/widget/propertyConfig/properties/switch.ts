@@ -29,7 +29,8 @@ const PROPERTIES = {
         propertyName: "alignWidget",
         helpText: "设置字段对齐方式",
         label: "对齐",
-        controlType: "DROP_DOWN",
+        controlType: "ICON_TABS",
+        fullWidth: true,
         isBindProperty: true,
         isTriggerProperty: false,
         options: [

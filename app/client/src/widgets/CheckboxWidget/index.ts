@@ -11,7 +11,7 @@ export const CONFIG = {
   searchTags: ["boolean", "checkbox"],
   defaults: {
     rows: 4,
-    columns: 7,
+    columns: 12,
     label: "标签",
     defaultCheckedState: true,
     widgetName: "Checkbox",

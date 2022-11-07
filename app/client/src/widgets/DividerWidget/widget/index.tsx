@@ -46,7 +46,8 @@ class DividerWidget extends BaseWidget<DividerWidgetProps, WidgetState> {
             helpText: "设置组件排列方向",
             propertyName: "orientation",
             label: "方向",
-            controlType: "DROP_DOWN",
+            controlType: "ICON_TABS",
+            fullWidth: true,
             options: [
               {
                 label: "水平",
@@ -172,6 +173,7 @@ class DividerWidget extends BaseWidget<DividerWidgetProps, WidgetState> {
             propertyName: "capSide",
             label: "端点位置",
             controlType: "ICON_TABS",
+            fullWidth: true,
             options: [
               {
                 icon: "DIVIDER_CAP_LEFT",
