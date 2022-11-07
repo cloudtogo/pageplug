@@ -79,6 +79,7 @@ export type FieldProps = {
   additionalAutoComplete?: Record<string, Record<string, unknown>>;
   activeNavigateToTab: SwitchType;
   navigateToSwitches: Array<SwitchType>;
+  isMobile?: boolean;
 };
 
 export type FieldsProps = Omit<FieldProps, "field"> & {
