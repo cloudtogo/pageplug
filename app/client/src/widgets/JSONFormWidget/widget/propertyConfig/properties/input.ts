@@ -499,6 +499,7 @@ const PROPERTIES = {
         label: "图标对齐",
         helpText: "设置图标对齐方式",
         controlType: "ICON_TABS",
+        fullWidth: true,
         options: [
           {
             icon: "VERTICAL_LEFT",

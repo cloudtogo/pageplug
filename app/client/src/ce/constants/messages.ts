@@ -350,6 +350,7 @@ export const CLEAR_INTERVAL = () => `清除定时器`;
 export const GET_GEO_LOCATION = () => `获取定位`;
 export const WATCH_GEO_LOCATION = () => `实时定位`;
 export const STOP_WATCH_GEO_LOCATION = () => `停止实时定位`;
+export const POST_MESSAGE = () => `发消息`;
 
 //js actions
 export const JS_ACTION_COPY_SUCCESS = (actionName: string, pageName: string) =>

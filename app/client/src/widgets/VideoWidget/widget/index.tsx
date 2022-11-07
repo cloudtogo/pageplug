@@ -27,6 +27,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
           {
             propertyName: "url",
             label: "URL地址",
+            helpText: "Link to the video file which should be played",
             controlType: "INPUT_TEXT",
             placeholderText: "请输入视频地址",
             inputType: "TEXT",

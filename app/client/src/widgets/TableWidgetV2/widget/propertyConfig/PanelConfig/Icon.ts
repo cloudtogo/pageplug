@@ -38,6 +38,7 @@ export default {
       label: "图标位置",
       helpText: "设置按钮图标位置",
       controlType: "ICON_TABS",
+      fullWidth: true,
       options: [
         {
           icon: "VERTICAL_LEFT",
@@ -57,7 +58,7 @@ export default {
       validation: {
         type: ValidationTypes.TEXT,
         params: {
-          allowedValues: ["center", "left", "right"],
+          allowedValues: ["left", "right"],
         },
       },
     },

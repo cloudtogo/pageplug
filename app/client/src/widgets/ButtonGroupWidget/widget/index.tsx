@@ -55,7 +55,8 @@ class ButtonGroupWidget extends BaseWidget<
                     {
                       propertyName: "buttonType",
                       label: "按钮类型",
-                      controlType: "DROP_DOWN",
+                      controlType: "ICON_TABS",
+                      fullWidth: true,
                       helpText: "设置按钮类型",
                       options: [
                         {
@@ -181,7 +182,8 @@ class ButtonGroupWidget extends BaseWidget<
                                 label: "图标",
                                 helpText: "设置菜单项的图标",
                                 controlType: "ICON_SELECT",
-                                isBindProperty: false,
+                                isJSConvertible: true,
+                                isBindProperty: true,
                                 isTriggerProperty: false,
                                 validation: { type: ValidationTypes.TEXT },
                               },
@@ -190,6 +192,7 @@ class ButtonGroupWidget extends BaseWidget<
                                 label: "位置",
                                 helpText: "设置菜单项图标对齐方向",
                                 controlType: "ICON_TABS",
+                                fullWidth: true,
                                 options: [
                                   {
                                     icon: "VERTICAL_LEFT",
@@ -326,6 +329,7 @@ class ButtonGroupWidget extends BaseWidget<
                       label: "位置",
                       helpText: "设置按钮图标的对齐位置",
                       controlType: "ICON_TABS",
+                      fullWidth: true,
                       options: [
                         {
                           icon: "VERTICAL_LEFT",
@@ -445,7 +449,8 @@ class ButtonGroupWidget extends BaseWidget<
           {
             propertyName: "buttonVariant",
             label: "按钮类型",
-            controlType: "DROP_DOWN",
+            controlType: "ICON_TABS",
+            fullWidth: true,
             helpText: "设置按钮类型",
             options: [
               {
@@ -480,7 +485,8 @@ class ButtonGroupWidget extends BaseWidget<
             helpText: "设置组件排列方向",
             propertyName: "orientation",
             label: "排列方向",
-            controlType: "DROP_DOWN",
+            controlType: "ICON_TABS",
+            fullWidth: true,
             options: [
               {
                 label: "水平",

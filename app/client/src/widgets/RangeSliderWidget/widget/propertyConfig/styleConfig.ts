@@ -8,7 +8,8 @@ export default [
         helpText: "设置滑动条尺寸大小",
         propertyName: "sliderSize",
         label: "尺寸",
-        controlType: "DROP_DOWN",
+        controlType: "ICON_TABS",
+        fullWidth: true,
         defaultValue: "m",
         options: [
           {
@@ -39,6 +40,7 @@ export default [
       {
         propertyName: "labelTextColor",
         label: "字体颜色",
+        helpText: "Control the color of the label associated",
         controlType: "COLOR_PICKER",
         isJSConvertible: true,
         isBindProperty: true,
@@ -48,6 +50,7 @@ export default [
       {
         propertyName: "labelTextSize",
         label: "字体大小",
+        helpText: "Control the font size of the label associated",
         controlType: "DROP_DOWN",
         defaultValue: "0.875rem",
         options: [
@@ -90,6 +93,7 @@ export default [
       {
         propertyName: "labelStyle",
         label: "强调",
+        helpText: "Control if the label should be bold or italics",
         controlType: "BUTTON_TABS",
         options: [
           {

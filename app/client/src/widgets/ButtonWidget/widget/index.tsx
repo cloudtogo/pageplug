@@ -180,7 +180,8 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           {
             propertyName: "buttonVariant",
             label: "按钮类型",
-            controlType: "DROP_DOWN",
+            controlType: "ICON_TABS",
+            fullWidth: true,
             helpText: "设置图标按钮类型",
             options: [
               {
@@ -221,7 +222,8 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
             label: "选择图标",
             helpText: "设置按钮图标",
             controlType: "ICON_SELECT",
-            isBindProperty: false,
+            isJSConvertible: true,
+            isBindProperty: true,
             isTriggerProperty: false,
             updateHook: (
               props: ButtonWidgetProps,
@@ -247,6 +249,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
             label: "位置",
             helpText: "设置按钮图标对齐方向",
             controlType: "ICON_TABS",
+            fullWidth: true,
             options: [
               {
                 icon: "VERTICAL_LEFT",
@@ -269,7 +272,8 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
           {
             propertyName: "placement",
             label: "排列方式",
-            controlType: "DROP_DOWN",
+            controlType: "ICON_TABS",
+            fullWidth: true,
             helpText: "设置图标与标签的排列方式",
             options: [
               {

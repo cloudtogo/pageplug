@@ -35,7 +35,8 @@ class RichTextEditorWidget extends BaseWidget<
             propertyName: "inputType",
             helpText: "内容输入方式，支持HTML和Markdown",
             label: "输入格式",
-            controlType: "DROP_DOWN",
+            controlType: "ICON_TABS",
+            fullWidth: true,
             options: [
               {
                 label: "Markdown",
@@ -78,11 +79,12 @@ class RichTextEditorWidget extends BaseWidget<
             helpText: "设置组件标签位置",
             propertyName: "labelPosition",
             label: "位置",
-            controlType: "DROP_DOWN",
+            controlType: "ICON_TABS",
+            fullWidth: true,
             options: [
+              { label: "自动", value: LabelPosition.Auto },
               { label: "左", value: LabelPosition.Left },
               { label: "上", value: LabelPosition.Top },
-              { label: "自动", value: LabelPosition.Auto },
             ],
             isBindProperty: false,
             isTriggerProperty: false,
@@ -217,6 +219,7 @@ class RichTextEditorWidget extends BaseWidget<
           {
             propertyName: "labelTextColor",
             label: "字体颜色",
+            helpText: "Control the color of the label associated",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -226,6 +229,7 @@ class RichTextEditorWidget extends BaseWidget<
           {
             propertyName: "labelTextSize",
             label: "字体大小",
+            helpText: "Control the font size of the label associated",
             controlType: "DROP_DOWN",
             defaultValue: "0.875rem",
             options: [
@@ -266,6 +270,7 @@ class RichTextEditorWidget extends BaseWidget<
           {
             propertyName: "labelStyle",
             label: "强调",
+            helpText: "Control if the label should be bold or italics",
             controlType: "BUTTON_TABS",
             options: [
               {

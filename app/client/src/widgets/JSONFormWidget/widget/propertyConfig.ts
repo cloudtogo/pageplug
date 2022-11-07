@@ -297,7 +297,8 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
       {
         propertyName: `${prefix}.buttonVariant`,
         label: "按钮类型",
-        controlType: "DROP_DOWN",
+        controlType: "ICON_TABS",
+        fullWidth: true,
         helpText: "设置图标按钮类型",
         options: [
           {
@@ -387,6 +388,7 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
         label: "位置",
         helpText: "设置按钮图标对齐方向",
         controlType: "ICON_TABS",
+        fullWidth: true,
         options: [
           {
             icon: "VERTICAL_LEFT",
@@ -410,7 +412,8 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
       {
         propertyName: `${prefix}.placement`,
         label: "排列方式",
-        controlType: "DROP_DOWN",
+        controlType: "ICON_TABS",
+        fullWidth: true,
         helpText: "设置图标与标签的排列方式",
         options: [
           {

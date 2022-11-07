@@ -28,7 +28,8 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
             helpText: "设置组件标签位置",
             propertyName: "labelPosition",
             label: "位置",
-            controlType: "DROP_DOWN",
+            controlType: "ICON_TABS",
+            fullWidth: true,
             options: [
               { label: "左", value: LabelPosition.Left },
               { label: "右", value: LabelPosition.Right },
@@ -144,6 +145,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
           {
             propertyName: "labelTextColor",
             label: "字体颜色",
+            helpText: "Control the color of the label associated",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -158,6 +160,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
           {
             propertyName: "labelTextSize",
             label: "字体大小",
+            helpText: "Control the font size of the label associated",
             controlType: "DROP_DOWN",
             defaultValue: "0.875rem",
             options: [
@@ -200,6 +203,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
           {
             propertyName: "labelStyle",
             label: "强调",
+            helpText: "Control if the label should be bold or italics",
             controlType: "BUTTON_TABS",
             options: [
               {
