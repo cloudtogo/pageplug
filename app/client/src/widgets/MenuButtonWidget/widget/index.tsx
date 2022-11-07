@@ -144,7 +144,8 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                       label: "图标",
                       helpText: "设置菜单项的图标",
                       controlType: "ICON_SELECT",
-                      isBindProperty: false,
+                      isJSConvertible: true,
+                      isBindProperty: true,
                       isTriggerProperty: false,
                       validation: { type: ValidationTypes.TEXT },
                     },
@@ -153,6 +154,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
                       label: "位置",
                       helpText: "设置菜单项图标对齐方向",
                       controlType: "ICON_TABS",
+                      fullWidth: true,
                       options: [
                         {
                           icon: "VERTICAL_LEFT",
@@ -260,7 +262,8 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
           {
             propertyName: "menuVariant",
             label: "按钮类型",
-            controlType: "DROP_DOWN",
+            controlType: "ICON_TABS",
+            fullWidth: true,
             helpText: "设置菜单按钮的风格类型",
             options: [
               {
@@ -327,6 +330,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
             label: "位置",
             helpText: "设置菜单按钮图标对齐方式",
             controlType: "ICON_TABS",
+            fullWidth: true,
             options: [
               {
                 icon: "VERTICAL_LEFT",
@@ -349,7 +353,8 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
           {
             propertyName: "placement",
             label: "排列方式",
-            controlType: "DROP_DOWN",
+            controlType: "ICON_TABS",
+            fullWidth: true,
             helpText: "设置图标与标签的排列方式",
             options: [
               {

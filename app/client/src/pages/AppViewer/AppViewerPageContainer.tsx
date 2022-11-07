@@ -18,7 +18,7 @@ import { getCurrentApplication } from "selectors/applicationSelectors";
 import {
   isPermitted,
   PERMISSION_TYPE,
-} from "../Applications/permissionHelpers";
+} from "@appsmith/utils/permissionHelpers";
 import { builderURL } from "RouteBuilder";
 import {
   getCanvasWidgetsStructure,

@@ -15,6 +15,7 @@ export default {
     {
       propertyName: "textSize",
       label: "字体大小",
+      helpText: "Controls the size of text in the column",
       controlType: "DROP_DOWN",
       isJSConvertible: true,
       customJSControl: "TABLE_COMPUTE_VALUE",
@@ -61,6 +62,7 @@ export default {
     {
       propertyName: "fontStyle",
       label: "强调",
+      helpText: "Controls the style of the text in the column",
       controlType: "BUTTON_TABS",
       options: [
         {
@@ -106,7 +108,9 @@ export default {
           ? "水平对齐"
           : "文本对齐";
       },
+      helpText: "Sets the horizontal alignment of the content in the column",
       controlType: "ICON_TABS",
+      fullWidth: true,
       options: [
         {
           icon: "LEFT_ALIGN",
@@ -150,7 +154,9 @@ export default {
     {
       propertyName: "verticalAlignment",
       label: "垂直对齐",
+      helpText: "Sets the vertical alignment of the content in the column",
       controlType: "ICON_TABS",
+      fullWidth: true,
       options: [
         {
           icon: "VERTICAL_TOP",

@@ -39,7 +39,8 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
             propertyName: "overflow",
             label: "内容超出",
             helpText: "设置文本内容超出组件区域时如何展示",
-            controlType: "DROP_DOWN",
+            controlType: "ICON_TABS",
+            fullWidth: true,
             options: [
               {
                 label: "允许内容滚动",
@@ -102,6 +103,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           {
             propertyName: "fontFamily",
             label: "字体",
+            helpText: "Controls the font family being used",
             controlType: "DROP_DOWN",
             options: [
               {
@@ -156,6 +158,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           {
             propertyName: "fontSize",
             label: "字体大小",
+            helpText: "Controls the size of the font used",
             controlType: "DROP_DOWN",
             defaultValue: "1rem",
             options: [
@@ -205,6 +208,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           {
             propertyName: "textColor",
             label: "文本颜色",
+            helpText: "Controls the color of the text displayed",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -219,6 +223,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           {
             propertyName: "backgroundColor",
             label: "背景颜色",
+            helpText: "Background color of the text added",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -248,6 +253,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           {
             propertyName: "truncateButtonColor",
             label: "截断按钮颜色",
+            helpText: "Controls the color of the truncate button",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -271,7 +277,9 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           {
             propertyName: "textAlign",
             label: "对齐",
+            helpText: "Controls the horizontal alignment of the text",
             controlType: "ICON_TABS",
+            fullWidth: true,
             options: [
               {
                 icon: "LEFT_ALIGN",
@@ -295,6 +303,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           {
             propertyName: "fontStyle",
             label: "强调",
+            helpText: "Controls the font emphasis of the text displayed",
             controlType: "BUTTON_TABS",
             options: [
               {

@@ -116,7 +116,8 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
           {
             propertyName: "buttonVariant",
             label: "按钮类型",
-            controlType: "DROP_DOWN",
+            controlType: "ICON_TABS",
+            fullWidth: true,
             helpText: "设置图标按钮类型",
             options: [
               {

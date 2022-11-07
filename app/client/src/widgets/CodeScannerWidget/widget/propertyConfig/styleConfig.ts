@@ -24,6 +24,7 @@ export default [
         label: "位置",
         helpText: "设置按钮图标位置",
         controlType: "ICON_TABS",
+        fullWidth: true,
         options: [
           {
             icon: "VERTICAL_LEFT",
@@ -46,7 +47,8 @@ export default [
       {
         propertyName: "placement",
         label: "对齐",
-        controlType: "DROP_DOWN",
+        controlType: "ICON_TABS",
+        fullWidth: true,
         helpText: "设置对齐方式",
         options: [
           {

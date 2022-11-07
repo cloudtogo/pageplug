@@ -12,7 +12,7 @@ export const CONFIG = {
   isCanvas: false, // Defines if this widget has a canvas within in which we can drop other widgets
   defaults: {
     widgetName: "SwitchGroup",
-    rows: 4,
+    rows: 6,
     columns: 26,
     options: [
       { label: "蓝", value: "BLUE" },
@@ -27,7 +27,7 @@ export const CONFIG = {
     animateLoading: true,
     alignment: Alignment.LEFT,
     labelText: "标签",
-    labelPosition: LabelPosition.Left,
+    labelPosition: LabelPosition.Top,
     labelAlignment: Alignment.LEFT,
     labelWidth: 5,
     version: 1,

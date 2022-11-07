@@ -80,7 +80,8 @@ export default [
         propertyName: "inlineEditingSaveOption",
         helpText: "选择如何保存编辑的单元格数据",
         label: "更新模式",
-        controlType: "DROP_DOWN",
+        controlType: "ICON_TABS",
+        fullWidth: true,
         isBindProperty: true,
         isTriggerProperty: false,
         hidden: (props: TableWidgetProps) => {
@@ -205,6 +206,7 @@ export default [
       {
         propertyName: "enableClientSideSearch",
         label: "前端搜索",
+        helpText: "Searches all results only on the data which is loaded",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -214,6 +216,7 @@ export default [
       {
         propertyName: "defaultSearchText",
         label: "默认搜索内容",
+        helpText: "Adds a search text by default",
         controlType: "INPUT_TEXT",
         placeholderText: "{{global.user.name}}",
         isBindProperty: true,
@@ -225,6 +228,7 @@ export default [
       {
         propertyName: "onSearchTextChanged",
         label: "onSearchTextChanged",
+        helpText: "Triggers an action when search text is modified by the user",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
         isBindProperty: true,
@@ -295,6 +299,7 @@ export default [
       {
         propertyName: "multiRowSelection",
         label: "支持多选",
+        helpText: "Allows users to select multiple rows",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
