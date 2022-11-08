@@ -106,7 +106,7 @@ function AddPageContextMenu({
       items.pop();
     }
 
-    if (featureFlags.TEMPLATES_PHASE_2) {
+    if (featureFlags.TEMPLATES_PHASE_2 && !isMobile) {
       items.push({
         title: createMessage(ADD_PAGE_FROM_TEMPLATE),
         icon: Layout2LineIcon,
