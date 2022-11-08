@@ -102,7 +102,8 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     view: ViewTypes.TEXT_VIEW,
   },
   [FieldType.URL_FIELD]: {
-    label: (props: FieldProps) => (props.isMobile ? "页面名称" : "请输入 URL"),
+    label: (props: FieldProps) =>
+      props.field.isMobile ? "页面名称" : "请输入 URL",
     defaultText: "",
     options: () => null,
     getter: (value: string) => {
@@ -264,7 +265,7 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     view: ViewTypes.SELECTOR_VIEW,
   },
   [FieldType.RESET_CHILDREN_FIELD]: {
-    label: () => "重置内容",
+    label: () => "重置子组件",
     options: () => RESET_CHILDREN_OPTIONS,
     defaultText: "true",
     getter: (value: any) => {
@@ -302,7 +303,7 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
   [FieldType.ALERT_TYPE_SELECTOR_FIELD]: {
     label: () => "提示类型",
     options: (props: FieldProps) =>
-      props.isMobile ? WX_ALERT_STYLE_OPTIONS : ALERT_STYLE_OPTIONS,
+      props.field.isMobile ? WX_ALERT_STYLE_OPTIONS : ALERT_STYLE_OPTIONS,
     defaultText: "选择提示类型",
     getter: (value: any) => {
       return enumTypeGetter(value, 1, "success");

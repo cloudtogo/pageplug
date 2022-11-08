@@ -63,6 +63,7 @@ export type Field = {
   value?: string;
   label?: string;
   index?: number;
+  isMobile?: boolean;
 };
 
 export type FieldProps = {
@@ -79,7 +80,6 @@ export type FieldProps = {
   additionalAutoComplete?: Record<string, Record<string, unknown>>;
   activeNavigateToTab: SwitchType;
   navigateToSwitches: Array<SwitchType>;
-  isMobile?: boolean;
 };
 
 export type FieldsProps = Omit<FieldProps, "field"> & {

@@ -43,7 +43,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
             fullWidth: true,
             options: [
               {
-                label: "允许内容滚动",
+                label: "文本滚动",
                 value: OverflowTypes.SCROLL,
               },
               {

@@ -158,8 +158,8 @@ export default [
         controlType: "ICON_TABS",
         fullWidth: true,
         options: [
-          { label: "Left", value: LabelPosition.Left },
-          { label: "Top", value: LabelPosition.Top },
+          { label: "左", value: LabelPosition.Left },
+          { label: "上", value: LabelPosition.Top },
         ],
         isBindProperty: false,
         isTriggerProperty: false,
