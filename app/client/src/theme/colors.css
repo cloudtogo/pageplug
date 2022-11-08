@@ -1,15 +1,15 @@
 :root {
   /* orange */
-  --appsmith-color-orange-900 : #B7491A;
-  --appsmith-color-orange-800 : #D15420;
-  --appsmith-color-orange-700 : #DF5B23;
-  --appsmith-color-orange-600 : #ED6227;
-  --appsmith-color-orange-500 : #F86A2B; /* Primary */
-  --appsmith-color-orange-400 : #F97D4A;
-  --appsmith-color-orange-300 : #F9936B;
-  --appsmith-color-orange-200 : #FBB195;
-  --appsmith-color-orange-100 : #FCCFBF;
-  --appsmith-color-orange-50 : #FAEAE8;
+  --appsmith-color-orange-900 : #032121;
+  --appsmith-color-orange-800 : #064744;
+  --appsmith-color-orange-700 : #0f6e66;
+  --appsmith-color-orange-600 : #1c9486;
+  --appsmith-color-orange-500 : #2cbba6; /* Primary */
+  --appsmith-color-orange-400 : #50c7b1;
+  --appsmith-color-orange-300 : #77d4bf;
+  --appsmith-color-orange-200 : #a2e0d1;
+  --appsmith-color-orange-100 : #d1ede5;
+  --appsmith-color-orange-50 : #ebfaf5;
 
   /* black */
   --appsmith-color-black: #000;

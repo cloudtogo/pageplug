@@ -8,8 +8,8 @@ export default {
     const columnType = get(props, `${propertyPath}.columnType`);
     return columnType === ColumnTypes.CHECKBOX ||
       columnType === ColumnTypes.SWITCH
-      ? "Alignment"
-      : "Text Formatting";
+      ? "对齐"
+      : "文本样式";
   },
   children: [
     {

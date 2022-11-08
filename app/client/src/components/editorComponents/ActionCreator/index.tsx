@@ -140,6 +140,7 @@ const mobileHiddenActionMap = {
   [AppsmithFunction.getGeolocation]: true,
   [AppsmithFunction.watchGeolocation]: true,
   [AppsmithFunction.stopWatchGeolocation]: true,
+  [AppsmithFunction.postMessage]: true,
 };
 
 const getBaseOptions = (featureFlags: FeatureFlags, isMobile?: boolean) => {
