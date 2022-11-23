@@ -282,6 +282,10 @@ export function listEntityDependencies(
     if (dynamicBindingPathList.length) {
       dynamicBindingPathList.forEach((dynamicPath) => {
         const propertyPath = dynamicPath.key;
+        // [[ formily quincy hack ]] skip all "schema" path binding
+        if (propertyPath === "schema") {
+          return;
+        }
         const unevalPropValue = get(entity, propertyPath);
         const { jsSnippets } = getDynamicBindings(unevalPropValue);
         const existingDeps =
