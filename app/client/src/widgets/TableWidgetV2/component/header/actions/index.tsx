@@ -170,11 +170,11 @@ function Actions(props: ActionsPropsType) {
               borderRadius={props.borderRadius}
               className="t--add-new-row"
               disabled={props.disableAddNewRow}
-              disabledMessage="Save or discard the unsaved row to add a new row"
+              disabledMessage="新增行之前请保存或丢弃未保存的行"
               icon="add"
               selectMenu={props.onAddNewRow}
               selected={false}
-              title="Add new row"
+              title="新增一行"
               width={12}
             />
           )}

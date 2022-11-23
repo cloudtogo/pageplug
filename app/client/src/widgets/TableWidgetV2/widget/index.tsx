@@ -1347,9 +1347,9 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
         this.props.updatedRowIndices.indexOf(originalIndex) === -1) ||
       (this.hasInvalidColumnCell() && !isNewRow);
 
-    const disabledEditMessage = `Save or discard the ${
-      this.props.isAddRowInProgress ? "newly added" : "unsaved"
-    } row to start editing here`;
+    const disabledEditMessage = `在编辑之前请先保存或丢弃${
+      this.props.isAddRowInProgress ? "新添加" : "未保存"
+    }的行`;
 
     if (this.props.isAddRowInProgress) {
       cellProperties.isCellDisabled = rowIndex !== 0;

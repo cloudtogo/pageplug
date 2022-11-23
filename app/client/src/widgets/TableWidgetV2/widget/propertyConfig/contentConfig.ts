@@ -351,9 +351,9 @@ export default [
     children: [
       {
         propertyName: "allowAddNewRow",
-        helpText: "显示新增行数据按钮",
+        helpText: "显示新增一行按钮",
         isJSConvertible: true,
-        label: "允许新增行数据",
+        label: "允许新增一行",
         controlType: "SWITCH",
         isBindProperty: true,
         isTriggerProperty: false,
