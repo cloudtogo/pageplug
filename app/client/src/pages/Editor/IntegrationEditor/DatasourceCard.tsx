@@ -307,9 +307,7 @@ function DatasourceCard(props: DatasourceCardProps) {
                 onClick={
                   datasource.isConfigured ? routeToGeneratePage : editDatasource
                 }
-                text={
-                  datasource.isConfigured ? "自动生成页面" : "重新连接"
-                }
+                text={datasource.isConfigured ? "自动生成页面" : "重新连接"}
               />
             )}
             {datasource.isConfigured && (

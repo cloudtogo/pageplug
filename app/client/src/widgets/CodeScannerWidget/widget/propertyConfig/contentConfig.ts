@@ -11,18 +11,18 @@ export default [
     children: [
       {
         propertyName: "scannerLayout",
-        label: "Scanner Layout",
+        label: "扫码方式",
         controlType: "ICON_TABS",
         fullWidth: true,
         helpText:
-          'Sets how the code scanner will look and behave. If set to "Always on", the scanner will be visible and scanning all the time. If set to "Click to Scan", the scanner will pop up inside a modal and start scanning when the user clicks on the button.',
+          "选择扫码方式。直接扫码：让组件直接展示扫码相机；点击扫码：组件显示为按钮，点击后弹出扫码相机。",
         options: [
           {
-            label: "Always On",
+            label: "直接扫码",
             value: ScannerLayout.ALWAYS_ON,
           },
           {
-            label: "Click to Scan",
+            label: "点击扫码",
             value: ScannerLayout.CLICK_TO_SCAN,
           },
         ],

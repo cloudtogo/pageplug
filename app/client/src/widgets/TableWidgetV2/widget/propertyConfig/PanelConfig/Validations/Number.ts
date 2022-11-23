@@ -4,9 +4,9 @@ import { hideByColumnType } from "widgets/TableWidgetV2/widget/propertyUtils";
 
 export default [
   {
-    helpText: "Sets the minimum allowed value",
+    helpText: "设置允许输入的最小值",
     propertyName: "validation.min",
-    label: "Min",
+    label: "最小值",
     controlType: "TABLE_INLINE_EDIT_VALIDATION_CONTROL",
     placeholderText: "1",
     isBindProperty: true,
@@ -26,9 +26,9 @@ export default [
     dependencies: ["primaryColumns"],
   },
   {
-    helpText: "Sets the maximum allowed value",
+    helpText: "设置允许输入的最大值",
     propertyName: "validation.max",
-    label: "Max",
+    label: "最大值",
     controlType: "TABLE_INLINE_EDIT_VALIDATION_CONTROL",
     placeholderText: "100",
     isBindProperty: true,

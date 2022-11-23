@@ -238,22 +238,22 @@ export const GeneralStyle = {
     {
       propertyName: "imageSize",
       dependencies: ["primaryColumns", "columnType"],
-      label: "Image Size",
-      helpText: "Sets the size of the image",
+      label: "图片尺寸",
+      helpText: "设置图片尺寸大小",
       defaultValue: "DEFAULT",
       controlType: "ICON_TABS",
       fullWidth: true,
       options: [
         {
-          label: "Default",
+          label: "默认",
           value: "DEFAULT",
         },
         {
-          label: "Medium",
+          label: "适中",
           value: "MEDIUM",
         },
         {
-          label: "Large",
+          label: "大",
           value: "LARGE",
         },
       ],

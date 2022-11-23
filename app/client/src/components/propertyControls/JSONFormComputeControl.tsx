@@ -138,9 +138,9 @@ export function InputText(props: {
         placeholder={placeholder}
         promptMessage={
           <PromptMessage>
-            Access the current form using <CurlyBraces>{"{{"}</CurlyBraces>
+            使用 <CurlyBraces>{"{{"}</CurlyBraces>
             sourceData.fieldName
-            <CurlyBraces>{"}}"}</CurlyBraces>
+            <CurlyBraces>{"}}"}</CurlyBraces> 访问当前表单
           </PromptMessage>
         }
         size={EditorSize.EXTENDED}
