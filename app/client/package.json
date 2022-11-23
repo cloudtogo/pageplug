@@ -29,6 +29,7 @@
     "@taroify/core": "^0.0.28-alpha.1",
     "@tarojs/components": "3.3.14",
     "@tinymce/tinymce-react": "^3.13.0",
+    "@types/react-page-visibility": "^6.4.1",
     "@types/webfontloader": "^1.6.33",
     "@uppy/core": "^1.16.0",
     "@uppy/dashboard": "^1.16.0",
@@ -58,7 +59,7 @@
     "cypress-log-to-output": "^1.1.2",
     "dayjs": "^1.10.6",
     "deep-diff": "^1.0.2",
-    "design-system": "npm:@appsmithorg/design-system@1.0.31",
+    "design-system": "npm:@appsmithorg/design-system@1.0.32",
     "downloadjs": "^1.4.7",
     "draft-js": "^0.11.7",
     "emoji-mart": "^3.0.1",
@@ -137,6 +138,7 @@
     "react-media-recorder": "^1.6.1",
     "react-mentions": "^4.1.1",
     "react-modal": "^3.15.1",
+    "react-page-visibility": "^7.0.0",
     "react-paginating": "^1.4.0",
     "react-player": "^2.3.1",
     "react-qr-barcode-scanner": "^1.0.6",
@@ -182,7 +184,6 @@
     "url-search-params-polyfill": "^8.0.0",
     "webfontloader": "^1.6.28",
     "webpack-retry-chunk-load-plugin": "^3.1.1",
-    "worker-loader": "^3.0.2",
     "yjs": "^13.5.12",
     "zipcelx": "^1.6.2"
   },
@@ -218,6 +219,7 @@
   ],
   "devDependencies": {
     "@babel/helper-create-regexp-features-plugin": "^7.18.6",
+    "@babel/helper-string-parser": "^7.19.4",
     "@faker-js/faker": "^7.4.0",
     "@sentry/webpack-plugin": "^1.18.9",
     "@testing-library/jest-dom": "5.16.1",
@@ -315,6 +317,7 @@
     "semver": "^7.3.5",
     "sass": "^1.52.3",
     "ts-jest": "27.0.0",
+    "ts-jest-mock-import-meta": "^0.12.0",
     "webpack-merge": "^5.8.0",
     "workbox-webpack-plugin": "^6.5.3"
   },

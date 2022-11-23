@@ -112,10 +112,10 @@ class PhoneInputWidget extends BaseInputWidget<
             },
             {
               propertyName: "allowDialCodeChange",
-              label: "允许修改国家编码",
+              label: "修改国家编码",
               helpText: "使用国家名搜索",
               controlType: "SWITCH",
-              isJSConvertible: false,
+              isJSConvertible: true,
               isBindProperty: true,
               isTriggerProperty: false,
               validation: { type: ValidationTypes.BOOLEAN },
