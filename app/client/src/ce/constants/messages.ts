@@ -341,6 +341,8 @@ export const SHOW_MESSAGE = () => `消息提示`;
 export const OPEN_MODAL = () => `打开弹窗`;
 export const CLOSE_MODAL = () => `关闭弹窗`;
 export const STORE_VALUE = () => `保存数据`;
+export const REMOVE_VALUE = () => `删除数据`;
+export const CLEAR_STORE = () => `清空数据`;
 export const DOWNLOAD = () => `下载`;
 export const COPY_TO_CLIPBOARD = () => `复制`;
 export const RESET_WIDGET = () => `重置组件`;
@@ -1060,6 +1062,7 @@ export const CONTEXT_MOVE = () => "移动到页面";
 export const CONTEXT_COPY = () => "复制到页面";
 export const CONTEXT_DELETE = () => "删除";
 export const CONFIRM_CONTEXT_DELETE = () => "确定删除吗？";
+export const CONFIRM_CONTEXT_DELETING = () => "正在删除";
 export const CONTEXT_NO_PAGE = () => "暂无页面";
 export const CONTEXT_REFRESH = () => "刷新";
 export const CONTEXT_CLONE = () => "克隆页面";
@@ -1152,7 +1155,34 @@ export const INVALID_URL = () => "请输入有效 URL，例如 https://example.c
 // Alert options and labels for showMessage types
 export const ALERT_STYLE_OPTIONS = [
   { label: "信息", value: "'info'", id: "info" },
-  { label: "成功", value: "'success'", id: "success" },
+  {
+    label: "成功",
+    value: "'success'",
+    id: "success",
+  },
   { label: "错误", value: "'error'", id: "error" },
   { label: "警告", value: "'warning'", id: "warning" },
 ];
+
+export const USAGE_AND_BILLING = {
+  usage: () => "Usage",
+  billing: () => "Billing",
+  usageAndBilling: () => "Usage & Billing",
+  usageOverNDays: (days: number) => `Usage over the past ${days} days!`,
+  usageDetails: () =>
+    "This is how much you have used Appsmith to build and run apps.",
+  unit: () => "minutes/day",
+  averaged: () => "*averaged",
+  approximated: () => "*approximated",
+  sell: () => "Figure out your usage before purchasing Appsmith",
+  upgradeToBusiness: () => "UPGRADE TO BUSINESS EDITION",
+  rbacHeading: () => "Role Based Access Control",
+  rbacDetails: () =>
+    "RBAC is here to allow you to control access to appsmith as easy as you maintain your organization.",
+  ssoHeading: () => "SSO and Custom Authentication",
+  ssoDetails: () => "SSO and custom auth allow you to onboard users faster.",
+  gitHeading: () => "Unlimited private git repositories",
+  gitDetails: () => "Expand your single source of truth capability to infinite",
+  exclusive: () =>
+    "These features are exclusively available on business edition.",
+};
