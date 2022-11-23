@@ -82,9 +82,9 @@ class TableInlineEditValidPropertyControl extends TableInlineEditValidationContr
         onChange={this.onTextChange}
         promptMessage={
           <>
-            Access the current cell using <CurlyBraces>{"{{"}</CurlyBraces>
+            使用 <CurlyBraces>{"{{"}</CurlyBraces>
             currentRow.columnName
-            <CurlyBraces>{"}}"}</CurlyBraces>
+            <CurlyBraces>{"}}"}</CurlyBraces> 访问当前单元格
           </>
         }
         theme={theme}
