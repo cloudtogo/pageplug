@@ -1,6 +1,7 @@
 import IconSVG from "./icon.svg";
 import Widget from "./widget";
 import { ButtonPlacementTypes } from "components/constants";
+import { ScannerLayout } from "./constants";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
@@ -17,11 +18,12 @@ export const CONFIG = {
     "条形码",
   ],
   defaults: {
-    rows: 4,
+    rows: 33,
     label: "扫描二维码/条形码",
-    columns: 16,
+    columns: 25,
     widgetName: "CodeScanner",
     isDefaultClickDisabled: true,
+    scannerLayout: ScannerLayout.ALWAYS_ON,
     version: 1,
     isRequired: false,
     isDisabled: false,

@@ -304,7 +304,8 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
             label: "图标",
             helpText: "设置菜单按钮图标",
             controlType: "ICON_SELECT",
-            isBindProperty: false,
+            isJSConvertible: true,
+            isBindProperty: true,
             isTriggerProperty: false,
             updateHook: (
               props: MenuButtonWidgetProps,
