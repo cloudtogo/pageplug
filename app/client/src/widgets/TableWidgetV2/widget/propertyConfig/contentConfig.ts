@@ -347,6 +347,82 @@ export default [
     ],
   },
   {
+    sectionName: "新增行数据",
+    children: [
+      {
+        propertyName: "allowAddNewRow",
+        helpText: "显示新增行数据按钮",
+        isJSConvertible: true,
+        label: "允许新增行数据",
+        controlType: "SWITCH",
+        isBindProperty: true,
+        isTriggerProperty: false,
+        validation: {
+          type: ValidationTypes.BOOLEAN,
+        },
+      },
+      {
+        propertyName: "onAddNewRowSave",
+        helpText: "点击新增行保存按钮时触发",
+        label: "onSave",
+        controlType: "ACTION_SELECTOR",
+        hidden: (props: TableWidgetProps) => {
+          return !props.allowAddNewRow;
+        },
+        dependencies: ["allowAddNewRow", "primaryColumns"],
+        isJSConvertible: true,
+        isBindProperty: true,
+        isTriggerProperty: true,
+        additionalAutoComplete: (props: TableWidgetProps) => {
+          const newRow: Record<string, unknown> = {};
+
+          if (props.primaryColumns) {
+            Object.values(props.primaryColumns)
+              .filter((column) => !column.isDerived)
+              .forEach((column) => {
+                newRow[column.alias] = "";
+              });
+          }
+
+          return {
+            newRow,
+          };
+        },
+      },
+      {
+        propertyName: "onAddNewRowDiscard",
+        helpText: "点击新增行丢弃按钮时触发",
+        label: "onDiscard",
+        controlType: "ACTION_SELECTOR",
+        hidden: (props: TableWidgetProps) => {
+          return !props.allowAddNewRow;
+        },
+        dependencies: ["allowAddNewRow"],
+        isJSConvertible: true,
+        isBindProperty: true,
+        isTriggerProperty: true,
+      },
+      {
+        propertyName: "defaultNewRow",
+        helpText: "默认新增行数据",
+        label: "默认行数据",
+        controlType: "INPUT_TEXT",
+        dependencies: ["allowAddNewRow"],
+        hidden: (props: TableWidgetProps) => {
+          return !props.allowAddNewRow;
+        },
+        isBindProperty: true,
+        isTriggerProperty: false,
+        validation: {
+          type: ValidationTypes.OBJECT,
+          params: {
+            default: {},
+          },
+        },
+      },
+    ],
+  },
+  {
     sectionName: "属性",
     children: [
       {
