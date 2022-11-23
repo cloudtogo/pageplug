@@ -5,7 +5,7 @@ import commonValidations from "./Validations/Common";
 import numberTypeValidations from "./Validations/Number";
 
 export default {
-  sectionName: "Validation",
+  sectionName: "校验",
   hidden: (props: TableWidgetProps, propertyPath: string) => {
     const isEditable = get(props, `${propertyPath}.isEditable`, "");
 
