@@ -21,6 +21,7 @@ export enum ActionTriggerType {
   STOP_WATCHING_CURRENT_LOCATION = "STOP_WATCHING_CURRENT_LOCATION",
   CONFIRMATION_MODAL = "CONFIRMATION_MODAL",
   POST_MESSAGE = "POST_MESSAGE",
+  CALL_FUNC = "CALL_FUNC",
 }
 
 export const ActionTriggerFunctionNames: Record<ActionTriggerType, string> = {
@@ -35,6 +36,7 @@ export const ActionTriggerFunctionNames: Record<ActionTriggerType, string> = {
   [ActionTriggerType.SET_INTERVAL]: "setInterval",
   [ActionTriggerType.SHOW_ALERT]: "showAlert",
   [ActionTriggerType.SHOW_MODAL_BY_NAME]: "showModal",
+  [ActionTriggerType.CALL_FUNC]: "callFunc",
   [ActionTriggerType.STORE_VALUE]: "storeValue",
   [ActionTriggerType.REMOVE_VALUE]: "removeValue",
   [ActionTriggerType.CLEAR_STORE]: "clearStore",
@@ -193,12 +195,30 @@ export type PostMessageDescription = {
   };
 };
 
+// type optionProps = {
+//   widgetName: string;
+//   funcName: string;
+//   params: any;
+// };
+
+type EchartActionPayload = {
+  options?: any;
+  widgetName: string;
+  funcName: string;
+};
+
+export type EchartAction = {
+  type: ActionTriggerType.CALL_FUNC;
+  payload: EchartActionPayload;
+};
+
 export type ActionDescription =
   | RunPluginActionDescription
   | ClearPluginActionDescription
   | NavigateActionDescription
   | ShowAlertActionDescription
   | ShowModalActionDescription
+  | EchartAction
   | CloseModalActionDescription
   | StoreValueActionDescription
   | RemoveValueActionDescription

@@ -988,6 +988,10 @@ export const APP_THEME_BETA_CARD_HEADING = () => `🎨 修改应用风格`;
 export const APP_THEME_BETA_CARD_CONTENT = () =>
   `自定义全局样式风格，后面对所有组件进行支持`;
 
+// echat theme
+export const CHANGE_ECHART_THEME = (name: string) =>
+  `Echart主题已切换为 ${name} 风格主题`;
+
 export const UPGRADE_TO_EE = (authLabel: string) =>
   `你好，我想升级并且开始使用 ${authLabel} 鉴权`;
 export const UPGRADE_TO_EE_GENERIC = () => `你好，我想升级`;

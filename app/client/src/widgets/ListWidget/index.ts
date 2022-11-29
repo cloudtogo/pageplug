@@ -334,6 +334,7 @@ export const CONFIG = {
               "BUTTON_GROUP_WIDGET",
               "BUTTON_WIDGET",
               "CHART_WIDGET",
+              "ECHART_WIDGET",
               "CHECKBOX_WIDGET",
               "CHECKBOX_GROUP_WIDGET",
               "DIVIDER_WIDGET",

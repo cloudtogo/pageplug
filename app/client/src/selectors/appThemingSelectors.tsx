@@ -1,8 +1,10 @@
 import { AppState } from "@appsmith/reducers";
+import { echartThemes } from "constants/EchartContants";
 
 export enum AppThemingMode {
   APP_THEME_EDIT = "APP_THEME_EDIT",
   APP_THEME_SELECTION = "APP_THEME_SELECTION",
+  ECHART_THEME_SELECTION = "ECHART_THEME_SELECTION",
 }
 
 /**
@@ -43,6 +45,19 @@ export const getSelectedAppTheme = (state: AppState) => {
  */
 export const getSelectedAppThemeStylesheet = (state: AppState) => {
   return state.ui.appTheming.selectedTheme.stylesheet;
+};
+
+/**
+ * get the selected echart theme
+ *
+ * @param state
+ * @returns
+ */
+export const getSelectedEchartTheme = (state: AppState) => {
+  if (state.ui.applications.currentApplication?.chartTheme) {
+    return echartThemes[state.ui.applications.currentApplication?.chartTheme];
+  }
+  return echartThemes["default"];
 };
 
 /**

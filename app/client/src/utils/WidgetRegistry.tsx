@@ -23,6 +23,9 @@ import CanvasWidget, {
 import ChartWidget, {
   CONFIG as CHART_WIDGET_CONFIG,
 } from "widgets/ChartWidget";
+import EChartWidget, {
+  CONFIG as ECHART_WIDGET_CONFIG,
+} from "widgets/EchartWidget";
 import CheckboxGroupWidget, {
   CONFIG as CHECKBOX_GROUP_WIDGET_CONFIG,
 } from "widgets/CheckboxGroupWidget";
@@ -240,6 +243,7 @@ export const ALL_WIDGETS_AND_CONFIG = [
   [TabsWidget, TABS_WIDGET_CONFIG],
   [ModalWidget, MODAL_WIDGET_CONFIG],
   [ChartWidget, CHART_WIDGET_CONFIG],
+  [EChartWidget, ECHART_WIDGET_CONFIG],
   [MapWidget, MAP_WIDGET_CONFIG],
   [RichTextEditorWidget, RICH_TEXT_EDITOR_WIDGET_CONFIG],
   [DatePickerWidget2, DATE_PICKER_WIDGET_2_CONFIG],
