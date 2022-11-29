@@ -32,6 +32,7 @@ const DARK_THEMES = ["dark", "chalk", "transparent"];
 function EchartComponent(props: EchartComponentProps) {
   const echartRef = useRef<any>();
   const echartInstance = useRef<any>();
+  const [refreshflag, refresh] = useState<number>(0);
   const selectedEchartTheme = useSelector(getSelectedEchartTheme);
   const objectRef = useRef<any>();
   const [preChartTheme, setCurrentChart] = useState<EchartTheme | null>();
@@ -171,7 +172,18 @@ function EchartComponent(props: EchartComponentProps) {
         _.set(newOption, "xAxis.show", true);
       }
       const newOptions: any = convertStringFunciton(newOption);
-      echartInstance.current.setOption(newOptions, { replaceMerge });
+      try {
+        if (
+          registerMapName &&
+          !echarts.getMap(registerMapName) &&
+          registerMapJsonUrl
+        ) {
+          registerMap();
+          refresh(refreshflag + 1);
+        } else {
+          echartInstance.current.setOption(newOptions, { replaceMerge });
+        }
+      } catch (err) {}
       setCurrentChart(selectedEchartTheme);
     }
   }, [
@@ -185,6 +197,7 @@ function EchartComponent(props: EchartComponentProps) {
     selectedEchartTheme,
     registerMapName,
     registerMapJsonUrl,
+    refreshflag,
   ]);
 
   useEffect(() => {
@@ -204,7 +217,6 @@ function EchartComponent(props: EchartComponentProps) {
     if (echartRef.current) {
       handleEvent();
     }
-    registerMap();
   }, []);
 
   const getSeriesAndXaxisData = () => {
