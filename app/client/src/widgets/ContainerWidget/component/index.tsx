@@ -23,7 +23,10 @@ const StyledContainerComponent = styled.div<
 >`
   height: 100%;
   width: 100%;
-  background: ${(props) => props.backgroundColor};
+  background: ${(props) =>
+    props.backgroundImage
+      ? `url('${props.backgroundImage}') no-repeat center top / 100% 100%`
+      : props.backgroundColor};
   opacity: ${(props) => (props.resizeDisabled ? "0.8" : "1")};
   position: relative;
   ${(props) => (!props.isVisible ? invisible : "")};
@@ -48,6 +51,8 @@ const StyledContainerComponent = styled.div<
         ? tinycolor(props.backgroundColor)
             .darken(5)
             .toString()
+        : props.backgroundImage
+        ? `url('${props.backgroundImage}') no-repeat center top / 100% 100%`
         : props.backgroundColor;
     }};
   }
@@ -95,6 +100,7 @@ function ContainerComponent(props: ContainerComponentProps) {
         "widgetId",
         "containerStyle",
         "backgroundColor",
+        "backgroundImage",
         "borderColor",
         "borderWidth",
         "borderRadius",
@@ -114,6 +120,7 @@ export interface ContainerComponentProps
   children?: ReactNode;
   className?: string;
   backgroundColor?: Color;
+  backgroundImage?: string;
   shouldScrollContents?: boolean;
   resizeDisabled?: boolean;
   selected?: boolean;

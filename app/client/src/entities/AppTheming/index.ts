@@ -70,3 +70,10 @@ export type AppTheme = {
     };
   };
 };
+
+export type EchartTheme = {
+  themeKey: string;
+  backgroundColor?: string;
+  color?: string[];
+  [key: string]: any;
+};

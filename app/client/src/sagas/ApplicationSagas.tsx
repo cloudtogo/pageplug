@@ -360,6 +360,10 @@ export function* updateApplicationSaga(
           type: ReduxActionTypes.UPDATE_APPLICATION_SUCCESS,
           payload: response.data,
         });
+        yield put({
+          type: ReduxActionTypes.CURRENT_APPLICATION_CHART_THEME_UPDATE,
+          payload: response.data,
+        });
       }
       if (request.currentApp) {
         yield put({

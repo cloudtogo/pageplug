@@ -3,7 +3,7 @@ import { DSLWidget } from "widgets/constants";
 
 export const migrateChartWidgetReskinningData = (currentDSL: DSLWidget) => {
   currentDSL.children = currentDSL.children?.map((child: WidgetProps) => {
-    if (child.type === "CHART_WIDGET") {
+    if (child.type === "CHART_WIDGET" || child.type === "ECHART_WIDGET") {
       if (
         !(
           child.hasOwnProperty("accentColor") &&

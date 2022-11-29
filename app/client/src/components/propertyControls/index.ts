@@ -16,6 +16,7 @@ import DatePickerControl, {
   DatePickerControlProps,
 } from "components/propertyControls/DatePickerControl";
 import ChartDataControl from "components/propertyControls/ChartDataControl";
+import EchartDataControl from "components/propertyControls/EchartDataControl";
 import LocationSearchControl from "components/propertyControls/LocationSearchControl";
 import StepControl, {
   StepControlProps,
@@ -90,6 +91,7 @@ export const PropertyControls = {
   ColumnActionSelectorControl,
   MultiSwitchControl,
   ChartDataControl,
+  EchartDataControl,
   LocationSearchControl,
   StepControl,
   TabControl,

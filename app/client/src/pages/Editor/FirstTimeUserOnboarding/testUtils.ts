@@ -32,6 +32,7 @@ export const initialState: any = {
       currentApplication: {
         lastDeployedAt: null,
         slug: "applicationSlug",
+        chartTheme: "default",
       },
     },
     onBoarding: {
