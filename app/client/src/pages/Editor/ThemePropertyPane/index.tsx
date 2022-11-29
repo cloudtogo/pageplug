@@ -4,6 +4,7 @@ import { last } from "lodash";
 
 import ThemeEditor from "./ThemeEditor";
 import ThemeSelector from "./ThemeSelector";
+import EchartThemeSelector from "./Echart/EchartThemeSelector";
 import {
   AppThemingMode,
   getAppThemingStack,
@@ -26,6 +27,8 @@ export function ThemePropertyPane() {
         return <ThemeEditor />;
       case themingMode === AppThemingMode.APP_THEME_SELECTION:
         return <ThemeSelector />;
+      case themingMode === AppThemingMode.ECHART_THEME_SELECTION:
+        return <EchartThemeSelector />;
       default:
         return <ThemeEditor />;
     }

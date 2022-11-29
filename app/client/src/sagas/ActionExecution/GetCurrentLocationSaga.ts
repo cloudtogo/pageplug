@@ -1,5 +1,6 @@
 import {
   GetCurrentLocationDescription,
+  EchartAction,
   WatchCurrentLocationDescription,
 } from "entities/DataTree/actionTriggers";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
@@ -7,13 +8,19 @@ import {
   executeAppAction,
   TriggerMeta,
 } from "sagas/ActionExecution/ActionExecutionSagas";
-import { call, put, spawn, take } from "redux-saga/effects";
+import _find from "lodash/find";
+import { call, put, spawn, take, select } from "redux-saga/effects";
 import {
   logActionExecutionError,
   TriggerFailureError,
 } from "sagas/ActionExecution/errorUtils";
 import { setUserCurrentGeoLocation } from "actions/browserRequestActions";
 import { Channel, channel } from "redux-saga";
+import { getEchartWidget } from "selectors/widgetSelectors";
+import { FlattenedWidgetProps } from "reducers/entityReducers/canvasWidgetsReducer";
+import { ActionValidationError } from "sagas/ActionExecution/errorUtils";
+import { ActionTriggerType } from "entities/DataTree/actionTriggers";
+import { getType, Types } from "utils/TypeHelpers";
 
 // Making the getCurrentPosition call in a promise fashion
 const getUserLocation = (options?: PositionOptions) =>
@@ -125,6 +132,56 @@ export function* getCurrentLocationSaga(
       triggerMeta.source,
       triggerMeta.triggerPropertyName,
     );
+  }
+}
+
+export function* getEchartSaga(
+  actionPayload: EchartAction["payload"],
+  eventType: EventType,
+  triggerMeta: TriggerMeta,
+) {
+  const { widgetName, funcName, options } = actionPayload;
+  const echartWidgets: {
+    [widgetId: string]: FlattenedWidgetProps;
+  } = yield select(getEchartWidget);
+  const _target = _find(echartWidgets, (it: any) => it.name === widgetName);
+  const _instance = _target?.instance;
+  if (typeof widgetName !== "string") {
+    throw new ActionValidationError(
+      ActionTriggerType.CALL_FUNC,
+      "widgetName",
+      Types.STRING,
+      getType(widgetName),
+    );
+  }
+  if (typeof funcName !== "string") {
+    throw new ActionValidationError(
+      ActionTriggerType.CALL_FUNC,
+      "funcName",
+      Types.STRING,
+      getType(funcName),
+    );
+  }
+
+  try {
+    if (_instance) {
+      const res = _instance[funcName](options);
+      if (funcName === "getDom") {
+        logActionExecutionError(
+          "postmessage could not be cloned",
+          triggerMeta.source,
+          triggerMeta.triggerPropertyName,
+        );
+      }
+      return [res];
+    }
+  } catch (error) {
+    logActionExecutionError(
+      (error as Error).message,
+      triggerMeta.source,
+      triggerMeta.triggerPropertyName,
+    );
+    return [error];
   }
 }
 

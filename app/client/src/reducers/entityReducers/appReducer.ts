@@ -40,6 +40,7 @@ export type AppDataState = {
     canBeRequested: boolean;
     currentPosition?: Partial<GeolocationPosition>;
   };
+  echartInstance: any;
 };
 
 const initialState: AppDataState = {
@@ -67,6 +68,7 @@ const initialState: AppDataState = {
     canBeRequested: "geolocation" in navigator,
     currentPosition: {},
   },
+  echartInstance: {},
 };
 
 const appReducer = createReducer(initialState, {
