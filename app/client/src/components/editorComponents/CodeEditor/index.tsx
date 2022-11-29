@@ -677,6 +677,7 @@ class CodeEditor extends Component<Props, State> {
       });
     }
     const inputValue = this.props.input.value || "";
+    // console.log(inputValue, "handleChange");
     if (
       this.props.input.onChange &&
       ((value !== inputValue && this.state.isFocused) ||

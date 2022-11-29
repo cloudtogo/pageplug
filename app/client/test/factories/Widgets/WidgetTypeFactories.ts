@@ -13,6 +13,7 @@ import { OldTabsFactory, TabsFactory } from "./TabsFactory";
 import { ModalFactory } from "./ModalFactory";
 import { RichTextFactory } from "./RichTextFactory";
 import { ChartFactory } from "./ChartFactory";
+import { EchartFactory } from "./EchartFactory";
 import { FormFactory } from "./FormFactory";
 import { FormButtonFactory } from "./FormButtonFactory";
 import { MapFactory } from "./MapFactory";
@@ -42,6 +43,7 @@ export const WidgetTypeFactories: Record<string, any> = {
   MODAL_WIDGET: ModalFactory,
   RICH_TEXT_EDITOR_WIDGET: RichTextFactory,
   CHART_WIDGET: ChartFactory,
+  ECHART_WIDGET: EchartFactory,
   FORM_WIDGET: FormFactory,
   FORM_BUTTON_WIDGET: FormButtonFactory,
   MAP_WIDGET: MapFactory,

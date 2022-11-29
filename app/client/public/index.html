@@ -19,12 +19,14 @@
       transition: all ease-in 0.3s;
     }
   </style>
+   
   <script type="text/javascript">
     if ("%REACT_APP_IN_CLOUDOS%".trim() === "true") {
       document.querySelector(':root').style.setProperty("--loader-bar-color", "#613eea");
       document.title = "Methodot";
     }
   </script>
+  <script src="/logger.js"></script>
   <script>
     // '' (empty strings), 'false' are falsy
     // could return either boolean or string based on value
@@ -55,7 +57,20 @@
       head && head.appendChild(script);
     }
   </script>
-  <script src="/logger.js"></script>
+  <script>
+    const BMAP_AK = parseConfig("__BMAP_AK__");
+    const script = document.createElement('script');
+    script.type = "text/javascript"
+    script.src = `https://api.map.baidu.com/api?v=3.0&ak=${BMAP_AK}`;
+    const head = document.getElementsByTagName('head')[0];
+    head && head.appendChild(script);
+    script.onload = () => {
+      const script1 = document.createElement('script');
+      script1.src  = `https://api.map.baidu.com/getscript?v=3.0&ak=${BMAP_AK}&services=&t=${(new Date()).getTime()}`
+      script1.type = "text/javascript"
+      head && head.appendChild(script1);
+    }
+  </script>
 </head>
 
 <body class="appsmith-light-theme">
