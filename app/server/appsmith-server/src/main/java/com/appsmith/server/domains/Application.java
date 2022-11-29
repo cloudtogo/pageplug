@@ -69,6 +69,8 @@ public class Application extends BaseDomain {
 
     String icon;
 
+    String chartTheme;
+
     private String slug;
 
     AppLayout unpublishedAppLayout;
@@ -163,6 +165,7 @@ public class Application extends BaseDomain {
         this.clonedFromApplicationId = application.getId();
         this.color = application.getColor();
         this.icon = application.getIcon();
+        this.chartTheme = application.getChartTheme();
         this.unpublishedAppLayout = application.getUnpublishedAppLayout() == null ? null : new AppLayout(application.getUnpublishedAppLayout().type);
         this.publishedAppLayout = application.getPublishedAppLayout() == null ? null : new AppLayout(application.getPublishedAppLayout().type);
         this.viewerLayout = application.getViewerLayout();

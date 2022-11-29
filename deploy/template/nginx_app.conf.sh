@@ -59,6 +59,7 @@ $NGINX_SSL_CMNT    server_name $custom_domain ;
         sub_filter __APPSMITH_DISABLE_INTERCOM__ '\${APPSMITH_DISABLE_INTERCOM}';
         sub_filter __APPSMITH_FORM_LOGIN_DISABLED__ '\${APPSMITH_FORM_LOGIN_DISABLED}';
         sub_filter __APPSMITH_SIGNUP_DISABLED__ '\${APPSMITH_SIGNUP_DISABLED}';
+        sub_filter __BMAP_AK__ '\${BMAP_AK}';
     }
 
 

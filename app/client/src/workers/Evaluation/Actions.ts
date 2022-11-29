@@ -81,6 +81,22 @@ export const DATA_TREE_FUNCTIONS: Record<
       executionType: ExecutionType.PROMISE,
     };
   },
+  callFunc: {
+    qualifier: (entity) => isAppsmithEntity(entity),
+    path: "appsmith.echartInstance.callFunc",
+    func: () =>
+      function(widgetName: string, funcName: string, options?: any) {
+        return {
+          type: ActionTriggerType.CALL_FUNC,
+          payload: {
+            widgetName,
+            funcName,
+            options,
+          },
+          executionType: ExecutionType.PROMISE,
+        };
+      },
+  },
   storeValue: function(key: string, value: string, persist = true) {
     // momentarily store this value in local state to support loops
     _.set(self, ["appsmith", "store", key], value);

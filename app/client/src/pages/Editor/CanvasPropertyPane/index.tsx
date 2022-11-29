@@ -15,6 +15,7 @@ const Title = styled.p`
 type Props = {
   skipThemeEditor?: boolean;
 };
+import EchartThemeEditor from "../ThemePropertyPane/Echart/EchartThemeEditor";
 
 export function CanvasPropertyPane(props: Props) {
   const isMobile = useSelector(isMobileLayout);
@@ -31,6 +32,7 @@ export function CanvasPropertyPane(props: Props) {
         )}
 
         {!props.skipThemeEditor && <ThemeEditor />}
+        <EchartThemeEditor />
       </div>
     </div>
   );

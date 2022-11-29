@@ -26,3 +26,21 @@ const getEnvLogLevel = (configLevel: LogLevelDesc): LogLevelDesc => {
   }
   return logLevel;
 };
+
+/**
+ * read json data from json url
+ * @param blobUrl
+ * @returns
+ */
+export async function readBlob(blobUrl: string): Promise<any> {
+  const file = await fetch(blobUrl, {
+    referrer: "",
+  }).then((r) => r.blob());
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.readAsText(file);
+    reader.onloadend = () => {
+      resolve(reader.result);
+    };
+  });
+}

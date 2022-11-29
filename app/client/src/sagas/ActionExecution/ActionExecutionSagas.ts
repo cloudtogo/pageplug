@@ -46,6 +46,7 @@ import {
   setIntervalSaga,
 } from "sagas/ActionExecution/SetIntervalSaga";
 import {
+  getEchartSaga,
   getCurrentLocationSaga,
   stopWatchCurrentLocation,
   watchCurrentLocation,
@@ -128,7 +129,14 @@ export function* executeActionTriggers(
         triggerMeta,
       );
       break;
-
+    case ActionTriggerType.CALL_FUNC:
+      response = yield call(
+        getEchartSaga,
+        trigger.payload,
+        eventType,
+        triggerMeta,
+      );
+      break;
     case ActionTriggerType.WATCH_CURRENT_LOCATION:
       response = yield call(
         watchCurrentLocation,
