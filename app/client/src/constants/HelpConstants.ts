@@ -275,6 +275,10 @@ export const HelpMap: Record<string, { path: string; searchKey: string }> = {
     path: "/widget-reference/map-chart",
     searchKey: "Map Chart",
   },
+  ECHART_WIDGET: {
+    path: "/widget-reference/chart",
+    searchKey: "Echart",
+  },
 };
 
 export const HelpBaseURL = "https://docs.appsmith.com";

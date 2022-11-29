@@ -34,3 +34,4 @@ app/client/yalc.lock
 .idea
 .fleet/*
 app/client/.fleet/*
+*debug.log
