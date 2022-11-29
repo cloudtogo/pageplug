@@ -86,6 +86,12 @@ export const WIDGET_DATA_FIELD_MAP: Record<string, WidgetBindingInfo> = {
     widgetName: "Chart",
     image: "https://assets.appsmith.com/widgetSuggestion/chart.svg",
   },
+  ECHART_WIDGET: {
+    label: "chart-series-data-control",
+    propertyName: "chartData",
+    widgetName: "EChart",
+    image: "https://assets.appsmith.com/widgetSuggestion/chart.svg",
+  },
   SELECT_WIDGET: {
     label: "选项",
     propertyName: "options",
@@ -145,6 +151,20 @@ function getWidgetProps(
             },
           },
           dynamicBindingPathList: [{ key: `chartData.${reactKey}.data` }],
+        },
+      };
+    case "ECHART_WIDGET":
+      const ereactKey = generateReactKey();
+      return {
+        type: suggestedWidget.type,
+        props: {
+          [fieldName]: {
+            [ereactKey]: {
+              seriesName: "Sales",
+              data: `{{${actionName}.${suggestedWidget.bindingQuery}}}`,
+            },
+          },
+          dynamicBindingPathList: [{ key: `echartData.${ereactKey}.data` }],
         },
       };
     case "SELECT_WIDGET":

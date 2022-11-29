@@ -114,6 +114,7 @@ export type UpdateApplicationPayload = {
   appLayout?: AppLayoutConfig;
   applicationVersion?: number;
   viewerLayout?: string;
+  chartTheme?: string;
 };
 
 export type UpdateApplicationRequest = UpdateApplicationPayload & {
@@ -129,6 +130,7 @@ export interface ApplicationObject {
   workspaceId: string;
   pages: ApplicationPagePayload[];
   userPermissions: string[];
+  chartTheme?: string;
 }
 
 export interface PermissionGroup {

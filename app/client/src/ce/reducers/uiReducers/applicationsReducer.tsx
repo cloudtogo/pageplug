@@ -133,6 +133,16 @@ export const handlers = {
     currentApplication: action.payload,
     isFetchingApplication: false,
   }),
+  [ReduxActionTypes.CURRENT_APPLICATION_CHART_THEME_UPDATE]: (
+    state: ApplicationsReduxState,
+    action: ReduxAction<{ chartTheme: string }>,
+  ) => ({
+    ...state,
+    currentApplication: {
+      ...state.currentApplication,
+      chartTheme: action.payload.chartTheme,
+    },
+  }),
   [ReduxActionTypes.CURRENT_APPLICATION_NAME_UPDATE]: (
     state: ApplicationsReduxState,
     action: ReduxAction<{ name: string; slug: string }>,

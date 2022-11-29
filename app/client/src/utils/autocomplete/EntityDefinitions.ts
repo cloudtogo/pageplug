@@ -39,6 +39,10 @@ export const entityDefinitions = {
           watchPosition: "fn(options: object) -> void",
           clearWatch: "fn() -> void",
         },
+        echartInstance: {
+          callFunc:
+            "fn(widgetName: string, funcName: string, options?: any) -> +Promise[:t=[!0.<i>.:t]]",
+        },
       };
     }
     return generatedTypeDef;
@@ -349,6 +353,20 @@ export const entityDefinitions = {
     xAxisName: "string",
     yAxisName: "string",
     selectedDataPoint: "$__chartDataPoint__$",
+  },
+  ECHART_WIDGET: {
+    "!doc":
+      "EChart widget is used to view the graphical representation of your data. Echart is the go-to widget for your data visualisation needs.",
+    "!url": "https://docs.appsmith.com/widget-reference/chart",
+    isVisible: true,
+    chartData: {
+      seriesName: "string",
+      // data: "[$__chartDataPoint__$]",
+      data: "any",
+    },
+    xAxisName: "string",
+    yAxisName: "string",
+    selectedDataItem: "any",
   },
   FORM_WIDGET: (widget: any, extraDefsToDefine?: ExtraDef) => ({
     "!doc":

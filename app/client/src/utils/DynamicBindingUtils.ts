@@ -2,6 +2,7 @@ import _, { get, isString, VERSION as lodashVersion } from "lodash";
 import { DATA_BIND_REGEX } from "constants/BindingsConstants";
 import { Action } from "entities/Action";
 import moment from "moment-timezone";
+import * as echarts from "echarts";
 import { WidgetProps } from "widgets/BaseWidget";
 import parser from "fast-xml-parser";
 
@@ -186,6 +187,13 @@ export const extraLibraries: ExtraLibrary[] = [
     version: "1.3.0",
     docsURL: "https://github.com/digitalbazaar/forge",
     displayName: "forge",
+  },
+  {
+    accessor: "echarts",
+    lib: echarts,
+    version: "5.4.0",
+    docsURL: `https://echarts.apache.org/handbook/zh/how-to/animation/transition/`,
+    displayName: "echarts",
   },
 ];
 /**

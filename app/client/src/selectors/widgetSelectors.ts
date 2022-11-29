@@ -1,5 +1,6 @@
 import { createSelector } from "reselect";
 import { AppState } from "@appsmith/reducers";
+import * as echarts from "echarts";
 import {
   CanvasWidgetsReduxState,
   FlattenedWidgetProps,
@@ -42,6 +43,24 @@ export const getModalDropdownList = createSelector(
     }));
   },
 );
+
+export const getEchartWidget = createSelector(getCanvasWidgets, (widgets) => {
+  const echartWidgets = Object.values(widgets).filter(
+    (widget: FlattenedWidgetProps) => widget.type === "ECHART_WIDGET",
+  );
+  if (echartWidgets.length === 0) return undefined;
+  return echartWidgets.map((widget: FlattenedWidgetProps) => {
+    const chartId = `${widget.widgetId}-echart-container`;
+    const c_dom: HTMLElement | null = document
+      ? document.getElementById(`${chartId}`)
+      : null;
+    return {
+      id: widget.widgetId,
+      name: widget.widgetName,
+      instance: c_dom ? echarts.getInstanceByDom(c_dom) : null,
+    };
+  });
+});
 
 export const getNextModalName = createSelector(
   getExistingWidgetNames,
