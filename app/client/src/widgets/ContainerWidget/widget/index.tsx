@@ -86,6 +86,17 @@ class ContainerWidget extends BaseWidget<
             validation: { type: ValidationTypes.TEXT },
           },
           {
+            helpText: "使用图片URL",
+            placeholderText: "使用图片URL",
+            propertyName: "backgroundImage",
+            label: "背景图片",
+            controlType: "INPUT_TEXT",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+          {
             helpText: "使用 html 颜色名称，HEX，RGB 或者 RGBA 值",
             placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
             propertyName: "borderColor",
