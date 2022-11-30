@@ -32,7 +32,6 @@ const DARK_THEMES = ["dark", "chalk", "transparent"];
 function EchartComponent(props: EchartComponentProps) {
   const echartRef = useRef<any>();
   const echartInstance = useRef<any>();
-  const [refreshflag, refresh] = useState<number>(0);
   const selectedEchartTheme = useSelector(getSelectedEchartTheme);
   const objectRef = useRef<any>();
   const [preChartTheme, setCurrentChart] = useState<EchartTheme | null>();
@@ -91,9 +90,12 @@ function EchartComponent(props: EchartComponentProps) {
         readBlob(registerMapJsonUrl)
           .then((resData) => {
             echarts.registerMap(registerMapName, resData);
+            echartInstance.current.setOption(
+              echartInstance.current.getOption(),
+            );
           })
           .catch(() => {
-            message.warn("地图注册失败");
+            console.error(registerMapName + "地图注册失败");
           });
       }
     }
@@ -172,14 +174,16 @@ function EchartComponent(props: EchartComponentProps) {
         _.set(newOption, "xAxis.show", true);
       }
       const newOptions: any = convertStringFunciton(newOption);
+      const usedMap: boolean =
+        registerMapJsonUrl &&
+        registerMapName &&
+        !echarts.getMap(registerMapName) &&
+        chartType === "CUSTOM_CHART" &&
+        customEchartConfig;
+
       try {
-        if (
-          registerMapName &&
-          !echarts.getMap(registerMapName) &&
-          registerMapJsonUrl
-        ) {
+        if (usedMap) {
           registerMap();
-          refresh(refreshflag + 1);
         } else {
           echartInstance.current.setOption(newOptions, { replaceMerge });
         }
@@ -197,7 +201,6 @@ function EchartComponent(props: EchartComponentProps) {
     selectedEchartTheme,
     registerMapName,
     registerMapJsonUrl,
-    refreshflag,
   ]);
 
   useEffect(() => {
