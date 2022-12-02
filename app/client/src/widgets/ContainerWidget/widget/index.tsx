@@ -86,8 +86,8 @@ class ContainerWidget extends BaseWidget<
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "使用图片URL",
-            placeholderText: "使用图片URL",
+            helpText: "使用图片 URL 或 Base64 数据",
+            placeholderText: "使用图片 URL 或 Base64 数据",
             propertyName: "backgroundImage",
             label: "背景图片",
             controlType: "INPUT_TEXT",
