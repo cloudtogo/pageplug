@@ -962,6 +962,7 @@ export const LOCK_ENTITY_EXPLORER_MESSAGE = () => `固定侧边栏`;
 export const CLOSE_ENTITY_EXPLORER_MESSAGE = () => `关闭侧边栏`;
 export const JS_TOGGLE_DISABLED_MESSAGE = "清空字段回退";
 export const PROPERTY_PANE_EMPTY_SEARCH_RESULT_MESSAGE = "没有发现任何属性";
+export const HELP_MESSAGE = "帮助";
 
 // API Pane
 export const API_PANE_NO_BODY = () => "当前请求没有请求体";
