@@ -62,6 +62,8 @@
     "design-system": "npm:@appsmithorg/design-system@1.0.32",
     "downloadjs": "^1.4.7",
     "draft-js": "^0.11.7",
+    "echarts": "^5.4.0",
+    "echarts-gl": "^2.0.9",
     "emoji-mart": "^3.0.1",
     "exceljs-lightweight": "^1.14.0",
     "fast-deep-equal": "^3.1.3",
