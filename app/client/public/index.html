@@ -10,6 +10,7 @@
     :root {
       --loader-bar-color: #2CBBA6;
     }
+
     #loader {
       position: fixed;
       left: 0;
@@ -19,7 +20,6 @@
       transition: all ease-in 0.3s;
     }
   </style>
-   
   <script type="text/javascript">
     if ("%REACT_APP_IN_CLOUDOS%".trim() === "true") {
       document.querySelector(':root').style.setProperty("--loader-bar-color", "#613eea");
@@ -45,7 +45,7 @@
     }
     const CLOUD_HOSTING = parseConfig("__APPSMITH_CLOUD_HOSTING__");
     const ZIPY_KEY = parseConfig("__APPSMITH_ZIPY_SDK_KEY__");
-    if(CLOUD_HOSTING && ZIPY_KEY) {
+    if (CLOUD_HOSTING && ZIPY_KEY) {
       const script = document.createElement('script');
       script.crossOrigin = "anonymous";
       script.defer = true;
@@ -65,8 +65,11 @@
     const head = document.getElementsByTagName('head')[0];
     head && head.appendChild(script);
     script.onload = () => {
+      if (!BMAP_AK) {
+        return;
+      }
       const script1 = document.createElement('script');
-      script1.src  = `https://api.map.baidu.com/getscript?v=3.0&ak=${BMAP_AK}&services=&t=${(new Date()).getTime()}`
+      script1.src = `https://api.map.baidu.com/getscript?v=3.0&ak=${BMAP_AK}&services=&t=${(new Date()).getTime()}`
       script1.type = "text/javascript"
       head && head.appendChild(script1);
     }
@@ -202,6 +205,8 @@
 
     // CloudOS
     window.CLOUDOS_LOGIN_URL = parseConfig("__PAGEPLUG_CLOUDOS_LOGIN_URL__") || "http://factory.dev.staros.local/user/login";
+    // echarts baidu map
+    window.BMAP_AK_NOT_CONFIGED = !parseConfig("__BMAP_AK__");
 
   </script>
 </body>
