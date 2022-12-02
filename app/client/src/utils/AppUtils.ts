@@ -36,11 +36,14 @@ export async function readBlob(blobUrl: string): Promise<any> {
   const file = await fetch(blobUrl, {
     referrer: "",
   }).then((r) => r.blob());
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsText(file);
     reader.onloadend = () => {
       resolve(reader.result);
+    };
+    reader.onerror = () => {
+      reject(reader.error);
     };
   });
 }

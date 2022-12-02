@@ -15,12 +15,17 @@ import { LabelOrientation, AllChartData } from "../constants";
 import { NO_AXIS, ECHART_BASIC_OPTION, ECHART_TYPE_MAP } from "../constants";
 import { convertStringFunciton } from "../widget/helper";
 import { readBlob } from "utils/AppUtils";
-import { message } from "antd";
+// import { message } from "antd";
 
 interface pointType {
   name: string | number;
   value: number;
 }
+
+type registerType = {
+  name: string;
+  url: string;
+};
 
 function customizer(objValue: any, srcValue: any) {
   if (_.isArray(objValue)) {
@@ -32,10 +37,13 @@ const DARK_THEMES = ["dark", "chalk", "transparent"];
 function EchartComponent(props: EchartComponentProps) {
   const echartRef = useRef<any>();
   const echartInstance = useRef<any>();
-  const [refreshflag, refresh] = useState<number>(0);
   const selectedEchartTheme = useSelector(getSelectedEchartTheme);
   const objectRef = useRef<any>();
   const [preChartTheme, setCurrentChart] = useState<EchartTheme | null>();
+  const [registeredMap, setRegisteredMap] = useState<registerType>({
+    name: "",
+    url: "",
+  });
 
   const chartContainerId = props.widgetId + "-echart-container";
 
@@ -83,19 +91,34 @@ function EchartComponent(props: EchartComponentProps) {
     }
   };
 
-  const registerMap = () => {
-    if (registerMapName && registerMapJsonUrl && echartInstance.current) {
-      if (echarts.getMap(registerMapName)) {
-        // already register
-      } else {
-        readBlob(registerMapJsonUrl)
-          .then((resData) => {
-            echarts.registerMap(registerMapName, resData);
-          })
-          .catch(() => {
-            message.warn("地图注册失败");
+  const registerMap = (cb?: () => void) => {
+    if (
+      registerMapName &&
+      registerMapJsonUrl &&
+      echartInstance.current &&
+      (!_.isEqual(registeredMap.name, registerMapName) ||
+        !_.isEqual(registeredMap.url, registerMapJsonUrl))
+    ) {
+      readBlob(registerMapJsonUrl)
+        .then((resData) => {
+          echarts.registerMap(registerMapName, resData);
+          setRegisteredMap({
+            name: registerMapName,
+            url: registerMapJsonUrl,
           });
-      }
+        })
+        .finally(() => {
+          initChartInstance(true);
+          cb && cb();
+        })
+        .catch(() => {
+          console.log(
+            `%cregister [${registerMapName}] failed: ${registerMapJsonUrl}`,
+            "color: #df9658;",
+          );
+        });
+    } else {
+      cb && cb();
     }
   };
 
@@ -104,88 +127,103 @@ function EchartComponent(props: EchartComponentProps) {
     onInstance && echartInstance.current && onInstance(echartInstance.current);
   }, [echartInstance.current]);
 
+  // init echart instance
+  const initChartInstance = (flag?: boolean) => {
+    let needReDraw = !!flag;
+    const registerTheme: EchartTheme | undefined = selectedEchartTheme;
+    let defaultTheme = _.get(registerTheme, "themeKey", "default");
+    if (
+      registerTheme &&
+      _.get(preChartTheme, "themeKey") !== _.get(registerTheme, "themeKey")
+    ) {
+      registerEchartTheme(registerTheme.themeKey);
+      defaultTheme = _.get(registerTheme, "themeKey");
+      needReDraw = true;
+    }
+    if (!echartInstance.current || needReDraw) {
+      echartInstance.current && echartInstance.current.dispose();
+      echartInstance.current = echarts.init(echartRef?.current, defaultTheme);
+    }
+    echartInstance.current.clear();
+    return echartInstance.current;
+  };
+
   // props更新调用
   useEffect(() => {
     if (!chartData) {
       return;
     }
-    if (!echartInstance.current && echartRef.current) {
-      echartInstance.current = echarts.init(echartRef?.current, "default");
+    const instance: any = initChartInstance();
+    // 清空一下实例
+    instance.clear();
+    const _seriesD = getSeriesAndXaxisData();
+    let newOption: any = {
+      title: {
+        text: chartName,
+      },
+      xAxis: {
+        name: xAxisName,
+        data: _seriesD.xAxis,
+      },
+      yAxis: {
+        name: yAxisName,
+      },
+      darkMode: true,
+      series: _seriesD.series,
+    };
+    if (backgroundColor) {
+      _.set(newOption, "backgroundColor", backgroundColor);
     }
-    /*register theme*/
-    const registerTheme: EchartTheme | undefined = selectedEchartTheme;
-    if (preChartTheme !== registerTheme && registerTheme) {
-      echartInstance.current.dispose();
-      registerEchartTheme(registerTheme.themeKey);
-      echartInstance.current = echarts.init(
-        echartRef?.current,
-        registerTheme.themeKey,
-      );
+    if (
+      selectedEchartTheme &&
+      DARK_THEMES.includes(selectedEchartTheme.themeKey)
+    ) {
+      _.set(newOption, "darkMode", true);
     }
 
-    if (echartInstance.current) {
-      // 清空一下实例
-      echartInstance.current.clear();
-      const _seriesD = getSeriesAndXaxisData();
-      let newOption: any = {
-        title: {
-          text: chartName,
-        },
-        xAxis: {
-          name: xAxisName,
-          data: _seriesD.xAxis,
-        },
-        yAxis: {
-          name: yAxisName,
-        },
-        darkMode: true,
-        series: _seriesD.series,
-      };
-      if (backgroundColor) {
-        _.set(newOption, "backgroundColor", backgroundColor);
-      }
-      if (
-        selectedEchartTheme &&
-        DARK_THEMES.includes(selectedEchartTheme.themeKey)
-      ) {
-        _.set(newOption, "darkMode", true);
-      }
+    if (chartType === "CUSTOM_CHART" && customEchartConfig) {
+      newOption = customEchartConfig;
+    }
 
-      if (chartType === "CUSTOM_CHART" && customEchartConfig) {
-        newOption = customEchartConfig;
-      }
+    _.mergeWith(newOption, ECHART_BASIC_OPTION, customizer);
 
-      _.mergeWith(newOption, ECHART_BASIC_OPTION, customizer);
+    /**
+     * 如果在opts.replaceMerge里指定组件类型，这类组件会进行替换合并。
+     * 否则，会进行普通合并
+     */
+    const replaceMerge: string[] = [];
 
-      /**
-       * 如果在opts.replaceMerge里指定组件类型，这类组件会进行替换合并。
-       * 否则，会进行普通合并
-       */
-      const replaceMerge: string[] = [];
+    if (NO_AXIS[chartType]) {
+      replaceMerge.push("xAxis", "yAxis");
+      _.set(newOption, "yAxis.show", false);
+      _.set(newOption, "xAxis.show", false);
+    } else {
+      _.set(newOption, "yAxis.show", true);
+      _.set(newOption, "xAxis.show", true);
+    }
+    const newOptions: any = convertStringFunciton(newOption);
+    const usedMap: boolean =
+      registerMapJsonUrl &&
+      registerMapName &&
+      chartType === "CUSTOM_CHART" &&
+      customEchartConfig;
 
-      if (NO_AXIS[chartType]) {
-        replaceMerge.push("xAxis", "yAxis");
-        _.set(newOption, "yAxis.show", false);
-        _.set(newOption, "xAxis.show", false);
+    try {
+      if (usedMap) {
+        registerMap(() => {
+          console.log(
+            `%cregister [${registerMapName}] successfully`,
+            "color: green;",
+          );
+          echartInstance.current.clear();
+          echartInstance.current.setOption(newOptions, true);
+        });
       } else {
-        _.set(newOption, "yAxis.show", true);
-        _.set(newOption, "xAxis.show", true);
+        echartInstance.current.clear();
+        echartInstance.current.setOption(newOptions, true);
       }
-      const newOptions: any = convertStringFunciton(newOption);
-      try {
-        if (
-          registerMapName &&
-          !echarts.getMap(registerMapName) &&
-          registerMapJsonUrl
-        ) {
-          registerMap();
-          refresh(refreshflag + 1);
-        } else {
-          echartInstance.current.setOption(newOptions, { replaceMerge });
-        }
-      } catch (err) {}
-      setCurrentChart(selectedEchartTheme);
-    }
+    } catch (err) {}
+    setCurrentChart(selectedEchartTheme);
   }, [
     chartType,
     chartName,
@@ -197,12 +235,7 @@ function EchartComponent(props: EchartComponentProps) {
     selectedEchartTheme,
     registerMapName,
     registerMapJsonUrl,
-    refreshflag,
   ]);
-
-  useEffect(() => {
-    registerMap();
-  }, [registerMapJsonUrl, registerMapName]);
 
   // 点击事件handler
   useEffect(() => {
