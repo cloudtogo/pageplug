@@ -8,6 +8,7 @@ import {
   ControlWrapper,
 } from "components/propertyControls/StyledControls";
 import { JSToggleButton } from "design-system";
+import { HelpIcons } from "icons/HelpIcons";
 import PropertyControlFactory from "utils/PropertyControlFactory";
 import PropertyHelpLabel from "pages/Editor/PropertyPane/PropertyHelpLabel";
 import { useDispatch, useSelector } from "react-redux";
@@ -50,7 +51,10 @@ import { getSelectedAppTheme } from "selectors/appThemingSelectors";
 import { TooltipComponent } from "design-system";
 import { ReactComponent as ResetIcon } from "assets/icons/control/undo_2.svg";
 import { AppTheme } from "entities/AppTheming";
-import { JS_TOGGLE_DISABLED_MESSAGE } from "@appsmith/constants/messages";
+import {
+  JS_TOGGLE_DISABLED_MESSAGE,
+  HELP_MESSAGE,
+} from "@appsmith/constants/messages";
 import { AppState } from "@appsmith/reducers";
 import {
   getPropertyControlFocusElement,
@@ -58,6 +62,10 @@ import {
 } from "utils/editorContextUtils";
 import PropertyPaneHelperText from "./PropertyPaneHelperText";
 import { generateKeyAndSetFocusablePropertyPaneField } from "actions/propertyPaneActions";
+
+import { Colors } from "constants/Colors";
+
+const HelpIcon = HelpIcons.HELP_ICON;
 
 type Props = PropertyPaneControlConfig & {
   panel: IPanelProps;
@@ -520,6 +528,7 @@ const PropertyControl = memo((props: Props) => {
       propertyName,
     );
     const isConvertible = !!props.isJSConvertible;
+    const helpLink = props.helpLink;
     const className = label
       .split(" ")
       .join("")
@@ -645,6 +654,26 @@ const PropertyControl = memo((props: Props) => {
                   isToggleDisabled={isToggleDisabled}
                 />
               </TooltipComponent>
+            )}
+            {helpLink && (
+              <div
+                onClick={() => {
+                  window.open(helpLink, "_blank");
+                }}
+              >
+                <TooltipComponent
+                  content={HELP_MESSAGE}
+                  openOnTargetFocus={false}
+                  position="auto"
+                >
+                  <HelpIcon
+                    className={"help-icon"}
+                    color={Colors.GREY_7}
+                    height={13}
+                    width={13}
+                  />
+                </TooltipComponent>
+              </div>
             )}
             {isPropertyDeviatedFromTheme && (
               <>
