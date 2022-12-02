@@ -2,12 +2,6 @@
 import { EchartWidgetProps } from "widgets/EchartWidget/widget";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-// import { EditorModes } from "components/editorComponents/CodeEditor/EditorConfig";
-import {
-  // CUSTOM_CHART_TYPES,
-  LabelOrientation,
-  isLabelOrientationApplicableFor,
-} from "../constants";
 
 export default [
   {
@@ -157,16 +151,6 @@ export default [
           },
         ],
       },
-      // {
-      //   propertyName: "useDataSet",
-      //   label: "使用数据集DataSet",
-      //   helpText: "使用数据集设置图表数据",
-      //   controlType: "SWITCH",
-      //   isJSConvertible: true,
-      //   isBindProperty: true,
-      //   isTriggerProperty: false,
-      //   validation: { type: ValidationTypes.BOOLEAN },
-      // },
 
       {
         propertyName: "isVisible",
@@ -227,44 +211,6 @@ export default [
         validation: { type: ValidationTypes.TEXT },
         dependencies: ["chartType"],
       },
-      {
-        helpText: "修改x轴标签方向",
-        propertyName: "labelOrientation",
-        label: "x轴标签方向",
-        hidden: (x: EchartWidgetProps) =>
-          !isLabelOrientationApplicableFor(x.chartType),
-        isBindProperty: false,
-        isTriggerProperty: false,
-        dependencies: ["chartType"],
-        controlType: "DROP_DOWN",
-        options: [
-          {
-            label: "自动",
-            value: LabelOrientation.AUTO,
-          },
-          {
-            label: "倾斜",
-            value: LabelOrientation.SLANT,
-          },
-          {
-            label: "旋转",
-            value: LabelOrientation.ROTATE,
-          },
-          {
-            label: "交错",
-            value: LabelOrientation.STAGGER,
-          },
-        ],
-      },
-      {
-        propertyName: "setAdaptiveYMin",
-        label: "自适应坐标轴",
-        helpText: "定义坐标轴最小刻度",
-        controlType: "SWITCH",
-        isBindProperty: true,
-        isTriggerProperty: false,
-        validation: { type: ValidationTypes.BOOLEAN },
-      },
     ],
   },
   {
@@ -284,15 +230,15 @@ export default [
             regex: /\w+/,
           },
         },
-        // hidden: (x: any) => x.chartType !== "CUSTOM_CHART",
-        dependencies: ["chartType"],
+        // hidden: (x: EchartWidgetProps) => x.chartType !== "CUSTOM_CHART",
+        // dependencies: ["chartType"],
       },
       {
         helpText: "地图注册JSON数据",
         propertyName: "registerMapJsonUrl",
-        label: "JSON链接",
+        label: "GeoJson",
         controlType: "INPUT_TEXT",
-        placeholderText: "注册地图JSON数据链接",
+        placeholderText: "注册GeoJson数据链接",
         isBindProperty: true,
         isTriggerProperty: false,
         helpLink: "https://datav.aliyun.com/portal/school/atlas/area_selector",
@@ -304,6 +250,8 @@ export default [
             // regex: /(http(s?):)([/|.|\w|\s|-])*\.(?:json)/,
           },
         },
+        // hidden: (x: EchartWidgetProps) => x.chartType !== "CUSTOM_CHART",
+        // dependencies: ["chartType"],
       },
     ],
   },
@@ -539,15 +487,6 @@ export const contentConfig = [
     sectionName: "坐标轴配置",
     children: [
       {
-        propertyName: "setAdaptiveYMin",
-        label: "自适应坐标轴",
-        helpText: "定义坐标轴最小刻度",
-        controlType: "SWITCH",
-        isBindProperty: true,
-        isTriggerProperty: false,
-        validation: { type: ValidationTypes.BOOLEAN },
-      },
-      {
         helpText: "设置x轴标签",
         propertyName: "xAxisName",
         placeholderText: "日期",
@@ -556,7 +495,7 @@ export const contentConfig = [
         isBindProperty: true,
         isTriggerProperty: false,
         validation: { type: ValidationTypes.TEXT },
-        hidden: (x: any) => x.chartType === "CUSTOM_CHART",
+        // hidden: (x: any) => x.chartType === "CUSTOM_CHART",
         dependencies: ["chartType"],
       },
       {
@@ -568,38 +507,9 @@ export const contentConfig = [
         isBindProperty: true,
         isTriggerProperty: false,
         validation: { type: ValidationTypes.TEXT },
-        hidden: (x: any) => x.chartType === "CUSTOM_CHART",
+        // hidden: (x: any) => x.chartType === "CUSTOM_CHART",
         dependencies: ["chartType"],
       },
-      // {
-      //   helpText: "修改x轴标签方向",
-      //   propertyName: "labelOrientation",
-      //   label: "x轴标签方向",
-      //   hidden: (x: EchartWidgetProps) =>
-      //     !isLabelOrientationApplicableFor(x.chartType),
-      //   isBindProperty: false,
-      //   isTriggerProperty: false,
-      //   dependencies: ["chartType"],
-      //   controlType: "DROP_DOWN",
-      //   options: [
-      //     {
-      //       label: "自动",
-      //       value: LabelOrientation.AUTO,
-      //     },
-      //     {
-      //       label: "倾斜",
-      //       value: LabelOrientation.SLANT,
-      //     },
-      //     {
-      //       label: "旋转",
-      //       value: LabelOrientation.ROTATE,
-      //     },
-      //     {
-      //       label: "交错",
-      //       value: LabelOrientation.STAGGER,
-      //     },
-      //   ],
-      // },
     ],
   },
   {
@@ -619,15 +529,15 @@ export const contentConfig = [
             regex: /\w+/,
           },
         },
-        // hidden: (x: any) => x.chartType === "CUSTOM_CHART",
-        dependencies: ["chartType"],
+        // hidden: (x: EchartWidgetProps) => x.chartType !== "CUSTOM_CHART",
+        // dependencies: ["chartType"],
       },
       {
         helpText: "地图注册JSON数据",
         propertyName: "registerMapJsonUrl",
-        label: "JSON链接",
+        label: "GeoJson",
         controlType: "INPUT_TEXT",
-        placeholderText: "注册地图JSON数据链接",
+        placeholderText: "注册GeoJson数据链接",
         isBindProperty: true,
         isTriggerProperty: false,
         helpLink: "https://datav.aliyun.com/portal/school/atlas/area_selector",
@@ -639,6 +549,8 @@ export const contentConfig = [
             // regex: /(http(s?):)([/|.|\w|\s|-])*\.(?:json)/,
           },
         },
+        // hidden: (x: EchartWidgetProps) => x.chartType !== "CUSTOM_CHART",
+        // dependencies: ["chartType"],
       },
     ],
   },
