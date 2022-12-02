@@ -15,7 +15,13 @@ import { LabelOrientation, AllChartData } from "../constants";
 import { NO_AXIS, ECHART_BASIC_OPTION, ECHART_TYPE_MAP } from "../constants";
 import { convertStringFunciton } from "../widget/helper";
 import { readBlob } from "utils/AppUtils";
-// import { message } from "antd";
+import { message } from "antd";
+
+declare global {
+  interface Window {
+    BMAP_AK_NOT_CONFIGED: boolean;
+  }
+}
 
 interface pointType {
   name: string | number;
@@ -61,6 +67,11 @@ function EchartComponent(props: EchartComponentProps) {
     registerMapJsonUrl,
     registerMapName,
   } = props;
+  const hasBMap =
+    chartType === "CUSTOM_CHART" &&
+    customEchartConfig &&
+    customEchartConfig.bmap;
+  const showBMapKeyConfigTips = hasBMap && window.BMAP_AK_NOT_CONFIGED;
 
   const handleEvent = () => {
     const _echartInstance = echartInstance.current;
@@ -112,6 +123,7 @@ function EchartComponent(props: EchartComponentProps) {
           cb && cb();
         })
         .catch(() => {
+          message.error("GeoJSON 注册失败！");
           console.log(
             `%cregister [${registerMapName}] failed: ${registerMapJsonUrl}`,
             "color: #df9658;",
@@ -317,6 +329,19 @@ function EchartComponent(props: EchartComponentProps) {
         data="about:blank"
         className="absolute block top-0 left-0 w-full h-full border-0 opacity-0 z-[-1000] pointer-events-none"
       />
+      {showBMapKeyConfigTips ? (
+        <div className="text-red-600 w-full h-full absolute top-0 left-0">
+          请在环境变量中配置百度地图 ak 密钥
+          <a
+            href="https://lbsyun.baidu.com/index.php?title=jspopularGL/guide/getkey"
+            target="_blank"
+            rel="noreferrer"
+            className="pl-4"
+          >
+            申请百度地图密钥
+          </a>
+        </div>
+      ) : null}
     </div>
   );
 }
