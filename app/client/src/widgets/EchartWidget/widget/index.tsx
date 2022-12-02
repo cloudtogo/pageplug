@@ -2,7 +2,7 @@ import React, { lazy, Suspense } from "react";
 // import styled from "styled-components";
 import * as _ from "lodash";
 import Skeleton from "components/utils/Skeleton";
-import propertyConfig, { contentConfig, styleConfig } from "./propertyConfig";
+import { contentConfig, styleConfig } from "./propertyConfig";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { retryPromise } from "utils/AppsmithUtils";
 
@@ -10,8 +10,6 @@ import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { DerivedPropertiesMap } from "utils/WidgetFactory";
 import { Colors } from "constants/Colors";
 import { AllChartData, ChartType } from "../constants";
-// import { computeFinalRowCols } from "components/editorComponents/ResizableUtils";
-// import { EchartComponentProps } from "../component";
 
 const EchartComponent = lazy(() =>
   retryPromise(() =>
@@ -21,10 +19,6 @@ const EchartComponent = lazy(() =>
   ),
 );
 class EchartWidget extends BaseWidget<EchartWidgetProps, WidgetState> {
-  static getPropertyPaneConfig() {
-    return propertyConfig;
-  }
-
   static getDerivedPropertiesMap(): DerivedPropertiesMap {
     return {};
   }
@@ -72,7 +66,6 @@ class EchartWidget extends BaseWidget<EchartWidgetProps, WidgetState> {
   };
 
   getPageView() {
-    // console.log(this.props.customEchartConfig, "echart");
     return (
       <Suspense fallback={<Skeleton />}>
         <EchartComponent
