@@ -5,24 +5,24 @@ import { MenuButtonWidgetProps } from "../../constants";
 
 export default [
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
         propertyName: "menuVariant",
-        label: "Button Variant",
+        label: "按钮类型",
         controlType: "DROP_DOWN",
-        helpText: "Sets the variant of the menu button",
+        helpText: "设置菜单按钮的风格类型",
         options: [
           {
-            label: "Primary",
+            label: "主按钮",
             value: ButtonVariantTypes.PRIMARY,
           },
           {
-            label: "Secondary",
+            label: "次级按钮",
             value: ButtonVariantTypes.SECONDARY,
           },
           {
-            label: "Tertiary",
+            label: "文本按钮",
             value: ButtonVariantTypes.TERTIARY,
           },
         ],
@@ -44,12 +44,12 @@ export default [
     ],
   },
   {
-    sectionName: "Icon",
+    sectionName: "图标配置",
     children: [
       {
         propertyName: "iconName",
-        label: "Icon",
-        helpText: "Sets the icon to be used for the menu button",
+        label: "图标",
+        helpText: "设置菜单按钮图标",
         controlType: "ICON_SELECT",
         isJSConvertible: true,
         isBindProperty: true,
@@ -75,8 +75,8 @@ export default [
       },
       {
         propertyName: "iconAlign",
-        label: "Position",
-        helpText: "Sets the icon alignment of the menu button",
+        label: "位置",
+        helpText: "设置菜单按钮图标对齐方式",
         controlType: "ICON_TABS",
         options: [
           {
@@ -99,20 +99,20 @@ export default [
       },
       {
         propertyName: "placement",
-        label: "Placement",
+        label: "排列方式",
         controlType: "DROP_DOWN",
-        helpText: "Sets the space between items",
+        helpText: "设置图标与标签的排列方式",
         options: [
           {
-            label: "Start",
+            label: "向前对齐",
             value: ButtonPlacementTypes.START,
           },
           {
-            label: "Between",
+            label: "两边对齐",
             value: ButtonPlacementTypes.BETWEEN,
           },
           {
-            label: "Center",
+            label: "居中对齐",
             value: ButtonPlacementTypes.CENTER,
           },
         ],
@@ -135,12 +135,12 @@ export default [
     ],
   },
   {
-    sectionName: "Color",
+    sectionName: "颜色配置",
     children: [
       {
         propertyName: "menuColor",
-        helpText: "Sets the style of the Menu button",
-        label: "Button Color",
+        helpText: "设置菜单按钮颜色",
+        label: "按钮颜色",
         controlType: "COLOR_PICKER",
         isJSConvertible: true,
         isBindProperty: true,
@@ -150,12 +150,12 @@ export default [
     ],
   },
   {
-    sectionName: "Border and Shadow",
+    sectionName: "轮廓样式",
     children: [
       {
         propertyName: "borderRadius",
-        label: "Border Radius",
-        helpText: "Rounds the corners of the icon button's outer border edge",
+        label: "边框圆角",
+        helpText: "边框圆角样式",
         controlType: "BORDER_RADIUS_OPTIONS",
         isJSConvertible: true,
         isBindProperty: true,
@@ -164,9 +164,8 @@ export default [
       },
       {
         propertyName: "boxShadow",
-        label: "Box Shadow",
-        helpText:
-          "Enables you to cast a drop shadow from the frame of the widget",
+        label: "阴影",
+        helpText: "组件轮廓投影",
         controlType: "BOX_SHADOW_OPTIONS",
         isJSConvertible: true,
         isBindProperty: true,
