@@ -16,13 +16,12 @@ export default {
   },
   contentChildren: [
     {
-      sectionName: "General",
+      sectionName: "属性",
       children: [
         {
           propertyName: "label",
-          helpText:
-            "Sets the label of a menu item using the {{currentItem}} binding.",
-          label: "Label",
+          helpText: "设置菜单项标签，通过 {{currentItem}} 绑定当前菜单项数据",
+          label: "标签",
           controlType: "MENU_BUTTON_DYNAMIC_ITEMS",
           placeholderText: "{{currentItem.name}}",
           isBindProperty: true,
@@ -38,8 +37,8 @@ export default {
         {
           propertyName: "isVisible",
           helpText:
-            "Controls the visibility of the widget. Can also be configured the using {{currentItem}} binding.",
-          label: "Visible",
+            "控制组件的显示/隐藏，通过 {{currentItem}} 绑定当前菜单项数据",
+          label: "是否显示",
           controlType: "SWITCH",
           isJSConvertible: true,
           isBindProperty: true,
@@ -55,9 +54,8 @@ export default {
         },
         {
           propertyName: "isDisabled",
-          helpText:
-            "Disables input to the widget. Can also be configured the using {{currentItem}} binding.",
-          label: "Disabled",
+          helpText: "让组件不可交互，通过 {{currentItem}} 绑定当前菜单项数据",
+          label: "禁用",
           controlType: "SWITCH",
           isJSConvertible: true,
           isBindProperty: true,
@@ -74,11 +72,10 @@ export default {
       ],
     },
     {
-      sectionName: "Events",
+      sectionName: "事件",
       children: [
         {
-          helpText:
-            "Triggers an action when the menu item is clicked. Can also be configured the using {{currentItem}} binding.",
+          helpText: "点击菜单项时触发，通过 {{currentItem}} 绑定当前菜单项数据",
           propertyName: "onClick",
           label: "onClick",
           controlType: "ACTION_SELECTOR",
@@ -93,13 +90,12 @@ export default {
   ],
   styleChildren: [
     {
-      sectionName: "Icon",
+      sectionName: "图标配置",
       children: [
         {
           propertyName: "iconName",
-          label: "Icon",
-          helpText:
-            "Sets the icon to be used for a menu item. Can also be configured the using {{currentItem}} binding.",
+          label: "图标",
+          helpText: "设置菜单项的图标，通过 {{currentItem}} 绑定当前菜单项数据",
           controlType: "ICON_SELECT",
           isBindProperty: true,
           isTriggerProperty: false,
@@ -118,9 +114,9 @@ export default {
         },
         {
           propertyName: "iconAlign",
-          label: "Position",
+          label: "位置",
           helpText:
-            "Sets the icon alignment of a menu item. Can also be configured the using {{currentItem}} binding.",
+            "设置菜单项图标对齐方向，通过 {{currentItem}} 绑定当前菜单项数据",
           controlType: "ICON_TABS",
           options: [
             {
@@ -150,13 +146,13 @@ export default {
       ],
     },
     {
-      sectionName: "Color",
+      sectionName: "颜色配置",
       children: [
         {
           propertyName: "iconColor",
           helpText:
-            "Sets the icon color of a menu item. Can also be configured the using {{currentItem}} binding.",
-          label: "Icon color",
+            "设置菜单项图标颜色，通过 {{currentItem}} 绑定当前菜单项数据",
+          label: "图标颜色",
           controlType: "COLOR_PICKER",
           isBindProperty: true,
           isTriggerProperty: false,
@@ -174,8 +170,8 @@ export default {
         {
           propertyName: "backgroundColor",
           helpText:
-            "Sets the background color of a menu item. Can also be configured the using {{currentItem}} binding.",
-          label: "Background color",
+            "设置菜单项背景颜色，通过 {{currentItem}} 绑定当前菜单项数据",
+          label: "背景颜色",
           controlType: "COLOR_PICKER",
           isBindProperty: true,
           isTriggerProperty: false,
@@ -193,8 +189,8 @@ export default {
         {
           propertyName: "textColor",
           helpText:
-            "Sets the text color of a menu item. Can also be configured the using {{currentItem}} binding.",
-          label: "Text color",
+            "设置菜单项文本颜色，通过 {{currentItem}} 绑定当前菜单项数据",
+          label: "文本颜色",
           controlType: "COLOR_PICKER",
           isBindProperty: true,
           isTriggerProperty: false,

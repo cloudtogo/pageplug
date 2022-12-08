@@ -10,12 +10,12 @@ import { updateMenuItemsSource } from "./propertyUtils";
 
 export default [
   {
-    sectionName: "Basic",
+    sectionName: "属性",
     children: [
       {
         propertyName: "label",
-        helpText: "Sets the label of a menu",
-        label: "Label",
+        helpText: "设置菜单标签",
+        label: "标签",
         controlType: "INPUT_TEXT",
         placeholderText: "Open",
         isBindProperty: true,
@@ -24,17 +24,17 @@ export default [
       },
       {
         propertyName: "menuItemsSource",
-        helpText: "Sets the source for the menu items",
-        label: "Menu Items Source",
+        helpText: "设置菜单项数据源",
+        label: "菜单项数据源",
         controlType: "ICON_TABS",
         fullWidth: true,
         options: [
           {
-            label: "Static",
+            label: "静态",
             value: MenuItemsSource.STATIC,
           },
           {
-            label: "Dynamic",
+            label: "动态",
             value: MenuItemsSource.DYNAMIC,
           },
         ],
@@ -46,10 +46,10 @@ export default [
         dependencies: ["sourceData", "configureMenuItems"],
       },
       {
-        helpText: "Menu items",
+        helpText: "静态菜单配置",
         propertyName: "menuItems",
         controlType: "MENU_ITEMS",
-        label: "Menu Items",
+        label: "静态菜单项",
         isBindProperty: false,
         isTriggerProperty: false,
         hidden: (props: MenuButtonWidgetProps) =>
@@ -58,9 +58,9 @@ export default [
         panelConfig: menuItemsConfig,
       },
       {
-        helpText: "Takes in an array of items to display the menu items.",
+        helpText: "动态菜单项数组",
         propertyName: "sourceData",
-        label: "Source Data",
+        label: "动态菜单项",
         controlType: "INPUT_TEXT",
         placeholderText: "{{Query1.data}}",
         inputType: "ARRAY",
@@ -83,14 +83,14 @@ export default [
         dependencies: ["menuItemsSource"],
       },
       {
-        helpText: "Configure how each menu item will appear.",
+        helpText: "配置菜单项的外观",
         propertyName: "configureMenuItems",
         controlType: "OPEN_CONFIG_PANEL",
         buttonConfig: {
-          label: "Item Configuration",
+          label: "配置",
           icon: "settings-2-line",
         },
-        label: "Configure Menu Items",
+        label: "配置菜单项",
         isBindProperty: false,
         isTriggerProperty: false,
         hidden: (props: MenuButtonWidgetProps) =>
@@ -101,12 +101,12 @@ export default [
     ],
   },
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
         propertyName: "isVisible",
-        helpText: "Controls the visibility of the widget",
-        label: "Visible",
+        helpText: "控制组件的显示/隐藏",
+        label: "是否显示",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -115,8 +115,8 @@ export default [
       },
       {
         propertyName: "isDisabled",
-        helpText: "Disables input to the widget",
-        label: "Disabled",
+        helpText: "让组件不可交互",
+        label: "禁用",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -125,9 +125,9 @@ export default [
       },
       {
         propertyName: "animateLoading",
-        label: "Animate Loading",
+        label: "加载时显示动画",
         controlType: "SWITCH",
-        helpText: "Controls the loading of the widget",
+        helpText: "组件依赖的数据加载时显示加载动画",
         defaultValue: true,
         isJSConvertible: true,
         isBindProperty: true,
@@ -136,8 +136,8 @@ export default [
       },
       {
         propertyName: "isCompact",
-        helpText: "Decides if menu items will consume lesser space",
-        label: "Compact",
+        helpText: "让菜单项显示更紧凑",
+        label: "紧凑模式",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
