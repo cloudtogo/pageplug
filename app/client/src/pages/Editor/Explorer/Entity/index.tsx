@@ -196,7 +196,9 @@ const IconWrapper = styled.span`
 
 export type EntityProps = {
   entityId: string;
+  showAddButton?: boolean;
   className?: string;
+  canEditEntityName?: boolean;
   name: string;
   children?: ReactNode;
   highlight?: boolean;
@@ -227,6 +229,7 @@ export type EntityProps = {
 
 export const Entity = forwardRef(
   (props: EntityProps, ref: React.Ref<HTMLDivElement>) => {
+    const { canEditEntityName = false, showAddButton = false } = props;
     const [isOpen, open] = useState(!!props.isDefaultExpanded);
     const isUpdating = useEntityUpdateState(props.entityId);
     const isEditing = useEntityEditState(props.entityId);
@@ -280,6 +283,7 @@ export const Entity = forwardRef(
     }, [dispatch]);
 
     const enterEditMode = useCallback(() => {
+      if (!canEditEntityName) return;
       if (guidedTourEnabled) {
         dispatch(toggleShowDeviationDialog(true));
         return;
@@ -374,7 +378,7 @@ export const Entity = forwardRef(
                 {props.rightIcon}
               </IconWrapper>
             )}
-            {addButton}
+            {showAddButton && addButton}
             {props.contextMenu && (
               <ContextMenuWrapper>{props.contextMenu}</ContextMenuWrapper>
             )}

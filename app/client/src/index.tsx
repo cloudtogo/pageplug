@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import { ThemeProvider, taroifyTheme } from "constants/DefaultTheme";
 import { appInitializer } from "utils/AppUtils";
 import { Slide } from "react-toastify";
-import store from "./store";
+import store, { runSagaMiddleware } from "./store";
 import { LayersContext, Layers } from "constants/Layers";
 import AppRouter from "./AppRouter";
 import * as Sentry from "@sentry/react";
@@ -66,6 +66,8 @@ const inst = createReactApp(Empty, React, ReactDOM, {});
 // add touch emulator
 import "@vant/touch-emulator";
 import "react-sortable-tree-patch-react-17/style.css";
+
+runSagaMiddleware();
 
 appInitializer();
 

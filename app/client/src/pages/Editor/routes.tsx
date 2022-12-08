@@ -17,7 +17,6 @@ import {
   JS_COLLECTION_EDITOR_PATH,
   JS_COLLECTION_ID_PATH,
   CURL_IMPORT_PAGE_PATH,
-  PAGE_LIST_EDITOR_PATH,
   DATA_SOURCES_EDITOR_ID_PATH,
   PROVIDER_TEMPLATE_PATH,
   GENERATE_TEMPLATE_FORM_PATH,
@@ -36,7 +35,6 @@ import * as Sentry from "@sentry/react";
 const SentryRoute = Sentry.withSentryRouting(Route);
 import { SaaSEditorRoutes } from "./SaaSEditor/routes";
 import { useWidgetSelection } from "utils/hooks/useWidgetSelection";
-import PagesEditor from "./PagesEditor";
 import { builderURL } from "RouteBuilder";
 import history from "utils/history";
 import OnboardingChecklist from "./FirstTimeUserOnboarding/Checklist";
@@ -141,11 +139,6 @@ function EditorsRouter() {
               path={`${path}${childPath}`}
             />
           ))}
-          <SentryRoute
-            component={PagesEditor}
-            exact
-            path={`${path}${PAGE_LIST_EDITOR_PATH}`}
-          />
           <SentryRoute
             component={DataSourceEditor}
             exact

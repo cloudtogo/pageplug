@@ -24,6 +24,7 @@ import ApplicationApi, {
   PublishApplicationResponse,
   SetDefaultPageRequest,
   UpdateApplicationRequest,
+  UpdateApplicationResponse,
 } from "api/ApplicationApi";
 import { all, call, put, select, takeLatest } from "redux-saga/effects";
 
@@ -45,6 +46,7 @@ import {
   setPageIdForImport,
   setWorkspaceIdForImport,
   showReconnectDatasourceModal,
+  updateCurrentApplicationIcon,
 } from "actions/applicationActions";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import {
@@ -241,6 +243,8 @@ export function* fetchAppAndPagesSaga(
             isDefault: page.isDefault,
             isHidden: !!page.isHidden,
             slug: page.slug,
+            customSlug: page.customSlug,
+            userPermissions: page.userPermissions,
             icon: page.icon,
           })),
           applicationId: response.data.application?.id,
@@ -341,7 +345,7 @@ export function* updateApplicationSaga(
 ) {
   try {
     const request: UpdateApplicationRequest = action.payload;
-    const response: ApiResponse = yield call(
+    const response: ApiResponse<UpdateApplicationResponse> = yield call(
       ApplicationApi.updateApplication,
       request,
     );
@@ -362,10 +366,14 @@ export function* updateApplicationSaga(
         });
       }
       if (request.currentApp) {
-        yield put({
-          type: ReduxActionTypes.CURRENT_APPLICATION_NAME_UPDATE,
-          payload: response.data,
-        });
+        if (request.name)
+          yield put({
+            type: ReduxActionTypes.CURRENT_APPLICATION_NAME_UPDATE,
+            payload: response.data,
+          });
+        if (request.icon) {
+          yield put(updateCurrentApplicationIcon(response.data.icon));
+        }
       }
     }
     if (isValidResponse && request.viewerLayout) {

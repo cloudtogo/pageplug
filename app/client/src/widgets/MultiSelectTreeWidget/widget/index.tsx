@@ -12,11 +12,13 @@ import { DefaultValueType } from "rc-tree-select/lib/interface";
 import { Layers } from "constants/Layers";
 import { CheckedStrategy } from "rc-tree-select/lib/utils/strategyUtil";
 import { GRID_DENSITY_MIGRATION_V1, MinimumPopupRows } from "widgets/constants";
-import { AutocompleteDataType } from "utils/autocomplete/TernServer";
+import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import MultiTreeSelectComponent from "../component";
 import { LabelPosition } from "components/constants";
 import { Alignment } from "@blueprintjs/core";
+import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
 import derivedProperties from "./parseDerivedProperties";
+import { Stylesheet } from "entities/AppTheming";
 
 function defaultOptionValueValidation(value: unknown): ValidationResponse {
   let values: string[] = [];
@@ -167,6 +169,7 @@ class MultiSelectTreeWidget extends BaseWidget<
               { label: "左", value: LabelPosition.Left },
               { label: "上", value: LabelPosition.Top },
             ],
+            defaultValue: LabelPosition.Top,
             isBindProperty: false,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -253,6 +256,16 @@ class MultiSelectTreeWidget extends BaseWidget<
             ],
             isBindProperty: false,
             isTriggerProperty: false,
+          },
+          {
+            helpText: "提示信息",
+            propertyName: "labelTooltip",
+            label: "提示",
+            controlType: "INPUT_TEXT",
+            placeholderText: "请输入至少 6 个字符",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
           },
           {
             helpText: "设置占位文本",
@@ -478,6 +491,14 @@ class MultiSelectTreeWidget extends BaseWidget<
     };
   }
 
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      accentColor: "{{appsmith.theme.colors.primaryColor}}",
+      borderRadius: "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      boxShadow: "none",
+    };
+  }
+
   componentDidUpdate(prevProps: MultiSelectTreeWidgetProps): void {
     if (
       xor(this.props.defaultOptionValue, prevProps.defaultOptionValue).length >
@@ -513,6 +534,7 @@ class MultiSelectTreeWidget extends BaseWidget<
           zIndex: Layers.dropdownModalWidget,
         }}
         expandAll={this.props.expandAll}
+        isDynamicHeightEnabled={isAutoHeightEnabledForWidget(this.props)}
         isFilterable
         isValid={!isInvalid}
         labelAlignment={this.props.labelAlignment}
@@ -521,6 +543,7 @@ class MultiSelectTreeWidget extends BaseWidget<
         labelText={this.props.labelText}
         labelTextColor={this.props.labelTextColor}
         labelTextSize={this.props.labelTextSize}
+        labelTooltip={this.props.labelTooltip}
         labelWidth={this.getLabelWidth()}
         loading={this.props.isLoading}
         mode={this.props.mode}

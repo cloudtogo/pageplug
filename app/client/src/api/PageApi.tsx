@@ -46,6 +46,7 @@ export type FetchPageResponseData = {
   layouts: Array<PageLayout>;
   lastUpdatedTime: number;
   customSlug?: string;
+  userPermissions?: string[];
   layoutOnLoadActionErrors?: LayoutOnLoadActionErrors[];
 };
 
@@ -78,6 +79,18 @@ export type UpdatePageRequest = {
   icon?: string;
 };
 
+export type UpdatePageResponse = {
+  id: string;
+  name: string;
+  slug: string;
+  customSlug?: string;
+  applicationId: string;
+  layouts: Array<PageLayout>;
+  isHidden: boolean;
+  lastUpdatedTime: number;
+  defaultResources: unknown[];
+};
+
 export type SetPageOrderRequest = {
   order: number;
   pageId: string;
@@ -95,6 +108,7 @@ export type FetchPageListResponseData = {
     layouts: Array<PageLayout>;
     slug?: string;
     icon?: string;
+    userPermissions?: string[];
   }>;
   workspaceId: string;
 };
@@ -225,7 +239,9 @@ class PageApi extends Api {
     return Api.post(PageApi.url, createPageRequest);
   }
 
-  static updatePage(request: UpdatePageRequest): AxiosPromise<ApiResponse> {
+  static updatePage(
+    request: UpdatePageRequest,
+  ): AxiosPromise<ApiResponse<UpdatePageResponse>> {
     return Api.put(PageApi.updatePageUrl(request.id), request);
   }
 

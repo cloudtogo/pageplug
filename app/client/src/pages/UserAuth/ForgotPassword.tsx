@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { connect, useDispatch } from "react-redux";
-import { withRouter, RouteComponentProps } from "react-router-dom";
+import { withRouter, RouteComponentProps, Link } from "react-router-dom";
 import {
   change,
   reduxForm,
@@ -103,12 +103,21 @@ export const ForgotPassword = withTheme(
             <FormMessage
               actions={[
                 {
-                  url: "https://docs.appsmith.com/v/v1.2.1/setup/docker/email",
+                  linkElement: (
+                    <a
+                      href="https://docs.appsmith.com/v/v1.2.1/setup/docker/email"
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      配置邮件服务
+                    </a>
+                  ),
                   text: "配置邮件服务",
                   intent: "primary",
                 },
               ]}
               intent="warning"
+              linkAs={Link}
               message={"系统未开通邮件服务，不能正常发送重置邮件"}
             />
           )}

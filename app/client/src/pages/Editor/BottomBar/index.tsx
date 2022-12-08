@@ -5,6 +5,7 @@ import { Layers } from "constants/Layers";
 import { DebuggerTrigger } from "components/editorComponents/Debugger";
 import { Colors } from "constants/Colors";
 import ManualUpgrades from "./ManualUpgrades";
+import { Icon, IconSize } from "design-system";
 
 import { getAppsmithConfigs } from "@appsmith/configs";
 const { inCloudOS } = getAppsmithConfigs();
@@ -25,7 +26,14 @@ export default function BottomBar(props: { className?: string }) {
     <Container className={props.className ?? ""}>
       {inCloudOS ? <span /> : <QuickGitActions />}
       <div className="flex justify-between items-center gap-4">
-        <ManualUpgrades />
+        <ManualUpgrades showTooltip>
+          <Icon
+            className="t--upgrade"
+            fillColor={Colors.SCORPION}
+            name="upgrade"
+            size={IconSize.XXXL}
+          />
+        </ManualUpgrades>
         <DebuggerTrigger />
       </div>
     </Container>

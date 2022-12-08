@@ -4,6 +4,12 @@ import IconSVG from "./icon.svg";
 import Widget from "./widget";
 
 export const CONFIG = {
+  features: {
+    dynamicHeight: {
+      sectionIndex: 3,
+      active: true,
+    },
+  },
   type: Widget.getWidgetType(),
   name: "开关组", // The display name which will be made in uppercase and show in the widgets panel ( can have spaces )
   searchTags: ["switch group"],
@@ -40,6 +46,7 @@ export const CONFIG = {
     config: Widget.getPropertyPaneConfig(),
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
   },
 };
 

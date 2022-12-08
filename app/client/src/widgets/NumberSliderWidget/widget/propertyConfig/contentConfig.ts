@@ -1,7 +1,7 @@
 import { Alignment } from "@blueprintjs/core";
 import { LabelPosition } from "components/constants";
 import { ValidationTypes } from "constants/WidgetValidation";
-import { AutocompleteDataType } from "utils/autocomplete/TernServer";
+import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import { NumberSliderWidgetProps } from "..";
 import {
   defaultValueValidation,
@@ -119,6 +119,7 @@ export default [
           { label: "左", value: LabelPosition.Left },
           { label: "上", value: LabelPosition.Top },
         ],
+        defaultValue: LabelPosition.Left,
         isBindProperty: false,
         isTriggerProperty: false,
         validation: { type: ValidationTypes.TEXT },
@@ -169,6 +170,16 @@ export default [
   {
     sectionName: "属性",
     children: [
+      {
+        helpText: "Show help text or details about current input",
+        propertyName: "labelTooltip",
+        label: "Tooltip",
+        controlType: "INPUT_TEXT",
+        placeholderText: "Value must be atleast 6 chars",
+        isBindProperty: true,
+        isTriggerProperty: false,
+        validation: { type: ValidationTypes.TEXT },
+      },
       {
         propertyName: "showMarksLabel",
         helpText: "是否显示滑动条下标",
