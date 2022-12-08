@@ -174,11 +174,11 @@ class SwitchGroupWidget extends BaseWidget<
         sectionName: "属性",
         children: [
           {
-            helpText: "Show help text or details about current input",
+            helpText: "提示信息",
             propertyName: "labelTooltip",
-            label: "Tooltip",
+            label: "提示",
             controlType: "INPUT_TEXT",
-            placeholderText: "Value must be atleast 6 chars",
+            placeholderText: "请至少输入 6 个字符",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
