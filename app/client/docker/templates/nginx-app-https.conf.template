@@ -56,6 +56,7 @@ server {
         sub_filter __APPSMITH_ZIPY_SDK_KEY__ '${APPSMITH_ZIPY_SDK_KEY}';
         sub_filter __APPSMITH_HIDE_WATERMARK__ '${APPSMITH_HIDE_WATERMARK}';
         sub_filter __APPSMITH_DISABLE_IFRAME_WIDGET_SANDBOX__ '${APPSMITH_DISABLE_IFRAME_WIDGET_SANDBOX}';
+        sub_filter __APPSMITH_BMAP_AK__ '${APPSMITH_BMAP_AK}';
     }
 
 
@@ -75,6 +76,12 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Host $host;
         proxy_pass ${APPSMITH_SERVER_PROXY_PASS};
+    }
+
+    location /data-gl {
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_pass https://echarts.apache.org/examples/data-gl;
     }
 }
 

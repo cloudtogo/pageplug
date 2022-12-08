@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import { AppState } from "@appsmith/reducers";
-import * as echarts from "echarts";
+// import * as echarts from "echarts";
 import {
   CanvasWidgetsReduxState,
   FlattenedWidgetProps,
