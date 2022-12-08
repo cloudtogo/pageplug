@@ -57,21 +57,21 @@ export const contentConfig = [
         controlType: "INPUT_TEXT",
         isBindProperty: true,
         isTriggerProperty: false,
-        validation: {
-          type: ValidationTypes.OBJECT,
-          params: {
-            allowedKeys: [
-              {
-                type: ValidationTypes.ARRAY,
-                name: "series",
-                params: {
-                  default: [] || {},
-                  required: true,
-                },
-              },
-            ],
-          },
-        },
+        // validation: {
+        //   type: ValidationTypes.OBJECT,
+        //   params: {
+        //     allowedKeys: [
+        //       {
+        //         type: ValidationTypes.ARRAY,
+        //         name: "series",
+        //         params: {
+        //           default: [] || {},
+        //           required: true,
+        //         },
+        //       },
+        //     ],
+        //   },
+        // },
         hidden: (props: EchartWidgetProps) =>
           props.chartType !== "CUSTOM_CHART",
         dependencies: ["chartType"],

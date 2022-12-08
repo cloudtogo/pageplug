@@ -39,12 +39,12 @@ const DEFAUTL_CHART = {
 const defaultKey = generateReactKey();
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "Echart", // The display name which will be made in uppercase and show in the widgets panel ( can have spaces )
+  name: "Echarts", // The display name which will be made in uppercase and show in the widgets panel ( can have spaces )
   iconSVG: IconSVG,
   needsMeta: true, // Defines if this widget adds any meta properties
   searchTags: ["graph", "echart", "chart", "visualisations"],
   defaults: {
-    widgetName: "Echart",
+    widgetName: "Echarts",
     mycustom: 2,
     rows: 32,
     columns: 24,

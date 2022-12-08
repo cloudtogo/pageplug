@@ -26,6 +26,9 @@
       document.title = "Methodot";
     }
   </script>
+  <script src="/echarts-v5.4.0/echarts.min.js" defer="defer"></script>
+  <script src="/echarts-v5.4.0/echarts-gl.min.js" defer="defer"></script>
+  <script src="/echarts-v5.4.0/bmap.min.js" defer="defer"></script>
   <script src="/logger.js"></script>
   <script>
     // '' (empty strings), 'false' are falsy
@@ -58,7 +61,7 @@
     }
   </script>
   <script>
-    const BMAP_AK = parseConfig("__BMAP_AK__");
+    const BMAP_AK = parseConfig("__APPSMITH_BMAP_AK__");
     const script = document.createElement('script');
     script.type = "text/javascript"
     script.src = `https://api.map.baidu.com/api?v=3.0&ak=${BMAP_AK}`;
@@ -206,7 +209,7 @@
     // CloudOS
     window.CLOUDOS_LOGIN_URL = parseConfig("__PAGEPLUG_CLOUDOS_LOGIN_URL__") || "http://factory.dev.staros.local/user/login";
     // echarts baidu map
-    window.BMAP_AK_NOT_CONFIGED = !parseConfig("__BMAP_AK__");
+    window.BMAP_AK_NOT_CONFIGED = !parseConfig("__APPSMITH_BMAP_AK__");
 
   </script>
 </body>

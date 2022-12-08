@@ -59,7 +59,7 @@ $NGINX_SSL_CMNT    server_name $custom_domain ;
         sub_filter __APPSMITH_DISABLE_INTERCOM__ '\${APPSMITH_DISABLE_INTERCOM}';
         sub_filter __APPSMITH_FORM_LOGIN_DISABLED__ '\${APPSMITH_FORM_LOGIN_DISABLED}';
         sub_filter __APPSMITH_SIGNUP_DISABLED__ '\${APPSMITH_SIGNUP_DISABLED}';
-        sub_filter __BMAP_AK__ '\${BMAP_AK}';
+        sub_filter __APPSMITH_BMAP_AK__ '\${APPSMITH_BMAP_AK}';
     }
 
 
@@ -73,6 +73,10 @@ $NGINX_SSL_CMNT    server_name $custom_domain ;
 
     location /login {
         proxy_pass http://appsmith-internal-server:8080;
+    }
+
+    location /data-gl {
+        proxy_pass https://echarts.apache.org/examples/data-gl;
     }
 }
 
@@ -119,6 +123,7 @@ $NGINX_SSL_CMNT        sub_filter __APPSMITH_RECAPTCHA_ENABLED__ '\${APPSMITH_RE
 $NGINX_SSL_CMNT        sub_filter __APPSMITH_DISABLE_INTERCOM__ '\${APPSMITH_DISABLE_INTERCOM}';
 $NGINX_SSL_CMNT        sub_filter __APPSMITH_FORM_LOGIN_DISABLED__ '\${APPSMITH_FORM_LOGIN_DISABLED}';
 $NGINX_SSL_CMNT        sub_filter __APPSMITH_SIGNUP_DISABLED__ '\${APPSMITH_SIGNUP_DISABLED}';
+$NGINX_SSL_CMNT        sub_filter __APPSMITH_BMAP_AK__ '\${APPSMITH_BMAP_AK}';
 $NGINX_SSL_CMNT    }
 $NGINX_SSL_CMNT
 $NGINX_SSL_CMNT    location /api {
@@ -131,6 +136,10 @@ $NGINX_SSL_CMNT    }
 $NGINX_SSL_CMNT
 $NGINX_SSL_CMNT    location /login {
 $NGINX_SSL_CMNT        proxy_pass http://appsmith-internal-server:8080;
+$NGINX_SSL_CMNT    }
+$NGINX_SSL_CMNT
+$NGINX_SSL_CMNT    location /data-gl {
+$NGINX_SSL_CMNT        proxy_pass https://echarts.apache.org/examples/data-gl;
 $NGINX_SSL_CMNT    }
 $NGINX_SSL_CMNT
 $NGINX_SSL_CMNT }
