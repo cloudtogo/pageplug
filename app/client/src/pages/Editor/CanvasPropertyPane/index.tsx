@@ -1,22 +1,27 @@
 import React from "react";
+import styled from "styled-components";
+import { useDispatch } from "react-redux";
 import * as Sentry from "@sentry/react";
+import { PopoverPosition } from "@blueprintjs/core";
+import { TooltipComponent, Button, Size, Category } from "design-system";
 import { useSelector } from "react-redux";
 import { isMobileLayout } from "selectors/editorSelectors";
 
-import { MainContainerLayoutControl } from "../MainContainerLayoutControl";
-import ThemeEditor from "../ThemePropertyPane/ThemeEditor";
-import styled from "styled-components";
 import { Colors } from "constants/Colors";
+import { MainContainerLayoutControl } from "../MainContainerLayoutControl";
+import { openAppSettingsPaneAction } from "actions/appSettingsPaneActions";
 
 const Title = styled.p`
   color: ${Colors.GRAY_800};
 `;
 
-type Props = {
-  skipThemeEditor?: boolean;
-};
+export function CanvasPropertyPane() {
+  const dispatch = useDispatch();
 
-export function CanvasPropertyPane(props: Props) {
+  const openAppSettingsPane = () => {
+    dispatch(openAppSettingsPaneAction());
+  };
+
   const isMobile = useSelector(isMobileLayout);
   return (
     <div className="relative ">
@@ -27,10 +32,27 @@ export function CanvasPropertyPane(props: Props) {
           <div className="px-4 space-y-2">
             <Title className="text-sm">画布尺寸</Title>
             <MainContainerLayoutControl />
+
+            <TooltipComponent
+              content={
+                <>
+                  <p className="text-center">更新应用主题、URL</p>
+                  <p className="text-center">和其他设置</p>
+                </>
+              }
+              position={PopoverPosition.BOTTOM}
+            >
+              <Button
+                category={Category.tertiary}
+                fill
+                id="t--app-settings-cta"
+                onClick={openAppSettingsPane}
+                size={Size.medium}
+                text="App Settings"
+              />
+            </TooltipComponent>
           </div>
         )}
-
-        {!props.skipThemeEditor && <ThemeEditor />}
       </div>
     </div>
   );

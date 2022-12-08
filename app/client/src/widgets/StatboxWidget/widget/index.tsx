@@ -2,6 +2,7 @@ import { WidgetType } from "constants/WidgetConstants";
 import ContainerWidget from "widgets/ContainerWidget";
 
 import { ValidationTypes } from "constants/WidgetValidation";
+import { Stylesheet } from "entities/AppTheming";
 
 class StatboxWidget extends ContainerWidget {
   static getPropertyPaneContentConfig() {
@@ -108,6 +109,13 @@ class StatboxWidget extends ContainerWidget {
         ],
       },
     ];
+  }
+
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      borderRadius: "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      boxShadow: "{{appsmith.theme.boxShadow.appBoxShadow}}",
+    };
   }
 
   static getWidgetType(): WidgetType {

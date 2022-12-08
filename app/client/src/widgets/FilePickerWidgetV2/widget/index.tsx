@@ -24,6 +24,7 @@ import { Colors } from "constants/Colors";
 import Papa from "papaparse";
 import { klona } from "klona";
 import { UppyFile } from "@uppy/utils";
+import { Stylesheet } from "entities/AppTheming";
 
 const CSV_ARRAY_LABEL = "Array (仅限 CSVs)";
 const CSV_FILE_TYPE_REGEX = /.+(\/csv)$/;
@@ -500,6 +501,14 @@ class FilePickerWidget extends BaseWidget<
       selectedFiles: [],
       uploadedFileData: {},
       isDirty: false,
+    };
+  }
+
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      buttonColor: "{{appsmith.theme.colors.primaryColor}}",
+      borderRadius: "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      boxShadow: "none",
     };
   }
 
