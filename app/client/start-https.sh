@@ -264,7 +264,7 @@ $(if [[ $use_https == 1 ]]; then echo "
             sub_filter __APPSMITH_DISABLE_INTERCOM__ '${APPSMITH_DISABLE_INTERCOM-}';
             sub_filter __APPSMITH_FORM_LOGIN_DISABLED__ '${APPSMITH_FORM_LOGIN_DISABLED-}';
             sub_filter __APPSMITH_SIGNUP_DISABLED__ '${APPSMITH_SIGNUP_DISABLED-}';
-            sub_filter __BMAP_AK__ '${BMAP_AK-}';
+            sub_filter __APPSMITH_BMAP_AK__ '${APPSMITH_BMAP_AK-}';
             sub_filter __APPSMITH_ZIPY_SDK_KEY__ '${APPSMITH_ZIPY_SDK_KEY-}';
             sub_filter __APPSMITH_HIDE_WATERMARK__ '${APPSMITH_HIDE_WATERMARK-}';
             sub_filter __APPSMITH_DISABLE_IFRAME_WIDGET_SANDBOX__ '${APPSMITH_DISABLE_IFRAME_WIDGET_SANDBOX-}';
@@ -288,6 +288,10 @@ $(if [[ $use_https == 1 ]]; then echo "
             proxy_set_header Host \$host;
             proxy_set_header Connection upgrade;
             proxy_set_header Upgrade \$http_upgrade;
+        }
+
+        location /data-gl {
+            proxy_pass https://echarts.apache.org/examples/data-gl;
         }
     }
 }

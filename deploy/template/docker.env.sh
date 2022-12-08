@@ -80,6 +80,10 @@ APPSMITH_DISABLE_TELEMETRY=$disable_telemetry
 
 # APPSMITH_PLUGIN_MAX_RESPONSE_SIZE_MB=5
 
+# ******** echarts bmap key ***********
+# APPSMITH_BMAP_AK=
+# ********************************
+
 APPSMITH_DISABLE_IFRAME_WIDGET_SANDBOX=false
 
 EOF
