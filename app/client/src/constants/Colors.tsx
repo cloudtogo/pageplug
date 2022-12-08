@@ -94,7 +94,7 @@ export const Colors = {
   WATUSI: "#FFE0D2",
   GRAY: "#858282",
   GRAY2: "#939090",
-  DOVE_GRAY2: "#716E6E",
+  DOVE_GRAY2: "#716e6e",
   ATHENS_GRAY_DARKER: "#F8F9FA",
   POMEGRANATE: "#F44336",
   POMEGRANATE2: "#F22B2B",
@@ -217,6 +217,7 @@ export const Colors = {
 
   GRAY_50: "#F8F8F8",
   GRAY_200: "#E7E7E7",
+  GRAY_300: "#D7D7D7",
   GRAY_400: "#B3B3B3",
   GRAY_500: "#939393",
   GRAY_700: "#575757",

@@ -9,10 +9,12 @@ import {
 } from "constants/WidgetValidation";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { TabContainerWidgetProps, TabsWidgetProps } from "../constants";
-import { AutocompleteDataType } from "utils/autocomplete/TernServer";
+import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import { WidgetProperties } from "selectors/propertyPaneSelectors";
 import { WIDGET_PADDING } from "constants/WidgetConstants";
 import derivedProperties from "./parseDerivedProperties";
+import { Stylesheet } from "entities/AppTheming";
+import { ReduxActionTypes } from "ce/constants/ReduxActionConstants";
 
 export function selectedTabValidation(
   value: unknown,
@@ -169,6 +171,7 @@ class TabsWidget extends BaseWidget<
             controlType: "SWITCH",
             isBindProperty: false,
             isTriggerProperty: false,
+            postUpdateAction: ReduxActionTypes.CHECK_CONTAINERS_FOR_AUTO_HEIGHT,
           },
         ],
       },
@@ -261,6 +264,11 @@ class TabsWidget extends BaseWidget<
     ];
   }
 
+  callDynamicHeightUpdates = () => {
+    const { checkContainersForAutoHeight } = this.context;
+    checkContainersForAutoHeight && checkContainersForAutoHeight();
+  };
+
   onTabChange = (tabWidgetId: string) => {
     this.props.updateWidgetMetaProperty("selectedTabWidgetId", tabWidgetId, {
       triggerPropertyName: "onTabSelected",
@@ -269,7 +277,16 @@ class TabsWidget extends BaseWidget<
         type: EventType.ON_TAB_CHANGE,
       },
     });
+    setTimeout(this.callDynamicHeightUpdates, 0);
   };
+
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      accentColor: "{{appsmith.theme.colors.primaryColor}}",
+      borderRadius: "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      boxShadow: "{{appsmith.theme.boxShadow.appBoxShadow}}",
+    };
+  }
 
   static getDerivedPropertiesMap() {
     return {
@@ -323,7 +340,6 @@ class TabsWidget extends BaseWidget<
       return null;
     }
 
-    childWidgetData.shouldScrollContents = false;
     childWidgetData.canExtend = this.props.shouldScrollContents;
     const { componentHeight, componentWidth } = this.getComponentDimensions();
     childWidgetData.rightColumn = componentWidth;
@@ -384,6 +400,7 @@ class TabsWidget extends BaseWidget<
         "selectedTabWidgetId",
         defaultTabWidgetId,
       );
+      setTimeout(this.callDynamicHeightUpdates, 0);
     }
   };
 

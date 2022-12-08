@@ -268,6 +268,11 @@ function AppViewer(props: Props) {
     [updateWidgetAutoHeightAction, dispatch],
   );
 
+  const checkContainersForAutoHeightCallback = useCallback(
+    () => dispatch(checkContainersForAutoHeightAction()),
+    [checkContainersForAutoHeightAction],
+  );
+
   return (
     <ThemeProvider theme={lightTheme}>
       <EditorContext.Provider
@@ -278,7 +283,7 @@ function AppViewer(props: Props) {
           syncUpdateWidgetMetaProperty: syncUpdateWidgetMetaPropertyCallback,
           triggerEvalOnMetaUpdate: triggerEvalOnMetaUpdateCallback,
           updateWidgetAutoHeight: updateWidgetAutoHeightCallback,
-          checkContainersForAutoHeight: checkContainersForAutoHeightAction,
+          checkContainersForAutoHeight: checkContainersForAutoHeightCallback,
         }}
       >
         <WidgetGlobaStyles
