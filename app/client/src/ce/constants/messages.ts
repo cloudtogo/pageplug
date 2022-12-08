@@ -893,7 +893,7 @@ export const NOTIFICATIONS_TOOLTIP = () => "通知";
 
 // Navigation Menu
 export const DEPLOY_MENU_OPTION = () => "发布";
-export const CURRENT_DEPLOY_PREVIEW_OPTION = () => "当前已发布版本";
+export const CURRENT_DEPLOY_PREVIEW_OPTION = () => "最新发布版本";
 export const CONNECT_TO_GIT_OPTION = () => "连接到 Git 仓库";
 //
 export const GO_TO_PAGE = () => "跳转到页面";
