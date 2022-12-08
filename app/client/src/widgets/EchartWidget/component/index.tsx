@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useEffect, useRef, useState } from "react";
-import * as echarts from "echarts";
-import "echarts-gl";
 import * as _ from "lodash";
-import "echarts/extension/bmap/bmap";
 import macarons from "theme/echart/macarons.json";
 import chalk from "theme/echart/chalk.json";
 import walden from "theme/echart/walden.json";
@@ -122,12 +119,13 @@ function EchartComponent(props: EchartComponentProps) {
           initChartInstance(true);
           cb && cb();
         })
-        .catch(() => {
+        .catch((e) => {
           message.error("GeoJSON 注册失败！");
           console.log(
             `%cregister [${registerMapName}] failed: ${registerMapJsonUrl}`,
             "color: #df9658;",
           );
+          console.error(e);
         });
     } else {
       cb && cb();
@@ -152,7 +150,7 @@ function EchartComponent(props: EchartComponentProps) {
       defaultTheme = _.get(registerTheme, "themeKey");
       needReDraw = true;
     }
-    if (!echartInstance.current || needReDraw) {
+    if ((!echartInstance.current || needReDraw) && echartRef?.current) {
       echartInstance.current && echartInstance.current.dispose();
       echartInstance.current = echarts.init(echartRef?.current, defaultTheme);
     }
@@ -262,6 +260,12 @@ function EchartComponent(props: EchartComponentProps) {
     if (echartRef.current) {
       handleEvent();
     }
+    return () => {
+      if (echartInstance.current) {
+        echartInstance.current.clear();
+        echartInstance.current.dispose();
+      }
+    };
   }, []);
 
   const getSeriesAndXaxisData = () => {

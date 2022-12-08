@@ -112,7 +112,7 @@ CLOUDOS_IN_CLOUDOS=true
 
 // nginx.conf 配置前端环境变量，替换 index.html 中的配置
 sub_filter __PAGEPLUG_CLOUDOS_LOGIN_URL__ 'http://factory.dev.staros.local/user/login';
-sub_filter __BMAP_AK__ 'nWCpSjRnXLfGuBc3iLZ9kYv8Y6wYaxf8';
+sub_filter __APPSMITH_BMAP_AK__ 'nWCpSjRnXLfGuBc3iLZ9kYv8Y6wYaxf8';
 🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨
 StarOS 版本使用固定用户
 在开启 inCloudOS 前需要
