@@ -1178,45 +1178,42 @@ export const INVALID_URL = () => "请输入有效 URL，例如 https://example.c
 export const SAVE_OR_DISCARD_DATASOURCE_WARNING = () =>
   `离开页面后未保存的数据将会丢失，离开前请先保存信息`;
 
-export const APP_SETTINGS_PANE_HEADER = () => "Settings";
-export const APP_SETTINGS_CLOSE_TOOLTIP = () => "Close settings panel";
+export const APP_SETTINGS_PANE_HEADER = () => "设置";
+export const APP_SETTINGS_CLOSE_TOOLTIP = () => "关闭设置面板";
 
-export const GENERAL_SETTINGS_SECTION_HEADER = () => "General";
-export const GENERAL_SETTINGS_SECTION_CONTENT_HEADER = () => "General Settings";
+export const GENERAL_SETTINGS_SECTION_HEADER = () => "通用";
+export const GENERAL_SETTINGS_SECTION_CONTENT_HEADER = () => "通用设置";
 export const GENERAL_SETTINGS_SECTION_HEADER_DESC = () =>
-  "App name, icon and share";
-export const GENERAL_SETTINGS_APP_NAME_LABEL = () => "App Name";
-export const GENERAL_SETTINGS_NAME_EMPTY_MESSAGE = () =>
-  "App name cannot be empty";
+  "应用名称、图标和分享";
+export const GENERAL_SETTINGS_APP_NAME_LABEL = () => "应用名称";
+export const GENERAL_SETTINGS_NAME_EMPTY_MESSAGE = () => "应用名称不能为空";
 export const GENERAL_SETTINGS_NAME_SPECIAL_CHARACTER_ERROR = () =>
-  "Only alphanumeric or '-()' are allowed";
-export const GENERAL_SETTINGS_APP_ICON_LABEL = () => "App Icon";
+  "只能输入字母、数字或 '-()' 等字符";
+export const GENERAL_SETTINGS_APP_ICON_LABEL = () => "应用图标";
 
-export const THEME_SETTINGS_SECTION_HEADER = () => "Theme";
-export const THEME_SETTINGS_SECTION_CONTENT_HEADER = () => "Theme Settings";
-export const THEME_SETTINGS_SECTION_HEADER_DESC = () =>
-  "Set theme, color and font";
+export const THEME_SETTINGS_SECTION_HEADER = () => "主题";
+export const THEME_SETTINGS_SECTION_CONTENT_HEADER = () => "主题设置";
+export const THEME_SETTINGS_SECTION_HEADER_DESC = () => "设置主题、颜色、字体";
 
-export const PAGE_SETTINGS_SECTION_HEADER = () => "Page settings";
-export const PAGE_SETTINGS_SECTION_CONTENT_HEADER = () => "Settings";
-export const PAGE_SETTINGS_PAGE_NAME_LABEL = () => "Page Name";
-export const PAGE_SETTINGS_NAME_EMPTY_MESSAGE = () =>
-  "Page name cannot be empty";
+export const PAGE_SETTINGS_SECTION_HEADER = () => "页面设置";
+export const PAGE_SETTINGS_SECTION_CONTENT_HEADER = () => "设置";
+export const PAGE_SETTINGS_PAGE_NAME_LABEL = () => "页面名称";
+export const PAGE_SETTINGS_NAME_EMPTY_MESSAGE = () => "页面名称不能为空";
 export const PAGE_SETTINGS_NAME_SPECIAL_CHARACTER_ERROR = () =>
-  "Only alphanumeric or '-' are allowed";
-export const PAGE_SETTINGS_PAGE_URL_LABEL = () => "Change Page URL";
-export const PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_1 = () => "Please";
-export const PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_2 = () => "update";
+  "只能输入字母、数字或 '-'";
+export const PAGE_SETTINGS_PAGE_URL_LABEL = () => "修改页面 URL";
+export const PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_1 = () => "请";
+export const PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_2 = () => "更新";
 export const PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_3 = () =>
-  "your app URL to new readable format to change this";
-export const PAGE_SETTINGS_SHOW_PAGE_NAV = () => "Show page navigation";
+  "你的应用 URL 到新的可读格式";
+export const PAGE_SETTINGS_SHOW_PAGE_NAV = () => "显示菜单导航";
 export const PAGE_SETTINGS_SHOW_PAGE_NAV_TOOLTIP = () =>
-  "Hide or show the appsmith navbar containing the app name and page switcher";
-export const PAGE_SETTINGS_SET_AS_HOMEPAGE = () => "Set as home page";
+  "显示或隐藏应用菜单导航";
+export const PAGE_SETTINGS_SET_AS_HOMEPAGE = () => "设为主页";
 export const PAGE_SETTINGS_SET_AS_HOMEPAGE_TOOLTIP = () =>
-  "This is the current home page, you can change this by setting another page as the home page";
+  "当前页面已经是主页，你可以将其他页面设为主页";
 export const PAGE_SETTINGS_SET_AS_HOMEPAGE_TOOLTIP_NON_HOME_PAGE = () =>
-  "Set this page as your home page. This will override your previously set home page.";
+  "将这页设置为主页";
 
 // Alert options and labels for showMessage types
 export const ALERT_STYLE_OPTIONS = [
