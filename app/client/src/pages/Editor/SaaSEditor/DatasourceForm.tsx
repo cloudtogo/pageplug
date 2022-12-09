@@ -276,50 +276,59 @@ class DatasourceSaaSEditor extends JSONtoForm<Props, State> {
                 />
               </FormTitleContainer>
 
-            {viewMode && (
-              <EditDatasourceButton
-                category={Category.tertiary}
-                className="t--edit-datasource"
-                onClick={() => {
-                  this.props.history.replace(
-                    saasEditorDatasourceIdURL({
-                      pageId: pageId || "",
-                      pluginPackageName,
-                      datasourceId,
-                      params: {
-                        viewMode: false,
-                      },
-                    }),
-                  );
-                }}
-                text="编辑"
-              />
-            )}
-          </Header>
-        )}
-        {!viewMode ? (
-          <>
-            {!_.isNil(sections)
-              ? _.map(sections, this.renderMainSection)
-              : null}
-            {""}
-          </>
-        ) : (
-          <Connected />
-        )}
-        {/* Render datasource form call-to-actions */}
-        {datasource && (
-          <DatasourceAuth
-            datasource={datasource}
-            datasourceButtonConfiguration={datasourceButtonConfiguration}
-            formData={formData}
-            getSanitizedFormData={_.memoize(this.getSanitizedData)}
-            isInvalid={this.validate()}
-            pageId={pageId}
-            shouldRender={!viewMode}
-          />
-        )}
-      </form>
+              {viewMode && (
+                <EditDatasourceButton
+                  category={Category.tertiary}
+                  className="t--edit-datasource"
+                  onClick={() => {
+                    this.props.history.replace(
+                      saasEditorDatasourceIdURL({
+                        pageId: pageId || "",
+                        pluginPackageName,
+                        datasourceId,
+                        params: {
+                          viewMode: false,
+                        },
+                      }),
+                    );
+                  }}
+                  text="编辑"
+                />
+              )}
+            </Header>
+          )}
+          {!viewMode ? (
+            <>
+              {!_.isNil(sections)
+                ? _.map(sections, this.renderMainSection)
+                : null}
+              {""}
+            </>
+          ) : (
+            <Connected />
+          )}
+          {/* Render datasource form call-to-actions */}
+          {datasource && (
+            <DatasourceAuth
+              datasource={datasource}
+              datasourceButtonConfiguration={datasourceButtonConfiguration}
+              formData={formData}
+              getSanitizedFormData={_.memoize(this.getSanitizedData)}
+              isInvalid={this.validate()}
+              pageId={pageId}
+              shouldRender={!viewMode}
+            />
+          )}
+        </form>
+        <SaveOrDiscardDatasourceModal
+          datasourceId={datasourceId}
+          datasourcePermissions={datasource?.userPermissions || []}
+          isOpen={this.state.showDialog}
+          onClose={this.closeDialog}
+          onDiscard={this.onDiscard}
+          onSave={this.onSave}
+        />
+      </>
     );
   };
 }

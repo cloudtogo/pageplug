@@ -1,6 +1,5 @@
 import React, { ReactNode, useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppState } from "reducers";
 import TreeDropdown, {
   TreeDropdownOption,
 } from "pages/Editor/Explorer/TreeDropdown";
