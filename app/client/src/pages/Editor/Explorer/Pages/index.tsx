@@ -32,10 +32,7 @@ import { resolveAsSpaceChar } from "utils/helpers";
 import { getExplorerPinned } from "selectors/explorerSelector";
 import { setExplorerPinnedAction } from "actions/explorerActions";
 import { selectAllPages } from "selectors/entitiesSelector";
-import {
-  builderURL,
-  viewerLayoutEditorURL,
-} from "RouteBuilder";
+import { builderURL, viewerLayoutEditorURL } from "RouteBuilder";
 import { saveExplorerStatus, getExplorerStatus } from "../helpers";
 import { tailwindLayers } from "constants/Layers";
 import useResize, {
@@ -51,6 +48,7 @@ import {
   hasManagePagePermission,
 } from "@appsmith/utils/permissionHelpers";
 import { AppState } from "@appsmith/reducers";
+import { TooltipComponent } from "design-system";
 
 const ENTITY_HEIGHT = 36;
 const MIN_PAGES_HEIGHT = 60;
@@ -154,7 +152,6 @@ function Pages() {
       <TooltipComponent
         boundary="viewport"
         content={`设计项目菜单`}
-        hoverOpenDelay={TOOLTIP_HOVER_ON_DELAY}
         position="bottom"
       >
         {appLayoutIcon}
