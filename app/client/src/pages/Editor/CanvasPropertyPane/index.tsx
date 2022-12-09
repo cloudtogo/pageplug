@@ -48,7 +48,7 @@ export function CanvasPropertyPane() {
                 id="t--app-settings-cta"
                 onClick={openAppSettingsPane}
                 size={Size.medium}
-                text="App Settings"
+                text="应用设置"
               />
             </TooltipComponent>
           </div>
