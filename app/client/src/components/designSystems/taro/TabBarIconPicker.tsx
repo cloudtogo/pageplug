@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { AppState } from "@appsmith/reducers";
 import { updatePage } from "actions/pageActions";
+import { UpdatePageRequest } from "api/PageApi";
 import {
   getViewModePageList,
   getCurrentPage,
@@ -91,14 +92,13 @@ const TabBar = ({ currentPage, isFull }: TabbarProps) => {
 
   const onIconSelected = (icon?: string) => {
     if (icon) {
-      dispatch(
-        updatePage(
-          pageId,
-          pageName,
-          pageHidden,
-          icon === CLOSE_TABBAR ? "" : icon,
-        ),
-      );
+      const payload: UpdatePageRequest = {
+        id: pageId,
+        name: pageName,
+        isHidden: pageHidden,
+        icon: icon === CLOSE_TABBAR ? "" : icon,
+      };
+      dispatch(updatePage(payload));
     }
   };
 
@@ -116,7 +116,12 @@ const TabBar = ({ currentPage, isFull }: TabbarProps) => {
           name={pageName}
           nameTransformFn={resolveAsSpaceChar}
           updateEntityName={(name) =>
-            updatePage(pageId, name, pageHidden, pageIcon)
+            updatePage({
+              id: pageId,
+              name,
+              isHidden: pageHidden,
+              icon: pageIcon,
+            })
           }
         />
         {isEditing ? null : (

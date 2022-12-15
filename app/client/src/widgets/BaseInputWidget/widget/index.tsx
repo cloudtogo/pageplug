@@ -47,6 +47,7 @@ class BaseInputWidget<
               { label: "左", value: LabelPosition.Left },
               { label: "上", value: LabelPosition.Top },
             ],
+            defaultValue: LabelPosition.Top,
             isBindProperty: false,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },

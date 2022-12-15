@@ -1,17 +1,17 @@
 import React from "react";
 import { Alignment } from "@blueprintjs/core";
-import { xor } from "lodash";
-
+import { isString, xor } from "lodash";
 import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { DerivedPropertiesMap } from "utils/WidgetFactory";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-
-import SwitchGroupComponent, { OptionProps } from "../component";
 import { LabelPosition } from "components/constants";
 import { TextSize } from "constants/WidgetConstants";
 import { GRID_DENSITY_MIGRATION_V1 } from "widgets/constants";
+import { Stylesheet } from "entities/AppTheming";
+import SwitchGroupComponent, { OptionProps } from "../component";
+import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
 
 class SwitchGroupWidget extends BaseWidget<
   SwitchGroupWidgetProps,
@@ -107,6 +107,7 @@ class SwitchGroupWidget extends BaseWidget<
               { label: "左", value: LabelPosition.Left },
               { label: "上", value: LabelPosition.Top },
             ],
+            defaultValue: LabelPosition.Top,
             isBindProperty: false,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -172,6 +173,16 @@ class SwitchGroupWidget extends BaseWidget<
       {
         sectionName: "属性",
         children: [
+          {
+            helpText: "提示信息",
+            propertyName: "labelTooltip",
+            label: "提示",
+            controlType: "INPUT_TEXT",
+            placeholderText: "请至少输入 6 个字符",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
           {
             propertyName: "isVisible",
             helpText: "控制组件的显示/隐藏",
@@ -354,6 +365,12 @@ class SwitchGroupWidget extends BaseWidget<
     ];
   }
 
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      accentColor: "{{appsmith.theme.colors.primaryColor}}",
+    };
+  }
+
   static getDefaultPropertiesMap(): Record<string, string> {
     return {
       selectedValuesArray: "defaultSelectedValues",
@@ -414,6 +431,7 @@ class SwitchGroupWidget extends BaseWidget<
       labelText,
       labelTextColor,
       labelTextSize,
+      labelTooltip,
       options,
       selectedValues,
       topRow,
@@ -421,6 +439,15 @@ class SwitchGroupWidget extends BaseWidget<
     } = this.props;
 
     const { componentHeight } = this.getComponentDimensions();
+
+    // TODO(abhinav): Not sure why we have to do this.
+    // Check with the App Viewers Pod
+    let _options = options;
+    if (isString(options)) {
+      try {
+        _options = JSON.parse(options as string);
+      } catch (e) {}
+    }
 
     return (
       <SwitchGroupComponent
@@ -430,15 +457,17 @@ class SwitchGroupWidget extends BaseWidget<
         disabled={isDisabled}
         height={componentHeight}
         inline={isInline}
+        isDynamicHeightEnabled={isAutoHeightEnabledForWidget(this.props)}
         labelAlignment={labelAlignment}
         labelPosition={labelPosition}
         labelStyle={labelStyle}
         labelText={labelText}
         labelTextColor={labelTextColor}
         labelTextSize={labelTextSize}
+        labelTooltip={labelTooltip}
         labelWidth={this.getLabelWidth()}
         onChange={this.handleSwitchStateChange}
-        options={options}
+        options={_options}
         required={isRequired}
         selected={selectedValues}
         valid={isValid}

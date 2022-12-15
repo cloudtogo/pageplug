@@ -1,20 +1,21 @@
 import React from "react";
 import { Alignment } from "@blueprintjs/core";
 import { isArray, compact, isNumber } from "lodash";
-
 import BaseWidget, { WidgetProps, WidgetState } from "../../BaseWidget";
 import { TextSize, WidgetType } from "constants/WidgetConstants";
 import { GRID_DENSITY_MIGRATION_V1 } from "widgets/constants";
-import { AutocompleteDataType } from "utils/autocomplete/TernServer";
+import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import {
-  ValidationResponse,
-  ValidationTypes,
-} from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import { RadioOption } from "../constants";
 import { LabelPosition } from "components/constants";
 import RadioGroupComponent from "../component";
+import { Stylesheet } from "entities/AppTheming";
+import {
+  ValidationResponse,
+  ValidationTypes,
+} from "constants/WidgetValidation";
+import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
 
 /**
  * Validation rules:
@@ -225,6 +226,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
               { label: "左", value: LabelPosition.Left },
               { label: "上", value: LabelPosition.Top },
             ],
+            defaultValue: LabelPosition.Top,
             isBindProperty: false,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -290,6 +292,16 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
       {
         sectionName: "属性",
         children: [
+          {
+            helpText: "显示提示信息",
+            propertyName: "labelTooltip",
+            label: "提示",
+            controlType: "INPUT_TEXT",
+            placeholderText: "请至少输入 6 个字符",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
           {
             helpText: "控制组件的显示/隐藏",
             propertyName: "isVisible",
@@ -494,6 +506,13 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
     };
   }
 
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      accentColor: "{{appsmith.theme.colors.primaryColor}}",
+      boxShadow: "none",
+    };
+  }
+
   componentDidUpdate(prevProps: RadioGroupWidgetProps): void {
     if (
       this.props.defaultOptionValue !== prevProps.defaultOptionValue &&
@@ -532,6 +551,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
         disabled={isDisabled}
         height={componentHeight}
         inline={Boolean(isInline)}
+        isDynamicHeightEnabled={isAutoHeightEnabledForWidget(this.props)}
         key={widgetId}
         labelAlignment={labelAlignment}
         labelPosition={labelPosition}
@@ -539,6 +559,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
         labelText={label}
         labelTextColor={labelTextColor}
         labelTextSize={labelTextSize}
+        labelTooltip={this.props.labelTooltip}
         labelWidth={this.getLabelWidth()}
         loading={isLoading}
         onRadioSelectionChange={this.onRadioSelectionChange}
