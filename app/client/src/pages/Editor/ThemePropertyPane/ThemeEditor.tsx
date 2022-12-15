@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import React, { useCallback, useState } from "react";
 import Save2LineIcon from "remixicon-react/Save2LineIcon";
 import ArrowGoBackIcon from "remixicon-react/ArrowGoBackFillIcon";
+import EchartThemeEditor from "./Echart/EchartThemeEditor";
 
 import ThemeCard from "./ThemeCard";
 import {
@@ -287,6 +288,7 @@ function ThemeEditor() {
             },
           )}
         </SettingSection>
+        <EchartThemeEditor />
       </main>
       <SaveThemeModal isOpen={isSaveModalOpen} onClose={onCloseSaveModal} />
       <PopoverStyles />
