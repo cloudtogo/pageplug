@@ -22,6 +22,7 @@ export function WidgetContextMenu(props: {
   widgetId: string;
   pageId: string;
   className?: string;
+  canManagePages?: boolean;
 }) {
   const { widgetId } = props;
   const parentId = useSelector((state: AppState) => {
@@ -85,18 +86,22 @@ export function WidgetContextMenu(props: {
 
   const optionTree: TreeDropdownOption[] = [
     {
-      value: "rename",
-      onSelect: editWidgetName,
-      label: "编辑名称",
-    },
-    {
       value: "showBinding",
       onSelect: () => showBinding(props.widgetId, widget.widgetName),
       label: "可绑定变量",
     },
   ];
 
-  if (widget.isDeletable !== false) {
+  if (props.canManagePages) {
+    const option: TreeDropdownOption = {
+      value: "rename",
+      onSelect: editWidgetName,
+      label: "编辑名称",
+    };
+    optionTree.push(option);
+  }
+
+  if (widget.isDeletable !== false && props.canManagePages) {
     const option: TreeDropdownOption = {
       value: "delete",
       onSelect: dispatchDelete,
@@ -106,17 +111,17 @@ export function WidgetContextMenu(props: {
 
     optionTree.push(option);
   }
-  return (
+  return optionTree.length > 0 ? (
     <TreeDropdown
       className={props.className}
       defaultText=""
       modifiers={ContextMenuPopoverModifiers}
       onSelect={noop}
-      optionTree={optionTree}
+      optionTree={optionTree as TreeDropdownOption[]}
       selectedValue=""
       toggle={<ContextMenuTrigger className="t--context-menu" />}
     />
-  );
+  ) : null;
 }
 
 WidgetContextMenu.displayName = "WidgetContextMenu";
