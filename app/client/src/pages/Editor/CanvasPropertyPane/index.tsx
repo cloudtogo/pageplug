@@ -6,7 +6,6 @@ import { PopoverPosition } from "@blueprintjs/core";
 import { TooltipComponent, Button, Size, Category } from "design-system";
 import { useSelector } from "react-redux";
 import { isMobileLayout } from "selectors/editorSelectors";
-import EchartThemeEditor from "../ThemePropertyPane/Echart/EchartThemeEditor";
 import { Colors } from "constants/Colors";
 import { MainContainerLayoutControl } from "../MainContainerLayoutControl";
 import { openAppSettingsPaneAction } from "actions/appSettingsPaneActions";
@@ -56,7 +55,6 @@ export function CanvasPropertyPane() {
             />
           </TooltipComponent>
         </div>
-        <EchartThemeEditor />
       </div>
     </div>
   );
