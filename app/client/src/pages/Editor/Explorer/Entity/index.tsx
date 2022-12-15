@@ -48,6 +48,7 @@ const Wrapper = styled.div<{ active: boolean }>`
   line-height: ${(props) => props.theme.lineHeights[2]}px;
   ${ContextMenuWrapper} {
     width: 0;
+    line-height: 0;
   }
   &: hover {
     & > div > ${ContextMenuWrapper} {

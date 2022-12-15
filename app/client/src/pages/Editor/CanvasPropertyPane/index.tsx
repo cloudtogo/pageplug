@@ -28,31 +28,34 @@ export function CanvasPropertyPane() {
       <h3 className="px-4 py-3 text-sm font-medium uppercase">全局配置</h3>
 
       <div className="mt-3 space-y-6">
-        {isMobile ? null : (
-          <div className="px-4 space-y-2">
-            <Title className="text-sm">画布尺寸</Title>
-            <MainContainerLayoutControl />
-
-            <TooltipComponent
-              content={
+        <div className="px-4 space-y-2">
+          {isMobile ? null : (
+            <>
+              <Title className="text-sm">画布尺寸</Title>
+              <MainContainerLayoutControl />
+            </>
+          )}
+          <TooltipComponent
+            content={
+              isMobile ? null : (
                 <>
                   <p className="text-center">更新应用主题、URL</p>
                   <p className="text-center">和其他设置</p>
                 </>
-              }
-              position={PopoverPosition.BOTTOM}
-            >
-              <Button
-                category={Category.tertiary}
-                fill
-                id="t--app-settings-cta"
-                onClick={openAppSettingsPane}
-                size={Size.medium}
-                text="应用设置"
-              />
-            </TooltipComponent>
-          </div>
-        )}
+              )
+            }
+            position={PopoverPosition.BOTTOM}
+          >
+            <Button
+              category={Category.secondary}
+              fill
+              id="t--app-settings-cta"
+              onClick={openAppSettingsPane}
+              size={Size.medium}
+              text="应用设置"
+            />
+          </TooltipComponent>
+        </div>
       </div>
     </div>
   );

@@ -356,7 +356,7 @@ function DatasourceCard(props: DatasourceCardProps) {
                   className="t--datasource-option-edit"
                   icon="edit"
                   onSelect={editDatasource}
-                  text="Edit"
+                  text="编辑"
                 />
                 <RedMenuItem
                   className="t--datasource-option-delete"

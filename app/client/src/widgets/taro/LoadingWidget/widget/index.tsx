@@ -10,7 +10,7 @@ import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { generateClassName } from "utils/generators";
 import { selectWidgetInitAction } from "actions/widgetSelectionActions";
 import { previewModeSelector } from "selectors/editorSelectors";
-import { AppState } from "reducers";
+import { AppState } from "@appsmith/reducers";
 
 const Container = styled(View)`
   position: fixed;

@@ -1188,7 +1188,7 @@ export const GENERAL_SETTINGS_SECTION_HEADER_DESC = () =>
 export const GENERAL_SETTINGS_APP_NAME_LABEL = () => "应用名称";
 export const GENERAL_SETTINGS_NAME_EMPTY_MESSAGE = () => "应用名称不能为空";
 export const GENERAL_SETTINGS_NAME_SPECIAL_CHARACTER_ERROR = () =>
-  "只能输入字母、数字或 '-()' 等字符";
+  "只能输入字母、数字、'-'、'('、')' 等字符";
 export const GENERAL_SETTINGS_APP_ICON_LABEL = () => "应用图标";
 
 export const THEME_SETTINGS_SECTION_HEADER = () => "主题";
