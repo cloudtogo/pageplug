@@ -22,11 +22,15 @@ const Wrapper = styled(EntityTogglesWrapper)`
   &&&& {
     svg,
     svg path {
-      fill: ${Colors.MINT_ORANGE};
+      fill: ${Colors.MINT_GREEN};
     }
 
     &:hover {
-      background: ${Colors.MINT_ORANGE_LIGHT};
+      background: ${Colors.MINT_GREEN};
+      svg,
+      svg path {
+        fill: ${Colors.WHITE};
+      }
     }
   }
   span {

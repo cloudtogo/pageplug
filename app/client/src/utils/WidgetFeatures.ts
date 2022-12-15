@@ -148,11 +148,11 @@ export const WidgetFeaturePropertyPaneEnhancements: Record<
         dynamicHeight: {
           options: [
             {
-              label: "Auto Height",
+              label: "自动高度",
               value: DynamicHeight.AUTO_HEIGHT,
             },
             {
-              label: "Fixed",
+              label: "固定高度",
               value: DynamicHeight.FIXED,
             },
           ],
@@ -291,7 +291,7 @@ function updateMinMaxDynamicHeight(
 // TODO FEATURE:(abhinav) Add validations to these properties
 
 const CONTAINER_SCROLL_HELPER_TEXT =
-  "This widget shows an internal scroll when you add widgets in edit mode. It'll resize after you've added widgets. The scroll won't exist in view mode.";
+  "组件在编辑时会显示内部滚动条，因为当你往组件添加子组件后，它需要自动调整大小。不过请放心，这个滚动条在页面发布后不会出现。";
 
 export const PropertyPaneConfigTemplates: Record<
   RegisteredWidgetFeatures,
@@ -299,10 +299,9 @@ export const PropertyPaneConfigTemplates: Record<
 > = {
   [RegisteredWidgetFeatures.DYNAMIC_HEIGHT]: [
     {
-      helpText:
-        "Auto Height: Configure the way the widget height reacts to content changes.",
+      helpText: "自动高度：组件高度随着组件内容高度变化而变化",
       propertyName: "dynamicHeight",
-      label: "Height",
+      label: "高度",
       controlType: "DROP_DOWN",
       isBindProperty: false,
       isTriggerProperty: false,
@@ -325,15 +324,15 @@ export const PropertyPaneConfigTemplates: Record<
       },
       options: [
         {
-          label: "Auto Height",
+          label: "自动高度",
           value: DynamicHeight.AUTO_HEIGHT,
         },
         {
-          label: "Auto Height with limits",
+          label: "区间自动高度",
           value: DynamicHeight.AUTO_HEIGHT_WITH_LIMITS,
         },
         {
-          label: "Fixed",
+          label: "固定高度",
           value: DynamicHeight.FIXED,
         },
       ],
@@ -357,7 +356,7 @@ export function disableWidgetFeatures(
   const clonedConfig = klona(widgetConfig);
   const GeneralConfig = clonedConfig.find(
     (sectionConfig) =>
-      (sectionConfig as PropertyPaneSectionConfig)?.sectionName === "General",
+      (sectionConfig as PropertyPaneSectionConfig)?.sectionName === "属性",
   );
 
   for (let i = 0; i < (GeneralConfig?.children?.length || -1); i++) {

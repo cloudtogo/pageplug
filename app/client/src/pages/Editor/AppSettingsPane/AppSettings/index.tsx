@@ -9,6 +9,7 @@ import SectionHeader, { SectionHeaderProps } from "./SectionHeader";
 import DraggablePageList from "./DraggablePageList";
 import PageSettings from "./PageSettings";
 import { getAppSettingsPane } from "selectors/appSettingsPaneSelectors";
+import { isMobileLayout } from "selectors/editorSelectors";
 import {
   GENERAL_SETTINGS_SECTION_CONTENT_HEADER,
   GENERAL_SETTINGS_SECTION_HEADER,
@@ -48,6 +49,7 @@ const ThemeContentWrapper = styled.div`
 function AppSettings() {
   const { context } = useSelector(getAppSettingsPane);
   const pages: Page[] = useSelector(selectAllPages);
+  const isMobile = useSelector(isMobileLayout);
 
   const [selectedTab, setSelectedTab] = useState<SelectedTab>({
     type: context?.type || AppSettingsTabs.General,
@@ -94,9 +96,11 @@ function AppSettings() {
   return (
     <Wrapper className="flex flex-row">
       <div className="w-1/2">
-        {SectionHeadersConfig.map((config) => (
-          <SectionHeader key={config.name} {...config} />
-        ))}
+        {SectionHeadersConfig.filter((s, i) => (isMobile ? i !== 1 : true)).map(
+          (config) => (
+            <SectionHeader key={config.name} {...config} />
+          ),
+        )}
         <div
           className={`border-t-[1px] border-[color:var(--appsmith-color-black-300)]`}
         />

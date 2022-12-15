@@ -31,12 +31,11 @@ const Section = styled.section<{
   isMobile: boolean;
 }>`
   background: ${({ isMobile }) => (isMobile ? "#fff" : "transparent")};
+  width: ${({ isMobile }) => (isMobile ? "auto" : "100%")};
   height: 100%;
-  min-height: ${({ height }) => height}px;
   margin: 0 auto;
   position: relative;
-  overflow-x: auto;
-  overflow-y: auto;
+  overflow: auto;
 `;
 
 type AppViewerPageContainerProps = RouteComponentProps<AppViewerRouteParams>;

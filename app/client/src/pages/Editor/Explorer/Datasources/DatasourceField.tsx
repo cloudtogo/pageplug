@@ -16,7 +16,7 @@ const Wrapper = styled.div<{ step: number }>`
   height: 30px;
   width: 100%;
   &:hover {
-    background: ${Colors.MINT_ORANGE_LIGHT};
+    background: ${Colors.MINT_GREEN_LIGHT};
   }
   align-items: center;
   cursor: pointer;

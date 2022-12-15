@@ -68,7 +68,7 @@ export const GetNavigationMenuData = ({
 
   return [
     {
-      text: "Go to dashboard",
+      text: "首页",
       onClick: () => history.replace(APPLICATIONS_URL),
       type: MenuTypes.MENU,
       isVisible: true,
@@ -117,15 +117,15 @@ export const GetNavigationMenuData = ({
       isVisible: true,
       children: [
         {
-          text: "Community Forum",
-          onClick: () => openExternalLink("https://community.appsmith.com/"),
+          text: "社区",
+          onClick: () => openExternalLink("https://appsmith-fans.cn/"),
           type: MenuTypes.MENU,
           isVisible: true,
           isOpensNewWindow: true,
         },
         {
-          text: "Discord Channel",
-          onClick: () => openExternalLink("https://discord.gg/rBTTVJp"),
+          text: "文档",
+          onClick: () => openExternalLink("https://docs.appsmith.com/"),
           type: MenuTypes.MENU,
           isVisible: true,
           isOpensNewWindow: true,
@@ -133,14 +133,15 @@ export const GetNavigationMenuData = ({
         {
           text: "Github",
           onClick: () =>
-            openExternalLink("https://github.com/appsmithorg/appsmith/"),
+            openExternalLink("https://github.com/cloudtogo/pageplug"),
           type: MenuTypes.MENU,
           isVisible: true,
           isOpensNewWindow: true,
         },
         {
-          text: "Documentation",
-          onClick: () => openExternalLink("https://docs.appsmith.com/"),
+          text: "Gitee",
+          onClick: () =>
+            openExternalLink("https://gitee.com/cloudtogo/pageplug"),
           type: MenuTypes.MENU,
           isVisible: true,
           isOpensNewWindow: true,

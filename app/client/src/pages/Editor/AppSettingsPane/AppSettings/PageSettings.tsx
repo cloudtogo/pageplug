@@ -28,6 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getCurrentApplicationId,
   selectApplicationVersion,
+  isMobileLayout,
 } from "selectors/editorSelectors";
 import { getUpdatingEntity } from "selectors/explorerSelector";
 import { getPageLoadingState } from "selectors/pageListSelectors";
@@ -108,6 +109,8 @@ function PageSettings(props: { page: Page }) {
 
   const [isDefault, setIsDefault] = useState(page.isDefault);
   const [isDefaultSaving, setIsDefaultSaving] = useState(false);
+
+  const isMobile = useSelector(isMobileLayout);
 
   const pathPreview = useCallback(getUrlPreview, [
     page.pageId,
@@ -196,7 +199,7 @@ function PageSettings(props: { page: Page }) {
               savePageName();
             }
           }}
-          placeholder="Page name"
+          placeholder="页面名称"
           type="input"
           validator={checkRegex(
             specialCharacterCheckRegex,
@@ -209,94 +212,98 @@ function PageSettings(props: { page: Page }) {
         />
       </div>
 
-      <Text type={TextType.P1}>{PAGE_SETTINGS_PAGE_URL_LABEL()}</Text>
-      {appNeedsUpdate && (
-        <div
-          className={`pt-1 text-[color:var(--appsmith-color-black-700)] text-[13px]`}
-          style={{ lineHeight: "1.31" }}
-        >
-          {PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_1()}{" "}
-          <ManualUpgrades inline>
-            <a>
-              <u className="text-[color:var(--appsmith-color-black-900)]">
-                {PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_2()}
-              </u>
-            </a>
-          </ManualUpgrades>{" "}
-          {PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_3()}
-        </div>
-      )}
-      <div
-        className={classNames({
-          "py-1 relative": true,
-          "pb-2": appNeedsUpdate,
-          "pb-6": !appNeedsUpdate && !isCustomSlugValid,
-        })}
-      >
-        {isCustomSlugSaving && <TextLoaderIcon />}
-        <TextInput
-          defaultValue={customSlug}
-          disabled={!canManagePages}
-          fill
-          id="t--page-settings-custom-slug"
-          onBlur={saveCustomSlug}
-          onChange={setCustomSlug}
-          onKeyPress={(ev: React.KeyboardEvent) => {
-            if (ev.key === "Enter") {
-              saveCustomSlug();
-            }
-          }}
-          placeholder="Page URL"
-          readOnly={appNeedsUpdate}
-          type="input"
-          validator={checkRegex(
-            specialCharacterCheckRegex,
-            PAGE_SETTINGS_SPECIAL_CHARACTER_ERROR(),
-            false,
-            setIsCustomSlugValid,
+      {!isMobile && (
+        <>
+          <Text type={TextType.P1}>{PAGE_SETTINGS_PAGE_URL_LABEL()}</Text>
+          {appNeedsUpdate && (
+            <div
+              className={`pt-1 text-[color:var(--appsmith-color-black-700)] text-[13px]`}
+              style={{ lineHeight: "1.31" }}
+            >
+              {PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_1()}{" "}
+              <ManualUpgrades inline>
+                <a>
+                  <u className="text-[color:var(--appsmith-color-black-900)]">
+                    {PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_2()}
+                  </u>
+                </a>
+              </ManualUpgrades>{" "}
+              {PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_3()}
+            </div>
           )}
-          value={customSlug}
-        />
-      </div>
-
-      {!appNeedsUpdate && (
-        <UrlPreviewWrapper
-          className={`mb-2 bg-[color:var(--appsmith-color-black-100)]`}
-        >
-          <UrlPreviewScroll
-            className={`py-1 pl-2 mr-0.5 text-[color:var(--appsmith-color-black-700)] text-xs break-all`}
-            onCopy={() => {
-              navigator.clipboard.writeText(
-                location.protocol +
-                  "//" +
-                  window.location.hostname +
-                  pathPreview.relativePath,
-              );
-            }}
-            style={{ lineHeight: "1.17" }}
+          <div
+            className={classNames({
+              "py-1 relative": true,
+              "pb-2": appNeedsUpdate,
+              "pb-6": !appNeedsUpdate && !isCustomSlugValid,
+            })}
           >
-            {location.protocol}
-            {"//"}
-            {window.location.hostname}
-            {Array.isArray(pathPreview.splitRelativePath) && (
-              <>
-                {pathPreview.splitRelativePath[0]}
-                <strong
-                  className={`text-[color:var(--appsmith-color-black-800))]`}
-                >
-                  {pathPreview.splitRelativePath[1]}
-                </strong>
-                {pathPreview.splitRelativePath[2]}
-                {pathPreview.splitRelativePath[3]}
-              </>
-            )}
-            {!Array.isArray(pathPreview.splitRelativePath) &&
-              pathPreview.splitRelativePath}
-          </UrlPreviewScroll>
-        </UrlPreviewWrapper>
+            {isCustomSlugSaving && <TextLoaderIcon />}
+            <TextInput
+              defaultValue={customSlug}
+              disabled={!canManagePages}
+              fill
+              id="t--page-settings-custom-slug"
+              onBlur={saveCustomSlug}
+              onChange={setCustomSlug}
+              onKeyPress={(ev: React.KeyboardEvent) => {
+                if (ev.key === "Enter") {
+                  saveCustomSlug();
+                }
+              }}
+              placeholder="页面标识"
+              readOnly={appNeedsUpdate}
+              type="input"
+              validator={checkRegex(
+                specialCharacterCheckRegex,
+                PAGE_SETTINGS_SPECIAL_CHARACTER_ERROR(),
+                false,
+                setIsCustomSlugValid,
+              )}
+              value={customSlug}
+            />
+          </div>
+
+          {!appNeedsUpdate && (
+            <UrlPreviewWrapper
+              className={`mb-2 bg-[color:var(--appsmith-color-black-100)]`}
+            >
+              <UrlPreviewScroll
+                className={`py-1 pl-2 mr-0.5 text-[color:var(--appsmith-color-black-700)] text-xs break-all`}
+                onCopy={() => {
+                  navigator.clipboard.writeText(
+                    location.protocol +
+                      "//" +
+                      window.location.hostname +
+                      pathPreview.relativePath,
+                  );
+                }}
+                style={{ lineHeight: "1.17" }}
+              >
+                {location.protocol}
+                {"//"}
+                {window.location.hostname}
+                {Array.isArray(pathPreview.splitRelativePath) && (
+                  <>
+                    {pathPreview.splitRelativePath[0]}
+                    <strong
+                      className={`text-[color:var(--appsmith-color-black-800))]`}
+                    >
+                      {pathPreview.splitRelativePath[1]}
+                    </strong>
+                    {pathPreview.splitRelativePath[2]}
+                    {pathPreview.splitRelativePath[3]}
+                  </>
+                )}
+                {!Array.isArray(pathPreview.splitRelativePath) &&
+                  pathPreview.splitRelativePath}
+              </UrlPreviewScroll>
+            </UrlPreviewWrapper>
+          )}
+        </>
       )}
 
-      <div className="flex justify-between content-center pb-2">
+      {/* <div className="flex justify-between content-center pb-2">
         <div className="pt-0.5 text-[color:var(--appsmith-color-black-700)]">
           <PropertyHelpLabel
             label={PAGE_SETTINGS_SHOW_PAGE_NAV()}
@@ -318,7 +325,7 @@ function PageSettings(props: { page: Page }) {
             }}
           />
         </SwitchWrapper>
-      </div>
+      </div> */}
 
       <div className="flex justify-between content-center">
         <div className="pt-0.5 text-[color:var(--appsmith-color-black-700)]">
