@@ -32,7 +32,7 @@ export const CONFIG = {
     labelWidth: 8,
     labelTextSize: "0.875rem",
     rows: 8,
-    columns: 38,
+    columns: 40,
     widgetName: "RangeSlider",
     shouldScroll: false,
     shouldTruncate: false,
@@ -46,6 +46,7 @@ export const CONFIG = {
     meta: Widget.getMetaPropertiesMap(),
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
   },
 };
 

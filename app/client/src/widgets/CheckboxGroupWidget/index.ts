@@ -4,6 +4,12 @@ import IconSVG from "./icon.svg";
 import Widget from "./widget";
 
 export const CONFIG = {
+  features: {
+    dynamicHeight: {
+      sectionIndex: 3,
+      active: true,
+    },
+  },
   type: Widget.getWidgetType(),
   name: "勾选组",
   iconSVG: IconSVG,
@@ -19,7 +25,7 @@ export const CONFIG = {
       { label: "绿", value: "GREEN" },
       { label: "红", value: "RED" },
     ],
-    defaultSelectedValues: "BLUE",
+    defaultSelectedValues: ["BLUE"],
     isDisabled: false,
     isInline: true,
     isRequired: false,
@@ -38,6 +44,7 @@ export const CONFIG = {
     config: Widget.getPropertyPaneConfig(),
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
   },
 };
 

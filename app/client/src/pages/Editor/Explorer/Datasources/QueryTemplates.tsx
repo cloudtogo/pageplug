@@ -31,8 +31,8 @@ const TemplateType = styled.div`
   padding: 8px;
   &:hover {
     cursor: pointer;
-    color: ${Colors.MINT_ORANGE};
-    background: ${Colors.MINT_ORANGE_LIGHT};
+    color: ${Colors.MINT_GREEN};
+    background: #eee;
   }
 `;
 

@@ -108,6 +108,8 @@ export const TERMS_AND_CONDITIONS_LINK = () => `条款协议`;
 export const ERROR_500 = () => `抱歉，服务端出错了，我们正在拼命修复`;
 export const ERROR_0 = () => `无法连接到服务端，请检查你的网络连接`;
 export const ERROR_401 = () => `鉴权失败！请重新登录`;
+export const ERROR_403 = (entity: string, userEmail: string) =>
+  `抱歉，你的账号 (${userEmail}) 没有权限更新 ${entity}，请联系管理员解决`;
 export const PAGE_NOT_FOUND_ERROR = () => `页面不存在`;
 export const INVALID_URL_ERROR = () => `无效地址`;
 
@@ -891,7 +893,7 @@ export const NOTIFICATIONS_TOOLTIP = () => "通知";
 
 // Navigation Menu
 export const DEPLOY_MENU_OPTION = () => "发布";
-export const CURRENT_DEPLOY_PREVIEW_OPTION = () => "当前已发布版本";
+export const CURRENT_DEPLOY_PREVIEW_OPTION = () => "最新发布版本";
 export const CONNECT_TO_GIT_OPTION = () => "连接到 Git 仓库";
 //
 export const GO_TO_PAGE = () => "跳转到页面";
@@ -942,6 +944,27 @@ export const EXCLUSIVE_TO_BUSINESS = (featureName: string) =>
   `The ${featureName} feature is exclusive to workspaces on the Enterprise Plan`;
 // Audit logs Upgrade page end
 // Audit logs end
+
+// Access control upgrade page begin
+export const GRANULAR_ACCESS_CONTROL_FOR_TEAMS = () =>
+  "Granular Access Controls for teams";
+export const ACCESS_CONTROL_UPGRADE_PAGE_SUB_HEADING = () =>
+  "Control view, create, edit, delete, share, and export permissions for all resources in your apps in a workspace. Manage permissions by attributes as granularly or broadly as you want. Use permissions and user groups to easily define access levels of new and existing users.";
+export const SECURITY_APPS_LEAST_PRIVILEGE = () =>
+  "Secure apps by the least privilege needed";
+export const SECURITY_APPS_LEAST_PRIVILEGE_DETAIL1 = () =>
+  "Create roles by the least privilege needed as defaults, e.g.: View only, assign them to users in groups, e.g.: Marketing, and modify for special access, e.g.: Content creators_Execute queries";
+export const PREVENT_ACCIDENTAL_DAMAGE = () =>
+  "Prevent accidental damage to data";
+export const PREVENT_ACCIDENTAL_DAMAGE_DETAIL1 = () =>
+  `Assign edit and delete permissions to an entire group, then modify granularly so non-native users of your data don’t drop a table or bulk-delete streaming data records before you can say, “Retrieve”.`;
+export const RESTRICT_PUBLIC_EXPOSURE = () =>
+  "Restrict public exposure of sensitive data";
+export const RESTRICT_PUBLIC_EXPOSURE_DETAIL1 = () =>
+  "Proactively disallow groups of non-admin or non-super-admin users from publicly sharing your app or exporting app data out of your environment, domain, and security perimeters.";
+export const ACCESS_CONTROL_UPGRADE_PAGE_FOOTER = () =>
+  "Unlock granular access controls along with audit logs and SSO for enhanced security and reliability with an upgrade to our Business edition.";
+// Access control upgrade page end
 
 //
 export const WELCOME_FORM_NON_SUPER_USER_ROLE_DROPDOWN = () =>
@@ -1071,6 +1094,7 @@ export const CONFIRM_CONTEXT_DELETING = () => "正在删除";
 export const CONTEXT_NO_PAGE = () => "暂无页面";
 export const CONTEXT_REFRESH = () => "刷新";
 export const CONTEXT_CLONE = () => "克隆页面";
+export const CONTEXT_SETTINGS = () => "设置";
 export const CONTEXT_SET_AS_HOME_PAGE = () => "设置为主页";
 export const PAGE = () => "页面";
 export const PAGES = () => "页面";
@@ -1156,6 +1180,45 @@ export const GENERATE_PAGE_DESCRIPTION = () =>
   "用数据库数据自动生成一个增删改查页面";
 export const ADD_PAGE_FROM_TEMPLATE = () => "添加模板页面";
 export const INVALID_URL = () => "请输入有效 URL，例如 https://example.com";
+export const SAVE_OR_DISCARD_DATASOURCE_WARNING = () =>
+  `离开页面后未保存的数据将会丢失，离开前请先保存信息`;
+
+export const APP_SETTINGS_PANE_HEADER = () => "设置";
+export const APP_SETTINGS_CLOSE_TOOLTIP = () => "关闭设置面板";
+
+export const GENERAL_SETTINGS_SECTION_HEADER = () => "通用";
+export const GENERAL_SETTINGS_SECTION_CONTENT_HEADER = () => "通用设置";
+export const GENERAL_SETTINGS_SECTION_HEADER_DESC = () =>
+  "应用名称、图标和分享";
+export const GENERAL_SETTINGS_APP_NAME_LABEL = () => "应用名称";
+export const GENERAL_SETTINGS_NAME_EMPTY_MESSAGE = () => "应用名称不能为空";
+export const GENERAL_SETTINGS_NAME_SPECIAL_CHARACTER_ERROR = () =>
+  "只能输入字母、数字、'-'、'('、')' 等字符";
+export const GENERAL_SETTINGS_APP_ICON_LABEL = () => "应用图标";
+
+export const THEME_SETTINGS_SECTION_HEADER = () => "主题";
+export const THEME_SETTINGS_SECTION_CONTENT_HEADER = () => "主题设置";
+export const THEME_SETTINGS_SECTION_HEADER_DESC = () => "设置主题、颜色、字体";
+
+export const PAGE_SETTINGS_SECTION_HEADER = () => "页面设置";
+export const PAGE_SETTINGS_SECTION_CONTENT_HEADER = () => "设置";
+export const PAGE_SETTINGS_PAGE_NAME_LABEL = () => "页面名称";
+export const PAGE_SETTINGS_NAME_EMPTY_MESSAGE = () => "页面名称不能为空";
+export const PAGE_SETTINGS_NAME_SPECIAL_CHARACTER_ERROR = () =>
+  "只能输入字母、数字或 '-'";
+export const PAGE_SETTINGS_PAGE_URL_LABEL = () => "修改页面 URL";
+export const PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_1 = () => "请";
+export const PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_2 = () => "更新";
+export const PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_3 = () =>
+  "你的应用 URL 到新的可读格式";
+export const PAGE_SETTINGS_SHOW_PAGE_NAV = () => "显示菜单导航";
+export const PAGE_SETTINGS_SHOW_PAGE_NAV_TOOLTIP = () =>
+  "显示或隐藏应用菜单导航";
+export const PAGE_SETTINGS_SET_AS_HOMEPAGE = () => "设为主页";
+export const PAGE_SETTINGS_SET_AS_HOMEPAGE_TOOLTIP = () =>
+  "当前页面已经是主页，你可以将其他页面设为主页";
+export const PAGE_SETTINGS_SET_AS_HOMEPAGE_TOOLTIP_NON_HOME_PAGE = () =>
+  "将这页设置为主页";
 
 // Alert options and labels for showMessage types
 export const ALERT_STYLE_OPTIONS = [

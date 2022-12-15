@@ -1,5 +1,5 @@
 import { LabelPosition } from "components/constants";
-import { AutocompleteDataType } from "utils/autocomplete/TernServer";
+import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import { Alignment } from "@blueprintjs/core";
 import { ValidationTypes } from "constants/WidgetValidation";
@@ -84,6 +84,7 @@ export default [
           { label: "左", value: LabelPosition.Left },
           { label: "上", value: LabelPosition.Top },
         ],
+        defaultValue: LabelPosition.Left,
         isBindProperty: false,
         isTriggerProperty: false,
         validation: { type: ValidationTypes.TEXT },
@@ -134,6 +135,16 @@ export default [
   {
     sectionName: "属性",
     children: [
+      {
+        helpText: "提示信息",
+        propertyName: "labelTooltip",
+        label: "提示",
+        controlType: "INPUT_TEXT",
+        placeholderText: "请至少输入 6 个字符",
+        isBindProperty: true,
+        isTriggerProperty: false,
+        validation: { type: ValidationTypes.TEXT },
+      },
       {
         propertyName: "showMarksLabel",
         helpText: "控制是否显示下标文字",
