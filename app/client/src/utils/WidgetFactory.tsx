@@ -294,6 +294,9 @@ class WidgetFactory {
   static getWidgetStylesheetConfigMap(widgetType: WidgetType) {
     const map = this.stylesheetConfigMap.get(widgetType);
     if (!map) {
+      if (widgetType.startsWith("TARO_")) {
+        return undefined;
+      }
       log.error("Widget stylesheet properties not defined: ", widgetType);
       return undefined;
     }

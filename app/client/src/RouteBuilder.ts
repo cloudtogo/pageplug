@@ -53,7 +53,7 @@ export function getQueryStringfromObject(
 export const viewerLayoutEditorURL = (props: URLBuilderParams): string => {
   return urlBuilder.build({
     ...props,
-    suffix: "viewer-layout",
+    suffix: "viewerlayout",
   });
 };
 

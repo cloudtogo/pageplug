@@ -114,7 +114,7 @@ const AutoHeightLimitHandle = ({
       <AutoHeightLimitHandleDot isDragging={isDragging} />
       {!isColliding ? (
         <AutoHeightLimitHandleLabel isActive={isActive}>
-          {label}: {heightToRows(height)} rows
+          {label}: {heightToRows(height)} 格
         </AutoHeightLimitHandleLabel>
       ) : null}
     </AutoHeightLimitHandleContainer>
@@ -143,7 +143,7 @@ const AutoHeightLimitHandleGroup: React.FC<AutoHeightLimitHandleGroupProps> = ({
         isActive={isMinDotActive}
         isColliding={isColliding}
         isDragging={isMinDotDragging}
-        label="Min-Height"
+        label="最小高度"
         onDragCallbacks={onMinLimitDragCallbacks}
         onMouseHoverFunctions={onMinLimitMouseHoverCallbacks}
       />
@@ -153,7 +153,7 @@ const AutoHeightLimitHandleGroup: React.FC<AutoHeightLimitHandleGroupProps> = ({
         isActive={isMaxDotActive}
         isColliding={false}
         isDragging={isMaxDotDragging}
-        label={isColliding ? "Height" : "Max-Height"}
+        label={isColliding ? "高度" : "最大高度"}
         onDragCallbacks={onMaxLimitDragCallbacks}
         onMouseHoverFunctions={onMaxLimitMouseHoverCallbacks}
       />

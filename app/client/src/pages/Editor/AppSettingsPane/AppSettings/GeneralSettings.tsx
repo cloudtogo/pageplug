@@ -104,7 +104,7 @@ function GeneralSettings() {
               updateAppSettings();
             }
           }}
-          placeholder="App name"
+          placeholder="应用名称"
           type="input"
           validator={checkRegex(
             appNameRegex,

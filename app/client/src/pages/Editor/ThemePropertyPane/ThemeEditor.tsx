@@ -60,9 +60,9 @@ const PopoverStyles = createGlobalStyle`
 `;
 
 const FOOL_TRANSLATE: any = {
-  "App Font": "应用字体",
-  "App Border Radius": "应用圆角",
-  "App Box Shadow": "应用阴影",
+  appFont: "应用字体",
+  appBorderRadius: "应用圆角",
+  appBoxShadow: "应用阴影",
 };
 
 function ThemeEditor() {
@@ -178,12 +178,15 @@ function ThemeEditor() {
       </header>
       <main className="mt-1">
         {/* FONT  */}
-        <SettingSection className="px-4 py-3" isDefaultOpen title="Font">
+        <SettingSection className="px-4 py-3" isDefaultOpen title="字体">
           {Object.keys(selectedTheme.config.fontFamily).map(
             (fontFamilySectionName: string, index: number) => {
               return (
                 <section className="space-y-2" key={index}>
-                  <h3>{startCase(fontFamilySectionName)}</h3>
+                  <h3>
+                    {FOOL_TRANSLATE[fontFamilySectionName] ||
+                      startCase(fontFamilySectionName)}
+                  </h3>
                   <ThemeFontControl
                     options={get(
                       selectedTheme,
@@ -207,7 +210,7 @@ function ThemeEditor() {
         <SettingSection
           className="px-4 py-3 border-t"
           isDefaultOpen
-          title="Color"
+          title="颜色"
         >
           <section className="space-y-2">
             <ThemeColorControl
@@ -227,7 +230,10 @@ function ThemeEditor() {
             (borderRadiusSectionName: string, index: number) => {
               return (
                 <section className="space-y-2" key={index}>
-                  <h3>{startCase(borderRadiusSectionName)}</h3>
+                  <h3>
+                    {FOOL_TRANSLATE[borderRadiusSectionName] ||
+                      startCase(borderRadiusSectionName)}
+                  </h3>
                   <ThemeBorderRadiusControl
                     options={get(
                       selectedTheme,
@@ -258,7 +264,10 @@ function ThemeEditor() {
             (boxShadowSectionName: string, index: number) => {
               return (
                 <section className="space-y-2" key={index}>
-                  <h3>{startCase(boxShadowSectionName)}</h3>
+                  <h3>
+                    {FOOL_TRANSLATE[boxShadowSectionName] ||
+                      startCase(boxShadowSectionName)}
+                  </h3>
                   <ThemeBoxShadowControl
                     options={get(
                       selectedTheme,
