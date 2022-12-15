@@ -411,14 +411,14 @@ class IntegrationsHomeScreen extends React.Component<
     const PRIMARY_MENU: TabProp[] = [
       {
         key: "ACTIVE",
-        title: "Active",
+        title: "已保存",
         panelComponent: <div />,
       },
       ...(canCreateDatasource
         ? [
             {
               key: "CREATE_NEW",
-              title: "Create New",
+              title: "添加",
               panelComponent: <div />,
               icon: "plus",
               iconSize: IconSize.XS,

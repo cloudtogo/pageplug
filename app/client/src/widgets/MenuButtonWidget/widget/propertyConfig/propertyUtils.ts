@@ -29,11 +29,11 @@ export const updateMenuItemsSource = (
       propertiesToUpdate.push({
         propertyPath: "configureMenuItems",
         propertyValue: {
-          label: "Configure Menu Items",
+          label: "配置菜单项",
           id: "config",
           config: {
             id: "config",
-            label: "Menu Item",
+            label: "菜单项",
             isVisible: true,
             isDisabled: false,
           },

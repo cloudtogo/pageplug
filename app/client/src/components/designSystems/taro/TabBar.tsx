@@ -11,10 +11,7 @@ import {
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
 import { getAppMode } from "selectors/applicationSelectors";
 import { APP_MODE } from "entities/App";
-import {
-  PageListPayload,
-  ApplicationPayload,
-} from "@appsmith/constants/ReduxActionConstants";
+import { Page } from "@appsmith/constants/ReduxActionConstants";
 import { Tabbar } from "@taroify/core";
 import { createVanIconComponent } from "@taroify/icons/van";
 import history from "utils/history";
@@ -31,7 +28,6 @@ const TabBarContainer = styled.div<{
   height: ${(props) => props.theme.tabbarHeight};
   background: ${(props) =>
     props.mode === APP_MODE.EDIT ? props.editorModeColor : "#ffec8f36"};
-  overflow-y: scroll;
 `;
 
 const Center = styled.div`
@@ -41,8 +37,7 @@ const Center = styled.div`
 `;
 
 export type TabbarProps = {
-  pages: PageListPayload;
-  currentApplicationDetails?: ApplicationPayload;
+  pages: Page[];
   currentPageId?: string;
   mode?: APP_MODE;
   showTabBar: boolean;
@@ -52,7 +47,6 @@ export type TabbarProps = {
 
 const TabBar = ({
   pages,
-  currentApplicationDetails,
   currentPageId,
   mode,
   showTabBar,
@@ -64,7 +58,6 @@ const TabBar = ({
     const urlBuilder = mode === APP_MODE.PUBLISHED ? viewerURL : builderURL;
     history.push(
       urlBuilder({
-        applicationSlug: currentApplicationDetails?.slug,
         pageId: target,
       }),
     );
@@ -95,7 +88,6 @@ const TabBar = ({
 
 const mapStateToProps = (state: AppState) => ({
   pages: getViewModePageList(state)?.filter((p) => !!p.icon),
-  currentApplicationDetails: state.ui.applications.currentApplication,
   currentPageId: getCurrentPageId(state),
   mode: getAppMode(state),
   showTabBar: getShowTabBar(state),

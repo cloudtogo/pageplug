@@ -56,14 +56,14 @@ function SaveOrDiscardDatasourceModal(props: SaveOrDiscardModalProps) {
             category={Category.tertiary}
             onClick={onDiscard}
             size={Size.medium}
-            text="DON'T SAVE"
+            text="不保存"
           />
           <Button
             category={Category.primary}
             disabled={disableSaveButton}
             onClick={!disableSaveButton && onSave}
             size={Size.medium}
-            text="SAVE"
+            text="保存"
           />
         </div>
       </div>

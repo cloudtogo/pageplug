@@ -1,11 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { AppState } from "reducers";
+import { AppState } from "@appsmith/reducers";
 import { isMobileLayout } from "selectors/editorSelectors";
 import { fetchApplicationPreviewWxaCode } from "actions/applicationActions";
 import { Colors } from "constants/Colors";
-import QRCode from "qrcode.react";
+// import QRCode from "qrcode.react";
 import Spinner from "components/editorComponents/Spinner";
 
 const Container = styled.div`

@@ -69,7 +69,7 @@ function InputText(props: InputTextProp) {
         placeholder={placeholder}
         promptMessage={
           <PromptMessage>
-            Access the current item using <CurlyBraces>{"{{"}</CurlyBraces>
+            访问当前数据项请使用 <CurlyBraces>{"{{"}</CurlyBraces>
             currentItem
             <CurlyBraces>{"}}"}</CurlyBraces>
           </PromptMessage>
