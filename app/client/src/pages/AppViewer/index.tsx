@@ -92,11 +92,13 @@ const StableContainer = styled.div`
   overflow: hidden;
 `;
 
-const ContainerForBottom = styled.div`
+const ContainerForBottom = styled.div<{
+  isMobile: boolean;
+}>`
   display: flex;
   width: 100%;
   height: 100%;
-  transform: translate(0, 0);
+  ${({ isMobile }) => (isMobile ? "transform: translate(0, 0);" : "")}
 `;
 
 export type AppViewerProps = RouteComponentProps<BuilderRouteParams>;
@@ -268,6 +270,11 @@ function AppViewer(props: Props) {
     [updateWidgetAutoHeightAction, dispatch],
   );
 
+  const checkContainersForAutoHeightCallback = useCallback(
+    () => dispatch(checkContainersForAutoHeightAction()),
+    [checkContainersForAutoHeightAction],
+  );
+
   return (
     <ThemeProvider theme={lightTheme}>
       <EditorContext.Provider
@@ -278,7 +285,7 @@ function AppViewer(props: Props) {
           syncUpdateWidgetMetaProperty: syncUpdateWidgetMetaPropertyCallback,
           triggerEvalOnMetaUpdate: triggerEvalOnMetaUpdateCallback,
           updateWidgetAutoHeight: updateWidgetAutoHeightCallback,
-          checkContainersForAutoHeight: checkContainersForAutoHeightAction,
+          checkContainersForAutoHeight: checkContainersForAutoHeightCallback,
         }}
       >
         <WidgetGlobaStyles
@@ -287,7 +294,7 @@ function AppViewer(props: Props) {
         />
         <AppViewerLayout>
           <StableContainer>
-            <ContainerForBottom>
+            <ContainerForBottom isMobile={isMobile}>
               <AppViewerBodyContainer
                 backgroundColor={
                   isMobile

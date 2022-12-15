@@ -12,7 +12,7 @@ import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import { MinimumPopupRows, GRID_DENSITY_MIGRATION_V1 } from "widgets/constants";
 import { LabelPosition } from "components/constants";
 import { Alignment } from "@blueprintjs/core";
-import { AutocompleteDataType } from "utils/autocomplete/TernServer";
+import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import {
   findIndex,
   isArray,
@@ -21,8 +21,10 @@ import {
   isString,
   LoDashStatic,
 } from "lodash";
+import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
 import equal from "fast-deep-equal/es6";
 import derivedProperties from "./parseDerivedProperties";
+import { Stylesheet } from "entities/AppTheming";
 
 export function defaultOptionValueValidation(
   value: unknown,
@@ -212,6 +214,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
               { label: "上", value: LabelPosition.Top },
               { label: "自动", value: LabelPosition.Auto },
             ],
+            defaultValue: LabelPosition.Top,
             isBindProperty: false,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -313,6 +316,16 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
       {
         sectionName: "属性",
         children: [
+          {
+            helpText: "提示信息",
+            propertyName: "labelTooltip",
+            label: "提示",
+            controlType: "INPUT_TEXT",
+            placeholderText: "请至少输入 6 个字符",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
           {
             helpText: "设置占位文本",
             propertyName: "placeholderText",
@@ -496,6 +509,14 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
     ];
   }
 
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      accentColor: "{{appsmith.theme.colors.primaryColor}}",
+      borderRadius: "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      boxShadow: "none",
+    };
+  }
+
   static getDefaultPropertiesMap(): Record<string, string> {
     return {
       value: "defaultOptionValue",
@@ -567,6 +588,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
         filterText={this.props.filterText}
         hasError={isInvalid}
         height={componentHeight}
+        isDynamicHeightEnabled={isAutoHeightEnabledForWidget(this.props)}
         isFilterable={this.props.isFilterable}
         isLoading={this.props.isLoading}
         isValid={this.props.isValid}
@@ -577,6 +599,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
         labelText={this.props.labelText}
         labelTextColor={this.props.labelTextColor}
         labelTextSize={this.props.labelTextSize}
+        labelTooltip={this.props.labelTooltip}
         labelWidth={this.getLabelWidth()}
         onFilterChange={this.onFilterChange}
         onOptionSelected={this.onOptionSelected}

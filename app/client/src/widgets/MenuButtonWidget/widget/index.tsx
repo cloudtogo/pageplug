@@ -1,446 +1,123 @@
 import React from "react";
-
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import MenuButtonComponent from "../component";
-import { ValidationTypes } from "constants/WidgetValidation";
-import { Alignment } from "@blueprintjs/core";
+import BaseWidget, { WidgetState } from "widgets/BaseWidget";
 import {
-  ButtonBorderRadius,
-  ButtonVariant,
-  ButtonVariantTypes,
-  ButtonPlacementTypes,
-  ButtonPlacement,
-} from "components/constants";
-import { IconName } from "@blueprintjs/icons";
+  EventType,
+  ExecuteTriggerPayload,
+} from "constants/AppsmithActionConstants/ActionConstants";
+import MenuButtonComponent from "../component";
 import { MinimumPopupRows } from "widgets/constants";
-export interface MenuButtonWidgetProps extends WidgetProps {
-  label?: string;
-  isDisabled?: boolean;
-  isVisible?: boolean;
-  isCompact?: boolean;
-  menuItems: Record<
-    string,
-    {
-      widgetId: string;
-      id: string;
-      index: number;
-      isVisible?: boolean;
-      isDisabled?: boolean;
-      label?: string;
-      backgroundColor?: string;
-      textColor?: string;
-      iconName?: IconName;
-      iconColor?: string;
-      iconAlign?: Alignment;
-      onClick?: string;
-    }
-  >;
-  menuVariant?: ButtonVariant;
-  menuColor?: string;
-  borderRadius: ButtonBorderRadius;
-  boxShadow?: string;
-  iconName?: IconName;
-  iconAlign?: Alignment;
-  placement?: ButtonPlacement;
-}
+import { MenuButtonWidgetProps, MenuItem, MenuItemsSource } from "../constants";
+import contentConfig from "./propertyConfig/contentConfig";
+import styleConfig from "./propertyConfig/styleConfig";
+import equal from "fast-deep-equal/es6";
+import { isArray, orderBy } from "lodash";
+import { getSourceDataKeys } from "./helper";
+import { Stylesheet } from "entities/AppTheming";
 
 class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
   static getPropertyPaneContentConfig() {
-    return [
-      {
-        sectionName: "属性",
-        children: [
-          {
-            propertyName: "label",
-            helpText: "设置菜单标签",
-            label: "标签",
-            controlType: "INPUT_TEXT",
-            placeholderText: "Open",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            helpText: "菜单配置",
-            propertyName: "menuItems",
-            controlType: "MENU_ITEMS",
-            label: "菜单项",
-            isBindProperty: false,
-            isTriggerProperty: false,
-            panelConfig: {
-              editableTitle: true,
-              titlePropertyName: "label",
-              panelIdPropertyName: "id",
-              updateHook: (
-                props: any,
-                propertyPath: string,
-                propertyValue: string,
-              ) => {
-                return [
-                  {
-                    propertyPath,
-                    propertyValue,
-                  },
-                ];
-              },
-              contentChildren: [
-                {
-                  sectionName: "属性",
-                  children: [
-                    {
-                      propertyName: "label",
-                      helpText: "设置菜单项标签",
-                      label: "标签",
-                      controlType: "INPUT_TEXT",
-                      placeholderText: "Download",
-                      isBindProperty: true,
-                      isTriggerProperty: false,
-                      validation: { type: ValidationTypes.TEXT },
-                    },
-                    {
-                      helpText: "点击菜单项时触发",
-                      propertyName: "onClick",
-                      label: "onClick",
-                      controlType: "ACTION_SELECTOR",
-                      isJSConvertible: true,
-                      isBindProperty: true,
-                      isTriggerProperty: true,
-                    },
-                  ],
-                },
-                {
-                  sectionName: "属性",
-                  children: [
-                    {
-                      propertyName: "isVisible",
-                      helpText: "控制组件的显示/隐藏",
-                      label: "是否显示",
-                      controlType: "SWITCH",
-                      isJSConvertible: true,
-                      isBindProperty: true,
-                      isTriggerProperty: false,
-                      validation: { type: ValidationTypes.BOOLEAN },
-                    },
-                    {
-                      propertyName: "isDisabled",
-                      helpText: "让组件不可交互",
-                      label: "禁用",
-                      controlType: "SWITCH",
-                      isJSConvertible: true,
-                      isBindProperty: true,
-                      isTriggerProperty: false,
-                      validation: { type: ValidationTypes.BOOLEAN },
-                    },
-                  ],
-                },
-              ],
-              styleChildren: [
-                {
-                  sectionName: "图标配置",
-                  children: [
-                    {
-                      propertyName: "iconName",
-                      label: "图标",
-                      helpText: "设置菜单项的图标",
-                      controlType: "ICON_SELECT",
-                      isJSConvertible: true,
-                      isBindProperty: true,
-                      isTriggerProperty: false,
-                      validation: { type: ValidationTypes.TEXT },
-                    },
-                    {
-                      propertyName: "iconAlign",
-                      label: "位置",
-                      helpText: "设置菜单项图标对齐方向",
-                      controlType: "ICON_TABS",
-                      fullWidth: true,
-                      options: [
-                        {
-                          icon: "VERTICAL_LEFT",
-                          value: "left",
-                        },
-                        {
-                          icon: "VERTICAL_RIGHT",
-                          value: "right",
-                        },
-                      ],
-                      isBindProperty: false,
-                      isTriggerProperty: false,
-                      validation: { type: ValidationTypes.TEXT },
-                    },
-                  ],
-                },
-                {
-                  sectionName: "颜色配置",
-                  children: [
-                    {
-                      propertyName: "iconColor",
-                      helpText: "设置菜单项图标颜色",
-                      label: "图标颜色",
-                      controlType: "COLOR_PICKER",
-                      isBindProperty: false,
-                      isTriggerProperty: false,
-                    },
-                    {
-                      propertyName: "textColor",
-                      helpText: "设置菜单项文本颜色",
-                      label: "文本颜色",
-                      controlType: "COLOR_PICKER",
-                      isBindProperty: false,
-                      isTriggerProperty: false,
-                    },
-                    {
-                      propertyName: "backgroundColor",
-                      helpText: "设置菜单项背景颜色",
-                      label: "背景颜色",
-                      controlType: "COLOR_PICKER",
-                      isBindProperty: false,
-                      isTriggerProperty: false,
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-        ],
-      },
-      {
-        sectionName: "属性",
-        children: [
-          {
-            propertyName: "isVisible",
-            helpText: "控制组件的显示/隐藏",
-            label: "是否显示",
-            controlType: "SWITCH",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
-            propertyName: "isDisabled",
-            helpText: "让组件不可交互",
-            label: "禁用",
-            controlType: "SWITCH",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
-            propertyName: "animateLoading",
-            label: "加载时显示动画",
-            controlType: "SWITCH",
-            helpText: "组件依赖的数据加载时显示加载动画",
-            defaultValue: true,
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
-            propertyName: "isCompact",
-            helpText: "菜单项占用更少的空间",
-            label: "紧凑模式",
-            controlType: "SWITCH",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-        ],
-      },
-    ];
+    return contentConfig;
   }
 
   static getPropertyPaneStyleConfig() {
-    return [
-      {
-        sectionName: "属性",
-        children: [
-          {
-            propertyName: "menuVariant",
-            label: "按钮类型",
-            controlType: "ICON_TABS",
-            fullWidth: true,
-            helpText: "设置菜单按钮的风格类型",
-            options: [
-              {
-                label: "主按钮",
-                value: ButtonVariantTypes.PRIMARY,
-              },
-              {
-                label: "次级按钮",
-                value: ButtonVariantTypes.SECONDARY,
-              },
-              {
-                label: "文本按钮",
-                value: ButtonVariantTypes.TERTIARY,
-              },
-            ],
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: {
-              type: ValidationTypes.TEXT,
-              params: {
-                allowedValues: [
-                  ButtonVariantTypes.PRIMARY,
-                  ButtonVariantTypes.SECONDARY,
-                  ButtonVariantTypes.TERTIARY,
-                ],
-                default: ButtonVariantTypes.PRIMARY,
-              },
-            },
-          },
-        ],
-      },
-      {
-        sectionName: "图标配置",
-        children: [
-          {
-            propertyName: "iconName",
-            label: "图标",
-            helpText: "设置菜单按钮图标",
-            controlType: "ICON_SELECT",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            updateHook: (
-              props: MenuButtonWidgetProps,
-              propertyPath: string,
-              propertyValue: string,
-            ) => {
-              const propertiesToUpdate = [{ propertyPath, propertyValue }];
-              if (!props.iconAlign) {
-                propertiesToUpdate.push({
-                  propertyPath: "iconAlign",
-                  propertyValue: Alignment.LEFT,
-                });
-              }
-              return propertiesToUpdate;
-            },
-            dependencies: ["iconAlign"],
-            validation: {
-              type: ValidationTypes.TEXT,
-            },
-          },
-          {
-            propertyName: "iconAlign",
-            label: "位置",
-            helpText: "设置菜单按钮图标对齐方式",
-            controlType: "ICON_TABS",
-            fullWidth: true,
-            options: [
-              {
-                icon: "VERTICAL_LEFT",
-                value: "left",
-              },
-              {
-                icon: "VERTICAL_RIGHT",
-                value: "right",
-              },
-            ],
-            isBindProperty: false,
-            isTriggerProperty: false,
-            validation: {
-              type: ValidationTypes.TEXT,
-              params: {
-                allowedValues: ["center", "left", "right"],
-              },
-            },
-          },
-          {
-            propertyName: "placement",
-            label: "排列方式",
-            controlType: "ICON_TABS",
-            fullWidth: true,
-            helpText: "设置图标与标签的排列方式",
-            options: [
-              {
-                label: "向前对齐",
-                value: ButtonPlacementTypes.START,
-              },
-              {
-                label: "两边对齐",
-                value: ButtonPlacementTypes.BETWEEN,
-              },
-              {
-                label: "居中对齐",
-                value: ButtonPlacementTypes.CENTER,
-              },
-            ],
-            defaultValue: ButtonPlacementTypes.CENTER,
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: {
-              type: ValidationTypes.TEXT,
-              params: {
-                allowedValues: [
-                  ButtonPlacementTypes.START,
-                  ButtonPlacementTypes.BETWEEN,
-                  ButtonPlacementTypes.CENTER,
-                ],
-                default: ButtonPlacementTypes.CENTER,
-              },
-            },
-          },
-        ],
-      },
-      {
-        sectionName: "颜色配置",
-        children: [
-          {
-            propertyName: "menuColor",
-            helpText: "设置菜单按钮颜色",
-            label: "按钮颜色",
-            controlType: "COLOR_PICKER",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-        ],
-      },
-      {
-        sectionName: "轮廓样式",
-        children: [
-          {
-            propertyName: "borderRadius",
-            label: "边框圆角",
-            helpText: "边框圆角样式",
-            controlType: "BORDER_RADIUS_OPTIONS",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            propertyName: "boxShadow",
-            label: "阴影",
-            helpText: "组件轮廓投影",
-            controlType: "BOX_SHADOW_OPTIONS",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-        ],
-      },
-    ];
+    return styleConfig;
   }
 
-  menuItemClickHandler = (onClick: string | undefined) => {
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      menuColor: "{{appsmith.theme.colors.primaryColor}}",
+      borderRadius: "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      boxShadow: "none",
+    };
+  }
+
+  menuItemClickHandler = (onClick: string | undefined, index: number) => {
     if (onClick) {
-      super.executeAction({
+      const config: ExecuteTriggerPayload = {
         triggerPropertyName: "onClick",
         dynamicString: onClick,
         event: {
           type: EventType.ON_CLICK,
         },
-      });
+      };
+
+      if (this.props.menuItemsSource === MenuItemsSource.DYNAMIC) {
+        config.globalContext = {
+          currentItem: this.props.sourceData
+            ? this.props.sourceData[index]
+            : {},
+          currentIndex: index,
+        };
+      }
+
+      super.executeAction(config);
+    }
+  };
+
+  getVisibleItems = () => {
+    const {
+      configureMenuItems,
+      menuItems,
+      menuItemsSource,
+      sourceData,
+    } = this.props;
+    if (menuItemsSource === MenuItemsSource.STATIC) {
+      const visibleItems = Object.keys(menuItems)
+        .map((itemKey) => menuItems[itemKey])
+        .filter((item) => item.isVisible === true);
+
+      return orderBy(visibleItems, ["index"], ["asc"]);
+    } else if (
+      menuItemsSource === MenuItemsSource.DYNAMIC &&
+      isArray(sourceData) &&
+      sourceData?.length &&
+      configureMenuItems?.config
+    ) {
+      const { config } = configureMenuItems;
+      const getValue = (propertyName: keyof MenuItem, index: number) => {
+        const value = config[propertyName];
+
+        if (isArray(value)) {
+          return value[index];
+        }
+
+        return value ?? null;
+      };
+
+      const visibleItems = sourceData
+        .map((item, index) => ({
+          ...item,
+          id: index.toString(),
+          isVisible: getValue("isVisible", index),
+          isDisabled: getValue("isDisabled", index),
+          index: index,
+          widgetId: "",
+          label: getValue("label", index),
+          onClick: config?.onClick,
+          textColor: getValue("textColor", index),
+          backgroundColor: getValue("backgroundColor", index),
+          iconAlign: getValue("iconAlign", index),
+          iconColor: getValue("iconColor", index),
+          iconName: getValue("iconName", index),
+        }))
+        .filter((item) => item.isVisible === true);
+
+      return visibleItems;
+    }
+
+    return [];
+  };
+
+  componentDidMount = () => {
+    super.updateWidgetProperty("sourceDataKeys", getSourceDataKeys(this.props));
+  };
+
+  componentDidUpdate = (prevProps: MenuButtonWidgetProps) => {
+    if (!equal(prevProps.sourceData, this.props.sourceData)) {
+      super.updateWidgetProperty(
+        "sourceDataKeys",
+        getSourceDataKeys(this.props),
+      );
     }
   };
 
@@ -451,6 +128,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
     return (
       <MenuButtonComponent
         {...this.props}
+        getVisibleItems={this.getVisibleItems}
         menuDropDownWidth={menuDropDownWidth}
         onItemClicked={this.menuItemClickHandler}
         renderMode={this.props.renderMode}

@@ -17,6 +17,7 @@ export type URLBuilderParams = {
   hash?: string;
   params?: Record<string, any>;
   pageId: string;
+  persistExistingParams?: boolean;
 };
 
 export const fillPathname = (
@@ -52,16 +53,10 @@ export function getQueryStringfromObject(
 export const viewerLayoutEditorURL = (props: URLBuilderParams): string => {
   return urlBuilder.build({
     ...props,
-    suffix: "viewer-layout",
+    suffix: "viewerlayout",
   });
 };
 
-export const pageListEditorURL = (props: URLBuilderParams): string => {
-  return urlBuilder.build({
-    ...props,
-    suffix: "pages",
-  });
-};
 export const datasourcesEditorURL = (props: URLBuilderParams): string =>
   urlBuilder.build({
     ...props,

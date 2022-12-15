@@ -323,11 +323,10 @@ export const isThemeBoundProperty = (
 };
 
 export const unsafeFunctionForEval = [
-  "fetch",
+  "XMLHttpRequest",
   "setInterval",
   "clearInterval",
   "setImmediate",
-  "XMLHttpRequest",
   "importScripts",
   "Navigator",
 ];

@@ -15,7 +15,9 @@ import { AppState } from "@appsmith/reducers";
 import { getCanvasWidth, snipingModeSelector } from "selectors/editorSelectors";
 import { deselectModalWidgetAction } from "actions/widgetSelectionActions";
 import { ValidationTypes } from "constants/WidgetValidation";
+import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
 import { CanvasWidgetsStructureReduxState } from "reducers/entityReducers/canvasWidgetsStructureReducer";
+import { Stylesheet } from "entities/AppTheming";
 
 const minSize = 100;
 
@@ -107,6 +109,13 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
     ];
   }
 
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      borderRadius: "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      boxShadow: "none",
+    };
+  }
+
   static defaultProps = {
     isOpen: true,
     canEscapeKeyClose: false,
@@ -156,6 +165,12 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
       height: Math.max(minSize, dimensions.height),
       width: Math.max(minSize, this.getModalWidth(dimensions.width)),
     };
+
+    if (
+      newDimensions.height !== this.props.height &&
+      isAutoHeightEnabledForWidget(this.props)
+    )
+      return;
 
     const canvasWidgetId =
       this.props.children && this.props.children.length > 0
@@ -226,6 +241,7 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
         className={`t--modal-widget ${generateClassName(this.props.widgetId)}`}
         enableResize={isResizeEnabled}
         height={this.props.height}
+        isDynamicHeightEnabled={isAutoHeightEnabledForWidget(this.props)}
         isEditMode={isEditMode}
         isOpen={!!this.props.isVisible}
         maxWidth={this.getMaxModalWidth()}
@@ -248,6 +264,14 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
     let children = this.getChildren();
     children = this.makeModalSelectable(children);
     children = this.showWidgetName(children, true);
+    if (isAutoHeightEnabledForWidget(this.props, true)) {
+      children = this.addAutoHeightOverlay(children, {
+        width: "100%",
+        height: "100%",
+        left: 0,
+        top: 0,
+      });
+    }
     return this.makeModalComponent(children, true);
   }
 

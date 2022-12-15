@@ -21,8 +21,8 @@ import {
 import { WidgetContainerDiff } from "widgets/WidgetUtils";
 import { LabelPosition } from "components/constants";
 import SelectButton from "./SelectButton";
-import { LabelWithTooltip } from "design-system";
 import { labelMargin } from "../../WidgetUtils";
+import LabelWithTooltip from "widgets/components/LabelWithTooltip";
 
 const DEBOUNCE_TIMEOUT = 800;
 const ITEM_SIZE = 40;
@@ -259,6 +259,7 @@ class SelectComponent extends React.Component<
       boxShadow,
       compactMode,
       disabled,
+      isDynamicHeightEnabled,
       isLoading,
       labelAlignment,
       labelPosition,
@@ -266,6 +267,7 @@ class SelectComponent extends React.Component<
       labelText,
       labelTextColor,
       labelTextSize,
+      labelTooltip,
       labelWidth,
       widgetId,
     } = this.props;
@@ -325,6 +327,8 @@ class SelectComponent extends React.Component<
             disabled={disabled}
             fontSize={labelTextSize}
             fontStyle={labelStyle}
+            helpText={labelTooltip}
+            isDynamicHeightEnabled={isDynamicHeightEnabled}
             loading={isLoading}
             position={labelPosition}
             ref={this.labelRef}
@@ -333,10 +337,10 @@ class SelectComponent extends React.Component<
           />
         )}
         <StyledControlGroup
-          compactMode={compactMode}
+          $compactMode={compactMode}
+          $isDisabled={disabled}
+          $labelPosition={labelPosition}
           fill
-          isDisabled={disabled}
-          labelPosition={labelPosition}
         >
           <StyledSingleDropDown
             accentColor={accentColor}
@@ -421,9 +425,11 @@ export interface SelectComponentProps extends ComponentProps {
   labelTextSize?: TextSize;
   labelStyle?: string;
   labelWidth?: number;
+  labelTooltip?: string;
   compactMode: boolean;
   selectedIndex?: number;
   options: DropdownOption[];
+  isDynamicHeightEnabled?: boolean;
   isLoading: boolean;
   isFilterable: boolean;
   isValid: boolean;

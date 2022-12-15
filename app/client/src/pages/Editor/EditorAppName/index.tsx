@@ -27,7 +27,6 @@ type EditorAppNameProps = CommonComponentProps &
     placeholder?: string;
     editInteractionKind: EditInteractionKind;
     defaultSavingState: SavingState;
-    deploy: typeof noop;
     onBlur?: (value: string) => void;
     isEditingDefault?: boolean;
     inputValidation?: (value: string) => string | boolean;
@@ -35,7 +34,6 @@ type EditorAppNameProps = CommonComponentProps &
     fill?: boolean;
     isError?: boolean;
     isNewApp: boolean;
-    currentDeployLink: string;
     isPopoverOpen: boolean;
     setIsPopoverOpen: typeof noop;
   };
@@ -134,10 +132,8 @@ const StyledMenu = styled(Menu)`
 
 export function EditorAppName(props: EditorAppNameProps) {
   const {
-    currentDeployLink,
     defaultSavingState,
     defaultValue,
-    deploy,
     isNewApp,
     isPopoverOpen,
     setIsPopoverOpen,
@@ -192,9 +188,7 @@ export function EditorAppName(props: EditorAppNameProps) {
   }, []);
 
   const NavigationMenuData = GetNavigationMenuData({
-    currentDeployLink,
     editMode,
-    deploy,
     theme,
   });
 
