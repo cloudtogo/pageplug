@@ -23,7 +23,30 @@
       }
       return result;
     }
-    document.getElementById("iframe").src = parseConfig("__PAGEPLUG_APP_URL__") || "https://show.methodot.com";
+
+    function getQueryObject() {
+      const url = location.search; //获取url中"?"符后的字串
+      let params = new Object();
+      if (url.indexOf("?") != -1) {
+          let str = url.substr(1);
+          strs = str.split("&");
+          for(let i = 0; i < strs.length; i ++) {
+            params[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+          }
+      }
+      return params;
+    }
+
+    let iframeUrl = parseConfig("__PAGEPLUG_APP_URL__") || "https://show.methodot.com";
+    const tmpUrl = new URL(iframeUrl)
+    const params = getQueryObject();
+    for (let key in params) {
+      tmpUrl.searchParams.set(key, params[key]);
+    }
+
+    iframeUrl = tmpUrl.toString();
+
+    document.getElementById("iframe").src = iframeUrl;
   </script>
 </body>
 
