@@ -432,14 +432,14 @@ export function EditorHeader(props: EditorHeaderProps) {
           <HeaderSection className="space-x-3">
             <EditorSaveIndicator />
             <span style={{ color: "#8a8a8a" }}>{savedTime}</span>
-            <StyledDeployButton
+            {/* <StyledDeployButton
               className="t--application-publish-btn"
               isLoading={isPublishing}
               onClick={handlePublish}
               size={Size.small}
               text={"提交"}
               style={{ padding: "6px 20px" }}
-            />
+            /> */}
           </HeaderSection>
         </HeaderWrapper>
       </ThemeProvider>
