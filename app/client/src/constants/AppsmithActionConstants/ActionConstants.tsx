@@ -49,6 +49,7 @@ export interface APIRequest {
 }
 
 export enum EventType {
+  ON_ECHART_EVENT = "ON_ECHART_EVENT",
   ON_RESET = "ON_RESET",
   ON_PAGE_LOAD = "ON_PAGE_LOAD",
   ON_PREV_PAGE = "ON_PREV_PAGE",
