@@ -6,6 +6,7 @@ import styled from "constants/DefaultTheme";
 import { FormIcons } from "icons/FormIcons";
 import { AnyStyledComponent } from "styled-components";
 import { CodeEditorExpected } from "components/editorComponents/CodeEditor";
+import { InputText } from "components/propertyControls/InputTextControl";
 import {
   EditorModes,
   EditorSize,
@@ -101,6 +102,24 @@ type RenderComponentProps = {
   label?: labelType;
 };
 
+type RenderChildrenComponentProps = {
+  index: string;
+  item: ChartData;
+  length: number;
+  dataTreePath: string;
+  deleteOption: (index: string) => void;
+  updateOption: (index: string, key: string, value: string) => void;
+  evaluated: {
+    seriesName: string;
+    data: Array<{ name: string; value: string }> | any;
+  };
+  theme: EditorTheme;
+  noTitle?: boolean;
+  label?: labelType;
+  children?: any[];
+  panel?: any;
+};
+
 const expectedSeriesName: CodeEditorExpected = {
   type: "string",
   example: "series1",
@@ -116,6 +135,97 @@ const expectedSeriesData: CodeEditorExpected = {
   ],
   autocompleteDataType: AutocompleteDataType.ARRAY,
 };
+
+const expectedListenerName: CodeEditorExpected = {
+  type: "string",
+  example:
+    "click | dblclick | mousedown | mouseup | contextmenu | highlight | downplay | selectchanged | datazoom | rendered | fininshed | geoselect | updateAxisPointer",
+  autocompleteDataType: AutocompleteDataType.STRING,
+};
+const expectedListenerSeriesData: CodeEditorExpected = {
+  type: "Function",
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  example: `{{(params) => { 
+    // add code here 
+   }}}`,
+  autocompleteDataType: AutocompleteDataType.FUNCTION,
+};
+
+function EventControlComponent(props: RenderChildrenComponentProps) {
+  const {
+    dataTreePath,
+    deleteOption,
+    // evaluated,
+    index,
+    item,
+    length,
+    updateOption,
+  } = props;
+  // console.log(item, dataTreePath, props);
+  return (
+    <StyledOptionControlWrapper orientation={"VERTICAL"}>
+      <ActionHolder>
+        <StyledLabel>名称</StyledLabel>
+        {length > 0 && (
+          <StyledDeleteIcon
+            height={20}
+            onClick={() => {
+              deleteOption(index);
+            }}
+            width={20}
+          />
+        )}
+      </ActionHolder>
+      <StyledOptionControlWrapper orientation={"HORIZONTAL"}>
+        <InputText
+          dataTreePath={`${dataTreePath}.seriesName`}
+          expected={expectedListenerName}
+          label={"eventName"}
+          onChange={(
+            event: React.ChangeEvent<HTMLTextAreaElement> | string,
+          ) => {
+            let value: string = event as string;
+            if (typeof event !== "string") {
+              value = event.target.value;
+            }
+            updateOption(index, "seriesName", value);
+          }}
+          placeholder="event name"
+          theme={props.theme}
+          value={item.seriesName || ""}
+        />
+      </StyledOptionControlWrapper>
+
+      <StyledLabel>函数</StyledLabel>
+      <StyledDynamicInput
+        className={"t--property-control-chart-series-data-control"}
+      >
+        <CodeEditor
+          dataTreePath={`${dataTreePath}.handler`}
+          expected={expectedListenerSeriesData}
+          input={{
+            value: item.handler,
+            onChange: (
+              event: React.ChangeEvent<HTMLTextAreaElement> | string,
+            ) => {
+              let value: string = event as string;
+              if (typeof event !== "string") {
+                value = event.target.value;
+              }
+              updateOption(index, "handler", value);
+            },
+          }}
+          mode={EditorModes.JSON_WITH_BINDING}
+          placeholder={"event handler"}
+          size={EditorSize.EXTENDED}
+          tabBehaviour={TabBehaviour.INPUT}
+          theme={props.theme}
+        />
+      </StyledDynamicInput>
+      <Box />
+    </StyledOptionControlWrapper>
+  );
+}
 
 function DataControlComponent(props: RenderComponentProps) {
   const {
@@ -206,6 +316,14 @@ function DataControlComponent(props: RenderComponentProps) {
 const Name_Data_Array = ["xAxis", "yAxis"];
 
 const ControlLabel = (propertyName: string) => {
+  if (propertyName === "listener") {
+    return {
+      titleLabel: "名称",
+      areaLabel: "函数",
+      hasAddBtn: true,
+      btnLabel: "ADD LISTENER",
+    };
+  }
   if (Name_Data_Array.includes(propertyName)) {
     return {
       titleLabel: "标签",
@@ -232,6 +350,45 @@ class EchartDataControl extends BaseControl<ControlProps> {
     const isDataSet = this.props.propertyName === "dataSet";
     const evaluatedValue = this.props.evaluatedValue;
     const firstKey = Object.keys(chartData)[0] as string;
+    if (this.props.propertyName === "listener") {
+      return (
+        <>
+          <Wrapper>
+            {Object.keys(chartData).map((key: string) => {
+              const data = get(chartData, `${key}`);
+              return (
+                <EventControlComponent
+                  dataTreePath={`${this.props.dataTreePath}.${key}`}
+                  deleteOption={this.deleteOption}
+                  evaluated={get(evaluatedValue, `${key}`)}
+                  index={key}
+                  item={data}
+                  key={key}
+                  length={dataLength}
+                  theme={this.props.theme}
+                  updateOption={this.updateOption}
+                  label={ControlLabel(this.props.propertyName)}
+                  panel={this.props.panel}
+                />
+              );
+            })}
+          </Wrapper>
+          {/* 新增按钮 */}
+          {ControlLabel(this.props.propertyName).hasAddBtn ? (
+            <StyledPropertyPaneButton
+              category={Category.tertiary}
+              icon="plus"
+              onClick={this.addOption}
+              size={Size.medium}
+              tag="button"
+              text={ControlLabel(this.props.propertyName).btnLabel}
+              type="button"
+            />
+          ) : null}
+        </>
+      );
+    }
+
     if (this.props.widgetProperties.chartType === "PIE_CHART") {
       const data = dataLength
         ? get(chartData, `${firstKey}`)
@@ -314,10 +471,18 @@ class EchartDataControl extends BaseControl<ControlProps> {
    */
   addOption = () => {
     const randomString = generateReactKey();
-    this.updateProperty(`${this.props.propertyName}.${randomString}`, {
-      seriesName: "",
-      data: JSON.stringify([{ name: "label", value: 51 }]),
-    });
+    if (this.props.propertyName === "listener") {
+      this.updateProperty(`${this.props.propertyName}.${randomString}`, {
+        seriesName: "",
+        handler: "",
+      });
+    } else {
+      this.updateProperty(`${this.props.propertyName}.${randomString}`, {
+        seriesName: "",
+        data: JSON.stringify([{ name: "label", value: 100 }]),
+        handler: "",
+      });
+    }
   };
 
   static getControlType() {

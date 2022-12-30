@@ -266,6 +266,39 @@ export const contentConfig = [
       },
     ],
   },
+  {
+    sectionName: "监听事件",
+    children: [
+      {
+        helpText: "给图表添加监听事件",
+        propertyName: "listener",
+        label: "添加图表监听事件",
+        helpLink: "https://echarts.apache.org/zh/api.html#echartsInstance.on",
+        controlType: "ECHART_DATA",
+        isBindProperty: true,
+        isTriggerProperty: true,
+        children: [
+          {
+            helpText: "监听事件名称",
+            propertyName: "seriesName",
+            label: "事件名称",
+            controlType: "INPUT_TEXT_AREA",
+            isBindProperty: true,
+            isTriggerProperty: true,
+          },
+          {
+            helpText: "监听事件",
+            propertyName: "handler",
+            label: "事件回调",
+            controlType: "ACTION_SELECTOR",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: true,
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export const styleConfig = [

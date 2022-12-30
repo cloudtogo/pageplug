@@ -12,6 +12,7 @@ import { LabelOrientation, AllChartData } from "../constants";
 import { NO_AXIS, ECHART_BASIC_OPTION, ECHART_TYPE_MAP } from "../constants";
 import { convertStringFunciton } from "../widget/helper";
 import { readBlob } from "utils/AppUtils";
+import useResizeObserver from "utils/hooks/useResizeObserver";
 import { message } from "antd";
 
 declare global {
@@ -41,7 +42,6 @@ function EchartComponent(props: EchartComponentProps) {
   const echartRef = useRef<any>();
   const echartInstance = useRef<any>();
   const selectedEchartTheme = useSelector(getSelectedEchartTheme);
-  const objectRef = useRef<any>();
   const [preChartTheme, setCurrentChart] = useState<EchartTheme | null>();
   const [registeredMap, setRegisteredMap] = useState<registerType>({
     name: "",
@@ -70,6 +70,21 @@ function EchartComponent(props: EchartComponentProps) {
     customEchartConfig.bmap;
   const showBMapKeyConfigTips = hasBMap && window.BMAP_AK_NOT_CONFIGED;
 
+  const handleListener = () => {
+    const { listener, onListener } = props;
+    const _echartInstance = echartInstance.current;
+    _.each(listener, (item: any) => {
+      if (item.seriesName) {
+        _echartInstance.off(item.seriesName);
+        // console.log("注册监听事件", item.seriesName);
+        _echartInstance.on(item.seriesName, (evt: any) => {
+          // console.log("触发监听事件", item.seriesName);
+          onListener && onListener(item.seriesName, evt);
+        });
+      }
+    });
+  };
+
   const handleEvent = () => {
     const _echartInstance = echartInstance.current;
     const { onDataPointClick } = props;
@@ -78,6 +93,7 @@ function EchartComponent(props: EchartComponentProps) {
         onDataPointClick(evt);
       });
     }
+    handleListener();
   };
 
   const registerEchartTheme = (theme: string | undefined) => {
@@ -249,9 +265,14 @@ function EchartComponent(props: EchartComponentProps) {
 
   // 点击事件handler
   useEffect(() => {
+    const { listener } = props;
     return () => {
       echartInstance.current &&
         echartInstance.current.off("click", onDataPointClick);
+      _.each(listener, (item: any) => {
+        // console.log("取消监听事件", item.seriesName);
+        echartInstance.current && echartInstance.current.off(item.seriesName);
+      });
     };
   }, [onDataPointClick]);
 
@@ -267,6 +288,12 @@ function EchartComponent(props: EchartComponentProps) {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (echartRef.current) {
+      handleListener();
+    }
+  }, [props.listener]);
 
   const getSeriesAndXaxisData = () => {
     const series: any[] = [];
@@ -301,14 +328,9 @@ function EchartComponent(props: EchartComponentProps) {
     return { xAxis, series };
   };
 
-  useEffect(() => {
-    objectRef.current.contentDocument.defaultView.addEventListener(
-      "resize",
-      () => {
-        echartInstance.current.resize();
-      },
-    );
-  }, [objectRef.current]);
+  useResizeObserver(echartRef.current, () => {
+    echartInstance.current.resize();
+  });
 
   const style = {
     borderRadius,
@@ -324,15 +346,6 @@ function EchartComponent(props: EchartComponentProps) {
       style={style}
     >
       <div id={chartContainerId} ref={echartRef} className="h-full w-full" />
-      {/* 监听组件大小 */}
-      <object
-        ref={objectRef}
-        tabIndex={-1}
-        type="text/html"
-        aria-hidden="true"
-        data="about:blank"
-        className="absolute block top-0 left-0 w-full h-full border-0 opacity-0 z-[-1000] pointer-events-none"
-      />
       {showBMapKeyConfigTips ? (
         <div className="text-red-600 w-full h-full absolute top-0 left-0">
           请在环境变量中配置百度地图 ak 密钥
@@ -372,6 +385,8 @@ export interface EchartComponentProps {
   fontFamily?: string;
   registerMapJsonUrl?: string;
   registerMapName?: string;
+  listener?: string;
+  onListener?: (type: string, cbdata?: any) => void;
 }
 
 export default EchartComponent;
