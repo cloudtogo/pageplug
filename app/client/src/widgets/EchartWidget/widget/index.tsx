@@ -56,6 +56,21 @@ class EchartWidget extends BaseWidget<EchartWidgetProps, WidgetState> {
     );
   };
 
+  listenerCallback = (eventName: string, callbackData: any) => {
+    _.mapValues(this.props.listener, (item: any) => {
+      if (item.seriesName === eventName && item.handler) {
+        super.executeAction({
+          triggerPropertyName: eventName,
+          dynamicString: item.handler,
+          event: {
+            type: EventType.ON_ECHART_EVENT,
+          },
+          callbackData: [_.omit(callbackData, "event")],
+        });
+      }
+    });
+  };
+
   getEchartInstance = (instance: any) => {
     const params = {
       name: "instance",
@@ -91,6 +106,8 @@ class EchartWidget extends BaseWidget<EchartWidgetProps, WidgetState> {
           onInstance={this.getEchartInstance}
           registerMapName={this.props.registerMapName}
           registerMapJsonUrl={this.props.registerMapJsonUrl}
+          listener={this.props.listener}
+          onListener={this.listenerCallback}
         />
       </Suspense>
     );
@@ -118,6 +135,8 @@ export interface EchartWidgetProps extends WidgetProps {
   onDataPointClick?: string;
   registerMapName?: string;
   registerMapJsonUrl?: string;
+  listener?: string;
+  onListener?: void;
 }
 
 export default EchartWidget;
