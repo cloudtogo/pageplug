@@ -93,6 +93,8 @@ export default {
       propertyName: "alias",
       label: "属性名",
       controlType: "INPUT_TEXT",
+      helperText: () =>
+        "Changing the name of the column overrides any changes to this field",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         const columnId = propertyPath.match(/primaryColumns\.(.*)\.alias/);
         let isDerivedProperty = false;
