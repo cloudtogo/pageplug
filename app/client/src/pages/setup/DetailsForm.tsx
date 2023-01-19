@@ -136,7 +136,7 @@ export default function DetailsForm(
         )}
         <ButtonWrapper>
           <Button
-            category={Category.tertiary}
+            category={Category.secondary}
             className="t--welcome-form-next-button"
             disabled={props.invalid}
             onClick={props.onNext}

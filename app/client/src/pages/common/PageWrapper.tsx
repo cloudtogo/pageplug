@@ -32,9 +32,10 @@ const Wrapper = styled.section<{ isFixed?: boolean }>`
   }
 `;
 
-const PageBody = styled.div`
+const PageBody = styled.div<{ isSavable?: boolean }>`
   height: calc(
-    100vh - ${(props) => props.theme.homePage.header}px
+    100vh - ${(props) => props.theme.homePage.header}px - ${(props) =>
+  props.isSavable ? "84px" : "0px"}
   );
   display: flex;
   flex-direction: column;
@@ -51,10 +52,11 @@ type PageWrapperProps = {
   children?: ReactNode;
   displayName?: string;
   isFixed?: boolean;
+  isSavable?: boolean;
 };
 
 export function PageWrapper(props: PageWrapperProps) {
-  const { isFixed = false } = props;
+  const { isFixed = false, isSavable = false } = props;
   return (
     <Wrapper isFixed={isFixed}>
       <Helmet>
@@ -62,7 +64,7 @@ export function PageWrapper(props: PageWrapperProps) {
          ${theme.inCloudOS ? "Methodot" : "PagePlug"}
          `}</title>
       </Helmet>
-      <PageBody>{props.children}</PageBody>
+      <PageBody isSavable={isSavable}>{props.children}</PageBody>
     </Wrapper>
   );
 }
