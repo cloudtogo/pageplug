@@ -91,7 +91,7 @@ function ConnectDataCTA(props: ConnectDataCTAProps) {
         text="绑定数据"
       />
       {/* <Button
-        category={Category.tertiary}
+        category={Category.secondary}
         onClick={openHelpModal}
         text="了解更多"
         tabIndex={0}

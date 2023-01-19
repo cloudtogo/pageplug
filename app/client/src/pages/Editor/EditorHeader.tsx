@@ -219,9 +219,9 @@ const StyledDeployIcon = styled(Icon)`
   height: 30px;
   width: 20px;
   align-self: center;
-  background: ${(props) => props.theme.colors.header.shareBtnHighlight};
+  background: var(--ads-color-brand);
   &:hover {
-    background: rgb(80, 80, 80);
+    background: var(--ads-color-brand-hover);
   }
 `;
 
@@ -608,7 +608,7 @@ export function EditorHeader(props: EditorHeaderProps) {
                 link={deployLink}
                 trigger={
                   <StyledDeployIcon
-                    fillColor="#fff"
+                    fillColor="var(--ads-color-brand-text)"
                     name={"down-arrow"}
                     size={IconSize.XXL}
                   />
