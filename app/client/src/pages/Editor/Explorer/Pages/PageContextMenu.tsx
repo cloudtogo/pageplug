@@ -158,11 +158,6 @@ export function PageContextMenu(props: {
     //     </CustomLabel>
     //   ) as ReactNode) as string,
     // },
-    {
-      value: "settings",
-      onSelect: openAppSettingsPane,
-      label: createMessage(CONTEXT_SETTINGS),
-    },
     // inCloudOS mode cannot set default page, because the first default page created by blueprint cannot be deleted!
     !props.isDefaultPage &&
       !inCloudOS &&
@@ -178,6 +173,11 @@ export function PageContextMenu(props: {
         value: "setdefault",
         label: createMessage(CONTEXT_SET_AS_HOME_PAGE),
       },
+    {
+      value: "settings",
+      onSelect: openAppSettingsPane,
+      label: createMessage(CONTEXT_SETTINGS),
+    },
     !props.isDefaultPage &&
       canDeletePages && {
         className: "t--apiFormDeleteBtn single-select",

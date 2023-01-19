@@ -43,17 +43,25 @@ const GithubImg = styled.img`
 
 function FooterLinks() {
   return (
-    <FooterLinksContainer>
-      {/* <FooterLink href="/privacy-policy.html" target="_blank">
+    <div className="flex items-center justify-center gap-4 px-2 py-2">
+      {/* <a
+        className="text-gray-900 hover:text-inherit"
+        href="/privacy-policy.html"
+        target="_blank"
+      >
         {createMessage(PRIVACY_POLICY_LINK)}
-      </FooterLink>
-      <FooterLink href="/terms-and-conditions.html" target="_blank">
+      </a>
+      <a
+        className="text-gray-900 hover:text-inherit"
+        href="/terms-and-conditions.html"
+        target="_blank"
+      >
         {createMessage(TERMS_AND_CONDITIONS_LINK)}
       </FooterLink> */}
       <FooterLink href="https://github.com/cloudtogo/pageplug" target="_blank">
         <GithubImg src={githubIcon} /> PagePlug <Red>❤</Red>
-      </FooterLink>
-    </FooterLinksContainer>
+      </a>
+    </div>
   );
 }
 

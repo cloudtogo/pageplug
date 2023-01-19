@@ -305,6 +305,24 @@ class SingleSelectTreeWidget extends BaseWidget<
             isBindProperty: true,
             isTriggerProperty: true,
           },
+          {
+            helpText: "Triggers an action when the dropdown opens",
+            propertyName: "onDropdownOpen",
+            label: "onDropdownOpen",
+            controlType: "ACTION_SELECTOR",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: true,
+          },
+          {
+            helpText: "Triggers an action when the dropdown closes",
+            propertyName: "onDropdownClose",
+            label: "onDropdownClose",
+            controlType: "ACTION_SELECTOR",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: true,
+          },
         ],
       },
     ];
@@ -509,6 +527,8 @@ class SingleSelectTreeWidget extends BaseWidget<
         labelWidth={this.getLabelWidth()}
         loading={this.props.isLoading}
         onChange={this.onOptionChange}
+        onDropdownClose={this.onDropdownClose}
+        onDropdownOpen={this.onDropdownOpen}
         options={options}
         placeholder={this.props.placeholderText as string}
         renderMode={this.props.renderMode}
@@ -534,6 +554,30 @@ class SingleSelectTreeWidget extends BaseWidget<
     });
   };
 
+  onDropdownOpen = () => {
+    if (this.props.onDropdownOpen) {
+      super.executeAction({
+        triggerPropertyName: "onDropdownOpen",
+        dynamicString: this.props.onDropdownOpen,
+        event: {
+          type: EventType.ON_DROPDOWN_OPEN,
+        },
+      });
+    }
+  };
+
+  onDropdownClose = () => {
+    if (this.props.onDropdownClose) {
+      super.executeAction({
+        triggerPropertyName: "onDropdownClose",
+        dynamicString: this.props.onDropdownClose,
+        event: {
+          type: EventType.ON_DROPDOWN_CLOSE,
+        },
+      });
+    }
+  };
+
   static getWidgetType(): WidgetType {
     return "SINGLE_SELECT_TREE_WIDGET";
   }
@@ -552,6 +596,8 @@ export interface SingleSelectTreeWidgetProps extends WidgetProps {
   options?: DropdownOption[];
   flattenedOptions?: DropdownOption[];
   onOptionChange: string;
+  onDropdownOpen?: string;
+  onDropdownClose?: string;
   defaultOptionValue: string;
   isRequired: boolean;
   isLoading: boolean;

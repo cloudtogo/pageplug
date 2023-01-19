@@ -71,7 +71,7 @@ export const layoutConfigurations: LayoutConfigurations = {
   MOBILE_FLUID: { minWidth: 450, maxWidth: 450 },
 };
 
-export const LATEST_PAGE_VERSION = 70;
+export const LATEST_PAGE_VERSION = 71;
 
 export const GridDefaults = {
   DEFAULT_CELL_SIZE: 1,
