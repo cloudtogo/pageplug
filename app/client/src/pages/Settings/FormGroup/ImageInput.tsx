@@ -68,9 +68,9 @@ export const ImageInput = (props: ImageInputProps) => {
           iconPosition="left"
           onClick={onFileInputClick}
           size={Size.medium}
-          text="Upload file"
+          text="上传图片"
         >
-          Upload file
+          上传图片
         </Button>
       </div>
 

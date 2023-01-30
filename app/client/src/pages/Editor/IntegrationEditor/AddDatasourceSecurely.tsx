@@ -50,7 +50,7 @@ function AddDatasourceSecurely() {
           <Header>快速且安全的数据连接</Header>
         </HeadWrapper>
         <Content>
-          立即连接数据源来构建您的工作流，您的全部数据都是加密传输，我们永远不会存储您的任何数据。
+          立即连接数据源来构建您的业务，您的全部数据都是加密传输，我们永远不会存储您的任何数据。
         </Content>
       </div>
       <img className="datasource-img" src={Datasource} />

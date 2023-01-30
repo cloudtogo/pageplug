@@ -58,7 +58,7 @@ const Card = styled.div<{ centerAlign?: boolean }>`
   }
 
   &:hover svg path {
-    fill: var(--appsmith-color-orange-500);
+    fill: var(--ads-color-brand);
   }
 `;
 

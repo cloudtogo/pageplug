@@ -27,6 +27,7 @@ import {
   getViewModePageList,
   getShowTabBar,
   isMobileLayout,
+  getCurrentPage,
 } from "selectors/editorSelectors";
 import { getThemeDetails, ThemeMode } from "selectors/themeSelectors";
 import TabBar from "components/designSystems/taro/TabBar";
@@ -124,7 +125,8 @@ function AppViewer(props: Props) {
   const prevValues = usePrevious({ branch, location: props.location, pageId });
   const showTabBar = useSelector(getShowTabBar);
   const isMobile = useSelector(isMobileLayout);
-  const isEmbed = !!getSearchQuery(search, "embed");
+  const currentPage = useSelector(getCurrentPage);
+  const isEmbed = !!getSearchQuery(search, "embed") || !!currentPage?.isHidden;
   const { hideWatermark } = getAppsmithConfigs();
 
   /**

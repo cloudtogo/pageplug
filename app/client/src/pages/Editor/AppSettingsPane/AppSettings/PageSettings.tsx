@@ -240,52 +240,55 @@ function PageSettings(props: { page: Page }) {
         />
       </div>
 
-      <Text type={TextType.P1}>{PAGE_SETTINGS_PAGE_URL_LABEL()}</Text>
-      {appNeedsUpdate && (
-        <div
-          className={`pt-1 text-[color:var(--appsmith-color-black-700)] text-[13px]`}
-          style={{ lineHeight: "1.31" }}
-        >
-          {PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_1()}{" "}
-          <ManualUpgrades inline>
-            <a>
-              <u className="text-[color:var(--appsmith-color-black-900)]">
-                {PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_2()}
-              </u>
-            </a>
-          </ManualUpgrades>{" "}
-          {PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_3()}
-        </div>
-      )}
-      <div
-        className={classNames({
-          "py-1 relative": true,
-          "pb-2": appNeedsUpdate,
-        })}
-      >
-        {isCustomSlugSaving && <TextLoaderIcon />}
-        <TextInput
-          defaultValue={customSlug}
-          disabled={!canManagePages}
-          fill
-          id="t--page-settings-custom-slug"
-          onBlur={saveCustomSlug}
-          onChange={(value: string) =>
-            value.length > 0
-              ? specialCharacterCheckRegex.test(value) && setCustomSlug(value)
-              : setCustomSlug(value)
-          }
-          onKeyPress={(ev: React.KeyboardEvent) => {
-            if (ev.key === "Enter") {
-              saveCustomSlug();
-            }
-          }}
-          placeholder="Page URL"
-          readOnly={appNeedsUpdate}
-          type="input"
-          value={customSlug}
-        />
-      </div>
+      {isMobile ? null : (
+        <>
+          <Text type={TextType.P1}>{PAGE_SETTINGS_PAGE_URL_LABEL()}</Text>
+          {appNeedsUpdate && (
+            <div
+              className={`pt-1 text-[color:var(--appsmith-color-black-700)] text-[13px]`}
+              style={{ lineHeight: "1.31" }}
+            >
+              {PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_1()}{" "}
+              <ManualUpgrades inline>
+                <a>
+                  <u className="text-[color:var(--appsmith-color-black-900)]">
+                    {PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_2()}
+                  </u>
+                </a>
+              </ManualUpgrades>{" "}
+              {PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_3()}
+            </div>
+          )}
+          <div
+            className={classNames({
+              "py-1 relative": true,
+              "pb-2": appNeedsUpdate,
+            })}
+          >
+            {isCustomSlugSaving && <TextLoaderIcon />}
+            <TextInput
+              defaultValue={customSlug}
+              disabled={!canManagePages}
+              fill
+              id="t--page-settings-custom-slug"
+              onBlur={saveCustomSlug}
+              onChange={(value: string) =>
+                value.length > 0
+                  ? specialCharacterCheckRegex.test(value) &&
+                    setCustomSlug(value)
+                  : setCustomSlug(value)
+              }
+              onKeyPress={(ev: React.KeyboardEvent) => {
+                if (ev.key === "Enter") {
+                  saveCustomSlug();
+                }
+              }}
+              placeholder="页面 URL"
+              readOnly={appNeedsUpdate}
+              type="input"
+              value={customSlug}
+            />
+          </div>
 
           {!appNeedsUpdate && (
             <UrlPreviewWrapper
@@ -323,32 +326,32 @@ function PageSettings(props: { page: Page }) {
               </UrlPreviewScroll>
             </UrlPreviewWrapper>
           )}
+
+          <div className="flex justify-between content-center pb-2">
+            <div className="pt-0.5 text-[color:var(--appsmith-color-black-700)]">
+              <PropertyHelpLabel
+                label={PAGE_SETTINGS_SHOW_PAGE_NAV()}
+                lineHeight="1.17"
+                maxWidth="217px"
+                tooltip={PAGE_SETTINGS_SHOW_PAGE_NAV_TOOLTIP()}
+              />
+            </div>
+            <SwitchWrapper>
+              <AdsSwitch
+                checked={isShown}
+                className="mb-0"
+                disabled={isShownSaving || !canManagePages}
+                id="t--page-settings-show-nav-control"
+                large
+                onChange={() => {
+                  setIsShown(!isShown);
+                  saveIsShown(!isShown);
+                }}
+              />
+            </SwitchWrapper>
+          </div>
         </>
       )}
-
-      {/* <div className="flex justify-between content-center pb-2">
-        <div className="pt-0.5 text-[color:var(--appsmith-color-black-700)]">
-          <PropertyHelpLabel
-            label={PAGE_SETTINGS_SHOW_PAGE_NAV()}
-            lineHeight="1.17"
-            maxWidth="217px"
-            tooltip={PAGE_SETTINGS_SHOW_PAGE_NAV_TOOLTIP()}
-          />
-        </div>
-        <SwitchWrapper>
-          <AdsSwitch
-            checked={isShown}
-            className="mb-0"
-            disabled={isShownSaving || !canManagePages}
-            id="t--page-settings-show-nav-control"
-            large
-            onChange={() => {
-              setIsShown(!isShown);
-              saveIsShown(!isShown);
-            }}
-          />
-        </SwitchWrapper>
-      </div> */}
 
       <div className="flex justify-between content-center">
         <div className="pt-0.5 text-[color:var(--appsmith-color-black-700)]">

@@ -9,7 +9,7 @@ export const config: AdminConfigType = {
   type: SettingCategories.BRANDING,
   controlType: SettingTypes.PAGE,
   canSave: false,
-  title: "Branding",
+  title: "自定义品牌",
   icon: "pantone",
   component: BrandingPage,
 };

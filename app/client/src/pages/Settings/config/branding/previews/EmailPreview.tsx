@@ -12,7 +12,7 @@ const EmailPreview = (props: PreviewsProps) => {
       style={{
         backgroundColor: shades.background,
       }}
-      title="E-mail"
+      title="邮件"
     >
       <div
         className="w-7/12 bg-white border-t-4 border-l border-r b h-4/5"
@@ -31,8 +31,7 @@ const EmailPreview = (props: PreviewsProps) => {
               fontSize: "8px",
             }}
           >
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nostrum
-            quas quos cumque sit hic unde deserunt
+            恭喜发财，大吉大利！
           </p>
           <div
             className="flex items-center justify-center h-4 mt-2 rounded-sm t--branding-bg"

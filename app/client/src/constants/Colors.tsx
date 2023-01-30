@@ -1,19 +1,5 @@
-// Color Names generated from http://chir.ag/projects/name-that-color
-import { getAppsmithConfigs } from "@appsmith/configs";
-import tinycolor from "tinycolor2";
-const { inCloudOS } = getAppsmithConfigs();
 // MINT_GREEN #2CBBA6
-const primaryColor = inCloudOS ? "#613eea" : "#2CBBA6";
-
-const lighten = (color: string, p: number) => {
-  return new tinycolor(color).lighten(p).toString();
-};
-const darken = (color: string, p: number) => {
-  return new tinycolor(color).darken(p).toString();
-};
-const desaturate = (color: string, p: number) => {
-  return new tinycolor(color).desaturate(p).toString();
-};
+const primaryColor = "var(--ads-color-brand)";
 
 export const Colors = {
   EBONY_CLAY: "#2A2F3D",
@@ -122,11 +108,11 @@ export const Colors = {
   RATE_ACTIVE: "#FFCB45",
   RATE_INACTIVE: "#F2F2F2",
   // new colors
-  MINT_GREEN: primaryColor,
-  MINT_GREEN_LIGHT: lighten(primaryColor, 30),
-  MINT_GREEN_DARK: darken(primaryColor, 10),
-  MINT_GREEN_DARKER: darken(primaryColor, 20),
-  MINT_GREEN_DARKEST: desaturate(lighten(primaryColor, 30), 50),
+  MINT_GREEN: "var(--ads-color-brand)",
+  MINT_GREEN_LIGHT: "var(--ads-color-background-secondary)",
+  MINT_GREEN_DARK: "var(--ads-color-brand-hover)",
+  MINT_GREEN_DARKER: "var(--ads-color-brand-hover)",
+  MINT_GREEN_DARKEST: "var(--ads-color-brand-hover)",
   MINT_ORANGE: "#FF6A00",
   MINT_ORANGE_LIGHT: "#FFE8D7",
   MINT_BLUE: "#3C6DC1",
