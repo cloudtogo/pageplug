@@ -20,8 +20,8 @@ export const APPSMITH_INSTANCE_NAME_SETTING_SETTING: Setting = {
   category: SettingCategories.GENERAL,
   controlType: SettingTypes.TEXTINPUT,
   controlSubType: SettingSubtype.TEXT,
-  label: "Instance Name",
-  placeholder: "appsmith/prod",
+  label: "实例名称",
+  placeholder: "pageplug",
 };
 
 export const APPSMITH__ADMIN_EMAILS_SETTING: Setting = {
@@ -29,10 +29,9 @@ export const APPSMITH__ADMIN_EMAILS_SETTING: Setting = {
   category: SettingCategories.GENERAL,
   controlType: SettingTypes.TEXTINPUT,
   controlSubType: SettingSubtype.EMAIL,
-  label: "Admin Email",
-  subText:
-    "Emails of the users who can modify instance settings (Comma Separated)",
-  placeholder: "Jane@example.com",
+  label: "管理员邮箱",
+  subText: "多个管理员用逗号分隔，管理员可以修改实例设置",
+  placeholder: "admin@example.com",
   validate: (value: string) => {
     if (
       value &&
@@ -40,7 +39,7 @@ export const APPSMITH__ADMIN_EMAILS_SETTING: Setting = {
         .split(",")
         .reduce((prev, curr) => prev && isEmail(curr.trim()), true)
     ) {
-      return "Please enter valid email id(s)";
+      return "请输入有效邮箱地址";
     }
   },
 };
@@ -56,18 +55,18 @@ export const APPSMITH_DOWNLOAD_DOCKER_COMPOSE_FILE_SETTING: Setting = {
   },
   category: SettingCategories.GENERAL,
   controlType: SettingTypes.BUTTON,
-  label: "Generated Docker Compose File",
-  text: "Download",
+  label: "生成 Docker Compose 文件",
+  text: "下载",
 };
 
 export const APPSMITH_DISABLE_TELEMETRY_SETTING: Setting = {
   id: "APPSMITH_DISABLE_TELEMETRY",
   category: SettingCategories.GENERAL,
   controlType: SettingTypes.TOGGLE,
-  label: "Share anonymous usage data",
-  subText: "Share anonymous usage data to help improve the product",
+  label: "匿名共享使用数据",
+  subText: "共享匿名数据帮助我们提高用户体验",
   toggleText: (value: boolean) =>
-    value ? "Don't share any data" : "Share Anonymous Telemetry",
+    value ? "不分享任何数据" : "共享匿名遥感数据",
 };
 
 export const APPSMITH_HIDE_WATERMARK_SETTING: Setting = {
@@ -90,32 +89,31 @@ export const APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING: Setting = {
   name: "APPSMITH_ALLOWED_FRAME_ANCESTORS",
   category: SettingCategories.GENERAL,
   controlType: SettingTypes.RADIO,
-  label: "Embed Settings",
+  label: "嵌入配置",
   controlTypeProps: {
     options: [
       {
-        badge: "NOT RECOMMENDED",
+        badge: "不推荐",
         tooltip: {
           icon: <QuestionFillIcon />,
-          text:
-            "Lets all domains, including malicious ones, embed your Appsmith apps. ",
-          linkText: "SEE WHY THIS IS RISKY",
+          text: "允许所有网站（包括那些恶意网站）随意嵌入你的 PagePlug 应用",
+          linkText: "为什么这是非常危险的？",
           link:
             "https://docs.appsmith.com/getting-started/setup/instance-configuration/frame-ancestors#why-should-i-control-this",
         },
-        label: "Allow embedding everywhere",
+        label: "允许嵌入到任何地方",
         value: "ALLOW_EMBEDDING_EVERYWHERE",
       },
       {
-        label: "Limit embedding to certain URLs",
+        label: "限制嵌入到指定的 URL",
         value: "LIMIT_EMBEDDING",
-        nodeLabel: "You can add one or more URLs",
+        nodeLabel: "可以添加多个 URL",
         node: <TagInput input={{}} placeholder={""} type={"text"} />,
         nodeInputPath: "input",
         nodeParentClass: "tag-input",
       },
       {
-        label: "Disable embedding everywhere",
+        label: "不允许嵌入到任何地方",
         value: "DISABLE_EMBEDDING_EVERYWHERE",
       },
     ],
@@ -157,7 +155,7 @@ export const APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING: Setting = {
   },
   validate: (value: string) => {
     if (!value) {
-      return "This field cannot be empty";
+      return "这个字段不能为空";
     }
   },
 };
@@ -166,14 +164,14 @@ export const config: AdminConfigType = {
   icon: "settings-2-line",
   type: SettingCategories.GENERAL,
   controlType: SettingTypes.GROUP,
-  title: "General",
+  title: "通用",
   canSave: true,
   settings: [
     APPSMITH_INSTANCE_NAME_SETTING_SETTING,
     APPSMITH__ADMIN_EMAILS_SETTING,
     APPSMITH_DOWNLOAD_DOCKER_COMPOSE_FILE_SETTING,
     APPSMITH_DISABLE_TELEMETRY_SETTING,
-    APPSMITH_HIDE_WATERMARK_SETTING,
+    // APPSMITH_HIDE_WATERMARK_SETTING,
     APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING,
   ],
 } as AdminConfigType;

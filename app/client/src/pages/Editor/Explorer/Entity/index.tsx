@@ -87,10 +87,6 @@ export const EntityItem = styled.div<{
   font-size: 14px;
   user-select: none;
   padding-left: ${(props) => `calc(0.25rem + (0.25 * ${props.step}rem))`};
-  border-top: ${(props) =>
-    props.highlight ? `1px solid ${Colors.MINT_GREEN}` : "none"};
-  border-bottom: ${(props) =>
-    props.highlight ? `1px solid ${Colors.MINT_GREEN}` : "none"};
   background: ${(props) =>
     props.active
       ? Colors.MINT_GREEN_LIGHT
@@ -108,7 +104,7 @@ export const EntityItem = styled.div<{
   cursor: pointer;
   align-items: center;
   &:hover {
-    background: ${Colors.MINT_GREEN_LIGHT}66;
+    background: #f0f0f0;
   }
 
   .${Classes.COLLAPSE_BODY} & {

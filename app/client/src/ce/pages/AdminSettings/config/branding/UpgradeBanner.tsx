@@ -24,7 +24,7 @@ const UpgradeBanner = () => {
       <div className="flex items-center justify-between p-6 border">
         <main>
           <div className="inline-block px-1 text-xs text-blue-900 uppercase bg-blue-100">
-            Business
+            商业版
           </div>
           <SettingsHeader className="mt-1">
             {createMessage(ADMIN_BRANDING_SETTINGS_TITLE)}
@@ -40,7 +40,7 @@ const UpgradeBanner = () => {
             iconPosition="left"
             onClick={onUpgrade}
             size="large"
-            text="UPGRADE"
+            text="升级"
           />
         </aside>
       </div>

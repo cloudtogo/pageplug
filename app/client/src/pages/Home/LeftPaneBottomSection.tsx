@@ -65,8 +65,6 @@ function LeftPaneBottomSection() {
   const user = useSelector(getCurrentUser);
   const tenantPermissions = useSelector(getTenantPermissions);
 
-  return null;
-
   return (
     <Wrapper>
       {showAdminSettings(user) && !isFetchingApplications && (
@@ -84,7 +82,7 @@ function LeftPaneBottomSection() {
           text={createMessage(ADMIN_SETTINGS)}
         />
       )}
-      <MenuItem
+      {/* <MenuItem
         className={isFetchingApplications ? BlueprintClasses.SKELETON : ""}
         icon="discord"
         onSelect={() => {
@@ -117,7 +115,7 @@ function LeftPaneBottomSection() {
           text={createMessage(WELCOME_TOUR)}
         />
       )}
-      <ProductUpdatesModal />
+      <ProductUpdatesModal /> */}
       <LeftPaneVersionData>
         <span>
           {createMessage(

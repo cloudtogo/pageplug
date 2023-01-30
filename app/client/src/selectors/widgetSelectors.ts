@@ -19,6 +19,7 @@ import { getAppMode } from "selectors/applicationSelectors";
 import { APP_MODE } from "entities/App";
 import { getIsTableFilterPaneVisible } from "selectors/tableFilterSelectors";
 import { getIsAutoHeightWithLimitsChanging } from "utils/hooks/autoHeightUIHooks";
+import { isMobileLayout } from "./editorSelectors";
 
 export const getIsDraggingOrResizing = (state: AppState) =>
   state.ui.widgetDragResize.isResizing || state.ui.widgetDragResize.isDragging;
@@ -46,9 +47,12 @@ export const getModalDropdownList = createSelector(
 
 export const getNextModalName = createSelector(
   getExistingWidgetNames,
-  (names) => {
+  isMobileLayout,
+  (names, isMobile) => {
     const prefix =
-      WidgetFactory.widgetConfigMap.get("MODAL_WIDGET")?.widgetName || "";
+      WidgetFactory.widgetConfigMap.get(
+        isMobile ? "TARO_POPUP_WIDGET" : "MODAL_WIDGET",
+      )?.widgetName || "";
     return getNextEntityName(prefix, names);
   },
 );

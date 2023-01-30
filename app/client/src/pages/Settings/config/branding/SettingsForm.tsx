@@ -83,7 +83,7 @@ function SettingsForm(props: SettingsFormProps) {
         {/* FAVICON */}
         <div className="flex flex-col gap-2">
           <label className="font-semibold" htmlFor="APPSMITH_BRAND_FAVICON">
-            Favicon
+            网站图标
           </label>
           <Controller
             control={control}
@@ -116,7 +116,7 @@ function SettingsForm(props: SettingsFormProps) {
               className="font-semibold"
               htmlFor="APPSMITH_BRAND_PRIMARY_COLOR"
             >
-              Color
+              颜色
             </label>
             <TooltipComponent
               content={createMessage(ADMIN_BRANDING_COLOR_TOOLTIP)}
@@ -160,7 +160,7 @@ function SettingsForm(props: SettingsFormProps) {
           disabled={disabled || !hasDirtyFields}
           size={Size.medium}
           tag="button"
-          text="submit"
+          text="保存"
           type="submit"
         />
       </div>

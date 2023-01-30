@@ -8,7 +8,7 @@ const AppPreview = (props: PreviewsProps) => {
   const { logo } = props;
 
   return (
-    <PreviewBox className="items-center p-4 bg-gray-100 " title="App">
+    <PreviewBox className="items-center p-4 bg-gray-100 " title="应用">
       <div className="w-full h-full bg-white">
         <div className="flex flex-col">
           <header className="flex items-center gap-1 px-3 py-2 border-b">

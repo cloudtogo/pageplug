@@ -59,7 +59,7 @@ const saveAdminSettings = (props: SaveAdminSettingsProps) => {
         isLoading={isSaving}
         onClick={onSave}
         tag="button"
-        text={createMessage(() => "Save & Restart")}
+        text={createMessage(() => "保存并重启服务")}
       />
       <StyledClearButton
         category={Category.secondary}
@@ -67,7 +67,7 @@ const saveAdminSettings = (props: SaveAdminSettingsProps) => {
         disabled={Object.keys(settings).length == 0}
         onClick={onClear}
         tag="button"
-        text={createMessage(() => "Reset")}
+        text={createMessage(() => "重置")}
       />
     </SettingsButtonWrapper>
   );
