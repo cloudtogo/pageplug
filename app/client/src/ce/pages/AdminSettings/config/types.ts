@@ -98,6 +98,7 @@ export interface Category {
 
 export const SettingCategories = {
   GENERAL: "general",
+  MINI: "mini",
   EMAIL: "email",
   GOOGLE_MAPS: "google-maps",
   VERSION: "version",

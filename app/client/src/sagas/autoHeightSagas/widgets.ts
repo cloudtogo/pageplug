@@ -232,10 +232,10 @@ export function* updateWidgetAutoHeightSaga() {
     // start with the bottom most level (maxLevel)
     // We do this so, that we don't have to re-comupte the higher levels,
     // as children can modify their parent sizes.
-    for (let level = maxLevel; level >= 0; level--) {
+    for (let levelItem = maxLevel; levelItem >= 0; levelItem--) {
       // The canvas widgets at this level.
       const parentCanvasWidgetsToConsider =
-        parentCanvasWidgetsGroupedByLevel[level];
+        parentCanvasWidgetsGroupedByLevel[levelItem];
       const delta: Record<string, number> = {};
 
       if (

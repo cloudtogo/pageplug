@@ -183,7 +183,7 @@ function ColorPickerPopup(props: ColorPickerPopupProps) {
       )}
       {brandColors && Object.keys(brandColors).length > 0 && (
         <section className="space-y-2">
-          <h3 className="text-xs">Brand Colors</h3>
+          <h3 className="text-xs">品牌颜色</h3>
           <div className="grid grid-cols-10 gap-2">
             {Object.keys(brandColors).map(
               (colorKey: string, colorIndex: number) => (

@@ -13,11 +13,12 @@ export interface TenantReduxState {
 }
 
 export const defaultBrandingConfig = {
-  brandFaviconUrl: "/static/img/favicon-orange.ico",
+  brandFaviconUrl: "/static/img/favicon-pageplug.ico",
   brandColors: {
-    ...createBrandColorsFromPrimaryColor("#F86A2B"),
+    ...createBrandColorsFromPrimaryColor("#2CBBA6"),
+    font: "#fff",
   },
-  brandLogoUrl: "/static/img/appsmith-logo.svg",
+  brandLogoUrl: "/static/img/pageplug_logo_black.svg",
 };
 
 export const initialState: TenantReduxState = {

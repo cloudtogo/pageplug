@@ -7,6 +7,7 @@ import { MAIN_CONTAINER_WIDGET_ID } from "constants/WidgetConstants";
 import { all, call, fork, put, select, takeLatest } from "redux-saga/effects";
 import {
   getWidgetIdsByType,
+  getWidgetIdsByTypes,
   getWidgetImmediateChildren,
   getWidgetMetaProps,
   getWidgets,
@@ -403,10 +404,10 @@ function* openOrCloseModalSaga(
   if (!action.payload.widgetId) return;
   if (action.payload.isMultiSelect) return;
 
-  const modalWidgetIds: string[] = yield select(
-    getWidgetIdsByType,
-    "MODAL_WIDGET",
-  );
+  const modalWidgetIds: string[] = yield select(getWidgetIdsByTypes, [
+    WidgetTypes.MODAL_WIDGET,
+    WidgetTypes.TARO_POPUP_WIDGET,
+  ]);
 
   const widgetIsModal = modalWidgetIds.includes(action.payload.widgetId);
 

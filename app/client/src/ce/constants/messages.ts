@@ -14,7 +14,7 @@ export const APPSMITH_DISPLAY_VERSION = (
   edition: string,
   version: string,
   cloudHosting: boolean,
-) => `Appsmith ${!cloudHosting ? edition : ""} ${version}`;
+) => `PagePlug ${!cloudHosting ? edition : ""} ${version}`;
 export const YES = () => `是的`;
 export const ARE_YOU_SURE = () => `确定吗？`;
 export const ERROR_ADD_API_INVALID_URL = () =>
@@ -603,10 +603,10 @@ export const CANNOT_MERGE_DUE_TO_UNCOMMITTED_CHANGES = () =>
   "你当前分支还有未提交的更新，请在合并之前提交更新";
 
 export const DISCONNECT_SERVICE_SUBHEADER = () =>
-  "修改这个配置会打断用户鉴权，请谨慎操作";
-export const DISCONNECT_SERVICE_WARNING = () => "最主要的鉴权方式会被删除";
+  "修改这个配置会打断用户登录，请谨慎操作";
+export const DISCONNECT_SERVICE_WARNING = () => "这个身份认证方式会被删除";
 export const AUTHENTICATION_METHOD_ENABLED = (methodName: string) => `
-  ${methodName} 鉴权方式已生效
+  ${methodName} 身份认证已生效
 `;
 
 export const REVOKE_EXISTING_REPOSITORIES = () => "与现有仓库断开连接";
@@ -1035,7 +1035,7 @@ export const DISCONNECT_AUTH_METHOD = () => "断开连接";
 export const DISCONNECT_CONFIRMATION = () => "你确定吗？";
 
 // Branding
-export const ADMIN_BRANDING_SETTINGS_TITLE = () => "为你的应用组自定义品牌";
+export const ADMIN_BRANDING_SETTINGS_TITLE = () => "为你的平台自定义品牌";
 export const ADMIN_BRANDING_SETTINGS_SUBTITLE = () =>
   "自由定制你的 LOGO 和品牌色，如果需要使用此功能请升级到商业版";
 export const ADMIN_BRANDING_COLOR_TOOLTIP = () =>
@@ -1055,12 +1055,12 @@ export const ADMIN_BRANDING_FAVICON_FORMAT_ERROR = () =>
 export const ADMIN_BRANDING_FAVICON_REQUIREMENT = () =>
   `仅限 .ICO, .PNG, 或 .JPG • 最大尺寸 32 X 32`;
 export const ADMIN_BRANDING_COLOR_TOOLTIP_PRIMARY = () =>
-  `用作按钮、链接或其他交互组件`;
-export const ADMIN_BRANDING_COLOR_TOOLTIP_BACKGROUND = () => `用作背景颜色`;
-export const ADMIN_BRANDING_COLOR_TOOLTIP_HOVER = () => `用作按钮 hover 颜色`;
-export const ADMIN_BRANDING_COLOR_TOOLTIP_FONT = () => `用作按钮文本颜色`;
+  `用于按钮、链接或其他交互组件的颜色`;
+export const ADMIN_BRANDING_COLOR_TOOLTIP_BACKGROUND = () => `用于背景颜色`;
+export const ADMIN_BRANDING_COLOR_TOOLTIP_HOVER = () => `用于按钮 hover 颜色`;
+export const ADMIN_BRANDING_COLOR_TOOLTIP_FONT = () => `用于按钮文字颜色`;
 export const ADMIN_BRANDING_COLOR_TOOLTIP_DISABLED = () =>
-  `用作禁用按钮背景颜色`;
+  `用于禁用按钮背景颜色`;
 
 // Guided tour
 // -- STEPS ---
@@ -1130,7 +1130,7 @@ export const CONFIRM_CONTEXT_DELETE = () => "确定删除吗？";
 export const CONFIRM_CONTEXT_DELETING = () => "正在删除";
 export const CONTEXT_NO_PAGE = () => "暂无页面";
 export const CONTEXT_REFRESH = () => "刷新";
-export const CONTEXT_CLONE = () => "克隆页面";
+export const CONTEXT_CLONE = () => "复制页面";
 export const CONTEXT_SETTINGS = () => "设置";
 export const CONTEXT_SET_AS_HOME_PAGE = () => "设置为主页";
 export const PAGE = () => "页面";
@@ -1191,8 +1191,8 @@ export const ENTITY_ID_TOOLTIP = () => "这个地址用来配置你的身份认�
 
 export const FORK_APP_MODAL_LOADING_TITLE = () => "正在拉取应用组...";
 export const FORK_APP_MODAL_EMPTY_TITLE = () => "没有可用应用组";
-export const FORK_APP_MODAL_SUCCESS_TITLE = () => "选择把应用克隆到哪里";
-export const FORK = () => `克隆`;
+export const FORK_APP_MODAL_SUCCESS_TITLE = () => "选择把应用复制到哪里";
+export const FORK = () => `复制`;
 
 export const CLEAN_URL_UPDATE = {
   name: () => "更新地址",
@@ -1250,7 +1250,7 @@ export const PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_3 = () =>
   "你的应用 URL 到新的可读格式";
 export const PAGE_SETTINGS_SHOW_PAGE_NAV = () => "显示菜单导航";
 export const PAGE_SETTINGS_SHOW_PAGE_NAV_TOOLTIP = () =>
-  "在应用菜单导航中显示或隐藏页面";
+  "当前页面是否显示应用菜单导航";
 export const PAGE_SETTINGS_SET_AS_HOMEPAGE = () => "设为主页";
 export const PAGE_SETTINGS_SET_AS_HOMEPAGE_TOOLTIP = () =>
   "当前页面已经是主页，你可以将其他页面设为主页";

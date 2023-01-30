@@ -749,7 +749,7 @@ public class EnvManagerCEImpl implements EnvManagerCE {
                         final ServerHttpResponse response = exchange.getResponse();
                         response.setStatusCode(HttpStatus.OK);
                         response.getHeaders().set(HttpHeaders.CONTENT_TYPE, "application/zip");
-                        response.getHeaders().set("Content-Disposition", "attachment; filename=\"appsmith-config.zip\"");
+                        response.getHeaders().set("Content-Disposition", "attachment; filename=\"pageplug-config.zip\"");
                         return response.writeWith(Mono.just(new DefaultDataBufferFactory().wrap(byteArray)));
                     } catch (IOException e) {
                         log.error("failed to generate zip file", e);

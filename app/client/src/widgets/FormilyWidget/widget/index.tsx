@@ -98,6 +98,16 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
               return !props.showReset;
             },
           },
+          {
+            propertyName: "isVisible",
+            label: "是否显示",
+            helpText: "控制组件的显示/隐藏",
+            controlType: "SWITCH",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.BOOLEAN },
+          },
         ],
       },
       {

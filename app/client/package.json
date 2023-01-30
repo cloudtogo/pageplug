@@ -327,6 +327,7 @@
     "node-fetch": "2.6.7",
     "babel-plugin-styled-components": "2.0.7",
     "minimatch": "^5.0.0",
-    "loader-utils": "^2.0.4"
+    "loader-utils": "^2.0.4",
+    "design-system/react-dnd-html5-backend": "9.3.4"
   }
 }
