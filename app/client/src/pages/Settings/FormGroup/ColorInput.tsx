@@ -95,6 +95,14 @@ const LeftIcon = (
   );
 };
 
+const hardCodeMap: any = {
+  Primary: "主色",
+  Background: "背景色",
+  Font: "字体颜色",
+};
+
+const hardCode = (key: string) => hardCodeMap[key] || key;
+
 export const ColorInput = (props: ColorInputProps) => {
   const [selectedIndex, setSelectedIndex] = useState<brandColorsKeys>(
     "primary",
@@ -141,7 +149,7 @@ export const ColorInput = (props: ColorInputProps) => {
         {colorKeys.filter(filter).map((colorKey: brandColorsKeys, index) => (
           <TooltipComponent
             className="flex-1"
-            content={startCase(colorKey)}
+            content={hardCode(startCase(colorKey))}
             key={colorKey}
           >
             <div
@@ -169,7 +177,7 @@ export const ColorInput = (props: ColorInputProps) => {
       {/* label with tooltip */}
       <div className="flex items-center gap-1">
         <label className="text-sm text-gray-700">
-          {startCase(selectedIndex)}
+          {hardCode(startCase(selectedIndex))}
         </label>
         <TooltipComponent
           content={tooltips && tooltips[selectedIndex]}
@@ -183,7 +191,7 @@ export const ColorInput = (props: ColorInputProps) => {
         className={`mb-2 ${className ? className : ""}`}
         leftIcon={<LeftIcon onChange={onColorInputChange} value={hex} />}
         onChange={onColorInputChange}
-        placeholder="enter color name or hex"
+        placeholder="请输入颜色名称或 hex"
         value={value[selectedIndex]}
       />
     </>

@@ -1,10 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import {
-  PRIVACY_POLICY_LINK,
-  TERMS_AND_CONDITIONS_LINK,
-  createMessage,
-} from "constants/messages";
 import githubIcon from "assets/icons/help/github-icon.svg";
 
 const FooterLink = styled.a`
@@ -22,15 +17,6 @@ const FooterLink = styled.a`
   color: #000 !important;
 `;
 
-const FooterLinksContainer = styled.div`
-  padding: ${(props) => props.theme.spaces[9]}px;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  width: 100%;
-  max-width: 240px;
-`;
-
 const Red = styled.span`
   color: red;
 `;
@@ -44,23 +30,9 @@ const GithubImg = styled.img`
 function FooterLinks() {
   return (
     <div className="flex items-center justify-center gap-4 px-2 py-2">
-      {/* <a
-        className="text-gray-900 hover:text-inherit"
-        href="/privacy-policy.html"
-        target="_blank"
-      >
-        {createMessage(PRIVACY_POLICY_LINK)}
-      </a>
-      <a
-        className="text-gray-900 hover:text-inherit"
-        href="/terms-and-conditions.html"
-        target="_blank"
-      >
-        {createMessage(TERMS_AND_CONDITIONS_LINK)}
-      </FooterLink> */}
       <FooterLink href="https://github.com/cloudtogo/pageplug" target="_blank">
         <GithubImg src={githubIcon} /> PagePlug <Red>❤</Red>
-      </a>
+      </FooterLink>
     </div>
   );
 }

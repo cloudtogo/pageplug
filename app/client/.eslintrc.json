@@ -36,6 +36,7 @@
     "react/jsx-sort-props": 0,
     "react/jsx-fragments": "error",
     "react/jsx-no-useless-fragment": "error",
+    "react/no-unknown-property": 0,
     "prettier/prettier": [
       "error",
       { "endOfLine": "auto" }

@@ -1,4 +1,4 @@
-import { invisible, theme, transparenten } from "constants/DefaultTheme";
+import { invisible, theme } from "constants/DefaultTheme";
 import { WIDGET_PADDING } from "constants/WidgetConstants";
 import styled, { css } from "styled-components";
 
@@ -19,7 +19,7 @@ export const VisibilityContainer = styled.div<{
   ${(props) =>
     props.isWidgetActive
       ? css`
-          box-shadow: 0 0 32px 0px ${transparenten(theme.colors.primary, 0.25)};
+          box-shadow: 0 0 32px -16px var(--ads-color-brand);
         `
       : ""}
   height: 100%;

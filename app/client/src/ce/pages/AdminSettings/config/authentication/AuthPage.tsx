@@ -177,7 +177,7 @@ export function AuthPage({ authMethods }: { authMethods: AuthMethodType[] }) {
                     {method.label}&nbsp;
                     {method.needsUpgrade && (
                       <>
-                        <Label business>Business</Label>
+                        <Label business>商业版</Label>
                         &nbsp;
                       </>
                     )}

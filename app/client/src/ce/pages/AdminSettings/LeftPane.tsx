@@ -144,7 +144,7 @@ export default function LeftPane() {
     <Wrapper>
       <>
         <HeaderContainer>
-          <StyledHeader>Admin Settings</StyledHeader>
+          <StyledHeader>管理员设置</StyledHeader>
         </HeaderContainer>
         <Categories
           categories={categories}
@@ -152,7 +152,7 @@ export default function LeftPane() {
           currentSubCategory={subCategory}
         />
       </>
-      <>
+      {/* <>
         <HeaderContainer>
           <StyledHeader>Business</StyledHeader>
         </HeaderContainer>
@@ -200,7 +200,7 @@ export default function LeftPane() {
             </CategoryItem>
           )}
         </CategoryList>
-      </>
+      </> */}
     </Wrapper>
   );
 }
