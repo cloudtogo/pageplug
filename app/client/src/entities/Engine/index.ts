@@ -66,7 +66,11 @@ export default abstract class AppEngine {
     const { applicationId, branch, pageId, queryParams } = payload;
 
     // sync CloudOS api
-    if (queryParams && queryParams.get("inCloudOS") === "true") {
+    if (
+      queryParams &&
+      queryParams.get("inCloudOS") === "true" &&
+      queryParams.get("workEnv") === "methodot"
+    ) {
       const depList = queryParams.get("depList") || "";
       const projectId = queryParams.get("projectId");
       const orgId = queryParams.get("orgId");

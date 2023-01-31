@@ -50,6 +50,7 @@ export interface INJECTED_CONFIGS {
   hideWatermark: boolean;
   disableIframeWidgetSandbox: boolean;
   inCloudOS: boolean;
+  workEnv: string;
 }
 
 const capitalizeText = (text: string) => {
@@ -137,6 +138,7 @@ export const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
       ? process.env.APPSMITH_DISABLE_IFRAME_WIDGET_SANDBOX.length > 0
       : false,
     inCloudOS: !!process.env.REACT_APP_IN_CLOUDOS,
+    workEnv: process.env.REACT_APP_WORK_ENV || "",
   };
 };
 
@@ -289,5 +291,6 @@ export const getAppsmithConfigs = (): AppsmithUIConfigs => {
       ENV_CONFIG.disableIframeWidgetSandbox ||
       APPSMITH_FEATURE_CONFIGS.disableIframeWidgetSandbox,
     inCloudOS: ENV_CONFIG.inCloudOS,
+    workEnv: ENV_CONFIG.workEnv,
   };
 };

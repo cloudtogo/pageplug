@@ -8,7 +8,7 @@ import { AlertIcons } from "icons/AlertIcons";
 import { IconProps } from "constants/IconConstants";
 import { JSXElementConstructor } from "react";
 import { getAppsmithConfigs } from "@appsmith/configs";
-const { inCloudOS } = getAppsmithConfigs();
+const { inCloudOS, workEnv } = getAppsmithConfigs();
 import { typography, Typography, TypographyKeys } from "./typography";
 
 import { LabelPosition } from "components/constants";
@@ -402,6 +402,7 @@ export type NestedObjectOrArray<T> =
   | T
   | T[];
 export type Theme = {
+  workEnv: string;
   inCloudOS: boolean;
   radii: Array<number>;
   fontSizes: Array<number>;
@@ -2774,6 +2775,7 @@ export const light: ColorType = {
 
 export const theme: Theme = {
   inCloudOS,
+  workEnv,
   radii: [0, 4, 8, 10, 20, 50],
   fontSizes: [0, 10, 12, 14, 16, 18, 24, 28, 32, 48, 64],
   spaces: [0, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 30, 36, 38, 40, 42, 44],
