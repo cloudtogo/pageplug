@@ -71,4 +71,5 @@ export interface AppsmithUIConfigs {
   hideWatermark: boolean;
   disableIframeWidgetSandbox: boolean;
   inCloudOS: boolean;
-};
+  workEnv: string;
+}
