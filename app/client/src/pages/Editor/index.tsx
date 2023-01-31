@@ -71,6 +71,7 @@ type EditorProps = {
   resetEditorRequest: () => void;
   handlePathUpdated: (location: typeof window.location) => void;
   inCloudOS: boolean;
+  workEnv: string;
   fetchPage: (pageId: string) => void;
   updateCurrentPage: (pageId: string) => void;
   handleBranchChange: (branch: string) => void;
@@ -104,6 +105,7 @@ class Editor extends Component<Props> {
     const { applicationId, pageId } = this.props.match.params;
     const queryParams = new URLSearchParams(this.props.location.search);
     queryParams.set("inCloudOS", this.props.inCloudOS ? "true" : "false");
+    queryParams.set("workEnv", this.props.workEnv);
     if (pageId)
       this.props.initEditor({
         applicationId,
@@ -156,6 +158,7 @@ class Editor extends Component<Props> {
     );
     const queryParams = new URLSearchParams(this.props.location.search);
     queryParams.set("inCloudOS", this.props.inCloudOS ? "true" : "false");
+    queryParams.set("workEnv", this.props.workEnv);
 
     const branch = getSearchQuery(
       this.props.location.search,
@@ -244,7 +247,11 @@ class Editor extends Component<Props> {
               <meta charSet="utf-8" />
               <title>
                 {`${this.props.currentApplicationName} - ${
-                  this.props.inCloudOS ? "Methodot" : "PagePlug"
+                  this.props.inCloudOS
+                    ? this.props.workEnv === "methodot"
+                      ? "Methodot"
+                      : "CloudOS"
+                    : "PagePlug"
                 }`}
               </title>
             </Helmet>
