@@ -59,7 +59,13 @@ export function PageWrapper(props: PageWrapperProps) {
     <Wrapper isFixed={isFixed}>
       <Helmet>
         <title>{`${props.displayName ? `${props.displayName} - ` : ""}
-         ${theme.inCloudOS ? "Methodot" : "PagePlug"}
+         ${
+           theme.inCloudOS
+             ? theme.workEnv === "methodot"
+               ? "Methodot"
+               : "CloudOS"
+             : "PagePlug"
+         }
          `}</title>
       </Helmet>
       <PageBody>{props.children}</PageBody>

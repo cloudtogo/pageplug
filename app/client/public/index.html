@@ -23,6 +23,9 @@
   <script type="text/javascript">
     if ("%REACT_APP_IN_CLOUDOS%".trim() === "true") {
       document.querySelector(':root').style.setProperty("--loader-bar-color", "#613eea");
+      document.title = "CloudOS";
+    }
+    if ("%REACT_APP_WORK_ENV%".trim() === "methodot") {
       document.title = "Methodot";
     }
   </script>
