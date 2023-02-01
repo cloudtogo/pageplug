@@ -96,8 +96,8 @@ export function generatePropertyPaneSearchConfig(
   styleConfig: readonly PropertyPaneConfig[],
 ) {
   return [
-    ...addSearchSpecificPropertiesToConfig(contentConfig, "CONTENT"),
-    ...addSearchSpecificPropertiesToConfig(styleConfig, "STYLE"),
+    ...addSearchSpecificPropertiesToConfig(contentConfig, "内容"),
+    ...addSearchSpecificPropertiesToConfig(styleConfig, "样式"),
   ];
 }
 

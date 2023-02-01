@@ -521,7 +521,7 @@ function ApiResponseView(props: Props) {
                     onClick={onRunClick}
                     size={Size.medium}
                     tag="button"
-                    text="Run"
+                    text="运行"
                     type="button"
                   />
                   {EMPTY_RESPONSE_LAST_HALF()}
