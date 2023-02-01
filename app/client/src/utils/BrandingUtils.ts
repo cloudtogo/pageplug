@@ -13,7 +13,7 @@ import {
 const FAVICON_MAX_WIDTH = 32;
 const FAVICON_MAX_HEIGHT = 32;
 const DEFAULT_BRANDING_PRIMARY_COLOR = "#D7D7D7";
-export const APPSMITH_BRAND_PRIMARY_COLOR = "#F86A2B";
+export const APPSMITH_BRAND_PRIMARY_COLOR = "#2CBBA6";
 
 /**
  * create brand colors from primary color

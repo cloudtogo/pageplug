@@ -74,7 +74,7 @@ const TreeContainer = styled.div`
 
 const NameInput = styled.input`
   border: none;
-  background: ${(props) => props.theme.colors.primary}23;
+  background: ${Colors.MINT_GREEN_LIGHT};
   border-radius: 4px;
   padding: 4px 6px;
 `;

@@ -41,7 +41,7 @@ const generatePropertyControl = (
         <Boxed
           key={config.id + props.id}
           show={
-            sectionConfig.sectionName !== "General" &&
+            sectionConfig.sectionName !== "属性" &&
             props.type === "TABLE_WIDGET"
           }
           step={GUIDED_TOUR_STEPS.TABLE_WIDGET_BINDING}
