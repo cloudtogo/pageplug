@@ -153,6 +153,7 @@ class IconSelectControl extends BaseControl<
           noResults={<MenuItem disabled text="未找到相关内容" />}
           onItemSelect={this.handleIconChange}
           popoverProps={{ minimal: true }}
+          inputProps={{ placeholder: "过滤..." }}
         >
           <StyledButton
             alignText={Alignment.LEFT}

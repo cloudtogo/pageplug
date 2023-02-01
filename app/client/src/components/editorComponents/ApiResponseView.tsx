@@ -521,7 +521,7 @@ function ApiResponseView(props: Props) {
                     onClick={onRunClick}
                     size={Size.medium}
                     tag="button"
-                    text="Run"
+                    text="运行"
                     type="button"
                   />
                   {EMPTY_RESPONSE_LAST_HALF()}
@@ -581,7 +581,7 @@ function ApiResponseView(props: Props) {
                 {createMessage(ACTION_EXECUTION_MESSAGE, "API")}
               </Text>
               <CancelRequestButton
-                category={Category.tertiary}
+                category={Category.secondary}
                 className={`t--cancel-action-button`}
                 onClick={() => {
                   handleCancelActionExecution();

@@ -192,7 +192,7 @@ div.bp3-popover-arrow {
 }
 
 .bp3-dialog {
-  box-shadow: 0 0 0 6px @primary-color;
+  border-radius: 8px !important;
 }
 
 .bp3-overlay .bp3-overlay-content {
@@ -340,15 +340,15 @@ div.bp3-popover-arrow {
   .rstcustom__rowContents {
     box-shadow: none;
     cursor: grab;
-    border: 1px solid @primary-color;
+    border: 1px solid var(--ads-color-brand);
     border-radius: 4px;
-    background: @primary-1;
+    background: var(--ads-color-background-secondary);
   }
   .rstcustom__rowWrapper {
     padding: 10px 10px 10px 0;
     .rstcustom__rowLandingPad::before {
-      border: 3px dashed @primary-color;
-      background: @primary-2;
+      border: 3px dashed var(--ads-color-brand);
+      background: var(--ads-color-background-secondary);
       border-radius: 4px;
     }
     .rstcustom__rowCancelPad::before {
@@ -370,7 +370,7 @@ div.bp3-popover-arrow {
     opacity: 1;
     .rstcustom__rowContents {
       background: #fff;
-      box-shadow: 0 0 0 4px @primary-1;
+      box-shadow: 0 0 0 4px var(--ads-color-background-secondary);
     }
   }
   .icon-select-container {
@@ -383,8 +383,8 @@ div.bp3-popover-arrow {
       right: 20px;
     }
     &.rst__placeholderLandingPad::before {
-      border: 3px dashed @primary-color;
-      background: @primary-2;
+      border: 3px dashed var(--ads-color-brand);
+      background: var(--ads-color-background-secondary);
       border-radius: 4px;
     }
     &.rst__placeholderCancelPad::before {
@@ -395,4 +395,9 @@ div.bp3-popover-arrow {
   .rstcustom__toolbarButton {
     margin-right: 5px;
   }
+}
+
+::selection {
+  color: var(--ads-color-brand-text);
+  background: var(--ads-color-brand);
 }

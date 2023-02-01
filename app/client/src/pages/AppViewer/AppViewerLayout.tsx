@@ -5,7 +5,11 @@ import ProLayout, { PageContainer } from "@ant-design/pro-layout";
 import history from "utils/history";
 import { withRouter, RouteComponentProps } from "react-router";
 import { getIsInitialized } from "selectors/appViewSelectors";
-import { isMobileLayout, getViewModePageList } from "selectors/editorSelectors";
+import {
+  isMobileLayout,
+  getViewModePageList,
+  getCurrentPage,
+} from "selectors/editorSelectors";
 import { getCurrentApplication } from "selectors/applicationSelectors";
 import { DEFAULT_VIEWER_LOGO } from "constants/AppConstants";
 import { viewerURL } from "RouteBuilder";
@@ -66,11 +70,13 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
   const isInitialized = useSelector(getIsInitialized);
   const isMobile = useSelector(isMobileLayout);
   const currentApp = useSelector(getCurrentApplication);
+  const currentPage = useSelector(getCurrentPage);
   const pages = useSelector(getViewModePageList);
   const appName = currentApp?.name;
   const viewerLayout = currentApp?.viewerLayout;
+  const isHidden = !!currentPage?.isHidden;
   const queryParams = new URLSearchParams(window.location.search);
-  const isEmbed = !!queryParams.get("embed");
+  const isEmbed = !!queryParams.get("embed") || isHidden;
 
   const initState = useMemo(() => {
     let init = {
