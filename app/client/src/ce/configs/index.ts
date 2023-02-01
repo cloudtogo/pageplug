@@ -118,7 +118,7 @@ export const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
       ? process.env.REACT_APP_CLOUD_HOSTING.length > 0
       : false,
     appVersion: {
-      id: process.env.REACT_APP_VERSION_ID || "",
+      id: process.env.REACT_APP_VERSION_ID || "v1.8.15",
       releaseDate: process.env.REACT_APP_VERSION_RELEASE_DATE || "",
       edition: process.env.REACT_APP_VERSION_EDITION || "",
     },

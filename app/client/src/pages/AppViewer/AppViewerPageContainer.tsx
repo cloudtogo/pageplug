@@ -31,8 +31,9 @@ const Section = styled.section<{
   isMobile: boolean;
 }>`
   background: ${({ isMobile }) => (isMobile ? "#fff" : "transparent")};
-  width: ${({ isMobile }) => (isMobile ? "auto" : "100%")};
+  width: ${({ isMobile }) => (isMobile ? "450px" : "100%")};
   height: 100%;
+  min-height: ${({ height, isMobile }) => (isMobile ? `${height}px` : "unset")};
   margin: 0 auto;
   position: relative;
   overflow: auto;

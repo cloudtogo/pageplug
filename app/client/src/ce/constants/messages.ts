@@ -14,7 +14,7 @@ export const APPSMITH_DISPLAY_VERSION = (
   edition: string,
   version: string,
   cloudHosting: boolean,
-) => `Appsmith ${!cloudHosting ? edition : ""} ${version}`;
+) => `PagePlug ${!cloudHosting ? edition : ""} ${version}`;
 export const YES = () => `是的`;
 export const ARE_YOU_SURE = () => `确定吗？`;
 export const ERROR_ADD_API_INVALID_URL = () =>
@@ -289,7 +289,18 @@ export const WIDGET_BIND_HELP = () => "不知道怎么从组件获取信息吗�
 
 export const BACK_TO_HOMEPAGE = () => "回到主页";
 
+// error pages
+export const PAGE_NOT_FOUND_TITLE = () => "404";
 export const PAGE_NOT_FOUND = () => "未找到页面";
+export const PAGE_SERVER_UNAVAILABLE_ERROR_CODE = () => "503";
+export const PAGE_SERVER_UNAVAILABLE_TITLE = () => "PagePlug 服务异常";
+export const PAGE_SERVER_UNAVAILABLE_DESCRIPTION = () => "请稍后重试";
+export const PAGE_SERVER_TIMEOUT_ERROR_CODE = () => "504";
+export const PAGE_SERVER_TIMEOUT_TITLE = () => "PagePlug 服务长时间无响应";
+export const PAGE_SERVER_TIMEOUT_DESCRIPTION = () => `请稍后重试`;
+export const PAGE_CLIENT_ERROR_TITLE = () => "糟糕，魔法失灵了！";
+export const PAGE_CLIENT_ERROR_DESCRIPTION = () =>
+  "请联系 PagePlug 团队寻求帮助";
 
 // comments
 export const POST = () => "提交";
@@ -592,10 +603,10 @@ export const CANNOT_MERGE_DUE_TO_UNCOMMITTED_CHANGES = () =>
   "你当前分支还有未提交的更新，请在合并之前提交更新";
 
 export const DISCONNECT_SERVICE_SUBHEADER = () =>
-  "修改这个配置会打断用户鉴权，请谨慎操作";
-export const DISCONNECT_SERVICE_WARNING = () => "最主要的鉴权方式会被删除";
+  "修改这个配置会打断用户登录，请谨慎操作";
+export const DISCONNECT_SERVICE_WARNING = () => "这个身份认证方式会被删除";
 export const AUTHENTICATION_METHOD_ENABLED = (methodName: string) => `
-  ${methodName} 鉴权方式已生效
+  ${methodName} 身份认证已生效
 `;
 
 export const REVOKE_EXISTING_REPOSITORIES = () => "与现有仓库断开连接";
@@ -941,7 +952,7 @@ export const INCIDENT_MANAGEMENT_DETAIL1 = () =>
   "Go back in time from an incident to see who did what, correlate events with breaking changes, and run RCAs to remediate incidents for now and the future.";
 export const AVAILABLE_ON_BUSINESS = () => "Available on a business plan only";
 export const EXCLUSIVE_TO_BUSINESS = (featureName: string) =>
-  `The ${featureName} feature is exclusive to workspaces on the Enterprise Plan`;
+  `The ${featureName} feature is exclusive to workspaces on the Business Plan`;
 // Audit logs Upgrade page end
 // Audit logs end
 
@@ -985,6 +996,7 @@ export const LOCK_ENTITY_EXPLORER_MESSAGE = () => `固定侧边栏`;
 export const CLOSE_ENTITY_EXPLORER_MESSAGE = () => `关闭侧边栏`;
 export const JS_TOGGLE_DISABLED_MESSAGE = "清空字段回退";
 export const PROPERTY_PANE_EMPTY_SEARCH_RESULT_MESSAGE = "没有发现任何属性";
+export const PROPERTY_SEARCH_INPUT_PLACEHOLDER = "搜索组件属性";
 export const HELP_MESSAGE = "帮助";
 
 // API Pane
@@ -1017,13 +1029,43 @@ export const CHANGE_ECHART_THEME = (name: string) =>
   `Echart主题已切换为 ${name} 风格主题`;
 
 export const UPGRADE_TO_EE = (authLabel: string) =>
-  `你好，我想升级并且开始使用 ${authLabel} 鉴权`;
+  `你好，我想升级来使用 ${authLabel} 鉴权`;
+export const UPGRADE_TO_EE_FEATURE = (feature: string) =>
+  `你好，我想升级来使用 ${feature} 功能`;
 export const UPGRADE_TO_EE_GENERIC = () => `你好，我想升级`;
 export const ADMIN_AUTH_SETTINGS_TITLE = () => "选择鉴权方式";
 export const ADMIN_AUTH_SETTINGS_SUBTITLE = () => "选择一个鉴权协议";
 export const DANGER_ZONE = () => "危险操作";
 export const DISCONNECT_AUTH_METHOD = () => "断开连接";
 export const DISCONNECT_CONFIRMATION = () => "你确定吗？";
+
+// Branding
+export const ADMIN_BRANDING_SETTINGS_TITLE = () => "为你的平台自定义品牌";
+export const ADMIN_BRANDING_SETTINGS_SUBTITLE = () =>
+  "自由定制你的 LOGO 和品牌色，如果需要使用此功能请升级到商业版";
+export const ADMIN_BRANDING_COLOR_TOOLTIP = () =>
+  `当你选择主色后，我们会自动为你生成辅助色和强调色，你也可以随时调整它们`;
+export const ADMIN_BRANDING_LOGO_SIZE_ERROR = () => `上传文件大小不能超过 2MB`;
+export const ADMIN_BRANDING_LOGO_DIMENSION_ERROR = () =>
+  `Logo 的高度必须大于 256px`;
+export const ADMIN_BRANDING_LOGO_FORMAT_ERROR = () =>
+  `上传文件仅支持 .SVG, .PNG, 和 .JPG 格式`;
+export const ADMIN_BRANDING_LOGO_REQUIREMENT = () =>
+  `仅限 .SVG, .PNG, 或 .JPG • 最大 2MB`;
+export const ADMIN_BRANDING_FAVICON_DIMENSION_ERROR = () =>
+  `上传文件最大尺寸为 32 X 32 像素`;
+export const ADMIN_BRANDING_FAVICON_SIZE_ERROR = () => `上传文件必须小于 2MB`;
+export const ADMIN_BRANDING_FAVICON_FORMAT_ERROR = () =>
+  `上传文件仅支持 .ICO, .PNG, 和 .JPG 格式`;
+export const ADMIN_BRANDING_FAVICON_REQUIREMENT = () =>
+  `仅限 .ICO, .PNG, 或 .JPG • 最大尺寸 32 X 32`;
+export const ADMIN_BRANDING_COLOR_TOOLTIP_PRIMARY = () =>
+  `用于按钮、链接或其他交互组件的颜色`;
+export const ADMIN_BRANDING_COLOR_TOOLTIP_BACKGROUND = () => `用于背景颜色`;
+export const ADMIN_BRANDING_COLOR_TOOLTIP_HOVER = () => `用于按钮 hover 颜色`;
+export const ADMIN_BRANDING_COLOR_TOOLTIP_FONT = () => `用于按钮文字颜色`;
+export const ADMIN_BRANDING_COLOR_TOOLTIP_DISABLED = () =>
+  `用于禁用按钮背景颜色`;
 
 // Guided tour
 // -- STEPS ---
@@ -1093,7 +1135,7 @@ export const CONFIRM_CONTEXT_DELETE = () => "确定删除吗？";
 export const CONFIRM_CONTEXT_DELETING = () => "正在删除";
 export const CONTEXT_NO_PAGE = () => "暂无页面";
 export const CONTEXT_REFRESH = () => "刷新";
-export const CONTEXT_CLONE = () => "克隆页面";
+export const CONTEXT_CLONE = () => "复制页面";
 export const CONTEXT_SETTINGS = () => "设置";
 export const CONTEXT_SET_AS_HOME_PAGE = () => "设置为主页";
 export const PAGE = () => "页面";
@@ -1154,8 +1196,8 @@ export const ENTITY_ID_TOOLTIP = () => "这个地址用来配置你的身份认�
 
 export const FORK_APP_MODAL_LOADING_TITLE = () => "正在拉取应用组...";
 export const FORK_APP_MODAL_EMPTY_TITLE = () => "没有可用应用组";
-export const FORK_APP_MODAL_SUCCESS_TITLE = () => "选择把应用克隆到哪里";
-export const FORK = () => `克隆`;
+export const FORK_APP_MODAL_SUCCESS_TITLE = () => "选择把应用复制到哪里";
+export const FORK = () => `复制`;
 
 export const CLEAN_URL_UPDATE = {
   name: () => "更新地址",
@@ -1213,12 +1255,14 @@ export const PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_3 = () =>
   "你的应用 URL 到新的可读格式";
 export const PAGE_SETTINGS_SHOW_PAGE_NAV = () => "显示菜单导航";
 export const PAGE_SETTINGS_SHOW_PAGE_NAV_TOOLTIP = () =>
-  "显示或隐藏应用菜单导航";
+  "当前页面是否显示应用菜单导航";
 export const PAGE_SETTINGS_SET_AS_HOMEPAGE = () => "设为主页";
 export const PAGE_SETTINGS_SET_AS_HOMEPAGE_TOOLTIP = () =>
   "当前页面已经是主页，你可以将其他页面设为主页";
 export const PAGE_SETTINGS_SET_AS_HOMEPAGE_TOOLTIP_NON_HOME_PAGE = () =>
   "将这页设置为主页";
+export const PAGE_SETTINGS_ACTION_NAME_CONFLICT_ERROR = (name: string) =>
+  `${name} 已经被占用`;
 
 // Alert options and labels for showMessage types
 export const ALERT_STYLE_OPTIONS = [

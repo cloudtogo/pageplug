@@ -19,25 +19,19 @@ export const ENTITY_ICON_SIZE = 16;
 
 const PagesIcon = MenuIcons.PAGES_ICON;
 export const pageGroupIcon = (
-  <PagesIcon
-    color={Colors.MINT_GREEN}
-    height={ENTITY_ICON_SIZE}
-    width={ENTITY_ICON_SIZE}
-  />
+  <PagesIcon height={ENTITY_ICON_SIZE} width={ENTITY_ICON_SIZE} />
 );
 
 const PageIcon = MenuIcons.PAGE_ICON;
 export const pageIcon = (
   <PageIcon
-    color={Colors.MINT_GREEN}
+    color={Colors.GREY_9}
     height={ENTITY_ICON_SIZE}
     width={ENTITY_ICON_SIZE}
   />
 );
 
-export const homePageIcon = (
-  <Icon color={Colors.MINT_GREEN} icon="home" iconSize={ENTITY_ICON_SIZE} />
-);
+export const homePageIcon = <Icon icon="home" iconSize={ENTITY_ICON_SIZE} />;
 
 const DefaultPageIcon = MenuIcons.DEFAULT_HOMEPAGE_ICON;
 export const defaultPageIcon = (
@@ -51,11 +45,7 @@ export const defaultPageIcon = (
 
 const HiddenPageIcon = MenuIcons.EYES_OFF_ICON;
 export const hiddenPageIcon = (
-  <HiddenPageIcon
-    color={Colors.MINT_GREEN}
-    height={ENTITY_ICON_SIZE}
-    width={ENTITY_ICON_SIZE}
-  />
+  <HiddenPageIcon height={ENTITY_ICON_SIZE} width={ENTITY_ICON_SIZE} />
 );
 
 const WidgetIcon = MenuIcons.WIDGETS_ICON;

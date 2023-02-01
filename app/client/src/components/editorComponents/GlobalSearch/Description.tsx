@@ -98,7 +98,7 @@ const Container = styled.div`
       props.theme.colors.globalSearch.documentationCodeBackground} !important;
     white-space: pre-wrap;
     overflow: hidden;
-    border-left: 3px solid #f86a2b;
+    border-left: 3px solid var(--ads-color-brand);
     padding: 12px;
   }
   .CodeMirror {

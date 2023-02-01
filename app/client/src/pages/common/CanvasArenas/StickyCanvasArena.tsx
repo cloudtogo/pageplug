@@ -128,7 +128,12 @@ export const StickyCanvasArena = forwardRef(
 
     return (
       <>
-        <canvas data-testid={canvasId} id={canvasId} ref={stickyCanvasRef} />
+        <canvas
+          data-sl="canvas-mq" // attribute to enable canvas on smartlook
+          data-testid={canvasId}
+          id={canvasId}
+          ref={stickyCanvasRef}
+        />
         <StyledCanvasSlider
           data-testid={id}
           id={id}
