@@ -335,7 +335,6 @@ export const entityDefinitions = {
   },
   MODAL_WIDGET: {
     isVisible: isVisible,
-    isOpen: "bool",
   },
   RICH_TEXT_EDITOR_WIDGET: {
     isVisible: isVisible,

@@ -98,6 +98,7 @@ export interface Category {
 
 export const SettingCategories = {
   GENERAL: "general",
+  MINI: "mini",
   EMAIL: "email",
   GOOGLE_MAPS: "google-maps",
   VERSION: "version",
@@ -108,6 +109,7 @@ export const SettingCategories = {
   GITHUB_AUTH: "github-auth",
   AUDIT_LOGS: "audit-logs",
   ACCESS_CONTROL: "access-control",
+  BRANDING: "branding",
 };
 
 export const SettingSubCategories = {
@@ -127,4 +129,5 @@ export type AdminConfigType = {
   canSave: boolean;
   isConnected?: boolean;
   icon?: string;
+  needsUpgrade?: boolean;
 };

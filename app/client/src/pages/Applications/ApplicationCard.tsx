@@ -116,6 +116,7 @@ const NameWrapper = styled((props: HTMLDivProps & NameWrapperProps) => (
                   border: 2px solid ${Colors.BLACK};
                   background-color: ${Colors.BLACK};
                   color: ${Colors.WHITE};
+                  white-space: nowrap;
                 }
 
                 & .t--application-view-link:hover {
@@ -125,7 +126,7 @@ const NameWrapper = styled((props: HTMLDivProps & NameWrapperProps) => (
 
                   svg {
                     path {
-                      fill: ${Colors.BLACK};
+                      fill: currentColor;
                     }
                   }
                 }
@@ -138,7 +139,7 @@ const NameWrapper = styled((props: HTMLDivProps & NameWrapperProps) => (
                       width: 16px;
                       height: 16px;
                       path {
-                        fill: ${Colors.WHITE};
+                        fill: currentColor;
                       }
                     }
                   }
@@ -876,7 +877,7 @@ export function ApplicationCard(props: ApplicationCardProps) {
                   {!isMenuOpen && (
                     <Button
                       style={{ padding: "0 15.2px" }}
-                      category={Category.tertiary}
+                      category={Category.secondary}
                       className="t--application-view-link"
                       fill
                       href={viewModeURL}
