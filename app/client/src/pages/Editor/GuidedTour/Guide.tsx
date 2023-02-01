@@ -265,8 +265,8 @@ function InitialContent() {
       </ContentWrapper>
       <Hint>
         <span className="hint-text">
-          The app is connected to a Postgres database with customers data called{" "}
-          <b>Customers DB</b>.
+          这个应用会连接一个名为 <b>Customers DB</b> 的 Postgres
+          数据库来获取用户数据
         </span>
       </Hint>
     </div>

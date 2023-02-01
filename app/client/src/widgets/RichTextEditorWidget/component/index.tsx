@@ -338,6 +338,7 @@ function RichtextEditorComponent(props: RichtextEditorComponentProps) {
         borderRadius={props.borderRadius}
         isDynamicHeightEnabled={isDynamicHeightEnabled}
         isValid={props.isValid}
+        data-no-touch-simulate
       >
         <Editor
           disabled={props.isDisabled}

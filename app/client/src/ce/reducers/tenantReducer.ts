@@ -16,7 +16,6 @@ export const defaultBrandingConfig = {
   brandFaviconUrl: "/static/img/favicon-pageplug.ico",
   brandColors: {
     ...createBrandColorsFromPrimaryColor("#2CBBA6"),
-    font: "#fff",
   },
   brandLogoUrl: "/static/img/pageplug_logo_black.svg",
 };
