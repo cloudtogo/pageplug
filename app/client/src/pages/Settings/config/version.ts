@@ -13,14 +13,14 @@ export const config: AdminConfigType = {
   icon: "timer-2-line",
   type: SettingCategories.VERSION,
   controlType: SettingTypes.GROUP,
-  title: "Version",
+  title: "版本",
   canSave: false,
   settings: [
     {
       id: "APPSMITH_CURRENT_VERSION",
       category: SettingCategories.VERSION,
       controlType: SettingTypes.TEXT,
-      label: "Current version",
+      label: "当前版本",
     },
     {
       id: "APPSMITH_VERSION_READ_MORE",
@@ -33,7 +33,7 @@ export const config: AdminConfigType = {
       },
       category: SettingCategories.VERSION,
       controlType: SettingTypes.LINK,
-      label: "Release Notes",
+      label: "Appsmith 官方版本发布",
     },
   ],
 };

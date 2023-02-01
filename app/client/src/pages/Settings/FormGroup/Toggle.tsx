@@ -52,8 +52,8 @@ function FieldToggleWithToggleText(
           {typeof toggleText == "function"
             ? createMessage(() => toggleText(val))
             : val
-            ? createMessage(() => "Enabled")
-            : createMessage(() => "Disabled")}
+            ? createMessage(() => "开启")
+            : createMessage(() => "关闭")}
         </ToggleStatus>
       </ToggleWrapper>
     );

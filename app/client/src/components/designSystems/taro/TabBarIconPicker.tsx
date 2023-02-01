@@ -33,7 +33,7 @@ const TabBarContainer = styled.div`
   transform: translate(-208px, 0px);
   width: 200px;
   border-radius: 4px;
-  background: ${Colors.MINT_GREEN_LIGHT}45;
+  background: ${Colors.MINT_GREEN_LIGHT};
   border: 2px solid ${Colors.MINT_GREEN};
   padding: 12px;
 `;

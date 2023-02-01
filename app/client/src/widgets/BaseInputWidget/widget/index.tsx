@@ -241,6 +241,24 @@ class BaseInputWidget<
             isTriggerProperty: true,
           },
           {
+            helpText: "输入聚焦时触发",
+            propertyName: "onFocus",
+            label: "onFocus",
+            controlType: "ACTION_SELECTOR",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: true,
+          },
+          {
+            helpText: "输入失焦时触发",
+            propertyName: "onBlur",
+            label: "onBlur",
+            controlType: "ACTION_SELECTOR",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: true,
+          },
+          {
             helpText: "提交时触发（用户按了回车）",
             propertyName: "onSubmit",
             label: "onSubmit",
@@ -420,7 +438,6 @@ class BaseInputWidget<
      * 2. Dragging across the text (for text selection) in input won't cause the widget to drag.
      */
     this.props.updateWidgetMetaProperty("dragDisabled", focusState);
-    this.props.updateWidgetMetaProperty("isFocused", focusState);
   }
 
   resetWidgetText() {

@@ -48,6 +48,7 @@ import {
   hasManagePagePermission,
 } from "@appsmith/utils/permissionHelpers";
 import { AppState } from "@appsmith/reducers";
+import { pageChanged } from "actions/focusHistoryActions";
 import { TooltipComponent } from "design-system";
 
 const ENTITY_HEIGHT = 36;
@@ -127,6 +128,16 @@ function Pages() {
       });
       dispatch(toggleInOnboardingWidgetSelection(true));
       history.push(navigateToUrl);
+      const currentURL = navigateToUrl.split(/(?=\?)/g);
+      dispatch(
+        pageChanged(
+          page.pageId,
+          currentURL[0],
+          currentURL[1],
+          location.pathname,
+          location.search,
+        ),
+      );
     },
     [location.pathname],
   );
@@ -226,7 +237,7 @@ function Pages() {
           />
         );
       }),
-    [pages, currentPageId, applicationId],
+    [pages, currentPageId, applicationId, location.pathname],
   );
 
   return (
@@ -246,7 +257,9 @@ function Pages() {
         }
         entityId="Pages"
         icon={""}
-        isDefaultExpanded={isPagesOpen === null ? true : isPagesOpen}
+        isDefaultExpanded={
+          isPagesOpen === null || isPagesOpen === undefined ? true : isPagesOpen
+        }
         name="页面"
         // onClickPreRightIcon={onPin}
         onToggle={onPageToggle}
