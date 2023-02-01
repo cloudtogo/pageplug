@@ -10,7 +10,7 @@ function FilePickerComponent(props: FilePickerComponentProps) {
   let computedLabel = props.label;
 
   if (props.files && props.files.length) {
-    computedLabel = `${props.files.length} files selected`;
+    computedLabel = `已选择 ${props.files.length} 个文件`;
   }
 
   /**

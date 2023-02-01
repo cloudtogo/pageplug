@@ -1408,12 +1408,12 @@ const auth: any = {
   inputBackground: darkShades[1],
   headingText: "#000",
   link: Colors.MINT_GREEN,
-  boxShadow: `0 0 0 6px ${Colors.MINT_GREEN}ab`,
+  boxShadow: `0 0 0 6px ${Colors.MINT_GREEN_LIGHT}`,
   text: darkShades[6],
   placeholder: darkShades[9],
-  socialBtnText: darkShades[8],
-  socialBtnBorder: darkShades[8],
-  socialBtnHighlight: darkShades[1],
+  socialBtnText: "#000",
+  socialBtnBorder: lightShades[13],
+  socialBtnHighlight: lightShades[2],
 };
 
 const helpModal = {

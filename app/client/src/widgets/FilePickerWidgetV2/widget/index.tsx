@@ -25,6 +25,7 @@ import Papa from "papaparse";
 import { klona } from "klona";
 import { UppyFile } from "@uppy/utils";
 import { Stylesheet } from "entities/AppTheming";
+import zh_CN from "./zh_CN";
 
 const CSV_ARRAY_LABEL = "Array (仅限 CSVs)";
 const CSV_FILE_TYPE_REGEX = /.+(\/csv)$/;
@@ -596,11 +597,7 @@ class FilePickerWidget extends BaseWidget<
             plugin.closeModal();
           }
         },
-        locale: {
-          strings: {
-            closeModal: "Close",
-          },
-        },
+        locale: zh_CN,
       })
       .use(GoogleDrive, { companionUrl: "https://companion.uppy.io" })
       .use(Url, { companionUrl: "https://companion.uppy.io" })

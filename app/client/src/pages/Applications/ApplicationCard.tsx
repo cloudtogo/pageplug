@@ -116,6 +116,7 @@ const NameWrapper = styled((props: HTMLDivProps & NameWrapperProps) => (
                   border: 2px solid ${Colors.BLACK};
                   background-color: ${Colors.BLACK};
                   color: ${Colors.WHITE};
+                  white-space: nowrap;
                 }
 
                 & .t--application-view-link:hover {
