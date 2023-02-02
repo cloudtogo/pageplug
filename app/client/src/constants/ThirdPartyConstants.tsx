@@ -9,6 +9,8 @@ export const GET_RELEASE_NOTES_URL = (tagName: string) =>
   `${GITHUB_RELEASE_URL}/${tagName}`;
 export const GOOGLE_MAPS_SETUP_DOC =
   "https://docs.appsmith.com/getting-started/setup/instance-configuration/google-maps";
+export const BAIDU_MAPS_SETUP_DOC =
+  "https://lbsyun.baidu.com/index.php?title=jspopularGL/guide/getkey";
 export const GOOGLE_SIGNUP_SETUP_DOC =
   "https://docs.appsmith.com/getting-started/setup/instance-configuration/authentication/google-login";
 export const GITHUB_SIGNUP_SETUP_DOC =

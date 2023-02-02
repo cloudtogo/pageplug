@@ -10,6 +10,7 @@ import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { DerivedPropertiesMap } from "utils/WidgetFactory";
 import { Colors } from "constants/Colors";
 import { AllChartData, ChartType } from "../constants";
+import { Stylesheet } from "entities/AppTheming";
 
 const EchartComponent = lazy(() =>
   retryPromise(() =>
@@ -33,6 +34,15 @@ class EchartWidget extends BaseWidget<EchartWidgetProps, WidgetState> {
 
   static getPropertyPaneStyleConfig() {
     return styleConfig;
+  }
+
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      borderRadius: "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      boxShadow: "{{appsmith.theme.boxShadow.appBoxShadow}}",
+      accentColor: "{{appsmith.theme.colors.primaryColor}}",
+      fontFamily: "{{appsmith.theme.fontFamily.appFont}}",
+    };
   }
 
   static getMetaPropertiesMap(): Record<string, any> {

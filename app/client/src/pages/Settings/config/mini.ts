@@ -6,7 +6,7 @@ import {
 } from "@appsmith/pages/AdminSettings/config/types";
 
 export const config: AdminConfigType = {
-  icon: "map-pin-2-line",
+  icon: "mobile",
   type: SettingCategories.MINI,
   controlType: SettingTypes.GROUP,
   title: "小程序",
