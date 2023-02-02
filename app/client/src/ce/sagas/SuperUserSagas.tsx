@@ -73,7 +73,7 @@ export function* SaveAdminSettingsSaga(
 
     if (isValidResponse) {
       Toaster.show({
-        text: "Successfully Saved",
+        text: "保存成功",
         variant: Variant.success,
       });
       yield put({

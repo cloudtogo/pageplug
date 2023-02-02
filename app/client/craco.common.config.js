@@ -1,6 +1,7 @@
 const CracoAlias = require("craco-alias");
 const CracoLessPlugin = require('craco-less');
 const { DefinePlugin, EnvironmentPlugin } = require("webpack");
+const { merge } = require("webpack-merge");
 
 module.exports = {
   devServer: {
@@ -15,35 +16,42 @@ module.exports = {
     },
   },
   webpack: {
-    configure: {
-      resolve: {
-        fallback: {
-          assert: false,
-          stream: false,
-          util: false,
-          fs: false,
-          os: false,
-          path: false,
+    configure: webpackConfig => {
+      const config = {
+        resolve: {
+          fallback: {
+            assert: false,
+            stream: false,
+            util: false,
+            fs: false,
+            os: false,
+            path: false,
+          },
         },
-      },
-      module: {
-        rules: [
-          {
-            test: /\.m?js/,
-            resolve: { fullySpecified: false },
+        module: {
+          rules: [
+            {
+              test: /\.m?js/,
+              resolve: { fullySpecified: false },
+            },
+          ],
+        },
+        ignoreWarnings: [
+          function ignoreSourcemapsloaderWarnings(warning) {
+            return (
+              warning.module &&
+              warning.module.resource.includes("node_modules") &&
+              warning.details &&
+              warning.details.includes("source-map-loader")
+            );
           },
         ],
-      },
-      ignoreWarnings: [
-        function ignoreSourcemapsloaderWarnings(warning) {
-          return (
-            warning.module &&
-            warning.module.resource.includes("node_modules") &&
-            warning.details &&
-            warning.details.includes("source-map-loader")
-          );
-        },
-      ],
+      };
+      const scopePluginIndex = webpackConfig.resolve.plugins.findIndex(
+        ({ constructor }) => constructor && constructor.name === 'ModuleScopePlugin'
+      );
+      webpackConfig.resolve.plugins.splice(scopePluginIndex, 1);
+      return merge(webpackConfig, config);
     },
     plugins: [
       new DefinePlugin({
