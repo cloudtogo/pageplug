@@ -916,9 +916,8 @@ export const SETTINGS_TOOLTIP = () => "设置";
 //settings
 export const ADMIN_SETTINGS = () => "管理员设置";
 export const RESTART_BANNER_BODY = () => "请稍等，马上就好了";
-export const RESTART_BANNER_HEADER = () => "重启你的服务器";
-export const RESTART_ERROR_BODY = () =>
-  "你可以再试着重启你的服务器来让你的设置生效";
+export const RESTART_BANNER_HEADER = () => "正在帮你重启服务...";
+export const RESTART_ERROR_BODY = () => "你可以试着手动重启服务来让更改生效";
 export const RESTART_ERROR_HEADER = () => "重启失败";
 export const RETRY_BUTTON = () => "重试";
 export const INFO_VERSION_MISMATCH_FOUND_RELOAD_REQUEST = () =>
