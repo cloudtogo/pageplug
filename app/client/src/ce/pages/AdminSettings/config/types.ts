@@ -101,6 +101,7 @@ export const SettingCategories = {
   MINI: "mini",
   EMAIL: "email",
   GOOGLE_MAPS: "google-maps",
+  BAIDU_MAPS: "baidu-maps",
   VERSION: "version",
   ADVANCED: "advanced",
   AUTHENTICATION: "authentication",
