@@ -1,6 +1,7 @@
 const { exec } = require("child_process");
 const path = require("path");
 const sharedJSON = require("./shared-dependencies.json");
+const crossify = require('./cross');
 
 const CURRENT_DIRECTORY = path.join(__dirname, '..');
 const SCOPE_DIRECTORY = process.env.CURRENT_SCOPE;
@@ -24,10 +25,10 @@ async function main() {
                 `Linking Dependency for \x1b[34m${dependencyFolder} to ${SCOPE_DIRECTORY}`
               );
               exec(
-                `
+                crossify(`
             cd ${CURRENT_DIRECTORY}/${SCOPE_DIRECTORY};
             yarn link ${dependencyFolder};
-          `,
+          `),
                 (err) => {
                   if (err) {
                     reject(err);
