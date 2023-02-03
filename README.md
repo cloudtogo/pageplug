@@ -13,9 +13,9 @@
 </h3>
 
 ## PagePlug 是什么？
-PagePlug 是 [Appsmith](https://github.com/appsmithorg/appsmith) 的超集，是一个更适合中国开发者的开源前端低代码平台，可以用来制作 web 应用、微信小程序。适合有基础开发经验的开发者：程序员、运维工程师、计算机类师生、数据分析师、产品经理等。
+PagePlug 是 [Appsmith](https://github.com/appsmithorg/appsmith) 的中国化项目，是一个开源的、声明式的、可视化的前端低代码框架，可以用来制作 web 应用、微信小程序。
 
-> 当前版本基于 Appsmith v1.7.14 版本，最新版本正在开发中，敬请期待。
+> 当前版本基于 Appsmith v1.8.15 版本，最新版本正在开发中，敬请期待。
 
 ## PagePlug 和其他低代码有什么不同？
 PagePlug 无需侵入客户架构，直接连接数据源（API、DB），任何的后端数据都变成了 JS 变量，可以随意转换、并配置到任意的视图组件，整个过程符合开发者心流，前端开发变得不仅更快了、而且更快乐了！
@@ -30,11 +30,14 @@ PagePlug 无需侵入客户架构，直接连接数据源（API、DB），任何
 
 ## 功能特色
 
-- 支持移动端！一分钟制作一个小程序，并生成小程序码进行分享！
-  <img src="static/pageplug/gifs/weapp.gif" width="100%">
+- 支持移动端！一分钟制作一个小程序，并生成小程序码进行分享！ 
+  <img src="static/pageplug/gifs/weapp.gif">
 
-- 丰富的移动端组件
-  <img src="static/pageplug/gifs/widgets.gif" width="100%">
+- 丰富的移动端组件  
+  <img src="static/pageplug/gifs/widgets.gif">
+
+- 集成优秀可视化方案 [Echarts](https://echarts.apache.org)  
+  <img src="static/pageplug/gifs/echarts.gif">
 
 - 集成社区中功能拔群的表单解决方案 [Formily](https://github.com/alibaba/formily)
   <img src="static/pageplug/gifs/formily.gif" width="100%">
@@ -64,6 +67,8 @@ PagePlug 无需侵入客户架构，直接连接数据源（API、DB），任何
   [体验地址](https://lowcode.methodot.com/applications/6322a6d63892ca140cb87551/pages/6322a6d63892ca140cb87555?embed=1)  
   PagePlug 制作的简单CRM项目，实现了线索、商机和客户的信息管理
 
+- Echarts示例  
+  演示如何在 PagePlug 中使用 Echarts
 
 ## 如何导入 DEMO 项目？
 通过文件方式导入demo项目到应用组，demo项目 JSON 文件在 /demo 目录下
@@ -158,10 +163,9 @@ yarn dev:weapp
 ## 帮助
 - 扫码邀请加入微信交流群  
   <img src="static/pageplug/wechat_help.jpg" width="200">
+- 联系作者  
+  <img src="static/pageplug/wechat_author.jpg" width="200">
 - [中文社区](https://appsmith-fans.cn/)
-
-## 贡献者
-[AppSmith团队](https://github.com/appsmithorg/appsmith)、[王昆](https://github.com/lifeneedspassion)
 
 ## 感谢这些巨人
 PagePlug 代码中使用到的才华横溢的开源项目，感谢这些开源项目让世界更美好！
