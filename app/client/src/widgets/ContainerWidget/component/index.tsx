@@ -4,7 +4,6 @@ import tinycolor from "tinycolor2";
 import { invisible } from "constants/DefaultTheme";
 import { Color } from "constants/Colors";
 import { generateClassName, getCanvasClassName } from "utils/generators";
-import { useCanvasMinHeightUpdateHook } from "utils/hooks/useCanvasMinHeightUpdateHook";
 import WidgetStyleContainer, {
   WidgetStyleContainerProps,
 } from "components/designSystems/appsmith/WidgetStyleContainer";
@@ -23,7 +22,10 @@ const StyledContainerComponent = styled.div<
 >`
   height: 100%;
   width: 100%;
-  background: ${(props) => props.backgroundColor};
+  background: ${(props) =>
+    props.backgroundImage
+      ? `url('${props.backgroundImage}') no-repeat center top / 100% 100%`
+      : props.backgroundColor};
   opacity: ${(props) => (props.resizeDisabled ? "0.8" : "1")};
   position: relative;
   ${(props) => (!props.isVisible ? invisible : "")};
@@ -48,6 +50,8 @@ const StyledContainerComponent = styled.div<
         ? tinycolor(props.backgroundColor)
             .darken(5)
             .toString()
+        : props.backgroundImage
+        ? `url('${props.backgroundImage}') no-repeat center top / 100% 100%`
         : props.backgroundColor;
     }};
   }
@@ -86,7 +90,6 @@ function ContainerComponentWrapper(props: ContainerComponentProps) {
 }
 
 function ContainerComponent(props: ContainerComponentProps) {
-  useCanvasMinHeightUpdateHook(props.widgetId, props.minHeight);
   return props.widgetId === MAIN_CONTAINER_WIDGET_ID ? (
     <ContainerComponentWrapper {...props} />
   ) : (
@@ -95,6 +98,7 @@ function ContainerComponent(props: ContainerComponentProps) {
         "widgetId",
         "containerStyle",
         "backgroundColor",
+        "backgroundImage",
         "borderColor",
         "borderWidth",
         "borderRadius",
@@ -114,6 +118,7 @@ export interface ContainerComponentProps
   children?: ReactNode;
   className?: string;
   backgroundColor?: Color;
+  backgroundImage?: string;
   shouldScrollContents?: boolean;
   resizeDisabled?: boolean;
   selected?: boolean;

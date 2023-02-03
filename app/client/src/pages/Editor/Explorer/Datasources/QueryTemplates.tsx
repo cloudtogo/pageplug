@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Colors } from "constants/Colors";
 import { useDispatch, useSelector } from "react-redux";
 import { createActionRequest } from "actions/pluginActionActions";
-import { AppState } from "reducers";
+import { AppState } from "@appsmith/reducers";
 import { createNewQueryName } from "utils/AppsmithUtils";
 import {
   getCurrentApplicationId,
@@ -31,8 +31,8 @@ const TemplateType = styled.div`
   padding: 8px;
   &:hover {
     cursor: pointer;
-    color: ${Colors.MINT_ORANGE};
-    background: ${Colors.MINT_ORANGE_LIGHT};
+    color: ${Colors.MINT_GREEN};
+    background: #eee;
   }
 `;
 

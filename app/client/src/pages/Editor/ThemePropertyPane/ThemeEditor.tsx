@@ -1,10 +1,11 @@
-import { createGlobalStyle } from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { get, startCase } from "lodash";
 import MoreIcon from "remixicon-react/MoreFillIcon";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useCallback, useState } from "react";
 import Save2LineIcon from "remixicon-react/Save2LineIcon";
 import ArrowGoBackIcon from "remixicon-react/ArrowGoBackFillIcon";
+import EchartThemeEditor from "./Echart/EchartThemeEditor";
 
 import ThemeCard from "./ThemeCard";
 import {
@@ -29,14 +30,18 @@ import { AppTheme } from "entities/AppTheming";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import ThemeFontControl from "./controls/ThemeFontControl";
 import ThemeColorControl from "./controls/ThemeColorControl";
-import Button, { Category, Size } from "components/ads/Button";
+import { Button, Category, Classes as CsClasses, Size } from "design-system";
 import ThemeBoxShadowControl from "./controls/ThemeShadowControl";
 import { getCurrentApplicationId } from "selectors/editorSelectors";
 import ThemeBorderRadiusControl from "./controls/ThemeBorderRadiusControl";
 import BetaCard from "components/editorComponents/BetaCard";
-import { Classes as CsClasses } from "components/ads/common";
+import { Colors } from "constants/Colors";
 
 const THEMING_BETA_CARD_POPOVER_CLASSNAME = `theming-beta-card-popover`;
+
+const Title = styled.h3`
+  color: ${Colors.GRAY_800};
+`;
 
 const PopoverStyles = createGlobalStyle`
 .${THEMING_BETA_CARD_POPOVER_CLASSNAME} .bp3-popover-content {
@@ -56,9 +61,9 @@ const PopoverStyles = createGlobalStyle`
 `;
 
 const FOOL_TRANSLATE: any = {
-  "App Font": "应用字体",
-  "App Border Radius": "应用圆角",
-  "App Box Shadow": "应用阴影",
+  appFont: "应用字体",
+  appBorderRadius: "应用圆角",
+  appBoxShadow: "应用阴影",
 };
 
 function ThemeEditor() {
@@ -122,159 +127,169 @@ function ThemeEditor() {
 
   return (
     <>
-      <div>
-        <header className="px-3 space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <h3 className="text-sm font-normal capitalize">主题配置</h3>
-              <BetaCard />
-            </div>
-            <div>
-              <DropdownV2 position="bottom-right">
-                <DropdownTrigger>
-                  <button className="p-1 hover:bg-gray-100 active:bg-gray-100">
-                    <MoreIcon className="w-5 h-5" />
-                  </button>
-                </DropdownTrigger>
-                <DropdownList>
-                  <DropdownItem
-                    className="flex items-center"
-                    icon={<Save2LineIcon className="w-4 h-4" />}
-                    onClick={onOpenSaveModal}
-                    text="保存主题"
-                  />
-                  <DropdownItem
-                    className="flex items-center"
-                    icon={<ArrowGoBackIcon className="w-4 h-4" />}
-                    onClick={onResetTheme}
-                    text="重置主题"
-                  />
-                </DropdownList>
-              </DropdownV2>
-            </div>
+      <header className="px-4 space-y-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Title className="text-sm font-normal capitalize">主题配置</Title>
+            <BetaCard />
           </div>
-
-          <ThemeCard theme={selectedTheme}>
-            <aside
-              className={`absolute left-0 top-0 bottom-0 right-0 items-center justify-center hidden group-hover:flex  backdrop-filter bg-gray-900 bg-opacity-50 backdrop-blur-sm `}
+          <div>
+            <DropdownV2
+              portalContainer={
+                document.getElementById("app-settings-portal") || undefined
+              }
+              position="bottom-right"
             >
-              <Button
-                category={Category.primary}
-                className="t--change-theme-btn"
-                onClick={onClickChangeThemeButton}
-                size={Size.medium}
-                text="选择主题"
-              />
-            </aside>
-          </ThemeCard>
-        </header>
-        <main className="mt-1">
-          {/* FONT  */}
-          <SettingSection className="px-3 py-3" isDefaultOpen title="字体">
-            {Object.keys(selectedTheme.config.fontFamily).map(
-              (fontFamilySectionName: string, index: number) => {
-                const itemName = startCase(fontFamilySectionName);
-                return (
-                  <section className="space-y-2" key={index}>
-                    <h3>{FOOL_TRANSLATE[itemName] || itemName}</h3>
-                    <ThemeFontControl
-                      options={get(
-                        selectedTheme,
-                        `config.fontFamily.${fontFamilySectionName}`,
-                        {},
-                      )}
-                      sectionName={fontFamilySectionName}
-                      selectedOption={get(
-                        selectedTheme,
-                        `properties.fontFamily.${fontFamilySectionName}`,
-                      )}
-                      theme={selectedTheme}
-                      updateTheme={updateSelectedTheme}
-                    />
-                  </section>
-                );
-              },
-            )}
-          </SettingSection>
-          {/* COLORS */}
-          <SettingSection
-            className="px-3 py-3 border-t"
-            isDefaultOpen
-            title="颜色"
-          >
-            <section className="space-y-2">
-              <ThemeColorControl
-                theme={selectedTheme}
-                updateTheme={updateSelectedTheme}
-              />
-            </section>
-          </SettingSection>
+              <DropdownTrigger>
+                <button className="p-1 hover:bg-gray-100 active:bg-gray-100">
+                  <MoreIcon className="w-5 h-5" />
+                </button>
+              </DropdownTrigger>
+              <DropdownList>
+                <DropdownItem
+                  className="flex items-center"
+                  icon={<Save2LineIcon className="w-4 h-4" />}
+                  onClick={onOpenSaveModal}
+                  text="保存主题"
+                />
+                <DropdownItem
+                  className="flex items-center"
+                  icon={<ArrowGoBackIcon className="w-4 h-4" />}
+                  onClick={onResetTheme}
+                  text="重置主题"
+                />
+              </DropdownList>
+            </DropdownV2>
+          </div>
+        </div>
 
-          {/* BORDER RADIUS */}
-          <SettingSection
-            className="px-3 py-3 border-t "
-            isDefaultOpen
-            title="边框"
+        <ThemeCard theme={selectedTheme}>
+          <aside
+            className={`absolute left-0 top-0 bottom-0 right-0 items-center justify-center hidden group-hover:flex  backdrop-filter bg-gray-900 bg-opacity-50 backdrop-blur-sm `}
           >
-            {Object.keys(selectedTheme.config.borderRadius).map(
-              (borderRadiusSectionName: string, index: number) => {
-                const itemName = startCase(borderRadiusSectionName);
-                return (
-                  <section className="space-y-2" key={index}>
-                    <h3>{FOOL_TRANSLATE[itemName] || itemName}</h3>
-                    <ThemeBorderRadiusControl
-                      options={get(
-                        selectedTheme,
-                        `config.borderRadius.${borderRadiusSectionName}`,
-                        {},
-                      )}
-                      sectionName={borderRadiusSectionName}
-                      selectedOption={get(
-                        selectedTheme,
-                        `properties.borderRadius.${borderRadiusSectionName}`,
-                      )}
-                      theme={selectedTheme}
-                      updateTheme={updateSelectedTheme}
-                    />
-                  </section>
-                );
-              },
-            )}
-          </SettingSection>
+            <Button
+              category={Category.primary}
+              className="t--change-theme-btn"
+              onClick={onClickChangeThemeButton}
+              size={Size.medium}
+              text="选择主题"
+            />
+          </aside>
+        </ThemeCard>
+      </header>
+      <main className="mt-1">
+        {/* FONT  */}
+        <SettingSection className="px-4 py-3" isDefaultOpen title="字体">
+          {Object.keys(selectedTheme.config.fontFamily).map(
+            (fontFamilySectionName: string, index: number) => {
+              return (
+                <section className="space-y-2" key={index}>
+                  <h3>
+                    {FOOL_TRANSLATE[fontFamilySectionName] ||
+                      startCase(fontFamilySectionName)}
+                  </h3>
+                  <ThemeFontControl
+                    options={get(
+                      selectedTheme,
+                      `config.fontFamily.${fontFamilySectionName}`,
+                      {},
+                    )}
+                    sectionName={fontFamilySectionName}
+                    selectedOption={get(
+                      selectedTheme,
+                      `properties.fontFamily.${fontFamilySectionName}`,
+                    )}
+                    theme={selectedTheme}
+                    updateTheme={updateSelectedTheme}
+                  />
+                </section>
+              );
+            },
+          )}
+        </SettingSection>
+        {/* COLORS */}
+        <SettingSection
+          className="px-4 py-3 border-t"
+          isDefaultOpen
+          title="颜色"
+        >
+          <section className="space-y-2">
+            <ThemeColorControl
+              theme={selectedTheme}
+              updateTheme={updateSelectedTheme}
+            />
+          </section>
+        </SettingSection>
 
-          {/* BOX SHADOW */}
-          <SettingSection
-            className="px-3 py-3 border-t "
-            isDefaultOpen
-            title="阴影"
-          >
-            {Object.keys(selectedTheme.config.boxShadow).map(
-              (boxShadowSectionName: string, index: number) => {
-                const itemName = startCase(boxShadowSectionName);
-                return (
-                  <section className="space-y-2" key={index}>
-                    <h3>{FOOL_TRANSLATE[itemName] || itemName}</h3>
-                    <ThemeBoxShadowControl
-                      options={get(
-                        selectedTheme,
-                        `config.boxShadow.${boxShadowSectionName}`,
-                        {},
-                      )}
-                      sectionName={boxShadowSectionName}
-                      selectedOption={get(
-                        selectedTheme,
-                        `properties.boxShadow.${boxShadowSectionName}`,
-                      )}
-                      theme={selectedTheme}
-                      updateTheme={updateSelectedTheme}
-                    />
-                  </section>
-                );
-              },
-            )}
-          </SettingSection>
-        </main>
-      </div>
+        {/* BORDER RADIUS */}
+        <SettingSection
+          className="px-4 py-3 border-t "
+          isDefaultOpen
+          title="边框"
+        >
+          {Object.keys(selectedTheme.config.borderRadius).map(
+            (borderRadiusSectionName: string, index: number) => {
+              return (
+                <section className="space-y-2" key={index}>
+                  <h3>
+                    {FOOL_TRANSLATE[borderRadiusSectionName] ||
+                      startCase(borderRadiusSectionName)}
+                  </h3>
+                  <ThemeBorderRadiusControl
+                    options={get(
+                      selectedTheme,
+                      `config.borderRadius.${borderRadiusSectionName}`,
+                      {},
+                    )}
+                    sectionName={borderRadiusSectionName}
+                    selectedOption={get(
+                      selectedTheme,
+                      `properties.borderRadius.${borderRadiusSectionName}`,
+                    )}
+                    theme={selectedTheme}
+                    updateTheme={updateSelectedTheme}
+                  />
+                </section>
+              );
+            },
+          )}
+        </SettingSection>
+
+        {/* BOX SHADOW */}
+        <SettingSection
+          className="px-4 py-3 border-t "
+          isDefaultOpen
+          title="阴影"
+        >
+          {Object.keys(selectedTheme.config.boxShadow).map(
+            (boxShadowSectionName: string, index: number) => {
+              return (
+                <section className="space-y-2" key={index}>
+                  <h3>
+                    {FOOL_TRANSLATE[boxShadowSectionName] ||
+                      startCase(boxShadowSectionName)}
+                  </h3>
+                  <ThemeBoxShadowControl
+                    options={get(
+                      selectedTheme,
+                      `config.boxShadow.${boxShadowSectionName}`,
+                      {},
+                    )}
+                    sectionName={boxShadowSectionName}
+                    selectedOption={get(
+                      selectedTheme,
+                      `properties.boxShadow.${boxShadowSectionName}`,
+                    )}
+                    theme={selectedTheme}
+                    updateTheme={updateSelectedTheme}
+                  />
+                </section>
+              );
+            },
+          )}
+        </SettingSection>
+        <EchartThemeEditor />
+      </main>
       <SaveThemeModal isOpen={isSaveModalOpen} onClose={onCloseSaveModal} />
       <PopoverStyles />
     </>

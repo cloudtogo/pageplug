@@ -10,12 +10,13 @@ import {
 
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import MultiSelectComponent from "../component";
-import { DefaultValueType } from "rc-select/lib/interface/generator";
 import { Layers } from "constants/Layers";
-import { AutocompleteDataType } from "utils/autocomplete/TernServer";
+import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import { MinimumPopupRows, GRID_DENSITY_MIGRATION_V1 } from "widgets/constants";
 import { LabelPosition } from "components/constants";
 import { Alignment } from "@blueprintjs/core";
+import { DraftValueType } from "rc-select/lib/Select";
+import { Stylesheet } from "entities/AppTheming";
 
 function defaultOptionValueValidation(value: unknown): ValidationResponse {
   let values: string[] = [];
@@ -208,6 +209,7 @@ class MultiSelectWidget extends BaseWidget<
               { label: "上", value: LabelPosition.Top },
               { label: "自动", value: LabelPosition.Auto },
             ],
+            defaultValue: LabelPosition.Top,
             isBindProperty: false,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -406,6 +408,14 @@ class MultiSelectWidget extends BaseWidget<
     };
   }
 
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      accentColor: "{{appsmith.theme.colors.primaryColor}}",
+      borderRadius: "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      boxShadow: "none",
+    };
+  }
+
   getPageView() {
     const options = isArray(this.props.options) ? this.props.options : [];
     const values: string[] = isArray(this.props.selectedOptionValues)
@@ -453,7 +463,7 @@ class MultiSelectWidget extends BaseWidget<
     );
   }
 
-  onOptionChange = (value: DefaultValueType) => {
+  onOptionChange = (value: DraftValueType) => {
     this.props.updateWidgetMetaProperty("selectedOptionValueArr", value, {
       triggerPropertyName: "onOptionChange",
       dynamicString: this.props.onOptionChange,

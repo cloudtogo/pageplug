@@ -1,9 +1,9 @@
 version: "3"
 
 services:
-  appsmith:
-    image: index.docker.io/appsmith/appsmith-ce
-    container_name: appsmith
+  pageplug:
+    image: index.docker.io/cloudtogouser/pageplug-ce
+    container_name: pageplug
     ports:
       - "80:80"
       - "443:443"

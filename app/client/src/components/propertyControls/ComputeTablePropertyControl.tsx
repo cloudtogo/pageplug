@@ -15,7 +15,7 @@ import { isString } from "utils/helpers";
 import {
   JSToString,
   stringToJS,
-} from "components/editorComponents/ActionCreator/Fields";
+} from "components/editorComponents/ActionCreator/utils";
 import CodeEditor from "components/editorComponents/LazyCodeEditorWrapper";
 
 const PromptMessage = styled.span`
@@ -66,7 +66,7 @@ export function InputText(props: {
         placeholder={placeholder}
         promptMessage={
           <PromptMessage>
-            Access the current cell using <CurlyBraces>{"{{"}</CurlyBraces>
+            你可以这样访问当前行数据：<CurlyBraces>{"{{"}</CurlyBraces>
             currentRow.columnName
             <CurlyBraces>{"}}"}</CurlyBraces>
           </PromptMessage>

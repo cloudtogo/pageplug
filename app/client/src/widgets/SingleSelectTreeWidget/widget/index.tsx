@@ -2,20 +2,22 @@ import React, { ReactNode } from "react";
 import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { TextSize, WidgetType } from "constants/WidgetConstants";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import { isArray, findIndex } from "lodash";
+import { isArray } from "lodash";
 import {
   ValidationResponse,
   ValidationTypes,
 } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import { DefaultValueType } from "rc-select/lib/interface/generator";
+import { DefaultValueType } from "rc-tree-select/lib/interface";
 import { Layers } from "constants/Layers";
-import { isString } from "../../../utils/helpers";
-import { AutocompleteDataType } from "utils/autocomplete/TernServer";
+import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import { GRID_DENSITY_MIGRATION_V1, MinimumPopupRows } from "widgets/constants";
 import SingleSelectTreeComponent from "../component";
 import { LabelPosition } from "components/constants";
 import { Alignment } from "@blueprintjs/core";
+import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
+import derivedProperties from "./parseDerivedProperties";
+import { Stylesheet } from "entities/AppTheming";
 
 function defaultOptionValueValidation(value: unknown): ValidationResponse {
   if (typeof value === "string") return { isValid: true, parsed: value.trim() };
@@ -31,367 +33,6 @@ class SingleSelectTreeWidget extends BaseWidget<
   SingleSelectTreeWidgetProps,
   WidgetState
 > {
-  static getPropertyPaneConfig() {
-    return [
-      {
-        sectionName: "属性",
-        children: [
-          {
-            helpText: "允许用户多选，每个选项的值必须唯一",
-            propertyName: "options",
-            label: "选项",
-            controlType: "INPUT_TEXT",
-            placeholderText: "请输入选项数据",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            isJSConvertible: false,
-            validation: {
-              type: ValidationTypes.NESTED_OBJECT_ARRAY,
-              params: {
-                unique: ["value"],
-                default: [],
-                children: {
-                  type: ValidationTypes.OBJECT,
-                  params: {
-                    allowedKeys: [
-                      {
-                        name: "label",
-                        type: ValidationTypes.TEXT,
-                        params: {
-                          default: "",
-                          required: true,
-                        },
-                      },
-                      {
-                        name: "value",
-                        type: ValidationTypes.TEXT,
-                        params: {
-                          default: "",
-                        },
-                      },
-                      {
-                        name: "children",
-                        type: ValidationTypes.ARRAY,
-                        required: false,
-                        params: {
-                          children: {
-                            type: ValidationTypes.OBJECT,
-                            params: {
-                              allowedKeys: [
-                                {
-                                  name: "label",
-                                  type: ValidationTypes.TEXT,
-                                  params: {
-                                    default: "",
-                                    required: true,
-                                  },
-                                },
-                                {
-                                  name: "value",
-                                  type: ValidationTypes.TEXT,
-                                  params: {
-                                    default: "",
-                                  },
-                                },
-                              ],
-                            },
-                          },
-                        },
-                      },
-                    ],
-                  },
-                },
-              },
-            },
-            evaluationSubstitutionType:
-              EvaluationSubstitutionType.SMART_SUBSTITUTE,
-          },
-          {
-            helpText: "默认选中这个值",
-            propertyName: "defaultOptionValue",
-            label: "默认值",
-            controlType: "INPUT_TEXT",
-            placeholderText: "请输入选项数据",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: {
-              type: ValidationTypes.FUNCTION,
-              params: {
-                fn: defaultOptionValueValidation,
-                expected: {
-                  type: "value",
-                  example: `value1`,
-                  autocompleteDataType: AutocompleteDataType.STRING,
-                },
-              },
-            },
-          },
-          {
-            helpText: "设置占位文本",
-            propertyName: "placeholderText",
-            label: "占位符",
-            controlType: "INPUT_TEXT",
-            placeholderText: "请输入占位文本",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            propertyName: "isRequired",
-            label: "必填",
-            helpText: "强制用户填写",
-            controlType: "SWITCH",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
-            helpText: "控制组件的显示/隐藏",
-            propertyName: "isVisible",
-            label: "是否显示",
-            controlType: "SWITCH",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
-            propertyName: "isDisabled",
-            label: "禁用",
-            helpText: "让组件不可交互",
-            controlType: "SWITCH",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
-            propertyName: "animateLoading",
-            label: "加载时显示动画",
-            controlType: "SWITCH",
-            helpText: "组件依赖的数据加载时显示加载动画",
-            defaultValue: true,
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
-            propertyName: "allowClear",
-            label: "允许清空",
-            helpText: "显示清空按钮用来清空选择",
-            controlType: "SWITCH",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
-            propertyName: "expandAll",
-            label: "默认展开",
-            helpText: "默认展开所有层级的选项",
-            controlType: "SWITCH",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-        ],
-      },
-      {
-        sectionName: "事件",
-        children: [
-          {
-            helpText: "用户选中一个选项时触发",
-            propertyName: "onOptionChange",
-            label: "onOptionChange",
-            controlType: "ACTION_SELECTOR",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: true,
-          },
-        ],
-      },
-      {
-        sectionName: "标签",
-        children: [
-          {
-            helpText: "设置组件标签文本",
-            propertyName: "labelText",
-            label: "文本",
-            controlType: "INPUT_TEXT",
-            placeholderText: "请输入文本内容",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            helpText: "设置组件标签位置",
-            propertyName: "labelPosition",
-            label: "位置",
-            controlType: "DROP_DOWN",
-            options: [
-              { label: "左", value: LabelPosition.Left },
-              { label: "上", value: LabelPosition.Top },
-              { label: "自动", value: LabelPosition.Auto },
-            ],
-            isBindProperty: false,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            helpText: "设置组件标签的对齐方式",
-            propertyName: "labelAlignment",
-            label: "对齐",
-            controlType: "LABEL_ALIGNMENT_OPTIONS",
-            options: [
-              {
-                icon: "LEFT_ALIGN",
-                value: Alignment.LEFT,
-              },
-              {
-                icon: "RIGHT_ALIGN",
-                value: Alignment.RIGHT,
-              },
-            ],
-            isBindProperty: false,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-            hidden: (props: SingleSelectTreeWidgetProps) =>
-              props.labelPosition !== LabelPosition.Left,
-            dependencies: ["labelPosition"],
-          },
-          {
-            helpText: "设置组件标签占用的列数",
-            propertyName: "labelWidth",
-            label: "宽度（所占列数）",
-            controlType: "NUMERIC_INPUT",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            min: 0,
-            validation: {
-              type: ValidationTypes.NUMBER,
-              params: {
-                natural: true,
-              },
-            },
-            hidden: (props: SingleSelectTreeWidgetProps) =>
-              props.labelPosition !== LabelPosition.Left,
-            dependencies: ["labelPosition"],
-          },
-        ],
-      },
-      {
-        sectionName: "样式",
-        children: [
-          {
-            propertyName: "accentColor",
-            label: "强调色",
-            controlType: "COLOR_PICKER",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-            invisible: true,
-          },
-          {
-            propertyName: "borderRadius",
-            label: "边框圆角",
-            helpText: "边框圆角样式",
-            controlType: "BORDER_RADIUS_OPTIONS",
-
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            propertyName: "boxShadow",
-            label: "阴影",
-            helpText: "组件轮廓投影",
-            controlType: "BOX_SHADOW_OPTIONS",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            propertyName: "labelStyle",
-            label: "字体样式",
-            controlType: "BUTTON_TABS",
-            options: [
-              {
-                icon: "BOLD_FONT",
-                value: "BOLD",
-              },
-              {
-                icon: "ITALICS_FONT",
-                value: "ITALIC",
-              },
-            ],
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            propertyName: "labelTextColor",
-            label: "标签文本颜色",
-            controlType: "COLOR_PICKER",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            propertyName: "labelTextSize",
-            label: "标签文本大小",
-            controlType: "DROP_DOWN",
-            defaultValue: "0.875rem",
-            options: [
-              {
-                label: "S",
-                value: "0.875rem",
-                subText: "0.875rem",
-              },
-              {
-                label: "M",
-                value: "1rem",
-                subText: "1rem",
-              },
-              {
-                label: "L",
-                value: "1.25rem",
-                subText: "1.25rem",
-              },
-              {
-                label: "XL",
-                value: "1.875rem",
-                subText: "1.875rem",
-              },
-              {
-                label: "XXL",
-                value: "3rem",
-                subText: "3rem",
-              },
-              {
-                label: "3XL",
-                value: "3.75rem",
-                subText: "3.75rem",
-              },
-            ],
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-        ],
-      },
-    ];
-  }
-
   static getPropertyPaneContentConfig() {
     return [
       {
@@ -506,12 +147,14 @@ class SingleSelectTreeWidget extends BaseWidget<
             helpText: "设置组件标签位置",
             propertyName: "labelPosition",
             label: "位置",
-            controlType: "DROP_DOWN",
+            controlType: "ICON_TABS",
+            fullWidth: true,
             options: [
+              { label: "自动", value: LabelPosition.Auto },
               { label: "左", value: LabelPosition.Left },
               { label: "上", value: LabelPosition.Top },
-              { label: "自动", value: LabelPosition.Auto },
             ],
+            defaultValue: LabelPosition.Top,
             isBindProperty: false,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -577,6 +220,16 @@ class SingleSelectTreeWidget extends BaseWidget<
       {
         sectionName: "属性",
         children: [
+          {
+            helpText: "提示信息",
+            propertyName: "labelTooltip",
+            label: "提示",
+            controlType: "INPUT_TEXT",
+            placeholderText: "请至少输入 6 个字符",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
           {
             helpText: "设置占位文本",
             propertyName: "placeholderText",
@@ -652,9 +305,35 @@ class SingleSelectTreeWidget extends BaseWidget<
             isBindProperty: true,
             isTriggerProperty: true,
           },
+          {
+            helpText: "Triggers an action when the dropdown opens",
+            propertyName: "onDropdownOpen",
+            label: "onDropdownOpen",
+            controlType: "ACTION_SELECTOR",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: true,
+          },
+          {
+            helpText: "Triggers an action when the dropdown closes",
+            propertyName: "onDropdownClose",
+            label: "onDropdownClose",
+            controlType: "ACTION_SELECTOR",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: true,
+          },
         ],
       },
     ];
+  }
+
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      accentColor: "{{appsmith.theme.colors.primaryColor}}",
+      borderRadius: "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      boxShadow: "none",
+    };
   }
 
   static getPropertyPaneStyleConfig() {
@@ -665,6 +344,7 @@ class SingleSelectTreeWidget extends BaseWidget<
           {
             propertyName: "labelTextColor",
             label: "字体颜色",
+            helpText: "设置标签字体颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -674,6 +354,7 @@ class SingleSelectTreeWidget extends BaseWidget<
           {
             propertyName: "labelTextSize",
             label: "字体大小",
+            helpText: "设置标签字体大小",
             controlType: "DROP_DOWN",
             defaultValue: "0.875rem",
             options: [
@@ -716,6 +397,7 @@ class SingleSelectTreeWidget extends BaseWidget<
           {
             propertyName: "labelStyle",
             label: "强调",
+            helpText: "设置标签字体是否加粗或斜体",
             controlType: "BUTTON_TABS",
             options: [
               {
@@ -775,11 +457,11 @@ class SingleSelectTreeWidget extends BaseWidget<
 
   static getDerivedPropertiesMap() {
     return {
-      selectedOptionLabel: `{{  this.selectedLabel[0] }}`,
-      selectedOptionValue:
-        '{{  JSON.stringify(this.options).match(new RegExp(`"value":${Number.isFinite(this.selectedOption) ? this.selectedOption : `"${this.selectedOption}"` }`), "g") ? this.selectedOption : undefined  }}',
-      isValid: `{{this.isRequired  ? !!this.selectedOptionValue || this.selectedOptionValue === 0 : true}}`,
       value: `{{this.selectedOptionValue}}`,
+      flattenedOptions: `{{(()=>{${derivedProperties.getFlattenedOptions}})()}}`,
+      isValid: `{{(()=>{${derivedProperties.getIsValid}})()}}`,
+      selectedOptionValue: `{{(()=>{${derivedProperties.getSelectedOptionValue}})()}}`,
+      selectedOptionLabel: `{{(()=>{${derivedProperties.getSelectedOptionLabel}})()}}`,
     };
   }
 
@@ -793,8 +475,7 @@ class SingleSelectTreeWidget extends BaseWidget<
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       selectedOption: undefined,
-      selectedOptionValueArr: undefined,
-      selectedLabel: [],
+      selectedLabel: undefined,
       isDirty: false,
     };
   }
@@ -809,19 +490,9 @@ class SingleSelectTreeWidget extends BaseWidget<
   }
 
   getPageView() {
-    const options =
-      isArray(this.props.options) &&
-      !this.props.__evaluation__?.errors.options.length
-        ? this.props.options
-        : [];
-    const value: string | number | undefined =
-      isString(this.props.selectedOption) ||
-      Number.isFinite(this.props.selectedOption)
-        ? this.props.selectedOption
-        : undefined;
+    const options = isArray(this.props.options) ? this.props.options : [];
     const isInvalid =
       "isValid" in this.props && !this.props.isValid && !!this.props.isDirty;
-    const filteredValue = this.filterValue(value);
     const dropDownWidth = MinimumPopupRows * this.props.parentColumnSpace;
     const { componentWidth } = this.getComponentDimensions();
     return (
@@ -843,6 +514,7 @@ class SingleSelectTreeWidget extends BaseWidget<
           zIndex: Layers.dropdownModalWidget,
         }}
         expandAll={this.props.expandAll}
+        isDynamicHeightEnabled={isAutoHeightEnabledForWidget(this.props)}
         isFilterable
         isValid={!isInvalid}
         labelAlignment={this.props.labelAlignment}
@@ -851,13 +523,16 @@ class SingleSelectTreeWidget extends BaseWidget<
         labelText={this.props.labelText}
         labelTextColor={this.props.labelTextColor}
         labelTextSize={this.props.labelTextSize}
+        labelTooltip={this.props.labelTooltip}
         labelWidth={this.getLabelWidth()}
         loading={this.props.isLoading}
         onChange={this.onOptionChange}
+        onDropdownClose={this.onDropdownClose}
+        onDropdownOpen={this.onDropdownOpen}
         options={options}
         placeholder={this.props.placeholderText as string}
         renderMode={this.props.renderMode}
-        value={filteredValue}
+        value={this.props.selectedOptionValue}
         widgetId={this.props.widgetId}
         width={componentWidth}
       />
@@ -870,37 +545,38 @@ class SingleSelectTreeWidget extends BaseWidget<
     }
 
     this.props.updateWidgetMetaProperty("selectedOption", value);
-    this.props.updateWidgetMetaProperty("selectedLabel", labelList, {
+    this.props.updateWidgetMetaProperty("selectedLabel", labelList?.[0] ?? "", {
       triggerPropertyName: "onOptionChange",
       dynamicString: this.props.onOptionChange,
       event: {
         type: EventType.ON_OPTION_CHANGE,
       },
     });
-    if (!this.props.isDirty) {
-      this.props.updateWidgetMetaProperty("isDirty", true);
+  };
+
+  onDropdownOpen = () => {
+    if (this.props.onDropdownOpen) {
+      super.executeAction({
+        triggerPropertyName: "onDropdownOpen",
+        dynamicString: this.props.onDropdownOpen,
+        event: {
+          type: EventType.ON_DROPDOWN_OPEN,
+        },
+      });
     }
   };
 
-  flat(array: DropdownOption[]) {
-    let result: { value: string | number }[] = [];
-    array.forEach((a) => {
-      result.push({ value: a.value });
-      if (Array.isArray(a.children)) {
-        result = result.concat(this.flat(a.children));
-      }
-    });
-    return result;
-  }
-
-  filterValue(value: string | number | undefined) {
-    const options = this.props.options ? this.flat(this.props.options) : [];
-
-    if (isString(value) || Number.isFinite(value)) {
-      const index = findIndex(options, { value: value as string });
-      return index > -1 ? value : undefined;
+  onDropdownClose = () => {
+    if (this.props.onDropdownClose) {
+      super.executeAction({
+        triggerPropertyName: "onDropdownClose",
+        dynamicString: this.props.onDropdownClose,
+        event: {
+          type: EventType.ON_DROPDOWN_CLOSE,
+        },
+      });
     }
-  }
+  };
 
   static getWidgetType(): WidgetType {
     return "SINGLE_SELECT_TREE_WIDGET";
@@ -918,7 +594,10 @@ export interface SingleSelectTreeWidgetProps extends WidgetProps {
   placeholderText?: string;
   selectedIndex?: number;
   options?: DropdownOption[];
+  flattenedOptions?: DropdownOption[];
   onOptionChange: string;
+  onDropdownOpen?: string;
+  onDropdownClose?: string;
   defaultOptionValue: string;
   isRequired: boolean;
   isLoading: boolean;

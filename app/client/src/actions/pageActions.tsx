@@ -11,7 +11,13 @@ import {
 } from "@appsmith/constants/ReduxActionConstants";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { WidgetOperation } from "widgets/BaseWidget";
-import { FetchPageRequest, PageLayout, SavePageResponse } from "api/PageApi";
+import {
+  FetchPageRequest,
+  PageLayout,
+  SavePageResponse,
+  UpdatePageRequest,
+  UpdatePageResponse,
+} from "api/PageApi";
 import { UrlDataState } from "reducers/entityReducers/appReducer";
 import { APP_MODE } from "entities/App";
 import { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
@@ -36,6 +42,12 @@ export interface CreatePageActionPayload {
   layouts: Partial<PageLayout>[];
   blockNavigation?: boolean;
 }
+
+export type updateLayoutOptions = {
+  isRetry?: boolean;
+  shouldReplay?: boolean;
+  updatedWidgetIds?: string[];
+};
 
 export const fetchPage = (
   pageId: string,
@@ -90,9 +102,13 @@ export const fetchAllPageEntityCompletion = (
   payload: undefined,
 });
 
-export const updateCurrentPage = (id: string, slug?: string) => ({
+export const updateCurrentPage = (
+  id: string,
+  slug?: string,
+  permissions?: string[],
+) => ({
   type: ReduxActionTypes.SWITCH_CURRENT_PAGE_ID,
-  payload: { id, slug },
+  payload: { id, slug, permissions },
 });
 
 export const initCanvasLayout = (
@@ -130,12 +146,12 @@ export const deletePageSuccess = () => {
 
 export const updateAndSaveLayout = (
   widgets: CanvasWidgetsReduxState,
-  isRetry?: boolean,
-  shouldReplay?: boolean,
+  options: updateLayoutOptions = {},
 ) => {
+  const { isRetry, shouldReplay, updatedWidgetIds } = options;
   return {
     type: ReduxActionTypes.UPDATE_LAYOUT,
-    payload: { widgets, isRetry, shouldReplay },
+    payload: { widgets, isRetry, shouldReplay, updatedWidgetIds },
   };
 };
 
@@ -200,21 +216,30 @@ export const clonePageSuccess = (
   };
 };
 
-export const updatePage = (
-  id: string,
-  name: string,
-  isHidden: boolean,
-  icon?: string,
-) => {
+export const updatePage = (payload: UpdatePageRequest) => {
   return {
     type: ReduxActionTypes.UPDATE_PAGE_INIT,
-    payload: {
-      id,
-      name,
-      isHidden,
-      icon,
-    },
+    payload,
   };
+};
+
+export const updatePageSuccess = (payload: UpdatePageResponse) => {
+  return {
+    type: ReduxActionTypes.UPDATE_PAGE_SUCCESS,
+    payload,
+  };
+};
+
+export const updatePageError = (payload: UpdatePageErrorPayload) => {
+  return {
+    type: ReduxActionErrorTypes.UPDATE_PAGE_ERROR,
+    payload,
+  };
+};
+
+export type UpdatePageErrorPayload = {
+  request: UpdatePageRequest;
+  error: unknown;
 };
 
 export type WidgetAddChild = {
@@ -502,12 +527,4 @@ export const resetApplicationWidgets = () => ({
 
 export const fetchPageDSLs = () => ({
   type: ReduxActionTypes.POPULATE_PAGEDSLS_INIT,
-});
-
-export const setPageSlug = (payload: {
-  customSlug: string;
-  pageId: string;
-}) => ({
-  type: ReduxActionTypes.UPDATE_CUSTOM_SLUG_INIT,
-  payload,
 });

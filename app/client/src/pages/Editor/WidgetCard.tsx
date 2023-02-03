@@ -30,7 +30,7 @@ export const Wrapper = styled.div`
     justify-content: center;
   }
   &:hover {
-    background: ${Colors.MINT_GREEN_LIGHT};
+    background: #f0f0f0;
     cursor: grab;
   }
   & i {

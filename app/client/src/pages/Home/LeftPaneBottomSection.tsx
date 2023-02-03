@@ -2,8 +2,10 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { Classes as BlueprintClasses } from "@blueprintjs/core";
-import MenuItem from "components/ads/MenuItem";
+import { MenuItem } from "design-system";
 import {
+  ADMIN_SETTINGS,
+  APPSMITH_DISPLAY_VERSION,
   createMessage,
   DOCUMENTATION,
   WELCOME_TOUR,
@@ -16,13 +18,22 @@ import { howMuchTimeBeforeText } from "utils/helpers";
 import { onboardingCreateApplication } from "actions/onboardingActions";
 import ProductUpdatesModal from "pages/Applications/ProductUpdatesModal";
 import { Colors } from "constants/Colors";
+import {
+  DropdownOnSelectActions,
+  getOnSelectAction,
+} from "../common/CustomizedDropdown/dropdownHelpers";
+import { getCurrentUser } from "selectors/usersSelectors";
+import {
+  getDefaultAdminSettingsPath,
+  showAdminSettings,
+} from "@appsmith/utils/adminSettingsHelpers";
+import { getTenantPermissions } from "@appsmith/selectors/tenantSelectors";
 
 const Wrapper = styled.div`
   padding-bottom: ${(props) => props.theme.spaces[3]}px;
   background-color: ${Colors.WHITE};
-  position: absolute;
-  bottom: 0;
   width: 100%;
+  margin-top: auto;
 
   & .ads-dialog-trigger {
     margin-top: ${(props) => props.theme.spaces[1]}px;
@@ -49,14 +60,29 @@ function LeftPaneBottomSection() {
   const dispatch = useDispatch();
   const onboardingWorkspaces = useSelector(getOnboardingWorkspaces);
   const isFetchingApplications = useSelector(getIsFetchingApplications);
-  const { appVersion } = getAppsmithConfigs();
+  const { appVersion, cloudHosting } = getAppsmithConfigs();
   const howMuchTimeBefore = howMuchTimeBeforeText(appVersion.releaseDate);
-
-  return null;
+  const user = useSelector(getCurrentUser);
+  const tenantPermissions = useSelector(getTenantPermissions);
 
   return (
     <Wrapper>
-      <MenuItem
+      {showAdminSettings(user) && !isFetchingApplications && (
+        <MenuItem
+          className="admin-settings-menu-option"
+          icon="setting"
+          onSelect={() => {
+            getOnSelectAction(DropdownOnSelectActions.REDIRECT, {
+              path: getDefaultAdminSettingsPath({
+                isSuperUser: user?.isSuperUser,
+                tenantPermissions,
+              }),
+            });
+          }}
+          text={createMessage(ADMIN_SETTINGS)}
+        />
+      )}
+      {/* <MenuItem
         className={isFetchingApplications ? BlueprintClasses.SKELETON : ""}
         icon="discord"
         onSelect={() => {
@@ -89,9 +115,16 @@ function LeftPaneBottomSection() {
           text={createMessage(WELCOME_TOUR)}
         />
       )}
-      <ProductUpdatesModal />
+      <ProductUpdatesModal /> */}
       <LeftPaneVersionData>
-        <span>Appsmith {appVersion.id}</span>
+        <span>
+          {createMessage(
+            APPSMITH_DISPLAY_VERSION,
+            appVersion.edition,
+            appVersion.id,
+            cloudHosting,
+          )}
+        </span>
         {howMuchTimeBefore !== "" && (
           <span>Released {howMuchTimeBefore} ago</span>
         )}

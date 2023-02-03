@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { connect, useDispatch } from "react-redux";
-import { withRouter, RouteComponentProps } from "react-router-dom";
+import { withRouter, RouteComponentProps, Link } from "react-router-dom";
 import {
   change,
   reduxForm,
@@ -9,7 +9,6 @@ import {
 } from "redux-form";
 import StyledForm from "components/editorComponents/Form";
 import {
-  AuthCardHeader,
   FormActions,
   BlackAuthCardNavLink,
   FormMessagesContainer,
@@ -28,11 +27,9 @@ import {
   createMessage,
 } from "@appsmith/constants/messages";
 import { AUTH_LOGIN_URL } from "constants/routes";
-import FormMessage from "components/ads/formFields/FormMessage";
-import { FORGOT_PASSWORD_FORM_NAME } from "constants/forms";
-import FormGroup from "components/ads/formFields/FormGroup";
-import Button, { Size } from "components/ads/Button";
-import FormTextField from "components/ads/formFields/TextField";
+import { FORGOT_PASSWORD_FORM_NAME } from "@appsmith/constants/forms";
+import FormTextField from "components/utils/ReduxFormTextField";
+import { Button, FormGroup, FormMessage, Size } from "design-system";
 import { Icon } from "@blueprintjs/core";
 import { isEmail, isEmptyString } from "utils/formhelpers";
 import {
@@ -40,6 +37,7 @@ import {
   forgotPasswordSubmitHandler,
 } from "./helpers";
 import { getAppsmithConfigs } from "@appsmith/configs";
+import Container from "./Container";
 
 const { mailEnabled } = getAppsmithConfigs();
 
@@ -78,19 +76,18 @@ export const ForgotPassword = withTheme(
     }, [props.emailValue]);
 
     return (
-      <>
-        <AuthCardHeader>
-          <h1>{createMessage(FORGOT_PASSWORD_PAGE_TITLE)}</h1>
-        </AuthCardHeader>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <BlackAuthCardNavLink to={AUTH_LOGIN_URL}>
+      <Container
+        subtitle={
+          <BlackAuthCardNavLink className="text-sm" to={AUTH_LOGIN_URL}>
             <Icon
               icon="arrow-left"
               style={{ marginRight: props.theme.spaces[3] }}
             />
             {createMessage(FORGOT_PASSWORD_PAGE_LOGIN_LINK)}
           </BlackAuthCardNavLink>
-        </div>
+        }
+        title={createMessage(FORGOT_PASSWORD_PAGE_TITLE)}
+      >
         <FormMessagesContainer>
           {submitSucceeded && (
             <FormMessage
@@ -105,15 +102,22 @@ export const ForgotPassword = withTheme(
             <FormMessage
               actions={[
                 {
-                  url: "https://docs.appsmith.com/v/v1.2.1/setup/docker/email",
-                  text: "Configure Email service",
+                  linkElement: (
+                    <a
+                      href="https://docs.appsmith.com/v/v1.2.1/setup/docker/email"
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      配置邮件服务
+                    </a>
+                  ),
+                  text: "配置邮件服务",
                   intent: "primary",
                 },
               ]}
               intent="warning"
-              message={
-                "You haven’t setup any email service yet. Please configure your email service to receive a reset link"
-              }
+              linkAs={Link}
+              message={"系统未开通邮件服务，不能正常发送重置邮件"}
             />
           )}
           {submitFailed && error && (
@@ -145,7 +149,7 @@ export const ForgotPassword = withTheme(
             />
           </FormActions>
         </StyledForm>
-      </>
+      </Container>
     );
   },
 );

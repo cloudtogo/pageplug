@@ -14,7 +14,7 @@ export const CONFIG = {
   name: "表格",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["datagrid"],
+  searchTags: ["datagrid", "table"],
   hideCard: true,
   defaults: {
     rows: 28,
@@ -213,6 +213,7 @@ export const CONFIG = {
     default: Widget.getDefaultPropertiesMap(),
     meta: Widget.getMetaPropertiesMap(),
     config: Widget.getPropertyPaneConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
   },
 };
 

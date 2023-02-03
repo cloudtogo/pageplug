@@ -4,6 +4,7 @@ import IconSVG from "./icon.svg";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "Formily表单",
+  searchTags: ["form", "submit"],
   iconSVG: IconSVG,
   needsMeta: true,
   isCanvas: false,

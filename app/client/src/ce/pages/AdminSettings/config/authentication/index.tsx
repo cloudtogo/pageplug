@@ -1,17 +1,17 @@
 import React from "react";
 import {
-  GOOGLE_SIGNUP_SETUP_DOC,
   GITHUB_SIGNUP_SETUP_DOC,
+  GOOGLE_SIGNUP_SETUP_DOC,
   SIGNUP_RESTRICTION_DOC,
 } from "constants/ThirdPartyConstants";
 import {
+  AdminConfigType,
   SettingCategories,
   SettingSubCategories,
-  SettingTypes,
   SettingSubtype,
-  AdminConfigType,
+  SettingTypes,
 } from "@appsmith/pages/AdminSettings/config/types";
-import { AuthPage, AuthMethodType } from "./AuthPage";
+import { AuthMethodType, AuthPage } from "./AuthPage";
 import Google from "assets/images/Google.png";
 import SamlSso from "assets/images/saml.svg";
 import OIDC from "assets/images/oidc.svg";
@@ -28,8 +28,8 @@ const {
 const FormAuth: AdminConfigType = {
   type: SettingCategories.FORM_AUTH,
   controlType: SettingTypes.GROUP,
-  title: "Form Login",
-  subText: "Enable your workspace to sign in with Appsmith Form.",
+  title: "账号密码登录",
+  subText: "为你的 PagePlug 开启账号密码登录",
   canSave: true,
   isConnected: false,
   settings: [
@@ -38,27 +38,24 @@ const FormAuth: AdminConfigType = {
       category: SettingCategories.FORM_AUTH,
       subCategory: SettingSubCategories.FORMLOGIN,
       controlType: SettingTypes.TOGGLE,
-      label: "Form Login",
-      toggleText: (value: boolean) => (value ? "Disabled" : "Enabled"),
+      label: "登录",
+      toggleText: (value: boolean) => (value ? "关闭" : "开启"),
     },
     {
       id: "APPSMITH_SIGNUP_DISABLED",
       category: SettingCategories.FORM_AUTH,
       subCategory: SettingSubCategories.FORMLOGIN,
       controlType: SettingTypes.TOGGLE,
-      label: "Form Signup",
+      label: "注册",
       toggleText: (value: boolean) =>
-        value
-          ? "Allow only invited users to signup"
-          : "Allow all users to signup",
+        value ? "只允许邀请用户注册" : "允许任何用户注册",
     },
     {
       id: "APPSMITH_FORM_CALLOUT_BANNER",
       category: SettingCategories.FORM_AUTH,
       subCategory: SettingSubCategories.FORMLOGIN,
       controlType: SettingTypes.LINK,
-      label:
-        "The form login method does not verify the emails of users that create accounts.",
+      label: "账号密码登录不会校验邮箱是否有效",
       url: SIGNUP_RESTRICTION_DOC,
       calloutType: "Warning",
     },
@@ -68,8 +65,8 @@ const FormAuth: AdminConfigType = {
 const GoogleAuth: AdminConfigType = {
   type: SettingCategories.GOOGLE_AUTH,
   controlType: SettingTypes.GROUP,
-  title: "Google Authentication",
-  subText: "Enable your workspace to sign in with Google (OAuth).",
+  title: "Google 登录",
+  subText: "使用 Google 账号登录你的平台 (OAuth)",
   canSave: true,
   isConnected: enableGoogleOAuth,
   settings: [
@@ -78,7 +75,7 @@ const GoogleAuth: AdminConfigType = {
       category: SettingCategories.GOOGLE_AUTH,
       subCategory: SettingSubCategories.GOOGLE,
       controlType: SettingTypes.LINK,
-      label: "How to configure?",
+      label: "如何配置？",
       url: GOOGLE_SIGNUP_SETUP_DOC,
     },
     {
@@ -105,7 +102,7 @@ const GoogleAuth: AdminConfigType = {
       subCategory: SettingSubCategories.GOOGLE,
       controlType: SettingTypes.TEXTINPUT,
       controlSubType: SettingSubtype.TEXT,
-      label: "Allowed Domains",
+      label: "允许域名",
       placeholder: "domain1.com, domain2.com",
     },
   ],
@@ -114,9 +111,8 @@ const GoogleAuth: AdminConfigType = {
 const GithubAuth: AdminConfigType = {
   type: SettingCategories.GITHUB_AUTH,
   controlType: SettingTypes.GROUP,
-  title: "Github Authentication",
-  subText:
-    "Enable your workspace to sign in with Github SAML single sign-on (SSO).",
+  title: "Github 登录",
+  subText: "使用 Github 账号登录你的平台 (SAML)",
   canSave: true,
   isConnected: enableGithubOAuth,
   settings: [
@@ -125,7 +121,7 @@ const GithubAuth: AdminConfigType = {
       category: SettingCategories.GITHUB_AUTH,
       subCategory: SettingSubCategories.GITHUB,
       controlType: SettingTypes.LINK,
-      label: "How to configure?",
+      label: "如何配置？",
       url: GITHUB_SIGNUP_SETUP_DOC,
     },
     {
@@ -152,8 +148,8 @@ const GithubAuth: AdminConfigType = {
 export const FormAuthCallout: AuthMethodType = {
   id: "APPSMITH_FORM_LOGIN_AUTH",
   category: SettingCategories.FORM_AUTH,
-  label: "Form Login",
-  subText: "Enable your workspace to sign in with Appsmith Form.",
+  label: "账号密码登录",
+  subText: "允许用户使用账号密码登录你的平台",
   image: Lock,
   type: "LINK",
   isConnected: !disableLoginForm,
@@ -163,8 +159,7 @@ export const GoogleAuthCallout: AuthMethodType = {
   id: "APPSMITH_GOOGLE_AUTH",
   category: SettingCategories.GOOGLE_AUTH,
   label: "Google",
-  subText:
-    "Enable your workspace to sign in with Google (OAuth 2.0) single sign-on (SSO).",
+  subText: "允许使用 Google 账号登录你的平台",
   image: Google,
   type: "LINK",
   isConnected: enableGoogleOAuth,
@@ -174,8 +169,7 @@ export const GithubAuthCallout: AuthMethodType = {
   id: "APPSMITH_GITHUB_AUTH",
   category: SettingCategories.GITHUB_AUTH,
   label: "Github",
-  subText:
-    "Enable your workspace to sign in with Github (OAuth 2.0) single sign-on (SSO).",
+  subText: "允许使用 Github 账号登录你的平台",
   image: Github,
   type: "LINK",
   isConnected: enableGithubOAuth,
@@ -185,7 +179,7 @@ export const SamlAuthCallout: AuthMethodType = {
   id: "APPSMITH_SAML_AUTH",
   category: "saml",
   label: "SAML 2.0",
-  subText: `Enable your workspace to sign in with your preferred SAML2 compliant provider.`,
+  subText: `允许使用 SAML2 协议的单点登录服务登录你的平台`,
   image: SamlSso,
   needsUpgrade: true,
   type: "OTHER",
@@ -195,7 +189,7 @@ export const OidcAuthCallout: AuthMethodType = {
   id: "APPSMITH_OIDC_AUTH",
   category: "oidc",
   label: "OIDC",
-  subText: `Enable your workspace to sign in with Open ID Connect.`,
+  subText: `允许使用 OIDC 协议的单点登录服务登录你的平台`,
   image: OIDC,
   needsUpgrade: true,
   type: "OTHER",
@@ -203,7 +197,7 @@ export const OidcAuthCallout: AuthMethodType = {
 
 const AuthMethods = [
   OidcAuthCallout,
-  SamlAuthCallout,
+  // SamlAuthCallout,
   GoogleAuthCallout,
   GithubAuthCallout,
   FormAuthCallout,
@@ -214,9 +208,10 @@ function AuthMain() {
 }
 
 export const config: AdminConfigType = {
+  icon: "lock-password-line",
   type: SettingCategories.AUTHENTICATION,
   controlType: SettingTypes.PAGE,
-  title: "Authentication",
+  title: "身份认证",
   canSave: false,
   children: [FormAuth, GoogleAuth, GithubAuth],
   component: AuthMain,

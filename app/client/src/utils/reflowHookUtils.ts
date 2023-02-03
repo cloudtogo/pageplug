@@ -17,7 +17,11 @@ export function collisionCheckPostReflow(
 
     if (widgets[widgetId].detachFromLayout) return false;
 
-    if (widgets[widgetId].type === "MODAL_WIDGET") return false;
+    if (
+      widgets[widgetId].type === "MODAL_WIDGET" ||
+      widgets[widgetId].type === "TARO_POPUP_WIDGET"
+    )
+      return false;
 
     return true;
   });
@@ -41,6 +45,8 @@ export function collisionCheckPostReflow(
   return true;
 }
 
+// TODO(ashok): There is a name clash here. Fine for now, but might get confusing in the future.
+// maybe we should create a task for this.
 function areIntersecting(r1: FlattenedWidgetProps, r2: FlattenedWidgetProps) {
   if (r1.widgetId === r2.widgetId) return false;
 

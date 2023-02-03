@@ -24,7 +24,10 @@ describe("Update Workspace", function() {
       cy.get(homePage.workspaceNameInput).type(workspaceId);
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(2000);
-      cy.get(homePage.workspaceHeaderName).should("have.text", workspaceId);
+      cy.get(homePage.workspaceHeaderName).should(
+        "have.text",
+        `Members in ${workspaceId}`,
+      );
     });
     cy.NavigateToHome();
     cy.get(homePage.leftPanelContainer).within(() => {
@@ -62,8 +65,7 @@ describe("Update Workspace", function() {
       "response.body.responseMeta.status",
       200,
     );
-    cy.xpath(homePage.membersTab).click({ force: true });
-    cy.xpath(homePage.generalTab).click({ force: true });
+    cy.wait(1000);
     cy.get(homePage.removeLogo)
       .last()
       .should("be.hidden")
@@ -78,12 +80,15 @@ describe("Update Workspace", function() {
 
   it("Open the workspace general settings and update workspace website. The update should reflect in the workspace.", function() {
     cy.get(homePage.workspaceWebsiteInput).clear();
-    cy.get(homePage.workspaceWebsiteInput).type("demowebsite");
+    cy.get(homePage.workspaceWebsiteInput).type("demowebsite.com");
     cy.wait("@updateWorkspace").should(
       "have.nested.property",
       "response.body.responseMeta.status",
       200,
     );
-    cy.get(homePage.workspaceWebsiteInput).should("have.value", "demowebsite");
+    cy.get(homePage.workspaceWebsiteInput).should(
+      "have.value",
+      "demowebsite.com",
+    );
   });
 });

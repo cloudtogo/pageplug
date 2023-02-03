@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { useDispatch } from "react-redux";
 import { withRouter, RouteComponentProps } from "react-router";
-import { AppState } from "reducers";
+import { AppState } from "@appsmith/reducers";
 import {
   AppViewerRouteParams,
   BuilderRouteParams,
@@ -21,12 +21,13 @@ import {
   syncUpdateWidgetMetaProperty,
   triggerEvalOnMetaUpdate,
 } from "actions/metaActions";
-import { editorInitializer } from "utils/EditorUtils";
+import { editorInitializer } from "utils/editor/EditorUtils";
 import * as Sentry from "@sentry/react";
 import {
   getViewModePageList,
   getShowTabBar,
   isMobileLayout,
+  getCurrentPage,
 } from "selectors/editorSelectors";
 import { getThemeDetails, ThemeMode } from "selectors/themeSelectors";
 import TabBar from "components/designSystems/taro/TabBar";
@@ -52,6 +53,11 @@ import { APP_MODE } from "entities/App";
 import { initAppViewer } from "actions/initActions";
 import { WidgetGlobaStyles } from "globalStyles/WidgetGlobalStyles";
 import { getAppsmithConfigs } from "@appsmith/configs";
+
+import {
+  checkContainersForAutoHeightAction,
+  updateWidgetAutoHeightAction,
+} from "actions/autoHeightActions";
 
 const AppViewerBody = styled.section<{
   showTabBar: boolean;
@@ -87,11 +93,13 @@ const StableContainer = styled.div`
   overflow: hidden;
 `;
 
-const ContainerForBottom = styled.div`
+const ContainerForBottom = styled.div<{
+  isMobile: boolean;
+}>`
   display: flex;
   width: 100%;
   height: 100%;
-  transform: translate(0, 0);
+  ${({ isMobile }) => (isMobile ? "transform: translate(0, 0);" : "")}
 `;
 
 export type AppViewerProps = RouteComponentProps<BuilderRouteParams>;
@@ -117,7 +125,8 @@ function AppViewer(props: Props) {
   const prevValues = usePrevious({ branch, location: props.location, pageId });
   const showTabBar = useSelector(getShowTabBar);
   const isMobile = useSelector(isMobileLayout);
-  const isEmbed = !!getSearchQuery(search, "embed");
+  const currentPage = useSelector(getCurrentPage);
+  const isEmbed = !!getSearchQuery(search, "embed") || !!currentPage?.isHidden;
   const { hideWatermark } = getAppsmithConfigs();
 
   /**
@@ -256,6 +265,18 @@ function AppViewer(props: Props) {
     [triggerEvalOnMetaUpdate, dispatch],
   );
 
+  const updateWidgetAutoHeightCallback = useCallback(
+    (widgetId: string, height: number) => {
+      dispatch(updateWidgetAutoHeightAction(widgetId, height));
+    },
+    [updateWidgetAutoHeightAction, dispatch],
+  );
+
+  const checkContainersForAutoHeightCallback = useCallback(
+    () => dispatch(checkContainersForAutoHeightAction()),
+    [checkContainersForAutoHeightAction],
+  );
+
   return (
     <ThemeProvider theme={lightTheme}>
       <EditorContext.Provider
@@ -265,6 +286,8 @@ function AppViewer(props: Props) {
           batchUpdateWidgetProperty: batchUpdateWidgetPropertyCallback,
           syncUpdateWidgetMetaProperty: syncUpdateWidgetMetaPropertyCallback,
           triggerEvalOnMetaUpdate: triggerEvalOnMetaUpdateCallback,
+          updateWidgetAutoHeight: updateWidgetAutoHeightCallback,
+          checkContainersForAutoHeight: checkContainersForAutoHeightCallback,
         }}
       >
         <WidgetGlobaStyles
@@ -273,7 +296,7 @@ function AppViewer(props: Props) {
         />
         <AppViewerLayout>
           <StableContainer>
-            <ContainerForBottom>
+            <ContainerForBottom isMobile={isMobile}>
               <AppViewerBodyContainer
                 backgroundColor={
                   isMobile

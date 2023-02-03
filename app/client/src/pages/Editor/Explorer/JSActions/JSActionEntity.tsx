@@ -6,13 +6,17 @@ import { saveJSObjectName } from "actions/jsActionActions";
 import { useSelector } from "react-redux";
 import { getCurrentPageId } from "selectors/editorSelectors";
 import { getJSCollection } from "selectors/entitiesSelector";
-import { AppState } from "reducers";
+import { AppState } from "@appsmith/reducers";
 import { JSCollection } from "entities/JSCollection";
 import { JsFileIconV2 } from "../ExplorerIcons";
 import { PluginType } from "entities/Action";
 import { jsCollectionIdURL } from "RouteBuilder";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { useLocation } from "react-router";
+import {
+  hasDeleteActionPermission,
+  hasManageActionPermission,
+} from "@appsmith/utils/permissionHelpers";
 
 type ExplorerJSCollectionEntityProps = {
   step: number;
@@ -49,8 +53,17 @@ export const ExplorerJSCollectionEntity = memo(
         history.push(navigateToUrl);
       }
     }, [pageId, jsAction.id, jsAction.name, location.pathname]);
+
+    const jsActionPermissions = jsAction.userPermissions || [];
+
+    const canDeleteJSAction = hasDeleteActionPermission(jsActionPermissions);
+
+    const canManageJSAction = hasManageActionPermission(jsActionPermissions);
+
     const contextMenu = (
       <JSCollectionEntityContextMenu
+        canDelete={canDeleteJSAction}
+        canManage={canManageJSAction}
         className={EntityClassNames.CONTEXT_MENU}
         id={jsAction.id}
         name={jsAction.name}
@@ -61,6 +74,7 @@ export const ExplorerJSCollectionEntity = memo(
       <Entity
         action={navigateToJSCollection}
         active={props.isActive}
+        canEditEntityName={canManageJSAction}
         className="t--jsaction"
         contextMenu={contextMenu}
         entityId={jsAction.id}

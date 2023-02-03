@@ -8,7 +8,6 @@ import { get } from "lodash";
 import {
   getBasePropertyPath,
   hideByColumnType,
-  SelectColumnOptionsValidations,
   showByColumnType,
   uniqueColumnAliasValidation,
   updateColumnLevelEditability,
@@ -16,7 +15,7 @@ import {
   updateNumberColumnTypeTextAlignment,
   updateThemeStylesheetsInColumns,
 } from "../../propertyUtils";
-import { AutocompleteDataType } from "utils/autocomplete/TernServer";
+import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import { isColumnTypeEditable } from "../../utilities";
 import { composePropertyUpdateHook } from "widgets/WidgetUtils";
 
@@ -29,40 +28,52 @@ export default {
       controlType: "DROP_DOWN",
       options: [
         {
-          label: "文本",
-          value: "text",
+          label: "按钮",
+          value: ColumnTypes.BUTTON,
         },
         {
-          label: "URL",
-          value: "url",
-        },
-        {
-          label: "数字",
-          value: "number",
-        },
-        {
-          label: "图片",
-          value: "image",
-        },
-        {
-          label: "视频",
-          value: "video",
+          label: "勾选",
+          value: ColumnTypes.CHECKBOX,
         },
         {
           label: "日期",
-          value: "date",
-        },
-        {
-          label: "按钮",
-          value: "button",
-        },
-        {
-          label: "菜单按钮",
-          value: "menuButton",
+          value: ColumnTypes.DATE,
         },
         {
           label: "图标按钮",
-          value: "iconButton",
+          value: ColumnTypes.ICON_BUTTON,
+        },
+        {
+          label: "图片",
+          value: ColumnTypes.IMAGE,
+        },
+        {
+          label: "菜单按钮",
+          value: ColumnTypes.MENU_BUTTON,
+        },
+        {
+          label: "数字",
+          value: ColumnTypes.NUMBER,
+        },
+        {
+          label: "文本",
+          value: ColumnTypes.TEXT,
+        },
+        {
+          label: "开关",
+          value: ColumnTypes.SWITCH,
+        },
+        {
+          label: "URL",
+          value: ColumnTypes.URL,
+        },
+        {
+          label: "视频",
+          value: ColumnTypes.VIDEO,
+        },
+        {
+          label: "选择器",
+          value: ColumnTypes.SELECT,
         },
       ],
       updateHook: composePropertyUpdateHook([
@@ -145,6 +156,9 @@ export default {
           ColumnTypes.TEXT,
           ColumnTypes.VIDEO,
           ColumnTypes.URL,
+          ColumnTypes.CHECKBOX,
+          ColumnTypes.SWITCH,
+          ColumnTypes.SELECT,
         ]);
       },
       dependencies: ["primaryColumns", "columnOrder"],
@@ -163,7 +177,7 @@ export default {
       isBindProperty: true,
       isTriggerProperty: false,
       validation: {
-        type: ValidationTypes.TABLE_PROPERTY,
+        type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
         params: {
           type: ValidationTypes.BOOLEAN,
         },
@@ -181,7 +195,7 @@ export default {
       isBindProperty: true,
       isTriggerProperty: false,
       validation: {
-        type: ValidationTypes.TABLE_PROPERTY,
+        type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
         params: {
           type: ValidationTypes.BOOLEAN,
         },
@@ -217,7 +231,7 @@ export default {
         updateInlineEditingOptionDropdownVisibilityHook,
       ]),
       validation: {
-        type: ValidationTypes.TABLE_PROPERTY,
+        type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
         params: {
           type: ValidationTypes.BOOLEAN,
         },
@@ -239,7 +253,7 @@ export default {
       isBindProperty: true,
       isTriggerProperty: false,
       validation: {
-        type: ValidationTypes.TABLE_PROPERTY,
+        type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
         params: {
           type: ValidationTypes.BOOLEAN,
         },
@@ -262,7 +276,7 @@ export default {
       isJSConvertible: true,
       isBindProperty: true,
       validation: {
-        type: ValidationTypes.TABLE_PROPERTY,
+        type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
         params: {
           type: ValidationTypes.BOOLEAN,
         },
@@ -271,25 +285,6 @@ export default {
       dependencies: ["primaryColumns", "columnOrder"],
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(props, propertyPath, [ColumnTypes.MENU_BUTTON]);
-      },
-    },
-    {
-      propertyName: "selectOptions",
-      helpText: "下拉选择框的可选选项",
-      label: "选项",
-      controlType: "INPUT_TEXT",
-      isJSConvertible: false,
-      isBindProperty: true,
-      validation: {
-        type: ValidationTypes.FUNCTION,
-        params: {
-          fnString: SelectColumnOptionsValidations.toString(),
-        },
-      },
-      isTriggerProperty: false,
-      dependencies: ["primaryColumns"],
-      hidden: (props: TableWidgetProps, propertyPath: string) => {
-        return hideByColumnType(props, propertyPath, [ColumnTypes.SELECT]);
       },
     },
     {
@@ -389,7 +384,7 @@ export default {
       dependencies: ["primaryColumns", "columnOrder"],
       isBindProperty: true,
       validation: {
-        type: ValidationTypes.TABLE_PROPERTY,
+        type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
         params: {
           type: ValidationTypes.TEXT,
           params: {
@@ -517,7 +512,7 @@ export default {
       dependencies: ["primaryColumns", "columnType"],
       isBindProperty: true,
       validation: {
-        type: ValidationTypes.TABLE_PROPERTY,
+        type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
         params: {
           type: ValidationTypes.TEXT,
           params: {

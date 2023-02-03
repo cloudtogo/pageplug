@@ -1,4 +1,5 @@
-import _, { get } from "lodash";
+import { get } from "lodash";
+import equal from "fast-deep-equal/es6";
 import React from "react";
 import styled from "styled-components";
 
@@ -116,6 +117,7 @@ class ChartComponent extends React.Component<ChartComponentProps> {
   getChartData = () => {
     const chartData: AllChartData = this.props.chartData;
     const dataLength = Object.keys(chartData).length;
+    const chartType = this.props.chartType;
 
     // if datalength is zero, just pass a empty datum
     if (dataLength === 0) {
@@ -129,6 +131,7 @@ class ChartComponent extends React.Component<ChartComponentProps> {
 
     const firstKey = Object.keys(chartData)[0] as string;
     let data = get(chartData, `${firstKey}.data`, []) as ChartDataPoint[];
+    const color = chartData[firstKey] && chartData[firstKey].color;
 
     if (!Array.isArray(data)) {
       data = [];
@@ -147,6 +150,12 @@ class ChartComponent extends React.Component<ChartComponentProps> {
       return {
         label: item.x,
         value: item.y,
+        color:
+          chartType === "PIE_CHART"
+            ? ""
+            : color
+            ? color
+            : this.props.primaryColor,
       };
     });
   };
@@ -220,7 +229,7 @@ class ChartComponent extends React.Component<ChartComponentProps> {
   getChartDataset = (chartData: AllChartData) => {
     const categories: string[] = this.getChartCategoriesMultiSeries(chartData);
 
-    const dataset = Object.keys(chartData).map((key: string) => {
+    const dataset = Object.keys(chartData).map((key: string, index) => {
       const item = get(chartData, `${key}`);
 
       const seriesChartData: Array<Record<
@@ -229,6 +238,11 @@ class ChartComponent extends React.Component<ChartComponentProps> {
       >> = this.getSeriesChartData(get(item, "data", []), categories);
       return {
         seriesName: item.seriesName,
+        color: item.color
+          ? item.color
+          : index === 0
+          ? this.props.primaryColor
+          : "",
         data: seriesChartData,
       };
     });
@@ -409,26 +423,19 @@ class ChartComponent extends React.Component<ChartComponentProps> {
 
   // return series title name for in clicked data point
   getSeriesTitle = (data: any) => {
-    // custom chart have mentioned seriesName in dataSource
-    if (this.props.chartType === "CUSTOM_FUSION_CHART") {
-      // custom chart have mentioned seriesName in dataSource
-      return get(
-        this.props,
-        `customFusionChartConfig.dataSource.seriesName`,
-        "",
-      );
-    } else {
-      const dataLength = this.getDatalength();
-      // if pie chart or other chart have single dataset,
-      // get seriesName from chartData
-      if (dataLength <= 1 || this.props.chartType === "PIE_CHART") {
-        const chartData: AllChartData = this.props.chartData;
-        const firstKey = Object.keys(chartData)[0] as string;
-        return get(chartData, `${firstKey}.seriesName`, "");
-      }
-      // other charts return datasetName from clicked data point
-      return get(data, "datasetName", "");
+    const dataLength = this.getDatalength();
+    // if pie chart or other chart have single dataset,
+    // get seriesName from chartData
+    if (
+      (dataLength <= 1 || this.props.chartType === "PIE_CHART") &&
+      this.props.chartType !== "CUSTOM_FUSION_CHART"
+    ) {
+      const chartData: AllChartData = this.props.chartData;
+      const firstKey = Object.keys(chartData)[0] as string;
+      return get(chartData, `${firstKey}.seriesName`, "");
     }
+    // other charts return datasetName from clicked data point
+    return get(data, "datasetName", "");
   };
 
   createGraph = () => {
@@ -503,7 +510,7 @@ class ChartComponent extends React.Component<ChartComponentProps> {
   }
 
   componentDidUpdate(prevProps: ChartComponentProps) {
-    if (!_.isEqual(prevProps, this.props)) {
+    if (!equal(prevProps, this.props)) {
       const chartType = this.getChartType();
       this.chartInstance.chartType(chartType);
       if (this.props.chartType === "CUSTOM_FUSION_CHART") {

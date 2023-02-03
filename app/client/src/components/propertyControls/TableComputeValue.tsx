@@ -17,7 +17,7 @@ import { isString } from "utils/helpers";
 import {
   JSToString,
   stringToJS,
-} from "components/editorComponents/ActionCreator/Fields";
+} from "components/editorComponents/ActionCreator/utils";
 import { AdditionalDynamicDataTree } from "utils/autocomplete/customTreeTypeDefCreator";
 
 const PromptMessage = styled.span`
@@ -70,7 +70,7 @@ function InputText(props: InputTextProp) {
         placeholder={placeholder}
         promptMessage={
           <PromptMessage>
-            Access the current cell using <CurlyBraces>{"{{"}</CurlyBraces>
+            你可以这样访问当前行数据：<CurlyBraces>{"{{"}</CurlyBraces>
             currentRow.columnName
             <CurlyBraces>{"}}"}</CurlyBraces>
           </PromptMessage>
@@ -98,7 +98,10 @@ class ComputeTablePropertyControlV2 extends BaseControl<
     const tableId = this.props.widgetProperties.widgetName;
     const value =
       propertyValue && isDynamicValue(propertyValue)
-        ? this.getInputComputedValue(propertyValue, tableId)
+        ? ComputeTablePropertyControlV2.getInputComputedValue(
+            propertyValue,
+            tableId,
+          )
         : propertyValue
         ? propertyValue
         : defaultValue;
@@ -130,7 +133,7 @@ class ComputeTablePropertyControlV2 extends BaseControl<
     );
   }
 
-  getInputComputedValue = (propertyValue: string, tableId: string) => {
+  static getInputComputedValue = (propertyValue: string, tableId: string) => {
     const value = `${propertyValue.substring(
       `{{${tableId}.processedTableData.map((currentRow, currentIndex) => ( `
         .length,

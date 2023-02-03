@@ -1,17 +1,5 @@
-// Color Names generated from http://chir.ag/projects/name-that-color
-import tinycolor from "tinycolor2";
 // MINT_GREEN #2CBBA6
-const primaryColor = "#2CBBA6";
-
-const lighten = (color: string, p: number) => {
-  return new tinycolor(color).lighten(p).toString();
-};
-const darken = (color: string, p: number) => {
-  return new tinycolor(color).darken(p).toString();
-};
-const desaturate = (color: string, p: number) => {
-  return new tinycolor(color).desaturate(p).toString();
-};
+const primaryColor = "var(--ads-color-brand)";
 
 export const Colors = {
   EBONY_CLAY: "#2A2F3D",
@@ -92,7 +80,7 @@ export const Colors = {
   WATUSI: "#FFE0D2",
   GRAY: "#858282",
   GRAY2: "#939090",
-  DOVE_GRAY2: "#716E6E",
+  DOVE_GRAY2: "#716e6e",
   ATHENS_GRAY_DARKER: "#F8F9FA",
   POMEGRANATE: "#F44336",
   POMEGRANATE2: "#F22B2B",
@@ -120,11 +108,11 @@ export const Colors = {
   RATE_ACTIVE: "#FFCB45",
   RATE_INACTIVE: "#F2F2F2",
   // new colors
-  MINT_GREEN: primaryColor,
-  MINT_GREEN_LIGHT: lighten(primaryColor, 30),
-  MINT_GREEN_DARK: darken(primaryColor, 10),
-  MINT_GREEN_DARKER: darken(primaryColor, 20),
-  MINT_GREEN_DARKEST: desaturate(lighten(primaryColor, 30), 50),
+  MINT_GREEN: "var(--ads-color-brand)",
+  MINT_GREEN_LIGHT: "var(--ads-color-background-secondary)",
+  MINT_GREEN_DARK: "var(--ads-color-brand-hover)",
+  MINT_GREEN_DARKER: "var(--ads-color-brand-hover)",
+  MINT_GREEN_DARKEST: "var(--ads-color-brand-hover)",
   MINT_ORANGE: "#FF6A00",
   MINT_ORANGE_LIGHT: "#FFE8D7",
   MINT_BLUE: "#3C6DC1",
@@ -142,6 +130,7 @@ export const Colors = {
 
   WARNING_SOLID: "#FEB811",
   WARNING_SOLID_HOVER: "#EFA903",
+  WARNING_DEBUGGER_GROUPING_BADGE: "#EAD592",
   WARNING_ORANGE: "#FFF8E2",
   WARNING_OUTLINE_HOVER: "#FFFAE9",
   WARNING_GHOST_HOVER: "#FBEED0",
@@ -193,7 +182,7 @@ export const Colors = {
   GREY_800: "#393939",
   GREY_900: "#191919",
 
-  PRIMARY_ORANGE: "#F86A2B",
+  PRIMARY_ORANGE: primaryColor,
 
   GREEN_SOLID: "#50AF6C",
   MIRAGE: "#182026",
@@ -213,8 +202,12 @@ export const Colors = {
   BROWN: "#864C17",
 
   GRAY_50: "#F8F8F8",
+  GRAY_100: "#F1F1F1",
   GRAY_200: "#E7E7E7",
+  GRAY_300: "#D7D7D7",
   GRAY_400: "#B3B3B3",
+  GRAY_500: "#939393",
+  GRAY_600: "#6B6B6B",
   GRAY_700: "#575757",
   GRAY_800: "#393939",
   GRAY_900: "#101828",
@@ -233,6 +226,7 @@ export const Colors = {
   /* RED colors */
   RED_50: "#FFEAEC",
   RED_100: "#FFCACE",
+  RED_150: "#F1B6B6",
   RED_200: "#F09493",
   RED_300: "#E56A69",
   RED_400: "#EE4643",

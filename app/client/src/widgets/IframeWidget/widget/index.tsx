@@ -4,155 +4,9 @@ import { ValidationTypes } from "constants/WidgetValidation";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import IframeComponent from "../component";
 import { IframeWidgetProps } from "../constants";
+import { Stylesheet } from "entities/AppTheming";
 
 class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
-  static getPropertyPaneConfig() {
-    return [
-      {
-        sectionName: "属性",
-        children: [
-          {
-            propertyName: "source",
-            helpText: "页面地址",
-            label: "URL",
-            controlType: "INPUT_TEXT",
-            placeholderText: "https://www.example.com",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: {
-              type: ValidationTypes.SAFE_URL,
-              params: {
-                default: "https://www.example.com",
-              },
-            },
-          },
-          {
-            propertyName: "srcDoc",
-            helpText: "直接写 HTML",
-            label: "HTML",
-            controlType: "INPUT_TEXT",
-            placeholderText: "<p>Inline HTML</p>",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: {
-              type: ValidationTypes.TEXT,
-            },
-          },
-          {
-            propertyName: "title",
-            label: "标题",
-            controlType: "INPUT_TEXT",
-            placeholderText: "Documentation",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            propertyName: "animateLoading",
-            label: "加载时显示动画",
-            controlType: "SWITCH",
-            helpText: "组件依赖的数据加载时显示加载动画",
-            defaultValue: true,
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-        ],
-      },
-      {
-        sectionName: "动作",
-        children: [
-          {
-            helpText: "URL 变化时触发",
-            propertyName: "onURLChanged",
-            label: "onURLChanged",
-            controlType: "ACTION_SELECTOR",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: true,
-          },
-          {
-            helpText: "内联 HTML 变化时触发",
-            propertyName: "onSrcDocChanged",
-            label: "onSrcDocChanged",
-            controlType: "ACTION_SELECTOR",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: true,
-          },
-          {
-            helpText: "收到消息时触发",
-            propertyName: "onMessageReceived",
-            label: "onMessageReceived",
-            controlType: "ACTION_SELECTOR",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: true,
-          },
-        ],
-      },
-      {
-        sectionName: "样式",
-        children: [
-          {
-            propertyName: "borderColor",
-            label: "边框颜色",
-            controlType: "COLOR_PICKER",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            propertyName: "borderOpacity",
-            label: "边框透明度 (%)",
-            controlType: "INPUT_TEXT",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            inputType: "NUMBER",
-            validation: {
-              type: ValidationTypes.NUMBER,
-              params: { min: 0, max: 100, default: 100 },
-            },
-          },
-          {
-            propertyName: "borderWidth",
-            label: "边框宽度 (px)",
-            controlType: "INPUT_TEXT",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            inputType: "NUMBER",
-            validation: {
-              type: ValidationTypes.NUMBER,
-              params: { min: 0, default: 1 },
-            },
-          },
-          {
-            propertyName: "borderRadius",
-            label: "边框圆角",
-            helpText: "边框圆角样式",
-            controlType: "BORDER_RADIUS_OPTIONS",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            propertyName: "boxShadow",
-            label: "阴影",
-            helpText: "组件轮廓投影",
-            controlType: "BOX_SHADOW_OPTIONS",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-        ],
-      },
-    ];
-  }
-
   static getPropertyPaneContentConfig() {
     return [
       {
@@ -256,6 +110,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           {
             propertyName: "borderColor",
             label: "边框颜色",
+            helpText: "Controls the color of the border",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -270,6 +125,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           {
             propertyName: "borderWidth",
             label: "边框宽度 (px)",
+            helpText: "Controls the size of the border in px",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -282,6 +138,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           {
             propertyName: "borderOpacity",
             label: "边框透明度 (%)",
+            helpText: "Controls the opacity of the border in percentage",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -320,6 +177,13 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
     return {
       message: undefined,
       messageMetadata: undefined,
+    };
+  }
+
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      borderRadius: "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      boxShadow: "{{appsmith.theme.boxShadow.appBoxShadow}}",
     };
   }
 
@@ -377,6 +241,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
       srcDoc,
       title,
       widgetId,
+      widgetName,
     } = this.props;
 
     return (
@@ -394,6 +259,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
         srcDoc={srcDoc}
         title={title}
         widgetId={widgetId}
+        widgetName={widgetName}
       />
     );
   }

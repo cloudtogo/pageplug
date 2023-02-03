@@ -21,6 +21,20 @@ import { createGlobalStyle } from "styled-components";
 import UpIcon from "assets/icons/ads/up-arrow.svg";
 import CloseIcon from "assets/icons/ads/cross.svg";
 import { Colors } from "constants/Colors";
+import Papa from "papaparse";
+import { klona } from "klona";
+import { UppyFile } from "@uppy/utils";
+import { Stylesheet } from "entities/AppTheming";
+import zh_CN from "./zh_CN";
+
+const CSV_ARRAY_LABEL = "Array (仅限 CSVs)";
+const CSV_FILE_TYPE_REGEX = /.+(\/csv)$/;
+
+const ARRAY_CSV_HELPER_TEXT = `注意：非 csv 类型文件数据都是空值，组件中使用大文件可能会让应用变得卡顿`;
+
+const isCSVFileType = (str: string) => CSV_FILE_TYPE_REGEX.test(str);
+
+type Result = string | Buffer | ArrayBuffer | null;
 
 const FilePickerGlobalStyles = createGlobalStyle<{
   borderRadius?: string;
@@ -193,228 +207,15 @@ class FilePickerWidget extends BaseWidget<
   FilePickerWidgetProps,
   FilePickerWidgetState
 > {
+  private isWidgetUnmounting: boolean;
+
   constructor(props: FilePickerWidgetProps) {
     super(props);
+    this.isWidgetUnmounting = false;
     this.state = {
       isLoading: false,
       uppy: this.initializeUppy(),
     };
-  }
-
-  static getPropertyPaneConfig() {
-    return [
-      {
-        sectionName: "属性",
-        children: [
-          {
-            propertyName: "label",
-            label: "标签",
-            controlType: "INPUT_TEXT",
-            helpText: "设置按钮标签",
-            placeholderText: "选择文件",
-            inputType: "TEXT",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            propertyName: "maxNumFiles",
-            label: "最大上传数量",
-            helpText: "设置一次最多上传多少个文件",
-            controlType: "INPUT_TEXT",
-            placeholderText: "1",
-            inputType: "INTEGER",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.NUMBER },
-          },
-          {
-            propertyName: "maxFileSize",
-            helpText: "设置每个上传文件大小的上限",
-            label: "最大上传大小 (Mb)",
-            controlType: "INPUT_TEXT",
-            placeholderText: "5",
-            inputType: "INTEGER",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: {
-              type: ValidationTypes.NUMBER,
-              params: { min: 1, max: 100, default: 5 },
-            },
-          },
-          {
-            propertyName: "allowedFileTypes",
-            helpText: "限制那些类型的文件可以上传",
-            label: "支持文件类型",
-            controlType: "DROP_DOWN",
-            isMultiSelect: true,
-            placeholderText: "选择文件类型",
-            options: [
-              {
-                label: "任意文件类型",
-                value: "*",
-              },
-              {
-                label: "图片",
-                value: "image/*",
-              },
-              {
-                label: "视频",
-                value: "video/*",
-              },
-              {
-                label: "音频",
-                value: "audio/*",
-              },
-              {
-                label: "文本",
-                value: "text/*",
-              },
-              {
-                label: "Word文档",
-                value: ".doc",
-              },
-              {
-                label: "JPEG",
-                value: "image/jpeg",
-              },
-              {
-                label: "PNG",
-                value: ".png",
-              },
-            ],
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: {
-              type: ValidationTypes.ARRAY,
-              params: {
-                unique: true,
-                children: {
-                  type: ValidationTypes.TEXT,
-                },
-              },
-            },
-            evaluationSubstitutionType:
-              EvaluationSubstitutionType.SMART_SUBSTITUTE,
-          },
-          {
-            helpText: "设置文件读取数据格式",
-            propertyName: "fileDataType",
-            label: "数据格式",
-            controlType: "DROP_DOWN",
-            options: [
-              {
-                label: FileDataTypes.Base64,
-                value: FileDataTypes.Base64,
-              },
-              {
-                label: FileDataTypes.Binary,
-                value: FileDataTypes.Binary,
-              },
-              {
-                label: FileDataTypes.Text,
-                value: FileDataTypes.Text,
-              },
-            ],
-            isBindProperty: false,
-            isTriggerProperty: false,
-          },
-          {
-            propertyName: "isRequired",
-            label: "必填",
-            helpText: "强制用户填写",
-            controlType: "SWITCH",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
-            propertyName: "isVisible",
-            label: "是否显示",
-            helpText: "控制组件的显示/隐藏",
-            controlType: "SWITCH",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
-            propertyName: "isDisabled",
-            label: "Disable",
-            helpText: "让组件不可交互",
-            controlType: "SWITCH",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
-            propertyName: "animateLoading",
-            label: "加载时显示动画",
-            controlType: "SWITCH",
-            helpText: "组件依赖的数据加载时显示加载动画",
-            defaultValue: true,
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-        ],
-      },
-      {
-        sectionName: "事件",
-        children: [
-          {
-            helpText: "用户选中文件后触发，文件 URL 存储在 filepicker.files 中",
-            propertyName: "onFilesSelected",
-            label: "onFilesSelected",
-            controlType: "ACTION_SELECTOR",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: true,
-          },
-        ],
-      },
-
-      {
-        sectionName: "样式",
-        children: [
-          {
-            propertyName: "buttonColor",
-            helpText: "修改按钮颜色",
-            label: "按钮颜色",
-            controlType: "COLOR_PICKER",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            propertyName: "borderRadius",
-            label: "边框圆角",
-            helpText: "边框圆角样式",
-            controlType: "BORDER_RADIUS_OPTIONS",
-
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            propertyName: "boxShadow",
-            label: "阴影",
-            helpText: "组件轮廓投影",
-            controlType: "BOX_SHADOW_OPTIONS",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-        ],
-      },
-    ];
   }
 
   static getPropertyPaneContentConfig() {
@@ -483,6 +284,11 @@ class FilePickerWidget extends BaseWidget<
             propertyName: "fileDataType",
             label: "数据格式",
             controlType: "DROP_DOWN",
+            helperText: (props: FilePickerWidgetProps) => {
+              return props.fileDataType === FileDataTypes.Array
+                ? ARRAY_CSV_HELPER_TEXT
+                : "";
+            },
             options: [
               {
                 label: FileDataTypes.Base64,
@@ -496,9 +302,27 @@ class FilePickerWidget extends BaseWidget<
                 label: FileDataTypes.Text,
                 value: FileDataTypes.Text,
               },
+              {
+                label: CSV_ARRAY_LABEL,
+                value: FileDataTypes.Array,
+              },
             ],
             isBindProperty: false,
             isTriggerProperty: false,
+          },
+          {
+            propertyName: "dynamicTyping",
+            label: "解析 CSV 中的数据类型",
+            helpText: "根据 csv 文件中的数据值自动推断数据类型",
+            controlType: "SWITCH",
+            isJSConvertible: false,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            hidden: (props: FilePickerWidgetProps) => {
+              return props.fileDataType !== FileDataTypes.Array;
+            },
+            dependencies: ["fileDataType"],
+            validation: { type: ValidationTypes.BOOLEAN },
           },
           {
             propertyName: "maxNumFiles",
@@ -553,7 +377,12 @@ class FilePickerWidget extends BaseWidget<
             isTriggerProperty: false,
             validation: {
               type: ValidationTypes.NUMBER,
-              params: { min: 1, max: 100, default: 5 },
+              params: {
+                min: 1,
+                max: 100,
+                default: 5,
+                passThroughOnZero: false,
+              },
             },
           },
         ],
@@ -573,7 +402,7 @@ class FilePickerWidget extends BaseWidget<
           },
           {
             propertyName: "isDisabled",
-            label: "Disable",
+            label: "禁用",
             helpText: "让组件不可交互",
             controlType: "SWITCH",
             isJSConvertible: true,
@@ -676,6 +505,14 @@ class FilePickerWidget extends BaseWidget<
     };
   }
 
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      buttonColor: "{{appsmith.theme.colors.primaryColor}}",
+      borderRadius: "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      boxShadow: "none",
+    };
+  }
+
   /**
    * if uppy is not initialized before, initialize it
    * else setState of uppy instance
@@ -760,11 +597,7 @@ class FilePickerWidget extends BaseWidget<
             plugin.closeModal();
           }
         },
-        locale: {
-          strings: {
-            closeModal: "Close",
-          },
-        },
+        locale: zh_CN,
       })
       .use(GoogleDrive, { companionUrl: "https://companion.uppy.io" })
       .use(Url, { companionUrl: "https://companion.uppy.io" })
@@ -789,22 +622,40 @@ class FilePickerWidget extends BaseWidget<
        * Uppy provides an argument called reason. It helps us to distinguish on which event the file-removed event was called.
        * Refer to the following issue to know about reason prop: https://github.com/transloadit/uppy/pull/2323
        */
-      let updatedFiles = [];
       if (reason === "removed-by-user") {
-        updatedFiles = this.props.selectedFiles
-          ? this.props.selectedFiles.filter((dslFile) => {
-              return file.id !== dslFile.id;
-            })
-          : [];
-      } else if (reason === "cancel-all") {
-        updatedFiles = [];
+        const fileCount = this.props.selectedFiles?.length || 0;
+
+        /**
+         * Once the file is removed we update the selectedFiles
+         * with the current files present in the uppy's internal state
+         */
+        const updatedFiles = this.state.uppy
+          .getFiles()
+          .map((currentFile: UppyFile, index: number) => ({
+            type: currentFile.type,
+            id: currentFile.id,
+            data: currentFile.data,
+            name: currentFile.meta
+              ? currentFile.meta.name
+              : `File-${index + fileCount}`,
+            size: currentFile.size,
+            dataFormat: this.props.fileDataType,
+          }));
+        this.props.updateWidgetMetaProperty(
+          "selectedFiles",
+          updatedFiles ?? [],
+        );
       }
-      this.props.updateWidgetMetaProperty("selectedFiles", updatedFiles);
+
+      if (reason === "cancel-all" && !this.isWidgetUnmounting) {
+        this.props.updateWidgetMetaProperty("selectedFiles", []);
+      }
     });
 
     this.state.uppy.on("files-added", (files: any[]) => {
-      const dslFiles = this.props.selectedFiles
-        ? [...this.props.selectedFiles]
+      // Deep cloning the selectedFiles
+      const selectedFiles = this.props.selectedFiles
+        ? klona(this.props.selectedFiles)
         : [];
 
       const fileCount = this.props.selectedFiles?.length || 0;
@@ -823,7 +674,12 @@ class FilePickerWidget extends BaseWidget<
               const newFile = {
                 type: file.type,
                 id: file.id,
-                data: reader.result,
+                data: this.parseUploadResult(
+                  reader.result,
+                  file.type,
+                  this.props.fileDataType,
+                ),
+                meta: file.meta,
                 name: file.meta ? file.meta.name : `File-${index + fileCount}`,
                 size: file.size,
                 dataFormat: this.props.fileDataType,
@@ -836,6 +692,7 @@ class FilePickerWidget extends BaseWidget<
               type: file.type,
               id: file.id,
               data: data,
+              meta: file.meta,
               name: file.meta ? file.meta.name : `File-${index + fileCount}`,
               size: file.size,
               dataFormat: this.props.fileDataType,
@@ -850,10 +707,17 @@ class FilePickerWidget extends BaseWidget<
           this.props.updateWidgetMetaProperty("isDirty", true);
         }
 
-        this.props.updateWidgetMetaProperty(
-          "selectedFiles",
-          dslFiles.concat(files),
-        );
+        if (selectedFiles.length !== 0) {
+          files.forEach((fileItem: any) => {
+            if (!fileItem?.meta?.isInitializing) {
+              selectedFiles.push(fileItem);
+            }
+          });
+          this.props.updateWidgetMetaProperty("selectedFiles", selectedFiles);
+        } else {
+          // update with newly added files when the selectedFiles is empty.
+          this.props.updateWidgetMetaProperty("selectedFiles", [...files]);
+        }
       });
     });
 
@@ -915,17 +779,37 @@ class FilePickerWidget extends BaseWidget<
     });
   }
 
+  initializeSelectedFiles() {
+    /**
+     * Since on unMount the uppy instance closes and it's internal state is lost along with the files present in it.
+     * Below we add the files again to the uppy instance so that the files are retained.
+     */
+    this.props.selectedFiles?.forEach((fileItem: any) => {
+      this.state.uppy.addFile({
+        name: fileItem.name,
+        type: fileItem.type,
+        data: new Blob([fileItem.data]),
+        meta: {
+          // Adding this flag to distinguish a file in the files-added event
+          isInitializing: true,
+        },
+      });
+    });
+  }
+
   componentDidMount() {
     super.componentDidMount();
 
     try {
       this.initializeUppyEventListeners();
+      this.initializeSelectedFiles();
     } catch (e) {
       log.debug("Error in initializing uppy");
     }
   }
 
   componentWillUnmount() {
+    this.isWidgetUnmounting = true;
     this.state.uppy.close();
   }
 
@@ -951,6 +835,57 @@ class FilePickerWidget extends BaseWidget<
     );
   }
 
+  parseUploadResult(
+    result: Result,
+    fileType: string,
+    dataFormat: FileDataTypes,
+  ) {
+    if (
+      dataFormat !== FileDataTypes.Array ||
+      !isCSVFileType(fileType) ||
+      !result
+    ) {
+      return result;
+    }
+
+    const data: Record<string, string>[] = [];
+    const errors: Papa.ParseError[] = [];
+
+    function chunk(results: Papa.ParseStepResult<any>) {
+      if (results?.errors?.length) {
+        errors.push(...results.errors);
+      }
+      data.push(...results.data);
+    }
+
+    if (typeof result === "string") {
+      const config = {
+        header: true,
+        dynamicTyping: this.props.dynamicTyping,
+        chunk,
+      };
+      try {
+        const startParsing = performance.now();
+
+        Papa.parse(result, config);
+
+        const endParsing = performance.now();
+
+        log.debug(
+          `### FILE_PICKER_WIDGET_V2 - ${this.props.widgetName} - CSV PARSING  `,
+          `${endParsing - startParsing} ms`,
+        );
+
+        return data;
+      } catch (error) {
+        log.error(errors);
+        return [];
+      }
+    } else {
+      return [];
+    }
+  }
+
   static getWidgetType(): WidgetType {
     return "FILE_PICKER_WIDGET_V2";
   }
@@ -973,6 +908,7 @@ interface FilePickerWidgetProps extends WidgetProps {
   backgroundColor: string;
   borderRadius: string;
   boxShadow?: string;
+  dynamicTyping?: boolean;
 }
 
 export type FilePickerWidgetV2Props = FilePickerWidgetProps;

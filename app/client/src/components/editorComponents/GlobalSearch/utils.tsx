@@ -10,13 +10,17 @@ import { ValidationTypes } from "constants/WidgetValidation";
 import { Datasource } from "entities/Datasource";
 import { useEffect, useState } from "react";
 import { fetchRawGithubContentList } from "./githubHelper";
-import { PluginType } from "entities/Action";
+import { PluginPackageName, PluginType } from "entities/Action";
 import { WidgetType } from "constants/WidgetConstants";
 import { ENTITY_TYPE } from "entities/DataTree/dataTreeFactory";
 import { getPluginByPackageName } from "selectors/entitiesSelector";
-import { AppState } from "reducers";
+import { AppState } from "@appsmith/reducers";
 import WidgetFactory from "utils/WidgetFactory";
-import { CurlIconV2, JsFileIconV2 } from "pages/Editor/Explorer/ExplorerIcons";
+import {
+  CurlIconV2,
+  JsFileIconV2,
+  GraphQLIconV2,
+} from "pages/Editor/Explorer/ExplorerIcons";
 import { createNewApiAction } from "actions/apiPaneActions";
 import { createNewJSCollection } from "actions/jsPaneActions";
 import { EventLocation } from "utils/AnalyticsUtil";
@@ -346,11 +350,20 @@ export const actionOperations: ActionOperation[] = [
       createNewApiAction(pageId, location),
   },
   {
+    title: "新建 GraphQL API",
+    desc: "新建一个 GraphQL API",
+    icon: <GraphQLIconV2 />,
+    kind: SEARCH_ITEM_TYPES.actionOperation,
+    action: (pageId: string, location: EventLocation) =>
+      createNewApiAction(pageId, location, PluginPackageName.GRAPHQL),
+  },
+  {
     title: "新建 JS 对象",
     desc: "创建一个新的 JS 对象",
     kind: SEARCH_ITEM_TYPES.actionOperation,
     icon: JsFileIconV2,
-    action: (pageId: string) => createNewJSCollection(pageId),
+    action: (pageId: string, from: EventLocation) =>
+      createNewJSCollection(pageId, from),
   },
   {
     title: "新建 cURL 导入",

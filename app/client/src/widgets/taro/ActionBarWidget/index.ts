@@ -4,6 +4,7 @@ import IconSVG from "./icon.svg";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "动作栏",
+  searchTags: ["action bar"],
   iconSVG: IconSVG,
   needsMeta: false,
   isCanvas: false,

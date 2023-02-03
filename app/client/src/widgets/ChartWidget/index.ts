@@ -9,7 +9,7 @@ export const CONFIG = {
   name: "图表",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["graph", "visuals", "visualisations"],
+  searchTags: ["graph", "visuals", "visualisations", "chart"],
   defaults: {
     rows: 32,
     columns: 24,
@@ -102,6 +102,7 @@ export const CONFIG = {
     config: Widget.getPropertyPaneConfig(),
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
   },
 };
 

@@ -5,6 +5,7 @@ import Widget from "./widget";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "环形进度条",
+  searchTags: ["circular progress"],
   hideCard: true,
   isDeprecated: true,
   replacement: "PROGRESS_WIDGET",
@@ -29,6 +30,7 @@ export const CONFIG = {
     default: Widget.getDefaultPropertiesMap(),
     meta: Widget.getMetaPropertiesMap(),
     config: Widget.getPropertyPaneConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
   },
 };
 

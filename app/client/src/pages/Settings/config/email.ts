@@ -14,16 +14,17 @@ import {
 } from "@appsmith/pages/AdminSettings/config/types";
 
 export const config: AdminConfigType = {
+  icon: "mail-line",
   type: SettingCategories.EMAIL,
   controlType: SettingTypes.GROUP,
-  title: "Email",
+  title: "邮箱",
   canSave: true,
   settings: [
     {
       id: "APPSMITH_MAIL_READ_MORE",
       category: SettingCategories.EMAIL,
       controlType: SettingTypes.LINK,
-      label: "How to configure?",
+      label: "如何配置？",
       url: EMAIL_SETUP_DOC,
     },
     {
@@ -31,7 +32,7 @@ export const config: AdminConfigType = {
       category: SettingCategories.EMAIL,
       controlType: SettingTypes.TEXTINPUT,
       controlSubType: SettingSubtype.TEXT,
-      label: "SMTP Host",
+      label: "SMTP 主机",
       placeholder: "email-smtp.us-east-2.amazonaws.com",
     },
     {
@@ -40,11 +41,11 @@ export const config: AdminConfigType = {
       controlType: SettingTypes.TEXTINPUT,
       controlSubType: SettingSubtype.NUMBER,
       placeholder: "25",
-      label: "SMTP Port",
+      label: "SMTP 端口",
       validate: (value: string) => {
         const port = parseInt(value);
         if (value && (port < 0 || port > 65535)) {
-          return "Please enter a valid port";
+          return "请输入有效端口";
         }
       },
     },
@@ -53,43 +54,41 @@ export const config: AdminConfigType = {
       category: SettingCategories.EMAIL,
       controlType: SettingTypes.TEXTINPUT,
       controlSubType: SettingSubtype.TEXT,
-      label: "From Address",
-      placeholder: "admin@appsmith.com",
+      label: "发件地址",
+      placeholder: "admin@your.email",
       validate: (value: string) => {
         if (value && !isEmail(value)) {
-          return "Please enter a valid email id";
+          return "请输入有效邮箱地址";
         }
       },
-      subText:
-        "You will need to verify your from email address to begin sending emails",
+      subText: "在发送邮件之前需要验证邮箱地址",
     },
     {
       id: "APPSMITH_REPLY_TO",
       category: SettingCategories.EMAIL,
       controlType: SettingTypes.TEXTINPUT,
       controlSubType: SettingSubtype.TEXT,
-      label: "Reply-To Address",
-      placeholder: "admin@appsmith.com",
+      label: "回复地址",
+      placeholder: "admin@your.email",
       validate: (value: string) => {
         if (value && !isEmail(value)) {
-          return "Please enter a valid email id";
+          return "请输入有效邮箱地址";
         }
       },
-      subText:
-        "You will need to verify your to email address to begin receiving emails",
+      subText: "在发送邮件之前需要验证邮箱地址",
     },
     {
       id: "APPSMITH_MAIL_SMTP_TLS_ENABLED",
       category: SettingCategories.EMAIL,
       controlType: SettingTypes.TOGGLE,
-      label: "TLS Protected Connection",
+      label: "TLS 安全连接",
     },
     {
       id: "APPSMITH_MAIL_USERNAME",
       category: SettingCategories.EMAIL,
       controlType: SettingTypes.TEXTINPUT,
       controlSubType: SettingSubtype.TEXT,
-      label: "SMTP Username",
+      label: "SMTP 用户名",
       isVisible: (values: Record<string, any>) => {
         return values && values["APPSMITH_MAIL_SMTP_TLS_ENABLED"];
       },
@@ -99,7 +98,7 @@ export const config: AdminConfigType = {
       category: SettingCategories.EMAIL,
       controlType: SettingTypes.TEXTINPUT,
       controlSubType: SettingSubtype.PASSWORD,
-      label: "SMTP Password",
+      label: "SMTP 密码",
       isVisible: (values: Record<string, any>) => {
         return values && values["APPSMITH_MAIL_SMTP_TLS_ENABLED"];
       },
@@ -131,7 +130,7 @@ export const config: AdminConfigType = {
           !settings["APPSMITH_MAIL_FROM"]
         );
       },
-      text: "Send Test Email",
+      text: "发送测试邮件",
     },
   ],
 };

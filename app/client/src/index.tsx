@@ -5,21 +5,20 @@ import { Provider } from "react-redux";
 import { ThemeProvider, taroifyTheme } from "constants/DefaultTheme";
 import { appInitializer } from "utils/AppUtils";
 import { Slide } from "react-toastify";
-import store from "./store";
+import store, { runSagaMiddleware } from "./store";
 import { LayersContext, Layers } from "constants/Layers";
 import AppRouter from "./AppRouter";
 import * as Sentry from "@sentry/react";
 import { getCurrentThemeDetails, ThemeMode } from "selectors/themeSelectors";
 import { connect } from "react-redux";
-import { AppState } from "reducers";
+import { AppState } from "@appsmith/reducers";
 import { setThemeMode } from "actions/themeActions";
-import { StyledToastContainer } from "components/ads/Toast";
+import { StyledToastContainer } from "design-system";
 import localStorage from "utils/localStorage";
 import "./assets/styles/index.css";
 import "./index.less";
 import "design-system/build/css/design-system.css";
 import "./polyfills/corejs-add-on";
-import AppErrorBoundary from "./AppErrorBoundry";
 import GlobalStyles from "globalStyles";
 // locale
 import { ConfigProvider } from "antd";
@@ -29,6 +28,7 @@ import { IntlProvider } from "react-intl";
 import "moment/locale/zh-cn";
 // enable autofreeze only in development
 import { setAutoFreeze } from "immer";
+import AppErrorBoundary from "AppErrorBoundry";
 const shouldAutoFreeze = process.env.NODE_ENV === "development";
 setAutoFreeze(shouldAutoFreeze);
 // taro-components polyfills
@@ -67,14 +67,9 @@ const inst = createReactApp(Empty, React, ReactDOM, {});
 import "@vant/touch-emulator";
 import "react-sortable-tree-patch-react-17/style.css";
 
-// app init
-appInitializer();
+runSagaMiddleware();
 
-// if (process.env.NODE_ENV === "development") {
-//   import("./mocks/browser").then(({ worker }) => {
-//     worker.start();
-//   });
-// }
+appInitializer();
 
 function App() {
   return (

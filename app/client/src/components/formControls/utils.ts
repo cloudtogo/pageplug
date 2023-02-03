@@ -146,24 +146,21 @@ export const switchViewType = (
     ".data",
     ".componentData",
   );
-  const jsonData = get(values, pathForJsonData);
   const componentData = get(values, pathForComponentData);
   const currentData = get(values, configProperty, "");
   const stringifiedCurrentData = JSON.stringify(currentData, null, "\t");
 
   if (newViewType === ViewTypes.JSON) {
     changeFormValue(formName, pathForComponentData, currentData);
-    if (!!jsonData) {
-      changeFormValue(formName, configProperty, jsonData);
-    } else {
-      changeFormValue(
-        formName,
-        configProperty,
-        isString(currentData)
-          ? currentData
-          : stringifiedCurrentData.replace(/\\/g, ""),
-      );
-    }
+
+    // when switching to JSON, we always want a form to json conversion of the data.
+    changeFormValue(
+      formName,
+      configProperty,
+      isString(currentData)
+        ? currentData
+        : stringifiedCurrentData.replace(/\\/g, ""),
+    );
   } else {
     changeFormValue(formName, pathForJsonData, currentData);
     if (!!componentData) {
@@ -289,6 +286,7 @@ export const actionPathFromName = (
 export enum PaginationSubComponent {
   Limit = "limit",
   Offset = "offset",
+  Cursor = "cursor",
 }
 
 export enum SortingSubComponent {

@@ -17,7 +17,7 @@ function MultiSelectPropertyPane() {
   return (
     <div className="relative space-y-3">
       <div className="px-3 py-3">
-        <h3 className="text-sm font-medium uppercase">Multi</h3>
+        <h3 className="text-sm font-medium uppercase">选中多个组件</h3>
       </div>
 
       <div className="px-3 space-y-3 t--layout-control-wrapper">

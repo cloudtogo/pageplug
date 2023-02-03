@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import styled, { ThemeProvider } from "styled-components";
 import { useParams } from "react-router";
 import history from "utils/history";
-import { AppState } from "reducers";
+import { AppState } from "@appsmith/reducers";
 import SearchModal from "./SearchModal";
 import AlgoliaSearchWrapper from "./AlgoliaSearchWrapper";
 import SearchBox from "./SearchBox";
@@ -52,7 +52,7 @@ import {
 import { getActionConfig } from "pages/Editor/Explorer/Actions/helpers";
 import { HelpBaseURL } from "constants/HelpConstants";
 import { ExplorerURLParams } from "pages/Editor/Explorer/helpers";
-import { getSelectedWidget } from "selectors/ui";
+import { getLastSelectedWidget } from "selectors/ui";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import useRecentEntities from "./useRecentEntities";
 import { get, noop } from "lodash";
@@ -66,8 +66,7 @@ import { lightTheme } from "selectors/themeSelectors";
 import { SnippetAction } from "reducers/uiReducers/globalSearchReducer";
 import copy from "copy-to-clipboard";
 import { getSnippet } from "./SnippetsDescription";
-import { Variant } from "components/ads/common";
-import { Toaster } from "components/ads/Toast";
+import { Toaster, Variant } from "design-system";
 import {
   useFilteredActions,
   useFilteredFileOperations,
@@ -81,6 +80,7 @@ import {
   jsCollectionIdURL,
 } from "RouteBuilder";
 import { getPlugins } from "selectors/entitiesSelector";
+import { TEMP_DATASOURCE_ID } from "constants/Datasource";
 
 const StyledContainer = styled.div<{ category: SearchCategory; query: string }>`
   width: ${({ category, query }) =>
@@ -244,7 +244,9 @@ function GlobalSearch() {
   }, [refinements]);
 
   const reducerDatasources = useSelector((state: AppState) => {
-    return state.entities.datasources.list;
+    return state.entities.datasources.list.filter(
+      (datasource) => datasource.id !== TEMP_DATASOURCE_ID,
+    );
   });
   const datasourcesList = useMemo(() => {
     return reducerDatasources.map((datasource) => ({
@@ -274,7 +276,7 @@ function GlobalSearch() {
   );
 
   const resetSearchQuery = useSelector(searchQuerySelector);
-  const selectedWidgetId = useSelector(getSelectedWidget);
+  const lastSelectedWidgetId = useSelector(getLastSelectedWidget);
 
   // keeping query in component state until we can figure out fixed for the perf issues
   // this is used to update query from outside the component, for ex. using the help button within prop. pane
@@ -298,7 +300,12 @@ function GlobalSearch() {
 
   const searchResults = useMemo(() => {
     if (isMenu(category) && !query) {
-      return filterCategoryList.filter((cat: SearchCategory) => !isMenu(cat));
+      const shouldRemoveActionCreation = !filteredFileOperations.length;
+      return filterCategoryList.filter(
+        (cat: SearchCategory) =>
+          !isMenu(cat) &&
+          (isActionOperation(cat) ? !shouldRemoveActionCreation : true),
+      );
     }
     if (isActionOperation(category)) {
       return filteredFileOperations;
@@ -398,8 +405,7 @@ function GlobalSearch() {
       activeItem.widgetId,
       activeItem.type,
       activeItem.pageId,
-      selectedWidgetId === activeItem.widgetId,
-      activeItem.parentModalId,
+      lastSelectedWidgetId === activeItem.widgetId,
     );
   };
 

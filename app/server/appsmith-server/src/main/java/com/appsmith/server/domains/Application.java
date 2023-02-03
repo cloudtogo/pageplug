@@ -69,6 +69,8 @@ public class Application extends BaseDomain {
 
     String icon;
 
+    String chartTheme;
+
     private String slug;
 
     AppLayout unpublishedAppLayout;
@@ -92,13 +94,15 @@ public class Application extends BaseDomain {
      */
     Integer applicationVersion;
 
-    /*
-    Changing name, change in pages, widgets and datasources will set lastEditedAt.
-    Other activities e.g. changing policy will not change this property.
-    We're adding JsonIgnore here because it'll be exposed as modifiedAt to keep it backward compatible
+    /**
+     * Changing name, change in pages, widgets and datasources will set lastEditedAt.
+     * Other activities e.g. changing policy will not change this property.
+     * We're adding JsonIgnore here because it'll be exposed as modifiedAt to keep it backward compatible
      */
     @JsonIgnore
     Instant lastEditedAt;
+
+    EmbedSetting embedSetting;
 
     /**
      * Earlier this was returning value of the updatedAt property in the base domain.
@@ -149,6 +153,10 @@ public class Application extends BaseDomain {
     // TODO Temporary provision for exporting the application with datasource configuration for the sample/template apps
     Boolean exportWithConfiguration;
 
+    @JsonIgnore
+    @Deprecated
+    String defaultPermissionGroup;
+
     // This constructor is used during clone application. It only deeply copies selected fields. The rest are either
     // initialized newly or is left up to the calling function to set.
     public Application(Application application) {
@@ -159,6 +167,7 @@ public class Application extends BaseDomain {
         this.clonedFromApplicationId = application.getId();
         this.color = application.getColor();
         this.icon = application.getIcon();
+        this.chartTheme = application.getChartTheme();
         this.unpublishedAppLayout = application.getUnpublishedAppLayout() == null ? null : new AppLayout(application.getUnpublishedAppLayout().type);
         this.publishedAppLayout = application.getPublishedAppLayout() == null ? null : new AppLayout(application.getPublishedAppLayout().type);
         this.viewerLayout = application.getViewerLayout();
@@ -189,6 +198,7 @@ public class Application extends BaseDomain {
         this.setServerSchemaVersion(null);
         this.setIsManualUpdate(false);
         this.sanitiseToExportBaseObject();
+        this.setDefaultPermissionGroup(null);
     }
 
     public List<ApplicationPage> getPages() {
@@ -233,5 +243,17 @@ public class Application extends BaseDomain {
             FLUID,
             MOBILE_FLUID,
         }
+    }
+
+    /**
+     * EmbedSetting is used for embedding Appsmith apps on other platforms
+     */
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class EmbedSetting {
+        private String height;
+        private String width;
+        private Boolean showNavigationBar;
     }
 }

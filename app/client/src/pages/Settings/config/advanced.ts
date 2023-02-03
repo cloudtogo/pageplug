@@ -4,10 +4,12 @@ import {
   SettingSubtype,
   SettingTypes,
 } from "@appsmith/pages/AdminSettings/config/types";
+
 export const config: AdminConfigType = {
+  icon: "settings-line",
   type: SettingCategories.ADVANCED,
   controlType: SettingTypes.GROUP,
-  title: "Advanced",
+  title: "高级配置",
   canSave: true,
   settings: [
     {
@@ -17,7 +19,7 @@ export const config: AdminConfigType = {
       controlSubType: SettingSubtype.TEXT,
       label: "MongoDB URI",
       subText:
-        "Appsmith internally uses MongoDB. Change to an external MongoDb for Clustering",
+        "PagePlug 内部使用的 MongoDB，你可以修改为外部 MongoDb 来满足集群化需求",
     },
     {
       id: "APPSMITH_REDIS_URL",
@@ -26,15 +28,15 @@ export const config: AdminConfigType = {
       controlSubType: SettingSubtype.TEXT,
       label: "Redis URL",
       subText:
-        "Appsmith internally uses redis for session storage. Change this to an external redis for Clustering",
+        "PagePlug 内部使用 Redis 来存储 session，你可以修改为外部 Redis 来满足集群化需求",
     },
     {
       id: "APPSMITH_CUSTOM_DOMAIN",
       category: SettingCategories.ADVANCED,
       controlType: SettingTypes.TEXTINPUT,
       controlSubType: SettingSubtype.TEXT,
-      label: "Custom Domain",
-      subText: "Custom domain for your Appsmith instance",
+      label: "自定义域名",
+      subText: "为你的 PagePlug 实例自定义域名",
     },
   ],
 };

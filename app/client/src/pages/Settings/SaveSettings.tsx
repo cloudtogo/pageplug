@@ -1,6 +1,6 @@
-import Button, { Category } from "components/ads/Button";
-import { createMessage } from "@appsmith/constants/messages";
 import React from "react";
+import { createMessage } from "@appsmith/constants/messages";
+import { Button, Category } from "design-system";
 import styled from "styled-components";
 
 const StyledButton = styled(Button)`
@@ -33,8 +33,7 @@ const SettingsButtonWrapper = styled.div`
     ${(props) =>
       props.theme.homePage.leftPane.leftPadding +
       props.theme.homePage.leftPane.width +
-      props.theme.homePage.main.marginLeft -
-      props.theme.spaces[11]}px;
+      props.theme.spaces[8]}px;
   box-shadow: ${(props) => props.theme.settings.footerShadow};
   z-index: 2;
   background-color: ${(props) => props.theme.colors.homepageBackground};
@@ -60,15 +59,15 @@ const saveAdminSettings = (props: SaveAdminSettingsProps) => {
         isLoading={isSaving}
         onClick={onSave}
         tag="button"
-        text={createMessage(() => "Save & Restart")}
+        text={createMessage(() => "保存并重启服务")}
       />
       <StyledClearButton
-        category={Category.tertiary}
+        category={Category.secondary}
         className="t--admin-settings-reset-button"
         disabled={Object.keys(settings).length == 0}
         onClick={onClear}
         tag="button"
-        text={createMessage(() => "Reset")}
+        text={createMessage(() => "重置")}
       />
     </SettingsButtonWrapper>
   );

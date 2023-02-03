@@ -22,7 +22,6 @@ import {
   getSkuComb,
   getSkuImgValue,
   isAllSelected,
-  SelectedValueType,
 } from "./utils";
 import {
   LIMIT_TYPE,

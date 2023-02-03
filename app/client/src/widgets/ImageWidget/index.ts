@@ -4,6 +4,7 @@ import Widget from "./widget";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "图片",
+  searchTags: ["picture", "image"],
   iconSVG: IconSVG,
   defaults: {
     defaultImage: "https://assets.appsmith.com/widgets/default.png",
@@ -11,7 +12,7 @@ export const CONFIG = {
     maxZoomLevel: 1,
     enableRotation: false,
     enableDownload: false,
-    objectFit: "contain",
+    objectFit: "cover",
     image: "",
     rows: 12,
     columns: 12,
@@ -26,6 +27,7 @@ export const CONFIG = {
     config: Widget.getPropertyPaneConfig(),
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
   },
 };
 

@@ -5,6 +5,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "地图",
   iconSVG: IconSVG,
+  searchTags: ["map"],
   needsMeta: true,
   defaults: {
     rows: 40,
@@ -29,6 +30,7 @@ export const CONFIG = {
     config: Widget.getPropertyPaneConfig(),
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
   },
 };
 

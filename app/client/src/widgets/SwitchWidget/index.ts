@@ -4,11 +4,17 @@ import { LabelPosition } from "components/constants";
 import { AlignWidgetTypes } from "widgets/constants";
 
 export const CONFIG = {
+  features: {
+    dynamicHeight: {
+      sectionIndex: 1,
+      active: true,
+    },
+  },
   type: Widget.getWidgetType(),
   name: "开关",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["boolean"],
+  searchTags: ["boolean", "switch"],
   defaults: {
     label: "标签",
     rows: 4,
@@ -28,6 +34,7 @@ export const CONFIG = {
     config: Widget.getPropertyPaneConfig(),
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
   },
 };
 

@@ -4,6 +4,7 @@ import IconSVG from "./icon.svg";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "复选框",
+  searchTags: ["checkbox"],
   iconSVG: IconSVG,
   needsMeta: true,
   isCanvas: false,

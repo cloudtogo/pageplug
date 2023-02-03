@@ -1,8 +1,15 @@
 const dsl = require("../../../../../fixtures/Table/TextWrappingDSL.json");
 const commonlocators = require("../../../../../locators/commonlocators.json");
+import { ObjectsRegistry } from "../../../../../support/Objects/Registry";
+const agHelper = ObjectsRegistry.AggregateHelper;
 
 describe("Table Widget text wrapping functionality", function() {
+  afterEach(() => {
+    agHelper.SaveLocalStorageCache();
+  });
+
   beforeEach(() => {
+    agHelper.RestoreLocalStorageCache();
     cy.addDsl(dsl);
   });
 
@@ -16,8 +23,8 @@ describe("Table Widget text wrapping functionality", function() {
     cy.editColumn("image");
     cy.get(".t--property-control-cellwrapping .bp3-control-indicator")
       .first()
-      .click();
-
+      .click({ force: true });
+    cy.wait(1000);
     cy.getTableCellHeight(1, 0).then((height) => {
       expect(height).to.not.equal("28px");
     });
@@ -36,9 +43,10 @@ describe("Table Widget text wrapping functionality", function() {
     cy.openPropertyPane("tablewidgetv2");
     cy.wait(2000);
     cy.editColumn("email");
-    cy.get(".t--property-control-cellwrapping .bp3-control-indicator")
-      .first()
-      .click();
+    cy.get(".t--property-control-cellwrapping .bp3-control-indicator").click({
+      force: true,
+    });
+    cy.wait(1000);
     cy.getTableCellHeight(2, 0).then((height) => {
       expect(height).to.not.equal("28px");
     });

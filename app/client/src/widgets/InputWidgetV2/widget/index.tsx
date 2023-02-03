@@ -17,7 +17,7 @@ import {
 } from "@appsmith/constants/messages";
 import { DerivedPropertiesMap } from "utils/WidgetFactory";
 import { GRID_DENSITY_MIGRATION_V1, ICON_NAMES } from "widgets/constants";
-import { AutocompleteDataType } from "utils/autocomplete/TernServer";
+import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import BaseInputWidget from "widgets/BaseInputWidget";
 import { isNil, isNumber, merge, toString } from "lodash";
 import derivedProperties from "./parsedDerivedProperties";
@@ -25,6 +25,8 @@ import { BaseInputWidgetProps } from "widgets/BaseInputWidget/widget";
 import { mergeWidgetConfig } from "utils/helpers";
 import { InputTypes } from "widgets/BaseInputWidget/constants";
 import { getParsedText } from "./Utilities";
+import { Stylesheet } from "entities/AppTheming";
+import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
 
 export function defaultValueValidation(
   value: any,
@@ -173,172 +175,6 @@ export function maxValueValidation(max: any, props: InputWidgetProps, _?: any) {
   }
 }
 class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
-  static getPropertyPaneConfig() {
-    return mergeWidgetConfig(
-      [
-        {
-          sectionName: "属性",
-          children: [
-            {
-              helpText: "输入的数据类型",
-              propertyName: "inputType",
-              label: "数据类型",
-              controlType: "DROP_DOWN",
-              options: [
-                {
-                  label: "文本",
-                  value: "TEXT",
-                },
-                {
-                  label: "数字",
-                  value: "NUMBER",
-                },
-                {
-                  label: "密码",
-                  value: "PASSWORD",
-                },
-                {
-                  label: "邮箱",
-                  value: "EMAIL",
-                },
-              ],
-              isBindProperty: false,
-              isTriggerProperty: false,
-            },
-            {
-              helpText: "设置最大输入字符长度",
-              propertyName: "maxChars",
-              label: "最大字符数",
-              controlType: "INPUT_TEXT",
-              placeholderText: "255",
-              isBindProperty: true,
-              isTriggerProperty: false,
-              validation: {
-                type: ValidationTypes.NUMBER,
-                params: { min: 1, natural: true },
-              },
-              hidden: (props: InputWidgetProps) => {
-                return props.inputType !== InputTypes.TEXT;
-              },
-              dependencies: ["inputType"],
-            },
-            {
-              helpText: "设置组件默认值，当默认值改变后，组件当前值会自动更新",
-              propertyName: "defaultText",
-              label: "默认值",
-              controlType: "INPUT_TEXT",
-              placeholderText: "John Wick",
-              isBindProperty: true,
-              isTriggerProperty: false,
-              validation: {
-                type: ValidationTypes.FUNCTION,
-                params: {
-                  fn: defaultValueValidation,
-                  expected: {
-                    type: "string or number",
-                    example: `John | 123`,
-                    autocompleteDataType: AutocompleteDataType.STRING,
-                  },
-                },
-              },
-              dependencies: ["inputType"],
-            },
-            {
-              helpText: "设置最小输入长度",
-              propertyName: "minNum",
-              label: "最小输入长度",
-              controlType: "INPUT_TEXT",
-              placeholderText: "1",
-              isBindProperty: true,
-              isTriggerProperty: false,
-              validation: {
-                type: ValidationTypes.FUNCTION,
-                params: {
-                  fn: minValueValidation,
-                  expected: {
-                    type: "number",
-                    example: `1`,
-                    autocompleteDataType: AutocompleteDataType.NUMBER,
-                  },
-                },
-              },
-              hidden: (props: InputWidgetProps) => {
-                return props.inputType !== InputTypes.NUMBER;
-              },
-              dependencies: ["inputType"],
-            },
-            {
-              helpText: "设置最大输入长度",
-              propertyName: "maxNum",
-              label: "最大输入长度",
-              controlType: "INPUT_TEXT",
-              placeholderText: "100",
-              isBindProperty: true,
-              isTriggerProperty: false,
-              validation: {
-                type: ValidationTypes.FUNCTION,
-                params: {
-                  fn: maxValueValidation,
-                  expected: {
-                    type: "number",
-                    example: `100`,
-                    autocompleteDataType: AutocompleteDataType.NUMBER,
-                  },
-                },
-              },
-              hidden: (props: InputWidgetProps) => {
-                return props.inputType !== InputTypes.NUMBER;
-              },
-              dependencies: ["inputType"],
-            },
-          ],
-        },
-        {
-          sectionName: "图标配置",
-          children: [
-            {
-              propertyName: "iconName",
-              label: "图标",
-              helpText: "设置输入框的图标",
-              controlType: "ICON_SELECT",
-              isBindProperty: true,
-              isTriggerProperty: false,
-              isJSConvertible: true,
-              validation: {
-                type: ValidationTypes.TEXT,
-                params: {
-                  allowedValues: ICON_NAMES,
-                },
-              },
-            },
-            {
-              propertyName: "iconAlign",
-              label: "图标对齐",
-              helpText: "设置输入框图标的对齐方式",
-              controlType: "ICON_TABS",
-              options: [
-                {
-                  icon: "VERTICAL_LEFT",
-                  value: "left",
-                },
-                {
-                  icon: "VERTICAL_RIGHT",
-                  value: "right",
-                },
-              ],
-              isBindProperty: false,
-              isTriggerProperty: false,
-              validation: { type: ValidationTypes.TEXT },
-              hidden: (props: InputWidgetProps) => !props.iconName,
-              dependencies: ["iconName"],
-            },
-          ],
-        },
-      ],
-      super.getPropertyPaneConfig(),
-    );
-  }
-
   static getPropertyPaneContentConfig() {
     return mergeWidgetConfig(
       [
@@ -421,7 +257,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               isTriggerProperty: false,
               validation: {
                 type: ValidationTypes.NUMBER,
-                params: { min: 1, natural: true },
+                params: { min: 1, natural: true, passThroughOnZero: false },
               },
               hidden: (props: InputWidgetProps) => {
                 return props.inputType !== InputTypes.TEXT;
@@ -509,6 +345,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               label: "位置",
               helpText: "设置输入框图标的对齐方式",
               controlType: "ICON_TABS",
+              fullWidth: true,
               options: [
                 {
                   icon: "VERTICAL_LEFT",
@@ -540,7 +377,8 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
 
   static getMetaPropertiesMap(): Record<string, any> {
     return merge(super.getMetaPropertiesMap(), {
-      inputText: undefined,
+      inputText: "",
+      text: "",
     });
   }
 
@@ -551,7 +389,33 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
     };
   }
 
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      accentColor: "{{appsmith.theme.colors.primaryColor}}",
+      borderRadius: "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      boxShadow: "none",
+    };
+  }
+
   handleFocusChange = (focusState: boolean) => {
+    if (focusState) {
+      this.props.updateWidgetMetaProperty("isFocused", focusState, {
+        triggerPropertyName: "onFocus",
+        dynamicString: this.props.onFocus,
+        event: {
+          type: EventType.ON_FOCUS,
+        },
+      });
+    }
+    if (!focusState) {
+      this.props.updateWidgetMetaProperty("isFocused", focusState, {
+        triggerPropertyName: "onBlur",
+        dynamicString: this.props.onBlur,
+        event: {
+          type: EventType.ON_BLUR,
+        },
+      });
+    }
     super.handleFocusChange(focusState);
   };
 
@@ -715,6 +579,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
         iconAlign={this.props.iconAlign}
         iconName={this.props.iconName}
         inputType={this.props.inputType}
+        isDynamicHeightEnabled={isAutoHeightEnabledForWidget(this.props)}
         isInvalid={isInvalid}
         isLoading={this.props.isLoading}
         label={this.props.label}

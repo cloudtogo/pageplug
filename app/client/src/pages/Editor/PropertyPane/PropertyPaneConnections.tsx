@@ -1,29 +1,32 @@
 import React, { memo, useMemo, useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
-import Icon, { IconSize } from "components/ads/Icon";
-import Dropdown, {
-  DefaultDropDownValueNodeProps,
-  DropdownOption,
-} from "components/ads/Dropdown";
-import { TooltipComponent as Tooltip } from "design-system";
-import { AppState } from "reducers";
+import { AppState } from "@appsmith/reducers";
 import { useDispatch, useSelector } from "react-redux";
 import { getDataTree } from "selectors/dataTreeSelectors";
-import { isAction, isWidget } from "workers/evaluationUtils";
-import { Text, TextType } from "design-system";
-import { Classes } from "components/ads/common";
+import { isAction, isWidget } from "workers/Evaluation/evaluationUtils";
+import {
+  Classes,
+  Dropdown,
+  DefaultDropDownValueNodeProps,
+  DropdownOption,
+  getTypographyByKey,
+  Icon,
+  IconSize,
+  Text,
+  TextType,
+  TooltipComponent as Tooltip,
+  RenderDropdownOptionType,
+} from "design-system";
 import { useEntityLink } from "components/editorComponents/Debugger/hooks/debuggerHooks";
 import { useGetEntityInfo } from "components/editorComponents/Debugger/hooks/useGetEntityInfo";
 import {
-  DEBUGGER_TAB_KEYS,
   doesEntityHaveErrors,
   getDependenciesFromInverseDependencies,
 } from "components/editorComponents/Debugger/helpers";
 import { getFilteredErrors } from "selectors/debuggerSelectors";
 import { ENTITY_TYPE, Log } from "entities/AppsmithConsole";
 import { DebugButton } from "components/editorComponents/Debugger/DebugCTA";
-import { setCurrentTab, showDebugger } from "actions/debuggerActions";
-import { getTypographyByKey } from "constants/DefaultTheme";
+import { showDebugger } from "actions/debuggerActions";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { Colors } from "constants/Colors";
 import { inGuidedTour } from "selectors/onboardingSelectors";
@@ -43,7 +46,7 @@ const TopLayer = styled.div`
   display: flex;
   flex: 1;
   justify-content: space-between;
-  padding: 0 0.75rem;
+  padding: 0 1rem;
 
   .connection-dropdown {
     box-shadow: none;
@@ -73,7 +76,7 @@ const SelectedNodeWrapper = styled.div<{
     props.hasError
       ? props.theme.colors.propertyPane.connections.error
       : props.theme.colors.propertyPane.connections.connectionsCount};
-  ${(props) => getTypographyByKey(props, "p3")}
+  ${getTypographyByKey("p3")}
   opacity: ${(props) => (!!props.entityCount ? 1 : 0.5)};
 
   & > *:nth-child(2) {
@@ -170,7 +173,8 @@ const OptionContentWrapper = styled.div<{
     margin-right: ${(props) => props.theme.spaces[5]}px;
   }
 
-  &:hover {
+  &:hover,
+  &.highlighted {
     background-color: ${(props) =>
       !props.hasError && props.theme.colors.dropdown.hovered.bg};
   }
@@ -253,8 +257,6 @@ function OptionNode(props: any) {
     if (entityInfo?.hasError) {
       if (entityInfo?.type === ENTITY_TYPE.WIDGET) {
         dispatch(showDebugger(true));
-      } else {
-        dispatch(setCurrentTab(DEBUGGER_TAB_KEYS.ERROR_TAB));
       }
     }
     navigateToEntity(props.option.label);
@@ -265,8 +267,12 @@ function OptionNode(props: any) {
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (!props.isSelectedNode) return;
-    if (e.key === " " || e.key === "Enter") onClick();
+    if (!props.isSelectedNode && !props.isHighlighted) return;
+    if (
+      (props.isSelectedNode || props.isHighlighted) &&
+      (e.key === " " || e.key === "Enter")
+    )
+      onClick();
   };
 
   useEffect(() => {
@@ -274,14 +280,16 @@ function OptionNode(props: any) {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [props.isSelectedNode]);
+  }, [props.isSelectedNode, props.isHighlighted]);
 
   return (
     <OptionWrapper
+      className={`t--dropdown-option`}
       fillIconColor={!entityInfo?.datasourceName}
       hasError={!!entityInfo?.hasError}
     >
       <OptionContentWrapper
+        className={`${props.isHighlighted ? "highlighted" : ""}`}
         hasError={!!entityInfo?.hasError}
         isSelected={props.isSelectedNode}
         onClick={onClick}
@@ -406,7 +414,9 @@ function PropertyPaneConnections(props: PropertyPaneConnectionsProps) {
   return (
     <TopLayer ref={topLayerRef}>
       <Dropdown
-        SelectedValueNode={(selectedValueProps) => (
+        SelectedValueNode={(
+          selectedValueProps: DefaultDropDownValueNodeProps,
+        ) => (
           <TriggerNode
             iconAlignment={"LEFT"}
             justifyContent={"flex-start"}
@@ -424,9 +434,10 @@ function PropertyPaneConnections(props: PropertyPaneConnectionsProps) {
         headerLabel="输入连接"
         height={`${CONNECTION_HEIGHT}px`}
         options={dependencies.dependencyOptions}
-        renderOption={(optionProps) => {
+        renderOption={(optionProps: RenderDropdownOptionType) => {
           return (
             <OptionNode
+              isHighlighted={optionProps.isHighlighted}
               isSelectedNode={optionProps.isSelectedNode}
               option={optionProps.option}
             />
@@ -439,7 +450,9 @@ function PropertyPaneConnections(props: PropertyPaneConnectionsProps) {
       />
       {/* <PopperDragHandle /> */}
       <Dropdown
-        SelectedValueNode={(selectedValueProps) => (
+        SelectedValueNode={(
+          selectedValueProps: DefaultDropDownValueNodeProps,
+        ) => (
           <TriggerNode
             iconAlignment={"RIGHT"}
             justifyContent={"flex-end"}
@@ -458,9 +471,10 @@ function PropertyPaneConnections(props: PropertyPaneConnectionsProps) {
         height={`${CONNECTION_HEIGHT}px`}
         onSelect={navigateToEntity}
         options={dependencies.inverseDependencyOptions}
-        renderOption={(optionProps) => {
+        renderOption={(optionProps: RenderDropdownOptionType) => {
           return (
             <OptionNode
+              isHighlighted={optionProps.isHighlighted}
               isSelectedNode={optionProps.isSelectedNode}
               option={optionProps.option}
             />

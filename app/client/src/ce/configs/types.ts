@@ -56,6 +56,7 @@ export interface AppsmithUIConfigs {
   appVersion: {
     id: string;
     releaseDate: string;
+    edition: string;
   };
   intercomAppID: string;
   mailEnabled: boolean;
@@ -68,4 +69,5 @@ export interface AppsmithUIConfigs {
   };
   appsmithSupportEmail: string;
   hideWatermark: boolean;
-};
+  disableIframeWidgetSandbox: boolean;
+}

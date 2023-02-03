@@ -1,12 +1,17 @@
 import localStorage from "utils/localStorage";
+import { GridDefaults } from "./WidgetConstants";
 
 export const CANVAS_DEFAULT_HEIGHT_PX = 1292;
 export const CANVAS_DEFAULT_MIN_HEIGHT_PX = 380;
 export const CANVAS_DEFAULT_GRID_HEIGHT_PX = 1;
 export const CANVAS_DEFAULT_GRID_WIDTH_PX = 1;
+export const CANVAS_DEFAULT_MIN_ROWS = Math.ceil(
+  CANVAS_DEFAULT_MIN_HEIGHT_PX / GridDefaults.DEFAULT_GRID_ROW_HEIGHT,
+);
 export const CANVAS_BACKGROUND_COLOR = "#FFFFFF";
 export const DEFAULT_ENTITY_EXPLORER_WIDTH = 256;
-export const DEFAULT_PROPERTY_PANE_WIDTH = 256;
+export const DEFAULT_PROPERTY_PANE_WIDTH = 288;
+export const APP_SETTINGS_PANE_WIDTH = 525;
 
 export const DEFAULT_VIEWER_LOGO = "https://img.icons8.com/doodle/2x/koala.png";
 

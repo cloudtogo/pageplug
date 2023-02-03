@@ -14,6 +14,7 @@ import com.appsmith.server.services.SessionUserService;
 import com.appsmith.server.services.UserDataService;
 import com.appsmith.server.services.UserWorkspaceService;
 import com.appsmith.server.services.UserService;
+import com.appsmith.server.solutions.UserAndAccessManagementService;
 import com.appsmith.server.solutions.UserSignup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ public class UserControllerCE extends BaseController<UserService, User, String> 
     private final UserWorkspaceService userWorkspaceService;
     private final UserSignup userSignup;
     private final UserDataService userDataService;
+    private final UserAndAccessManagementService userAndAccessManagementService;
     private final CloudOSActionSolution cloudOSActionSolution;
 
     @Autowired
@@ -50,12 +52,14 @@ public class UserControllerCE extends BaseController<UserService, User, String> 
                             UserWorkspaceService userWorkspaceService,
                             UserSignup userSignup,
                             UserDataService userDataService,
+                            UserAndAccessManagementService userAndAccessManagementService,
                             CloudOSActionSolution cloudOSActionSolution) {
         super(service);
         this.sessionUserService = sessionUserService;
         this.userWorkspaceService = userWorkspaceService;
         this.userSignup = userSignup;
         this.userDataService = userDataService;
+        this.userAndAccessManagementService = userAndAccessManagementService;
         this.cloudOSActionSolution = cloudOSActionSolution;
     }
 
@@ -92,18 +96,6 @@ public class UserControllerCE extends BaseController<UserService, User, String> 
     public Mono<ResponseDTO<User>> update(@RequestBody UserUpdateDTO updates, ServerWebExchange exchange) {
         return service.updateCurrentUser(updates, exchange)
                 .map(updatedUser -> new ResponseDTO<>(HttpStatus.OK.value(), updatedUser, null));
-    }
-
-    @PutMapping("/switchWorkspace/{workspaceId}")
-    public Mono<ResponseDTO<User>> setCurrentWorkspace(@PathVariable String workspaceId) {
-        return service.switchCurrentWorkspace(workspaceId)
-                .map(user -> new ResponseDTO<>(HttpStatus.OK.value(), user, null));
-    }
-
-    @PutMapping("/addWorkspace/{workspaceId}")
-    public Mono<ResponseDTO<User>> addUserToWorkspace(@PathVariable String workspaceId) {
-        return userWorkspaceService.addUserToWorkspace(workspaceId, null)
-                .map(user -> new ResponseDTO<>(HttpStatus.OK.value(), user, null));
     }
 
     @PutMapping("/leaveWorkspace/{workspaceId}")
@@ -162,7 +154,7 @@ public class UserControllerCE extends BaseController<UserService, User, String> 
     @PostMapping("/invite")
     public Mono<ResponseDTO<List<User>>> inviteUsers(@RequestBody InviteUsersDTO inviteUsersDTO,
                                                      @RequestHeader("Origin") String originHeader) {
-        return service.inviteUsers(inviteUsersDTO, originHeader)
+        return userAndAccessManagementService.inviteUsers(inviteUsersDTO, originHeader)
                 .map(users -> new ResponseDTO<>(HttpStatus.OK.value(), users, null));
     }
 

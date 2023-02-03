@@ -3,6 +3,7 @@ import {
   combineDynamicBindings,
   getDynamicBindings,
 } from "utils/DynamicBindingUtils";
+import { RegisteredWidgetFeatures } from "utils/WidgetFeatures";
 import { WidgetProps } from "widgets/BaseWidget";
 import {
   BlueprintOperationTypes,
@@ -15,6 +16,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "列表",
   iconSVG: IconSVG,
+  searchTags: ["list"],
   needsMeta: true,
   isCanvas: true,
   defaults: {
@@ -122,6 +124,9 @@ export const CONFIG = {
                     isDeletable: false,
                     disallowCopy: true,
                     disablePropertyPane: true,
+                    disabledWidgetFeatures: [
+                      RegisteredWidgetFeatures.DYNAMIC_HEIGHT,
+                    ],
                     openParentPropertyPane: true,
                     children: [],
                     blueprint: {
@@ -293,6 +298,11 @@ export const CONFIG = {
                 propertyName: "template",
                 propertyValue: template,
               },
+              {
+                widgetId: container.widgetId,
+                propertyName: "dynamicHeight",
+                propertyValue: "FIXED",
+              },
             ];
 
             // add logBlackList to updateProperyMap for all children
@@ -333,6 +343,7 @@ export const CONFIG = {
               "BUTTON_GROUP_WIDGET",
               "BUTTON_WIDGET",
               "CHART_WIDGET",
+              "ECHART_WIDGET",
               "CHECKBOX_WIDGET",
               "CHECKBOX_GROUP_WIDGET",
               "DIVIDER_WIDGET",
@@ -402,6 +413,7 @@ export const CONFIG = {
     config: Widget.getPropertyPaneConfig(),
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
   },
 };
 

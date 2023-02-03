@@ -4,14 +4,20 @@ import { LabelPosition } from "components/constants";
 import { AlignWidgetTypes } from "widgets/constants";
 
 export const CONFIG = {
+  features: {
+    dynamicHeight: {
+      sectionIndex: 2,
+      active: true,
+    },
+  },
   type: Widget.getWidgetType(),
   name: "勾选",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["boolean"],
+  searchTags: ["boolean", "checkbox"],
   defaults: {
     rows: 4,
-    columns: 7,
+    columns: 12,
     label: "标签",
     defaultCheckedState: true,
     widgetName: "Checkbox",
@@ -29,6 +35,7 @@ export const CONFIG = {
     config: Widget.getPropertyPaneConfig(),
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
   },
 };
 
