@@ -1,6 +1,7 @@
 const { exec } = require("child_process");
 const path = require("path");
 const sharedJSON = require("./shared-dependencies.json");
+const crossify = require('./cross');
 
 const CURRENT_DIRECTORY = path.join(__dirname, '..');
 const SCOPE_DIRECTORY = process.env.CURRENT_SCOPE;
@@ -23,11 +24,11 @@ async function main() {
                 `Bundling Dependency for \x1b[34m${dependencyFolder}`
               );
               exec(
-                `
+                crossify(`
             cd ${CURRENT_DIRECTORY}/${dependencyFolder.replace("@", "")};
             yarn unlink;
             yarn run link-package;
-          `,
+          `),
                 (err) => {
                   if (err) {
                     reject(err);
