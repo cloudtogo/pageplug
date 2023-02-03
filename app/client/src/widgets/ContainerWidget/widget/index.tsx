@@ -1,24 +1,26 @@
 import React from "react";
 
-import ContainerComponent, { ContainerStyle } from "../component";
-import WidgetFactory, { DerivedPropertiesMap } from "utils/WidgetFactory";
 import {
   CONTAINER_GRID_PADDING,
   GridDefaults,
   MAIN_CONTAINER_WIDGET_ID,
+  RenderModes,
   WIDGET_PADDING,
 } from "constants/WidgetConstants";
+import WidgetFactory, { DerivedPropertiesMap } from "utils/WidgetFactory";
+import ContainerComponent, { ContainerStyle } from "../component";
 
 import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 
 import { ValidationTypes } from "constants/WidgetValidation";
 
-import WidgetsMultiSelectBox from "pages/Editor/WidgetsMultiSelectBox";
-import { CanvasSelectionArena } from "pages/common/CanvasArenas/CanvasSelectionArena";
 import { compact, map, sortBy } from "lodash";
+import { CanvasSelectionArena } from "pages/common/CanvasArenas/CanvasSelectionArena";
+import WidgetsMultiSelectBox from "pages/Editor/WidgetsMultiSelectBox";
 
 import { CanvasDraggingArena } from "pages/common/CanvasArenas/CanvasDraggingArena";
 import { getCanvasSnapRows } from "utils/WidgetPropsUtils";
+import { Stylesheet } from "entities/AppTheming";
 
 class ContainerWidget extends BaseWidget<
   ContainerWidgetProps<WidgetProps>,
@@ -27,101 +29,6 @@ class ContainerWidget extends BaseWidget<
   constructor(props: ContainerWidgetProps<WidgetProps>) {
     super(props);
     this.renderChildWidget = this.renderChildWidget.bind(this);
-  }
-
-  static getPropertyPaneConfig() {
-    return [
-      {
-        sectionName: "属性",
-        children: [
-          {
-            helpText: "控制组件是否可见",
-            propertyName: "isVisible",
-            label: "是否可见",
-            controlType: "SWITCH",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
-            propertyName: "animateLoading",
-            label: "加载状态",
-            controlType: "SWITCH",
-            helpText: "组件依赖的数据加载时显示加载动画",
-            defaultValue: true,
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
-            helpText: "允许组件内部内容滚动",
-            propertyName: "shouldScrollContents",
-            label: "是否滚动内容",
-            controlType: "SWITCH",
-            isBindProperty: false,
-            isTriggerProperty: false,
-          },
-        ],
-      },
-      {
-        sectionName: "样式",
-        children: [
-          {
-            helpText: "使用 html 颜色名称，HEX，RGB 或者 RGBA 值",
-            placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
-            propertyName: "backgroundColor",
-            label: "背景颜色",
-            controlType: "COLOR_PICKER",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            helpText: "使用 html 颜色名称，HEX，RGB 或者 RGBA 值",
-            placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
-            propertyName: "borderColor",
-            label: "边框颜色",
-            controlType: "COLOR_PICKER",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            helpText: "输入边框宽度",
-            propertyName: "borderWidth",
-            label: "边框厚度",
-            placeholderText: "以 px 为单位",
-            controlType: "INPUT_TEXT",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.NUMBER },
-          },
-          {
-            propertyName: "borderRadius",
-            label: "边框圆角",
-            helpText: "边框圆角样式",
-            controlType: "BORDER_RADIUS_OPTIONS",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            propertyName: "boxShadow",
-            label: "阴影",
-            helpText: "组件轮廓投影",
-            controlType: "BOX_SHADOW_OPTIONS",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-        ],
-      },
-    ];
   }
 
   static getPropertyPaneContentConfig() {
@@ -174,6 +81,17 @@ class ContainerWidget extends BaseWidget<
             propertyName: "backgroundColor",
             label: "背景颜色",
             controlType: "COLOR_PICKER",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+          {
+            helpText: "使用图片 URL 或 Base64 数据",
+            placeholderText: "使用图片 URL 或 Base64 数据",
+            propertyName: "backgroundImage",
+            label: "背景图片",
+            controlType: "INPUT_TEXT",
             isJSConvertible: true,
             isBindProperty: true,
             isTriggerProperty: false,
@@ -239,6 +157,13 @@ class ContainerWidget extends BaseWidget<
     return {};
   }
 
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      borderRadius: "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      boxShadow: "{{appsmith.theme.boxShadow.appBoxShadow}}",
+    };
+  }
+
   getSnapSpaces = () => {
     const { componentWidth } = this.getComponentDimensions();
     // For all widgets inside a container, we remove both container padding as well as widget padding from component width
@@ -265,25 +190,21 @@ class ContainerWidget extends BaseWidget<
   };
 
   renderChildWidget(childWidgetData: WidgetProps): React.ReactNode {
-    // For now, isVisible prop defines whether to render a detached widget
-    if (childWidgetData.detachFromLayout && !childWidgetData.isVisible) {
-      return null;
-    }
+    const childWidget = { ...childWidgetData };
 
     const { componentHeight, componentWidth } = this.getComponentDimensions();
 
-    childWidgetData.rightColumn = componentWidth;
-    childWidgetData.bottomRow = this.props.shouldScrollContents
-      ? childWidgetData.bottomRow
+    childWidget.rightColumn = componentWidth;
+    childWidget.bottomRow = this.props.shouldScrollContents
+      ? childWidget.bottomRow
       : componentHeight;
-    childWidgetData.minHeight = componentHeight;
-    childWidgetData.isVisible = this.props.isVisible;
-    childWidgetData.shouldScrollContents = false;
-    childWidgetData.canExtend = this.props.shouldScrollContents;
+    childWidget.minHeight = componentHeight;
+    childWidget.shouldScrollContents = false;
+    childWidget.canExtend = this.props.shouldScrollContents;
 
-    childWidgetData.parentId = this.props.widgetId;
+    childWidget.parentId = this.props.widgetId;
 
-    return WidgetFactory.createWidget(childWidgetData, this.props.renderMode);
+    return WidgetFactory.createWidget(childWidget, this.props.renderMode);
   }
 
   renderChildren = () => {
@@ -300,33 +221,36 @@ class ContainerWidget extends BaseWidget<
     const snapRows = getCanvasSnapRows(props.bottomRow, props.canExtend);
     return (
       <ContainerComponent {...props}>
-        {props.type === "CANVAS_WIDGET" && (
-          <>
-            <CanvasDraggingArena
-              {...this.getSnapSpaces()}
-              canExtend={props.canExtend}
-              dropDisabled={!!props.dropDisabled}
-              noPad={this.props.noPad}
-              parentId={props.parentId}
-              snapRows={snapRows}
-              widgetId={props.widgetId}
-            />
-            <CanvasSelectionArena
-              {...this.getSnapSpaces()}
-              canExtend={props.canExtend}
-              dropDisabled={!!props.dropDisabled}
-              parentId={props.parentId}
-              snapRows={snapRows}
-              widgetId={props.widgetId}
-            />
-          </>
-        )}
-        <WidgetsMultiSelectBox
-          {...this.getSnapSpaces()}
-          noContainerOffset={!!props.noContainerOffset}
-          widgetId={this.props.widgetId}
-          widgetType={this.props.type}
-        />
+        {props.type === "CANVAS_WIDGET" &&
+          props.renderMode === RenderModes.CANVAS && (
+            <>
+              <CanvasDraggingArena
+                {...this.getSnapSpaces()}
+                canExtend={props.canExtend}
+                dropDisabled={!!props.dropDisabled}
+                noPad={this.props.noPad}
+                parentId={props.parentId}
+                snapRows={snapRows}
+                widgetId={props.widgetId}
+              />
+              <CanvasSelectionArena
+                {...this.getSnapSpaces()}
+                canExtend={props.canExtend}
+                dropDisabled={!!props.dropDisabled}
+                parentId={props.parentId}
+                snapRows={snapRows}
+                widgetId={props.widgetId}
+              />
+
+              <WidgetsMultiSelectBox
+                {...this.getSnapSpaces()}
+                noContainerOffset={!!props.noContainerOffset}
+                widgetId={this.props.widgetId}
+                widgetType={this.props.type}
+              />
+            </>
+          )}
+
         {/* without the wrapping div onClick events are triggered twice */}
         <>{this.renderChildren()}</>
       </ContainerComponent>

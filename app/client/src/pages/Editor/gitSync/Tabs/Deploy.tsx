@@ -15,10 +15,14 @@ import {
   READ_DOCUMENTATION,
 } from "@appsmith/constants/messages";
 import styled, { useTheme } from "styled-components";
-import TextInput from "components/ads/TextInput";
-import Button, { Category, Size } from "components/ads/Button";
-import { LabelContainer } from "components/ads/Checkbox";
-
+import {
+  Button,
+  Category,
+  getTypographyByKey,
+  LabelContainer,
+  Size,
+  TextInput,
+} from "design-system";
 import {
   getConflictFoundDocUrlDeploy,
   getDiscardDocUrl,
@@ -34,7 +38,7 @@ import {
 } from "selectors/gitSyncSelectors";
 import { useDispatch, useSelector } from "react-redux";
 import { Colors } from "constants/Colors";
-import { getTypographyByKey, Theme } from "constants/DefaultTheme";
+import { Theme } from "constants/DefaultTheme";
 
 import { getCurrentAppGitMetaData } from "selectors/applicationSelectors";
 import DeployPreview from "../components/DeployPreview";
@@ -50,12 +54,18 @@ import Statusbar, {
   StatusbarWrapper,
 } from "pages/Editor/gitSync/components/Statusbar";
 import GitChangesList from "../components/GitChangesList";
-import { TooltipComponent as Tooltip } from "design-system";
-import { Text, TextType } from "design-system";
+import {
+  Icon,
+  IconSize,
+  ScrollIndicator,
+  Text,
+  TextType,
+  TooltipComponent as Tooltip,
+  Variant,
+} from "design-system";
 import InfoWrapper from "../components/InfoWrapper";
 import Link from "../components/Link";
 import ConflictInfo from "../components/ConflictInfo";
-import Icon, { IconSize } from "components/ads/Icon";
 
 import { isMacOrIOS } from "utils/helpers";
 import AnalyticsUtil from "utils/AnalyticsUtil";
@@ -66,10 +76,9 @@ import {
 import GIT_ERROR_CODES from "constants/GitErrorCodes";
 import useAutoGrow from "utils/hooks/useAutoGrow";
 import { Space, Title } from "../components/StyledComponents";
-import { Variant } from "components/ads";
 import DiscardChangesWarning from "../components/DiscardChangesWarning";
 import { changeInfoSinceLastCommit } from "../utils";
-import ScrollIndicator from "../../../../components/ads/ScrollIndicator";
+import { GitStatusData } from "reducers/uiReducers/gitSyncReducer";
 
 const Section = styled.div`
   margin-top: 0;
@@ -82,7 +91,7 @@ const Row = styled.div`
 `;
 
 const SectionTitle = styled.div`
-  ${(props) => getTypographyByKey(props, "p1")};
+  ${getTypographyByKey("p1")};
   color: ${Colors.CHARCOAL};
   display: inline-flex;
 
@@ -152,12 +161,12 @@ function Deploy() {
   const isCommittingInProgress = useSelector(getIsCommittingInProgress);
   const isDiscardInProgress = useSelector(getIsDiscardInProgress) || false;
   const gitMetaData = useSelector(getCurrentAppGitMetaData);
-  const gitStatus = useSelector(getGitStatus);
+  const gitStatus = useSelector(getGitStatus) as GitStatusData;
   const isFetchingGitStatus = useSelector(getIsFetchingGitStatus);
   const isPullingProgress = useSelector(getIsPullingProgress);
   const isCommitAndPushSuccessful = useSelector(getIsCommitSuccessful);
   const hasChangesToCommit = !gitStatus?.isClean;
-  const gitError = useSelector(getGitCommitAndPushError);
+  const commitAndPushError = useSelector(getGitCommitAndPushError);
   const pullFailed = useSelector(getPullFailed);
   const commitInputRef = useRef<HTMLInputElement>(null);
   const upstreamErrorDocumentUrl = useSelector(getUpstreamErrorDocUrl);
@@ -230,7 +239,8 @@ function Deploy() {
     isCommitAndPushSuccessful ||
     isDiscarding;
   const pullRequired =
-    gitError?.code === GIT_ERROR_CODES.PUSH_FAILED_REMOTE_COUNTERPART_IS_AHEAD;
+    commitAndPushError?.code ===
+    GIT_ERROR_CODES.PUSH_FAILED_REMOTE_COUNTERPART_IS_AHEAD;
 
   const showCommitButton =
     !isConflicting &&
@@ -300,6 +310,10 @@ function Deploy() {
     }
   }, [scrollWrapperRef]);
 
+  const showPullButton =
+    !isFetchingGitStatus &&
+    ((pullRequired && !isConflicting) ||
+      (gitStatus?.behindCount > 0 && gitStatus?.isClean));
   return (
     <Container data-testid={"t--deploy-tab-container"} ref={scrollWrapperRef}>
       <Title>{createMessage(DEPLOY_YOUR_APPLICATION)}</Title>
@@ -312,7 +326,7 @@ function Deploy() {
             {changeReasonText}
           </Text>
         )}
-        <GitChangesList isAutoUpdate={isAutoUpdate} />
+        <GitChangesList />
         <Row>
           <SectionTitle>
             <span>{createMessage(COMMIT_TO)}</span>
@@ -370,7 +384,7 @@ function Deploy() {
           </InfoWrapper>
         )}
         <ActionsContainer>
-          {pullRequired && !isConflicting && (
+          {showPullButton && (
             <Button
               className="t--pull-button"
               isLoading={isPullingProgress}

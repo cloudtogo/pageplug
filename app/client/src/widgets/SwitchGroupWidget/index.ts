@@ -4,14 +4,21 @@ import IconSVG from "./icon.svg";
 import Widget from "./widget";
 
 export const CONFIG = {
+  features: {
+    dynamicHeight: {
+      sectionIndex: 3,
+      active: true,
+    },
+  },
   type: Widget.getWidgetType(),
   name: "开关组", // The display name which will be made in uppercase and show in the widgets panel ( can have spaces )
+  searchTags: ["switch group"],
   iconSVG: IconSVG,
   needsMeta: true, // Defines if this widget adds any meta properties
   isCanvas: false, // Defines if this widget has a canvas within in which we can drop other widgets
   defaults: {
     widgetName: "SwitchGroup",
-    rows: 4,
+    rows: 6,
     columns: 26,
     options: [
       { label: "蓝", value: "BLUE" },
@@ -26,7 +33,7 @@ export const CONFIG = {
     animateLoading: true,
     alignment: Alignment.LEFT,
     labelText: "标签",
-    labelPosition: LabelPosition.Left,
+    labelPosition: LabelPosition.Top,
     labelAlignment: Alignment.LEFT,
     labelWidth: 5,
     version: 1,
@@ -39,6 +46,7 @@ export const CONFIG = {
     config: Widget.getPropertyPaneConfig(),
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
   },
 };
 

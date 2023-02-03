@@ -1,6 +1,13 @@
-import React, { useCallback, useMemo, useEffect, useRef } from "react";
+import React, {
+  useCallback,
+  useMemo,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  getCurrentApplication,
   getCurrentApplicationId,
   getCurrentPageId,
   isMobileLayout,
@@ -12,39 +19,37 @@ import {
   hiddenPageIcon,
   pageIcon,
   defaultPageIcon,
-  settingsIcon,
   currentPageIcon,
+  appLayoutIcon,
 } from "../ExplorerIcons";
-import {
-  createMessage,
-  ADD_PAGE_TOOLTIP,
-  PAGE_PROPERTIES_TOOLTIP,
-} from "@appsmith/constants/messages";
+import { createMessage, ADD_PAGE_TOOLTIP } from "@appsmith/constants/messages";
 import { Page } from "@appsmith/constants/ReduxActionConstants";
 import { getNextEntityName } from "utils/AppsmithUtils";
 import { extractCurrentDSL } from "utils/WidgetPropsUtils";
-import { TooltipComponent } from "design-system";
-import { TOOLTIP_HOVER_ON_DELAY } from "constants/AppConstants";
 import styled from "styled-components";
 import PageContextMenu from "./PageContextMenu";
 import { resolveAsSpaceChar } from "utils/helpers";
 import { getExplorerPinned } from "selectors/explorerSelector";
 import { setExplorerPinnedAction } from "actions/explorerActions";
 import { selectAllPages } from "selectors/entitiesSelector";
-import {
-  builderURL,
-  pageListEditorURL,
-  viewerLayoutEditorURL,
-} from "RouteBuilder";
+import { builderURL, viewerLayoutEditorURL } from "RouteBuilder";
 import { saveExplorerStatus, getExplorerStatus } from "../helpers";
 import { tailwindLayers } from "constants/Layers";
 import useResize, {
   DIRECTION,
   CallbackResponseType,
 } from "utils/hooks/useResize";
+import AddPageContextMenu from "./AddPageContextMenu";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { useLocation } from "react-router";
 import { toggleInOnboardingWidgetSelection } from "actions/onboardingActions";
+import {
+  hasCreatePagePermission,
+  hasManagePagePermission,
+} from "@appsmith/utils/permissionHelpers";
+import { AppState } from "@appsmith/reducers";
+import { pageChanged } from "actions/focusHistoryActions";
+import { TooltipComponent } from "design-system";
 
 const ENTITY_HEIGHT = 36;
 const MIN_PAGES_HEIGHT = 60;
@@ -123,9 +128,21 @@ function Pages() {
       });
       dispatch(toggleInOnboardingWidgetSelection(true));
       history.push(navigateToUrl);
+      const currentURL = navigateToUrl.split(/(?=\?)/g);
+      dispatch(
+        pageChanged(
+          page.pageId,
+          currentURL[0],
+          currentURL[1],
+          location.pathname,
+          location.search,
+        ),
+      );
     },
     [location.pathname],
   );
+
+  const [isMenuOpen, openMenu] = useState(false);
 
   const createPageCallback = useCallback(() => {
     const name = getNextEntityName(
@@ -139,29 +156,16 @@ function Pages() {
     dispatch(createPage(applicationId, name, defaultPageLayouts));
   }, [dispatch, pages, applicationId]);
 
-  const settingsIconWithTooltip = React.useMemo(
-    () => (
-      <TooltipComponent
-        boundary="viewport"
-        content={createMessage(PAGE_PROPERTIES_TOOLTIP)}
-        hoverOpenDelay={TOOLTIP_HOVER_ON_DELAY}
-        position="bottom"
-      >
-        {settingsIcon}
-      </TooltipComponent>
-    ),
-    [],
-  );
+  const onMenuClose = useCallback(() => openMenu(false), [openMenu]);
 
   const viewerMenuEditIcon = React.useMemo(
     () => (
       <TooltipComponent
         boundary="viewport"
         content={`设计项目菜单`}
-        hoverOpenDelay={TOOLTIP_HOVER_ON_DELAY}
         position="bottom"
       >
-        {settingsIcon}
+        {appLayoutIcon}
       </TooltipComponent>
     ),
     [],
@@ -178,15 +182,6 @@ function Pages() {
     dispatch(setExplorerPinnedAction(!pinned));
   }, [pinned, dispatch, setExplorerPinnedAction]);
 
-  const onClickRightIcon = useCallback(() => {
-    history.push(pageListEditorURL({ pageId: currentPageId }));
-  }, [currentPageId]);
-
-  const onPageListSelection = React.useCallback(
-    () => history.push(pageListEditorURL({ pageId: currentPageId })),
-    [currentPageId],
-  );
-
   const onPageToggle = useCallback(
     (isOpen: boolean) => {
       saveExplorerStatus(applicationId, "pages", isOpen);
@@ -194,12 +189,20 @@ function Pages() {
     [applicationId],
   );
 
+  const userAppPermissions = useSelector(
+    (state: AppState) => getCurrentApplication(state)?.userPermissions ?? [],
+  );
+
+  const canCreatePages = hasCreatePagePermission(userAppPermissions);
+
   const pageElements = useMemo(
     () =>
       pages.map((page) => {
         const icon = page.isDefault ? defaultPageIcon : pageIcon;
         const rightIcon = !!page.isHidden ? hiddenPageIcon : null;
         const isCurrentPage = currentPageId === page.pageId;
+        const pagePermissions = page.userPermissions;
+        const canManagePages = hasManagePagePermission(pagePermissions);
         const contextMenu = (
           <PageContextMenu
             applicationId={applicationId as string}
@@ -215,6 +218,7 @@ function Pages() {
         return (
           <StyledEntity
             action={() => switchPage(page)}
+            canEditEntityName={canManagePages}
             className={`page ${isCurrentPage && "activePage"}`}
             contextMenu={contextMenu}
             entityId={page.pageId}
@@ -228,35 +232,42 @@ function Pages() {
             searchKeyword={""}
             step={1}
             updateEntityName={(id, name) =>
-              updatePage(id, name, !!page.isHidden)
+              updatePage({ id, name, isHidden: !!page.isHidden })
             }
           />
         );
       }),
-    [pages, currentPageId, applicationId],
+    [pages, currentPageId, applicationId, location.pathname],
   );
 
   return (
     <RelativeContainer>
       <StyledEntity
-        action={onPageListSelection}
         addButtonHelptext={createMessage(ADD_PAGE_TOOLTIP)}
         alwaysShowRightIcon
         className="group pages"
         collapseRef={pageResizeRef}
+        customAddButton={
+          <AddPageContextMenu
+            className={`${EntityClassNames.ADD_BUTTON} group pages`}
+            createPageCallback={createPageCallback}
+            onMenuClose={onMenuClose}
+            openMenu={isMenuOpen}
+          />
+        }
         entityId="Pages"
         icon={""}
-        isDefaultExpanded={isPagesOpen === null ? true : isPagesOpen}
+        isDefaultExpanded={
+          isPagesOpen === null || isPagesOpen === undefined ? true : isPagesOpen
+        }
         name="页面"
         // onClickPreRightIcon={onPin}
-        onClickRightIcon={onClickRightIcon}
-        onCreate={createPageCallback}
         onToggle={onPageToggle}
         pagesSize={ENTITY_HEIGHT * pages.length}
-        rightIcon={settingsIconWithTooltip}
         onClickPreRightIcon={navToLayoutEditor}
         preRightIcon={isMobile ? null : viewerMenuEditIcon}
         searchKeyword={""}
+        showAddButton={canCreatePages}
         step={0}
       >
         {pageElements}

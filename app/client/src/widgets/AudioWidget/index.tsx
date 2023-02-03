@@ -6,7 +6,7 @@ export const CONFIG = {
   name: "音频",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["mp3", "sound", "wave", "player"],
+  searchTags: ["mp3", "sound", "wave", "player", "audio"],
   defaults: {
     rows: 4,
     columns: 28,

@@ -3,7 +3,7 @@ import {
   ValidationTypes,
 } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import { AutocompleteDataType } from "utils/autocomplete/TernServer";
+import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import { FieldType } from "widgets/JSONFormWidget/constants";
 import { optionsCustomValidation } from "widgets/RadioGroupWidget/widget";
 import {
@@ -49,70 +49,6 @@ function defaultOptionValidation(
 }
 
 const PROPERTIES = {
-  general: [
-    {
-      propertyName: "options",
-      helpText: "用户可选项，选项值必须唯一",
-      label: "选项",
-      controlType: "INPUT_TEXT",
-      placeholderText: '[{ "label": "选项1", "value": "选项2" }]',
-      isBindProperty: true,
-      isTriggerProperty: false,
-      validation: {
-        type: ValidationTypes.FUNCTION,
-        params: {
-          fn: optionsValidation,
-          expected: {
-            type: 'Array<{ "label": "string", "value": "string" | number}>',
-            example: `[{"label": "One", "value": "one"}]`,
-            autocompleteDataType: AutocompleteDataType.STRING,
-          },
-        },
-      },
-      evaluationSubstitutionType: EvaluationSubstitutionType.SMART_SUBSTITUTE,
-      hidden: (...args: HiddenFnParams) =>
-        getSchemaItem(...args).fieldTypeNotMatches(FieldType.RADIO_GROUP),
-      dependencies: ["schema"],
-    },
-    {
-      propertyName: "defaultValue",
-      helpText: "设置默认选中的选项",
-      label: "默认选中值",
-      placeholderText: "Y",
-      controlType: "JSON_FORM_COMPUTE_VALUE",
-      isBindProperty: true,
-      isTriggerProperty: false,
-      validation: {
-        type: ValidationTypes.FUNCTION,
-        params: {
-          fn: defaultOptionValidation,
-          expected: {
-            type: `string |\nnumber (only works in mustache syntax)`,
-            example: `abc | {{1}}`,
-            autocompleteDataType: AutocompleteDataType.STRING,
-          },
-        },
-      },
-      hidden: (...args: HiddenFnParams) =>
-        getSchemaItem(...args).fieldTypeNotMatches(FieldType.RADIO_GROUP),
-      dependencies: ["schema", "sourceData"],
-    },
-  ],
-  actions: [
-    {
-      propertyName: "onSelectionChange",
-      helpText: "选中项改变时触发",
-      label: "onSelectionChange",
-      controlType: "ACTION_SELECTOR",
-      isJSConvertible: true,
-      isBindProperty: true,
-      isTriggerProperty: true,
-      additionalAutoComplete: getAutocompleteProperties,
-      hidden: (...args: HiddenFnParams) =>
-        getSchemaItem(...args).fieldTypeNotMatches(FieldType.RADIO_GROUP),
-      dependencies: ["schema", "sourceData"],
-    },
-  ],
   content: {
     data: [
       {

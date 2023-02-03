@@ -1,6 +1,6 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import cls from "clsx";
-import { BEM, createBEM } from "../../rvStyle/bem";
+import { createBEM } from "../../rvStyle/bem";
 import { LIMIT_TYPE } from "./constants";
 import { Stepper } from "@taroify/core";
 
@@ -24,7 +24,6 @@ const { QUOTA_LIMIT, STOCK_LIMIT } = LIMIT_TYPE;
 const SkuStepper: React.FC<SkuStepperProps> = (props) => {
   const bem = createBEM("rv-sku");
   const [limitType, setLimitType] = useState(STOCK_LIMIT);
-  const [updateKey, setUpdateKey] = useState(0);
 
   const stepperLimit = useMemo(() => {
     const quotaLimit = +props.quota - +props.quotaUsed;
@@ -101,7 +100,6 @@ const SkuStepper: React.FC<SkuStepperProps> = (props) => {
   };
 
   const onChange = (currentValue: any) => {
-    // setUpdateKey(updateKey + 1);
     const intValue = parseInt(currentValue, 10);
     const { handleStepperChange } = props.customStepperConfig;
     if (handleStepperChange) handleStepperChange(intValue);
@@ -119,7 +117,7 @@ const SkuStepper: React.FC<SkuStepperProps> = (props) => {
         onChange={onChange}
       >
         <Stepper.Button />
-        <Stepper.Input disabled key={updateKey} />
+        <Stepper.Input disabled />
         <Stepper.Button />
       </Stepper>
       {!props.hideQuotaText && quotaContent && (

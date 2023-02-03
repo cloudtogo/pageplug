@@ -14,6 +14,7 @@ import { escapeString } from "./widget/utilities";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "表格",
+  searchTags: ["datagrid", "table"],
   iconSVG: IconSVG,
   needsMeta: true,
   defaults: {
@@ -31,6 +32,8 @@ export const CONFIG = {
     totalRecordsCount: 0,
     defaultPageSize: 0,
     dynamicPropertyPathList: [],
+    borderColor: Colors.GREY_5,
+    borderWidth: "1",
     dynamicBindingPathList: [
       {
         key: "primaryColumns.step.computedValue",
@@ -73,6 +76,7 @@ export const CONFIG = {
         isDerived: false,
         label: "步骤",
         computedValue: `{{Table1.processedTableData.map((currentRow, currentIndex) => ( currentRow["step"]))}}`,
+        validation: {},
       },
       task: {
         index: 1,
@@ -92,6 +96,7 @@ export const CONFIG = {
         isDerived: false,
         label: "任务",
         computedValue: `{{Table1.processedTableData.map((currentRow, currentIndex) => ( currentRow["task"]))}}`,
+        validation: {},
       },
       status: {
         index: 2,
@@ -111,6 +116,7 @@ export const CONFIG = {
         isDerived: false,
         label: "状态",
         computedValue: `{{Table1.processedTableData.map((currentRow, currentIndex) => ( currentRow["status"]))}}`,
+        validation: {},
       },
       action: {
         index: 3,
@@ -133,6 +139,7 @@ export const CONFIG = {
         onClick:
           "{{currentRow.step === '#1' ? showAlert('Done', 'success') : currentRow.step === '#2' ? navigateTo('https://docs.appsmith.com/core-concepts/connecting-to-data-sources/querying-a-database',undefined,'NEW_WINDOW') : navigateTo('https://docs.appsmith.com/core-concepts/displaying-data-read/display-data-tables',undefined,'NEW_WINDOW')}}",
         computedValue: `{{Table1.processedTableData.map((currentRow, currentIndex) => ( currentRow["action"]))}}`,
+        validation: {},
       },
     },
     tableData: [
@@ -226,9 +233,10 @@ export const CONFIG = {
     derived: Widget.getDerivedPropertiesMap(),
     default: Widget.getDefaultPropertiesMap(),
     meta: Widget.getMetaPropertiesMap(),
-    config: Widget.getPropertyPaneConfig(),
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
+    loadingProperties: Widget.getLoadingProperties(),
   },
 };
 

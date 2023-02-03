@@ -1,9 +1,8 @@
 /// <reference types="Cypress" />
-
-import homePage from "../../../../locators/HomePage";
+import { ObjectsRegistry } from "../../../../support/Objects/Registry";
+let HomePage = ObjectsRegistry.HomePage;
 
 describe("Leave workspace test spec", function() {
-  let newWorkspaceId;
   let newWorkspaceName;
 
   it("leave workspace menu is visible validation", function() {
@@ -11,7 +10,6 @@ describe("Leave workspace test spec", function() {
     cy.createWorkspace();
     cy.wait("@createWorkspace").then((interception) => {
       newWorkspaceName = interception.response.body.data.name;
-      newWorkspaceId = interception.response.body.data.name;
       cy.visit("/applications");
       cy.openWorkspaceOptionsPopup(newWorkspaceName);
       cy.contains("Leave Workspace");
@@ -23,7 +21,6 @@ describe("Leave workspace test spec", function() {
     cy.createWorkspace();
     cy.wait("@createWorkspace").then((interception) => {
       newWorkspaceName = interception.response.body.data.name;
-      newWorkspaceId = interception.response.body.data.name;
       cy.visit("/applications");
       cy.openWorkspaceOptionsPopup(newWorkspaceName);
       cy.contains("Leave Workspace").click();
@@ -35,28 +32,22 @@ describe("Leave workspace test spec", function() {
     });
   });
 
-  it("Non admin users can only access leave workspace popup menu validation", function() {
+  it("Bug 17235 & 17987 - Non admin users can only access leave workspace popup menu validation", function() {
     cy.visit("/applications");
     cy.createWorkspace();
     cy.wait("@createWorkspace").then((interception) => {
       newWorkspaceName = interception.response.body.data.name;
-      newWorkspaceId = interception.response.body.data.name;
       cy.visit("/applications");
-      cy.inviteUserForWorkspace(
+      HomePage.InviteUserToWorkspace(
         newWorkspaceName,
         Cypress.env("TESTUSERNAME1"),
-        homePage.viewerRole,
+        "App Viewer",
       );
       cy.LogOut();
 
       cy.LogintoApp(Cypress.env("TESTUSERNAME1"), Cypress.env("TESTPASSWORD1"));
       cy.visit("/applications");
-      cy.openWorkspaceOptionsPopup(newWorkspaceName);
-      cy.get(homePage.workspaceNamePopoverContent)
-        .find("a")
-        .should("have.length", 1)
-        .first()
-        .contains("Leave Workspace");
+      cy.leaveWorkspace(newWorkspaceName);
     });
   });
 });

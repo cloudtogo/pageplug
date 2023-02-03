@@ -2,19 +2,27 @@ import Widget from "./widget";
 import IconSVG from "./icon.svg";
 import { LabelPosition } from "components/constants";
 import { Alignment } from "@blueprintjs/core";
+import { DynamicHeight } from "utils/WidgetFeatures";
 
 export const CONFIG = {
+  features: {
+    dynamicHeight: {
+      sectionIndex: 4,
+      defaultValue: DynamicHeight.FIXED,
+      active: true,
+    },
+  },
   type: Widget.getWidgetType(),
   name: "下拉单选",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["dropdown"],
+  searchTags: ["dropdown", "select"],
   defaults: {
-    rows: 4,
+    rows: 7,
     columns: 20,
     placeholderText: "请选择",
     labelText: "标签",
-    labelPosition: LabelPosition.Left,
+    labelPosition: LabelPosition.Top,
     labelAlignment: Alignment.LEFT,
     labelWidth: 5,
     options: [
@@ -39,6 +47,7 @@ export const CONFIG = {
     config: Widget.getPropertyPaneConfig(),
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
   },
 };
 

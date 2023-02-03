@@ -7,7 +7,8 @@ import RateComponent from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { DerivedPropertiesMap } from "utils/WidgetFactory";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import { AutocompleteDataType } from "utils/autocomplete/TernServer";
+import { Stylesheet } from "entities/AppTheming";
+import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 
 function validateDefaultRate(value: unknown, props: any, _: any) {
   try {
@@ -67,159 +68,6 @@ function validateDefaultRate(value: unknown, props: any, _: any) {
 }
 
 class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
-  static getPropertyPaneConfig() {
-    return [
-      {
-        sectionName: "属性",
-        children: [
-          {
-            propertyName: "maxCount",
-            helpText: "设置总分",
-            label: "最大星星数",
-            controlType: "INPUT_TEXT",
-            placeholderText: "5",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: {
-              type: ValidationTypes.NUMBER,
-              params: { natural: true },
-            },
-          },
-          {
-            propertyName: "defaultRate",
-            helpText: "设置默认评分",
-            label: "默认评分",
-            controlType: "INPUT_TEXT",
-            placeholderText: "2.5",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: {
-              type: ValidationTypes.FUNCTION,
-              params: {
-                fn: validateDefaultRate,
-                expected: {
-                  type: "number",
-                  example: 5,
-                  autocompleteDataType: AutocompleteDataType.NUMBER,
-                },
-              },
-            },
-            dependencies: ["maxCount", "isAllowHalf"],
-          },
-          {
-            propertyName: "tooltips",
-            label: "提示气泡",
-            controlType: "INPUT_TEXT",
-            placeholderText: '["糟糕", "普通", "非常棒"]',
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: {
-              type: ValidationTypes.ARRAY,
-              params: { children: { type: ValidationTypes.TEXT } },
-            },
-          },
-          {
-            propertyName: "size",
-            label: "尺寸",
-            controlType: "DROP_DOWN",
-            options: [
-              {
-                label: "小",
-                value: "SMALL",
-              },
-              {
-                label: "中",
-                value: "MEDIUM",
-              },
-              {
-                label: "大",
-                value: "LARGE",
-              },
-            ],
-            isBindProperty: false,
-            isTriggerProperty: false,
-          },
-          {
-            propertyName: "isAllowHalf",
-            helpText: "是否允许打半星",
-            label: "允许半星",
-            controlType: "SWITCH",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
-            propertyName: "isVisible",
-            label: "是否可见",
-            controlType: "SWITCH",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
-            propertyName: "isDisabled",
-            label: "是否禁用",
-            controlType: "SWITCH",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
-            propertyName: "animateLoading",
-            label: "加载时显示动画",
-            controlType: "SWITCH",
-            helpText: "组件依赖的数据加载时显示加载动画",
-            defaultValue: true,
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-        ],
-      },
-      {
-        sectionName: "事件",
-        children: [
-          {
-            helpText: "评分变化时触发",
-            propertyName: "onRateChanged",
-            label: "onChange",
-            controlType: "ACTION_SELECTOR",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: true,
-          },
-        ],
-      },
-      {
-        sectionName: "样式",
-        children: [
-          {
-            propertyName: "activeColor",
-            label: "评分颜色",
-            controlType: "COLOR_PICKER",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            propertyName: "inactiveColor",
-            label: "评分背景颜色",
-            controlType: "COLOR_PICKER",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-        ],
-      },
-    ];
-  }
-
   static getPropertyPaneContentConfig() {
     return [
       {
@@ -308,6 +156,16 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
+            propertyName: "isReadOnly",
+            helpText: "让组件只读",
+            label: "只读",
+            controlType: "SWITCH",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.BOOLEAN },
+          },
+          {
             propertyName: "animateLoading",
             label: "加载时显示动画",
             controlType: "SWITCH",
@@ -345,7 +203,9 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
           {
             propertyName: "size",
             label: "尺寸",
-            controlType: "DROP_DOWN",
+            helpText: "Controls the size of the stars in the widget",
+            controlType: "ICON_TABS",
+            fullWidth: true,
             options: [
               {
                 label: "小",
@@ -371,6 +231,7 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
           {
             propertyName: "activeColor",
             label: "评分颜色",
+            helpText: "Color of the selected stars",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -380,6 +241,7 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
           {
             propertyName: "inactiveColor",
             label: "评分背景颜色",
+            helpText: "Color of the unselected stars",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -409,6 +271,12 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
     };
   }
 
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      activeColor: "{{appsmith.theme.colors.primaryColor}}",
+    };
+  }
+
   valueChangedHandler = (value: number) => {
     this.props.updateWidgetMetaProperty("rate", value, {
       triggerPropertyName: "onRateChanged",
@@ -433,7 +301,7 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
           leftColumn={this.props.leftColumn}
           maxCount={this.props.maxCount}
           onValueChanged={this.valueChangedHandler}
-          readonly={this.props.isDisabled}
+          readonly={this.props.isReadOnly}
           rightColumn={this.props.rightColumn}
           size={this.props.size}
           tooltips={this.props.tooltips}
@@ -460,6 +328,7 @@ export interface RateWidgetProps extends WidgetProps {
   isAllowHalf?: boolean;
   onRateChanged?: string;
   tooltips?: Array<string>;
+  isReadOnly?: boolean;
 }
 
 export default RateWidget;

@@ -9,6 +9,7 @@ import {
 } from "../../propertyUtils";
 import { isColumnTypeEditable } from "../../utilities";
 import { composePropertyUpdateHook } from "widgets/WidgetUtils";
+import { ButtonVariantTypes } from "components/constants";
 
 export default {
   sectionName: "属性",
@@ -25,7 +26,7 @@ export default {
       isBindProperty: true,
       isTriggerProperty: false,
       validation: {
-        type: ValidationTypes.TABLE_PROPERTY,
+        type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
         params: {
           type: ValidationTypes.BOOLEAN,
         },
@@ -34,6 +35,7 @@ export default {
     {
       propertyName: "isDisabled",
       label: "禁用",
+      helpText: "Controls the disabled state of the button",
       defaultValue: false,
       controlType: "SWITCH",
       customJSControl: "TABLE_COMPUTE_VALUE",
@@ -41,7 +43,7 @@ export default {
       isBindProperty: true,
       isTriggerProperty: false,
       validation: {
-        type: ValidationTypes.TABLE_PROPERTY,
+        type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
         params: {
           type: ValidationTypes.BOOLEAN,
         },
@@ -64,7 +66,7 @@ export default {
       isJSConvertible: true,
       isBindProperty: true,
       validation: {
-        type: ValidationTypes.TABLE_PROPERTY,
+        type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
         params: {
           type: ValidationTypes.BOOLEAN,
         },
@@ -80,14 +82,14 @@ export default {
       dependencies: ["primaryColumns", "columnType"],
       label: "单元格换行",
       helpText: "允许单元格内容换行",
-      defaultValue: true,
+      defaultValue: false,
       controlType: "SWITCH",
       customJSControl: "TABLE_COMPUTE_VALUE",
       isJSConvertible: true,
       isBindProperty: true,
       isTriggerProperty: false,
       validation: {
-        type: ValidationTypes.TABLE_PROPERTY,
+        type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
         params: {
           type: ValidationTypes.BOOLEAN,
         },
@@ -123,7 +125,7 @@ export default {
         updateInlineEditingOptionDropdownVisibilityHook,
       ]),
       validation: {
-        type: ValidationTypes.TABLE_PROPERTY,
+        type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
         params: {
           type: ValidationTypes.BOOLEAN,
         },
@@ -133,6 +135,132 @@ export default {
         const columnType = get(props, `${baseProperty}.columnType`, "");
         const isDerived = get(props, `${baseProperty}.isDerived`, false);
         return !isColumnTypeEditable(columnType) || isDerived;
+      },
+    },
+  ],
+};
+
+export const GeneralStyle = {
+  sectionName: "通用配置",
+  children: [
+    {
+      propertyName: "buttonVariant",
+      label: "按钮类型",
+      controlType: "ICON_TABS",
+      fullWidth: true,
+      customJSControl: "TABLE_COMPUTE_VALUE",
+      isJSConvertible: true,
+      helpText: "设置按钮样式类型",
+      hidden: (props: TableWidgetProps, propertyPath: string) => {
+        return hideByColumnType(props, propertyPath, [
+          ColumnTypes.ICON_BUTTON,
+          ColumnTypes.BUTTON,
+        ]);
+      },
+      dependencies: ["primaryColumns", "columnOrder"],
+      options: [
+        {
+          label: "主按钮",
+          value: ButtonVariantTypes.PRIMARY,
+        },
+        {
+          label: "次级按钮",
+          value: ButtonVariantTypes.SECONDARY,
+        },
+        {
+          label: "文本按钮",
+          value: ButtonVariantTypes.TERTIARY,
+        },
+      ],
+      defaultValue: ButtonVariantTypes.PRIMARY,
+      isBindProperty: true,
+      isTriggerProperty: false,
+      validation: {
+        type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
+        params: {
+          type: ValidationTypes.TEXT,
+          params: {
+            default: ButtonVariantTypes.PRIMARY,
+            allowedValues: [
+              ButtonVariantTypes.PRIMARY,
+              ButtonVariantTypes.SECONDARY,
+              ButtonVariantTypes.TERTIARY,
+            ],
+          },
+        },
+      },
+    },
+    {
+      propertyName: "menuVariant",
+      label: "按钮类型",
+      controlType: "ICON_TABS",
+      fullWidth: true,
+      customJSControl: "TABLE_COMPUTE_VALUE",
+      helpText: "Sets the variant of the menu button",
+      options: [
+        {
+          label: "主按钮",
+          value: ButtonVariantTypes.PRIMARY,
+        },
+        {
+          label: "次级按钮",
+          value: ButtonVariantTypes.SECONDARY,
+        },
+        {
+          label: "文本按钮",
+          value: ButtonVariantTypes.TERTIARY,
+        },
+      ],
+      isJSConvertible: true,
+      dependencies: ["primaryColumns", "columnOrder"],
+      hidden: (props: TableWidgetProps, propertyPath: string) => {
+        return hideByColumnType(props, propertyPath, [ColumnTypes.MENU_BUTTON]);
+      },
+      isBindProperty: true,
+      isTriggerProperty: false,
+      defaultValue: ButtonVariantTypes.PRIMARY,
+      validation: {
+        type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
+        params: {
+          type: ValidationTypes.TEXT,
+          params: {
+            default: ButtonVariantTypes.PRIMARY,
+            allowedValues: [
+              ButtonVariantTypes.PRIMARY,
+              ButtonVariantTypes.SECONDARY,
+              ButtonVariantTypes.TERTIARY,
+            ],
+          },
+        },
+      },
+    },
+
+    {
+      propertyName: "imageSize",
+      dependencies: ["primaryColumns", "columnType"],
+      label: "图片尺寸",
+      helpText: "设置图片尺寸大小",
+      defaultValue: "DEFAULT",
+      controlType: "ICON_TABS",
+      fullWidth: true,
+      options: [
+        {
+          label: "默认",
+          value: "DEFAULT",
+        },
+        {
+          label: "适中",
+          value: "MEDIUM",
+        },
+        {
+          label: "大",
+          value: "LARGE",
+        },
+      ],
+      isBindProperty: false,
+      isTriggerProperty: false,
+      hidden: (props: TableWidgetProps, propertyPath: string) => {
+        return hideByColumnType(props, propertyPath, [ColumnTypes.IMAGE]);
       },
     },
   ],

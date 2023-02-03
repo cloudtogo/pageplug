@@ -6,8 +6,8 @@ import {
 } from "redux-form";
 import styled from "styled-components";
 import { FormGroup, SettingComponentProps } from "./Common";
-import { FormTextFieldProps } from "components/ads/formFields/TextField";
-import Toggle from "components/ads/Toggle";
+import { FormTextFieldProps } from "components/utils/ReduxFormTextField";
+import { Toggle } from "design-system";
 import { createMessage } from "@appsmith/constants/messages";
 
 const ToggleWrapper = styled.div`
@@ -52,8 +52,8 @@ function FieldToggleWithToggleText(
           {typeof toggleText == "function"
             ? createMessage(() => toggleText(val))
             : val
-            ? createMessage(() => "Enabled")
-            : createMessage(() => "Disabled")}
+            ? createMessage(() => "开启")
+            : createMessage(() => "关闭")}
         </ToggleStatus>
       </ToggleWrapper>
     );

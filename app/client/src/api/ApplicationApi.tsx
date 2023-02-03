@@ -2,7 +2,7 @@ import Api from "api/Api";
 import { ApiResponse } from "./ApiResponses";
 import { AxiosPromise } from "axios";
 import { AppColorCode } from "constants/DefaultTheme";
-import { AppIconName } from "components/ads/AppIcon";
+import { AppIconName } from "design-system";
 import { AppLayoutConfig } from "reducers/entityReducers/pageListReducer";
 import { APP_MODE } from "entities/App";
 import { ApplicationVersion } from "actions/applicationActions";
@@ -28,6 +28,7 @@ export interface ApplicationPagePayload {
   slug: string;
   isHidden?: boolean;
   customSlug?: string;
+  userPermissions?: string;
   icon?: string;
 }
 
@@ -114,6 +115,7 @@ export type UpdateApplicationPayload = {
   appLayout?: AppLayoutConfig;
   applicationVersion?: number;
   viewerLayout?: string;
+  chartTheme?: string;
 };
 
 export type UpdateApplicationRequest = UpdateApplicationPayload & {
@@ -129,12 +131,18 @@ export interface ApplicationObject {
   workspaceId: string;
   pages: ApplicationPagePayload[];
   userPermissions: string[];
+  chartTheme?: string;
 }
 
-export interface UserRoles {
+export interface PermissionGroup {
+  permissionGroupId: string;
+  permissionGroupName: string;
+}
+
+export interface UserRoles extends PermissionGroup {
   name: string;
-  roleName: string;
   username: string;
+  userId: string;
 }
 
 export interface WorkspaceApplicationObject {
@@ -143,7 +151,7 @@ export interface WorkspaceApplicationObject {
     id: string;
     name: string;
   };
-  userRoles: Array<UserRoles>;
+  users: Array<UserRoles>;
 }
 export interface FetchUsersApplicationsWorkspacesResponse extends ApiResponse {
   data: {
@@ -163,6 +171,35 @@ export interface ImportApplicationRequest {
   applicationFile?: File;
   progress?: (progressEvent: ProgressEvent) => void;
   onSuccessCallback?: () => void;
+}
+
+export interface UpdateApplicationResponse {
+  id: string;
+  modifiedBy: string;
+  userPermissions: string[];
+  name: string;
+  workspaceId: string;
+  isPublic: boolean;
+  pages: PageDefaultMeta[];
+  appIsExample: boolean;
+  unreadCommentThreads: number;
+  color: string;
+  icon: AppIconName;
+  slug: string;
+  lastDeployedAt: Date;
+  evaluationVersion: number;
+  applicationVersion: number;
+  isManualUpdate: boolean;
+  appLayout: AppLayoutConfig;
+  new: boolean;
+  modifiedAt: Date;
+}
+
+export interface PageDefaultMeta {
+  id: string;
+  isDefault: boolean;
+  defaultPageId: string;
+  default: boolean;
 }
 
 class ApplicationApi extends Api {
@@ -248,7 +285,7 @@ class ApplicationApi extends Api {
 
   static updateApplication(
     request: UpdateApplicationRequest,
-  ): AxiosPromise<ApiResponse> {
+  ): AxiosPromise<ApiResponse<UpdateApplicationResponse>> {
     const { id, ...rest } = request;
     return Api.put(ApplicationApi.baseURL + "/" + id, rest);
   }

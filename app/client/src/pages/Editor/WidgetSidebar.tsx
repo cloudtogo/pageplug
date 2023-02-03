@@ -13,9 +13,7 @@ import { WidgetCardProps } from "widgets/BaseWidget";
 
 function WidgetSidebar({ isActive }: { isActive: boolean }) {
   const cards = useSelector(getWidgetCards);
-  const [filteredCards, setFilteredCards] = useState(
-    cards.filter((c) => c.widgetCardName !== "地图"),
-  );
+  const [filteredCards, setFilteredCards] = useState(cards);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
 
   let fuse: Fuse<WidgetCardProps, Fuse.FuseOptions<WidgetCardProps>>;
@@ -76,10 +74,13 @@ function WidgetSidebar({ isActive }: { isActive: boolean }) {
         autoFocus
         clear={clearSearchInput}
         onChange={search}
-        placeholder="Search widgets..."
+        placeholder="搜索组件..."
         ref={searchInputRef}
       />
-      <div className="flex-grow px-3 overflow-y-scroll">
+      <div
+        className="flex-grow px-3 overflow-y-scroll"
+        data-cy="widget-sidebar-scrollable-wrapper"
+      >
         <p className="px-3 py-3 text-sm leading-relaxed text-trueGray-400 t--widget-sidebar">
           {createMessage(WIDGET_SIDEBAR_CAPTION)}
         </p>

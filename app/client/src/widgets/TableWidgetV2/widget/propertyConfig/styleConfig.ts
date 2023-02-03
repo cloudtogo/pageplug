@@ -9,7 +9,8 @@ export default [
         propertyName: "compactMode",
         helpText: "选择行高",
         label: "默认行高",
-        controlType: "DROP_DOWN",
+        controlType: "ICON_TABS",
+        fullWidth: true,
         defaultValue: "DEFAULT",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -36,6 +37,7 @@ export default [
       {
         propertyName: "textSize",
         label: "字体大小",
+        helpText: "Controls the size of text in the column",
         controlType: "DROP_DOWN",
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns"],
@@ -69,6 +71,7 @@ export default [
       {
         propertyName: "fontStyle",
         label: "强调",
+        helpText: "Controls the style of the text in the column",
         controlType: "BUTTON_TABS",
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns"],
@@ -82,13 +85,17 @@ export default [
             value: "ITALIC",
           },
         ],
-        isBindProperty: false,
+        isJSConvertible: true,
+        isBindProperty: true,
         isTriggerProperty: false,
+        validation: { type: ValidationTypes.TEXT },
       },
       {
         propertyName: "horizontalAlignment",
         label: "文本对齐方式",
+        helpText: "Sets the horizontal alignment of the content in the column",
         controlType: "ICON_TABS",
+        fullWidth: true,
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns"],
         options: [
@@ -106,13 +113,22 @@ export default [
           },
         ],
         defaultValue: "LEFT",
-        isBindProperty: false,
+        isJSConvertible: true,
+        isBindProperty: true,
         isTriggerProperty: false,
+        validation: {
+          type: ValidationTypes.TEXT,
+          params: {
+            allowedValues: ["LEFT", "CENTER", "RIGHT"],
+          },
+        },
       },
       {
         propertyName: "verticalAlignment",
         label: "垂直对齐",
+        helpText: "Sets the vertical alignment of the content in the column",
         controlType: "ICON_TABS",
+        fullWidth: true,
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns"],
         options: [
@@ -129,9 +145,16 @@ export default [
             value: "BOTTOM",
           },
         ],
-        defaultValue: "LEFT",
-        isBindProperty: false,
+        defaultValue: "CENTER",
+        isJSConvertible: true,
+        isBindProperty: true,
         isTriggerProperty: false,
+        validation: {
+          type: ValidationTypes.TEXT,
+          params: {
+            allowedValues: ["TOP", "CENTER", "BOTTOM"],
+          },
+        },
       },
     ],
   },
@@ -141,6 +164,7 @@ export default [
       {
         propertyName: "cellBackground",
         label: "单元格背景颜色",
+        helpText: "Changes the background color of the cell",
         controlType: "COLOR_PICKER",
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns"],
@@ -162,6 +186,7 @@ export default [
       {
         propertyName: "textColor",
         label: "文本颜色",
+        helpText: "Controls the color of text in the column",
         controlType: "COLOR_PICKER",
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns"],
@@ -175,6 +200,29 @@ export default [
   {
     sectionName: "轮廓样式",
     children: [
+      {
+        propertyName: "variant",
+        helpText: "选择单元格边框样式",
+        label: "单元格边框",
+        controlType: "DROP_DOWN",
+        defaultValue: "DEFAULT",
+        isBindProperty: true,
+        isTriggerProperty: false,
+        options: [
+          {
+            label: "默认",
+            value: "DEFAULT",
+          },
+          {
+            label: "无边框",
+            value: "VARIANT2",
+          },
+          {
+            label: "水平边框",
+            value: "VARIANT3",
+          },
+        ],
+      },
       {
         propertyName: "borderRadius",
         label: "边框圆角",
@@ -194,6 +242,26 @@ export default [
         isBindProperty: true,
         isTriggerProperty: false,
         validation: { type: ValidationTypes.TEXT },
+      },
+      {
+        helpText: "使用 html 颜色名称，HEX，RGB 或者 RGBA 值",
+        placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
+        propertyName: "borderColor",
+        label: "边框颜色",
+        controlType: "COLOR_PICKER",
+        isBindProperty: true,
+        isTriggerProperty: false,
+        validation: { type: ValidationTypes.TEXT },
+      },
+      {
+        helpText: "请输入边框宽度",
+        propertyName: "borderWidth",
+        label: "边框宽度",
+        placeholderText: "以 px 为单位",
+        controlType: "INPUT_TEXT",
+        isBindProperty: true,
+        isTriggerProperty: false,
+        validation: { type: ValidationTypes.NUMBER },
       },
     ],
   },

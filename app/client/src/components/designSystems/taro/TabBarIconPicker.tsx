@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { connect, useDispatch, useSelector } from "react-redux";
-import { AppState } from "reducers";
+import { AppState } from "@appsmith/reducers";
 import { updatePage } from "actions/pageActions";
+import { UpdatePageRequest } from "api/PageApi";
 import {
   getViewModePageList,
   getCurrentPage,
@@ -12,7 +13,6 @@ import {
   Page,
   ReduxActionTypes,
 } from "@appsmith/constants/ReduxActionConstants";
-import Switch from "components/ads/Switch";
 import EditablePageName from "pages/Editor/Explorer/Entity/Name";
 import Loader from "pages/Editor/Explorer/Entity/Loader";
 import { resolveAsSpaceChar } from "utils/helpers";
@@ -20,7 +20,7 @@ import {
   useEntityUpdateState,
   useEntityEditState,
 } from "pages/Editor/Explorer/hooks";
-import Icon, { IconSize } from "components/ads/Icon";
+import { Icon, IconSize, Switch } from "design-system";
 import { TooltipComponent } from "design-system";
 import { Alignment } from "@blueprintjs/core";
 import { Position } from "@blueprintjs/core/lib/esm/common/position";
@@ -33,7 +33,7 @@ const TabBarContainer = styled.div`
   transform: translate(-208px, 0px);
   width: 200px;
   border-radius: 4px;
-  background: ${Colors.MINT_GREEN_LIGHT}45;
+  background: ${Colors.MINT_GREEN_LIGHT};
   border: 2px solid ${Colors.MINT_GREEN};
   padding: 12px;
 `;
@@ -92,14 +92,13 @@ const TabBar = ({ currentPage, isFull }: TabbarProps) => {
 
   const onIconSelected = (icon?: string) => {
     if (icon) {
-      dispatch(
-        updatePage(
-          pageId,
-          pageName,
-          pageHidden,
-          icon === CLOSE_TABBAR ? "" : icon,
-        ),
-      );
+      const payload: UpdatePageRequest = {
+        id: pageId,
+        name: pageName,
+        isHidden: pageHidden,
+        icon: icon === CLOSE_TABBAR ? "" : icon,
+      };
+      dispatch(updatePage(payload));
     }
   };
 
@@ -117,7 +116,12 @@ const TabBar = ({ currentPage, isFull }: TabbarProps) => {
           name={pageName}
           nameTransformFn={resolveAsSpaceChar}
           updateEntityName={(name) =>
-            updatePage(pageId, name, pageHidden, pageIcon)
+            updatePage({
+              id: pageId,
+              name,
+              isHidden: pageHidden,
+              icon: pageIcon,
+            })
           }
         />
         {isEditing ? null : (

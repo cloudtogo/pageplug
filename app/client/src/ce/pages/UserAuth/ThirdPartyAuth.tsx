@@ -4,7 +4,7 @@ import {
   getSocialLoginButtonProps,
   SocialLoginType,
 } from "@appsmith/constants/SocialLogin";
-import { getTypographyByKey } from "constants/DefaultTheme";
+import { getTypographyByKey } from "design-system";
 import AnalyticsUtil, { EventName } from "utils/AnalyticsUtil";
 import { useLocation } from "react-router-dom";
 import PerformanceTracker, {
@@ -34,7 +34,7 @@ const StyledSocialLoginButton = styled.a`
   }
 
   & .login-method {
-    ${(props) => getTypographyByKey(props, "btnLarge")}
+    ${getTypographyByKey("btnLarge")}
     color: ${(props) => props.theme.colors.auth.socialBtnText};
     text-transform: uppercase;
   }
@@ -87,7 +87,7 @@ function SocialLoginButton(props: {
     >
       <ButtonLogo alt={` ${props.name} login`} src={props.logo} />
       <div className="login-method" data-testid={`login-with-${props.name}`}>
-        {props.label ?? `continue with ${props.name}`}
+        {props.label ?? `${props.name} 登录`}
       </div>
     </StyledSocialLoginButton>
   );

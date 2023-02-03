@@ -8,6 +8,7 @@ export const CONFIG = {
   iconSVG: IconSVG,
   hideCard: true,
   isDeprecated: true,
+  searchTags: ["form button"],
   replacement: "BUTTON_WIDGET",
   needsMeta: true,
   defaults: {
@@ -25,6 +26,7 @@ export const CONFIG = {
     default: Widget.getDefaultPropertiesMap(),
     meta: Widget.getMetaPropertiesMap(),
     config: Widget.getPropertyPaneConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
   },
 };
 

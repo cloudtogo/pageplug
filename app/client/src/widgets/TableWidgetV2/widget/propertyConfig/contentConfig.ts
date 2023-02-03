@@ -1,6 +1,6 @@
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import { AutocompleteDataType } from "utils/autocomplete/TernServer";
+import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import {
   InlineEditingSaveOptions,
   TableWidgetProps,
@@ -11,6 +11,7 @@ import {
   updateColumnOrderHook,
   updateInlineEditingSaveOptionHook,
   updateInlineEditingOptionDropdownVisibilityHook,
+  updateCustomColumnAliasOnLabelChange,
 } from "../propertyUtils";
 import {
   createMessage,
@@ -49,11 +50,18 @@ export default [
         updateHook: composePropertyUpdateHook([
           updateColumnOrderHook,
           updateInlineEditingOptionDropdownVisibilityHook,
+          updateCustomColumnAliasOnLabelChange,
         ]),
         dependencies: [
           "columnOrder",
           "childStylesheet",
           "inlineEditingSaveOption",
+          "textColor",
+          "textSize",
+          "fontStyle",
+          "cellBackground",
+          "verticalAlignment",
+          "horizontalAlignment",
         ],
         isBindProperty: false,
         isTriggerProperty: false,
@@ -74,7 +82,8 @@ export default [
         propertyName: "inlineEditingSaveOption",
         helpText: "选择如何保存编辑的单元格数据",
         label: "更新模式",
-        controlType: "DROP_DOWN",
+        controlType: "ICON_TABS",
+        fullWidth: true,
         isBindProperty: true,
         isTriggerProperty: false,
         hidden: (props: TableWidgetProps) => {
@@ -136,8 +145,6 @@ export default [
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
-        hidden: (props: TableWidgetProps) => !props.isVisiblePagination,
-        dependencies: ["isVisiblePagination"],
       },
       {
         helpText: createMessage(TABLE_WIDGET_TOTAL_RECORD_TOOLTIP),
@@ -158,9 +165,8 @@ export default [
             },
           },
         },
-        hidden: (props: TableWidgetProps) =>
-          !props.isVisiblePagination || !props.serverSidePaginationEnabled,
-        dependencies: ["serverSidePaginationEnabled", "isVisiblePagination"],
+        hidden: (props: TableWidgetProps) => !props.serverSidePaginationEnabled,
+        dependencies: ["serverSidePaginationEnabled"],
       },
       {
         helpText: "表格换页时触发",
@@ -170,9 +176,8 @@ export default [
         isJSConvertible: true,
         isBindProperty: true,
         isTriggerProperty: true,
-        hidden: (props: TableWidgetProps) =>
-          !props.isVisiblePagination || !props.serverSidePaginationEnabled,
-        dependencies: ["isVisiblePagination", "serverSidePaginationEnabled"],
+        hidden: (props: TableWidgetProps) => !props.serverSidePaginationEnabled,
+        dependencies: ["serverSidePaginationEnabled"],
       },
       {
         helpText: "表格页大小改变时触发",
@@ -182,9 +187,8 @@ export default [
         isJSConvertible: true,
         isBindProperty: true,
         isTriggerProperty: true,
-        hidden: (props: TableWidgetProps) =>
-          !props.isVisiblePagination || !props.serverSidePaginationEnabled,
-        dependencies: ["isVisiblePagination", "serverSidePaginationEnabled"],
+        hidden: (props: TableWidgetProps) => !props.serverSidePaginationEnabled,
+        dependencies: ["serverSidePaginationEnabled"],
       },
     ],
   },
@@ -204,6 +208,7 @@ export default [
       {
         propertyName: "enableClientSideSearch",
         label: "前端搜索",
+        helpText: "Searches all results only on the data which is loaded",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -213,8 +218,9 @@ export default [
       {
         propertyName: "defaultSearchText",
         label: "默认搜索内容",
+        helpText: "Adds a search text by default",
         controlType: "INPUT_TEXT",
-        placeholderText: "{{appsmith.user.name}}",
+        placeholderText: "{{global.user.name}}",
         isBindProperty: true,
         isTriggerProperty: false,
         validation: { type: ValidationTypes.TEXT },
@@ -224,6 +230,7 @@ export default [
       {
         propertyName: "onSearchTextChanged",
         label: "onSearchTextChanged",
+        helpText: "Triggers an action when search text is modified by the user",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
         isBindProperty: true,
@@ -276,7 +283,7 @@ export default [
         propertyName: "defaultSelectedRowIndex",
         label: "默认选中行",
         controlType: "INPUT_TEXT",
-        placeholderText: "0",
+        defaultValue: 0,
         isBindProperty: true,
         isTriggerProperty: false,
         validation: {
@@ -294,6 +301,7 @@ export default [
       {
         propertyName: "multiRowSelection",
         label: "支持多选",
+        helpText: "Allows users to select multiple rows",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -337,6 +345,82 @@ export default [
         isTriggerProperty: true,
         hidden: (props: TableWidgetProps) => !props.isSortable,
         dependencies: ["isSortable"],
+      },
+    ],
+  },
+  {
+    sectionName: "新增行数据",
+    children: [
+      {
+        propertyName: "allowAddNewRow",
+        helpText: "显示新增一行按钮",
+        isJSConvertible: true,
+        label: "允许新增一行",
+        controlType: "SWITCH",
+        isBindProperty: true,
+        isTriggerProperty: false,
+        validation: {
+          type: ValidationTypes.BOOLEAN,
+        },
+      },
+      {
+        propertyName: "onAddNewRowSave",
+        helpText: "点击新增行保存按钮时触发",
+        label: "onSave",
+        controlType: "ACTION_SELECTOR",
+        hidden: (props: TableWidgetProps) => {
+          return !props.allowAddNewRow;
+        },
+        dependencies: ["allowAddNewRow", "primaryColumns"],
+        isJSConvertible: true,
+        isBindProperty: true,
+        isTriggerProperty: true,
+        additionalAutoComplete: (props: TableWidgetProps) => {
+          const newRow: Record<string, unknown> = {};
+
+          if (props.primaryColumns) {
+            Object.values(props.primaryColumns)
+              .filter((column) => !column.isDerived)
+              .forEach((column) => {
+                newRow[column.alias] = "";
+              });
+          }
+
+          return {
+            newRow,
+          };
+        },
+      },
+      {
+        propertyName: "onAddNewRowDiscard",
+        helpText: "点击新增行丢弃按钮时触发",
+        label: "onDiscard",
+        controlType: "ACTION_SELECTOR",
+        hidden: (props: TableWidgetProps) => {
+          return !props.allowAddNewRow;
+        },
+        dependencies: ["allowAddNewRow"],
+        isJSConvertible: true,
+        isBindProperty: true,
+        isTriggerProperty: true,
+      },
+      {
+        propertyName: "defaultNewRow",
+        helpText: "默认新增行数据",
+        label: "默认行数据",
+        controlType: "INPUT_TEXT",
+        dependencies: ["allowAddNewRow"],
+        hidden: (props: TableWidgetProps) => {
+          return !props.allowAddNewRow;
+        },
+        isBindProperty: true,
+        isTriggerProperty: false,
+        validation: {
+          type: ValidationTypes.OBJECT,
+          params: {
+            default: {},
+          },
+        },
       },
     ],
   },

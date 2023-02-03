@@ -5,8 +5,9 @@ import styled from "styled-components";
 import { TimePrecision } from "@blueprintjs/datetime";
 import { WidgetProps } from "widgets/BaseWidget";
 import { ISO_DATE_FORMAT } from "constants/WidgetValidation";
-import DatePickerComponent from "components/ads/DatePickerComponent";
+import { DatePicker } from "design-system";
 import { isDynamicValue } from "utils/DynamicBindingUtils";
+import MomentLocaleUtils from "react-day-picker/moment";
 
 const DatePickerControlWrapper = styled.div<{ isValid: boolean }>`
   display: flex;
@@ -101,7 +102,7 @@ class DatePickerControl extends BaseControl<
 
     return (
       <DatePickerControlWrapper isValid ref={this.wrapperRef} tabIndex={0}>
-        <DatePickerComponent
+        <DatePicker
           closeOnSelection
           formatDate={this.formatDate}
           inputRef={this.inputRef}
@@ -110,6 +111,10 @@ class DatePickerControl extends BaseControl<
           onChange={this.onDateSelected}
           parseDate={this.parseDate}
           placeholder="YYYY-MM-DD HH:mm"
+          locale="zh_CN"
+          localeUtils={MomentLocaleUtils}
+          clearButtonText="清空"
+          todayButtonText="今天"
           showActionsBar
           tabIndex={-1}
           timePrecision={TimePrecision.MINUTE}

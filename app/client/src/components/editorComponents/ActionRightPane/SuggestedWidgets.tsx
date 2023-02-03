@@ -1,10 +1,9 @@
-import { getTypographyByKey } from "constants/DefaultTheme";
 import React, { memo } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { generateReactKey } from "utils/generators";
 import { Collapsible } from ".";
-import { TooltipComponent as Tooltip } from "design-system";
+import { getTypographyByKey, TooltipComponent as Tooltip } from "design-system";
 import { addSuggestedWidget } from "actions/widgetActions";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import {
@@ -15,13 +14,12 @@ import {
 } from "@appsmith/constants/messages";
 import { SuggestedWidget } from "api/ActionAPI";
 
-import { useSelector } from "store";
 import { getDataTree } from "selectors/dataTreeSelectors";
 import { getWidgets } from "sagas/selectors";
 import { getNextWidgetName } from "sagas/WidgetOperationUtils";
 
 const WidgetList = styled.div`
-  ${(props) => getTypographyByKey(props, "p1")}
+  ${getTypographyByKey("p1")}
   margin-left: ${(props) => props.theme.spaces[2] + 1}px;
 
   img {
@@ -87,6 +85,12 @@ export const WIDGET_DATA_FIELD_MAP: Record<string, WidgetBindingInfo> = {
     widgetName: "Chart",
     image: "https://assets.appsmith.com/widgetSuggestion/chart.svg",
   },
+  ECHART_WIDGET: {
+    label: "chart-series-data-control",
+    propertyName: "chartData",
+    widgetName: "EChart",
+    image: "https://assets.appsmith.com/widgetSuggestion/chart.svg",
+  },
   SELECT_WIDGET: {
     label: "选项",
     propertyName: "options",
@@ -146,6 +150,20 @@ function getWidgetProps(
             },
           },
           dynamicBindingPathList: [{ key: `chartData.${reactKey}.data` }],
+        },
+      };
+    case "ECHART_WIDGET":
+      const ereactKey = generateReactKey();
+      return {
+        type: suggestedWidget.type,
+        props: {
+          [fieldName]: {
+            [ereactKey]: {
+              seriesName: "Sales",
+              data: `{{${actionName}.${suggestedWidget.bindingQuery}}}`,
+            },
+          },
+          dynamicBindingPathList: [{ key: `echartData.${ereactKey}.data` }],
         },
       };
     case "SELECT_WIDGET":

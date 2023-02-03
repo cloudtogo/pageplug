@@ -1,5 +1,5 @@
 import { Icon, Overlay } from "@blueprintjs/core";
-import Button, { Category, Size } from "components/ads/Button";
+import { Button, Category, Size } from "design-system";
 import {
   HOW_APPSMITH_WORKS,
   BUILD_MY_FIRST_APP,
@@ -213,7 +213,7 @@ export default function IntroductionModal({ close }: IntroductionModalProps) {
             </ModalFooterText>
             <div>
               <StyledButton
-                category={Category.tertiary}
+                category={Category.secondary}
                 className="t--introduction-modal-build-button my-6"
                 onClick={onBuildApp}
                 size={Size.large}

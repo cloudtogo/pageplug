@@ -5,7 +5,7 @@ import { Property } from "api/ActionAPI";
 import _ from "lodash";
 import { ActionDataState } from "reducers/entityReducers/actionsReducer";
 import * as log from "loglevel";
-import { AppIconCollection, AppIconName } from "components/ads/AppIcon";
+import { AppIconCollection, AppIconName } from "design-system";
 import { ERROR_CODES } from "@appsmith/constants/ApiConstants";
 import { createMessage, ERROR_500 } from "@appsmith/constants/messages";
 import { JSCollectionData } from "reducers/entityReducers/jsActionsReducer";
@@ -19,6 +19,24 @@ export const initializeAnalyticsAndTrackers = () => {
       window.Sentry = Sentry;
       Sentry.init({
         ...appsmithConfigs.sentry,
+        beforeSend(event) {
+          if (
+            event.exception &&
+            Array.isArray(event.exception.values) &&
+            event.exception.values[0].value &&
+            event.exception.values[0].type === "ChunkLoadError"
+          ) {
+            // Only log ChunkLoadErrors after the 2 retires
+            if (
+              !event.exception.values[0].value.includes(
+                "failed after 2 retries",
+              )
+            ) {
+              return null;
+            }
+          }
+          return event;
+        },
         beforeBreadcrumb(breadcrumb) {
           if (
             breadcrumb.category === "console" &&
@@ -397,10 +415,24 @@ export const replacePluginIcon = (url: string) => {
   return url
     ?.replace("https://s3.us-east-2.amazonaws.com/assets.appsmith.com", "")
     ?.replace("https://assets.appsmith.com", "")
-    ?.replace(/\.png$/g, ".svg");
+    ?.replace(/RestAPI\.png$/g, "RestAPI.svg");
 };
 
 // util function to detect current os is Mac
 export const isMacOs = () => {
   return osName === "Mac OS";
 };
+
+/**
+ * checks if array of strings are equal regardless of order
+ * @param arr1
+ * @param arr2
+ * @returns
+ */
+export function areArraysEqual(arr1: string[], arr2: string[]) {
+  if (arr1.length !== arr2.length) return false;
+
+  if (arr1.sort().join(",") === arr2.sort().join(",")) return true;
+
+  return false;
+}

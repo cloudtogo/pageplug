@@ -2,7 +2,7 @@ import { Component } from "react";
 import { ControlType } from "constants/PropertyControlConstants";
 import { InputType } from "components/constants";
 import { ConditonalObject } from "reducers/evaluationReducers/formEvaluationReducer";
-import { DropdownOption } from "components/ads/Dropdown";
+import { DropdownOption } from "design-system";
 import { ViewTypes } from "./utils";
 // eslint-disable-next-line @typescript-eslint/ban-types
 abstract class BaseControl<P extends ControlProps, S = {}> extends Component<
@@ -82,6 +82,7 @@ export interface ControlData {
   sectionName?: string;
   disabled?: boolean;
   staticDependencyPathList?: string[];
+  validator?: (value: string) => { isValid: boolean; message: string };
 }
 export type FormConfigType = Omit<ControlData, "configProperty"> & {
   configProperty?: string;

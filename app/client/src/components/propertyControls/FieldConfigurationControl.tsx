@@ -10,16 +10,14 @@ import SchemaParser, {
 } from "widgets/JSONFormWidget/schemaParser";
 import styled from "constants/DefaultTheme";
 import { ARRAY_ITEM_KEY, Schema } from "widgets/JSONFormWidget/constants";
-import { Category, Size } from "components/ads/Button";
-import {
-  BaseItemProps,
-  DroppableComponent,
-} from "components/ads/DraggableListComponent";
-import { DraggableListCard } from "components/ads/DraggableListCard";
+import { Category, Size } from "design-system";
+import { BaseItemProps } from "./DraggableListComponent";
+import { DraggableListCard } from "components/propertyControls/DraggableListCard";
 import { StyledPropertyPaneButton } from "./StyledControls";
 import { getNextEntityName } from "utils/AppsmithUtils";
 import { InputText } from "./InputTextControl";
 import { JSONFormWidgetProps } from "widgets/JSONFormWidget/widget";
+import { DraggableListControl } from "pages/Editor/PropertyPane/DraggableListControl";
 
 type DroppableItem = BaseItemProps & {
   index: number;
@@ -135,6 +133,9 @@ class FieldConfigurationControl extends BaseControl<ControlProps, State> {
       widgetName,
       isCustomField: true,
       skipDefaultValueProcessing: true,
+      baseSchemaPath: null,
+      removedSchemaItems: [],
+      modifiedSchemaItems: {},
       identifier: nextFieldKey,
       fieldThemeStylesheets: childStylesheet,
     });
@@ -199,13 +200,13 @@ class FieldConfigurationControl extends BaseControl<ControlProps, State> {
 
     const addNewFieldButton = (
       <AddFieldButton
-        category={Category.tertiary}
+        category={Category.secondary}
         className="t--add-column-btn"
         icon="plus"
         onClick={this.addNewField}
         size={Size.medium}
         tag="button"
-        text="Add a new field"
+        text="添加字段"
         type="button"
       />
     );
@@ -261,13 +262,14 @@ class FieldConfigurationControl extends BaseControl<ControlProps, State> {
 
     return (
       <TabsWrapper>
-        <DroppableComponent
+        <DraggableListControl
           deleteOption={this.onDeleteOption}
           focusedIndex={this.state.focusedIndex}
           itemHeight={45}
           items={draggableComponentColumns}
           onEdit={this.onEdit}
-          renderComponent={(props) => {
+          propertyPath={this.props.dataTreePath}
+          renderComponent={(props: any) => {
             const { id, isCustomField } = props.item;
 
             return DraggableListCard({

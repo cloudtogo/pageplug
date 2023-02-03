@@ -1,5 +1,5 @@
 import React from "react";
-import { find } from "lodash";
+import { find, isEmpty } from "lodash";
 import TabsComponent from "../component";
 import BaseWidget, { WidgetState } from "../../BaseWidget";
 import WidgetFactory from "utils/WidgetFactory";
@@ -9,10 +9,12 @@ import {
 } from "constants/WidgetValidation";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { TabContainerWidgetProps, TabsWidgetProps } from "../constants";
-import { AutocompleteDataType } from "utils/autocomplete/TernServer";
+import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import { WidgetProperties } from "selectors/propertyPaneSelectors";
 import { WIDGET_PADDING } from "constants/WidgetConstants";
 import derivedProperties from "./parseDerivedProperties";
+import { Stylesheet } from "entities/AppTheming";
+import { ReduxActionTypes } from "ce/constants/ReduxActionConstants";
 
 export function selectedTabValidation(
   value: unknown,
@@ -33,181 +35,6 @@ class TabsWidget extends BaseWidget<
   TabsWidgetProps<TabContainerWidgetProps>,
   WidgetState
 > {
-  static getPropertyPaneConfig() {
-    return [
-      {
-        sectionName: "属性",
-        children: [
-          {
-            propertyName: "tabsObj",
-            isJSConvertible: false,
-            label: "标签页列表",
-            controlType: "TABS_INPUT",
-            isBindProperty: false,
-            isTriggerProperty: false,
-            updateRelatedWidgetProperties: (
-              propertyPath: string,
-              propertyValue: string,
-              props: WidgetProperties,
-            ) => {
-              const propertyPathSplit = propertyPath.split(".");
-              const property = propertyPathSplit.pop();
-              if (property === "label") {
-                const itemId = propertyPathSplit.pop() || "";
-                const item = props.tabsObj[itemId];
-                if (item) {
-                  return [
-                    {
-                      widgetId: item.widgetId,
-                      updates: {
-                        modify: {
-                          tabName: propertyValue,
-                        },
-                      },
-                    },
-                  ];
-                }
-              }
-              return [];
-            },
-            panelConfig: {
-              editableTitle: true,
-              titlePropertyName: "label",
-              panelIdPropertyName: "id",
-              updateHook: (
-                props: any,
-                propertyPath: string,
-                propertyValue: string,
-              ) => {
-                return [
-                  {
-                    propertyPath,
-                    propertyValue,
-                  },
-                ];
-              },
-              children: [
-                {
-                  sectionName: "标签页配置",
-                  children: [
-                    {
-                      propertyName: "isVisible",
-                      label: "是否可见",
-                      helpText: "标签页是否可见",
-                      controlType: "SWITCH",
-                      useValidationMessage: true,
-                      isJSConvertible: true,
-                      isBindProperty: true,
-                      isTriggerProperty: false,
-                      validation: { type: ValidationTypes.BOOLEAN },
-                    },
-                  ],
-                },
-              ],
-            },
-          },
-          {
-            propertyName: "defaultTab",
-            placeholderText: "输入标签页名称",
-            label: "默认标签页",
-            controlType: "INPUT_TEXT",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: {
-              type: ValidationTypes.FUNCTION,
-              params: {
-                fn: selectedTabValidation,
-                expected: {
-                  type: "标签页名称 (string)",
-                  example: "Tab 1",
-                  autocompleteDataType: AutocompleteDataType.STRING,
-                },
-              },
-            },
-            dependencies: ["tabsObj", "tabs"],
-          },
-          {
-            propertyName: "shouldShowTabs",
-            helpText: "隐藏标签头后，标签页不可切换，只展示默认标签页",
-            label: "显示标签头",
-            controlType: "SWITCH",
-            isBindProperty: false,
-            isTriggerProperty: false,
-          },
-          {
-            helpText: "允许组件内部内容滚动",
-            propertyName: "shouldScrollContents",
-            label: "滚动内容",
-            controlType: "SWITCH",
-            isBindProperty: false,
-            isTriggerProperty: false,
-          },
-          {
-            propertyName: "isVisible",
-            label: "是否可见",
-            controlType: "SWITCH",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-          {
-            propertyName: "animateLoading",
-            label: "加载时显示动画",
-            controlType: "SWITCH",
-            helpText: "组件依赖的数据加载时显示加载动画",
-            defaultValue: true,
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.BOOLEAN },
-          },
-        ],
-      },
-      {
-        sectionName: "动作",
-        children: [
-          {
-            helpText: "选中标签页时触发",
-            propertyName: "onTabSelected",
-            label: "onTabSelected",
-            controlType: "ACTION_SELECTOR",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: true,
-          },
-        ],
-      },
-
-      {
-        sectionName: "样式",
-        children: [
-          {
-            propertyName: "borderRadius",
-            label: "边框圆角",
-            helpText: "边框圆角样式",
-            controlType: "BORDER_RADIUS_OPTIONS",
-
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-          {
-            propertyName: "boxShadow",
-            label: "阴影",
-            helpText: "组件轮廓投影",
-            controlType: "BOX_SHADOW_OPTIONS",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-          },
-        ],
-      },
-    ];
-  }
-
   static getPropertyPaneContentConfig() {
     return [
       {
@@ -217,6 +44,7 @@ class TabsWidget extends BaseWidget<
             propertyName: "tabsObj",
             isJSConvertible: false,
             label: "标签页列表",
+            helpText: "Tabs",
             controlType: "TABS_INPUT",
             isBindProperty: false,
             isTriggerProperty: false,
@@ -298,6 +126,7 @@ class TabsWidget extends BaseWidget<
                   autocompleteDataType: AutocompleteDataType.STRING,
                 },
               },
+              dependentPaths: ["tabsObj", "tabs"],
             },
             dependencies: ["tabsObj", "tabs"],
           },
@@ -342,6 +171,7 @@ class TabsWidget extends BaseWidget<
             controlType: "SWITCH",
             isBindProperty: false,
             isTriggerProperty: false,
+            postUpdateAction: ReduxActionTypes.CHECK_CONTAINERS_FOR_AUTO_HEIGHT,
           },
         ],
       },
@@ -349,7 +179,7 @@ class TabsWidget extends BaseWidget<
         sectionName: "事件",
         children: [
           {
-            helpText: "点击按钮时触发",
+            helpText: "标签页切换时触发",
             propertyName: "onTabSelected",
             label: "onTabSelected",
             controlType: "ACTION_SELECTOR",
@@ -367,6 +197,47 @@ class TabsWidget extends BaseWidget<
       {
         sectionName: "轮廓样式",
         children: [
+          {
+            propertyName: "accentColor",
+            helpText: "设置当前标签页下标颜色",
+            label: "下标颜色",
+            controlType: "COLOR_PICKER",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+          {
+            helpText: "使用 html 颜色名, HEX, RGB 或者 RGBA 颜色格式",
+            placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
+            propertyName: "backgroundColor",
+            label: "背景颜色",
+            controlType: "COLOR_PICKER",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+          {
+            helpText: "使用 html 颜色名, HEX, RGB 或者 RGBA 颜色格式",
+            placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
+            propertyName: "borderColor",
+            label: "边框颜色",
+            controlType: "COLOR_PICKER",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+          {
+            helpText: "设置边框宽度（px 单位）",
+            propertyName: "borderWidth",
+            label: "边框宽度",
+            placeholderText: "单位是 px",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.NUMBER },
+          },
           {
             propertyName: "borderRadius",
             label: "边框圆角",
@@ -393,6 +264,11 @@ class TabsWidget extends BaseWidget<
     ];
   }
 
+  callDynamicHeightUpdates = () => {
+    const { checkContainersForAutoHeight } = this.context;
+    checkContainersForAutoHeight && checkContainersForAutoHeight();
+  };
+
   onTabChange = (tabWidgetId: string) => {
     this.props.updateWidgetMetaProperty("selectedTabWidgetId", tabWidgetId, {
       triggerPropertyName: "onTabSelected",
@@ -401,7 +277,16 @@ class TabsWidget extends BaseWidget<
         type: EventType.ON_TAB_CHANGE,
       },
     });
+    setTimeout(this.callDynamicHeightUpdates, 0);
   };
+
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      accentColor: "{{appsmith.theme.colors.primaryColor}}",
+      borderRadius: "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      boxShadow: "{{appsmith.theme.boxShadow.appBoxShadow}}",
+    };
+  }
 
   static getDerivedPropertiesMap() {
     return {
@@ -431,7 +316,10 @@ class TabsWidget extends BaseWidget<
     return (
       <TabsComponent
         {...tabsComponentProps}
+        backgroundColor={this.props.backgroundColor}
+        borderColor={this.props.borderColor}
         borderRadius={this.props.borderRadius}
+        borderWidth={this.props.borderWidth}
         boxShadow={this.props.boxShadow}
         onTabChange={this.onTabChange}
         primaryColor={this.props.primaryColor}
@@ -443,16 +331,15 @@ class TabsWidget extends BaseWidget<
 
   renderComponent = () => {
     const selectedTabWidgetId = this.props.selectedTabWidgetId;
-    const childWidgetData: TabContainerWidgetProps = this.props.children
-      ?.filter(Boolean)
-      .filter((item) => {
+    const childWidgetData = {
+      ...this.props.children?.filter(Boolean).filter((item) => {
         return selectedTabWidgetId === item.widgetId;
-      })[0];
-    if (!childWidgetData) {
+      })[0],
+    };
+    if (isEmpty(childWidgetData)) {
       return null;
     }
 
-    childWidgetData.shouldScrollContents = false;
     childWidgetData.canExtend = this.props.shouldScrollContents;
     const { componentHeight, componentWidth } = this.getComponentDimensions();
     childWidgetData.rightColumn = componentWidth;
@@ -513,6 +400,7 @@ class TabsWidget extends BaseWidget<
         "selectedTabWidgetId",
         defaultTabWidgetId,
       );
+      setTimeout(this.callDynamicHeightUpdates, 0);
     }
   };
 

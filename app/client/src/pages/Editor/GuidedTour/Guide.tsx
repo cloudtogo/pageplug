@@ -3,8 +3,7 @@ import {
   showInfoMessage,
   toggleLoader,
 } from "actions/onboardingActions";
-import Button from "components/ads/Button";
-import Icon, { IconSize } from "components/ads/Icon";
+import { Button, getTypographyByKey, Icon, IconSize } from "design-system";
 import { isArray } from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -20,7 +19,6 @@ import {
 } from "selectors/onboardingSelectors";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { getTypographyByKey } from "constants/DefaultTheme";
 import { GUIDED_TOUR_STEPS, Steps } from "./constants";
 import useComputeCurrentStep from "./useComputeCurrentStep";
 import {
@@ -58,7 +56,7 @@ const TitleWrapper = styled.div`
 `;
 
 const Title = styled.span`
-  ${(props) => getTypographyByKey(props, "h2")}
+  ${getTypographyByKey("h2")}
   font-weight: 600;
   color: #000000;
   display: flex;
@@ -72,7 +70,7 @@ const Title = styled.span`
 const StepCount = styled.div`
   background: ${(props) => props.theme.colors.guidedTour.stepCountBackground};
   color: white;
-  ${(props) => getTypographyByKey(props, "h5")};
+  ${getTypographyByKey("h5")};
   height: 24px;
   width: 24px;
   border-radius: 12px;
@@ -110,7 +108,7 @@ const GuideButton = styled(Button)<{ isVisible?: boolean }>`
   padding: ${(props) => props.theme.spaces[0]}px
     ${(props) => props.theme.spaces[6]}px;
   height: 38px;
-  ${(props) => getTypographyByKey(props, "btnMedium")};
+  ${getTypographyByKey("btnMedium")};
   visibility: ${({ isVisible = true }) => (isVisible ? "visible" : "hidden")};
 `;
 
@@ -267,8 +265,8 @@ function InitialContent() {
       </ContentWrapper>
       <Hint>
         <span className="hint-text">
-          The app is connected to a Postgres database with customers data called{" "}
-          <b>Customers DB</b>.
+          这个应用会连接一个名为 <b>Customers DB</b> 的 Postgres
+          数据库来获取用户数据
         </span>
       </Hint>
     </div>
@@ -305,7 +303,7 @@ function GuideStepsContent(props: {
   };
 
   return (
-    <div>
+    <div data-cy={"guided-tour-banner"}>
       <ContentWrapper>
         <SubContentWrapper>
           <div className="header">

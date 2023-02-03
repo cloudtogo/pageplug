@@ -4,7 +4,6 @@ import { Form, Button, Cell } from "@taroify/core";
 import { FormInstance } from "@taroify/core/form";
 import styled from "styled-components";
 import { theme } from "constants/DefaultTheme";
-import _ from "lodash";
 import PickerField from "./PickerField";
 import InputField from "./InputField";
 import SwitchField from "./SwitchField";

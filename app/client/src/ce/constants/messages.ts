@@ -5,6 +5,16 @@ export function createMessage(
   return format(...args);
 }
 
+/*
+  For self hosted, it displays the string "Appsmith Community v1.10.0" or "Appsmith Business v1.10.0".
+  For cloud hosting, it displays "Appsmith v1.10.0".
+  This is because Appsmith Cloud doesn't support business features yet.
+ */
+export const APPSMITH_DISPLAY_VERSION = (
+  edition: string,
+  version: string,
+  cloudHosting: boolean,
+) => `PagePlug ${!cloudHosting ? edition : ""} ${version}`;
 export const YES = () => `是的`;
 export const ARE_YOU_SURE = () => `确定吗？`;
 export const ERROR_ADD_API_INVALID_URL = () =>
@@ -24,7 +34,8 @@ export const INPUT_DEFAULT_TEXT_MIN_NUM_ERROR = () => `默认文本长度超出�
 export const VALID_FUNCTION_NAME_ERROR = () => `函数名不符合规范（驼峰式）`;
 export const UNIQUE_NAME_ERROR = () => `名字必须唯一`;
 export const NAME_SPACE_ERROR = () => `名字中间不能包含空格`;
-export const SPECIAL_CHARACTER_ERROR = () => `名字只能包含字母和数字`;
+export const APLHANUMERIC_HYPHEN_SLASH_SPACE_ERROR = () =>
+  `名字只能包含字母、数字、连字符（-）、斜杠（/）和空格`;
 
 export const FORM_VALIDATION_EMPTY_EMAIL = () => `请填写邮箱地址`;
 export const FORM_VALIDATION_INVALID_EMAIL = () => `请填写有效的邮箱地址`;
@@ -97,6 +108,8 @@ export const TERMS_AND_CONDITIONS_LINK = () => `条款协议`;
 export const ERROR_500 = () => `抱歉，服务端出错了，我们正在拼命修复`;
 export const ERROR_0 = () => `无法连接到服务端，请检查你的网络连接`;
 export const ERROR_401 = () => `鉴权失败！请重新登录`;
+export const ERROR_403 = (entity: string, userEmail: string) =>
+  `抱歉，你的账号 (${userEmail}) 没有权限更新 ${entity}，请联系管理员解决`;
 export const PAGE_NOT_FOUND_ERROR = () => `页面不存在`;
 export const INVALID_URL_ERROR = () => `无效地址`;
 
@@ -108,6 +121,8 @@ export const INVITE_USERS_ROLE_SELECT_PLACEHOLDER = () => `请选择角色`;
 export const INVITE_USERS_ROLE_SELECT_LABEL = () => `角色`;
 export const INVITE_USERS_EMAIL_LIST_LABEL = () => `邮箱`;
 export const INVITE_USERS_ADD_EMAIL_LIST_FIELD = () => `添加`;
+export const INVITE_USERS_MESSAGE = () => `邀请小伙伴`;
+export const INVITE_USERS_PLACEHOLDER = () => `请输入邮箱地址`;
 export const INVITE_USERS_SUBMIT_BUTTON_TEXT = () => `邀请小伙伴`;
 export const INVITE_USERS_SUBMIT_SUCCESS = () => `邀请成功`;
 export const INVITE_USER_SUBMIT_SUCCESS = () => `邀请成功`;
@@ -182,6 +197,8 @@ export const ERROR_DATEPICKER_MAX_DATE = () => `超出最大日期限制`;
 export const ERROR_WIDGET_DOWNLOAD = (err: string) => `下载失败！ ${err}`;
 export const ERROR_PLUGIN_ACTION_EXECUTE = (actionName: string) =>
   `${actionName} 动作运行失败`;
+export const ACTION_EXECUTION_CANCELLED = (actionName: string) =>
+  `${actionName} 已取消`;
 export const ERROR_FAIL_ON_PAGE_LOAD_ACTIONS = () =>
   `页面加载后关联的动作运行失败`;
 export const ERROR_ACTION_EXECUTE_FAIL = (actionName: string) =>
@@ -272,7 +289,18 @@ export const WIDGET_BIND_HELP = () => "不知道怎么从组件获取信息吗�
 
 export const BACK_TO_HOMEPAGE = () => "回到主页";
 
+// error pages
+export const PAGE_NOT_FOUND_TITLE = () => "404";
 export const PAGE_NOT_FOUND = () => "未找到页面";
+export const PAGE_SERVER_UNAVAILABLE_ERROR_CODE = () => "503";
+export const PAGE_SERVER_UNAVAILABLE_TITLE = () => "PagePlug 服务异常";
+export const PAGE_SERVER_UNAVAILABLE_DESCRIPTION = () => "请稍后重试";
+export const PAGE_SERVER_TIMEOUT_ERROR_CODE = () => "504";
+export const PAGE_SERVER_TIMEOUT_TITLE = () => "PagePlug 服务长时间无响应";
+export const PAGE_SERVER_TIMEOUT_DESCRIPTION = () => `请稍后重试`;
+export const PAGE_CLIENT_ERROR_TITLE = () => "糟糕，魔法失灵了！";
+export const PAGE_CLIENT_ERROR_DESCRIPTION = () =>
+  "请联系 PagePlug 团队寻求帮助";
 
 // comments
 export const POST = () => "提交";
@@ -290,6 +318,10 @@ export const PRESS = () => "🎉 按 ";
 export const OPEN_THE_DEBUGGER = () => " 显示/隐藏调试器";
 export const DEBUGGER_QUERY_RESPONSE_SECOND_HALF = () =>
   " 在调试器中显示更多信息";
+export const LOGS_FILTER_OPTION_ALL = () => "所有日志";
+export const LOGS_FILTER_OPTION_ERROR = () => "错误日志";
+export const LOGS_FILTER_OPTION_CONSOLE = () => "控制台日志";
+export const LOGS_FILTER_OPTION_SYSTEM = () => "系统日志";
 export const NO_LOGS = () => "暂无日志";
 export const NO_ERRORS = () => "🌈 一切顺利！";
 export const DEBUGGER_ERRORS = () => "错误";
@@ -310,8 +342,6 @@ export const DEBUGGER_TRIGGER_ERROR = (propertyName: string) =>
   `解析触发器 ${propertyName} 时出错了`;
 
 export const TROUBLESHOOT_ISSUE = () => "答疑解惑";
-export const DEBUGGER_SEARCH_GOOGLE = () => "求助搜索引擎";
-export const DEBUGGER_COPY_MESSAGE = () => "复制";
 export const DEBUGGER_OPEN_DOCUMENTATION = () => "打开文档";
 export const DEBUGGER_SEARCH_SNIPPET = () => "查看代码片段";
 export const DEBUGGER_APPSMITH_SUPPORT = () => "获取官方支持";
@@ -324,6 +354,8 @@ export const SHOW_MESSAGE = () => `消息提示`;
 export const OPEN_MODAL = () => `打开弹窗`;
 export const CLOSE_MODAL = () => `关闭弹窗`;
 export const STORE_VALUE = () => `保存数据`;
+export const REMOVE_VALUE = () => `删除数据`;
+export const CLEAR_STORE = () => `清空数据`;
 export const DOWNLOAD = () => `下载`;
 export const COPY_TO_CLIPBOARD = () => `复制`;
 export const RESET_WIDGET = () => `重置组件`;
@@ -333,6 +365,7 @@ export const CLEAR_INTERVAL = () => `清除定时器`;
 export const GET_GEO_LOCATION = () => `获取定位`;
 export const WATCH_GEO_LOCATION = () => `实时定位`;
 export const STOP_WATCH_GEO_LOCATION = () => `停止实时定位`;
+export const POST_MESSAGE = () => `发消息`;
 
 //js actions
 export const JS_ACTION_COPY_SUCCESS = (actionName: string, pageName: string) =>
@@ -341,8 +374,6 @@ export const ERROR_JS_ACTION_COPY_FAIL = (actionName: string) =>
   `${actionName} 复制失败`;
 export const JS_ACTION_DELETE_SUCCESS = (actionName: string) =>
   `${actionName} 删除成功`;
-export const JS_ACTION_CREATED_SUCCESS = (actionName: string) =>
-  `${actionName} 创建成功`;
 export const JS_ACTION_MOVE_SUCCESS = (actionName: string, pageName: string) =>
   `成功将动作 ${actionName} 移动到页面 ${pageName}`;
 export const ERROR_JS_ACTION_MOVE_FAIL = (actionName: string) =>
@@ -356,6 +387,8 @@ export const EXECUTING_FUNCTION = () => `执行函数`;
 export const UPDATING_JS_COLLECTION = () => `正在更新...`;
 export const EMPTY_JS_OBJECT = () => `空空如也。写点 js 代码试试`;
 export const EXPORT_DEFAULT_BEGINNING = () => `对象用 export default 开头`;
+export const ACTION_EXECUTION_FAILED = (actionName: string) =>
+  `"${actionName}" 执行失败`;
 export const JS_EXECUTION_SUCCESS = () => "JS 函数执行成功";
 export const JS_EXECUTION_FAILURE = () => "JS 函数执行失败";
 export const JS_EXECUTION_FAILURE_TOASTER = () => "函数执行时出错了";
@@ -570,14 +603,14 @@ export const CANNOT_MERGE_DUE_TO_UNCOMMITTED_CHANGES = () =>
   "你当前分支还有未提交的更新，请在合并之前提交更新";
 
 export const DISCONNECT_SERVICE_SUBHEADER = () =>
-  "修改这个配置会打断用户鉴权，请谨慎操作";
-export const DISCONNECT_SERVICE_WARNING = () => "最主要的鉴权方式会被删除";
+  "修改这个配置会打断用户登录，请谨慎操作";
+export const DISCONNECT_SERVICE_WARNING = () => "这个身份认证方式会被删除";
 export const AUTHENTICATION_METHOD_ENABLED = (methodName: string) => `
-  ${methodName} 鉴权方式已生效
+  ${methodName} 身份认证已生效
 `;
 
-export const DISCONNECT_EXISTING_REPOSITORIES = () => "与现有仓库断开连接";
-export const DISCONNECT_EXISTING_REPOSITORIES_INFO = () =>
+export const REVOKE_EXISTING_REPOSITORIES = () => "与现有仓库断开连接";
+export const REVOKE_EXISTING_REPOSITORIES_INFO = () =>
   "你可以删除现有的仓库来给新的仓库腾出空间";
 export const CONTACT_SUPPORT = () => "联系我们";
 export const CONTACT_SALES_MESSAGE_ON_INTERCOM = (workspaceName: string) =>
@@ -592,9 +625,9 @@ export const APPLICATION_IMPORT_SUCCESS_DESCRIPTION = () =>
 export const NONE_REVERSIBLE_MESSAGE = () => "这个操作是不可恢复的，请谨慎操作";
 export const CONTACT_SUPPORT_TO_UPGRADE = () =>
   "联系我们进行升级，升级版可以使用无限的私有仓库";
-export const DISCONNECT_CAUSE_APPLICATION_BREAK = () =>
+export const REVOKE_CAUSE_APPLICATION_BREAK = () =>
   "断开连接可能会导致应用出错";
-export const DISCONNECT_GIT = () => "取消访问";
+export const REVOKE_GIT = () => "取消访问";
 export const DISCONNECT = () => "断开连接";
 export const REVOKE = () => "取消";
 export const REVOKE_ACCESS = () => "取消访问";
@@ -606,8 +639,8 @@ export const GIT_TYPE_REPO_NAME_FOR_REVOKING_ACCESS = (name: string) =>
   `在输入框中输入 “${name}” 来取消访问`;
 export const APPLICATION_NAME = () => "应用名称";
 export const NOT_OPTIONS = () => "没有可选项！";
-export const OPEN_REPO = () => "打开仓库";
-export const CONNECTING_REPO = () => "连接到 git 仓库";
+export const OPEN_REPO = () => "打开仓库SITORY";
+export const CONNECTING_REPO = () => "连接到 git 仓库sitory";
 export const IMPORTING_APP_FROM_GIT = () => "从 git 导入应用";
 export const ERROR_CONNECTING = () => "连接时出错";
 export const ERROR_COMMITTING = () => "提交时出错";
@@ -718,7 +751,7 @@ export const ONBOARDING_CHECKLIST_BANNER_HEADER = () =>
 export const ONBOARDING_CHECKLIST_BANNER_BODY = () =>
   "你可以去主页看看你创建的应用";
 export const ONBOARDING_CHECKLIST_BANNER_BUTTON = () => "探索主页";
-
+export const ONBOARDING_SKIPPED_FIRST_TIME_USER = () => "跳过新手指引";
 export const ONBOARDING_CHECKLIST_HEADER = () => "👋 欢迎来到 PagePlug ！";
 export const ONBOARDING_CHECKLIST_BODY = () =>
   "开始你的第一个应用吧，你可以自由探索，或者跟随指引了解 PagePlug 的基本用法";
@@ -871,7 +904,7 @@ export const NOTIFICATIONS_TOOLTIP = () => "通知";
 
 // Navigation Menu
 export const DEPLOY_MENU_OPTION = () => "发布";
-export const CURRENT_DEPLOY_PREVIEW_OPTION = () => "当前已发布版本";
+export const CURRENT_DEPLOY_PREVIEW_OPTION = () => "最新发布版本";
 export const CONNECT_TO_GIT_OPTION = () => "连接到 Git 仓库";
 //
 export const GO_TO_PAGE = () => "跳转到页面";
@@ -883,9 +916,8 @@ export const SETTINGS_TOOLTIP = () => "设置";
 //settings
 export const ADMIN_SETTINGS = () => "管理员设置";
 export const RESTART_BANNER_BODY = () => "请稍等，马上就好了";
-export const RESTART_BANNER_HEADER = () => "重启你的服务器";
-export const RESTART_ERROR_BODY = () =>
-  "你可以再试着重启你的服务器来让你的设置生效";
+export const RESTART_BANNER_HEADER = () => "正在帮你重启服务...";
+export const RESTART_ERROR_BODY = () => "你可以试着手动重启服务来让更改生效";
 export const RESTART_ERROR_HEADER = () => "重启失败";
 export const RETRY_BUTTON = () => "重试";
 export const INFO_VERSION_MISMATCH_FOUND_RELOAD_REQUEST = () =>
@@ -896,6 +928,54 @@ export const TEST_EMAIL_SUCCESS_TROUBLESHOOT = () => "疑难杂症";
 export const TEST_EMAIL_FAILURE = () => "测试邮件发送失败";
 export const DISCONNECT_AUTH_ERROR = () => "不能断开唯一已连接的鉴权方式";
 export const MANDATORY_FIELDS_ERROR = () => "必填字段不能为空";
+
+// Audit logs begin
+export const AUDIT_LOGS = () => "Audit Logs";
+export const TRY_AGAIN_WITH_YOUR_FILTER = () => "Try again with your filter";
+
+// Audit logs Upgrade page begin
+export const INTRODUCING = (featureName: string) =>
+  `Introducing ${featureName}`;
+export const AUDIT_LOGS_UPGRADE_PAGE_SUB_HEADING = () =>
+  "See a timestamped trail of events in your workspace. Filter by type of event, user, resource ID, and time. Drill down into each event to investigate further.";
+export const SECURITY_AND_COMPLIANCE = () => "Security & Compliance";
+export const SECURITY_AND_COMPLIANCE_DETAIL1 = () =>
+  "Proactively derisk misconfigured permissions, roll back changes from a critical security event, and keep checks against your compliance policies.";
+export const SECURITY_AND_COMPLIANCE_DETAIL2 = () =>
+  "Exports to popular compliance tools coming soon";
+export const DEBUGGING = () => "Debugging";
+export const DEBUGGING_DETAIL1 = () =>
+  "Debug with a timeline of events filtered by user and resource ID, correlate them with end-user and app developer actions, and investigate back to the last known good state of your app.";
+export const INCIDENT_MANAGEMENT = () => "Incident Management";
+export const INCIDENT_MANAGEMENT_DETAIL1 = () =>
+  "Go back in time from an incident to see who did what, correlate events with breaking changes, and run RCAs to remediate incidents for now and the future.";
+export const AVAILABLE_ON_BUSINESS = () => "Available on a business plan only";
+export const EXCLUSIVE_TO_BUSINESS = (featureName: string) =>
+  `The ${featureName} feature is exclusive to workspaces on the Business Plan`;
+// Audit logs Upgrade page end
+// Audit logs end
+
+// Access control upgrade page begin
+export const GRANULAR_ACCESS_CONTROL_FOR_TEAMS = () =>
+  "Granular Access Controls for teams";
+export const ACCESS_CONTROL_UPGRADE_PAGE_SUB_HEADING = () =>
+  "Control view, create, edit, delete, share, and export permissions for all resources in your apps in a workspace. Manage permissions by attributes as granularly or broadly as you want. Use permissions and user groups to easily define access levels of new and existing users.";
+export const SECURITY_APPS_LEAST_PRIVILEGE = () =>
+  "Secure apps by the least privilege needed";
+export const SECURITY_APPS_LEAST_PRIVILEGE_DETAIL1 = () =>
+  "Create roles by the least privilege needed as defaults, e.g.: View only, assign them to users in groups, e.g.: Marketing, and modify for special access, e.g.: Content creators_Execute queries";
+export const PREVENT_ACCIDENTAL_DAMAGE = () =>
+  "Prevent accidental damage to data";
+export const PREVENT_ACCIDENTAL_DAMAGE_DETAIL1 = () =>
+  `Assign edit and delete permissions to an entire group, then modify granularly so non-native users of your data don’t drop a table or bulk-delete streaming data records before you can say, “Retrieve”.`;
+export const RESTRICT_PUBLIC_EXPOSURE = () =>
+  "Restrict public exposure of sensitive data";
+export const RESTRICT_PUBLIC_EXPOSURE_DETAIL1 = () =>
+  "Proactively disallow groups of non-admin or non-super-admin users from publicly sharing your app or exporting app data out of your environment, domain, and security perimeters.";
+export const ACCESS_CONTROL_UPGRADE_PAGE_FOOTER = () =>
+  "Unlock granular access controls along with audit logs and SSO for enhanced security and reliability with an upgrade to our Business edition.";
+// Access control upgrade page end
+
 //
 export const WELCOME_FORM_NON_SUPER_USER_ROLE_DROPDOWN = () =>
   "请告诉我们你的工作角色是？";
@@ -915,6 +995,8 @@ export const LOCK_ENTITY_EXPLORER_MESSAGE = () => `固定侧边栏`;
 export const CLOSE_ENTITY_EXPLORER_MESSAGE = () => `关闭侧边栏`;
 export const JS_TOGGLE_DISABLED_MESSAGE = "清空字段回退";
 export const PROPERTY_PANE_EMPTY_SEARCH_RESULT_MESSAGE = "没有发现任何属性";
+export const PROPERTY_SEARCH_INPUT_PLACEHOLDER = "搜索组件属性";
+export const HELP_MESSAGE = "帮助";
 
 // API Pane
 export const API_PANE_NO_BODY = () => "当前请求没有请求体";
@@ -931,6 +1013,8 @@ export const GENERATE_APPLICATION_DESCRIPTION = () =>
 export const DELETE_WORKSPACE_SUCCESSFUL = () => "应用组删除成功";
 // theming
 export const CHANGE_APP_THEME = (name: string) => `已切换为 ${name} 风格主题`;
+export const SET_DEFAULT_SELECTED_THEME = (name: string) =>
+  `找不到自定义主题，切换到 ${name} 风格主题`;
 export const SAVE_APP_THEME = (name: string) => `风格主题 ${name} 已保存`;
 export const DELETE_APP_THEME = (name: string) => `风格主题 ${name} 已删除`;
 export const DELETE_APP_THEME_WARNING = () =>
@@ -939,14 +1023,48 @@ export const APP_THEME_BETA_CARD_HEADING = () => `🎨 修改应用风格`;
 export const APP_THEME_BETA_CARD_CONTENT = () =>
   `自定义全局样式风格，后面对所有组件进行支持`;
 
+// echat theme
+export const CHANGE_ECHART_THEME = (name: string) =>
+  `Echart主题已切换为 ${name} 风格主题`;
+
 export const UPGRADE_TO_EE = (authLabel: string) =>
-  `你好，我想升级并且开始使用 ${authLabel} 鉴权`;
+  `你好，我想升级来使用 ${authLabel} 鉴权`;
+export const UPGRADE_TO_EE_FEATURE = (feature: string) =>
+  `你好，我想升级来使用 ${feature} 功能`;
 export const UPGRADE_TO_EE_GENERIC = () => `你好，我想升级`;
 export const ADMIN_AUTH_SETTINGS_TITLE = () => "选择鉴权方式";
 export const ADMIN_AUTH_SETTINGS_SUBTITLE = () => "选择一个鉴权协议";
 export const DANGER_ZONE = () => "危险操作";
 export const DISCONNECT_AUTH_METHOD = () => "断开连接";
 export const DISCONNECT_CONFIRMATION = () => "你确定吗？";
+
+// Branding
+export const ADMIN_BRANDING_SETTINGS_TITLE = () => "为你的平台自定义品牌";
+export const ADMIN_BRANDING_SETTINGS_SUBTITLE = () =>
+  "自由定制你的 LOGO 和品牌色，如果需要使用此功能请升级到商业版";
+export const ADMIN_BRANDING_COLOR_TOOLTIP = () =>
+  `当你选择主色后，我们会自动为你生成辅助色和强调色，你也可以随时调整它们`;
+export const ADMIN_BRANDING_LOGO_SIZE_ERROR = () => `上传文件大小不能超过 2MB`;
+export const ADMIN_BRANDING_LOGO_DIMENSION_ERROR = () =>
+  `Logo 的高度必须大于 256px`;
+export const ADMIN_BRANDING_LOGO_FORMAT_ERROR = () =>
+  `上传文件仅支持 .SVG, .PNG, 和 .JPG 格式`;
+export const ADMIN_BRANDING_LOGO_REQUIREMENT = () =>
+  `仅限 .SVG, .PNG, 或 .JPG • 最大 2MB`;
+export const ADMIN_BRANDING_FAVICON_DIMENSION_ERROR = () =>
+  `上传文件最大尺寸为 32 X 32 像素`;
+export const ADMIN_BRANDING_FAVICON_SIZE_ERROR = () => `上传文件必须小于 2MB`;
+export const ADMIN_BRANDING_FAVICON_FORMAT_ERROR = () =>
+  `上传文件仅支持 .ICO, .PNG, 和 .JPG 格式`;
+export const ADMIN_BRANDING_FAVICON_REQUIREMENT = () =>
+  `仅限 .ICO, .PNG, 或 .JPG • 最大尺寸 32 X 32`;
+export const ADMIN_BRANDING_COLOR_TOOLTIP_PRIMARY = () =>
+  `用于按钮、链接或其他交互组件的颜色`;
+export const ADMIN_BRANDING_COLOR_TOOLTIP_BACKGROUND = () => `用于背景颜色`;
+export const ADMIN_BRANDING_COLOR_TOOLTIP_HOVER = () => `用于按钮 hover 颜色`;
+export const ADMIN_BRANDING_COLOR_TOOLTIP_FONT = () => `用于按钮文字颜色`;
+export const ADMIN_BRANDING_COLOR_TOOLTIP_DISABLED = () =>
+  `用于禁用按钮背景颜色`;
 
 // Guided tour
 // -- STEPS ---
@@ -1013,10 +1131,14 @@ export const CONTEXT_MOVE = () => "移动到页面";
 export const CONTEXT_COPY = () => "复制到页面";
 export const CONTEXT_DELETE = () => "删除";
 export const CONFIRM_CONTEXT_DELETE = () => "确定删除吗？";
+export const CONFIRM_CONTEXT_DELETING = () => "正在删除";
 export const CONTEXT_NO_PAGE = () => "暂无页面";
 export const CONTEXT_REFRESH = () => "刷新";
-export const CONTEXT_CLONE = () => "克隆页面";
+export const CONTEXT_CLONE = () => "复制页面";
+export const CONTEXT_SETTINGS = () => "设置";
 export const CONTEXT_SET_AS_HOME_PAGE = () => "设置为主页";
+export const PAGE = () => "页面";
+export const PAGES = () => "页面";
 
 // Entity explorer
 export const ADD_DATASOURCE_BUTTON = () => "添加数据源";
@@ -1036,7 +1158,7 @@ export const CHOOSE_WHERE_TO_FORK = () => "选择把模板克隆到哪里";
 export const SELECT_WORKSPACE = () => "选择应用组";
 export const FORK_TEMPLATE = () => "克隆模板";
 export const TEMPLATES = () => "模板";
-export const FORK_THIS_TEMPLATE = () => "克隆这个模板";
+export const FORK_THIS_TEMPLATE = () => "使用这个模板";
 export const COULDNT_FIND_TEMPLATE = () => "找不到你想要的模板吗？";
 export const COULDNT_FIND_TEMPLATE_DESCRIPTION = () =>
   "你可以在我们的 github 上给我们提 issue ，告诉我们你想要什么模板";
@@ -1056,7 +1178,15 @@ export const WIDGET_USED = () => "用到的组件";
 export const SIMILAR_TEMPLATES = () => "类似模板";
 export const VIEW_ALL_TEMPLATES = () => "查看所有模板";
 export const FILTERS = () => "过滤";
+export const TEMPLATE_CARD_TITLE = () => "从模板开始";
+export const TEMPLATE_CARD_DESCRIPTION = () => "选择模板页面创建应用";
+export const FILTER_SELECTALL = () => "全选";
+export const FILTER_SELECT_PAGES = () => "选择页面";
+export const FORKING_TEMPLATE = () => "正在克隆模板";
+export const FETCHING_TEMPLATES = () => "正在加载模板详情";
+export const FETCHING_TEMPLATE_LIST = () => "正在加载模板列表";
 
+export const TEMPLATES_BACK_BUTTON = () => "返回模板";
 export const IMAGE_LOAD_ERROR = () => "图片加载失败";
 
 export const REDIRECT_URL_TOOLTIP = () =>
@@ -1065,8 +1195,8 @@ export const ENTITY_ID_TOOLTIP = () => "这个地址用来配置你的身份认�
 
 export const FORK_APP_MODAL_LOADING_TITLE = () => "正在拉取应用组...";
 export const FORK_APP_MODAL_EMPTY_TITLE = () => "没有可用应用组";
-export const FORK_APP_MODAL_SUCCESS_TITLE = () => "选择把应用克隆到哪里";
-export const FORK = () => `克隆`;
+export const FORK_APP_MODAL_SUCCESS_TITLE = () => "选择把应用复制到哪里";
+export const FORK = () => `复制`;
 
 export const CLEAN_URL_UPDATE = {
   name: () => "更新地址",
@@ -1080,4 +1210,90 @@ export const CLEAN_URL_UPDATE = {
   ],
   disclaimer: () =>
     "引用了 <strong>appsmith.URL.fullpath</strong> 和 <strong>appsmith.URL.pathname</strong> 的属性会有显示出变化",
+};
+
+export const MEMBERS_TAB_TITLE = (length: number) => `成员 (${length})`;
+
+export const CREATE_PAGE = () => "新建空白页面";
+export const CANVAS_NEW_PAGE_CARD = () => "新建页面";
+export const GENERATE_PAGE = () => "用数据库自动生成页面";
+export const GENERATE_PAGE_DESCRIPTION = () =>
+  "用数据库数据自动生成一个增删改查页面";
+export const ADD_PAGE_FROM_TEMPLATE = () => "添加模板页面";
+export const INVALID_URL = () => "请输入有效 URL，例如 https://example.com";
+export const SAVE_OR_DISCARD_DATASOURCE_WARNING = () =>
+  `离开页面后未保存的数据将会丢失，离开前请先保存信息`;
+
+export const APP_SETTINGS_PANE_HEADER = () => "设置";
+export const APP_SETTINGS_CLOSE_TOOLTIP = () => "关闭设置面板";
+
+export const GENERAL_SETTINGS_SECTION_HEADER = () => "通用";
+export const GENERAL_SETTINGS_SECTION_CONTENT_HEADER = () => "通用设置";
+export const GENERAL_SETTINGS_SECTION_HEADER_DESC = () =>
+  "应用名称、图标和分享";
+export const GENERAL_SETTINGS_APP_NAME_LABEL = () => "应用名称";
+export const GENERAL_SETTINGS_NAME_EMPTY_MESSAGE = () => "应用名称不能为空";
+export const GENERAL_SETTINGS_NAME_SPECIAL_CHARACTER_ERROR = () =>
+  "只能输入字母、数字、'-'、'('、')' 等字符";
+export const GENERAL_SETTINGS_APP_ICON_LABEL = () => "应用图标";
+
+export const THEME_SETTINGS_SECTION_HEADER = () => "主题";
+export const THEME_SETTINGS_SECTION_CONTENT_HEADER = () => "主题设置";
+export const THEME_SETTINGS_SECTION_HEADER_DESC = () => "设置主题、颜色、字体";
+
+export const PAGE_SETTINGS_SECTION_HEADER = () => "页面设置";
+export const PAGE_SETTINGS_SECTION_CONTENT_HEADER = () => "设置";
+export const PAGE_SETTINGS_PAGE_NAME_LABEL = () => "页面名称";
+export const PAGE_SETTINGS_NAME_EMPTY_MESSAGE = () => "页面名称不能为空";
+export const PAGE_SETTINGS_NAME_SPECIAL_CHARACTER_ERROR = () =>
+  "只能输入字母、数字或 '-'";
+export const PAGE_SETTINGS_PAGE_URL_LABEL = () => "修改页面 URL";
+export const PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_1 = () => "请";
+export const PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_2 = () => "更新";
+export const PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_3 = () =>
+  "你的应用 URL 到新的可读格式";
+export const PAGE_SETTINGS_SHOW_PAGE_NAV = () => "显示菜单导航";
+export const PAGE_SETTINGS_SHOW_PAGE_NAV_TOOLTIP = () =>
+  "当前页面是否显示应用菜单导航";
+export const PAGE_SETTINGS_SET_AS_HOMEPAGE = () => "设为主页";
+export const PAGE_SETTINGS_SET_AS_HOMEPAGE_TOOLTIP = () =>
+  "当前页面已经是主页，你可以将其他页面设为主页";
+export const PAGE_SETTINGS_SET_AS_HOMEPAGE_TOOLTIP_NON_HOME_PAGE = () =>
+  "将这页设置为主页";
+export const PAGE_SETTINGS_ACTION_NAME_CONFLICT_ERROR = (name: string) =>
+  `${name} 已经被占用`;
+
+// Alert options and labels for showMessage types
+export const ALERT_STYLE_OPTIONS = [
+  { label: "信息", value: "'info'", id: "info" },
+  {
+    label: "成功",
+    value: "'success'",
+    id: "success",
+  },
+  { label: "错误", value: "'error'", id: "error" },
+  { label: "警告", value: "'warning'", id: "warning" },
+];
+
+export const USAGE_AND_BILLING = {
+  usage: () => "Usage",
+  billing: () => "Billing",
+  usageAndBilling: () => "Usage & Billing",
+  usageOverNDays: (days: number) => `Usage over the past ${days} days!`,
+  usageDetails: () =>
+    "This is how much you have used Appsmith to build and run apps.",
+  unit: () => "minutes/day",
+  averaged: () => "*averaged",
+  approximated: () => "*approximated",
+  sell: () => "Figure out your usage before purchasing Appsmith",
+  upgradeToBusiness: () => "UPGRADE TO BUSINESS EDITION",
+  rbacHeading: () => "Role Based Access Control",
+  rbacDetails: () =>
+    "RBAC is here to allow you to control access to appsmith as easy as you maintain your organization.",
+  ssoHeading: () => "SSO and Custom Authentication",
+  ssoDetails: () => "SSO and custom auth allow you to onboard users faster.",
+  gitHeading: () => "Unlimited private git repositories",
+  gitDetails: () => "Expand your single source of truth capability to infinite",
+  exclusive: () =>
+    "These features are exclusively available on business edition.",
 };

@@ -1,22 +1,30 @@
 import { Alignment } from "@blueprintjs/core";
 import { LabelPosition } from "components/constants";
 import moment from "moment";
+import { DynamicHeight } from "utils/WidgetFeatures";
 import { TimePrecision } from "./constants";
 import IconSVG from "./icon.svg";
 import Widget from "./widget";
 
 export const CONFIG = {
+  features: {
+    dynamicHeight: {
+      sectionIndex: 3,
+      defaultValue: DynamicHeight.FIXED,
+      active: true,
+    },
+  },
   type: Widget.getWidgetType(),
   name: "日期选择器",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["calendar"],
+  searchTags: ["calendar", "date picker"],
   defaults: {
     isDisabled: false,
     datePickerType: "DATE_PICKER",
-    rows: 4,
+    rows: 7,
     label: "标签",
-    labelPosition: LabelPosition.Left,
+    labelPosition: LabelPosition.Top,
     labelAlignment: Alignment.LEFT,
     labelWidth: 5,
     labelTextSize: "0.875rem",
@@ -30,7 +38,7 @@ export const CONFIG = {
     isRequired: false,
     closeOnSelection: true,
     shortcuts: false,
-    firstDayOfWeek: 0,
+    firstDayOfWeek: 1,
     timePrecision: TimePrecision.MINUTE,
     animateLoading: true,
   },
@@ -41,6 +49,7 @@ export const CONFIG = {
     config: Widget.getPropertyPaneConfig(),
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
   },
 };
 

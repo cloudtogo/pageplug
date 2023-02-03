@@ -4,12 +4,19 @@ import IconSVG from "./icon.svg";
 import Widget from "./widget";
 
 export const CONFIG = {
+  features: {
+    dynamicHeight: {
+      sectionIndex: 3,
+      active: true,
+    },
+  },
   type: Widget.getWidgetType(),
   name: "勾选组",
   iconSVG: IconSVG,
   needsMeta: true,
+  searchTags: ["checkbox group"],
   defaults: {
-    rows: 4,
+    rows: 6,
     columns: 23,
     animateLoading: true,
     labelTextSize: "0.875rem",
@@ -18,13 +25,13 @@ export const CONFIG = {
       { label: "绿", value: "GREEN" },
       { label: "红", value: "RED" },
     ],
-    defaultSelectedValues: "BLUE",
+    defaultSelectedValues: ["BLUE"],
     isDisabled: false,
     isInline: true,
     isRequired: false,
     isVisible: true,
     labelText: "标签",
-    labelPosition: LabelPosition.Left,
+    labelPosition: LabelPosition.Top,
     labelAlignment: Alignment.LEFT,
     labelWidth: 5,
     widgetName: "CheckboxGroup",
@@ -37,6 +44,7 @@ export const CONFIG = {
     config: Widget.getPropertyPaneConfig(),
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
   },
 };
 

@@ -23,6 +23,9 @@ import CanvasWidget, {
 import ChartWidget, {
   CONFIG as CHART_WIDGET_CONFIG,
 } from "widgets/ChartWidget";
+import EChartWidget, {
+  CONFIG as ECHART_WIDGET_CONFIG,
+} from "widgets/EchartWidget";
 import CheckboxGroupWidget, {
   CONFIG as CHECKBOX_GROUP_WIDGET_CONFIG,
 } from "widgets/CheckboxGroupWidget";
@@ -149,6 +152,18 @@ import { WidgetConfiguration } from "widgets/constants";
 import TableWidgetV2, {
   CONFIG as TABLE_WIDGET_CONFIG_V2,
 } from "widgets/TableWidgetV2";
+import NumberSliderWidget, {
+  CONFIG as NUMBER_SLIDER_WIDGET_CONFIG,
+} from "widgets/NumberSliderWidget";
+import RangeSliderWidget, {
+  CONFIG as RANGE_SLIDER_WIDGET_CONFIG,
+} from "widgets/RangeSliderWidget";
+import CategorySliderWidget, {
+  CONFIG as CATEGORY_SLIDER_WIDGET_CONFIG,
+} from "widgets/CategorySliderWidget";
+import CodeScannerWidget, {
+  CONFIG as CODE_SCANNER_WIDGET_CONFIG,
+} from "widgets/CodeScannerWidget";
 
 import FormilyWidget, {
   CONFIG as FORMILY_WIDGET_CONFIG,
@@ -214,7 +229,7 @@ import MTextWidget, {
 //   ProfiledPickerWidget,
 // } from "widgets/taro/PickerWidget";
 
-export const ALL_WIDGETS_AND_CONFIG = [
+export const ALL_WIDGETS_AND_CONFIG: [any, WidgetConfiguration][] = [
   [CanvasWidget, CANVAS_WIDGET_CONFIG],
   [SkeletonWidget, SKELETON_WIDGET_CONFIG],
   [ContainerWidget, CONTAINER_WIDGET_CONFIG],
@@ -228,6 +243,7 @@ export const ALL_WIDGETS_AND_CONFIG = [
   [TabsWidget, TABS_WIDGET_CONFIG],
   [ModalWidget, MODAL_WIDGET_CONFIG],
   [ChartWidget, CHART_WIDGET_CONFIG],
+  [EChartWidget, ECHART_WIDGET_CONFIG],
   [MapWidget, MAP_WIDGET_CONFIG],
   [RichTextEditorWidget, RICH_TEXT_EDITOR_WIDGET_CONFIG],
   [DatePickerWidget2, DATE_PICKER_WIDGET_2_CONFIG],
@@ -260,6 +276,10 @@ export const ALL_WIDGETS_AND_CONFIG = [
   [CurrencyInputWidget, CURRENCY_INPUT_WIDGET_V2_CONFIG],
   [JSONFormWidget, JSON_FORM_WIDGET_CONFIG],
   [TableWidgetV2, TABLE_WIDGET_CONFIG_V2],
+  [NumberSliderWidget, NUMBER_SLIDER_WIDGET_CONFIG],
+  [RangeSliderWidget, RANGE_SLIDER_WIDGET_CONFIG],
+  [CategorySliderWidget, CATEGORY_SLIDER_WIDGET_CONFIG],
+  [CodeScannerWidget, CODE_SCANNER_WIDGET_CONFIG],
 
   [FormilyWidget, FORMILY_WIDGET_CONFIG],
 

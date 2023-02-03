@@ -11,7 +11,7 @@ import {
 import { DropDownOptionWithKey } from "./OptionControl";
 import { DropdownOption } from "components/constants";
 import { generateReactKey } from "utils/generators";
-import { Category, Size } from "components/ads/Button";
+import { Category, Size } from "design-system";
 import { debounce } from "lodash";
 import { getNextEntityName } from "utils/AppsmithUtils";
 
@@ -235,7 +235,7 @@ export function KeyValueComponent(props: KeyValueComponentProps) {
       })}
 
       <StyledPropertyPaneButton
-        category={Category.tertiary}
+        category={Category.secondary}
         className="t--property-control-options-add"
         icon="plus"
         onClick={addPair}

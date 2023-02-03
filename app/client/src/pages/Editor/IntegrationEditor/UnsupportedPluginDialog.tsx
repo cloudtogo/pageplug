@@ -1,13 +1,19 @@
 import React from "react";
-import { Text, TextType } from "design-system";
 import { HelpIcons } from "icons/HelpIcons";
 import { withTheme } from "styled-components";
 import styled from "styled-components";
 import { Color } from "constants/Colors";
-import Dialog from "components/ads/DialogComponent";
-import Icon, { IconSize } from "components/ads/Icon";
+import {
+  Button,
+  Category,
+  DialogComponent as Dialog,
+  Icon,
+  IconSize,
+  Size,
+  Text,
+  TextType,
+} from "design-system";
 import { IconProps } from "constants/IconConstants";
-import Button, { Category, Size } from "components/ads/Button";
 import { UNSUPPORTED_PLUGIN_DIALOG_MAIN_HEADING } from "@appsmith/constants/messages";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import {
@@ -149,7 +155,7 @@ function UnsupportedPluginDialog(props: Props) {
 
       <ActionButtonWrapper>
         <ActionButton
-          category={Category.tertiary}
+          category={Category.secondary}
           onClick={() => {
             AnalyticsUtil.logEvent("UNSUPPORTED_PLUGIN_DIALOG_BACK_ACTION");
             handleClose();

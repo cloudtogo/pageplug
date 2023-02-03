@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { ActionBarIconProps } from "./PropsType";
 import { createVanIconComponent } from "@taroify/icons/van";
 import { Badge } from "@taroify/core";
-import { BEM, createBEM } from "../../rvStyle/bem";
+import { createBEM } from "../../rvStyle/bem";
 
 const ActionBarIcon: React.FC<ActionBarIconProps> = (props) => {
   const bem = createBEM("rv-action-bar-icon");

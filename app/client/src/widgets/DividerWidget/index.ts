@@ -6,7 +6,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "分隔线",
   iconSVG: IconSVG,
-  searchTags: ["line"],
+  searchTags: ["line", "divider"],
   defaults: {
     rows: 4,
     columns: 20,
@@ -15,7 +15,7 @@ export const CONFIG = {
     capType: "nc",
     capSide: 0,
     strokeStyle: "solid",
-    dividerColor: Colors.GREY_3,
+    dividerColor: Colors.GRAY,
     thickness: 2,
     isVisible: true,
     version: 1,

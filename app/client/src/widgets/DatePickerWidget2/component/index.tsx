@@ -17,10 +17,11 @@ import {
 } from "@appsmith/constants/messages";
 import { LabelPosition } from "components/constants";
 import { parseDate } from "./utils";
+import { lightenColor, PopoverStyles } from "widgets/WidgetUtils";
 import LabelWithTooltip, {
   labelLayoutStyles,
-} from "components/ads/LabelWithTooltip";
-import { lightenColor, PopoverStyles } from "widgets/WidgetUtils";
+} from "widgets/components/LabelWithTooltip";
+import MomentLocaleUtils from "react-day-picker/moment";
 
 const DATEPICKER_POPUP_CLASSNAME = "datepickerwidget-popup";
 
@@ -34,39 +35,76 @@ const StyledControlGroup = styled(ControlGroup)<{
 }>`
   ${labelLayoutStyles}
 
+  /**
+    When the label is on the left it is not center aligned
+    here set height to auto and not 100% because the input 
+    has fixed height and stretch the container.
+  */
+    ${({ labelPosition }) => {
+      if (labelPosition === LabelPosition.Left) {
+        return `
+      height: auto !important;
+      align-items: stretch;
+      `;
+      }
+    }}
+
   &&& {
     .${Classes.INPUT} {
-      color: ${Colors.GREY_10};
-      background: ${Colors.WHITE};
+      color: var(--wds-color-text);
+      background: var(--wds-color-bg);
       border-radius: ${({ borderRadius }) => borderRadius} !important;
       box-shadow: ${({ boxShadow }) => `${boxShadow}`} !important;
       border: 1px solid;
       border-color: ${({ isValid }) =>
-        !isValid ? `${Colors.DANGER_SOLID} !important;` : `${Colors.GREY_3};`}
+        !isValid
+          ? `var(--wds-color-border-danger);`
+          : `var(--wds-color-border);`};
       width: 100%;
       height: 100%;
       min-height: 32px;
       align-items: center;
       transition: none;
 
-      &:active {
+      &:active:not(:disabled) {
         border-color: ${({ accentColor, isValid }) =>
-          !isValid ? Colors.DANGER_SOLID : accentColor};
+          !isValid ? `var(--wds-color-border-danger)` : accentColor};
       }
 
-      &:focus {
+      &:hover:not(:disabled) {
+        border-color: ${({ isValid }) =>
+          !isValid
+            ? `var(--wds-color-border-danger-hover)`
+            : `var(--wds-color-border-hover)`};
+      }
+
+      &:focus:not(:disabled) {
         outline: 0;
         border: 1px solid;
         border-color: ${({ accentColor, isValid }) =>
-          !isValid ? Colors.DANGER_SOLID : accentColor};
-        box-shadow: ${({ accentColor }) =>
-          `0px 0px 0px 3px ${lightenColor(accentColor)} !important;`}
+          !isValid
+            ? `var(--wds-color-border-danger-focus) !important`
+            : accentColor};
+        box-shadow: ${({ accentColor, isValid }) =>
+          `0px 0px 0px 2px ${
+            isValid
+              ? lightenColor(accentColor)
+              : "var(--wds-color-border-danger-focus-light)"
+          } !important;`};
       }
     }
 
     .${Classes.INPUT}:disabled {
-      background: ${Colors.GREY_1};
-      color: ${Colors.GREY_7};
+      background: var(--wds-color-bg-disabled);
+      color: var(--wds-color-text-disabled);
+    }
+
+    .${Classes.INPUT}:not(:disabled)::placeholder {
+      color: var(--wds-color-text-light);
+    }
+
+    .${Classes.INPUT}::placeholder {
+      color: var(--wds-color-text-disabled-light);
     }
 
     .${Classes.INPUT_GROUP} {
@@ -164,6 +202,45 @@ class DatePickerComponent extends React.Component<
       isValid && this.state.selectedDate
         ? new Date(this.state.selectedDate)
         : null;
+
+    const shortcutsConfig = [
+      { date: now.toDate(), label: "今天" },
+      {
+        date: now
+          .clone()
+          .subtract(1, "d")
+          .toDate(),
+        label: "昨天",
+      },
+      {
+        date: now
+          .clone()
+          .subtract(1, "w")
+          .toDate(),
+        label: "一周前",
+      },
+      {
+        date: now
+          .clone()
+          .subtract(1, "M")
+          .toDate(),
+        label: "一个月前",
+      },
+      {
+        date: now
+          .clone()
+          .subtract(3, "M")
+          .toDate(),
+        label: "三个月前",
+      },
+      {
+        date: now
+          .clone()
+          .subtract(1, "y")
+          .toDate(),
+        label: "一年前",
+      },
+    ];
 
     const getInitialMonth = () => {
       // None
@@ -277,6 +354,7 @@ class DatePickerComponent extends React.Component<
             disabled={isDisabled}
             fontSize={labelTextSize}
             fontStyle={labelStyle}
+            isDynamicHeightEnabled={this.props.isDynamicHeightEnabled}
             loading={isLoading}
             position={labelPosition}
             text={labelText}
@@ -295,25 +373,33 @@ class DatePickerComponent extends React.Component<
               className={this.props.isLoading ? "bp3-skeleton" : ""}
               closeOnSelection={this.props.closeOnSelection}
               dayPickerProps={{
-                firstDayOfWeek: this.props.firstDayOfWeek || 0,
+                firstDayOfWeek: this.props.firstDayOfWeek || 1,
               }}
               disabled={this.props.isDisabled}
               formatDate={this.formatDate}
               initialMonth={initialMonth}
               inputProps={{
                 inputRef: this.props.inputRef,
+                onFocus: () => this.props.onFocus?.(),
+                onBlur: () => this.props.onBlur?.(),
               }}
+              locale="zh_CN"
+              localeUtils={MomentLocaleUtils}
+              clearButtonText="清空"
+              todayButtonText="今天"
               maxDate={maxDate}
               minDate={minDate}
               onChange={this.onDateSelected}
               parseDate={this.parseDate}
-              placeholder={"Select Date"}
+              placeholder={"选择日期"}
               popoverProps={{
+                portalContainer:
+                  document.getElementById("art-board") || undefined,
                 usePortal: !this.props.withoutPortal,
                 canEscapeKeyClose: true,
                 portalClassName: `${DATEPICKER_POPUP_CLASSNAME}-${this.props.widgetId}`,
               }}
-              shortcuts={this.props.shortcuts}
+              shortcuts={this.props.shortcuts ? shortcutsConfig : false}
               showActionsBar
               timePrecision={
                 this.props.timePrecision === TimePrecision.NONE
@@ -414,6 +500,7 @@ interface DatePickerComponentProps extends ComponentProps {
   timezone?: string;
   datePickerType: DatePickerType;
   isDisabled: boolean;
+  isDynamicHeightEnabled?: boolean;
   onDateSelected: (selectedDate: string) => void;
   isLoading: boolean;
   withoutPortal?: boolean;
@@ -425,6 +512,8 @@ interface DatePickerComponentProps extends ComponentProps {
   borderRadius: string;
   boxShadow?: string;
   accentColor: string;
+  onFocus?: () => void;
+  onBlur?: () => void;
 }
 
 interface DatePickerComponentState {

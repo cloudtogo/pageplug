@@ -118,6 +118,7 @@ const GridComponent = (props: GridComponentProps) => {
   };
 
   const onClickGridItem = (item: any) => (e: any) => {
+    console.log(e);
     onItemClicked(item, "ITEM");
   };
 

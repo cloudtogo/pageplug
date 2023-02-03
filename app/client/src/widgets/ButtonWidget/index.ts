@@ -11,7 +11,7 @@ export const CONFIG = {
   name: "按钮",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["click", "submit"],
+  searchTags: ["click", "submit", "button"],
   defaults: {
     animateLoading: true,
     text: "提交",
@@ -35,6 +35,7 @@ export const CONFIG = {
     config: Widget.getPropertyPaneConfig(),
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
   },
 };
 

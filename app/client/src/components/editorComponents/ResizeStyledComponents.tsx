@@ -1,4 +1,4 @@
-import { invisible, theme, transparenten } from "constants/DefaultTheme";
+import { invisible, theme } from "constants/DefaultTheme";
 import { WIDGET_PADDING } from "constants/WidgetConstants";
 import styled, { css } from "styled-components";
 
@@ -19,7 +19,7 @@ export const VisibilityContainer = styled.div<{
   ${(props) =>
     props.isWidgetActive
       ? css`
-          box-shadow: 0 0 32px 0px ${transparenten(theme.colors.primary, 0.25)};
+          box-shadow: 0 0 32px -16px var(--ads-color-brand);
         `
       : ""}
   height: 100%;
@@ -45,6 +45,7 @@ const ResizeIndicatorStyle = css<{
 export const EdgeHandleStyles = css<{
   showAsBorder: boolean;
   showLightBorder: boolean;
+  disableDot: boolean;
 }>`
   position: absolute;
   width: ${EDGE_RESIZE_HANDLE_WIDTH}px;
@@ -60,18 +61,20 @@ export const EdgeHandleStyles = css<{
     }};
     content: "";
   }
-  ${(props) => (!props.showAsBorder ? ResizeIndicatorStyle : "")}
+  ${(props) =>
+    props.showAsBorder || props.disableDot ? "" : ResizeIndicatorStyle}
 `;
 
 export const VerticalHandleStyles = css<{
   showAsBorder: boolean;
   showLightBorder: boolean;
+  disableDot: boolean;
 }>`
   ${EdgeHandleStyles}
   top:${~(WIDGET_PADDING - 1) + 1}px;
   height: calc(100% + ${2 * WIDGET_PADDING - 1}px);
-  ${(props) => (!props.showAsBorder ? "cursor: col-resize;" : "")}
-  cursor: col-resize;
+  ${(props) =>
+    props.showAsBorder || props.disableDot ? "" : "cursor: col-resize;"}
   &:before {
     left: 50%;
     bottom: 0px;
@@ -83,12 +86,13 @@ export const VerticalHandleStyles = css<{
 export const HorizontalHandleStyles = css<{
   showAsBorder: boolean;
   showLightBorder: boolean;
+  disableDot: boolean;
 }>`
   ${EdgeHandleStyles}
   left: ${~WIDGET_PADDING + 1}px;
   width: calc(100% + ${2 * WIDGET_PADDING}px);
-  ${(props) => (!props.showAsBorder ? "cursor: row-resize;" : "")}
-  cursor: row-resize;
+  ${(props) =>
+    props.showAsBorder || props.disableDot ? "" : "cursor: row-resize;"}
   &:before {
     top: 50%;
     right: 0px;

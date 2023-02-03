@@ -2,7 +2,6 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { SettingCategories } from "../types";
 import styled from "styled-components";
-import Button, { Category } from "components/ads/Button";
 import {
   ENABLE,
   ADMIN_AUTH_SETTINGS_SUBTITLE,
@@ -13,34 +12,30 @@ import {
   UPGRADE_TO_EE,
   AUTHENTICATION_METHOD_ENABLED,
 } from "@appsmith/constants/messages";
-import { Callout, CalloutType } from "components/ads/CalloutV2";
-import { getAppsmithConfigs } from "@appsmith/configs";
+import { CalloutV2, CalloutType } from "design-system";
 import { Colors } from "constants/Colors";
-import Icon from "components/ads/Icon";
-import { TooltipComponent } from "design-system";
+import { Button, Category, Icon, TooltipComponent } from "design-system";
 import { adminSettingsCategoryUrl } from "RouteBuilder";
 import AnalyticsUtil from "utils/AnalyticsUtil";
+import useOnUpgrade from "utils/hooks/useOnUpgrade";
 
-const { intercomAppID } = getAppsmithConfigs();
-
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   flex-basis: calc(100% - ${(props) => props.theme.homePage.leftPane.width}px);
-  margin-left: 112px;
   padding-top: 40px;
   height: calc(100vh - ${(props) => props.theme.homePage.header}px);
   overflow: auto;
 `;
 
-const SettingsFormWrapper = styled.div``;
+export const SettingsFormWrapper = styled.div``;
 
-const SettingsHeader = styled.h2`
+export const SettingsHeader = styled.h2`
   font-size: 24px;
   font-weight: 500;
   text-transform: capitalize;
   margin-bottom: 0;
 `;
 
-const SettingsSubHeader = styled.div`
+export const SettingsSubHeader = styled.div`
   font-size: 14px;
   margin-bottom: 0;
 `;
@@ -112,10 +107,10 @@ const StyledAuthButton = styled(Button)`
   padding: 8px 16px;
 `;
 
-const Label = styled.span<{ enterprise?: boolean }>`
+const Label = styled.span<{ business?: boolean }>`
   display: inline;
   ${(props) =>
-    props.enterprise
+    props.business
       ? `
     border: 1px solid ${Colors.COD_GRAY};
     color: ${Colors.COD_GRAY};
@@ -129,17 +124,18 @@ const Label = styled.span<{ enterprise?: boolean }>`
   font-size: 12px;
 `;
 
+export function Upgrade(message: string, method: string) {
+  const { onUpgrade } = useOnUpgrade({
+    logEventName: "ADMIN_SETTINGS_UPGRADE_AUTH_METHOD",
+    logEventData: { method },
+    intercomMessage: message,
+  });
+
+  return onUpgrade();
+}
+
 export function AuthPage({ authMethods }: { authMethods: AuthMethodType[] }) {
   const history = useHistory();
-
-  const triggerIntercom = (authLabel: string) => {
-    if (intercomAppID && window.Intercom) {
-      window.Intercom(
-        "showNewMessage",
-        createMessage(UPGRADE_TO_EE, authLabel),
-      );
-    }
-  };
 
   const onClickHandler = (method: AuthMethodType) => {
     if (!method.needsUpgrade || method.isConnected) {
@@ -158,10 +154,7 @@ export function AuthPage({ authMethods }: { authMethods: AuthMethodType[] }) {
         }),
       );
     } else {
-      AnalyticsUtil.logEvent("ADMIN_SETTINGS_UPGRADE_AUTH_METHOD", {
-        method: method.label,
-      });
-      triggerIntercom(method.label);
+      Upgrade(createMessage(UPGRADE_TO_EE, method.label), method.label);
     }
   };
 
@@ -184,7 +177,7 @@ export function AuthPage({ authMethods }: { authMethods: AuthMethodType[] }) {
                     {method.label}&nbsp;
                     {method.needsUpgrade && (
                       <>
-                        <Label enterprise>Enterprise</Label>
+                        <Label business>商业版</Label>
                         &nbsp;
                       </>
                     )}
@@ -210,7 +203,7 @@ export function AuthPage({ authMethods }: { authMethods: AuthMethodType[] }) {
                   </MethodTitle>
                   <MethodDets>{method.subText}</MethodDets>
                   {method.calloutBanner && (
-                    <Callout
+                    <CalloutV2
                       actionLabel={method.calloutBanner.actionLabel}
                       desc={method.calloutBanner.title}
                       type={method.calloutBanner.type}

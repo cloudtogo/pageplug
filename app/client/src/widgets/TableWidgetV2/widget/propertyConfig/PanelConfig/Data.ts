@@ -13,7 +13,7 @@ import {
   updateNumberColumnTypeTextAlignment,
   updateThemeStylesheetsInColumns,
 } from "../../propertyUtils";
-import { AutocompleteDataType } from "utils/autocomplete/TernServer";
+import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import { composePropertyUpdateHook } from "widgets/WidgetUtils";
 
 export default {
@@ -22,43 +22,57 @@ export default {
     {
       propertyName: "columnType",
       label: "列类型",
+      helpText:
+        "Type of column to be shown corresponding to the data of the column",
       controlType: "DROP_DOWN",
       options: [
         {
-          label: "文本",
-          value: "text",
+          label: "按钮",
+          value: ColumnTypes.BUTTON,
         },
         {
-          label: "URL",
-          value: "url",
-        },
-        {
-          label: "数字",
-          value: "number",
-        },
-        {
-          label: "图片",
-          value: "image",
-        },
-        {
-          label: "视频",
-          value: "video",
+          label: "勾选",
+          value: ColumnTypes.CHECKBOX,
         },
         {
           label: "日期",
-          value: "date",
-        },
-        {
-          label: "按钮",
-          value: "button",
-        },
-        {
-          label: "菜单按钮",
-          value: "menuButton",
+          value: ColumnTypes.DATE,
         },
         {
           label: "图标按钮",
-          value: "iconButton",
+          value: ColumnTypes.ICON_BUTTON,
+        },
+        {
+          label: "图片",
+          value: ColumnTypes.IMAGE,
+        },
+        {
+          label: "菜单按钮",
+          value: ColumnTypes.MENU_BUTTON,
+        },
+        {
+          label: "数字",
+          value: ColumnTypes.NUMBER,
+        },
+        {
+          label: "文本",
+          value: ColumnTypes.TEXT,
+        },
+        {
+          label: "选择器",
+          value: ColumnTypes.SELECT,
+        },
+        {
+          label: "开关",
+          value: ColumnTypes.SWITCH,
+        },
+        {
+          label: "URL",
+          value: ColumnTypes.URL,
+        },
+        {
+          label: "视频",
+          value: ColumnTypes.VIDEO,
         },
       ],
       updateHook: composePropertyUpdateHook([
@@ -75,10 +89,12 @@ export default {
       },
     },
     {
-      helpText: "The alias that you use in selectedrow",
+      helpText: "在 selectedrow 中使用的别名",
       propertyName: "alias",
       label: "属性名",
       controlType: "INPUT_TEXT",
+      helperText: () =>
+        "Changing the name of the column overrides any changes to this field",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         const columnId = propertyPath.match(/primaryColumns\.(.*)\.alias/);
         let isDerivedProperty = false;
@@ -117,6 +133,7 @@ export default {
     {
       propertyName: "displayText",
       label: "显示文本",
+      helpText: "The text to be displayed in the column",
       controlType: "TABLE_COMPUTE_VALUE",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         const baseProperty = getBasePropertyPath(propertyPath);
@@ -141,6 +158,9 @@ export default {
           ColumnTypes.TEXT,
           ColumnTypes.VIDEO,
           ColumnTypes.URL,
+          ColumnTypes.CHECKBOX,
+          ColumnTypes.SWITCH,
+          ColumnTypes.SELECT,
         ]);
       },
       dependencies: ["primaryColumns", "columnOrder"],
@@ -150,6 +170,7 @@ export default {
     {
       propertyName: "inputFormat",
       label: "原始日期类型",
+      helpText: "Date format of incoming data to the column",
       controlType: "DROP_DOWN",
       options: [
         {
@@ -244,7 +265,7 @@ export default {
       dependencies: ["primaryColumns", "columnOrder"],
       isBindProperty: true,
       validation: {
-        type: ValidationTypes.TABLE_PROPERTY,
+        type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
         params: {
           type: ValidationTypes.TEXT,
           params: {
@@ -278,6 +299,7 @@ export default {
     {
       propertyName: "outputFormat",
       label: "展示日期格式",
+      helpText: "Date format to be shown to users",
       controlType: "DROP_DOWN",
       customJSControl: "TABLE_COMPUTE_VALUE",
       isJSConvertible: true,
@@ -372,7 +394,7 @@ export default {
       dependencies: ["primaryColumns", "columnType"],
       isBindProperty: true,
       validation: {
-        type: ValidationTypes.TABLE_PROPERTY,
+        type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
         params: {
           type: ValidationTypes.TEXT,
           params: {

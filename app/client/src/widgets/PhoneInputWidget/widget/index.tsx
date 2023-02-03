@@ -16,7 +16,7 @@ import {
   getCountryCode,
   ISDCodeDropdownOptions,
 } from "../component/ISDCodeDropdown";
-import { AutocompleteDataType } from "utils/autocomplete/TernServer";
+import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import _ from "lodash";
 import BaseInputWidget from "widgets/BaseInputWidget";
 import derivedProperties from "./parsedDerivedProperties";
@@ -30,6 +30,8 @@ import {
 import * as Sentry from "@sentry/react";
 import log from "loglevel";
 import { GRID_DENSITY_MIGRATION_V1 } from "widgets/constants";
+import { Stylesheet } from "entities/AppTheming";
+import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
 
 export function defaultValueValidation(
   value: any,
@@ -68,75 +70,6 @@ class PhoneInputWidget extends BaseInputWidget<
   PhoneInputWidgetProps,
   WidgetState
 > {
-  static getPropertyPaneConfig() {
-    return mergeWidgetConfig(
-      [
-        {
-          sectionName: "属性",
-          children: [
-            {
-              propertyName: "allowDialCodeChange",
-              label: "允许修改国家编码",
-              helpText: "使用国家名搜索",
-              controlType: "SWITCH",
-              isJSConvertible: false,
-              isBindProperty: true,
-              isTriggerProperty: false,
-              validation: { type: ValidationTypes.BOOLEAN },
-            },
-            {
-              helpText: "修改默认的电话国家编号",
-              propertyName: "defaultDialCode",
-              label: "默认国家编号",
-              enableSearch: true,
-              dropdownHeight: "156px",
-              controlType: "DROP_DOWN",
-              searchPlaceholderText: "通过国家名称或编号搜索",
-              options: ISDCodeDropdownOptions,
-              isJSConvertible: true,
-              isBindProperty: true,
-              isTriggerProperty: false,
-              validation: {
-                type: ValidationTypes.TEXT,
-              },
-            },
-            {
-              helpText: "设置组件默认值，当默认值改变后，组件当前值会自动更新",
-              propertyName: "defaultText",
-              label: "默认值",
-              controlType: "INPUT_TEXT",
-              placeholderText: "(000) 000-0000",
-              isBindProperty: true,
-              isTriggerProperty: false,
-              validation: {
-                type: ValidationTypes.FUNCTION,
-                params: {
-                  fn: defaultValueValidation,
-                  expected: {
-                    type: "string",
-                    example: `(000) 000-0000`,
-                    autocompleteDataType: AutocompleteDataType.STRING,
-                  },
-                },
-              },
-            },
-            {
-              propertyName: "allowFormatting",
-              label: "手机号格式化",
-              helpText: "按各个国家的规则格式化手机号",
-              controlType: "SWITCH",
-              isJSConvertible: true,
-              isBindProperty: true,
-              isTriggerProperty: false,
-              validation: { type: ValidationTypes.BOOLEAN },
-            },
-          ],
-        },
-      ],
-      super.getPropertyPaneConfig(),
-    );
-  }
-
   static getPropertyPaneContentConfig() {
     return mergeWidgetConfig(
       [
@@ -181,10 +114,10 @@ class PhoneInputWidget extends BaseInputWidget<
             },
             {
               propertyName: "allowDialCodeChange",
-              label: "允许修改国家编码",
+              label: "修改国家编码",
               helpText: "使用国家名搜索",
               controlType: "SWITCH",
-              isJSConvertible: false,
+              isJSConvertible: true,
               isBindProperty: true,
               isTriggerProperty: false,
               validation: { type: ValidationTypes.BOOLEAN },
@@ -251,6 +184,14 @@ class PhoneInputWidget extends BaseInputWidget<
     return _.merge(super.getDefaultPropertiesMap(), {
       dialCode: "defaultDialCode",
     });
+  }
+
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      accentColor: "{{appsmith.theme.colors.primaryColor}}",
+      borderRadius: "{{appsmith.theme.borderRadius.appBorderRadius}}",
+      boxShadow: "none",
+    };
   }
 
   getFormattedPhoneNumber(value: string) {
@@ -356,6 +297,24 @@ class PhoneInputWidget extends BaseInputWidget<
   };
 
   handleFocusChange = (focusState: boolean) => {
+    if (focusState) {
+      this.props.updateWidgetMetaProperty("isFocused", focusState, {
+        triggerPropertyName: "onFocus",
+        dynamicString: this.props.onFocus,
+        event: {
+          type: EventType.ON_FOCUS,
+        },
+      });
+    }
+    if (!focusState) {
+      this.props.updateWidgetMetaProperty("isFocused", focusState, {
+        triggerPropertyName: "onBlur",
+        dynamicString: this.props.onBlur,
+        event: {
+          type: EventType.ON_BLUR,
+        },
+      });
+    }
     super.handleFocusChange(focusState);
   };
 
@@ -405,6 +364,7 @@ class PhoneInputWidget extends BaseInputWidget<
         iconAlign={this.props.iconAlign}
         iconName={this.props.iconName}
         inputType={this.props.inputType}
+        isDynamicHeightEnabled={isAutoHeightEnabledForWidget(this.props)}
         isInvalid={isInvalid}
         isLoading={this.props.isLoading}
         label={this.props.label}

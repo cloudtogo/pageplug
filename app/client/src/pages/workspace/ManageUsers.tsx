@@ -1,9 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import history from "utils/history";
-import { Text, TextType } from "design-system";
-import Icon, { IconSize } from "components/ads/Icon";
-import { Classes } from "components/ads/common";
+import { Classes, Icon, IconSize, Text, TextType } from "design-system";
 import { useLocation } from "react-router-dom";
 
 const StyledManageUsers = styled("a")`
@@ -49,7 +47,7 @@ function ManageUsers({ workspaceId }: { workspaceId: string }) {
         history.push(`/workspace/${workspaceId}/settings/members`);
       }}
     >
-      <Text type={TextType.H6}>管理组员</Text>
+      <Text type={TextType.H6}>管理成员</Text>
       <Icon name="manage" size={IconSize.XS} />
     </StyledManageUsers>
   ) : null;

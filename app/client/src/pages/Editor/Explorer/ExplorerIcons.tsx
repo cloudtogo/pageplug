@@ -4,36 +4,34 @@ import { Colors } from "constants/Colors";
 import { Plugin } from "api/PluginApi";
 import ImageAlt from "assets/images/placeholder-image.svg";
 import styled from "styled-components";
-import { HTTP_METHOD, HTTP_METHODS_COLOR } from "constants/ApiEditorConstants";
+import {
+  HTTP_METHOD,
+  HTTP_METHODS_COLOR,
+} from "constants/ApiEditorConstants/CommonApiConstants";
 import { PRIMARY_KEY, FOREIGN_KEY } from "constants/DatasourceEditorConstants";
 import { Icon } from "@blueprintjs/core";
 import { ControlIcons } from "icons/ControlIcons";
 import { ReactComponent as ApiIcon } from "assets/icons/menu/api-colored.svg";
 import { ReactComponent as CurlIcon } from "assets/images/Curl-logo.svg";
+import { ReactComponent as GraphqlIcon } from "assets/images/Graphql-logo.svg";
 
 export const ENTITY_ICON_SIZE = 16;
 
 const PagesIcon = MenuIcons.PAGES_ICON;
 export const pageGroupIcon = (
-  <PagesIcon
-    color={Colors.MINT_GREEN}
-    height={ENTITY_ICON_SIZE}
-    width={ENTITY_ICON_SIZE}
-  />
+  <PagesIcon height={ENTITY_ICON_SIZE} width={ENTITY_ICON_SIZE} />
 );
 
 const PageIcon = MenuIcons.PAGE_ICON;
 export const pageIcon = (
   <PageIcon
-    color={Colors.MINT_GREEN}
+    color={Colors.GREY_9}
     height={ENTITY_ICON_SIZE}
     width={ENTITY_ICON_SIZE}
   />
 );
 
-export const homePageIcon = (
-  <Icon color={Colors.MINT_GREEN} icon="home" iconSize={ENTITY_ICON_SIZE} />
-);
+export const homePageIcon = <Icon icon="home" iconSize={ENTITY_ICON_SIZE} />;
 
 const DefaultPageIcon = MenuIcons.DEFAULT_HOMEPAGE_ICON;
 export const defaultPageIcon = (
@@ -47,11 +45,7 @@ export const defaultPageIcon = (
 
 const HiddenPageIcon = MenuIcons.EYES_OFF_ICON;
 export const hiddenPageIcon = (
-  <HiddenPageIcon
-    color={Colors.MINT_GREEN}
-    height={ENTITY_ICON_SIZE}
-    width={ENTITY_ICON_SIZE}
-  />
+  <HiddenPageIcon height={ENTITY_ICON_SIZE} width={ENTITY_ICON_SIZE} />
 );
 
 const WidgetIcon = MenuIcons.WIDGETS_ICON;
@@ -311,4 +305,20 @@ export const JsFileIconV2 = (
   <EntityIcon>
     <EntityIcon.textIcon>JS</EntityIcon.textIcon>
   </EntityIcon>
+);
+
+export function GraphQLIconV2() {
+  return (
+    <EntityIcon>
+      <GraphqlIcon />
+    </EntityIcon>
+  );
+}
+
+export const appLayoutIcon = (
+  <Icon
+    color={Colors.CODE_GRAY}
+    icon="page-layout"
+    iconSize={ENTITY_ICON_SIZE}
+  />
 );

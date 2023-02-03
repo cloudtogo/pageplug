@@ -9,7 +9,7 @@ import {
   forceShowContent,
   focusWidget,
 } from "actions/onboardingActions";
-import { IconName } from "components/ads/Icon";
+import { IconName } from "design-system";
 import { highlightSection, showIndicator } from "./utils";
 import { setExplorerPinnedAction } from "actions/explorerActions";
 import { forceOpenWidgetPanel } from "actions/widgetSidebarActions";
@@ -262,8 +262,8 @@ export const Steps: StepsType = {
       {
         text: (
           <>
-            This command will fetch the first 20 items in the user_data
-            database. Hit <b>RUN</b> to see the response.
+            这个命令会拉取 user_data 数据库的前 20 条数据，点击 <b>运行</b>{" "}
+            按钮查看响应数据
           </>
         ),
       },
@@ -290,8 +290,7 @@ export const Steps: StepsType = {
       {
         text: (
           <>
-            <b>Click on the CustomersTable widget</b> in the explorer on the
-            left.
+            在左侧资源管理面板 <b>点击 CustomersTable 组件</b>
           </>
         ),
       },
@@ -303,14 +302,14 @@ export const Steps: StepsType = {
       {
         text: (
           <>
-            Bind the response by typing{" "}
+            在右侧面板 “数据” 配置框中输入{" "}
             <b>
               <code>
                 &#123;&#123;
                 {"getCustomers.data"}&#125;&#125;
               </code>
             </b>{" "}
-            in the Table Data input field on the right pane.
+            来绑定响应数据
           </>
         ),
         image: TableData,
@@ -332,8 +331,7 @@ export const Steps: StepsType = {
       icon: "lightbulb-flash-line",
       text: (
         <>
-          The pane on the right is called the <b>Property Pane</b>. Here you can
-          modify properties, data, or styling for every widget.
+          右侧是 <b>属性配置面板</b>，你可以在那里修改组件的属性、数据和样式
         </>
       ),
       onClick: (dispatch) => {
@@ -352,7 +350,7 @@ export const Steps: StepsType = {
           }),
         );
       },
-      buttonText: "GOT IT",
+      buttonText: "好的",
     },
   },
   [GUIDED_TOUR_STEPS.NAME_INPUT_BINDING]: {
@@ -361,12 +359,9 @@ export const Steps: StepsType = {
       {
         text: (
           <>
-            We{"'"}ll{" "}
-            <b>
-              display the data from a table{"'"}s selected row inside an input
-              field.
-            </b>
-            <br /> This will let us see the data before we update it.
+            接下来，我们会
+            <b>把表格的选中行数据展示到一个输入框中</b>
+            <br /> 这样可以让我们在更新数据前看到当前值
           </>
         ),
         button: {
@@ -386,13 +381,13 @@ export const Steps: StepsType = {
       {
         text: (
           <>
-            In the property pane of {GuidedTourEntityNames.NAME_INPUT}, add the{" "}
+            在组件 {GuidedTourEntityNames.NAME_INPUT} 的属性配置面板中，输入{" "}
             <b>
               <code>
                 &#123;&#123;CustomersTable.selectedRow.name&#125;&#125;
               </code>
             </b>{" "}
-            binding to the <b>Default Text</b> property
+            绑定到 <b>默认值</b> 属性
           </>
         ),
         // Get gif from url
@@ -422,15 +417,15 @@ export const Steps: StepsType = {
         text: <>{createMessage(STEP_FIVE_HINT_TEXT)}</>,
         steps: [
           <>
-            Connect <b>{GuidedTourEntityNames.EMAIL_INPUT}</b>
-            {"'"}s Default Text Property to{" "}
+            绑定 <b>{GuidedTourEntityNames.EMAIL_INPUT}</b>
+            的默认值为{" "}
             <code>
               &#123;&#123;CustomersTable.selectedRow.email&#125;&#125;
             </code>
           </>,
           <>
-            Connect <b>{GuidedTourEntityNames.COUNTRY_INPUT}</b>
-            {"'"}s Default Text Property to{" "}
+            绑定 <b>{GuidedTourEntityNames.COUNTRY_INPUT}</b>
+            的默认值为{" "}
             <code>
               &#123;&#123;CustomersTable.selectedRow.country&#125;&#125;
             </code>
@@ -458,9 +453,8 @@ export const Steps: StepsType = {
       {
         text: (
           <>
-            Switch to the widget pane and then <b>Drag {"&"} Drop</b> a{" "}
-            <b>Button</b> widget into the left bottom of container, below the
-            image.
+            切换到添加组件面板 <b>拖拽</b> 一个
+            <b>按钮</b> 组件到右边容器中图片组件的下方
           </>
         ),
       },
@@ -480,8 +474,8 @@ export const Steps: StepsType = {
       icon: "lightbulb-flash-line",
       text: (
         <>
-          To <b>update the customers</b> through the button, we created an{" "}
-          <b>updateCustomerInfo query</b> for you which is ready to use
+          为了用这个按钮 <b>更新用户数据</b>，我们为你创建了一个名为{" "}
+          <b>updateCustomerInfo</b> 的查询供你使用
         </>
       ),
       onClick: (dispatch) => {
@@ -502,9 +496,8 @@ export const Steps: StepsType = {
       {
         text: (
           <>
-            Select the button widget to see the properties in the property pane.
-            From the onClick dropdown, select <b>Execute a query</b> {"&"} then
-            select <b>updateCustomerInfo</b> query
+            选中按钮在右侧查看它的属性配置，点击 onClick 的下拉框，选择{" "}
+            <b>执行查询</b>，然后选择 <b>updateCustomerInfo</b>
           </>
         ),
       },
@@ -516,8 +509,8 @@ export const Steps: StepsType = {
       {
         text: (
           <>
-            Click the onSuccess dropdown, select <b>Execute a query</b> {"&"}{" "}
-            then choose <b>getCustomers</b> Query
+            点击 onSuccess 下拉框，选择 <b>执行查询</b>，然后选择{" "}
+            <b>getCustomers</b>
           </>
         ),
       },
@@ -542,8 +535,8 @@ export const Steps: StepsType = {
       {
         text: (
           <>
-            Test your app and ensure there are no errors. When you are ready,
-            click <b>Deploy</b> to deploy this app to a URL.
+            测试你的应用，看看有没有错误，一切准备好之后，点击 <b>发布</b>{" "}
+            按钮发布你的应用
           </>
         ),
       },

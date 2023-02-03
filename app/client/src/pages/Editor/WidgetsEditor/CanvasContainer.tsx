@@ -3,9 +3,10 @@ import { useSelector } from "react-redux";
 import {
   getCurrentPageId,
   getIsFetchingPage,
-  getCanvasWidgetDsl,
   getViewModePageList,
   previewModeSelector,
+  getCanvasWidth,
+  showCanvasTopSectionSelector,
   getShowTabBar,
 } from "selectors/editorSelectors";
 import styled from "styled-components";
@@ -21,11 +22,13 @@ import {
   getAppThemeIsChanging,
   getSelectedAppTheme,
 } from "selectors/appThemingSelectors";
-import Spinner from "components/ads/Spinner";
+import { Spinner } from "design-system";
 import useGoogleFont from "utils/hooks/useGoogleFont";
-import { IconSize } from "components/ads/Icon";
+import { IconSize } from "design-system";
 import { useDynamicAppLayout } from "utils/hooks/useDynamicAppLayout";
 import { getCurrentThemeDetails } from "selectors/themeSelectors";
+import { getCanvasWidgetsStructure } from "selectors/entitiesSelector";
+import equal from "fast-deep-equal/es6";
 import { WidgetGlobaStyles } from "globalStyles/WidgetGlobalStyles";
 
 const Container = styled.section<{
@@ -50,7 +53,8 @@ function CanvasContainer() {
   const dispatch = useDispatch();
   const currentPageId = useSelector(getCurrentPageId);
   const isFetchingPage = useSelector(getIsFetchingPage);
-  const widgets = useSelector(getCanvasWidgetDsl);
+  const canvasWidth = useSelector(getCanvasWidth);
+  const widgetsStructure = useSelector(getCanvasWidgetsStructure, equal);
   const pages = useSelector(getViewModePageList);
   const theme = useSelector(getCurrentThemeDetails);
   const isPreviewMode = useSelector(previewModeSelector);
@@ -58,6 +62,7 @@ function CanvasContainer() {
   const params = useParams<{ applicationId: string; pageId: string }>();
   const shouldHaveTopMargin = !isPreviewMode || pages.length > 1;
   const isAppThemeChanging = useSelector(getAppThemeIsChanging);
+  const showCanvasTopSection = useSelector(showCanvasTopSectionSelector);
   const showTabBar = useSelector(getShowTabBar);
 
   const isLayoutingInitialized = useDynamicAppLayout();
@@ -82,8 +87,14 @@ function CanvasContainer() {
     node = pageLoading;
   }
 
-  if (!isPageInitializing && widgets) {
-    node = <Canvas dsl={widgets} pageId={params.pageId} />;
+  if (!isPageInitializing && widgetsStructure) {
+    node = (
+      <Canvas
+        canvasWidth={canvasWidth}
+        pageId={params.pageId}
+        widgetsStructure={widgetsStructure}
+      />
+    );
   }
   // calculating exact height to not allow scroll at this component,
   // calculating total height minus margin on top, top bar and bottom bar
@@ -100,8 +111,10 @@ function CanvasContainer() {
       className={classNames({
         [`${getCanvasClassName()} scrollbar-thin`]: true,
         "mt-0": !shouldHaveTopMargin,
-        "mt-8": shouldHaveTopMargin,
+        "mt-4": showCanvasTopSection,
+        "mt-8": shouldHaveTopMargin && !showCanvasTopSection,
       })}
+      id={"canvas-viewport"}
       key={currentPageId}
       style={{
         height: shouldHaveTopMargin ? heightWithTopMargin : "100vh",

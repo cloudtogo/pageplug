@@ -3,11 +3,17 @@ import IconSVG from "./icon.svg";
 import Widget from "./widget";
 
 export const CONFIG = {
+  features: {
+    dynamicHeight: {
+      sectionIndex: 1,
+      active: true,
+    },
+  },
   type: Widget.getWidgetType(),
   name: "评分",
   iconSVG: IconSVG,
   needsMeta: true,
-  searchTags: ["stars"],
+  searchTags: ["stars", "rating"],
   defaults: {
     rows: 4,
     columns: 20,
@@ -15,11 +21,12 @@ export const CONFIG = {
     maxCount: 5,
     defaultRate: 3,
     activeColor: Colors.RATE_ACTIVE,
-    inactiveColor: Colors.ALTO_3,
+    inactiveColor: Colors.ALTO2,
     size: "LARGE",
     isRequired: false,
     isAllowHalf: false,
     isDisabled: false,
+    isReadOnly: false,
     tooltips: ["烂透了", "不好", "一般", "好", "好极了"],
     widgetName: "Rating",
   },
@@ -30,6 +37,7 @@ export const CONFIG = {
     config: Widget.getPropertyPaneConfig(),
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
+    stylesheetConfig: Widget.getStylesheetConfig(),
   },
 };
 

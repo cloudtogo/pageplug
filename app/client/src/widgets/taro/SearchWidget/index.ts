@@ -4,6 +4,7 @@ import IconSVG from "./icon.svg";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "搜索框",
+  searchTags: ["search input"],
   iconSVG: IconSVG,
   needsMeta: true,
   isCanvas: false,
