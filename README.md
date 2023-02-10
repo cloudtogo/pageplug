@@ -6,6 +6,7 @@
 <h2>行云 CloudOS 产品架构</h2>
 
 <img src="https://www.cloudtogo.cn/static/upload/image/20220326/1648280909798832.png" width="100%">
+<h2></h2>
 
 <p align="center">
   <img src="static/pageplug/pageplug_logo_banner.svg" width="360" height="160" alt="PagePlug">
