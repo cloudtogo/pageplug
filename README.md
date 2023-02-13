@@ -1,3 +1,4 @@
+<!---
 <h1 align="center">行云创新 CloudOS</h1>
 
 <h3>提供一站式云原生开发平台，为企业构建敏捷创新的应用研发环境，实现应用研发可视化和敏捷化、技术平台标准化，让传统应用研发人员快速实现云原生应用创新，加快企业数字化转型。
@@ -7,6 +8,7 @@
 
 <img src="https://www.cloudtogo.cn/static/upload/image/20220326/1648280909798832.png" width="100%">
 <h2></h2>
+--->
 
 <p align="center">
   <img src="static/pageplug/pageplug_logo_banner.svg" width="360" height="160" alt="PagePlug">
