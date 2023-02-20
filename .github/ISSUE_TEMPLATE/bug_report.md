@@ -8,32 +8,21 @@ assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+**🙋🏻‍♂️描述下你的问题**
+在使用PagePlug是出现了什么问题
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+**🧑🏻‍💻贴图**
+可以在这里附上报错日志的截图及报错提醒内容，更好发现是什么内容导致
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+**🥳复现流程**
+1⃣️ 使用了什么组件
+2⃣️ 做了哪些相关的操作（连接API、写了某个属性值等等，越详细越好）
+3⃣️ 尝试过如何处理
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**🤔想实现的效果**
+可以描述下在设计开发的时候，预期想要达成的效果
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
-
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.
+**🔗PagePlug环境版本**
+1⃣️ 本地化部署 —xxx版本
+2⃣️ 私有化部署 —xxx版本
+3⃣️ 在线体验环境
