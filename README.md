@@ -14,7 +14,7 @@
   <img src="static/pageplug/pageplug_logo_banner.svg" width="360" height="160" alt="PagePlug">
 </p>
 
-<h2 align="center">更快、更快乐的开源前端低代码【中国版Appsmith】</h2>
+<h2 align="center">更快、更简单的开源前端低代码【中国版Appsmith】</h2>
 
 <h3 align="center" style="margin-bottom: 32px">
   <a href="#quickStart">快速开始</a>
@@ -28,6 +28,8 @@
 PagePlug 是 [Appsmith](https://github.com/appsmithorg/appsmith) 的中国化项目，是一个开源的、声明式的、可视化的前端低代码框架，可以用来制作 web 应用、微信小程序。
 
 > 当前版本基于 Appsmith v1.8.15 版本，最新版本正在开发中，敬请期待。
+
+记得在github上给开源的大佬们点个星星🌟支持下哦～～
 
 ## PagePlug 和其他低代码有什么不同？
 PagePlug 无需侵入客户架构，直接连接数据源（API、DB），任何的后端数据都变成了 JS 变量，可以随意转换、并配置到任意的视图组件，整个过程符合开发者心流，前端开发变得不仅更快了、而且更快乐了！
@@ -173,7 +175,7 @@ yarn dev:weapp
 <div id="help" />
 
 ## 帮助
-- 扫码邀请加入微信交流群  
+- 部署安装遇到问题或者想加入社区交流群，扫描下方二维码联系PagePlug产品静静获取帮助  
   <img src="static/pageplug/wechat_help.jpg" width="200">
 - 联系作者  
   <img src="static/pageplug/wechat_author.jpg" width="200">
