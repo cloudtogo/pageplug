@@ -13,8 +13,7 @@ import styled from "styled-components";
 import { AppState } from "@appsmith/reducers";
 import history from "utils/history";
 import { Position } from "@blueprintjs/core/lib/esm/common/position";
-
-import { renderDatasourceSection } from "pages/Editor/DataSourceEditor/DatasourceSection";
+import RenderDatasourceInformation from "pages/Editor/DataSourceEditor/DatasourceSection";
 import { getQueryParams } from "utils/URLUtils";
 import {
   Button,
@@ -23,7 +22,7 @@ import {
   IconSize,
   Menu,
   MenuItem,
-} from "design-system";
+} from "design-system-old";
 import { deleteDatasource } from "actions/datasourceActions";
 import { getGenerateCRUDEnabledPluginMap } from "selectors/entitiesSelector";
 import { GenerateCRUDEnabledPluginMap, Plugin } from "api/PluginApi";
@@ -39,12 +38,19 @@ import {
   CONFIRM_CONTEXT_DELETE,
   createMessage,
   CONFIRM_CONTEXT_DELETING,
+  GENERATE_NEW_PAGE_BUTTON_TEXT,
+  RECONNECT_BUTTON_TEXT,
 } from "@appsmith/constants/messages";
+import { isDatasourceAuthorizedForQueryCreation } from "utils/editorContextUtils";
 import {
   getCurrentPageId,
   getPagePermissions,
 } from "selectors/editorSelectors";
-import { hasCreateDatasourceActionPermission } from "@appsmith/utils/permissionHelpers";
+import {
+  hasCreateDatasourceActionPermission,
+  hasDeleteDatasourcePermission,
+  hasManageDatasourcePermission,
+} from "@appsmith/utils/permissionHelpers";
 
 const Wrapper = styled.div`
   padding: 15px;
@@ -210,6 +216,14 @@ function DatasourceCard(props: DatasourceCardProps) {
     ...pagePermissions,
   ]);
 
+  const canEditDatasource = hasManageDatasourcePermission(
+    datasourcePermissions,
+  );
+
+  const canDeleteDatasource = hasDeleteDatasourcePermission(
+    datasourcePermissions,
+  );
+
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const isDeletingDatasource = !!datasource.isDeleting;
@@ -309,74 +323,92 @@ function DatasourceCard(props: DatasourceCardProps) {
             </Queries>
           </div>
           <ButtonsWrapper className="action-wrapper">
-            {(!datasource.isConfigured || supportTemplateGeneration) && (
-              <GenerateTemplateOrReconnect
-                category={Category.secondary}
-                className={
-                  datasource.isConfigured
-                    ? "t--generate-template"
-                    : "t--reconnect-btn"
-                }
-                onClick={
-                  datasource.isConfigured ? routeToGeneratePage : editDatasource
-                }
-                text={datasource.isConfigured ? "自动生成页面" : "重新连接"}
-              />
-            )}
+            {(!datasource.isConfigured || supportTemplateGeneration) &&
+              isDatasourceAuthorizedForQueryCreation(datasource, plugin) && (
+                <GenerateTemplateOrReconnect
+                  category={Category.secondary}
+                  className={
+                    datasource.isConfigured
+                      ? "t--generate-template"
+                      : "t--reconnect-btn"
+                  }
+                  onClick={
+                    datasource.isConfigured
+                      ? routeToGeneratePage
+                      : editDatasource
+                  }
+                  text={
+                    datasource.isConfigured
+                      ? createMessage(GENERATE_NEW_PAGE_BUTTON_TEXT)
+                      : createMessage(RECONNECT_BUTTON_TEXT)
+                  }
+                />
+              )}
             {datasource.isConfigured && (
               <NewActionButton
                 datasource={datasource}
-                disabled={!canCreateDatasourceActions}
+                disabled={
+                  !canCreateDatasourceActions ||
+                  !isDatasourceAuthorizedForQueryCreation(datasource, plugin)
+                }
                 eventFrom="active-datasources"
                 plugin={plugin}
               />
             )}
-            <MenuWrapper
-              className="t--datasource-menu-option"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              <MenuComponent
-                menuItemWrapperWidth="160px"
-                position={Position.BOTTOM_RIGHT}
-                target={
-                  <MoreOptionsContainer>
-                    <Icon
-                      fillColor={
-                        datasource.isConfigured ? Colors.GREY_8 : Colors.GRAY2
-                      }
-                      name="comment-context-menu"
-                      size={IconSize.XXXL}
-                    />
-                  </MoreOptionsContainer>
-                }
+            {(canDeleteDatasource || canEditDatasource) && (
+              <MenuWrapper
+                className="t--datasource-menu-option"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
               >
-                <MenuItem
-                  className="t--datasource-option-edit"
-                  icon="edit"
-                  onSelect={editDatasource}
-                  text="编辑"
-                />
-                <RedMenuItem
-                  className="t--datasource-option-delete"
-                  icon="delete"
-                  isLoading={isDeletingDatasource}
-                  onSelect={() => {
-                    if (!isDeletingDatasource) {
-                      confirmDelete ? deleteAction() : setConfirmDelete(true);
-                    }
-                  }}
-                  text={
-                    isDeletingDatasource
-                      ? createMessage(CONFIRM_CONTEXT_DELETING)
-                      : confirmDelete
-                      ? createMessage(CONFIRM_CONTEXT_DELETE)
-                      : createMessage(CONTEXT_DELETE)
+                <MenuComponent
+                  menuItemWrapperWidth="160px"
+                  position={Position.BOTTOM_RIGHT}
+                  target={
+                    <MoreOptionsContainer>
+                      <Icon
+                        fillColor={
+                          datasource.isConfigured ? Colors.GREY_8 : Colors.GRAY2
+                        }
+                        name="comment-context-menu"
+                        size={IconSize.XXXL}
+                      />
+                    </MoreOptionsContainer>
                   }
-                />
-              </MenuComponent>
-            </MenuWrapper>
+                >
+                  {canEditDatasource && (
+                    <MenuItem
+                      className="t--datasource-option-edit"
+                      icon="edit"
+                      onSelect={editDatasource}
+                      text="编辑"
+                    />
+                  )}
+                  {canDeleteDatasource && (
+                    <RedMenuItem
+                      className="t--datasource-option-delete"
+                      icon="delete"
+                      isLoading={isDeletingDatasource}
+                      onSelect={() => {
+                        if (!isDeletingDatasource) {
+                          confirmDelete
+                            ? deleteAction()
+                            : setConfirmDelete(true);
+                        }
+                      }}
+                      text={
+                        isDeletingDatasource
+                          ? createMessage(CONFIRM_CONTEXT_DELETING)
+                          : confirmDelete
+                          ? createMessage(CONFIRM_CONTEXT_DELETE)
+                          : createMessage(CONTEXT_DELETE)
+                      }
+                    />
+                  )}
+                </MenuComponent>
+              </MenuWrapper>
+            )}
           </ButtonsWrapper>
         </DatasourceCardHeader>
       </DatasourceCardMainBody>
@@ -388,7 +420,10 @@ function DatasourceCard(props: DatasourceCardProps) {
         >
           <CollapseComponent title="详情" titleStyle={{ maxWidth: 120 }}>
             <DatasourceInfo>
-              {renderDatasourceSection(currentFormConfig[0], datasource)}
+              <RenderDatasourceInformation
+                config={currentFormConfig[0]}
+                datasource={datasource}
+              />
             </DatasourceInfo>
           </CollapseComponent>
         </CollapseComponentWrapper>

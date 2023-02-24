@@ -1,5 +1,4 @@
-import * as styledComponents from "styled-components";
-import { ThemedStyledComponentsModule } from "styled-components";
+import { css } from "styled-components";
 import { Colors, Color } from "./Colors";
 import * as FontFamilies from "./Fonts";
 import tinycolor from "tinycolor2";
@@ -13,22 +12,6 @@ import { typography, Typography, TypographyKeys } from "./typography";
 
 import { LabelPosition } from "components/constants";
 export type FontFamily = typeof FontFamilies[keyof typeof FontFamilies];
-
-const themedStyled = {
-  default: styledComponents.default,
-  css: styledComponents.css,
-  createGlobalStyle: styledComponents.createGlobalStyle,
-  keyframes: styledComponents.keyframes,
-  ThemeProvider: styledComponents.ThemeProvider,
-} as ThemedStyledComponentsModule<Theme>;
-
-const {
-  createGlobalStyle,
-  css,
-  default: styled,
-  keyframes,
-  ThemeProvider,
-} = themedStyled;
 
 export const IntentColors: Record<string, Color> = {
   primary: Colors.GREEN,
@@ -107,10 +90,9 @@ export const BlueprintControlTransform = css`
         border: 1px solid var(--wds-color-border-disabled) !important;
       }
 
-      &:hover {
-        & input:not(:checked):not(:disabled) ~ .bp3-control-indicator {
-          border: 1px solid ${Colors.GREY_6} !important;
-        }
+      &:hover input:not(:checked):not(:disabled) ~ .bp3-control-indicator,
+      & input:not(:checked):not(:disabled):focus ~ .bp3-control-indicator {
+        border: 1px solid var(--wds-color-bg-disabled-strong) !important;
       }
     }
 
@@ -139,11 +121,10 @@ export const BlueprintControlTransform = css`
         }
       }
 
-      &:hover {
-        & input:not(:checked):not(:disabled) ~ .bp3-control-indicator {
-          background: var(--wds-color-bg-strong-hover);
-          border: 1px solid var(--wds-color-border-hover) !important;
-        }
+      &:hover input:not(:checked):not(:disabled) ~ .bp3-control-indicator,
+      input:not(:checked):not(:disabled):focus ~ .bp3-control-indicator {
+        background: var(--wds-color-bg-strong-hover);
+        border: 1px solid var(--wds-color-border-hover) !important;
       }
     }
 
@@ -427,6 +408,7 @@ export type Theme = {
   viewHeaderTabHeight: string;
   bottomBarHeight: string;
   tabbarHeight: string;
+  pageTabsHeight: string;
   integrationsPageUnusableHeight: string;
   backBanner: string;
   homePage: any;
@@ -2156,9 +2138,9 @@ export const light: ColorType = {
   globalSearch: {
     ...globalSearch,
     helpBarBackground: "#F0F0F0",
-    helpBarText: "#A9A7A7",
+    helpBarText: Colors.GRAY_400,
     helpButtonBackground: "#F0F0F0",
-    helpIcon: "#939090",
+    helpIcon: Colors.GRAY_700,
   },
   navigationMenu: {
     contentActive: "#090707",
@@ -2918,9 +2900,10 @@ export const theme: Theme = {
   },
   headerHeight: "48px",
   viewHeaderTabHeight: "36px",
-  smallHeaderHeight: "32px",
+  smallHeaderHeight: "40px",
   bottomBarHeight: "34px",
   tabbarHeight: "60px",
+  pageTabsHeight: "32px",
   integrationsPageUnusableHeight: "182px",
   backBanner: "30px",
   canvasBottomPadding: 200,
@@ -3052,6 +3035,4 @@ const taroifyTheme = {
   cellIconMarginLeft: "20px",
 };
 
-export { css, createGlobalStyle, keyframes, ThemeProvider, taroifyTheme };
-
-export default styled;
+export { taroifyTheme };

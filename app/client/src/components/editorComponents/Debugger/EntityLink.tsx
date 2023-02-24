@@ -16,7 +16,7 @@ import {
 } from "selectors/entitiesSelector";
 import { getLastSelectedWidget } from "selectors/ui";
 import AnalyticsUtil from "utils/AnalyticsUtil";
-import history from "utils/history";
+import history, { NavigationMethod } from "utils/history";
 import { getQueryParams } from "utils/URLUtils";
 import { datasourcesEditorIdURL, jsCollectionIdURL } from "RouteBuilder";
 
@@ -90,6 +90,7 @@ function WidgetLink(props: EntityLinkProps) {
       props.id,
       widget.type,
       widget.pageId,
+      NavigationMethod.EntityExplorer,
       props.id === selectedWidgetId,
     );
     AnalyticsUtil.logEvent("DEBUGGER_ENTITY_NAVIGATION", {
@@ -162,7 +163,10 @@ function Link(props: {
           ? props.name
           : props.name + "." + props.entityType.toLowerCase();
       return (
-        <span className="debugger-entity-link" onClick={onClick}>
+        <span
+          className="debugger-entity-link t--debugger-log-entity-link"
+          onClick={onClick}
+        >
           {link}
         </span>
       );

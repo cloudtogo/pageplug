@@ -1,21 +1,24 @@
 import { ActionValidationConfigMap } from "constants/PropertyControlConstants";
-import { UserLogObject } from "entities/AppsmithConsole";
 import { AppTheme } from "entities/AppTheming";
 import { DataTree, UnEvalTree } from "entities/DataTree/dataTreeFactory";
 import { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
 
+import { DependencyMap, EvalError } from "utils/DynamicBindingUtils";
 import {
-  DependencyMap,
-  EvalError,
-  EVAL_WORKER_ACTIONS,
-} from "utils/DynamicBindingUtils";
+  EVAL_WORKER_ASYNC_ACTION,
+  EVAL_WORKER_SYNC_ACTION,
+} from "@appsmith/workers/Evaluation/evalWorkerActions";
 import { JSUpdate } from "utils/JSPaneUtils";
 import { WidgetTypeConfigMap } from "utils/WidgetFactory";
-import { EvalMetaUpdates } from "workers/common/DataTreeEvaluator/types";
-import { WorkerRequest } from "workers/common/types";
-import { DataTreeDiff } from "./evaluationUtils";
+import { EvalMetaUpdates } from "@appsmith/workers/common/DataTreeEvaluator/types";
+import { WorkerRequest } from "@appsmith/workers/common/types";
+import { DataTreeDiff } from "@appsmith/workers/Evaluation/evaluationUtils";
 
-export type EvalWorkerRequest = WorkerRequest<any, EVAL_WORKER_ACTIONS>;
+export type EvalWorkerSyncRequest = WorkerRequest<any, EVAL_WORKER_SYNC_ACTION>;
+export type EvalWorkerASyncRequest = WorkerRequest<
+  any,
+  EVAL_WORKER_ASYNC_ACTION
+>;
 export type EvalWorkerResponse = EvalTreeResponseData | boolean | unknown;
 
 export interface EvalTreeRequestData {
@@ -28,6 +31,7 @@ export interface EvalTreeRequestData {
     [actionId: string]: ActionValidationConfigMap;
   };
   requiresLinting: boolean;
+  forceEvaluation: boolean;
 }
 export interface EvalTreeResponseData {
   dataTree: DataTree;
@@ -37,7 +41,7 @@ export interface EvalTreeResponseData {
   evaluationOrder: string[];
   jsUpdates: Record<string, JSUpdate>;
   logs: unknown[];
-  userLogs: UserLogObject[];
   unEvalUpdates: DataTreeDiff[];
   isCreateFirstTree: boolean;
+  staleMetaIds: string[];
 }

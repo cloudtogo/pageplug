@@ -58,6 +58,7 @@ import {
   checkContainersForAutoHeightAction,
   updateWidgetAutoHeightAction,
 } from "actions/autoHeightActions";
+import useWidgetFocus from "utils/hooks/useWidgetFocus/useWidgetFocus";
 
 const AppViewerBody = styled.section<{
   showTabBar: boolean;
@@ -128,6 +129,8 @@ function AppViewer(props: Props) {
   const currentPage = useSelector(getCurrentPage);
   const isEmbed = !!getSearchQuery(search, "embed") || !!currentPage?.isHidden;
   const { hideWatermark } = getAppsmithConfigs();
+
+  const focusRef = useWidgetFocus();
 
   /**
    * initializes the widgets factory and registers all widgets
@@ -310,13 +313,14 @@ function AppViewer(props: Props) {
                   isMobile={isMobile || isEmbed}
                   hasPages={pages.length > 1}
                   headerHeight={headerHeight}
+            ref={focusRef}
                   showGuidedTourMessage={showGuidedTourMessage}
                 >
                   {isInitialized && registered && <AppViewerPageContainer />}
                 </AppViewerBody>
                 {!hideWatermark && (
                   <a
-                    className="fixed hidden right-8 bottom-4 z-2 hover:no-underline md:flex"
+                    className="fixed hidden right-8 bottom-4 z-3 hover:no-underline md:flex"
                     href="https://appsmith.com"
                     rel="noreferrer"
                     target="_blank"

@@ -4,7 +4,7 @@ import {
 } from "actions/applicationActions";
 import {
   setAppMode,
-  updateAppPersistentStore,
+  updateAppStore,
   fetchCloudOSApi,
 } from "actions/pageActions";
 import {
@@ -93,9 +93,7 @@ export default abstract class AppEngine {
     if (!apiCalls)
       throw new PageNotFoundError(`Cannot find page with id: ${pageId}`);
     const application: ApplicationPayload = yield select(getCurrentApplication);
-    yield put(
-      updateAppPersistentStore(getPersistentAppStore(application.id, branch)),
-    );
+    yield put(updateAppStore(getPersistentAppStore(application.id, branch)));
 
     // get weapp WxaCode preview image
     const isMobile = yield select(isMobileLayout);

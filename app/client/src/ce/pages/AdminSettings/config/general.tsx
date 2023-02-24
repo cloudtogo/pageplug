@@ -10,7 +10,7 @@ import {
   Setting,
 } from "@appsmith/pages/AdminSettings/config/types";
 import BrandingBadge from "pages/AppViewer/BrandingBadge";
-import { TagInput } from "design-system";
+import { TagInput } from "design-system-old";
 import QuestionFillIcon from "remixicon-react/QuestionFillIcon";
 import localStorage from "utils/localStorage";
 import isUndefined from "lodash/isUndefined";
@@ -84,6 +84,11 @@ export const APPSMITH_HIDE_WATERMARK_SETTING: Setting = {
     "Hello, I would like to upgrade and remove the watermark.",
 };
 
+export enum AppsmithFrameAncestorsSetting {
+  ALLOW_EMBEDDING_EVERYWHERE = "ALLOW_EMBEDDING_EVERYWHERE",
+  LIMIT_EMBEDDING = "LIMIT_EMBEDDING",
+  DISABLE_EMBEDDING_EVERYWHERE = "DISABLE_EMBEDDING_EVERYWHERE",
+}
 export const APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING: Setting = {
   id: "APPSMITH_ALLOWED_FRAME_ANCESTORS",
   name: "APPSMITH_ALLOWED_FRAME_ANCESTORS",
@@ -102,11 +107,11 @@ export const APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING: Setting = {
             "https://docs.appsmith.com/getting-started/setup/instance-configuration/frame-ancestors#why-should-i-control-this",
         },
         label: "允许嵌入到任何地方",
-        value: "ALLOW_EMBEDDING_EVERYWHERE",
+        value: AppsmithFrameAncestorsSetting.ALLOW_EMBEDDING_EVERYWHERE,
       },
       {
         label: "限制嵌入到指定的 URL",
-        value: "LIMIT_EMBEDDING",
+        value: AppsmithFrameAncestorsSetting.LIMIT_EMBEDDING,
         nodeLabel: "可以添加多个 URL",
         node: <TagInput input={{}} placeholder={""} type={"text"} />,
         nodeInputPath: "input",
@@ -114,22 +119,22 @@ export const APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING: Setting = {
       },
       {
         label: "不允许嵌入到任何地方",
-        value: "DISABLE_EMBEDDING_EVERYWHERE",
+        value: AppsmithFrameAncestorsSetting.DISABLE_EMBEDDING_EVERYWHERE,
       },
     ],
   },
   format: (value: string) => {
     if (value === "*") {
       return {
-        value: "ALLOW_EMBEDDING_EVERYWHERE",
+        value: AppsmithFrameAncestorsSetting.ALLOW_EMBEDDING_EVERYWHERE,
       };
     } else if (value === "'none'") {
       return {
-        value: "DISABLE_EMBEDDING_EVERYWHERE",
+        value: AppsmithFrameAncestorsSetting.DISABLE_EMBEDDING_EVERYWHERE,
       };
     } else {
       return {
-        value: "LIMIT_EMBEDDING",
+        value: AppsmithFrameAncestorsSetting.LIMIT_EMBEDDING,
         additionalData: value ? value.replaceAll(" ", ",") : "",
       };
     }
@@ -145,9 +150,13 @@ export const APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING: Setting = {
       localStorage.setItem("ALLOWED_FRAME_ANCESTORS", sources);
     }
 
-    if (value.value === "ALLOW_EMBEDDING_EVERYWHERE") {
+    if (
+      value.value === AppsmithFrameAncestorsSetting.ALLOW_EMBEDDING_EVERYWHERE
+    ) {
       return "*";
-    } else if (value.value === "DISABLE_EMBEDDING_EVERYWHERE") {
+    } else if (
+      value.value === AppsmithFrameAncestorsSetting.DISABLE_EMBEDDING_EVERYWHERE
+    ) {
       return "'none'";
     } else {
       return sources;

@@ -1,19 +1,11 @@
 import { ValidationTypes } from "constants/WidgetValidation";
-import { ICON_NAMES } from "../../../constants";
-import { getSourceDataKeysForEventAutocomplete } from "../../helper";
+import { ICON_NAMES, MenuButtonWidgetProps } from "../../../constants";
+import { getKeysFromSourceDataForEventAutocomplete } from "../../helper";
 
 export default {
   editableTitle: false,
   titlePropertyName: "label",
   panelIdPropertyName: "id",
-  updateHook: (props: any, propertyPath: string, propertyValue: string) => {
-    return [
-      {
-        propertyPath,
-        propertyValue,
-      },
-    ];
-  },
   contentChildren: [
     {
       sectionName: "属性",
@@ -32,7 +24,7 @@ export default {
               type: ValidationTypes.TEXT,
             },
           },
-          dependencies: ["sourceDataKeys"],
+          evaluatedDependencies: ["sourceData"],
         },
         {
           propertyName: "isVisible",
@@ -50,7 +42,7 @@ export default {
             },
           },
           customJSControl: "MENU_BUTTON_DYNAMIC_ITEMS",
-          dependencies: ["sourceDataKeys"],
+          evaluatedDependencies: ["sourceData"],
         },
         {
           propertyName: "isDisabled",
@@ -67,7 +59,7 @@ export default {
             },
           },
           customJSControl: "MENU_BUTTON_DYNAMIC_ITEMS",
-          dependencies: ["sourceDataKeys"],
+          evaluatedDependencies: ["sourceData"],
         },
       ],
     },
@@ -82,8 +74,12 @@ export default {
           isJSConvertible: true,
           isBindProperty: true,
           isTriggerProperty: true,
-          additionalAutoComplete: getSourceDataKeysForEventAutocomplete,
-          dependencies: ["sourceDataKeys"],
+          additionalAutoComplete: (props: MenuButtonWidgetProps) => {
+            return getKeysFromSourceDataForEventAutocomplete(
+              props?.__evaluation__?.evaluatedValues?.sourceData,
+            );
+          },
+          evaluatedDependencies: ["sourceData"],
         },
       ],
     },
@@ -110,7 +106,7 @@ export default {
             },
           },
           customJSControl: "MENU_BUTTON_DYNAMIC_ITEMS",
-          dependencies: ["sourceDataKeys"],
+          evaluatedDependencies: ["sourceData"],
         },
         {
           propertyName: "iconAlign",
@@ -141,7 +137,7 @@ export default {
             },
           },
           customJSControl: "MENU_BUTTON_DYNAMIC_ITEMS",
-          dependencies: ["sourceDataKeys"],
+          evaluatedDependencies: ["sourceData"],
         },
       ],
     },
@@ -158,7 +154,7 @@ export default {
           isTriggerProperty: false,
           isJSConvertible: true,
           customJSControl: "MENU_BUTTON_DYNAMIC_ITEMS",
-          dependencies: ["sourceDataKeys"],
+          evaluatedDependencies: ["sourceData"],
           validation: {
             type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
             params: {
@@ -177,7 +173,7 @@ export default {
           isTriggerProperty: false,
           isJSConvertible: true,
           customJSControl: "MENU_BUTTON_DYNAMIC_ITEMS",
-          dependencies: ["sourceDataKeys"],
+          evaluatedDependencies: ["sourceData"],
           validation: {
             type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
             params: {
@@ -196,7 +192,7 @@ export default {
           isTriggerProperty: false,
           isJSConvertible: true,
           customJSControl: "MENU_BUTTON_DYNAMIC_ITEMS",
-          dependencies: ["sourceDataKeys"],
+          evaluatedDependencies: ["sourceData"],
           validation: {
             type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
             params: {

@@ -43,7 +43,7 @@ export const ENTER_VIDEO_URL = () => `请填写有效的地址`;
 export const ENTER_AUDIO_URL = () => `请填写有效的地址`;
 
 export const FORM_VALIDATION_EMPTY_PASSWORD = () => `请输入密码`;
-export const FORM_VALIDATION_PASSWORD_RULE = () => `密码必须是 6 ~ 42 个字符`;
+export const FORM_VALIDATION_PASSWORD_RULE = () => `密码必须是 6 ~ 256 个字符`;
 export const FORM_VALIDATION_INVALID_PASSWORD = FORM_VALIDATION_PASSWORD_RULE;
 
 export const LOGIN_PAGE_SUBTITLE = () => `使用你的团队邮箱`;
@@ -112,9 +112,16 @@ export const ERROR_403 = (entity: string, userEmail: string) =>
   `抱歉，你的账号 (${userEmail}) 没有权限更新 ${entity}，请联系管理员解决`;
 export const PAGE_NOT_FOUND_ERROR = () => `页面不存在`;
 export const INVALID_URL_ERROR = () => `无效地址`;
-
+export const MAKE_APPLICATION_PUBLIC = () => "公开应用";
+export const MAKE_APPLICATION_PUBLIC_TOOLTIP = () =>
+  "让任何人无需登录即可访问你的应用";
+export const INVITE_TAB = () => "邀请";
 export const INVITE_USERS_VALIDATION_EMAIL_LIST = () => `包含无效邮箱地址`;
 export const INVITE_USERS_VALIDATION_ROLE_EMPTY = () => `请选择角色`;
+
+export const INVITE_USERS_VALIDATION_EMAIL_LIST = () =>
+  `Invalid Email address(es) found`;
+export const INVITE_USERS_VALIDATION_ROLE_EMPTY = () => `Please select a role`;
 
 export const INVITE_USERS_EMAIL_LIST_PLACEHOLDER = () => `邮箱之间用逗号分隔`;
 export const INVITE_USERS_ROLE_SELECT_PLACEHOLDER = () => `请选择角色`;
@@ -152,6 +159,16 @@ export const ENABLE_TIME = () => `显示时间`;
 export const EDIT_APP = () => `编辑应用`;
 export const FORK_APP = () => `复制应用`;
 export const SIGN_IN = () => `登录`;
+
+export const EDITOR_HEADER = {
+  saving: () => "正在保存",
+  saveFailed: () => "保存失败",
+  share: () => "分享",
+  previewTooltip: {
+    text: () => "预览",
+    shortcut: () => "P",
+  },
+};
 
 // Homepage
 export const CREATE_NEW_APPLICATION = () => `新建应用`;
@@ -269,6 +286,9 @@ export const OAUTH_AUTHORIZATION_FAILED = "鉴权失败！请查看详情";
 export const OAUTH_AUTHORIZATION_APPSMITH_ERROR = "出错了";
 export const OAUTH_APPSMITH_TOKEN_NOT_FOUND = "没有发现 token";
 
+export const GSHEET_AUTHORIZATION_ERROR =
+  "数据源未授权，请授权后继续操作";
+
 export const LOCAL_STORAGE_QUOTA_EXCEEDED_MESSAGE = () =>
   "本地存储失败！已超出本地最大存储限制";
 export const LOCAL_STORAGE_NO_SPACE_LEFT_ON_DEVICE_MESSAGE = () =>
@@ -282,7 +302,7 @@ export const OMNIBAR_PLACEHOLDER_NAV = () => "搜索组件和查询";
 export const OMNIBAR_PLACEHOLDER_DOC = () => "搜索文档";
 export const CREATE_NEW_OMNIBAR_PLACEHOLDER = () =>
   "新建查询、API 或者静态 JS 对象";
-export const HELPBAR_PLACEHOLDER = () => "快速搜索/导航";
+export const HELPBAR_PLACEHOLDER = () => "搜索";
 export const NO_SEARCH_DATA_TEXT = () => "没有找到相关内容";
 
 export const WIDGET_BIND_HELP = () => "不知道怎么从组件获取信息吗？";
@@ -960,11 +980,11 @@ export const EXCLUSIVE_TO_BUSINESS = (featureName: string) =>
 export const GRANULAR_ACCESS_CONTROL_FOR_TEAMS = () =>
   "Granular Access Controls for teams";
 export const ACCESS_CONTROL_UPGRADE_PAGE_SUB_HEADING = () =>
-  "Control view, create, edit, delete, share, and export permissions for all resources in your apps in a workspace. Manage permissions by attributes as granularly or broadly as you want. Use permissions and user groups to easily define access levels of new and existing users.";
+  "Control all permissions for all resources in your apps in a workspace. Manage permissions granularly by attributes. Use permissions and user groups to easily define access levels.";
 export const SECURITY_APPS_LEAST_PRIVILEGE = () =>
   "Secure apps by the least privilege needed";
 export const SECURITY_APPS_LEAST_PRIVILEGE_DETAIL1 = () =>
-  "Create roles by the least privilege needed as defaults, e.g.: View only, assign them to users in groups, e.g.: Marketing, and modify for special access, e.g.: Content creators_Execute queries";
+  `Create roles by the least privilege needed as defaults, <span>e.g.: View only</span>, assign them to users in groups, <span>e.g.: Marketing</span>, and modify for special access, <span>e.g.: Content creators_Execute queries</span>`;
 export const PREVENT_ACCIDENTAL_DAMAGE = () =>
   "Prevent accidental damage to data";
 export const PREVENT_ACCIDENTAL_DAMAGE_DETAIL1 = () =>
@@ -1004,7 +1024,7 @@ export const API_PANE_NO_BODY = () => "当前请求没有请求体";
 export const TABLE_WIDGET_TOTAL_RECORD_TOOLTIP = () =>
   "保存数据表的总行数，用来在分页的时候计算是否还有下一页/上一页";
 export const CREATE_DATASOURCE_TOOLTIP = () => "添加新数据源";
-export const ADD_QUERY_JS_TOOLTIP = () => "新建";
+export const ADD_QUERY_JS_TOOLTIP = () => "新建查询 / JS对象";
 
 // Add datasource
 export const GENERATE_APPLICATION_TITLE = () => "新建页面";
@@ -1061,6 +1081,8 @@ export const ADMIN_BRANDING_COLOR_TOOLTIP_HOVER = () => `用于按钮 hover 颜�
 export const ADMIN_BRANDING_COLOR_TOOLTIP_FONT = () => `用于按钮文字颜色`;
 export const ADMIN_BRANDING_COLOR_TOOLTIP_DISABLED = () =>
   `用于禁用按钮背景颜色`;
+export const ADMIN_BRANDING_UPGRADE_INTERCOM_MESSAGE = () =>
+  `你好，我想试试 PagePlug 商业版 😀`;
 
 // Guided tour
 // -- STEPS ---
@@ -1208,7 +1230,11 @@ export const CLEAN_URL_UPDATE = {
     "引用了 <strong>appsmith.URL.fullpath</strong> 和 <strong>appsmith.URL.pathname</strong> 的属性会有显示出变化",
 };
 
-export const MEMBERS_TAB_TITLE = (length: number) => `成员 (${length})`;
+export const MEMBERS_TAB_TITLE = (
+  length: number,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  cloudHosting?: boolean,
+) => `成员 (${length})`;
 
 export const CREATE_PAGE = () => "新建空白页面";
 export const CANVAS_NEW_PAGE_CARD = () => "新建页面";
@@ -1259,6 +1285,38 @@ export const PAGE_SETTINGS_SET_AS_HOMEPAGE_TOOLTIP_NON_HOME_PAGE = () =>
 export const PAGE_SETTINGS_ACTION_NAME_CONFLICT_ERROR = (name: string) =>
   `${name} 已经被占用`;
 
+export const IN_APP_EMBED_SETTING = {
+  applicationUrl: () => "应用地址",
+  allowEmbeddingLabel: () => "支持嵌入",
+  allowEmbeddingTooltip: () =>
+    "应用可以嵌入到任何域名下，包括那些恶意网站",
+  copy: () => "复制",
+  copied: () => "已复制",
+  limitEmbeddingLabel: () => "限制嵌入",
+  limitEmbeddingTooltip: () => "应用只能嵌入到特定的域名下",
+  disableEmbeddingLabel: () => "不能嵌入",
+  disableEmbeddingTooltip: () =>
+    "应用不能被嵌入到任何域名下",
+  embed: () => "嵌入",
+  embedSnippetTitle: () => "复制嵌入代码",
+  change: () => "修改",
+  copiedEmbedCode: () => "嵌入代码已复制",
+  embedSize: () => "嵌入宽高",
+  previewEmbeddedApp: () => "预览嵌入应用",
+  sectionHeader: () => "分享 & 嵌入",
+  sectionContentHeader: () => "分享",
+  sectionHeaderDesc: () => "共享应用，嵌入属性",
+  showNavigationBar: () => "显示菜单导航",
+};
+
+export const NEW_QUERY_BUTTON_TEXT = () => "新建查询";
+export const NEW_API_BUTTON_TEXT = () => "新建 API";
+export const GENERATE_NEW_PAGE_BUTTON_TEXT = () => "生成新页面";
+export const RECONNECT_BUTTON_TEXT = () => "重连";
+export const SAVE_BUTTON_TEXT = () => "保存";
+export const SAVE_AND_AUTHORIZE_BUTTON_TEXT = () => "保存并鉴权";
+export const DISCARD_POPUP_DONT_SAVE_BUTTON_TEXT = () => "不保存";
+
 // Alert options and labels for showMessage types
 export const ALERT_STYLE_OPTIONS = [
   { label: "信息", value: "'info'", id: "info" },
@@ -1271,25 +1329,38 @@ export const ALERT_STYLE_OPTIONS = [
   { label: "警告", value: "'warning'", id: "warning" },
 ];
 
-export const USAGE_AND_BILLING = {
-  usage: () => "Usage",
-  billing: () => "Billing",
-  usageAndBilling: () => "Usage & Billing",
-  usageOverNDays: (days: number) => `Usage over the past ${days} days!`,
-  usageDetails: () =>
-    "This is how much you have used Appsmith to build and run apps.",
-  unit: () => "minutes/day",
-  averaged: () => "*averaged",
-  approximated: () => "*approximated",
-  sell: () => "Figure out your usage before purchasing Appsmith",
-  upgradeToBusiness: () => "UPGRADE TO BUSINESS EDITION",
-  rbacHeading: () => "Role Based Access Control",
-  rbacDetails: () =>
-    "RBAC is here to allow you to control access to appsmith as easy as you maintain your organization.",
-  ssoHeading: () => "SSO and Custom Authentication",
-  ssoDetails: () => "SSO and custom auth allow you to onboard users faster.",
-  gitHeading: () => "Unlimited private git repositories",
-  gitDetails: () => "Expand your single source of truth capability to infinite",
-  exclusive: () =>
-    "These features are exclusively available on business edition.",
+export const customJSLibraryMessages = {
+  ADD_JS_LIBRARY: () => "添加 JS 库",
+  REC_LIBRARY: () => "推荐库",
+  INSTALLATION_SUCCESSFUL: (accessor: string) =>
+    `安装成功！你现在可以在全局使用 ${accessor} 了`,
+  INSTALLATION_FAILED: () => "安装失败",
+  INSTALLED_ALREADY: (accessor: string) =>
+    `已经安装过这个库了，你可以通过 ${accessor} 来使用它`,
+  UNINSTALL_FAILED: (name: string) =>
+    `不能卸载 ${name}，请稍后重试`,
+  UNINSTALL_SUCCESS: (accessor: string) =>
+    `${accessor} 卸载成功`,
+  LEARN_MORE_DESC: () => "如何使用这个功能？",
+  UNSUPPORTED_LIB: () => `不支持这个库`,
+  UNSUPPORTED_LIB_DESC: () =>
+    `非常抱歉，因为平台限制不能支持这个库，请试试其他的库。`,
+  LEARN_MORE: () => `了解更多`,
+  REPORT_ISSUE: () => `报告错误`,
+  AUTOCOMPLETE_FAILED: (name: string) =>
+    `${name} 不支持代码补全`,
+  CLIENT_LOAD_FAILED: (url: string) => `脚本拉取失败 ${url}`,
+  LIB_OVERRIDE_ERROR: (
+    name: string,
+  ) => `${name} 已安装，如果想安装另外的版本，请卸载后重新安装。`,
+  DEFS_FAILED_ERROR: (name: string) =>
+    `${name} 代码补全提示生成失败`,
+  IMPORT_URL_ERROR: (url: string) =>
+    `${url} 脚本安装失败`,
+  NAME_COLLISION_ERROR: (accessors: string) =>
+    `发现重名：${accessors}`,
 };
+
+// Business Edition upgrade page
+export const MOVE_TO_BUSINESS_EDITION = (trailingChar: string) =>
+  `升级到商业版本${trailingChar ? trailingChar : ""}`;

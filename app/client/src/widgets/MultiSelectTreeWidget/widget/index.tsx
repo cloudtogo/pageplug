@@ -236,6 +236,16 @@ class MultiSelectTreeWidget extends BaseWidget<
         sectionName: "属性",
         children: [
           {
+            helpText: "提示信息",
+            propertyName: "labelTooltip",
+            label: "提示",
+            controlType: "INPUT_TEXT",
+            placeholderText: "在这里添加提示信息",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+          {
             helpText: "选项显示模式",
             propertyName: "mode",
             label: "模式",
@@ -256,16 +266,6 @@ class MultiSelectTreeWidget extends BaseWidget<
             ],
             isBindProperty: false,
             isTriggerProperty: false,
-          },
-          {
-            helpText: "提示信息",
-            propertyName: "labelTooltip",
-            label: "提示",
-            controlType: "INPUT_TEXT",
-            placeholderText: "请输入至少 6 个字符",
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
           },
           {
             helpText: "设置占位文本",
@@ -343,7 +343,7 @@ class MultiSelectTreeWidget extends BaseWidget<
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the dropdown opens",
+            helpText: "下拉框打开时触发",
             propertyName: "onDropdownOpen",
             label: "onDropdownOpen",
             controlType: "ACTION_SELECTOR",
@@ -352,7 +352,7 @@ class MultiSelectTreeWidget extends BaseWidget<
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the dropdown closes",
+            helpText: "下拉框关闭时触发",
             propertyName: "onDropdownClose",
             label: "onDropdownClose",
             controlType: "ACTION_SELECTOR",
@@ -427,7 +427,7 @@ class MultiSelectTreeWidget extends BaseWidget<
             propertyName: "labelStyle",
             label: "强调",
             helpText: "设置标签字体是否加粗或斜体",
-            controlType: "BUTTON_TABS",
+            controlType: "BUTTON_GROUP",
             options: [
               {
                 icon: "BOLD_FONT",
