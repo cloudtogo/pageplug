@@ -12,10 +12,14 @@ import { DeployMode } from "../Pages/DeployModeHelper";
 import { GitSync } from "../Pages/GitSync";
 import { FakerHelper } from "../Pages/FakerHelper";
 import { DebuggerHelper } from "../Pages/DebuggerHelper";
+import { LibraryInstaller } from "../Pages/LibraryInstaller";
+import { InviteModal } from "../Pages/InviteModal";
 import { AppSettings } from "../Pages/AppSettings/AppSettings";
 import { GeneralSettings } from "../Pages/AppSettings/GeneralSettings";
 import { PageSettings } from "../Pages/AppSettings/PageSettings";
 import { ThemeSettings } from "../Pages/AppSettings/ThemeSettings";
+import { EmbedSettings } from "../Pages/AppSettings/EmbedSettings";
+import { Templates } from "../Pages/Templates";
 
 export class ObjectsRegistry {
   private static aggregateHelper__: AggregateHelper;
@@ -160,6 +164,38 @@ export class ObjectsRegistry {
       ObjectsRegistry.themeSettings__ = new ThemeSettings();
     }
     return ObjectsRegistry.themeSettings__;
+  }
+
+  private static embedSettings__: EmbedSettings;
+  static get EmbedSettings(): EmbedSettings {
+    if (ObjectsRegistry.embedSettings__ === undefined) {
+      ObjectsRegistry.embedSettings__ = new EmbedSettings();
+    }
+    return ObjectsRegistry.embedSettings__;
+  }
+
+  private static LibraryInstaller__: LibraryInstaller;
+  static get LibraryInstaller(): LibraryInstaller {
+    if (ObjectsRegistry.LibraryInstaller__ === undefined) {
+      ObjectsRegistry.LibraryInstaller__ = new LibraryInstaller();
+    }
+    return ObjectsRegistry.LibraryInstaller__;
+  }
+
+  private static inviteModal__: InviteModal;
+  static get InviteModal(): InviteModal {
+    if (ObjectsRegistry.inviteModal__ === undefined) {
+      ObjectsRegistry.inviteModal__ = new InviteModal();
+    }
+    return ObjectsRegistry.inviteModal__;
+  }
+
+  private static templates__: Templates;
+  static get Templates(): Templates {
+    if (ObjectsRegistry.templates__ === undefined) {
+      ObjectsRegistry.templates__ = new Templates();
+    }
+    return ObjectsRegistry.templates__;
   }
 }
 

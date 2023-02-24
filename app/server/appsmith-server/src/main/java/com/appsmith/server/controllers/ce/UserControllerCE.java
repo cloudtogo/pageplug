@@ -1,6 +1,5 @@
 package com.appsmith.server.controllers.ce;
 
-import com.appsmith.server.constants.CommentOnboardingState;
 import com.appsmith.server.constants.Url;
 import com.appsmith.server.domains.User;
 import com.appsmith.server.domains.UserData;
@@ -12,22 +11,32 @@ import com.appsmith.server.dtos.UserSignupRequestDTO;
 import com.appsmith.server.dtos.UserUpdateDTO;
 import com.appsmith.server.services.SessionUserService;
 import com.appsmith.server.services.UserDataService;
-import com.appsmith.server.services.UserWorkspaceService;
 import com.appsmith.server.services.UserService;
+import com.appsmith.server.services.UserWorkspaceService;
 import com.appsmith.server.solutions.UserAndAccessManagementService;
 import com.appsmith.server.solutions.UserSignup;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.Part;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import com.appsmith.server.configurations.CloudOSConfig;
 import com.appsmith.server.solutions.CloudOSActionSolution;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -211,13 +220,4 @@ public class UserControllerCE extends BaseController<UserService, User, String> 
         return userDataService.getFeatureFlagsForCurrentUser()
                 .map(map -> new ResponseDTO<>(HttpStatus.OK.value(), map, null));
     }
-
-    @PatchMapping("/comment/state")
-    public Mono<ResponseDTO<CommentOnboardingState>> setCommentState(@RequestBody UserData userData) {
-        return userDataService.setCommentState(userData.getCommentOnboardingState())
-                .map(savedUserData ->
-                        new ResponseDTO<>(HttpStatus.OK.value(), savedUserData.getCommentOnboardingState(), null)
-                );
-    }
-
 }

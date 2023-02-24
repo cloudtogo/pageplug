@@ -54,17 +54,18 @@ import {
   TextType,
   TextProps,
   Variant,
-} from "design-system";
+} from "design-system-old";
 import { getInitialsAndColorCode } from "utils/AppsmithUtils";
 import ProfileImage from "pages/common/ProfileImage";
 import ManageUsers from "pages/workspace/ManageUsers";
-import { ScrollIndicator } from "design-system";
 import UserApi from "@appsmith/api/UserApi";
 import { Colors } from "constants/Colors";
 import { fetchWorkspace } from "@appsmith/actions/workspaceActions";
 import { useHistory } from "react-router-dom";
 import { Tooltip } from "@blueprintjs/core";
 import { isEllipsisActive } from "utils/helpers";
+
+const { cloudHosting, mailEnabled } = getAppsmithConfigs();
 
 export const CommonTitleTextStyle = css`
   color: ${Colors.CHARCOAL};
@@ -262,7 +263,10 @@ const validateFormValues = (values: {
     _users.forEach((user) => {
       if (!isEmail(user)) {
         throw new SubmissionError({
-          _error: createMessage(INVITE_USERS_VALIDATION_EMAIL_LIST),
+          _error: createMessage(
+            INVITE_USERS_VALIDATION_EMAIL_LIST,
+            cloudHosting,
+          ),
         });
       }
     });
@@ -294,14 +298,15 @@ const validate = (values: any) => {
 
     _users.forEach((user: string) => {
       if (!isEmail(user)) {
-        errors["users"] = createMessage(INVITE_USERS_VALIDATION_EMAIL_LIST);
+        errors["users"] = createMessage(
+          INVITE_USERS_VALIDATION_EMAIL_LIST,
+          cloudHosting,
+        );
       }
     });
   }
   return errors;
 };
-
-export const { mailEnabled } = getAppsmithConfigs();
 
 export const InviteButtonWidth = "88px";
 
@@ -427,18 +432,8 @@ function WorkspaceInviteUsersForm(props: any) {
     );
   };
 
-  const errorHandler = (error: string, values: string[]) => {
-    if (values && values.length > 0) {
-      let error = "";
-      values.forEach((user: any) => {
-        if (!isEmail(user)) {
-          error = createMessage(INVITE_USERS_VALIDATION_EMAIL_LIST);
-        }
-      });
-      setEmailError(error);
-    } else {
-      props.customError?.("");
-    }
+  const errorHandler = (error: string) => {
+    setEmailError(error);
   };
 
   return (
@@ -452,13 +447,17 @@ function WorkspaceInviteUsersForm(props: any) {
       <StyledForm
         onSubmit={handleSubmit((values: any, dispatch: any) => {
           validateFormValues(values);
-          AnalyticsUtil.logEvent("INVITE_USER", values);
           const usersAsStringsArray = values.users.split(",");
           // update state to show success message correctly
           updateNumberOfUsersInvited(usersAsStringsArray.length);
           const users = usersAsStringsArray
             .filter((user: any) => isEmail(user))
             .join(",");
+          AnalyticsUtil.logEvent("INVITE_USER", {
+            users: usersAsStringsArray,
+            role: values.role,
+            numberOfUsersInvited: usersAsStringsArray.length,
+          });
           return inviteUsersToWorkspace(
             {
               ...(props.workspaceId ? { workspaceId: props.workspaceId } : {}),
@@ -476,15 +475,13 @@ function WorkspaceInviteUsersForm(props: any) {
           <div className="wrapper">
             <TagListField
               autofocus
-              customError={(err: string, values?: string[]) =>
-                errorHandler(err, values || [])
-              }
+              customError={(err: string) => errorHandler(err)}
               data-cy="t--invite-email-input"
               intent="success"
               label="邮箱"
               name="users"
               placeholder={placeholder || "请输入邮箱地址"}
-              type="text"
+              type="email"
             />
             <SelectField
               allowDeselection={isMultiSelectDropdown}
@@ -571,7 +568,6 @@ function WorkspaceInviteUsersForm(props: any) {
                     );
                   },
                 )}
-                <ScrollIndicator containerRef={userRef} mode="DARK" />
               </UserList>
             )}
           </>
@@ -636,6 +632,7 @@ export default connect(
       applicationId?: string;
       workspaceId?: string;
       isApplicationInvite?: boolean;
+      placeholder?: string;
     }
   >({
     validate,

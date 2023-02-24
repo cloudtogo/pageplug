@@ -5,9 +5,9 @@ import {
   getApiRightPaneSelectedTab,
 } from "selectors/apiPaneSelectors";
 import {
-  setApiPaneResponseSelectedTab,
   setApiPaneConfigSelectedTabIndex,
   setApiPaneResponsePaneHeight,
+  setApiPaneResponseSelectedTab,
   setApiRightPaneSelectedTab,
 } from "actions/apiPaneActions";
 import { AppState } from "@appsmith/reducers";
@@ -18,8 +18,8 @@ import {
   getAllSubEntityCollapsibleStates,
   getCodeEditorHistory,
   getExplorerSwitchIndex,
+  getFocusableInputField,
   getPropertyPanelState,
-  getFocusableCodeEditorField,
   getSelectedCanvasDebuggerTab,
   getWidgetSelectedPropertyTabIndex,
 } from "selectors/editorContextSelectors";
@@ -28,16 +28,16 @@ import {
   setAllSubEntityCollapsibleStates,
   setCodeEditorHistory,
   setExplorerSwitchIndex,
+  setFocusableInputField,
   setPanelPropertiesState,
   setWidgetSelectedPropertyTabIndex,
 } from "actions/editorContextActions";
-import { setFocusableCodeEditorField } from "actions/editorContextActions";
 import {
   getAllDatasourceCollapsibleState,
   getSelectedWidgets,
   isDatasourceInViewMode,
 } from "selectors/ui";
-import { selectMultipleWidgetsInitAction } from "actions/widgetSelectionActions";
+import { selectWidgetInitAction } from "actions/widgetSelectionActions";
 
 import { FocusEntity } from "navigation/FocusEntity";
 import { ActionExecutionResizerHeight } from "pages/Editor/APIEditor/constants";
@@ -68,16 +68,15 @@ import {
   DEFAULT_PROPERTY_PANE_WIDTH,
 } from "constants/AppConstants";
 import {
+  getFocusablePropertyPaneField,
   getPropertyPaneWidth,
   getSelectedPropertyPanel,
 } from "selectors/propertyPaneSelectors";
 import {
-  setPropertyPaneWidthAction,
-  setSelectedPropertyPanels,
-} from "actions/propertyPaneActions";
-import {
   setAllPropertySectionState,
   setFocusablePropertyPaneField,
+  setPropertyPaneWidthAction,
+  setSelectedPropertyPanels,
 } from "actions/propertyPaneActions";
 import { setCanvasDebuggerSelectedTab } from "actions/debuggerActions";
 import {
@@ -85,7 +84,7 @@ import {
   setDatasourceViewMode,
 } from "actions/datasourceActions";
 import { PluginPackageName } from "entities/Action";
-import { getFocusablePropertyPaneField } from "selectors/propertyPaneSelectors";
+import { SelectionRequestType } from "sagas/WidgetSelectUtils";
 
 export enum FocusElement {
   ApiPaneConfigTabs = "ApiPaneConfigTabs",
@@ -105,15 +104,15 @@ export enum FocusElement {
   JSPaneConfigTabs = "JSPaneConfigTabs",
   JSPaneResponseTabs = "JSPaneResponseTabs",
   JSPaneResponseHeight = "JSPaneResponseHeight",
-  CodeEditor = "CodeEditor",
-  PropertyField = "PropertyField",
   PropertySections = "PropertySections",
+  PropertyField = "PropertyField",
   PropertyTabs = "PropertyTabs",
   PropertyPanelContext = "PropertyPanelContext",
   PropertyPaneWidth = "PropertyPaneWidth",
   SelectedPropertyPanel = "SelectedPropertyPanel",
   SelectedWidgets = "SelectedWidgets",
   SubEntityCollapsibleState = "SubEntityCollapsibleState",
+  InputField = "InputField",
 }
 
 type Config = {
@@ -180,7 +179,8 @@ export const FocusElementsConfig: Record<FocusEntity, Config[]> = {
     {
       name: FocusElement.SelectedWidgets,
       selector: getSelectedWidgets,
-      setter: selectMultipleWidgetsInitAction,
+      setter: (widgetIds: string[]) =>
+        selectWidgetInitAction(SelectionRequestType.Multiple, widgetIds),
       defaultValue: [],
     },
     {
@@ -211,9 +211,9 @@ export const FocusElementsConfig: Record<FocusEntity, Config[]> = {
   ],
   [FocusEntity.JS_OBJECT]: [
     {
-      name: FocusElement.CodeEditor,
-      selector: getFocusableCodeEditorField,
-      setter: setFocusableCodeEditorField,
+      name: FocusElement.InputField,
+      selector: getFocusableInputField,
+      setter: setFocusableInputField,
     },
     {
       name: FocusElement.JSPaneConfigTabs,
@@ -236,9 +236,9 @@ export const FocusElementsConfig: Record<FocusEntity, Config[]> = {
   ],
   [FocusEntity.QUERY]: [
     {
-      name: FocusElement.CodeEditor,
-      selector: getFocusableCodeEditorField,
-      setter: setFocusableCodeEditorField,
+      name: FocusElement.InputField,
+      selector: getFocusableInputField,
+      setter: setFocusableInputField,
     },
     {
       name: FocusElement.QueryPaneConfigTabs,
@@ -275,11 +275,6 @@ export const FocusElementsConfig: Record<FocusEntity, Config[]> = {
   ],
   [FocusEntity.API]: [
     {
-      name: FocusElement.CodeEditor,
-      selector: getFocusableCodeEditorField,
-      setter: setFocusableCodeEditorField,
-    },
-    {
       name: FocusElement.ApiPaneConfigTabs,
       selector: getApiPaneConfigSelectedTabIndex,
       setter: setApiPaneConfigSelectedTabIndex,
@@ -301,6 +296,11 @@ export const FocusElementsConfig: Record<FocusEntity, Config[]> = {
       selector: getApiPaneResponsePaneHeight,
       setter: setApiPaneResponsePaneHeight,
       defaultValue: ActionExecutionResizerHeight,
+    },
+    {
+      name: FocusElement.InputField,
+      selector: getFocusableInputField,
+      setter: setFocusableInputField,
     },
     {
       name: FocusElement.ApiRightPaneTabs,

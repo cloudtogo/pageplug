@@ -581,7 +581,7 @@ Cypress.Commands.add("updateCodeInput", ($selector, value) => {
     codeMirrorInput.focus();
     cy.wait(200);
     codeMirrorInput.setValue(value);
-    cy.wait(1000); //time for value to set
+    cy.wait(500); //time for value to set
   });
 });
 
@@ -617,7 +617,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add(
-  "assertSoftFocusOnPropertyPane",
+  "assertSoftFocusOnCodeInput",
   ($selector, cursor = { ch: 0, line: 0 }) => {
     cy.EnableAllCodeEditors();
     cy.get($selector)
@@ -1106,6 +1106,7 @@ Cypress.Commands.add("Deletepage", (Pagename) => {
   cy.get(`.t--entity-item:contains(${Pagename})`).within(() => {
     cy.get(".t--context-menu").click({ force: true });
   });
+  cy.wait(2000);
   cy.selectAction("Delete");
   cy.selectAction("Are you sure?");
   cy.wait("@deletePage");
@@ -1617,7 +1618,9 @@ Cypress.Commands.add("makeColumnEditable", (column) => {
 Cypress.Commands.add("enterTableCellValue", (x, y, text) => {
   cy.get(
     `[data-colindex="${x}"][data-rowindex="${y}"] .t--inlined-cell-editor input.bp3-input`,
-  ).clear();
+  )
+    .click({ force: true })
+    .clear({ force: true });
 
   if (text) {
     cy.get(
@@ -1721,4 +1724,12 @@ Cypress.Commands.add("checkMaxDefaultValue", (endp, value) => {
       cy.log(someText);
       expect(someText).to.equal(value);
     });
+});
+
+Cypress.Commands.add("findAndExpandEvaluatedTypeTitle", () => {
+  cy.get(commonlocators.evaluatedTypeTitle)
+    .first()
+    .next()
+    .find("span")
+    .click();
 });

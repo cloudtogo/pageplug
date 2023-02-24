@@ -71,7 +71,7 @@ class DocumentViewerWidget extends BaseWidget<
         children: [
           {
             helpText:
-              "需要预览文档的链接。如果是 URL，支持的文件扩展名包括 txt、pdf、docx、ppt、pptx 和 xlsx；如果是 base64，不支持 ppt。",
+              "需要预览文档的链接。如果是 URL，支持的文件扩展名包括 txt、pdf、docx、ppt、pptx 和 xlsx；如果是 base64，不支持 ppt/pptx。",
             propertyName: "docUrl",
             label: "文档链接",
             controlType: "INPUT_TEXT",

@@ -295,7 +295,7 @@ class DropdownWidget extends BaseWidget<DropdownWidgetProps, WidgetState> {
           {
             propertyName: "labelStyle",
             label: "字体样式",
-            controlType: "BUTTON_TABS",
+            controlType: "BUTTON_GROUP",
             options: [
               {
                 icon: "BOLD_FONT",

@@ -28,6 +28,12 @@ import { updateCanvasLayoutAction } from "actions/editorActions";
 import { getIsCanvasInitialized } from "selectors/mainCanvasSelectors";
 import { getIsAppSettingsPaneOpen } from "selectors/appSettingsPaneSelectors";
 import { getPropertyPaneWidth } from "selectors/propertyPaneSelectors";
+import {
+  getPaneCount,
+  getTabsPaneWidth,
+  isMultiPaneActive,
+} from "selectors/multiPaneSelectors";
+import { SIDE_NAV_WIDTH } from "pages/common/SideNav";
 
 const BORDERS_WIDTH = 2;
 const GUTTER_WIDTH = 72;
@@ -50,6 +56,9 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
   const isCanvasInitialized = useSelector(getIsCanvasInitialized);
   const appLayout = useSelector(getCurrentApplicationLayout);
   const isAppSettingsPaneOpen = useSelector(getIsAppSettingsPaneOpen);
+  const tabsPaneWidth = useSelector(getTabsPaneWidth);
+  const isMultiPane = useSelector(isMultiPaneActive);
+  const paneCount = useSelector(getPaneCount);
 
   // /**
   //  * calculates min height
@@ -91,8 +100,6 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
    *  - if calculated width is larger than max width, use max width
    *  - by default use min width
    *
-   * @param screenWidth
-   * @param layoutMaxWidth
    * @returns
    */
   const calculateCanvasWidth = () => {
@@ -120,6 +127,11 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
       appMode === APP_MODE.EDIT
     ) {
       calculatedWidth -= explorerWidth;
+    }
+
+    if (isMultiPane) {
+      calculatedWidth = screenWidth - scrollbarWidth() - tabsPaneWidth - 100;
+      if (paneCount === 3) calculatedWidth -= propertyPaneWidth;
     }
 
     switch (true) {
@@ -152,15 +164,31 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
   const resizeToLayout = () => {
     const calculatedWidth = calculateCanvasWidth();
     const { width: rightColumn } = mainCanvasProps || {};
-
-    if (rightColumn !== calculatedWidth || !isCanvasInitialized) {
-      dispatch(updateCanvasLayoutAction(calculatedWidth));
+    let scale = 1;
+    if (isMultiPane && appLayout?.type !== "FLUID") {
+      let canvasSpace =
+        screenWidth -
+        tabsPaneWidth -
+        SIDE_NAV_WIDTH -
+        GUTTER_WIDTH -
+        BORDERS_WIDTH;
+      if (paneCount === 3) canvasSpace -= propertyPaneWidth;
+      // Scale will always be between 0.5 to 1
+      scale = Math.max(
+        Math.min(+Math.abs(canvasSpace / calculatedWidth).toFixed(2), 1),
+        0.5,
+      );
+      dispatch(updateCanvasLayoutAction(calculatedWidth, scale));
+    } else if (rightColumn !== calculatedWidth || !isCanvasInitialized) {
+      dispatch(updateCanvasLayoutAction(calculatedWidth, scale));
     }
   };
 
   const debouncedResize = useCallback(debounce(resizeToLayout, 250), [
     mainCanvasProps,
     screenWidth,
+    tabsPaneWidth,
+    paneCount,
   ]);
 
   /**
@@ -174,7 +202,7 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
 
   useEffect(() => {
     if (isCanvasInitialized) debouncedResize();
-  }, [screenWidth]);
+  }, [screenWidth, tabsPaneWidth, paneCount]);
 
   /**
    * resize the layout if any of the following thing changes:
