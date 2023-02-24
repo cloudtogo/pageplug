@@ -2,23 +2,21 @@ import React from "react";
 import "./wdyr";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { ThemeProvider, taroifyTheme } from "constants/DefaultTheme";
+import { ThemeProvider, taroifyTheme } from "styled-components";
 import { appInitializer } from "utils/AppUtils";
 import { Slide } from "react-toastify";
 import store, { runSagaMiddleware } from "./store";
 import { LayersContext, Layers } from "constants/Layers";
-import AppRouter from "./AppRouter";
+import AppRouter from "@appsmith/AppRouter";
 import * as Sentry from "@sentry/react";
-import { getCurrentThemeDetails, ThemeMode } from "selectors/themeSelectors";
+import { getCurrentThemeDetails } from "selectors/themeSelectors";
 import { connect } from "react-redux";
 import { AppState } from "@appsmith/reducers";
-import { setThemeMode } from "actions/themeActions";
-import { StyledToastContainer } from "design-system";
-import localStorage from "utils/localStorage";
+import { StyledToastContainer } from "design-system-old";
 import "./assets/styles/index.css";
 import "./index.less";
 import "design-system/build/css/design-system.css";
-import "./polyfills/corejs-add-on";
+import "./polyfills";
 import GlobalStyles from "globalStyles";
 // locale
 import { ConfigProvider } from "antd";
@@ -85,13 +83,7 @@ function App() {
 
 class ThemedApp extends React.Component<{
   currentTheme: any;
-  setTheme: (themeMode: ThemeMode) => void;
 }> {
-  componentDidMount() {
-    if (localStorage.getItem("THEME") === "LIGHT") {
-      this.props.setTheme(ThemeMode.LIGHT);
-    }
-  }
   render() {
     return (
       <ThemeProvider theme={this.props.currentTheme}>
@@ -120,16 +112,8 @@ class ThemedApp extends React.Component<{
 const mapStateToProps = (state: AppState) => ({
   currentTheme: getCurrentThemeDetails(state),
 });
-const mapDispatchToProps = (dispatch: any) => ({
-  setTheme: (mode: ThemeMode) => {
-    dispatch(setThemeMode(mode));
-  },
-});
 
-const ThemedAppWithProps = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ThemedApp);
+const ThemedAppWithProps = connect(mapStateToProps)(ThemedApp);
 
 ReactDOM.render(<App />, document.getElementById("root"));
 

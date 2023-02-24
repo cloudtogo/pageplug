@@ -229,6 +229,16 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
         sectionName: "属性",
         children: [
           {
+            helpText: "Show help text or details about current selection",
+            propertyName: "labelTooltip",
+            label: "Tooltip",
+            controlType: "INPUT_TEXT",
+            placeholderText: "Add tooltip text here",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+          {
             propertyName: "isVisible",
             label: "是否显示",
             helpText: "控制组件的显示/隐藏",
@@ -380,7 +390,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
             propertyName: "labelStyle",
             label: "强调",
             helpText: "设置标签字体是否加粗或斜体",
-            controlType: "BUTTON_TABS",
+            controlType: "BUTTON_GROUP",
             options: [
               {
                 icon: "BOLD_FONT",
@@ -490,17 +500,19 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           )
         }
         dateFormat={this.props.dateFormat}
-        datePickerType={"DATE_PICKER"}
+        datePickerType="DATE_PICKER"
         firstDayOfWeek={this.props.firstDayOfWeek}
         isDisabled={this.props.isDisabled}
         isDynamicHeightEnabled={isAutoHeightEnabledForWidget(this.props)}
         isLoading={this.props.isLoading}
+        isRequired={this.props.isRequired}
         labelAlignment={this.props.labelAlignment}
         labelPosition={this.props.labelPosition}
         labelStyle={this.props.labelStyle}
         labelText={this.props.label}
         labelTextColor={this.props.labelTextColor}
         labelTextSize={this.props.labelTextSize}
+        labelTooltip={this.props.labelTooltip}
         labelWidth={this.getLabelWidth()}
         maxDate={this.props.maxDate}
         minDate={this.props.minDate}

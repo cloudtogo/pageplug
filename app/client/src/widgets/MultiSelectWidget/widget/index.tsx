@@ -324,7 +324,7 @@ class MultiSelectWidget extends BaseWidget<
           {
             propertyName: "labelStyle",
             label: "字体样式",
-            controlType: "BUTTON_TABS",
+            controlType: "BUTTON_GROUP",
             options: [
               {
                 icon: "BOLD_FONT",

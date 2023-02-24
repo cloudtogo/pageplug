@@ -1,5 +1,6 @@
 import {
   ApplicationPayload,
+  Page,
   ReduxAction,
   ReduxActionErrorTypes,
   ReduxActionTypes,
@@ -46,6 +47,7 @@ import {
   setPageIdForImport,
   setWorkspaceIdForImport,
   showReconnectDatasourceModal,
+  updateCurrentApplicationEmbedSetting,
   updateCurrentApplicationIcon,
 } from "actions/applicationActions";
 import AnalyticsUtil from "utils/AnalyticsUtil";
@@ -55,10 +57,10 @@ import {
   DISCARD_SUCCESS,
   DUPLICATING_APPLICATION,
 } from "@appsmith/constants/messages";
-import { Toaster, Variant } from "design-system";
+import { Toaster, Variant } from "design-system-old";
 import { APP_MODE } from "entities/App";
 import { Workspace, Workspaces } from "@appsmith/constants/workspaceConstants";
-import { AppIconName } from "design-system";
+import { AppIconName } from "design-system-old";
 import { AppColorCode } from "constants/DefaultTheme";
 import {
   getCurrentApplicationId,
@@ -95,7 +97,7 @@ import { getDefaultPageId as selectDefaultPageId } from "./selectors";
 import PageApi from "api/PageApi";
 import { identity, merge, pickBy } from "lodash";
 import { checkAndGetPluginFormConfigsSaga } from "./PluginSagas";
-import { getPluginForm } from "selectors/entitiesSelector";
+import { getPageList, getPluginForm } from "selectors/entitiesSelector";
 import { getConfigInitialValues } from "components/formControls/utils";
 import DatasourcesApi from "api/DatasourcesApi";
 import { resetApplicationWidgets } from "actions/pageActions";
@@ -198,12 +200,8 @@ export function* getAllApplicationSaga() {
         type: ReduxActionTypes.FETCH_USER_APPLICATIONS_WORKSPACES_SUCCESS,
         payload: workspaceApplication,
       });
-      const { newReleasesCount, releaseItems } = response.data || {};
-      yield put({
-        type: ReduxActionTypes.FETCH_RELEASES_SUCCESS,
-        payload: { newReleasesCount, releaseItems },
-      });
     }
+    yield call(fetchReleases);
   } catch (error) {
     yield put({
       type: ReduxActionErrorTypes.FETCH_USER_APPLICATIONS_WORKSPACES_ERROR,
@@ -222,13 +220,17 @@ export function* fetchAppAndPagesSaga(
     if (params.pageId && params.applicationId) {
       delete params.applicationId;
     }
-
     const response: FetchApplicationResponse = yield call(
       PageApi.fetchAppAndPages,
       params,
     );
     const isValidResponse: boolean = yield call(validateResponse, response);
     if (isValidResponse) {
+      const prevPagesState: Page[] = yield select(getPageList);
+      const pagePermissionsMap = prevPagesState.reduce((acc, page) => {
+        acc[page.pageId] = page.userPermissions ?? [];
+        return acc;
+      }, {} as Record<string, string[]>);
       yield put({
         type: ReduxActionTypes.FETCH_APPLICATION_SUCCESS,
         payload: { ...response.data.application, pages: response.data.pages },
@@ -244,7 +246,9 @@ export function* fetchAppAndPagesSaga(
             isHidden: !!page.isHidden,
             slug: page.slug,
             customSlug: page.customSlug,
-            userPermissions: page.userPermissions,
+            userPermissions: page.userPermissions
+              ? page.userPermissions
+              : pagePermissionsMap[page.id],
             icon: page.icon,
           })),
           applicationId: response.data.application?.id,
@@ -265,7 +269,6 @@ export function* fetchAppAndPagesSaga(
         });
         localStorage.setItem("GIT_DISCARD_CHANGES", "");
       }
-
       yield put({
         type: ReduxActionTypes.SET_APP_VERSION_ON_WORKER,
         payload: response.data.application?.evaluationVersion,
@@ -373,6 +376,11 @@ export function* updateApplicationSaga(
           });
         if (request.icon) {
           yield put(updateCurrentApplicationIcon(response.data.icon));
+        }
+        if (request.embedSetting) {
+          yield put(
+            updateCurrentApplicationEmbedSetting(response.data.embedSetting),
+          );
         }
       }
     }
@@ -786,7 +794,7 @@ export function* fetchApplicationPreviewWxaCodeSaga(
 function* fetchReleases() {
   try {
     const response: FetchUsersApplicationsWorkspacesResponse = yield call(
-      ApplicationApi.getAllApplication,
+      ApplicationApi.getReleaseItems,
     );
     const isValidResponse: boolean = yield validateResponse(response);
     if (isValidResponse) {

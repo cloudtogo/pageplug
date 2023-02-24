@@ -57,12 +57,12 @@ import { getCurrentPageId } from "selectors/editorSelectors";
 import { WidgetProps } from "widgets/BaseWidget";
 import * as log from "loglevel";
 import { DependencyMap } from "utils/DynamicBindingUtils";
-import { TriggerMeta } from "./ActionExecution/ActionExecutionSagas";
+import { TriggerMeta } from "@appsmith/sagas/ActionExecution/ActionExecutionSagas";
 import {
   getEntityNameAndPropertyPath,
   isAction,
   isWidget,
-} from "workers/Evaluation/evaluationUtils";
+} from "@appsmith/workers/Evaluation/evaluationUtils";
 
 // Saga to format action request values to be shown in the debugger
 function* formatActionRequestSaga(
@@ -610,28 +610,18 @@ function* deleteDebuggerErrorLogsSaga(
 }
 
 // takes a log object array and stores it in the redux store
-export function* storeLogs(
-  logs: LogObject[],
-  entityName: string,
-  entityType: ENTITY_TYPE,
-  entityId: string,
-) {
+export function* storeLogs(logs: LogObject[]) {
   AppsmithConsole.addLogs(
-    logs.reduce((acc: Log[], log: LogObject) => {
-      acc.push({
+    logs.map((log: LogObject) => {
+      return {
         text: createLogTitleString(log.data),
         logData: log.data,
-        source: {
-          type: entityType,
-          name: entityName,
-          id: entityId,
-        },
+        source: log.source,
         severity: log.severity,
         timestamp: log.timestamp,
         category: LOG_CATEGORY.USER_GENERATED,
-      });
-      return acc;
-    }, []),
+      };
+    }),
   );
 }
 

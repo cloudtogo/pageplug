@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
+import org.springframework.security.web.server.authentication.ServerAuthenticationEntryPointFailureHandler;
 import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler;
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
@@ -50,15 +52,18 @@ import static com.appsmith.server.constants.Url.ACTION_COLLECTION_URL;
 import static com.appsmith.server.constants.Url.ACTION_URL;
 import static com.appsmith.server.constants.Url.APPLICATION_URL;
 import static com.appsmith.server.constants.Url.ASSET_URL;
+import static com.appsmith.server.constants.Url.CUSTOM_JS_LIB_URL;
 import static com.appsmith.server.constants.Url.PAGE_URL;
 import static com.appsmith.server.constants.Url.TENANT_URL;
 import static com.appsmith.server.constants.Url.THEME_URL;
 import static com.appsmith.server.constants.Url.USER_URL;
 import static com.appsmith.server.constants.Url.CLOUDOS_URL;
+import static com.appsmith.server.constants.Url.USAGE_PULSE_URL;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @EnableWebFluxSecurity
 @EnableReactiveMethodSecurity
+@Configuration
 @Slf4j
 public class SecurityConfig {
 
@@ -121,6 +126,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, ReactiveUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        ServerAuthenticationEntryPointFailureHandler failureHandler = new ServerAuthenticationEntryPointFailureHandler(authenticationEntryPoint);
+
         return http
                 // This picks up the configurationSource from the bean corsConfigurationSource()
                 .csrf().disable()
@@ -153,6 +160,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeExchange()
                 .matchers(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, Url.LOGIN_URL),
+                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, Url.HEALTH_CHECK),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL + "/super"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL + "/forgotPassword"),
@@ -170,31 +178,36 @@ public class SecurityConfig {
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, THEME_URL + "/**"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, ACTION_URL + "/execute"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, CLOUDOS_URL + "/getMiniPreview"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, TENANT_URL + "/current")
+                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, TENANT_URL + "/current"),
+                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USAGE_PULSE_URL),
+                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, CUSTOM_JS_LIB_URL + "/*/view")
                 )
                 .permitAll()
-                .pathMatchers("/public/**", "/oauth2/**").permitAll()
+                .pathMatchers("/public/**", "/oauth2/**", "/actuator/**").permitAll()
                 .anyExchange()
                 .authenticated()
-                .and().httpBasic()
-                .and().formLogin()
-                .loginPage(Url.LOGIN_URL)
-                .authenticationEntryPoint(authenticationEntryPoint)
-                .requiresAuthenticationMatcher(ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, Url.LOGIN_URL))
-                .authenticationSuccessHandler(authenticationSuccessHandler)
-                .authenticationFailureHandler(authenticationFailureHandler)
+                .and()
+                .httpBasic(httpBasicSpec -> httpBasicSpec.authenticationFailureHandler(failureHandler))
+                .formLogin(formLoginSpec -> formLoginSpec.authenticationFailureHandler(failureHandler)
+                        .loginPage(Url.LOGIN_URL)
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .requiresAuthenticationMatcher(ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, Url.LOGIN_URL))
+                        .authenticationSuccessHandler(authenticationSuccessHandler)
+                        .authenticationFailureHandler(authenticationFailureHandler))
 
                 // For Github SSO Login, check transformation class: CustomOAuth2UserServiceImpl
                 // For Google SSO Login, check transformation class: CustomOAuth2UserServiceImpl
-                .and().oauth2Login()
-                .authorizationRequestResolver(new CustomServerOAuth2AuthorizationRequestResolver(reactiveClientRegistrationRepository, commonConfig, redirectHelper))
-                .authenticationSuccessHandler(authenticationSuccessHandler)
-                .authenticationFailureHandler(authenticationFailureHandler)
-                .authorizedClientRepository(new ClientUserRepository(userService, commonConfig))
-                .and().logout()
+                .oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec.authenticationFailureHandler(failureHandler)
+                        .authorizationRequestResolver(new CustomServerOAuth2AuthorizationRequestResolver(reactiveClientRegistrationRepository, commonConfig, redirectHelper))
+                        .authenticationSuccessHandler(authenticationSuccessHandler)
+                        .authenticationFailureHandler(authenticationFailureHandler)
+                        .authorizedClientRepository(new ClientUserRepository(userService, commonConfig)))
+
+                .logout()
                 .logoutUrl(Url.LOGOUT_URL)
                 .logoutSuccessHandler(new LogoutSuccessHandler(objectMapper, analyticsService))
-                .and().build();
+                .and()
+                .build();
     }
 
     /**
