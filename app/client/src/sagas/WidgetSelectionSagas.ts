@@ -204,37 +204,11 @@ function* canPerformSelectionSaga(saga: any, action: any) {
 function* openOrCloseModalSaga(action: ReduxAction<{ widgetIds: string[] }>) {
   if (action.payload.widgetIds.length !== 1) return;
 
-/**
- * Deselect widgets only if it is or inside the modal. Otherwise will not deselect any widgets.
- * @param action
- * @returns
- */
-function* deselectModalWidgetSaga(
-  action: ReduxAction<{
-    modalId: string;
-    modalWidgetChildren?: CanvasWidgetsStructureReduxState[];
-  }>,
-) {
-  const { modalId, modalWidgetChildren } = action.payload;
-  const selectedWidgets: string[] = yield select(getSelectedWidgets);
-  if (selectedWidgets.length == 0) return;
-
-  if (
-    (selectedWidgets.length === 1 && selectedWidgets[0] === modalId) ||
-    isWidgetPartOfChildren(selectedWidgets[0], modalWidgetChildren)
-  )
-    yield put(selectMultipleWidgetsAction([]));
-}
-
-function* openOrCloseModalSaga(
-  action: ReduxAction<{ widgetId: string; isMultiSelect: boolean }>,
-) {
-  if (!action.payload.widgetId) return;
-  if (action.payload.isMultiSelect) return;
+  const selectedWidget = action.payload.widgetIds[0];
 
   const modalWidgetIds: string[] = yield select(getWidgetIdsByTypes, [
-    WidgetTypes.MODAL_WIDGET,
-    WidgetTypes.TARO_POPUP_WIDGET,
+    "MODAL_WIDGET",
+    "TARO_POPUP_WIDGET",
   ]);
 
   const widgetIsModal = modalWidgetIds.includes(selectedWidget);

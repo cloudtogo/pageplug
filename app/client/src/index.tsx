@@ -2,7 +2,8 @@ import React from "react";
 import "./wdyr";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { ThemeProvider, taroifyTheme } from "styled-components";
+import { ThemeProvider } from "styled-components";
+import { taroifyTheme } from "constants/DefaultTheme";
 import { appInitializer } from "utils/AppUtils";
 import { Slide } from "react-toastify";
 import store, { runSagaMiddleware } from "./store";
@@ -15,12 +16,11 @@ import { AppState } from "@appsmith/reducers";
 import { StyledToastContainer } from "design-system-old";
 import "./assets/styles/index.css";
 import "./index.less";
-import "design-system/build/css/design-system.css";
+import "design-system-old/build/css/design-system-old.css";
 import "./polyfills";
 import GlobalStyles from "globalStyles";
 // locale
 import { ConfigProvider } from "antd";
-import zhCNAntd from "antd/lib/locale/zh_CN";
 import zhCN from "locales/zh-CN";
 import { IntlProvider } from "react-intl";
 import "moment/locale/zh-cn";
@@ -41,7 +41,6 @@ applyPolyfills().then(() => {
   defineCustomElements(window);
 });
 // create taro runtime in React
-import { createRouter } from "@tarojs/taro";
 import { createReactApp } from "@tarojs/runtime";
 class Empty extends React.Component {
   render() {
@@ -49,18 +48,6 @@ class Empty extends React.Component {
   }
 }
 const inst = createReactApp(Empty, React, ReactDOM, {});
-// createRouter(
-//   inst,
-//   {
-//     routes: [],
-//     router: {
-//       mode: "browser",
-//       basename: "",
-//       pathname: "",
-//     },
-//   },
-//   "react",
-// );
 // add touch emulator
 import "@vant/touch-emulator";
 import "react-sortable-tree-patch-react-17/style.css";
@@ -98,7 +85,13 @@ class ThemedApp extends React.Component<{
         <GlobalStyles />
         <AppErrorBoundary>
           <IntlProvider locale="zh-CN" messages={zhCN}>
-            <ConfigProvider locale={zhCNAntd}>
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorPrimary: "var(--ads-color-brand)",
+                },
+              }}
+            >
               <TaroifyTheme theme={taroifyTheme}>
                 <AppRouter />
               </TaroifyTheme>

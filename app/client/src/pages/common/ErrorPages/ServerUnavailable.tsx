@@ -20,7 +20,7 @@ function ServerUnavailable() {
           onClick={() => window.location.reload()}
           size={Size.large}
           tag="button"
-          text={"Retry"}
+          text={"重试"}
           variant="info"
         />
       }

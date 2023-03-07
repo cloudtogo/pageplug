@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import styled, { ThemeContext } from "styled-components";
+import styled, { ThemeContext, keyframes, css } from "styled-components";
 import { connect, useDispatch, useSelector } from "react-redux";
 import MediaQuery from "react-responsive";
 import { useLocation } from "react-router-dom";
@@ -362,7 +362,6 @@ export const textIconStyles = (props: { color: string; hover: string }) => {
         fill: ${props.color};
       }
 
-
       &:hover {
         .${Classes.TEXT},.${Classes.ICON} svg path {
           color: ${props.hover};
@@ -452,7 +451,7 @@ export function LeftPane(props: LeftPaneProps) {
                   submitCreateWorkspaceForm(
                     {
                       name: getNextEntityName(
-                        "Untitled workspace ",
+                        "应用组 ",
                         fetchedUserWorkspaces.map(
                           (el: any) => el.workspace.name,
                         ),
@@ -516,6 +515,7 @@ export const WorkspaceRename = styled(EditableText)`
 
 export const NoSearchResultImg = styled.img`
   margin: 1em;
+  height: 240px;
 `;
 
 export const ApplicationsWrapper = styled.div<{ isMobile: boolean }>`
@@ -540,6 +540,30 @@ export const ApplicationsWrapper = styled.div<{ isMobile: boolean }>`
     width: 100%;
     padding: 0;
   `}
+`;
+
+const spreadKeyframes = (init: number) => {
+  const frames = Array.from(Array(21))
+    .map((a, i) => {
+      return `
+        ${i * 5}% { --spread: ${init + i}px; }
+      `;
+    })
+    .join("\n");
+  return keyframes`${frames}`;
+};
+
+const SpreadButton = styled(Button)`
+  --spread: 20px;
+  &:hover {
+    animation: ${spreadKeyframes(20)} 0.6s infinite;
+    background: ${(props) => props.theme.colors.applications.bg};
+  }
+
+  & svg {
+    width: 18px;
+    height: 18px;
+  }
 `;
 
 export function ApplicationsSection(props: any) {
@@ -644,6 +668,7 @@ export function ApplicationsSection(props: any) {
   const createNewApplication = (
     applicationName: string,
     workspaceId: string,
+    isMobile: boolean,
   ) => {
     const color = getRandomPaletteColor(theme.colors.appCardColors);
     const icon =
@@ -656,8 +681,37 @@ export function ApplicationsSection(props: any) {
         workspaceId,
         icon,
         color,
+        isMobile,
       },
     });
+  };
+
+  const CreateApp = ({ isMobile, orgId, applications }: any) => {
+    return (
+      <SpreadButton
+        className="t--new-button createnew"
+        icon={"plus"}
+        isLoading={creatingApplicationMap && creatingApplicationMap[orgId]}
+        onClick={() => {
+          if (
+            Object.entries(creatingApplicationMap).length === 0 ||
+            (creatingApplicationMap && !creatingApplicationMap[orgId])
+          ) {
+            createNewApplication(
+              getNextEntityName(
+                "应用 ",
+                applications.map((el: any) => el.name),
+              ),
+              orgId,
+              isMobile,
+            );
+          }
+        }}
+        size={Size.medium}
+        tag="button"
+        text={`创建${isMobile ? "移动" : "桌面"}应用`}
+      />
+    );
   };
 
   let updatedWorkspaces;
@@ -684,7 +738,7 @@ export function ApplicationsSection(props: any) {
         <CreateNewLabel type={TextType.H4}>
           {createMessage(NO_APPS_FOUND)}
         </CreateNewLabel>
-        <NoSearchResultImg alt="No result found" src={NoSearchImage} />
+        <NoSearchResultImg alt="没有搜索到相关内容" src={NoSearchImage} />
       </CenteredWrapper>
     );
   } else {
@@ -704,21 +758,6 @@ export function ApplicationsSection(props: any) {
         );
         const hasCreateNewApplicationPermission =
           hasCreateNewAppPermission(workspace.userPermissions) && !isMobile;
-
-        const onClickAddNewButton = (workspaceId: string) => {
-          if (
-            Object.entries(creatingApplicationMap).length === 0 ||
-            (creatingApplicationMap && !creatingApplicationMap[workspaceId])
-          ) {
-            createNewApplication(
-              getNextEntityName(
-                "Untitled application ",
-                applications.map((el: any) => el.name),
-              ),
-              workspaceId,
-            );
-          }
-        };
 
         const showWorkspaceMenuOptions =
           canInviteToWorkspace ||
@@ -762,14 +801,14 @@ export function ApplicationsSection(props: any) {
                         INVITE_USERS_PLACEHOLDER,
                         cloudHosting,
                       )}
-                      title={`Invite Users to ${workspace.name}`}
+                      title={`邀请小伙伴到应用组 ${workspace.name}`}
                       trigger={
                         <Button
                           category={Category.secondary}
                           icon={"share-line"}
                           size={Size.medium}
                           tag="button"
-                          text={"Share"}
+                          text={"分享"}
                         />
                       }
                       workspaceId={workspace.id}
@@ -777,20 +816,19 @@ export function ApplicationsSection(props: any) {
                   )}
                   {hasCreateNewApplicationPermission &&
                     !isFetchingApplications &&
-                    applications.length !== 0 && (
-                      <Button
-                        className="t--new-button createnew"
-                        icon={"plus"}
-                        isLoading={
-                          creatingApplicationMap &&
-                          creatingApplicationMap[workspace.id]
-                        }
-                        onClick={() => onClickAddNewButton(workspace.id)}
-                        size={Size.medium}
-                        tag="button"
-                        text={"New"}
-                      />
-                    )}
+                    applications.length !== 0 && [
+                      <CreateApp
+                        key="pc"
+                        orgId={workspace.id}
+                        applications={applications}
+                      />,
+                      <CreateApp
+                        key="mobile"
+                        orgId={workspace.id}
+                        applications={applications}
+                        isMobile
+                      />,
+                    ]}
                   {(currentUser || isFetchingApplications) &&
                     !isMobile &&
                     showWorkspaceMenuOptions && (
@@ -836,7 +874,7 @@ export function ApplicationsSection(props: any) {
                                 onBlur={(value: string) => {
                                   WorkspaceNameChange(value, workspace.id);
                                 }}
-                                placeholder="Workspace name"
+                                placeholder="应用组名称"
                                 savingState={
                                   isSavingWorkspaceInfo
                                     ? SavingState.STARTED
@@ -856,7 +894,7 @@ export function ApplicationsSection(props: any) {
                                   },
                                 )
                               }
-                              text="Settings"
+                              text="配置"
                             />
                           </>
                         )}
@@ -870,7 +908,7 @@ export function ApplicationsSection(props: any) {
                                   workspace.id,
                                 )
                               }
-                              text="Import"
+                              text="导入"
                             />
                           )}
                         {hasManageWorkspacePermissions && canInviteToWorkspace && (
@@ -884,7 +922,7 @@ export function ApplicationsSection(props: any) {
                                 },
                               )
                             }
-                            text="Members"
+                            text="成员"
                           />
                         )}
                         {canInviteToWorkspace && (
@@ -898,8 +936,8 @@ export function ApplicationsSection(props: any) {
                             }}
                             text={
                               !warnLeavingWorkspace
-                                ? "Leave Workspace"
-                                : "Are you sure?"
+                                ? "退出应用组"
+                                : "确定退出应用组吗？"
                             }
                             type={!warnLeavingWorkspace ? undefined : "warning"}
                           />
@@ -915,8 +953,8 @@ export function ApplicationsSection(props: any) {
                             }}
                             text={
                               !warnDeleteWorkspace
-                                ? "Delete Workspace"
-                                : "Are you sure?"
+                                ? "删除应用组"
+                                : "确定删除应用组吗？"
                             }
                             type={!warnDeleteWorkspace ? undefined : "warning"}
                           />
@@ -948,21 +986,25 @@ export function ApplicationsSection(props: any) {
               {applications.length === 0 && (
                 <NoAppsFound>
                   <NoAppsFoundIcon />
-                  <span>There’s nothing inside this workspace</span>
+                  <span>应用组是空的</span>
                   {/* below component is duplicate. This is because of cypress test were failing */}
                   {hasCreateNewApplicationPermission && (
-                    <Button
-                      className="t--new-button createnew"
-                      icon={"plus"}
-                      isLoading={
-                        creatingApplicationMap &&
-                        creatingApplicationMap[workspace.id]
-                      }
-                      onClick={() => onClickAddNewButton(workspace.id)}
-                      size={Size.medium}
-                      tag="button"
-                      text={"New"}
-                    />
+                    <div
+                      className="flex justify-between"
+                      style={{ width: 272 }}
+                    >
+                      <CreateApp
+                        key="pc"
+                        orgId={workspace.id}
+                        applications={applications}
+                      />
+                      <CreateApp
+                        key="mobile"
+                        orgId={workspace.id}
+                        applications={applications}
+                        isMobile
+                      />
+                    </div>
                   )}
                 </NoAppsFound>
               )}
@@ -1039,7 +1081,7 @@ export class Applications<
 
   public render() {
     return (
-      <PageWrapper displayName="Applications">
+      <PageWrapper displayName="应用管理">
         <LeftPane />
         <MediaQuery maxWidth={MOBILE_MAX_WIDTH}>
           {(matches: boolean) => (

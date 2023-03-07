@@ -313,7 +313,7 @@ function AppViewer(props: Props) {
                   isMobile={isMobile || isEmbed}
                   hasPages={pages.length > 1}
                   headerHeight={headerHeight}
-            ref={focusRef}
+                  ref={focusRef}
                   showGuidedTourMessage={showGuidedTourMessage}
                 >
                   {isInitialized && registered && <AppViewerPageContainer />}

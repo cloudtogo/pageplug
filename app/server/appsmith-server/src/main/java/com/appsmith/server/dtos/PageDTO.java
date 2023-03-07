@@ -55,8 +55,6 @@ public class PageDTO {
     @Transient
     Long lastUpdatedTime;
 
-    String icon;
-
     // This field will be used to store the default/root pageId and applicationId for actions generated for git
     // connected applications and will be used to connect actions across the branches
     @Transient
