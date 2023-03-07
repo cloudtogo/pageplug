@@ -47,6 +47,7 @@ import { isMobileLayout } from "selectors/editorSelectors";
 
 import WidgetFactory from "utils/WidgetFactory";
 import { Toaster } from "design-system-old";
+import { WidgetProps } from "widgets/BaseWidget";
 import { selectWidgetInitAction } from "actions/widgetSelectionActions";
 import { SelectionRequestType } from "./WidgetSelectUtils";
 const WidgetTypes = WidgetFactory.widgetTypes;
@@ -125,9 +126,12 @@ export function* showModalSaga(action: ReduxAction<{ modalId: string }>) {
 
   yield put(focusWidget(action.payload.modalId));
 
+  const widgetLikeProps = {
+    widgetId: action.payload.modalId,
+  } as WidgetProps;
   const metaProps: Record<string, unknown> = yield select(
     getWidgetMetaProps,
-    action.payload.modalId,
+    widgetLikeProps,
   );
   if (!metaProps || !metaProps.isVisible) {
     // Then show the modal we would like to show.

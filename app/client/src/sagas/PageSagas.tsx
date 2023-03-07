@@ -78,6 +78,7 @@ import {
   getCurrentPageId,
   getCurrentPageName,
   getPageById,
+  previewModeSelector,
   isMobileLayout,
 } from "selectors/editorSelectors";
 import {
@@ -574,6 +575,7 @@ export function* saveLayoutSaga(action: ReduxAction<{ isRetry?: boolean }>) {
   try {
     const currentPageId: string = yield select(getCurrentPageId);
     const currentPage: Page = yield select(getPageById(currentPageId));
+    const isPreviewMode: boolean = yield select(previewModeSelector);
 
     const appMode: APP_MODE | undefined = yield select(getAppMode);
 
@@ -588,7 +590,7 @@ export function* saveLayoutSaga(action: ReduxAction<{ isRetry?: boolean }>) {
       });
     }
 
-    if (appMode === APP_MODE.EDIT) {
+    if (appMode === APP_MODE.EDIT && !isPreviewMode) {
       yield put(saveLayout(action.payload.isRetry));
     }
   } catch (error) {
