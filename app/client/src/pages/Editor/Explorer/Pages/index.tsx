@@ -52,7 +52,7 @@ import {
 } from "@appsmith/utils/permissionHelpers";
 import { AppState } from "@appsmith/reducers";
 import { pageChanged } from "actions/focusHistoryActions";
-import { TooltipComponent } from "design-system";
+import { TooltipComponent } from "design-system-old";
 
 const ENTITY_HEIGHT = 36;
 const MIN_PAGES_HEIGHT = 60;

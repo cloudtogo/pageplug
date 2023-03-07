@@ -7,7 +7,7 @@ import {
   NONE,
   SAFE_ICON_NAMES,
 } from "components/propertyControls/taro/IconNames";
-import { TooltipComponent } from "design-system";
+import { TooltipComponent } from "design-system-old";
 
 const StyledButton = styled(Button)`
   box-shadow: none !important;

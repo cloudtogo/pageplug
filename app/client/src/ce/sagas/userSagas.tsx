@@ -44,7 +44,6 @@ import { flushErrorsAndRedirect } from "actions/errorActions";
 import localStorage from "utils/localStorage";
 import { Toaster, Variant } from "design-system-old";
 import log from "loglevel";
-import { getAppsmithConfigs } from "@appsmith/configs";
 
 import { getCurrentUser } from "selectors/usersSelectors";
 import {
@@ -112,6 +111,7 @@ export function* createUserSaga(
 }
 
 export function* waitForSegmentInit(skipWithAnonymousId: boolean) {
+  return;
   if (skipWithAnonymousId && AnalyticsUtil.getAnonymousId()) return;
   const currentUser: User | undefined = yield select(getCurrentUser);
   const segmentState: SegmentState | undefined = yield select(getSegmentState);
@@ -202,6 +202,7 @@ export function* getCurrentUserSaga() {
 }
 
 export function* runUserSideEffectsSaga() {
+  return;
   const currentUser: User = yield select(getCurrentUser);
   const { enableTelemetry } = currentUser;
 

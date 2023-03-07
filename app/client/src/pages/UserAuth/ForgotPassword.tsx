@@ -114,9 +114,7 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
             ]}
             intent="warning"
             linkAs={Link}
-            message={
-              "系统未开通邮件服务，不能正常发送重置邮件"
-            }
+            message={"系统未开通邮件服务，不能正常发送重置邮件"}
           />
         )}
         {submitFailed && error && (
