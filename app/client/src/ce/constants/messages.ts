@@ -268,6 +268,7 @@ export const ERROR_WIDGET_COPY_NO_WIDGET_SELECTED = () => `请选择要复制的
 export const ERROR_WIDGET_COPY_NOT_ALLOWED = () => `不能复制该组件`;
 export const WIDGET_CUT = (widgetName: string) => `${widgetName} 剪切成功`;
 export const ERROR_WIDGET_CUT_NO_WIDGET_SELECTED = () => `请选择要剪切的组件`;
+export const ERROR_WIDGET_CUT_NOT_ALLOWED = () => `不能剪切该组件`;
 export const SELECT_ALL_WIDGETS_MSG = () => `已选中页面中所有的组件`;
 export const ERROR_ADD_WIDGET_FROM_QUERY = () => `组件添加失败`;
 
@@ -1015,11 +1016,17 @@ export const PROPERTY_SEARCH_INPUT_PLACEHOLDER = "搜索组件属性";
 
 // API Pane
 export const API_PANE_NO_BODY = () => "当前请求没有请求体";
+export const API_PANE_AUTO_GENERATED_HEADER = () =>
+  "PagePlug 会根据 API 的请求体类型自动生成请求头 content-type，如果需要覆盖它，请新建 content-type 请求头字段";
+export const API_PANE_DUPLICATE_HEADER = (headerName: string) =>
+  `这个重复的请求头会被你添加的 ${headerName} 请求头覆盖`;
 
 export const TABLE_WIDGET_TOTAL_RECORD_TOOLTIP = () =>
   "保存数据表的总行数，用来在分页的时候计算是否还有下一页/上一页";
 export const CREATE_DATASOURCE_TOOLTIP = () => "添加新数据源";
 export const ADD_QUERY_JS_TOOLTIP = () => "新建查询 / JS对象";
+export const LIST_WIDGET_V2_TOTAL_RECORD_TOOLTIP = () =>
+  "计算总数据行数，这个可以帮助我们计算出应该展示的页数";
 
 // Add datasource
 export const GENERATE_APPLICATION_TITLE = () => "新建页面";

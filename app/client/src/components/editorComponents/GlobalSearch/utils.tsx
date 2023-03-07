@@ -362,7 +362,7 @@ export const actionOperations: ActionOperation[] = [
     title: "新建 JS 对象",
     desc: "创建一个新的 JS 对象",
     kind: SEARCH_ITEM_TYPES.actionOperation,
-    icon: JsFileIconV2,
+    icon: JsFileIconV2(),
     action: (pageId: string, from: EventLocation) =>
       createNewJSCollection(pageId, from),
   },

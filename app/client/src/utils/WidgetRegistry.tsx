@@ -161,6 +161,9 @@ import CategorySliderWidget, {
 import CodeScannerWidget, {
   CONFIG as CODE_SCANNER_WIDGET_CONFIG,
 } from "widgets/CodeScannerWidget";
+import ListWidgetV2, {
+  CONFIG as LIST_WIDGET_CONFIG_V2,
+} from "widgets/ListWidgetV2";
 
 import FormilyWidget, {
   CONFIG as FORMILY_WIDGET_CONFIG,
@@ -245,7 +248,6 @@ export const ALL_WIDGETS_AND_CONFIG: [any, WidgetConfiguration][] = [
   [DatePickerWidget2, DATE_PICKER_WIDGET_2_CONFIG],
   [SwitchWidget, SWITCH_WIDGET_CONFIG],
   [FormWidget, FORM_WIDGET_CONFIG],
-  [ListWidget, LIST_WIDGET_CONFIG],
   [RateWidget, RATE_WIDGET_CONFIG],
   [IframeWidget, IFRAME_WIDGET_CONFIG],
   [TabsMigratorWidget, TABS_MIGRATOR_WIDGET_CONFIG],
@@ -276,6 +278,7 @@ export const ALL_WIDGETS_AND_CONFIG: [any, WidgetConfiguration][] = [
   [RangeSliderWidget, RANGE_SLIDER_WIDGET_CONFIG],
   [CategorySliderWidget, CATEGORY_SLIDER_WIDGET_CONFIG],
   [CodeScannerWidget, CODE_SCANNER_WIDGET_CONFIG],
+  [ListWidgetV2, LIST_WIDGET_CONFIG_V2],
 
   [FormilyWidget, FORMILY_WIDGET_CONFIG],
 
@@ -308,6 +311,8 @@ export const ALL_WIDGETS_AND_CONFIG: [any, WidgetConfiguration][] = [
   [FormButtonWidget, FORM_BUTTON_WIDGET_CONFIG],
   [ProgressWidget, PROGRESS_WIDGET_CONFIG],
   [CircularProgressWidget, CIRCULAR_PROGRESS_WIDGET_CONFIG],
+  [ListWidget, LIST_WIDGET_CONFIG],
+
   /*
    * If a newly added widget works well inside the list widget,
    * please add widget type in the List widget's allowed widget
