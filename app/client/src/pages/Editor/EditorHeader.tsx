@@ -69,7 +69,7 @@ import { fetchUsersForWorkspace } from "@appsmith/actions/workspaceActions";
 import { WorkspaceUser } from "@appsmith/constants/workspaceConstants";
 
 import { getIsGitConnected } from "selectors/gitSyncSelectors";
-import { IconWrapper } from "design-system";
+import { IconWrapper } from "design-system-old";
 import {
   CLOSE_ENTITY_EXPLORER_MESSAGE,
   createMessage,
@@ -204,6 +204,16 @@ const AppsmithLink = styled((props) => {
 const DeploySection = styled.div`
   display: flex;
   align-items: center;
+`;
+
+const StyledDeployButton = styled(Button)`
+  margin-right: ${(props) => props.theme.spaces[9]}px;
+  height: ${(props) => props.theme.smallHeaderHeight};
+  ${getTypographyByKey("btnLarge")}
+  padding: ${(props) => props.theme.spaces[2]}px;
+  border-radius: 0;
+  margin-right: 0px;
+  height: 30px;
 `;
 
 const BindingBanner = styled.div`

@@ -307,7 +307,7 @@ class DatasourceSaaSEditor extends JSONtoForm<Props, State> {
                     category={Category.secondary}
                     className="t--edit-datasource"
                     onClick={() => {
-                        this.props.history.replace(
+                      this.props.history.replace(
                         saasEditorDatasourceIdURL({
                           pageId: pageId || "",
                           pluginPackageName,

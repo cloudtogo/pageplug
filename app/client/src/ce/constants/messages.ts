@@ -119,10 +119,6 @@ export const INVITE_TAB = () => "邀请";
 export const INVITE_USERS_VALIDATION_EMAIL_LIST = () => `包含无效邮箱地址`;
 export const INVITE_USERS_VALIDATION_ROLE_EMPTY = () => `请选择角色`;
 
-export const INVITE_USERS_VALIDATION_EMAIL_LIST = () =>
-  `Invalid Email address(es) found`;
-export const INVITE_USERS_VALIDATION_ROLE_EMPTY = () => `Please select a role`;
-
 export const INVITE_USERS_EMAIL_LIST_PLACEHOLDER = () => `邮箱之间用逗号分隔`;
 export const INVITE_USERS_ROLE_SELECT_PLACEHOLDER = () => `请选择角色`;
 export const INVITE_USERS_ROLE_SELECT_LABEL = () => `角色`;
@@ -286,8 +282,7 @@ export const OAUTH_AUTHORIZATION_FAILED = "鉴权失败！请查看详情";
 export const OAUTH_AUTHORIZATION_APPSMITH_ERROR = "出错了";
 export const OAUTH_APPSMITH_TOKEN_NOT_FOUND = "没有发现 token";
 
-export const GSHEET_AUTHORIZATION_ERROR =
-  "数据源未授权，请授权后继续操作";
+export const GSHEET_AUTHORIZATION_ERROR = "数据源未授权，请授权后继续操作";
 
 export const LOCAL_STORAGE_QUOTA_EXCEEDED_MESSAGE = () =>
   "本地存储失败！已超出本地最大存储限制";
@@ -1288,15 +1283,13 @@ export const PAGE_SETTINGS_ACTION_NAME_CONFLICT_ERROR = (name: string) =>
 export const IN_APP_EMBED_SETTING = {
   applicationUrl: () => "应用地址",
   allowEmbeddingLabel: () => "支持嵌入",
-  allowEmbeddingTooltip: () =>
-    "应用可以嵌入到任何域名下，包括那些恶意网站",
+  allowEmbeddingTooltip: () => "应用可以嵌入到任何域名下，包括那些恶意网站",
   copy: () => "复制",
   copied: () => "已复制",
   limitEmbeddingLabel: () => "限制嵌入",
   limitEmbeddingTooltip: () => "应用只能嵌入到特定的域名下",
   disableEmbeddingLabel: () => "不能嵌入",
-  disableEmbeddingTooltip: () =>
-    "应用不能被嵌入到任何域名下",
+  disableEmbeddingTooltip: () => "应用不能被嵌入到任何域名下",
   embed: () => "嵌入",
   embedSnippetTitle: () => "复制嵌入代码",
   change: () => "修改",
@@ -1337,28 +1330,21 @@ export const customJSLibraryMessages = {
   INSTALLATION_FAILED: () => "安装失败",
   INSTALLED_ALREADY: (accessor: string) =>
     `已经安装过这个库了，你可以通过 ${accessor} 来使用它`,
-  UNINSTALL_FAILED: (name: string) =>
-    `不能卸载 ${name}，请稍后重试`,
-  UNINSTALL_SUCCESS: (accessor: string) =>
-    `${accessor} 卸载成功`,
+  UNINSTALL_FAILED: (name: string) => `不能卸载 ${name}，请稍后重试`,
+  UNINSTALL_SUCCESS: (accessor: string) => `${accessor} 卸载成功`,
   LEARN_MORE_DESC: () => "如何使用这个功能？",
   UNSUPPORTED_LIB: () => `不支持这个库`,
   UNSUPPORTED_LIB_DESC: () =>
     `非常抱歉，因为平台限制不能支持这个库，请试试其他的库。`,
   LEARN_MORE: () => `了解更多`,
   REPORT_ISSUE: () => `报告错误`,
-  AUTOCOMPLETE_FAILED: (name: string) =>
-    `${name} 不支持代码补全`,
+  AUTOCOMPLETE_FAILED: (name: string) => `${name} 不支持代码补全`,
   CLIENT_LOAD_FAILED: (url: string) => `脚本拉取失败 ${url}`,
-  LIB_OVERRIDE_ERROR: (
-    name: string,
-  ) => `${name} 已安装，如果想安装另外的版本，请卸载后重新安装。`,
-  DEFS_FAILED_ERROR: (name: string) =>
-    `${name} 代码补全提示生成失败`,
-  IMPORT_URL_ERROR: (url: string) =>
-    `${url} 脚本安装失败`,
-  NAME_COLLISION_ERROR: (accessors: string) =>
-    `发现重名：${accessors}`,
+  LIB_OVERRIDE_ERROR: (name: string) =>
+    `${name} 已安装，如果想安装另外的版本，请卸载后重新安装。`,
+  DEFS_FAILED_ERROR: (name: string) => `${name} 代码补全提示生成失败`,
+  IMPORT_URL_ERROR: (url: string) => `${url} 脚本安装失败`,
+  NAME_COLLISION_ERROR: (accessors: string) => `发现重名：${accessors}`,
 };
 
 // Business Edition upgrade page

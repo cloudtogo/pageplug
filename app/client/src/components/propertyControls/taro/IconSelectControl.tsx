@@ -5,7 +5,7 @@ import { ItemListRenderer, ItemRenderer, Select } from "@blueprintjs/select";
 import { createVanIconComponent } from "@taroify/icons/van";
 import VantIcons from "./IconNames";
 import BaseControl, { ControlProps } from "../BaseControl";
-import { TooltipComponent } from "design-system";
+import { TooltipComponent } from "design-system-old";
 
 const IconSelectContainerStyles = createGlobalStyle<{
   targetWidth: number | undefined;

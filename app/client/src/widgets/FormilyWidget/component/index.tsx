@@ -31,7 +31,7 @@ import {
   FormButtonGroup,
   FormDrawer,
   FormDialog,
-} from "@formily/antd";
+} from "@formily/antd-v5";
 import { Card, Slider, Rate, Button } from "antd";
 import { FormType } from "widgets/FormilyWidget/widget";
 import styled from "styled-components";

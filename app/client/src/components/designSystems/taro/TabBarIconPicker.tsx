@@ -20,8 +20,8 @@ import {
   useEntityUpdateState,
   useEntityEditState,
 } from "pages/Editor/Explorer/hooks";
-import { Icon, IconSize, Switch } from "design-system";
-import { TooltipComponent } from "design-system";
+import { Icon, IconSize, Switch } from "design-system-old";
+import { TooltipComponent } from "design-system-old";
 import { Alignment } from "@blueprintjs/core";
 import { Position } from "@blueprintjs/core/lib/esm/common/position";
 import IconSelectControl from "components/propertyControls/taro/IconSelectControl";

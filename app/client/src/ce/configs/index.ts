@@ -101,7 +101,7 @@ export const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
       (process.env.REACT_APP_CLIENT_LOG_LEVEL as
         | "debug"
         | "error"
-        | undefined) || "error",
+        | undefined) || "debug",
     google: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "",
     enableTNCPP: process.env.REACT_APP_TNC_PP
       ? process.env.REACT_APP_TNC_PP.length > 0
@@ -113,7 +113,7 @@ export const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
       ? process.env.REACT_APP_CLOUD_HOSTING.length > 0
       : false,
     appVersion: {
-      id: process.env.REACT_APP_VERSION_ID || "v1.8.15",
+      id: process.env.REACT_APP_VERSION_ID || "v1.9.8",
       releaseDate: process.env.REACT_APP_VERSION_RELEASE_DATE || "",
       edition: process.env.REACT_APP_VERSION_EDITION || "",
     },
