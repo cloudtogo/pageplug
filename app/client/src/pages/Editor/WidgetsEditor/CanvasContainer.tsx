@@ -7,7 +7,6 @@ import {
   previewModeSelector,
   getCanvasWidth,
   showCanvasTopSectionSelector,
-  getCanvasScale,
   getShowTabBar,
 } from "selectors/editorSelectors";
 import styled from "styled-components";
@@ -66,7 +65,6 @@ function CanvasContainer() {
   const isAppThemeChanging = useSelector(getAppThemeIsChanging);
   const showCanvasTopSection = useSelector(showCanvasTopSectionSelector);
   const showTabBar = useSelector(getShowTabBar);
-  const canvasScale = useSelector(getCanvasScale);
 
   const isLayoutingInitialized = useDynamicAppLayout();
   const isPageInitializing = isFetchingPage || !isLayoutingInitialized;
@@ -93,7 +91,6 @@ function CanvasContainer() {
   if (!isPageInitializing && widgetsStructure) {
     node = (
       <Canvas
-        canvasScale={canvasScale}
         canvasWidth={canvasWidth}
         pageId={params.pageId}
         widgetsStructure={widgetsStructure}

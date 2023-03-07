@@ -51,7 +51,6 @@ import {
   hasManagePagePermission,
 } from "@appsmith/utils/permissionHelpers";
 import { AppState } from "@appsmith/reducers";
-import { pageChanged } from "actions/focusHistoryActions";
 import { TooltipComponent } from "design-system-old";
 
 const ENTITY_HEIGHT = 36;
@@ -70,10 +69,12 @@ const StyledEntity = styled(Entity)<{ pagesSize?: number }>`
       overflow-y: auto;
     }
   }
+
   &.page .${EntityClassNames.PRE_RIGHT_ICON} {
     width: 20px;
     right: 0;
   }
+
   &.page:hover {
     & .${EntityClassNames.PRE_RIGHT_ICON} {
       display: none;
@@ -133,16 +134,6 @@ function Pages() {
       history.push(navigateToUrl, {
         invokedBy: NavigationMethod.EntityExplorer,
       });
-      const currentURL = navigateToUrl.split(/(?=\?)/g);
-      dispatch(
-        pageChanged(
-          page.pageId,
-          currentURL[0],
-          currentURL[1],
-          location.pathname,
-          location.search,
-        ),
-      );
     },
     [location.pathname],
   );
