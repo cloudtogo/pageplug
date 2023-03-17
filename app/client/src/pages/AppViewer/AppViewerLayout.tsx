@@ -1,24 +1,17 @@
 import React, { ReactNode, useMemo } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import ProLayout, { PageContainer } from "@ant-design/pro-layout";
+import { ProLayout, PageContainer } from "@ant-design/pro-layout";
 import history from "utils/history";
 import { withRouter, RouteComponentProps } from "react-router";
 import { getIsInitialized } from "selectors/appViewSelectors";
+import { getViewModePageList, getCurrentPage } from "selectors/editorSelectors";
 import {
+  getCurrentApplication,
   isMobileLayout,
-  getViewModePageList,
-  getCurrentPage,
-} from "selectors/editorSelectors";
-import { getCurrentApplication } from "selectors/applicationSelectors";
+} from "selectors/applicationSelectors";
 import { DEFAULT_VIEWER_LOGO } from "constants/AppConstants";
 import { viewerURL } from "RouteBuilder";
-
-const StaticHeader = styled.div`
-  background: var(--layout-header-bg-color);
-  height: 100%;
-  margin: 0 -16px;
-`;
 
 const ColorfulLayout = styled.div<{
   color: string;
@@ -49,12 +42,14 @@ const makeRouteNode = (pagesMap: any, newTree: any[]) => (node: any) => {
     item = {
       name: node.title,
       icon,
+      path: "/",
       routes,
     };
   } else {
     item = {
       name: node.title,
       icon,
+      path: "/",
     };
   }
   if (item) {
@@ -134,13 +129,9 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
   return (
     <ColorfulLayout color={initState.color}>
       <ProLayout
-        navTheme="light"
         title={appName}
         logo={initState.logoUrl || DEFAULT_VIEWER_LOGO}
-        // waterMarkProps={{
-        //   content: appName,
-        // }}
-        headerContentRender={() => <StaticHeader />}
+        layout="mix"
         location={location}
         collapsedButtonRender={false}
         menuItemRender={(item: any, dom: any) => (
@@ -155,6 +146,15 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
         iconfontUrl="//at.alicdn.com/t/font_3399269_yx9ykuzs72.js"
         route={{
           routes: initState.treeData,
+        }}
+        token={{
+          header: {
+            colorBgHeader: "var(--layout-header-bg-color)",
+            colorHeaderTitle: "#fff",
+          },
+          // pageContainer: {
+          //   paddingInlinePageContainerContent: 0,
+          // },
         }}
       >
         <PageContainer>{children}</PageContainer>

@@ -259,6 +259,7 @@ const StyledButton = styled(Button)`
   padding: 0 6px;
   height: ${(props) => props.theme.smallHeaderHeight};
   color: ${Colors.GREY_900};
+  margin-bottom: 1px;
 
   svg {
     height: 18px;
@@ -299,6 +300,7 @@ export function ShareButtonComponent() {
       size={Size.medium}
       tag={"button"}
       text={createMessage(EDITOR_HEADER.share)}
+      width={"83px"}
     />
   );
 }
@@ -594,7 +596,7 @@ export function EditorHeader(props: EditorHeaderProps) {
             "help-bar": "true",
           })}
         >
-          <HelpBar />
+          {/* <HelpBar /> */}
         </HeaderSection>
         <HeaderSection className="gap-x-2">
           <Boxed
@@ -650,7 +652,7 @@ export function EditorHeader(props: EditorHeaderProps) {
                   size={Size.medium}
                   tag={"button"}
                   text={DEPLOY_MENU_OPTION()}
-                  width={"88px"}
+                  width={"83px"}
                 />
               </TooltipComponent>
 

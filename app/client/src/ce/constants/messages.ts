@@ -907,7 +907,7 @@ export const ADD_WIDGET_TOOLTIP = () => "查找、添加组件";
 export const HELP_RESOURCE_TOOLTIP = () => "帮助资源";
 export const COPY_ELEMENT = () => "复制元素";
 export const LAYOUT_DROPDOWN_TOOLTIP = () => "选择你的应用宽度";
-export const DEPLOY_BUTTON_TOOLTIP = () => "发布应用的当前版本";
+export const DEPLOY_BUTTON_TOOLTIP = () => "发布最新应用";
 export const SHARE_BUTTON_TOOLTIP = () => "邀请你的团队到 PagePlug";
 export const SHARE_BUTTON_TOOLTIP_WITH_USER = (length: number) => () =>
   `和 ${length} 位小伙伴共享`;

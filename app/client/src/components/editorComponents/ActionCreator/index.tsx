@@ -18,8 +18,8 @@ import {
 import {
   getCurrentApplicationId,
   getCurrentPageId,
-  isMobileLayout,
 } from "selectors/editorSelectors";
+import { isMobileLayout } from "selectors/applicationSelectors";
 import {
   getActionsForCurrentPage,
   getJSCollectionsForCurrentPage,

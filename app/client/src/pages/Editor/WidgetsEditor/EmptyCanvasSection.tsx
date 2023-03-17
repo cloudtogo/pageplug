@@ -24,7 +24,7 @@ import {
   TEMPLATE_CARD_TITLE,
 } from "@appsmith/constants/messages";
 import { selectFeatureFlags } from "selectors/usersSelectors";
-import { isMobileLayout } from "selectors/editorSelectors";
+import { isMobileLayout } from "selectors/applicationSelectors";
 import FeatureFlags from "entities/FeatureFlags";
 import { deleteCanvasCardsState } from "actions/editorActions";
 

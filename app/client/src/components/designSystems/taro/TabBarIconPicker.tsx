@@ -4,11 +4,8 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import { AppState } from "@appsmith/reducers";
 import { updatePage } from "actions/pageActions";
 import { UpdatePageRequest } from "api/PageApi";
-import {
-  getViewModePageList,
-  getCurrentPage,
-  isMobileLayout,
-} from "selectors/editorSelectors";
+import { getViewModePageList, getCurrentPage } from "selectors/editorSelectors";
+import { isMobileLayout } from "selectors/applicationSelectors";
 import {
   Page,
   ReduxActionTypes,

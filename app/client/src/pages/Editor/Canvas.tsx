@@ -9,7 +9,8 @@ import React from "react";
 import { RenderModes } from "constants/WidgetConstants";
 import { useSelector } from "react-redux";
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
-import { previewModeSelector, isMobileLayout } from "selectors/editorSelectors";
+import { previewModeSelector } from "selectors/editorSelectors";
+import { isMobileLayout } from "selectors/applicationSelectors";
 import useWidgetFocus from "utils/hooks/useWidgetFocus";
 
 interface CanvasProps {

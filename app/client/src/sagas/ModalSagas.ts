@@ -43,7 +43,7 @@ import { focusWidget, showModal } from "actions/widgetActions";
 import log from "loglevel";
 import { flatten } from "lodash";
 import AppsmithConsole from "utils/AppsmithConsole";
-import { isMobileLayout } from "selectors/editorSelectors";
+import { isMobileLayout } from "selectors/applicationSelectors";
 
 import WidgetFactory from "utils/WidgetFactory";
 import { Toaster } from "design-system-old";

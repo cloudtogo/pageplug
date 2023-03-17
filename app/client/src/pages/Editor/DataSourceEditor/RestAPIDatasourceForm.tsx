@@ -848,7 +848,7 @@ class DatasourceRestAPIEditor extends React.Component<
       _.get(connection, "ssl.authType") === SSLType.SELF_SIGNED_CERTIFICATE;
 
     return (
-      <Collapsible title="Advanced Settings">
+      <Collapsible title="高级配置">
         {isAuthenticationTypeOAuth2 && isGrantTypeAuthorizationCode && (
           <FormInputContainer
             data-replay-id={btoa("authentication.sendScopeWithRefreshToken")}
@@ -857,11 +857,11 @@ class DatasourceRestAPIEditor extends React.Component<
               "authentication.sendScopeWithRefreshToken",
               [
                 {
-                  label: "Yes",
+                  label: "是",
                   value: true,
                 },
                 {
-                  label: "No",
+                  label: "否",
                   value: false,
                 },
               ],
