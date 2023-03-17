@@ -30,6 +30,7 @@ const StyledButton = styled(Button)<{ active: boolean }>`
   padding: 0 ${(props) => props.theme.spaces[2]}px;
   color: ${Colors.GREY_900};
   height: ${(props) => props.theme.smallHeaderHeight};
+  margin-bottom: 1px;
 
   svg {
     height: 18px;
@@ -76,6 +77,7 @@ function ToggleModeButton() {
         size={Size.medium}
         tag={"button"}
         text={createMessage(EDITOR_HEADER.previewTooltip.text).toUpperCase()}
+        width={"83px"}
       />
     </TooltipComponent>
   );

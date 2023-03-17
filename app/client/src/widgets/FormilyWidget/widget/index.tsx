@@ -3,10 +3,12 @@ import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import { WidgetType } from "constants/WidgetConstants";
 import FormilyComponent from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
+import { Stylesheet } from "entities/AppTheming";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import { ConfigProvider } from "antd";
 
 class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
-  static getPropertyPaneConfig() {
+  static getPropertyPaneContentConfig() {
     return [
       {
         sectionName: "属性",
@@ -49,6 +51,32 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
             ],
             isBindProperty: false,
             isTriggerProperty: false,
+          },
+          {
+            propertyName: "modalWidth",
+            label: "弹窗宽度",
+            helpText: "支持设置各种样式单位，如屏幕百分比（%）、像素值（px）",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+            dependencies: ["formType"],
+            hidden: (props: FormilyWidgetProps) => {
+              return props.formType !== "MODAL";
+            },
+          },
+          {
+            propertyName: "drawerWidth",
+            label: "侧边抽屉宽度",
+            helpText: "支持设置各种样式单位，如屏幕百分比（%）、像素值（px）",
+            controlType: "INPUT_TEXT",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+            dependencies: ["formType"],
+            hidden: (props: FormilyWidgetProps) => {
+              return props.formType !== "DRAWER";
+            },
           },
           {
             propertyName: "triggerLabel",
@@ -126,6 +154,60 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
     ];
   }
 
+  static getPropertyPaneStyleConfig() {
+    return [
+      {
+        sectionName: "属性",
+        children: [
+          {
+            propertyName: "componentSize",
+            label: "组件尺寸",
+            helpText: "表单中组件的尺寸",
+            controlType: "ICON_TABS",
+            fullWidth: true,
+            options: [
+              {
+                label: "小",
+                value: "small",
+              },
+              {
+                label: "中",
+                value: "middle",
+              },
+              {
+                label: "大",
+                value: "large",
+              },
+            ],
+            isBindProperty: false,
+            isTriggerProperty: false,
+          },
+        ],
+      },
+      {
+        sectionName: "颜色",
+        children: [
+          {
+            propertyName: "themeColor",
+            label: "主题色",
+            helpText: "表单中组件的主题色",
+            controlType: "COLOR_PICKER",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.TEXT },
+          },
+        ],
+      },
+    ];
+  }
+
+  static getStylesheetConfig(): Stylesheet {
+    return {
+      themeColor: "{{appsmith.theme.colors.primaryColor}}",
+    };
+  }
+
   static getMetaPropertiesMap(): Record<string, undefined> {
     return {
       formData: undefined,
@@ -152,21 +234,38 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
       resetLabel,
       schema,
       initValue,
+      componentSize,
+      themeColor,
+      widgetId,
+      modalWidth,
+      drawerWidth,
     } = this.props;
     return (
-      <FormilyComponent
-        onFormSubmit={this.onFormSubmit}
-        {...{
-          title,
-          formType,
-          triggerLabel,
-          submitLabel,
-          showReset,
-          resetLabel,
-          schema,
-          initValue,
+      <ConfigProvider
+        componentSize={componentSize}
+        theme={{
+          token: {
+            colorPrimary: themeColor,
+          },
         }}
-      />
+      >
+        <FormilyComponent
+          onFormSubmit={this.onFormSubmit}
+          {...{
+            title,
+            formType,
+            triggerLabel,
+            submitLabel,
+            showReset,
+            resetLabel,
+            schema,
+            initValue,
+            widgetId,
+            modalWidth,
+            drawerWidth,
+          }}
+        />
+      </ConfigProvider>
     );
   }
 
@@ -186,6 +285,10 @@ export interface FormilyWidgetProps extends WidgetProps {
   formData: any;
   schema: string;
   onFormSubmit?: string;
+  modalWidth?: string;
+  drawerWidth?: string;
+  componentSize: any;
+  themeColor?: string;
 }
 export type FormType = "PLAIN" | "MODAL" | "DRAWER";
 

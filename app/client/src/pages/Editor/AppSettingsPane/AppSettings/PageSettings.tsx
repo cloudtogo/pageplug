@@ -27,8 +27,8 @@ import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   getCurrentApplicationId,
   selectApplicationVersion,
-  isMobileLayout,
 } from "selectors/editorSelectors";
+import { isMobileLayout } from "selectors/applicationSelectors";
 import { getUpdatingEntity } from "selectors/explorerSelector";
 import { getPageLoadingState } from "selectors/pageListSelectors";
 import styled from "styled-components";

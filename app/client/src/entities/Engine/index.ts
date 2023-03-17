@@ -18,8 +18,10 @@ import log from "loglevel";
 import { call, put, select } from "redux-saga/effects";
 import { failFastApiCalls } from "sagas/InitSagas";
 import { getDefaultPageId } from "sagas/selectors";
-import { getCurrentApplication } from "selectors/applicationSelectors";
-import { isMobileLayout } from "selectors/editorSelectors";
+import {
+  getCurrentApplication,
+  isMobileLayout,
+} from "selectors/applicationSelectors";
 import history from "utils/history";
 import URLRedirect from "entities/URLRedirect/index";
 import URLGeneratorFactory from "entities/URLRedirect/factory";

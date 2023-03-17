@@ -90,9 +90,9 @@ class FormilyControl extends BaseControl<ControlProps> {
               </Center>
             </DrawerHeader>
           }
-          visible={showEditor}
+          open={showEditor}
           onClose={this.toggle}
-          afterVisibleChange={this.onVisibleChanged}
+          afterOpenChange={this.onVisibleChanged}
           height="100%"
           placement="bottom"
           className="designable-drawer"

@@ -21,9 +21,12 @@ import "./polyfills";
 import GlobalStyles from "globalStyles";
 // locale
 import { ConfigProvider } from "antd";
+import zhCNantd from "antd/locale/zh_CN";
 import zhCN from "locales/zh-CN";
 import { IntlProvider } from "react-intl";
 import "moment/locale/zh-cn";
+import "dayjs/locale/zh-cn";
+import { StyleProvider } from "@ant-design/cssinjs";
 // enable autofreeze only in development
 import { setAutoFreeze } from "immer";
 import AppErrorBoundary from "AppErrorBoundry";
@@ -85,17 +88,20 @@ class ThemedApp extends React.Component<{
         <GlobalStyles />
         <AppErrorBoundary>
           <IntlProvider locale="zh-CN" messages={zhCN}>
-            <ConfigProvider
-              theme={{
-                token: {
-                  colorPrimary: "var(--ads-color-brand)",
-                },
-              }}
-            >
-              <TaroifyTheme theme={taroifyTheme}>
-                <AppRouter />
-              </TaroifyTheme>
-            </ConfigProvider>
+            <StyleProvider hashPriority="high">
+              <ConfigProvider
+                locale={zhCNantd}
+                theme={{
+                  token: {
+                    colorPrimary: "#2cbba6",
+                  },
+                }}
+              >
+                <TaroifyTheme theme={taroifyTheme}>
+                  <AppRouter />
+                </TaroifyTheme>
+              </ConfigProvider>
+            </StyleProvider>
           </IntlProvider>
         </AppErrorBoundary>
       </ThemeProvider>

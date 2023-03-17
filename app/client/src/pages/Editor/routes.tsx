@@ -141,11 +141,11 @@ function EditorsRouter() {
           exact
           path={`${path}${GENERATE_TEMPLATE_FORM_PATH}`}
         />
-          <SentryRoute
-            component={ViewerLayoutEditor}
-            exact
-            path={`${path}${VIEWER_LAYOUT_CONFIG_PATH}`}
-          />
+        <SentryRoute
+          component={ViewerLayoutEditor}
+          exact
+          path={`${path}${VIEWER_LAYOUT_CONFIG_PATH}`}
+        />
       </Switch>
     </Wrapper>
   );

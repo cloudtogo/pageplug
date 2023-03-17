@@ -107,6 +107,9 @@ public enum AppsmithErrorCode {
     SIGNUP_DISABLED("AE-SGN-4033", "Signup disabled"),
     TOO_MANY_REQUESTS("AE-TMR-4029", "Too many requests"),
     USER_NOT_FOUND("AE-USR-4004", "User not found"),
+    CLOUDOS_API_ERROR("AE-CLD-9001", "cloudos 数据源接口请求失败"),
+    CLOUDOS_WECHAT_TOKEN_ERROR("AE-MINI-9002", "微信 access_token 获取失败"),
+    CLOUDOS_WECHAT_PREVIEW_ERROR("AE-MINI-9003", "微信小程序码获取失败"),
     ;
     private final String code;
     private final String description;

@@ -5,7 +5,7 @@ import * as Sentry from "@sentry/react";
 import { PopoverPosition } from "@blueprintjs/core";
 import { TooltipComponent, Button, Size, Category } from "design-system-old";
 import { useSelector } from "react-redux";
-import { isMobileLayout } from "selectors/editorSelectors";
+import { isMobileLayout } from "selectors/applicationSelectors";
 
 import { Colors } from "constants/Colors";
 import { MainContainerLayoutControl } from "../MainContainerLayoutControl";

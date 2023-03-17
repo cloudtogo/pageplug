@@ -32,7 +32,7 @@ import {
 } from "@appsmith/constants/messages";
 import HotKeys from "../Files/SubmenuHotkeys";
 import { selectFeatureFlags } from "selectors/usersSelectors";
-import { isMobileLayout } from "selectors/editorSelectors";
+import { isMobileLayout } from "selectors/applicationSelectors";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 
 const MenuItem = styled.div<{ active: boolean }>`

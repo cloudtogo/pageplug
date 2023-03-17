@@ -10,6 +10,7 @@ import {
   getCurrentPageId,
   getPageList,
 } from "selectors/editorSelectors";
+import { getSelectedAppThemeProperties } from "selectors/appThemingSelectors";
 import { builderURL } from "RouteBuilder";
 import {
   SortableTreeWithoutDndContext as SortableTree,
@@ -182,12 +183,14 @@ function PagesEditor() {
   const appName = useSelector(getCurrentApplication)?.name;
   const currentLayout = useSelector(getCurrentApplication)?.viewerLayout;
   const pages = useSelector(getPageList);
+  const appPrimaryColor = useSelector(getSelectedAppThemeProperties)?.colors
+    .primaryColor;
 
   const initState = useMemo(() => {
     let init = {
       logoUrl: "",
       name: "",
-      color: Colors.MINT_GREEN,
+      color: appPrimaryColor,
       treeData: pages.map((p) => ({
         title: p.pageName,
         pageId: p.pageId,

@@ -19,9 +19,9 @@ import * as Sentry from "@sentry/react";
 import {
   getViewModePageList,
   getShowTabBar,
-  isMobileLayout,
   getCurrentPage,
 } from "selectors/editorSelectors";
+import { isMobileLayout } from "selectors/applicationSelectors";
 import { getThemeDetails, ThemeMode } from "selectors/themeSelectors";
 import TabBar from "components/designSystems/taro/TabBar";
 import PreviewQRCode from "./PreviewQRCode";
