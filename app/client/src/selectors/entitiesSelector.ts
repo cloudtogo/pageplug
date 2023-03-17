@@ -20,7 +20,6 @@ import { AppStoreState } from "reducers/entityReducers/appReducer";
 import { JSCollectionDataState } from "reducers/entityReducers/jsActionsReducer";
 import { DefaultPlugin, GenerateCRUDEnabledPluginMap } from "api/PluginApi";
 import { JSAction, JSCollection } from "entities/JSCollection";
-import { replacePluginIcon } from "utils/AppsmithUtils";
 import { APP_MODE } from "entities/App";
 import { ExplorerFileEntity } from "@appsmith/pages/Editor/Explorer/helpers";
 import { ActionValidationConfigMap } from "constants/PropertyControlConstants";
@@ -34,6 +33,13 @@ import {
 import { InstallState } from "reducers/uiReducers/libraryReducer";
 import recommendedLibraries from "pages/Editor/Explorer/Libraries/recommendedLibraries";
 import { TJSLibrary } from "workers/common/JSLibrary";
+
+const replacePluginIcon = (url: string) => {
+  return url
+    ?.replace("https://s3.us-east-2.amazonaws.com/assets.appsmith.com", "")
+    ?.replace("https://assets.appsmith.com", "")
+    ?.replace(/RestAPI\.png$/g, "RestAPI.svg");
+};
 
 export const getEntities = (state: AppState): AppState["entities"] =>
   state.entities;

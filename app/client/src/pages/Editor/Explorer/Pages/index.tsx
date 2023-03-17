@@ -10,8 +10,8 @@ import {
   getCurrentApplication,
   getCurrentApplicationId,
   getCurrentPageId,
-  isMobileLayout,
 } from "selectors/editorSelectors";
+import { isMobileLayout } from "selectors/applicationSelectors";
 import Entity, { EntityClassNames } from "../Entity";
 import history, { NavigationMethod } from "utils/history";
 import { createPage, updatePage } from "actions/pageActions";

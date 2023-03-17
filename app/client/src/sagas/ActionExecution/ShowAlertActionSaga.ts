@@ -6,7 +6,7 @@ import {
 } from "sagas/ActionExecution/errorUtils";
 import { getType, Types } from "utils/TypeHelpers";
 import { select } from "redux-saga/effects";
-import { isMobileLayout } from "selectors/editorSelectors";
+import { isMobileLayout } from "selectors/applicationSelectors";
 import Taro from "@tarojs/taro";
 import { TShowAlertDescription } from "workers/Evaluation/fns/showAlert";
 

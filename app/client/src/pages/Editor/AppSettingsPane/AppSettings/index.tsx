@@ -9,7 +9,7 @@ import SectionHeader, { SectionHeaderProps } from "./SectionHeader";
 import DraggablePageList from "./DraggablePageList";
 import PageSettings from "./PageSettings";
 import { getAppSettingsPane } from "selectors/appSettingsPaneSelectors";
-import { isMobileLayout } from "selectors/editorSelectors";
+import { isMobileLayout } from "selectors/applicationSelectors";
 import {
   createMessage,
   GENERAL_SETTINGS_SECTION_CONTENT_HEADER,
