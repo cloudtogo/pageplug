@@ -22,7 +22,8 @@ export type ActionTriggerKeys =
   | "CONFIRMATION_MODAL"
   | "POST_MESSAGE"
   | "SET_TIMEOUT"
-  | "CLEAR_TIMEOUT";
+  | "CLEAR_TIMEOUT"
+  | "CALL_FUNC";
 
 export const ActionTriggerFunctionNames: Record<ActionTriggerKeys, string> = {
   CLEAR_INTERVAL: "clearInterval",
@@ -46,6 +47,7 @@ export const ActionTriggerFunctionNames: Record<ActionTriggerKeys, string> = {
   POST_MESSAGE: "postWindowMessage",
   SET_TIMEOUT: "setTimeout",
   CLEAR_TIMEOUT: "clearTimeout",
+  CALL_FUNC: "callFunc",
 };
 
 export interface ActionDescriptionInterface<T, Type extends ActionTriggerKeys> {
@@ -204,6 +206,17 @@ export type PostMessageDescription = ActionDescriptionInterface<
   "POST_MESSAGE"
 >;
 
+type EchartActionPayload = {
+  options?: any;
+  widgetName: string;
+  funcName: string;
+};
+
+export type EchartActionDescription = ActionDescriptionInterface<
+  EchartActionPayload,
+  "CALL_FUNC"
+>;
+
 export type ActionDescription =
   | RunPluginActionDescription
   | ClearPluginActionDescription
@@ -223,4 +236,5 @@ export type ActionDescription =
   | WatchCurrentLocationDescription
   | StopWatchingCurrentLocationDescription
   | ConfirmationModalDescription
-  | PostMessageDescription;
+  | PostMessageDescription
+  | EchartActionDescription;
