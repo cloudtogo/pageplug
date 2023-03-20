@@ -2,9 +2,8 @@ import React from "react";
 import { get, isString } from "lodash";
 import BaseControl, { ControlProps } from "./BaseControl";
 import { ControlWrapper, StyledPropertyPaneButton } from "./StyledControls";
-import styled from "constants/DefaultTheme";
 import { FormIcons } from "icons/FormIcons";
-import { AnyStyledComponent } from "styled-components";
+import styled, { AnyStyledComponent } from "styled-components";
 import { CodeEditorExpected } from "components/editorComponents/CodeEditor";
 import { InputText } from "components/propertyControls/InputTextControl";
 import {
@@ -13,7 +12,7 @@ import {
   EditorTheme,
   TabBehaviour,
 } from "components/editorComponents/CodeEditor/EditorConfig";
-import { Size, Category } from "design-system";
+import { Size, Category } from "design-system-old";
 import { AllChartData, ChartData } from "widgets/ChartWidget/constants";
 import { generateReactKey } from "utils/generators";
 import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
