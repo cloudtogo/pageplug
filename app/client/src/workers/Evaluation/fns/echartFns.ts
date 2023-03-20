@@ -1,7 +1,5 @@
 import { promisify } from "./utils/Promisify";
 
-export let geoLocationListener: ((e: MessageEvent<any>) => void) | null = null;
-
 function callFuncFnDescriptor(
   widgetName: string,
   funcName: string,
