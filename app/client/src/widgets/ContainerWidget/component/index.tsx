@@ -54,6 +54,7 @@ interface ContainerWrapperProps {
   resizeDisabled?: boolean;
   shouldScrollContents?: boolean;
   backgroundColor?: string;
+  backgroundImage?: string;
   widgetId: string;
   type: WidgetType;
   dropDisabled?: boolean;
@@ -127,6 +128,7 @@ function ContainerComponentWrapper(
       // getCanvasClassName is used to add a scrollable parent.
       $noScroll={props.$noScroll}
       backgroundColor={props.backgroundColor}
+      backgroundImage={props.backgroundImage}
       className={`${
         props.shouldScrollContents ? getCanvasClassName() : ""
       } ${generateClassName(props.widgetId)} container-with-scrollbar`}
@@ -167,7 +169,6 @@ function ContainerComponent(props: ContainerComponentProps) {
     <WidgetStyleContainer
       backgroundColor={props.backgroundColor}
       borderColor={props.borderColor}
-      backgroundImage={props.backgroundImage}
       borderRadius={props.borderRadius}
       borderWidth={props.borderWidth}
       boxShadow={props.boxShadow}
@@ -179,6 +180,7 @@ function ContainerComponent(props: ContainerComponentProps) {
       <ContainerComponentWrapper
         $noScroll={!!props.noScroll}
         backgroundColor={props.backgroundColor}
+        backgroundImage={props.backgroundImage}
         dropDisabled={props.dropDisabled}
         onClick={props.onClick}
         onClickCapture={props.onClickCapture}
