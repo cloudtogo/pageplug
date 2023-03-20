@@ -58,6 +58,8 @@ PagePlug 无需侵入客户架构，直接连接数据源（API、DB），任何
 ## DEMO 项目
 - 严选小程序（微信小程序）  
   <img src="static/pageplug/weapp_demo.png" width="200" />
+  
+（因小程序版本升级，目前旧的二维码使用会报错，待大版本更新后微信端可正常使用），可先在pc端体验感受：[体验地址](https://lowcode.methodot.com/applications/640042ebde5d5825c7acfd91/pages/640042ebde5d5825c7acfdae)
 
   PagePlug 制作的完整电商小程序案例，支持注册、登录、二级商品分类、商品搜索、商品详情、购物车、购买下单、收货地址管理、订单管理等功能。后端接口使用开源商城后台 [litmall](https://github.com/linlinjava/litemall) 
 
@@ -86,10 +88,13 @@ PagePlug 无需侵入客户架构，直接连接数据源（API、DB），任何
 - 🌱 [私有部署【Docker】](https://lowcode.methodot.com/app/pageplug/page1-63160074cb370d532de7f2af?embed=1)（推荐）  
   > 最低服务器配置：4G内存 + 2核CPU
 
+- 🤩[详细安装文档教程](https://appsmithcn.gitbook.io/appsmith-tutorial/xue-xi-wen-dang/bu-shu-an-zhuang/yuan-ma-ben-di-hua-bu-shu-windows-ban#4.1-qi-dong-ben-di-nginx-docker)
+  > 有问题可添加下方静静二维码，加入社区讨论学习
 
 <div id="dev" />
 
 ### 🎈 本地开发
+
 PagePlug 代码位于 /app 目录下，主要目录分别是：
 - /client -- React 前端项目，使用 create-react-app 脚手架生成，负责低代码的编辑器和 web 端展示
 - /server -- Java 后端项目，使用 Spring WebFlux 框架，负责低代码的后端服务、各种数据源的代理
@@ -163,7 +168,8 @@ yarn dev:weapp
 <div id="help" />
 
 ## 帮助
-- 部署安装遇到问题或者想加入社区交流群，扫描下方二维码联系PagePlug产品静静获取帮助  
+- 部署安装遇到问题或者想加入社区交流学习（目前1——7群已满，联系静静加入8群）
+- 扫描下方二维码联系PagePlug产品静静获取帮助  
   <img src="static/pageplug/wechat_help.jpg" width="200">
 - 联系作者  
   <img src="static/pageplug/wechat_author.jpg" width="200">
