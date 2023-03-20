@@ -8,7 +8,7 @@ import { getCurrentApplication } from "selectors/applicationSelectors";
 import {
   getCurrentApplicationId,
   getCurrentPageId,
-  getPageList,
+  getVisiblePageList,
 } from "selectors/editorSelectors";
 import { getSelectedAppThemeProperties } from "selectors/appThemingSelectors";
 import { builderURL } from "RouteBuilder";
@@ -182,7 +182,7 @@ function PagesEditor() {
   const pageId = useSelector(getCurrentPageId);
   const appName = useSelector(getCurrentApplication)?.name;
   const currentLayout = useSelector(getCurrentApplication)?.viewerLayout;
-  const pages = useSelector(getPageList);
+  const pages = useSelector(getVisiblePageList);
   const appPrimaryColor = useSelector(getSelectedAppThemeProperties)?.colors
     .primaryColor;
 

@@ -121,6 +121,10 @@ export const getCurrentLayoutId = (state: AppState) =>
 
 export const getPageList = (state: AppState) => state.entities.pageList.pages;
 
+export const getVisiblePageList = createSelector(getPageList, (list) => {
+  return list.filter((page) => !page.isHidden);
+});
+
 export const getPageById = (pageId: string) =>
   createSelector(getPageList, (pages: Page[]) =>
     pages.find((page) => page.pageId === pageId),
