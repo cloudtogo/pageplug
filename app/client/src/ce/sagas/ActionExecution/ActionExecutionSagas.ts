@@ -36,6 +36,7 @@ import {
   getCurrentLocationSaga,
   stopWatchCurrentLocation,
   watchCurrentLocation,
+  getEchartSaga,
 } from "sagas/ActionExecution/geolocationSaga";
 import { postMessageSaga } from "sagas/ActionExecution/PostMessageSaga";
 import { ActionDescription } from "@appsmith/workers/Evaluation/fns";
@@ -90,6 +91,14 @@ export function* executeActionTriggers(
       response = yield call(
         getCurrentLocationSaga,
         trigger,
+        eventType,
+        triggerMeta,
+      );
+      break;
+    case "CALL_FUNC":
+      response = yield call(
+        getEchartSaga,
+        trigger.payload,
         eventType,
         triggerMeta,
       );
