@@ -10,6 +10,7 @@ import {
   hideByColumnType,
   showByColumnType,
   uniqueColumnAliasValidation,
+  updateMenuItemsSource,
   updateNumberColumnTypeTextAlignment,
   updateThemeStylesheetsInColumns,
 } from "../../propertyUtils";
@@ -78,6 +79,7 @@ export default {
       updateHook: composePropertyUpdateHook([
         updateNumberColumnTypeTextAlignment,
         updateThemeStylesheetsInColumns,
+        updateMenuItemsSource,
       ]),
       dependencies: ["primaryColumns", "columnOrder", "childStylesheet"],
       isBindProperty: false,
@@ -150,6 +152,9 @@ export default {
       propertyName: "computedValue",
       label: "计算值",
       controlType: "TABLE_COMPUTE_VALUE",
+      additionalControlData: {
+        isArrayValue: true,
+      },
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(props, propertyPath, [
           ColumnTypes.DATE,
@@ -260,7 +265,7 @@ export default {
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         const baseProperty = getBasePropertyPath(propertyPath);
         const columnType = get(props, `${baseProperty}.columnType`, "");
-        return columnType !== "date";
+        return columnType !== ColumnTypes.DATE;
       },
       dependencies: ["primaryColumns", "columnOrder"],
       isBindProperty: true,
@@ -389,7 +394,7 @@ export default {
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         const baseProperty = getBasePropertyPath(propertyPath);
         const columnType = get(props, `${baseProperty}.columnType`, "");
-        return columnType !== "date";
+        return columnType !== ColumnTypes.DATE;
       },
       dependencies: ["primaryColumns", "columnType"],
       isBindProperty: true,

@@ -35,3 +35,7 @@ app/client/yalc.lock
 .fleet/*
 app/client/.fleet/*
 *debug.log
+
+# Observability related local storage
+utils/observability/tempo-data/*
+

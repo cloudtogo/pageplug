@@ -12,7 +12,7 @@ import {
   WidgetType,
   WIDGET_PADDING,
 } from "constants/WidgetConstants";
-import React, { Component, ReactNode } from "react";
+import React, { Component, Context, ReactNode, RefObject } from "react";
 import { get, memoize } from "lodash";
 import DraggableComponent from "components/editorComponents/DraggableComponent";
 import SnipeableComponent from "components/editorComponents/SnipeableComponent";
@@ -21,7 +21,10 @@ import { ExecuteTriggerPayload } from "constants/AppsmithActionConstants/ActionC
 import PositionedContainer from "components/designSystems/appsmith/PositionedContainer";
 import WidgetNameComponent from "components/editorComponents/WidgetNameComponent";
 import shallowequal from "shallowequal";
-import { EditorContext } from "components/editorComponents/EditorContextProvider";
+import {
+  EditorContext,
+  EditorContextType,
+} from "components/editorComponents/EditorContextProvider";
 import ErrorBoundary from "components/editorComponents/ErrorBoundry";
 import { DerivedPropertiesMap } from "utils/WidgetFactory";
 import {
@@ -45,10 +48,16 @@ import { DataTreeWidget } from "entities/DataTree/dataTreeFactory";
 import Skeleton from "./Skeleton";
 import { Stylesheet } from "entities/AppTheming";
 import { CSSProperties } from "styled-components";
-import { ReduxActionTypes } from "ce/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import AutoHeightOverlayContainer from "components/autoHeightOverlay";
 import AutoHeightContainerWrapper from "components/autoHeight/AutoHeightContainerWrapper";
+import { FlattenedWidgetProps } from "./constants";
+import {
+  ModifyMetaWidgetPayload,
+  UpdateMetaWidgetPropertyPayload,
+} from "reducers/entityReducers/metaWidgetsReducer";
+import { SelectionRequestType } from "sagas/WidgetSelectUtils";
 import styled, { css } from "styled-components";
 
 const HiddenDetachWidgetWrapper = styled.div<{
@@ -77,12 +86,15 @@ const HiddenDetachWidgetWrapper = styled.div<{
  *
  */
 
+const REFERENCE_KEY = "$$refs$$";
+
 abstract class BaseWidget<
   T extends WidgetProps,
-  K extends WidgetState
+  K extends WidgetState,
+  TCache = unknown
 > extends Component<T, K> {
   static contextType = EditorContext;
-  context!: React.ContextType<typeof EditorContext>;
+  context!: React.ContextType<Context<EditorContextType<TCache>>>;
 
   static getPropertyPaneConfig(): PropertyPaneConfig[] {
     return [];
@@ -103,6 +115,7 @@ abstract class BaseWidget<
   static getDefaultPropertiesMap(): Record<string, any> {
     return {};
   }
+
   // TODO Find a way to enforce this, (dont let it be set)
   static getMetaPropertiesMap(): Record<string, any> {
     return {};
@@ -235,12 +248,96 @@ abstract class BaseWidget<
     }
   };
 
+  selectWidgetRequest = (
+    selectionRequestType: SelectionRequestType,
+    payload?: string[],
+  ) => {
+    const { selectWidgetRequest } = this.context;
+    if (selectWidgetRequest) {
+      selectWidgetRequest(selectionRequestType, payload);
+    }
+  };
+
   /* eslint-disable @typescript-eslint/no-empty-function */
+
   /* eslint-disable @typescript-eslint/no-unused-vars */
-  componentDidUpdate(prevProps: T) {}
+  componentDidUpdate(prevProps: T, prevState?: K) {
+    if (
+      !this.props.deferRender &&
+      this.props.deferRender !== prevProps.deferRender
+    ) {
+      this.deferredComponentDidRender();
+    }
+  }
 
   componentDidMount(): void {}
+
+  /*
+   * With lazy rendering, skeleton loaders are rendered for below fold widgets.
+   * This Appsmith widget life cycle method that gets called when the actual widget
+   * component renders instead of the skeleton loader.
+   */
+  deferredComponentDidRender(): void {}
+
   /* eslint-enable @typescript-eslint/no-empty-function */
+
+  modifyMetaWidgets = (modifications: ModifyMetaWidgetPayload) => {
+    this.context.modifyMetaWidgets?.({
+      ...modifications,
+      creatorId: this.props.widgetId,
+    });
+  };
+
+  deleteMetaWidgets = () => {
+    this.context?.deleteMetaWidgets?.({
+      creatorIds: [this.props.widgetId],
+    });
+  };
+
+  setWidgetCache = (data: TCache) => {
+    const key = this.getWidgetCacheKey();
+
+    if (key) {
+      this.context?.setWidgetCache?.(key, data);
+    }
+  };
+
+  updateMetaWidgetProperty = (payload: UpdateMetaWidgetPropertyPayload) => {
+    const { widgetId } = this.props;
+
+    this.context.updateMetaWidgetProperty?.({
+      ...payload,
+      creatorId: widgetId,
+    });
+  };
+
+  getWidgetCache = () => {
+    const key = this.getWidgetCacheKey();
+
+    if (key) {
+      return this.context?.getWidgetCache?.(key);
+    }
+  };
+
+  getWidgetCacheKey = () => {
+    return this.props.metaWidgetId || this.props.widgetId;
+  };
+
+  setWidgetReferenceCache = <TRefCache,>(data: TRefCache) => {
+    const key = this.getWidgetCacheReferenceKey();
+
+    this.context?.setWidgetCache?.(`${key}.${REFERENCE_KEY}`, data);
+  };
+
+  getWidgetReferenceCache = <TRefCache,>() => {
+    const key = this.getWidgetCacheReferenceKey();
+
+    return this.context?.getWidgetCache?.<TRefCache>(`${key}.${REFERENCE_KEY}`);
+  };
+
+  getWidgetCacheReferenceKey = () => {
+    return this.props.referencedWidgetId || this.props.widgetId;
+  };
 
   getComponentDimensions = () => {
     return this.calculateWidgetBounds(
@@ -293,10 +390,7 @@ abstract class BaseWidget<
    */
   makeResizable(content: ReactNode) {
     return (
-      <ResizableComponent
-        {...this.props}
-        paddingOffset={PositionedContainer.padding}
-      >
+      <ResizableComponent {...this.props} paddingOffset={WIDGET_PADDING}>
         {content}
       </ResizableComponent>
     );
@@ -339,6 +433,7 @@ abstract class BaseWidget<
   makeDraggable(content: ReactNode) {
     return <DraggableComponent {...this.props}>{content}</DraggableComponent>;
   }
+
   /**
    * wraps the widget in a draggable component.
    * Note: widget drag can be disabled by setting `dragDisabled` prop to true
@@ -357,15 +452,19 @@ abstract class BaseWidget<
         componentHeight={componentHeight}
         componentWidth={componentWidth}
         focused={this.props.focused}
+        isDisabled={this.props.isDisabled}
+        isVisible={this.props.isVisible}
         leftColumn={this.props.leftColumn}
         noContainerOffset={this.props.noContainerOffset}
         parentColumnSpace={this.props.parentColumnSpace}
         parentId={this.props.parentId}
         parentRowSpace={this.props.parentRowSpace}
+        ref={this.props.wrapperRef}
         resizeDisabled={this.props.resizeDisabled}
         selected={this.props.selected}
         topRow={this.props.topRow}
         widgetId={this.props.widgetId}
+        widgetName={this.props.widgetName}
         widgetType={this.props.type}
       >
         {content}
@@ -398,16 +497,30 @@ abstract class BaseWidget<
   }
 
   addAutoHeightOverlay(content: ReactNode, style?: CSSProperties) {
-    const onBatchUpdate = (height: number, propertiesToUpdate?: string[]) => {
-      if (propertiesToUpdate === undefined) {
-        propertiesToUpdate = ["minDynamicHeight", "maxDynamicHeight"];
-      }
+    // required when the limits have to be updated
+    // simultaneosuly when they move together
+    // to maintain the undo/redo stack
+    const onBatchUpdate = ({
+      maxHeight,
+      minHeight,
+    }: {
+      maxHeight?: number;
+      minHeight?: number;
+    }) => {
       const modifyObj: Record<string, unknown> = {};
-      propertiesToUpdate.forEach((propertyName) => {
-        modifyObj[propertyName] = Math.floor(
-          height / GridDefaults.DEFAULT_GRID_ROW_HEIGHT,
+
+      if (maxHeight !== undefined) {
+        modifyObj["maxDynamicHeight"] = Math.floor(
+          maxHeight / GridDefaults.DEFAULT_GRID_ROW_HEIGHT,
         );
-      });
+      }
+
+      if (minHeight !== undefined) {
+        modifyObj["minDynamicHeight"] = Math.floor(
+          minHeight / GridDefaults.DEFAULT_GRID_ROW_HEIGHT,
+        );
+      }
+
       this.batchUpdateWidgetProperty({
         modify: modifyObj,
         postUpdateAction: ReduxActionTypes.CHECK_CONTAINERS_FOR_AUTO_HEIGHT,
@@ -415,11 +528,9 @@ abstract class BaseWidget<
       AnalyticsUtil.logEvent("AUTO_HEIGHT_OVERLAY_HANDLES_UPDATE", modifyObj);
     };
 
-    const onMaxHeightSet = (height: number) =>
-      onBatchUpdate(height, ["maxDynamicHeight"]);
+    const onMaxHeightSet = (maxHeight: number) => onBatchUpdate({ maxHeight });
 
-    const onMinHeightSet = (height: number) =>
-      onBatchUpdate(height, ["minDynamicHeight"]);
+    const onMinHeightSet = (minHeight: number) => onBatchUpdate({ minHeight });
 
     return (
       <>
@@ -436,6 +547,7 @@ abstract class BaseWidget<
       </>
     );
   }
+
   getWidgetComponent = () => {
     const { renderMode, type } = this.props;
 
@@ -448,7 +560,7 @@ abstract class BaseWidget<
      * Note:- This is done to retain the old rendering flow without any breaking changes.
      * This could be refactored into not changing the widget type but to have a boolean flag.
      */
-    if (type === "SKELETON_WIDGET") {
+    if (type === "SKELETON_WIDGET" || this.props.deferRender) {
       return <Skeleton />;
     }
 
@@ -578,12 +690,28 @@ export interface WidgetBuilder<
 
 export interface WidgetBaseProps {
   widgetId: string;
+  metaWidgetId?: string;
   type: WidgetType;
   widgetName: string;
   parentId?: string;
   renderMode: RenderMode;
   version: number;
   childWidgets?: DataTreeWidget[];
+  flattenedChildCanvasWidgets?: Record<string, FlattenedWidgetProps>;
+  metaWidgetChildrenStructure?: CanvasWidgetStructure[];
+  referencedWidgetId?: string;
+  requiresFlatWidgetChildren?: boolean;
+  hasMetaWidgets?: boolean;
+  creatorId?: string;
+  isMetaWidget?: boolean;
+  suppressAutoComplete?: boolean;
+  suppressDebuggerError?: boolean;
+  disallowCopy?: boolean;
+  /**
+   * The keys of the props mentioned here would always be picked from the canvas widget
+   * rather than the evaluated values in withWidgetProps HOC.
+   *  */
+  additionalStaticProps?: string[];
 }
 
 export type WidgetRowCols = {
@@ -621,6 +749,8 @@ export interface WidgetDisplayProps {
   isDisabled?: boolean;
   backgroundColor?: string;
   animateLoading?: boolean;
+  deferRender?: boolean;
+  wrapperRef?: RefObject<HTMLDivElement>;
 }
 
 export interface WidgetDataProps
@@ -634,6 +764,7 @@ export interface WidgetProps
     DataTreeEvaluationProps {
   key?: string;
   isDefaultClickDisabled?: boolean;
+
   [key: string]: any;
 }
 

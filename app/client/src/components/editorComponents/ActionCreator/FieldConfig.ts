@@ -19,7 +19,7 @@ import {
 import store from "../../../store";
 import { getPageList } from "../../../selectors/entitiesSelector";
 import { ACTION_TRIGGER_REGEX } from "./regex";
-import { TreeDropdownOption } from "design-system";
+import { TreeDropdownOption } from "design-system-old";
 
 const WX_ALERT_STYLE_OPTIONS = [
   { label: "无图标", value: "'none'", id: "info" },

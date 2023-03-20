@@ -46,7 +46,8 @@ export class PropertyPane {
     `.t--property-pane-section-collapse-${section} .t--property-section-tag-${tab}`;
   private _propertyControl = (property: string) =>
     `.t--property-control-${property}`;
-  _propertyPaneSearchInput = ".t--property-pane-search-input-wrapper input";
+  _propertyPaneSearchInputWrapper = ".t--property-pane-search-input-wrapper";
+  _propertyPaneSearchInput = `${this._propertyPaneSearchInputWrapper} input`;
   _propertyPaneEmptySearchResult = ".t--property-pane-no-search-results";
   _propertyToggle = (controlToToggle: string) =>
     ".t--property-control-" +
@@ -223,6 +224,45 @@ export class PropertyPane {
     toVerifySave && this.agHelper.AssertAutoSave(); //Allowing time for saving entered value
   }
 
+  public ValidatePropertyFieldValue(
+    propFieldName: string,
+    valueToValidate: string,
+  ) {
+    cy.xpath(this.locator._existingFieldTextByName(propFieldName)).then(
+      ($field: any) => {
+        this.agHelper.ValidateCodeEditorContent($field, valueToValidate);
+      },
+    );
+    return cy.wrap(valueToValidate);
+  }
+
+  public EvaluateExistingPropertyFieldValue(fieldName = "", currentValue = "") {
+    let val: any;
+    if (fieldName) {
+      cy.xpath(this.locator._existingFieldValueByName(fieldName))
+        .eq(0)
+        .click();
+      val = cy.get(fieldName).then(($field) => {
+        cy.wrap($field)
+          .find(".CodeMirror-code span")
+          .first()
+          .invoke("text");
+      });
+    } else {
+      cy.xpath(this.locator._codeMirrorCode).click();
+      val = cy
+        .xpath(
+          "//div[@class='CodeMirror-code']//span[contains(@class,'cm-m-javascript')]",
+        )
+        .then(($field) => {
+          cy.wrap($field).invoke("text");
+        });
+    }
+    this.agHelper.Sleep(); //Increasing wait time to evaluate non-undefined values
+    if (currentValue) expect(val).to.eq(currentValue);
+    return val;
+  }
+
   public RemoveText(endp: string, toVerifySave = true) {
     cy.get(
       this.locator._propertyControl +
@@ -258,6 +298,21 @@ export class PropertyPane {
           parseSpecialCharSequences: false,
           force: true,
         });
+      });
+
+    this.agHelper.AssertAutoSave(); //Allowing time for saving entered value
+  }
+
+  public ToggleCommentInTextField(endp: string) {
+    cy.get(
+      this.locator._propertyControl +
+        endp.replace(/ +/g, "").toLowerCase() +
+        " " +
+        this.locator._codeMirrorTextArea,
+    )
+      .first()
+      .then((el: any) => {
+        cy.get(el).type(this.agHelper.isMac ? "{meta}/" : "{ctrl}/");
       });
 
     this.agHelper.AssertAutoSave(); //Allowing time for saving entered value

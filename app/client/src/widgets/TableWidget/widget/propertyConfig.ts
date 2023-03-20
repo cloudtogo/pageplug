@@ -661,7 +661,7 @@ export default [
                 {
                   propertyName: "fontStyle",
                   label: "字体样式",
-                  controlType: "BUTTON_TABS",
+                  controlType: "BUTTON_GROUP",
                   options: [
                     {
                       icon: "BOLD_FONT",
@@ -1685,7 +1685,7 @@ export default [
       {
         propertyName: "fontStyle",
         label: "字体样式",
-        controlType: "BUTTON_TABS",
+        controlType: "BUTTON_GROUP",
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns", "derivedColumns"],
         options: [

@@ -59,7 +59,11 @@ export const isHiddenConditionsEvaluation = (
   }
 };
 
-export const caculateIsHidden = (values: any, hiddenConfig?: HiddenType) => {
+export const caculateIsHidden = (
+  values: any,
+  hiddenConfig?: HiddenType,
+  featureFlag?: boolean,
+) => {
   if (!!hiddenConfig && !isBoolean(hiddenConfig)) {
     let valueAtPath;
     let value, comparison;
@@ -86,19 +90,28 @@ export const caculateIsHidden = (values: any, hiddenConfig?: HiddenType) => {
         return Array.isArray(value) && value.includes(valueAtPath);
       case "NOT_IN":
         return Array.isArray(value) && !value.includes(valueAtPath);
+      case "FEATURE_FLAG":
+        // FEATURE_FLAG comparision is used to hide previous configs,
+        // and show new configs if feature flag is enabled, if disabled/ not present,
+        // previous config would be shown as is
+        return featureFlag === value;
       default:
         return true;
     }
   }
 };
 
-export const isHidden = (values: any, hiddenConfig?: HiddenType) => {
+export const isHidden = (
+  values: any,
+  hiddenConfig?: HiddenType,
+  featureFlag?: boolean,
+) => {
   if (!!hiddenConfig && !isBoolean(hiddenConfig)) {
     if ("conditionType" in hiddenConfig) {
       //check if nested conditions exist
       return isHiddenConditionsEvaluation(values, hiddenConfig);
     } else {
-      return caculateIsHidden(values, hiddenConfig);
+      return caculateIsHidden(values, hiddenConfig, featureFlag);
     }
   }
   return !!hiddenConfig;
@@ -514,4 +527,12 @@ export function fixActionPayloadForMongoQuery(
     console.error("Error adding default paths in Mongo query");
     return action;
   }
+}
+
+// Function to check if the config has KEYVALUE_ARRAY controlType with more than 1 dependent children
+export function isKVArray(children: Array<any>) {
+  if (!Array.isArray(children) || children.length < 2) return false;
+  return (
+    children[0].controlType && children[0].controlType === "KEYVALUE_ARRAY"
+  );
 }

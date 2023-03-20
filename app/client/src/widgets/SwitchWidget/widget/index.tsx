@@ -195,7 +195,7 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
             propertyName: "labelStyle",
             label: "强调",
             helpText: "设置标签字体是否加粗或斜体",
-            controlType: "BUTTON_TABS",
+            controlType: "BUTTON_GROUP",
             options: [
               {
                 icon: "BOLD_FONT",

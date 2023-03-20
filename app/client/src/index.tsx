@@ -2,30 +2,31 @@ import React from "react";
 import "./wdyr";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { ThemeProvider, taroifyTheme } from "constants/DefaultTheme";
+import { ThemeProvider } from "styled-components";
+import { taroifyTheme } from "constants/DefaultTheme";
 import { appInitializer } from "utils/AppUtils";
 import { Slide } from "react-toastify";
 import store, { runSagaMiddleware } from "./store";
 import { LayersContext, Layers } from "constants/Layers";
-import AppRouter from "./AppRouter";
+import AppRouter from "@appsmith/AppRouter";
 import * as Sentry from "@sentry/react";
-import { getCurrentThemeDetails, ThemeMode } from "selectors/themeSelectors";
+import { getCurrentThemeDetails } from "selectors/themeSelectors";
 import { connect } from "react-redux";
 import { AppState } from "@appsmith/reducers";
-import { setThemeMode } from "actions/themeActions";
-import { StyledToastContainer } from "design-system";
-import localStorage from "utils/localStorage";
+import { StyledToastContainer } from "design-system-old";
 import "./assets/styles/index.css";
 import "./index.less";
-import "design-system/build/css/design-system.css";
-import "./polyfills/corejs-add-on";
+import "design-system-old/build/css/design-system-old.css";
+import "./polyfills";
 import GlobalStyles from "globalStyles";
 // locale
 import { ConfigProvider } from "antd";
-import zhCNAntd from "antd/lib/locale/zh_CN";
+import zhCNantd from "antd/locale/zh_CN";
 import zhCN from "locales/zh-CN";
 import { IntlProvider } from "react-intl";
 import "moment/locale/zh-cn";
+import "dayjs/locale/zh-cn";
+import { StyleProvider } from "@ant-design/cssinjs";
 // enable autofreeze only in development
 import { setAutoFreeze } from "immer";
 import AppErrorBoundary from "AppErrorBoundry";
@@ -43,7 +44,6 @@ applyPolyfills().then(() => {
   defineCustomElements(window);
 });
 // create taro runtime in React
-import { createRouter } from "@tarojs/taro";
 import { createReactApp } from "@tarojs/runtime";
 class Empty extends React.Component {
   render() {
@@ -51,18 +51,6 @@ class Empty extends React.Component {
   }
 }
 const inst = createReactApp(Empty, React, ReactDOM, {});
-// createRouter(
-//   inst,
-//   {
-//     routes: [],
-//     router: {
-//       mode: "browser",
-//       basename: "",
-//       pathname: "",
-//     },
-//   },
-//   "react",
-// );
 // add touch emulator
 import "@vant/touch-emulator";
 import "react-sortable-tree-patch-react-17/style.css";
@@ -85,13 +73,7 @@ function App() {
 
 class ThemedApp extends React.Component<{
   currentTheme: any;
-  setTheme: (themeMode: ThemeMode) => void;
 }> {
-  componentDidMount() {
-    if (localStorage.getItem("THEME") === "LIGHT") {
-      this.props.setTheme(ThemeMode.LIGHT);
-    }
-  }
   render() {
     return (
       <ThemeProvider theme={this.props.currentTheme}>
@@ -106,11 +88,20 @@ class ThemedApp extends React.Component<{
         <GlobalStyles />
         <AppErrorBoundary>
           <IntlProvider locale="zh-CN" messages={zhCN}>
-            <ConfigProvider locale={zhCNAntd}>
-              <TaroifyTheme theme={taroifyTheme}>
-                <AppRouter />
-              </TaroifyTheme>
-            </ConfigProvider>
+            <StyleProvider hashPriority="high">
+              <ConfigProvider
+                locale={zhCNantd}
+                theme={{
+                  token: {
+                    colorPrimary: "#2cbba6",
+                  },
+                }}
+              >
+                <TaroifyTheme theme={taroifyTheme}>
+                  <AppRouter />
+                </TaroifyTheme>
+              </ConfigProvider>
+            </StyleProvider>
           </IntlProvider>
         </AppErrorBoundary>
       </ThemeProvider>
@@ -120,16 +111,8 @@ class ThemedApp extends React.Component<{
 const mapStateToProps = (state: AppState) => ({
   currentTheme: getCurrentThemeDetails(state),
 });
-const mapDispatchToProps = (dispatch: any) => ({
-  setTheme: (mode: ThemeMode) => {
-    dispatch(setThemeMode(mode));
-  },
-});
 
-const ThemedAppWithProps = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ThemedApp);
+const ThemedAppWithProps = connect(mapStateToProps)(ThemedApp);
 
 ReactDOM.render(<App />, document.getElementById("root"));
 

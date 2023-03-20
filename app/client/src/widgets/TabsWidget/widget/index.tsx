@@ -14,7 +14,8 @@ import { WidgetProperties } from "selectors/propertyPaneSelectors";
 import { WIDGET_PADDING } from "constants/WidgetConstants";
 import derivedProperties from "./parseDerivedProperties";
 import { Stylesheet } from "entities/AppTheming";
-import { ReduxActionTypes } from "ce/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
 
 export function selectedTabValidation(
   value: unknown,
@@ -28,7 +29,12 @@ export function selectedTabValidation(
   return {
     isValid: value === "" ? true : tabNames.includes(value as string),
     parsed: value,
-    messages: [`标签页 ${value} 不存在`],
+    messages: [
+      {
+        name: "ValidationError",
+        message: `标签页 ${value} 不存在`,
+      },
+    ],
   };
 }
 class TabsWidget extends BaseWidget<
@@ -237,6 +243,7 @@ class TabsWidget extends BaseWidget<
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.NUMBER },
+            postUpdateAction: ReduxActionTypes.CHECK_CONTAINERS_FOR_AUTO_HEIGHT,
           },
           {
             propertyName: "borderRadius",
@@ -313,9 +320,13 @@ class TabsWidget extends BaseWidget<
       width:
         (rightColumn - leftColumn) * parentColumnSpace - WIDGET_PADDING * 2,
     };
+    const isAutoHeightEnabled: boolean =
+      isAutoHeightEnabledForWidget(this.props) &&
+      !isAutoHeightEnabledForWidget(this.props, true);
     return (
       <TabsComponent
         {...tabsComponentProps}
+        $noScroll={isAutoHeightEnabled}
         backgroundColor={this.props.backgroundColor}
         borderColor={this.props.borderColor}
         borderRadius={this.props.borderRadius}

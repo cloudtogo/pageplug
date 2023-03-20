@@ -3,7 +3,7 @@ import {
   Designer,
   Workspace,
   OutlineTreeWidget,
-  ResourceWidget,
+  ResourceListWidget,
   HistoryWidget,
   StudioPanel,
   CompositePanel,
@@ -12,50 +12,22 @@ import {
   ViewPanel,
   SettingsPanel,
   ComponentTreeWidget,
-} from "@designable/react";
+} from "@pind/designable-react";
 import {
   SettingsForm,
   setNpmCDNRegistry,
-} from "@designable/react-settings-form";
+} from "@pind/designable-react-settings-form";
 import {
   transformToSchema,
   transformToTreeNode,
-} from "@designable/formily-transformer";
+} from "@pind/designable-formily-transformer";
 import {
   createDesigner,
   GlobalRegistry,
   WorkbenchTypes,
-} from "@designable/core";
+} from "@pind/designable-core";
 import { PreviewWidget } from "./PreviewWidget";
-import {
-  Form,
-  Field,
-  Input,
-  Select,
-  TreeSelect,
-  Cascader,
-  Radio,
-  Checkbox,
-  Slider,
-  Rate,
-  NumberPicker,
-  Transfer,
-  Password,
-  DatePicker,
-  TimePicker,
-  Upload,
-  Switch,
-  Text,
-  Card,
-  ArrayCards,
-  ObjectContainer,
-  ArrayTable,
-  Space,
-  FormTab,
-  FormCollapse,
-  FormLayout,
-  FormGrid,
-} from "@designable/formily-antd";
+import { sources } from "@pind/designable-formily-antd";
 
 setNpmCDNRegistry("//unpkg.com");
 
@@ -109,43 +81,7 @@ const FormilyDesigner = (props: any, ref: any) => {
       <StudioPanel>
         <CompositePanel>
           <CompositePanel.Item title="panels.Component" icon="Component">
-            <ResourceWidget
-              title="sources.Inputs"
-              sources={[
-                Input,
-                Password,
-                NumberPicker,
-                Rate,
-                Slider,
-                Select,
-                TreeSelect,
-                Cascader,
-                Transfer,
-                Checkbox,
-                Radio,
-                DatePicker,
-                TimePicker,
-                Upload,
-                Switch,
-                ObjectContainer,
-              ]}
-            />
-            <ResourceWidget
-              title="sources.Layouts"
-              sources={[
-                Card,
-                FormGrid,
-                FormTab,
-                FormLayout,
-                FormCollapse,
-                Space,
-              ]}
-            />
-            <ResourceWidget
-              title="sources.Arrays"
-              sources={[ArrayCards, ArrayTable]}
-            />
-            <ResourceWidget title="sources.Displays" sources={[Text]} />
+            <ResourceListWidget sources={Object.values({ ...sources })} />
           </CompositePanel.Item>
           <CompositePanel.Item title="panels.OutlinedTree" icon="Outline">
             <OutlineTreeWidget />
@@ -158,39 +94,7 @@ const FormilyDesigner = (props: any, ref: any) => {
           <WorkspacePanel>
             <ViewportPanel style={{ height: "100%" }}>
               <ViewPanel type="DESIGNABLE">
-                {() => (
-                  <ComponentTreeWidget
-                    components={{
-                      Form,
-                      Field,
-                      Input,
-                      Select,
-                      TreeSelect,
-                      Cascader,
-                      Radio,
-                      Checkbox,
-                      Slider,
-                      Rate,
-                      NumberPicker,
-                      Transfer,
-                      Password,
-                      DatePicker,
-                      TimePicker,
-                      Upload,
-                      Switch,
-                      Text,
-                      Card,
-                      ArrayCards,
-                      ArrayTable,
-                      Space,
-                      FormTab,
-                      FormCollapse,
-                      FormGrid,
-                      FormLayout,
-                      ObjectContainer,
-                    }}
-                  />
-                )}
+                {() => <ComponentTreeWidget components={{ ...sources }} />}
               </ViewPanel>
               <ViewPanel type="PREVIEW">
                 {(tree) => <PreviewWidget tree={tree} />}

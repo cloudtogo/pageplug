@@ -22,7 +22,7 @@ import styled from "styled-components";
 import { RenderMode, TextSize } from "constants/WidgetConstants";
 import { Alignment, Button, Classes, InputGroup } from "@blueprintjs/core";
 import { labelMargin, WidgetContainerDiff } from "widgets/WidgetUtils";
-import { Icon } from "design-system";
+import { Icon } from "design-system-old";
 import { Colors } from "constants/Colors";
 import { LabelPosition } from "components/constants";
 import useDropdown from "widgets/useDropdown";
@@ -262,6 +262,7 @@ function SingleSelectTreeComponent({
           className={`tree-select-label`}
           color={labelTextColor}
           compact={compactMode}
+          cyHelpTextClassName="tree-select-tooltip"
           disabled={disabled}
           fontSize={labelTextSize}
           fontStyle={labelStyle}

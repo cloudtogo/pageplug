@@ -16,11 +16,10 @@ import {
 } from "./ui";
 import { MAIN_CONTAINER_WIDGET_ID } from "constants/WidgetConstants";
 import { get } from "lodash";
-import { getAppMode } from "selectors/applicationSelectors";
+import { getAppMode, isMobileLayout } from "selectors/applicationSelectors";
 import { APP_MODE } from "entities/App";
 import { getIsTableFilterPaneVisible } from "selectors/tableFilterSelectors";
 import { getIsAutoHeightWithLimitsChanging } from "utils/hooks/autoHeightUIHooks";
-import { isMobileLayout } from "./editorSelectors";
 
 export const getIsDraggingOrResizing = (state: AppState) =>
   state.ui.widgetDragResize.isResizing || state.ui.widgetDragResize.isDragging;
