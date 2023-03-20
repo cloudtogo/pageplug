@@ -21,6 +21,8 @@ import { DSLWidget } from "widgets/constants";
 import { getSubstringBetweenTwoWords } from "utils/helpers";
 import { traverseDSLAndMigrate } from "utils/WidgetMigrationUtils";
 import { isDynamicValue } from "utils/DynamicBindingUtils";
+import { stringToJS } from "components/editorComponents/ActionCreator/utils";
+import { StickyType } from "widgets/TableWidgetV2/component/Constants";
 
 export const isSortableMigration = (currentDSL: DSLWidget) => {
   currentDSL.children = currentDSL.children?.map((child: WidgetProps) => {
@@ -641,6 +643,73 @@ export const migrateTableWidgetV2ValidationBinding = (
             newBindingSuffix(widget.widgetName, column);
         }
       }
+    }
+  });
+};
+
+export const migrateTableWidgetV2SelectOption = (currentDSL: DSLWidget) => {
+  return traverseDSLAndMigrate(currentDSL, (widget: WidgetProps) => {
+    if (widget.type === "TABLE_WIDGET_V2") {
+      Object.values(
+        widget.primaryColumns as Record<
+          string,
+          { columnType: string; selectOptions: string }
+        >,
+      )
+        .filter((column) => column.columnType === "select")
+        .forEach((column) => {
+          const selectOptions = column.selectOptions;
+
+          if (selectOptions && isDynamicValue(selectOptions)) {
+            column.selectOptions = `{{${
+              widget.widgetName
+            }.processedTableData.map((currentRow, currentIndex) => ( ${stringToJS(
+              selectOptions,
+            )}))}}`;
+          }
+        });
+    }
+  });
+};
+
+export const migrateMenuButtonDynamicItemsInsideTableWidget = (
+  currentDSL: DSLWidget,
+) => {
+  return traverseDSLAndMigrate(currentDSL, (widget: WidgetProps) => {
+    if (widget.type === "TABLE_WIDGET_V2") {
+      const primaryColumns = widget.primaryColumns;
+
+      if (primaryColumns) {
+        for (const column in primaryColumns) {
+          if (
+            primaryColumns.hasOwnProperty(column) &&
+            primaryColumns[column].columnType === "menuButton" &&
+            !primaryColumns[column].menuItemsSource
+          ) {
+            primaryColumns[column].menuItemsSource = "STATIC";
+          }
+        }
+      }
+    }
+  });
+};
+
+export const migrateColumnFreezeAttributes = (currentDSL: DSLWidget) => {
+  return traverseDSLAndMigrate(currentDSL, (widget: WidgetProps) => {
+    if (widget.type === "TABLE_WIDGET_V2") {
+      const primaryColumns = widget?.primaryColumns;
+
+      // Assign default sticky value to each column
+      if (primaryColumns) {
+        for (const column in primaryColumns) {
+          if (!primaryColumns[column].hasOwnProperty("sticky")) {
+            primaryColumns[column].sticky = StickyType.NONE;
+          }
+        }
+      }
+
+      widget.canFreezeColumn = false;
+      widget.columnUpdatedAt = Date.now();
     }
   });
 };

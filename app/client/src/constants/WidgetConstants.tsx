@@ -36,12 +36,12 @@ export type RenderMode =
   | "PAGE"
   | "CANVAS_SELECTED";
 
-export const RenderModes: { [id: string]: RenderMode } = {
-  COMPONENT_PANE: "COMPONENT_PANE",
-  CANVAS: "CANVAS",
-  PAGE: "PAGE",
-  CANVAS_SELECTED: "CANVAS_SELECTED",
-};
+export enum RenderModes {
+  COMPONENT_PANE = "COMPONENT_PANE",
+  CANVAS = "CANVAS",
+  PAGE = "PAGE",
+  CANVAS_SELECTED = "CANVAS_SELECTED",
+}
 
 export const CSSUnits: { [id: string]: CSSUnit } = {
   PIXEL: "px",
@@ -71,7 +71,7 @@ export const layoutConfigurations: LayoutConfigurations = {
   MOBILE_FLUID: { minWidth: 450, maxWidth: 450 },
 };
 
-export const LATEST_PAGE_VERSION = 71;
+export const LATEST_PAGE_VERSION = 77;
 
 export const GridDefaults = {
   DEFAULT_CELL_SIZE: 1,
@@ -98,6 +98,7 @@ export const WIDGET_CLASSNAME_PREFIX = "WIDGET_";
 export const MAIN_CONTAINER_WIDGET_ID = "0";
 export const MAIN_CONTAINER_WIDGET_NAME = "MainContainer";
 export const MODAL_PORTAL_CLASSNAME = "bp3-modal-widget";
+export const MODAL_PORTAL_OVERLAY_CLASSNAME = "bp3-overlay-zindex";
 export const CANVAS_SELECTOR = "canvas";
 
 export const DEFAULT_CENTER = { lat: -34.397, lng: 150.644 };
@@ -143,15 +144,20 @@ export const WIDGET_STATIC_PROPS = {
   detachFromLayout: true,
   noContainerOffset: false,
   height: false,
+  topRowBeforeCollapse: false,
+  bottomRowBeforeCollapse: false,
 };
 
 export const WIDGET_DSL_STRUCTURE_PROPS = {
+  bottomRow: true,
   children: true,
+  requiresFlatWidgetChildren: true,
+  hasMetaWidgets: true,
+  parentId: true,
+  referencedWidgetId: true,
+  topRow: true,
   type: true,
   widgetId: true,
-  parentId: true,
-  topRow: true,
-  bottomRow: true,
 };
 
 export type TextSize = keyof typeof TextSizes;
@@ -182,4 +188,6 @@ export const WIDGET_PROPS_TO_SKIP_FROM_EVAL = {
   iconSVG: true,
   version: true,
   displayName: true,
+  topRowBeforeCollapse: false,
+  bottomRowBeforeCollapse: false,
 };

@@ -20,7 +20,7 @@ import ModalComponent from "../ModalComponent";
 import { getCurrentUser } from "selectors/usersSelectors";
 import { User } from "constants/userConstants";
 import bootIntercom from "utils/bootIntercom";
-import { TooltipComponent } from "design-system";
+import { TooltipComponent } from "design-system-old";
 import {
   createMessage,
   HELP_RESOURCE_TOOLTIP,

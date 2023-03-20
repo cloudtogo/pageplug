@@ -1,11 +1,10 @@
 @import "~normalize.css";
 @import "~@blueprintjs/core/lib/css/blueprint.css";
 @import "~@blueprintjs/icons/lib/css/blueprint-icons.css";
-// @import "~design-system/build/css/design-system.css";
+// @import "~design-system-old/build/css/design-system-old.css";
 @import "theme/colors.css";
 @import "theme/defaultTheme.css";
 @import "theme/wds.css";
-@import '~antd/dist/antd.less';
 @import "theme/pageplugDesign.css";
 
 blockquote, dd, dl, figure, h1, h2, h3, h4, h5, h6, hr, p, pre {
@@ -25,21 +24,6 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-  }
-
-  .ant-pro-sider.ant-layout-sider-collapsed .ant-pro-sider-logo {
-    padding: 8px 8px;
-  }
-
-  .ant-pro-sider-light .ant-pro-sider-logo {
-    padding: 8px 16px;
-    background: var(--layout-header-bg-color);
-
-    h1 {
-      color: #fff;
-      font-size: 16px;
-      font-weight: normal;
-    }
   }
 
   .ant-pro-sider-menu .anticon {
@@ -214,118 +198,29 @@ div.bp3-popover-arrow {
 
 .designable-drawer {
 
+  .dn-aux-helpers button {
+    font-size: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 3px !important;
+    height: 20px !important;
+    color: var(--dn-aux-selector-btn-color) !important;
+    background: var(--dn-aux-selector-btn-bg-color) !important;
+    border-color: var(--dn-aux-selector-btn-border-color) !important;
+  }
+
   .dn-main-panel.root {
     height: auto;
-    top: 55px;
-    bottom: 53px;
+    top: 57px;
+    bottom: 49px;
   }
   
   .dn-light {
-    --dn-aux-cover-rect-dragging-color: fade(color(lighten(@primary-color, 15%)), 30%);
-    --dn-aux-cover-rect-dropping-color: fade(@primary-color, 6%);
-    --dn-aux-free-selection-background-color: @primary-color;
-    --dn-aux-free-selection-border-color: @primary-color;
-    --dn-aux-insertion-color: @primary-color;
-    --dn-aux-dashed-box-color: @primary-color;
-    --dn-aux-dashed-box-title-color: #333;
-    --dn-aux-selection-box-border-color: @primary-color;
-    --dn-aux-selection-box-color: #333;
-    --dn-ghost-color: #fff;
-    --dn-ghost-bg-color: fade(color(darken(@primary-color, 15%)), 80%);
-    --dn-outline-tree-bg-color: #fff;
-    --dn-outline-tree-header-border-color: #eee;
-    --dn-outline-tree-color: #333;
-    --dn-outline-tree-insertion-bg-color: @primary-color;
-    --dn-outline-tree-node-selected-color: #f3f3f3;
-    --dn-outline-tree-node-header-color: #333;
-    --dn-outline-tree-node-hover-color: @primary-color;
-
-    --dn-toolbar-input-color: rgba(0, 0, 0, 0.85);
-    --dn-toolbar-input-bg-color: #fff;
-    --dn-toolbar-input-border-color: #d9d9d9;
-    --dn-toolbar-input-hover-border-color: #d9d9d9;
-    --dn-toolbar-input-handler-bg-color: #fff;
-
-    --dn-resize-handle-bg-color: #f0f0f0;
-    --dn-resize-handle-hover-bg-color: #fafafa;
-    --dn-resize-handle-color: #666;
-    --dn-resize-handle-hover-color: #aaa;
-
-    --dn-mobile-simulator-bg-color: #eee;
-    --dn-mobile-simulator-body-bg-color: #fff;
-    --dn-mobile-simulator-border-color: #222;
-    --dn-responsive-simulator-bg-color: #fff;
-    --dn-pc-simulator-bg-color: #fff;
-
-    --dn-aux-selector-btn-color: #fff;
-    --dn-aux-selector-btn-bg-color: @primary-color;
-    --dn-aux-selector-btn-border-color: @primary-color;
-    --dn-aux-selector-btn-hover-color: #fff;
-    --dn-aux-selector-btn-hover-bg-color: lighten(@primary-color, 10%);
-    --dn-aux-selector-btn-hover-border-color: lighten(@primary-color, 10%);
-    --dn-aux-selector-btn-active-color: #fff;
-    --dn-aux-selector-btn-active-bg-color: darken(@primary-color, 10%);
-    --dn-aux-selector-btn-active-border-color: darken(@primary-color, 10%);
-
-    --dn-composite-panel-tabs-bg-color: #fff;
-    --dn-composite-panel-tabs-active-bg-color: #fff;
-    --dn-composite-panel-highlight-bg-color: #f0f0f0;
-    --dn-composite-panel-tabs-color: #666;
-    --dn-composite-panel-tabs-hover-color: @primary-color;
-    --dn-composite-panel-tabs-content-border-color: #eee;
-    --dn-composite-panel-tabs-content-bg-color: #fff;
-    --dn-composite-panel-tabs-header-color: #666;
-
-    --dn-drag-source-header-border-color: #eee;
-    --dn-drag-source-header-color: #888;
-    --dn-drag-source-header-hover-color: #333;
-    --dn-drag-source-item-border-color: #aaa;
-    --dn-drag-source-item-color: #333;
-    --dn-drag-source-item-hover-border-color: lighten(@primary-color, 10%);
-    --dn-drag-source-item-hover-color: lighten(@primary-color, 10%);
-
-    --dn-main-panel-header-bg-color: #fff;
-    --dn-main-panel-header-border-color: #eee;
-    --dn-workspace-panel-bg-color: #eee;
-
-    --dn-scrollbar-color: rgba(0, 0, 0, 0.2);
-    --dn-scrollbar-hover-color: rgba(0, 0, 0, 0.3);
-
-    --dn-btn-color: rgba(0, 0, 0, 0.85);
-    --dn-btn-border-color: #d9d9d9;
-    --dn-btn-bg-color: #fff;
-
-    --dn-btn-hover-color: lighten(@primary-color, 10%);
-    --dn-btn-hover-border-color: lighten(@primary-color, 10%);
-    --dn-btn-hover-bg-color: #fff;
-
-    --dn-btn-active-color: darken(@primary-color, 10%);
-    --dn-btn-active-bg-color: #fff;
-    --dn-btn-active-border-color: darken(@primary-color, 10%);
-
-    --dn-btn-disabled-color: rgba(0, 0, 0, 0.25);
-    --dn-btn-disabled-bg-color: #f5f5f5;
-    --dn-btn-disabled-border-color: #d9d9d9;
-
-    --dn-btn-primary-color: #fff;
-    --dn-btn-primary-bg-color: @primary-color;
-    --dn-btn-primary-border-color: @primary-color;
-
-    --dn-btn-primary-hover-color: #fff;
-    --dn-btn-primary-hover-bg-color: lighten(@primary-color, 10%);
-    --dn-btn-primary-hover-border-color: lighten(@primary-color, 10%);
-
-    --dn-btn-primary-active-color: #fff;
-    --dn-btn-primary-active-bg-color: darken(@primary-color, 10%);
-    --dn-btn-primary-active-border-color: darken(@primary-color, 10%);
-
-    --dn-btn-primary-disabled-color: rgba(0, 0, 0, 0.25);
-    --dn-btn-primary-disabled-bg-color: #f5f5f5;
-    --dn-btn-primary-disabled-border-color: #d9d9d9;
-
-    --dn-btn-text-shadow-color: rgba(0, 0, 0, 0.12);
-    --dn-btn-box-shadow-color: rgba(0, 0, 0, 0.045);
-    --dn-empty-bg-color: #fff;
+    --dn-brand-color: var(--ads-color-brand);
+    --dn-brand-hovering: var(--ads-color-brand-hover);
+    --dn-brand-dragging: rgba(0, 0, 0, 0.26);
+    --dn-brand-dropping: rgba(0, 0, 0, 0.34);
+    --dn-brand-moving: rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -352,8 +247,8 @@ div.bp3-popover-arrow {
       border-radius: 4px;
     }
     .rstcustom__rowCancelPad::before {
-      border: 3px dashed @error-color;
-      background: @red-2;
+      border: 3px dashed #ff4d4f;
+      background: #ffccc7;
     }
   }
   .rst__placeholder::before {
@@ -388,8 +283,8 @@ div.bp3-popover-arrow {
       border-radius: 4px;
     }
     &.rst__placeholderCancelPad::before {
-      border: 3px dashed @error-color;
-      background: @red-2;
+      border: 3px dashed #ff4d4f;
+      background: #ffccc7;
     }
   }
   .rstcustom__toolbarButton {

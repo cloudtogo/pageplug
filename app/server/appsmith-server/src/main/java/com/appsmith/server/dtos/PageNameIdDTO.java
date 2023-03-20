@@ -11,6 +11,8 @@ public class PageNameIdDTO {
 
     String name;
 
+    String icon;
+
     String slug;
 
     String customSlug;
@@ -19,7 +21,6 @@ public class PageNameIdDTO {
 
     Boolean isHidden;
 
-    String icon;
     // This field will represent the default pageId for current page in git system where we are connecting resources
     // among the branches
     @JsonIgnore

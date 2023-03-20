@@ -1,6 +1,6 @@
 import React, { memo, useCallback } from "react";
 import Entity, { EntityClassNames } from "../Entity";
-import history from "utils/history";
+import history, { NavigationMethod } from "utils/history";
 import JSCollectionEntityContextMenu from "./JSActionContextMenu";
 import { saveJSObjectName } from "actions/jsActionActions";
 import { useSelector } from "react-redux";
@@ -50,7 +50,9 @@ export const ExplorerJSCollectionEntity = memo(
           toUrl: navigateToUrl,
           name: jsAction.name,
         });
-        history.push(navigateToUrl);
+        history.push(navigateToUrl, {
+          invokedBy: NavigationMethod.EntityExplorer,
+        });
       }
     }, [pageId, jsAction.id, jsAction.name, location.pathname]);
 
@@ -78,7 +80,7 @@ export const ExplorerJSCollectionEntity = memo(
         className="t--jsaction"
         contextMenu={contextMenu}
         entityId={jsAction.id}
-        icon={JsFileIconV2}
+        icon={JsFileIconV2()}
         key={jsAction.id}
         name={jsAction.name}
         searchKeyword={props.searchKeyword}
