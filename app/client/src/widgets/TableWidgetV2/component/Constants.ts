@@ -520,10 +520,10 @@ export const TABLE_SCROLLBAR_WIDTH = 10;
 export const TABLE_SCROLLBAR_HEIGHT = 8;
 
 export const POPOVER_ITEMS_TEXT_MAP = {
-  SORT_ASC: "Sort column ascending",
-  SORT_DSC: "Sort column descending",
-  FREEZE_LEFT: "Freeze column left",
-  FREEZE_RIGHT: "Freeze column right",
+  SORT_ASC: "升序排序",
+  SORT_DSC: "降序排序",
+  FREEZE_LEFT: "固定列在左边",
+  FREEZE_RIGHT: "固定列在右边",
 };
 
 export const HEADER_MENU_PORTAL_CLASS = ".header-menu-portal";
