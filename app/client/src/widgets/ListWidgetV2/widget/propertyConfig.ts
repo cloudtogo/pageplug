@@ -43,8 +43,7 @@ export const primaryColumnValidation = (
         messages: [
           {
             name: "ValidationError",
-            message:
-              "This data identifier evaluates to an empty array. Please use an identifier that evaluates to a valid value.",
+            message: "数据标识符解析为空数组，请使用有效的标识符",
           },
         ],
       };
@@ -58,8 +57,7 @@ export const primaryColumnValidation = (
         messages: [
           {
             name: "ValidationError",
-            message:
-              "This identifier isn't a data attribute. Use an existing data attribute as your data identifier.",
+            message: "当前数据标识符不是数据字段，请使用真实存在的数据字段",
           },
         ],
       };
@@ -73,8 +71,7 @@ export const primaryColumnValidation = (
         messages: [
           {
             name: "ValidationError",
-            message:
-              "This data identifier evaluates to null or undefined. Please use an identifier that evaluates to a valid value.",
+            message: "数据标识符解析为空，请使用有效的标识符",
           },
         ],
       };
@@ -89,16 +86,15 @@ export const primaryColumnValidation = (
         messages: [
           {
             name: "ValidationError",
-            message:
-              "This data identifier is evaluating to a duplicate value. Please use an identifier that evaluates to a unique value.",
+            message: "使用当前标识符解析出了重复的值，请使用解析值唯一的标识符",
           },
         ],
       };
     }
   } else {
     const message = isJSModeEnabled
-      ? "Use currentItem or currentIndex to find a good data identifier. You can also combine two or more data attributes or columns."
-      : "Select an option from the dropdown or toggle JS on to define a data identifier.";
+      ? "使用 currentItem 或 currentIndex 查找合适的数据标识符，你也可以合并多个数据字段"
+      : "在下拉框中选择一项，或切换成 JS 输入数据标识符";
 
     return {
       isValid: false,
@@ -179,12 +175,12 @@ export const primaryKeyOptions = (props: ListWidgetProps) => {
 
 export const PropertyPaneContentConfig = [
   {
-    sectionName: "Data",
+    sectionName: "数据",
     children: [
       {
         propertyName: "listData",
-        helpText: "Reference or write an array to display in the List.",
-        label: "Items",
+        helpText: "列表展示的数据对象",
+        label: "数据项",
         controlType: "INPUT_TEXT",
         placeholderText: '[{ "name": "John" }]',
         inputType: "ARRAY",
@@ -196,8 +192,8 @@ export const PropertyPaneContentConfig = [
       {
         propertyName: "primaryKeys",
         helperText:
-          "Like keys in React, you must include a primary data identifier, often a column from your datasource. You could also combine two columns or data attributes.",
-        label: "Data Identifier",
+          "标识数据行唯一的字段，让数据可以相互区分。如果没有值唯一的字段，你可以将多个字段混合成一个新字段。",
+        label: "数据标识符",
         controlType: "DROP_DOWN",
         dropdownUsePropertyValue: true,
         customJSControl: "LIST_COMPUTE_CONTROL",
@@ -222,7 +218,7 @@ export const PropertyPaneContentConfig = [
     ],
   },
   {
-    sectionName: "Pagination",
+    sectionName: "分页",
     children: [
       // Disabling till List V2.1
       // {
@@ -240,8 +236,8 @@ export const PropertyPaneContentConfig = [
       {
         propertyName: "serverSidePagination",
         helpText:
-          "Triggered by onPageChange, this helps you show your data one page at a time for better performance.",
-        label: "Server Side Pagination",
+          "通过 onPageChange 触发，每次只拉取需要展示的那部分数据，让页面有更好的性能",
+        label: "服务端分页",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -249,12 +245,12 @@ export const PropertyPaneContentConfig = [
       {
         propertyName: "totalRecordsCount",
         helpText: createMessage(LIST_WIDGET_V2_TOTAL_RECORD_TOOLTIP),
-        label: "Total Records",
+        label: "总数据行数",
         controlType: "INPUT_TEXT",
         inputType: "INTEGER",
         isBindProperty: true,
         isTriggerProperty: false,
-        placeholderText: "Enter total record count",
+        placeholderText: "请输入总数据行数",
         validation: {
           type: ValidationTypes.NUMBER,
           params: { min: MIN_TOTAL_RECORD_COUNT, max: MAX_TOTAL_RECORD_COUNT },
@@ -265,8 +261,7 @@ export const PropertyPaneContentConfig = [
       },
       {
         propertyName: "onPageChange",
-        helpText:
-          "Configure one or chain multiple Actions when the page is changed in a List. All nested Actions run at the same time.",
+        helpText: "页面切换时触发",
         label: "onPageChange",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
@@ -279,12 +274,12 @@ export const PropertyPaneContentConfig = [
     ],
   },
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
         propertyName: "isVisible",
-        label: "Visible",
-        helpText: "Toggles the visibility of this List to end users",
+        label: "是否显示",
+        helpText: "控制组件的显示/隐藏",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -295,10 +290,9 @@ export const PropertyPaneContentConfig = [
       },
       {
         propertyName: "animateLoading",
-        label: "Animate Loading",
+        label: "加载时显示动画",
         controlType: "SWITCH",
-        helpText:
-          "Toggles the loading animation of this List on and off for end-users",
+        helpText: "组件依赖的数据加载时显示加载动画",
         defaultValue: true,
         isJSConvertible: true,
         isBindProperty: true,
@@ -308,11 +302,11 @@ export const PropertyPaneContentConfig = [
     ],
   },
   {
-    sectionName: "Events",
+    sectionName: "事件",
     children: [
       {
         propertyName: "onItemClick",
-        helpText: "Triggers an action when an item in this List is clicked",
+        helpText: "点击列表项时触发",
         label: "onItemClick",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
@@ -345,13 +339,13 @@ export const PropertyPaneContentConfig = [
 
 export const PropertyPaneStyleConfig = [
   {
-    sectionName: "General",
+    sectionName: "属性",
     children: [
       {
         propertyName: "itemSpacing",
-        helpText: "Sets the spacing between items in pixels to a max 16 px",
+        helpText: "列表项之间的像素距离，最大 16px",
         placeholderText: "0",
-        label: "Item Spacing (px)",
+        label: "列表项间距 (px)",
         controlType: "INPUT_TEXT",
         isBindProperty: true,
         isTriggerProperty: false,
@@ -364,12 +358,12 @@ export const PropertyPaneStyleConfig = [
     ],
   },
   {
-    sectionName: "Color",
+    sectionName: "颜色",
     children: [
       {
         propertyName: "backgroundColor",
-        label: "Background Color",
-        helpText: "Sets the background color of this List",
+        label: "背景颜色",
+        helpText: "列表项的背景颜色",
         controlType: "COLOR_PICKER",
         isJSConvertible: true,
         isBindProperty: true,
@@ -388,12 +382,12 @@ export const PropertyPaneStyleConfig = [
     ],
   },
   {
-    sectionName: "Border and Shadow",
+    sectionName: "轮廓样式",
     children: [
       {
         propertyName: "borderRadius",
-        label: "Border Radius",
-        helpText: "Rounds the corners of the List's border",
+        label: "边框圆角",
+        helpText: "边框圆角样式",
         controlType: "BORDER_RADIUS_OPTIONS",
         isJSConvertible: true,
         isBindProperty: true,
@@ -402,8 +396,8 @@ export const PropertyPaneStyleConfig = [
       },
       {
         propertyName: "boxShadow",
-        label: "Box Shadow",
-        helpText: "Drops a shadow from the frame of this List",
+        label: "阴影",
+        helpText: "组件轮廓投影",
         controlType: "BOX_SHADOW_OPTIONS",
         isJSConvertible: true,
         isBindProperty: true,

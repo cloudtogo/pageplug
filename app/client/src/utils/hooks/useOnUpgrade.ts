@@ -18,7 +18,7 @@ const useOnUpgrade = (props: Props) => {
       logEventName || "ADMIN_SETTINGS_UPGRADE",
       logEventData,
     );
-    window.open(PRICING_PAGE_URL("CE", instanceId), "_blank");
+    // window.open(PRICING_PAGE_URL("CE", instanceId), "_blank");
   };
 
   return { onUpgrade };

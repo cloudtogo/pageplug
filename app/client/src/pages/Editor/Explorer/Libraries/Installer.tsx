@@ -327,7 +327,7 @@ const SectionDivider = styled(MenuDivider)`
 const EXT_LINK = {
   learnMore:
     "https://docs.appsmith.com/core-concepts/writing-code/ext-libraries",
-  reportIssue: "https://github.com/appsmithorg/appsmith/issues/19037",
+  reportIssue: "https://github.com/cloudtogo/pageplug/issues/new/choose",
   jsDelivr: "https://www.jsdelivr.com/",
 };
 
@@ -373,7 +373,7 @@ export function Installer(props: { left: number }) {
     setIsValid(isValid);
     return {
       isValid,
-      message: isValid ? "" : "Please enter a valid URL",
+      message: isValid ? "" : "请输入有效地址",
     };
   }, []);
 
@@ -427,12 +427,12 @@ export function Installer(props: { left: number }) {
       <div className="search-body overflow-auto">
         <div className="search-area t--library-container">
           <div className="flex flex-row gap-2 justify-between items-end">
-            <FormGroup className="flex-1" label={"Library URL"}>
+            <FormGroup className="flex-1" label={"工具库地址"}>
               <TextInput
                 $padding="12px"
                 data-testid="library-url"
                 height="30px"
-                label={"Library URL"}
+                label={"工具库地址"}
                 leftIcon="link-2"
                 onChange={updateURL}
                 padding="12px"
@@ -450,29 +450,28 @@ export function Installer(props: { left: number }) {
               onClick={() => installLibrary()}
               size={Size.medium}
               tag="button"
-              text="INSTALL"
+              text="安装"
               type="button"
             />
           </div>
         </div>
         <div className="search-CTA mb-3 text-xs">
           <span>
-            Explore libraries on{" "}
+            在{" "}
             <a
               className="text-primary-500"
               onClick={(e) => openDoc(e, EXT_LINK.jsDelivr)}
             >
               jsDelivr
             </a>
-            {". "}
+            {" 中查找需要的 js 库。"}
             {createMessage(customJSLibraryMessages.LEARN_MORE_DESC)}{" "}
             <a
               className="text-primary-500"
               onClick={(e) => openDoc(e, EXT_LINK.learnMore)}
             >
-              here
+              点击这里
             </a>
-            {"."}
           </span>
         </div>
         <SectionDivider color="red" />

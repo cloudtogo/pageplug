@@ -463,8 +463,8 @@ export default [
       },
       {
         propertyName: "canFreezeColumn",
-        helpText: "Controls whether the user can freeze columns",
-        label: "Allow Column Freeze",
+        helpText: "是否允许用户将表格列固定在表格的一侧",
+        label: "允许固定列",
         controlType: "SWITCH",
         defaultValue: true,
         isJSConvertible: true,

@@ -232,7 +232,7 @@ function LibraryEntity({ lib }: { lib: TJSLibrary }) {
   const copyToClipboard = useCallback(() => {
     write(lib.accessor[lib.accessor.length - 1]);
     Toaster.show({
-      text: "Copied to clipboard",
+      text: "拷贝成功",
       variant: Variant.success,
     });
   }, [lib.accessor]);
@@ -271,7 +271,7 @@ function LibraryEntity({ lib }: { lib: TJSLibrary }) {
       </div>
       <Collapse className="text-xs" isOpen={isOpen}>
         <div className="content pr-2">
-          Available as{" "}
+          引用方式：
           <div className="accessor">
             {lib.accessor[lib.accessor.length - 1]}{" "}
             <div>
@@ -332,7 +332,7 @@ function JSDependencies() {
       icon={null}
       isDefaultExpanded={isOpen}
       isSticky
-      name="Libraries"
+      name="工具库"
       showAddButton={canCreateActions}
       step={0}
     >

@@ -1330,8 +1330,8 @@ export const ALERT_STYLE_OPTIONS = [
 ];
 
 export const customJSLibraryMessages = {
-  ADD_JS_LIBRARY: () => "添加 JS 库",
-  REC_LIBRARY: () => "推荐库",
+  ADD_JS_LIBRARY: () => "添加 JS 工具库",
+  REC_LIBRARY: () => "推荐 JS 工具库",
   INSTALLATION_SUCCESSFUL: (accessor: string) =>
     `安装成功！你现在可以在全局使用 ${accessor} 了`,
   INSTALLATION_FAILED: () => "安装失败",
