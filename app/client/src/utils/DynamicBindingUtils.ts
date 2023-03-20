@@ -1,18 +1,16 @@
-import _, { get, isString, VERSION as lodashVersion } from "lodash";
+import _, { get, isString } from "lodash";
 import { DATA_BIND_REGEX } from "constants/BindingsConstants";
 import { Action } from "entities/Action";
-import moment from "moment-timezone";
 // import * as echarts from "echarts";
 import { WidgetProps } from "widgets/BaseWidget";
-import parser from "fast-xml-parser";
-
 import { Severity } from "entities/AppsmithConsole";
 import {
   getEntityNameAndPropertyPath,
+  isAction,
   isJSAction,
   isTrueObject,
-} from "workers/Evaluation/evaluationUtils";
-import forge from "node-forge";
+  isWidget,
+} from "@appsmith/workers/Evaluation/evaluationUtils";
 import { DataTreeEntity } from "entities/DataTree/dataTreeFactory";
 import { getType, Types } from "./TypeHelpers";
 import { ViewTypes } from "components/formControls/utils";
@@ -131,83 +129,6 @@ export type EvalError = {
   context?: Record<string, any>;
 };
 
-export enum EVAL_WORKER_ACTIONS {
-  SETUP = "SETUP",
-  EVAL_TREE = "EVAL_TREE",
-  EVAL_ACTION_BINDINGS = "EVAL_ACTION_BINDINGS",
-  EVAL_TRIGGER = "EVAL_TRIGGER",
-  PROCESS_TRIGGER = "PROCESS_TRIGGER",
-  CLEAR_CACHE = "CLEAR_CACHE",
-  VALIDATE_PROPERTY = "VALIDATE_PROPERTY",
-  UNDO = "undo",
-  REDO = "redo",
-  EVAL_EXPRESSION = "EVAL_EXPRESSION",
-  UPDATE_REPLAY_OBJECT = "UPDATE_REPLAY_OBJECT",
-  SET_EVALUATION_VERSION = "SET_EVALUATION_VERSION",
-  INIT_FORM_EVAL = "INIT_FORM_EVAL",
-  EXECUTE_SYNC_JS = "EXECUTE_SYNC_JS",
-  LINT_TREE = "LINT_TREE",
-}
-
-export type ExtraLibrary = {
-  version: string;
-  docsURL: string;
-  displayName: string;
-  accessor: string;
-  lib: any;
-};
-
-export const extraLibraries: ExtraLibrary[] = [
-  {
-    accessor: "_",
-    lib: _,
-    version: lodashVersion,
-    docsURL: `https://lodash.com/docs/${lodashVersion}`,
-    displayName: "lodash",
-  },
-  {
-    accessor: "moment",
-    lib: moment,
-    version: moment.version,
-    docsURL: `https://momentjs.com/docs/`,
-    displayName: "moment",
-  },
-  {
-    accessor: "xmlParser",
-    lib: parser,
-    version: "3.17.5",
-    docsURL: "https://github.com/NaturalIntelligence/fast-xml-parser",
-    displayName: "xmlParser",
-  },
-  {
-    accessor: "forge",
-    // We are removing some functionalities of node-forge because they wont
-    // work in the worker thread
-    lib: _.omit(forge, ["tls", "http", "xhr", "socket", "task"]),
-    version: "1.3.0",
-    docsURL: "https://github.com/digitalbazaar/forge",
-    displayName: "forge",
-  },
-  // {
-  //   accessor: "echarts",
-  //   lib: echarts,
-  //   version: "5.4.0",
-  //   docsURL: `https://echarts.apache.org/handbook/zh/how-to/animation/transition/`,
-  //   displayName: "echarts",
-  // },
-];
-/**
- * creates dynamic list of constants based on
- * current list of extra libraries i.e lodash("_"), moment etc
- * to be used in widget and entity name validations
- */
-export const extraLibrariesNames = extraLibraries.reduce(
-  (prev: Record<string, string>, curr) => {
-    prev[curr.accessor] = curr.accessor;
-    return prev;
-  },
-  {},
-);
 export interface DynamicPath {
   key: string;
   value?: string;
@@ -272,7 +193,7 @@ export const getWidgetDynamicTriggerPathList = (
   return [];
 };
 
-export const isPathADynamicTrigger = (
+export const isPathDynamicTrigger = (
   widget: WidgetProps,
   path: string,
 ): boolean => {
@@ -299,7 +220,7 @@ export const getWidgetDynamicPropertyPathList = (
   return [];
 };
 
-export const isPathADynamicProperty = (
+export const isPathDynamicProperty = (
   widget: WidgetProps,
   path: string,
 ): boolean => {
@@ -324,10 +245,7 @@ export const isThemeBoundProperty = (
 
 export const unsafeFunctionForEval = [
   "XMLHttpRequest",
-  "setInterval",
-  "clearInterval",
   "setImmediate",
-  "importScripts",
   "Navigator",
 ];
 
@@ -359,7 +277,7 @@ export const EVAL_ERROR_PATH = `${EVALUATION_PATH}.errors`;
 export const EVAL_VALUE_PATH = `${EVALUATION_PATH}.evaluatedValues`;
 
 /**
- * non-populated object 
+ * non-populated object
  {
    __evaluation__:{
      evaluatedValues:{
@@ -437,10 +355,9 @@ export enum PropertyEvaluationErrorType {
   PARSE = "PARSE",
   LINT = "LINT",
 }
-
 export interface DataTreeError {
   raw: string;
-  errorMessage: string;
+  errorMessage: Error;
   severity: Severity.WARNING | Severity.ERROR;
 }
 
@@ -605,4 +522,20 @@ export function getDynamicBindingsChangesSaga(
     }
   }
   return dynamicBindings;
+}
+
+export function getEntityType(entity: DataTreeEntity) {
+  return "ENTITY_TYPE" in entity && entity.ENTITY_TYPE;
+}
+
+export function getEntityId(entity: DataTreeEntity) {
+  if (isAction(entity)) return entity.actionId;
+  if (isWidget(entity)) return entity.widgetId;
+  if (isJSAction(entity)) return entity.actionId;
+}
+
+export function getEntityName(entity: DataTreeEntity) {
+  if (isAction(entity)) return entity.name;
+  if (isWidget(entity)) return entity.widgetName;
+  if (isJSAction(entity)) return entity.name;
 }

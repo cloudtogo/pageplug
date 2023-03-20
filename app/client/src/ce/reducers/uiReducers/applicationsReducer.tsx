@@ -13,11 +13,15 @@ import {
   createMessage,
   ERROR_MESSAGE_CREATE_APPLICATION,
 } from "@appsmith/constants/messages";
-import { PageDefaultMeta, UpdateApplicationRequest } from "api/ApplicationApi";
+import {
+  AppEmbedSetting,
+  PageDefaultMeta,
+  UpdateApplicationRequest,
+} from "api/ApplicationApi";
 import { CreateApplicationFormValues } from "pages/Applications/helpers";
 import { AppLayoutConfig } from "reducers/entityReducers/pageListReducer";
 import { ConnectToGitResponse } from "actions/gitSyncActions";
-import { AppIconName } from "design-system";
+import { AppIconName } from "design-system-old";
 
 export const initialState: ApplicationsReduxState = {
   isFetchingApplications: false,
@@ -131,7 +135,9 @@ export const handlers = {
     action: ReduxAction<{ applicationList: ApplicationPayload[] }>,
   ) => ({
     ...state,
-    currentApplication: action.payload,
+    currentApplication: {
+      ...action.payload,
+    },
     isFetchingApplication: false,
   }),
   [ReduxActionTypes.CURRENT_APPLICATION_CHART_THEME_UPDATE]: (
@@ -548,6 +554,18 @@ export const handlers = {
     return {
       ...state,
       applicationList: [...state.applicationList, action.payload],
+    };
+  },
+  [ReduxActionTypes.CURRENT_APPLICATION_EMBED_SETTING_UPDATE]: (
+    state: ApplicationsReduxState,
+    action: ReduxAction<AppEmbedSetting>,
+  ) => {
+    return {
+      ...state,
+      currentApplication: {
+        ...state.currentApplication,
+        embedSetting: action.payload,
+      },
     };
   },
 };

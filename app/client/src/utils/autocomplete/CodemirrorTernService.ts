@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // Heavily inspired from https://github.com/codemirror/CodeMirror/blob/master/addon/tern/tern.js
-import tern, { Server, Def } from "tern";
+import { Server, Def } from "tern";
 import ecma from "constants/defs/ecmascript.json";
 import lodash from "constants/defs/lodash.json";
 import base64 from "constants/defs/base64-js.json";
@@ -16,7 +16,7 @@ import {
 import {
   GLOBAL_DEFS,
   GLOBAL_FUNCTIONS,
-} from "utils/autocomplete/EntityDefinitions";
+} from "@appsmith/utils/autocomplete/EntityDefinitions";
 import { FieldEntityInformation } from "components/editorComponents/CodeEditor/EditorConfig";
 import { ENTITY_TYPE } from "entities/DataTree/dataTreeFactory";
 import { AutocompleteSorter } from "./AutocompleteSortRules";
@@ -107,6 +107,16 @@ export type DataTreeDefEntityInformation = {
   subType: string;
 };
 
+/** Tern hard coded some keywords which return `isKeyword` true.
+ * There is however no provision to add more keywords to the list. Therefore,
+ * we maintain a set of keywords that we add and show the keyword icon and type for.
+ */
+export function isCustomKeywordType(name: string): boolean {
+  const customKeywordsList = ["async", "await"];
+
+  return customKeywordsList.includes(name);
+}
+
 export function getDataType(type: string): AutocompleteDataType {
   if (type === "?") return AutocompleteDataType.UNKNOWN;
   else if (type === "number") return AutocompleteDataType.NUMBER;
@@ -147,13 +157,10 @@ class CodeMirrorTernService {
     this.server = new TernWorkerServer(this);
   }
 
-  resetServer() {
-    this.server = new tern.Server({
-      async: true,
-      defs: DEFS,
-    });
+  resetServer = () => {
+    this.server = new TernWorkerServer(this);
     this.docs = Object.create(null);
-  }
+  };
 
   complete(cm: CodeMirror.Editor) {
     cm.showHint({
@@ -243,11 +250,17 @@ class CodeMirrorTernService {
 
     for (let i = 0; i < data.completions.length; ++i) {
       const completion = data.completions[i];
+      const isCustomKeyword = isCustomKeywordType(completion.name);
+
+      if (isCustomKeyword) {
+        completion.isKeyword = true;
+      }
+
       let className = typeToIcon(completion.type, completion.isKeyword);
       const dataType = getDataType(completion.type);
       if (data.guess) className += " " + cls + "guess";
       let completionText = completion.name + after;
-      if (dataType === "FUNCTION") {
+      if (dataType === "FUNCTION" && !completion.origin?.startsWith("LIB/")) {
         completionText = completionText + "()";
       }
       const codeMirrorCompletion: Completion = {
@@ -259,6 +272,7 @@ class CodeMirrorTernService {
         type: dataType,
         isHeader: false,
       };
+
       if (completion.isKeyword) {
         codeMirrorCompletion.render = (
           element: HTMLElement,

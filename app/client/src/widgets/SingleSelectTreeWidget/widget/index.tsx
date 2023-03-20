@@ -25,7 +25,12 @@ function defaultOptionValueValidation(value: unknown): ValidationResponse {
     return {
       isValid: false,
       parsed: "",
-      messages: ["This value does not evaluate to type: string"],
+      messages: [
+        {
+          name: "TypeError",
+          message: "This value does not evaluate to type: string",
+        },
+      ],
     };
   return { isValid: true, parsed: value };
 }
@@ -225,7 +230,7 @@ class SingleSelectTreeWidget extends BaseWidget<
             propertyName: "labelTooltip",
             label: "提示",
             controlType: "INPUT_TEXT",
-            placeholderText: "请至少输入 6 个字符",
+            placeholderText: "添加提示信息",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -398,7 +403,7 @@ class SingleSelectTreeWidget extends BaseWidget<
             propertyName: "labelStyle",
             label: "强调",
             helpText: "设置标签字体是否加粗或斜体",
-            controlType: "BUTTON_TABS",
+            controlType: "BUTTON_GROUP",
             options: [
               {
                 icon: "BOLD_FONT",

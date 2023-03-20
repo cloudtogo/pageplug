@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo, useEffect, useCallback } from "react";
 import { createForm } from "@formily/core";
 import { createSchemaField } from "@formily/react";
 import {
@@ -31,7 +31,7 @@ import {
   FormButtonGroup,
   FormDrawer,
   FormDialog,
-} from "@formily/antd";
+} from "@formily/antd-v5";
 import { Card, Slider, Rate, Button } from "antd";
 import { FormType } from "widgets/FormilyWidget/widget";
 import styled from "styled-components";
@@ -56,6 +56,9 @@ interface FormilyComponentProps {
   schema: string;
   initValue: any;
   onFormSubmit: (data: any) => void;
+  widgetId: string;
+  modalWidth?: string;
+  drawerWidth?: string;
 }
 
 const EmptyForm = styled.div`
@@ -139,6 +142,9 @@ const FormilyComponent = (props: FormilyComponentProps) => {
     resetLabel,
     initValue,
     onFormSubmit,
+    widgetId,
+    modalWidth,
+    drawerWidth,
   } = props;
   const schema: {
     form?: any;
@@ -158,12 +164,16 @@ const FormilyComponent = (props: FormilyComponentProps) => {
   const resetText = resetLabel || "重置";
   const triggerText = triggerLabel || "打开表单";
   const initFormValue = _.isObject(initValue) ? _.cloneDeep(initValue) : {};
-
-  useEffect(() => {
+  const resetForm = useCallback(() => {
     try {
       form.reset();
       form.setValues(initFormValue);
     } catch (e) {}
+    return false;
+  }, [form, initFormValue]);
+
+  useEffect(() => {
+    resetForm();
   }, [initFormValue]);
 
   const formContent = _.isUndefined(schema.schema) ? (
@@ -173,7 +183,7 @@ const FormilyComponent = (props: FormilyComponentProps) => {
   );
 
   const showDrawer = () => {
-    FormDrawer({ title }, () => {
+    FormDrawer({ title, width: drawerWidth || 520 }, widgetId, () => {
       return (
         <FormLayout {...formProps}>
           {formContent}
@@ -199,43 +209,59 @@ const FormilyComponent = (props: FormilyComponentProps) => {
   };
 
   const showModal = () => {
-    FormDialog({ title, okText: submitText }, () => {
-      return (
-        <FormLayout {...formProps}>
-          {formContent}
-          <FormDialog.Footer>
-            {showReset ? <Reset>{resetText}</Reset> : null}
-          </FormDialog.Footer>
-        </FormLayout>
-      );
-    })
+    FormDialog(
+      { title, okText: submitText, width: modalWidth || 520 },
+      widgetId,
+      () => {
+        return (
+          <FormLayout {...formProps}>
+            {formContent}
+            <FormDialog.Footer>
+              {showReset ? <Reset>{resetText}</Reset> : null}
+            </FormDialog.Footer>
+          </FormLayout>
+        );
+      },
+    )
       .open({
         initialValues: initFormValue,
       })
       .then(onFormSubmit);
   };
 
-  if (formType === "MODAL" || formType === "DRAWER") {
+  if (formType === "MODAL") {
     return (
-      <Button
-        type="primary"
-        block
-        onClick={formType === "DRAWER" ? showDrawer : showModal}
-      >
-        {triggerText}
-      </Button>
+      <FormDialog.Portal id={widgetId}>
+        <Button type="primary" block onClick={showModal}>
+          {triggerText}
+        </Button>
+      </FormDialog.Portal>
+    );
+  }
+
+  if (formType === "DRAWER") {
+    return (
+      <FormDrawer.Portal id={widgetId}>
+        <Button type="primary" block onClick={showDrawer}>
+          {triggerText}
+        </Button>
+      </FormDrawer.Portal>
     );
   }
 
   return (
     <Card
       title={title}
-      bodyStyle={{ height: title ? "calc(100% - 58px)" : "100%" }}
+      style={{ height: "100%" }}
+      bodyStyle={{ height: title ? "calc(100% - 54px)" : "100%" }}
     >
       <Form
         form={form}
         {...formProps}
-        onAutoSubmit={onFormSubmit}
+        onAutoSubmit={(value) => {
+          onFormSubmit(value);
+          resetForm();
+        }}
         className="full-height-form"
       >
         <ScrollContainer>
@@ -251,7 +277,7 @@ const FormilyComponent = (props: FormilyComponentProps) => {
             ) : showReset ? (
               <FormButtonGroup.FormItem>
                 <Submit>{submitText}</Submit>
-                <Reset>{resetText}</Reset>
+                <Reset onClick={resetForm}>{resetText}</Reset>
               </FormButtonGroup.FormItem>
             ) : (
               <FormButtonGroup.FormItem>
@@ -265,4 +291,4 @@ const FormilyComponent = (props: FormilyComponentProps) => {
   );
 };
 
-export default FormilyComponent;
+export default React.memo(FormilyComponent);

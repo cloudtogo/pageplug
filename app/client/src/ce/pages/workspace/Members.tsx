@@ -8,7 +8,7 @@ import {
 } from "@appsmith/selectors/workspaceSelectors";
 import { RouteComponentProps } from "react-router";
 import { getCurrentUser } from "selectors/usersSelectors";
-import { Table } from "design-system";
+import { Table } from "design-system-old";
 import {
   fetchUsersForWorkspace,
   fetchRolesForWorkspace,
@@ -26,13 +26,13 @@ import {
   TableDropdownOption,
   Text,
   TextType,
-} from "design-system";
+} from "design-system-old";
 import styled from "styled-components";
 import DeleteConfirmationModal from "pages/workspace/DeleteConfirmationModal";
 import { useMediaQuery } from "react-responsive";
 import { Card } from "@blueprintjs/core";
 import ProfileImage from "pages/common/ProfileImage";
-import { USER_PHOTO_URL } from "constants/userConstants";
+import { USER_PHOTO_ASSET_URL } from "constants/userConstants";
 import { Colors } from "constants/Colors";
 import { WorkspaceUser } from "@appsmith/constants/workspaceConstants";
 import {
@@ -40,6 +40,9 @@ import {
   MEMBERS_TAB_TITLE,
   NO_SEARCH_DATA_TEXT,
 } from "@appsmith/constants/messages";
+import { getAppsmithConfigs } from "@appsmith/configs";
+
+const { cloudHosting } = getAppsmithConfigs();
 
 export type PageProps = RouteComponentProps<{
   workspaceId: string;
@@ -65,10 +68,6 @@ export const MembersWrapper = styled.div<{
           line-height: 1.5;
           color: var(--appsmith-color-black-700);
           padding: 8px 20px;
-
-          &:first-child {
-            width: 320px;
-          }
 
           &:last-child {
             width: 120px;
@@ -331,7 +330,9 @@ export default function MemberSettings(props: PageProps) {
 
   const columns = [
     {
-      Header: createMessage(() => MEMBERS_TAB_TITLE(filteredData?.length)),
+      Header: createMessage(() =>
+        MEMBERS_TAB_TITLE(filteredData?.length, cloudHosting),
+      ),
       accessor: "users",
       Cell: function UserCell(props: any) {
         const member = props.cell.row.original;
@@ -341,7 +342,11 @@ export default function MemberSettings(props: PageProps) {
               <ProfileImage
                 className="user-icons"
                 size={20}
-                source={`/api/v1/users/photo/${member.username}`}
+                source={
+                  member.photoId
+                    ? `/api/${USER_PHOTO_ASSET_URL}/${member.photoId}`
+                    : undefined
+                }
                 userName={member.username}
               />
               <HighlightText highlight={searchValue} text={member.username} />
@@ -464,7 +469,11 @@ export default function MemberSettings(props: PageProps) {
                     <ProfileImage
                       className="avatar"
                       size={71}
-                      source={`/api/${USER_PHOTO_URL}/${member.username}`}
+                      source={
+                        member.photoId
+                          ? `/api/${USER_PHOTO_ASSET_URL}/${member.photoId}`
+                          : undefined
+                      }
                       userName={member.username}
                     />
                     <HighlightText

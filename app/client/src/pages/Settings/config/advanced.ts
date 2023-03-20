@@ -19,7 +19,7 @@ export const config: AdminConfigType = {
       controlSubType: SettingSubtype.TEXT,
       label: "MongoDB URI",
       subText:
-        "PagePlug 内部使用的 MongoDB，你可以修改为外部 MongoDb 来满足集群化需求",
+        "PagePlug 内部使用的 MongoDB，你可以修改为外部 MongoDB 来满足集群化需求",
     },
     {
       id: "APPSMITH_REDIS_URL",

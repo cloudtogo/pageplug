@@ -7,12 +7,12 @@ import {
   StyledDeleteIcon,
   StyledEditIcon,
 } from "../StyledControls";
-import styled from "constants/DefaultTheme";
+import styled from "styled-components";
 import { generateReactKey } from "utils/generators";
 import { DroppableComponent } from "../DraggableListComponent";
 import { getNextEntityName } from "utils/AppsmithUtils";
 import _, { debounce } from "lodash";
-import { Category, Size } from "design-system";
+import { Category, Size } from "design-system-old";
 
 const StyledPropertyPaneButtonWrapper = styled.div`
   display: flex;

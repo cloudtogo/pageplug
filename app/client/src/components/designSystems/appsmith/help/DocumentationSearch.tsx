@@ -326,19 +326,19 @@ type HelpItem = {
 const HELP_MENU_ITEMS: HelpItem[] = [
   {
     icon: <StyledDocumentIcon color="#4b4848" height={14} width={14} />,
-    label: "Documentation",
+    label: "官方文档",
     link: "https://docs.appsmith.com/",
   },
   {
     icon: <StyledGithubIcon color="#4b4848" height={14} width={14} />,
-    label: "Report a bug",
-    link: "https://github.com/appsmithorg/appsmith/issues/new/choose",
+    label: "报告问题",
+    link: "https://github.com/cloudtogo/pageplug/issues/new/choose",
   },
-  {
-    icon: <StyledDiscordIcon color="#4b4848" height={14} width={14} />,
-    label: "Join our Discord",
-    link: "https://discord.gg/rBTTVJp",
-  },
+  // {
+  //   icon: <StyledDiscordIcon color="#4b4848" height={14} width={14} />,
+  //   label: "Join our Discord",
+  //   link: "https://discord.gg/rBTTVJp",
+  // },
 ];
 
 if (intercomAppID && window.Intercom) {
@@ -445,7 +445,6 @@ class DocumentationSearch extends React.Component<Props, State> {
                     cloudHosting,
                   )}
                 </span>
-                <span>Released {moment(appVersion.releaseDate).fromNow()}</span>
               </HelpFooter>
             )}
           </HelpContainer>

@@ -83,7 +83,12 @@ function accessorValidation(
     return {
       isValid: false,
       parsed: value,
-      messages: ["Property Name cannot be empty"],
+      messages: [
+        {
+          name: "ValidationError",
+          message: "Property Name cannot be empty",
+        },
+      ],
     };
   }
 
@@ -96,7 +101,12 @@ function accessorValidation(
     return {
       isValid: false,
       parsed: "",
-      messages: ["Property name already in use."],
+      messages: [
+        {
+          name: "ValidationError",
+          message: "Property name already in use.",
+        },
+      ],
     };
   }
 
@@ -104,14 +114,19 @@ function accessorValidation(
     return {
       isValid: false,
       parsed: "",
-      messages: ["This is a restricted Property Name"],
+      messages: [
+        {
+          name: "ValidationError",
+          message: "This is a restricted Property Name",
+        },
+      ],
     };
   }
 
   return {
     isValid: true,
     parsed: value,
-    messages: [""],
+    messages: [{ name: "", message: "" }],
   };
 }
 
@@ -364,7 +379,7 @@ const COMMON_PROPERTIES = {
         propertyName: "labelStyle",
         label: "强调",
         helpText: "设置标签字体是否加粗或斜体",
-        controlType: "BUTTON_TABS",
+        controlType: "BUTTON_GROUP",
         options: [
           {
             icon: "BOLD_FONT",

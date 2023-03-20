@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, memo } from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import Entity, { EntityClassNames } from "../Entity";
 import { WidgetProps } from "widgets/BaseWidget";
 import { WidgetType } from "constants/WidgetConstants";
@@ -15,6 +15,7 @@ import { builderURL } from "RouteBuilder";
 import { useLocation } from "react-router";
 import { hasManagePagePermission } from "@appsmith/utils/permissionHelpers";
 import { getPagePermissions } from "selectors/editorSelectors";
+import { NavigationMethod } from "utils/history";
 
 export type WidgetTree = WidgetProps & { children?: WidgetTree[] };
 
@@ -24,7 +25,6 @@ const useWidget = (
   widgetId: string,
   widgetType: WidgetType,
   pageId: string,
-  widgetsInStep: string[],
 ) => {
   const selectedWidgets = useSelector(getSelectedWidgets);
   const lastSelectedWidget = useSelector(getLastSelectedWidget);
@@ -41,20 +41,13 @@ const useWidget = (
         widgetId,
         widgetType,
         pageId,
+        NavigationMethod.EntityExplorer,
         isWidgetSelected,
         isMultiSelect,
         isShiftSelect,
-        widgetsInStep,
       );
     },
-    [
-      widgetId,
-      widgetType,
-      pageId,
-      isWidgetSelected,
-      widgetsInStep,
-      navigateToWidget,
-    ],
+    [widgetId, widgetType, pageId, isWidgetSelected, navigateToWidget],
   );
 
   return {
@@ -96,12 +89,7 @@ export const WidgetEntity = memo((props: WidgetEntityProps) => {
     lastSelectedWidget,
     multipleWidgetsSelected,
     navigateToWidget,
-  } = useWidget(
-    props.widgetId,
-    props.widgetType,
-    props.pageId,
-    props.widgetsInStep,
-  );
+  } = useWidget(props.widgetId, props.widgetType, props.pageId);
 
   const { parentModalId, widgetId, widgetType } = props;
   /**

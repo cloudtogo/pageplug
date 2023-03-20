@@ -315,7 +315,7 @@ function NewApiScreen(props: Props) {
                   src={authApiPlugin.iconLocation}
                 />
               </div>
-              <p className="textBtn">鉴权 API</p>
+              <p className="t--plugin-name textBtn">鉴权 API</p>
             </CardContentWrapper>
           </ApiCard>
         )}

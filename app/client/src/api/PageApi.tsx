@@ -109,6 +109,7 @@ export type FetchPageListResponseData = {
     slug?: string;
     icon?: string;
     userPermissions?: string[];
+    description?: string;
   }>;
   workspaceId: string;
 };

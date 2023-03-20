@@ -25,7 +25,12 @@ export const sourceDataValidationFn = (
     return {
       isValid: false,
       parsed: {},
-      messages: ["Source data cannot be empty."],
+      messages: [
+        {
+          name: "ValidationError",
+          message: "Source data cannot be empty.",
+        },
+      ],
     };
   }
 
@@ -52,7 +57,7 @@ export const sourceDataValidationFn = (
     return {
       isValid: false,
       parsed: {},
-      messages: [(e as Error).message],
+      messages: [e as Error],
     };
   }
 };
@@ -155,6 +160,7 @@ export const contentConfig = [
           "schema",
           "fieldLimitExceeded",
           "childStylesheet",
+          "dynamicPropertyPathList",
         ],
         evaluatedDependencies: ["sourceData"],
       },
@@ -187,6 +193,16 @@ export const contentConfig = [
         propertyName: "isVisible",
         helpText: "控制组件的显示/隐藏",
         label: "是否显示",
+        controlType: "SWITCH",
+        isJSConvertible: true,
+        isBindProperty: true,
+        isTriggerProperty: false,
+        validation: { type: ValidationTypes.BOOLEAN },
+      },
+      {
+        propertyName: "useSourceData",
+        helpText: "Use source data for hidden fields to show them in form data",
+        label: "Hidden Fields in Data",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,

@@ -29,6 +29,8 @@ export const getCurrentApplication = (
 ): ApplicationPayload | undefined => {
   return state.ui.applications.currentApplication;
 };
+export const isMobileLayout = (state: AppState) =>
+  state.ui.applications.currentApplication?.appLayout?.type === "MOBILE_FLUID";
 export const getApplicationSearchKeyword = (state: AppState) =>
   state.ui.applications.searchKeyword;
 export const getAppMode = (state: AppState) => state.entities.app.mode;
@@ -123,6 +125,12 @@ export const getIsFetchingApplications = createSelector(
   getApplicationsState,
   (applications: ApplicationsReduxState): boolean =>
     applications.isFetchingApplications,
+);
+
+export const getIsChangingViewAccess = createSelector(
+  getApplicationsState,
+  (applications: ApplicationsReduxState): boolean =>
+    applications.isChangingViewAccess,
 );
 
 export const getIsCreatingApplication = createSelector(

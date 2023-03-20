@@ -1,24 +1,20 @@
-import { Toaster, ToastTypeOptions, Variant } from "design-system";
+import { Toaster, ToastTypeOptions, Variant } from "design-system-old";
 import AppsmithConsole from "utils/AppsmithConsole";
-import {
-  ActionTriggerType,
-  ShowAlertActionDescription,
-} from "entities/DataTree/actionTriggers";
 import {
   ActionValidationError,
   TriggerFailureError,
 } from "sagas/ActionExecution/errorUtils";
 import { getType, Types } from "utils/TypeHelpers";
 import { select } from "redux-saga/effects";
-import { isMobileLayout } from "selectors/editorSelectors";
+import { isMobileLayout } from "selectors/applicationSelectors";
 import Taro from "@tarojs/taro";
+import { TShowAlertDescription } from "workers/Evaluation/fns/showAlert";
 
-export default function* showAlertSaga(
-  payload: ShowAlertActionDescription["payload"],
-) {
+export default function* showAlertSaga(action: TShowAlertDescription) {
+  const { payload } = action;
   if (typeof payload.message !== "string") {
     throw new ActionValidationError(
-      ActionTriggerType.SHOW_ALERT,
+      "SHOW_ALERT",
       "message",
       Types.STRING,
       getType(payload.message),

@@ -22,9 +22,9 @@ import {
   getAppThemeIsChanging,
   getSelectedAppTheme,
 } from "selectors/appThemingSelectors";
-import { Spinner } from "design-system";
+import { Spinner } from "design-system-old";
 import useGoogleFont from "utils/hooks/useGoogleFont";
-import { IconSize } from "design-system";
+import { IconSize } from "design-system-old";
 import { useDynamicAppLayout } from "utils/hooks/useDynamicAppLayout";
 import { getCurrentThemeDetails } from "selectors/themeSelectors";
 import { getCanvasWidgetsStructure } from "selectors/entitiesSelector";
@@ -39,6 +39,7 @@ const Container = styled.section<{
   overflow-x: auto;
   overflow-y: auto;
   background: ${({ background }) => background};
+
   &:before {
     position: absolute;
     top: 0;
@@ -76,12 +77,12 @@ function CanvasContainer() {
 
   const fontFamily = useGoogleFont(selectedTheme.properties.fontFamily.appFont);
 
+  let node: ReactNode;
   const pageLoading = (
     <Centered>
       <Spinner />
     </Centered>
   );
-  let node: ReactNode;
 
   if (isPageInitializing) {
     node = pageLoading;

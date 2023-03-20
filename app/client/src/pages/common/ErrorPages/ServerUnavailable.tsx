@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Size } from "design-system";
+import { Button, Size } from "design-system-old";
 
 import Page from "./Page";
 import {
@@ -20,7 +20,7 @@ function ServerUnavailable() {
           onClick={() => window.location.reload()}
           size={Size.large}
           tag="button"
-          text={"Retry"}
+          text={"重试"}
           variant="info"
         />
       }

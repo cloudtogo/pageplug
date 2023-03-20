@@ -4,11 +4,8 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import { AppState } from "@appsmith/reducers";
 import { updatePage } from "actions/pageActions";
 import { UpdatePageRequest } from "api/PageApi";
-import {
-  getViewModePageList,
-  getCurrentPage,
-  isMobileLayout,
-} from "selectors/editorSelectors";
+import { getViewModePageList, getCurrentPage } from "selectors/editorSelectors";
+import { isMobileLayout } from "selectors/applicationSelectors";
 import {
   Page,
   ReduxActionTypes,
@@ -20,8 +17,8 @@ import {
   useEntityUpdateState,
   useEntityEditState,
 } from "pages/Editor/Explorer/hooks";
-import { Icon, IconSize, Switch } from "design-system";
-import { TooltipComponent } from "design-system";
+import { Icon, IconSize, Switch } from "design-system-old";
+import { TooltipComponent } from "design-system-old";
 import { Alignment } from "@blueprintjs/core";
 import { Position } from "@blueprintjs/core/lib/esm/common/position";
 import IconSelectControl from "components/propertyControls/taro/IconSelectControl";

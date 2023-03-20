@@ -189,10 +189,10 @@ export const usePageContainerSizeHooks = () => {
 
   const onResize = () => {
     const container = document.getElementsByClassName(
-      "ant-pro-basicLayout-content",
+      "ant-pro-page-container-children-content",
     )[0];
     updateWindowSize({
-      width: container?.clientWidth || window.innerWidth,
+      width: container?.children[0]?.clientWidth || window.innerWidth,
       height: window.innerHeight,
     });
   };
