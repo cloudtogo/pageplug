@@ -237,7 +237,7 @@ function ManualUpgrades(props: {
 
   const tooltipContent = (
     <div className="text-sm">
-      {`${latestVersion - applicationVersion} pending update(s)`}
+      {`${latestVersion - applicationVersion} 个版本待更新`}
       <ul className="mt-1">
         {updates.slice(applicationVersion - 1).map((u) => (
           <li key={u.name}>{u.shortDesc}</li>
