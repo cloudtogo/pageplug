@@ -65,6 +65,11 @@ import {
   watchGeoLocation,
 } from "./geolocationFns";
 import { isAsyncGuard } from "./utils/fnGuard";
+import {
+  echartCallFunc,
+  TCallFuncDescription,
+  TCallFuncActionType,
+} from "./echartFns";
 
 // cloudHosting -> to use in EE
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -156,6 +161,12 @@ export const entityFns = [
     fn: () =>
       isAsyncGuard(stopWatchGeoLocation, "appsmith.geolocation.clearWatch"),
   },
+  {
+    name: "callFunc",
+    path: "appsmith.echartInstance.callFunc",
+    qualifier: (entity: DataTreeEntity) => isAppsmithEntity(entity),
+    fn: () => isAsyncGuard(echartCallFunc, "appsmith.echartInstance.callFunc"),
+  },
 ];
 
 export type ActionTriggerKeys =
@@ -172,7 +183,8 @@ export type ActionTriggerKeys =
   | TPostWindowMessageActionType
   | TGetGeoLocationActionType
   | TWatchGeoLocationActionType
-  | TStopWatchGeoLocationActionType;
+  | TStopWatchGeoLocationActionType
+  | TCallFuncActionType;
 
 export const getActionTriggerFunctionNames = (
   // cloudHosting -> to use in ee
@@ -222,4 +234,5 @@ export type ActionDescription =
   | TCopyToClipboardDescription
   | TGetGeoLocationDescription
   | TWatchGeoLocationDescription
-  | TStopWatchGeoLocationDescription;
+  | TStopWatchGeoLocationDescription
+  | TCallFuncDescription;

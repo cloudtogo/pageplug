@@ -1,6 +1,6 @@
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { TriggerMeta } from "@appsmith/sagas/ActionExecution/ActionExecutionSagas";
-import { call, put, spawn, take } from "redux-saga/effects";
+import { call, put, spawn, take, select } from "redux-saga/effects";
 import { logActionExecutionError } from "sagas/ActionExecution/errorUtils";
 import { setUserCurrentGeoLocation } from "actions/browserRequestActions";
 import { Channel, channel } from "redux-saga";
@@ -9,6 +9,12 @@ import {
   TGetGeoLocationDescription,
   TWatchGeoLocationDescription,
 } from "workers/Evaluation/fns/geolocationFns";
+import _find from "lodash/find";
+import { getEchartWidget } from "selectors/widgetSelectors";
+import { FlattenedWidgetProps } from "reducers/entityReducers/canvasWidgetsReducer";
+import { ActionValidationError } from "sagas/ActionExecution/errorUtils";
+import { EchartActionDescription } from "@appsmith/entities/DataTree/actionTriggers";
+import { getType, Types } from "utils/TypeHelpers";
 
 class GeoLocationError extends Error {
   constructor(message: string, private responseData?: any) {
@@ -134,6 +140,56 @@ export function* getCurrentLocationSaga(
       const sanitizedError = sanitizeGeolocationError(error);
       throw new GeoLocationError(sanitizedError.message, [sanitizedError]);
     }
+  }
+}
+
+export function* getEchartSaga(
+  actionPayload: EchartActionDescription["payload"],
+  eventType: EventType,
+  triggerMeta: TriggerMeta,
+) {
+  const { widgetName, funcName, options } = actionPayload;
+  const echartWidgets: {
+    [widgetId: string]: FlattenedWidgetProps;
+  } = yield select(getEchartWidget);
+  const _target = _find(echartWidgets, (it: any) => it.name === widgetName);
+  const _instance = _target?.instance;
+  if (typeof widgetName !== "string") {
+    throw new ActionValidationError(
+      "CALL_FUNC",
+      "widgetName",
+      Types.STRING,
+      getType(widgetName),
+    );
+  }
+  if (typeof funcName !== "string") {
+    throw new ActionValidationError(
+      "CALL_FUNC",
+      "funcName",
+      Types.STRING,
+      getType(funcName),
+    );
+  }
+
+  try {
+    if (_instance) {
+      const res = _instance[funcName](options);
+      if (funcName === "getDom") {
+        logActionExecutionError(
+          "postmessage could not be cloned",
+          triggerMeta.source,
+          triggerMeta.triggerPropertyName,
+        );
+      }
+      return [res];
+    }
+  } catch (error) {
+    logActionExecutionError(
+      (error as Error).message,
+      triggerMeta.source,
+      triggerMeta.triggerPropertyName,
+    );
+    return [error];
   }
 }
 
