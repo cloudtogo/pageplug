@@ -140,11 +140,10 @@ export default {
     },
     {
       propertyName: "sticky",
-      helpText:
-        "Choose column that needs to be frozen left or right of the table",
+      helpText: "你可以选择将数据列固定在表格左边或者右边",
       controlType: "ICON_TABS",
       defaultValue: StickyType.NONE,
-      label: "Column Freeze",
+      label: "固定列",
       fullWidth: true,
       isBindProperty: true,
       isTriggerProperty: false,
