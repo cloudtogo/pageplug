@@ -53,6 +53,10 @@ export const addDataTreeToContext = (args: {
       const func = entityFn.fn(entity);
       const fullPath = `${entityFn.path || `${entityName}.${entityFn.name}`}`;
       set(entityFunctionCollection, fullPath, func);
+      if (fullPath.startsWith("appsmith.")) {
+        const globalFullPath = fullPath.replace(/^appsmith/g, "global");
+        set(entityFunctionCollection, globalFullPath, func);
+      }
     }
   }
 
@@ -80,6 +84,10 @@ export const getAllAsyncFunctions = (dataTree: DataTree) => {
       if (!entityFn.qualifier(entity)) continue;
       const fullPath = `${entityFn.path || `${entityName}.${entityFn.name}`}`;
       asyncFunctionNameMap[fullPath] = true;
+      if (fullPath.startsWith("appsmith.")) {
+        const globalFullPath = fullPath.replace(/^appsmith/g, "global");
+        asyncFunctionNameMap[globalFullPath] = true;
+      }
     }
   }
   for (const platformFn of getPlatformFunctions(self.$cloudHosting)) {
