@@ -40,6 +40,8 @@ const Section = styled.section<{
 
 type AppViewerPageContainerProps = RouteComponentProps<AppViewerRouteParams>;
 
+const AUTO_HEIGHT_PADDING = 50;
+
 function AppViewerPageContainer(props: AppViewerPageContainerProps) {
   const currentPageName = useSelector(getCurrentPageName);
   const widgetsStructure = useSelector(getCanvasWidgetsStructure, equal);
@@ -53,7 +55,9 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
   );
   let fixedHeight = 0;
   if (hasFixedWidget) {
-    fixedHeight = parseInt(widgetsConfig[hasFixedWidget?.widgetId]?.height);
+    fixedHeight = parseInt(
+      widgetsConfig[hasFixedWidget?.widgetId]?.height + "",
+    );
   }
   const isMobile = useSelector(isMobileLayout);
 
@@ -110,7 +114,7 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
 
   return (
     <Section
-      height={widgetsStructure.bottomRow + fixedHeight}
+      height={widgetsStructure.bottomRow + fixedHeight + AUTO_HEIGHT_PADDING}
       isMobile={isMobile}
       id="art-board"
     >
