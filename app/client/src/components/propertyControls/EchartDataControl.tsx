@@ -320,7 +320,7 @@ const ControlLabel = (propertyName: string) => {
       titleLabel: "名称",
       areaLabel: "函数",
       hasAddBtn: true,
-      btnLabel: "ADD LISTENER",
+      btnLabel: "添加监听器",
     };
   }
   if (Name_Data_Array.includes(propertyName)) {
@@ -328,14 +328,14 @@ const ControlLabel = (propertyName: string) => {
       titleLabel: "标签",
       areaLabel: "数据",
       hasAddBtn: false,
-      btnLabel: "ADD AXIS",
+      btnLabel: "添加数据轴",
     };
   }
   return {
-    titleLabel: "Series Title",
-    areaLabel: "Series Data",
+    titleLabel: "数据列标题",
+    areaLabel: "数据序列",
     hasAddBtn: true,
-    btnLabel: "ADD SERIES",
+    btnLabel: "添加数据序列",
   };
 };
 
