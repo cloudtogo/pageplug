@@ -59,16 +59,16 @@ PagePlug 无需侵入客户架构，直接连接数据源（API、DB），任何
 - 严选小程序（微信小程序）  
   <img src="static/pageplug/weapp_demo.png" width="200" />
   
-（因小程序版本升级，目前旧的二维码使用会报错，待大版本更新后微信端可正常使用），可先在pc端体验感受：[体验地址](https://lowcode.methodot.com/applications/640042ebde5d5825c7acfd91/pages/640042ebde5d5825c7acfdae)
+（因小程序版本升级，目前旧的二维码使用会报错，待大版本更新后微信端可正常使用），可先在pc端体验感受：[体验地址](https://lowcode.methodot.com/applications/640042ebde5d5825c7acfd91/pages/640042ebde5d5825c7acfdae/?hmsr=G1&hmpl=A3)
 
   PagePlug 制作的完整电商小程序案例，支持注册、登录、二级商品分类、商品搜索、商品详情、购物车、购买下单、收货地址管理、订单管理等功能。后端接口使用开源商城后台 [litmall](https://github.com/linlinjava/litemall) 
 
 - 工程管理系统（PC web应用）  
-  [体验地址](https://lowcode.methodot.com/applications/6322a1453892ca140cb874d5/pages/6322a1453892ca140cb874e3)  
+  [体验地址](https://lowcode.methodot.com/applications/6322a1453892ca140cb874d5/pages/6322a1453892ca140cb874e3/?hmsr=G1&hmpl=A2)  
   PagePlug 制作的一个典型CRUD项目，实现了基本增删改查、后端分页、搜索过滤、弹窗表单、复杂表单等功能
 
 - 企业CRM系统（PC web应用）  
-  [体验地址](https://lowcode.methodot.com/applications/6322a6d63892ca140cb87551/pages/6322a6d63892ca140cb87555?embed=1)  
+  [体验地址](https://lowcode.methodot.com/applications/6322a6d63892ca140cb87551/pages/6322a6d63892ca140cb87555?embed=1/?hmsr=G1&hmpl=A1)  
   PagePlug 制作的简单CRM项目，实现了线索、商机和客户的信息管理
 
 - Echarts示例  
@@ -88,7 +88,7 @@ PagePlug 无需侵入客户架构，直接连接数据源（API、DB），任何
 - 🌱 [私有部署【Docker】](https://lowcode.methodot.com/app/pageplug/page1-63160074cb370d532de7f2af?embed=1)（推荐）  
   > 最低服务器配置：4G内存 + 2核CPU
 
-- 🤩[详细安装文档教程](https://appsmithcn.gitbook.io/appsmith-tutorial/xue-xi-wen-dang/bu-shu-an-zhuang/yuan-ma-ben-di-hua-bu-shu-windows-ban#4.1-qi-dong-ben-di-nginx-docker)
+- 🤩[详细安装文档教程](https://appsmithcn.gitbook.io/appsmith-tutorial/xue-xi-wen-dang/bu-shu-an-zhuang/yuan-ma-ben-di-hua-bu-shu-windows-ban#4.1-qi-dong-ben-di-nginx-docker/?hmsr=G1&hmpl=A4)
   > 有问题可添加下方静静二维码，加入社区讨论学习
 
 <div id="dev" />
