@@ -88,7 +88,7 @@ PagePlug 无需侵入客户架构，直接连接数据源（API、DB），任何
 - 🌱 [私有部署【Docker】](https://lowcode.methodot.com/app/pageplug/page1-63160074cb370d532de7f2af?embed=1)（推荐）  
   > 最低服务器配置：4G内存 + 2核CPU
 
-- 🤩[详细安装文档教程](https://appsmithcn.gitbook.io/appsmith-tutorial/xue-xi-wen-dang/bu-shu-an-zhuang/yuan-ma-ben-di-hua-bu-shu-windows-ban#4.1-qi-dong-ben-di-nginx-docker/?hmsr=G1&hmpl=A4)
+- 🤩[详细安装文档教程](https://docs.pageplug.cn/xue-xi-wen-dang/bu-shu-an-zhuang/yuan-ma-ben-di-hua-bu-shu-windows-ban/?hmsr=G1&hmpl=A4)
   > 有问题可添加下方静静二维码，加入社区讨论学习
 
 <div id="dev" />
