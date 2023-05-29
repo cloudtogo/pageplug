@@ -26,7 +26,6 @@ async function main() {
               exec(
                 crossify(`
             cd ${CURRENT_DIRECTORY}/${dependencyFolder.replace("@", "")};
-            yarn unlink;
             yarn run link-package;
           `),
                 (err) => {
