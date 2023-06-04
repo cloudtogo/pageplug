@@ -2,7 +2,10 @@
   <img src="static/pageplug/pageplug_logo_banner.svg" width="360" height="160" alt="PagePlug">
 </p>
 
-<h2 align="center">更快、更简单的开源前端低代码【中国版Appsmith】</h2>
+<h2 align="center">面向研发使用的低代码，让智慧的开发者们不再做重复的造轮子工作
+
+  专注于创新、创造业务价值
+</h2>
 
 <h3 align="center" style="margin-bottom: 32px">
   <a href="#quickStart">快速开始</a>
@@ -33,27 +36,52 @@ PagePlug与市面上其他的低代码（轻流、宜搭、微搭、简道云、
 
 ## 功能特色
 
-- 支持移动端！一分钟制作一个小程序，并生成小程序码进行分享！  
-  <img src="static/pageplug/gifs/weapp.gif">
+- 更强大的可视化建模工具
 
-- 丰富的移动端组件  
+PagePlug拥有非常直观和灵活的可视化建模工具，如表格、图表、表单、按钮等。这些组件都是经过优化和测试的，可以满足大多数业务需求，从而减少开发人员的工作量，避免大量的编码工作和测试工作。可以让开发人员根据需要更容易地拖放和配置各种组件，创建自定义表单、报告和应用程序，无需重复编写复杂的代码，而且整个软件的维护更加轻便
+  <img src="https://pic1.zhimg.com/80/v2-a758c4b99c47e5cfc111371c90e235ae_1440w.png?source=d16d100b">
+
+- 更广泛的API支持
+
+PagePlug支持大量的第三方API集成，包括数据存储、消息队列、文件上传等，可以让开发人员更轻松地集成各种功能，可以与自己的应用程序进行无缝集成，扩展应用程序的功能。
+  <img src="https://picx.zhimg.com/80/v2-ca0565fca624842b0ddbb92b91b83af9_1440w.png?source=d16d100b">
+
+
+- 更完善的数据管理功能
+
+PagePlug提供了强大的数据管理工具，让用户可以轻松地编写和执行SQL查询语句，管理数据库、表格以及其他数据资源。相较于其他低代码平台，PagePlug连接api及数据库服务器无需手动配置，内置引擎充分支持。
+  <img src="https://pica.zhimg.com/80/v2-553d79cf08e3517cfb05b2b13c321aa4_1440w.png?source=d16d100b">
+  
+- 更强大的扩展性
+
+PagePlug支持任意一处使用JavaScript编写自定义代码，目前也支持添加第三方JS库，可以方便地自定义组件和控制逻辑，从而更好地实现个性化需求
+  <img src="https://pic1.zhimg.com/80/v2-9aa905fd6da588ce98e0702d1738e7bf_1440w.png?source=d16d100b">
+  
+- 更好的安全性支持
+
+PagePlug提供很多针对安全性的支持，包括身份验证、授权、加密、审计等，可以保证你的应用程序安全可靠。
+  
+## 与Appsmith的不同  
+
+- 基于Appsmith做了整体汉化及性能优化，体验变得更好了
+
+简化启动步骤，支持Windows环境本地开发（无需WSL），官方AppSmith前端项目第一次启动步骤繁琐，依赖非常多，并且官方支持 Windows 平台本地开发是通过 WSL 实现的，配置非常麻烦！
+
+- 引入 antd 组件库，支持Antd5，react 版本升级到 v17
+
+- 丰富的移动端组件 ，支持移动端！一分钟制作一个小程序，并生成小程序码进行分享！
+
   <img src="static/pageplug/gifs/widgets.gif">
 
-- 集成优秀可视化方案 [Echarts](https://echarts.apache.org)  
+- 更快捷简单的图表解决方案： [Echarts](https://echarts.apache.org)  
+
+  <img src="https://pic1.zhimg.com/80/v2-2e500e9a4f141817210e74c2e73a4e65_1440w.png?source=d16d100b">
   <img src="static/pageplug/gifs/echarts.gif">
 
-- 集成社区中功能拔群的表单解决方案 [Formily](https://github.com/alibaba/formily)
+- 集成表单解决方案领域的佼佼者： [Formily](https://github.com/alibaba/formily)
+
+  <img src="https://picx.zhimg.com/80/v2-dcec6f0c5914e9c83367f393f10d83fc_1440w.png?source=d16d100b">
   <img src="static/pageplug/gifs/formily.gif" width="100%">
-
-- PC端应用支持自定义导航菜单
-  <img src="static/pageplug/gifs/menu.gif" width="100%">
-
-- 中文界面、更简洁的 UI
-
-- 引入 antd 组件库，react 版本升级到 v17
-
-- 简化启动步骤，支持Windows环境本地开发（无需WSL）  
-  官方 AppSmith 前端项目第一次启动步骤繁琐，依赖非常多，并且官方支持 Windows 平台本地开发是通过 WSL 实现的，配置非常麻烦！PagePlug 优化了 Windows 环境下的运行脚本，简化了项目启动过程。[详请](#dev)
 
 
 ## DEMO 项目
@@ -168,13 +196,27 @@ yarn dev:weapp
 
 <div id="help" />
 
-## 帮助
-- 部署安装遇到问题或者想加入社区交流学习（目前1——7群已满，联系静静加入8群）
-- 扫描下方二维码联系PagePlug产品静静获取帮助  
+## 如何贡献
+
+如果想参与项目贡献及了解，可以阅读PP的贡献指南
+
+- 查看社区的想法及任务——[社区任务文档](https://docs.pageplug.cn/jie-shao/jia-ru-wo-men/ti-jiao-pull-request)
+- 产品有更好的优化——[提交PR文档](https://docs.pageplug.cn/jie-shao/jia-ru-wo-men/ti-jiao-pull-request)
+- 探讨产品的使用及想法问题——[提交issue文档](https://docs.pageplug.cn/jie-shao/jia-ru-wo-men/ti-jiao-issue)
+- 部署安装遇到问题或者想加入社区交流学习、或者是对社区有其他的想法参与等等，扫描下方二维码联系PagePlug产品静静获取帮助 （目前1——7群已满，联系静静加入8群）
   <img src="static/pageplug/wechat_help.jpg" width="200">
-- 联系作者  
-  <img src="static/pageplug/wechat_author.jpg" width="200">
-- [中文社区](https://appsmith-fans.cn/)
+
+
+## 社区的杰出贡献者们
+我们对PagePlug有更远的目标及期望，我们非常欢迎开发者们为PagePlug开源贡献一份力量，相应也将给予贡献者激励以表认可与感谢。如果你有更多的想法，欢迎在PP社区中寻找你志同道合的伙伴。[社区介绍及成长路线](https://docs.pageplug.cn/jie-shao/jia-ru-wo-men)
+
+PP Contributor：无名、茂行、Nina、洪涛
+
+PP Committer：xiaolu
+
+PP Maintainer：平头哥、kate、Bob
+
+PP Team Leader：QC王昆（Owenr）、DD、Chris、克力
 
 ## 感谢这些巨人
 PagePlug 代码中使用到的才华横溢的开源项目，感谢这些开源项目让世界更美好！
