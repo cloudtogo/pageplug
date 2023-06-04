@@ -204,11 +204,13 @@ yarn dev:weapp
 - 产品有更好的优化——[提交PR文档](https://docs.pageplug.cn/jie-shao/jia-ru-wo-men/ti-jiao-pull-request)
 - 探讨产品的使用及想法问题——[提交issue文档](https://docs.pageplug.cn/jie-shao/jia-ru-wo-men/ti-jiao-issue)
 - 部署安装遇到问题或者想加入社区交流学习、或者是对社区有其他的想法参与等等，扫描下方二维码联系PagePlug产品静静获取帮助 （目前1——7群已满，联系静静加入8群）
+
+
   <img src="static/pageplug/wechat_help.jpg" width="200">
 
 
 ## 社区的杰出贡献者们
-我们对PagePlug有更远的目标及期望，我们非常欢迎开发者们为PagePlug开源贡献一份力量，相应也将给予贡献者激励以表认可与感谢。如果你有更多的想法，欢迎在PP社区中寻找你志同道合的伙伴。[社区介绍及成长路线](https://docs.pageplug.cn/jie-shao/jia-ru-wo-men)
+我们对PagePlug有更远的目标及期望，我们非常欢迎开发者们为PagePlug开源贡献一份力量，相应也将给予贡献者激励以表认可与感谢。如果你对PagePlug有更多的想法，欢迎在PP社区中寻找你志同道合的伙伴一起尝试。[社区介绍及成长路线](https://docs.pageplug.cn/jie-shao/jia-ru-wo-men)
 
 PP Contributor：无名、茂行、Nina、洪涛
 
