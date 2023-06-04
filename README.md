@@ -218,7 +218,7 @@ PP Committer：xiaolu
 
 PP Maintainer：平头哥、kate、Bob
 
-PP Team Leader：QC王昆（Owenr）、DD、Chris、克力
+PP Team Leader：QC王昆（Owner）、DD、Chris、克力
 
 ## 感谢这些巨人
 PagePlug 代码中使用到的才华横溢的开源项目，感谢这些开源项目让世界更美好！
