@@ -212,7 +212,7 @@ yarn dev:weapp
 ## 社区的杰出贡献者们
 我们对PagePlug有更远的目标及期望，我们非常欢迎开发者们为PagePlug开源贡献一份力量，相应也将给予贡献者激励以表认可与感谢。如果你对PagePlug有更多的想法，欢迎在PP社区中寻找你志同道合的伙伴一起尝试。[社区介绍及成长路线](https://docs.pageplug.cn/jie-shao/jia-ru-wo-men)
 
-PP Contributor：无名、茂行、Nina、洪涛
+PP Contributor：Catsoft、无名、茂行、Nina、洪涛、东哥隆咚锵
 
 PP Committer：xiaolu
 
