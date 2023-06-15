@@ -185,7 +185,7 @@ export const contentConfig = [
     sectionName: "坐标轴配置",
     children: [
       {
-        helpText: "设置x轴标签",
+        helpText: "设置x轴标签(默认图表)",
         propertyName: "xAxisName",
         placeholderText: "日期",
         label: "x轴标签",
@@ -197,7 +197,7 @@ export const contentConfig = [
         dependencies: ["chartType"],
       },
       {
-        helpText: "设置y轴标签",
+        helpText: "设置y轴标签(默认图表)",
         propertyName: "yAxisName",
         placeholderText: "收入",
         label: "y轴标签",
