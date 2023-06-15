@@ -64,19 +64,36 @@ export const CONFIG = {
     animateLoading: true,
     customEchartConfig: {
       title: {
-        text: "基础折线图",
+        text: "Referer of a Website",
+        subtext: "Fake Data",
+        left: "center",
       },
-      xAxis: {
-        type: "category",
-        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      tooltip: {
+        trigger: "item",
       },
-      yAxis: {
-        type: "value",
+      legend: {
+        orient: "vertical",
+        left: "left",
       },
       series: [
         {
-          data: [150, 230, 224, 218, 135, 147, 260],
-          type: "line",
+          name: "Access From",
+          type: "pie",
+          radius: "50%",
+          data: [
+            { value: 1048, name: "Search Engine" },
+            { value: 735, name: "Direct" },
+            { value: 580, name: "Email" },
+            { value: 484, name: "Union Ads" },
+            { value: 300, name: "Video Ads" },
+          ],
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: "rgba(0, 0, 0, 0.5)",
+            },
+          },
         },
       ],
     },

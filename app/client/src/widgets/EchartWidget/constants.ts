@@ -132,12 +132,6 @@ export const isLabelOrientationApplicableFor = (chartType: string) =>
   LABEL_ORIENTATION_COMPATIBLE_CHARTS.includes(chartType);
 
 export const ECHART_BASIC_OPTION = {
-  xAxis: {
-    type: "category",
-  },
   animation: true,
-  yAxis: {
-    type: "value",
-  },
   series: [],
 };
