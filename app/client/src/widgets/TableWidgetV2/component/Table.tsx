@@ -14,7 +14,7 @@ import {
   TableHeaderWrapper,
   TableHeaderInnerWrapper,
 } from "./TableStyledWrappers";
-import TableHeader from "./header";
+import { TableHeader_Top, TableHeader_Bottom } from "./header";
 import { Classes } from "@blueprintjs/core";
 import {
   ReactTableColumnProps,
@@ -51,14 +51,14 @@ const PopoverStyles = createGlobalStyle<{
     ${HEADER_MENU_PORTAL_CLASS}-${({ widgetId }) => widgetId}
     {
       font-family: var(--wds-font-family) !important;
-  
+
       & .${PopOver2Classes.POPOVER2},
       .${PopOver2Classes.POPOVER2_CONTENT},
       .bp3-menu {
         border-radius: ${({ borderRadius }) =>
           borderRadius >= `1.5rem` ? `0.375rem` : borderRadius} !important;
       }
-    }   
+    }
 `;
 interface TableProps {
   width: number;
@@ -157,6 +157,7 @@ type HeaderComponentProps = {
   widgetId: string;
 };
 const HeaderComponent = (props: HeaderComponentProps) => {
+  console.log("用了header");
   return (
     <div
       className="thead"
@@ -226,6 +227,7 @@ const HeaderComponent = (props: HeaderComponentProps) => {
 };
 
 export function Table(props: TableProps) {
+  console.log("----用了table");
   const isResizingColumn = React.useRef(false);
   const handleResizeColumn = (columnWidths: Record<string, number>) => {
     const columnWidthMap = {
@@ -441,65 +443,57 @@ export function Table(props: TableProps) {
         borderRadius={props.borderRadius}
         widgetId={props.widgetId}
       />
+      {/* 表格工具栏-顶部*/}
       {isHeaderVisible && (
-        <SimpleBar
-          style={{
-            maxHeight: tableSizes.TABLE_HEADER_HEIGHT,
-          }}
+        // <SimpleBar
+        //   style={{
+        //     maxHeight: tableSizes.TABLE_HEADER_HEIGHT,
+        //   }}
+        // >
+        <TableHeaderWrapper
+          backgroundColor={Colors.WHITE}
+          ref={tableHeaderWrapperRef}
+          serverSidePaginationEnabled={props.serverSidePaginationEnabled}
+          tableSizes={tableSizes}
+          width={props.width}
         >
-          <TableHeaderWrapper
+          <TableHeaderInnerWrapper
             backgroundColor={Colors.WHITE}
-            ref={tableHeaderWrapperRef}
             serverSidePaginationEnabled={props.serverSidePaginationEnabled}
             tableSizes={tableSizes}
+            variant={props.variant}
             width={props.width}
           >
-            <TableHeaderInnerWrapper
-              backgroundColor={Colors.WHITE}
-              serverSidePaginationEnabled={props.serverSidePaginationEnabled}
+            <TableHeader_Top
+              accentColor={props.accentColor}
+              allowAddNewRow={props.allowAddNewRow}
+              applyFilter={props.applyFilter}
+              borderRadius={props.borderRadius}
+              boxShadow={props.boxShadow}
+              columns={tableHeadercolumns}
+              delimiter={props.delimiter}
+              disableAddNewRow={!!props.editableCell.column}
+              disabledAddNewRowSave={props.disabledAddNewRowSave}
+              filters={props.filters}
+              isAddRowInProgress={props.isAddRowInProgress}
+              isVisibleDownload={props.isVisibleDownload}
+              isVisibleFilters={props.isVisibleFilters}
+              isVisibleSearch={props.isVisibleSearch}
+              onAddNewRow={props.onAddNewRow}
+              onAddNewRowAction={props.onAddNewRowAction}
+              searchKey={props.searchKey}
+              searchTableData={props.searchTableData}
+              tableColumns={columns}
+              tableData={data}
               tableSizes={tableSizes}
-              variant={props.variant}
-              width={props.width}
-            >
-              <TableHeader
-                accentColor={props.accentColor}
-                allowAddNewRow={props.allowAddNewRow}
-                applyFilter={props.applyFilter}
-                borderRadius={props.borderRadius}
-                boxShadow={props.boxShadow}
-                columns={tableHeadercolumns}
-                currentPageIndex={currentPageIndex}
-                delimiter={props.delimiter}
-                disableAddNewRow={!!props.editableCell.column}
-                disabledAddNewRowSave={props.disabledAddNewRowSave}
-                filters={props.filters}
-                isAddRowInProgress={props.isAddRowInProgress}
-                isVisibleDownload={props.isVisibleDownload}
-                isVisibleFilters={props.isVisibleFilters}
-                isVisiblePagination={props.isVisiblePagination}
-                isVisibleSearch={props.isVisibleSearch}
-                nextPageClick={props.nextPageClick}
-                onAddNewRow={props.onAddNewRow}
-                onAddNewRowAction={props.onAddNewRowAction}
-                pageCount={pageCount}
-                pageNo={props.pageNo}
-                pageOptions={pageOptions}
-                prevPageClick={props.prevPageClick}
-                searchKey={props.searchKey}
-                searchTableData={props.searchTableData}
-                serverSidePaginationEnabled={props.serverSidePaginationEnabled}
-                tableColumns={columns}
-                tableData={data}
-                tableSizes={tableSizes}
-                totalRecordsCount={props.totalRecordsCount}
-                updatePageNo={props.updatePageNo}
-                widgetId={props.widgetId}
-                widgetName={props.widgetName}
-              />
-            </TableHeaderInnerWrapper>
-          </TableHeaderWrapper>
-        </SimpleBar>
+              widgetId={props.widgetId}
+              widgetName={props.widgetName}
+            />
+          </TableHeaderInnerWrapper>
+        </TableHeaderWrapper>
+        // {/* </SimpleBar> */}
       )}
+      {/* 表格内容 */}
       <div
         className={
           props.isLoading
@@ -577,6 +571,59 @@ export function Table(props: TableProps) {
           )}
         </div>
       </div>
+      {/* 表格工具栏-底部 */}
+      {isHeaderVisible && (
+        // <SimpleBar
+        //   style={{
+        //     maxHeight: tableSizes.TABLE_HEADER_HEIGHT,
+        //   }}
+        // >
+        <TableHeaderWrapper
+          backgroundColor={Colors.WHITE}
+          ref={tableHeaderWrapperRef}
+          serverSidePaginationEnabled={props.serverSidePaginationEnabled}
+          tableSizes={tableSizes}
+          width={props.width}
+        >
+          <TableHeaderInnerWrapper
+            backgroundColor={Colors.WHITE}
+            serverSidePaginationEnabled={props.serverSidePaginationEnabled}
+            tableSizes={tableSizes}
+            variant={props.variant}
+            width={props.width}
+          >
+            <TableHeader_Bottom
+              accentColor={props.accentColor}
+              allowAddNewRow={props.allowAddNewRow}
+              borderRadius={props.borderRadius}
+              boxShadow={props.boxShadow}
+              columns={tableHeadercolumns}
+              currentPageIndex={currentPageIndex}
+              delimiter={props.delimiter}
+              disableAddNewRow={!!props.editableCell.column}
+              disabledAddNewRowSave={props.disabledAddNewRowSave}
+              isAddRowInProgress={props.isAddRowInProgress}
+              isVisiblePagination={props.isVisiblePagination}
+              nextPageClick={props.nextPageClick}
+              onAddNewRow={props.onAddNewRow}
+              onAddNewRowAction={props.onAddNewRowAction}
+              pageCount={pageCount}
+              pageNo={props.pageNo}
+              pageOptions={pageOptions}
+              prevPageClick={props.prevPageClick}
+              serverSidePaginationEnabled={props.serverSidePaginationEnabled}
+              tableColumns={columns}
+              tableData={data}
+              tableSizes={tableSizes}
+              totalRecordsCount={props.totalRecordsCount}
+              updatePageNo={props.updatePageNo}
+              widgetId={props.widgetId}
+              widgetName={props.widgetName}
+            />
+          </TableHeaderInnerWrapper>
+        </TableHeaderWrapper>
+        // </SimpleBar>
+      )}
     </TableWrapper>
   );
 }
