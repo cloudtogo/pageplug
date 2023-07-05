@@ -2,6 +2,7 @@ import * as Sentry from "@sentry/react";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useCallback } from "react";
 import { Route, Switch, useRouteMatch } from "react-router";
+
 import { updateExplorerWidthAction } from "actions/explorerActions";
 import classNames from "classnames";
 import EntityExplorerSidebar from "components/editorComponents/Sidebar";

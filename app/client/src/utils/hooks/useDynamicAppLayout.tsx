@@ -38,7 +38,6 @@ import {
 } from "selectors/multiPaneSelectors";
 import { getPropertyPaneWidth } from "selectors/propertyPaneSelectors";
 import { scrollbarWidth } from "utils/helpers";
-
 const BORDERS_WIDTH = 2;
 const GUTTER_WIDTH = 72;
 export const AUTOLAYOUT_RESIZER_WIDTH_BUFFER = 40;
