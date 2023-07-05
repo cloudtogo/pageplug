@@ -11,14 +11,15 @@ import {
   ValidationResponse,
   ValidationTypes,
 } from "constants/WidgetValidation";
+
 import { AppPositioningTypes } from "reducers/entityReducers/pageListReducer";
-import { WidgetProperties } from "selectors/propertyPaneSelectors";
 import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import { getResponsiveLayoutConfig } from "utils/layoutPropertiesUtils";
 import { TabContainerWidgetProps, TabsWidgetProps } from "../constants";
 import derivedProperties from "./parseDerivedProperties";
 import { Stylesheet } from "entities/AppTheming";
 import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
+import { WidgetProperties } from "selectors/propertyPaneSelectors";
 
 export function selectedTabValidation(
   value: unknown,
