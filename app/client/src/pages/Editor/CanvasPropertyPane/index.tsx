@@ -1,19 +1,15 @@
-import React from "react";
-import styled from "styled-components";
-import { useDispatch } from "react-redux";
 import * as Sentry from "@sentry/react";
+
+import React from "react";
+import { useDispatch } from "react-redux";
+
 import { PopoverPosition } from "@blueprintjs/core";
 import { TooltipComponent, Button, Size, Category } from "design-system-old";
 import { useSelector } from "react-redux";
 import { isMobileLayout } from "selectors/applicationSelectors";
-
-import { Colors } from "constants/Colors";
-import { MainContainerLayoutControl } from "../MainContainerLayoutControl";
 import { openAppSettingsPaneAction } from "actions/appSettingsPaneActions";
-
-const Title = styled.p`
-  color: ${Colors.GRAY_800};
-`;
+import { AppPositionTypeControl, Title } from "../AppPositionTypeControl";
+import { MainContainerLayoutControl } from "../MainContainerLayoutControl";
 
 export function CanvasPropertyPane() {
   const dispatch = useDispatch();
@@ -35,6 +31,7 @@ export function CanvasPropertyPane() {
               <MainContainerLayoutControl />
             </>
           )}
+          <AppPositionTypeControl />
           <TooltipComponent
             content={
               isMobile ? null : (

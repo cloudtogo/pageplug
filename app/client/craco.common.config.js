@@ -1,7 +1,9 @@
 const CracoAlias = require("craco-alias");
-const CracoLessPlugin = require('craco-less');
+const CracoLessPlugin = require("craco-less");
 const { DefinePlugin, EnvironmentPlugin } = require("webpack");
 const { merge } = require("webpack-merge");
+const CracoBabelLoader = require("craco-babel-loader");
+const path = require("path");
 
 module.exports = {
   devServer: {
@@ -16,7 +18,7 @@ module.exports = {
     },
   },
   webpack: {
-    configure: webpackConfig => {
+    configure: (webpackConfig) => {
       const config = {
         resolve: {
           fallback: {
@@ -48,7 +50,8 @@ module.exports = {
         ],
       };
       const scopePluginIndex = webpackConfig.resolve.plugins.findIndex(
-        ({ constructor }) => constructor && constructor.name === 'ModuleScopePlugin'
+        ({ constructor }) =>
+          constructor && constructor.name === "ModuleScopePlugin",
       );
       webpackConfig.resolve.plugins.splice(scopePluginIndex, 1);
       return merge(webpackConfig, config);
@@ -59,28 +62,31 @@ module.exports = {
         ENABLE_ADJACENT_HTML: true,
         ENABLE_TEMPLATE_CONTENT: true,
         ENABLE_CLONE_NODE: true,
-        ENABLE_SIZE_APIS: false
+        ENABLE_SIZE_APIS: false,
       }),
       new EnvironmentPlugin({
-        TARO_ENV: 'h5',
+        TARO_ENV: "h5",
       }),
-    ]
+    ],
   },
   style: {
     postcss: {
       loaderOptions: {
         postcssOptions: {
-          ident: 'postcss',
+          ident: "postcss",
           plugins: [
-            'tailwindcss',
-            'autoprefixer',
-            ['postcss-pageplug-pxtorem', {
-              h5Width: 450,
-            }],
-          ]
-        }
-      }
-    }
+            "tailwindcss",
+            "autoprefixer",
+            [
+              "postcss-pageplug-pxtorem",
+              {
+                h5Width: 450,
+              },
+            ],
+          ],
+        },
+      },
+    },
   },
   plugins: [
     {
@@ -92,6 +98,12 @@ module.exports = {
         baseUrl: "./src",
         // tsConfigPath should point to the file where "baseUrl" and "paths" are specified
         tsConfigPath: "./tsconfig.path.json",
+      },
+    },
+    {
+      plugin: CracoBabelLoader,
+      options: {
+        includes: [path.resolve("packages")],
       },
     },
     {
@@ -115,7 +127,7 @@ module.exports = {
     },
   ],
   typescript: {
-    enableTypeChecking: false
+    enableTypeChecking: false,
   },
   // babel: {
   //   plugins: [
