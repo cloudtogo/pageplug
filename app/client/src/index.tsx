@@ -29,7 +29,7 @@ import "dayjs/locale/zh-cn";
 import { StyleProvider } from "@ant-design/cssinjs";
 // enable autofreeze only in development
 import { setAutoFreeze } from "immer";
-import AppErrorBoundary from "AppErrorBoundry";
+import AppErrorBoundary from "./AppErrorBoundry";
 const shouldAutoFreeze = process.env.NODE_ENV === "development";
 setAutoFreeze(shouldAutoFreeze);
 // taro-components polyfills

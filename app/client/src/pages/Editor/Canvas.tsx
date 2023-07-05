@@ -1,10 +1,10 @@
-import log from "loglevel";
 import * as Sentry from "@sentry/react";
 import TabBarIconPicker from "components/designSystems/taro/TabBarIconPicker";
-import styled from "styled-components";
-import { CanvasWidgetStructure } from "widgets/constants";
-import WidgetFactory from "utils/WidgetFactory";
+import log from "loglevel";
 import React from "react";
+import styled from "styled-components";
+import WidgetFactory from "utils/WidgetFactory";
+import { CanvasWidgetStructure } from "widgets/constants";
 
 import { RenderModes } from "constants/WidgetConstants";
 import { useSelector } from "react-redux";

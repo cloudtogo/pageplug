@@ -191,3 +191,5 @@ export const WIDGET_PROPS_TO_SKIP_FROM_EVAL = {
   topRowBeforeCollapse: false,
   bottomRowBeforeCollapse: false,
 };
+
+export const FLEXBOX_PADDING = 4;

@@ -1,8 +1,8 @@
 import React, { forwardRef, RefObject, useEffect, useRef } from "react";
 import styled from "styled-components";
 
-import ResizeObserver from "resize-observer-polyfill";
 import { useSelector } from "react-redux";
+import ResizeObserver from "resize-observer-polyfill";
 import { getCanvasScale } from "selectors/editorSelectors";
 import { isMultiPaneActive } from "selectors/multiPaneSelectors";
 
@@ -133,7 +133,9 @@ export const StickyCanvasArena = forwardRef(
     };
 
     useEffect(() => {
-      observeSlider();
+      if (slidingArenaRef.current) {
+        observeSlider();
+      }
     }, [
       showCanvas,
       snapRows,
@@ -161,7 +163,6 @@ export const StickyCanvasArena = forwardRef(
         }
       };
     }, []);
-
     return (
       <>
         <canvas
@@ -169,6 +170,9 @@ export const StickyCanvasArena = forwardRef(
           data-testid={canvasId}
           id={canvasId}
           ref={stickyCanvasRef}
+          style={{
+            position: "absolute",
+          }}
         />
         <StyledCanvasSlider
           data-testid={id}

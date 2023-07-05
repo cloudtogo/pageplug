@@ -4,9 +4,9 @@ import { ListWidgetProps } from "../constants";
 
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import { EVAL_VALUE_PATH } from "utils/DynamicBindingUtils";
 import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
-
+import { EVAL_VALUE_PATH } from "utils/DynamicBindingUtils";
+import { getResponsiveLayoutConfig } from "utils/layoutPropertiesUtils";
 export const PropertyPaneContentConfig = [
   {
     sectionName: "数据",
@@ -91,6 +91,7 @@ export const PropertyPaneContentConfig = [
       },
     ],
   },
+  ...getResponsiveLayoutConfig("LIST_WIDGET"),
   {
     sectionName: "事件",
     children: [
