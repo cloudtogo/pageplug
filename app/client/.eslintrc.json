@@ -24,6 +24,7 @@
     "@typescript-eslint/no-var-requires": "off",
     "import/no-webpack-loader-syntax": "off",
     "no-undef": "off",
+    "no-unused-vars": "off",
     "react/prop-types": "off",
     "react/display-name": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
