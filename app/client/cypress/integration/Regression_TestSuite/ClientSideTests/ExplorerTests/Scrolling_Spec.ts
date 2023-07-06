@@ -32,8 +32,16 @@ describe("Entity explorer context menu should hide on scrolling", function() {
 
   after(() => {
     //clean up
-    _.entityExplorer.ActionContextMenuByEntityName("Query1", "Delete", "Are you sure?");
-    _.entityExplorer.ActionContextMenuByEntityName("Query2", "Delete", "Are you sure?");
+    _.entityExplorer.ActionContextMenuByEntityName(
+      "Query1",
+      "Delete",
+      "Are you sure?",
+    );
+    _.entityExplorer.ActionContextMenuByEntityName(
+      "Query2",
+      "Delete",
+      "Are you sure?",
+    );
     _.dataSources.DeleteDatasouceFromActiveTab(mockDBNameMovies); //Since sometimes after Queries are deleted, ds is no more visible in EE tr_.ee
     _.dataSources.DeleteDatasouceFromActiveTab(mockDBNameUsers);
   });

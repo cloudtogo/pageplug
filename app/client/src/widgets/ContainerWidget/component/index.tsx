@@ -1,20 +1,17 @@
-import React, {
+import type {
   MouseEventHandler,
   PropsWithChildren,
   ReactNode,
   RefObject,
-  useCallback,
-  useEffect,
-  useRef,
 } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
 import tinycolor from "tinycolor2";
 import fastdom from "fastdom";
 import { generateClassName, getCanvasClassName } from "utils/generators";
-import WidgetStyleContainer, {
-  WidgetStyleContainerProps,
-} from "components/designSystems/appsmith/WidgetStyleContainer";
-import { WidgetType } from "utils/WidgetFactory";
+import type { WidgetStyleContainerProps } from "components/designSystems/appsmith/WidgetStyleContainer";
+import WidgetStyleContainer from "components/designSystems/appsmith/WidgetStyleContainer";
+import type { WidgetType } from "utils/WidgetFactory";
 import { scrollCSS } from "widgets/WidgetUtils";
 
 const StyledContainerComponent = styled.div<

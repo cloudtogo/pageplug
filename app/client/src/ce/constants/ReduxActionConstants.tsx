@@ -1,18 +1,19 @@
-import { ERROR_CODES } from "@appsmith/constants/ApiConstants";
-import { Workspace } from "@appsmith/constants/workspaceConstants";
-import { ApplicationVersion } from "actions/applicationActions";
-import {
+import type { ERROR_CODES } from "@appsmith/constants/ApiConstants";
+import type { Workspace } from "@appsmith/constants/workspaceConstants";
+import type { ApplicationVersion } from "actions/applicationActions";
+import type {
   AppEmbedSetting,
   ApplicationPagePayload,
   GitApplicationMetadata,
 } from "api/ApplicationApi";
-import {
+import type {
   LayoutOnLoadActionErrors,
   PageAction,
 } from "constants/AppsmithActionConstants/ActionConstants";
-import { AppLayoutConfig } from "reducers/entityReducers/pageListReducer";
-import { WidgetCardProps, WidgetProps } from "widgets/BaseWidget";
+import type { AppLayoutConfig } from "reducers/entityReducers/pageListReducer";
+import type { WidgetCardProps, WidgetProps } from "widgets/BaseWidget";
 
+import type { NavigationSetting } from "constants/AppConstants";
 export const ReduxSagaChannels = {
   WEBSOCKET_APP_LEVEL_WRITE_CHANNEL: "WEBSOCKET_APP_LEVEL_WRITE_CHANNEL",
   WEBSOCKET_PAGE_LEVEL_WRITE_CHANNEL: "WEBSOCKET_PAGE_LEVEL_WRITE_CHANNEL",
@@ -30,6 +31,7 @@ export const ReduxActionTypes = {
   UNINSTALL_LIBRARY_SUCCESS: "UNINSTALL_LIBRARY_SUCCESS",
   GIT_DISCARD_CHANGES_SUCCESS: "GIT_DISCARD_CHANGES_SUCCESS",
   GIT_DISCARD_CHANGES: "GIT_DISCARD_CHANGES",
+  CLEAR_DISCARD_ERROR_STATE: "CLEAR_DISCARD_ERROR_STATE",
   DELETE_BRANCH_INIT: "DELETE_BRANCH_INIT",
   DELETING_BRANCH: "DELETING_BRANCH",
   DELETE_BRANCH_SUCCESS: "DELETE_BRANCH_SUCCESS",
@@ -383,6 +385,7 @@ export const ReduxActionTypes = {
   CREATE_WORKSPACE_SUCCESS: "CREATE_WORKSPACE_SUCCESS",
   ADD_USER_TO_WORKSPACE_INIT: "ADD_USER_TO_WORKSPACE_INIT",
   ADD_USER_TO_WORKSPACE_SUCCESS: "ADD_USER_TO_WORKSPACE_ERROR",
+  BATCH_UPDATE_META_PROPS: "BATCH_UPDATE_META_PROPS",
   SET_META_PROP: "SET_META_PROP",
   SET_META_PROP_AND_EVAL: "SET_META_PROP_AND_EVAL",
   META_UPDATE_DEBOUNCED_EVAL: "META_UPDATE_DEBOUNCED_EVAL",
@@ -500,6 +503,7 @@ export const ReduxActionTypes = {
     "CURRENT_APPLICATION_VIEWER_LAYOUT_UPDATE",
   CURRENT_APPLICATION_EMBED_SETTING_UPDATE:
     "CURRENT_APPLICATION_EMBED_SETTING_UPDATE",
+  UPDATE_NAVIGATION_SETTING: "UPDATE_NAVIGATION_SETTING",
   FORK_APPLICATION_INIT: "FORK_APPLICATION_INIT",
   FORK_APPLICATION_SUCCESS: "FORK_APPLICATION_SUCCESS",
   IMPORT_APPLICATION_INIT: "IMPORT_APPLICATION_INIT",
@@ -700,6 +704,8 @@ export const ReduxActionTypes = {
   SET_TRIGGER_VALUES_LOADING: "SET_TRIGGER_VALUES_LOADING",
   OPEN_APP_SETTINGS_PANE: "OPEN_APP_SETTINGS_PANE",
   CLOSE_APP_SETTINGS_PANE: "CLOSE_APP_SETTINGS_PANE",
+  UPDATE_APP_SETTINGS_PANE_SELECTED_TAB:
+    "UPDATE_APP_SETTINGS_PANE_SELECTED_TAB",
   FETCH_CURRENT_TENANT_CONFIG: "FETCH_CURRENT_TENANT_CONFIG",
   FETCH_CURRENT_TENANT_CONFIG_SUCCESS: "FETCH_CURRENT_TENANT_CONFIG_SUCCESS",
   SET_FOCUS_HISTORY: "SET_FOCUS_HISTORY",
@@ -768,9 +774,13 @@ export const ReduxActionTypes = {
   AUTOLAYOUT_REORDER_WIDGETS: "AUTOLAYOUT_REORDER_WIDGETS",
   AUTOLAYOUT_ADD_NEW_WIDGETS: "AUTOLAYOUT_ADD_NEW_WIDGETS",
   RECALCULATE_COLUMNS: "RECALCULATE_COLUMNS",
+  SET_APP_SIDEBAR_PINNED: "SET_APP_SIDEBAR_PINNED",
+  SET_GSHEET_TOKEN: "SET_GSHEET_TOKEN",
+  FILE_PICKER_CALLBACK_ACTION: "FILE_PICKER_CALLBACK_ACTION",
 };
 
-export type ReduxActionType = typeof ReduxActionTypes[keyof typeof ReduxActionTypes];
+export type ReduxActionType =
+  (typeof ReduxActionTypes)[keyof typeof ReduxActionTypes];
 
 export const ReduxActionErrorTypes = {
   GIT_DISCARD_CHANGES_ERROR: "GIT_DISCARD_CHANGES_ERROR",
@@ -974,7 +984,8 @@ export const WidgetReduxActionTypes: { [key: string]: string } = {
   WIDGET_UPDATE_PROPERTY: "WIDGET_UPDATE_PROPERTY",
 };
 
-export type ReduxActionErrorType = typeof ReduxActionErrorTypes[keyof typeof ReduxActionErrorTypes];
+export type ReduxActionErrorType =
+  (typeof ReduxActionErrorTypes)[keyof typeof ReduxActionErrorTypes];
 
 export interface ReduxAction<T> {
   type: ReduxActionType | ReduxActionErrorType;
@@ -1079,6 +1090,9 @@ export interface ApplicationPayload {
   isAutoUpdate?: boolean;
   isManualUpdate?: boolean;
   embedSetting?: AppEmbedSetting;
+  applicationDetail?: {
+    navigationSetting?: NavigationSetting;
+  };
   collapseInvisibleWidgets?: boolean;
   chartTheme?: string;
 }

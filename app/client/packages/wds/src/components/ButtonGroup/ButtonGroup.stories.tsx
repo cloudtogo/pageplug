@@ -1,5 +1,6 @@
 import React from "react";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+// eslint-disable-next-line prettier/prettier
+import type { ComponentMeta, ComponentStory } from "@storybook/react";
 
 import { ButtonGroup } from "./index";
 import { Button } from "../Button";

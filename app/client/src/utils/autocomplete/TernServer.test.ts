@@ -1,8 +1,10 @@
+import type {
+  Completion,
+  DataTreeDefEntityInformation,
+} from "./CodemirrorTernService";
 import CodemirrorTernService, {
   AutocompleteDataType,
-  Completion,
   createCompletionHeader,
-  DataTreeDefEntityInformation,
 } from "./CodemirrorTernService";
 import { MockCodemirrorEditor } from "../../../test/__mocks__/CodeMirrorEditorMock";
 import { ENTITY_TYPE } from "entities/DataTree/dataTreeFactory";
@@ -14,11 +16,11 @@ describe("Tern server", () => {
       {
         input: {
           name: "test",
-          doc: ({
+          doc: {
             getCursor: () => ({ ch: 0, line: 0 }),
             getLine: () => "{{Api.}}",
             getValue: () => "{{Api.}}",
-          } as unknown) as CodeMirror.Doc,
+          } as unknown as CodeMirror.Doc,
           changed: null,
         },
         expectedOutput: "{{Api.}}",
@@ -26,11 +28,11 @@ describe("Tern server", () => {
       {
         input: {
           name: "test",
-          doc: ({
+          doc: {
             getCursor: () => ({ ch: 0, line: 0 }),
             getLine: () => "a{{Api.}}",
             getValue: () => "a{{Api.}}",
-          } as unknown) as CodeMirror.Doc,
+          } as unknown as CodeMirror.Doc,
           changed: null,
         },
         expectedOutput: "a{{Api.}}",
@@ -38,11 +40,11 @@ describe("Tern server", () => {
       {
         input: {
           name: "test",
-          doc: ({
+          doc: {
             getCursor: () => ({ ch: 10, line: 0 }),
             getLine: () => "a{{Api.}}bc",
             getValue: () => "a{{Api.}}bc",
-          } as unknown) as CodeMirror.Doc,
+          } as unknown as CodeMirror.Doc,
           changed: null,
         },
         expectedOutput: "a{{Api.}}bc",
@@ -50,11 +52,11 @@ describe("Tern server", () => {
       {
         input: {
           name: "test",
-          doc: ({
+          doc: {
             getCursor: () => ({ ch: 4, line: 0 }),
             getLine: () => "a{{Api.}}",
             getValue: () => "a{{Api.}}",
-          } as unknown) as CodeMirror.Doc,
+          } as unknown as CodeMirror.Doc,
           changed: null,
         },
         expectedOutput: "Api.",
@@ -74,12 +76,12 @@ describe("Tern server", () => {
       {
         input: {
           name: "test",
-          doc: ({
+          doc: {
             getCursor: () => ({ ch: 0, line: 0 }),
             getLine: () => "{{Api.}}",
             somethingSelected: () => false,
             getValue: () => "{{Api.}}",
-          } as unknown) as CodeMirror.Doc,
+          } as unknown as CodeMirror.Doc,
           changed: null,
         },
         expectedOutput: { ch: 0, line: 0 },
@@ -87,12 +89,12 @@ describe("Tern server", () => {
       {
         input: {
           name: "test",
-          doc: ({
+          doc: {
             getCursor: () => ({ ch: 0, line: 0 }),
             getLine: () => "{{Api.}}",
             somethingSelected: () => false,
             getValue: () => "{{Api.}}",
-          } as unknown) as CodeMirror.Doc,
+          } as unknown as CodeMirror.Doc,
           changed: null,
         },
         expectedOutput: { ch: 0, line: 0 },
@@ -100,12 +102,12 @@ describe("Tern server", () => {
       {
         input: {
           name: "test",
-          doc: ({
+          doc: {
             getCursor: () => ({ ch: 8, line: 0 }),
             getLine: () => "g {{Api.}}",
             somethingSelected: () => false,
             getValue: () => "g {{Api.}}",
-          } as unknown) as CodeMirror.Doc,
+          } as unknown as CodeMirror.Doc,
           changed: null,
         },
         expectedOutput: { ch: 4, line: 0 },
@@ -113,12 +115,12 @@ describe("Tern server", () => {
       {
         input: {
           name: "test",
-          doc: ({
+          doc: {
             getCursor: () => ({ ch: 7, line: 1 }),
             getLine: () => "c{{Api.}}",
             somethingSelected: () => false,
             getValue: () => "ab\nc{{Api.}}",
-          } as unknown) as CodeMirror.Doc,
+          } as unknown as CodeMirror.Doc,
           changed: null,
         },
         expectedOutput: { ch: 4, line: 0 },
@@ -138,12 +140,12 @@ describe("Tern server", () => {
           codeEditor: {
             value: "{{}}",
             cursor: { ch: 2, line: 0 },
-            doc: ({
+            doc: {
               getCursor: () => ({ ch: 2, line: 0 }),
               getLine: () => "{{}}",
               somethingSelected: () => false,
               getValue: () => "{{}}",
-            } as unknown) as CodeMirror.Doc,
+            } as unknown as CodeMirror.Doc,
           },
           requestCallbackData: {
             completions: [{ name: "Api1" }],
@@ -158,12 +160,12 @@ describe("Tern server", () => {
           codeEditor: {
             value: "\n {{}}",
             cursor: { ch: 3, line: 0 },
-            doc: ({
+            doc: {
               getCursor: () => ({ ch: 3, line: 0 }),
               getLine: () => " {{}}",
               somethingSelected: () => false,
               getValue: () => " {{}}",
-            } as unknown) as CodeMirror.Doc,
+            } as unknown as CodeMirror.Doc,
           },
           requestCallbackData: {
             completions: [{ name: "Api1" }],
@@ -192,7 +194,7 @@ describe("Tern server", () => {
       const value: any = CodemirrorTernService.requestCallback(
         null,
         testCase.input.requestCallbackData,
-        (MockCodemirrorEditor as unknown) as CodeMirror.Editor,
+        MockCodemirrorEditor as unknown as CodeMirror.Editor,
         () => null,
       );
 
@@ -204,10 +206,8 @@ describe("Tern server", () => {
 });
 
 describe("Tern server sorting", () => {
-  const defEntityInformation: Map<
-    string,
-    DataTreeDefEntityInformation
-  > = new Map();
+  const defEntityInformation: Map<string, DataTreeDefEntityInformation> =
+    new Map();
   const contextCompletion: Completion = {
     text: "context",
     type: AutocompleteDataType.STRING,
@@ -376,7 +376,7 @@ describe("Tern server sorting", () => {
     );
   });
 
-  it("tests score of completions", function() {
+  it("tests score of completions", function () {
     AutocompleteSorter.entityDefInfo = {
       type: ENTITY_TYPE.WIDGET,
       subType: "TABLE_WIDGET",

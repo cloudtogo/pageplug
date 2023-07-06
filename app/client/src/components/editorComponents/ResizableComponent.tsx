@@ -1,14 +1,16 @@
-import { AppState } from "@appsmith/reducers";
+/* eslint-disable prettier/prettier */
+import type { AppState } from "@appsmith/reducers";
 import { batchUpdateMultipleWidgetProperties } from "actions/controlActions";
 import { focusWidget } from "actions/widgetActions";
 import { EditorContext } from "components/editorComponents/EditorContextProvider";
 import { GridDefaults } from "constants/WidgetConstants";
 import { get, omit } from "lodash";
-import { XYCord } from "pages/common/CanvasArenas/hooks/useRenderBlocksOnCanvas";
+import type { XYCord } from "pages/common/CanvasArenas/hooks/useRenderBlocksOnCanvas";
 import React, { memo, useContext, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Resizable from "resizable/resizenreflow";
 import { SelectionRequestType } from "sagas/WidgetSelectUtils";
+import { getIsAppSettingsPaneWithNavigationTabOpen } from "selectors/appSettingsPaneSelectors";
 import {
   previewModeSelector,
   snipingModeSelector,
@@ -34,18 +36,15 @@ import {
 import { useWidgetSelection } from "utils/hooks/useWidgetSelection";
 import { NonResizableWidgets } from "utils/layoutPropertiesUtils";
 import { getSnapColumns } from "utils/WidgetPropsUtils";
+import type { WidgetProps, WidgetRowCols } from "widgets/BaseWidget";
+import { WidgetOperations } from "widgets/BaseWidget";
 import {
-  WidgetOperations,
-  WidgetProps,
-  WidgetRowCols,
-} from "widgets/BaseWidget";
-import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
+  isAutoHeightEnabledForWidget,
+  isAutoHeightEnabledForWidgetWithLimits,
+} from "widgets/WidgetUtils";
+import type { UIElementSize } from "./ResizableUtils";
+import { computeFinalRowCols, computeRowCols } from "./ResizableUtils";
 import { DropTargetContext } from "./DropTargetComponent";
-import {
-  computeFinalRowCols,
-  computeRowCols,
-  UIElementSize,
-} from "./ResizableUtils";
 import {
   BottomHandleStyles,
   BottomLeftHandleStyles,
@@ -71,6 +70,9 @@ export const ResizableComponent = memo(function ResizableComponent(
 
   const isSnipingMode = useSelector(snipingModeSelector);
   const isPreviewMode = useSelector(previewModeSelector);
+  const isAppSettingsPaneWithNavigationTabOpen = useSelector(
+    getIsAppSettingsPaneWithNavigationTabOpen,
+  );
 
   const showPropertyPane = useShowPropertyPane();
   const showTableFilterPane = useShowTableFilterPane();
@@ -283,7 +285,8 @@ export const ResizableComponent = memo(function ResizableComponent(
     isWidgetFocused &&
     !props.resizeDisabled &&
     !isSnipingMode &&
-    !isPreviewMode;
+    !isPreviewMode &&
+    !isAppSettingsPaneWithNavigationTabOpen;
   const { updateDropTargetRows } = useContext(DropTargetContext);
 
   const gridProps = {
@@ -319,7 +322,7 @@ export const ResizableComponent = memo(function ResizableComponent(
   }, [props, isAutoHeightEnabledForWidget, isEnabled]);
 
   const fixedHeight =
-    isAutoHeightEnabledForWidget(props, true) ||
+    isAutoHeightEnabledForWidgetWithLimits(props) ||
     !isAutoHeightEnabledForWidget(props) ||
     !props.isCanvas;
 
@@ -328,7 +331,10 @@ export const ResizableComponent = memo(function ResizableComponent(
     !props.isFlexChild;
   const isHovered = isFocused && !isSelected;
   const showResizeBoundary =
-    !isPreviewMode && !isDragging && (isHovered || isSelected);
+    !isPreviewMode &&
+    !isAppSettingsPaneWithNavigationTabOpen &&
+    !isDragging &&
+    (isHovered || isSelected);
   return (
     <Resizable
       allowResize={allowResize}

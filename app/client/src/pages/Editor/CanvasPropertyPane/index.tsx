@@ -4,12 +4,13 @@ import React from "react";
 import { useDispatch } from "react-redux";
 
 import { PopoverPosition } from "@blueprintjs/core";
-import { TooltipComponent, Button, Size, Category } from "design-system-old";
 import { useSelector } from "react-redux";
 import { isMobileLayout } from "selectors/applicationSelectors";
+import { MainContainerLayoutControl } from "../MainContainerLayoutControl";
+import { Button, Category, Size, TooltipComponent } from "design-system-old";
+
 import { openAppSettingsPaneAction } from "actions/appSettingsPaneActions";
 import { AppPositionTypeControl, Title } from "../AppPositionTypeControl";
-import { MainContainerLayoutControl } from "../MainContainerLayoutControl";
 
 export function CanvasPropertyPane() {
   const dispatch = useDispatch();

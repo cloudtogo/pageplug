@@ -30,20 +30,22 @@ public class ApplicationSnapshotServiceCEImpl implements ApplicationSnapshotServ
     private final ApplicationPermission applicationPermission;
     private final Gson gson;
 
-    private static final int MAX_SNAPSHOT_SIZE = 15*1024*1024; // 15 MB
+    private static final int MAX_SNAPSHOT_SIZE = 15 * 1024 * 1024; // 15 MB
 
     @Override
     public Mono<Boolean> createApplicationSnapshot(String applicationId, String branchName) {
-        return applicationService.findBranchedApplicationId(branchName, applicationId, applicationPermission.getEditPermission())
-                /* SerialiseApplicationObjective=VERSION_CONTROL because this API can be invoked from developers.
-                exportApplicationById method check for MANAGE_PERMISSION if SerialiseApplicationObjective=SHARE.
-                */
-                .flatMap(branchedAppId ->
-                        Mono.zip(
-                                importExportApplicationService.exportApplicationById(branchedAppId, SerialiseApplicationObjective.VERSION_CONTROL),
-                                Mono.just(branchedAppId)
-                        )
-                )
+        return applicationService
+                .findBranchedApplicationId(branchName, applicationId, applicationPermission.getEditPermission())
+                /*
+                 * SerialiseApplicationObjective=VERSION_CONTROL because this API can be invoked
+                 * from developers.
+                 * exportApplicationById method check for MANAGE_PERMISSION if
+                 * SerialiseApplicationObjective=SHARE.
+                 */
+                .flatMap(branchedAppId -> Mono.zip(
+                        importExportApplicationService.exportApplicationById(branchedAppId,
+                                SerialiseApplicationObjective.VERSION_CONTROL),
+                        Mono.just(branchedAppId)))
                 .flatMapMany(objects -> {
                     String branchedAppId = objects.getT2();
                     ApplicationJson applicationJson = objects.getT1();
@@ -55,7 +57,8 @@ public class ApplicationSnapshotServiceCEImpl implements ApplicationSnapshotServ
 
     private Flux<ApplicationSnapshot> createSnapshots(String applicationId, ApplicationJson applicationJson) {
         String json = gson.toJson(applicationJson);
-        // check the size of the exported json before storing to avoid mongodb document size limit
+        // check the size of the exported json before storing to avoid mongodb document
+        // size limit
         byte[] utf8JsonString = json.getBytes(StandardCharsets.UTF_8);
         List<ApplicationSnapshot> applicationSnapshots = createSnapshotsObjects(utf8JsonString, applicationId);
         return applicationSnapshotRepository.saveAll(applicationSnapshots);
@@ -63,35 +66,36 @@ public class ApplicationSnapshotServiceCEImpl implements ApplicationSnapshotServ
 
     @Override
     public Mono<ApplicationSnapshot> getWithoutDataByApplicationId(String applicationId, String branchName) {
-        // get application first to check the permission and get child aka branched application ID
-        return applicationService.findBranchedApplicationId(branchName, applicationId, applicationPermission.getEditPermission())
+        // get application first to check the permission and get child aka branched
+        // application ID
+        return applicationService
+                .findBranchedApplicationId(branchName, applicationId, applicationPermission.getEditPermission())
                 .switchIfEmpty(Mono.error(
-                        new AppsmithException(AppsmithError.NO_RESOURCE_FOUND, FieldName.APPLICATION, applicationId))
-                )
+                        new AppsmithException(AppsmithError.NO_RESOURCE_FOUND, FieldName.APPLICATION, applicationId)))
                 .flatMap(applicationSnapshotRepository::findWithoutData)
                 .switchIfEmpty(Mono.error(
-                        new AppsmithException(AppsmithError.NO_RESOURCE_FOUND, FieldName.APPLICATION, applicationId))
-                );
+                        new AppsmithException(AppsmithError.NO_RESOURCE_FOUND, FieldName.APPLICATION, applicationId)));
     }
 
     @Override
     public Mono<Application> restoreSnapshot(String applicationId, String branchName) {
-        return applicationService.findByBranchNameAndDefaultApplicationId(branchName, applicationId, applicationPermission.getEditPermission())
+        return applicationService
+                .findByBranchNameAndDefaultApplicationId(branchName, applicationId,
+                        applicationPermission.getEditPermission())
                 .switchIfEmpty(Mono.error(
-                        new AppsmithException(AppsmithError.NO_RESOURCE_FOUND, FieldName.APPLICATION, applicationId))
-                )
+                        new AppsmithException(AppsmithError.NO_RESOURCE_FOUND, FieldName.APPLICATION, applicationId)))
                 .flatMap(
                         application -> getApplicationJsonStringFromSnapShot(application.getId())
-                                .zipWith(Mono.just(application))
-                )
+                                .zipWith(Mono.just(application)))
                 .flatMap(objects -> {
                     String applicationJsonString = objects.getT1();
                     Application application = objects.getT2();
                     ApplicationJson applicationJson = gson.fromJson(applicationJsonString, ApplicationJson.class);
                     return importExportApplicationService.importApplicationInWorkspace(
-                            application.getWorkspaceId(), applicationJson, application.getId(), branchName
-                    );
-                });
+                            application.getWorkspaceId(), applicationJson, application.getId(), branchName);
+                })
+                .flatMap(application -> applicationSnapshotRepository.deleteAllByApplicationId(application.getId())
+                        .thenReturn(application));
     }
 
     private Mono<String> getApplicationJsonStringFromSnapShot(String applicationId) {
@@ -101,14 +105,14 @@ public class ApplicationSnapshotServiceCEImpl implements ApplicationSnapshotServ
                 .collectList()
                 .map(bytes -> {
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    for(byte [] b: bytes) {
+                    for (byte[] b : bytes) {
                         outputStream.writeBytes(b);
                     }
                     return outputStream.toString(StandardCharsets.UTF_8);
                 });
     }
 
-    private List<ApplicationSnapshot> createSnapshotsObjects(byte [] bytes, String applicationId) {
+    private List<ApplicationSnapshot> createSnapshotsObjects(byte[] bytes, String applicationId) {
         List<ApplicationSnapshot> applicationSnapshots = new ArrayList<>();
         int total = bytes.length;
         int copiedCount = 0;
@@ -116,10 +120,10 @@ public class ApplicationSnapshotServiceCEImpl implements ApplicationSnapshotServ
 
         while (copiedCount < total) {
             int currentChunkSize = MAX_SNAPSHOT_SIZE;
-            if(copiedCount + currentChunkSize > total) {
+            if (copiedCount + currentChunkSize > total) {
                 currentChunkSize = total - copiedCount;
             }
-            byte [] sub = new byte[currentChunkSize];
+            byte[] sub = new byte[currentChunkSize];
             System.arraycopy(bytes, copiedCount, sub, 0, currentChunkSize);
             copiedCount += currentChunkSize;
 
@@ -133,5 +137,16 @@ public class ApplicationSnapshotServiceCEImpl implements ApplicationSnapshotServ
             chunkOrder++;
         }
         return applicationSnapshots;
+    }
+
+    @Override
+    public Mono<Boolean> deleteSnapshot(String applicationId, String branchName) {
+        // find root application by applicationId and branchName
+        return applicationService
+                .findBranchedApplicationId(branchName, applicationId, applicationPermission.getEditPermission())
+                .switchIfEmpty(Mono.error(
+                        new AppsmithException(AppsmithError.NO_RESOURCE_FOUND, FieldName.APPLICATION, applicationId)))
+                .flatMap(branchedAppId -> applicationSnapshotRepository.deleteAllByApplicationId(branchedAppId)
+                        .thenReturn(Boolean.TRUE));
     }
 }

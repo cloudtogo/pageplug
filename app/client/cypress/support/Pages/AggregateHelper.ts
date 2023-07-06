@@ -18,7 +18,6 @@ const DEFAULT_ENTERVALUE_OPTIONS = {
 };
 export class AggregateHelper {
   private locator = ObjectsRegistry.CommonLocators;
-  public mockApiUrl = "http://host.docker.internal:5001/v1/mock-api?records=10";
   public isMac = Cypress.platform === "darwin";
   private selectLine = `${
     this.isMac ? "{cmd}{shift}{leftArrow}" : "{shift}{home}"
@@ -120,7 +119,7 @@ export class AggregateHelper {
     this.GetNClick(name, 0, true);
     cy.get(text)
       .clear({ force: true })
-      .type(renameVal, { force: true })
+      .type(renameVal, { force: true, delay: 0 })
       .should("have.value", renameVal)
       .blur();
     this.Sleep();
@@ -143,16 +142,19 @@ export class AggregateHelper {
     cy.get("body").then(($ele) => {
       if ($ele.find(this.locator._saveStatusError).length) {
         this.RefreshPage();
+        return false;
       }
     });
+    return true;
   }
 
   public AssertAutoSave() {
-    this.CheckForPageSaveError();
+    let saveStatus = this.CheckForPageSaveError();
     // wait for save query to trigger & n/w call to finish occuring
-    cy.get(this.locator._saveStatusContainer, { timeout: 30000 }).should(
-      "not.exist",
-    ); //adding timeout since waiting more time is not worth it!
+    if (!saveStatus)
+      cy.get(this.locator._saveStatusContainer, { timeout: 30000 }).should(
+        "not.exist",
+      ); //adding timeout since waiting more time is not worth it!
 
     //this.ValidateNetworkStatus("@sucessSave", 200);
   }
@@ -197,7 +199,12 @@ export class AggregateHelper {
       .should("contain.text", text);
   }
 
-  public ClickButton(btnVisibleText: string, index = 0, shouldSleep = true, force = true) {
+  public ClickButton(
+    btnVisibleText: string,
+    index = 0,
+    shouldSleep = true,
+    force = true,
+  ) {
     cy.xpath(this.locator._spanButton(btnVisibleText))
       .eq(index)
       .scrollIntoView()
@@ -559,7 +566,7 @@ export class AggregateHelper {
     const locator = selector.startsWith("//")
       ? cy.xpath(selector)
       : cy.get(selector);
-    return locator.type(this.selectAll+"{del}");
+    return locator.type(this.selectAll + "{del}");
   }
 
   public RemoveCharsNType(selector: string, charCount = 0, totype: string) {
@@ -837,13 +844,14 @@ export class AggregateHelper {
         input.setValue(value);
         this.Sleep(200);
       });
+    this.Sleep(500); //for value set to settle
   }
 
   public UpdateInput(selector: string, value: string) {
     this.GetElement(selector)
       .find("input")
       //.type(this.selectAll)
-      .type(value, { delay: 1 });
+      .type(value, { delay: 1, parseSpecialCharSequences: false });
     // .type(selectAllJSObjectContentShortcut)
     // .then((ins: any) => {
     //   //const input = ins[0].input;
@@ -853,6 +861,30 @@ export class AggregateHelper {
     //   ins.val(value).trigger('change');
     //   this.Sleep(200);
     // });
+  }
+
+  public UpdateFieldLongInput(selector: string, value: string) {
+    this.GetElement(selector)
+      .find("input")
+      .invoke("attr", "value", value)
+      .trigger("input");
+    this.Sleep(); //for value set to settle
+  }
+
+  public UpdateTextArea(selector: string, value: string) {
+    this.GetElement(selector)
+      .find("textarea")
+      .first()
+      .invoke("val", value)
+      .trigger("input");
+    this.Sleep(500); //for value set to settle
+  }
+
+  public UpdateInputValue(selector: string, value: string) {
+    this.GetElement(selector)
+      .closest("input")
+      //.type(this.selectAll)
+      .type(value, { delay: 0 });
   }
 
   public BlurCodeInput(selector: string) {

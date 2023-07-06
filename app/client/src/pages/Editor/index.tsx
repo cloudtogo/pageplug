@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
-import { RouteComponentProps, withRouter } from "react-router-dom";
+import type { RouteComponentProps } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { Spinner } from "@blueprintjs/core";
-import { BuilderRouteParams } from "constants/routes";
-import { AppState } from "@appsmith/reducers";
+import type { BuilderRouteParams } from "constants/routes";
+import type { AppState } from "@appsmith/reducers";
 import MainContainer from "./MainContainer";
-import { DndProvider } from "react-dnd";
 import { TouchBackend } from "react-dnd-touch-backend";
 import {
   getCurrentApplicationId,
@@ -15,34 +15,25 @@ import {
   getIsPublishingApplication,
   getPublishingError,
 } from "selectors/editorSelectors";
-import {
-  initEditor,
-  InitializeEditorPayload,
-  resetEditorRequest,
-} from "actions/initActions";
+import type { InitializeEditorPayload } from "actions/initActions";
+import { initEditor, resetEditorRequest } from "actions/initActions";
 import { editorInitializer } from "utils/editor/EditorUtils";
 import CenteredWrapper from "components/designSystems/appsmith/CenteredWrapper";
 import { getCurrentUser } from "selectors/usersSelectors";
-import { User } from "constants/userConstants";
+import type { User } from "constants/userConstants";
 import RequestConfirmationModal from "pages/Editor/RequestConfirmationModal";
 import * as Sentry from "@sentry/react";
 import { getTheme, ThemeMode } from "selectors/themeSelectors";
 import { ThemeProvider } from "styled-components";
-import { Theme } from "constants/DefaultTheme";
+import type { Theme } from "constants/DefaultTheme";
 import GlobalHotKeys from "./GlobalHotKeys";
 import GitSyncModal from "pages/Editor/gitSync/GitSyncModal";
 import DisconnectGitModal from "pages/Editor/gitSync/DisconnectGitModal";
 import { fetchPage, updateCurrentPage } from "actions/pageActions";
 import { getCurrentPageId } from "selectors/editorSelectors";
 import { getSearchQuery } from "utils/helpers";
-import { getIsPageLevelSocketConnected } from "selectors/websocketSelectors";
-import {
-  collabStartSharingPointerEvent,
-  collabStopSharingPointerEvent,
-} from "actions/appCollabActions";
 import { loading } from "selectors/onboardingSelectors";
 import GuidedTourModal from "./GuidedTour/DeviationModal";
-import { getPageLevelSocketRoomId } from "sagas/WebsocketSagas/utils";
 import RepoLimitExceededErrorModal from "./gitSync/RepoLimitExceededErrorModal";
 import ImportedApplicationSuccessModal from "./gitSync/ImportedAppSuccessModal";
 import { getIsBranchUpdated } from "../utils";
@@ -72,9 +63,6 @@ type EditorProps = {
   updateCurrentPage: (pageId: string) => void;
   handleBranchChange: (branch: string) => void;
   currentPageId?: string;
-  isPageLevelSocketConnected: boolean;
-  collabStartSharingPointerEvent: (pageId: string) => void;
-  collabStopSharingPointerEvent: (pageId?: string) => void;
   pageLevelSocketRoomId: string;
   isMultiPane: boolean;
 };
@@ -108,12 +96,6 @@ class Editor extends Component<Props> {
         mode: APP_MODE.EDIT,
         queryParams,
       });
-
-    if (this.props.isPageLevelSocketConnected && pageId) {
-      this.props.collabStartSharingPointerEvent(
-        getPageLevelSocketRoomId(pageId, branch),
-      );
-    }
   }
 
   shouldComponentUpdate(nextProps: Props, nextState: { registered: boolean }) {
@@ -134,9 +116,7 @@ class Editor extends Component<Props> {
       nextProps.isEditorInitializeError !==
         this.props.isEditorInitializeError ||
       nextProps.loadingGuidedTour !== this.props.loadingGuidedTour ||
-      nextState.registered !== this.state.registered ||
-      (nextProps.isPageLevelSocketConnected &&
-        !this.props.isPageLevelSocketConnected)
+      nextState.registered !== this.state.registered
     );
   }
 
@@ -182,24 +162,10 @@ class Editor extends Component<Props> {
         this.props.fetchPage(pageId);
       }
     }
-
-    if (this.props.isPageLevelSocketConnected && isPageIdUpdated) {
-      this.props.collabStartSharingPointerEvent(
-        getPageLevelSocketRoomId(pageId, branch),
-      );
-    }
   }
 
   componentWillUnmount() {
-    const { pageId } = this.props.match.params || {};
-    const {
-      location: { search },
-    } = this.props;
-    const branch = getSearchQuery(search, GIT_BRANCH_QUERY_KEY);
     this.props.resetEditorRequest();
-    this.props.collabStopSharingPointerEvent(
-      getPageLevelSocketRoomId(pageId, branch),
-    );
   }
 
   render() {
@@ -218,12 +184,6 @@ class Editor extends Component<Props> {
     }
     return (
       <ThemeProvider theme={theme}>
-        <DndProvider
-          backend={TouchBackend}
-          options={{
-            enableMouseEvents: true,
-          }}
-        >
           <div>
             <Helmet>
               <meta charSet="utf-8" />
@@ -253,7 +213,6 @@ class Editor extends Component<Props> {
             </GlobalHotKeys>
           </div>
           <RequestConfirmationModal />
-        </DndProvider>
       </ThemeProvider>
     );
   }
@@ -271,7 +230,6 @@ const mapStateToProps = (state: AppState) => ({
   currentApplicationName: state.ui.applications.currentApplication?.name,
   inCloudOS: state.entities.app.inCloudOS || false,
   currentPageId: getCurrentPageId(state),
-  isPageLevelSocketConnected: getIsPageLevelSocketConnected(state),
   loadingGuidedTour: loading(state),
   isMultiPane: isMultiPaneActive(state),
 });
@@ -283,10 +241,6 @@ const mapDispatchToProps = (dispatch: any) => {
     resetEditorRequest: () => dispatch(resetEditorRequest()),
     fetchPage: (pageId: string) => dispatch(fetchPage(pageId)),
     updateCurrentPage: (pageId: string) => dispatch(updateCurrentPage(pageId)),
-    collabStartSharingPointerEvent: (pageId: string) =>
-      dispatch(collabStartSharingPointerEvent(pageId)),
-    collabStopSharingPointerEvent: (pageId?: string) =>
-      dispatch(collabStopSharingPointerEvent(pageId)),
   };
 };
 
