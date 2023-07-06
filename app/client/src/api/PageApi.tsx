@@ -1,16 +1,17 @@
 import Api from "api/Api";
-import { ApiResponse } from "./ApiResponses";
-import axios, { AxiosPromise, CancelTokenSource } from "axios";
-import {
+import type { ApiResponse } from "./ApiResponses";
+import type { AxiosPromise, CancelTokenSource } from "axios";
+import axios from "axios";
+import type {
   LayoutOnLoadActionErrors,
   PageAction,
 } from "constants/AppsmithActionConstants/ActionConstants";
-import { DSLWidget } from "widgets/constants";
-import {
+import type { DSLWidget } from "widgets/constants";
+import type {
   ClonePageActionPayload,
   CreatePageActionPayload,
 } from "actions/pageActions";
-import { FetchApplicationResponse } from "./ApplicationApi";
+import type { FetchApplicationResponse } from "@appsmith/api/ApplicationApi";
 
 export type FetchPageRequest = {
   id: string;
@@ -151,15 +152,13 @@ export type FetchPageListResponse = ApiResponse<FetchPageListResponseData>;
 
 export type UpdateWidgetNameResponse = ApiResponse<PageLayout>;
 
-export type GenerateTemplatePageRequestResponse = ApiResponse<
-  GenerateTemplatePageResponseData
->;
+export type GenerateTemplatePageRequestResponse =
+  ApiResponse<GenerateTemplatePageResponseData>;
 
 export type FetchPageResponse = ApiResponse<FetchPageResponseData>;
 
-export type FetchPublishedPageResponse = ApiResponse<
-  FetchPublishedPageResponseData
->;
+export type FetchPublishedPageResponse =
+  ApiResponse<FetchPublishedPageResponseData>;
 
 export interface SyncCloudOSApiRequest {
   dep_list: string[];

@@ -110,7 +110,9 @@ public enum AppsmithErrorCode {
     CLOUDOS_API_ERROR("AE-CLD-9001", "cloudos 数据源接口请求失败"),
     CLOUDOS_WECHAT_TOKEN_ERROR("AE-MINI-9002", "微信 access_token 获取失败"),
     CLOUDOS_WECHAT_PREVIEW_ERROR("AE-MINI-9003", "微信小程序码获取失败"),
+    CSRF_TOKEN_INVALID("AE-APP-4039", "CSRF token missing/invalid"),
     ;
+
     private final String code;
     private final String description;
 

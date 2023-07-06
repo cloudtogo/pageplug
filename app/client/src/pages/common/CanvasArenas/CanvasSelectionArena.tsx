@@ -1,4 +1,4 @@
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import {
   selectAllWidgetsInAreaAction,
   setCanvasSelectionStateAction,
@@ -14,7 +14,8 @@ import { throttle } from "lodash";
 import React, { useCallback, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getWidget } from "sagas/selectors";
-import { getAppMode } from "selectors/applicationSelectors";
+import { getAppMode } from "@appsmith/selectors/applicationSelectors";
+import { getIsAppSettingsPaneWithNavigationTabOpen } from "selectors/appSettingsPaneSelectors";
 import { getIsDraggingForSelection } from "selectors/canvasSelectors";
 import {
   getCurrentApplicationLayout,
@@ -24,7 +25,7 @@ import {
 import { getNearestParentCanvas } from "utils/generators";
 import { getAbsolutePixels } from "utils/helpers";
 import { useCanvasDragToScroll } from "./hooks/useCanvasDragToScroll";
-import { XYCord } from "./hooks/useRenderBlocksOnCanvas";
+import type { XYCord } from "./hooks/useRenderBlocksOnCanvas";
 import { StickyCanvasArena } from "./StickyCanvasArena";
 
 export interface SelectedArenaDimensions {
@@ -65,6 +66,9 @@ export function CanvasSelectionArena({
   );
   const appMode = useSelector(getAppMode);
   const isPreviewMode = useSelector(previewModeSelector);
+  const isAppSettingsPaneWithNavigationTabOpen = useSelector(
+    getIsAppSettingsPaneWithNavigationTabOpen,
+  );
   const isDragging = useSelector(
     (state: AppState) => state.ui.widgetDragResize.isDragging,
   );
@@ -171,6 +175,8 @@ export function CanvasSelectionArena({
       let isMultiSelect = false;
       let isDragging = false;
       const slidingArena = slidingArenaRef.current;
+      let isMouseDown = false;
+      let shouldStartCanvasDragging = false;
 
       const getSelectionDimensions = () => {
         return {
@@ -243,7 +249,7 @@ export function CanvasSelectionArena({
       const onMouseEnter = (e: any) => {
         if (
           slidingArenaRef.current &&
-          !isDragging &&
+          !isMouseDown &&
           drawOnEnterObj?.current.canDraw
         ) {
           firstRender(e, true);
@@ -260,7 +266,7 @@ export function CanvasSelectionArena({
             Math.abs(selectionRectangle.width) >
           0
         ) {
-          if (!isDragging) {
+          if (!isMouseDown) {
             // cant set this in onMouseUp coz click seems to happen after onMouseUp.
             selectionRectangle = initRectangle();
           }
@@ -275,12 +281,8 @@ export function CanvasSelectionArena({
           left: 0,
         };
         if (slidingArenaRef.current && startPoints) {
-          const {
-            height,
-            left,
-            top,
-            width,
-          } = slidingArenaRef.current.getBoundingClientRect();
+          const { height, left, top, width } =
+            slidingArenaRef.current.getBoundingClientRect();
           const outOfMaxBounds = {
             x: startPoints.x < left + width,
             y: startPoints.y < top + height,
@@ -307,7 +309,11 @@ export function CanvasSelectionArena({
       };
 
       const firstRender = (e: any, fromOuterCanvas = false) => {
-        if (slidingArenaRef.current && stickyCanvasRef.current && !isDragging) {
+        if (
+          slidingArenaRef.current &&
+          stickyCanvasRef.current &&
+          !isMouseDown
+        ) {
           isMultiSelect = e.ctrlKey || e.metaKey || e.shiftKey;
           if (fromOuterCanvas) {
             const { left, top } = startPositionsForOutCanvasSelection();
@@ -321,7 +327,8 @@ export function CanvasSelectionArena({
           }
           selectionRectangle.width = 0;
           selectionRectangle.height = 0;
-          isDragging = true;
+          isMouseDown = true;
+          shouldStartCanvasDragging = true;
           // bring the canvas to the top layer
           stickyCanvasRef.current.style.zIndex = "2";
           slidingArenaRef.current.style.zIndex = "2";
@@ -336,13 +343,12 @@ export function CanvasSelectionArena({
           slidingArenaRef.current &&
           (!isDraggableParent || e.ctrlKey || e.metaKey)
         ) {
-          dispatch(setCanvasSelectionStateAction(true, widgetId));
           firstRender(e);
         }
       };
       const onMouseUp = () => {
-        if (isDragging && slidingArenaRef.current && stickyCanvasRef.current) {
-          isDragging = false;
+        if (isMouseDown && slidingArenaRef.current && stickyCanvasRef.current) {
+          isMouseDown = false;
           canvasCtx.clearRect(
             0,
             0,
@@ -352,11 +358,21 @@ export function CanvasSelectionArena({
           stickyCanvasRef.current.style.zIndex = "";
           slidingArenaRef.current.style.zIndex = "";
           slidingArenaRef.current.style.cursor = "";
-          dispatch(setCanvasSelectionStateAction(false, widgetId));
+          //moving triggering action to the end of queue,
+          // to avoid selecting the widget being dragged on
+          setTimeout(() => {
+            dispatch(setCanvasSelectionStateAction(false, widgetId));
+          }, 0);
         }
       };
       const onMouseMove = (e: any) => {
-        if (isDragging && slidingArenaRef.current && stickyCanvasRef.current) {
+        if (isMouseDown && slidingArenaRef.current && stickyCanvasRef.current) {
+          // This is to make sure we start selection only after dragging start
+          // rather than mouse down
+          if (shouldStartCanvasDragging) {
+            dispatch(setCanvasSelectionStateAction(true, widgetId));
+            shouldStartCanvasDragging = false;
+          }
           selectionRectangle.width =
             e.offsetX -
             slidingArenaRef.current.offsetLeft -
@@ -380,11 +396,8 @@ export function CanvasSelectionArena({
         }
       };
       const onScroll = () => {
-        const {
-          lastMouseMoveEvent,
-          lastScrollHeight,
-          lastScrollTop,
-        } = scrollObj;
+        const { lastMouseMoveEvent, lastScrollHeight, lastScrollTop } =
+          scrollObj;
         if (
           lastMouseMoveEvent &&
           Number.isInteger(lastScrollHeight) &&
@@ -452,7 +465,13 @@ export function CanvasSelectionArena({
   // Resizing state still shows selection arena to aid with scroll behavior
 
   const shouldShow =
-    appMode === APP_MODE.EDIT && !(isDragging || isPreviewMode || dropDisabled);
+    appMode === APP_MODE.EDIT &&
+    !(
+      isDragging ||
+      isPreviewMode ||
+      isAppSettingsPaneWithNavigationTabOpen ||
+      dropDisabled
+    );
 
   const canvasRef = React.useRef({
     slidingArenaRef,

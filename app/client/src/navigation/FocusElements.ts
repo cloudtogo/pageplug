@@ -1,5 +1,6 @@
-import { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
-import { AppState } from "@appsmith/reducers";
+/* eslint-disable prettier/prettier */
+import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
+import type { AppState } from "@appsmith/reducers";
 import {
   setApiPaneConfigSelectedTabIndex,
   setApiPaneResponsePaneHeight,

@@ -18,6 +18,7 @@ import reactor.test.StepVerifier;
 import reactor.util.function.Tuple2;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,7 +59,8 @@ public class ApplicationSnapshotServiceTest {
                     return applicationSnapshotService.createApplicationSnapshot(application.getId(), "")
                             .thenReturn(application.getId());
                 })
-                .flatMap(applicationId -> applicationSnapshotService.getWithoutDataByApplicationId(applicationId, null));
+                .flatMap(
+                        applicationId -> applicationSnapshotService.getWithoutDataByApplicationId(applicationId, null));
 
         StepVerifier.create(snapshotMono)
                 .assertNext(snapshot -> {
@@ -89,7 +91,8 @@ public class ApplicationSnapshotServiceTest {
                             .then(applicationSnapshotService.createApplicationSnapshot(application.getId(), ""))
                             .thenReturn(application.getId());
                 })
-                .flatMap(applicationId -> applicationSnapshotService.getWithoutDataByApplicationId(applicationId, null));
+                .flatMap(
+                        applicationId -> applicationSnapshotService.getWithoutDataByApplicationId(applicationId, null));
 
         StepVerifier.create(snapshotMono)
                 .assertNext(snapshot -> {
@@ -115,7 +118,8 @@ public class ApplicationSnapshotServiceTest {
                     testApplication.setName("Test app for snapshot");
                     testApplication.setWorkspaceId(createdWorkspace.getId());
 
-                    // this app will have default app id=testDefaultAppId and branch name=test branch name
+                    // this app will have default app id=testDefaultAppId and branch name=test
+                    // branch name
                     GitApplicationMetadata gitApplicationMetadata = new GitApplicationMetadata();
                     gitApplicationMetadata.setDefaultApplicationId(testDefaultAppId);
                     gitApplicationMetadata.setBranchName(testBranchName);
@@ -123,8 +127,10 @@ public class ApplicationSnapshotServiceTest {
 
                     return applicationPageService.createApplication(testApplication);
                 })
-                .flatMap(application -> applicationSnapshotService.createApplicationSnapshot(testDefaultAppId, testBranchName)
-                        .then(applicationSnapshotService.getWithoutDataByApplicationId(testDefaultAppId, testBranchName))
+                .flatMap(application -> applicationSnapshotService
+                        .createApplicationSnapshot(testDefaultAppId, testBranchName)
+                        .then(applicationSnapshotService.getWithoutDataByApplicationId(testDefaultAppId,
+                                testBranchName))
                         .zipWith(Mono.just(application)));
 
         StepVerifier.create(tuple2Mono)
@@ -161,10 +167,9 @@ public class ApplicationSnapshotServiceTest {
                     applicationSnapshot.setData("Hello".getBytes(StandardCharsets.UTF_8));
                     return applicationSnapshotRepository.save(applicationSnapshot).thenReturn(application);
                 })
-                .flatMapMany(application ->
-                        applicationSnapshotService.createApplicationSnapshot(application.getId(), null)
-                                .thenMany(applicationSnapshotRepository.findByApplicationId(application.getId()))
-                );
+                .flatMapMany(
+                        application -> applicationSnapshotService.createApplicationSnapshot(application.getId(), null)
+                                .thenMany(applicationSnapshotRepository.findByApplicationId(application.getId())));
 
         StepVerifier.create(applicationSnapshotFlux)
                 .assertNext(applicationSnapshot -> {
@@ -198,7 +203,8 @@ public class ApplicationSnapshotServiceTest {
                     pageDTO.setName("Home");
                     pageDTO.setApplicationId(createdApp.getId());
                     return applicationPageService.createPage(pageDTO)
-                            .then(newPageService.findApplicationPages(createdApp.getId(), null, null, ApplicationMode.EDIT));
+                            .then(newPageService.findApplicationPages(createdApp.getId(), null, null,
+                                    ApplicationMode.EDIT));
                 });
 
         Mono<ApplicationPagesDTO> pagesAfterSnapshot = applicationMono.flatMap(application -> { // create a snapshot
@@ -218,11 +224,55 @@ public class ApplicationSnapshotServiceTest {
                 .flatMap(applicationPagesDTO -> pagesAfterSnapshot.zipWith(Mono.just(applicationPagesDTO)));
 
         StepVerifier.create(tuple2Mono)
-            .assertNext(objects -> {
-                ApplicationPagesDTO beforePages = objects.getT2();
-                ApplicationPagesDTO afterPages = objects.getT1();
-                assertThat(beforePages.getPages().size()).isEqualTo(afterPages.getPages().size());
-            })
-            .verifyComplete();
+                .assertNext(objects -> {
+                    ApplicationPagesDTO beforePages = objects.getT2();
+                    ApplicationPagesDTO afterPages = objects.getT1();
+                    assertThat(beforePages.getPages().size()).isEqualTo(afterPages.getPages().size());
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    @WithUserDetails("api_user")
+    public void restoreSnapshot_WhenSuccessfullyRestored_SnapshotDeleted() {
+        String uniqueString = UUID.randomUUID().toString();
+
+        // create a new workspace
+        Workspace workspace = new Workspace();
+        workspace.setName("Test workspace " + uniqueString);
+
+        Flux<ApplicationSnapshot> snapshotFlux = workspaceService.create(workspace)
+                .flatMap(createdWorkspace -> {
+                    Application testApplication = new Application();
+                    testApplication.setName("App before snapshot");
+                    return applicationPageService.createApplication(testApplication, workspace.getId());
+                }).flatMap(application -> { // create a snapshot
+                    return applicationSnapshotService.createApplicationSnapshot(application.getId(), null)
+                            .thenReturn(application);
+                })
+                .flatMapMany(application -> applicationSnapshotService.restoreSnapshot(application.getId(), null)
+                        .thenMany(applicationSnapshotRepository.findByApplicationId(application.getId())));
+
+        StepVerifier.create(snapshotFlux)
+                .verifyComplete();
+    }
+
+    @Test
+    public void deleteSnapshot_WhenSnapshotExists_Deleted() {
+        String testAppId = "app-" + UUID.randomUUID().toString();
+        ApplicationSnapshot snapshot1 = new ApplicationSnapshot();
+        snapshot1.setChunkOrder(1);
+        snapshot1.setApplicationId(testAppId);
+
+        ApplicationSnapshot snapshot2 = new ApplicationSnapshot();
+        snapshot2.setApplicationId(testAppId);
+        snapshot2.setChunkOrder(2);
+
+        Flux<ApplicationSnapshot> snapshotFlux = applicationSnapshotRepository.saveAll(List.of(snapshot1, snapshot2))
+                .then(applicationSnapshotService.deleteSnapshot(testAppId, null))
+                .thenMany(applicationSnapshotRepository.findByApplicationId(testAppId));
+
+        StepVerifier.create(snapshotFlux)
+                .verifyComplete();
     }
 }

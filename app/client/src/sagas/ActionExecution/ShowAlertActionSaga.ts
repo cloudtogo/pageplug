@@ -8,7 +8,7 @@ import { getType, Types } from "utils/TypeHelpers";
 import { select } from "redux-saga/effects";
 import { isMobileLayout } from "selectors/applicationSelectors";
 import Taro from "@tarojs/taro";
-import { TShowAlertDescription } from "workers/Evaluation/fns/showAlert";
+import type { TShowAlertDescription } from "workers/Evaluation/fns/showAlert";
 
 export default function* showAlertSaga(action: TShowAlertDescription) {
   const { payload } = action;

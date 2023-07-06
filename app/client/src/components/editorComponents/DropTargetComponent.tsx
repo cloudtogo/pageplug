@@ -1,17 +1,16 @@
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import {
   GridDefaults,
   MAIN_CONTAINER_WIDGET_ID,
 } from "constants/WidgetConstants";
 import equal from "fast-deep-equal/es6";
+import type { Context, PropsWithChildren } from "react";
 import React, {
-  Context,
   createContext,
   useCallback,
   useEffect,
   useMemo,
   useRef,
-  PropsWithChildren,
 } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
@@ -36,7 +35,12 @@ import {
   checkContainersForAutoHeightAction,
   updateDOMDirectlyBasedOnAutoHeightAction,
 } from "actions/autoHeightActions";
-import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
+
+import {
+  isAutoHeightEnabledForWidget,
+  isAutoHeightEnabledForWidgetWithLimits,
+} from "widgets/WidgetUtils";
+import { getIsAppSettingsPaneWithNavigationTabOpen } from "selectors/appSettingsPaneSelectors";
 
 type DropTargetComponentProps = PropsWithChildren<{
   snapColumnSpace: number;
@@ -155,9 +159,8 @@ function useUpdateRows(
    */
   const isParentAutoHeightEnabled = useSelector((state: AppState) => {
     return parentId
-      ? !isAutoHeightEnabledForWidget(
+      ? !isAutoHeightEnabledForWidgetWithLimits(
           state.entities.canvasWidgets[parentId],
-          true,
         ) &&
           isAutoHeightEnabledForWidget(state.entities.canvasWidgets[parentId])
       : false;
@@ -218,6 +221,9 @@ function useUpdateRows(
 export function DropTargetComponent(props: DropTargetComponentProps) {
   // Get if this is in preview mode.
   const isPreviewMode = useSelector(previewModeSelector);
+  const isAppSettingsPaneWithNavigationTabOpen = useSelector(
+    getIsAppSettingsPaneWithNavigationTabOpen,
+  );
   const isAutoLayoutActive = useSelector(isAutoLayoutEnabled);
   const { contextValue, dropTargetRef, rowRef } = useUpdateRows(
     props.bottomRow,
@@ -323,13 +329,15 @@ export function DropTargetComponent(props: DropTargetComponentProps) {
       isResizing ||
       isAutoHeightWithLimitsChanging) &&
     !isPreviewMode &&
+    !isAppSettingsPaneWithNavigationTabOpen &&
     !props.useAutoLayout;
 
   return (
     <DropTargetContext.Provider value={contextValue}>
       <StyledDropTarget
-        className={`t--drop-target drop-target-${props.parentId ||
-          MAIN_CONTAINER_WIDGET_ID}`}
+        className={`t--drop-target drop-target-${
+          props.parentId || MAIN_CONTAINER_WIDGET_ID
+        }`}
         onClick={handleFocus}
         ref={dropTargetRef}
         style={dropTargetStyles}

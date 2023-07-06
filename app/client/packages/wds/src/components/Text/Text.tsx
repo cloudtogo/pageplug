@@ -1,6 +1,7 @@
 import React from "react";
 import { StyledText } from "./index.styled";
-import { fontFamilyTypes } from "../../utils/typography";
+// eslint-disable-next-line prettier/prettier
+import type { fontFamilyTypes } from "../../utils/typography";
 
 export type TextProps = {
   children: React.ReactNode;

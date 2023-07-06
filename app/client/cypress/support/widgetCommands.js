@@ -275,7 +275,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add("widgetText", (text, inputcss, innercss) => {
-  cy.get(commonlocators.editWidgetName)
+  cy.get(commonlocators.propertyPaneTitle)
     .click({ force: true })
     .type(text, { delay: 300 })
     .type("{enter}");
@@ -286,7 +286,7 @@ Cypress.Commands.add("widgetText", (text, inputcss, innercss) => {
 });
 
 Cypress.Commands.add("verifyUpdatedWidgetName", (text, txtToVerify) => {
-  cy.get(commonlocators.editWidgetName)
+  cy.get(commonlocators.propertyPaneTitle)
     .click({ force: true })
     .type(text)
     .type("{enter}");
@@ -313,7 +313,7 @@ Cypress.Commands.add("editColName", (text) => {
 
 Cypress.Commands.add("invalidWidgetText", () => {
   // checking invalid widget name
-  cy.get(commonlocators.editWidgetName)
+  cy.get(commonlocators.propertyPaneTitle)
     .click({ force: true })
     .type("download")
     .type("{enter}");
@@ -1269,6 +1269,28 @@ Cypress.Commands.add("openPropertyPane", (widgetType) => {
     .wait(500);
   cy.get(".t--widget-propertypane-toggle > .t--widget-name")
     .first()
+    .click({ force: true })
+    .wait(500);
+  cy.get(".t--widget-propertypane-toggle > .t--widget-name")
+    .first()
+    .click({ force: true });
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(1000);
+});
+
+Cypress.Commands.add("openPropertyPaneFromModal", (widgetType) => {
+  const selector = `.t--draggable-${widgetType}`;
+  cy.wait(500);
+  cy.get(selector)
+    .first()
+    .trigger("mouseover", { force: true })
+    .wait(500);
+  cy.get(`${selector}:first-of-type`)
+    .first()
+    .click({ force: true })
+    .wait(500);
+  cy.get(".t--widget-propertypane-toggle > .t--widget-name")
+    .last()
     .click({ force: true });
   // eslint-disable-next-line cypress/no-unnecessary-waiting
   cy.wait(1000);
@@ -1339,9 +1361,12 @@ Cypress.Commands.add("copyWidget", (widget, widgetLocator) => {
     .last()
     .invoke("text")
     .then((x) => {
-      cy.log(x);
-      let originalWidget = x.replaceAll("x", "");
-      originalWidget = originalWidget.replaceAll(/\u200B/g, "");
+      //cy.log(x);
+      let originalWidget = x
+        .replaceAll("x", "")
+        .replaceAll(/\u200B/g, "")
+        .replaceAll("\n", "")
+        .replaceAll("/Type / to access quick commands", "");
       cy.log(originalWidget);
       cy.get(widgetsPage.copyWidget).click({ force: true });
       cy.wait(3000);
@@ -1357,11 +1382,14 @@ Cypress.Commands.add("copyWidget", (widget, widgetLocator) => {
         .last()
         .invoke("text")
         .then((y) => {
-          cy.log(y);
-          let copiedWidget = y.replaceAll("x", "");
-          copiedWidget = copiedWidget.replaceAll(/\u200B/g, "");
+          //cy.log(y);
+          let copiedWidget = y
+            .replaceAll("x", "")
+            .replaceAll(/\u200B/g, "")
+            .replaceAll("\n", "")
+            .replaceAll("/Type / to access quick commands", "");
           cy.log(copiedWidget);
-          expect(originalWidget).to.be.equal(copiedWidget);
+          expect(originalWidget).to.equal(copiedWidget);
         });
     });
 });
@@ -1836,6 +1864,30 @@ Cypress.Commands.add("findAndExpandEvaluatedTypeTitle", () => {
     .next()
     .find("span")
     .click();
+});
+
+/**
+ * sourceColumn - Column name that needs to be dragged/picked.
+ * targetColumn - Name of the column where the sourceColumn needs to be dropped
+ */
+Cypress.Commands.add("dragAndDropColumn", (sourceColumn, targetColumn) => {
+  const dataTransfer = new DataTransfer();
+  cy.get(
+    `[data-header="${sourceColumn}"] [draggable='true']`,
+  ).trigger("dragstart", { force: true, dataTransfer });
+
+  cy.get(`[data-header="${targetColumn}"] [draggable='true']`).trigger("drop", {
+    force: true,
+    dataTransfer,
+  });
+  cy.wait(500);
+});
+
+Cypress.Commands.add("resizeColumn", (columnName, resizeAmount) => {
+  cy.get(`[data-header="${columnName}"] .resizer`)
+    .trigger("mousedown")
+    .trigger("mousemove", { x: resizeAmount, y: 0, force: true })
+    .trigger("mouseup");
 });
 
 /**

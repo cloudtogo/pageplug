@@ -14,7 +14,7 @@ import AnalyticsUtil from "utils/AnalyticsUtil";
 import history from "utils/history";
 import { generateTemplateFormURL } from "RouteBuilder";
 import { useParams } from "react-router";
-import { ExplorerURLParams } from "@appsmith/pages/Editor/Explorer/helpers";
+import type { ExplorerURLParams } from "@appsmith/pages/Editor/Explorer/helpers";
 import { showTemplatesModal as showTemplatesModalAction } from "actions/templateActions";
 import {
   createMessage,
@@ -25,7 +25,8 @@ import {
 } from "@appsmith/constants/messages";
 import { selectFeatureFlags } from "selectors/usersSelectors";
 import { isMobileLayout } from "selectors/applicationSelectors";
-import FeatureFlags from "entities/FeatureFlags";
+
+import type FeatureFlags from "entities/FeatureFlags";
 import { deleteCanvasCardsState } from "actions/editorActions";
 
 const Wrapper = styled.div`
