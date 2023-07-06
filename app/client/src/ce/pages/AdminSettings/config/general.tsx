@@ -2,12 +2,14 @@ import React from "react";
 import { isEmail } from "utils/formhelpers";
 import { apiRequestConfig } from "api/Api";
 import UserApi from "@appsmith/api/UserApi";
-import {
+import type {
   AdminConfigType,
+  Setting,
+} from "@appsmith/pages/AdminSettings/config/types";
+import {
   SettingCategories,
   SettingSubtype,
   SettingTypes,
-  Setting,
 } from "@appsmith/pages/AdminSettings/config/types";
 import BrandingBadge from "pages/AppViewer/BrandingBadge";
 import { TagInput } from "design-system-old";
@@ -75,7 +77,7 @@ export const APPSMITH_HIDE_WATERMARK_SETTING: Setting = {
   controlType: SettingTypes.CHECKBOX,
   label: "Appsmith Watermark",
   text: "Show Appsmith Watermark",
-  needsUpgrade: true,
+  needsUpgrade: false,
   isDisabled: () => true,
   textSuffix: <BrandingBadge />,
   upgradeLogEventName: "ADMIN_SETTINGS_UPGRADE_WATERMARK",
@@ -100,10 +102,9 @@ export const APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING: Setting = {
         badge: "不推荐",
         tooltip: {
           icon: <QuestionFillIcon />,
-          text: "允许所有网站（包括那些恶意网站）随意嵌入你的 PagePlug 应用",
-          linkText: "为什么这是非常危险的？",
-          link:
-            "https://docs.appsmith.com/getting-started/setup/instance-configuration/frame-ancestors#why-should-i-control-this",
+          text: "Lets all domains, including malicious ones, embed your Appsmith apps. ",
+          linkText: "SEE WHY THIS IS RISKY",
+          link: "https://docs.appsmith.com/getting-started/setup/instance-configuration/frame-ancestors#why-should-i-control-this",
         },
         label: "允许嵌入到任何地方",
         value: AppsmithFrameAncestorsSetting.ALLOW_EMBEDDING_EVERYWHERE,

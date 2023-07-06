@@ -23,7 +23,7 @@ import {
   appLayoutIcon,
 } from "../ExplorerIcons";
 import { ADD_PAGE_TOOLTIP, createMessage } from "@appsmith/constants/messages";
-import { Page } from "@appsmith/constants/ReduxActionConstants";
+import type { Page } from "@appsmith/constants/ReduxActionConstants";
 import { getNextEntityName } from "utils/AppsmithUtils";
 import { extractCurrentDSL } from "utils/WidgetPropsUtils";
 import styled from "styled-components";
@@ -38,10 +38,8 @@ import {
   saveExplorerStatus,
 } from "@appsmith/pages/Editor/Explorer/helpers";
 import { tailwindLayers } from "constants/Layers";
-import useResize, {
-  CallbackResponseType,
-  DIRECTION,
-} from "utils/hooks/useResize";
+import type { CallbackResponseType } from "utils/hooks/useResize";
+import useResize, { DIRECTION } from "utils/hooks/useResize";
 import AddPageContextMenu from "./AddPageContextMenu";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { useLocation } from "react-router";
@@ -50,7 +48,7 @@ import {
   hasCreatePagePermission,
   hasManagePagePermission,
 } from "@appsmith/utils/permissionHelpers";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import { TooltipComponent } from "design-system-old";
 
 const ENTITY_HEIGHT = 36;

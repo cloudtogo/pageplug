@@ -31,14 +31,19 @@ describe("Abort Action Execution", function() {
         "AbortQuery",
       );
       _.dataSources.SetQueryTimeout(0);
-      _.dataSources.RunQuery(false, false, 0);
+      _.dataSources.RunQuery({
+        toValidateResponse: false,
+        waitTimeInterval: 0,
+      });
       _.agHelper.GetNClick(_.locators._cancelActionExecution, 0, true);
       _.agHelper.AssertContains(
         createMessage(ACTION_EXECUTION_CANCELLED, "AbortQuery"),
       );
       _.agHelper.AssertElementAbsence(_.locators._specificToast("{}")); //Assert that empty toast does not appear - Bug #16093
       _.agHelper.ActionContextMenuWithInPane("Delete", "Are you sure?");
-      _.dataSources.DeleteDatasouceFromWinthinDS($dsName as unknown as string);
+      _.dataSources.DeleteDatasouceFromWinthinDS(
+        ($dsName as unknown) as string,
+      );
     });
   });
 });

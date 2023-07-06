@@ -1,16 +1,18 @@
-import React, {
-  useCallback,
+/* eslint-disable prettier/prettier */
+import type {
   CSSProperties,
   ReactNode,
-  Ref,
+  Ref} from "react";
+import React, {
+  useCallback,
   useMemo,
 } from "react";
-import { BaseStyle } from "widgets/BaseWidget";
+import type { BaseStyle } from "widgets/BaseWidget";
+import type { WidgetType } from "constants/WidgetConstants";
 import {
   CONTAINER_GRID_PADDING,
   CSSUnits,
   PositionTypes,
-  WidgetType,
   WIDGET_PADDING,
 } from "constants/WidgetConstants";
 import { generateClassName } from "utils/generators";
@@ -99,7 +101,7 @@ export function PositionedContainer(
       generateClassName(props.widgetId) +
       ` ${POSITIONED_WIDGET} ${widgetTypeClassname(
         props.widgetType,
-      )} t--widget-${props.widgetName.toLowerCase()}`
+      )} t--widget-${props.widgetName?.toLowerCase()}`
     );
   }, [props.widgetType, props.widgetId, props.widgetName]);
   const isDropTarget = checkIsDropTarget(props.widgetType);

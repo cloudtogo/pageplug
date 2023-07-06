@@ -1,4 +1,5 @@
-import { AppsmithUIConfigs } from "./types";
+// eslint-disable-next-line prettier/prettier
+import type { AppsmithUIConfigs } from "./types";
 import { Integrations } from "@sentry/tracing";
 import * as Sentry from "@sentry/react";
 import { createBrowserHistory } from "history";
@@ -50,6 +51,8 @@ export interface INJECTED_CONFIGS {
   disableIframeWidgetSandbox: boolean;
   inCloudOS: boolean;
   workEnv: string;
+  pricingUrl: string;
+  customerPortalUrl: string;
 }
 
 const capitalizeText = (text: string) => {
@@ -135,6 +138,8 @@ export const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
       : false,
     inCloudOS: !!process.env.REACT_APP_IN_CLOUDOS,
     workEnv: process.env.REACT_APP_WORK_ENV || "",
+    pricingUrl: process.env.REACT_APP_PRICING_URL || "",
+    customerPortalUrl: process.env.REACT_APP_CUSTOMER_PORTAL_URL || "",
   };
 };
 
@@ -281,5 +286,9 @@ export const getAppsmithConfigs = (): AppsmithUIConfigs => {
       APPSMITH_FEATURE_CONFIGS.disableIframeWidgetSandbox,
     inCloudOS: ENV_CONFIG.inCloudOS,
     workEnv: ENV_CONFIG.workEnv,
+    pricingUrl: ENV_CONFIG.pricingUrl || APPSMITH_FEATURE_CONFIGS.pricingUrl,
+    customerPortalUrl:
+      ENV_CONFIG.customerPortalUrl ||
+      APPSMITH_FEATURE_CONFIGS.customerPortalUrl,
   };
 };

@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 
-import { TextProps } from "./Text";
+// eslint-disable-next-line prettier/prettier
+import type { TextProps } from "./Text";
 import { createTypographyStyles } from "../../utils/typography";
 
 const shouldForwardProp = (prop: any) => {

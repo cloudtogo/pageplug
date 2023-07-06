@@ -1,5 +1,7 @@
+/* eslint-disable prettier/prettier */
 import styled from "styled-components";
-import { Color, Colors } from "./Colors";
+import { Colors } from "./Colors";
+import type { Color } from "./Colors";
 
 export type IconProps = {
   width?: number;

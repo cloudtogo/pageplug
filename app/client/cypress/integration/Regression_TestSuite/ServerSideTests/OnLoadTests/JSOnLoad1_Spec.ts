@@ -54,7 +54,9 @@ describe("JSObjects OnLoad Actions tests", function() {
           ".getEmployee] will be executed automatically on page load",
       );
       _.deployMode.DeployApp();
-      _.agHelper.AssertElementVisible(_.jsEditor._dialog("Confirmation Dialog"));
+      _.agHelper.AssertElementVisible(
+        _.jsEditor._dialog("Confirmation Dialog"),
+      );
       _.agHelper.AssertElementVisible(
         _.jsEditor._dialogBody((jsName as string) + ".getEmployee"),
       );
@@ -81,7 +83,7 @@ describe("JSObjects OnLoad Actions tests", function() {
   });
 
   it("3. Tc 56 - Verify OnPage Load - Enabled & Before Function calling Enabled for JSOBject & User clicks No & then Yes in Confirmation dialog", function() {
-    _.deployMode.DeployApp();//Adding this check since GetEmployee failure toast is always coming & making product flaky
+    _.deployMode.DeployApp(); //Adding this check since GetEmployee failure toast is always coming & making product flaky
     //_.agHelper.WaitUntilAllToastsDisappear();
     _.agHelper.AssertElementVisible(_.jsEditor._dialog("Confirmation Dialog"));
     _.agHelper.AssertElementVisible(
@@ -124,7 +126,9 @@ describe("JSObjects OnLoad Actions tests", function() {
       _.jsEditor._dialogBody((jsName as string) + ".getEmployee"),
     );
     // assert that on view mode, we don't get "successful run" toast message for onpageload actions
-    _.agHelper.AssertElementAbsence(_.locators._specificToast("ran successfully")); //failed toast is appearing hence skipping
+    _.agHelper.AssertElementAbsence(
+      _.locators._specificToast("ran successfully"),
+    ); //failed toast is appearing hence skipping
     _.agHelper.ValidateNetworkExecutionSuccess("@postExecute");
     _.table.ReadTableRowColumnData(0, 0).then((cellData) => {
       expect(cellData).to.be.equal("2");
@@ -174,7 +178,11 @@ describe("JSObjects OnLoad Actions tests", function() {
       "Are you sure?",
       true,
     );
-    _.entityExplorer.ActionContextMenuByEntityName("GetEmployee", "Delete", "Are you sure?");
+    _.entityExplorer.ActionContextMenuByEntityName(
+      "GetEmployee",
+      "Delete",
+      "Are you sure?",
+    );
   });
 
   it("7. Tc 60, 1912 - Verify JSObj calling API - OnPageLoad calls & Confirmation No then Yes!", () => {
@@ -283,7 +291,9 @@ describe("JSObjects OnLoad Actions tests", function() {
       _.agHelper.ClickButton("No");
       //_.agHelper.WaitUntilToastDisappear('The action "Quotes" has failed');No toast appears!
 
-      _.agHelper.AssertElementAbsence(_.jsEditor._dialogBody("WhatTrumpThinks")); //Since JS call is NO, dependent API confirmation should not appear
+      _.agHelper.AssertElementAbsence(
+        _.jsEditor._dialogBody("WhatTrumpThinks"),
+      ); //Since JS call is NO, dependent API confirmation should not appear
 
       _.agHelper.RefreshPage();
       // _.agHelper.AssertElementVisible(
@@ -337,14 +347,19 @@ describe("JSObjects OnLoad Actions tests", function() {
     _.agHelper.ClickButton("No");
     _.agHelper.AssertContains("was cancelled");
     _.entityExplorer.ExpandCollapseEntity("Queries/JS");
-    _.apiPage.CreateAndFillApi("https://catfact.ninja/fact", "CatFacts", 30000);
+    cy.fixture("datasources").then((datasourceFormData) => {
+      _.apiPage.CreateAndFillApi(
+        datasourceFormData.randomCatfactUrl,
+        "CatFacts",
+      );
+    });
     _.apiPage.ToggleOnPageLoadRun(true);
     _.apiPage.ToggleConfirmBeforeRunningApi(true);
 
     _.entityExplorer.SelectEntityByName("Image1", "Widgets");
     _.propPane.EnterJSContext(
       "onClick",
-      `{{CatFacts.run(() => showAlert('Your cat fact is :'+ CatFacts.data.fact,'success'), () => showAlert('Oh No!','error'))}}`,
+      `{{CatFacts.run(() => showAlert('Your cat fact is :'+ CatFacts.data,'success'), () => showAlert('Oh No!','error'))}}`,
     );
 
     _.entityExplorer.SelectEntityByName("Quotes", "Queries/JS");
@@ -530,7 +545,11 @@ describe("JSObjects OnLoad Actions tests", function() {
       "Delete",
       "Are you sure?",
     );
-    _.entityExplorer.ActionContextMenuByEntityName("getBooks", "Delete", "Are you sure?");
+    _.entityExplorer.ActionContextMenuByEntityName(
+      "getBooks",
+      "Delete",
+      "Are you sure?",
+    );
     _.entityExplorer.ActionContextMenuByEntityName(
       jsName as string,
       "Delete",
@@ -540,5 +559,4 @@ describe("JSObjects OnLoad Actions tests", function() {
   });
 
   //it.skip("13. Tc # 57 - Multiple functions set to true for OnPageLoad & Confirmation before running + Bug 15340", () => {});
-
 });

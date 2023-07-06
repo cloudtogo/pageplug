@@ -1,4 +1,5 @@
-import { LogLevelDesc } from "loglevel";
+// eslint-disable-next-line prettier/prettier
+import type { LogLevelDesc } from "loglevel";
 
 export type SentryConfig = {
   dsn: string;
@@ -66,4 +67,6 @@ export interface AppsmithUIConfigs {
   disableIframeWidgetSandbox: boolean;
   inCloudOS: boolean;
   workEnv: string;
+  pricingUrl: string;
+  customerPortalUrl: string;
 }

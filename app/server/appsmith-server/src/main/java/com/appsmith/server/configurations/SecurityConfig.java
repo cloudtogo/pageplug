@@ -1,12 +1,12 @@
 package com.appsmith.server.configurations;
 
-
 import com.appsmith.server.authentication.handlers.AccessDeniedHandler;
 import com.appsmith.server.authentication.handlers.CustomServerOAuth2AuthorizationRequestResolver;
 import com.appsmith.server.authentication.handlers.LogoutSuccessHandler;
 import com.appsmith.server.constants.FieldName;
 import com.appsmith.server.constants.Url;
 import com.appsmith.server.domains.User;
+import com.appsmith.server.filters.CSRFFilter;
 import com.appsmith.server.helpers.RedirectHelper;
 import com.appsmith.server.services.AnalyticsService;
 import com.appsmith.server.services.UserService;
@@ -56,9 +56,8 @@ import static com.appsmith.server.constants.Url.CUSTOM_JS_LIB_URL;
 import static com.appsmith.server.constants.Url.PAGE_URL;
 import static com.appsmith.server.constants.Url.TENANT_URL;
 import static com.appsmith.server.constants.Url.THEME_URL;
-import static com.appsmith.server.constants.Url.USER_URL;
-import static com.appsmith.server.constants.Url.CLOUDOS_URL;
 import static com.appsmith.server.constants.Url.USAGE_PULSE_URL;
+import static com.appsmith.server.constants.Url.USER_URL;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @EnableWebFluxSecurity
@@ -101,15 +100,19 @@ public class SecurityConfig {
     private CloudOSConfig cloudOSConfig;
 
     /**
-     * This routerFunction is required to map /public/** endpoints to the src/main/resources/public folder
-     * This is to allow static resources to be served by the server. Couldn't find an easier way to do this,
+     * This routerFunction is required to map /public/** endpoints to the
+     * src/main/resources/public folder
+     * This is to allow static resources to be served by the server. Couldn't find
+     * an easier way to do this,
      * hence using RouterFunctions to implement this feature.
      * <p>
      * Future folks: Please check out links:
      * - https://www.baeldung.com/spring-webflux-static-content
-     * - https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html#webflux-config-static-resources
+     * -
+     * https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html#webflux-config-static-resources
      * - Class ResourceHandlerRegistry
-     * for details. If you figure out a cleaner approach, please modify this function
+     * for details. If you figure out a cleaner approach, please modify this
+     * function
      *
      * @return
      */
@@ -125,35 +128,22 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http, ReactiveUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
-        ServerAuthenticationEntryPointFailureHandler failureHandler = new ServerAuthenticationEntryPointFailureHandler(authenticationEntryPoint);
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http,
+            ReactiveUserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        ServerAuthenticationEntryPointFailureHandler failureHandler = new ServerAuthenticationEntryPointFailureHandler(
+                authenticationEntryPoint);
 
         return http
-                // This picks up the configurationSource from the bean corsConfigurationSource()
+                // The native CSRF solution doesn't work with WebFlux, yet, but only for WebMVC.
+                // So we make our own.
                 .csrf().disable()
-                .addFilterBefore(new WebFilter() {
-                    @Override
-                    public Mono<Void> filter(ServerWebExchange serverWebExchange, WebFilterChain webFilterChain) {
-                        final Boolean inCloudOS = cloudOSConfig.getInCloudOS();
-                        if (!inCloudOS) {
-                            return webFilterChain.filter(serverWebExchange);
-                        }
-                        return userService.findByEmail("admin@cloudtogo.cn")
-                                .switchIfEmpty(Mono.error(new UsernameNotFoundException("Unable to find username: admin")))
-                                .flatMap(defaultUser -> {
-                                    UsernamePasswordAuthenticationToken token =
-                                            new UsernamePasswordAuthenticationToken(defaultUser, null, defaultUser.getAuthorities());
-                                    return ReactiveSecurityContextHolder.getContext().flatMap(context -> {
-                                        context.setAuthentication(token);
-                                        return webFilterChain.filter(serverWebExchange);
-                                    });
-                                });
-                    }
-                }, SecurityWebFiltersOrder.SECURITY_CONTEXT_SERVER_WEB_EXCHANGE)
+                .addFilterAt(new CSRFFilter(), SecurityWebFiltersOrder.CSRF)
                 .anonymous().principal(createAnonymousUser())
                 .and()
-                // This returns 401 unauthorized for all requests that are not authenticated but authentication is required
-                // The client will redirect to the login page if we return 401 as Http status response
+                // This returns 401 unauthorized for all requests that are not authenticated but
+                // authentication is required
+                // The client will redirect to the login page if we return 401 as Http status
+                // response
                 .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint)
                 .accessDeniedHandler(accessDeniedHandler)
@@ -180,8 +170,7 @@ public class SecurityConfig {
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, CLOUDOS_URL + "/getMiniPreview"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, TENANT_URL + "/current"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USAGE_PULSE_URL),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, CUSTOM_JS_LIB_URL + "/*/view")
-                )
+                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, CUSTOM_JS_LIB_URL + "/*/view"))
                 .permitAll()
                 .pathMatchers("/public/**", "/oauth2/**", "/actuator/**").permitAll()
                 .anyExchange()
@@ -191,14 +180,16 @@ public class SecurityConfig {
                 .formLogin(formLoginSpec -> formLoginSpec.authenticationFailureHandler(failureHandler)
                         .loginPage(Url.LOGIN_URL)
                         .authenticationEntryPoint(authenticationEntryPoint)
-                        .requiresAuthenticationMatcher(ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, Url.LOGIN_URL))
+                        .requiresAuthenticationMatcher(
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, Url.LOGIN_URL))
                         .authenticationSuccessHandler(authenticationSuccessHandler)
                         .authenticationFailureHandler(authenticationFailureHandler))
 
                 // For Github SSO Login, check transformation class: CustomOAuth2UserServiceImpl
                 // For Google SSO Login, check transformation class: CustomOAuth2UserServiceImpl
                 .oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec.authenticationFailureHandler(failureHandler)
-                        .authorizationRequestResolver(new CustomServerOAuth2AuthorizationRequestResolver(reactiveClientRegistrationRepository, commonConfig, redirectHelper))
+                        .authorizationRequestResolver(new CustomServerOAuth2AuthorizationRequestResolver(
+                                reactiveClientRegistrationRepository, commonConfig, redirectHelper))
                         .authenticationSuccessHandler(authenticationSuccessHandler)
                         .authenticationFailureHandler(authenticationFailureHandler)
                         .authorizedClientRepository(new ClientUserRepository(userService, commonConfig)))
@@ -211,15 +202,18 @@ public class SecurityConfig {
     }
 
     /**
-     * This bean configures the parameters that need to be set when a Cookie is created for a logged in user
+     * This bean configures the parameters that need to be set when a Cookie is
+     * created for a logged in user
      *
      * @return
      */
     @Bean
     public WebSessionIdResolver webSessionIdResolver() {
         CookieWebSessionIdResolver resolver = new CookieWebSessionIdResolver();
-        // Setting the max age to 30 days so that the cookie doesn't expire on browser close
-        // If the max age is not set, some browsers will default to deleting the cookies on session close.
+        // Setting the max age to 30 days so that the cookie doesn't expire on browser
+        // close
+        // If the max age is not set, some browsers will default to deleting the cookies
+        // on session close.
         resolver.setCookieMaxAge(Duration.of(30, DAYS));
         resolver.addCookieInitializer((builder) -> builder.path("/"));
         resolver.addCookieInitializer((builder) -> builder.sameSite("Lax"));

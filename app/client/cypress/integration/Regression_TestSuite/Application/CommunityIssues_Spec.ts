@@ -66,8 +66,9 @@ describe("AForce - Community Issues page validations", function() {
     ee.SelectEntityByName("Table1", "Widgets");
     agHelper.AssertExistingToggleState("serversidepagination", "checked");
 
-    propPane.ValidatePropertyFieldValue("Default Selected Row", "0")
-    .then(($selectedRow: any) => {
+    propPane
+      .ValidatePropertyFieldValue("Default Selected Row", "0")
+      .then(($selectedRow: any) => {
         selectedRow = Number($selectedRow);
         table.AssertSelectedRow(selectedRow);
       });
@@ -204,7 +205,7 @@ describe("AForce - Community Issues page validations", function() {
   });
 
   it("7. Validate Filter table", () => {
-    var filterTitle = new Array();
+    let filterTitle = new Array();
     deployMode.DeployApp();
     table.WaitUntilTableLoad();
 
@@ -245,12 +246,12 @@ describe("AForce - Community Issues page validations", function() {
 
     //Two filters - AND
     table.OpenNFilterTable("Votes", "greater than", "2");
-    table.ReadTableRowColumnData(0, 1,"v1", 3000).then(($cellData) => {
+    table.ReadTableRowColumnData(0, 1, "v1", 3000).then(($cellData) => {
       expect($cellData).to.eq("Combine queries from different datasources");
     });
 
     table.OpenNFilterTable("Title", "contains", "button", "AND", 1);
-    table.ReadTableRowColumnData(0, 1,"v1", 3000).then(($cellData) => {
+    table.ReadTableRowColumnData(0, 1, "v1", 3000).then(($cellData) => {
       expect($cellData).to.eq(
         "Change the video in the video player with a button click",
       );
@@ -297,7 +298,7 @@ describe("AForce - Community Issues page validations", function() {
     table.SearchTable("Suggestion", 2);
     table.WaitUntilTableLoad();
 
-    table.ReadTableRowColumnData(0, 0,"v1", 4000).then((cellData) => {
+    table.ReadTableRowColumnData(0, 0, "v1", 4000).then((cellData) => {
       expect(cellData).to.be.equal("Suggestion");
     });
 
@@ -358,7 +359,7 @@ describe("AForce - Community Issues page validations", function() {
     );
     agHelper.ClickButton("Save");
     agHelper.Sleep(2000);
-    table.ReadTableRowColumnData(0, 0,"v1",2000).then((cellData) => {
+    table.ReadTableRowColumnData(0, 0, "v1", 2000).then((cellData) => {
       expect(cellData).to.be.equal("Troubleshooting");
     });
 

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
-import { ButtonGroupProps } from "./ButtonGroup";
+// eslint-disable-next-line prettier/prettier
+import type { ButtonGroupProps } from "./ButtonGroup";
 
 export const StyledContainer = styled.div<ButtonGroupProps>`
   --border-width: 1px;

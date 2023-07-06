@@ -108,6 +108,10 @@ export const TERMS_AND_CONDITIONS_LINK = () => `条款协议`;
 export const ERROR_500 = () => `抱歉，服务端出错了，我们正在拼命修复`;
 export const ERROR_0 = () => `无法连接到服务端，请检查你的网络连接`;
 export const ERROR_401 = () => `鉴权失败！请重新登录`;
+export const ERROR_413 = (maxFileSize: number) =>
+  `Payload too large. File size cannot exceed ${maxFileSize}MB.`;
+export const GENERIC_API_EXECUTION_ERROR = () => `API execution error`;
+export const APPSMITH_HTTP_ERROR_413 = () => `413 CONTENT_TOO_LARGE`;
 export const ERROR_403 = (entity: string, userEmail: string) =>
   `抱歉，你的账号 (${userEmail}) 没有权限更新 ${entity}，请联系管理员解决`;
 export const PAGE_NOT_FOUND_ERROR = () => `页面不存在`;
@@ -155,6 +159,7 @@ export const ENABLE_TIME = () => `显示时间`;
 export const EDIT_APP = () => `编辑应用`;
 export const FORK_APP = () => `复制应用`;
 export const SIGN_IN = () => `登录`;
+export const SHARE_APP = () => `Share app`;
 
 export const EDITOR_HEADER = {
   saving: () => "正在保存",
@@ -1320,6 +1325,26 @@ export const RECONNECT_BUTTON_TEXT = () => "重连";
 export const SAVE_BUTTON_TEXT = () => "保存";
 export const SAVE_AND_AUTHORIZE_BUTTON_TEXT = () => "保存并鉴权";
 export const DISCARD_POPUP_DONT_SAVE_BUTTON_TEXT = () => "不保存";
+export const APP_NAVIGATION_SETTING = {
+  sectionHeader: () => "Navigation",
+  sectionHeaderDesc: () => "Customize the navigation bar",
+  showNavbarLabel: () => "Show Navbar",
+  orientationLabel: () => "Orientation",
+  navStyleLabel: () => "Variant",
+  positionLabel: () => "Position",
+  itemStyleLabel: () => "Item Style",
+  colorStyleLabel: () => "Background color",
+  logoLabel: () => "Logo",
+  logoConfigurationLabel: () => "Logo Configuration",
+  showSignInLabel: () => "Show Sign In",
+  showSignInTooltip: () =>
+    "Toggle to show the sign-in button for users who are not logged in.",
+};
+
+export const LOCK_SIDEBAR_MESSAGE = () => `Lock sidebar open`;
+export const CLOSE_SIDEBAR_MESSAGE = () => `Close sidebar`;
+export const GSHEET_AUTHORISED_FILE_IDS_KEY = () =>
+  "Google sheets authorised file ids key";
 
 // Alert options and labels for showMessage types
 export const ALERT_STYLE_OPTIONS = [

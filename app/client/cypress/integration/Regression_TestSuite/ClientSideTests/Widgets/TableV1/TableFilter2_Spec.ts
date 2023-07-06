@@ -177,10 +177,10 @@ describe("Verify various Table_Filter combinations", function() {
     table.ReadTableRowColumnData(0, 3).then(($cellData) => {
       expect($cellData).to.eq("Tobias Funke");
     });
-    table.ReadTableRowColumnData(1, 3, "v1",200).then(($cellData) => {
+    table.ReadTableRowColumnData(1, 3, "v1", 200).then(($cellData) => {
       expect($cellData).to.eq("Byron Fields");
     });
-    table.ReadTableRowColumnData(2, 3, "v1",200).then(($cellData) => {
+    table.ReadTableRowColumnData(2, 3, "v1", 200).then(($cellData) => {
       expect($cellData).to.eq("Ryan Holmes");
     });
 
@@ -193,7 +193,8 @@ describe("Verify various Table_Filter combinations", function() {
     table.ReadTableRowColumnData(0, 3).then(($cellData) => {
       expect($cellData).to.eq("Michael Lawson");
     });
-    table.ReadTableRowColumnData(1, 3,"v1", 200).then(($cellData) => {
+
+    table.ReadTableRowColumnData(1, 3, "v1", 200).then(($cellData) => {
       expect($cellData).to.eq("Lindsay Ferguson");
     });
     table.ReadTableRowColumnData(2, 3, "v1", 200).then(($cellData) => {

@@ -1,12 +1,15 @@
 import { call, fork, put, race, select, take } from "redux-saga/effects";
-import {
+// eslint-disable-next-line prettier/prettier
+import type {
   ReduxAction,
   ReduxActionWithPromise,
+} from "@appsmith/constants/ReduxActionConstants";
+import {
   ReduxActionTypes,
   ReduxActionErrorTypes,
 } from "@appsmith/constants/ReduxActionConstants";
 import { reset } from "redux-form";
-import UserApi, {
+import type {
   CreateUserRequest,
   CreateUserResponse,
   ForgotPasswordRequest,
@@ -16,8 +19,9 @@ import UserApi, {
   LeaveWorkspaceRequest,
 } from "@appsmith/api/UserApi";
 import { AUTH_LOGIN_URL, matchBuilderPath, SETUP } from "constants/routes";
+import UserApi from "@appsmith/api/UserApi";
 import history from "utils/history";
-import { ApiResponse } from "api/ApiResponses";
+import type { ApiResponse } from "api/ApiResponses";
 import {
   validateResponse,
   getResponseErrorMessage,
@@ -38,9 +42,12 @@ import { INVITE_USERS_TO_WORKSPACE_FORM } from "@appsmith/constants/forms";
 import PerformanceTracker, {
   PerformanceTransactionName,
 } from "utils/PerformanceTracker";
-import { ERROR_CODES } from "@appsmith/constants/ApiConstants";
-import { ANONYMOUS_USERNAME, User } from "constants/userConstants";
-import { flushErrorsAndRedirect } from "actions/errorActions";
+import type { User } from "constants/userConstants";
+import { ANONYMOUS_USERNAME } from "constants/userConstants";
+import {
+  flushErrorsAndRedirect,
+  safeCrashAppRequest,
+} from "actions/errorActions";
 import localStorage from "utils/localStorage";
 import { Toaster, Variant } from "design-system-old";
 import log from "loglevel";
@@ -65,8 +72,8 @@ import {
   segmentInitUncertain,
   segmentInitSuccess,
 } from "actions/analyticsActions";
-import { SegmentState } from "reducers/uiReducers/analyticsReducer";
-import FeatureFlags from "entities/FeatureFlags";
+import type { SegmentState } from "reducers/uiReducers/analyticsReducer";
+import type FeatureFlags from "entities/FeatureFlags";
 import UsagePulse from "usagePulse";
 
 const { inCloudOS } = getAppsmithConfigs();
@@ -192,12 +199,7 @@ export function* getCurrentUserSaga() {
       },
     });
 
-    yield put({
-      type: ReduxActionTypes.SAFE_CRASH_APPSMITH_REQUEST,
-      payload: {
-        code: ERROR_CODES.SERVER_ERROR,
-      },
-    });
+    yield put(safeCrashAppRequest());
   }
 }
 
@@ -545,11 +547,10 @@ export function* updateFirstTimeUserOnboardingSage() {
   const enable: string | null = yield getEnableFirstTimeUserOnboarding();
 
   if (enable) {
-    const applicationId: string = yield getFirstTimeUserOnboardingApplicationId() ||
-      "";
-    const introModalVisibility:
-      | string
-      | null = yield getFirstTimeUserOnboardingIntroModalVisibility();
+    const applicationId: string =
+      yield getFirstTimeUserOnboardingApplicationId() || "";
+    const introModalVisibility: string | null =
+      yield getFirstTimeUserOnboardingIntroModalVisibility();
     yield put({
       type: ReduxActionTypes.SET_ENABLE_FIRST_TIME_USER_ONBOARDING,
       payload: true,

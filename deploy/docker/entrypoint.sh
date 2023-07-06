@@ -3,6 +3,22 @@
 set -e
 set -o xtrace
 
+if [[ -n ${APPSMITH_SEGMENT_CE_KEY-} ]]; then
+  ip="$(curl -sS https://api64.ipify.org || echo unknown)"
+  curl \
+    --user "$APPSMITH_SEGMENT_CE_KEY:" \
+    --header 'Content-Type: application/json' \
+    --data '{
+      "userId":"'"$ip"'",
+      "event":"Instance Start",
+      "properties": {
+        "ip": "'"$ip"'"
+      }
+    }' \
+    https://api.segment.io/v1/track \
+    || true
+fi
+
 stacks_path=/appsmith-stacks
 
 function get_maximum_heap() {
@@ -151,6 +167,15 @@ init_replica_set() {
     fi
   done
 
+  if [[ $isUriLocal -gt 0 && -f /proc/cpuinfo ]] && ! grep --quiet avx /proc/cpuinfo; then
+    echo "====================================================================================================" >&2
+    echo "==" >&2
+    echo "== AVX instruction not found in your CPU. Appsmith's embedded MongoDB may not start. Please use an external MongoDB instance instead." >&2
+    echo "== See https://docs.appsmith.com/getting-started/setup/instance-configuration/custom-mongodb-redis#custom-mongodb for instructions." >&2
+    echo "==" >&2
+    echo "====================================================================================================" >&2
+  fi
+
   if [[ $shouldPerformInitdb -gt 0 && $isUriLocal -eq 0 ]]; then
     echo "Initializing Replica Set for local database"
     # Start installed MongoDB service - Dependencies Layer
@@ -177,15 +202,6 @@ init_replica_set() {
   fi
 
   if [[ $isUriLocal -gt 0 ]]; then
-    if [[ -f /proc/cpuinfo ]] && ! grep --quiet avx /proc/cpuinfo; then
-      echo "====================================================================================================" >&2
-      echo "==" >&2
-      echo "== AVX instruction not found in your CPU. Appsmith's embedded MongoDB may not start. Please use an external MongoDB instance instead." >&2
-      echo "== See https://docs.appsmith.com/getting-started/setup/instance-configuration/custom-mongodb-redis#custom-mongodb for instructions." >&2
-      echo "==" >&2
-      echo "====================================================================================================" >&2
-    fi
-
     echo "Checking Replica Set of external MongoDB"
 
     if appsmithctl check-replica-set; then
@@ -193,7 +209,7 @@ init_replica_set() {
     else
       echo -e "\033[0;31m***************************************************************************************\033[0m"
       echo -e "\033[0;31m*      MongoDB Replica Set is not enabled                                             *\033[0m"
-      echo -e "\033[0;31m*      Please ensure the credentials provided for MongoDB, has `readWrite` role.      *\033[0m"
+      echo -e "\033[0;31m*      Please ensure the credentials provided for MongoDB, has 'readWrite' role.      *\033[0m"
       echo -e "\033[0;31m***************************************************************************************\033[0m"
       exit 1
     fi
@@ -338,13 +354,13 @@ init_postgres() {
       su postgres -c "/usr/lib/postgresql/13/bin/pg_ctl stop -D $POSTGRES_DB_PATH"
     fi
   else
-    runEmbeddedPostgres=0 
+    runEmbeddedPostgres=0
   fi
-  
+
 }
 
 seed_embedded_postgres(){
-    # Create mockdb database 
+    # Create mockdb database
     psql -U postgres -c "CREATE DATABASE mockdb;"
     # Create mockdb superuser
     su postgres -c "/usr/lib/postgresql/13/bin/createuser mockdb -s"
@@ -362,7 +378,7 @@ seed_embedded_postgres(){
 safe_init_postgres(){
 runEmbeddedPostgres=1
 # fail safe to prevent entrypoint from exiting, and prevent postgres from starting
-init_postgres || runEmbeddedPostgres=0 
+init_postgres || runEmbeddedPostgres=0
 }
 
 # Main Section

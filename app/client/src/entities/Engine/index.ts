@@ -3,12 +3,11 @@ import {
   fetchApplicationPreviewWxaCode,
 } from "actions/applicationActions";
 import {
-  setAppMode,
-  updateAppStore,
   fetchCloudOSApi,
 } from "actions/pageActions";
+import { setAppMode, updateAppStore } from "actions/pageActions";
+import type { ApplicationPayload } from "@appsmith/constants/ReduxActionConstants";
 import {
-  ApplicationPayload,
   ReduxActionErrorTypes,
   ReduxActionTypes,
 } from "@appsmith/constants/ReduxActionConstants";
@@ -23,7 +22,7 @@ import {
   isMobileLayout,
 } from "selectors/applicationSelectors";
 import history from "utils/history";
-import URLRedirect from "entities/URLRedirect/index";
+import type URLRedirect from "entities/URLRedirect/index";
 import URLGeneratorFactory from "entities/URLRedirect/factory";
 import { updateBranchLocally } from "actions/gitSyncActions";
 import { getCurrentGitBranch } from "selectors/gitSyncSelectors";
@@ -100,9 +99,8 @@ export default abstract class AppEngine {
     if (!apiCalls)
       throw new PageNotFoundError(`Cannot find page with id: ${pageId}`);
     const application: ApplicationPayload = yield select(getCurrentApplication);
-    const currentGitBranch: ReturnType<typeof getCurrentGitBranch> = yield select(
-      getCurrentGitBranch,
-    );
+    const currentGitBranch: ReturnType<typeof getCurrentGitBranch> =
+      yield select(getCurrentGitBranch);
     yield put(
       updateAppStore(
         getPersistentAppStore(application.id, branch || currentGitBranch),

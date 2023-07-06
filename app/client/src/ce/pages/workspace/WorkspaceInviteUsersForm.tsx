@@ -15,18 +15,15 @@ import TagListField from "components/editorComponents/form/fields/TagListField";
 import { reduxForm, SubmissionError } from "redux-form";
 import SelectField from "components/editorComponents/form/fields/SelectField";
 import { connect, useSelector } from "react-redux";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import {
   getRolesForField,
   getAllUsers,
   getCurrentAppWorkspace,
 } from "@appsmith/selectors/workspaceSelectors";
 import Spinner from "components/editorComponents/Spinner";
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
-import {
-  InviteUsersToWorkspaceFormValues,
-  inviteUsersToWorkspace,
-} from "@appsmith/pages/workspace/helpers";
+import type { InviteUsersToWorkspaceFormValues } from "@appsmith/pages/workspace/helpers";
+import { inviteUsersToWorkspace } from "@appsmith/pages/workspace/helpers";
 import { INVITE_USERS_TO_WORKSPACE_FORM } from "@appsmith/constants/forms";
 import {
   createMessage,
@@ -35,6 +32,8 @@ import {
   INVITE_USERS_VALIDATION_EMAILS_EMPTY,
   INVITE_USERS_VALIDATION_EMAIL_LIST,
   INVITE_USERS_VALIDATION_ROLE_EMPTY,
+  USERS_HAVE_ACCESS_TO_ALL_APPS,
+  NO_USERS_INVITED,
 } from "@appsmith/constants/messages";
 import { isEmail } from "utils/formhelpers";
 import {
@@ -44,28 +43,34 @@ import {
 import { getAppsmithConfigs } from "@appsmith/configs";
 import { ReactComponent as NoEmailConfigImage } from "assets/images/email-not-configured.svg";
 import AnalyticsUtil from "utils/AnalyticsUtil";
+import type { DropdownOption, TextProps } from "design-system-old";
 import {
   Button,
   Classes,
   Callout,
-  DropdownOption,
   Size,
   Text,
   TextType,
-  TextProps,
   Variant,
+  Icon,
+  IconSize,
 } from "design-system-old";
 import { getInitialsAndColorCode } from "utils/AppsmithUtils";
 import ProfileImage from "pages/common/ProfileImage";
 import ManageUsers from "pages/workspace/ManageUsers";
 import { Colors } from "constants/Colors";
-import { fetchWorkspace } from "@appsmith/actions/workspaceActions";
+import {
+  fetchRolesForWorkspace,
+  fetchUsersForWorkspace,
+  fetchWorkspace,
+} from "@appsmith/actions/workspaceActions";
 import { useHistory } from "react-router-dom";
 import { Tooltip } from "@blueprintjs/core";
 import { isEllipsisActive } from "utils/helpers";
 import { USER_PHOTO_ASSET_URL } from "constants/userConstants";
+import type { WorkspaceUserRoles } from "@appsmith/constants/workspaceConstants";
 
-const { cloudHosting, mailEnabled } = getAppsmithConfigs();
+const { cloudHosting } = getAppsmithConfigs();
 
 export const CommonTitleTextStyle = css`
   color: ${Colors.CHARCOAL};
@@ -75,13 +80,6 @@ export const CommonTitleTextStyle = css`
 export const WorkspaceInviteWrapper = styled.div`
   > div {
     margin-top: 0;
-  }
-`;
-
-export const WorkspaceInviteTitle = styled.div`
-  padding: 0 0 10px 0;
-  & > span[type="h5"] {
-    ${CommonTitleTextStyle}
   }
 `;
 
@@ -210,19 +208,20 @@ export const MailConfigContainer = styled.div`
     font-weight: 500;
     font-size: 14px;
   }
-  && > a {
-    color: ${(props) => props.theme.colors.modal.email.desc};
-    font-size: 12px;
-    text-decoration: underline;
-  }
 `;
 
 export const LabelText = styled(Text)`
   font-size: 14px;
-  color: ${Colors.GREY_8};
-  margin-bottom: 8px;
-  line-height: 1.57;
+  color: ${Colors.GREY_7};
+  margin: 8px 0;
+  line-height: 1.31;
   letter-spacing: -0.24px;
+  display: flex;
+  font-weight: var(--ads-font-weight-normal);
+
+  .cs-icon {
+    margin-right: 8px;
+  }
 `;
 
 export const StyledText = styled(Text)`
@@ -331,7 +330,6 @@ function WorkspaceInviteUsersForm(props: any) {
   const {
     allUsers,
     anyTouched,
-    disableEmailSetup = false,
     disableManageUsers = false,
     disableUserList = false,
     error,
@@ -339,10 +337,8 @@ function WorkspaceInviteUsersForm(props: any) {
     fetchCurrentWorkspace,
     fetchUser,
     handleSubmit,
-    isApplicationInvite,
     isLoading,
     isMultiSelectDropdown = false,
-    message = "",
     placeholder = "",
     submitFailed,
     submitSucceeded,
@@ -439,11 +435,6 @@ function WorkspaceInviteUsersForm(props: any) {
   return (
     <WorkspaceInviteWrapper>
       <InviteModalStyles />
-      {isApplicationInvite && (
-        <WorkspaceInviteTitle>
-          <Text type={TextType.H5}>邀请小伙伴到 {currentWorkspace?.name} </Text>
-        </WorkspaceInviteTitle>
-      )}
       <StyledForm
         onSubmit={handleSubmit((values: any, dispatch: any) => {
           validateFormValues(values);
@@ -472,7 +463,6 @@ function WorkspaceInviteUsersForm(props: any) {
           );
         })}
       >
-        <LabelText type={TextType.P0}>{message}</LabelText>
         <StyledInviteFieldGroup>
           <div className="wrapper">
             <TagListField
@@ -515,11 +505,15 @@ function WorkspaceInviteUsersForm(props: any) {
             width={InviteButtonWidth}
           />
         </StyledInviteFieldGroup>
+        <LabelText type={TextType.P0}>
+          <Icon name="user-3-line" size={IconSize.MEDIUM} />
+          {createMessage(USERS_HAVE_ACCESS_TO_ALL_APPS)}
+        </LabelText>
         {isLoading ? (
           <Loading size={30} />
         ) : (
           <>
-            {!mailEnabled && !disableEmailSetup && (
+            {allUsers.length === 0 && (
               <MailConfigContainer>
                 {allUsers.length === 0 && <NoEmailConfigImage />}
                 <span>未开通邮件服务</span>
@@ -541,8 +535,7 @@ function WorkspaceInviteUsersForm(props: any) {
                   (user: {
                     username: string;
                     name: string;
-                    permissionGroupId: string;
-                    permissionGroupName: string;
+                    roles: WorkspaceUserRoles[];
                     initials: string;
                     photoId?: string;
                   }) => {
@@ -565,7 +558,7 @@ function WorkspaceInviteUsersForm(props: any) {
                           </UserInfo>
                           <UserRole>
                             <Text type={TextType.P1}>
-                              {user.permissionGroupName?.split(" - ")[0]}
+                              {user.roles?.[0]?.name?.split(" - ")[0] || ""}
                             </Text>
                           </UserRole>
                         </User>
@@ -614,27 +607,16 @@ export default connect(
   },
   (dispatch: any) => ({
     fetchAllRoles: (workspaceId: string) =>
-      dispatch({
-        type: ReduxActionTypes.FETCH_ALL_ROLES_INIT,
-        payload: {
-          workspaceId,
-        },
-      }),
+      dispatch(fetchRolesForWorkspace(workspaceId)),
     fetchCurrentWorkspace: (workspaceId: string) =>
       dispatch(fetchWorkspace(workspaceId)),
     fetchUser: (workspaceId: string) =>
-      dispatch({
-        type: ReduxActionTypes.FETCH_ALL_USERS_INIT,
-        payload: {
-          workspaceId,
-        },
-      }),
+      dispatch(fetchUsersForWorkspace(workspaceId)),
   }),
 )(
   reduxForm<
     InviteUsersToWorkspaceFormValues,
     {
-      fetchAllRoles: (workspaceId: string) => void;
       roles?: any;
       applicationId?: string;
       workspaceId?: string;

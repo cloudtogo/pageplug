@@ -1,5 +1,4 @@
-import { AppState } from "@appsmith/reducers";
-import { echartThemes } from "constants/EchartContants";
+import type { AppState } from "@appsmith/reducers";
 
 export enum AppThemingMode {
   APP_THEME_EDIT = "APP_THEME_EDIT",
