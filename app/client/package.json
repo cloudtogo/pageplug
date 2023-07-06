@@ -31,7 +31,7 @@
     "test:jest": "$(npm bin)/jest --watch",
     "generate:widget": "plop --plopfile generators/index.js",
     "postinstall": "patch-package && CURRENT_SCOPE=client node ../shared/install-dependencies.js",
-    "preinstall": "CURRENT_SCOPE=client node ../shared/build-shared-dep.js",
+    "preinstall": "cross-env CURRENT_SCOPE=client node ../shared/build-shared-dep.js",
     "install": "node cypress/apply-patches.js",
     "storybook": "yarn workspace @design-system/storybook storybook",
     "lint:ci": "eslint --cache --ext .js,.ts,.tsx ./src && eslint --cache --ext .js,.ts ./cypress && yarn run lint:packages",
