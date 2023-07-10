@@ -135,7 +135,8 @@ export const INVITE_USERS_SUBMIT_SUCCESS = () => `邀请成功`;
 export const INVITE_USER_SUBMIT_SUCCESS = () => `邀请成功`;
 export const INVITE_USERS_VALIDATION_EMAILS_EMPTY = () =>
   `请输入小伙伴们的邮箱`;
-
+export const USERS_HAVE_ACCESS_TO_ALL_APPS = () =>
+  "Users will have access to all applications in this workspace";
 export const CREATE_PASSWORD_RESET_SUCCESS = () => `密码重置成功`;
 export const CREATE_PASSWORD_RESET_SUCCESS_LOGIN_LINK = () => `登录`;
 
