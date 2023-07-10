@@ -1,10 +1,12 @@
 import * as React from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import { Alignment, Button, Classes, Menu, MenuItem } from "@blueprintjs/core";
-import { ItemListRenderer, ItemRenderer, Select } from "@blueprintjs/select";
+import type { ItemListRenderer, ItemRenderer } from "@blueprintjs/select";
+import { Select } from "@blueprintjs/select";
 import { createVanIconComponent } from "@taroify/icons/van";
 import VantIcons from "./IconNames";
-import BaseControl, { ControlProps } from "../BaseControl";
+import type { ControlProps } from "../BaseControl";
+import BaseControl from "../BaseControl";
 import { TooltipComponent } from "design-system-old";
 
 const IconSelectContainerStyles = createGlobalStyle<{
@@ -125,8 +127,8 @@ class IconSelectControl extends BaseControl<
       this.setState((prevState: IconSelectControlState) => {
         return {
           ...prevState,
-          popoverTargetWidth: iconSelectTargetElement?.getBoundingClientRect()
-            .width,
+          popoverTargetWidth:
+            iconSelectTargetElement?.getBoundingClientRect().width,
         };
       });
     }, 0);

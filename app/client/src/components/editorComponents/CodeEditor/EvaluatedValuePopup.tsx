@@ -35,7 +35,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { getEvaluatedPopupState } from "selectors/editorContextSelectors";
 import type { AppState } from "@appsmith/reducers";
 import { setEvalPopupState } from "actions/editorContextActions";
-import { Colors } from "constants/Colors";
 import { Link } from "react-router-dom";
 import { showDebugger } from "actions/debuggerActions";
 import { modText } from "utils/helpers";

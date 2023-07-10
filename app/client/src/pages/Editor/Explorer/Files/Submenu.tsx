@@ -151,9 +151,7 @@ export default function ExplorerSubMenu({
           <SubMenuContainer
             className={`bg-white overflow-y-auto overflow-x-hidden flex flex-col justify-start z-10 delay-150 transition-all ${EntityClassNames.CONTEXT_MENU_CONTENT}`}
           >
-            <div className="px-4 py-2 text-sm font-medium text-gray">
-            新建
-            </div>
+            <div className="px-4 py-2 text-sm font-medium text-gray">新建</div>
             <div className="flex items-center space-x-2 px-4">
               <SearchIcon className="box-content w-4 h-4" />
               <input

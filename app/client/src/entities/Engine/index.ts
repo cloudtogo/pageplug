@@ -2,9 +2,7 @@ import {
   fetchApplication,
   fetchApplicationPreviewWxaCode,
 } from "actions/applicationActions";
-import {
-  fetchCloudOSApi,
-} from "actions/pageActions";
+import { fetchCloudOSApi } from "actions/pageActions";
 import { setAppMode, updateAppStore } from "actions/pageActions";
 import type { ApplicationPayload } from "@appsmith/constants/ReduxActionConstants";
 import {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Sentry from "@sentry/react";
 import TabBarIconPicker from "components/designSystems/taro/TabBarIconPicker";
 import log from "loglevel";

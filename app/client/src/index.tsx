@@ -50,6 +50,7 @@ class Empty extends React.Component {
     return null;
   }
 }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const inst = createReactApp(Empty, React, ReactDOM, {});
 // add touch emulator
 import "@vant/touch-emulator";

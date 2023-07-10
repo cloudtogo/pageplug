@@ -186,9 +186,8 @@ export const useEntityLink = () => {
 
 export const useGetEntityInfo = (name: string) => {
   const entity = useSelector((state: AppState) => state.evaluations.tree[name]);
-  const debuggerErrors: Record<string, Message> = useSelector(
-    getDebuggerErrors,
-  );
+  const debuggerErrors: Record<string, Message> =
+    useSelector(getDebuggerErrors);
   const action = useSelector((state: AppState) =>
     isAction(entity) ? getAction(state, entity.actionId) : undefined,
   );
