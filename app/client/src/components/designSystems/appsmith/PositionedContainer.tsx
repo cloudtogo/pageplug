@@ -20,7 +20,6 @@ import styled from "styled-components";
 import { useClickToSelectWidget } from "utils/hooks/useClickToSelectWidget";
 import { usePositionedContainerZIndex } from "utils/hooks/usePositionedContainerZIndex";
 import { useSelector } from "react-redux";
-import { snipingModeSelector } from "selectors/editorSelectors";
 import {
   getIsReflowEffectedSelector,
   getReflowSelector,
@@ -94,7 +93,6 @@ export function PositionedContainer(
   const y = style.yPosition + (style.yPositionUnit || "px");
   const padding = WIDGET_PADDING;
   const clickToSelectWidget = useClickToSelectWidget(props.widgetId);
-  const isSnipingMode = useSelector(snipingModeSelector);
   // memoized className
   const containerClassName = useMemo(() => {
     return (
@@ -167,6 +165,7 @@ export function PositionedContainer(
   }, [style, isReflowEffected, onHoverZIndex, zIndex, reflowedPosition]);
 
   // TODO: Experimental fix for sniping mode. This should be handled with a single event
+<<<<<<< HEAD
   const stopEventPropagation = (e: any) => {
     !isSnipingMode && e.stopPropagation();
   };
@@ -179,6 +178,8 @@ export function PositionedContainer(
     [clickToSelectWidget],
   );
 
+=======
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
   return (
     <PositionedWidget
       className={containerClassName}
@@ -188,8 +189,12 @@ export function PositionedContainer(
       disabled={props.isDisabled}
       id={props.widgetId}
       key={`positioned-container-${props.widgetId}`}
+<<<<<<< HEAD
       // Positioned Widget is the top enclosure for all widgets and clicks on/inside the widget should not be propagated/bubbled out of this Container.
       onClick={onClickFn}
+=======
+      onClickCapture={clickToSelectWidget}
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
       ref={ref}
       //Before you remove: This is used by property pane to reference the element
       style={containerStyle}

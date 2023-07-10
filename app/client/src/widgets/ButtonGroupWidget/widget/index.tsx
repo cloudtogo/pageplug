@@ -7,17 +7,27 @@ import { ValidationTypes } from "constants/WidgetValidation";
 import type { Stylesheet } from "entities/AppTheming";
 import { get } from "lodash";
 import React from "react";
-import { getResponsiveLayoutConfig } from "utils/layoutPropertiesUtils";
 import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import BaseWidget from "widgets/BaseWidget";
 import { MinimumPopupRows } from "widgets/constants";
 import ButtonGroupComponent from "../component";
 import { getStylesheetValue } from "./helpers";
+import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
 
 class ButtonGroupWidget extends BaseWidget<
   ButtonGroupWidgetProps,
   WidgetState
 > {
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "The Button group widget represents a set of buttons in a group. Group can have simple buttons or menu buttons with drop-down items.",
+      "!url": "https://docs.appsmith.com/widget-reference/button-group",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+    };
+  }
+
   static getPropertyPaneContentConfig() {
     return [
       {
@@ -161,7 +171,11 @@ class ButtonGroupWidget extends BaseWidget<
                             sectionName: "事件",
                             children: [
                               {
+<<<<<<< HEAD
                                 helpText: "点击菜单项时触发",
+=======
+                                helpText: "when the menu item is clicked",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
                                 propertyName: "onClick",
                                 label: "onClick",
                                 controlType: "ACTION_SELECTOR",
@@ -284,7 +298,6 @@ class ButtonGroupWidget extends BaseWidget<
                     },
                   ],
                 },
-                ...getResponsiveLayoutConfig(this.getWidgetType()),
                 {
                   sectionName: "事件",
                   hidden: (
@@ -300,7 +313,11 @@ class ButtonGroupWidget extends BaseWidget<
                   },
                   children: [
                     {
+<<<<<<< HEAD
                       helpText: "点击按钮时触发",
+=======
+                      helpText: "when the button is clicked",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
                       propertyName: "onClick",
                       label: "onClick",
                       controlType: "ACTION_SELECTOR",

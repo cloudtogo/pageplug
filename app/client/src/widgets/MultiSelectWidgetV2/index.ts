@@ -1,8 +1,9 @@
 import { Alignment } from "@blueprintjs/core";
 import { LabelPosition } from "components/constants";
 import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
-import { getDefaultResponsiveBehavior } from "utils/layoutPropertiesUtils";
+import { ResponsiveBehavior } from "utils/autoLayout/constants";
 import { DynamicHeight } from "utils/WidgetFeatures";
+
 import IconSVG from "./icon.svg";
 import Widget from "./widget";
 
@@ -40,10 +41,16 @@ export const CONFIG = {
     version: 1,
     isRequired: false,
     isDisabled: false,
+<<<<<<< HEAD
     placeholderText: "请选择",
     responsiveBehavior: getDefaultResponsiveBehavior(Widget.getWidgetType()),
+=======
+    placeholderText: "Select option(s)",
+    responsiveBehavior: ResponsiveBehavior.Fill,
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
     minWidth: FILL_WIDGET_MIN_WIDTH,
   },
+
   properties: {
     derived: Widget.getDerivedPropertiesMap(),
     default: Widget.getDefaultPropertiesMap(),
@@ -52,6 +59,32 @@ export const CONFIG = {
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
     stylesheetConfig: Widget.getStylesheetConfig(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
+  },
+  autoLayout: {
+    disabledPropsDefaults: {
+      labelPosition: LabelPosition.Top,
+      labelTextSize: "0.875rem",
+    },
+    defaults: {
+      rows: 6.6,
+    },
+    autoDimension: {
+      height: true,
+    },
+    widgetSize: [
+      {
+        viewportMinWidth: 0,
+        configuration: () => {
+          return {
+            minWidth: "160px",
+          };
+        },
+      },
+    ],
+    disableResizeHandles: {
+      vertical: true,
+    },
   },
 };
 

@@ -22,10 +22,13 @@ const StyledTooltip = styled(Tooltip)<{
     height: 100%;
   }
 `;
-const SettingsWrapper = styled.div`
+const WidgetNameBoundary = 1;
+const BORDER_RADIUS = 4;
+const SettingsWrapper = styled.div<{ widgetWidth: number; inverted: boolean }>`
   justify-self: flex-end;
   height: 100%;
-  padding: 0 10px;
+  padding: 0 5px;
+  margin-left: 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -37,12 +40,24 @@ const SettingsWrapper = styled.div`
       line-height: ${(props) => props.theme.fontSizes[3] - 1}px;
     }
   }
-  border-radius: 2px;
+  border: ${WidgetNameBoundary}px solid ${Colors.GREY_1};
+  ${(props) => {
+    if (props.inverted) {
+      return `border-bottom-left-radius: ${BORDER_RADIUS}px;
+      border-bottom-right-radius: ${BORDER_RADIUS}px;
+      border-top: none;`;
+    } else {
+      return `border-top-left-radius: ${BORDER_RADIUS}px;
+      border-top-right-radius: ${BORDER_RADIUS}px;
+      border-bottom: none;`;
+    }
+  }}
 `;
 
 const WidgetName = styled.span`
-  margin-right: ${(props) => props.theme.spaces[1] + 1}px;
-  margin-left: ${(props) => props.theme.spaces[3]}px;
+  width: inherit;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 `;
 
@@ -62,10 +77,11 @@ type SettingsControlProps = {
   activity: Activities;
   name: string;
   errorCount: number;
+  inverted: boolean;
+  widgetWidth: number;
 };
 
 const BindDataIcon = ControlIcons.BIND_DATA_CONTROL;
-const SettingsIcon = ControlIcons.SETTINGS_CONTROL;
 
 const getStyles = (
   activity: Activities,
@@ -92,8 +108,13 @@ const getStyles = (
       };
     case Activities.HOVERING:
       return {
+<<<<<<< HEAD
         background: Colors.MINT_ORANGE_LIGHT,
         color: Colors.BLACK_PEARL,
+=======
+        background: Colors.WATUSI,
+        color: Colors.WHITE,
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
       };
     case Activities.SELECTED:
       return {
@@ -110,6 +131,7 @@ const getStyles = (
 
 export function SettingsControl(props: SettingsControlProps) {
   const isSnipingMode = useSelector(snipingModeSelector);
+<<<<<<< HEAD
   const settingsIcon = (
     <SettingsIcon
       color={
@@ -123,6 +145,8 @@ export function SettingsControl(props: SettingsControlProps) {
       width={12}
     />
   );
+=======
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
   const errorIcon = (
     <StyledErrorIcon
       fillColor={Colors.WHITE}
@@ -140,8 +164,10 @@ export function SettingsControl(props: SettingsControlProps) {
       <SettingsWrapper
         className="t--widget-propertypane-toggle"
         data-testid="t--widget-propertypane-toggle"
+        inverted={props.inverted}
         onClick={props.toggleSettings}
         style={getStyles(props.activity, props.errorCount, isSnipingMode)}
+        widgetWidth={props.widgetWidth}
       >
         {!!props.errorCount && !isSnipingMode && (
           <>
@@ -155,10 +181,9 @@ export function SettingsControl(props: SettingsControlProps) {
         <WidgetName className="t--widget-name">
           {isSnipingMode ? `绑定到 ${props.name}` : props.name}
         </WidgetName>
-        {!isSnipingMode && settingsIcon}
       </SettingsWrapper>
     </StyledTooltip>
   );
 }
 
-export default SettingsControl;
+export default React.memo(SettingsControl);

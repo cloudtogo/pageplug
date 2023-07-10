@@ -10,12 +10,26 @@ import BaseWidget from "widgets/BaseWidget";
 import { FileDataTypes } from "widgets/constants";
 
 import type { Stylesheet } from "entities/AppTheming";
-import { getResponsiveLayoutConfig } from "utils/layoutPropertiesUtils";
 import CameraComponent from "../component";
 import type { CameraMode } from "../constants";
 import { CameraModeTypes, MediaCaptureStatusTypes } from "../constants";
+import type { AutocompletionDefinitions } from "widgets/constants";
 
 class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "Camera widget allows users to take a picture or record videos through their system camera using browser permissions.",
+      "!url": "https://docs.appsmith.com/widget-reference/camera",
+      imageBlobURL: "string",
+      imageDataURL: "string",
+      imageRawBinary: "string",
+      videoBlobURL: "string",
+      videoDataURL: "string",
+      videoRawBinary: "string",
+    };
+  }
+
   static getPropertyPaneContentConfig() {
     return [
       {
@@ -79,12 +93,15 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
           },
         ],
       },
-      ...getResponsiveLayoutConfig(this.getWidgetType()),
       {
         sectionName: "事件",
         children: [
           {
+<<<<<<< HEAD
             helpText: "拍照时触发",
+=======
+            helpText: "when the image is captured",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onImageCapture",
             label: "OnImageCapture",
             controlType: "ACTION_SELECTOR",
@@ -95,7 +112,11 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
+<<<<<<< HEAD
             helpText: "图片保存时触发",
+=======
+            helpText: "when the image is saved",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onImageSave",
             label: "onImageCapture",
             controlType: "ACTION_SELECTOR",
@@ -107,7 +128,11 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
+<<<<<<< HEAD
             helpText: "录像开始时触发",
+=======
+            helpText: "when the video recording get started",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onRecordingStart",
             label: "OnRecordingStart",
             controlType: "ACTION_SELECTOR",
@@ -118,7 +143,11 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
+<<<<<<< HEAD
             helpText: "录像结束时触发",
+=======
+            helpText: "when the video recording stops",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onRecordingStop",
             label: "OnRecordingStop",
             controlType: "ACTION_SELECTOR",
@@ -129,7 +158,11 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
+<<<<<<< HEAD
             helpText: "录像保存时触发",
+=======
+            helpText: "when the video recording is saved",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onVideoSave",
             label: "onVideoSave",
             controlType: "ACTION_SELECTOR",

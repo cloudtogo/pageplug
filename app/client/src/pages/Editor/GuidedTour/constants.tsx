@@ -38,6 +38,8 @@ import {
   STEP_THREE_TITLE,
   STEP_TWO_TITLE,
 } from "@appsmith/constants/messages";
+import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
+import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
 
 export const Classes = {
   GUIDED_TOUR_BORDER: "guided-tour-border",
@@ -111,7 +113,9 @@ export const onboardingContainerBlueprint = {
               },
               props: {
                 imageShape: "RECTANGLE",
-                defaultImage: "https://assets.appsmith.com/widgets/default.png",
+                defaultImage: getAssetUrl(
+                  `${ASSETS_CDN_URL}/widgets/default.png`,
+                ),
                 objectFit: "contain",
                 image: "{{CustomersTable.selectedRow.image}}",
                 dynamicBindingPathList: [{ key: "image" }],
@@ -496,8 +500,15 @@ export const Steps: StepsType = {
       {
         text: (
           <>
+<<<<<<< HEAD
             选中按钮在右侧查看它的属性配置，点击 onClick 的下拉框，选择{" "}
             <b>执行查询</b>，然后选择 <b>updateCustomerInfo</b>
+=======
+            Select the button widget to see the properties in the property pane.
+            Click the <b>+</b> button beside the onClick property to add an
+            action, select <b>Execute a query</b> {"&"} then select{" "}
+            <b>updateCustomerInfo</b> query
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
           </>
         ),
       },
@@ -509,8 +520,13 @@ export const Steps: StepsType = {
       {
         text: (
           <>
+<<<<<<< HEAD
             点击 onSuccess 下拉框，选择 <b>执行查询</b>，然后选择{" "}
             <b>getCustomers</b>
+=======
+            Click the <b>+</b> button beside On success, select{" "}
+            <b>Execute a query</b> {"&"} then choose <b>getCustomers</b> Query
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
           </>
         ),
       },

@@ -1,10 +1,8 @@
-import { createModalAction } from "actions/widgetActions";
-import type { TreeDropdownOption } from "design-system-old";
-import TreeStructure from "components/utils/TreeStructure";
-import { PluginType } from "entities/Action";
-import { isString, keyBy } from "lodash";
-import { getActionConfig } from "pages/Editor/Explorer/Actions/helpers";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { getActionBlocks, getCallExpressions } from "@shared/ast";
+import type { ActionCreatorProps, ActionTree } from "./types";
 import {
+<<<<<<< HEAD
   JsFileIconV2,
   jsFunctionIcon,
 } from "pages/Editor/Explorer/ExplorerIcons";
@@ -75,82 +73,34 @@ import type {
   GenericFunction,
   DataTreeForActionCreator,
 } from "./types";
+=======
+  getCodeFromMoustache,
+  getSelectedFieldFromValue,
+  isEmptyBlock,
+} from "./utils";
+import { diff } from "deep-diff";
+import Action from "./viewComponents/Action";
+import { useSelector } from "react-redux";
+import { selectEvaluationVersion } from "@appsmith/selectors/applicationSelectors";
+import { generateReactKey } from "../../../utils/generators";
+import { useApisQueriesAndJsActionOptions } from "./helpers";
+import AnalyticsUtil from "utils/AnalyticsUtil";
+import { getActionTypeLabel } from "./viewComponents/ActionBlockTree/utils";
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
 
-const baseOptions: { label: string; value: string }[] = [
-  {
-    label: createMessage(NO_ACTION),
-    value: AppsmithFunction.none,
+export const ActionCreatorContext = React.createContext<{
+  label: string;
+  selectBlock: (id: string) => void;
+  selectedBlockId?: string;
+}>({
+  label: "",
+  selectBlock: () => {
+    return;
   },
-  {
-    label: createMessage(EXECUTE_A_QUERY),
-    value: AppsmithFunction.integration,
-  },
-  {
-    label: createMessage(NAVIGATE_TO),
-    value: AppsmithFunction.navigateTo,
-  },
-  {
-    label: createMessage(SHOW_MESSAGE),
-    value: AppsmithFunction.showAlert,
-  },
-  {
-    label: createMessage(OPEN_MODAL),
-    value: AppsmithFunction.showModal,
-  },
-  {
-    label: createMessage(CLOSE_MODAL),
-    value: AppsmithFunction.closeModal,
-  },
-  {
-    label: createMessage(STORE_VALUE),
-    value: AppsmithFunction.storeValue,
-  },
-  {
-    label: createMessage(REMOVE_VALUE),
-    value: AppsmithFunction.removeValue,
-  },
-  {
-    label: createMessage(CLEAR_STORE),
-    value: AppsmithFunction.clearStore,
-  },
-  {
-    label: createMessage(DOWNLOAD),
-    value: AppsmithFunction.download,
-  },
-  {
-    label: createMessage(COPY_TO_CLIPBOARD),
-    value: AppsmithFunction.copyToClipboard,
-  },
-  {
-    label: createMessage(RESET_WIDGET),
-    value: AppsmithFunction.resetWidget,
-  },
-  {
-    label: createMessage(SET_INTERVAL),
-    value: AppsmithFunction.setInterval,
-  },
-  {
-    label: createMessage(CLEAR_INTERVAL),
-    value: AppsmithFunction.clearInterval,
-  },
-  {
-    label: createMessage(GET_GEO_LOCATION),
-    value: AppsmithFunction.getGeolocation,
-  },
-  {
-    label: createMessage(WATCH_GEO_LOCATION),
-    value: AppsmithFunction.watchGeolocation,
-  },
-  {
-    label: createMessage(STOP_WATCH_GEO_LOCATION),
-    value: AppsmithFunction.stopWatchGeolocation,
-  },
-  {
-    label: createMessage(POST_MESSAGE),
-    value: AppsmithFunction.postMessage,
-  },
-];
+  selectedBlockId: "",
+});
 
+<<<<<<< HEAD
 const mobileHiddenActionMap = {
   [AppsmithFunction.download]: true,
   [AppsmithFunction.resetWidget]: true,
@@ -240,31 +190,57 @@ function getFieldFromValue(
           },
           dataTree,
           isMobile,
+=======
+const ActionCreator = React.forwardRef(
+  (props: ActionCreatorProps, ref: any) => {
+    const [actions, setActions] = useState<Record<string, string>>(() => {
+      const blocks = getActionBlocks(
+        getCodeFromMoustache(props.value),
+        window.evaluationVersion,
+      );
+
+      const res = blocks.reduce(
+        (acc: Record<string, string>, value: string) => ({
+          ...acc,
+          [generateReactKey()]: value,
+        }),
+        {},
+      );
+
+      return res;
+    });
+
+    const updatedIdRef = useRef<string>("");
+    const previousBlocks = useRef<string[]>([]);
+    const evaluationVersion = useSelector(selectEvaluationVersion);
+
+    const actionOptions = useApisQueriesAndJsActionOptions(() => null);
+
+    useEffect(() => {
+      setActions((prev) => {
+        const newActions: Record<string, string> = {};
+        const newBlocks: string[] = getActionBlocks(
+          getCodeFromMoustache(props.value),
+          evaluationVersion,
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         );
-        successFields[0].label = "onSuccess";
-        fields.push(successFields);
 
-        let errorValue;
-        if (errorArg && errorArg.length > 0) {
-          errorValue = errorArg[1] !== "{}" ? `{{${errorArg[1]}}}` : ""; //errorArg[1] + errorArg[2];
-        }
-        const errorFields = getFieldFromValue(
-          errorValue,
-          activeTabNavigateTo,
-          (changeValue: string) => {
-            const matches = [...value.matchAll(ACTION_TRIGGER_REGEX)];
-            const args = [
-              ...matches[0][2].matchAll(ACTION_ANONYMOUS_FUNC_REGEX),
-            ];
-            const successArg = args[0] ? args[0][0] : "() => {}";
-            const errorArg = changeValue.endsWith(")")
-              ? `() => ${changeValue}`
-              : `() => {}`;
+        let prevIdValuePairs = Object.entries(prev);
 
-            return value.replace(
-              ACTION_TRIGGER_REGEX,
-              `{{$1(${successArg}, ${errorArg})}}`,
+        // We make sure that code blocks from previous render retain the same id
+        // We are sure that the order of the blocks will be the same
+        newBlocks.forEach((block) => {
+          const prevIdValuePair = prevIdValuePairs.find(
+            ([, value]) => value === block,
+          );
+          if (prevIdValuePair) {
+            newActions[prevIdValuePair[0]] = block;
+
+            // Filter out the id value pair so that it's not used again
+            prevIdValuePairs = prevIdValuePairs.filter(
+              ([id]) => id !== prevIdValuePair[0],
             );
+<<<<<<< HEAD
           },
           dataTree,
           isMobile,
@@ -422,43 +398,81 @@ function getFieldFromValue(
       },
       {
         field: FieldType.ID_FIELD,
+=======
+          } else if (childUpdate.current && updatedIdRef?.current) {
+            // Child updates come with the id of the block that was updated
+            newActions[updatedIdRef.current] = block;
+            prevIdValuePairs = prevIdValuePairs.filter(
+              ([id]) => id !== updatedIdRef.current,
+            );
+            updatedIdRef.current = "";
+            childUpdate.current = false;
+          } else {
+            // If the block is not present in the previous blocks, it's a new block
+            // We need to check if the block is a result of an edit
+            // If it is, we need to retain the id of the previous block
+            // This is to ensure that the undo/redo stack is not broken
+            const differences = diff(previousBlocks.current, newBlocks);
+            if (differences?.length === 1 && differences[0].kind === "E") {
+              const edit = differences[0];
+              //@ts-expect-error fix later
+              const prevBlock = edit.lhs as string;
+              const prevIdValuePair = prevIdValuePairs.find(
+                ([, value]) => value === prevBlock,
+              );
+              if (prevIdValuePair) {
+                newActions[prevIdValuePair[0]] = block;
+                prevIdValuePairs = prevIdValuePairs.filter(
+                  ([id]) => id !== prevIdValuePair[0],
+                );
+                return;
+              }
+            }
+            newActions[generateReactKey()] = block;
+          }
+        });
+        previousBlocks.current = [...newBlocks];
+        updatedIdRef.current = "";
+        childUpdate.current = false;
+        return newActions;
+      });
+    }, [props.value]);
+
+    const save = useCallback(
+      (newActions) => {
+        props.onValueChange(
+          Object.values(newActions).length > 0
+            ? `{{${Object.values(newActions).filter(Boolean).join("\n")}}}`
+            : "",
+          false,
+        );
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
       },
+      [props.onValueChange],
     );
-  }
 
-  if (value.indexOf("clearInterval") !== -1) {
-    fields.push({
-      field: FieldType.CLEAR_INTERVAL_ID_FIELD,
-    });
-  }
+    /** This variable will be set for all changes that happen from the Action blocks
+     * It will be unset for all the changes that happen from the parent components (Undo/Redo)
+     */
+    const childUpdate = React.useRef(false);
 
-  if (value.indexOf("getCurrentPosition") !== -1) {
-    fields.push({
-      field: FieldType.CALLBACK_FUNCTION_FIELD,
-    });
-  }
+    const handleActionChange = (id: string) => (value: string) => {
+      const newValueWithoutMoustache = getCodeFromMoustache(value);
+      const newActions = { ...actions };
+      updatedIdRef.current = id;
+      childUpdate.current = true;
+      if (newValueWithoutMoustache) {
+        newActions[id] = newValueWithoutMoustache;
+        const prevValue = actions[id];
+        const option = getSelectedFieldFromValue(
+          newValueWithoutMoustache,
+          actionOptions,
+        );
 
-  if (value.indexOf("postWindowMessage") !== -1) {
-    fields.push(
-      {
-        field: FieldType.MESSAGE_FIELD,
-      },
-      {
-        field: FieldType.SOURCE_FIELD,
-      },
-      {
-        field: FieldType.TARGET_ORIGIN_FIELD,
-      },
-    );
-  }
+        const actionType = (option?.type ||
+          option?.value) as ActionTree["actionType"];
 
-  return fields;
-}
-
-function useModalDropdownList() {
-  const dispatch = useDispatch();
-  const nextModalName = useSelector(getNextModalName);
-
+<<<<<<< HEAD
   let finalList: TreeDropdownOption[] = [
     {
       label: "新建弹窗",
@@ -519,93 +533,52 @@ function getIntegrationOptionsWithChildren(
   const option = options.find(
     (option) => option.value === AppsmithFunction.integration,
   );
-
-  const jsOption = options.find(
-    (option) => option.value === AppsmithFunction.jsFunction,
-  );
-
-  if (option) {
-    option.children = [createIntegrationOption];
-    apis.forEach((api) => {
-      (option.children as TreeDropdownOption[]).push({
-        label: api.config.name,
-        id: api.config.id,
-        value: api.config.name,
-        type: option.value,
-        icon: getActionConfig(api.config.pluginType)?.getIcon(
-          api.config,
-          plugins[(api as any).config.datasource.pluginId],
-          api.config.pluginType === PluginType.API,
-        ),
-      } as TreeDropdownOption);
-    });
-    queries.forEach((query) => {
-      (option.children as TreeDropdownOption[]).push({
-        label: query.config.name,
-        id: query.config.id,
-        value: query.config.name,
-        type: option.value,
-        icon: getActionConfig(query.config.pluginType)?.getIcon(
-          query.config,
-          plugins[(query as any).config.datasource.pluginId],
-        ),
-      } as TreeDropdownOption);
-    });
-  }
-  if (isJSEditorEnabled && jsOption) {
-    jsOption.children = [createJSObject];
-    jsActions.forEach((jsAction) => {
-      if (jsAction.config.actions && jsAction.config.actions.length > 0) {
-        const jsObject = {
-          label: jsAction.config.name,
-          id: jsAction.config.id,
-          value: jsAction.config.name,
-          type: jsOption.value,
-          icon: JsFileIconV2(),
-        } as unknown as TreeDropdownOption;
-        (jsOption.children as unknown as TreeDropdownOption[]).push(jsObject);
-        if (jsObject) {
-          //don't remove this will be used soon
-          // const createJSFunction: TreeDropdownOption = {
-          //   label: "Create New JS Function",
-          //   value: "JSFunction",
-          //   id: "create",
-          //   icon: "plus",
-          //   className: "t--create-js-function-btn",
-          //   onSelect: () => {
-          //     history.push(
-          //       JS_COLLECTION_ID_URL(applicationId, pageId, jsAction.config.id),
-          //     );
-          //   },
-          // };
-          jsObject.children = [];
-          jsAction.config.actions.forEach((js: JSAction) => {
-            const jsArguments = js.actionConfiguration.jsArguments;
-            const argValue: Array<any> = [];
-            if (jsArguments && jsArguments.length) {
-              jsArguments.forEach((arg: Variable) => {
-                argValue.push(arg.value);
-              });
-            }
-            const jsFunction = {
-              label: js.name,
-              id: js.id,
-              value: jsAction.config.name + "." + js.name,
-              type: jsOption.value,
-              icon: jsFunctionIcon,
-              args: argValue,
-            };
-            (jsObject.children as TreeDropdownOption[]).push(
-              jsFunction as unknown as TreeDropdownOption,
-            );
+=======
+        // If the previous value was empty, we're adding a new action
+        if (prevValue === "") {
+          AnalyticsUtil.logEvent("ACTION_ADDED", {
+            actionType: getActionTypeLabel(actionType),
+            code: newValueWithoutMoustache,
+            callback: null,
           });
-        }
-      }
-    });
-  }
-  return options;
-}
+        } else {
+          const prevRootCallExpression = getCallExpressions(
+            actions[id],
+            evaluationVersion,
+          )[0];
+          const newRootCallExpression = getCallExpressions(
+            newValueWithoutMoustache,
+            evaluationVersion,
+          )[0];
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
 
+          // We don't want the modified event to be triggered when the success/failure
+          // callbacks are modified/added/removed
+          // So, we check if the root call expression is the same
+          if (prevRootCallExpression?.code !== newRootCallExpression?.code) {
+            AnalyticsUtil.logEvent("ACTION_MODIFIED", {
+              actionType: getActionTypeLabel(actionType),
+              code: newValueWithoutMoustache,
+              callback: null,
+            });
+          }
+        }
+      } else {
+        const option = getSelectedFieldFromValue(newActions[id], actionOptions);
+        const actionType = (option?.type ||
+          option?.value) as ActionTree["actionType"];
+        AnalyticsUtil.logEvent("ACTION_DELETED", {
+          actionType: getActionTypeLabel(actionType),
+          code: newActions[id],
+          callback: null,
+        });
+        delete newActions[id];
+        !actions[id] && setActions(newActions);
+      }
+      save(newActions);
+    };
+
+<<<<<<< HEAD
 function useIntegrationsOptionTree() {
   const pageId = useSelector(getCurrentPageId) || "";
   const applicationId = useSelector(getCurrentApplicationId) as string;
@@ -644,20 +617,34 @@ function useIntegrationsOptionTree() {
     featureFlags,
   );
 }
+=======
+    // We need a unique id for each action when it's mapped
+    // We can't use index for obvious reasons
+    // We can't use the action value itself because it's not unique and changes on action change
+    const [selectedBlockId, selectBlock] = useState<string | undefined>(
+      undefined,
+    );
 
-const isValueValidURL = (value: string) => {
-  if (value) {
-    const indices = [];
-    for (let i = 0; i < value.length; i++) {
-      if (value[i] === "'") {
-        indices.push(i);
+    const id = useRef<string>("");
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+
+    useEffect(() => {
+      if (!id.current) return;
+      const children = ref.current?.children || [];
+      const lastChildElement = children[children.length - 1];
+      lastChildElement?.scrollIntoView({ block: "nearest" });
+      selectBlock(id.current);
+      id.current = "";
+    }, [actions]);
+
+    useEffect(() => {
+      if (props.additionalControlData?.showEmptyBlock) {
+        addBlock();
+        props.additionalControlData?.setShowEmptyBlock(false);
       }
-    }
-    const str = value.substring(indices[0], indices[1] + 1);
-    return isValidURL(str);
-  }
-};
+    }, [props.additionalControlData]);
 
+<<<<<<< HEAD
 const ActionCreator = React.forwardRef(
   (props: ActionCreatorProps, ref: any) => {
     const NAVIGATE_TO_TAB_SWITCHER: Array<SwitchType> = [
@@ -692,25 +679,46 @@ const ActionCreator = React.forwardRef(
       undefined,
       dataTree,
       isMobile,
+=======
+    const addBlock = useCallback(() => {
+      const hasAnEmptyBlock = Object.entries(actions).find(([, action]) =>
+        isEmptyBlock(action),
+      );
+      if (hasAnEmptyBlock) {
+        selectBlock(hasAnEmptyBlock[0]);
+        const children = ref.current?.children || [];
+        const lastChildElement = children[children.length - 1];
+        lastChildElement?.scrollIntoView({
+          block: "nearest",
+        });
+        return;
+      }
+      const newActions = { ...actions };
+      id.current = generateReactKey();
+      newActions[id.current] = "";
+      setActions(newActions);
+    }, [actions, save]);
+
+    const contextValue = React.useMemo(
+      () => ({ label: props.action, selectedBlockId, selectBlock }),
+      [selectedBlockId, props.action, selectBlock],
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
     );
 
     return (
-      <TreeStructure ref={ref}>
-        <Fields
-          activeNavigateToTab={activeTabNavigateTo}
-          additionalAutoComplete={props.additionalAutoComplete}
-          depth={1}
-          fields={fields}
-          integrationOptionTree={integrationOptionTree}
-          maxDepth={1}
-          modalDropdownList={modalDropdownList}
-          navigateToSwitches={NAVIGATE_TO_TAB_SWITCHER}
-          onValueChange={props.onValueChange}
-          pageDropdownOptions={pageDropdownOptions}
-          value={props.value}
-          widgetOptionTree={widgetOptionTree}
-        />
-      </TreeStructure>
+      <ActionCreatorContext.Provider value={contextValue}>
+        <div className="flex flex-col gap-[2px]" ref={ref}>
+          {Object.entries(actions).map(([id, value], index) => (
+            <Action
+              code={value}
+              id={id}
+              index={index}
+              key={id}
+              onChange={handleActionChange(id)}
+            />
+          ))}
+        </div>
+      </ActionCreatorContext.Provider>
     );
   },
 );

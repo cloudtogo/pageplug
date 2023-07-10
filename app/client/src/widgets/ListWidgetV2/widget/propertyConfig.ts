@@ -305,7 +305,12 @@ export const PropertyPaneContentConfig = [
       },
       {
         propertyName: "onPageChange",
+<<<<<<< HEAD
         helpText: "页面切换时触发",
+=======
+        helpText:
+          "Configure one or chain multiple actions when the page is changed in a List. All nested Actions run at the same time.",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         label: "onPageChange",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,

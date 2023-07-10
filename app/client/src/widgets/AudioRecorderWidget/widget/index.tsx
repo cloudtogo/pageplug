@@ -5,13 +5,13 @@ import type { WidgetType } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import type { Stylesheet } from "entities/AppTheming";
 import { createBlobUrl } from "utils/AppsmithUtils";
-import { getResponsiveLayoutConfig } from "utils/layoutPropertiesUtils";
 import type { DerivedPropertiesMap } from "utils/WidgetFactory";
 import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import BaseWidget from "widgets/BaseWidget";
 import { FileDataTypes } from "widgets/constants";
 import AudioRecorderComponent from "../component";
-
+import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
 export interface AudioRecorderWidgetProps extends WidgetProps {
   accentColor: string;
   borderRadius: string;
@@ -29,6 +29,18 @@ class AudioRecorderWidget extends BaseWidget<
   AudioRecorderWidgetProps,
   WidgetState
 > {
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "Audio recorder widget allows users to record using their microphone, listen to the playback, and export the data to a data source.",
+      "!url": "https://docs.appsmith.com/widget-reference/recorder",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      blobURL: "string",
+      dataURL: "string",
+      rawBinary: "string",
+    };
+  }
+
   static getPropertyPaneContentConfig() {
     return [
       {
@@ -71,12 +83,15 @@ class AudioRecorderWidget extends BaseWidget<
           },
         ],
       },
-      ...getResponsiveLayoutConfig(this.getWidgetType()),
       {
         sectionName: "事件",
         children: [
           {
+<<<<<<< HEAD
             helpText: "录音开始时触发",
+=======
+            helpText: "when the recording starts",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onRecordingStart",
             label: "onRecordingStart",
             controlType: "ACTION_SELECTOR",
@@ -85,7 +100,11 @@ class AudioRecorderWidget extends BaseWidget<
             isTriggerProperty: true,
           },
           {
+<<<<<<< HEAD
             helpText: "录音结束后触发",
+=======
+            helpText: "when the recording ends",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onRecordingComplete",
             label: "onRecordingComplete",
             controlType: "ACTION_SELECTOR",

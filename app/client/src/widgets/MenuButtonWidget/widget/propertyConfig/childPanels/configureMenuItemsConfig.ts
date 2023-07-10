@@ -68,7 +68,12 @@ export default {
       sectionName: "事件",
       children: [
         {
+<<<<<<< HEAD
           helpText: "点击菜单项时触发，通过 {{currentItem}} 绑定当前菜单项数据",
+=======
+          helpText:
+            "when the menu item is clicked. Can also be configured the using {{currentItem}} binding.",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
           propertyName: "onClick",
           label: "onClick",
           controlType: "ACTION_SELECTOR",

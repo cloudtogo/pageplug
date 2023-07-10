@@ -9,13 +9,25 @@ import {
   ADMIN_BRANDING_FAVICON_FORMAT_ERROR,
   ADMIN_BRANDING_FAVICON_DIMENSION_ERROR,
 } from "@appsmith/constants/messages";
+import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
+import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
 
 const FAVICON_MAX_WIDTH = 32;
 const FAVICON_MAX_HEIGHT = 32;
 const DEFAULT_BRANDING_PRIMARY_COLOR = "#D7D7D7";
+<<<<<<< HEAD
 export const APPSMITH_BRAND_PRIMARY_COLOR = "#2CBBA6";
 export const APPSMITH_BRAND_FAVICON_URL = "/static/img/favicon-pageplug.ico";
 export const APPSMITH_BRAND_LOGO_URL = "/static/img/pageplug_logo_black.svg";
+=======
+export const APPSMITH_BRAND_PRIMARY_COLOR = "#F86A2B";
+export const APPSMITH_BRAND_FAVICON_URL = getAssetUrl(
+  `${ASSETS_CDN_URL}/appsmith-favicon-orange.ico`,
+);
+export const APPSMITH_BRAND_LOGO_URL = getAssetUrl(
+  `${ASSETS_CDN_URL}/appsmith-logo-no-margin.png`,
+);
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
 
 /**
  * create brand colors from primary color

@@ -281,7 +281,11 @@ const COMMON_PROPERTIES = {
     events: [
       {
         propertyName: "onFocus",
+<<<<<<< HEAD
         helpText: "聚焦时触发",
+=======
+        helpText: "when focused.",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         label: "onFocus",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
@@ -296,7 +300,11 @@ const COMMON_PROPERTIES = {
       },
       {
         propertyName: "onBlur",
+<<<<<<< HEAD
         helpText: "失焦时触发",
+=======
+        helpText: "when the field loses focus.",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         label: "onBlur",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
