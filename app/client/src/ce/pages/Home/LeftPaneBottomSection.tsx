@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable react/react-in-jsx-scope */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { MenuItem } from "design-system-old";
@@ -6,16 +7,11 @@ import {
   ADMIN_SETTINGS,
   APPSMITH_DISPLAY_VERSION,
   createMessage,
-  DOCUMENTATION,
-  WELCOME_TOUR,
 } from "@appsmith/constants/messages";
 import { getIsFetchingApplications } from "@appsmith/selectors/applicationSelectors";
 import { getOnboardingWorkspaces } from "selectors/onboardingSelectors";
 import { getAppsmithConfigs } from "@appsmith/configs";
-import AnalyticsUtil from "utils/AnalyticsUtil";
 import { howMuchTimeBeforeText } from "utils/helpers";
-import { onboardingCreateApplication } from "actions/onboardingActions";
-import ProductUpdatesModal from "pages/Applications/ProductUpdatesModal";
 import { Colors } from "constants/Colors";
 import {
   DropdownOnSelectActions,

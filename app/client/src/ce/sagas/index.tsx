@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { watchActionExecutionSagas } from "@appsmith/sagas/ActionExecution/ActionExecutionSagas";
 import NavigationSagas from "@appsmith/sagas/NavigationSagas";
 import SuperUserSagas from "@appsmith/sagas/SuperUserSagas";

@@ -1,9 +1,11 @@
-import React, { ReactNode, useMemo } from "react";
+import type { ReactNode } from "react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { ProLayout, PageContainer } from "@ant-design/pro-layout";
 import history from "utils/history";
-import { withRouter, RouteComponentProps } from "react-router";
+import type { RouteComponentProps } from "react-router";
+import { withRouter } from "react-router";
 import { getIsInitialized } from "selectors/appViewSelectors";
 import { getViewModePageList, getCurrentPage } from "selectors/editorSelectors";
 import {
