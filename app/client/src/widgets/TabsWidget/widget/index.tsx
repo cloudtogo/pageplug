@@ -9,7 +9,6 @@ import React from "react";
 import { AppPositioningTypes } from "reducers/entityReducers/pageListReducer";
 import type { WidgetProperties } from "selectors/propertyPaneSelectors";
 import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
-import { getResponsiveLayoutConfig } from "utils/layoutPropertiesUtils";
 import WidgetFactory from "utils/WidgetFactory";
 import type { WidgetState } from "../../BaseWidget";
 import BaseWidget from "../../BaseWidget";
@@ -20,7 +19,9 @@ import type { Stylesheet } from "entities/AppTheming";
 import {
   isAutoHeightEnabledForWidget,
   isAutoHeightEnabledForWidgetWithLimits,
+  DefaultAutocompleteDefinitions,
 } from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
 
 export function selectedTabValidation(
   value: unknown,
@@ -186,12 +187,15 @@ class TabsWidget extends BaseWidget<
           },
         ],
       },
-      ...getResponsiveLayoutConfig(this.getWidgetType()),
       {
         sectionName: "事件",
         children: [
           {
+<<<<<<< HEAD
             helpText: "标签页切换时触发",
+=======
+            helpText: "when the button is clicked",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onTabSelected",
             label: "onTabSelected",
             controlType: "ACTION_SELECTOR",
@@ -304,6 +308,13 @@ class TabsWidget extends BaseWidget<
   static getDerivedPropertiesMap() {
     return {
       selectedTab: `{{(()=>{${derivedProperties.getSelectedTab}})()}}`,
+    };
+  }
+
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      selectedTab: "string",
     };
   }
 

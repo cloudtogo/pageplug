@@ -90,6 +90,8 @@ public class Application extends BaseDomain {
     @JsonView(Views.Public.class)
     String icon;
 
+    String chartTheme;
+
     @JsonView(Views.Public.class)
     private String slug;
 
@@ -204,6 +206,7 @@ public class Application extends BaseDomain {
     @JsonView(Views.Public.class)
     Boolean exportWithConfiguration;
 
+
     @JsonView(Views.Internal.class)
     @Deprecated
     String defaultPermissionGroup;
@@ -262,6 +265,7 @@ public class Application extends BaseDomain {
         }
     }
 
+    @Override
     public void sanitiseToExportDBObject() {
         this.setWorkspaceId(null);
         this.setOrganizationId(null);
@@ -275,9 +279,9 @@ public class Application extends BaseDomain {
         this.setClientSchemaVersion(null);
         this.setServerSchemaVersion(null);
         this.setIsManualUpdate(false);
-        this.sanitiseToExportBaseObject();
         this.setDefaultPermissionGroup(null);
         this.setPublishedCustomJSLibs(new HashSet<>());
+        super.sanitiseToExportDBObject();
     }
 
     public List<ApplicationPage> getPages() {

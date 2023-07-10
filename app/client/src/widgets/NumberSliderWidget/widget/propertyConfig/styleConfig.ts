@@ -1,4 +1,5 @@
 import { ValidationTypes } from "constants/WidgetValidation";
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
 
 export default [
   {
@@ -53,6 +54,7 @@ export default [
         helpText: "设置标签字体大小",
         controlType: "DROP_DOWN",
         defaultValue: "0.875rem",
+        hidden: isAutoLayout,
         options: [
           {
             label: "S",

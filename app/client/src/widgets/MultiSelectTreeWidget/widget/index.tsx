@@ -13,13 +13,17 @@ import type { CheckedStrategy } from "rc-tree-select/lib/utils/strategyUtil";
 import type { ReactNode } from "react";
 import React from "react";
 import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
-import { getResponsiveLayoutConfig } from "utils/layoutPropertiesUtils";
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
 import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import BaseWidget from "widgets/BaseWidget";
 import { GRID_DENSITY_MIGRATION_V1, MinimumPopupRows } from "widgets/constants";
-import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
+import {
+  isAutoHeightEnabledForWidget,
+  DefaultAutocompleteDefinitions,
+} from "widgets/WidgetUtils";
 import MultiTreeSelectComponent from "../component";
 import derivedProperties from "./parseDerivedProperties";
+import type { AutocompletionDefinitions } from "widgets/constants";
 
 function defaultOptionValueValidation(value: unknown): ValidationResponse {
   let values: string[] = [];
@@ -49,6 +53,28 @@ class MultiSelectTreeWidget extends BaseWidget<
   MultiSelectTreeWidgetProps,
   WidgetState
 > {
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "Multi TreeSelect is used to capture user inputs from a specified list of permitted inputs/Nested Inputs. A TreeSelect can capture a single choice as well as multiple choices",
+      "!url": "https://docs.appsmith.com/widget-reference/treeselect",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      selectedOptionValues: {
+        "!type": "[string]",
+        "!doc": "The array of values selected in a treeselect dropdown",
+        "!url": "https://docs.appsmith.com/widget-reference/treeselect",
+      },
+      selectedOptionLabels: {
+        "!type": "[string]",
+        "!doc": "The array of selected option labels in a treeselect dropdown",
+        "!url": "https://docs.appsmith.com/widget-reference/treeselect",
+      },
+      isDisabled: "bool",
+      isValid: "bool",
+      options: "[$__dropdownOption__$]",
+    };
+  }
+
   static getPropertyPaneContentConfig() {
     return [
       {
@@ -165,6 +191,7 @@ class MultiSelectTreeWidget extends BaseWidget<
             label: "位置",
             controlType: "ICON_TABS",
             fullWidth: true,
+            hidden: isAutoLayout,
             options: [
               { label: "自动", value: LabelPosition.Auto },
               { label: "左", value: LabelPosition.Left },
@@ -331,12 +358,15 @@ class MultiSelectTreeWidget extends BaseWidget<
           },
         ],
       },
-      ...getResponsiveLayoutConfig(this.getWidgetType()),
       {
         sectionName: "事件",
         children: [
           {
+<<<<<<< HEAD
             helpText: "用户选中一个选项时触发",
+=======
+            helpText: "when a user selects an option",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onOptionChange",
             label: "onOptionChange",
             controlType: "ACTION_SELECTOR",
@@ -345,7 +375,11 @@ class MultiSelectTreeWidget extends BaseWidget<
             isTriggerProperty: true,
           },
           {
+<<<<<<< HEAD
             helpText: "下拉框打开时触发",
+=======
+            helpText: "when the dropdown opens",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onDropdownOpen",
             label: "onDropdownOpen",
             controlType: "ACTION_SELECTOR",
@@ -354,7 +388,11 @@ class MultiSelectTreeWidget extends BaseWidget<
             isTriggerProperty: true,
           },
           {
+<<<<<<< HEAD
             helpText: "下拉框关闭时触发",
+=======
+            helpText: "when the dropdown closes",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onDropdownClose",
             label: "onDropdownClose",
             controlType: "ACTION_SELECTOR",
@@ -388,6 +426,7 @@ class MultiSelectTreeWidget extends BaseWidget<
             helpText: "设置标签字体大小",
             controlType: "DROP_DOWN",
             defaultValue: "0.875rem",
+            hidden: isAutoLayout,
             options: [
               {
                 label: "S",

@@ -1,9 +1,9 @@
-import { LabelPosition } from "components/constants";
 import { Alignment } from "@blueprintjs/core";
+import { LabelPosition } from "components/constants";
+import { ResponsiveBehavior } from "utils/autoLayout/constants";
 
 import IconSVG from "./icon.svg";
 import Widget from "./widget";
-import { ResponsiveBehavior } from "utils/autoLayout/constants";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
@@ -13,11 +13,19 @@ export const CONFIG = {
   iconSVG: IconSVG,
   defaults: {
     options: [
+<<<<<<< HEAD
       { label: "特别小", value: "xs" },
       { label: "小", value: "sm" },
       { label: "中", value: "md" },
       { label: "大", value: "lg" },
       { label: "特别大", value: "xl" },
+=======
+      { label: "xs", value: "xs" },
+      { label: "sm", value: "sm" },
+      { label: "md", value: "md" },
+      { label: "lg", value: "lg" },
+      { label: "xl", value: "xl" },
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
     ],
     defaultOptionValue: "md",
     isVisible: true,
@@ -30,8 +38,13 @@ export const CONFIG = {
     shouldTruncate: false,
     version: 1,
     animateLoading: true,
+<<<<<<< HEAD
     labelText: "尺寸",
     labelPosition: LabelPosition.Left,
+=======
+    labelText: "Size",
+    labelPosition: LabelPosition.Top,
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
     labelAlignment: Alignment.LEFT,
     labelWidth: 5,
     labelTextSize: "0.875rem",
@@ -45,6 +58,31 @@ export const CONFIG = {
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
     stylesheetConfig: Widget.getStylesheetConfig(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
+  },
+  autoLayout: {
+    disabledPropsDefaults: {
+      labelPosition: LabelPosition.Top,
+      labelTextSize: "0.875rem",
+    },
+    defaults: {
+      rows: 7,
+      columns: 40,
+    },
+    widgetSize: [
+      {
+        viewportMinWidth: 0,
+        configuration: () => {
+          return {
+            minWidth: "180px",
+            minHeight: "70px",
+          };
+        },
+      },
+    ],
+    disableResizeHandles: {
+      vertical: true,
+    },
   },
 };
 

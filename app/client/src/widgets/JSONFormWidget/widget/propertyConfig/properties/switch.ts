@@ -47,7 +47,11 @@ const PROPERTIES = {
     ],
     events: [
       {
+<<<<<<< HEAD
         helpText: "开关状态改变时触发",
+=======
+        helpText: "when the switch state is changed",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         propertyName: "onChange",
         label: "onChange",
         controlType: "ACTION_SELECTOR",

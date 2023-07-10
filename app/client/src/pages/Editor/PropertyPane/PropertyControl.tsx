@@ -7,8 +7,12 @@ import {
   ControlPropertyLabelContainer,
   ControlWrapper,
 } from "components/propertyControls/StyledControls";
+<<<<<<< HEAD
 import { JSToggleButton } from "design-system-old";
 import { HelpIcons } from "icons/HelpIcons";
+=======
+import { Icon, JSToggleButton } from "design-system-old";
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
 import PropertyControlFactory from "utils/PropertyControlFactory";
 import PropertyHelpLabel from "pages/Editor/PropertyPane/PropertyHelpLabel";
 import { useDispatch, useSelector } from "react-redux";
@@ -61,6 +65,7 @@ import { setFocusablePropertyPaneField } from "actions/propertyPaneActions";
 import { Colors } from "constants/Colors";
 import WidgetFactory from "utils/WidgetFactory";
 import type { AdditionalDynamicDataTree } from "utils/autocomplete/customTreeTypeDefCreator";
+import clsx from "clsx";
 
 const HelpIcon = HelpIcons.HELP_ICON;
 
@@ -72,11 +77,13 @@ type Props = PropertyPaneControlConfig & {
 };
 
 const SHOULD_NOT_REJECT_DYNAMIC_BINDING_LIST_FOR = ["COLOR_PICKER"];
+const tooltipModifier = { preventOverflow: { enabled: true } };
 
 const PropertyControl = memo((props: Props) => {
   const dispatch = useDispatch();
 
   const controlRef = useRef<HTMLDivElement | null>(null);
+  const [showEmptyBlock, setShowEmptyBlock] = React.useState(false);
 
   const propsSelector = getWidgetPropsForPropertyName(
     props.propertyName,
@@ -431,9 +438,12 @@ const PropertyControl = memo((props: Props) => {
 
       const enhancementsToOtherWidgets: UpdateWidgetPropertyPayload[] =
         getOtherWidgetPropertyChanges(propertyName, propertyValue);
+
       let allPropertiesToUpdates: UpdateWidgetPropertyPayload[] = [];
+
       if (selfUpdates) {
         allPropertiesToUpdates.push(selfUpdates);
+
         // ideally we should not allow updating another widget without any updates on its own.
         if (enhancementsToOtherWidgets && enhancementsToOtherWidgets.length) {
           allPropertiesToUpdates = allPropertiesToUpdates.concat(
@@ -441,6 +451,7 @@ const PropertyControl = memo((props: Props) => {
           );
         }
       }
+
       return allPropertiesToUpdates;
     },
     [getOtherWidgetPropertyChanges, getWidgetsOwnUpdatesOnPropertyChange],
@@ -509,6 +520,7 @@ const PropertyControl = memo((props: Props) => {
       propertyName: string,
       propertyValue: any,
       isUpdatedViaKeyboard?: boolean,
+      isDynamicPropertyPath?: boolean,
     ) => {
       AnalyticsUtil.logEvent("WIDGET_PROPERTY_UPDATE", {
         widgetType: widgetProperties.type,
@@ -525,6 +537,20 @@ const PropertyControl = memo((props: Props) => {
         );
 
       if (allPropertiesToUpdates && allPropertiesToUpdates.length) {
+        const update = allPropertiesToUpdates[0];
+
+        if (isDynamicPropertyPath && update) {
+          allPropertiesToUpdates[0] = merge({}, update, {
+            dynamicUpdates: {
+              dynamicPropertyPathList: [
+                {
+                  key: propertyName,
+                },
+              ],
+            },
+          });
+        }
+
         // updating properties of a widget(s) should be done only once when property value changes.
         // to make sure dsl updates are atomic which is a necessity for undo/redo.
         onBatchUpdatePropertiesOfMultipleWidgets(allPropertiesToUpdates);
@@ -708,10 +734,23 @@ const PropertyControl = memo((props: Props) => {
       }
     }
 
+    const helpText =
+      config.controlType === "ACTION_SELECTOR"
+        ? `Configure one or chain multiple actions. ${props.helpText}. All nested actions run at the same time.`
+        : props.helpText;
+
+    if (config.controlType === "ACTION_SELECTOR") {
+      config.additionalControlData = {
+        ...config.additionalControlData,
+        showEmptyBlock,
+        setShowEmptyBlock,
+      };
+    }
+
     try {
       return (
         <ControlWrapper
-          className={`t--property-control-wrapper t--property-control-${className} group`}
+          className={`t--property-control-wrapper t--property-control-${className} group relative`}
           data-guided-tour-iid={propertyName}
           id={uniqId}
           key={config.id}
@@ -727,13 +766,14 @@ const PropertyControl = memo((props: Props) => {
             <PropertyHelpLabel
               label={label}
               theme={props.theme}
-              tooltip={props.helpText}
+              tooltip={helpText}
             />
             {isConvertible && (
               <TooltipComponent
                 content={JS_TOGGLE_DISABLED_MESSAGE}
                 disabled={!isToggleDisabled}
                 hoverOpenDelay={200}
+                modifiers={tooltipModifier}
                 openOnTargetFocus={false}
                 position="auto"
               >
@@ -788,6 +828,19 @@ const PropertyControl = memo((props: Props) => {
                   </TooltipComponent>
                 </button>
               </>
+            )}
+            {!isDynamic && config.controlType === "ACTION_SELECTOR" && (
+              <button
+                className={clsx(
+                  `${config.label}`,
+                  "add-action flex items-center justify-center text-center h-7 w-7 ml-auto",
+                  `t--add-action-${config.label}`,
+                )}
+                disabled={false}
+                onClick={() => setShowEmptyBlock(true)}
+              >
+                <Icon fillColor="#575757" name="plus" size="extraExtraLarge" />
+              </button>
             )}
           </ControlPropertyLabelContainer>
           {PropertyControlFactory.createControl(

@@ -11,8 +11,9 @@ import { IconNames } from "@blueprintjs/icons";
 import type { ButtonVariant } from "components/constants";
 import { ButtonVariantTypes } from "components/constants";
 import type { Stylesheet } from "entities/AppTheming";
-import { getResponsiveLayoutConfig } from "utils/layoutPropertiesUtils";
 import IconButtonComponent from "../component";
+import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
 
 const ICON_NAMES = Object.keys(IconNames).map(
   (name: string) => IconNames[name as keyof typeof IconNames],
@@ -53,7 +54,11 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
             },
           },
           {
+<<<<<<< HEAD
             helpText: "点击按钮时触发",
+=======
+            helpText: "when the button is clicked",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onClick",
             label: "onClick",
             controlType: "ACTION_SELECTOR",
@@ -109,7 +114,6 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
           },
         ],
       },
-      ...getResponsiveLayoutConfig(this.getWidgetType()),
     ];
   }
 
@@ -247,6 +251,15 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
         }
       />
     );
+  }
+
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "Icon button widget is just an icon, along with all other button properties.",
+      "!url": "https://docs.appsmith.com/widget-reference/icon-button",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+    };
   }
 
   static getWidgetType(): WidgetType {

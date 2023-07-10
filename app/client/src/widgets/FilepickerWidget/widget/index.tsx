@@ -17,6 +17,8 @@ import _ from "lodash";
 import FileDataTypes from "./FileDataTypes";
 import log from "loglevel";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
+import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
 
 class FilePickerWidget extends BaseWidget<
   FilePickerWidgetProps,
@@ -27,6 +29,17 @@ class FilePickerWidget extends BaseWidget<
     this.state = {
       isLoading: false,
       uppy: this.initializeUppy(),
+    };
+  }
+
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "Filepicker widget is used to allow users to upload files from their local machines to any cloud storage via API. Cloudinary and Amazon S3 have simple APIs for cloud storage uploads",
+      "!url": "https://docs.appsmith.com/widget-reference/filepicker",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      files: "[$__file__$]",
+      isDisabled: "bool",
     };
   }
 
@@ -203,7 +216,11 @@ class FilePickerWidget extends BaseWidget<
         children: [
           {
             helpText:
+<<<<<<< HEAD
               "当用户选中文件后触发，上传文件到CDN，然后存储文件地址到 filepicker.files",
+=======
+              "when the user selects a file. Upload files to a CDN and stores their URLs in filepicker.files",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onFilesSelected",
             label: "onFilesSelected",
             controlType: "ACTION_SELECTOR",

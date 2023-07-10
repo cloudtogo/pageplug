@@ -19,6 +19,8 @@ import { getAppMode, isMobileLayout } from "@appsmith/selectors/applicationSelec
 import { APP_MODE } from "entities/App";
 import { getIsTableFilterPaneVisible } from "selectors/tableFilterSelectors";
 import { getIsAutoHeightWithLimitsChanging } from "utils/hooks/autoHeightUIHooks";
+import { getIsPropertyPaneVisible } from "./propertyPaneSelectors";
+import { previewModeSelector } from "./editorSelectors";
 
 export const getIsDraggingOrResizing = (state: AppState) =>
   state.ui.widgetDragResize.isResizing || state.ui.widgetDragResize.isDragging;
@@ -172,6 +174,7 @@ export const shouldWidgetIgnoreClicksSelector = (widgetId: string) => {
     (state: AppState) => state.ui.widgetDragResize.isDragging,
     (state: AppState) => state.ui.canvasSelection.isDraggingForSelection,
     getAppMode,
+    previewModeSelector,
     getIsAutoHeightWithLimitsChanging,
     (
       focusedWidgetId,
@@ -180,6 +183,7 @@ export const shouldWidgetIgnoreClicksSelector = (widgetId: string) => {
       isDragging,
       isDraggingForSelection,
       appMode,
+      isPreviewMode,
       isAutoHeightWithLimitsChanging,
     ) => {
       const isFocused = focusedWidgetId === widgetId;
@@ -188,6 +192,7 @@ export const shouldWidgetIgnoreClicksSelector = (widgetId: string) => {
         isDraggingForSelection ||
         isResizing ||
         isDragging ||
+        isPreviewMode ||
         appMode !== APP_MODE.EDIT ||
         !isFocused ||
         isTableFilterPaneVisible ||
@@ -200,9 +205,48 @@ export const shouldWidgetIgnoreClicksSelector = (widgetId: string) => {
 export const getSelectedWidgetAncestry = (state: AppState) =>
   state.ui.widgetDragResize.selectedWidgetAncestry;
 
+export const getEntityExplorerWidgetAncestry = (state: AppState) =>
+  state.ui.widgetDragResize.entityExplorerAncestry;
+
 export const getEntityExplorerWidgetsToExpand = createSelector(
-  getSelectedWidgetAncestry,
+  getEntityExplorerWidgetAncestry,
   (selectedWidgetAncestry: string[]) => {
     return selectedWidgetAncestry.slice(1);
   },
+);
+
+export const showWidgetAsSelected = (widgetId: string) => {
+  return createSelector(
+    getLastSelectedWidget,
+    getSelectedWidgets,
+    (lastSelectedWidgetId, selectedWidgets) => {
+      return (
+        lastSelectedWidgetId === widgetId ||
+        (selectedWidgets.length > 1 && selectedWidgets.includes(widgetId))
+      );
+    },
+  );
+};
+
+export const getFirstSelectedWidgetInList = createSelector(
+  getSelectedWidgets,
+  (selectedWidgets) => {
+    return selectedWidgets?.length ? selectedWidgets[0] : undefined;
+  },
+);
+
+export const isCurrentWidgetActiveInPropertyPane = (widgetId: string) => {
+  return createSelector(
+    getIsPropertyPaneVisible,
+    getFirstSelectedWidgetInList,
+    (isPaneVisible, firstSelectedWidgetId) => {
+      return isPaneVisible && firstSelectedWidgetId === widgetId;
+    },
+  );
+};
+
+export const isResizingOrDragging = createSelector(
+  (state: AppState) => state.ui.widgetDragResize.isResizing,
+  (state: AppState) => state.ui.widgetDragResize.isDragging,
+  (isResizing, isDragging) => !!isResizing || !!isDragging,
 );

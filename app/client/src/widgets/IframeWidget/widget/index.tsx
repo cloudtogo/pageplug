@@ -2,13 +2,26 @@ import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import type { Stylesheet } from "entities/AppTheming";
 import React from "react";
-import { getResponsiveLayoutConfig } from "utils/layoutPropertiesUtils";
 import type { WidgetState } from "widgets/BaseWidget";
 import BaseWidget from "widgets/BaseWidget";
 import IframeComponent from "../component";
 import type { IframeWidgetProps } from "../constants";
+import { generateTypeDef } from "utils/autocomplete/dataTreeTypeDefCreator";
+import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
 
 class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return (widget: IframeWidgetProps) => ({
+      "!doc": "Iframe widget is used to display iframes in your app.",
+      "!url": "https://docs.appsmith.com/widget-reference/iframe",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      source: "string",
+      title: "string",
+      message: generateTypeDef(widget.message),
+      messageMetadata: generateTypeDef(widget.messageMetadata),
+    });
+  }
   static getPropertyPaneContentConfig() {
     return [
       {
@@ -69,12 +82,15 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
           },
         ],
       },
-      ...getResponsiveLayoutConfig(this.getWidgetType()),
       {
         sectionName: "事件",
         children: [
           {
+<<<<<<< HEAD
             helpText: "URL 变化时触发",
+=======
+            helpText: "when the source URL is changed",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onURLChanged",
             label: "onURLChanged",
             controlType: "ACTION_SELECTOR",
@@ -83,7 +99,11 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
+<<<<<<< HEAD
             helpText: "内联 HTML 变化时触发",
+=======
+            helpText: "when the srcDoc is changed",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onSrcDocChanged",
             label: "onSrcDocChanged",
             controlType: "ACTION_SELECTOR",
@@ -92,7 +112,11 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
+<<<<<<< HEAD
             helpText: "收到消息时触发",
+=======
+            helpText: "when a message event is received",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onMessageReceived",
             label: "onMessageReceived",
             controlType: "ACTION_SELECTOR",

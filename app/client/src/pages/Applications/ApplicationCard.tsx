@@ -65,7 +65,6 @@ import history from "utils/history";
 import urlBuilder from "entities/URLRedirect/URLAssembly";
 import { getAppsmithConfigs } from "@appsmith/configs";
 import { addItemsInContextMenu } from "@appsmith/utils";
-import { selectFeatureFlags } from "selectors/usersSelectors";
 
 const { cloudHosting } = getAppsmithConfigs();
 
@@ -452,7 +451,6 @@ export function ApplicationCard(props: ApplicationCardProps) {
   const theme = useContext(ThemeContext);
   const isSavingName = useSelector(getIsSavingAppName);
   const isErroredSavingName = useSelector(getIsErroredSavingAppName);
-  const featureFlags = useSelector(selectFeatureFlags);
   const initialsAndColorCode = getInitialsAndColorCode(
     props.application.name,
     theme.colors.appCardColors,
@@ -524,7 +522,6 @@ export function ApplicationCard(props: ApplicationCardProps) {
         props.permissions?.hasManageWorkspacePermissions || false,
         props.permissions?.canInviteToWorkspace || false,
         !cloudHosting,
-        featureFlags.RBAC || false,
       ],
       history,
       props.workspaceId,

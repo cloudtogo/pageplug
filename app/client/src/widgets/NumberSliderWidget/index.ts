@@ -1,5 +1,6 @@
-import { LabelPosition } from "components/constants";
 import { Alignment } from "@blueprintjs/core";
+import { LabelPosition } from "components/constants";
+import { ResponsiveBehavior } from "utils/autoLayout/constants";
 
 import IconSVG from "./icon.svg";
 import Widget from "./widget";
@@ -31,12 +32,18 @@ export const CONFIG = {
     shouldTruncate: false,
     version: 1,
     animateLoading: true,
+<<<<<<< HEAD
     labelText: "百分比",
     labelPosition: LabelPosition.Left,
+=======
+    labelText: "Percentage",
+    labelPosition: LabelPosition.Top,
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
     labelAlignment: Alignment.LEFT,
     labelWidth: 8,
     labelTextSize: "0.875rem",
     sliderSize: "m",
+    responsiveBehavior: ResponsiveBehavior.Fill,
   },
   properties: {
     derived: Widget.getDerivedPropertiesMap(),
@@ -45,6 +52,31 @@ export const CONFIG = {
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
     stylesheetConfig: Widget.getStylesheetConfig(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
+  },
+  autoLayout: {
+    disabledPropsDefaults: {
+      labelPosition: LabelPosition.Top,
+      labelTextSize: "0.875rem",
+    },
+    defaults: {
+      rows: 7,
+      columns: 40,
+    },
+    widgetSize: [
+      {
+        viewportMinWidth: 0,
+        configuration: () => {
+          return {
+            minWidth: "180px",
+            minHeight: "70px",
+          };
+        },
+      },
+    ],
+    disableResizeHandles: {
+      vertical: true,
+    },
   },
 };
 

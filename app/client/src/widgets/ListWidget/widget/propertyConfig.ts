@@ -6,7 +6,6 @@ import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import { EVAL_VALUE_PATH } from "utils/DynamicBindingUtils";
-import { getResponsiveLayoutConfig } from "utils/layoutPropertiesUtils";
 export const PropertyPaneContentConfig = [
   {
     sectionName: "数据",
@@ -38,7 +37,11 @@ export const PropertyPaneContentConfig = [
         isTriggerProperty: false,
       },
       {
+<<<<<<< HEAD
         helpText: "列表页切换时触发",
+=======
+        helpText: "when a list page is changed",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         propertyName: "onPageChange",
         label: "onPageChange",
         controlType: "ACTION_SELECTOR",
@@ -50,7 +53,11 @@ export const PropertyPaneContentConfig = [
         dependencies: ["serverSidePaginationEnabled"],
       },
       {
+<<<<<<< HEAD
         helpText: "列表页大小改变时触发",
+=======
+        helpText: "when a list page size is changed",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         propertyName: "onPageSizeChange",
         label: "onPageSizeChange",
         controlType: "ACTION_SELECTOR",
@@ -91,12 +98,15 @@ export const PropertyPaneContentConfig = [
       },
     ],
   },
-  ...getResponsiveLayoutConfig("LIST_WIDGET"),
   {
     sectionName: "事件",
     children: [
       {
+<<<<<<< HEAD
         helpText: "点击列表项时触发",
+=======
+        helpText: "when a grid list item is clicked",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         propertyName: "onListItemClick",
         label: "onListItemClick",
         controlType: "ACTION_SELECTOR",

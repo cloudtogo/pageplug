@@ -33,6 +33,7 @@ import {
   Size,
 } from "design-system-old";
 import { roleOptions, useCaseOptions } from "./constants";
+import { isAirgapped } from "@appsmith/utils/airgapHelpers";
 
 const DetailsFormWrapper = styled.div`
   width: 100%;
@@ -49,6 +50,8 @@ export default function DetailsForm(
   props: SetupFormProps & { onNext?: () => void },
 ) {
   const ref = React.createRef<HTMLDivElement>();
+
+  const isAirgappedInstance = isAirgapped();
 
   return (
     <DetailsFormWrapper ref={ref}>
@@ -139,11 +142,16 @@ export default function DetailsForm(
             category={Category.secondary}
             className="t--welcome-form-next-button"
             disabled={props.invalid}
-            onClick={props.onNext}
+            onClick={!isAirgappedInstance ? props.onNext : undefined}
             size={Size.medium}
             tag="button"
+<<<<<<< HEAD
             text="下一步"
             type="button"
+=======
+            text="Next"
+            type={!isAirgappedInstance ? "button" : "submit"}
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
           />
         </ButtonWrapper>
       </StyledFormBodyWrapper>

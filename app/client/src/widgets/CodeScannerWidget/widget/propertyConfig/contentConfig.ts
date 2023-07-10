@@ -1,6 +1,6 @@
 import type { PropertyPaneConfig } from "constants/PropertyControlConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
-import { getResponsiveLayoutConfig } from "utils/layoutPropertiesUtils";
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
 import type { CodeScannerWidgetProps } from "widgets/CodeScannerWidget/constants";
 import { ScannerLayout } from "widgets/CodeScannerWidget/constants";
 export default [
@@ -24,6 +24,7 @@ export default [
             value: ScannerLayout.CLICK_TO_SCAN,
           },
         ],
+        hidden: isAutoLayout,
         isJSConvertible: false,
         isBindProperty: false,
         isTriggerProperty: false,
@@ -93,13 +94,16 @@ export default [
       },
     ],
   },
-  ...getResponsiveLayoutConfig("CODE_SCANNER_WIDGET"),
 
   {
     sectionName: "事件",
     children: [
       {
+<<<<<<< HEAD
         helpText: "扫码成功时触发",
+=======
+        helpText: "when a valid code is detected",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         propertyName: "onCodeDetected",
         label: "onCodeDetected",
         controlType: "ACTION_SELECTOR",

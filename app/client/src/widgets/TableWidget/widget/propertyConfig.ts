@@ -1122,7 +1122,11 @@ export default [
                   },
                 },
                 {
+<<<<<<< HEAD
                   helpText: "点击按钮时触发",
+=======
+                  helpText: "when the button is clicked",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
                   propertyName: "onClick",
                   label: "onClick",
                   controlType: "ACTION_SELECTOR",
@@ -1335,7 +1339,11 @@ export default [
                         sectionName: "事件",
                         children: [
                           {
+<<<<<<< HEAD
                             helpText: "点击菜单项时触发",
+=======
+                            helpText: "when the menu item is clicked",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
                             propertyName: "onClick",
                             label: "onItemClick",
                             controlType: "ACTION_SELECTOR",
@@ -1511,7 +1519,11 @@ export default [
     sectionName: "事件",
     children: [
       {
+<<<<<<< HEAD
         helpText: "选中行时触发",
+=======
+        helpText: "when a table row is selected",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         propertyName: "onRowSelected",
         label: "onRowSelected",
         controlType: "ACTION_SELECTOR",
@@ -1520,7 +1532,11 @@ export default [
         isTriggerProperty: true,
       },
       {
+<<<<<<< HEAD
         helpText: "表格换页时触发",
+=======
+        helpText: "when a table page is changed",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         propertyName: "onPageChange",
         label: "onPageChange",
         controlType: "ACTION_SELECTOR",
@@ -1529,7 +1545,11 @@ export default [
         isTriggerProperty: true,
       },
       {
+<<<<<<< HEAD
         helpText: "表格页大小改变时触发",
+=======
+        helpText: "when a table page size is changed",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         propertyName: "onPageSizeChange",
         label: "onPageSizeChange",
         controlType: "ACTION_SELECTOR",
@@ -1546,7 +1566,11 @@ export default [
         isTriggerProperty: true,
       },
       {
+<<<<<<< HEAD
         helpText: "表格列排序时触发",
+=======
+        helpText: "when a table column is sorted",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         propertyName: "onSort",
         label: "onSort",
         controlType: "ACTION_SELECTOR",

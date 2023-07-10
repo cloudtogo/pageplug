@@ -34,6 +34,8 @@ import HotKeys from "../Files/SubmenuHotkeys";
 import { selectFeatureFlags } from "selectors/usersSelectors";
 import { isMobileLayout } from "selectors/applicationSelectors";
 import AnalyticsUtil from "utils/AnalyticsUtil";
+import { getIsAutoLayout } from "selectors/editorSelectors";
+import { isAirgapped } from "@appsmith/utils/airgapHelpers";
 
 const MenuItem = styled.div<{ active: boolean }>`
   display: flex;
@@ -76,7 +78,12 @@ function AddPageContextMenu({
   const { pageId } = useParams<ExplorerURLParams>();
   const [activeItemIdx, setActiveItemIdx] = useState(0);
   const featureFlags = useSelector(selectFeatureFlags);
+<<<<<<< HEAD
   const isMobile = useSelector(isMobileLayout);
+=======
+  const isAutoLayout = useSelector(getIsAutoLayout);
+  const isAirgappedInstance = isAirgapped();
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
 
   const menuRef = useCallback(
     (node) => {
@@ -105,11 +112,19 @@ function AddPageContextMenu({
       },
     ];
 
+<<<<<<< HEAD
     if (isMobile) {
       items.pop();
     }
 
     if (featureFlags.TEMPLATES_PHASE_2 && !isMobile) {
+=======
+    if (
+      featureFlags.TEMPLATES_PHASE_2 &&
+      !isAutoLayout &&
+      !isAirgappedInstance
+    ) {
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
       items.push({
         title: createMessage(ADD_PAGE_FROM_TEMPLATE),
         icon: Layout2LineIcon,

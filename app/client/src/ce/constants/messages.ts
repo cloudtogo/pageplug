@@ -1,3 +1,5 @@
+import type { PageErrorMessageProps } from "pages/common/ErrorPages/Components/PageErrorMessage";
+
 export function createMessage(
   format: (...strArgs: any[]) => string,
   ...args: any[]
@@ -289,7 +291,14 @@ export const OAUTH_AUTHORIZATION_FAILED = "鉴权失败！请查看详情";
 export const OAUTH_AUTHORIZATION_APPSMITH_ERROR = "出错了";
 export const OAUTH_APPSMITH_TOKEN_NOT_FOUND = "没有发现 token";
 
+<<<<<<< HEAD
 export const GSHEET_AUTHORIZATION_ERROR = "数据源未授权，请授权后继续操作";
+=======
+export const GSHEET_AUTHORIZATION_ERROR =
+  "Authorisation failed, to continue using this data source authorize now.";
+export const GSHEET_FILES_NOT_SELECTED =
+  "Datasource does not have access to any files, please authorize google sheets to use this data source";
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
 
 export const LOCAL_STORAGE_QUOTA_EXCEEDED_MESSAGE = () =>
   "本地存储失败！已超出本地最大存储限制";
@@ -313,16 +322,78 @@ export const BACK_TO_HOMEPAGE = () => "回到主页";
 
 // error pages
 export const PAGE_NOT_FOUND_TITLE = () => "404";
+<<<<<<< HEAD
 export const PAGE_NOT_FOUND = () => "未找到页面";
 export const PAGE_SERVER_UNAVAILABLE_ERROR_CODE = () => "503";
 export const PAGE_SERVER_UNAVAILABLE_TITLE = () => "PagePlug 服务异常";
 export const PAGE_SERVER_UNAVAILABLE_DESCRIPTION = () => "请稍后重试";
+=======
+export const PAGE_NOT_FOUND = () => "Page not found";
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
 export const PAGE_SERVER_TIMEOUT_ERROR_CODE = () => "504";
 export const PAGE_SERVER_TIMEOUT_TITLE = () => "PagePlug 服务长时间无响应";
 export const PAGE_SERVER_TIMEOUT_DESCRIPTION = () => `请稍后重试`;
 export const PAGE_CLIENT_ERROR_TITLE = () => "糟糕，魔法失灵了！";
 export const PAGE_CLIENT_ERROR_DESCRIPTION = () =>
   "请联系 PagePlug 团队寻求帮助";
+
+export const PAGE_SERVER_UNAVAILABLE_ERROR_CODE = () => "503";
+
+// cloudHosting used in EE
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const PAGE_SERVER_UNAVAILABLE_TITLE = (cloudHosting: boolean) =>
+  "Appsmith server unavailable";
+
+export const PAGE_SERVER_UNAVAILABLE_DESCRIPTION = () =>
+  "Please try again later";
+
+export const PAGE_SERVER_UNAVAILABLE_ERROR_MESSAGES = (
+  cloudHosting: boolean,
+): PageErrorMessageProps[] => {
+  if (cloudHosting) {
+    return [
+      {
+        text: "If the problem persists, please contact customer support",
+        links: [
+          {
+            from: 40,
+            to: 56,
+            href: "mailto: support@appsmith.com?subject=Appsmith 503 Server Error",
+          },
+        ],
+        addNewLine: true,
+      },
+    ];
+  } else {
+    return [
+      {
+        text: "If the problem persists, please contact your admin",
+        addNewLine: true,
+      },
+      {
+        text: "You can find more information on how to debug and access the logs here",
+        links: [
+          {
+            from: 66,
+            to: 70,
+            href: "https://docs.appsmith.com/learning-and-resources/how-to-guides/how-to-get-container-logs",
+          },
+        ],
+        addNewLine: true,
+      },
+      {
+        text: "A quick view of the server logs is accessible here",
+        links: [
+          {
+            from: 46,
+            to: 50,
+            href: "/supervisor/logtail/backend",
+          },
+        ],
+      },
+    ];
+  }
+};
 
 // comments
 export const POST = () => "提交";
@@ -369,6 +440,7 @@ export const DEBUGGER_SEARCH_SNIPPET = () => "查看代码片段";
 export const DEBUGGER_APPSMITH_SUPPORT = () => "获取官方支持";
 
 //action creator menu
+<<<<<<< HEAD
 export const NO_ACTION = () => `无动作`;
 export const EXECUTE_A_QUERY = () => `执行查询`;
 export const NAVIGATE_TO = () => `跳转到`;
@@ -388,6 +460,28 @@ export const GET_GEO_LOCATION = () => `获取定位`;
 export const WATCH_GEO_LOCATION = () => `实时定位`;
 export const STOP_WATCH_GEO_LOCATION = () => `停止实时定位`;
 export const POST_MESSAGE = () => `发消息`;
+=======
+export const NO_ACTION = () => `No action`;
+export const EXECUTE_A_QUERY = () => `Execute a query`;
+export const NAVIGATE_TO = () => `Navigate to`;
+export const SHOW_ALERT = () => `Show Alert`;
+export const SHOW_MODAL = () => `Show modal`;
+export const CLOSE_MODAL = () => `Close modal`;
+export const CLOSE = () => `CLOSE`;
+export const STORE_VALUE = () => `Store value`;
+export const REMOVE_VALUE = () => `Remove value`;
+export const CLEAR_STORE = () => `Clear store`;
+export const DOWNLOAD = () => `Download`;
+export const COPY_TO_CLIPBOARD = () => `Copy to clipboard`;
+export const RESET_WIDGET = () => `Reset widget`;
+export const EXECUTE_JS_FUNCTION = () => `Execute a JS function`;
+export const SET_INTERVAL = () => `Set interval`;
+export const CLEAR_INTERVAL = () => `Clear interval`;
+export const GET_GEO_LOCATION = () => `Get Geolocation`;
+export const WATCH_GEO_LOCATION = () => `Watch Geolocation`;
+export const STOP_WATCH_GEO_LOCATION = () => `Stop watching Geolocation`;
+export const POST_MESSAGE = () => `Post message`;
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
 
 //js actions
 export const JS_ACTION_COPY_SUCCESS = (actionName: string, pageName: string) =>
@@ -451,6 +545,7 @@ export const RECONNECT_DATASOURCE_SUCCESS_MESSAGE2 = () => "请填写缺失的�
 export const ADD_MISSING_DATASOURCES = () => "添加缺失的数据源";
 export const SKIP_TO_APPLICATION_TOOLTIP_HEADER = () => "这个操作是不可逆的";
 export const SKIP_TO_APPLICATION_TOOLTIP_DESCRIPTION = () =>
+<<<<<<< HEAD
   `你可以随时重连数据源，只是你的应用可能会无法使用`;
 export const SKIP_TO_APPLICATION = () => "跳过设置";
 export const SELECT_A_METHOD_TO_ADD_CREDENTIALS = () => "选择一种鉴权方式";
@@ -463,6 +558,31 @@ export const JS_FUNCTION_CREATE_SUCCESS = () => "JS 函数创建成功";
 export const JS_FUNCTION_UPDATE_SUCCESS = () => "JS 函数更新成功";
 export const JS_FUNCTION_DELETE_SUCCESS = () => "JS 函数删除成功";
 export const JS_OBJECT_BODY_INVALID = () => "无法解析 JS 对象";
+=======
+  `You can always reconnect the datasources later but until then the application might be unuseable.`;
+export const SKIP_TO_APPLICATION = () => "Skip to Application";
+export const SELECT_A_METHOD_TO_ADD_CREDENTIALS = () =>
+  "Select a method to add credentials";
+export const DELETE_CONFIRMATION_MODAL_TITLE = () => `Are you sure?`;
+export const DELETE_CONFIRMATION_MODAL_SUBTITLE = (
+  name?: string | null,
+  entityType?: string,
+) =>
+  `You want to remove ${name} from this ${
+    entityType === "Application" ? "application" : "workspace"
+  }`;
+export const PARSING_ERROR = () =>
+  "Syntax Error: Unable to parse code, please check error logs to debug";
+export const PARSING_WARNING = () =>
+  "Linting Errors: Please resolve linting errors before using these functions";
+export const JS_FUNCTION_CREATE_SUCCESS = () =>
+  "New JS function added successfully";
+export const JS_FUNCTION_UPDATE_SUCCESS = () =>
+  "JS Function updated successfully";
+export const JS_FUNCTION_DELETE_SUCCESS = () =>
+  "JS function deleted successfully";
+export const JS_OBJECT_BODY_INVALID = () => "JS object could not be parsed";
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
 export const JS_ACTION_EXECUTION_ERROR = (jsFunctionName: string) =>
   `执行函数 ${jsFunctionName} 时出错了，具体请查看错误日志`;
 //Editor Page
@@ -1298,6 +1418,7 @@ export const PAGE_SETTINGS_ACTION_NAME_CONFLICT_ERROR = (name: string) =>
   `${name} 已经被占用`;
 
 export const IN_APP_EMBED_SETTING = {
+<<<<<<< HEAD
   applicationUrl: () => "应用地址",
   allowEmbeddingLabel: () => "支持嵌入",
   allowEmbeddingTooltip: () => "应用可以嵌入到任何域名下，包括那些恶意网站",
@@ -1317,6 +1438,38 @@ export const IN_APP_EMBED_SETTING = {
   sectionContentHeader: () => "分享",
   sectionHeaderDesc: () => "共享应用，嵌入属性",
   showNavigationBar: () => "显示菜单导航",
+=======
+  applicationUrl: () => "application url",
+  allowEmbeddingLabel: () => "Embedding enabled",
+  allowEmbeddingTooltip: () =>
+    "This app can be embedded in all domains, including malicious ones",
+  copy: () => "Copy",
+  copied: () => "Copied",
+  limitEmbeddingLabel: () => "Embedding restricted",
+  limitEmbeddingTooltip: () => "This app can be embedded in approved URLs only",
+  disableEmbeddingLabel: () => "Embedding disabled",
+  disableEmbeddingTooltip: () =>
+    "This app cannot be embedded anywhere on the Internet",
+  embed: () => "Embed",
+  embedSnippetTitle: () => "Embed URL",
+  change: () => "Change",
+  copiedEmbedCode: () => "Embed code copied to clipboard",
+  embedSize: () => "Embed size",
+  previewEmbeddedApp: () => "PREVIEW EMBEDDED APP",
+  sectionHeader: () => "Share & Embed",
+  sectionContentHeader: () => "Share",
+  sectionHeaderDesc: () => "Make public, embed properties",
+  showNavigationBar: () => "Show navigation bar",
+  upgradeHeading: () =>
+    "Please contact your workspace admin to make the app public before embedding",
+  upgradeHeadingForInviteModal: () =>
+    "Make your app public in share settings to embed",
+  upgradeContent: () => "Private embedding is now available in",
+  appsmithBusinessEdition: () => "Appsmith Business Edition",
+  secondaryHeadingForAppSettings: () => "Make your app public to embed",
+  secondaryHeading: () =>
+    "Please contact your workspace admin to make the app public before embedding",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
 };
 
 export const NEW_QUERY_BUTTON_TEXT = () => "新建查询";
@@ -1344,9 +1497,90 @@ export const APP_NAVIGATION_SETTING = {
 
 export const LOCK_SIDEBAR_MESSAGE = () => `Lock sidebar open`;
 export const CLOSE_SIDEBAR_MESSAGE = () => `Close sidebar`;
+<<<<<<< HEAD
+=======
+
+// Datasource/New Query
+export const NEW_QUERY_BUTTON_TEXT = () => "New Query";
+export const NEW_API_BUTTON_TEXT = () => "New API";
+export const GENERATE_NEW_PAGE_BUTTON_TEXT = () => "GENERATE NEW PAGE";
+export const RECONNECT_BUTTON_TEXT = () => "RECONNECT";
+export const SAVE_BUTTON_TEXT = () => "SAVE";
+export const SAVE_AND_AUTHORIZE_BUTTON_TEXT = () => "SAVE AND AUTHORIZE";
+export const DISCARD_POPUP_DONT_SAVE_BUTTON_TEXT = () => "DON'T SAVE";
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
 export const GSHEET_AUTHORISED_FILE_IDS_KEY = () =>
   "Google sheets authorised file ids key";
+export const GOOGLE_SHEETS_INFO_BANNER_MESSAGE = () =>
+  "Appsmith will require access to your google drive to access google sheets.";
+export const GOOGLE_SHEETS_AUTHORIZE_DATASOURCE = () => "Authorize Datasource";
+export const GOOGLE_SHEETS_LEARN_MORE = () => "Learn more";
 
+//Layout Conversion flow
+export const CONVERT = () => "CONVERT";
+export const BUILD_RESPONSIVE = () => "Build Responsive Apps";
+export const BUILD_RESPONSIVE_TEXT = () =>
+  "Appsmith will convert your application's UI to auto layout, a new mode designed for building mobile-friendly apps in no time";
+export const BUILD_FIXED_LAYOUT = () => "Use Fixed Layout";
+export const BUILD_FIXED_LAYOUT_TEXT = () =>
+  "Appsmith will convert your application’s UI to fixed layout, the default mode.";
+export const USE_SNAPSHOT = () => "USE SNAPSHOT";
+export const USE_SNAPSHOT_HEADER = () => "Use Snapshot";
+export const DISCARD_SNAPSHOT_HEADER = () => "Discarding a Snapshot";
+export const SAVE_SNAPSHOT = () =>
+  "Save a Snapshot of your Current Layout for 5 days";
+export const SAVE_SNAPSHOT_TEXT = () =>
+  "We save a snapshot of your current layout so you can go back if auto-layout doesn't work for you in this beta.";
+export const CREATE_SNAPSHOT = () => "Creating a snapshot";
+export const CONVERTING_APP = () => "Converting your app";
+export const RESTORING_SNAPSHOT = () => "Removing changes made";
+export const REFRESH_THE_APP = () => "REFRESH THE APP";
+export const CONVERT_ANYWAYS = () => "CONVERT ANYWAYS";
+export const CONVERSION_SUCCESS_HEADER = () => "All done";
+export const DISCARD_SNAPSHOT_TEXT = () =>
+  "You are about to discard this snapshot:";
+export const CONVERSION_SUCCESS_TEXT = () =>
+  "Check all your pages and start using your new layout";
+export const CONVERSION_WARNING_HEADER = () =>
+  "All done, some adjustments needed";
+export const CONVERSION_WARNING_TEXT = () =>
+  "You might need to manually position some of the widgets your layout contains";
+export const CONVERSION_ERROR_HEADER = () => "Conversion Failed";
+export const CONVERSION_ERROR = () =>
+  "Appsmith ran into a critical error while trying to convert to auto layout";
+export const SEND_REPORT = () => "SEND US A REPORT";
+export const CONVERSION_ERROR_TEXT = () => "No changes were made to your app";
+export const DROPDOWN_LABEL_TEXT = () => "Target canvas size";
+export const CONVERSION_WARNING = () => "Conversion will change your layout";
+export const SNAPSHOT_LABEL = () =>
+  "To revert back to the original state use this snapshot";
+export const USE_SNAPSHOT_TEXT = () =>
+  "Your app will look and work exactly like it used to before the conversion. Widgets, datasources, queries, JS objects added and any changes you made after conversion will not be present.";
+export const SNAPSHOT_WARNING_MESSAGE = () =>
+  "Any changes you made after conversion will not be present.";
+export const CONVERT_TO_FIXED_TITLE = () => "Convert to Fixed Layout";
+export const CONVERT_TO_FIXED_BUTTON = () => "CONVERT TO Fixed-LAYOUT";
+export const CONVERT_TO_AUTO_TITLE = () => "Convert to Auto Layout";
+export const CONVERT_TO_AUTO_BUTTON = () => "CONVERT TO AUTO-LAYOUT";
+export const SNAPSHOT_BANNER_MESSAGE = () =>
+  "Confirm this layout is per expectations before you discard the snapshot. Use the snapshot to go back.";
+export const USE_SNAPSHOT_CTA = () => "USE SNAPSHOT";
+export const DISCARD_SNAPSHOT_CTA = () => "DISCARD SNAPSHOT";
+export const MORE_DETAILS = () => "More details";
+export const CONVERSION_ERROR_MESSAGE_HEADER = () =>
+  "To resolve this error please:";
+export const CONVERSION_ERROR_MESSAGE_TEXT_ONE = () =>
+  "Check your internet connection.";
+export const CONVERSION_ERROR_MESSAGE_TEXT_TWO = () =>
+  "Send us a report. Sending a report will only inform us that the failure happened and will give us your email address to reach out to.";
+export const SNAPSHOT_TIME_FROM_MESSAGE = (
+  timeSince: string,
+  readableDate: string,
+) => `Snapshot from ${timeSince} ago (${readableDate})`;
+export const SNAPSHOT_TIME_TILL_EXPIRATION_MESSAGE = (
+  timeTillExpiration: string,
+) => `Snapshot of your previous layout expires in ${timeTillExpiration}`;
+export const DISCARD = () => "DISCARD";
 // Alert options and labels for showMessage types
 export const ALERT_STYLE_OPTIONS = [
   { label: "信息", value: "'info'", id: "info" },

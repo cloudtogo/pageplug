@@ -1,11 +1,11 @@
 import { Colors } from "constants/Colors";
 import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
 import { cloneDeep, set } from "lodash";
+import { ResponsiveBehavior } from "utils/autoLayout/constants";
 import {
   combineDynamicBindings,
   getDynamicBindings,
 } from "utils/DynamicBindingUtils";
-import { getDefaultResponsiveBehavior } from "utils/layoutPropertiesUtils";
 import type { WidgetProps } from "widgets/BaseWidget";
 import { BlueprintOperationTypes } from "widgets/constants";
 import { StickyType } from "./component/Constants";
@@ -22,7 +22,7 @@ export const CONFIG = {
   needsMeta: true,
   needsHeightForContent: true,
   defaults: {
-    responsiveBehavior: getDefaultResponsiveBehavior(Widget.getWidgetType()),
+    responsiveBehavior: ResponsiveBehavior.Fill,
     minWidth: FILL_WIDGET_MIN_WIDTH,
     rows: 28,
     canFreezeColumn: true,
@@ -72,6 +72,7 @@ export const CONFIG = {
         id: "step",
         originalId: "step",
         alias: "step",
+        allowSameOptionsInNewRow: true,
         horizontalAlignment: "LEFT",
         verticalAlignment: "CENTER",
         columnType: "text",
@@ -93,6 +94,7 @@ export const CONFIG = {
         id: "task",
         originalId: "task",
         alias: "task",
+        allowSameOptionsInNewRow: true,
         horizontalAlignment: "LEFT",
         verticalAlignment: "CENTER",
         columnType: "text",
@@ -114,6 +116,7 @@ export const CONFIG = {
         id: "status",
         originalId: "status",
         alias: "status",
+        allowSameOptionsInNewRow: true,
         horizontalAlignment: "LEFT",
         verticalAlignment: "CENTER",
         columnType: "text",
@@ -135,6 +138,7 @@ export const CONFIG = {
         id: "action",
         originalId: "action",
         alias: "action",
+        allowSameOptionsInNewRow: true,
         horizontalAlignment: "LEFT",
         verticalAlignment: "CENTER",
         columnType: "button",
@@ -249,6 +253,20 @@ export const CONFIG = {
     styleConfig: Widget.getPropertyPaneStyleConfig(),
     stylesheetConfig: Widget.getStylesheetConfig(),
     loadingProperties: Widget.getLoadingProperties(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
+  },
+  autoLayout: {
+    widgetSize: [
+      {
+        viewportMinWidth: 0,
+        configuration: () => {
+          return {
+            minWidth: "280px",
+            minHeight: "300px",
+          };
+        },
+      },
+    ],
   },
 };
 

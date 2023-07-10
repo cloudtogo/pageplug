@@ -31,6 +31,8 @@ import {
 import { LabelPosition } from "components/constants";
 import type { Stylesheet } from "entities/AppTheming";
 import { checkInputTypeTextByProps } from "widgets/BaseInputWidget/utils";
+import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
 
 export function defaultValueValidation(
   value: any,
@@ -123,6 +125,31 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
       text: props.text,
     };
   }
+
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "An input text field is used to capture a users textual input such as their names, numbers, emails etc. Inputs are used in forms and can have custom validations.",
+      "!url": "https://docs.appsmith.com/widget-reference/input",
+      text: {
+        "!type": "string",
+        "!doc": "The text value of the input",
+        "!url": "https://docs.appsmith.com/widget-reference/input",
+      },
+      isValid: "bool",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      isDisabled: "bool",
+      countryCode: {
+        "!type": "string",
+        "!doc": "Selected country code for Phone Number type input",
+      },
+      currencyCountryCode: {
+        "!type": "string",
+        "!doc": "Selected country code for Currency type input",
+      },
+    };
+  }
+
   static getPropertyPaneConfig() {
     return [
       {
@@ -470,7 +497,11 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
         sectionName: "事件",
         children: [
           {
+<<<<<<< HEAD
             helpText: "文本输入改变时触发",
+=======
+            helpText: "when the text is changed",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onTextChanged",
             label: "onTextChanged",
             controlType: "ACTION_SELECTOR",
@@ -479,7 +510,11 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
+<<<<<<< HEAD
             helpText: "提交时触发（用户按了回车）",
+=======
+            helpText: "on submit (when the enter key is pressed)",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onSubmit",
             label: "onSubmit",
             controlType: "ACTION_SELECTOR",

@@ -7,11 +7,6 @@ import type { JSCollectionData } from "reducers/entityReducers/jsActionsReducer"
 import type { Def } from "tern";
 import type { ActionEntity } from "entities/DataTree/types";
 
-const isVisible = {
-  "!type": "bool",
-  "!doc": "Boolean value indicating if the widget is in visible state",
-};
-
 export const entityDefinitions = {
   APPSMITH: (entity: AppsmithEntity, extraDefsToDefine: ExtraDef) => {
     const generatedTypeDef = generateTypeDef(
@@ -69,6 +64,7 @@ export const entityDefinitions = {
       clear: "fn() -> +Promise[:t=[!0.<i>.:t]]",
     };
   },
+<<<<<<< HEAD
   AUDIO_WIDGET: {
     "!doc":
       "Audio widget can be used for playing a variety of audio formats like MP3, AAC etc.",
@@ -824,6 +820,8 @@ export const entityDefinitions = {
     isDisabled: "bool",
     value: "string",
   },
+=======
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
 };
 
 /*

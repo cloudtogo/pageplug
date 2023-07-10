@@ -22,12 +22,14 @@ import React from "react";
 import shallowequal from "shallowequal";
 import { createGlobalStyle } from "styled-components";
 import { createBlobUrl, isBlobUrl } from "utils/AppsmithUtils";
-import { getResponsiveLayoutConfig } from "utils/layoutPropertiesUtils";
 import type { DerivedPropertiesMap } from "utils/WidgetFactory";
 import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import BaseWidget from "widgets/BaseWidget";
 import FilePickerComponent from "../component";
 import FileDataTypes from "../constants";
+import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
+import { isAirgapped } from "@appsmith/utils/airgapHelpers";
 
 const CSV_ARRAY_LABEL = "Array (仅限 CSVs)";
 const CSV_FILE_TYPE_REGEX = /.+(\/csv)$/;
@@ -37,6 +39,8 @@ const ARRAY_CSV_HELPER_TEXT = `注意：非 csv 类型文件数据都是空值�
 const isCSVFileType = (str: string) => CSV_FILE_TYPE_REGEX.test(str);
 
 type Result = string | Buffer | ArrayBuffer | null;
+
+const isAirgappedInstance = isAirgapped();
 
 const FilePickerGlobalStyles = createGlobalStyle<{
   borderRadius?: string;
@@ -217,6 +221,19 @@ class FilePickerWidget extends BaseWidget<
     this.state = {
       isLoading: false,
       uppy: this.initializeUppy(),
+    };
+  }
+
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "Filepicker widget is used to allow users to upload files from their local machines to any cloud storage via API. Cloudinary and Amazon S3 have simple APIs for cloud storage uploads",
+      "!url": "https://docs.appsmith.com/widget-reference/filepicker",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      files: "[$__file__$]",
+      isDisabled: "bool",
+      isValid: "bool",
+      isDirty: "bool",
     };
   }
 
@@ -425,13 +442,17 @@ class FilePickerWidget extends BaseWidget<
           },
         ],
       },
-      ...getResponsiveLayoutConfig(this.getWidgetType()),
 
       {
         sectionName: "事件",
         children: [
           {
+<<<<<<< HEAD
             helpText: "用户选中文件后触发，文件 URL 存储在 filepicker.files 中",
+=======
+            helpText:
+              "when the user selects a file. Upload files to a CDN and stores their URLs in filepicker.files",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onFilesSelected",
             label: "onFilesSelected",
             controlType: "ACTION_SELECTOR",
@@ -590,7 +611,7 @@ class FilePickerWidget extends BaseWidget<
         closeAfterFinish: true,
         closeModalOnClickOutside: true,
         disableStatusBar: false,
-        disableInformer: false,
+        disableInformer: isAirgappedInstance,
         disableThumbnailGenerator: false,
         disablePageScrollWhenModalOpen: true,
         proudlyDisplayPoweredByUppy: false,
