@@ -153,7 +153,7 @@ export default function LeftPane() {
           currentSubCategory={subCategory}
         />
       </HeaderContainer>
-      {/* <HeaderContainer>
+      <HeaderContainer>
         <StyledHeader>Business</StyledHeader>
         <CategoryList data-testid="t--enterprise-settings-category-list">
           <CategoryItem>
@@ -195,7 +195,7 @@ export default function LeftPane() {
             </StyledLink>
           </CategoryItem>
         </CategoryList>
-      </HeaderContainer> */}
+      </HeaderContainer>
     </Wrapper>
   );
 }

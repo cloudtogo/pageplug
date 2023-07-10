@@ -38,8 +38,7 @@ import { getUserApplicationsWorkspacesList } from "@appsmith/selectors/applicati
 import type { ApiResponse } from "api/ApiResponses";
 import history from "utils/history";
 import type { AppState } from "@appsmith/reducers";
-import type {
-  FetchApplicationPreviewPayload } from "@appsmith/actions/applicationActions";
+import type { FetchApplicationPreviewPayload } from "@appsmith/actions/applicationActions";
 import {
   ApplicationVersion,
   fetchApplication,
@@ -550,14 +549,8 @@ export function* createApplicationSaga(
     reject: any;
   }>,
 ) {
-  const {
-    applicationName,
-    color,
-    icon,
-    workspaceId,
-    reject,
-    isMobile,
-  } = action.payload;
+  const { applicationName, color, icon, workspaceId, reject, isMobile } =
+    action.payload;
   try {
     const userWorkspaces: Workspaces[] = yield select(
       getUserApplicationsWorkspacesList,
@@ -824,7 +817,7 @@ export function* fetchApplicationPreviewWxaCodeSaga(
   }
 }
 
-function* fetchReleases() {
+export function* fetchReleases() {
   try {
     const response: FetchUsersApplicationsWorkspacesResponse = yield call(
       ApplicationApi.getReleaseItems,

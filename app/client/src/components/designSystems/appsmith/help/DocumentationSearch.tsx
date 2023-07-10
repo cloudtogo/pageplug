@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { SyntheticEvent } from "react";
 import React from "react";
 import algoliasearch from "algoliasearch/lite";
