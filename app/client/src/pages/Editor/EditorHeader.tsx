@@ -1,11 +1,6 @@
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-  lazy,
-  Suspense,
-  useMemo,
-} from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react/react-in-jsx-scope */
+import { useCallback, useEffect, useState, useMemo } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import classNames from "classnames";
 import { Classes as Popover2Classes } from "@blueprintjs/popover2";
@@ -53,7 +48,6 @@ import {
   Size,
 } from "design-system-old";
 import { Profile } from "pages/common/ProfileImage";
-import HelpBar from "components/editorComponents/GlobalSearch/HelpBar";
 import { getTheme, ThemeMode } from "selectors/themeSelectors";
 import ToggleModeButton from "pages/Editor/ToggleModeButton";
 import { Colors } from "constants/Colors";
@@ -62,7 +56,6 @@ import { showConnectGitModal } from "actions/gitSyncActions";
 import RealtimeAppEditors from "./RealtimeAppEditors";
 import { EditorSaveIndicator } from "./EditorSaveIndicator";
 
-import { retryPromise } from "utils/AppsmithUtils";
 import { fetchUsersForWorkspace } from "@appsmith/actions/workspaceActions";
 import type { WorkspaceUser } from "@appsmith/constants/workspaceConstants";
 
@@ -426,7 +419,8 @@ export function EditorHeader(props: EditorHeaderProps) {
           <HeaderSection className="space-x-3">
             <HamburgerContainer
               className={classNames({
-                "relative flex items-center justify-center p-0 text-gray-800 transition-all transform duration-400": true,
+                "relative flex items-center justify-center p-0 text-gray-800 transition-all transform duration-400":
+                  true,
                 "-translate-x-full opacity-0": isPreviewMode,
                 "translate-x-0 opacity-100": !isPreviewMode,
               })}

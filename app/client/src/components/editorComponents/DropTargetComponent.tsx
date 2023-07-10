@@ -26,8 +26,6 @@ import {
   previewModeSelector,
 } from "selectors/editorSelectors";
 import { useWidgetSelection } from "utils/hooks/useWidgetSelection";
-import { DragSourceAnimation } from "./DropTargetEmpty";
-const CanvasEmpty: any = DragSourceAnimation.light;
 import EmptyCanvas from "assets/images/undraw_blank_canvas.svg";
 import { getDragDetails } from "sagas/selectors";
 import { useAutoHeightUIState } from "utils/hooks/autoHeightUIHooks";

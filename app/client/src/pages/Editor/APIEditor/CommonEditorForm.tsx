@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -32,7 +33,6 @@ import {
   Classes,
   Icon,
   IconSize,
-  SearchSnippet,
   Size,
   TabComponent,
   Text,

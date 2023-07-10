@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import React, { useRef, useEffect, useState, useCallback, useMemo } from "react";
+/* eslint-disable react/react-in-jsx-scope */
+import { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import MenuItemContainer from "./components/MenuItemContainer";
 import MenuItem from "./components/MenuItem";
@@ -9,7 +9,6 @@ import type {
 } from "@appsmith/constants/ReduxActionConstants";
 import { Icon, IconSize } from "design-system-old";
 import useThrottledRAF from "utils/hooks/useThrottledRAF";
-import { Colors } from "constants/Colors";
 import _ from "lodash";
 import { NAVIGATION_SETTINGS } from "constants/AppConstants";
 import { get } from "lodash";

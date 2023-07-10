@@ -1,15 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 import { connect, useDispatch, useSelector } from "react-redux";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import { updatePage } from "actions/pageActions";
-import { UpdatePageRequest } from "api/PageApi";
+import type { UpdatePageRequest } from "api/PageApi";
 import { getViewModePageList, getCurrentPage } from "selectors/editorSelectors";
 import { isMobileLayout } from "selectors/applicationSelectors";
-import {
-  Page,
-  ReduxActionTypes,
-} from "@appsmith/constants/ReduxActionConstants";
+import type { Page } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import EditablePageName from "pages/Editor/Explorer/Entity/Name";
 import Loader from "pages/Editor/Explorer/Entity/Loader";
 import { resolveAsSpaceChar } from "utils/helpers";

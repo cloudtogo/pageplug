@@ -21,11 +21,8 @@ import {
   transformToSchema,
   transformToTreeNode,
 } from "@pind/designable-formily-transformer";
-import {
-  createDesigner,
-  GlobalRegistry,
-  WorkbenchTypes,
-} from "@pind/designable-core";
+import type { WorkbenchTypes } from "@pind/designable-core";
+import { createDesigner, GlobalRegistry } from "@pind/designable-core";
 import { PreviewWidget } from "./PreviewWidget";
 import { sources } from "@pind/designable-formily-antd";
 
