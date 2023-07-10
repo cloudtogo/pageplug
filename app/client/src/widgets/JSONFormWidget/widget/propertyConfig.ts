@@ -6,7 +6,6 @@ import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import { EVALUATION_PATH } from "utils/DynamicBindingUtils";
-import { getResponsiveLayoutConfig } from "utils/layoutPropertiesUtils";
 import type { ButtonWidgetProps } from "widgets/ButtonWidget/widget";
 import type { JSONFormWidgetProps } from ".";
 import { ROOT_SCHEMA_KEY } from "../constants";
@@ -279,13 +278,16 @@ export const contentConfig = [
       },
     ],
   },
-  ...getResponsiveLayoutConfig("JSON_FORM_WIDGET"),
   {
     sectionName: "事件",
     children: [
       {
         propertyName: "onSubmit",
+<<<<<<< HEAD
         helpText: "点击提交按钮时触发",
+=======
+        helpText: "when the submit button is clicked",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         label: "onSubmit",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,

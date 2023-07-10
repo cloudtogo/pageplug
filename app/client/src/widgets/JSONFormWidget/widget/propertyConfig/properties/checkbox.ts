@@ -23,7 +23,11 @@ const PROPERTIES = {
     ],
     events: [
       {
+<<<<<<< HEAD
         helpText: "选中态改变时触发",
+=======
+        helpText: "when the check state is changed",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         propertyName: "onCheckChange",
         label: "onCheckChange",
         controlType: "ACTION_SELECTOR",

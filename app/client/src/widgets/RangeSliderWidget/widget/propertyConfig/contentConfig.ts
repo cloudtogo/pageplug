@@ -2,7 +2,7 @@ import { Alignment } from "@blueprintjs/core";
 import { LabelPosition } from "components/constants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
-import { getResponsiveLayoutConfig } from "utils/layoutPropertiesUtils";
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
 import type { RangeSliderWidgetProps } from "..";
 import {
   endValueValidation,
@@ -158,6 +158,7 @@ export default [
         label: "位置",
         controlType: "ICON_TABS",
         fullWidth: true,
+        hidden: isAutoLayout,
         options: [
           { label: "左", value: LabelPosition.Left },
           { label: "上", value: LabelPosition.Top },
@@ -317,12 +318,15 @@ export default [
       },
     ],
   },
-  ...getResponsiveLayoutConfig("RANGE_SLIDER_WIDGET"),
   {
     sectionName: "事件",
     children: [
       {
+<<<<<<< HEAD
         helpText: "区间左值变化时触发",
+=======
+        helpText: "when a user changes the slider value",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         propertyName: "onStartValueChange",
         label: "onStartValueChange",
         controlType: "ACTION_SELECTOR",
@@ -331,7 +335,11 @@ export default [
         isTriggerProperty: true,
       },
       {
+<<<<<<< HEAD
         helpText: "区间右值变化时触发",
+=======
+        helpText: "when a user changes the slider value",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         propertyName: "onEndValueChange",
         label: "onEndValueChange",
         controlType: "ACTION_SELECTOR",

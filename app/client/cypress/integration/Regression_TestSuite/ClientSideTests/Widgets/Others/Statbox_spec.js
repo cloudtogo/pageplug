@@ -55,7 +55,7 @@ describe("Statbox Widget Functionality", function() {
         .click()
         .wait(500);
       // opening modal from onClick action of icon button
-      cy.createModal("Modal", "Modal1");
+      cy.createModal("Modal", "onClick");
     });
     // verifying the changed icon
     cy.get(".bp3-icon-arrow-up")
@@ -66,9 +66,13 @@ describe("Statbox Widget Functionality", function() {
     cy.get(".t--modal-widget .t--draggable-iconbuttonwidget").click({
       force: true,
     });
+<<<<<<< HEAD
     cy.get("span:contains('Close')")
       .closest("div")
       .click();
+=======
+    cy.get("span:contains('Close')").closest("div").last().click();
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
   });
 
   it("4. Bind datasource to multiple components in statbox", () => {

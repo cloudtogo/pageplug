@@ -10,6 +10,7 @@ import { Icon, IconSize } from "design-system-old";
 import PaneCountSwitcher from "pages/common/PaneCountSwitcher";
 import { useSelector } from "react-redux";
 import { isMultiPaneActive } from "selectors/multiPaneSelectors";
+import { GPTTrigger } from "@appsmith/components/editorComponents/GPT/trigger";
 
 import { getAppsmithConfigs } from "@appsmith/configs";
 const { inCloudOS } = getAppsmithConfigs();
@@ -23,27 +24,39 @@ const Container = styled.div`
   background-color: ${(props) => props.theme.colors.editorBottomBar.background};
   z-index: ${Layers.bottomBar};
   border-top: solid 1px ${Colors.MERCURY};
-  padding: 0 ${(props) => props.theme.spaces[11]}px;
+  padding-left: ${(props) => props.theme.spaces[11]}px;
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 export default function BottomBar(props: { className?: string }) {
   const isMultiPane = useSelector(isMultiPaneActive);
   return (
     <Container className={props.className ?? ""}>
+<<<<<<< HEAD
       {inCloudOS ? <span /> : <QuickGitActions />}
       <div className="flex justify-between items-center gap-1">
+=======
+      <QuickGitActions />
+      <Wrapper>
+        <GPTTrigger />
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         <ManualUpgrades showTooltip>
           <Icon
             className="t--upgrade"
             fillColor={Colors.SCORPION}
             name="upgrade"
-            size={IconSize.XXXL}
+            size={IconSize.XL}
           />
         </ManualUpgrades>
-        <HelpButton />
         <DebuggerTrigger />
+        <HelpButton />
         {isMultiPane && <PaneCountSwitcher />}
-      </div>
+      </Wrapper>
     </Container>
   );
 }

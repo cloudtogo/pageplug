@@ -474,7 +474,11 @@ const PROPERTIES = {
     events: [
       {
         propertyName: "onTextChanged",
+<<<<<<< HEAD
         helpText: "文本输入改变时触发",
+=======
+        helpText: "when the text is changed",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         label: "onTextChanged",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
@@ -487,7 +491,11 @@ const PROPERTIES = {
       },
       {
         propertyName: "onEnterKeyPress",
+<<<<<<< HEAD
         helpText: "提交时触发（用户按了回车）",
+=======
+        helpText: "on submit (when the enter key is pressed)",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         label: "onEnterKeyPress",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,

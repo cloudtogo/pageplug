@@ -213,9 +213,13 @@ function Actions(props: ActionsPropsType) {
                 {props.pageNo + 1}
               </PaginationItemWrapper>
               &nbsp;
+<<<<<<< HEAD
               <span
                 data-pagecount={props.pageCount}
               >{`页，共${props.pageCount}页`}</span>
+=======
+              <span>{`of ${props.pageCount}`}</span>
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             </TableHeaderContentWrapper>
           ) : (
             <PaginationItemWrapper

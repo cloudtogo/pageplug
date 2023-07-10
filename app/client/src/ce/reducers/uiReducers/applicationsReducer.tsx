@@ -413,6 +413,12 @@ export const handlers = {
     if (action.payload.name) {
       isSavingAppName = true;
     }
+    if (state.currentApplication && action.payload.applicationDetail) {
+      state.currentApplication.applicationDetail = {
+        ...state.currentApplication.applicationDetail,
+        ...action.payload.applicationDetail,
+      };
+    }
 
     if (action.payload.applicationDetail?.navigationSetting) {
       isSavingNavigationSetting = true;
@@ -422,6 +428,9 @@ export const handlers = {
       ...state,
       isSavingAppName,
       isErrorSavingAppName: false,
+      ...(action.payload.applicationDetail
+        ? { applicationDetail: action.payload.applicationDetail }
+        : {}),
       isSavingNavigationSetting,
       isErrorSavingNavigationSetting: false,
     };

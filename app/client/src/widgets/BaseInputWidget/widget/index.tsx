@@ -6,7 +6,7 @@ import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import type { WidgetType } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import React from "react";
-import { getResponsiveLayoutConfig } from "utils/layoutPropertiesUtils";
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
 import type { DerivedPropertiesMap } from "utils/WidgetFactory";
 import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import BaseWidget from "widgets/BaseWidget";
@@ -43,6 +43,7 @@ class BaseInputWidget<
             label: "位置",
             controlType: "ICON_TABS",
             fullWidth: true,
+            hidden: isAutoLayout,
             options: [
               { label: "自动", value: LabelPosition.Auto },
               { label: "左", value: LabelPosition.Left },
@@ -251,12 +252,15 @@ class BaseInputWidget<
           },
         ],
       },
-      ...getResponsiveLayoutConfig(this.getWidgetType()),
       {
         sectionName: "事件",
         children: [
           {
+<<<<<<< HEAD
             helpText: "文本输入改变时触发",
+=======
+            helpText: "when the text is changed",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onTextChanged",
             label: "onTextChanged",
             controlType: "ACTION_SELECTOR",
@@ -265,7 +269,11 @@ class BaseInputWidget<
             isTriggerProperty: true,
           },
           {
+<<<<<<< HEAD
             helpText: "输入聚焦时触发",
+=======
+            helpText: "when the input field receives focus",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onFocus",
             label: "onFocus",
             controlType: "ACTION_SELECTOR",
@@ -274,7 +282,11 @@ class BaseInputWidget<
             isTriggerProperty: true,
           },
           {
+<<<<<<< HEAD
             helpText: "输入失焦时触发",
+=======
+            helpText: "when the input field loses focus",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onBlur",
             label: "onBlur",
             controlType: "ACTION_SELECTOR",
@@ -283,7 +295,11 @@ class BaseInputWidget<
             isTriggerProperty: true,
           },
           {
+<<<<<<< HEAD
             helpText: "提交时触发（用户按了回车）",
+=======
+            helpText: "on submit (when the enter key is pressed)",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onSubmit",
             label: "onSubmit",
             controlType: "ACTION_SELECTOR",
@@ -332,6 +348,7 @@ class BaseInputWidget<
             helpText: "设置标签字体大小",
             controlType: "DROP_DOWN",
             defaultValue: "0.875rem",
+            hidden: isAutoLayout,
             options: [
               {
                 label: "S",

@@ -122,7 +122,11 @@ class TabsMigratorWidget extends BaseWidget<
         sectionName: "动作",
         children: [
           {
+<<<<<<< HEAD
             helpText: "选中标签页时触发",
+=======
+            helpText: "when the button is clicked",
+>>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
             propertyName: "onTabSelected",
             label: "onTabSelected",
             controlType: "ACTION_SELECTOR",
@@ -134,6 +138,7 @@ class TabsMigratorWidget extends BaseWidget<
       },
     ];
   }
+
   componentDidMount() {
     if (get(this.props, EVAL_VALUE_PATH, false)) {
       const tabsDsl = cloneDeep(this.props);
