@@ -1,4 +1,3 @@
-import type { AppState } from "@appsmith/reducers";
 import equal from "fast-deep-equal/es6";
 import type { ReactNode } from "react";
 import React, { useCallback } from "react";
@@ -6,6 +5,8 @@ import { useSelector } from "react-redux";
 import { getIsPropertyPaneVisible } from "selectors/propertyPaneSelectors";
 import {
   getFocusedParentToOpen,
+  isCurrentWidgetFocused,
+  isResizingOrDragging,
   isWidgetSelected,
   shouldWidgetIgnoreClicksSelector,
 } from "selectors/widgetSelectors";
@@ -38,21 +39,12 @@ export function ClickContentToOpenPropPane({
     [clickToSelectWidget],
   );
 
-  const focusedWidget = useSelector(
-    (state: AppState) => state.ui.widgetDragResize.focusedWidget,
-  );
-
-  const isResizing = useSelector(
-    (state: AppState) => state.ui.widgetDragResize.isResizing,
-  );
-  const isDragging = useSelector(
-    (state: AppState) => state.ui.widgetDragResize.isDragging,
-  );
-  const isResizingOrDragging = !!isResizing || !!isDragging;
+  const isWidgetFocused = useSelector(isCurrentWidgetFocused(widgetId));
+  const resizingOrDragging = useSelector(isResizingOrDragging);
   const handleMouseOver = (e: any) => {
     focusWidget &&
-      !isResizingOrDragging &&
-      focusedWidget !== widgetId &&
+      !resizingOrDragging &&
+      !isWidgetFocused &&
       focusWidget(widgetId);
     e.stopPropagation();
   };

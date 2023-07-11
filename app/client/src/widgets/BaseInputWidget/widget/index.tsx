@@ -6,7 +6,7 @@ import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import type { WidgetType } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import React from "react";
-import { getResponsiveLayoutConfig } from "utils/layoutPropertiesUtils";
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
 import type { DerivedPropertiesMap } from "utils/WidgetFactory";
 import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import BaseWidget from "widgets/BaseWidget";
@@ -43,6 +43,7 @@ class BaseInputWidget<
             label: "位置",
             controlType: "ICON_TABS",
             fullWidth: true,
+            hidden: isAutoLayout,
             options: [
               { label: "自动", value: LabelPosition.Auto },
               { label: "左", value: LabelPosition.Left },
@@ -251,7 +252,6 @@ class BaseInputWidget<
           },
         ],
       },
-      ...getResponsiveLayoutConfig(this.getWidgetType()),
       {
         sectionName: "事件",
         children: [
@@ -332,6 +332,7 @@ class BaseInputWidget<
             helpText: "设置标签字体大小",
             controlType: "DROP_DOWN",
             defaultValue: "0.875rem",
+            hidden: isAutoLayout,
             options: [
               {
                 label: "S",

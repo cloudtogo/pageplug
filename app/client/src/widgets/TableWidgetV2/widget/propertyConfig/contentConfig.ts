@@ -229,7 +229,7 @@ export default [
       {
         propertyName: "onSearchTextChanged",
         label: "onSearchTextChanged",
-        helpText: "Triggers an action when search text is modified by the user",
+        helpText: "when search text is modified by the user",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
         isBindProperty: true,
