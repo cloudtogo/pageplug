@@ -46,12 +46,17 @@ import {
 } from "widgets/WidgetUtils";
 import type { UIElementSize } from "./ResizableUtils";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { computeFinalRowCols, computeRowCols } from "./ResizableUtils";
 import { DropTargetContext } from "./DropTargetComponent";
 =======
 import { computeFinalRowCols } from "./ResizableUtils";
 import { computeFinalAutoLayoutRowCols } from "./ResizableUtils";
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+import { computeFinalRowCols } from "./ResizableUtils";
+import { computeFinalAutoLayoutRowCols } from "./ResizableUtils";
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 import {
   BottomHandleStyles,
   BottomLeftHandleStyles,

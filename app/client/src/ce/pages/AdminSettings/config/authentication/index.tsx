@@ -23,9 +23,10 @@ import {
   JS_ORIGIN_URI_FORM,
   REDIRECT_URL_FORM,
 } from "@appsmith/constants/forms";
+import { useSelector } from "react-redux";
+import { getThirdPartyAuths } from "@appsmith/selectors/tenantSelectors";
 
-const { disableLoginForm, enableGithubOAuth, enableGoogleOAuth } =
-  getAppsmithConfigs();
+const { disableLoginForm } = getAppsmithConfigs();
 
 const FormAuth: AdminConfigType = {
   type: SettingCategories.FORM_AUTH,
@@ -33,7 +34,6 @@ const FormAuth: AdminConfigType = {
   title: "账号密码登录",
   subText: "为你的 PagePlug 开启账号密码登录",
   canSave: true,
-  isConnected: false,
   settings: [
     {
       id: "APPSMITH_FORM_LOGIN_DISABLED",
@@ -64,13 +64,12 @@ const FormAuth: AdminConfigType = {
   ],
 };
 
-const GoogleAuth: AdminConfigType = {
+export const GoogleAuth: AdminConfigType = {
   type: SettingCategories.GOOGLE_AUTH,
   controlType: SettingTypes.GROUP,
   title: "Google 登录",
   subText: "使用 Google 账号登录你的平台 (OAuth)",
   canSave: true,
-  isConnected: enableGoogleOAuth,
   settings: [
     {
       id: "APPSMITH_OAUTH2_GOOGLE_READ_MORE",
@@ -136,13 +135,12 @@ const GoogleAuth: AdminConfigType = {
   ],
 };
 
-const GithubAuth: AdminConfigType = {
+export const GithubAuth: AdminConfigType = {
   type: SettingCategories.GITHUB_AUTH,
   controlType: SettingTypes.GROUP,
   title: "Github 登录",
   subText: "使用 Github 账号登录你的平台 (SAML)",
   canSave: true,
-  isConnected: enableGithubOAuth,
   settings: [
     {
       id: "APPSMITH_OAUTH2_GITHUB_READ_MORE",
@@ -190,7 +188,6 @@ export const GoogleAuthCallout: AuthMethodType = {
   subText: "允许使用 Google 账号登录你的平台",
   image: Google,
   type: "LINK",
-  isConnected: enableGoogleOAuth,
 };
 
 export const GithubAuthCallout: AuthMethodType = {
@@ -200,7 +197,6 @@ export const GithubAuthCallout: AuthMethodType = {
   subText: "允许使用 Github 账号登录你的平台",
   image: Github,
   type: "LINK",
-  isConnected: enableGithubOAuth,
 };
 
 export const SamlAuthCallout: AuthMethodType = {
@@ -232,6 +228,11 @@ const AuthMethods = [
 ];
 
 function AuthMain() {
+  const socialLoginList = useSelector(getThirdPartyAuths);
+  GoogleAuth.isConnected = GoogleAuthCallout.isConnected =
+    socialLoginList.includes("google");
+  GithubAuth.isConnected = GithubAuthCallout.isConnected =
+    socialLoginList.includes("github");
   return <AuthPage authMethods={AuthMethods} />;
 }
 

@@ -104,10 +104,14 @@ class AudioWidget extends BaseWidget<AudioWidgetProps, WidgetState> {
         children: [
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "开始播放时触发",
 =======
             helpText: "when the audio is played",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "when the audio is played",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onPlay",
             label: "onPlay",
             controlType: "ACTION_SELECTOR",
@@ -117,10 +121,14 @@ class AudioWidget extends BaseWidget<AudioWidgetProps, WidgetState> {
           },
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "暂停播放时触发",
 =======
             helpText: "when the audio is paused",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "when the audio is paused",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onPause",
             label: "onPause",
             controlType: "ACTION_SELECTOR",
@@ -130,10 +138,14 @@ class AudioWidget extends BaseWidget<AudioWidgetProps, WidgetState> {
           },
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "播放结束时触发",
 =======
             helpText: "when the audio ends",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "when the audio ends",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onEnd",
             label: "onEnd",
             controlType: "ACTION_SELECTOR",

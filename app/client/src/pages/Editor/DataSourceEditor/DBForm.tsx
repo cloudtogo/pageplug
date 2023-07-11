@@ -13,7 +13,6 @@ import type { InjectedFormProps } from "redux-form";
 import { reduxForm } from "redux-form";
 import { APPSMITH_IP_ADDRESSES } from "constants/DatasourceEditorConstants";
 import { getAppsmithConfigs } from "@appsmith/configs";
-import AnalyticsUtil from "utils/AnalyticsUtil";
 import { convertArrayToSentence } from "utils/helpers";
 import { PluginType } from "entities/Action";
 import type { AppState } from "@appsmith/reducers";
@@ -35,12 +34,16 @@ import Debugger, {
 } from "./Debugger";
 import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
 import { showDebuggerFlag } from "selectors/debuggerSelectors";
+<<<<<<< HEAD
+=======
+import DatasourceInformation from "./DatasourceSection";
+import { DocsLink, openDoc } from "../../../constants/DocumentationLinks";
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
 const { cloudHosting } = getAppsmithConfigs();
 
 interface DatasourceDBEditorProps extends JSONtoFormProps {
   setDatasourceViewMode: (viewMode: boolean) => void;
-  openOmnibarReadMore: (text: string) => void;
   datasourceId: string;
   applicationId: string;
   pageId: string;
@@ -85,6 +88,16 @@ export const Form = styled.form`
   height: ${({ theme }) => `calc(100% - ${theme.backBanner})`};
   overflow: hidden;
   flex: 1;
+<<<<<<< HEAD
+=======
+`;
+
+const ViewModeWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #d0d7dd;
+  padding: 24px 20px;
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 `;
 
 class DatasourceDBEditor extends JSONtoForm<Props> {
@@ -101,10 +114,8 @@ class DatasourceDBEditor extends JSONtoForm<Props> {
     });
   };
 
-  openOmnibarReadMore = () => {
-    const { openOmnibarReadMore } = this.props;
-    openOmnibarReadMore("connect to databases");
-    AnalyticsUtil.logEvent("OPEN_OMNIBAR", { source: "READ_MORE_DATASOURCE" });
+  openDocumentation = () => {
+    openDoc(DocsLink.WHITELIST_IP);
   };
 
   render() {
@@ -128,6 +139,7 @@ class DatasourceDBEditor extends JSONtoForm<Props> {
       datasourceButtonConfiguration,
       datasourceDeleteTrigger,
       datasourceId,
+      formConfig,
       formData,
       messages,
       pluginType,
@@ -146,13 +158,19 @@ class DatasourceDBEditor extends JSONtoForm<Props> {
           <Header>
             <FormTitleContainer>
 <<<<<<< HEAD
+<<<<<<< HEAD
               <PluginImage alt="数据源" src={this.props.pluginImage} />
 =======
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
               <PluginImage
                 alt="Datasource"
                 src={getAssetUrl(this.props.pluginImage)}
               />
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
               <FormTitle
                 disabled={!createFlow && !canManageDatasource}
                 focusOnMount={this.props.isNewDatasource}
@@ -192,7 +210,11 @@ class DatasourceDBEditor extends JSONtoForm<Props> {
                     <span>{`Whitelist the IP ${convertArrayToSentence(
                       APPSMITH_IP_ADDRESSES,
                     )}  on your database instance to connect to it. `}</span>
+<<<<<<< HEAD
                     <a onClick={this.openOmnibarReadMore}>
+=======
+                    <a onClick={this.openDocumentation}>
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
                       {"Learn more "}
                       <StyledOpenDocsIcon icon="document-open" />
                     </a>
@@ -207,7 +229,24 @@ class DatasourceDBEditor extends JSONtoForm<Props> {
                 {""}
               </>
             )}
+<<<<<<< HEAD
             {viewMode && <Connected />}
+=======
+            {viewMode && (
+              <ViewModeWrapper>
+                <Connected />
+                <div style={{ marginTop: "30px" }}>
+                  {!_.isNil(formConfig) && !_.isNil(datasource) ? (
+                    <DatasourceInformation
+                      config={formConfig[0]}
+                      datasource={datasource}
+                      viewMode={viewMode}
+                    />
+                  ) : undefined}
+                </div>
+              </ViewModeWrapper>
+            )}
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             {/* Render datasource form call-to-actions */}
             {datasource && (
               <DatasourceAuth

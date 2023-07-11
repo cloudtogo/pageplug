@@ -36,24 +36,12 @@ import type { TreeDropdownOption } from "design-system-old";
 import { FIELD_GROUP_CONFIG } from "../FieldGroup/FieldGroupConfig";
 import { getFunctionName, checkIfArgumentExistAtPosition } from "@shared/ast";
 
-const WX_ALERT_STYLE_OPTIONS = [
-  { label: "无图标", value: "'none'", id: "info" },
-  { label: "成功", value: "'success'", id: "success" },
-  { label: "错误", value: "'error'", id: "error" },
-  { label: "加载中", value: "'loading'", id: "loading" },
-];
-
 export const FIELD_CONFIG: AppsmithFunctionConfigType = {
   [FieldType.ACTION_SELECTOR_FIELD]: {
     label: (props: FieldProps) => props.label || "",
-<<<<<<< HEAD:app/client/src/components/editorComponents/ActionCreator/FieldConfig.ts
-    options: (props: FieldProps) => props.integrationOptionTree,
-    defaultText: "选择动作",
-=======
     options: (props: FieldProps) => props.integrationOptions,
     defaultText: DEFAULT_SELECTOR_VIEW_TEXT,
     exampleText: "",
->>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44:app/client/src/components/editorComponents/ActionCreator/Field/FieldConfig.ts
     getter: (storedValue: string) => {
       if (storedValue === EMPTY_BINDING) {
         return AppsmithFunction.none;
@@ -87,7 +75,7 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
   },
   // Show Alert
   [FieldType.ALERT_TEXT_FIELD]: {
-    label: () => "提示消息",
+    label: () => "Message",
     defaultText: "",
     exampleText: "showAlert('Hello world!', 'info')",
     options: () => null,
@@ -118,8 +106,7 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
   },
   // navigateTo
   [FieldType.URL_FIELD]: {
-    label: (props: FieldProps) =>
-      props.field.isMobile ? "页面名称" : "请输入 URL",
+    label: () => "Enter URL",
     defaultText: "",
     exampleText: "navigateTo('google.com', { a: 1 }, 'SAME_WINDOW')",
     options: () => null,
@@ -135,7 +122,7 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     view: ViewTypes.TEXT_VIEW,
   },
   [FieldType.QUERY_PARAMS_FIELD]: {
-    label: () => "查询参数",
+    label: () => "Query Params",
     defaultText: "",
     exampleText: "navigateTo('Page1', { a: 1 }, 'SAME_WINDOW')",
     options: () => null,
@@ -212,14 +199,9 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     },
     view: ViewTypes.TEXT_VIEW,
   },
-<<<<<<< HEAD:app/client/src/components/editorComponents/ActionCreator/FieldConfig.ts
-  [FieldType.KEY_TEXT_FIELD]: {
-    label: () => "键",
-=======
   // storeValue
   [FieldType.KEY_TEXT_FIELD_STORE_VALUE]: {
     label: () => "Key",
->>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44:app/client/src/components/editorComponents/ActionCreator/Field/FieldConfig.ts
     defaultText: "",
     exampleText: "storeValue('a', 'b')",
     options: () => null,
@@ -232,7 +214,7 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     view: ViewTypes.TEXT_VIEW,
   },
   [FieldType.VALUE_TEXT_FIELD]: {
-    label: () => "值",
+    label: () => "Value",
     defaultText: "",
     exampleText: "storeValue('a', 'b')",
     options: () => null,
@@ -250,7 +232,7 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
   },
   // download()
   [FieldType.DOWNLOAD_DATA_FIELD]: {
-    label: () => "下载数据",
+    label: () => "Data to download",
     defaultText: "",
     exampleText: "download('Image', 'img.png', 'image/png')",
     options: () => null,
@@ -263,7 +245,7 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     view: ViewTypes.TEXT_VIEW,
   },
   [FieldType.DOWNLOAD_FILE_NAME_FIELD]: {
-    label: () => "完整文件名（带扩展名）",
+    label: () => "File name with extension",
     defaultText: "",
     exampleText: "download('Image', 'img.png', 'image/png')",
     options: () => null,
@@ -280,7 +262,7 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     view: ViewTypes.TEXT_VIEW,
   },
   [FieldType.COPY_TEXT_FIELD]: {
-    label: () => "需要复制的内容",
+    label: () => "Text to be copied to clipboard",
     defaultText: "",
     exampleText: "copyToClipboard('example')",
     options: () => null,
@@ -292,13 +274,8 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     },
     view: ViewTypes.TEXT_VIEW,
   },
-<<<<<<< HEAD:app/client/src/components/editorComponents/ActionCreator/FieldConfig.ts
-  [FieldType.CALLBACK_FUNCTION_FIELD]: {
-    label: () => "回调函数",
-=======
   [FieldType.CALLBACK_FUNCTION_FIELD_GEOLOCATION]: {
     label: () => "Callback function",
->>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44:app/client/src/components/editorComponents/ActionCreator/Field/FieldConfig.ts
     defaultText: "",
     exampleText: `appsmith.geolocation.getCurrentPosition((location) => { console.log(location) })`,
     options: () => null,
@@ -327,7 +304,7 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     view: ViewTypes.TEXT_VIEW,
   },
   [FieldType.DELAY_FIELD]: {
-    label: () => "延迟 (ms)",
+    label: () => "Delay (ms)",
     defaultText: "",
     exampleText: `setInterval(() => {
       const a = 0;
@@ -388,14 +365,10 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     view: ViewTypes.TEXT_VIEW,
   },
   [FieldType.SHOW_MODAL_FIELD]: {
-    label: () => "弹窗名称",
+    label: () => "Modal Name",
     options: (props: FieldProps) => props.modalDropdownList,
-<<<<<<< HEAD:app/client/src/components/editorComponents/ActionCreator/FieldConfig.ts
-    defaultText: "选择弹窗",
-=======
     defaultText: "Select Modal",
     exampleText: "showModal('Modal1')",
->>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44:app/client/src/components/editorComponents/ActionCreator/Field/FieldConfig.ts
     getter: (value: any) => {
       return modalGetter(value);
     },
@@ -405,14 +378,10 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     view: ViewTypes.SELECTOR_VIEW,
   },
   [FieldType.CLOSE_MODAL_FIELD]: {
-    label: () => "弹窗名称",
+    label: () => "Modal Name",
     options: (props: FieldProps) => props.modalDropdownList,
-<<<<<<< HEAD:app/client/src/components/editorComponents/ActionCreator/FieldConfig.ts
-    defaultText: "选择弹窗",
-=======
     defaultText: "Select Modal",
     exampleText: "closeModal('Modal1')",
->>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44:app/client/src/components/editorComponents/ActionCreator/Field/FieldConfig.ts
     getter: (value: any) => {
       return modalGetter(value);
     },
@@ -421,28 +390,11 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     },
     view: ViewTypes.SELECTOR_VIEW,
   },
-<<<<<<< HEAD:app/client/src/components/editorComponents/ActionCreator/FieldConfig.ts
-  [FieldType.RESET_CHILDREN_FIELD]: {
-    label: () => "重置子组件",
-    options: () => RESET_CHILDREN_OPTIONS,
-    defaultText: "true",
-    getter: (value: any) => {
-      return enumTypeGetter(value, 1);
-    },
-    setter: (option: any, currentValue: string) => {
-      return enumTypeSetter(option.value, currentValue, 1);
-    },
-    view: ViewTypes.SELECTOR_VIEW,
-  },
-  [FieldType.WIDGET_NAME_FIELD]: {
-    label: () => "组件",
-=======
   [FieldType.WIDGET_NAME_FIELD]: {
     label: () => "Widget",
     exampleText: "resetWidget('Modal1', true)",
->>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44:app/client/src/components/editorComponents/ActionCreator/Field/FieldConfig.ts
     options: (props: FieldProps) => props.widgetOptionTree,
-    defaultText: "选择组件",
+    defaultText: "Select Widget",
     getter: (value: any) => {
       return enumTypeGetter(value, 0);
     },
@@ -451,18 +403,11 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     },
     view: ViewTypes.SELECTOR_VIEW,
   },
-<<<<<<< HEAD:app/client/src/components/editorComponents/ActionCreator/FieldConfig.ts
-  [FieldType.PAGE_SELECTOR_FIELD]: {
-    label: () => "选择页面",
-    options: (props: FieldProps) => props.pageDropdownOptions,
-    defaultText: "选择页面",
-=======
   [FieldType.RESET_CHILDREN_FIELD]: {
     label: () => "Reset Children",
     options: () => RESET_CHILDREN_OPTIONS,
     defaultText: "true",
     exampleText: "resetWidget('Modal1', true)",
->>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44:app/client/src/components/editorComponents/ActionCreator/Field/FieldConfig.ts
     getter: (value: any) => {
       return enumTypeGetter(value, 1);
     },
@@ -475,19 +420,11 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     },
     view: ViewTypes.SELECTOR_VIEW,
   },
-<<<<<<< HEAD:app/client/src/components/editorComponents/ActionCreator/FieldConfig.ts
-  [FieldType.ALERT_TYPE_SELECTOR_FIELD]: {
-    label: () => "提示类型",
-    options: (props: FieldProps) =>
-      props.field.isMobile ? WX_ALERT_STYLE_OPTIONS : ALERT_STYLE_OPTIONS,
-    defaultText: "选择提示类型",
-=======
   [FieldType.PAGE_SELECTOR_FIELD]: {
     label: () => "Choose Page",
     exampleText: "navigateTo('Page1', { a: 1 }, 'SAME_WINDOW')",
     options: (props: FieldProps) => props.pageDropdownOptions,
     defaultText: "Select Page",
->>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44:app/client/src/components/editorComponents/ActionCreator/Field/FieldConfig.ts
     getter: (value: any) => {
       return enumTypeGetter(value, 0, "");
     },
@@ -497,31 +434,13 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     view: ViewTypes.SELECTOR_VIEW,
   },
   [FieldType.DOWNLOAD_FILE_TYPE_FIELD]: {
-<<<<<<< HEAD:app/client/src/components/editorComponents/ActionCreator/FieldConfig.ts
-    label: () => "文件类型",
-=======
     label: () => "Type",
     exampleText: "download('Image', 'img.png', 'image/png')",
->>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44:app/client/src/components/editorComponents/ActionCreator/Field/FieldConfig.ts
     options: () => FILE_TYPE_OPTIONS,
-    defaultText: "选择文件类型 (可选)",
+    defaultText: "Select file type (optional)",
     getter: (value: any) => {
       return enumTypeGetter(value, 2);
     },
-<<<<<<< HEAD:app/client/src/components/editorComponents/ActionCreator/FieldConfig.ts
-    setter: (option: any, currentValue: string) =>
-      enumTypeSetter(option.value, currentValue, 2),
-    view: ViewTypes.SELECTOR_VIEW,
-  },
-  [FieldType.NAVIGATION_TARGET_FIELD]: {
-    label: () => "打开目标",
-    options: () => NAVIGATION_TARGET_FIELD_OPTIONS,
-    defaultText: NAVIGATION_TARGET_FIELD_OPTIONS[0].label,
-    getter: (value: any) => {
-      return enumTypeGetter(value, 2, "SAME_WINDOW");
-    },
-=======
->>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44:app/client/src/components/editorComponents/ActionCreator/Field/FieldConfig.ts
     setter: (option: any, currentValue: string) => {
       const isDataFieldSet = textGetter(currentValue, 0);
       if (!isDataFieldSet) {
@@ -537,34 +456,24 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
   },
   [FieldType.ON_SUCCESS_FIELD]: {
     label: () => "",
-<<<<<<< HEAD:app/client/src/components/editorComponents/ActionCreator/FieldConfig.ts
-    options: (props: FieldProps) => props.integrationOptionTree,
-    defaultText: "选择动作",
-=======
     exampleText: "",
     options: (props: FieldProps) => props.integrationOptions,
     defaultText: "Select Action",
->>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44:app/client/src/components/editorComponents/ActionCreator/Field/FieldConfig.ts
     view: ViewTypes.NO_VIEW,
     getter: () => "",
     setter: () => "",
   },
   [FieldType.ON_ERROR_FIELD]: {
     label: () => "",
-<<<<<<< HEAD:app/client/src/components/editorComponents/ActionCreator/FieldConfig.ts
-    options: (props: FieldProps) => props.integrationOptionTree,
-    defaultText: "选择动作",
-=======
     exampleText: "",
     options: (props: FieldProps) => props.integrationOptions,
     defaultText: "Select Action",
->>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44:app/client/src/components/editorComponents/ActionCreator/Field/FieldConfig.ts
     view: ViewTypes.NO_VIEW,
     getter: () => "",
     setter: () => "",
   },
   [FieldType.PAGE_NAME_AND_URL_TAB_SELECTOR_FIELD]: {
-    label: () => "类型",
+    label: () => "Type",
     defaultText: "",
     exampleText: "navigateTo('Page1', { a: 1 }, 'SAME_WINDOW')",
     options: () => null,
@@ -578,14 +487,9 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
   },
   [FieldType.KEY_VALUE_FIELD]: {
     label: () => "",
-<<<<<<< HEAD:app/client/src/components/editorComponents/ActionCreator/FieldConfig.ts
-    defaultText: "选择动作",
-    options: (props: FieldProps) => props.integrationOptionTree,
-=======
     defaultText: "Select Action",
     exampleText: "",
     options: (props: FieldProps) => props.integrationOptions,
->>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44:app/client/src/components/editorComponents/ActionCreator/Field/FieldConfig.ts
     getter: (value: any) => {
       return value;
     },
@@ -611,15 +515,11 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     view: ViewTypes.TEXT_VIEW,
   },
   [FieldType.MESSAGE_FIELD]: {
-    label: () => "消息",
+    label: () => "Message",
     defaultText: "",
     options: () => null,
-<<<<<<< HEAD:app/client/src/components/editorComponents/ActionCreator/FieldConfig.ts
-    toolTip: "发送到目标 iframe 的消息数据",
-=======
     exampleText: "postWindowMessage('hi', 'window', '*')",
     toolTip: "Data to be sent to the target iframe",
->>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44:app/client/src/components/editorComponents/ActionCreator/Field/FieldConfig.ts
     getter: (value: string) => {
       return textGetter(value, 0);
     },
@@ -629,15 +529,11 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     view: ViewTypes.TEXT_VIEW,
   },
   [FieldType.TARGET_ORIGIN_FIELD]: {
-    label: () => "允许的域名",
+    label: () => "Allowed origins",
     defaultText: "",
     options: () => null,
-<<<<<<< HEAD:app/client/src/components/editorComponents/ActionCreator/FieldConfig.ts
-    toolTip: "限制能给哪些域名发送消息",
-=======
     exampleText: "postWindowMessage('hi', 'window', '*')",
     toolTip: "Restricts domains to which the message can be sent",
->>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44:app/client/src/components/editorComponents/ActionCreator/Field/FieldConfig.ts
     getter: (value: string) => {
       return textGetter(value, 2);
     },
@@ -647,15 +543,11 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     view: ViewTypes.TEXT_VIEW,
   },
   [FieldType.SOURCE_FIELD]: {
-    label: () => "目标 iframe",
+    label: () => "Target iframe",
     defaultText: "",
     options: () => null,
-<<<<<<< HEAD:app/client/src/components/editorComponents/ActionCreator/FieldConfig.ts
-    toolTip: "指定目标 iframe 组件或者父级窗口",
-=======
     exampleText: "postWindowMessage('hi', 'window', '*')",
     toolTip: "Specifies the target iframe widget name or parent window",
->>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44:app/client/src/components/editorComponents/ActionCreator/Field/FieldConfig.ts
     getter: (value: string) => {
       return textGetter(value, 1);
     },

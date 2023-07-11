@@ -217,10 +217,14 @@ export default {
               },
               {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 helpText: "点击菜单项时触发",
 =======
                 helpText: "when the menu item is clicked",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+                helpText: "when the menu item is clicked",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
                 propertyName: "onClick",
                 label: "onClick",
                 controlType: "ACTION_SELECTOR",
@@ -366,10 +370,14 @@ export default {
     },
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
       helpText: "点击按钮时触发",
 =======
       helpText: "when the button is clicked",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+      helpText: "when the button is clicked",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
       propertyName: "onClick",
       label: "onClick",
       controlType: "ACTION_SELECTOR",

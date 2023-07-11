@@ -76,12 +76,20 @@ function* addWidgetAndReorderSaga(
 
     let widgetIndex = index;
     let currLayerIndex = layerIndex;
+<<<<<<< HEAD
+=======
+    let newLayer = isNewLayer;
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
     const canvasWidget = updatedWidgetsOnAddition[parentId];
 
     if (addToBottom && canvasWidget.children && canvasWidget.flexLayers) {
       widgetIndex = canvasWidget.children.length;
       currLayerIndex = canvasWidget.flexLayers.length;
+<<<<<<< HEAD
+=======
+      newLayer = true;
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
     }
 
     const updatedWidgetsOnMove: CanvasWidgetsReduxState = yield call(
@@ -89,7 +97,11 @@ function* addWidgetAndReorderSaga(
       {
         movedWidgets: [newWidget.newWidgetId],
         index: widgetIndex,
+<<<<<<< HEAD
         isNewLayer,
+=======
+        isNewLayer: newLayer,
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         parentId,
         allWidgets: updatedWidgetsOnAddition,
         alignment,

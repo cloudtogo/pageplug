@@ -282,10 +282,14 @@ export default [
     children: [
       {
 <<<<<<< HEAD
+<<<<<<< HEAD
         helpText: "滑动条值变化时触发",
 =======
         helpText: "when a user changes the slider value",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+        helpText: "when a user changes the slider value",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         propertyName: "onChange",
         label: "onChange",
         controlType: "ACTION_SELECTOR",

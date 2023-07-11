@@ -11,6 +11,7 @@ import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { Colors } from "constants/Colors";
 import zh_CN from "./zh_CN";
 import type { WidgetType } from "constants/WidgetConstants";
+import { FILE_SIZE_LIMIT_FOR_BLOBS } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import type { Stylesheet } from "entities/AppTheming";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
@@ -29,7 +30,10 @@ import FilePickerComponent from "../component";
 import FileDataTypes from "../constants";
 import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
 import type { AutocompletionDefinitions } from "widgets/constants";
+<<<<<<< HEAD
 import { isAirgapped } from "@appsmith/utils/airgapHelpers";
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
 const CSV_ARRAY_LABEL = "Array (仅限 CSVs)";
 const CSV_FILE_TYPE_REGEX = /.+(\/csv)$/;
@@ -452,7 +456,10 @@ class FilePickerWidget extends BaseWidget<
 =======
             helpText:
               "when the user selects a file. Upload files to a CDN and stores their URLs in filepicker.files",
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onFilesSelected",
             label: "onFilesSelected",
             controlType: "ACTION_SELECTOR",
@@ -686,7 +693,7 @@ class FilePickerWidget extends BaseWidget<
       const fileCount = this.props.selectedFiles?.length || 0;
       const fileReaderPromises = files.map((file, index) => {
         return new Promise((resolve) => {
-          if (file.size < 5000 * 1000) {
+          if (file.size < FILE_SIZE_LIMIT_FOR_BLOBS) {
             const reader = new FileReader();
             if (this.props.fileDataType === FileDataTypes.Base64) {
               reader.readAsDataURL(file.data);

@@ -17,11 +17,15 @@ import {
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import React from "react";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { triggerWelcomeTour } from "./Utils";
 import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
+<<<<<<< HEAD
+=======
+import { getCurrentApplicationId } from "selectors/editorSelectors";
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 import { getAssetUrl, isAirgapped } from "@appsmith/utils/airgapHelpers";
 
 const Wrapper = styled.div`
@@ -131,6 +135,10 @@ const getPublishAppsImg = () => `${ASSETS_CDN_URL}/PublishApps-v2.svg`;
 
 export default function IntroductionModal({ close }: IntroductionModalProps) {
   const dispatch = useDispatch();
+<<<<<<< HEAD
+=======
+  const applicationId = useSelector(getCurrentApplicationId);
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   const isAirgappedInstance = isAirgapped();
   const onBuildApp = () => {
     AnalyticsUtil.logEvent("SIGNPOSTING_BUILD_APP_CLICK");
@@ -227,7 +235,11 @@ export default function IntroductionModal({ close }: IntroductionModalProps) {
                 <StyledButton
                   category={Category.secondary}
                   className="t--introduction-modal-welcome-tour-button my-6"
+<<<<<<< HEAD
                   onClick={() => triggerWelcomeTour(dispatch)}
+=======
+                  onClick={() => triggerWelcomeTour(dispatch, applicationId)}
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
                   size={Size.large}
                   tag="button"
                   text={createMessage(START_TUTORIAL)}

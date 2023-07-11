@@ -110,6 +110,7 @@ export const CONFIG = {
                   },
                   props: {
 <<<<<<< HEAD
+<<<<<<< HEAD
                     text: "同比提升 21%",
                     fontSize: "0.875rem",
                     textColor: Colors.GREEN,
@@ -118,6 +119,11 @@ export const CONFIG = {
                     buttonStyle: "PRIMARY",
                     buttonVariant: ButtonVariantTypes.PRIMARY,
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+                    iconName: "arrow-top-right",
+                    buttonStyle: "PRIMARY",
+                    buttonVariant: ButtonVariantTypes.PRIMARY,
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
                     version: 1,
                   },
                 },

@@ -77,6 +77,11 @@ export const getTotalTopOffset = (widgetId: string) => {
             ? parent.mobileTopRow
             : parent.topRow;
         offset += top * GridDefaults.DEFAULT_GRID_ROW_HEIGHT + FLEXBOX_PADDING;
+<<<<<<< HEAD
+=======
+        if (parent.type === "TABS_WIDGET" && parent?.shouldShowTabs)
+          offset += GridDefaults.DEFAULT_GRID_ROW_HEIGHT * 4; // 4 rows for tabs header
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         widget = parent;
       }
       return offset;

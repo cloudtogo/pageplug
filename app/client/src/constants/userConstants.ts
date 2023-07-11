@@ -17,6 +17,10 @@ export type User = {
   enableTelemetry: boolean;
   adminSettingsVisible?: boolean;
   isAnonymous?: boolean;
+<<<<<<< HEAD
+=======
+  isIntercomConsentGiven?: boolean;
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 };
 
 export interface UserApplication {
@@ -38,6 +42,7 @@ export const DefaultCurrentUserDetails: User = {
   isConfigurable: false,
   enableTelemetry: false,
   adminSettingsVisible: false,
+  isIntercomConsentGiven: false,
 };
 
 // TODO keeping it here instead of the USER_API since it leads to cyclic deps errors during tests

@@ -93,10 +93,14 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
         children: [
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "视频开始播放后触发",
 =======
             helpText: "when the video is played",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "when the video is played",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onPlay",
             label: "onPlay",
             controlType: "ACTION_SELECTOR",
@@ -106,10 +110,14 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
           },
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "视频暂停后触发",
 =======
             helpText: "when the video is paused",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "when the video is paused",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onPause",
             label: "onPause",
             controlType: "ACTION_SELECTOR",
@@ -119,10 +127,14 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
           },
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "视频播放结束后触发",
 =======
             helpText: "when the video ends",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "when the video ends",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onEnd",
             label: "onEnd",
             controlType: "ACTION_SELECTOR",

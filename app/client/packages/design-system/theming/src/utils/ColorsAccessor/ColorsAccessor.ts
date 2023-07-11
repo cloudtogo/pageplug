@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import type Color from "colorjs.io";
 import type { ColorTypes } from "colorjs.io/types/src/color";
 import { parse } from "../";
@@ -7,14 +8,27 @@ export class ColorsAccessor {
 
   constructor(color: ColorTypes) {
     this.color = parse(color);
+=======
+import Color from "colorjs.io";
+import type { ColorTypes } from "colorjs.io/types/src/color";
+
+export class ColorsAccessor {
+  color: Color;
+
+  constructor(color: ColorTypes) {
+    this.color = new Color(color);
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
     return this;
   }
 
+<<<<<<< HEAD
   get hex() {
     return this.color.toString({ format: "hex" });
   }
 
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   /* Lightness */
   get isVeryDark() {
     return this.color.oklch.l < 0.3;
