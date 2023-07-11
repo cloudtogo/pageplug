@@ -74,6 +74,10 @@ import {
 } from "selectors/onboardingSelectors";
 import { datasourcesEditorIdURL, integrationEditorURL } from "RouteBuilder";
 import { PluginPackageName } from "entities/Action";
+<<<<<<< HEAD
+=======
+import { removeFirstTimeUserOnboardingApplicationId } from "actions/onboardingActions";
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 import { getCurrentAppWorkspace } from "@appsmith/selectors/workspaceSelectors";
 import { hasCreateDatasourcePermission } from "@appsmith/utils/permissionHelpers";
 
@@ -523,10 +527,7 @@ function GeneratePageForm() {
     AnalyticsUtil.logEvent("GEN_CRUD_PAGE_FORM_SUBMIT");
     dispatch(generateTemplateToUpdatePage(payload));
     if (isFirstTimeUserOnboardingEnabled) {
-      dispatch({
-        type: ReduxActionTypes.SET_FIRST_TIME_USER_ONBOARDING_APPLICATION_ID,
-        payload: "",
-      });
+      dispatch(removeFirstTimeUserOnboardingApplicationId(applicationId));
     }
     if (isFirstTimeUserOnboardingComplete) {
       dispatch({

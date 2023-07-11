@@ -498,10 +498,14 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
         children: [
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "文本输入改变时触发",
 =======
             helpText: "when the text is changed",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "when the text is changed",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onTextChanged",
             label: "onTextChanged",
             controlType: "ACTION_SELECTOR",
@@ -511,10 +515,14 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
           },
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "提交时触发（用户按了回车）",
 =======
             helpText: "on submit (when the enter key is pressed)",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "on submit (when the enter key is pressed)",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onSubmit",
             label: "onSubmit",
             controlType: "ACTION_SELECTOR",

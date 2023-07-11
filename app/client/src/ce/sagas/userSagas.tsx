@@ -1,9 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { call, fork, put, race, select, take } from "redux-saga/effects";
 // eslint-disable-next-line prettier/prettier
 =======
 import { call, put, race, select, take } from "redux-saga/effects";
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+import { call, put, race, select, take } from "redux-saga/effects";
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 import type {
   ReduxAction,
   ReduxActionWithPromise,
@@ -62,8 +66,8 @@ import {
   initPageLevelSocketConnection,
 } from "actions/websocketActions";
 import {
-  getEnableFirstTimeUserOnboarding,
-  getFirstTimeUserOnboardingApplicationId,
+  getEnableStartSignposting,
+  getFirstTimeUserOnboardingApplicationIds,
   getFirstTimeUserOnboardingIntroModalVisibility,
 } from "utils/storage";
 import { initializeAnalyticsAndTrackers } from "utils/AppsmithUtils";
@@ -77,8 +81,11 @@ import type { SegmentState } from "reducers/uiReducers/analyticsReducer";
 import type FeatureFlags from "entities/FeatureFlags";
 import UsagePulse from "usagePulse";
 import { isAirgapped } from "@appsmith/utils/airgapHelpers";
+<<<<<<< HEAD
 
 const { inCloudOS } = getAppsmithConfigs();
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
 export function* createUserSaga(
   action: ReduxActionWithPromise<CreateUserRequest>,
@@ -381,12 +388,14 @@ export function* inviteUsers(
 
 export function* updateUserDetailsSaga(action: ReduxAction<UpdateUserRequest>) {
   try {
-    const { email, name, role, useCase } = action.payload;
+    const { email, intercomConsentGiven, name, role, useCase } = action.payload;
+
     const response: ApiResponse = yield callAPI(UserApi.updateUser, {
       email,
       name,
       role,
       useCase,
+      intercomConsentGiven,
     });
     const isValidResponse: boolean = yield validateResponse(response);
 
@@ -515,20 +524,15 @@ export function* fetchFeatureFlags() {
 }
 
 export function* updateFirstTimeUserOnboardingSage() {
-  const enable: string | null = yield getEnableFirstTimeUserOnboarding();
-
+  const enable: boolean | null = yield call(getEnableStartSignposting);
   if (enable) {
-    const applicationId: string =
-      yield getFirstTimeUserOnboardingApplicationId() || "";
+    const applicationIds: string[] =
+      yield getFirstTimeUserOnboardingApplicationIds() || [];
     const introModalVisibility: string | null =
       yield getFirstTimeUserOnboardingIntroModalVisibility();
     yield put({
-      type: ReduxActionTypes.SET_ENABLE_FIRST_TIME_USER_ONBOARDING,
-      payload: true,
-    });
-    yield put({
-      type: ReduxActionTypes.SET_FIRST_TIME_USER_ONBOARDING_APPLICATION_ID,
-      payload: applicationId,
+      type: ReduxActionTypes.SET_FIRST_TIME_USER_ONBOARDING_APPLICATION_IDS,
+      payload: applicationIds,
     });
     yield put({
       type: ReduxActionTypes.SET_SHOW_FIRST_TIME_USER_ONBOARDING_MODAL,

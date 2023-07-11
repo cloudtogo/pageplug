@@ -8,11 +8,15 @@ import {
   ControlWrapper,
 } from "components/propertyControls/StyledControls";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { JSToggleButton } from "design-system-old";
 import { HelpIcons } from "icons/HelpIcons";
 =======
 import { Icon, JSToggleButton } from "design-system-old";
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+import { Icon, JSToggleButton } from "design-system-old";
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 import PropertyControlFactory from "utils/PropertyControlFactory";
 import PropertyHelpLabel from "pages/Editor/PropertyPane/PropertyHelpLabel";
 import { useDispatch, useSelector } from "react-redux";
@@ -66,8 +70,11 @@ import { Colors } from "constants/Colors";
 import WidgetFactory from "utils/WidgetFactory";
 import type { AdditionalDynamicDataTree } from "utils/autocomplete/customTreeTypeDefCreator";
 import clsx from "clsx";
+<<<<<<< HEAD
 
 const HelpIcon = HelpIcons.HELP_ICON;
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
 type Props = PropertyPaneControlConfig & {
   panel: IPanelProps;

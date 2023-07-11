@@ -10,6 +10,8 @@ import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
 import type { DerivedPropertiesMap } from "utils/WidgetFactory";
 import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import BaseWidget from "widgets/BaseWidget";
+import type { InputWidgetProps } from "widgets/InputWidgetV2/widget";
+import { isInputTypeEmailOrPassword } from "widgets/InputWidgetV2/widget/Utilities";
 import BaseInputComponent from "../component";
 import { InputTypes } from "../constants";
 import { checkInputTypeTextByProps } from "../utils";
@@ -238,6 +240,24 @@ class BaseInputWidget<
             validation: { type: ValidationTypes.BOOLEAN },
           },
           {
+            propertyName: "shouldAllowAutofill",
+            label: "Allow autofill",
+            helpText: "Allow users to autofill values from browser",
+            controlType: "SWITCH",
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.BOOLEAN },
+            hidden: (props: InputWidgetProps) => {
+              //should be shown for only inputWidgetV2 and for email or password input types
+              return !(
+                isInputTypeEmailOrPassword(props?.inputType) &&
+                props.type === "INPUT_WIDGET_V2"
+              );
+            },
+            dependencies: ["inputType"],
+          },
+          {
             propertyName: "allowFormatting",
             label: "手机号格式化",
             helpText: "按各个国家的规则格式化手机号",
@@ -257,10 +277,14 @@ class BaseInputWidget<
         children: [
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "文本输入改变时触发",
 =======
             helpText: "when the text is changed",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "when the text is changed",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onTextChanged",
             label: "onTextChanged",
             controlType: "ACTION_SELECTOR",
@@ -270,10 +294,14 @@ class BaseInputWidget<
           },
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "输入聚焦时触发",
 =======
             helpText: "when the input field receives focus",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "when the input field receives focus",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onFocus",
             label: "onFocus",
             controlType: "ACTION_SELECTOR",
@@ -283,10 +311,14 @@ class BaseInputWidget<
           },
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "输入失焦时触发",
 =======
             helpText: "when the input field loses focus",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "when the input field loses focus",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onBlur",
             label: "onBlur",
             controlType: "ACTION_SELECTOR",
@@ -296,10 +328,14 @@ class BaseInputWidget<
           },
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "提交时触发（用户按了回车）",
 =======
             helpText: "on submit (when the enter key is pressed)",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "on submit (when the enter key is pressed)",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onSubmit",
             label: "onSubmit",
             controlType: "ACTION_SELECTOR",

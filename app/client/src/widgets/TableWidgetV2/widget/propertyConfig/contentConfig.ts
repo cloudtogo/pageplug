@@ -169,10 +169,14 @@ export default [
       },
       {
 <<<<<<< HEAD
+<<<<<<< HEAD
         helpText: "表格换页时触发",
 =======
         helpText: "when a table page is changed",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+        helpText: "when a table page is changed",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         propertyName: "onPageChange",
         label: "onPageChange",
         controlType: "ACTION_SELECTOR",
@@ -184,10 +188,14 @@ export default [
       },
       {
 <<<<<<< HEAD
+<<<<<<< HEAD
         helpText: "表格页大小改变时触发",
 =======
         helpText: "when a table page size is changed",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+        helpText: "when a table page size is changed",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         propertyName: "onPageSizeChange",
         label: "onPageSizeChange",
         controlType: "ACTION_SELECTOR",
@@ -315,10 +323,14 @@ export default [
       },
       {
 <<<<<<< HEAD
+<<<<<<< HEAD
         helpText: "选中行时触发",
 =======
         helpText: "when a table row is selected",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+        helpText: "when a table row is selected",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         propertyName: "onRowSelected",
         label: "onRowSelected",
         controlType: "ACTION_SELECTOR",
@@ -348,10 +360,14 @@ export default [
       },
       {
 <<<<<<< HEAD
+<<<<<<< HEAD
         helpText: "表格列排序时触发",
 =======
         helpText: "when a table column is sorted",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+        helpText: "when a table column is sorted",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         propertyName: "onSort",
         label: "onSort",
         controlType: "ACTION_SELECTOR",
@@ -381,10 +397,14 @@ export default [
       {
         propertyName: "onAddNewRowSave",
 <<<<<<< HEAD
+<<<<<<< HEAD
         helpText: "点击新增行保存按钮时触发",
 =======
         helpText: "when a add new row save button is clicked",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+        helpText: "when a add new row save button is clicked",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         label: "onSave",
         controlType: "ACTION_SELECTOR",
         hidden: (props: TableWidgetProps) => {
@@ -413,10 +433,14 @@ export default [
       {
         propertyName: "onAddNewRowDiscard",
 <<<<<<< HEAD
+<<<<<<< HEAD
         helpText: "点击新增行丢弃按钮时触发",
 =======
         helpText: "when a add new row discard button is clicked",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+        helpText: "when a add new row discard button is clicked",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         label: "onDiscard",
         controlType: "ACTION_SELECTOR",
         hidden: (props: TableWidgetProps) => {

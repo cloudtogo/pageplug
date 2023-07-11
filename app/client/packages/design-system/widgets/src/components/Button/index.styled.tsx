@@ -15,7 +15,11 @@ export const StyledButton = styled(HeadlessButton)<ButtonProps>`
   user-select: none;
 
   // TODO: remove this when we use only flex layout
+<<<<<<< HEAD
   &[data-fit-container="true"] {
+=======
+  &[data-fit-container] {
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
     width: 100%;
     height: 100%;
   }
@@ -29,11 +33,19 @@ export const StyledButton = styled(HeadlessButton)<ButtonProps>`
     color: var(--color-fg-on-accent);
     border-color: transparent;
 
+<<<<<<< HEAD
     &.is-hovered {
       background-color: var(--color-bg-accent-hover);
     }
 
     &.is-active {
+=======
+    &[data-hovered] {
+      background-color: var(--color-bg-accent-hover);
+    }
+
+    &[data-active] {
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
       background-color: var(--color-bg-accent-active);
     }
   }
@@ -44,11 +56,19 @@ export const StyledButton = styled(HeadlessButton)<ButtonProps>`
     border-color: var(--color-bd-accent);
     border-width: var(--border-width-1);
 
+<<<<<<< HEAD
     &.is-hovered {
       background-color: var(--color-bg-accent-subtle-hover);
     }
 
     &.is-active {
+=======
+    &[data-hovered] {
+      background-color: var(--color-bg-accent-subtle-hover);
+    }
+
+    &[data-active] {
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
       background-color: var(--color-bg-accent-subtle-active);
     }
   }
@@ -59,22 +79,38 @@ export const StyledButton = styled(HeadlessButton)<ButtonProps>`
     border-color: transparent;
     border-width: 0;
 
+<<<<<<< HEAD
     &.is-hovered {
       background: var(--color-bg-accent-subtle-hover);
     }
 
     &.is-active {
+=======
+    &[data-hovered] {
+      background: var(--color-bg-accent-subtle-hover);
+    }
+
+    &[data-active] {
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
       background: var(--color-bg-accent-subtle-active);
     }
   }
 
   // we don't use :focus-visible because not all browsers (safari) have it yet
+<<<<<<< HEAD
   &:not([data-loading]).focus-ring,
+=======
+  &[data-focused]:not([data-loading]),
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   &[data-focus="true"] {
     box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-bd-focus);
   }
 
+<<<<<<< HEAD
   &.is-disabled {
+=======
+  &[data-disabled] {
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
     pointer-events: none;
     opacity: var(--opacity-disabled);
   }

@@ -368,6 +368,7 @@ export const getCurrentPageName = createSelector(
 export const getWidgetCards = createSelector(
   getWidgetConfigs,
 <<<<<<< HEAD
+<<<<<<< HEAD
   isMobileLayout,
   (widgetConfigs: WidgetConfigReducerState, isMobile: boolean) => {
     const cards = Object.values(widgetConfigs.config).filter(
@@ -376,6 +377,8 @@ export const getWidgetCards = createSelector(
     );
 
 =======
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   getIsAutoLayout,
   (widgetConfigs: WidgetConfigReducerState, isAutoLayout: boolean) => {
     const cards = Object.values(widgetConfigs.config).filter((config) => {
@@ -383,7 +386,10 @@ export const getWidgetCards = createSelector(
         ? config.widgetName !== "Map" && !config.hideCard
         : !config.hideCard;
     });
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
     const _cards: WidgetCardProps[] = cards.map((config) => {
       const {
         detachFromLayout = false,

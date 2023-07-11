@@ -9,6 +9,7 @@
     "prettier:ci": "prettier --check .",
     "build:tokens": "npx ts-node ./src/utils/buildTokens.ts"
   },
+<<<<<<< HEAD
   "dependencies": {
     "react": "*",
     "react-dom": "*"
@@ -17,6 +18,8 @@
     "@types/react": "*",
     "@types/react-dom": "*"
   },
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0-rc.1 || ^18.0.0"
   }

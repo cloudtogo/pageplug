@@ -166,6 +166,7 @@ export function PositionedContainer(
 
   // TODO: Experimental fix for sniping mode. This should be handled with a single event
 <<<<<<< HEAD
+<<<<<<< HEAD
   const stopEventPropagation = (e: any) => {
     !isSnipingMode && e.stopPropagation();
   };
@@ -180,6 +181,8 @@ export function PositionedContainer(
 
 =======
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   return (
     <PositionedWidget
       className={containerClassName}
@@ -190,9 +193,12 @@ export function PositionedContainer(
       id={props.widgetId}
       key={`positioned-container-${props.widgetId}`}
 <<<<<<< HEAD
+<<<<<<< HEAD
       // Positioned Widget is the top enclosure for all widgets and clicks on/inside the widget should not be propagated/bubbled out of this Container.
       onClick={onClickFn}
 =======
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
       onClickCapture={clickToSelectWidget}
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
       ref={ref}

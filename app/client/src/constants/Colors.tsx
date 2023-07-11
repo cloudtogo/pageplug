@@ -187,7 +187,10 @@ export const Colors = {
 =======
   PRIMARY_ORANGE: "#F86A2B",
   PRIMARY_ORANGE_OPAQUE: "#F86A2B1A",
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
   GREEN_SOLID: "#50AF6C",
   MIRAGE: "#182026",

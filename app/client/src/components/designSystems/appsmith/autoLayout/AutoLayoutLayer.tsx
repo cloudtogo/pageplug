@@ -1,8 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* eslint-disable prettier/prettier */
 =======
 import { GridDefaults } from "constants/WidgetConstants";
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+import { GridDefaults } from "constants/WidgetConstants";
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 import type { ReactNode } from "react";
 import React from "react";
 import styled from "styled-components";

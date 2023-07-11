@@ -6,6 +6,7 @@ import {
 } from "./selectors";
 import _, { find, isString, reduce, remove } from "lodash";
 import type { WidgetType } from "constants/WidgetConstants";
+import { AUTO_LAYOUT_CONTAINER_PADDING } from "constants/WidgetConstants";
 import {
   CONTAINER_GRID_PADDING,
   FLEXBOX_PADDING,
@@ -60,6 +61,10 @@ import { isWidget } from "@appsmith/workers/Evaluation/evaluationUtils";
 import { CANVAS_DEFAULT_MIN_HEIGHT_PX } from "constants/AppConstants";
 import type { MetaState } from "reducers/entityReducers/metaReducer";
 import { Positioning } from "utils/autoLayout/constants";
+<<<<<<< HEAD
+=======
+import { AppPositioningTypes } from "reducers/entityReducers/pageListReducer";
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
 export interface CopiedWidgetGroup {
   widgetId: string;
@@ -744,7 +749,16 @@ export function getMousePositions(
  */
 export function getSnappedGrid(LayoutWidget: WidgetProps, canvasWidth: number) {
   // For all widgets inside a container, we remove both container padding as well as widget padding from component width
+<<<<<<< HEAD
   let padding = (CONTAINER_GRID_PADDING + WIDGET_PADDING) * 2;
+=======
+  let padding =
+    ((LayoutWidget?.appPositioningType === AppPositioningTypes.AUTO
+      ? AUTO_LAYOUT_CONTAINER_PADDING
+      : CONTAINER_GRID_PADDING) +
+      WIDGET_PADDING) *
+    2;
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   if (
     LayoutWidget.widgetId === MAIN_CONTAINER_WIDGET_ID ||
     LayoutWidget.type === "CONTAINER_WIDGET"

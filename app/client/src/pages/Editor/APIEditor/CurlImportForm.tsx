@@ -148,6 +148,7 @@ class CurlImportForm extends React.Component<Props> {
           </FormRow>
         </MainConfiguration>
 <<<<<<< HEAD
+<<<<<<< HEAD
         <StyledForm onSubmit={handleSubmit(curlImportSubmitHandler)}>
           <label className="inputLabel">复制 CURL 命令到这里</label>
           <CurlHintText>
@@ -166,6 +167,8 @@ class CurlImportForm extends React.Component<Props> {
           </CurlImportFormContainer>
         </StyledForm>
 =======
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         <ResizerMainContainer>
           <ResizerContentContainer>
             <StyledForm onSubmit={handleSubmit(curlImportSubmitHandler)}>
@@ -189,7 +192,10 @@ class CurlImportForm extends React.Component<Props> {
           </ResizerContentContainer>
           {showDebugger && <Debugger />}
         </ResizerMainContainer>
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
       </>
     );
   }

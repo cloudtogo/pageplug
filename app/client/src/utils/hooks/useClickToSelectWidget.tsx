@@ -31,6 +31,7 @@ export function ClickContentToOpenPropPane({
   const { focusWidget } = useWidgetSelection();
 
   const clickToSelectWidget = useClickToSelectWidget(widgetId);
+<<<<<<< HEAD
   const clickToSelectFn = useCallback(
     (e) => {
       clickToSelectWidget(e);
@@ -38,6 +39,8 @@ export function ClickContentToOpenPropPane({
     },
     [clickToSelectWidget],
   );
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
   const isWidgetFocused = useSelector(isCurrentWidgetFocused(widgetId));
   const resizingOrDragging = useSelector(isResizingOrDragging);

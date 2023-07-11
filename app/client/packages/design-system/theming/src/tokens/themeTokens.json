@@ -1,10 +1,18 @@
 {
   "color": {
+<<<<<<< HEAD
+=======
+    "bg": {
+      "value": "#f9fafe",
+      "type": "color"
+    },
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
     "bg-accent": {
       "value": "#553de9",
       "type": "color"
     },
     "bg-accent-hover": {
+<<<<<<< HEAD
       "value": "#6e61ff",
       "type": "color"
     },
@@ -22,6 +30,25 @@
     },
     "bd-accent": {
       "value": "#553de9",
+=======
+      "value": "#5c48f4",
+      "type": "color"
+    },
+    "bg-accent-active": {
+      "value": "#5033e1",
+      "type": "color"
+    },
+    "bg-accent-subtle-hover": {
+      "value": "#e7ddff",
+      "type": "color"
+    },
+    "bg-accent-subtle-active": {
+      "value": "#bbaee2",
+      "type": "color"
+    },
+    "fg": {
+      "value": "#040411",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
       "type": "color"
     },
     "fg-accent": {
@@ -29,11 +56,43 @@
       "type": "color"
     },
     "fg-on-accent": {
+<<<<<<< HEAD
       "value": "#fff",
       "type": "color"
     },
     "bd-focus": {
       "value": "#2a82ea",
+=======
+      "value": "#f8f9ff",
+      "type": "color"
+    },
+    "fg-negative": {
+      "value": "#d91921",
+      "type": "color"
+    },
+    "bd-accent": {
+      "value": "#553de9",
+      "type": "color"
+    },
+    "bd-neutral": {
+      "value": "#63646e",
+      "type": "color"
+    },
+    "bd-neutral-hover": {
+      "value": "#6c6d77",
+      "type": "color"
+    },
+    "bd-focus": {
+      "value": "#7b6200",
+      "type": "color"
+    },
+    "bd-negative": {
+      "value": "#d91921",
+      "type": "color"
+    },
+    "bd-negative-hover": {
+      "value": "#b90707",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
       "type": "color"
     }
   },

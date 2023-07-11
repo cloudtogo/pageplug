@@ -354,6 +354,7 @@ function JSEditorForm({ jsCollection: currentJSCollection }: Props) {
             </ActionButtons>
           </StyledFormRow>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <SecondaryWrapper>
             <TabbedViewContainer isExecuting={isExecutingCurrentJSAction}>
               <TabComponent
@@ -418,6 +419,8 @@ function JSEditorForm({ jsCollection: currentJSCollection }: Props) {
             />
           </SecondaryWrapper>
 =======
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
           <Wrapper>
             <div className="flex flex-1">
               <SecondaryWrapper>
@@ -490,7 +493,10 @@ function JSEditorForm({ jsCollection: currentJSCollection }: Props) {
             </div>
             <AIWindow className="border-t border-l" windowType="fixed" />
           </Wrapper>
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         </Form>
       </JSObjectHotKeys>
     </FormWrapper>

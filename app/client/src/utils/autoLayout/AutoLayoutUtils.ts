@@ -9,8 +9,13 @@ import {
   GridDefaults,
   MAIN_CONTAINER_WIDGET_ID,
   WIDGET_PADDING,
+<<<<<<< HEAD
   CONTAINER_GRID_PADDING,
   DefaultDimensionMap,
+=======
+  DefaultDimensionMap,
+  AUTO_LAYOUT_CONTAINER_PADDING,
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 } from "constants/WidgetConstants";
 import type {
   CanvasWidgetsReduxState,
@@ -511,9 +516,15 @@ function getPadding(canvas: FlattenedWidgetProps): number {
   if (canvas.widgetId === MAIN_CONTAINER_WIDGET_ID) {
     padding = FLEXBOX_PADDING * 2;
   } else if (canvas.type === "CONTAINER_WIDGET") {
+<<<<<<< HEAD
     padding = (CONTAINER_GRID_PADDING + FLEXBOX_PADDING) * 2;
   } else if (canvas.isCanvas) {
     padding = CONTAINER_GRID_PADDING * 2;
+=======
+    padding = (AUTO_LAYOUT_CONTAINER_PADDING + FLEXBOX_PADDING) * 2;
+  } else if (canvas.isCanvas) {
+    padding = AUTO_LAYOUT_CONTAINER_PADDING * 2;
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   }
 
   if (canvas.noPad) {

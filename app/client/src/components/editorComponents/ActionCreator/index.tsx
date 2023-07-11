@@ -3,6 +3,7 @@ import { getActionBlocks, getCallExpressions } from "@shared/ast";
 import type { ActionCreatorProps, ActionTree } from "./types";
 import {
 <<<<<<< HEAD
+<<<<<<< HEAD
   JsFileIconV2,
   jsFunctionIcon,
 } from "pages/Editor/Explorer/ExplorerIcons";
@@ -74,6 +75,8 @@ import type {
   DataTreeForActionCreator,
 } from "./types";
 =======
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   getCodeFromMoustache,
   getSelectedFieldFromValue,
   isEmptyBlock,
@@ -86,7 +89,10 @@ import { generateReactKey } from "../../../utils/generators";
 import { useApisQueriesAndJsActionOptions } from "./helpers";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { getActionTypeLabel } from "./viewComponents/ActionBlockTree/utils";
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
 export const ActionCreatorContext = React.createContext<{
   label: string;
@@ -100,6 +106,7 @@ export const ActionCreatorContext = React.createContext<{
   selectedBlockId: "",
 });
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 const mobileHiddenActionMap = {
   [AppsmithFunction.download]: true,
@@ -207,6 +214,24 @@ const ActionCreator = React.forwardRef(
         {},
       );
 
+=======
+const ActionCreator = React.forwardRef(
+  (props: ActionCreatorProps, ref: any) => {
+    const [actions, setActions] = useState<Record<string, string>>(() => {
+      const blocks = getActionBlocks(
+        getCodeFromMoustache(props.value),
+        window.evaluationVersion,
+      );
+
+      const res = blocks.reduce(
+        (acc: Record<string, string>, value: string) => ({
+          ...acc,
+          [generateReactKey()]: value,
+        }),
+        {},
+      );
+
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
       return res;
     });
 
@@ -222,6 +247,7 @@ const ActionCreator = React.forwardRef(
         const newBlocks: string[] = getActionBlocks(
           getCodeFromMoustache(props.value),
           evaluationVersion,
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
         );
 
@@ -236,10 +262,26 @@ const ActionCreator = React.forwardRef(
           if (prevIdValuePair) {
             newActions[prevIdValuePair[0]] = block;
 
+=======
+        );
+
+        let prevIdValuePairs = Object.entries(prev);
+
+        // We make sure that code blocks from previous render retain the same id
+        // We are sure that the order of the blocks will be the same
+        newBlocks.forEach((block) => {
+          const prevIdValuePair = prevIdValuePairs.find(
+            ([, value]) => value === block,
+          );
+          if (prevIdValuePair) {
+            newActions[prevIdValuePair[0]] = block;
+
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             // Filter out the id value pair so that it's not used again
             prevIdValuePairs = prevIdValuePairs.filter(
               ([id]) => id !== prevIdValuePair[0],
             );
+<<<<<<< HEAD
 <<<<<<< HEAD
           },
           dataTree,
@@ -541,6 +583,87 @@ function getIntegrationOptionsWithChildren(
             code: newValueWithoutMoustache,
             callback: null,
           });
+=======
+          } else if (childUpdate.current && updatedIdRef?.current) {
+            // Child updates come with the id of the block that was updated
+            newActions[updatedIdRef.current] = block;
+            prevIdValuePairs = prevIdValuePairs.filter(
+              ([id]) => id !== updatedIdRef.current,
+            );
+            updatedIdRef.current = "";
+            childUpdate.current = false;
+          } else {
+            // If the block is not present in the previous blocks, it's a new block
+            // We need to check if the block is a result of an edit
+            // If it is, we need to retain the id of the previous block
+            // This is to ensure that the undo/redo stack is not broken
+            const differences = diff(previousBlocks.current, newBlocks);
+            if (differences?.length === 1 && differences[0].kind === "E") {
+              const edit = differences[0];
+              //@ts-expect-error fix later
+              const prevBlock = edit.lhs as string;
+              const prevIdValuePair = prevIdValuePairs.find(
+                ([, value]) => value === prevBlock,
+              );
+              if (prevIdValuePair) {
+                newActions[prevIdValuePair[0]] = block;
+                prevIdValuePairs = prevIdValuePairs.filter(
+                  ([id]) => id !== prevIdValuePair[0],
+                );
+                return;
+              }
+            }
+            newActions[generateReactKey()] = block;
+          }
+        });
+        previousBlocks.current = [...newBlocks];
+        updatedIdRef.current = "";
+        childUpdate.current = false;
+        return newActions;
+      });
+    }, [props.value]);
+
+    const save = useCallback(
+      (newActions) => {
+        props.onValueChange(
+          Object.values(newActions).length > 0
+            ? `{{${Object.values(newActions).filter(Boolean).join("\n")}}}`
+            : "",
+          false,
+        );
+      },
+      [props.onValueChange],
+    );
+
+    /** This variable will be set for all changes that happen from the Action blocks
+     * It will be unset for all the changes that happen from the parent components (Undo/Redo)
+     */
+    const childUpdate = React.useRef(false);
+
+    const handleActionChange = (id: string) => (value: string) => {
+      const newValueWithoutMoustache = getCodeFromMoustache(value);
+      const newActions = { ...actions };
+      updatedIdRef.current = id;
+      childUpdate.current = true;
+      if (newValueWithoutMoustache) {
+        newActions[id] = newValueWithoutMoustache;
+        const prevValue = actions[id];
+        const option = getSelectedFieldFromValue(
+          newValueWithoutMoustache,
+          actionOptions,
+        );
+
+        const actionType = (option?.type ||
+          option?.value) as ActionTree["actionType"];
+
+        // If the previous value was empty, we're adding a new action
+        if (prevValue === "") {
+          AnalyticsUtil.logEvent("ACTION_ADDED", {
+            actionType: getActionTypeLabel(actionType),
+            code: newValueWithoutMoustache,
+            callback: null,
+          });
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         } else {
           const prevRootCallExpression = getCallExpressions(
             actions[id],
@@ -550,7 +673,10 @@ function getIntegrationOptionsWithChildren(
             newValueWithoutMoustache,
             evaluationVersion,
           )[0];
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
           // We don't want the modified event to be triggered when the success/failure
           // callbacks are modified/added/removed
@@ -578,6 +704,7 @@ function getIntegrationOptionsWithChildren(
       save(newActions);
     };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 function useIntegrationsOptionTree() {
   const pageId = useSelector(getCurrentPageId) || "";
@@ -638,12 +765,34 @@ function useIntegrationsOptionTree() {
     }, [actions]);
 
     useEffect(() => {
+=======
+    // We need a unique id for each action when it's mapped
+    // We can't use index for obvious reasons
+    // We can't use the action value itself because it's not unique and changes on action change
+    const [selectedBlockId, selectBlock] = useState<string | undefined>(
+      undefined,
+    );
+
+    const id = useRef<string>("");
+
+    useEffect(() => {
+      if (!id.current) return;
+      const children = ref.current?.children || [];
+      const lastChildElement = children[children.length - 1];
+      lastChildElement?.scrollIntoView({ block: "nearest" });
+      selectBlock(id.current);
+      id.current = "";
+    }, [actions]);
+
+    useEffect(() => {
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
       if (props.additionalControlData?.showEmptyBlock) {
         addBlock();
         props.additionalControlData?.setShowEmptyBlock(false);
       }
     }, [props.additionalControlData]);
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 const ActionCreator = React.forwardRef(
   (props: ActionCreatorProps, ref: any) => {
@@ -703,6 +852,30 @@ const ActionCreator = React.forwardRef(
       () => ({ label: props.action, selectedBlockId, selectBlock }),
       [selectedBlockId, props.action, selectBlock],
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+    const addBlock = useCallback(() => {
+      const hasAnEmptyBlock = Object.entries(actions).find(([, action]) =>
+        isEmptyBlock(action),
+      );
+      if (hasAnEmptyBlock) {
+        selectBlock(hasAnEmptyBlock[0]);
+        const children = ref.current?.children || [];
+        const lastChildElement = children[children.length - 1];
+        lastChildElement?.scrollIntoView({
+          block: "nearest",
+        });
+        return;
+      }
+      const newActions = { ...actions };
+      id.current = generateReactKey();
+      newActions[id.current] = "";
+      setActions(newActions);
+    }, [actions, save]);
+
+    const contextValue = React.useMemo(
+      () => ({ label: props.action, selectedBlockId, selectBlock }),
+      [selectedBlockId, props.action, selectBlock],
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
     );
 
     return (

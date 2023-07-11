@@ -41,6 +41,7 @@ const VerticalResizeIndicators = css<{
     position: absolute;
     content: "";
 <<<<<<< HEAD
+<<<<<<< HEAD
     width: ${EDGE_RESIZE_BAR_SHORT}px;
     height: ${EDGE_RESIZE_BAR_LONG}px;
     border-radius: 3px;
@@ -49,6 +50,8 @@ const VerticalResizeIndicators = css<{
     top: calc(50% - ${EDGE_RESIZE_BAR_LONG / 2}px);
     left: calc(50% - 2px);
 =======
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
     width: 7px;
     height: 16px;
     border-radius: 50%/16%;
@@ -85,7 +88,10 @@ const HorizontalResizeIndicators = css<{
   }
   &:hover::after {
     background: #f86a2b;
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   }
 `;
 
@@ -156,17 +162,24 @@ export const HorizontalHandleStyles = css<{
 export const LeftHandleStyles = styled.div`
   ${VerticalHandleStyles}
 <<<<<<< HEAD
+<<<<<<< HEAD
   left: ${HANDLE_OFFSET}px;
 =======
   left: ${-EDGE_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING + 1.5}px;
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+  left: ${-EDGE_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING + 1.5}px;
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 `;
 
 export const RightHandleStyles = styled.div`
   ${VerticalHandleStyles};
 <<<<<<< HEAD
+<<<<<<< HEAD
   right: ${HANDLE_OFFSET}px;
 =======
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   right: ${-EDGE_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING + 3.5}px;
   height: calc(100% + ${2 * WIDGET_PADDING}px);
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
@@ -175,19 +188,27 @@ export const RightHandleStyles = styled.div`
 export const TopHandleStyles = styled.div`
   ${HorizontalHandleStyles};
 <<<<<<< HEAD
+<<<<<<< HEAD
   top: ${HANDLE_OFFSET}px;
 =======
   top: ${-EDGE_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING + 1.5}px;
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+  top: ${-EDGE_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING + 1.5}px;
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 `;
 
 export const BottomHandleStyles = styled.div`
   ${HorizontalHandleStyles};
 <<<<<<< HEAD
+<<<<<<< HEAD
   bottom: ${HANDLE_OFFSET}px;
 =======
   bottom: ${-EDGE_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING + 3.5}px;
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+  bottom: ${-EDGE_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING + 3.5}px;
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 `;
 
 export const CornerHandleStyles = css`

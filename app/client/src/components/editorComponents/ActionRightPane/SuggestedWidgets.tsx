@@ -89,12 +89,15 @@ export const WIDGET_DATA_FIELD_MAP: Record<string, WidgetBindingInfo> = {
     propertyName: "chartData",
     widgetName: "Chart",
     image: `${ASSETS_CDN_URL}/widgetSuggestion/chart.svg`,
+<<<<<<< HEAD
   },
   ECHART_WIDGET: {
     label: "chart-series-data-control",
     propertyName: "chartData",
     widgetName: "EChart",
     image: "https://assets.appsmith.com/widgetSuggestion/chart.svg",
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   },
   SELECT_WIDGET: {
     label: "选项",

@@ -86,10 +86,14 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
         children: [
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "弹窗关闭后触发",
 =======
             helpText: "when the modal is closed",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "when the modal is closed",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onClose",
             label: "onClose",
             controlType: "ACTION_SELECTOR",

@@ -160,7 +160,11 @@ function WidgetsEditor() {
   );
 
   const showNavigation = () => {
+<<<<<<< HEAD
     if (isPreviewingNavigation) {
+=======
+    if (isPreviewingNavigation && !guidedTourEnabled) {
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
       return (
         <NavigationPreview
           isAppSettingsPaneWithNavigationTabOpen={
@@ -249,10 +253,14 @@ function WidgetsEditor() {
                 <CrudInfoModal />
               </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
               <TabBar />
 =======
               <Debugger />
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+              <Debugger />
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             </div>
 
             {!isMultiPane && <PropertyPaneContainer />}

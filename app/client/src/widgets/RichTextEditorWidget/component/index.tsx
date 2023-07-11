@@ -22,7 +22,10 @@ import "tinymce/plugins/emoticons/js/emojis";
 import "tinymce/plugins/print";
 import "tinymce/themes/silver";
 import "tinymce/skins/ui/oxide/skin.min.css";
+<<<<<<< HEAD
 import "tinymce/skins/ui/oxide/content.min.css";
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 import React, { useRef, useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { Editor } from "@tinymce/tinymce-react";
@@ -298,7 +301,7 @@ function RichtextEditorComponent(props: RichtextEditorComponentProps) {
   const initialRender = useRef(true);
 
   const toolbarConfig =
-    "insertfile undo redo | formatselect | bold italic underline backcolor forecolor | lineheight | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | removeformat | table | print preview media | emoticons |help";
+    "insertfile undo redo | formatselect | bold italic underline backcolor forecolor | lineheight | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | removeformat | table | print preview media | emoticons | code | help";
 
   const handleEditorChange = useCallback(
     (newValue: string, editor: any) => {
@@ -390,6 +393,7 @@ function RichtextEditorComponent(props: RichtextEditorComponentProps) {
               "searchreplace visualblocks code fullscreen",
               "insertdatetime media table paste code help",
               "emoticons",
+              "code",
             ],
             contextmenu: "link useBrowserSpellcheck image table",
             setup: function (editor) {

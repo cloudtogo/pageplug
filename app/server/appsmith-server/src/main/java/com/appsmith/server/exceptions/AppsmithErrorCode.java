@@ -111,6 +111,7 @@ public enum AppsmithErrorCode {
     CLOUDOS_WECHAT_TOKEN_ERROR("AE-MINI-9002", "微信 access_token 获取失败"),
     CLOUDOS_WECHAT_PREVIEW_ERROR("AE-MINI-9003", "微信小程序码获取失败"),
     CSRF_TOKEN_INVALID("AE-APP-4039", "CSRF token missing/invalid"),
+    UNSUPPORTED_IMPORT_OPERATION("AE-APP-4040", "Unsupported operation for import application via file"),
     ;
 
     private final String code;

@@ -12,6 +12,7 @@ import {
 } from "constants/WidgetConstants";
 import { APP_MODE } from "entities/App";
 <<<<<<< HEAD
+<<<<<<< HEAD
 // import { SIDE_NAV_WIDTH } from "pages/common/SideNav";
 // import { AppPositioningTypes } from "reducers/entityReducers/pageListReducer";
 // import { getIsAppSettingsPaneOpen } from "selectors/appSettingsPaneSelectors";
@@ -20,6 +21,10 @@ import { APP_MODE } from "entities/App";
 import { SIDE_NAV_WIDTH } from "pages/common/SideNav";
 import { AppPositioningTypes } from "reducers/entityReducers/pageListReducer";
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+import { SIDE_NAV_WIDTH } from "pages/common/SideNav";
+import { AppPositioningTypes } from "reducers/entityReducers/pageListReducer";
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 import {
   getCurrentApplicationLayout,
   getCurrentAppPositioningType,
@@ -55,7 +60,6 @@ import { useWindowSizeHooks } from "./dragResizeHooks";
 import type { AppState } from "@appsmith/reducers";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 
-const BORDERS_WIDTH = 2;
 const GUTTER_WIDTH = 72;
 export const AUTOLAYOUT_RESIZER_WIDTH_BUFFER = 40;
 
@@ -207,7 +211,11 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
       case maxWidth < 0:
       case appLayout?.type === "FLUID":
       case calculatedWidth < maxWidth && calculatedWidth > minWidth:
+<<<<<<< HEAD
         const totalWidthToSubtract = BORDERS_WIDTH + gutterWidth;
+=======
+        const totalWidthToSubtract = gutterWidth;
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         // NOTE: gutter + border width will be only substracted when theme mode and preview mode are off
         return (
           calculatedWidth -
@@ -238,11 +246,7 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
     let scale = 1;
     if (isMultiPane && appLayout?.type !== "FLUID") {
       let canvasSpace =
-        screenWidth -
-        tabsPaneWidth -
-        SIDE_NAV_WIDTH -
-        GUTTER_WIDTH -
-        BORDERS_WIDTH;
+        screenWidth - tabsPaneWidth - SIDE_NAV_WIDTH - GUTTER_WIDTH;
       if (paneCount === 3) canvasSpace -= propertyPaneWidth;
       // Scale will always be between 0.5 to 1
       scale = Math.max(

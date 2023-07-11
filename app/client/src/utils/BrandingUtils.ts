@@ -27,7 +27,10 @@ export const APPSMITH_BRAND_FAVICON_URL = getAssetUrl(
 export const APPSMITH_BRAND_LOGO_URL = getAssetUrl(
   `${ASSETS_CDN_URL}/appsmith-logo-no-margin.png`,
 );
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
 /**
  * create brand colors from primary color

@@ -228,10 +228,14 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
         children: [
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "点击地图图表数据点时触发",
 =======
             helpText: "when the map chart data point is clicked",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "when the map chart data point is clicked",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onDataPointClick",
             label: "onDataPointClick",
             controlType: "ACTION_SELECTOR",

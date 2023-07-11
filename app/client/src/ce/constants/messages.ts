@@ -16,9 +16,17 @@ export const APPSMITH_DISPLAY_VERSION = (
   edition: string,
   version: string,
   cloudHosting: boolean,
+<<<<<<< HEAD
 ) => `PagePlug ${!cloudHosting ? edition : ""} ${version}`;
 export const YES = () => `是的`;
 export const ARE_YOU_SURE = () => `确定吗？`;
+=======
+) => `Appsmith ${!cloudHosting ? edition : ""} ${version}`;
+export const INTERCOM_CONSENT_MESSAGE = () =>
+  `Can we have your email for better support?`;
+export const YES = () => `Yes`;
+export const ARE_YOU_SURE = () => `Are you sure?`;
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 export const ERROR_ADD_API_INVALID_URL = () =>
   `创建 API 失败！请给你的数据源添加地址`;
 export const ERROR_MESSAGE_NAME_EMPTY = () => `请选择一个名字`;
@@ -298,7 +306,10 @@ export const GSHEET_AUTHORIZATION_ERROR =
   "Authorisation failed, to continue using this data source authorize now.";
 export const GSHEET_FILES_NOT_SELECTED =
   "Datasource does not have access to any files, please authorize google sheets to use this data source";
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
 export const LOCAL_STORAGE_QUOTA_EXCEEDED_MESSAGE = () =>
   "本地存储失败！已超出本地最大存储限制";
@@ -329,6 +340,7 @@ export const PAGE_SERVER_UNAVAILABLE_TITLE = () => "PagePlug 服务异常";
 export const PAGE_SERVER_UNAVAILABLE_DESCRIPTION = () => "请稍后重试";
 =======
 export const PAGE_NOT_FOUND = () => "Page not found";
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
 export const PAGE_SERVER_TIMEOUT_ERROR_CODE = () => "504";
 export const PAGE_SERVER_TIMEOUT_TITLE = () => "PagePlug 服务长时间无响应";
@@ -336,6 +348,74 @@ export const PAGE_SERVER_TIMEOUT_DESCRIPTION = () => `请稍后重试`;
 export const PAGE_CLIENT_ERROR_TITLE = () => "糟糕，魔法失灵了！";
 export const PAGE_CLIENT_ERROR_DESCRIPTION = () =>
   "请联系 PagePlug 团队寻求帮助";
+
+export const PAGE_SERVER_UNAVAILABLE_ERROR_CODE = () => "503";
+
+// cloudHosting used in EE
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const PAGE_SERVER_UNAVAILABLE_TITLE = (cloudHosting: boolean) =>
+  "Appsmith server unavailable";
+
+export const PAGE_SERVER_UNAVAILABLE_DESCRIPTION = () =>
+  "Please try again later";
+
+export const PAGE_SERVER_UNAVAILABLE_ERROR_MESSAGES = (
+  cloudHosting: boolean,
+): PageErrorMessageProps[] => {
+  if (cloudHosting) {
+    return [
+      {
+        text: "If the problem persists, please contact customer support",
+        links: [
+          {
+            from: 40,
+            to: 56,
+            href: "mailto: support@appsmith.com?subject=Appsmith 503 Server Error",
+          },
+        ],
+        addNewLine: true,
+      },
+    ];
+  } else {
+    return [
+      {
+        text: "If the problem persists, please contact your admin",
+        addNewLine: true,
+      },
+      {
+        text: "You can find more information on how to debug and access the logs here",
+        links: [
+          {
+            from: 66,
+            to: 70,
+            href: "https://docs.appsmith.com/learning-and-resources/how-to-guides/how-to-get-container-logs",
+          },
+        ],
+        addNewLine: true,
+      },
+      {
+        text: "A quick view of the server logs is accessible here",
+        links: [
+          {
+            from: 46,
+            to: 50,
+            href: "/supervisor/logtail/backend",
+          },
+        ],
+      },
+    ];
+  }
+};
+=======
+export const PAGE_SERVER_TIMEOUT_ERROR_CODE = () => "504";
+export const PAGE_SERVER_TIMEOUT_TITLE = () =>
+  "Appsmith server is taking too long to respond";
+export const PAGE_SERVER_TIMEOUT_DESCRIPTION = () =>
+  `Please retry after some time`;
+export const PAGE_CLIENT_ERROR_TITLE = () => "Whoops something went wrong!";
+export const PAGE_CLIENT_ERROR_DESCRIPTION = () =>
+  "This is embarrassing, please contact Appsmith support for help";
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
 export const PAGE_SERVER_UNAVAILABLE_ERROR_CODE = () => "503";
 
@@ -526,12 +606,25 @@ export const NO_JS_FUNCTION_RETURN_VALUE = (JSFunctionName: string) =>
   `${JSFunctionName} 没有返回任何数据，你给函数添加了返回吗？`;
 
 // Import/Export Application features
+<<<<<<< HEAD
 export const IMPORT_APPLICATION_MODAL_TITLE = () => "导入应用";
 export const IMPORT_APPLICATION_MODAL_LABEL = () => "你想从哪里导入你的应用？";
 export const IMPORT_APP_FROM_FILE_TITLE = () => "从文件导入";
 export const UPLOADING_JSON = () => "上传 JSON 文件";
 export const UPLOADING_APPLICATION = () => "正在上传应用";
 export const IMPORT_APP_FROM_GIT_TITLE = () => "从 Git 仓库导入（测试版）";
+=======
+export const ERROR_IMPORTING_APPLICATION_TO_WORKSPACE = () =>
+  "Error importing application. No workspace found";
+export const IMPORT_APPLICATION_MODAL_TITLE = () => "Import application";
+export const IMPORT_APPLICATION_MODAL_LABEL = () =>
+  "Where would you like to import your application from?";
+export const IMPORT_APP_FROM_FILE_TITLE = () => "Import from file";
+export const UPLOADING_JSON = () => "Uploading JSON file";
+export const UPLOADING_APPLICATION = () => "Uploading application";
+export const IMPORT_APP_FROM_GIT_TITLE = () =>
+  "Import from Git repository (Beta)";
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 export const IMPORT_APP_FROM_FILE_MESSAGE = () =>
   "将文件拖拽到这里，或点击上传";
 export const IMPORT_APP_FROM_GIT_MESSAGE = () => "填写 Git 仓库地址导入应用";
@@ -1381,12 +1474,21 @@ export const SAVE_OR_DISCARD_DATASOURCE_WARNING = () =>
 export const APP_SETTINGS_PANE_HEADER = () => "设置";
 export const APP_SETTINGS_CLOSE_TOOLTIP = () => "关闭设置面板";
 
+<<<<<<< HEAD
 export const GENERAL_SETTINGS_SECTION_HEADER = () => "通用";
 export const GENERAL_SETTINGS_SECTION_CONTENT_HEADER = () => "通用设置";
 export const GENERAL_SETTINGS_SECTION_HEADER_DESC = () =>
   "应用名称、图标和分享";
 export const GENERAL_SETTINGS_APP_NAME_LABEL = () => "应用名称";
 export const GENERAL_SETTINGS_NAME_EMPTY_MESSAGE = () => "应用名称不能为空";
+=======
+export const GENERAL_SETTINGS_SECTION_HEADER = () => "General";
+export const GENERAL_SETTINGS_SECTION_CONTENT_HEADER = () => "General Settings";
+export const GENERAL_SETTINGS_SECTION_HEADER_DESC = () => "App name and icon";
+export const GENERAL_SETTINGS_APP_NAME_LABEL = () => "App Name";
+export const GENERAL_SETTINGS_NAME_EMPTY_MESSAGE = () =>
+  "App name cannot be empty";
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 export const GENERAL_SETTINGS_NAME_SPECIAL_CHARACTER_ERROR = () =>
   "只能输入字母、数字、'-'、'('、')' 等字符";
 export const GENERAL_SETTINGS_APP_ICON_LABEL = () => "应用图标";
@@ -1416,6 +1518,17 @@ export const PAGE_SETTINGS_SET_AS_HOMEPAGE_TOOLTIP_NON_HOME_PAGE = () =>
   "将这页设置为主页";
 export const PAGE_SETTINGS_ACTION_NAME_CONFLICT_ERROR = (name: string) =>
   `${name} 已经被占用`;
+
+export const UPDATE_VIA_IMPORT_SETTING = {
+  settingHeader: () => "Update through file import",
+  settingDesc: () => "Update app by importing file",
+  settingLabel: () => "Import",
+  settingContent: () =>
+    "This action will override your existing application. Please exercise caution while selecting the file to import.",
+  settingActionButtonTxt: () => "Import",
+  disabledForGit: () =>
+    "This feature is not supported for apps connected to Git version control. Please use Git Pull to update and sync your app.",
+};
 
 export const IN_APP_EMBED_SETTING = {
 <<<<<<< HEAD
@@ -1469,7 +1582,10 @@ export const IN_APP_EMBED_SETTING = {
   secondaryHeadingForAppSettings: () => "Make your app public to embed",
   secondaryHeading: () =>
     "Please contact your workspace admin to make the app public before embedding",
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 };
 
 export const NEW_QUERY_BUTTON_TEXT = () => "新建查询";
@@ -1508,9 +1624,13 @@ export const RECONNECT_BUTTON_TEXT = () => "RECONNECT";
 export const SAVE_BUTTON_TEXT = () => "SAVE";
 export const SAVE_AND_AUTHORIZE_BUTTON_TEXT = () => "SAVE AND AUTHORIZE";
 export const DISCARD_POPUP_DONT_SAVE_BUTTON_TEXT = () => "DON'T SAVE";
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
 export const GSHEET_AUTHORISED_FILE_IDS_KEY = () =>
   "Google sheets authorised file ids key";
+=======
+export const GSHEET_AUTHORISED_FILE_IDS_KEY = () => "userAuthorizedSheetIds";
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 export const GOOGLE_SHEETS_INFO_BANNER_MESSAGE = () =>
   "Appsmith will require access to your google drive to access google sheets.";
 export const GOOGLE_SHEETS_AUTHORIZE_DATASOURCE = () => "Authorize Datasource";

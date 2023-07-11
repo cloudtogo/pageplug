@@ -117,7 +117,11 @@ export default function Pagination(props: PaginationProps) {
               value: PaginationType.PAGE_NO,
             },
             {
+<<<<<<< HEAD
               label: "上一页下一页",
+=======
+              label: "Paginate with Response URL",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
               value: PaginationType.URL,
             },
           ]}
@@ -171,15 +175,20 @@ export default function Pagination(props: PaginationProps) {
                 <StepTitle>
                   <Text type={TextType.P1}>2. 配置请求参数</Text>
                 </StepTitle>
+<<<<<<< HEAD
                 <Step type={TextType.P1}>配置上一页、下一页 url </Step>
                 <Step type={TextType.P1}>上一页 url</Step>
+=======
+                <Step type={TextType.P1}>Configure Next and Previous URL </Step>
+                <Step type={TextType.P1}>Previous URL</Step>
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
                 <PaginationFieldWrapper
                   data-replay-id={btoa("actionConfiguration.prev")}
                 >
                   <DynamicTextField
                     border={CodeEditorBorder.ALL_SIDE}
                     className="t--apiFormPaginationPrev"
-                    evaluatedPopUpLabel="Previous Url"
+                    evaluatedPopUpLabel="Previous URL"
                     fill={!!true}
                     focusElementName={`${props.actionName}.actionConfiguration.prev`}
                     height="100%"
@@ -199,14 +208,18 @@ export default function Pagination(props: PaginationProps) {
                     type="button"
                   />
                 </PaginationFieldWrapper>
+<<<<<<< HEAD
                 <Step type={TextType.P1}>下一页 url</Step>
+=======
+                <Step type={TextType.P1}>Next URL</Step>
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
                 <PaginationFieldWrapper
                   data-replay-id={btoa("actionConfiguration.next")}
                 >
                   <DynamicTextField
                     border={CodeEditorBorder.ALL_SIDE}
                     className="t--apiFormPaginationNext"
-                    evaluatedPopUpLabel="Next Url"
+                    evaluatedPopUpLabel="Next URL"
                     fill={!!true}
                     focusElementName={`${props.actionName}.actionConfiguration.next`}
                     height="100%"

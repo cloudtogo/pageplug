@@ -73,24 +73,48 @@
           "initialValue": "authorization_code"
         },
         {
+<<<<<<< HEAD
+=======
+          "label": "Account",
+          "configProperty": "datasourceConfiguration.properties[0].value",
+          "controlType": "INPUT_TEXT",
+          "isRequired": false,
+          "hidden": {
+            "comparison": "VIEW_MODE",
+            "value": false
+          },
+          "initialValue": "Authorize datasource to fetch account name"
+        },
+        {
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
           "label": "Permissions | Scope",
           "configProperty": "datasourceConfiguration.authentication.scopeString",
           "controlType": "DROP_DOWN",
           "options": [
             {
-              "label": "Read/Write | Selected Google Sheets",
+              "label": "Read / Write / Delete | Selected Google Sheets",
               "value": "https://www.googleapis.com/auth/drive.file"
             },
             {
-              "label": "Read/Write | All Google Sheets",
+              "label": "Read / Write / Delete | All Google Sheets",
               "value": "https://www.googleapis.com/auth/spreadsheets,https://www.googleapis.com/auth/drive"
             },
             {
+<<<<<<< HEAD
+=======
+              "label": "Read / Write | All Google Sheets",
+              "value": "https://www.googleapis.com/auth/spreadsheets,https://www.googleapis.com/auth/drive.readonly"
+            },
+            {
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
               "label": "Read | All Google Sheets",
               "value": "https://www.googleapis.com/auth/spreadsheets.readonly,https://www.googleapis.com/auth/drive.readonly"
             }
           ],
-          "initialValue": "https://www.googleapis.com/auth/drive.file"
+          "initialValue": "https://www.googleapis.com/auth/drive.file",
+          "customStyles": {
+            "width": "340px"
+          }
         }
       ]
     }

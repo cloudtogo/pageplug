@@ -521,6 +521,7 @@ function WorkspaceInviteUsersForm(props: any) {
           <>
             {allUsers.length === 0 && (
 <<<<<<< HEAD
+<<<<<<< HEAD
               <MailConfigContainer>
                 {allUsers.length === 0 && <NoEmailConfigImage />}
                 <span>未开通邮件服务</span>
@@ -532,6 +533,8 @@ function WorkspaceInviteUsersForm(props: any) {
                   请先开通邮件服务，再邀请小伙伴进组
                 </a>
 =======
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
               <MailConfigContainer data-testid="no-users-content">
                 <NoEmailConfigImage />
                 <span>{createMessage(NO_USERS_INVITED)}</span>

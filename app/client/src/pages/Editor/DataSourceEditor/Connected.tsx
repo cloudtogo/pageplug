@@ -2,12 +2,10 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import type { AppState } from "@appsmith/reducers";
-import { isNil } from "lodash";
 import { getDatasource, getPlugin } from "selectors/entitiesSelector";
 import { Colors } from "constants/Colors";
 import { HeaderIcons } from "icons/HeaderIcons";
 import styled from "styled-components";
-import RenderDatasourceInformation from "./DatasourceSection";
 import NewActionButton from "./NewActionButton";
 
 import { hasCreateDatasourceActionPermission } from "@appsmith/utils/permissionHelpers";
@@ -28,6 +26,7 @@ const Header = styled.div`
   justify-content: space-between;
 `;
 
+<<<<<<< HEAD
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -35,6 +34,8 @@ const Wrapper = styled.div`
   padding: 24px 20px;
 `;
 
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 function Connected({
   errorComponent,
   hideDatasourceRenderSection = false,
@@ -50,10 +51,6 @@ function Connected({
     getDatasource(state, params.datasourceId),
   );
 
-  const datasourceFormConfigs = useSelector(
-    (state: AppState) => state.entities.plugins.formConfigs,
-  );
-
   const plugin = useSelector((state: AppState) =>
     getPlugin(state, datasource?.pluginId ?? ""),
   );
@@ -67,11 +64,8 @@ function Connected({
     ...pagePermissions,
   ]);
 
-  const currentFormConfig: Array<any> =
-    datasourceFormConfigs[datasource?.pluginId ?? ""];
-
   return (
-    <Wrapper>
+    <>
       {showDatasourceSavedText && (
         <Header>
           <ConnectedText>
@@ -91,6 +85,7 @@ function Connected({
         </Header>
       )}
       {errorComponent}
+<<<<<<< HEAD
       <div style={{ marginTop: showDatasourceSavedText ? "30px" : "" }}>
         {!isNil(currentFormConfig) &&
         !isNil(datasource) &&
@@ -102,6 +97,9 @@ function Connected({
         ) : undefined}
       </div>
     </Wrapper>
+=======
+    </>
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   );
 }
 

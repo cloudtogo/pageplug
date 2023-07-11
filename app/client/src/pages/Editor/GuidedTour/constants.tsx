@@ -508,7 +508,10 @@ export const Steps: StepsType = {
             Click the <b>+</b> button beside the onClick property to add an
             action, select <b>Execute a query</b> {"&"} then select{" "}
             <b>updateCustomerInfo</b> query
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
           </>
         ),
       },
@@ -521,12 +524,17 @@ export const Steps: StepsType = {
         text: (
           <>
 <<<<<<< HEAD
+<<<<<<< HEAD
             点击 onSuccess 下拉框，选择 <b>执行查询</b>，然后选择{" "}
             <b>getCustomers</b>
 =======
             Click the <b>+</b> button beside On success, select{" "}
             <b>Execute a query</b> {"&"} then choose <b>getCustomers</b> Query
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            Click the <b>+</b> button beside On success, select{" "}
+            <b>Execute a query</b> {"&"} then choose <b>getCustomers</b> Query
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
           </>
         ),
       },

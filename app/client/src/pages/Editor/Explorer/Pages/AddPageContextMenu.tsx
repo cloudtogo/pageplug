@@ -79,11 +79,16 @@ function AddPageContextMenu({
   const [activeItemIdx, setActiveItemIdx] = useState(0);
   const featureFlags = useSelector(selectFeatureFlags);
 <<<<<<< HEAD
+<<<<<<< HEAD
   const isMobile = useSelector(isMobileLayout);
 =======
   const isAutoLayout = useSelector(getIsAutoLayout);
   const isAirgappedInstance = isAirgapped();
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+  const isAutoLayout = useSelector(getIsAutoLayout);
+  const isAirgappedInstance = isAirgapped();
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
   const menuRef = useCallback(
     (node) => {
@@ -113,18 +118,24 @@ function AddPageContextMenu({
     ];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     if (isMobile) {
       items.pop();
     }
 
     if (featureFlags.TEMPLATES_PHASE_2 && !isMobile) {
 =======
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
     if (
       featureFlags.TEMPLATES_PHASE_2 &&
       !isAutoLayout &&
       !isAirgappedInstance
     ) {
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
       items.push({
         title: createMessage(ADD_PAGE_FROM_TEMPLATE),
         icon: Layout2LineIcon,

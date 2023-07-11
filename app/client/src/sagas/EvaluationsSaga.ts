@@ -402,6 +402,7 @@ function* executeAsyncJSFunction(
   collectionName: string,
   action: JSAction,
   collectionId: string,
+  isExecuteJSFunc: boolean,
 ) {
   let response: JSFunctionExecutionResponse;
   const functionCall = `${collectionName}.${action.name}()`;
@@ -423,7 +424,7 @@ function* executeAsyncJSFunction(
     );
   } catch (e) {
     if (e instanceof UncaughtPromiseError) {
-      logActionExecutionError(e.message);
+      logActionExecutionError(e.message, isExecuteJSFunc);
     }
     response = { errors: [e], result: undefined };
   }
@@ -434,6 +435,7 @@ export function* executeJSFunction(
   collectionName: string,
   action: JSAction,
   collectionId: string,
+  isExecuteJSFunc: boolean,
 ) {
   let response: {
     errors: unknown[];
@@ -447,6 +449,10 @@ export function* executeJSFunction(
       collectionName,
       action,
       collectionId,
+<<<<<<< HEAD
+=======
+      isExecuteJSFunc,
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
     );
   } catch (e) {
     if (e instanceof UncaughtPromiseError) {

@@ -33,11 +33,15 @@ import {
 import { ENTITY_TYPE } from "entities/AppsmithConsole";
 import type { Stylesheet } from "entities/AppTheming";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { DataTreeWidget } from "entities/DataTree/dataTreeFactory";
 import { get, memoize } from "lodash";
 =======
 import { get, isFunction, memoize } from "lodash";
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+import { get, isFunction, memoize } from "lodash";
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 import type { Context, ReactNode, RefObject } from "react";
 import React, { Component } from "react";
 import type {
@@ -72,6 +76,7 @@ import {
   shouldUpdateWidgetHeightAutomatically,
 } from "./WidgetUtils";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import styled, { css } from "styled-components";
 
 const HiddenDetachWidgetWrapper = styled.div<{
@@ -90,6 +95,10 @@ const HiddenDetachWidgetWrapper = styled.div<{
 import AutoLayoutDimensionObserver from "components/designSystems/appsmith/autoLayout/AutoLayoutDimensionObeserver";
 import WidgetFactory from "utils/WidgetFactory";
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+import AutoLayoutDimensionObserver from "components/designSystems/appsmith/autoLayout/AutoLayoutDimensionObeserver";
+import WidgetFactory from "utils/WidgetFactory";
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 import type { WidgetEntity } from "entities/DataTree/dataTreeFactory";
 import WidgetComponentBoundary from "components/editorComponents/WidgetComponentBoundary";
 import type { AutocompletionDefinitions } from "./constants";
@@ -765,6 +774,7 @@ abstract class BaseWidget<
       case RenderModes.PAGE:
         content = this.getWidgetComponent();
 <<<<<<< HEAD
+<<<<<<< HEAD
         if (this.props.isVisible) {
           if (this.props.isFlexChild) content = this.makeFlex(content);
           else if (!this.props.detachFromLayout) {
@@ -778,6 +788,11 @@ abstract class BaseWidget<
           if (this.props.isFlexChild) content = this.makeFlex(content);
           else content = this.makePositioned(content);
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+        if (!this.props.detachFromLayout) {
+          if (this.props.isFlexChild) content = this.makeFlex(content);
+          else content = this.makePositioned(content);
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         }
         return content;
       default:

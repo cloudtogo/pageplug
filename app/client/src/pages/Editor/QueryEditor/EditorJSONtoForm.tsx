@@ -48,8 +48,6 @@ import Resizable, {
 } from "components/editorComponents/Debugger/Resizer";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import CloseEditor from "components/editorComponents/CloseEditor";
-import { setGlobalSearchQuery } from "actions/globalSearchActions";
-import { toggleShowGlobalSearchModal } from "actions/globalSearchActions";
 import EntityDeps from "components/editorComponents/Debugger/EntityDependecies";
 import {
   checkIfSectionCanRender,
@@ -60,11 +58,17 @@ import {
   updateEvaluatedSectionConfig,
 } from "components/formControls/utils";
 import {
+  ACTION_EDITOR_REFRESH,
+  ACTION_EXECUTION_MESSAGE,
+  ACTION_RUN_BUTTON_MESSAGE_FIRST_HALF,
+  ACTION_RUN_BUTTON_MESSAGE_SECOND_HALF,
+  CREATE_NEW_DATASOURCE,
   createMessage,
   DEBUGGER_LOGS,
   DOCUMENTATION,
   DOCUMENTATION_TOOLTIP,
   INSPECT_ENTITY,
+<<<<<<< HEAD
   ACTION_EXECUTION_MESSAGE,
   UNEXPECTED_ERROR,
   NO_DATASOURCE_FOR_QUERY,
@@ -74,6 +78,11 @@ import {
   ACTION_RUN_BUTTON_MESSAGE_SECOND_HALF,
   CREATE_NEW_DATASOURCE,
   DEBUGGER_ERRORS,
+=======
+  INVALID_FORM_CONFIGURATION,
+  NO_DATASOURCE_FOR_QUERY,
+  UNEXPECTED_ERROR,
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 } from "@appsmith/constants/messages";
 import { useParams } from "react-router";
 import type { AppState } from "@appsmith/reducers";
@@ -102,15 +111,22 @@ import { EDITOR_TABS } from "constants/QueryEditorConstants";
 import type { FormEvalOutput } from "reducers/evaluationReducers/formEvaluationReducer";
 import { isValidFormConfig } from "reducers/evaluationReducers/formEvaluationReducer";
 import {
-  responseTabComponent,
-  InlineButton,
+  apiReactJsonProps,
   CancelRequestButton,
-  LoadingOverlayContainer,
   handleCancelActionExecution,
+<<<<<<< HEAD
   ResponseTabErrorContainer,
   ResponseTabErrorContent,
   ResponseTabErrorDefaultMessage,
   apiReactJsonProps,
+=======
+  InlineButton,
+  LoadingOverlayContainer,
+  responseTabComponent,
+  ResponseTabErrorContainer,
+  ResponseTabErrorContent,
+  ResponseTabErrorDefaultMessage,
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 } from "components/editorComponents/ApiResponseView";
 import LoadingOverlayScreen from "components/editorComponents/LoadingOverlayScreen";
 import { EditorTheme } from "components/editorComponents/CodeEditor/EditorConfig";
@@ -145,6 +161,10 @@ import LOG_TYPE from "entities/AppsmithConsole/logtype";
 import type { SourceEntity } from "entities/AppsmithConsole";
 import { ENTITY_TYPE as SOURCE_ENTITY_TYPE } from "entities/AppsmithConsole";
 import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+<<<<<<< HEAD
+=======
+import { DocsLink, openDoc } from "../../../constants/DocumentationLinks";
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 import { AIWindow } from "@appsmith/components/editorComponents/GPT";
 
 const QueryFormContainer = styled.form`
@@ -613,13 +633,7 @@ export function EditorJSONtoForm(props: Props) {
 
   const handleDocumentationClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const query = plugin?.name || "Connecting to datasources";
-    dispatch(setGlobalSearchQuery(query));
-    dispatch(toggleShowGlobalSearchModal());
-    AnalyticsUtil.logEvent("OPEN_OMNIBAR", {
-      source: "DATASOURCE_DOCUMENTATION_CLICK",
-      query,
-    });
+    openDoc(DocsLink.QUERY, plugin?.documentationLink, plugin?.name);
   };
 
   // Added function to handle the render of the configs
@@ -745,7 +759,8 @@ export function EditorJSONtoForm(props: Props) {
     (section: any): any => {
       return section.children.map(
         (formControlOrSection: ControlProps, idx: number) => {
-          if (isHidden(props.formData, section.hidden)) return null;
+          if (isHidden(props.formData, section.hidden, undefined, false))
+            return null;
           if (formControlOrSection.hasOwnProperty("children")) {
             return renderEachConfig(formName)(formControlOrSection);
           } else {
@@ -1075,6 +1090,7 @@ export function EditorJSONtoForm(props: Props) {
                       position="top"
                     >
 <<<<<<< HEAD
+<<<<<<< HEAD
                       <AdsIcon
                         keepColors
                         name="book-line"
@@ -1141,6 +1157,8 @@ export function EditorJSONtoForm(props: Props) {
                           actionSettingsConfig={settingConfig}
                           formName={formName}
 =======
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
                       <span
                         className="t--datasource-documentation-link"
                         onClick={(e: React.MouseEvent) =>
@@ -1151,7 +1169,10 @@ export function EditorJSONtoForm(props: Props) {
                           keepColors
                           name="book-line"
                           size={IconSize.XXXL}
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
                         />
                         &nbsp;
                         {createMessage(DOCUMENTATION)}
@@ -1267,6 +1288,7 @@ export function EditorJSONtoForm(props: Props) {
                         }`}</Text>
                       </Text>
 <<<<<<< HEAD
+<<<<<<< HEAD
                       <CancelRequestButton
                         category={Category.secondary}
                         className={`t--cancel-action-button`}
@@ -1291,6 +1313,8 @@ export function EditorJSONtoForm(props: Props) {
                   </Text>
                 </ResultsCount>
 =======
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
                     </ResultsCount>
                   )}
 
@@ -1307,7 +1331,10 @@ export function EditorJSONtoForm(props: Props) {
                     size={IconSize.XL}
                   />
                 </TabbedViewContainer>
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
               )}
             </SecondaryWrapper>
             <AIWindow className="border-t border-l" windowType="fixed" />

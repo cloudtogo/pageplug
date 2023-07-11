@@ -1212,7 +1212,8 @@ function* filePickerActionCallbackSaga(
     // Once users selects/cancels the file selection,
     // Sending sheet ids selected as part of datasource
     // config properties in order to save it in database
-    set(datasource, "datasourceConfiguration.properties[0]", {
+    // using the second index specifically for file ids.
+    set(datasource, "datasourceConfiguration.properties[1]", {
       key: createMessage(GSHEET_AUTHORISED_FILE_IDS_KEY),
       value: fileIds,
     });
@@ -1427,12 +1428,21 @@ function* loadFilePickerSaga() {
   const appsmithToken = localStorage.getItem(APPSMITH_TOKEN_STORAGE_KEY);
   const search = new URLSearchParams(window.location.search);
   const isShowFilePicker = search.get(SHOW_FILE_PICKER_KEY);
+<<<<<<< HEAD
+=======
+  const gapiScriptLoaded = (window as any).googleAPIsLoaded;
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   const authStatus = search.get(RESPONSE_STATUS);
   if (
     !!isShowFilePicker &&
     !!authStatus &&
     authStatus === AuthorizationStatus.SUCCESS &&
+<<<<<<< HEAD
     !!appsmithToken
+=======
+    !!appsmithToken &&
+    !!gapiScriptLoaded
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   ) {
     addClassToDocumentBody(className);
   }

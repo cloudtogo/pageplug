@@ -396,10 +396,14 @@ class DatasourceRestAPIEditor extends React.Component<
       <Header>
         <FormTitleContainer>
 <<<<<<< HEAD
+<<<<<<< HEAD
           <PluginImage alt="数据源" src={pluginImage} />
 =======
           <PluginImage alt="Datasource" src={getAssetUrl(pluginImage)} />
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+          <PluginImage alt="Datasource" src={getAssetUrl(pluginImage)} />
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
           <FormTitle
             disabled={!createMode && !canManageDatasource}
             focusOnMount={isNewDatasource}

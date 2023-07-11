@@ -60,12 +60,16 @@ import {
   stopWatchGeoLocation,
   watchGeoLocation,
 } from "./geolocationFns";
+<<<<<<< HEAD
 import { isAsyncGuard } from "./utils/fnGuard";
 import {
   echartCallFunc,
   TCallFuncDescription,
   TCallFuncActionType,
 } from "./echartFns";
+=======
+import { getFnWithGuards, isAsyncGuard } from "./utils/fnGuard";
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
 // cloudHosting -> to use in EE
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -125,34 +129,44 @@ export const entityFns = [
     name: "run",
     qualifier: (entity: DataTreeEntity) => isAction(entity),
     fn: (entity: DataTreeEntity, entityName: string) =>
-      isAsyncGuard(run.bind(entity), `${entityName}.run`),
+      getFnWithGuards(run.bind(entity), `${entityName}.run`, [isAsyncGuard]),
   },
   {
     name: "clear",
     qualifier: (entity: DataTreeEntity) => isAction(entity),
     fn: (entity: DataTreeEntity, entityName: string) =>
-      isAsyncGuard(clear.bind(entity), `${entityName}.clear`),
+      getFnWithGuards(clear.bind(entity), `${entityName}.clear`, [
+        isAsyncGuard,
+      ]),
   },
   {
     name: "getGeoLocation",
     path: "appsmith.geolocation.getCurrentPosition",
     qualifier: (entity: DataTreeEntity) => isAppsmithEntity(entity),
     fn: () =>
-      isAsyncGuard(getGeoLocation, "appsmith.geolocation.getCurrentPosition"),
+      getFnWithGuards(
+        getGeoLocation,
+        "appsmith.geolocation.getCurrentPosition",
+        [isAsyncGuard],
+      ),
   },
   {
     name: "watchGeoLocation",
     path: "appsmith.geolocation.watchPosition",
     qualifier: (entity: DataTreeEntity) => isAppsmithEntity(entity),
     fn: () =>
-      isAsyncGuard(watchGeoLocation, "appsmith.geolocation.watchPosition"),
+      getFnWithGuards(watchGeoLocation, "appsmith.geolocation.watchPosition", [
+        isAsyncGuard,
+      ]),
   },
   {
     name: "stopWatchGeoLocation",
     path: "appsmith.geolocation.clearWatch",
     qualifier: (entity: DataTreeEntity) => isAppsmithEntity(entity),
     fn: () =>
-      isAsyncGuard(stopWatchGeoLocation, "appsmith.geolocation.clearWatch"),
+      getFnWithGuards(stopWatchGeoLocation, "appsmith.geolocation.clearWatch", [
+        isAsyncGuard,
+      ]),
   },
   {
     name: "callFunc",

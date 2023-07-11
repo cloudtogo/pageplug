@@ -1,11 +1,18 @@
-const explorer = require("../../../../../locators/explorerlocators.json");
-import homePage from "../../../../../locators/HomePage";
 const publish = require("../../../../../locators/publishWidgetspage.json");
+<<<<<<< HEAD
 const dsl = require("../../../../../fixtures/swtchTableDsl.json");
+=======
+const explorer = require("../../../../../locators/explorerlocators.json");
+const dsl = require("../../../../../fixtures/tableNewDsl.json");
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
 describe("Table Widget", function () {
+  before(() => {
+    cy.addDsl(dsl);
+  });
   it("1. Table Widget Functionality To Check with changing schema of tabledata", () => {
     let jsContext = `{{Switch1.isSwitchedOn?[{name: "joe"}]:[{employee_name: "john"}];}}`;
+<<<<<<< HEAD
     cy.NavigateToHome();
     cy.get(homePage.createNew).first().click({ force: true });
     cy.wait("@createNewApplication").should(
@@ -15,12 +22,17 @@ describe("Table Widget", function () {
     );
     cy.addDsl(dsl);
     cy.wait(5000);
+=======
+    cy.wait(5000);
+    cy.get(explorer.addWidget).click();
+    cy.dragAndDropToCanvas("switchwidget", { x: 200, y: 200 });
+    cy.wait(2000);
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
     cy.openPropertyPane("tablewidget");
     cy.get(".t--property-control-tabledata").then(($el) => {
       cy.updateCodeInput($el, jsContext);
     });
     cy.PublishtheApp();
-    cy.wait(30000);
     cy.getTableDataSelector("0", "0").then((element) => {
       cy.get(element).should("be.visible");
     });
@@ -45,9 +57,7 @@ describe("Table Widget", function () {
     cy.readTabledataPublish("0", "0").then((value) => {
       expect(value).to.be.equal("joe");
     });
-
     cy.get(publish.backToEditor).click().wait(1000);
-    cy.wait(30000);
     cy.CheckAndUnfoldEntityItem("Widgets");
     cy.actionContextMenuByEntityName("Switch1");
     cy.actionContextMenuByEntityName("Table1");
