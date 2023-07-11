@@ -9130,7 +9130,11 @@ class-utils@^0.3.5:
 
 classnames@*:
   version "2.3.2"
+<<<<<<< HEAD
   resolved "https://registry.npmjs.org/classnames/-/classnames-2.3.2.tgz#351d813bf0137fcc6a76a16b88208d2560a0d924"
+=======
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.2.tgz#351d813bf0137fcc6a76a16b88208d2560a0d924"
+>>>>>>> ed35f7e5726f0dd91816a1f9bde5f937938cc880
   integrity sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==
 
 classnames@2.x, classnames@^2.3.1:
@@ -10476,6 +10480,7 @@ depd@~1.1.2:
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 "design-system-old@npm:@appsmithorg/design-system-old@1.1.1":
   version "1.1.1"
   resolved "https://registry.npmmirror.com/@appsmithorg/design-system-old/-/design-system-old-1.1.1.tgz"
@@ -10491,6 +10496,12 @@ depd@~1.1.2:
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
 =======
 >>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
+=======
+"design-system-old@npm:@appsmithorg/design-system-old@1.1.6":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@appsmithorg/design-system-old/-/design-system-old-1.1.6.tgz#4b009bd4639e6018168929f649c54298c24b5e77"
+  integrity sha512-og37WUPL1USDgq5ow+Ci//c1SmwjVcbREUWEqLcqs+X4OxSoNdXkaQPwAwNkj07R9jhDxZ7ESKME0EfrQMnxSw==
+>>>>>>> ed35f7e5726f0dd91816a1f9bde5f937938cc880
   dependencies:
     emoji-mart "3.0.1"
 
@@ -14992,6 +15003,19 @@ js-levenshtein@^1.1.6:
   version "1.1.6"
   resolved "https://registry.npmjs.org/js-levenshtein/-/js-levenshtein-1.1.6.tgz"
 
+<<<<<<< HEAD
+=======
+js-regex-pl@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/js-regex-pl/-/js-regex-pl-1.0.1.tgz#a0e4d76c7c2b4a503b17bc6b32ce8c5b0e39bca1"
+  integrity sha512-Cj291//fFojnJrYxh46mhK1jINe4F4WXk+/FNGaPy+2q61pKRX0n9LyY3rtZNlH06s41DtoNVh9UR7bTeuAhGg==
+
+js-sdsl@^4.1.4:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/js-sdsl/-/js-sdsl-4.3.0.tgz#aeefe32a451f7af88425b11fdb5f58c90ae1d711"
+  integrity sha512-mifzlm2+5nZ+lEcLJMoBK0/IH/bDg8XnJfd/Wq6IP+xoCjLZsTOnV2QpxlVbX9bMnkl5PdEjNtBJ9Cj1NjifhQ==
+
+>>>>>>> ed35f7e5726f0dd91816a1f9bde5f937938cc880
 js-sha256@^0.9.0:
   version "0.9.0"
   resolved "https://registry.npmjs.org/js-sha256/-/js-sha256-0.9.0.tgz"

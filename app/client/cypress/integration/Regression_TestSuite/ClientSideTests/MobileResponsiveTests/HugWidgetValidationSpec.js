@@ -33,7 +33,7 @@ describe("Validating Mobile Views", function () {
 =======
 const commonlocators = require("../../../../locators/commonlocators.json");
 describe("Validating Mobile Views for Hug Widget", function () {
-  it("Validate change with height width for hug widget - image widget", function () {
+  it("1. Validate change with height width for hug widget - image widget", function () {
     cy.get(commonlocators.autoConvert).click({
       force: true,
     });
@@ -50,12 +50,19 @@ describe("Validating Mobile Views for Hug Widget", function () {
   });
   //Added viewports of iphone14 and samsung galaxy s22 for testing purpose
   let phones = ["iphone-4", "samsung-s10", [390, 844], [360, 780]];
+<<<<<<< HEAD
   phones.forEach((phone) => {
 <<<<<<< HEAD
     it(`${phone} port execution`, function () {
 =======
     it(`${phone} port execution for hug widget -image widget `, function () {
 >>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
+=======
+  phones.forEach((phone, index) => {
+    it(`${
+      index + 1
+    }. ${phone} port execution for hug widget -image widget `, function () {
+>>>>>>> ed35f7e5726f0dd91816a1f9bde5f937938cc880
       if (Cypress._.isArray(phone)) {
         cy.viewport(phone[0], phone[1]);
       } else {

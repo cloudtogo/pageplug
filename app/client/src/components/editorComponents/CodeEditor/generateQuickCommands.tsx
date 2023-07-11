@@ -16,6 +16,8 @@ import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
 import MagicIcon from "remixicon-react/MagicLineIcon";
 import { addAISlashCommand } from "@appsmith/components/editorComponents/GPT/trigger";
 import type FeatureFlags from "entities/FeatureFlags";
+import type { FieldEntityInformation } from "./EditorConfig";
+import { EditorModes } from "./EditorConfig";
 
 enum Shortcuts {
   PLUS = "PLUS",
@@ -141,12 +143,22 @@ export const generateQuickCommands = (
     recentEntities: string[];
     featureFlags: FeatureFlags;
   },
-  expectedType: string,
-  entityId: any,
-  propertyPath: any,
+  entityInfo: FieldEntityInformation,
 ) => {
+<<<<<<< HEAD
   const suggestionsHeader: CommandsCompletion = commandsHeader("绑定数据");
   const createNewHeader: CommandsCompletion = commandsHeader("新建查询");
+=======
+  const {
+    entityId,
+    example,
+    expectedType = "string",
+    mode,
+    propertyPath,
+  } = entityInfo || {};
+  const suggestionsHeader: CommandsCompletion = commandsHeader("Bind Data");
+  const createNewHeader: CommandsCompletion = commandsHeader("Create a Query");
+>>>>>>> ed35f7e5726f0dd91816a1f9bde5f937938cc880
   recentEntities.reverse();
   const newBinding: CommandsCompletion = generateCreateNewCommand({
     text: "{{}}",
@@ -251,8 +263,10 @@ export const generateQuickCommands = (
   // TODO: Refactor slash commands generation for easier code splitting
   if (
     addAISlashCommand &&
-    featureFlags.CHAT_AI &&
-    currentEntityType !== ENTITY_TYPE.ACTION
+    featureFlags.ask_ai &&
+    (currentEntityType !== ENTITY_TYPE.ACTION ||
+      mode === EditorModes.SQL ||
+      mode === EditorModes.SQL_WITH_BINDING)
   ) {
     const askGPT: CommandsCompletion = generateCreateNewCommand({
       text: "",
@@ -266,6 +280,8 @@ export const generateQuickCommands = (
             expectedType: expectedType,
             entityId: entityId,
             propertyPath: propertyPath,
+            example,
+            mode,
           },
         }),
     });

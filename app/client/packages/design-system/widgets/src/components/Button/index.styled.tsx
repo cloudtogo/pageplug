@@ -10,7 +10,7 @@ export const StyledButton = styled(HeadlessButton)<ButtonProps>`
   outline: 0;
   gap: var(--spacing-4);
   padding: var(--spacing-2) var(--spacing-4);
-  min-height: calc(var(--sizing-root-unit) * 8);
+  height: calc(var(--sizing-root-unit) * 8);
   border-radius: var(--border-radius-1);
   user-select: none;
 
@@ -96,6 +96,7 @@ export const StyledButton = styled(HeadlessButton)<ButtonProps>`
     }
   }
 
+<<<<<<< HEAD
   // we don't use :focus-visible because not all browsers (safari) have it yet
 <<<<<<< HEAD
   &:not([data-loading]).focus-ring,
@@ -103,6 +104,9 @@ export const StyledButton = styled(HeadlessButton)<ButtonProps>`
   &[data-focused]:not([data-loading]),
 >>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   &[data-focus="true"] {
+=======
+  &[data-focused]:not([data-loading]) {
+>>>>>>> ed35f7e5726f0dd91816a1f9bde5f937938cc880
     box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-bd-focus);
   }
 

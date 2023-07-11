@@ -12,6 +12,7 @@ export default [
     helpText: "对输入进行正则校验，校验失败时显示错误",
     label: "正则校验",
     controlType: "TABLE_INLINE_EDIT_VALIDATION_CONTROL",
+    dependencies: ["primaryColumns"],
     placeholderText: "^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$",
     isBindProperty: true,
     isTriggerProperty: false,
@@ -47,7 +48,12 @@ export default [
     helpText: "普通校验或正则校验失败后显示的错误信息",
     label: "错误信息",
     controlType: "TABLE_INLINE_EDIT_VALIDATION_CONTROL",
+<<<<<<< HEAD
     placeholderText: "校验失败！",
+=======
+    dependencies: ["primaryColumns"],
+    placeholderText: "Not a valid value!",
+>>>>>>> ed35f7e5726f0dd91816a1f9bde5f937938cc880
     isBindProperty: true,
     isTriggerProperty: false,
     validation: { type: ValidationTypes.TEXT },
@@ -61,6 +67,7 @@ export default [
     helpText: "强制用户填写",
     label: "必填",
     controlType: "SWITCH",
+    dependencies: ["primaryColumns"],
     customJSControl: "TABLE_INLINE_EDIT_VALIDATION_CONTROL",
     isJSConvertible: true,
     isBindProperty: true,
