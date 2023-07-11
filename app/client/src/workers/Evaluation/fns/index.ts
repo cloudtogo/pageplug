@@ -69,7 +69,11 @@ import {
 } from "./echartFns";
 =======
 import { getFnWithGuards, isAsyncGuard } from "./utils/fnGuard";
+<<<<<<< HEAD
 >>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
+=======
+import type { ActionEntity } from "entities/DataTree/types";
+>>>>>>> ed35f7e5726f0dd91816a1f9bde5f937938cc880
 
 // cloudHosting -> to use in EE
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -128,16 +132,25 @@ export const entityFns = [
   {
     name: "run",
     qualifier: (entity: DataTreeEntity) => isAction(entity),
-    fn: (entity: DataTreeEntity, entityName: string) =>
-      getFnWithGuards(run.bind(entity), `${entityName}.run`, [isAsyncGuard]),
+    fn: (entity: DataTreeEntity, entityName: string) => {
+      // @ts-expect-error: name is not defined on ActionEntity
+      entity.name = entityName;
+      return getFnWithGuards(
+        run.bind(entity as ActionEntity),
+        `${entityName}.run`,
+        [isAsyncGuard],
+      );
+    },
   },
   {
     name: "clear",
     qualifier: (entity: DataTreeEntity) => isAction(entity),
     fn: (entity: DataTreeEntity, entityName: string) =>
-      getFnWithGuards(clear.bind(entity), `${entityName}.clear`, [
-        isAsyncGuard,
-      ]),
+      getFnWithGuards(
+        clear.bind(entity as ActionEntity),
+        `${entityName}.clear`,
+        [isAsyncGuard],
+      ),
   },
   {
     name: "getGeoLocation",

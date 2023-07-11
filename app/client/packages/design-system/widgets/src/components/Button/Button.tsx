@@ -47,7 +47,6 @@ export const Button = forwardRef(
       children,
       fontFamily,
       isFitContainer = false,
-      isFocused,
       isLoading,
       // eslint-disable-next-line -- TODO add onKeyUp when the bug is fixedhttps://github.com/adobe/react-spectrum/issues/4350
       onKeyUp,
@@ -77,7 +76,6 @@ export const Button = forwardRef(
     return (
       <StyledButton
         data-fit-container={isFitContainer ? "" : undefined}
-        data-focused={isFocused}
         data-loading={isLoading ? "" : undefined}
 >>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         data-variant={variant}

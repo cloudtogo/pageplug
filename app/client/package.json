@@ -118,6 +118,7 @@
     "deep-diff": "^1.0.2",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "delayed-stream": "^1.0.0",
     "design-system-old": "npm:@appsmithorg/design-system-old@1.1.1",
 =======
@@ -126,6 +127,9 @@
 =======
     "design-system-old": "npm:@appsmithorg/design-system-old@1.1.5",
 >>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
+=======
+    "design-system-old": "npm:@appsmithorg/design-system-old@1.1.6",
+>>>>>>> ed35f7e5726f0dd91816a1f9bde5f937938cc880
     "downloadjs": "^1.4.7",
     "draft-js": "^0.11.7",
     "echarts": "^5.4.0",
@@ -147,6 +151,7 @@
     "interweave-autolink": "^4.4.2",
     "jest-preview": "^0.3.1",
     "js-beautify": "^1.14.0",
+    "js-regex-pl": "^1.0.1",
     "js-sha256": "^0.9.0",
     "jshint": "^2.13.4",
     "klona": "^2.0.5",

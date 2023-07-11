@@ -342,7 +342,7 @@ public class NewPageServiceCEImpl extends BaseService<NewPageRepository, NewPage
                         pageNameIdDTO.setSlug(pageDTO.getSlug());
                         pageNameIdDTO.setIcon(pageDTO.getIcon());
                         pageNameIdDTO.setCustomSlug(pageDTO.getCustomSlug());
-                        pageNameIdDTO.setIcon(pageDTO.getIcon());
+                        pageNameIdDTO.setUserPermissions(pageFromDb.getUserPermissions());
 
                         if (pageNameIdDTO.getId().equals(defaultPageId)) {
                             pageNameIdDTO.setIsDefault(true);

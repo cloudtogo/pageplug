@@ -27,7 +27,6 @@ import {
   JSONtoForm,
   PluginImage,
 } from "../DataSourceEditor/JSONtoForm";
-import { getConfigInitialValues } from "components/formControls/utils";
 import Connected from "../DataSourceEditor/Connected";
 import {
   getCurrentApplicationId,
@@ -65,7 +64,6 @@ import {
   GSHEET_AUTHORIZATION_ERROR,
   SAVE_AND_AUTHORIZE_BUTTON_TEXT,
 } from "@appsmith/constants/messages";
-import { selectFeatureFlags } from "selectors/usersSelectors";
 import { getDatasourceErrorMessage } from "./errorUtils";
 import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
 import { DocumentationLink } from "../QueryEditor/EditorJSONtoForm";
@@ -74,7 +72,11 @@ import GoogleSheetFilePicker from "./GoogleSheetFilePicker";
 =======
 import DatasourceInformation from "./../DataSourceEditor/DatasourceSection";
 import styled from "styled-components";
+<<<<<<< HEAD
 >>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
+=======
+import { getConfigInitialValues } from "components/formControls/utils";
+>>>>>>> ed35f7e5726f0dd91816a1f9bde5f937938cc880
 
 interface StateProps extends JSONtoFormProps {
   applicationId: string;
@@ -282,9 +284,12 @@ class DatasourceSaaSEditor extends JSONtoForm<Props, State> {
       datasourceButtonConfiguration,
       datasourceId,
       documentationLink,
+<<<<<<< HEAD
       featureFlags,
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> ed35f7e5726f0dd91816a1f9bde5f937938cc880
       formConfig,
 >>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
       formData,
@@ -368,9 +373,6 @@ class DatasourceSaaSEditor extends JSONtoForm<Props, State> {
                           pageId: pageId || "",
                           pluginPackageName,
                           datasourceId,
-                          params: {
-                            viewMode: false,
-                          },
                         }),
                       );
                     }}
@@ -397,9 +399,7 @@ class DatasourceSaaSEditor extends JSONtoForm<Props, State> {
             <>
               {/* This adds information banner when creating google sheets datasource,
               this info banner explains why appsmith requires permissions from users google account */}
-              {!!featureFlags &&
-              !!featureFlags?.LIMITING_GOOGLE_SHEET_ACCESS &&
-              datasource &&
+              {datasource &&
               isGoogleSheetPlugin &&
               datasource?.id === TEMP_DATASOURCE_ID ? (
 <<<<<<< HEAD
@@ -554,6 +554,7 @@ const mapStateToProps = (state: AppState, props: any) => {
   if (formConfig) {
     merge(initialValues, getConfigInitialValues(formConfig));
   }
+
   merge(initialValues, datasource);
 
   const datasourceButtonConfiguration = getDatasourceFormButtonConfig(
@@ -609,7 +610,6 @@ const mapStateToProps = (state: AppState, props: any) => {
       state.entities.datasources.isDatasourceBeingSavedFromPopup,
     isFormDirty,
     canCreateDatasourceActions,
-    featureFlags: selectFeatureFlags(state),
     gsheetToken,
     gsheetProjectID,
   };

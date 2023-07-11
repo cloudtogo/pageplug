@@ -7,7 +7,13 @@ import { USER_PHOTO_ASSET_URL } from "constants/userConstants";
 import { DisplayImageUpload } from "design-system-old";
 
 import type Uppy from "@uppy/core";
+<<<<<<< HEAD
 import { isAirgapped } from "@appsmith/utils/airgapHelpers";
+=======
+import { ReduxActionErrorTypes } from "ce/constants/ReduxActionConstants";
+import type { ErrorActionPayload } from "sagas/ErrorSagas";
+import { USER_DISPLAY_PICTURE_FILE_INVALID } from "ce/constants/messages";
+>>>>>>> ed35f7e5726f0dd91816a1f9bde5f937938cc880
 
 function FormDisplayImage() {
   const isAirgappedInstance = isAirgapped();
@@ -53,10 +59,24 @@ function FormDisplayImage() {
     );
   };
 
+  const onFileTypeInvalid = () => {
+    const payload: ErrorActionPayload = {
+      show: true,
+      error: {
+        message: USER_DISPLAY_PICTURE_FILE_INVALID(),
+      },
+    };
+    dispatch({
+      type: ReduxActionErrorTypes.USER_IMAGE_INVALID_FILE_CONTENT,
+      payload,
+    });
+  };
+
   return (
     <DisplayImageUpload
       disableUppyInformer={isAirgappedInstance}
       onChange={onSelectFile}
+      onInvalidFileContent={onFileTypeInvalid}
       onRemove={removeProfileImage}
       submit={upload}
       value={imageURL}

@@ -74,9 +74,16 @@ describe("Validating Mobile Views for Fill Widget", function () {
 =======
   //Added viewports of iphone14 and samsung galaxy s22 for testing purpose
   let phones = ["iphone-4", "samsung-s10", [390, 844], [360, 780]];
+<<<<<<< HEAD
   phones.forEach((phone) => {
     it(`${phone} port execution for fill widget - input widget`, function () {
 >>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
+=======
+  phones.forEach((phone, index) => {
+    it(`${
+      index + 1
+    }. ${phone} port execution for fill widget - input widget`, function () {
+>>>>>>> ed35f7e5726f0dd91816a1f9bde5f937938cc880
       if (Cypress._.isArray(phone)) {
         cy.viewport(phone[0], phone[1]);
       } else {
