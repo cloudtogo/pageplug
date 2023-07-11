@@ -65,10 +65,14 @@ describe("Listv2 - Event bindings", () => {
     cy.get(widgetSelector("Input1"))
       .find("input")
 <<<<<<< HEAD
+<<<<<<< HEAD
       .type("Input");
 =======
       .type("Input", { force: true });
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+      .type("Input", { force: true });
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
     // click the button on inner list 1st row.
     cy.get(widgetSelector("Button1"))

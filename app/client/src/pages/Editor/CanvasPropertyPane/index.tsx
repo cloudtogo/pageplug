@@ -11,8 +11,11 @@ import { Button, Category, Size, TooltipComponent } from "design-system-old";
 
 import { openAppSettingsPaneAction } from "actions/appSettingsPaneActions";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { AppPositionTypeControl, Title } from "../AppPositionTypeControl";
 =======
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 import ConversionButton from "../CanvasLayoutConversion/ConversionButton";
 import { MainContainerLayoutControl } from "../MainContainerLayoutControl";
 import {
@@ -21,7 +24,10 @@ import {
 } from "selectors/editorSelectors";
 import styled from "styled-components";
 import { Colors } from "constants/Colors";
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
 const Title = styled.p`
   color: ${Colors.GRAY_800};
@@ -33,18 +39,24 @@ export function CanvasPropertyPane() {
     dispatch(openAppSettingsPaneAction());
   };
 <<<<<<< HEAD
+<<<<<<< HEAD
 
   const isMobile = useSelector(isMobileLayout);
 =======
   const isAutoLayoutFeatureEnabled = useSelector(isAutoLayoutEnabled);
   const isAutoLayout = useSelector(getIsAutoLayout);
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+  const isAutoLayoutFeatureEnabled = useSelector(isAutoLayoutEnabled);
+  const isAutoLayout = useSelector(getIsAutoLayout);
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   return (
     <div className="relative ">
       <h3 className="px-4 py-3 text-sm font-medium uppercase">全局配置</h3>
 
       <div className="mt-3 space-y-6">
         <div className="px-4 space-y-2">
+<<<<<<< HEAD
 <<<<<<< HEAD
           {isMobile ? null : (
             <>
@@ -54,6 +66,8 @@ export function CanvasPropertyPane() {
           )}
           <AppPositionTypeControl />
 =======
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
           {!isAutoLayout && (
             <>
               <Title className="text-sm">Canvas Size</Title>
@@ -61,7 +75,10 @@ export function CanvasPropertyPane() {
             </>
           )}
           {isAutoLayoutFeatureEnabled && <ConversionButton />}
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
           <TooltipComponent
             content={
               isMobile ? null : (

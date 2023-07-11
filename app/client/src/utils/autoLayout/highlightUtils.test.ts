@@ -105,7 +105,11 @@ describe("test HighlightUtils methods", () => {
           parentId: "1",
         },
       };
+<<<<<<< HEAD
       const offsetTop = (ROW_GAP - DEFAULT_HIGHLIGHT_SIZE / 2) / 2;
+=======
+      const offsetTop = ROW_GAP;
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
       const highlights: HighlightInfo[] = deriveHighlightsFromLayers(
         widgets,
         "1",

@@ -419,14 +419,20 @@ function DatasourceCard(props: DatasourceCardProps) {
           }}
         >
 <<<<<<< HEAD
+<<<<<<< HEAD
           <CollapseComponent title="详情" titleStyle={{ maxWidth: 120 }}>
 =======
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
           <CollapseComponent
             openTitle="Show Less"
             title="Show More"
             titleStyle={{ maxWidth: 120 }}
           >
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             <DatasourceInfo>
               <RenderDatasourceInformation
                 config={currentFormConfig[0]}

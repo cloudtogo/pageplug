@@ -84,10 +84,16 @@
     gapiLoaded = () => {
       window.googleAPIsLoaded = true;
     }
+<<<<<<< HEAD
 
+=======
+    onError = () => {
+      window.googleAPIsLoaded = false;
+    };
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   </script>
   <!-- Adding this Library to access google file picker API in case of limiting google sheet access -->
-  <script async defer id="googleapis" src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+  <script async defer id="googleapis" src="https://apis.google.com/js/api.js" onload="gapiLoaded()" onerror="onError()"></script>
 </head>
 
 <body class="appsmith-light-theme">
@@ -209,8 +215,6 @@
       smartLook: {
         id: parseConfig("__APPSMITH_SMART_LOOK_ID__"),
       },
-      enableGoogleOAuth: parseConfig("__APPSMITH_OAUTH2_GOOGLE_CLIENT_ID__"),
-      enableGithubOAuth: parseConfig("__APPSMITH_OAUTH2_GITHUB_CLIENT_ID__"),
       disableLoginForm: parseConfig("__APPSMITH_FORM_LOGIN_DISABLED__"),
       disableSignup: parseConfig("__APPSMITH_SIGNUP_DISABLED__"),
       enableRapidAPI: parseConfig("__APPSMITH_MARKETPLACE_ENABLED__"),

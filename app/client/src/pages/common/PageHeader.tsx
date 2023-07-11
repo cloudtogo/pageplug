@@ -200,6 +200,7 @@ export function PageHeader(props: PageHeaderProps) {
             </TabName>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             <TabName
               className="t--templates-tab"
               isSelected={
@@ -214,6 +215,8 @@ export function PageHeader(props: PageHeaderProps) {
               <div>模板</div>
             </TabName>
 =======
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             {!isAirgappedInstance && (
               <TabName
                 className="t--templates-tab"
@@ -229,7 +232,10 @@ export function PageHeader(props: PageHeaderProps) {
                 <div>Templates</div>
               </TabName>
             )}
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
           </>
         )}
       </Tabs>

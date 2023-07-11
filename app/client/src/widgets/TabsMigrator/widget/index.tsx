@@ -123,10 +123,14 @@ class TabsMigratorWidget extends BaseWidget<
         children: [
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "选中标签页时触发",
 =======
             helpText: "when the button is clicked",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "when the button is clicked",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onTabSelected",
             label: "onTabSelected",
             controlType: "ACTION_SELECTOR",

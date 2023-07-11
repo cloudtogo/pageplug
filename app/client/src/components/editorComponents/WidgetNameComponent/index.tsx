@@ -174,6 +174,7 @@ export function WidgetNameComponent(props: WidgetNameComponentProps) {
     if (showAsSelected && isActiveInPropertyPane) activity = Activities.ACTIVE;
     return activity;
   };
+<<<<<<< HEAD
 
   const currentActivity = useMemo(getCurrentActivity, [
     isActiveInPropertyPane,
@@ -197,6 +198,16 @@ export function WidgetNameComponent(props: WidgetNameComponentProps) {
   )
     currentActivity = Activities.ACTIVE;
 =======
+=======
+
+  const currentActivity = useMemo(getCurrentActivity, [
+    isActiveInPropertyPane,
+    isFocused,
+    isModalWidget,
+    showAsSelected,
+  ]);
+
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   const getPositionOffset = (): [number, number] => {
     if (isSnipingMode) {
       //ToDo: (Ashok) This is a hasty fix from my end. need to check the padding and margins and give a meaningful constant.
@@ -206,7 +217,10 @@ export function WidgetNameComponent(props: WidgetNameComponentProps) {
       ? [-RESIZE_BORDER_BUFFER / 2, -RESIZE_BORDER_BUFFER / 2]
       : [0, 0];
   };
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
   // bottom offset is RESIZE_BORDER_BUFFER - 1 because bottom border is none for the widget name
   const positionOffset: [number, number] = useMemo(getPositionOffset, [

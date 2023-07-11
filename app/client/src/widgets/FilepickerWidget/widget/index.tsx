@@ -217,10 +217,14 @@ class FilePickerWidget extends BaseWidget<
           {
             helpText:
 <<<<<<< HEAD
+<<<<<<< HEAD
               "当用户选中文件后触发，上传文件到CDN，然后存储文件地址到 filepicker.files",
 =======
               "when the user selects a file. Upload files to a CDN and stores their URLs in filepicker.files",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+              "when the user selects a file. Upload files to a CDN and stores their URLs in filepicker.files",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onFilesSelected",
             label: "onFilesSelected",
             controlType: "ACTION_SELECTOR",

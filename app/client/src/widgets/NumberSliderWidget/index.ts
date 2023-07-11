@@ -33,12 +33,17 @@ export const CONFIG = {
     version: 1,
     animateLoading: true,
 <<<<<<< HEAD
+<<<<<<< HEAD
     labelText: "百分比",
     labelPosition: LabelPosition.Left,
 =======
     labelText: "Percentage",
     labelPosition: LabelPosition.Top,
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+    labelText: "Percentage",
+    labelPosition: LabelPosition.Top,
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
     labelAlignment: Alignment.LEFT,
     labelWidth: 8,
     labelTextSize: "0.875rem",

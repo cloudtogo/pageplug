@@ -163,7 +163,7 @@ function* initiateActionTriggerExecution(
     }
   } catch (e) {
     if (e instanceof UncaughtPromiseError || e instanceof TriggerFailureError) {
-      logActionExecutionError(e.message, source, triggerPropertyName);
+      logActionExecutionError(e.message, true, source, triggerPropertyName);
     }
     // handle errors here
     if (event.callback) {

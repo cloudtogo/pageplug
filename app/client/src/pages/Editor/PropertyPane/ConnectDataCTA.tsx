@@ -1,18 +1,15 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { Button, Category, getTypographyByKey, Size } from "design-system-old";
 import type { AppState } from "@appsmith/reducers";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { INTEGRATION_EDITOR_MODES, INTEGRATION_TABS } from "constants/routes";
 import history from "utils/history";
-import {
-  setGlobalSearchQuery,
-  toggleShowGlobalSearchModal,
-} from "actions/globalSearchActions";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import type { WidgetType } from "constants/WidgetConstants";
 import { integrationEditorURL } from "RouteBuilder";
 import { getCurrentPageId } from "selectors/editorSelectors";
+import { DocsLink, openDoc } from "../../../constants/DocumentationLinks";
 
 const StyledDiv = styled.div`
   color: ${(props) => props.theme.colors.propertyPane.ctaTextColor};
@@ -54,15 +51,7 @@ type ConnectDataCTAProps = {
 };
 
 function ConnectDataCTA(props: ConnectDataCTAProps) {
-  const dispatch = useDispatch();
   const pageId: string = useSelector(getCurrentPageId);
-  const openHelpModal = useCallback(() => {
-    dispatch(setGlobalSearchQuery("Connecting to Data Sources"));
-    dispatch(toggleShowGlobalSearchModal());
-    AnalyticsUtil.logEvent("OPEN_OMNIBAR", {
-      source: "PROPERTY_PANE_CONNECT_DATA",
-    });
-  }, []);
 
   const onClick = () => {
     const { widgetId, widgetTitle, widgetType } = props;
@@ -93,8 +82,12 @@ function ConnectDataCTA(props: ConnectDataCTAProps) {
       />
       {/* <Button
         category={Category.secondary}
+<<<<<<< HEAD
         onClick={openHelpModal}
         text="了解更多"
+=======
+        onClick={() => openDoc(DocsLink.CONNECT_DATA)}
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         tabIndex={0}
         tag="button"
       /> */}

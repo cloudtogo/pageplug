@@ -12,8 +12,14 @@ describe("Google Sheets datasource test cases", function () {
     dataSources.NavigateToDSCreateNew();
     dataSources.CreatePlugIn("Google Sheets");
     VerifyFunctionDropdown([
+<<<<<<< HEAD
       "Read/Write | Selected Google Sheets",
       "Read/Write | All Google Sheets",
+=======
+      "Read / Write / Delete | Selected Google Sheets",
+      "Read / Write / Delete | All Google Sheets",
+      "Read / Write | All Google Sheets",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
       "Read | All Google Sheets",
     ]);
     dataSources.SaveDSFromDialog(false);

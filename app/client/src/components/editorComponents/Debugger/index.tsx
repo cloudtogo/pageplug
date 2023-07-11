@@ -108,16 +108,22 @@ export function DebuggerTrigger() {
   };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   const tooltipContent =
     totalMessageCount > 0
       ? `查看 ${totalMessageCount} 个错误的详情`
       : "查看日志";
 =======
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   //tooltip will always show error count as we are opening error tab on click of debugger.
   const tooltipContent = `View details for ${totalMessageCount} ${
     totalMessageCount > 1 ? "errors" : "error"
   }`;
+<<<<<<< HEAD
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
   if (hideDebuggerIcon) return null;
 

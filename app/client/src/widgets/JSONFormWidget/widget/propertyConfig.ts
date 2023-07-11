@@ -284,10 +284,14 @@ export const contentConfig = [
       {
         propertyName: "onSubmit",
 <<<<<<< HEAD
+<<<<<<< HEAD
         helpText: "点击提交按钮时触发",
 =======
         helpText: "when the submit button is clicked",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+        helpText: "when the submit button is clicked",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         label: "onSubmit",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,

@@ -217,10 +217,14 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
         children: [
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "评分变化时触发",
 =======
             helpText: "when the rate is changed",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "when the rate is changed",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onRateChanged",
             label: "onChange",
             controlType: "ACTION_SELECTOR",

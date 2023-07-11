@@ -1,8 +1,7 @@
 const dsl = require("../../../../../fixtures/Listv2/MetaHydrationDSL.json");
 const commonlocators = require("../../../../../locators/commonlocators.json");
-const datasource = require("../../../../../locators/DatasourcesEditor.json");
-const queryLocators = require("../../../../../locators/QueryEditor.json");
 const publishPage = require("../../../../../locators/publishWidgetspage.json");
+import * as _ from "../../../../../support/Objects/ObjectsCore";
 
 import { ObjectsRegistry } from "../../../../../support/Objects/Registry";
 
@@ -74,6 +73,7 @@ function testJsontextClear(endp) {
     .type(`{${modifierKey}}{del}`, { force: true });
 }
 
+<<<<<<< HEAD
 function verifyMultiDropdownValuesCount(count, page = 1) {
   cy.get(".rc-select-selection-overflow").then(($ele) => {
     if (
@@ -93,6 +93,9 @@ function verifyMultiDropdownValuesCount(count, page = 1) {
 
 // Skipping this test due to regression, issue id to track this regression https://github.com/appsmithorg/appsmith/issues/22534
 describe.skip("List widget v2 - meta hydration tests", () => {
+=======
+describe("List widget v2 - meta hydration tests", () => {
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
   before(() => {
     agHelper.AddDsl(dsl);
   });
@@ -105,6 +108,7 @@ describe.skip("List widget v2 - meta hydration tests", () => {
   });
 
   it("1. setup serverside data", () => {
+<<<<<<< HEAD
     cy.wait(1000);
     cy.NavigateToDatasourceEditor();
 
@@ -152,6 +156,14 @@ describe.skip("List widget v2 - meta hydration tests", () => {
     cy.runQuery();
 
     cy.get('.t--entity-name:contains("Page1")').click({ force: true });
+=======
+    cy.createAndFillApi(
+      "http://host.docker.internal:5001/v1/mock-api?records=20&page={{List1.pageNo}}&size={{List1.pageSize}}",
+      "",
+    );
+    cy.RunAPI();
+    cy.SearchEntityandOpen("List1");
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
     cy.wait(1000);
 
@@ -159,18 +171,17 @@ describe.skip("List widget v2 - meta hydration tests", () => {
 
     testJsontextClear("items");
 
-    cy.testJsontext("items", "{{Query1.data}}");
+    cy.testJsontext("items", "{{Api1.data}}");
 
     cy.togglebar(commonlocators.serverSidePaginationCheckbox);
 
     cy.get(toggleJSButton("onpagechange")).click({ force: true });
-    cy.testJsontext("onpagechange", "{{Query1.run()}}");
+    cy.testJsontext("onpagechange", "{{Api1.run()}}");
 
     cy.get(`${widgetSelector("List1")} ${containerWidgetSelector}`).should(
       "have.length",
       3,
     );
-    verifyMultiDropdownValuesCount(6);
   });
 
   it("2. using server side data", () => {
@@ -217,7 +228,10 @@ describe.skip("List widget v2 - meta hydration tests", () => {
         );
       });
 
+<<<<<<< HEAD
     verifyMultiDropdownValuesCount(6, 2);
+=======
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
     //   SecondPage
     //   First Row
     cy.get(`${widgetSelector("List1")}`).scrollIntoView();
@@ -253,6 +267,7 @@ describe.skip("List widget v2 - meta hydration tests", () => {
         .should("have.length", 3),
     );
 
+<<<<<<< HEAD
     cy.get(`${widgetSelector("List1")} ${containerWidgetSelector}`)
       .eq(0)
       .within(() => {
@@ -262,6 +277,17 @@ describe.skip("List widget v2 - meta hydration tests", () => {
             .should("exist"),
         );
       });
+=======
+    cy.waitUntil(() =>
+      cy
+        .get(
+          `${widgetSelector(
+            "List1",
+          )} ${containerWidgetSelector} .rc-select-selection-overflow-item .remove-icon`,
+        )
+        .should("have.length", 3),
+    );
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
     cy.waitUntil(
       () =>
@@ -313,6 +339,7 @@ describe.skip("List widget v2 - meta hydration tests", () => {
         .should("have.length", 3),
     );
 
+<<<<<<< HEAD
     cy.get(`${widgetSelector("List1")} ${containerWidgetSelector}`)
       .eq(0)
       .within(() => {
@@ -322,6 +349,17 @@ describe.skip("List widget v2 - meta hydration tests", () => {
             .should("exist"),
         );
       });
+=======
+    cy.waitUntil(() =>
+      cy
+        .get(
+          `${widgetSelector(
+            "List1",
+          )} ${containerWidgetSelector} .rc-select-selection-overflow-item .remove-icon`,
+        )
+        .should("have.length", 3),
+    );
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
     cy.waitUntil(
       () =>
@@ -438,6 +476,7 @@ describe.skip("List widget v2 - meta hydration tests", () => {
         .should("have.length", 3),
     );
 
+<<<<<<< HEAD
     cy.get(`${widgetSelector("List1")} ${containerWidgetSelector}`)
       .eq(0)
       .within(() => {
@@ -447,6 +486,17 @@ describe.skip("List widget v2 - meta hydration tests", () => {
             .should("exist"),
         );
       });
+=======
+    cy.waitUntil(() =>
+      cy
+        .get(
+          `${widgetSelector(
+            "List1",
+          )} ${containerWidgetSelector} .rc-select-selection-overflow-item .remove-icon`,
+        )
+        .should("have.length", 3),
+    );
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
     cy.waitUntil(
       () =>
@@ -498,6 +548,7 @@ describe.skip("List widget v2 - meta hydration tests", () => {
         .should("have.length", 3),
     );
 
+<<<<<<< HEAD
     cy.get(`${widgetSelector("List1")} ${containerWidgetSelector}`)
       .eq(0)
       .within(() => {
@@ -507,6 +558,17 @@ describe.skip("List widget v2 - meta hydration tests", () => {
             .should("exist"),
         );
       });
+=======
+    cy.waitUntil(() =>
+      cy
+        .get(
+          `${widgetSelector(
+            "List1",
+          )} ${containerWidgetSelector} .rc-select-selection-overflow-item .remove-icon`,
+        )
+        .should("have.length", 3),
+    );
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
 
     cy.waitUntil(
       () =>

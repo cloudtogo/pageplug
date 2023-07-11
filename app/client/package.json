@@ -19,12 +19,16 @@
     "prebuild": "if [ \"$REACT_APP_AIRGAP_ENABLED\" = \"true\" ]; then node download-assets.js; fi",
     "build": "./build.sh",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "build-win": "bash ./build.sh",
     "build-cloudos": "set REACT_APP_IN_CLOUDOS=true&& set REACT_APP_WORK_ENV=cloudos&& bash ./build.sh",
     "build-methodot": "set REACT_APP_IN_CLOUDOS=true&& set REACT_APP_WORK_ENV=methodot&& bash ./build.sh",
 =======
     "build-airgap": "node download-assets.js && ./build.sh",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+    "build-airgap": "node download-assets.js && ./build.sh",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
     "build-local": "craco --max-old-space-size=4096 build --config craco.build.config.js",
     "build-staging": "REACT_APP_ENVIRONMENT=STAGING craco --max-old-space-size=4096 build --config craco.build.config.js",
     "test": "CYPRESS_BASE_URL=https://dev.appsmith.com cypress/test.sh",
@@ -54,6 +58,7 @@
     "@blueprintjs/popover2": "^0.5.0",
     "@blueprintjs/select": "^3.10.0",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "@design-system/wds": "*",
     "@draft-js-plugins/editor": "^4.1.0",
     "@draft-js-plugins/mention": "^4.5.1",
@@ -63,6 +68,9 @@
 =======
     "@design-system/widgets": "*",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+    "@design-system/widgets": "*",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
     "@fusioncharts/powercharts": "^3.16.0",
     "@github/g-emoji-element": "^1.1.5",
     "@googlemaps/markerclusterer": "^2.0.14",
@@ -102,7 +110,6 @@
     "codemirror-graphql": "^1.2.14",
     "copy-to-clipboard": "^3.3.1",
     "core-js": "^3.9.1",
-    "country-flag-emoji-polyfill": "^0.1.4",
     "craco-alias": "^2.1.1",
     "craco-babel-loader": "^1.0.4",
     "craco-less": "2.1.0-alpha.0",
@@ -110,11 +117,15 @@
     "dayjs": "^1.10.6",
     "deep-diff": "^1.0.2",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "delayed-stream": "^1.0.0",
     "design-system-old": "npm:@appsmithorg/design-system-old@1.1.1",
 =======
     "design-system-old": "npm:@appsmithorg/design-system-old@1.1.5",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+    "design-system-old": "npm:@appsmithorg/design-system-old@1.1.5",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
     "downloadjs": "^1.4.7",
     "draft-js": "^0.11.7",
     "echarts": "^5.4.0",
@@ -309,6 +320,7 @@
     "cypress-file-upload": "^4.1.1",
     "cypress-image-snapshot": "^4.0.1",
     "cypress-multi-reporters": "^1.2.4",
+    "cypress-plugin-tab": "^1.0.5",
     "cypress-real-events": "^1.7.1",
     "cypress-wait-until": "^1.7.2",
     "cypress-xpath": "^1.4.0",

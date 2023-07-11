@@ -363,10 +363,14 @@ class MultiSelectTreeWidget extends BaseWidget<
         children: [
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "用户选中一个选项时触发",
 =======
             helpText: "when a user selects an option",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "when a user selects an option",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onOptionChange",
             label: "onOptionChange",
             controlType: "ACTION_SELECTOR",
@@ -376,10 +380,14 @@ class MultiSelectTreeWidget extends BaseWidget<
           },
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "下拉框打开时触发",
 =======
             helpText: "when the dropdown opens",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "when the dropdown opens",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onDropdownOpen",
             label: "onDropdownOpen",
             controlType: "ACTION_SELECTOR",
@@ -389,10 +397,14 @@ class MultiSelectTreeWidget extends BaseWidget<
           },
           {
 <<<<<<< HEAD
+<<<<<<< HEAD
             helpText: "下拉框关闭时触发",
 =======
             helpText: "when the dropdown closes",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+            helpText: "when the dropdown closes",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
             propertyName: "onDropdownClose",
             label: "onDropdownClose",
             controlType: "ACTION_SELECTOR",

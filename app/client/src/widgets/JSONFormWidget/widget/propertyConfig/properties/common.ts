@@ -277,15 +277,37 @@ const COMMON_PROPERTIES = {
         dependencies: ["schema", "sourceData"],
         updateHook: updateChildrenDisabledStateHook,
       },
+      {
+        propertyName: "shouldAllowAutofill",
+        label: "Allow autofill",
+        helpText: "Allow users to autofill values from browser",
+        controlType: "SWITCH",
+        isJSConvertible: true,
+        isBindProperty: true,
+        isTriggerProperty: false,
+        validation: { type: ValidationTypes.BOOLEAN },
+        hidden: (...args: HiddenFnParams) => {
+          //should be shown for only inputWidgetV2 and for email or password input types
+          return getSchemaItem(...args).fieldTypeNotIncludes([
+            FieldType.EMAIL_INPUT,
+            FieldType.PASSWORD_INPUT,
+          ]);
+        },
+        dependencies: ["schema", "sourceData"],
+      },
     ],
     events: [
       {
         propertyName: "onFocus",
 <<<<<<< HEAD
+<<<<<<< HEAD
         helpText: "聚焦时触发",
 =======
         helpText: "when focused.",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+        helpText: "when focused.",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         label: "onFocus",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
@@ -301,10 +323,14 @@ const COMMON_PROPERTIES = {
       {
         propertyName: "onBlur",
 <<<<<<< HEAD
+<<<<<<< HEAD
         helpText: "失焦时触发",
 =======
         helpText: "when the field loses focus.",
 >>>>>>> 338ac9ccba622f75984c735f06e0aae847270a44
+=======
+        helpText: "when the field loses focus.",
+>>>>>>> 3cb8d21c1b37c8fb5fb46d4b1b4bce4e6ebfcb8f
         label: "onBlur",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
