@@ -11,6 +11,8 @@ const DataSourceKVP = {
   Airtable: "Airtable",
   Arango: "ArangoDB",
   Firestore: "Firestore",
+  Elasticsearch: "Elasticsearch",
+  Redis: "Redis",
 }; //DataSources KeyValuePair
 
 export enum Widgets {
@@ -95,7 +97,7 @@ export class DataSources {
     "']";
   _refreshIcon = "button .bp3-icon-refresh";
   _addIcon = "button .bp3-icon-add";
-  _queryError = "span.t--query-error";
+  _queryError = "[data-cy='t--query-error']";
   _queryResponse = (responseType: string) =>
     "li[data-cy='t--tab-" + responseType + "']";
   _queryRecordResult = (recordCount: number) =>
@@ -187,6 +189,8 @@ export class DataSources {
     "\\]\\.value";
   _whereDelete = (index: number) =>
     "[data-cy='t--where-clause-delete-[" + index + "]']";
+
+  _bodyCodeMirror = "//div[contains(@class, 't--actionConfiguration.body')]";
 
   public AssertDSEditViewMode(mode: "Edit" | "View") {
     if (mode == "Edit") this.agHelper.AssertElementAbsence(this._editButton);
@@ -518,6 +522,27 @@ export class DataSources {
     //});
   }
 
+  public FillElasticSearchDSForm() {
+    this.agHelper.UpdateInputValue(
+      this._host,
+      datasourceFormData["elastic-host"],
+    );
+
+    this.agHelper.UpdateInputValue(
+      this._port,
+      datasourceFormData["elastic-port"].toString(),
+    );
+    this.ExpandSectionByName(this._sectionAuthentication);
+    this.agHelper.UpdateInputValue(
+      this._username,
+      datasourceFormData["elastic-username"],
+    );
+    this.agHelper.UpdateInputValue(
+      this._password,
+      datasourceFormData["elastic-password"],
+    );
+  }
+
   public FillUnAuthenticatedGraphQLDSForm() {
     this.agHelper.GetNClick(this._createBlankGraphQL);
     this.apiPage.EnterURL(datasourceFormData.GraphqlApiUrl_TED);
@@ -544,6 +569,17 @@ export class DataSources {
       this.SaveDatasource();
       cy.wrap(dataSourceName).as("dsName");
     });
+  }
+
+  public FillRedisDSForm() {
+    this.agHelper.UpdateInputValue(
+      this._host,
+      datasourceFormData["redis-host"],
+    );
+    this.agHelper.UpdateInputValue(
+      this._port,
+      datasourceFormData["redis-port"].toString(),
+    );
   }
 
   public TestSaveDatasource(expectedRes = true) {
@@ -837,7 +873,9 @@ export class DataSources {
       | "MsSql"
       | "Airtable"
       | "Arango"
-      | "Firestore",
+      | "Firestore"
+      | "Elasticsearch"
+      | "Redis",
     navigateToCreateNewDs = true,
     testNSave = true,
   ) {
@@ -861,6 +899,9 @@ export class DataSources {
         else if (DataSourceKVP[dsType] == "ArangoDB") this.FillArangoDSForm();
         else if (DataSourceKVP[dsType] == "Firestore")
           this.FillFirestoreDSForm();
+        else if (DataSourceKVP[dsType] == "Elasticsearch")
+          this.FillElasticSearchDSForm();
+        else if (DataSourceKVP[dsType] == "Redis") this.FillRedisDSForm();
 
         if (testNSave) {
           this.TestSaveDatasource();

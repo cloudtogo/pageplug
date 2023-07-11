@@ -43,11 +43,8 @@ const ChatIcon = HelpIcons.CHAT;
 const DiscordIcon = HelpIcons.DISCORD;
 
 const StyledOpenLinkIcon = styled(OenLinkIcon)<{ color?: string }>`
-  position: absolute;
-  right: 14px;
-  top: 1px;
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   display: none;
 `;
 
@@ -65,24 +62,6 @@ const StyledGithubIcon = styled(GithubIcon)`
   position: absolute;
 `;
 
-const StyledChatIcon = styled(ChatIcon)`
-  &&& {
-    margin-left: 14px;
-    margin-right: 10.8px;
-    margin-top: 1px;
-    position: absolute;
-  }
-`;
-
-const StyledDiscordIcon = styled(DiscordIcon)`
-  &&& {
-    margin-left: 12px;
-    margin-right: 10.8px;
-    margin-top: 1px;
-    position: absolute;
-  }
-`;
-
 function Hit(props: { hit: { path: string } }) {
   return (
     <div
@@ -92,7 +71,7 @@ function Hit(props: { hit: { path: string } }) {
       }}
     >
       <div className="hit-name t--docHitTitle">
-        <StyledDocumentIcon color="#4b4848" height={14} width={11.2} />
+        <DocumentIcon color="#4b4848" height={14} width={11.2} />
         <Highlight attribute="title" hit={props.hit} />
         <StyledOpenLinkIcon
           className="t--docOpenLink open-link"
@@ -128,8 +107,8 @@ function DefaultHelpMenuItem(props: {
           <StyledOpenLinkIcon
             className="t--docOpenLink open-link"
             color={"#4b4848"}
-            height={12}
-            width={12}
+            height={14}
+            width={14}
           />
         </div>
       </div>
@@ -188,7 +167,7 @@ const SearchContainer = styled.div`
     margin-bottom: 1em;
     width: 100%;
     margin: 0;
-    padding: 5px;
+    padding: 8px 16px;
     border: 0;
     cursor: pointer;
     box-shadow: none;
@@ -202,10 +181,15 @@ const SearchContainer = styled.div`
   }
 
   .hit-name {
-    font-size: 14px;
+    font-size: 12px;
     line-height: 16px;
+    letter-spacing: -0.195px;
+    height: 16px;
     color: #4b4848;
-    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
   }
 
   .ais-SearchBox-reset {
@@ -238,12 +222,10 @@ const SearchContainer = styled.div`
   }
 
   .ais-Highlight {
-    margin-left: 36px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     width: calc(100% - 36px);
-    display: inline-block;
   }
 
   .ais-Highlight-highlighted {
@@ -296,7 +278,7 @@ const HelpBody = styled.div<{ hideSearch?: boolean }>`
   ${(props) =>
     props.hideSearch
       ? `
-    padding: ${props.theme.spaces[2]}px;
+    padding: 0;
   `
       : `
     padding-top: 68px;
@@ -333,7 +315,7 @@ const HELP_MENU_ITEMS: HelpItem[] = [
     link: "https://github.com/cloudtogo/pageplug/issues/new/choose",
   },
   // {
-  //   icon: <StyledDiscordIcon color="#4b4848" height={14} width={14} />,
+  //   icon: <DiscordIcon color="#4b4848" height={16} width={16} />,
   //   label: "Join our Discord",
   //   link: "https://discord.gg/rBTTVJp",
   // },
@@ -341,7 +323,7 @@ const HELP_MENU_ITEMS: HelpItem[] = [
 
 if (intercomAppID && window.Intercom) {
   HELP_MENU_ITEMS.push({
-    icon: <StyledChatIcon color="#4b4848" height={14} width={14} />,
+    icon: <ChatIcon color="#4b4848" height={16} width={16} />,
     label: "Chat with us",
     id: "intercom-trigger",
   });

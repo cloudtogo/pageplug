@@ -28,7 +28,7 @@ import TabBar from "components/designSystems/taro/TabBar";
 import PreviewQRCode from "./PreviewQRCode";
 import AppViewerLayout from "./AppViewerLayout";
 
-import webfontloader from "webfontloader";
+// import webfontloader from "webfontloader";
 import { getSearchQuery } from "utils/helpers";
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
 import { useSelector } from "react-redux";
@@ -191,17 +191,7 @@ function AppViewer(props: Props) {
    * loads font for canvas based on theme
    */
   useEffect(() => {
-    if (selectedTheme.properties.fontFamily.appFont !== DEFAULT_FONT_NAME) {
-      webfontloader.load({
-        google: {
-          families: [
-            `${selectedTheme.properties.fontFamily.appFont}:300,400,500,700`,
-          ],
-        },
-      });
-    }
-
-    document.body.style.fontFamily = appFontFamily;
+    document.body.style.fontFamily = `${appFontFamily}, sans-serif`;
 
     return function reset() {
       document.body.style.fontFamily = "inherit";

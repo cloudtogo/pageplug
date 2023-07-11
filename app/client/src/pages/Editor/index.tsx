@@ -7,7 +7,7 @@ import { Spinner } from "@blueprintjs/core";
 import type { BuilderRouteParams } from "constants/routes";
 import type { AppState } from "@appsmith/reducers";
 import MainContainer from "./MainContainer";
-import { TouchBackend } from "react-dnd-touch-backend";
+// import { TouchBackend } from "react-dnd-touch-backend";
 import {
   getCurrentApplicationId,
   getIsEditorInitialized,
@@ -184,35 +184,35 @@ class Editor extends Component<Props> {
     }
     return (
       <ThemeProvider theme={theme}>
-          <div>
-            <Helmet>
-              <meta charSet="utf-8" />
-              <title>
-                {`${this.props.currentApplicationName} - ${
-                  this.props.inCloudOS
-                    ? this.props.workEnv === "methodot"
-                      ? "Methodot"
-                      : "CloudOS"
-                    : "PagePlug"
-                }`}
-              </title>
-            </Helmet>
-            <GlobalHotKeys>
-              {this.props.isMultiPane ? (
-                <MultiPaneContainer />
-              ) : (
-                <MainContainer />
-              )}
-              <GitSyncModal />
-              <DisconnectGitModal />
-              <GuidedTourModal />
-              <RepoLimitExceededErrorModal />
-              <TemplatesModal />
-              <ImportedApplicationSuccessModal />
-              <ReconnectDatasourceModal />
-            </GlobalHotKeys>
-          </div>
-          <RequestConfirmationModal />
+        <div>
+          <Helmet>
+            <meta charSet="utf-8" />
+            <title>
+              {`${this.props.currentApplicationName} - ${
+                this.props.inCloudOS
+                  ? this.props.workEnv === "methodot"
+                    ? "Methodot"
+                    : "CloudOS"
+                  : "PagePlug"
+              }`}
+            </title>
+          </Helmet>
+          <GlobalHotKeys>
+            {this.props.isMultiPane ? (
+              <MultiPaneContainer />
+            ) : (
+              <MainContainer />
+            )}
+            <GitSyncModal />
+            <DisconnectGitModal />
+            <GuidedTourModal />
+            <RepoLimitExceededErrorModal />
+            <TemplatesModal />
+            <ImportedApplicationSuccessModal />
+            <ReconnectDatasourceModal />
+          </GlobalHotKeys>
+        </div>
+        <RequestConfirmationModal />
       </ThemeProvider>
     );
   }

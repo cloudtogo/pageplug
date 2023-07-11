@@ -51,6 +51,7 @@ import {
   hasDeleteDatasourcePermission,
   hasManageDatasourcePermission,
 } from "@appsmith/utils/permissionHelpers";
+import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
 
 const Wrapper = styled.div`
   padding: 15px;
@@ -305,7 +306,7 @@ function DatasourceCard(props: DatasourceCardProps) {
                 <DatasourceImage
                   alt="数据源"
                   data-testid="active-datasource-image"
-                  src={pluginImages[datasource.pluginId]}
+                  src={getAssetUrl(pluginImages[datasource.pluginId])}
                 />
               </DatasourceIconWrapper>
               <DatasourceName data-testid="active-datasource-name">
@@ -417,7 +418,11 @@ function DatasourceCard(props: DatasourceCardProps) {
             e.stopPropagation();
           }}
         >
-          <CollapseComponent title="详情" titleStyle={{ maxWidth: 120 }}>
+          <CollapseComponent
+            openTitle="Show Less"
+            title="详情"
+            titleStyle={{ maxWidth: 120 }}
+          >
             <DatasourceInfo>
               <RenderDatasourceInformation
                 config={currentFormConfig[0]}

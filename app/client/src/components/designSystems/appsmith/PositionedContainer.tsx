@@ -1,12 +1,5 @@
-/* eslint-disable prettier/prettier */
-import type {
-  CSSProperties,
-  ReactNode,
-  Ref} from "react";
-import React, {
-  useCallback,
-  useMemo,
-} from "react";
+import type { CSSProperties, ReactNode, Ref } from "react";
+import React, { useCallback, useMemo } from "react";
 import type { BaseStyle } from "widgets/BaseWidget";
 import type { WidgetType } from "constants/WidgetConstants";
 import {
@@ -190,6 +183,7 @@ export function PositionedContainer(
       key={`positioned-container-${props.widgetId}`}
       // Positioned Widget is the top enclosure for all widgets and clicks on/inside the widget should not be propagated/bubbled out of this Container.
       onClick={onClickFn}
+      onClickCapture={clickToSelectWidget}
       ref={ref}
       //Before you remove: This is used by property pane to reference the element
       style={containerStyle}
