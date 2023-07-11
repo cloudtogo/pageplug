@@ -20,6 +20,8 @@ import type { SuggestedWidget } from "api/ActionAPI";
 import { getDataTree } from "selectors/dataTreeSelectors";
 import { getWidgets } from "sagas/selectors";
 import { getNextWidgetName } from "sagas/WidgetOperationUtils";
+import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
+import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
 
 const WidgetList = styled.div`
   ${getTypographyByKey("p1")}
@@ -68,25 +70,25 @@ export const WIDGET_DATA_FIELD_MAP: Record<string, WidgetBindingInfo> = {
     label: "数据项",
     propertyName: "listData",
     widgetName: "List",
-    image: "https://assets.appsmith.com/widgetSuggestion/list.svg",
+    image: `${ASSETS_CDN_URL}/widgetSuggestion/list.svg`,
   },
   TABLE_WIDGET: {
     label: "tabledata",
     propertyName: "tableData",
     widgetName: "Table",
-    image: "https://assets.appsmith.com/widgetSuggestion/table.svg",
+    image: `${ASSETS_CDN_URL}/widgetSuggestion/table.svg`,
   },
   TABLE_WIDGET_V2: {
     label: "tabledata",
     propertyName: "tableData",
     widgetName: "Table",
-    image: "https://assets.appsmith.com/widgetSuggestion/table.svg",
+    image: `${ASSETS_CDN_URL}/widgetSuggestion/table.svg`,
   },
   CHART_WIDGET: {
     label: "chart-series-data-control",
     propertyName: "chartData",
     widgetName: "Chart",
-    image: "https://assets.appsmith.com/widgetSuggestion/chart.svg",
+    image: `${ASSETS_CDN_URL}/widgetSuggestion/chart.svg`,
   },
   ECHART_WIDGET: {
     label: "chart-series-data-control",
@@ -98,19 +100,19 @@ export const WIDGET_DATA_FIELD_MAP: Record<string, WidgetBindingInfo> = {
     label: "选项",
     propertyName: "options",
     widgetName: "Select",
-    image: "https://assets.appsmith.com/widgetSuggestion/dropdown.svg",
+    image: `${ASSETS_CDN_URL}/widgetSuggestion/dropdown.svg`,
   },
   TEXT_WIDGET: {
     label: "文本",
     propertyName: "text",
     widgetName: "Text",
-    image: "https://assets.appsmith.com/widgetSuggestion/text.svg",
+    image: `${ASSETS_CDN_URL}/widgetSuggestion/text.svg`,
   },
   INPUT_WIDGET_V2: {
     label: "文本",
     propertyName: "defaultText",
     widgetName: "Input",
-    image: "https://assets.appsmith.com/widgetSuggestion/input.svg",
+    image: `${ASSETS_CDN_URL}/widgetSuggestion/input.svg`,
   },
 };
 
@@ -260,7 +262,12 @@ function SuggestedWidgets(props: SuggestedWidgetProps) {
             >
               <Tooltip content={createMessage(SUGGESTED_WIDGET_TOOLTIP)}>
                 <div className="image-wrapper">
-                  {widgetInfo.image && <img src={widgetInfo.image} />}
+                  {widgetInfo.image && (
+                    <img
+                      alt="widget-info-image"
+                      src={getAssetUrl(widgetInfo.image)}
+                    />
+                  )}
                   <WidgetOverlay />
                 </div>
               </Tooltip>

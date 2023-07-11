@@ -46,7 +46,8 @@
     ],
     "sort-destructure-keys/sort-destructure-keys": 0,
     "no-console": "warn",
-    "no-debugger": "warn"
+    "no-debugger": "warn",
+    "@typescript-eslint/no-empty-function": "off"
   },
   "settings": {
     "import/resolver": {

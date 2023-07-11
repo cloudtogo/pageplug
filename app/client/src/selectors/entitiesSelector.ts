@@ -61,6 +61,23 @@ export const getDatasourcesStructure = (
   return state.entities.datasources.structure;
 };
 
+export const getDatasourceStructureById =
+  (id: string) =>
+  (state: AppState): DatasourceStructure => {
+    return state.entities.datasources.structure[id];
+  };
+
+export const getDatasourceTableColumns =
+  (datasourceId: string, tableName: string) => (state: AppState) => {
+    const structure = getDatasourceStructureById(datasourceId)(state);
+
+    if (structure) {
+      const table = structure.tables?.find((d) => d.name === tableName);
+
+      return table?.columns;
+    }
+  };
+
 export const getIsFetchingDatasourceStructure = (state: AppState): boolean => {
   return state.entities.datasources.fetchingDatasourceStructure;
 };
@@ -316,12 +333,10 @@ export const getDatasourcePlugins = createSelector(getPlugins, (plugins) => {
 
 export const getPluginImages = createSelector(getPlugins, (plugins) => {
   const pluginImages: Record<string, string> = {};
-
   plugins.forEach((plugin) => {
     pluginImages[plugin.id] =
       replacePluginIcon(plugin?.iconLocation || "") ?? ImageAlt;
   });
-
   return pluginImages;
 });
 
@@ -378,6 +393,17 @@ export const getGenerateCRUDEnabledPluginMap = createSelector(
       }
     });
     return pluginIdGenerateCRUDPageEnabled;
+  },
+);
+
+export const getPluginIdPackageNamesMap = createSelector(
+  getPlugins,
+  (plugins) => {
+    return plugins.reduce((obj: Record<string, string>, plugin) => {
+      obj[plugin.id] = plugin.packageName;
+
+      return obj;
+    }, {});
   },
 );
 
@@ -532,12 +558,12 @@ export const getCanvasWidgets = (state: AppState): CanvasWidgetsReduxState =>
 export const getCanvasWidgetsStructure = (state: AppState) =>
   state.entities.canvasWidgetsStructure;
 
-const getPageWidgets = (state: AppState) => state.ui.pageWidgets;
+export const getPageWidgets = (state: AppState) => state.ui.pageWidgets;
 export const getCurrentPageWidgets = createSelector(
   getPageWidgets,
   getCurrentPageId,
   (widgetsByPage, currentPageId) =>
-    currentPageId ? widgetsByPage[currentPageId] : {},
+    currentPageId ? widgetsByPage[currentPageId].dsl : {},
 );
 
 export const getParentModalId = (
@@ -583,7 +609,7 @@ export const getAllWidgetsMap = createSelector(
   (widgetsByPage) => {
     return Object.entries(widgetsByPage).reduce(
       (res: any, [pageId, pageWidgets]: any) => {
-        const widgetsMap = Object.entries(pageWidgets).reduce(
+        const widgetsMap = Object.entries(pageWidgets.dsl).reduce(
           (res, [widgetId, widget]: any) => {
             const parentModalId = getParentModalId(widget, pageWidgets);
 
@@ -981,3 +1007,15 @@ export const getAllJSActionsData = (state: AppState) => {
   });
   return jsActionsData;
 };
+
+export const selectActionByName = (actionName: string) =>
+  createSelector(getActionsForCurrentPage, (actions) => {
+    return actions.find((action) => action.config.name === actionName);
+  });
+
+export const selectJSCollectionByName = (collectionName: string) =>
+  createSelector(getJSCollectionsForCurrentPage, (collections) => {
+    return collections.find(
+      (collection) => collection.config.name === collectionName,
+    );
+  });

@@ -3,7 +3,7 @@ import { LabelPosition } from "components/constants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
-import { getResponsiveLayoutConfig } from "utils/layoutPropertiesUtils";
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
 import type { CategorySliderWidgetProps } from "..";
 import {
   defaultOptionValidation,
@@ -81,6 +81,7 @@ export default [
         label: "位置",
         controlType: "ICON_TABS",
         fullWidth: true,
+        hidden: isAutoLayout,
         options: [
           { label: "左", value: LabelPosition.Left },
           { label: "上", value: LabelPosition.Top },
@@ -189,7 +190,6 @@ export default [
       },
     ],
   },
-  ...getResponsiveLayoutConfig("CATEGORY_SLIDER_WIDGET"),
   {
     sectionName: "事件",
     children: [
