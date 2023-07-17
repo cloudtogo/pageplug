@@ -18,9 +18,10 @@ import AppViewerPageContainer from "./AppViewerPageContainer";
 import { editorInitializer } from "utils/editor/EditorUtils";
 import * as Sentry from "@sentry/react";
 import {
-  getViewModePageList,
+  getCurrentPageDescription,
   getShowTabBar,
   getCurrentPage,
+  getViewModePageList,
 } from "selectors/editorSelectors";
 import { isMobileLayout } from "selectors/applicationSelectors";
 import { getThemeDetails, ThemeMode } from "selectors/themeSelectors";
@@ -44,6 +45,9 @@ import { initAppViewer } from "actions/initActions";
 import { WidgetGlobaStyles } from "globalStyles/WidgetGlobalStyles";
 import { getAppsmithConfigs } from "@appsmith/configs";
 import useWidgetFocus from "utils/hooks/useWidgetFocus/useWidgetFocus";
+import HtmlTitle from "./AppViewerHtmlTitle";
+import type { ApplicationPayload } from "@appsmith/constants/ReduxActionConstants";
+import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
 
 const AppViewerBody = styled.section<{
   showTabBar: boolean;
@@ -114,6 +118,10 @@ function AppViewer(props: Props) {
   const currentPage = useSelector(getCurrentPage);
   const isEmbed = !!getSearchQuery(search, "embed") || !!currentPage?.isHidden;
   const { hideWatermark } = getAppsmithConfigs();
+  const pageDescription = useSelector(getCurrentPageDescription);
+  const currentApplicationDetails: ApplicationPayload | undefined = useSelector(
+    getCurrentApplication,
+  );
 
   const focusRef = useWidgetFocus();
 
@@ -205,43 +213,33 @@ function AppViewer(props: Props) {
           fontFamily={selectedTheme.properties.fontFamily.appFont}
           primaryColor={selectedTheme.properties.colors.primaryColor}
         />
-        <AppViewerLayout>
-          <StableContainer>
-            <ContainerForBottom isMobile={isMobile}>
-              <AppViewerBodyContainer
-                backgroundColor={
-                  isMobile
-                    ? "radial-gradient(#2cbba633, #ffec8f36)"
-                    : selectedTheme.properties.colors.backgroundColor
-                }
-              >
-                <AppViewerBody
-                  className={CANVAS_SELECTOR}
-                  showTabBar={showTabBar}
-                  isMobile={isMobile || isEmbed}
-                  hasPages={pages.length > 1}
-                  headerHeight={headerHeight}
-                  ref={focusRef}
-                  showGuidedTourMessage={showGuidedTourMessage}
-                >
-                  {isInitialized && registered && <AppViewerPageContainer />}
-                </AppViewerBody>
-                {!hideWatermark && (
-                  <a
-                    className="fixed hidden right-8 bottom-4 z-3 hover:no-underline md:flex"
-                    href="https://appsmith.com"
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    <BrandingBadge />
-                  </a>
-                )}
-              </AppViewerBodyContainer>
-            </ContainerForBottom>
-            <TabBar />
-            <PreviewQRCode />
-          </StableContainer>
-        </AppViewerLayout>
+        <HtmlTitle
+          description={pageDescription}
+          name={currentApplicationDetails?.name}
+        />
+        <AppViewerBodyContainer
+          backgroundColor={selectedTheme.properties.colors.backgroundColor}
+        >
+          <AppViewerBody
+            className={CANVAS_SELECTOR}
+            hasPages={pages.length > 1}
+            headerHeight={headerHeight}
+            ref={focusRef}
+            showGuidedTourMessage={showGuidedTourMessage}
+          >
+            {isInitialized && registered && <AppViewerPageContainer />}
+          </AppViewerBody>
+          {!hideWatermark && (
+            <a
+              className="fixed hidden right-8 bottom-4 z-3 hover:no-underline md:flex"
+              href="https://appsmith.com"
+              rel="noreferrer"
+              target="_blank"
+            >
+              <BrandingBadge />
+            </a>
+          )}
+        </AppViewerBodyContainer>
       </EditorContextProvider>
     </ThemeProvider>
   );

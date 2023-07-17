@@ -7,9 +7,14 @@ import { useButton } from "@react-aria/button";
 import { useHover } from "@react-aria/interactions";
 import type { RefObject } from "react";
 import type { FocusableRef } from "@react-types/shared";
-import type { ButtonProps as SpectrumButtonProps } from "@react-types/button";
+import type {
+  AriaButtonProps as SpectrumAriaBaseButtonProps,
+  ButtonProps as SpectrumButtonProps,
+} from "@react-types/button";
 
-export interface ButtonProps extends SpectrumButtonProps {
+export interface ButtonProps
+  extends SpectrumButtonProps,
+    SpectrumAriaBaseButtonProps {
   className?: string;
   isActive?: boolean;
   isHover?: boolean;
