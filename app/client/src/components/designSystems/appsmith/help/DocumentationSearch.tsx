@@ -96,6 +96,11 @@ function DefaultHelpMenuItem(props: {
           if (props.item.id === "intercom-trigger") {
             if (intercomAppID && window.Intercom) {
               window.Intercom("show");
+              if (user?.isIntercomConsentGiven || cloudHosting) {
+                window.Intercom("show");
+              } else {
+                props.showIntercomConsent(true);
+              }
             }
           }
           props.onSelect();

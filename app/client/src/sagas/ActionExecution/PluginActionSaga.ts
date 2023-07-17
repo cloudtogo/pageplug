@@ -561,9 +561,11 @@ function* runActionSaga(
     },
     state: {
       ...actionObject.actionConfiguration,
-      ...(datasourceUrl && {
-        url: datasourceUrl,
-      }),
+      ...(datasourceUrl
+        ? {
+            url: datasourceUrl,
+          }
+        : null),
     },
   });
 
@@ -582,6 +584,8 @@ function* runActionSaga(
       executePluginActionSaga,
       id,
       paginationField,
+      {},
+      true,
     );
     payload = executePluginActionResponse.payload;
     isError = executePluginActionResponse.isError;
@@ -969,6 +973,7 @@ function* executePluginActionSaga(
   actionOrActionId: PageAction | string,
   paginationField?: PaginationField,
   params?: Record<string, unknown>,
+  isUserInitiated?: boolean,
 ) {
   let pluginAction;
   let actionId;
@@ -1020,6 +1025,9 @@ function* executePluginActionSaga(
     actionId: actionId,
     viewMode: appMode === APP_MODE.PUBLISHED,
     paramProperties: {},
+    analyticsProperties: {
+      isUserInitiated: !!isUserInitiated,
+    },
   };
 
   if (paginationField) {

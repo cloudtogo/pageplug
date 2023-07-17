@@ -250,6 +250,7 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
     } else if (rightColumn !== calculatedWidth || !isCanvasInitialized) {
       dispatch(updateCanvasLayoutAction(calculatedWidth, scale));
     }
+    return calculatedWidth;
   };
 
   const debouncedResize = useCallback(debounce(resizeToLayout, 250), [
@@ -349,13 +350,14 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
     if (isAutoCanvasResizing) setIsCanvasResizing(true);
     else if (isCanvasResizing) {
       setIsCanvasResizing(false);
+      const canvasWidth: number = resizeToLayout();
       dispatch(
         updateLayoutForMobileBreakpointAction(
           MAIN_CONTAINER_WIDGET_ID,
           appPositioningType === AppPositioningTypes.AUTO
             ? mainCanvasProps?.isMobile
             : false,
-          calculateCanvasWidth(),
+          canvasWidth,
         ),
       );
       dispatch({

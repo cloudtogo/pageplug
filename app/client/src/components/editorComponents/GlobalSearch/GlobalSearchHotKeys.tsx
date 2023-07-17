@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React from "react";
-import { HotkeysTarget } from "@blueprintjs/core/lib/esnext/components/hotkeys/hotkeysTarget.js";
-import { Hotkey, Hotkeys } from "@blueprintjs/core";
+import { Hotkey, Hotkeys, HotkeysTarget } from "@blueprintjs/core";
 import type { SearchItem, SelectEvent } from "./utils";
 
 type Props = {
