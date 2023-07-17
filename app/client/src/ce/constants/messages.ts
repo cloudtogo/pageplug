@@ -294,6 +294,7 @@ export const OAUTH_APPSMITH_TOKEN_NOT_FOUND = "没有发现 token";
 export const GSHEET_AUTHORIZATION_ERROR = "数据源未授权，请授权后继续操作";
 export const GSHEET_FILES_NOT_SELECTED =
   "Datasource does not have access to any files, please authorize google sheets to use this data source";
+export const FILES_NOT_SELECTED_EVENT = () => "Files not selected";
 
 export const LOCAL_STORAGE_QUOTA_EXCEEDED_MESSAGE = () =>
   "本地存储失败！已超出本地最大存储限制";
@@ -1355,6 +1356,20 @@ export const PAGE_SETTINGS_SET_AS_HOMEPAGE_TOOLTIP_NON_HOME_PAGE = () =>
   "将这页设置为主页";
 export const PAGE_SETTINGS_ACTION_NAME_CONFLICT_ERROR = (name: string) =>
   `${name} 已经被占用`;
+
+export const CODE_EDITOR_LOADING_ERROR = (message?: string) =>
+  `Failed to load the code editor${message ? `: ${message}` : ""}`;
+
+export const UPDATE_VIA_IMPORT_SETTING = {
+  settingHeader: () => "Update through file import",
+  settingDesc: () => "Update app by importing file",
+  settingLabel: () => "Import",
+  settingContent: () =>
+    "This action will override your existing application. Please exercise caution while selecting the file to import.",
+  settingActionButtonTxt: () => "Import",
+  disabledForGit: () =>
+    "This feature is not supported for apps connected to Git version control. Please use Git Pull to update and sync your app.",
+};
 
 export const IN_APP_EMBED_SETTING = {
   applicationUrl: () => "应用地址",

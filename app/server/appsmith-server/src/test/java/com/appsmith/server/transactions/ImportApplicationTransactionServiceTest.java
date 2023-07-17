@@ -22,7 +22,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -56,7 +55,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ImportApplicationTransactionServiceTest {
 
     @Autowired
-    @Qualifier("importExportServiceCEImplV2")
     ImportExportApplicationService importExportApplicationService;
 
     @Autowired

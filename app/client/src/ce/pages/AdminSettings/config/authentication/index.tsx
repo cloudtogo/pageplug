@@ -18,14 +18,15 @@ import SamlSso from "assets/images/saml.svg";
 import OIDC from "assets/images/oidc.svg";
 import Github from "assets/images/Github.png";
 import Lock from "assets/images/lock-password-line.svg";
-import { getAppsmithConfigs } from "@appsmith/configs";
 import {
   JS_ORIGIN_URI_FORM,
   REDIRECT_URL_FORM,
 } from "@appsmith/constants/forms";
-
-const { disableLoginForm, enableGithubOAuth, enableGoogleOAuth } =
-  getAppsmithConfigs();
+import { useSelector } from "react-redux";
+import {
+  getThirdPartyAuths,
+  getIsFormLoginEnabled,
+} from "@appsmith/selectors/tenantSelectors";
 
 const FormAuth: AdminConfigType = {
   type: SettingCategories.FORM_AUTH,
@@ -180,7 +181,6 @@ export const FormAuthCallout: AuthMethodType = {
   subText: "允许用户使用账号密码登录你的平台",
   image: Lock,
   type: "LINK",
-  isConnected: !disableLoginForm,
 };
 
 export const GoogleAuthCallout: AuthMethodType = {
@@ -232,6 +232,12 @@ const AuthMethods = [
 ];
 
 function AuthMain() {
+  FormAuthCallout.isConnected = useSelector(getIsFormLoginEnabled);
+  const socialLoginList = useSelector(getThirdPartyAuths);
+  GoogleAuth.isConnected = GoogleAuthCallout.isConnected =
+    socialLoginList.includes("google");
+  GithubAuth.isConnected = GithubAuthCallout.isConnected =
+    socialLoginList.includes("github");
   return <AuthPage authMethods={AuthMethods} />;
 }
 

@@ -85,6 +85,7 @@ import WidgetFactory from "utils/WidgetFactory";
 import type { WidgetEntity } from "entities/DataTree/dataTreeFactory";
 import WidgetComponentBoundary from "components/editorComponents/WidgetComponentBoundary";
 import type { AutocompletionDefinitions } from "./constants";
+import { getWidgetMinMaxDimensionsInPixel } from "utils/autoLayout/flexWidgetUtils";
 
 /***
  * BaseWidget
@@ -688,13 +689,23 @@ abstract class BaseWidget<
 
       const { componentHeight, componentWidth } = this.getComponentDimensions();
 
+      const { minHeight, minWidth } = getWidgetMinMaxDimensionsInPixel(
+        this.props,
+        this.props.mainCanvasWidth || 0,
+      );
+
       return (
         <AutoLayoutDimensionObserver
           height={componentHeight}
           isFillWidget={
             this.props.responsiveBehavior === ResponsiveBehavior.Fill
           }
+          minHeight={minHeight ?? 0}
+          minWidth={minWidth ?? 0}
           onDimensionUpdate={this.updateWidgetDimensions}
+          shouldObserveHeight={shouldObserveHeight || false}
+          shouldObserveWidth={shouldObserveWidth || false}
+          type={this.props.type}
           width={componentWidth}
         >
           {content}
@@ -853,6 +864,7 @@ export interface WidgetBaseProps {
    * rather than the evaluated values in withWidgetProps HOC.
    *  */
   additionalStaticProps?: string[];
+  mainCanvasWidth?: number;
 }
 
 export type WidgetRowCols = {

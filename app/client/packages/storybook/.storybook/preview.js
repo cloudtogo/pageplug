@@ -1,6 +1,7 @@
 import { resizor } from "./decorators/resizor";
 import { theming } from "./decorators/theming";
-
+import "@blueprintjs/icons/lib/css/blueprint-icons.css";
+import "@blueprintjs/core/lib/css/blueprint.css";
 import "./styles.css";
 
 export const parameters = {

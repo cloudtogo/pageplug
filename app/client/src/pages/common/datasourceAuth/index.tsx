@@ -57,6 +57,7 @@ interface Props {
   triggerSave?: boolean;
   isFormDirty?: boolean;
   datasourceDeleteTrigger: () => void;
+  scopeValue?: string;
 }
 
 export type DatasourceFormButtonTypes = Record<string, string[]>;
@@ -120,6 +121,7 @@ function DatasourceAuth({
   shouldDisplayAuthMessage = true,
   triggerSave,
   isFormDirty,
+  scopeValue,
 }: Props) {
   const authType =
     formData && "authType" in formData
@@ -176,20 +178,19 @@ function DatasourceAuth({
       if (status && shouldNotify) {
         const display_message = search.get("display_message");
         const variant = Variant.danger;
-
+        const oauthReason = status;
+        AnalyticsUtil.logEvent("DATASOURCE_AUTHORIZE_RESULT", {
+          dsName,
+          oauthReason,
+          orgId,
+          pluginName,
+        });
         if (status !== AuthorizationStatus.SUCCESS) {
           const message =
             status === AuthorizationStatus.APPSMITH_ERROR
               ? OAUTH_AUTHORIZATION_APPSMITH_ERROR
               : OAUTH_AUTHORIZATION_FAILED;
           Toaster.show({ text: display_message || message, variant });
-          const oAuthStatus = status;
-          AnalyticsUtil.logEvent("UPDATE_DATASOURCE", {
-            dsName,
-            oAuthStatus,
-            orgId,
-            pluginName,
-          });
         } else {
           dispatch(getOAuthAccessToken(datasourceId));
         }
@@ -290,6 +291,12 @@ function DatasourceAuth({
         ),
       );
     }
+    AnalyticsUtil.logEvent("DATASOURCE_AUTHORIZE_CLICK", {
+      dsName,
+      orgId,
+      pluginName,
+      scopeValue,
+    });
   };
 
   const createMode = datasourceId === TEMP_DATASOURCE_ID;

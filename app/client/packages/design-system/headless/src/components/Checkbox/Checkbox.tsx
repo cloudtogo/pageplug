@@ -19,10 +19,12 @@ export interface CheckboxProps extends SpectrumCheckboxProps {
 
 export type CheckboxRef = FocusableRef<HTMLLabelElement>;
 
+const ICON_SIZE = 14;
+
 export const Checkbox = forwardRef((props: CheckboxProps, ref: CheckboxRef) => {
   const {
     className,
-    icon = <CheckIcon />,
+    icon = <CheckIcon size={ICON_SIZE} />,
     isDisabled = false,
     isIndeterminate = false,
     children,
@@ -47,13 +49,23 @@ export const Checkbox = forwardRef((props: CheckboxProps, ref: CheckboxRef) => {
   });
 
   return (
-    <label {...hoverProps} className={computedClassnames} ref={domRef}>
+    <label
+      {...hoverProps}
+      className={className}
+      data-disabled={isDisabled ? "" : undefined}
+      data-focused={isFocusVisible ? "" : undefined}
+      data-hovered={isHovered ? "" : undefined}
+      data-invalid={validationState === "invalid" ? "" : undefined}
+      data-label=""
+      data-state={dataState}
+      ref={domRef}
+    >
       <input
         {...mergeProps(inputProps, visuallyHiddenProps, focusProps)}
         ref={inputRef}
       />
-      <span aria-hidden="true" className="icon" role="presentation">
-        {isIndeterminate ? <SubtractIcon /> : icon}
+      <span aria-hidden="true" data-icon="" role="presentation">
+        {isIndeterminate ? <SubtractIcon size={ICON_SIZE} /> : icon}
       </span>
       {children}
     </label>

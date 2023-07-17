@@ -1,7 +1,7 @@
 import CodeMirror from "codemirror";
 import type { HintHelper } from "components/editorComponents/CodeEditor/EditorConfig";
 import type { CommandsCompletion } from "utils/autocomplete/CodemirrorTernService";
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
 import { generateQuickCommands } from "./generateQuickCommands";
 import type { Datasource } from "entities/Datasource";
 import AnalyticsUtil from "utils/AnalyticsUtil";
@@ -32,6 +32,7 @@ export const commandsHelper: HintHelper = (editor, data: DataTree) => {
       { entityId, entityType, expectedType, propertyPath },
       {
         datasources,
+        enableAIAssistance,
         executeCommand,
         featureFlags,
         pluginIdToImageLocation,
@@ -45,6 +46,7 @@ export const commandsHelper: HintHelper = (editor, data: DataTree) => {
         update: (value: string) => void;
         entityId: string;
         featureFlags: FeatureFlags;
+        enableAIAssistance: boolean;
       },
     ): boolean => {
       const currentEntityType =
@@ -70,6 +72,7 @@ export const commandsHelper: HintHelper = (editor, data: DataTree) => {
             pluginIdToImageLocation,
             recentEntities,
             featureFlags,
+            enableAIAssistance,
           },
           expectedType || "string",
           entityId,
@@ -108,7 +111,7 @@ export const commandsHelper: HintHelper = (editor, data: DataTree) => {
                   selected.action();
                 } else {
                   selected.triggerCompletionsPostPick &&
-                    CodeMirror.signal(editor, "postPick");
+                    CodeMirror.signal(editor, "postPick", selected.displayText);
                 }
               });
               try {

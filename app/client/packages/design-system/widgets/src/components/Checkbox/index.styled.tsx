@@ -25,24 +25,26 @@ export const labelStyles = css<Pick<CheckboxProps, "labelPosition">>`
 
 export const StyledCheckbox = styled(HeadlessCheckbox)<CheckboxProps>`
   ${labelStyles}
+  --checkbox-border-width: var(--border-width-2);
+  --checkbox-border-color: var(--color-bd-neutral);
 
-  .icon {
-    width: calc(5 * var(--sizing-root-unit));
-    height: calc(5 * var(--sizing-root-unit));
-    border-width: var(--border-width-1);
-    border-style: solid;
-    border-radius: var(--border-radius-1);
-    border-color: var(--color-bd-neutral);
+  [data-icon] {
+    width: calc(4 * var(--sizing-root-unit));
+    height: calc(4 * var(--sizing-root-unit));
+    box-shadow: 0px 0px 0px var(--checkbox-border-width)
+      var(--checkbox-border-color) inset;
+    border-radius: clamp(0px, var(--border-radius-1), 0.375rem);
     color: transparent;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     user-select: none;
     flex-shrink: 0;
+    padding: 1px; // to make icon take 14px size
   }
 
-  &.is-hovered:not(.is-disabled) .icon {
-    border-color: var(--color-bd-neutral-hover);
+  &[data-hovered]:not([data-disabled]) [data-icon] {
+    --checkbox-border-color: var(--color-bd-neutral-hover);
   }
 
   /**
@@ -50,16 +52,18 @@ export const StyledCheckbox = styled(HeadlessCheckbox)<CheckboxProps>`
  * CHECKED  AND INDETERMINATE - BUT NOT DISABLED
  *-----------------------------------------------------------------------------
  */
-  &.is-checked .icon,
-  &.is-indeterminate .icon {
+  &[data-state="checked"] [data-icon],
+  &[data-state="indeterminate"] [data-icon] {
+    --checkbox-border-color: var(--color-bg-accent);
+
     background-color: var(--color-bg-accent);
-    border-color: var(--color-bg-accent);
     color: var(--color-fg-on-accent);
   }
 
-  &.is-hovered.is-checked:not(.is-disabled) .icon,
-  &.is-hovered.is-indeterminate:not(.is-disabled) .icon {
-    border-color: var(--color-bg-accent-hover);
+  &[data-hovered][data-state="checked"]:not([data-disabled]) [data-icon],
+  &[data-hovered][data-state="indeterminate"]:not([data-disabled]) [data-icon] {
+    --checkbox-border-color: var(--color-bg-accent-hover);
+
     background-color: var(--color-bg-accent-hover);
     color: var(--color-fg-on-accent);
   }
@@ -91,11 +95,11 @@ export const StyledCheckbox = styled(HeadlessCheckbox)<CheckboxProps>`
  * ERROR ( INVALID )
  *-----------------------------------------------------------------------------
  */
-  &.is-invalid .icon {
-    border-color: var(--color-bd-negative);
+  &[data-invalid] [data-icon] {
+    --checkbox-border-color: var(--color-bd-negative);
   }
 
-  &.is-hovered.is-invalid .icon {
-    border-color: var(--color-bd-negative-hover);
+  &[data-hovered][data-invalid] [data-icon] {
+    --checkbox-border-color: var(--color-bd-negative-hover);
   }
 `;

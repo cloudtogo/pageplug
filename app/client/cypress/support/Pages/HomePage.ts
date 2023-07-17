@@ -94,6 +94,8 @@ export class HomePage {
     "']";
   _welcomeTour = ".t--welcome-tour";
   _welcomeTourBuildingButton = ".t--start-building";
+  _reconnectDataSourceModal = "[data-cy=t--tab-RECONNECT_DATASOURCES]";
+  _skiptoApplicationBtn = "//span[text()='Skip to Application']/parent::a";
 
   public SwitchToAppsTab() {
     this.agHelper.GetNClick(this._homeTab);
@@ -285,7 +287,7 @@ export class HomePage {
   }
 
   public FilterApplication(appName: string, workspaceId: string) {
-    cy.get(this._searchInput).type(appName);
+    cy.get(this._searchInput).type(appName, { force: true });
     this.agHelper.Sleep(2000);
     cy.get(this._appContainer).contains(workspaceId);
     cy.xpath(this.locator._spanButton("Share")).first().should("be.visible");
@@ -492,5 +494,14 @@ export class HomePage {
     this.agHelper.ValidateToastMessage(
       "You have successfully left the workspace",
     );
+  }
+
+  public CloseReconnectDataSourceModal() {
+    cy.get("body").then(($ele) => {
+      if ($ele.find(this._reconnectDataSourceModal).length) {
+        this.agHelper.GetNClick(this._skiptoApplicationBtn);
+        this.NavigateToHome();
+      }
+    });
   }
 }
