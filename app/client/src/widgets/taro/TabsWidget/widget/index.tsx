@@ -1,6 +1,6 @@
 import React from "react";
 import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
+import type { WidgetType } from "constants/WidgetConstants";
 import NavTabComponent from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import {

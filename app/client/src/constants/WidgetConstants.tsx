@@ -68,10 +68,9 @@ export const layoutConfigurations: LayoutConfigurations = {
   DESKTOP: { minWidth: 1160, maxWidth: 1280 },
   TABLET: { minWidth: 650, maxWidth: 800 },
   FLUID: { minWidth: -1, maxWidth: -1 },
-  MOBILE_FLUID: { minWidth: 450, maxWidth: 450 },
 };
 
-export const LATEST_PAGE_VERSION = 78;
+export const LATEST_PAGE_VERSION = 79;
 
 export const GridDefaults = {
   DEFAULT_CELL_SIZE: 1,
@@ -99,6 +98,15 @@ export const DefaultDimensionMap = {
 export const CONTAINER_GRID_PADDING =
   GridDefaults.DEFAULT_GRID_ROW_HEIGHT * 0.6;
 
+/**
+ * Padding introduced by container-like widgets in AutoLayout mode.
+ * FlexComponent - margin: 2px (2 * 2 = 4px) [Deploy mode = 4px ( 4 * 2 = 8px)]
+ * ResizeWrapper - padding: 1px, border: 1px (2 * 2 = 4px) [Deploy mode = 0px]
+ * ContainerComponent - border: 1px (1 * 2 = 2px) [Deploy mode = 2px]
+ * Total - 5px (5 * 2 = 10px)
+ */
+export const AUTO_LAYOUT_CONTAINER_PADDING = 5;
+
 export const WIDGET_PADDING = GridDefaults.DEFAULT_GRID_ROW_HEIGHT * 0.4;
 
 export const WIDGET_CLASSNAME_PREFIX = "WIDGET_";
@@ -115,7 +123,6 @@ export enum FontStyleTypes {
   ITALIC = "ITALIC",
   REGULAR = "REGULAR",
   UNDERLINE = "UNDERLINE",
-  LINETHROUGH = "LINETHROUGH",
 }
 
 export enum TextSizes {
@@ -209,3 +216,10 @@ export const WIDGET_PROPS_TO_SKIP_FROM_EVAL = {
  * It is also used to calculate widget positions and highlight placements.
  */
 export const FLEXBOX_PADDING = 4;
+
+/**
+ * max width of modal widget constant as a multiplier of Main canvasWidth
+ */
+export const MAX_MODAL_WIDTH_FROM_MAIN_WIDTH = 0.95;
+
+export const FILE_SIZE_LIMIT_FOR_BLOBS = 5000 * 1024; // 5MB
