@@ -149,9 +149,6 @@ export const generateQuickCommands = (
     featureFlags: FeatureFlags;
     enableAIAssistance: boolean;
   },
-  expectedType: string,
-  entityId: any,
-  propertyPath: any,
 ) => {
   const suggestionsHeader: CommandsCompletion = commandsHeader("绑定数据");
   const createNewHeader: CommandsCompletion = commandsHeader("新建查询");

@@ -1,9 +1,10 @@
+/* eslint-disable prettier/prettier */
 import styled, { createGlobalStyle } from "styled-components";
 import { get, startCase } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useCallback, useState } from "react";
-import Save2LineIcon from "remixicon-react/Save2LineIcon";
-import ArrowGoBackIcon from "remixicon-react/ArrowGoBackFillIcon";
+// import Save2LineIcon from "remixicon-react/Save2LineIcon";
+// import ArrowGoBackIcon from "remixicon-react/ArrowGoBackFillIcon";
 import EchartThemeEditor from "./Echart/EchartThemeEditor";
 
 import ThemeCard from "./ThemeCard";

@@ -1,7 +1,12 @@
 const CracoAlias = require("craco-alias");
 const CracoLessPlugin = require("craco-less");
-const { DefinePlugin, EnvironmentPlugin } = require("webpack");
-const { merge } = require("webpack-merge");
+const {
+  DefinePlugin,
+  EnvironmentPlugin
+} = require("webpack");
+const {
+  merge
+} = require("webpack-merge");
 const CracoBabelLoader = require("craco-babel-loader");
 const path = require("path");
 const webpack = require("webpack");
@@ -22,12 +27,12 @@ module.exports = {
     plugins: ["babel-plugin-lodash"],
   },
   webpack: {
-    configure: (webpackConfig) => {
+    configure: webpackConfig => {
       const config = {
-        alias: {
-          "lodash-es": "lodash",
-        },
         resolve: {
+          alias: {
+            "lodash-es": "lodash",
+          },
           fallback: {
             assert: false,
             stream: false,
@@ -36,26 +41,14 @@ module.exports = {
             os: false,
             path: false,
           },
-    // configure: {
-    //   resolve: {
-    //     alias: {
-    //       "lodash-es": "lodash",
-    //     },
-    //     fallback: {
-    //       assert: false,
-    //       stream: false,
-    //       util: false,
-    //       fs: false,
-    //       os: false,
-    //       path: false,
         },
         module: {
-          rules: [
-            {
-              test: /\.m?js/,
-              resolve: { fullySpecified: false },
+          rules: [{
+            test: /\.m?js/,
+            resolve: {
+              fullySpecified: false
             },
-          ],
+          }]
         },
         ignoreWarnings: [
           function ignoreSourcemapsloaderWarnings(warning) {
@@ -67,10 +60,21 @@ module.exports = {
             );
           },
         ],
+        // plugins: [
+        //   // Replace BlueprintJS’s icon component with our own implementation
+        //   // that code-splits icons away
+        //   new webpack.NormalModuleReplacementPlugin(
+        //     /@blueprintjs\/core\/lib\/\w+\/components\/icon\/icon\.\w+/,
+        //     require.resolve(
+        //       "./src/components/designSystems/blueprintjs/icon/index.js",
+        //     ),
+        //   ),
+        // ],
       };
       const scopePluginIndex = webpackConfig.resolve.plugins.findIndex(
-        ({ constructor }) =>
-          constructor && constructor.name === "ModuleScopePlugin",
+        ({
+          constructor
+        }) => constructor && constructor.name === 'ModuleScopePlugin'
       );
       webpackConfig.resolve.plugins.splice(scopePluginIndex, 1);
       return merge(webpackConfig, config);
@@ -86,7 +90,7 @@ module.exports = {
       new EnvironmentPlugin({
         TARO_ENV: "h5",
       }),
-    ],
+    ]
   },
   style: {
     postcss: {
@@ -145,17 +149,13 @@ module.exports = {
       },
     },
     {
-      // plugin: CracoLessPlugin,
-      // options: {
-      //   lessLoaderOptions: {
-      //     lessOptions: {
-      //       javascriptEnabled: true,
-      //     },
       // Prioritize the local src directory over node_modules.
       // This matters for cases where `src/<dirname>` and `node_modules/<dirname>` both exist –
       // e.g., when `<dirname>` is `entities`: https://github.com/appsmithorg/appsmith/pull/20964#discussion_r1124782356
       plugin: {
-        overrideWebpackConfig: ({ webpackConfig }) => {
+        overrideWebpackConfig: ({
+          webpackConfig
+        }) => {
           webpackConfig.resolve.modules = [
             path.resolve(__dirname, "src"),
             ...webpackConfig.resolve.modules,
@@ -166,29 +166,83 @@ module.exports = {
     },
   ],
   typescript: {
-    enableTypeChecking: false,
+    enableTypeChecking: false
   },
-  // babel: {
-  //   plugins: [
-  //     [
-  //       "import",
-  //       {
-  //         libraryName: "@taroify/core",
-  //         libraryDirectory: "",
-  //         style: true,
-  //       },
-  //       "@taroify/core",
-  //     ],
-  //     [
-  //       "import",
-  //       {
-  //         libraryName: "@taroify/icons",
-  //         libraryDirectory: "",
-  //         camel2DashComponentName: false,
-  //         style: () => "@taroify/icons/style",
-  //       },
-  //       "@taroify/icons",
-  //     ],
-  //   ],
-  // }
-};
+}
+
+// plugins: [{
+//     plugin: CracoAlias,
+//     options: {
+//       source: "tsconfig",
+//       // baseUrl SHOULD be specified
+//       // plugin does not take it from tsconfig
+//       baseUrl: "./src",
+//       // tsConfigPath should point to the file where "baseUrl" and "paths" are specified
+//       tsConfigPath: "./tsconfig.path.json",
+//     },
+//   },
+//   {
+//     plugin: CracoBabelLoader,
+//     options: {
+//       includes: [path.resolve("packages")],
+//     },
+//   },
+//   {
+//     plugin: "prismjs",
+//     options: {
+//       languages: ["javascript"],
+//       plugins: [],
+//       theme: "twilight",
+//       css: false,
+//     },
+//   },
+//   {
+//     // plugin: CracoLessPlugin,
+//     // options: {
+//     //   lessLoaderOptions: {
+//     //     lessOptions: {
+//     //       javascriptEnabled: true,
+//     //     },
+//     // Prioritize the local src directory over node_modules.
+//     // This matters for cases where `src/<dirname>` and `node_modules/<dirname>` both exist –
+//     // e.g., when `<dirname>` is `entities`: https://github.com/appsmithorg/appsmith/pull/20964#discussion_r1124782356
+//     plugin: {
+//       overrideWebpackConfig: ({
+//         webpackConfig
+//       }) => {
+//         webpackConfig.resolve.modules = [
+//           path.resolve(__dirname, "src"),
+//           ...webpackConfig.resolve.modules,
+//         ];
+//         return webpackConfig;
+//       },
+//     },
+//   },
+// ],
+// typescript: {
+//   enableTypeChecking: false,
+// },
+// babel: {
+//   plugins: [
+//     [
+//       "import",
+//       {
+//         libraryName: "@taroify/core",
+//         libraryDirectory: "",
+//         style: true,
+//       },
+//       "@taroify/core",
+//     ],
+//     [
+//       "import",
+//       {
+//         libraryName: "@taroify/icons",
+//         libraryDirectory: "",
+//         camel2DashComponentName: false,
+//         style: () => "@taroify/icons/style",
+//       },
+//       "@taroify/icons",
+//     ],
+//   ],
+// }
+// };
