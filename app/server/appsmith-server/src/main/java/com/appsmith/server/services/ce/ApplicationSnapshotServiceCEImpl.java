@@ -72,11 +72,14 @@ public class ApplicationSnapshotServiceCEImpl implements ApplicationSnapshotServ
         // application ID
         return applicationService
                 .findBranchedApplicationId(branchName, applicationId, applicationPermission.getEditPermission())
-                .switchIfEmpty(Mono.error(
-                        new AppsmithException(AppsmithError.NO_RESOURCE_FOUND, FieldName.APPLICATION, applicationId)))
+//                .switchIfEmpty(Mono.error(
+//                        new AppsmithException(AppsmithError.NO_RESOURCE_FOUND, FieldName.APPLICATION, applicationId)))
                 .flatMap(applicationSnapshotRepository::findWithoutData)
-                .switchIfEmpty(Mono.error(
-                        new AppsmithException(AppsmithError.NO_RESOURCE_FOUND, FieldName.APPLICATION, applicationId)));
+//                .switchIfEmpty(Mono.error(
+//                        new AppsmithException(AppsmithError.NO_RESOURCE_FOUND, FieldName.APPLICATION, applicationId))
+//                        );
+                .defaultIfEmpty(new ApplicationSnapshot());
+
     }
 
     @Override

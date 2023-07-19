@@ -694,9 +694,9 @@ export function EditorHeader(props: EditorHeaderProps) {
             </DeploySection>
           </Boxed>
         </HeaderSection>
-        <Suspense fallback={<span />}>
-          <GlobalSearch />
-        </Suspense>
+        {/* // <Suspense fallback={<span />}>
+        //   <GlobalSearch />
+        // </Suspense> */}
         {isSnipingMode && (
           <BindingBanner className="t--sniping-mode-banner">
             选择一个组件绑定

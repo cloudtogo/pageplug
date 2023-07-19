@@ -34,7 +34,11 @@ public class ApplicationSnapshot extends BaseDomain {
      * Adding this method as updatedAt field in BaseDomain is annotated with @JsonIgnore
      * @return Updated at timestamp in ISO format
      */
+
     public String getUpdatedTime() {
+        //注释部分可以解决前端报404，在ApplicationSnapshot的一个实现类中
+        if(this.getUpdatedAt() == null) return null;
         return DateUtils.ISO_FORMATTER.format(this.getUpdatedAt());
+//        return DateUtils.ISO_FORMATTER.format(this.getUpdatedAt());
     }
 }
