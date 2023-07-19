@@ -26813,9 +26813,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dnd-html5-backend@npm:^11.1.3":
-  version: 11.1.3
-  resolution: "react-dnd-html5-backend@npm:11.1.3"
+"react-dnd-html5-backend@npm:^9.3.4":
+  version: 9.3.4
+  resolution: "react-dnd-html5-backend@npm:9.3.4"
   dependencies:
     dnd-core: ^11.1.3
   checksum: 4582ce4a96d58560feccca99a7b52fb9accf210888c5957ed9bc5f6fa3d5360f14e9985095624bff91c160a4c725ea89aced6b8b4d095f7226fde45174a572f9
@@ -27514,7 +27514,7 @@ __metadata:
     prop-types: ^15.6.1
     react: ^17.0.0
     react-dnd: ^11.1.3
-    react-dnd-html5-backend: ^11.1.3
+    react-dnd-html5-backend: ^9.3.4
     react-dnd-scrollzone-patch-react-17: ^1.0.2
     react-dom: ^17.0.0
     react-lifecycles-compat: ^3.0.4
