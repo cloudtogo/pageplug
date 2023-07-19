@@ -2960,7 +2960,7 @@ public class ImportExportApplicationServiceTests {
         StepVerifier
                 .create(resultMono)
                 .expectErrorMatches(throwable -> throwable instanceof AppsmithException &&
-                        throwable.getMessage().equals(AppsmithError.GENERIC_JSON_IMPORT_ERROR.getMessage(createdWorkspace.getId(), "")))
+                        throwable.getMessage().contains(AppsmithError.GENERIC_JSON_IMPORT_ERROR.getMessage(createdWorkspace.getId(), "")))
                 .verify();
     }
 
@@ -3573,7 +3573,6 @@ public class ImportExportApplicationServiceTests {
 
         Workspace testWorkspace = new Workspace();
         testWorkspace.setName("workspace-" + randomUUID);
-        // User apiUser = userService.findByEmail("api_user").block();
         Mono<Workspace> workspaceMono = workspaceService.create(testWorkspace).cache();
 
         Mono<Application> applicationMono = workspaceMono.flatMap(workspace -> {

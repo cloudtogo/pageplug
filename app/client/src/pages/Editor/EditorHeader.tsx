@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/react-in-jsx-scope */
-import { useCallback, useEffect, useState, useMemo } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+  useMemo,
+  lazy,
+  Suspense,
+} from "react";
 import styled, { ThemeProvider } from "styled-components";
 import classNames from "classnames";
 import { Classes as Popover2Classes } from "@blueprintjs/popover2";
@@ -55,7 +62,7 @@ import { snipingModeSelector } from "selectors/editorSelectors";
 import { showConnectGitModal } from "actions/gitSyncActions";
 import RealtimeAppEditors from "./RealtimeAppEditors";
 import { EditorSaveIndicator } from "./EditorSaveIndicator";
-
+import { retryPromise } from "utils/AppsmithUtils";
 import { fetchUsersForWorkspace } from "@appsmith/actions/workspaceActions";
 import type { WorkspaceUser } from "@appsmith/constants/workspaceConstants";
 
@@ -687,9 +694,9 @@ export function EditorHeader(props: EditorHeaderProps) {
             </DeploySection>
           </Boxed>
         </HeaderSection>
-        {/* <Suspense fallback={<span />}>
+        <Suspense fallback={<span />}>
           <GlobalSearch />
-        </Suspense> */}
+        </Suspense>
         {isSnipingMode && (
           <BindingBanner className="t--sniping-mode-banner">
             选择一个组件绑定

@@ -166,8 +166,8 @@ __metadata:
   linkType: hard
 
 "@ant-design/cssinjs@npm:^1.10.1, @ant-design/cssinjs@npm:^1.11.1, @ant-design/cssinjs@npm:^1.3.1":
-  version: 1.11.2
-  resolution: "@ant-design/cssinjs@npm:1.11.2"
+  version: 1.12.0
+  resolution: "@ant-design/cssinjs@npm:1.12.0"
   dependencies:
     "@babel/runtime": ^7.11.1
     "@emotion/hash": ^0.8.0
@@ -179,7 +179,7 @@ __metadata:
   peerDependencies:
     react: ">=16.0.0"
     react-dom: ">=16.0.0"
-  checksum: 2a6d32ca28591e4fcff30155025426fe3c22de46f7f712b0483f927d044280f0870a25c9fce12d550afe120d17b2579f90dbb1bcc329619fddd6c5a90d64947f
+  checksum: d3eb7ff0c06cd389cf4a6ba8cfbefdb3b5ffe2e81b7789ba5afb447b73801b58122f0017ee7448c6843f57fb3935c2816edcdd87e9402d50c5248e6b7713ec76
   languageName: node
   linkType: hard
 
@@ -7449,6 +7449,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/asap@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@types/asap@npm:2.0.0"
+  checksum: e68d3dc87c0157533d69bab0204edeb5c56328f257ba24e970e6efcd7feabb6f37f17e376cf90e3ffd453a0adad10eaa5fcd6ecc07af5738466abea8bf9d9974
+  languageName: node
+  linkType: hard
+
 "@types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.1.14, @types/babel__core@npm:^7.1.7":
   version: 7.20.0
   resolution: "@types/babel__core@npm:7.20.0"
@@ -7799,6 +7806,13 @@ __metadata:
     "@types/through": "*"
     rxjs: ^7.2.0
   checksum: 5362d0b1cbec3887c9d5a671a0b19c58cf54066456c8967dd7ee799dfcc242cc8cd8959440c0f2fe7768becaf721b45fd30c222e6b9bcca378f45c68af43bab5
+  languageName: node
+  linkType: hard
+
+"@types/invariant@npm:^2.2.30":
+  version: 2.2.34
+  resolution: "@types/invariant@npm:2.2.34"
+  checksum: 2dedddf5dcf70b484220b29ee0eb76b31d1501c54e0bdd787415e37be817b0358bdd66a7dd9e959af80262f8374e02c427459db8a407061406b412fd24cb32e5
   languageName: node
   linkType: hard
 
@@ -14574,6 +14588,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dnd-core@npm:^9.3.4":
+  version: 9.5.1
+  resolution: "dnd-core@npm:9.5.1"
+  dependencies:
+    "@types/asap": ^2.0.0
+    "@types/invariant": ^2.2.30
+    asap: ^2.0.6
+    invariant: ^2.2.4
+    redux: ^4.0.4
+  checksum: 6c4f593f033d1aced6b1a8daecdc2a277e82c7f55cb4cae945d9c14e1337134f3404225961ff45cbd5afea3f410ae4f7556861872ef322b71d90ae2a122b4b6c
+  languageName: node
+  linkType: hard
+
 "dns-equal@npm:^1.0.0":
   version: 1.0.0
   resolution: "dns-equal@npm:1.0.0"
@@ -14921,12 +14948,12 @@ __metadata:
   linkType: hard
 
 "echarts@npm:^5.4.0":
-  version: 5.4.2
-  resolution: "echarts@npm:5.4.2"
+  version: 5.4.3
+  resolution: "echarts@npm:5.4.3"
   dependencies:
     tslib: 2.3.0
-    zrender: 5.4.3
-  checksum: 933c28dada362314f7c7a5fd4243b44b24f75adb233f7c87541ac9a81734cb380a9683c3f56c8e559dacfddd363879e95a96f0047e33820123cd8f5b95b60f8f
+    zrender: 5.4.4
+  checksum: f4f69becf1cf8f546f9488ffa3bffaa971dcfbd49f5d635f288cbc8c5177839154bd6c325d6ed72c2b822c89c9bba4947ac73400614fd23c6f2f7ace3c939132
   languageName: node
   linkType: hard
 
@@ -26777,6 +26804,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-dnd-html5-backend@npm:9.3.4":
+  version: 9.3.4
+  resolution: "react-dnd-html5-backend@npm:9.3.4"
+  dependencies:
+    dnd-core: ^9.3.4
+  checksum: d477ec44a567639433079952941369a8406372b88f94bf81d349710927162a2d3e56c142c17f0c2f1b1577e9c721b4a3569d70bd0e1a582b87f44746bb017a00
+  languageName: node
+  linkType: hard
+
 "react-dnd-html5-backend@npm:^11.1.3":
   version: 11.1.3
   resolution: "react-dnd-html5-backend@npm:11.1.3"
@@ -28687,6 +28723,8 @@ __metadata:
 "root-workspace-0b6124@workspace:.":
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
+  dependencies:
+    react-dnd-html5-backend: 9.3.4
   languageName: unknown
   linkType: soft
 
@@ -32875,9 +32913,9 @@ __metadata:
   linkType: hard
 
 "whatwg-fetch@npm:^3.0.0, whatwg-fetch@npm:^3.4.0, whatwg-fetch@npm:^3.6.2":
-  version: 3.6.2
-  resolution: "whatwg-fetch@npm:3.6.2"
-  checksum: ee976b7249e7791edb0d0a62cd806b29006ad7ec3a3d89145921ad8c00a3a67e4be8f3fb3ec6bc7b58498724fd568d11aeeeea1f7827e7e1e5eae6c8a275afed
+  version: 3.6.16
+  resolution: "whatwg-fetch@npm:3.6.16"
+  checksum: b23cb4457a61d04ca53a798811d45f8599c9e640fe254ce73f32162caed937e463c00772ea5b011e3803e829bee159369f5a47e58f157e002ffffe0ce016fbc5
   languageName: node
   linkType: hard
 
@@ -33676,16 +33714,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zrender@npm:5.4.3":
-  version: 5.4.3
-  resolution: "zrender@npm:5.4.3"
-  dependencies:
-    tslib: 2.3.0
-  checksum: ae89584fbe4256217e500a74183fd5870a2bed7e7b3234cd78fcbc0a1a82da8449596b2019105927069531b567ecf94425fb171abd6cedcbf517e52fdf438722
-  languageName: node
-  linkType: hard
-
-"zrender@npm:^5.1.1":
+"zrender@npm:5.4.4, zrender@npm:^5.1.1":
   version: 5.4.4
   resolution: "zrender@npm:5.4.4"
   dependencies:

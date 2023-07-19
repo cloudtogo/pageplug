@@ -29,7 +29,6 @@ public class UrlCE {
     final public static String ASSET_URL = BASE_URL + VERSION + "/assets";
     final public static String COMMENT_URL = BASE_URL + VERSION + "/comments";
     final public static String NOTIFICATION_URL = BASE_URL + VERSION + "/notifications";
-    final public static String CLOUDOS_URL = BASE_URL + VERSION + "/cloudos";
     final public static String INSTANCE_ADMIN_URL = BASE_URL + VERSION + "/admin";
     final public static String GIT_URL = BASE_URL + VERSION + "/git";
     final public static String THEME_URL = BASE_URL + VERSION + "/themes";
@@ -37,6 +36,9 @@ public class UrlCE {
     final public static String USAGE_PULSE_URL = BASE_URL + VERSION + "/usage-pulse";
     final public static String TENANT_URL = BASE_URL + VERSION + "/tenants";
     final public static String CUSTOM_JS_LIB_URL = BASE_URL + VERSION + "/libraries";
+
+    //修改的！！！
+    final public static String CLOUDOS_URL = BASE_URL + VERSION + "/cloudos";
 
     // Sub-paths
     final public static String MOCKS = "/mocks";

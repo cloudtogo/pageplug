@@ -65,6 +65,10 @@ public interface NewActionServiceCE extends CrudService<NewAction, String> {
 
     Mono<ActionDTO> deleteUnpublishedAction(String id);
 
+    Flux<ActionDTO> getUnpublishedActions(MultiValueMap<String, String> params, Boolean includeJsActions);
+
+    Flux<ActionDTO> getUnpublishedActions(MultiValueMap<String, String> params, String branchName, Boolean includeJsActions);
+
     Flux<ActionDTO> getUnpublishedActions(MultiValueMap<String, String> params);
 
     Flux<ActionDTO> getUnpublishedActions(MultiValueMap<String, String> params, String branchName);
@@ -102,4 +106,14 @@ public interface NewActionServiceCE extends CrudService<NewAction, String> {
     Mono<ActionDTO> fillSelfReferencingDataPaths(ActionDTO actionDTO);
 
     Map<String, Object> getAnalyticsProperties(NewAction savedAction);
+
+
+    //Merge ce !!!!
+    Mono<ActionExecutionResult> executeAction(ExecuteActionDTO executeActionDTO, String environmentName);
+
+    Mono<ActionExecutionResult> executeAction(Flux<Part> partsFlux, String branchName, String environmentName);
+
+    Mono<ActionDTO> getValidActionForExecution(ExecuteActionDTO executeActionDTO, String actionId, NewAction newAction);
+
+    <T> T variableSubstitution(T configuration, Map<String, String> replaceParamsMap);
 }
