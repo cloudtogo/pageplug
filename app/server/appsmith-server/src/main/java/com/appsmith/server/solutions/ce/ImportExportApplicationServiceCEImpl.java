@@ -639,6 +639,7 @@ public class ImportExportApplicationServiceCEImpl implements ImportExportApplica
                     dataBuffer.read(data);
                     DataBufferUtils.release(dataBuffer);
                     return new String(data);
+//                    return new String(data, StandardCharsets.UTF_8);
                 });
 
         // Check if the application is connected to git and if it's connected throw exception asking user to update
