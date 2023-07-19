@@ -1,7 +1,6 @@
 package com.appsmith.server.solutions;
 
 import com.appsmith.server.helpers.PluginExecutorHelper;
-import com.appsmith.server.repositories.CustomDatasourceRepository;
 import com.appsmith.server.services.AuthenticationValidator;
 import com.appsmith.server.services.DatasourceContextService;
 import com.appsmith.server.services.DatasourceService;
@@ -20,7 +19,6 @@ public class DatasourceStructureSolutionImpl extends DatasourceStructureSolution
                                            PluginExecutorHelper pluginExecutorHelper,
                                            PluginService pluginService,
                                            DatasourceContextService datasourceContextService,
-                                           CustomDatasourceRepository datasourceRepository,
                                            AuthenticationValidator authenticationValidator,
                                            DatasourcePermission datasourcePermission,
                                            DatasourceConfigurationStructureService datasourceConfigurationStructureService,

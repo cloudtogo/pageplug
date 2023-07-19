@@ -32,7 +32,7 @@ import type { SignupFormValues } from "pages/UserAuth/helpers";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 
 import { SIGNUP_SUBMIT_PATH } from "@appsmith/constants/ApiConstants";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import type { AppState } from "@appsmith/reducers";
 import PerformanceTracker, {
   PerformanceTransactionName,

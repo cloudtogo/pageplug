@@ -1,6 +1,10 @@
 package com.appsmith.server.domains.ce;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class TenantConfigurationCE {
