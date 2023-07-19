@@ -90,7 +90,6 @@ public class Application extends BaseDomain {
     @JsonView(Views.Public.class)
     String icon;
 
-    @JsonView(Views.Public.class)
     String chartTheme;
 
     @JsonView(Views.Public.class)

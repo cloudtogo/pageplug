@@ -9256,6 +9256,7 @@ __metadata:
     echarts-gl: ^2.0.9
     eslint: ^8.36.0
     eslint-config-prettier: ^8.6.0
+    eslint-config-react-app: 7.0.1
     eslint-import-resolver-babel-module: ^5.3.1
     eslint-plugin-cypress: ^2.11.2
     eslint-plugin-import: ^2.25.2
@@ -14935,7 +14936,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-react-app@npm:^7.0.1":
+"eslint-config-react-app@npm:7.0.1, eslint-config-react-app@npm:^7.0.1":
   version: 7.0.1
   resolution: "eslint-config-react-app@npm:7.0.1"
   dependencies:

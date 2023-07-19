@@ -508,9 +508,7 @@ public class ExamplesWorkspaceClonerCEImpl implements ExamplesWorkspaceClonerCE 
         Mono<User> userMono = sessionUserService.getCurrentUser();
 
         return applicationPageService.setApplicationPolicies(userMono, workspaceId, application)
-                .flatMap(applicationToCreate ->
-                        createSuffixedApplication(applicationToCreate, applicationToCreate.getName(), 0)
-                );
+                .flatMap(applicationService::createDefaultApplication);
     }
 
     // forkWithConfiguration parameter if TRUE, returns the datasource with credentials else returns datasources without credentials
@@ -572,5 +570,15 @@ public class ExamplesWorkspaceClonerCEImpl implements ExamplesWorkspaceClonerCE 
                     }
                     throw error;
                 });
+    }
+
+    public void makePristine(BaseDomain domain) {
+        // Set the ID to null for this domain object so that it is saved a new document in the database (as opposed to
+        // updating an existing document). If it contains any policies, they are also reset.
+        domain.setId(null);
+        domain.setUpdatedAt(null);
+        if (domain.getPolicies() != null) {
+            domain.getPolicies().clear();
+        }
     }
 }
