@@ -49,10 +49,10 @@ const Sku = forwardRef<SkuInstance, SkuProps>((props, ref) => {
   const { tree = [] } = sku;
 
   const hasSku = useMemo(() => !sku.none_sku, [sku.none_sku]);
-  const hasSkuOrAttr = useMemo(() => hasSku || properties.length > 0, [
-    hasSku,
-    properties,
-  ]);
+  const hasSkuOrAttr = useMemo(
+    () => hasSku || properties.length > 0,
+    [hasSku, properties],
+  );
 
   const isSkuCombSelected = useMemo(() => {
     // SKU 未选完

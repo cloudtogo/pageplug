@@ -738,10 +738,10 @@ export const TreeSelectContainer = styled.div<{
     &:hover {
       .rc-tree-select-selector {
         border: 1.2px solid
-        ${(props) =>
-          props.isValid
-            ? "var(--wds-color-border-hover)"
-            : "var(--wds-color-border-danger-hover)"}!important;
+          ${(props) =>
+            props.isValid
+              ? "var(--wds-color-border-hover)"
+              : "var(--wds-color-border-danger-hover)"}!important;
       }
     }
   }
