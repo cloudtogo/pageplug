@@ -1,7 +1,8 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "@taroify/icons";
 import { Form, AreaPicker, Input } from "@taroify/core";
-import { FormItemInstance } from "@taroify/core/form";
+import type { FormItemInstance } from "@taroify/core/form";
 import PortalPopup from "./PortalPopup";
 import { areaList } from "@vant/area-data";
 

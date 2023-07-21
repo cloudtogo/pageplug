@@ -30,7 +30,7 @@
       "no-undef": "off",
       "no-unused-vars": "off",
       "react/prop-types": "off",
-      "react/display-name": "off",
+      "react/display-name": "warn",
       "@typescript-eslint/explicit-module-boundary-types": "off",
       "cypress/no-unnecessary-waiting": "off",
       "cypress/no-assigning-return-values": "off",

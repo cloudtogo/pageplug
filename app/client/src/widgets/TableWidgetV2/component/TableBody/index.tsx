@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import type { Ref } from "react";
 import React from "react";
 import type {
