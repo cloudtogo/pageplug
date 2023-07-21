@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-restricted-imports */
 import React, { useCallback } from "react";
 import { IconWrapper } from "constants/IconConstants";
 import { Colors } from "constants/Colors";
