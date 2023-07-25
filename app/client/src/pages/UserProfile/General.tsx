@@ -12,9 +12,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUser } from "selectors/usersSelectors";
 import { forgotPasswordSubmitHandler } from "pages/UserAuth/helpers";
-import {
-  FORGOT_PASSWORD_SUCCESS_TEXT,
-} from "@appsmith/constants/messages";
+import { FORGOT_PASSWORD_SUCCESS_TEXT } from "@appsmith/constants/messages";
 import { logoutUser, updateUserDetails } from "actions/userActions";
 import UserProfileImagePicker from "./UserProfileImagePicker";
 import { Wrapper, FieldWrapper, LabelWrapper } from "./StyledComponents";
@@ -98,9 +96,7 @@ function General() {
           {<Text type={TextType.P1}>{user?.email}</Text>}
 
           {isFormLoginEnabled && (
-            <ForgotPassword onClick={forgotPassword}>
-            重置密码
-            </ForgotPassword>
+            <ForgotPassword onClick={forgotPassword}>重置密码</ForgotPassword>
           )}
         </div>
       </FieldWrapper>

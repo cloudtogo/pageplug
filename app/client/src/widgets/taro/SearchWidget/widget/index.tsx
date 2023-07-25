@@ -146,14 +146,8 @@ class MSearchWidget extends BaseWidget<MSearchWidgetProps, WidgetState> {
   };
 
   getPageView() {
-    const {
-      text,
-      placeholder,
-      rounded,
-      inputAlign,
-      readonly,
-      showButton,
-    } = this.props;
+    const { text, placeholder, rounded, inputAlign, readonly, showButton } =
+      this.props;
     const actionButton = showButton ? (
       <View onClick={this.onSearch}>搜索</View>
     ) : null;

@@ -1,6 +1,6 @@
 import React from "react";
 import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
+import type { WidgetType } from "constants/WidgetConstants";
 import SkuComponent from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
@@ -293,15 +293,8 @@ class MSkuWidget extends BaseWidget<MSkuWidgetProps, MSkuWidgetState> {
   };
 
   getPageView() {
-    const {
-      goodsId,
-      price,
-      pic,
-      stockNum,
-      categories,
-      products,
-      color,
-    } = this.props;
+    const { goodsId, price, pic, stockNum, categories, products, color } =
+      this.props;
     const { addCartLoading, buyLoading } = this.state;
     const skuData = {
       goods_id: goodsId,
