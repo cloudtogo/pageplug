@@ -154,8 +154,8 @@ export class DataTreeFactory {
       // taking precedence in case the key is the same
       store: appData.store,
       theme,
-    } as DataTreeAppsmith;
-    (dataTree.global as DataTreeAppsmith).ENTITY_TYPE = ENTITY_TYPE.APPSMITH;
+    } as AppsmithEntity;
+    (dataTree.global as AppsmithEntity).ENTITY_TYPE = ENTITY_TYPE.APPSMITH;
 
     const startMetaWidgets = performance.now();
 

@@ -15,6 +15,7 @@ import { get } from "lodash";
 import { useSelector } from "react-redux";
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
 import { Container, ScrollBtnContainer } from "./TopStacked.styled";
+import React from "react";
 
 // TODO - @Dhruvik - ImprovedAppNav
 // Replace with NavigationProps if nothing changes

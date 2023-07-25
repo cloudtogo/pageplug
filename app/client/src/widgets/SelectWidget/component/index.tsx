@@ -290,7 +290,7 @@ class SelectComponent extends React.Component<
     } = this.props;
     // active focused item
     const activeItem = () => {
-      return -1;
+      // return -1;
       if (
         this.state.activeItemIndex === -1 ||
         isNil(this.state.activeItemIndex)

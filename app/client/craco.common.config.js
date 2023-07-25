@@ -1,12 +1,8 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const CracoAlias = require("craco-alias");
 const CracoLessPlugin = require("craco-less");
-const {
-  DefinePlugin,
-  EnvironmentPlugin
-} = require("webpack");
-const {
-  merge
-} = require("webpack-merge");
+const { DefinePlugin, EnvironmentPlugin } = require("webpack");
+const { merge } = require("webpack-merge");
 const CracoBabelLoader = require("craco-babel-loader");
 const path = require("path");
 const webpack = require("webpack");
@@ -27,12 +23,12 @@ module.exports = {
     plugins: ["babel-plugin-lodash"],
   },
   webpack: {
-    configure: webpackConfig => {
+    configure: (webpackConfig) => {
       const config = {
         resolve: {
-          alias: {
-            "lodash-es": "lodash",
-          },
+          // alias: {
+          //   "lodash-es": "lodash",
+          // },
           fallback: {
             assert: false,
             stream: false,
@@ -43,12 +39,14 @@ module.exports = {
           },
         },
         module: {
-          rules: [{
-            test: /\.m?js/,
-            resolve: {
-              fullySpecified: false
+          rules: [
+            {
+              test: /\.m?js/,
+              resolve: {
+                fullySpecified: false,
+              },
             },
-          }]
+          ],
         },
         ignoreWarnings: [
           function ignoreSourcemapsloaderWarnings(warning) {
@@ -72,9 +70,8 @@ module.exports = {
         // ],
       };
       const scopePluginIndex = webpackConfig.resolve.plugins.findIndex(
-        ({
-          constructor
-        }) => constructor && constructor.name === 'ModuleScopePlugin'
+        ({ constructor }) =>
+          constructor && constructor.name === "ModuleScopePlugin",
       );
       webpackConfig.resolve.plugins.splice(scopePluginIndex, 1);
       return merge(webpackConfig, config);
@@ -90,7 +87,7 @@ module.exports = {
       new EnvironmentPlugin({
         TARO_ENV: "h5",
       }),
-    ]
+    ],
   },
   style: {
     postcss: {
@@ -149,13 +146,21 @@ module.exports = {
       },
     },
     {
+      plugin: CracoLessPlugin,
+      options: {
+        lessLoaderOptions: {
+          lessOptions: {
+            javascriptEnabled: true,
+          },
+        },
+      },
+    },
+    {
       // Prioritize the local src directory over node_modules.
       // This matters for cases where `src/<dirname>` and `node_modules/<dirname>` both exist –
       // e.g., when `<dirname>` is `entities`: https://github.com/appsmithorg/appsmith/pull/20964#discussion_r1124782356
       plugin: {
-        overrideWebpackConfig: ({
-          webpackConfig
-        }) => {
+        overrideWebpackConfig: ({ webpackConfig }) => {
           webpackConfig.resolve.modules = [
             path.resolve(__dirname, "src"),
             ...webpackConfig.resolve.modules,
@@ -166,9 +171,9 @@ module.exports = {
     },
   ],
   typescript: {
-    enableTypeChecking: false
+    enableTypeChecking: false,
   },
-}
+};
 
 // plugins: [{
 //     plugin: CracoAlias,

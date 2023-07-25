@@ -118,6 +118,7 @@ class IconSelectControl extends BaseControl<
   }
 
   componentDidMount() {
+    // @ts-expect-error: setTimeout return type mismatch
     this.timer = setTimeout(() => {
       const iconSelectTargetElement = this.iconSelectTargetRef.current;
       // console.log(
@@ -148,6 +149,7 @@ class IconSelectControl extends BaseControl<
         <IconSelectContainerStyles targetWidth={popoverTargetWidth} />
         <TypedSelect
           className="icon-select-container"
+          inputProps={{ placeholder: "过滤..." }}
           itemListRenderer={this.renderMenu}
           itemPredicate={this.filterIconName}
           itemRenderer={this.renderIconItem}
@@ -155,7 +157,6 @@ class IconSelectControl extends BaseControl<
           noResults={<MenuItem disabled text="未找到相关内容" />}
           onItemSelect={this.handleIconChange}
           popoverProps={{ minimal: true }}
-          inputProps={{ placeholder: "过滤..." }}
         >
           <StyledButton
             alignText={Alignment.LEFT}

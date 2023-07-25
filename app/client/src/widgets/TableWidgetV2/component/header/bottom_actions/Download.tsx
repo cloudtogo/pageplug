@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-restricted-imports */
 import React, { memo } from "react";
 import {
   Popover,

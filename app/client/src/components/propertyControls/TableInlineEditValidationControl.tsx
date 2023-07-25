@@ -15,15 +15,6 @@ import { isString } from "utils/helpers";
 import { JSToString, stringToJS } from "./utils";
 import type { AdditionalDynamicDataTree } from "utils/autocomplete/customTreeTypeDefCreator";
 import LazyCodeEditor from "components/editorComponents/LazyCodeEditor";
-import {
-  ORIGINAL_INDEX_KEY,
-  PRIMARY_COLUMN_KEY_VALUE,
-} from "widgets/TableWidgetV2/constants";
-import { Colors } from "constants/Colors";
-import {
-  createMessage,
-  TABLE_WIDGET_VALIDATION_ASSIST_PROMPT,
-} from "@appsmith/constants/messages";
 
 const PromptMessage = styled.span`
   line-height: 17px;

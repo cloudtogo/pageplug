@@ -6,7 +6,7 @@ import type {
   ApplicationPagePayload,
   EvaluationVersion,
   GitApplicationMetadata,
-} from "api/ApplicationApi";
+} from "@appsmith/api/ApplicationApi";
 import type {
   LayoutOnLoadActionErrors,
   PageAction,

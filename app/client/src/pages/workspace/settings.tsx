@@ -33,7 +33,6 @@ import {
 import {
   createMessage,
   INVITE_USERS_PLACEHOLDER,
-  SEARCH_USERS,
 } from "@appsmith/constants/messages";
 import { getAppsmithConfigs } from "@appsmith/configs";
 import { APPLICATIONS_URL } from "constants/routes";

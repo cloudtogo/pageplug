@@ -180,7 +180,7 @@ export function CanvasSelectionArena({
       });
       let selectionRectangle: SelectedArenaDimensions = initRectangle();
       let isMultiSelect = false;
-      let isDragging = false;
+      const isDragging = false;
       const slidingArena = slidingArenaRef.current;
       let isMouseDown = false;
       let shouldStartCanvasDragging = false;

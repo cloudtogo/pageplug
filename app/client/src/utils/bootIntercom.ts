@@ -3,7 +3,7 @@ import { getAppsmithConfigs } from "@appsmith/configs";
 import { sha256 } from "js-sha256";
 import { getLicenseKey } from "@appsmith/utils/licenseHelpers";
 
-const { cloudHosting, intercomAppID } = getAppsmithConfigs();
+const { appVersion, cloudHosting, intercomAppID } = getAppsmithConfigs();
 
 export default function bootIntercom(user?: User) {
   if (intercomAppID && window.Intercom) {

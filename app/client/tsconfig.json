@@ -15,7 +15,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
+    "jsx": "react",
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "importHelpers": true,
@@ -26,7 +26,7 @@
     "sourceMap": true,
     "baseUrl": "./src",
     "noFallthroughCasesInSwitch": true,
-    "importsNotUsedAsValues": "error",
+    "importsNotUsedAsValues": "remove",
   },
   "include": [
     "./src/**/*",

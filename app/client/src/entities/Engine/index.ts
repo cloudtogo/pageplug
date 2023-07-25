@@ -106,7 +106,7 @@ export default abstract class AppEngine {
     );
 
     // get weapp WxaCode preview image
-    const isMobile = yield select(isMobileLayout);
+    const isMobile: boolean = yield select(isMobileLayout);
     const isPublishedMode = this._mode === APP_MODE.PUBLISHED;
     if (isMobile && isPublishedMode) {
       yield failFastApiCalls(

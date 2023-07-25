@@ -348,8 +348,8 @@ class CodeMirrorTernService {
     return obj;
   }
 
-  getHint(cm: CodeMirror.Editor) {
-    return new Promise((resolve) => {
+  async getHint(cm: CodeMirror.Editor) {
+    const hints = await new Promise((resolve) => {
       this.request(
         cm,
         {

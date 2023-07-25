@@ -27,7 +27,7 @@ type DroppableItem = BaseItemProps & {
 };
 
 type State = {
-  focusedIndex: number | null;
+  focusedIndex?: number | null;
 };
 
 const TabsWrapper = styled.div`
