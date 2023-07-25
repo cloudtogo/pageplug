@@ -7,16 +7,17 @@ import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { retryPromise } from "utils/AppsmithUtils";
 
 import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { DerivedPropertiesMap } from "utils/WidgetFactory";
+import type { DerivedPropertiesMap } from "utils/WidgetFactory";
 import { Colors } from "constants/Colors";
-import { AllChartData, ChartType } from "../constants";
-import { Stylesheet } from "entities/AppTheming";
+import type { AllChartData, ChartType } from "../constants";
+import type { Stylesheet } from "entities/AppTheming";
 
 const EchartComponent = lazy(() =>
-  retryPromise(() =>
-    import(
-      /* webpackPrefetch: true, webpackChunkName: "charts" */ "../component"
-    ),
+  retryPromise(
+    () =>
+      import(
+        /* webpackPrefetch: true, webpackChunkName: "charts" */ "../component"
+      ),
   ),
 );
 class EchartWidget extends BaseWidget<EchartWidgetProps, WidgetState> {
