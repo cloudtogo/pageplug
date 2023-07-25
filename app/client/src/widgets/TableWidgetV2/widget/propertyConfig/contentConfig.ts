@@ -207,7 +207,7 @@ export default [
       {
         propertyName: "enableClientSideSearch",
         label: "前端搜索",
-        helpText: "Searches all results only on the data which is loaded",
+        helpText: "仅在加载的数据上搜索所有结果",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -217,7 +217,7 @@ export default [
       {
         propertyName: "defaultSearchText",
         label: "默认搜索内容",
-        helpText: "Adds a search text by default",
+        helpText: "添加一个默认搜索关键字",
         controlType: "INPUT_TEXT",
         placeholderText: "{{global.user.name}}",
         isBindProperty: true,
@@ -229,7 +229,7 @@ export default [
       {
         propertyName: "onSearchTextChanged",
         label: "onSearchTextChanged",
-        helpText: "when search text is modified by the user",
+        helpText: "修改搜索关键字时触发",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
         isBindProperty: true,
@@ -300,7 +300,7 @@ export default [
       {
         propertyName: "multiRowSelection",
         label: "支持多选",
-        helpText: "Allows users to select multiple rows",
+        helpText: "允许用户多选",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,

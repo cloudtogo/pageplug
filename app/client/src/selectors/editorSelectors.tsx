@@ -367,12 +367,17 @@ export const getCurrentPageName = createSelector(
 
 export const getWidgetCards = createSelector(
   getWidgetConfigs,
+  isMobileLayout,
   getIsAutoLayout,
-  (widgetConfigs: WidgetConfigReducerState, isAutoLayout: boolean) => {
+  (
+    widgetConfigs: WidgetConfigReducerState,
+    isMobile: boolean,
+    isAutoLayout: boolean,
+  ) => {
     const cards = Object.values(widgetConfigs.config).filter((config) => {
       return isAirgapped()
         ? config.widgetName !== "Map" && !config.hideCard
-        : !config.hideCard;
+        : !config.hideCard && (isMobile ? config.isMobile : !config.isMobile);
     });
     const _cards: WidgetCardProps[] = cards.map((config) => {
       const {

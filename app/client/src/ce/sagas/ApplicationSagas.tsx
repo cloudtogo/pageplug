@@ -31,14 +31,14 @@ import type {
   WorkspaceApplicationObject,
 } from "@appsmith/api/ApplicationApi";
 import ApplicationApi from "@appsmith/api/ApplicationApi";
-import { all, call, put, select, take } from "redux-saga/effects";
+import { all, call, put, select, take, takeLatest } from "redux-saga/effects";
 
 import { validateResponse } from "sagas/ErrorSagas";
 import { getUserApplicationsWorkspacesList } from "@appsmith/selectors/applicationSelectors";
 import type { ApiResponse } from "api/ApiResponses";
 import history from "utils/history";
 import type { AppState } from "@appsmith/reducers";
-import type { FetchApplicationPreviewPayload } from "@appsmith/actions/applicationActions";
+// import type { FetchApplicationPreviewPayload } from "@appsmith/actions/applicationActions";
 import {
   ApplicationVersion,
   fetchApplication,
@@ -813,10 +813,11 @@ export function* importApplicationSaga(
 }
 
 export function* fetchApplicationPreviewWxaCodeSaga(
-  action: ReduxAction<FetchApplicationPreviewPayload>,
+  action: ReduxAction<FetchApplicationPayload>,
 ) {
   try {
     const { applicationId } = action.payload;
+    //@ts-ignore
     const response: ApiResponse = yield call(PageApi.getPreviewWxaCode, {
       app_id: applicationId,
     });

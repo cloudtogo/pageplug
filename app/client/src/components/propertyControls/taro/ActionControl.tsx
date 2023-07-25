@@ -87,7 +87,7 @@ function ActionControlComponent(props: RenderComponentProps) {
       <StyledDeleteIcon
         className="t--delete-tab-btn"
         height={20}
-        marginRight={12}
+        // marginRight={12}
         onClick={() => {
           deleteOption(index);
         }}

@@ -599,7 +599,6 @@ function ApiResponseView(props: Props) {
                     input={{
                       value: response?.body,
                     }}
-                    isReadOnly
                   />
                 ) : responseTabs &&
                   responseTabs.length > 0 &&

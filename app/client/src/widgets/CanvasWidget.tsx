@@ -23,8 +23,12 @@ import ContainerWidget from "widgets/ContainerWidget/widget";
 import type { CanvasWidgetStructure, DSLWidget } from "./constants";
 import ContainerComponent from "./ContainerWidget/component";
 import { AppPositioningTypes } from "reducers/entityReducers/pageListReducer";
+import type { AutocompletionDefinitions } from "widgets/constants";
 
 class CanvasWidget extends ContainerWidget {
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {};
+  }
   static getPropertyPaneConfig() {
     return [];
   }
@@ -229,6 +233,7 @@ export const CONFIG = {
     default: CanvasWidget.getDefaultPropertiesMap(),
     meta: CanvasWidget.getMetaPropertiesMap(),
     config: CanvasWidget.getPropertyPaneConfig(),
+    autocompleteDefinitions: CanvasWidget.getAutocompleteDefinitions(),
   },
 };
 

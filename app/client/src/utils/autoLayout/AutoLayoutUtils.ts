@@ -25,6 +25,7 @@ import {
   FlexLayerAlignment,
   Positioning,
   ResponsiveBehavior,
+  SNAPSHOT_EXPIRY_IN_DAYS,
 } from "utils/autoLayout/constants";
 import {
   updatePositionsOfParentAndSiblings,

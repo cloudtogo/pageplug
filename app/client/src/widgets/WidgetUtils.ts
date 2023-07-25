@@ -35,6 +35,7 @@ import type { ContainerWidgetProps } from "./ContainerWidget/widget";
 import type { SchemaItem } from "./JSONFormWidget/constants";
 import { WIDGET_COMPONENT_BOUNDARY_CLASS } from "constants/componentClassNameConstants";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const punycode = require("punycode/");
 
 type SanitizeOptions = {

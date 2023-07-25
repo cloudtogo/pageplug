@@ -98,6 +98,7 @@ export type UpdatePageResponse = {
   isHidden: boolean;
   lastUpdatedTime: number;
   defaultResources: unknown[];
+  icon?: any;
 };
 
 export type SetPageOrderRequest = {

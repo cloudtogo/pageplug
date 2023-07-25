@@ -2,12 +2,12 @@ import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import type {
   AppEmbedSetting,
   ApplicationResponsePayload,
-} from "api/ApplicationApi";
+} from "@appsmith/api/ApplicationApi";
 import type {
   UpdateApplicationPayload,
   ImportApplicationRequest,
   FetchApplicationPayload,
-} from "api/ApplicationApi";
+} from "@appsmith/api/ApplicationApi";
 import type { AppIconName } from "design-system-old";
 import type { Datasource } from "entities/Datasource";
 

@@ -68,6 +68,7 @@ export const layoutConfigurations: LayoutConfigurations = {
   DESKTOP: { minWidth: 1160, maxWidth: 1280 },
   TABLET: { minWidth: 650, maxWidth: 800 },
   FLUID: { minWidth: -1, maxWidth: -1 },
+  MOBILE_FLUID: { minWidth: 450, maxWidth: 450 },
 };
 
 export const LATEST_PAGE_VERSION = 79;
@@ -123,6 +124,7 @@ export enum FontStyleTypes {
   ITALIC = "ITALIC",
   REGULAR = "REGULAR",
   UNDERLINE = "UNDERLINE",
+  LINETHROUGH = "LINETHROUGH",
 }
 
 export enum TextSizes {

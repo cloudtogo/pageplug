@@ -11,7 +11,8 @@ import {
   PoweredBy,
 } from "react-instantsearch-dom";
 import "instantsearch.css/themes/algolia.css";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
+
 import styled from "styled-components";
 import { HelpIcons } from "icons/HelpIcons";
 import { HelpBaseURL } from "constants/HelpConstants";
@@ -85,7 +86,9 @@ function Hit(props: { hit: { path: string } }) {
 function DefaultHelpMenuItem(props: {
   item: { label: string; link?: string; id?: string; icon: React.ReactNode };
   onSelect: () => void;
+  showIntercomConsent: (val: boolean) => void;
 }) {
+  const user = useSelector(getCurrentUser);
   return (
     <li className="ais-Hits-item">
       <div
@@ -95,15 +98,14 @@ function DefaultHelpMenuItem(props: {
           if (props.item.link) window.open(props.item.link, "_blank");
           if (props.item.id === "intercom-trigger") {
             if (intercomAppID && window.Intercom) {
-              window.Intercom("show");
               if (user?.isIntercomConsentGiven || cloudHosting) {
                 window.Intercom("show");
               } else {
                 props.showIntercomConsent(true);
               }
             }
+            props.onSelect();
           }
-          props.onSelect();
         }}
       >
         <div className="hit-name t--docHitTitle">
@@ -299,7 +301,7 @@ type Props = {
   hideMinimizeBtn?: boolean;
   user?: User;
 };
-type State = { showResults: boolean };
+type State = { showResults: boolean; showIntercomConsent: boolean };
 
 type HelpItem = {
   label: string;
@@ -349,6 +351,7 @@ class DocumentationSearch extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      showIntercomConsent: false,
       showResults: props.defaultRefinement.length > 0,
     };
   }
@@ -415,6 +418,9 @@ class DocumentationSearch extends React.Component<Props, State> {
                       item={item}
                       key={item.label}
                       onSelect={this.handleClose}
+                      showIntercomConsent={(val: boolean) =>
+                        this.setState({ showIntercomConsent: val })
+                      }
                     />
                   ))}
                 </ul>

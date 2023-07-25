@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { debounce } from "lodash";
 import {
@@ -12,14 +12,11 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUser } from "selectors/usersSelectors";
 import { forgotPasswordSubmitHandler } from "pages/UserAuth/helpers";
-import {
-  FORGOT_PASSWORD_SUCCESS_TEXT,
-} from "@appsmith/constants/messages";
+import { FORGOT_PASSWORD_SUCCESS_TEXT } from "@appsmith/constants/messages";
 import { logoutUser, updateUserDetails } from "actions/userActions";
 import UserProfileImagePicker from "./UserProfileImagePicker";
 import { Wrapper, FieldWrapper, LabelWrapper } from "./StyledComponents";
 import { ANONYMOUS_USERNAME } from "constants/userConstants";
-import { ALL_LANGUAGE_CHARACTERS_REGEX } from "constants/Regex";
 import { createMessage } from "design-system-old/build/constants/messages";
 import { getIsFormLoginEnabled } from "@appsmith/selectors/tenantSelectors";
 
@@ -98,9 +95,7 @@ function General() {
           {<Text type={TextType.P1}>{user?.email}</Text>}
 
           {isFormLoginEnabled && (
-            <ForgotPassword onClick={forgotPassword}>
-            重置密码
-            </ForgotPassword>
+            <ForgotPassword onClick={forgotPassword}>重置密码</ForgotPassword>
           )}
         </div>
       </FieldWrapper>

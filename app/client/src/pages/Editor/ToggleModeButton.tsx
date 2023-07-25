@@ -38,7 +38,7 @@ const StyledButton = styled(Button)<{ active: boolean }>`
   }
 `;
 
-function ToggleModeButton() {
+function ToggleModeButton(props: any) {
   const dispatch = useDispatch();
   const isExploring = useSelector(isExploringSelector);
   const isPreviewMode = useSelector(previewModeSelector);

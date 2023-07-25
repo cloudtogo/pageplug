@@ -9,7 +9,7 @@ export type BaseItemProps = {
 };
 
 export type RenderComponentProps<TItem extends BaseItemProps> = {
-  focusedIndex: number | null | undefined;
+  focusedIndex?: number | null | undefined;
   index: number;
   item: TItem;
   deleteOption: (index: number) => void;
@@ -25,7 +25,7 @@ export type RenderComponentProps<TItem extends BaseItemProps> = {
 export type DroppableComponentProps<TItem extends BaseItemProps> = {
   className?: string;
   fixedHeight?: number | boolean;
-  focusedIndex: number | null | undefined;
+  focusedIndex?: number | null | undefined;
   items: TItem[];
   itemHeight: number;
   renderComponent: (props: RenderComponentProps<TItem>) => JSX.Element;

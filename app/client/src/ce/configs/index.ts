@@ -132,7 +132,6 @@ const getConfig = (fromENV: string, fromWindow = "") => {
   return { enabled: false, value: "" };
 };
 
-// TODO(Abhinav): See if this is called so many times, that we may need some form of memoization.
 export const getAppsmithConfigs = (): AppsmithUIConfigs => {
   const APPSMITH_FEATURE_CONFIGS =
     // This code might be called both from the main thread and a web worker
@@ -282,5 +281,7 @@ export const getAppsmithConfigs = (): AppsmithUIConfigs => {
       ENV_CONFIG.customerPortalUrl ||
       APPSMITH_FEATURE_CONFIGS?.customerPortalUrl ||
       "",
+    inCloudOS: ENV_CONFIG.inCloudOS,
+    workEnv: ENV_CONFIG.workEnv,
   };
 };
