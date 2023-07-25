@@ -53,9 +53,8 @@ export const useCanvasDragToScroll = (
       };
       const checkIfNeedsScroll = (e: any) => {
         if (isDragging && isCurrentDraggedCanvas) {
-          const scrollParent: Element | null = getNearestParentCanvas(
-            canvasElm,
-          );
+          const scrollParent: Element | null =
+            getNearestParentCanvas(canvasElm);
           if (canvasElm && scrollParent) {
             const scrollObj = getScrollByPixels(
               {
