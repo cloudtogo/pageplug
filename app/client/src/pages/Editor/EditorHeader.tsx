@@ -102,6 +102,7 @@ import { isMultiPaneActive } from "selectors/multiPaneSelectors";
 import moment from "moment/moment";
 import { getIsAppSettingsPaneWithNavigationTabOpen } from "selectors/appSettingsPaneSelectors";
 import { importSvg } from "design-system-old";
+import React from "react";
 
 const MenuIcon = importSvg(() => import("assets/icons/header/hamburger.svg"));
 const UnpinIcon = importSvg(
@@ -324,11 +325,11 @@ export function EditorHeader(props: EditorHeaderProps) {
   const {
     applicationId,
     currentApplication,
+    inCloudOS,
     isPublishing,
     pageId,
     publishApplication,
     workspaceId,
-    inCloudOS,
   } = props;
   const dispatch = useDispatch();
   const isSnipingMode = useSelector(snipingModeSelector);

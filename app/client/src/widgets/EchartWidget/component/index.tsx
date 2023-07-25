@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
+//@ts-nocheck
 import React, { useEffect, useRef, useState } from "react";
 import * as _ from "lodash";
 import macarons from "theme/echart/macarons.json";

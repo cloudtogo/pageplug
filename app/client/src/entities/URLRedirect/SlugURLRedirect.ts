@@ -29,7 +29,7 @@ export class SlugURLRedirect extends URLRedirect {
       newURL =
         getUpdatedRoute(pathname, {
           applicationSlug,
-          pageSlug,
+          pageSlug: pageSlug || "",
           pageId,
           customSlug,
         }) +

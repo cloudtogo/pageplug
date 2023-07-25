@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import type { Log } from "entities/AppsmithConsole";
@@ -9,12 +9,27 @@ import {
   getCurrentApplicationId,
   getCurrentPageId,
 } from "selectors/editorSelectors";
-import { getAction, getPlugins } from "selectors/entitiesSelector";
-import { onApiEditor, onCanvas, onQueryEditor } from "../helpers";
+import { getFilteredErrors } from "selectors/debuggerSelectors";
+
+import {
+  getAction,
+  getPlugins,
+  getDatasource,
+} from "selectors/entitiesSelector";
+import {
+  onApiEditor,
+  onCanvas,
+  onQueryEditor,
+  doesEntityHaveErrors,
+} from "../helpers";
 import { getLastSelectedWidget } from "selectors/ui";
 import { getConfigTree, getDataTree } from "selectors/dataTreeSelectors";
 import { useNavigateToWidget } from "pages/Editor/Explorer/Widgets/useNavigateToWidget";
 import { getActionConfig } from "pages/Editor/Explorer/Actions/helpers";
+// import { isStoredDatasource } from "entities/Action";
+// import { keyBy } from "lodash";
+// import equal from "fast-deep-equal/es6";
+// import { getPluginIcon, jsIcon } from "pages/Editor/Explorer/ExplorerIcons";
 import {
   isAction,
   isJSAction,
@@ -24,6 +39,7 @@ import history, { NavigationMethod } from "utils/history";
 import { jsCollectionIdURL } from "RouteBuilder";
 import store from "store";
 import { PluginType } from "entities/Action";
+// import WidgetIcon from "pages/Editor/Explorer/Widgets/WidgetIcon";
 
 export const useFilteredLogs = (query: string, filter?: any) => {
   let logs = useSelector((state: AppState) => state.ui.debugger.logs);
@@ -182,52 +198,4 @@ export const useEntityLink = () => {
   return {
     navigateToEntity,
   };
-};
-
-export const useGetEntityInfo = (name: string) => {
-  const entity = useSelector((state: AppState) => state.evaluations.tree[name]);
-  const debuggerErrors: Record<string, Message> =
-    useSelector(getDebuggerErrors);
-  const action = useSelector((state: AppState) =>
-    isAction(entity) ? getAction(state, entity.actionId) : undefined,
-  );
-
-  const plugins = useSelector((state: AppState) => {
-    return state.entities.plugins.list;
-  }, isEqual);
-  const pluginGroups = useMemo(() => keyBy(plugins, "id"), [plugins]);
-  const icon = action && getPluginIcon(pluginGroups[action.pluginId]);
-  const datasource = useSelector((state: AppState) =>
-    action && isStoredDatasource(action.datasource)
-      ? getDatasource(state, action.datasource.id)
-      : undefined,
-  );
-
-  const getEntityInfo = useCallback(() => {
-    if (isWidget(entity)) {
-      const icon = getWidgetIcon(entity.type);
-      const hasError = doesEntityHaveErrors(entity.widgetId, debuggerErrors);
-
-      return {
-        name,
-        icon,
-        hasError,
-        type: ENTITY_TYPE.WIDGET,
-        entityType: entity.type,
-      };
-    } else if (isAction(entity)) {
-      const hasError = doesEntityHaveErrors(entity.actionId, debuggerErrors);
-
-      return {
-        name,
-        icon,
-        datasourceName: datasource?.name ?? "",
-        hasError,
-        type: ENTITY_TYPE.ACTION,
-        entityType: action?.pluginId ? pluginGroups[action.pluginId].name : "",
-      };
-    }
-  }, [name]);
-
-  return getEntityInfo;
 };

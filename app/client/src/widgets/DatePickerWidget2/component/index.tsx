@@ -235,38 +235,23 @@ class DatePickerComponent extends React.Component<
     const shortcutsConfig = [
       { date: now.toDate(), label: "今天" },
       {
-        date: now
-          .clone()
-          .subtract(1, "d")
-          .toDate(),
+        date: now.clone().subtract(1, "d").toDate(),
         label: "昨天",
       },
       {
-        date: now
-          .clone()
-          .subtract(1, "w")
-          .toDate(),
+        date: now.clone().subtract(1, "w").toDate(),
         label: "一周前",
       },
       {
-        date: now
-          .clone()
-          .subtract(1, "M")
-          .toDate(),
+        date: now.clone().subtract(1, "M").toDate(),
         label: "一个月前",
       },
       {
-        date: now
-          .clone()
-          .subtract(3, "M")
-          .toDate(),
+        date: now.clone().subtract(3, "M").toDate(),
         label: "三个月前",
       },
       {
-        date: now
-          .clone()
-          .subtract(1, "y")
-          .toDate(),
+        date: now.clone().subtract(1, "y").toDate(),
         label: "一年前",
       },
     ];
@@ -402,6 +387,7 @@ class DatePickerComponent extends React.Component<
           >
             <DateInput
               className={this.props.isLoading ? "bp3-skeleton" : ""}
+              clearButtonText="清空"
               closeOnSelection={this.props.closeOnSelection}
               dayPickerProps={{
                 firstDayOfWeek: this.props.firstDayOfWeek || 1,
@@ -416,8 +402,6 @@ class DatePickerComponent extends React.Component<
               }}
               locale="zh_CN"
               localeUtils={MomentLocaleUtils}
-              clearButtonText="清空"
-              todayButtonText="今天"
               maxDate={maxDate}
               minDate={minDate}
               onChange={this.onDateSelected}

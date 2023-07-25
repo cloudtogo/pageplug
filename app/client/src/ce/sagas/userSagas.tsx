@@ -26,6 +26,7 @@ import {
   getResponseErrorMessage,
   callAPI,
 } from "sagas/ErrorSagas";
+import _get from "lodash/get";
 import {
   logoutUserSuccess,
   logoutUserError,
@@ -145,10 +146,10 @@ export function* getCurrentUserSaga() {
     if (isValidResponse) {
       if (
         inCloudOS &&
-        !response.data.cloudOSLogged &&
+        !_get(response.data, "cloudOSLogged") &&
         matchBuilderPath(window.location.pathname)
       ) {
-        window.location.href = window.CLOUDOS_LOGIN_URL;
+        window.location.href = _get(window, "CLOUDOS_LOGIN_URL", "");
         return;
       }
       yield put({

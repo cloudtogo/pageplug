@@ -67,7 +67,7 @@ export function validateAndParseWidgetProperty({
     evaluatedValue = isUndefined(transformed) ? evalPropertyValue : transformed;
 
     const evalErrors: EvaluationError[] =
-      messages?.map((message) => {
+      messages?.map((message: any) => {
         return {
           raw: unEvalPropertyValue,
           errorMessage: message || "",
@@ -160,7 +160,7 @@ export function getValidatedTree(
         );
         if (!isValid) {
           const evalErrors: EvaluationError[] =
-            messages?.map((message) => ({
+            messages?.map((message: any) => ({
               errorType: PropertyEvaluationErrorType.VALIDATION,
               errorMessage: message,
               severity: Severity.ERROR,

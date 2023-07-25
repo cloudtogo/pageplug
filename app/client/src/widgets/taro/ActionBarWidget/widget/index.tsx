@@ -1,6 +1,7 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
+import type { WidgetType } from "constants/WidgetConstants";
 import ActionBar from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
@@ -186,27 +187,27 @@ class MActionBarWidget extends BaseWidget<MActionBarWidgetProps, WidgetState> {
     return (
       <ActionBar>
         {actions.map((action, index) => {
-          const { label, type, icon, color, badge, buttonType, onClick } =
+          const { badge, buttonType, color, icon, label, onClick, type } =
             action || {};
           if (type === "icon") {
             return (
               <ActionBar.Icon
-                key={index}
-                icon={icon}
-                color={color}
                 badge={{ content: badge }}
-                text={label}
+                color={color}
+                icon={icon}
+                key={index}
                 onClick={this.onClickAction(onClick || "")}
+                text={label}
               />
             );
           }
           return (
             <ActionBar.Button
-              key={index}
-              type={buttonType}
               color={color}
-              text={label}
+              key={index}
               onClick={this.onClickAction(onClick || "")}
+              text={label}
+              type={buttonType}
             />
           );
         })}

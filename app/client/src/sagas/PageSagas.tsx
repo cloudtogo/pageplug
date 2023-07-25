@@ -176,7 +176,7 @@ export function* fetchPageListSaga(
         isDefault: page.isDefault,
         isHidden: !!page.isHidden,
         icon: page.icon,
-        slug: page.slug,
+        slug: page.slug || "",
         userPermissions: page.userPermissions
           ? page.userPermissions
           : pagePermissionsMap[page.id],
@@ -1330,7 +1330,7 @@ export function* fetchCloudOSApiSaga(
     PerformanceTransactionName.SYNC_CLOUDOS_API,
   );
   try {
-    const { pageId, depList, projectId, orgId } = fetchApiAction.payload;
+    const { depList, orgId, pageId, projectId } = fetchApiAction.payload;
     const response: FetchPageListResponse = yield call(PageApi.syncCloudOSApi, {
       dep_list: depList,
       project_id: projectId,

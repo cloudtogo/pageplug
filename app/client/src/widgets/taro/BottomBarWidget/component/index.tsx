@@ -1,8 +1,9 @@
-import React, { ReactNode } from "react";
+import type { ReactNode } from "react";
+import React from "react";
 import styled from "styled-components";
 import { getCanvasClassName } from "utils/generators";
 import { Popup } from "@taroify/core";
-import { PopupProps } from "@taroify/core/popup/popup";
+import type { PopupProps } from "@taroify/core/popup/popup";
 
 const Container = styled(Popup)<
   {
@@ -35,13 +36,13 @@ export function BottomBarComponent(props: BottomBarComponentProps) {
   return (
     <Container
       defaultOpen
-      placement="bottom"
-      height={props.height}
       duration={0}
+      height={props.height}
+      placement="bottom"
     >
       <Popup.Backdrop
-        open={false}
         closeable={false}
+        open={false}
         style={{ left: "unset", right: "unset", width: "450px" }}
       />
       <Content className={`${getCanvasClassName()} ${props.className}`}>

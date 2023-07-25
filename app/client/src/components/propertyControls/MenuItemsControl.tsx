@@ -31,7 +31,7 @@ const AddMenuItemButton = styled(StyledPropertyPaneButton)`
 `;
 
 type State = {
-  focusedIndex: number | null;
+  focusedIndex?: number | null;
 };
 
 class MenuItemsControl extends BaseControl<ControlProps, State> {

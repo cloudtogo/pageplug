@@ -90,8 +90,8 @@ export interface EntityNameProps {
   entityId: string;
   searchKeyword?: string;
   className?: string;
-  enterEditMode: () => void;
-  exitEditMode: () => void;
+  enterEditMode?: () => void;
+  exitEditMode?: () => void;
   nameTransformFn?: (input: string, limit?: number) => string;
   isBeta?: boolean;
 }

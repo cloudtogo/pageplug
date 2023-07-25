@@ -75,7 +75,7 @@ const getOriginalColumn = (
 };
 
 type State = {
-  focusedIndex: number | null;
+  focusedIndex?: number | null;
   duplicateColumnIds: string[];
 };
 

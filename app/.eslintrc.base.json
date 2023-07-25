@@ -26,11 +26,13 @@
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-use-before-define": "off",
       "@typescript-eslint/no-var-requires": "off",
+      "@typescript-eslint/no-restricted-imports": "warn",
       "import/no-webpack-loader-syntax": "off",
       "no-undef": "off",
       "no-unused-vars": "off",
       "react/prop-types": "off",
-      "react/display-name": "off",
+      "react/display-name": "warn",
+      "no-restricted-syntax": "warn",
       "@typescript-eslint/explicit-module-boundary-types": "off",
       "cypress/no-unnecessary-waiting": "off",
       "cypress/no-assigning-return-values": "off",
@@ -40,6 +42,7 @@
       "react/jsx-boolean-value": "error",
       "react/self-closing-comp": "error",
       "react/jsx-sort-props": 0,
+      "react/jsx-no-undef": "warn",
       "react/jsx-fragments": "error",
       "react/jsx-no-useless-fragment": "error",
       "react/no-unknown-property": 0,
@@ -52,7 +55,8 @@
       "sort-destructure-keys/sort-destructure-keys": 0,
       "no-console": "warn",
       "no-debugger": "warn",
-      "@typescript-eslint/no-empty-function": "off"
+      "@typescript-eslint/no-empty-function": "off",
+      "prefer-const": "warn"
     },
     "settings": {
       "import/resolver": {

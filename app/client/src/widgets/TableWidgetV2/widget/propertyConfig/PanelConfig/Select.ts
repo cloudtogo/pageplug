@@ -40,9 +40,8 @@ export default {
     {
       propertyName: "allowSameOptionsInNewRow",
       defaultValue: true,
-      helpText:
-        "Toggle to display same choices for new row and editing existing row in column",
-      label: "Same options in new row",
+      helpText: "切换以显示新行和编辑列中现有行的相同选项",
+      label: "新增行使用相同可选项",
       controlType: "SWITCH",
       isBindProperty: true,
       isJSConvertible: true,
@@ -55,9 +54,8 @@ export default {
     },
     {
       propertyName: "newRowSelectOptions",
-      helpText:
-        "Options exclusively displayed in the column for new row addition",
-      label: "New row options",
+      helpText: "新增一行的方式显示在列中用于添加新行的选项",
+      label: "新增行的可选项",
       controlType: "INPUT_TEXT",
       isJSConvertible: false,
       isBindProperty: true,

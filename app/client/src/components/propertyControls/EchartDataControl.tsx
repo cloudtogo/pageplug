@@ -235,10 +235,10 @@ function DataControlComponent(props: RenderComponentProps) {
     evaluated,
     index,
     item,
-    length,
-    updateOption,
-    noTitle,
     label,
+    length,
+    noTitle,
+    updateOption,
   } = props;
   return (
     <StyledOptionControlWrapper orientation={"VERTICAL"}>
@@ -365,11 +365,11 @@ class EchartDataControl extends BaseControl<ControlProps> {
                   index={key}
                   item={data}
                   key={key}
+                  label={ControlLabel(this.props.propertyName)}
                   length={dataLength}
+                  // panel={this.props?.panel}
                   theme={this.props.theme}
                   updateOption={this.updateOption}
-                  label={ControlLabel(this.props.propertyName)}
-                  panel={this.props.panel}
                 />
               );
             })}
@@ -399,16 +399,16 @@ class EchartDataControl extends BaseControl<ControlProps> {
           };
       return (
         <DataControlComponent
-          noTitle={isDataSet}
           dataTreePath={`${this.props.dataTreePath}.${firstKey}`}
           deleteOption={this.deleteOption}
           evaluated={get(evaluatedValue, `${firstKey}`)}
           index={firstKey}
           item={data}
+          label={ControlLabel(this.props.propertyName)}
           length={1}
+          noTitle={isDataSet}
           theme={this.props.theme}
           updateOption={this.updateOption}
-          label={ControlLabel(this.props.propertyName)}
         />
       );
     }
@@ -420,17 +420,17 @@ class EchartDataControl extends BaseControl<ControlProps> {
             const data = get(chartData, `${key}`);
             return (
               <DataControlComponent
-                noTitle={isDataSet}
                 dataTreePath={`${this.props.dataTreePath}.${key}`}
                 deleteOption={this.deleteOption}
                 evaluated={get(evaluatedValue, `${key}`)}
                 index={key}
                 item={data}
                 key={key}
+                label={ControlLabel(this.props.propertyName)}
                 length={dataLength}
+                noTitle={isDataSet}
                 theme={this.props.theme}
                 updateOption={this.updateOption}
-                label={ControlLabel(this.props.propertyName)}
               />
             );
           })}

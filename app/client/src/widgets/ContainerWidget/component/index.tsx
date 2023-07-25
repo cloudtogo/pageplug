@@ -37,9 +37,7 @@ const StyledContainerComponent = styled.div<
   &:hover {
     background-color: ${(props) => {
       return props.onClickCapture && props.backgroundColor
-        ? tinycolor(props.backgroundColor)
-            .darken(5)
-            .toString()
+        ? tinycolor(props.backgroundColor).darken(5).toString()
         : props.backgroundImage
         ? `url('${props.backgroundImage}') no-repeat center top / 100% 100%`
         : props.backgroundColor;

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "@taroify/icons";
 import { Form, AreaPicker, Input } from "@taroify/core";
-import { FormItemInstance } from "@taroify/core/form";
+import type { FormItemInstance } from "@taroify/core/form";
 import PortalPopup from "./PortalPopup";
 import { areaList } from "@vant/area-data";
 
@@ -21,7 +21,7 @@ const hiddenStyle = {
   padding: 0,
 };
 
-function PickerField({ label, name, required, placeholder }: FieldProps) {
+function PickerField({ label, name, placeholder, required }: FieldProps) {
   const itemRef = useRef<FormItemInstance>();
   const provinceNameRef = useRef<FormItemInstance>();
   const cityNameRef = useRef<FormItemInstance>();
@@ -41,9 +41,9 @@ function PickerField({ label, name, required, placeholder }: FieldProps) {
   return (
     <>
       <Form.Item
-        ref={itemRef}
-        name={name}
         clickable
+        name={name}
+        ref={itemRef}
         rightIcon={<ArrowRight />}
         rules={[{ required, message: `请选择${label}` }]}
       >
@@ -63,9 +63,9 @@ function PickerField({ label, name, required, placeholder }: FieldProps) {
             }
             return (
               <Input
-                readonly
-                placeholder={placeholder || `请选择${label}`}
                 onClick={() => setOpen(true)}
+                placeholder={placeholder || `请选择${label}`}
+                readonly
                 value={currentLabel}
               />
             );
@@ -83,13 +83,12 @@ function PickerField({ label, name, required, placeholder }: FieldProps) {
       </Form.Item>
       <PortalPopup
         mountOnEnter={false}
-        open={open}
-        rounded
-        placement="bottom"
         onClose={setOpen}
+        open={open}
+        placement="bottom"
+        rounded
       >
         <AreaPicker
-          value={areaValue}
           onCancel={() => setOpen(false)}
           onConfirm={(newValue) => {
             itemRef.current?.setValue(newValue[2]);
@@ -98,6 +97,7 @@ function PickerField({ label, name, required, placeholder }: FieldProps) {
             countyNameRef.current?.setValue(countyList[newValue[2]]);
             setOpen(false);
           }}
+          value={areaValue}
         >
           <AreaPicker.Toolbar>
             <AreaPicker.Button>取消</AreaPicker.Button>

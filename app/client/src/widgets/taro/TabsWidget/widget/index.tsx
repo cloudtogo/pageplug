@@ -1,12 +1,11 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
+import type { WidgetType } from "constants/WidgetConstants";
 import NavTabComponent from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import {
-  ValidationResponse,
-  ValidationTypes,
-} from "constants/WidgetValidation";
+import type { ValidationResponse } from "constants/WidgetValidation";
+import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import _ from "lodash";
@@ -50,7 +49,7 @@ export function selectedTabValidation(
         return {
           isValid: false,
           parsed: 0,
-          messages: [`索引值必须是非负整数`],
+          messages: ["索引值必须是非负整数"],
         };
       }
     }
@@ -206,7 +205,7 @@ class MTabsWidget extends BaseWidget<MTabsWidgetProps, WidgetState> {
   }
 
   syncMetaProperty = (props: any) => {
-    const { list, defaultNum, safeDefault } = props;
+    const { defaultNum, list, safeDefault } = props;
     let defaultIndex = defaultNum;
     if (!safeDefault) {
       defaultIndex = list.length ? 0 : undefined;
@@ -215,7 +214,7 @@ class MTabsWidget extends BaseWidget<MTabsWidgetProps, WidgetState> {
   };
 
   cleanProps = (props?: MTabsWidgetProps) => {
-    const { list, defaultNum, ...others } = props || this.props;
+    const { defaultNum, list, ...others } = props || this.props;
     const tabItems = _.isArray(list) ? list : [];
     const safeDefault =
       _.isNumber(defaultNum) &&
@@ -232,15 +231,15 @@ class MTabsWidget extends BaseWidget<MTabsWidgetProps, WidgetState> {
 
   getPageView() {
     const {
-      topRow,
       bottomRow,
+      isLoading,
       leftColumn,
-      rightColumn,
       list,
       nameKey,
+      rightColumn,
       selectedTabIndex,
-      isLoading,
       showLoading,
+      topRow,
     } = this.cleanProps();
     const layout = bottomRow - topRow > rightColumn - leftColumn ? "v" : "h";
     if (isLoading && showLoading) {
@@ -254,11 +253,11 @@ class MTabsWidget extends BaseWidget<MTabsWidgetProps, WidgetState> {
     }
     return (
       <NavTabComponent
+        layout={layout}
         list={list}
         nameKey={nameKey}
-        selectedIndex={selectedTabIndex}
-        layout={layout}
         onTabSelected={this.onTabChange}
+        selectedIndex={selectedTabIndex}
       />
     );
   }

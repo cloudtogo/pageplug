@@ -178,6 +178,7 @@ class Editor extends Component<Props> {
         <CenteredWrapper
           style={{ height: `calc(100vh - ${theme.smallHeaderHeight})` }}
         >
+          {/* load3 */}
           <Spinner />
         </CenteredWrapper>
       );

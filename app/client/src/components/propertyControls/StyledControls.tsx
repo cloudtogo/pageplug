@@ -52,7 +52,7 @@ export const ControlPropertyLabelContainer = styled.div`
   label {
     color: ${Colors.GRAY_700};
     margin-bottom: ${(props) => props.theme.spaces[1]}px;
-    font-size: ${(props) => props.theme.fontSizes[2]}px;
+    font-size: ${(props) => props.theme.fontSizes[3]}px;
   }
   .underline {
     color: ${(props) => props.theme.colors.paneTextUnderline};
@@ -149,9 +149,6 @@ export const StyledMenuItem = styled(MenuItem)`
     color: ${(props) => props.theme.dropdown[Skin.LIGHT].inActiveText};
     padding: 4px 8px;
     margin: 4px 0px;
-    &.bp3-menu-item.bp3-intent-danger {
-      color: ${Colors.MINT_RED};
-    }
     &:hover {
       background: ${(props) => props.theme.dropdown[Skin.LIGHT].hoverBG};
       &&&.bp3-menu-item.bp3-intent-danger:hover {

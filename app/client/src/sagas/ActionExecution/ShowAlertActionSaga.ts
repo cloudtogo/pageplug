@@ -21,10 +21,18 @@ export default function* showAlertSaga(action: TShowAlertDescription) {
     );
   }
 
-  const isMobile = yield select(isMobileLayout);
+  const isMobile: boolean = yield select(isMobileLayout);
   if (isMobile) {
+    let iconStr: any = "none";
+    if (payload.style === "success") {
+      iconStr = "success";
+    }
+    //@ts-ignore
+    if (payload.style === "loading") {
+      iconStr = "loading";
+    }
     Taro.showToast({
-      icon: payload.style,
+      icon: iconStr,
       title: payload.message,
     });
     return;

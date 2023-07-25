@@ -5,7 +5,7 @@ const eslintConfig = {
   rules: {
     // `no-restricted-imports` is disabled, as recommended in https://typescript-eslint.io/rules/no-restricted-imports/.
     // Please use @typescript-eslint/no-restricted-imports below instead.
-    // "no-restricted-imports": "off",
+    "no-restricted-imports": "off",
     "@typescript-eslint/no-restricted-imports": [
       "error",
       {

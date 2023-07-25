@@ -86,7 +86,7 @@ function TabControlComponent(props: RenderComponentProps<DroppableItem>) {
 }
 
 type State = {
-  focusedIndex: number | null;
+  focusedIndex?: number | null;
   duplicateTabIds: string[];
 };
 

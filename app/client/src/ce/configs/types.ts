@@ -1,4 +1,3 @@
-// eslint-disable-next-line prettier/prettier
 import type { LogLevelDesc } from "loglevel";
 
 export type SentryConfig = {

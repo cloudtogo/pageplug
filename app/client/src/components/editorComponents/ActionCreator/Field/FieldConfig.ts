@@ -398,22 +398,11 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     },
     view: ViewTypes.SELECTOR_VIEW,
   },
-  [FieldType.RESET_CHILDREN_FIELD]: {
-    label: () => "重置子组件",
-    options: () => RESET_CHILDREN_OPTIONS,
-    defaultText: "true",
-    getter: (value: any) => {
-      return enumTypeGetter(value, 1);
-    },
-    setter: (option: any, currentValue: string) => {
-      return enumTypeSetter(option.value, currentValue, 1);
-    },
-    view: ViewTypes.SELECTOR_VIEW,
-  },
   [FieldType.WIDGET_NAME_FIELD]: {
-    label: () => "组件",
+    label: () => "Widget",
+    exampleText: "resetWidget('Modal1', true)",
     options: (props: FieldProps) => props.widgetOptionTree,
-    defaultText: "选择组件",
+    defaultText: "Select Widget",
     getter: (value: any) => {
       return enumTypeGetter(value, 0);
     },
@@ -449,19 +438,6 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     },
     setter: (option: any, currentValue: string) => {
       return enumTypeSetter(option.value, currentValue, 0);
-    },
-    view: ViewTypes.SELECTOR_VIEW,
-  },
-  [FieldType.ALERT_TYPE_SELECTOR_FIELD]: {
-    label: () => "提示类型",
-    options: (props: FieldProps) =>
-      props.field.isMobile ? WX_ALERT_STYLE_OPTIONS : ALERT_STYLE_OPTIONS,
-    defaultText: "选择提示类型",
-    getter: (value: any) => {
-      return enumTypeGetter(value, 1, "success");
-    },
-    setter: (option: any, currentValue: string) => {
-      return enumTypeSetter(option.value, currentValue, 1);
     },
     view: ViewTypes.SELECTOR_VIEW,
   },

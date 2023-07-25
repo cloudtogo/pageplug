@@ -217,29 +217,43 @@ function AppViewer(props: Props) {
           description={pageDescription}
           name={currentApplicationDetails?.name}
         />
-        <AppViewerBodyContainer
-          backgroundColor={selectedTheme.properties.colors.backgroundColor}
-        >
-          <AppViewerBody
-            className={CANVAS_SELECTOR}
-            hasPages={pages.length > 1}
-            headerHeight={headerHeight}
-            ref={focusRef}
-            showGuidedTourMessage={showGuidedTourMessage}
-          >
-            {isInitialized && registered && <AppViewerPageContainer />}
-          </AppViewerBody>
-          {!hideWatermark && (
-            <a
-              className="fixed hidden right-8 bottom-4 z-3 hover:no-underline md:flex"
-              href="https://appsmith.com"
-              rel="noreferrer"
-              target="_blank"
-            >
-              <BrandingBadge />
-            </a>
-          )}
-        </AppViewerBodyContainer>
+        <AppViewerLayout>
+          <StableContainer>
+            <ContainerForBottom isMobile={isMobile}>
+              <AppViewerBodyContainer
+                backgroundColor={
+                  isMobile
+                    ? "radial-gradient(#2cbba633, #ffec8f36)"
+                    : selectedTheme.properties.colors.backgroundColor
+                }
+              >
+                <AppViewerBody
+                  className={CANVAS_SELECTOR}
+                  showTabBar={showTabBar}
+                  isMobile={isMobile || isEmbed}
+                  hasPages={pages.length > 1}
+                  headerHeight={headerHeight}
+                  ref={focusRef}
+                  showGuidedTourMessage={showGuidedTourMessage}
+                >
+                  {isInitialized && registered && <AppViewerPageContainer />}
+                </AppViewerBody>
+                {!hideWatermark && (
+                  <a
+                    className="fixed hidden right-8 bottom-4 z-3 hover:no-underline md:flex"
+                    href="https://appsmith.com"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    <BrandingBadge />
+                  </a>
+                )}
+              </AppViewerBodyContainer>
+            </ContainerForBottom>
+            <TabBar />
+            <PreviewQRCode />
+          </StableContainer>
+        </AppViewerLayout>
       </EditorContextProvider>
     </ThemeProvider>
   );

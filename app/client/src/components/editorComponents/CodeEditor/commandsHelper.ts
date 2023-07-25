@@ -1,5 +1,8 @@
 import CodeMirror from "codemirror";
-import type { HintHelper } from "components/editorComponents/CodeEditor/EditorConfig";
+import type {
+  FieldEntityInformation,
+  HintHelper,
+} from "components/editorComponents/CodeEditor/EditorConfig";
 import type { CommandsCompletion } from "utils/autocomplete/CodemirrorTernService";
 import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
 import { generateQuickCommands } from "./generateQuickCommands";
@@ -29,7 +32,7 @@ export const commandsHelper: HintHelper = (editor, data: DataTree) => {
   return {
     showHint: (
       editor: CodeMirror.Editor,
-      { entityId, entityType, expectedType, propertyPath },
+      entityInfo: FieldEntityInformation,
       {
         datasources,
         enableAIAssistance,
@@ -49,6 +52,7 @@ export const commandsHelper: HintHelper = (editor, data: DataTree) => {
         enableAIAssistance: boolean;
       },
     ): boolean => {
+      const { entityType } = entityInfo;
       const currentEntityType =
         entityType || ENTITY_TYPE.ACTION || ENTITY_TYPE.JSACTION;
       entitiesForSuggestions = entitiesForSuggestions.filter((entity: any) => {
@@ -74,9 +78,7 @@ export const commandsHelper: HintHelper = (editor, data: DataTree) => {
             featureFlags,
             enableAIAssistance,
           },
-          expectedType || "string",
-          entityId,
-          propertyPath,
+          entityInfo,
         );
         let currentSelection: CommandsCompletion = {
           origin: "",

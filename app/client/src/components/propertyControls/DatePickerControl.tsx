@@ -112,13 +112,13 @@ class DatePickerControl extends BaseControl<
           onChange={this.onDateSelected}
           parseDate={this.parseDate}
           placeholder="YYYY-MM-DD HH:mm"
-          locale="zh_CN"
-          localeUtils={MomentLocaleUtils}
-          clearButtonText="清空"
-          todayButtonText="今天"
-          showActionsBar
-          tabIndex={-1}
-          timePrecision={TimePrecision.MINUTE}
+          // locale="zh_CN"
+          // localeUtils={MomentLocaleUtils}
+          // clearButtonText="清空"
+          // todayButtonText="今天"
+          // showActionsBar
+          // tabIndex={-1}
+          // timePrecision={TimePrecision.MINUTE}
           value={value}
         />
       </DatePickerControlWrapper>

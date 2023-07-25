@@ -12,9 +12,9 @@ import type {
 } from "workers/Evaluation/fns/geolocationFns";
 import _find from "lodash/find";
 import { getEchartWidget } from "selectors/widgetSelectors";
-import { FlattenedWidgetProps } from "reducers/entityReducers/canvasWidgetsReducer";
+import type { FlattenedWidgetProps } from "reducers/entityReducers/canvasWidgetsReducer";
 import { ActionValidationError } from "sagas/ActionExecution/errorUtils";
-import { EchartActionDescription } from "@appsmith/entities/DataTree/actionTriggers";
+import type { EchartActionDescription } from "@appsmith/entities/DataTree/actionTriggers";
 import { getType, Types } from "utils/TypeHelpers";
 
 class GeoLocationError extends Error {
@@ -149,7 +149,7 @@ export function* getEchartSaga(
   eventType: EventType,
   triggerMeta: TriggerMeta,
 ) {
-  const { widgetName, funcName, options } = actionPayload;
+  const { funcName, options, widgetName } = actionPayload;
   const echartWidgets: {
     [widgetId: string]: FlattenedWidgetProps;
   } = yield select(getEchartWidget);

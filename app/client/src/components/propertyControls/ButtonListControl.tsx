@@ -32,7 +32,7 @@ const AddNewButton = styled(StyledPropertyPaneButton)`
 `;
 
 type State = {
-  focusedIndex: number | null;
+  focusedIndex?: number | null;
 };
 
 class ButtonListControl extends BaseControl<ControlProps, State> {

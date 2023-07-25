@@ -10,7 +10,7 @@ import type {
 } from "@appsmith/constants/ReduxActionConstants";
 import Fuse from "fuse.js";
 import type { Workspaces } from "@appsmith/constants/workspaceConstants";
-import type { GitApplicationMetadata } from "api/ApplicationApi";
+import type { GitApplicationMetadata } from "@appsmith/api/ApplicationApi";
 import { hasCreateNewAppPermission } from "@appsmith/utils/permissionHelpers";
 
 const fuzzySearchOptions = {

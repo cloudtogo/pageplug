@@ -74,11 +74,11 @@ export type PreviewQRCodeProps = {
 
 const PreviewQRCode = ({
   appId,
+  fetchWxaCode,
   imageData,
   isLoading,
-  loadFailed,
   isMobile,
-  fetchWxaCode,
+  loadFailed,
 }: PreviewQRCodeProps) => {
   if (!isMobile) {
     return null;

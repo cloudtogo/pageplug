@@ -29,7 +29,6 @@ import PerformanceTracker, {
 } from "utils/PerformanceTracker";
 import OnboardingTasks from "../FirstTimeUserOnboarding/Tasks";
 import CrudInfoModal from "../GeneratePage/components/CrudInfoModal";
-import PageTabs from "./PageTabs";
 import TabBar from "components/designSystems/taro/TabBar";
 import EditorContextProvider from "components/editorComponents/EditorContextProvider";
 import Guide from "../GuidedTour/Guide";

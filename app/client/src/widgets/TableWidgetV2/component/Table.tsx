@@ -31,7 +31,7 @@ import {
 import { Colors } from "constants/Colors";
 import type { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import type { EditableCell, TableVariant } from "../constants";
-import SimpleBar from "simplebar-react";
+import type SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 import { createGlobalStyle } from "styled-components";
 import { Classes as PopOver2Classes } from "@blueprintjs/popover2";
@@ -159,7 +159,6 @@ export type HeaderComponentProps = {
 
 const emptyArr: any = [];
 export function Table(props: TableProps) {
-  console.log("----用了table");
   const isResizingColumn = React.useRef(false);
   const handleResizeColumn = (columnWidths: Record<string, number>) => {
     const columnWidthMap = {

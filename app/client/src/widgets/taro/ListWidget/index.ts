@@ -25,7 +25,7 @@ export const CONFIG = {
     contentType: "I_N_D",
     controlType: "BUTTON",
     width: "100px",
-    height: "80px",
+    height: 80,
     inset: false,
     titleColor: "#646566",
     descriptionColor: "#999",

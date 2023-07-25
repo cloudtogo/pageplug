@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { memo, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import { GridDefaults } from "constants/WidgetConstants";

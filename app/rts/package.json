@@ -22,10 +22,6 @@
   "scripts": {
     "test:unit": "export APPSMITH_API_BASE_URL=http && $(npm bin)/jest -b --colors --no-cache --silent --coverage --collectCoverage=true --coverageDirectory='./' --coverageReporters='json-summary'",
     "test:jest": "export APPSMITH_API_BASE_URL=http && $(npm bin)/jest --watch ",
-    "preinstall-win": "set CURRENT_SCOPE=rts&& node ../shared/build-shared-dep.js",
-    "postinstall-win": "set CURRENT_SCOPE=rts&& node ../shared/install-dependencies.js",
-    "preinstall": "CURRENT_SCOPE=rts node ../shared/build-shared-dep.js",
-    "postinstall": "CURRENT_SCOPE=rts node ../shared/install-dependencies.js",
     "build": "./build.sh",
     "start": "./start-server.sh"
   },

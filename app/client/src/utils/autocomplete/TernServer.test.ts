@@ -9,6 +9,7 @@ import { AutocompleteDataType } from "./AutocompleteDataType";
 import { MockCodemirrorEditor } from "../../../test/__mocks__/CodeMirrorEditorMock";
 import { ENTITY_TYPE } from "entities/DataTree/dataTreeFactory";
 import _ from "lodash";
+import { AutocompleteSorter, ScoredCompletion } from "./AutocompleteSortRules";
 
 describe("Tern server", () => {
   it("Check whether the correct value is being sent to tern", () => {

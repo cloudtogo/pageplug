@@ -61,11 +61,8 @@ import {
   watchGeoLocation,
 } from "./geolocationFns";
 import { isAsyncGuard } from "./utils/fnGuard";
-import {
-  echartCallFunc,
-  TCallFuncDescription,
-  TCallFuncActionType,
-} from "./echartFns";
+import type { TCallFuncDescription, TCallFuncActionType } from "./echartFns";
+import { echartCallFunc } from "./echartFns";
 
 // cloudHosting -> to use in EE
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

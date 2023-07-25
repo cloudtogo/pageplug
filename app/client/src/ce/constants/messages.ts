@@ -139,6 +139,10 @@ export const INVITE_USERS_VALIDATION_EMAILS_EMPTY = () =>
   `请输入小伙伴们的邮箱`;
 export const USERS_HAVE_ACCESS_TO_ALL_APPS = () =>
   "Users will have access to all applications in this workspace";
+export const USERS_HAVE_ACCESS_TO_ONLY_THIS_APP = () =>
+  "Users will only have access to this application";
+export const NO_USERS_INVITED = () => "You haven't invited any users yet";
+export const BUSINESS_EDITION_TEXT = () => "business edition";
 export const CREATE_PASSWORD_RESET_SUCCESS = () => `密码重置成功`;
 export const CREATE_PASSWORD_RESET_SUCCESS_LOGIN_LINK = () => `登录`;
 
@@ -515,8 +519,20 @@ export const SKIP_TO_APPLICATION_TOOLTIP_DESCRIPTION = () =>
 export const SKIP_TO_APPLICATION = () => "跳过设置";
 export const SELECT_A_METHOD_TO_ADD_CREDENTIALS = () => "选择一种鉴权方式";
 export const DELETE_CONFIRMATION_MODAL_TITLE = () => `确认`;
-export const DELETE_CONFIRMATION_MODAL_SUBTITLE = (name?: string | null) =>
-  `你确实想从当前团队中删除 ${name} 吗？`;
+// export const DELETE_CONFIRMATION_MODAL_SUBTITLE = (name?: string | null) =>
+//   `你确实想从当前团队中删除 ${name} 吗？`;
+export const DELETE_CONFIRMATION_MODAL_SUBTITLE = (
+  name?: string | null,
+  entityType?: string,
+) =>
+  `You want to remove ${name} from this ${
+    entityType ===
+    `你确实想从当前${
+      entityType === "Application" ? "application" : "workspace"
+    }中删除 ${name} 吗？`
+      ? "application"
+      : "workspace"
+  }`;
 export const PARSING_ERROR = () => "语法错误：无法解析代码，请查看错误日志";
 export const PARSING_WARNING = () => "格式错误：在使用函数之前请先解决格式问题";
 export const JS_FUNCTION_CREATE_SUCCESS = () => "JS 函数创建成功";
@@ -1403,17 +1419,17 @@ export const IN_APP_EMBED_SETTING = {
 };
 
 export const APP_NAVIGATION_SETTING = {
-  sectionHeader: () => "Navigation",
-  sectionHeaderDesc: () => "Customize the navigation bar",
-  showNavbarLabel: () => "Show Navbar",
-  orientationLabel: () => "Orientation",
-  navStyleLabel: () => "Variant",
-  positionLabel: () => "Position",
+  sectionHeader: () => "导航",
+  sectionHeaderDesc: () => "自定义导航栏",
+  showNavbarLabel: () => "显示导航条",
+  orientationLabel: () => "方向标签",
+  navStyleLabel: () => "标签变量",
+  positionLabel: () => "标签位置",
   itemStyleLabel: () => "Item Style",
-  colorStyleLabel: () => "Background color",
+  colorStyleLabel: () => "背景颜色",
   logoLabel: () => "Logo",
-  logoConfigurationLabel: () => "Logo Configuration",
-  showSignInLabel: () => "Show Sign In",
+  logoConfigurationLabel: () => "Logo 配置",
+  showSignInLabel: () => "展示登录",
   showSignInTooltip: () =>
     "Toggle to show the sign-in button for users who are not logged in.",
 };

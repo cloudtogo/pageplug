@@ -9,6 +9,7 @@ import type { InjectedFormProps } from "redux-form";
 import { getFormValues, isDirty, reduxForm } from "redux-form";
 import type { RouteComponentProps } from "react-router";
 import { connect } from "react-redux";
+import styled from "styled-components";
 import type { AppState } from "@appsmith/reducers";
 import {
   getDatasource,
@@ -28,6 +29,7 @@ import {
   JSONtoForm,
   PluginImage,
 } from "../DataSourceEditor/JSONtoForm";
+import DatasourceInformation from "./../DataSourceEditor/DatasourceSection";
 import { getConfigInitialValues } from "components/formControls/utils";
 import Connected from "../DataSourceEditor/Connected";
 
@@ -134,6 +136,13 @@ type State = {
   unblock(): void;
   navigation(): void;
 };
+
+const ViewModeWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #d0d7dd;
+  padding: 24px 20px;
+`;
 
 class DatasourceSaaSEditor extends JSONtoForm<Props, State> {
   constructor(props: Props) {
@@ -274,6 +283,7 @@ class DatasourceSaaSEditor extends JSONtoForm<Props, State> {
       datasourceId,
       documentationLink,
       featureFlags,
+      formConfig,
       formData,
       gsheetProjectID,
       gsheetToken,
@@ -444,6 +454,7 @@ class DatasourceSaaSEditor extends JSONtoForm<Props, State> {
             <DatasourceAuth
               datasource={datasource}
               datasourceButtonConfiguration={datasourceButtonConfiguration}
+              datasourceDeleteTrigger={this.datasourceDeleteTrigger}
               formData={formData}
               getSanitizedFormData={_.memoize(this.getSanitizedData)}
               isInvalid={this.validate()}
@@ -451,6 +462,7 @@ class DatasourceSaaSEditor extends JSONtoForm<Props, State> {
               scopeValue={scopeValue}
               shouldDisplayAuthMessage={!isGoogleSheetPlugin}
               shouldRender={!viewMode}
+              triggerSave={this.props.isDatasourceBeingSavedFromPopup}
             />
           )}
         </form>

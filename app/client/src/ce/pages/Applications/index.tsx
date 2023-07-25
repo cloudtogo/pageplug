@@ -678,7 +678,7 @@ export function ApplicationsSection(props: any) {
     });
   };
 
-  const CreateApp = ({ isMobile, orgId, applications }: any) => {
+  const CreateApp = ({ applications, isMobile, orgId }: any) => {
     return (
       <SpreadButton
         className="t--new-button createnew"
@@ -810,15 +810,15 @@ export function ApplicationsSection(props: any) {
                     !isFetchingApplications &&
                     applications.length !== 0 && [
                       <CreateApp
+                        applications={applications}
                         key="pc"
                         orgId={workspace.id}
-                        applications={applications}
                       />,
                       <CreateApp
-                        key="mobile"
-                        orgId={workspace.id}
                         applications={applications}
                         isMobile
+                        key="mobile"
+                        orgId={workspace.id}
                       />,
                     ]}
                   {(currentUser || isFetchingApplications) &&
@@ -990,15 +990,15 @@ export function ApplicationsSection(props: any) {
                       style={{ width: 272 }}
                     >
                       <CreateApp
+                        applications={applications}
                         key="pc"
                         orgId={workspace.id}
-                        applications={applications}
                       />
                       <CreateApp
-                        key="mobile"
-                        orgId={workspace.id}
                         applications={applications}
                         isMobile
+                        key="mobile"
+                        orgId={workspace.id}
                       />
                     </div>
                   )}
