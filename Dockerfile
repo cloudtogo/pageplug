@@ -24,7 +24,7 @@ RUN apt-get update \
   && wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add - \
   && echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list \
   && apt-get update && apt-get install --no-install-recommends --yes temurin-17-jdk \
-  && pip install --no-cache-dir git+https://github.com/coderanger/supervisor-stdout@973ba19967cdaf46d9c1634d1675fc65b9574f6e \
+  && pip install git+https://github.com/coderanger/supervisor-stdout \
   && apt-get remove --yes git python3-pip
 
 # Install MongoDB v5.0.14, Redis, NodeJS - Service Layer, PostgreSQL v13
@@ -32,7 +32,7 @@ RUN curl --silent --show-error --location https://www.mongodb.org/static/pgp/ser
   && echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-5.0.list \
   && curl --silent --show-error --location https://deb.nodesource.com/setup_16.x | bash - \
   && echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list \
-  && curl --silent --show-error --location https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \ 
+  && curl --silent --show-error --location https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
   && apt update \
   && apt-get install --no-install-recommends --yes mongodb-org=5.0.14 nodejs redis build-essential postgresql-13 \
   && apt-get clean \
