@@ -9,6 +9,7 @@ import {
   createDatasourceFromForm,
   createTempDatasourceFromForm,
 } from "actions/datasourceActions";
+import { mapValues } from "lodash";
 import type { AppState } from "@appsmith/reducers";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
@@ -189,6 +190,13 @@ class DatasourceHomeScreen extends React.Component<Props> {
 
   render() {
     const { currentApplication, pluginImages, plugins } = this.props;
+    // console.log(pluginImages);
+    const _pluginImages = mapValues(pluginImages, (o: any) => {
+      if (o.includes("oracle")) {
+        return "/logo/Oracle.svg";
+      }
+      return o;
+    });
 
     return (
       <DatasourceHomePage>
@@ -215,7 +223,7 @@ class DatasourceHomeScreen extends React.Component<Props> {
                       alt="Datasource"
                       className="dataSourceImage"
                       data-testid="database-datasource-image"
-                      src={getAssetUrl(pluginImages[plugin.id])}
+                      src={getAssetUrl(_pluginImages[plugin.id])}
                     />
                   </div>
                   <p className="t--plugin-name textBtn">{plugin.name}</p>

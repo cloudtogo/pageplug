@@ -4,6 +4,7 @@ import AppCrashImage from "assets/images/404-image.png";
 import * as Sentry from "@sentry/react";
 import log from "loglevel";
 import AnalyticsUtil from "utils/AnalyticsUtil";
+import { Colors } from "constants/Colors";
 
 const Wrapper = styled.div`
   display: flex;
@@ -25,7 +26,7 @@ const Wrapper = styled.div`
 `;
 
 const RetryButton = styled.button`
-  background-color: #f3672a;
+  background-color: ${Colors.PRIMARY};
   color: white;
   height: 40px;
   width: 300px;

@@ -1,8 +1,18 @@
 import type { ReactNode } from "react";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
+import { Icon } from "@blueprintjs/core";
+import { IconNames } from "@blueprintjs/icons";
 import styled from "styled-components";
-import { ProLayout, PageContainer } from "@ant-design/pro-layout";
+import type { ProSettings } from "@ant-design/pro-components";
+import {
+  PageContainer,
+  // ProCard,
+  // ProConfigProvider,
+  ProLayout,
+  // ProBreadcrumb,
+} from "@ant-design/pro-components";
+// import { ConfigProvider } from "antd";
 import history from "utils/history";
 import type { RouteComponentProps } from "react-router";
 import { withRouter } from "react-router";
@@ -59,6 +69,13 @@ const makeRouteNode = (pagesMap: any, newTree: any[]) => (node: any) => {
   }
 };
 
+const StyledIcon = styled(Icon)`
+  text-align: center;
+  &.open-collapse {
+    transform: rotate(180deg);
+  }
+`;
+
 type AppViewerLayoutType = {
   children: ReactNode;
 } & RouteComponentProps;
@@ -69,6 +86,7 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
   const currentApp = useSelector(getCurrentApplication);
   const currentPage = useSelector(getCurrentPage);
   const pages = useSelector(getViewModePageList);
+  const [collapsed, setCollapsed] = useState(true);
   const appName = currentApp?.name;
   const viewerLayout = currentApp?.viewerLayout;
   const isHidden = !!currentPage?.isHidden;
@@ -128,14 +146,39 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
     return <div>{children}</div>;
   }
 
+  function CollapseToggle(props: { isOpen: boolean }) {
+    const { isOpen } = props;
+    return (
+      <StyledIcon
+        className={isOpen ? "open-collapse" : ""}
+        icon={IconNames.CHEVRON_LEFT}
+      />
+    );
+  }
+
   return (
     <ColorfulLayout color={initState.color}>
       <ProLayout
         title={appName}
         logo={initState.logoUrl || DEFAULT_VIEWER_LOGO}
         layout="mix"
-        location={location}
-        collapsedButtonRender={false}
+        // collapsedButtonRender={false}
+        // collapsed={collapsed}
+        // onCollapse={setCollapsed}
+        // postMenuData={(menuData) => {
+        //   return [
+        //     {
+        //       icon: collapsed ? (
+        //         <CollapseToggle isOpen={true} />
+        //       ) : (
+        //         <CollapseToggle isOpen={false} />
+        //       ),
+        //       name: collapsed ? "" : "收缩",
+        //       onTitleClick: () => setCollapsed(!collapsed),
+        //     },
+        //     ...(menuData || []),
+        //   ];
+        // }}
         menuItemRender={(item: any, dom: any) => (
           <a
             onClick={() => {
@@ -145,7 +188,6 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
             {dom}
           </a>
         )}
-        iconfontUrl="//at.alicdn.com/t/font_3399269_yx9ykuzs72.js"
         route={{
           routes: initState.treeData,
         }}
@@ -153,6 +195,18 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
           header: {
             colorBgHeader: "var(--layout-header-bg-color)",
             colorHeaderTitle: "#fff",
+            colorTextMenu: "#dfdfdf",
+            colorTextMenuSecondary: "#dfdfdf",
+            colorTextMenuSelected: "#fff",
+            colorBgMenuItemSelected: "#22272b",
+            colorTextRightActionsItem: "#dfdfdf",
+          },
+          sider: {
+            colorMenuBackground: "#fff",
+            colorMenuItemDivider: "#dfdfdf",
+            colorTextMenu: "#595959",
+            colorTextMenuSelected: "rgba(42,122,251,1)",
+            colorBgMenuItemSelected: "rgba(230,243,254,1)",
           },
           // pageContainer: {
           //   paddingInlinePageContainerContent: 0,

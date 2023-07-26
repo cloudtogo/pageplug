@@ -267,16 +267,8 @@ export const getPluginDependencyConfig = (state: AppState) =>
 export const getPluginSettingConfigs = (state: AppState, pluginId: string) =>
   state.entities.plugins.settingConfigs[pluginId];
 
-export const getDBPlugins = createSelector(
-  getPlugins,
-  selectFeatureFlags,
-  (plugins, featureFlags) =>
-    plugins.filter((plugin) =>
-      featureFlags.ORACLE_PLUGIN
-        ? plugin.type === PluginType.DB
-        : plugin.type === PluginType.DB &&
-          plugin.packageName !== PluginPackageName.ORACLE,
-    ),
+export const getDBPlugins = createSelector(getPlugins, (plugins) =>
+  plugins.filter((plugin) => plugin.type === PluginType.DB),
 );
 
 export const getDBAndRemotePlugins = createSelector(getPlugins, (plugins) =>

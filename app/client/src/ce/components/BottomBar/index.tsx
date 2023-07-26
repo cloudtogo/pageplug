@@ -48,7 +48,7 @@ export default function BottomBar(props: { className?: string }) {
           />
         </ManualUpgrades>
         <DebuggerTrigger />
-        <HelpButton />
+        {/* <HelpButton /> */}
         {isMultiPane && <PaneCountSwitcher />}
       </Wrapper>
     </Container>

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import DataCollectionForm from "./DataCollectionForm";
 import DetailsForm from "./DetailsForm";
 import NewsletterForm from "./NewsletterForm";
-import AppsmithLogo from "assets/images/pageplug_logo_mint.svg";
+import AppsmithLogo from "assets/images/pageplug_logo_mint.png";
 import {
   WELCOME_FORM_USECASE_FIELD_NAME,
   WELCOME_FORM_EMAIL_FIELD_NAME,

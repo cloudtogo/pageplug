@@ -1407,12 +1407,10 @@ export const IN_APP_EMBED_SETTING = {
   sectionContentHeader: () => "分享",
   sectionHeaderDesc: () => "共享应用，嵌入属性",
   showNavigationBar: () => "显示菜单导航",
-  upgradeHeading: () =>
-    "Please contact your workspace admin to make the app public before embedding",
-  upgradeHeadingForInviteModal: () =>
-    "Make your app public in share settings to embed",
-  upgradeContent: () => "Private embedding is now available in",
-  appsmithBusinessEdition: () => "Appsmith Business Edition",
+  upgradeHeading: () => "请联系管理员，使用嵌入功能需要先在设置中公开您的应用",
+  upgradeHeadingForInviteModal: () => "使用嵌入功能需要先在设置中公开您的应用",
+  upgradeContent: () => "想将嵌入企业内的系统",
+  appsmithBusinessEdition: () => "升级至企业版使用",
   secondaryHeadingForAppSettings: () => "Make your app public to embed",
   secondaryHeading: () =>
     "Please contact your workspace admin to make the app public before embedding",
@@ -1430,12 +1428,11 @@ export const APP_NAVIGATION_SETTING = {
   logoLabel: () => "Logo",
   logoConfigurationLabel: () => "Logo 配置",
   showSignInLabel: () => "展示登录",
-  showSignInTooltip: () =>
-    "Toggle to show the sign-in button for users who are not logged in.",
+  showSignInTooltip: () => "是否给未登录用户展示登录按钮",
 };
 
-export const LOCK_SIDEBAR_MESSAGE = () => `Lock sidebar open`;
-export const CLOSE_SIDEBAR_MESSAGE = () => `Close sidebar`;
+export const LOCK_SIDEBAR_MESSAGE = () => `固定侧边栏`;
+export const CLOSE_SIDEBAR_MESSAGE = () => `关闭侧边栏`;
 
 // Datasource/New Query
 export const NEW_QUERY_BUTTON_TEXT = () => "新建查询";

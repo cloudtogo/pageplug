@@ -47,12 +47,14 @@ const VerticalResizeIndicators = css<{
     top: calc(50% - 8px);
     left: calc(50% - 2.5px);
     border: ${(props) => {
-      return `1px solid ${props.isHovered ? Colors.WATUSI : "#F86A2B"}`;
+      return `1px solid ${
+        props.isHovered ? Colors.PRIMARY_LIGHT : Colors.PRIMARY
+      }`;
     }};
     outline: 1px solid ${Colors.GREY_1};
   }
   &:hover::after {
-    background: #f86a2b;
+    background: ${Colors.PRIMARY};
   }
 `;
 
@@ -67,7 +69,9 @@ const HorizontalResizeIndicators = css<{
     height: 7px;
     border-radius: 16%/50%;
     border: ${(props) => {
-      return `1px solid ${props.isHovered ? Colors.WATUSI : "#F86A2B"}`;
+      return `1px solid ${
+        props.isHovered ? Colors.PRIMARY_LIGHT : Colors.PRIMARY
+      }`;
     }};
     background: ${Colors.GREY_1};
     top: calc(50% - 2.5px);
@@ -75,7 +79,7 @@ const HorizontalResizeIndicators = css<{
     outline: 1px solid ${Colors.GREY_1};
   }
   &:hover::after {
-    background: #f86a2b;
+    background: ${Colors.PRIMARY};
   }
 `;
 

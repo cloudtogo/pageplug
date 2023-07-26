@@ -1,4 +1,6 @@
-// MINT_GREEN #2CBBA6
+import { darkenColor, lightenColor } from "widgets/WidgetUtils";
+
+// MINT_GREEN #27b7b7
 const primaryColor = "var(--ads-color-brand)";
 
 export const Colors = {
@@ -48,6 +50,9 @@ export const Colors = {
   MAKO: "#464D53",
   ALTO: "#DFDFDF",
 
+  PRIMARY: primaryColor,
+  PRIMARY_DARK: darkenColor(primaryColor, 50),
+  PRIMARY_LIGHT: lightenColor(primaryColor, "0.93"),
   GREEN: primaryColor,
   FOAM: "#D9FDED",
   LIGHT_GREEN_CYAN: "#e5f6ec",

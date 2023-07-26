@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled, { useTheme } from "styled-components";
 import { useHistory } from "react-router";
@@ -28,6 +27,7 @@ import ColorPickerComponent from "components/propertyControls/ColorPickerCompone
 import { updateApplication } from "actions/applicationActions";
 import { Colors } from "constants/Colors";
 import { DEFAULT_VIEWER_LOGO } from "constants/AppConstants";
+// } from "@nosferatu500/react-sortable-tree";
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -224,6 +224,7 @@ function PagesEditor() {
   const [color, setColor] = useState(initState.color);
   const [treeData, setTreeData] = useState<any>(initState.treeData);
   const [outsiderTree, setOutsiderTree] = useState<any>(initState.outsiderTree);
+  const [form] = Form.useForm();
 
   useEffect(() => {
     const pagesMap = pages.reduce((a: any, c: any) => {
@@ -362,6 +363,8 @@ function PagesEditor() {
     message.success("保存成功");
   };
 
+  // console.log(treeData, "treeData");
+
   const renderTitle = (node: any, path: any) => {
     const iconContent =
       path.length === 1 ? (
@@ -398,7 +401,7 @@ function PagesEditor() {
       </Header>
 
       <ConfigContainer>
-        <Form labelCol={{ span: 4 }} wrapperCol={{ span: 12 }}>
+        <Form form={form} labelCol={{ span: 4 }} wrapperCol={{ span: 12 }}>
           <Form.Item label="应用名称">
             <Input value={name} onChange={(e) => setName(e.target.value)} />
           </Form.Item>
@@ -435,7 +438,7 @@ function PagesEditor() {
             <TreeContainer>
               <SortableTree
                 treeData={treeData}
-                theme={FileExplorerTheme}
+                // theme={FileExplorerTheme}
                 rowHeight={64}
                 maxDepth={MAX_DEPTH}
                 shouldCopyOnOutsideDrop={false}

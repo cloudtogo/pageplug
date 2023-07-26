@@ -220,7 +220,7 @@ export const OidcAuthCallout: AuthMethodType = {
 };
 
 const AuthMethods = [
-  OidcAuthCallout,
+  // OidcAuthCallout,
   // SamlAuthCallout,
   GoogleAuthCallout,
   GithubAuthCallout,

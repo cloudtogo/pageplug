@@ -71,16 +71,15 @@ export function Navigation() {
            * We need to add top header since we want the current mobile
            * navigation experience until we create the new sidebar for mobile.
            */}
-          {isMobile ? (
-            <TopHeader
-              currentApplicationDetails={currentApplicationDetails}
-              currentUser={currentUser}
-              currentWorkspaceId={currentWorkspaceId}
-              isMenuOpen={isMenuOpen}
-              pages={pages}
-              setMenuOpen={setMenuOpen}
-            />
-          ) : (
+          {isMobile ? null : (
+            // <TopHeader
+            //   currentApplicationDetails={currentApplicationDetails}
+            //   currentUser={currentUser}
+            //   currentWorkspaceId={currentWorkspaceId}
+            //   isMenuOpen={isMenuOpen}
+            //   pages={pages}
+            //   setMenuOpen={setMenuOpen}
+            // />
             <Sidebar
               currentApplicationDetails={currentApplicationDetails}
               currentUser={currentUser}
@@ -92,16 +91,15 @@ export function Navigation() {
       );
     }
 
-    return (
-      <TopHeader
-        currentApplicationDetails={currentApplicationDetails}
-        currentUser={currentUser}
-        currentWorkspaceId={currentWorkspaceId}
-        isMenuOpen={isMenuOpen}
-        pages={pages}
-        setMenuOpen={setMenuOpen}
-      />
-    );
+    return null;
+    // <TopHeader
+    //   currentApplicationDetails={currentApplicationDetails}
+    //   currentUser={currentUser}
+    //   currentWorkspaceId={currentWorkspaceId}
+    //   isMenuOpen={isMenuOpen}
+    //   pages={pages}
+    //   setMenuOpen={setMenuOpen}
+    // />
   };
 
   if (hideHeader) return <HtmlTitle />;
