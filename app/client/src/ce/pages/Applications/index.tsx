@@ -915,7 +915,7 @@ export function ApplicationsSection(props: any) {
                                   },
                                 )
                               }
-                              text="Members"
+                              text="成员"
                             />
                           )}
                         {canInviteToWorkspace && (

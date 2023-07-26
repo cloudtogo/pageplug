@@ -41,7 +41,7 @@ export function CanvasPropertyPane() {
               <MainContainerLayoutControl />
             </>
           )}
-          {isAutoLayoutFeatureEnabled && <ConversionButton />}
+          {/* {isAutoLayoutFeatureEnabled && <ConversionButton />} */}
           <TooltipComponent
             content={
               isMobile ? null : (

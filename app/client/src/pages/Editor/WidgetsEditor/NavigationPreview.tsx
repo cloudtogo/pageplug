@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import type { LegacyRef } from "react";
 import React, { forwardRef } from "react";
 import classNames from "classnames";
@@ -16,7 +17,7 @@ const NavigationPreview = forwardRef(
     return (
       <div
         className={classNames({
-          "absolute top-0 z-3 w-full transform bg-gray-50 ease-in t--navigation-preview":
+          "absolute top-0 z-3 w-full transform bg-gray-50 ease-in t--navigation-preview hidden":
             true,
           "translate-y-0 ease-in transition duration-300":
             isPreviewMode || isAppSettingsPaneWithNavigationTabOpen,

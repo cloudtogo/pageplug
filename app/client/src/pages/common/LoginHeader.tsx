@@ -7,7 +7,7 @@ import StyledHeader from "components/designSystems/appsmith/StyledHeader";
 import type { AppState } from "@appsmith/reducers";
 import { BASE_URL } from "constants/routes";
 import { Colors } from "constants/Colors";
-import LogoImage from "assets/images/pageplug_logo_black.svg";
+import LogoImage from "assets/images/pageplug_logo_primary.png";
 import { importSvg } from "design-system-old";
 
 const AppsmithLogo = importSvg(

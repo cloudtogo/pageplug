@@ -123,13 +123,13 @@ function NavigationSettings() {
     [navigationSetting],
   );
 
-  if (!navigationSetting) {
-    return (
-      <div className="px-4 py-10 w-full flex justify-center">
-        <Spinner size="extraExtraExtraExtraLarge" />
-      </div>
-    );
-  }
+  // if (!navigationSetting) {
+  //   return (
+  //     <div className="px-4 py-10 w-full flex justify-center">
+  //       <Spinner size="extraExtraExtraExtraLarge" />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="px-4">
@@ -137,7 +137,7 @@ function NavigationSettings() {
         keyName="showNavbar"
         label={createMessage(APP_NAVIGATION_SETTING.showNavbarLabel)}
         updateSetting={updateSetting}
-        value={navigationSetting?.showNavbar}
+        value={!!navigationSetting?.showNavbar}
       />
 
       {navigationSetting?.showNavbar && (

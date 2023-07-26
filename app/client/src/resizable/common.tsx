@@ -46,7 +46,7 @@ export const getWrapperStyle = memoize(
           ? "0px 0px 0px " +
             resizeBoxShadow +
             "px " +
-            (isHovered ? Colors.WATUSI : "#f86a2b")
+            (isHovered ? Colors.PRIMARY_LIGHT : Colors.PRIMARY)
           : "none"
       }`,
     };
