@@ -55,10 +55,9 @@ const TopHeader = (props: TopHeaderProps) => {
   );
   const pageId = useSelector(getCurrentPageId);
   const editorURL = useHref(builderURL, { pageId });
-
   return (
     <StyledNav
-      className="relative js-appviewer-header t--app-viewer-navigation-header"
+      className="relative js-appviewer-header t--app-viewer-navigation-header z-8"
       data-testid={"t--app-viewer-navigation-header"}
       navColorStyle={navColorStyle}
       primaryColor={primaryColor}

@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import type { Ref } from "react";
 import React, { useCallback } from "react";
 import { Tooltip } from "@blueprintjs/core";
@@ -50,6 +51,7 @@ const UnsavedChangesMarker = styled.div<{ accentColor: string }>`
 const Content = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
+  user-select: text;
 `;
 
 const StyledEditIcon = styled.div<{

@@ -94,7 +94,7 @@ class ThemedApp extends React.Component<{
                 locale={zhCNantd}
                 theme={{
                   token: {
-                    colorPrimary: "#2cbba6",
+                    colorPrimary: "#27b7b7",
                   },
                 }}
               >

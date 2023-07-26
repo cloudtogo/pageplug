@@ -183,7 +183,9 @@ function AppViewer(props: Props) {
 
   useEffect(() => {
     const header = document.querySelector(".js-appviewer-header");
-
+    if (document) {
+      document.title = currentApplicationDetails?.name || "pageplug";
+    }
     dispatch(setAppViewHeaderHeight(header?.clientHeight || 0));
   }, [pages.length, isInitialized]);
 
@@ -223,7 +225,7 @@ function AppViewer(props: Props) {
               <AppViewerBodyContainer
                 backgroundColor={
                   isMobile
-                    ? "radial-gradient(#2cbba633, #ffec8f36)"
+                    ? "radial-gradient(#27b7b733, #ffec8f36)"
                     : selectedTheme.properties.colors.backgroundColor
                 }
               >
@@ -238,16 +240,6 @@ function AppViewer(props: Props) {
                 >
                   {isInitialized && registered && <AppViewerPageContainer />}
                 </AppViewerBody>
-                {!hideWatermark && (
-                  <a
-                    className="fixed hidden right-8 bottom-4 z-3 hover:no-underline md:flex"
-                    href="https://appsmith.com"
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    <BrandingBadge />
-                  </a>
-                )}
               </AppViewerBodyContainer>
             </ContainerForBottom>
             <TabBar />

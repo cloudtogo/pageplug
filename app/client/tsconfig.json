@@ -30,5 +30,7 @@
   },
   "include": [
     "./src/**/*",
+    "decs.d.ts",
+    "decs1.d.ts",
   ],
 }

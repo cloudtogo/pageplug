@@ -77,7 +77,11 @@ const Container = styled.section<{
 `;
 
 function CanvasContainer(props: CanvasContainerProps) {
-  const { isAppSettingsPaneWithNavigationTabOpen, navigationHeight } = props;
+  const {
+    isAppSettingsPaneWithNavigationTabOpen,
+    // navigationHeight
+  } = props;
+  const navigationHeight = 0;
   const dispatch = useDispatch();
   const { isPreviewMode, shouldShowSnapShotBanner } = props;
 

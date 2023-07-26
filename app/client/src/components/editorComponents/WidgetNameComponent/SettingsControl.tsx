@@ -103,17 +103,17 @@ const getStyles = (
   switch (activity) {
     case Activities.ACTIVE:
       return {
-        background: Colors.MINT_ORANGE,
+        background: Colors.PRIMARY_LIGHT,
         color: Colors.WHITE,
       };
     case Activities.HOVERING:
       return {
-        background: Colors.WATUSI,
+        background: Colors.PRIMARY_DARK,
         color: Colors.WHITE,
       };
     case Activities.SELECTED:
       return {
-        background: Colors.JAFFA_DARK,
+        background: Colors.PRIMARY,
         color: Colors.WHITE,
       };
     default:
