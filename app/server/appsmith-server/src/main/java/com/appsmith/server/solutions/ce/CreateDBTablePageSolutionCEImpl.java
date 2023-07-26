@@ -207,7 +207,7 @@ public class CreateDBTablePageSolutionCEImpl implements CreateDBTablePageSolutio
                 .zipWhen(datasource -> Mono.zip(
                                 pageMono,
                                 pluginService.findById(datasource.getPluginId()),
-                        datasourceStructureSolution.getStructure(datasource, false, null)
+                                datasourceStructureSolution.getStructure(datasource, false, null)
                         )
                 )
                 .flatMap(tuple -> {
@@ -518,6 +518,7 @@ public class CreateDBTablePageSolutionCEImpl implements CreateDBTablePageSolutio
         );
 
         ApplicationJson applicationJson = gson.fromJson(jsonContent, ApplicationJson.class);
+
         return JsonSchemaMigration.migrateApplicationToLatestSchema(applicationJson);
     }
 
