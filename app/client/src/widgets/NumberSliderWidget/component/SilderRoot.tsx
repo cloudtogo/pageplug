@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import styled from "styled-components";
 import React, { forwardRef } from "react";
 import { LabelPosition } from "components/constants";

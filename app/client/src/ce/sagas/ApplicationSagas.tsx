@@ -817,7 +817,6 @@ export function* fetchApplicationPreviewWxaCodeSaga(
 ) {
   try {
     const { applicationId } = action.payload;
-    //@ts-ignore
     const response: ApiResponse = yield call(PageApi.getPreviewWxaCode, {
       app_id: applicationId,
     });

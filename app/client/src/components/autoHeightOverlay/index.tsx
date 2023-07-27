@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import type { AppState } from "@appsmith/reducers";
 import type { CSSProperties } from "react";
 import React, { memo } from "react";
@@ -20,7 +21,7 @@ export interface AutoHeightOverlayContainerProps
   onMinHeightSet: (height: number) => void;
   style?: CSSProperties;
 }
-
+/* eslint-disable react/display-name */
 const AutoHeightOverlayContainer: React.FC<AutoHeightOverlayContainerProps> =
   memo((props) => {
     const widgetId = props.widgetId;

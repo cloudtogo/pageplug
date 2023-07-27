@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import React from "react";
 import Pagination from "rc-pagination";
 import styled, { css } from "styled-components";
