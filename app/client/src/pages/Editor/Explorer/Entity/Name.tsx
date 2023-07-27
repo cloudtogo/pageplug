@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import EditableText, {
   EditInteractionKind,
 } from "components/editorComponents/EditableText";

@@ -148,7 +148,6 @@ const TabBar = ({ currentPage, isFull }: TabbarProps) => {
         <>
           <PropertyName>导航栏图标</PropertyName>
           <PropertyControl>
-            {/* @ts-ignore */}
             <IconSelectControl
               onIconSelected={onIconSelected}
               propertyValue={pageIcon}

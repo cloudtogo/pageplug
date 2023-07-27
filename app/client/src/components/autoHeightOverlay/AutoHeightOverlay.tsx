@@ -33,6 +33,7 @@ export interface AutoHeightOverlayProps
   isHidden: boolean;
 }
 
+/* eslint-disable react/display-name */
 const AutoHeightOverlay: React.FC<AutoHeightOverlayProps> = memo(
   ({
     batchUpdate,

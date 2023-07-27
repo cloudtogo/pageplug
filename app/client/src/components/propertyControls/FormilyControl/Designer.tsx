@@ -60,7 +60,6 @@ const FormilyDesigner = (props: any, ref: any) => {
     ref,
     () => ({
       getSchema: () => {
-        //@ts-ignore
         return transformToSchema(engine?.getCurrentTree());
       },
       setSchema: (schema: any) => {

@@ -27,7 +27,6 @@ export default function* showAlertSaga(action: TShowAlertDescription) {
     if (payload.style === "success") {
       iconStr = "success";
     }
-    //@ts-ignore
     if (payload.style === "loading") {
       iconStr = "loading";
     }
