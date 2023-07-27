@@ -2,20 +2,8 @@
   "$schema": "http://json.schemastore.org/eslintrc",
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "react",
-    "@typescript-eslint",
-    "prettier",
-    "react-hooks",
-    "sort-destructure-keys",
-    "cypress"
-  ],
-  "extends": [
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:cypress/recommended",
-    "plugin:prettier/recommended"
-  ],
+  "plugins": ["react", "@typescript-eslint", "prettier", "react-hooks", "sort-destructure-keys", "cypress"],
+  "extends": ["plugin:react/recommended", "plugin:@typescript-eslint/recommended", "plugin:cypress/recommended", "plugin:prettier/recommended"],
   "parserOptions": {
     "ecmaVersion": 2020,
     "sourceType": "module",
@@ -31,7 +19,7 @@
       "no-undef": "off",
       "no-unused-vars": "off",
       "react/prop-types": "off",
-      "react/display-name": "warn",
+      "react/display-name": "off",
       "no-restricted-syntax": "warn",
       "@typescript-eslint/explicit-module-boundary-types": "off",
       "cypress/no-unnecessary-waiting": "off",

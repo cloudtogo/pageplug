@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React, {
   useEffect,
   useRef,
@@ -28,7 +29,7 @@ import { DSEventTypes } from "utils/AppsmithUtils";
 import { getBrandColors } from "@appsmith/selectors/tenantSelectors";
 import { importSvg } from "design-system-old";
 
-const FocusTrap = require("focus-trap-react");
+import FocusTrap from "focus-trap-react";
 
 const ColorPickerIcon = importSvg(
   () => import("assets/icons/control/color-picker.svg"),

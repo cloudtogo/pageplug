@@ -21,7 +21,7 @@ import log from "loglevel";
 import { Colors } from "constants/Colors";
 // Leaving this require here. Ref: https://stackoverflow.com/questions/41292559/could-not-find-a-declaration-file-for-module-module-name-path-to-module-nam/42505940#42505940
 // FusionCharts comes with its own typings so there is no need to separately import them. But an import from fusioncharts/core still requires a declaration file.
-const FusionCharts = require("fusioncharts");
+import FusionCharts from "fusioncharts";
 const plugins: Record<string, any> = {
   Charts: require("fusioncharts/fusioncharts.charts"),
   FusionTheme: require("fusioncharts/themes/fusioncharts.theme.fusion"),
@@ -90,7 +90,7 @@ export const isLabelOrientationApplicableFor = (chartType: string) =>
   LABEL_ORIENTATION_COMPATIBLE_CHARTS.includes(chartType);
 
 class ChartComponent extends React.Component<ChartComponentProps> {
-  chartInstance = new FusionCharts();
+  chartInstance = new FusionCharts({});
 
   chartContainerId = this.props.widgetId + "chart-container";
 
