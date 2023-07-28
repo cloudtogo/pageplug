@@ -64,7 +64,6 @@ export default abstract class AppEngine {
 
   *loadAppData(payload: AppEnginePayload) {
     const { applicationId, branch, pageId, queryParams } = payload;
-
     // sync CloudOS api
     if (
       queryParams &&

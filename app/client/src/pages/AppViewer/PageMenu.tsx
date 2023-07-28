@@ -147,8 +147,7 @@ export function PageMenu(props: NavigationProps) {
                   url={props.url}
                 />
               )}
-
-              {!hideWatermark && (
+              {/* {!hideWatermark && (
                 <a
                   className="flex hover:no-underline mt-2"
                   href="https://appsmith.com"
@@ -157,7 +156,7 @@ export function PageMenu(props: NavigationProps) {
                 >
                   <BrandingBadge />
                 </a>
-              )}
+              )} */}
             </StyledCtaContainer>
           )}
         </div>
