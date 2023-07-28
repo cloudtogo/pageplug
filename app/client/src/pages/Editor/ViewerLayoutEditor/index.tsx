@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled, { useTheme } from "styled-components";
 import { useHistory } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { get } from "lodash";
+import { get, size, map, flatMapDeep, cloneDeep } from "lodash";
 import { ControlIcons } from "icons/ControlIcons";
 import { getCurrentApplication } from "selectors/applicationSelectors";
 import {
@@ -12,22 +12,37 @@ import {
 } from "selectors/editorSelectors";
 import { getSelectedAppThemeProperties } from "selectors/appThemingSelectors";
 import { builderURL } from "RouteBuilder";
-import {
-  SortableTreeWithoutDndContext as SortableTree,
-  addNodeUnderParent,
-  removeNodeAtPath,
-  changeNodeAtPath,
-  getNodeAtPath,
-  walk,
-} from "react-sortable-tree-patch-react-17/dist/index.cjs.js";
-import FileExplorerTheme from "react-sortable-tree-theme-full-node-drag";
-import IconSelect from "./IconSelect";
-import { Button, Input, Form, message } from "antd";
+// import {
+//   SortableTreeWithoutDndContext as SortableTree,
+//   addNodeUnderParent,
+//   removeNodeAtPath,
+//   changeNodeAtPath,
+//   getNodeAtPath,
+//   walk,
+// } from "react-sortable-tree-patch-react-17/dist/index.cjs.js";
+// import FileExplorerTheme from "react-sortable-tree-theme-full-node-drag";
+// import IconSelect from "./IconSelect";
+import { Button, Input, Form, message, Tree, Divider, Typography } from "antd";
 import ColorPickerComponent from "components/propertyControls/ColorPickerComponentV2";
 import { updateApplication } from "actions/applicationActions";
 import { Colors } from "constants/Colors";
+import { Icon } from "@blueprintjs/core";
 import { DEFAULT_VIEWER_LOGO } from "constants/AppConstants";
-// } from "@nosferatu500/react-sortable-tree";
+import type { DataNode, TreeProps } from "antd/es/tree";
+// import { menutree, navdata, mockpages } from "./mock";
+import {
+  processTreeData,
+  generateUuid,
+  mapTree,
+  // traverseTree,
+  removeNodeByKey,
+} from "utils/treeUtils";
+const { Paragraph } = Typography;
+
+const x = 3;
+const y = 2;
+const z = 1;
+const defaultData: DataNode[] = [];
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -52,11 +67,8 @@ const Header = styled.div`
   }
 `;
 const MenuContainer = styled.div`
-  display: flex;
-
   & > div {
-    flex: 1;
-    border: 1px solid ${(props) => props.theme.colors.primary};
+    // border: 1px solid ${(props) => props.theme.colors.primary};
     margin: 10px;
     border-radius: 4px;
 
@@ -71,14 +83,17 @@ const MenuContainer = styled.div`
   }
 `;
 const TreeContainer = styled.div`
-  height: 400px;
-`;
-
-const NameInput = styled.input`
-  border: none;
-  background: ${Colors.MINT_GREEN_LIGHT};
-  border-radius: 4px;
-  padding: 4px 6px;
+  min-height: 200px;
+  width: 65%;
+  padding: 4rem 4rem;
+  && .ant-tree .ant-tree-treenode {
+    align-items: center;
+  }
+  && .ant-tree .ant-tree-switcher {
+    // align-self: center;
+  }
+  // transform: scale(1.2);
+  // transform-origin: top left;
 `;
 
 const ConfigContainer = styled.div`
@@ -224,7 +239,9 @@ function PagesEditor() {
   const [color, setColor] = useState(initState.color);
   const [treeData, setTreeData] = useState<any>(initState.treeData);
   const [outsiderTree, setOutsiderTree] = useState<any>(initState.outsiderTree);
-  const [form] = Form.useForm();
+  const [gData, setGData] = useState(defaultData);
+  const [hideNodes, setHideNodes] = useState<any>([]);
+  const [, setSymbol] = useState<any>();
 
   useEffect(() => {
     const pagesMap = pages.reduce((a: any, c: any) => {
@@ -243,147 +260,160 @@ function PagesEditor() {
         pageId: p.pageId,
         isPage: true,
       }));
-    setTreeData(newMenuTree.concat(newPages));
-    // update outsider pages
+    const _tree = newMenuTree.concat(newPages);
+    setTreeData(_tree);
     setOutsiderTree(newOuterTree);
+    setHideNodes(newOuterTree.map((o: any) => o.pageId));
+    initNewTree(_tree);
   }, [pages]);
+
+  const initNewTree = (tree: any) => {
+    const _formatTree = processTreeData(tree);
+    setGData(_formatTree);
+  };
+
+  const onDragEnter: TreeProps["onDragEnter"] = (info) => {
+    // expandedKeys, set it when controlled is needed
+    // setExpandedKeys(info.expandedKeys)
+  };
+
+  const onDrop: TreeProps["onDrop"] = (info) => {
+    const dropKey = info.node.key;
+    const dragKey = info.dragNode.key;
+    const dropPos = info.node.pos.split("-");
+    const dropPosition =
+      info.dropPosition - Number(dropPos[dropPos.length - 1]);
+
+    const loop = (
+      data: DataNode[],
+      key: React.Key,
+      callback: (node: DataNode, i: number, data: DataNode[]) => void,
+    ) => {
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].key === key) {
+          return callback(data[i], i, data);
+        }
+        if (data[i].children) {
+          loop(data[i].children!, key, callback);
+        }
+      }
+    };
+    const data = [...gData];
+
+    // Find dragObject
+    let dragObj: DataNode;
+    loop(data, dragKey, (item, index, arr) => {
+      arr.splice(index, 1);
+      dragObj = item;
+    });
+
+    if (!info.dropToGap) {
+      // Drop on the content
+      loop(data, dropKey, (item) => {
+        item.children = item.children || [];
+        // where to insert. New item was inserted to the start of the array in this example, but can be anywhere
+        item.children.unshift(dragObj);
+      });
+    } else if (
+      ((info.node as any).props.children || []).length > 0 && // Has children
+      (info.node as any).props.expanded && // Is expanded
+      dropPosition === 1 // On the bottom gap
+    ) {
+      loop(data, dropKey, (item) => {
+        item.children = item.children || [];
+        // where to insert. New item was inserted to the start of the array in this example, but can be anywhere
+        item.children.unshift(dragObj);
+        // in previous version, we use item.children.push(dragObj) to insert the
+        // item to the tail of the children
+      });
+    } else {
+      let ar: DataNode[] = [];
+      let i: number;
+      loop(data, dropKey, (_item, index, arr) => {
+        ar = arr;
+        i = index;
+      });
+      if (dropPosition === -1) {
+        ar.splice(i!, 0, dragObj!);
+      } else {
+        ar.splice(i! + 1, 0, dragObj!);
+      }
+    }
+    setGData(data);
+  };
 
   const onClose = useCallback(() => {
     history.push(builderURL({ pageId }));
   }, [pageId]);
 
-  const getNodeKey = ({ treeIndex }: any) => treeIndex;
-
-  const removeNode = (path: any) => () => {
-    moveToOutsider(path);
-    setTreeData(
-      removeNodeAtPath({
-        treeData,
-        path,
-        getNodeKey,
-      }),
-    );
-  };
-
-  const moveToOutsider = (path: any) => {
-    const targetNode = getNodeAtPath({
-      treeData,
-      path,
-      getNodeKey,
-      ignoreCollapsed: false,
-    });
-    const removedPages: any[] = [];
-    walk({
-      treeData: [targetNode.node],
-      getNodeKey,
-      ignoreCollapsed: false,
-      callback: (nodeInfo: any) => {
-        if (nodeInfo.node.isPage) {
-          removedPages.push(nodeInfo);
-        }
-      },
-    });
-    const outer = removedPages.map((p) => p.node).concat(outsiderTree);
-    setOutsiderTree(outer);
-  };
-
-  const onOutsiderTreeChanged = (tree: any[]) => {
-    const menus: any[] = [];
-    const pages: any[] = [];
-    tree.forEach((t: any) => {
-      if (t.isPage) {
-        pages.push(t);
-      } else {
-        menus.push(t);
-      }
-    });
-    if (menus.length) {
-      menus.forEach((menu: any) => getPagesInTree(pages)(menu));
-    }
-    setOutsiderTree(pages);
-  };
-
-  const addNodeAt = (node: any, path: any) => () => {
-    setTreeData(
-      addNodeUnderParent({
-        treeData,
-        parentKey: path[path.length - 1],
-        expandParent: true,
-        getNodeKey,
-        newNode: {
-          title: "二级菜单",
-        },
-      }).treeData,
-    );
-  };
-
-  const addRootNode = () => {
-    setTreeData(
-      treeData.concat({
-        title: "一级菜单",
-      }),
-    );
-  };
-
-  const editNodeTitle = (node: any, path: any) => (event: any) => {
-    const title = event.target.value;
-    setTreeData(
-      changeNodeAtPath({
-        treeData,
-        path,
-        getNodeKey,
-        newNode: { ...node, title },
-      }),
-    );
-  };
-
-  const onIconSelected = (node: any, path: any) => (icon?: string) => {
-    setTreeData(
-      changeNodeAtPath({
-        treeData,
-        path,
-        getNodeKey,
-        newNode: { ...node, icon },
-      }),
-    );
-  };
-
   const saveConfig = async () => {
+    const _outsiderTree: any = [];
+    gData.forEach((gItem: any) => {
+      mapTree(gItem, (tn: any) => {
+        if (hideNodes.includes(tn.key)) {
+          _outsiderTree.push({
+            title: tn.title,
+            pageId: tn.pageId,
+            isPage: true,
+          });
+        }
+      });
+    });
+    setOutsiderTree(_outsiderTree);
     const data = {
       name: name,
       viewerLayout: JSON.stringify({
         color,
         logoUrl,
         name,
-        treeData,
-        outsiderTree,
+        treeData: gData,
+        outsiderTree: _outsiderTree,
       }),
     };
     dispatch(updateApplication(applicationId, data));
     message.success("保存成功");
   };
 
-  // console.log(treeData, "treeData");
+  const addRootNode = () => {
+    setGData(
+      gData.concat({
+        title: "一级目录",
+        key: generateUuid(),
+      }),
+    );
+  };
 
-  const renderTitle = (node: any, path: any) => {
-    const iconContent =
-      path.length === 1 ? (
-        <IconSelect
-          iconName={node.icon || ""}
-          onIconSelected={onIconSelected(node, path)}
-        />
-      ) : null;
-    const titleContent = node.isPage ? (
-      node.title
-    ) : (
-      <NameInput value={node.title} onChange={editNodeTitle(node, path)} />
-    );
-    return (
-      <>
-        {iconContent}
-        {titleContent}
-      </>
-    );
+  // deleteMenu
+  const onDeleteMenu = (node: any) => {
+    if (size(node.children) > 0) {
+      message.warning("子级页面或目录移除后再删除目录");
+    } else {
+      const _gdata = cloneDeep(gData);
+      removeNodeByKey(_gdata, node.key);
+      setGData(_gdata);
+      setSymbol(Symbol("deletemenu"));
+      message.info("删除目录");
+    }
+  };
+
+  const toggleHidePage = (node: any) => {
+    if (hideNodes.includes(node.key)) {
+      // 打开
+      setHideNodes(hideNodes.filter((p: any) => p !== node.key));
+    } else {
+      setHideNodes([...hideNodes, node.key]); // 隐藏
+    }
+  };
+
+  const nodeNameChange = (name: string, node: any) => {
+    gData.map((gnode: any) => {
+      return mapTree(gnode, (gn: any) => {
+        if (gn.key === node.key) {
+          gn.title = name;
+        }
+      });
+    });
+    setGData(gData);
   };
 
   return (
@@ -399,106 +429,139 @@ function PagesEditor() {
           <h1>应用菜单编辑</h1>
         </div>
       </Header>
+      <div className="px-[10%] mt-2 ">
+        <div>
+          <div className="text-xl mb-4 bold">顶部导航</div>
+          <NavPreview color={color}>
+            <img src={logoUrl.trim() || DEFAULT_VIEWER_LOGO} />
+            <h2>{name}</h2>
+          </NavPreview>
+          <ConfigContainer>
+            <Form labelCol={{ span: 4 }} wrapperCol={{ span: 12 }}>
+              <Form.Item label="应用名称">
+                <Input value={name} onChange={(e) => setName(e.target.value)} />
+              </Form.Item>
+              <Form.Item label="Logo地址">
+                <Input
+                  value={logoUrl}
+                  onChange={(e) => setLogoUrl(e.target.value)}
+                />
+              </Form.Item>
+              <Form.Item label="导航栏颜色">
+                <ColorPicker
+                  changeColor={(c: string) => setColor(c)}
+                  color={color}
+                  showApplicationColors
+                  showThemeColors
+                />
+              </Form.Item>
+            </Form>
+          </ConfigContainer>
+        </div>
+        <Divider type="horizontal"></Divider>
+        <div data-no-touch-simulate>
+          <div className="text-xl mb-4 bold flex justify-between">
+            菜单导航
+            <Button onClick={addRootNode} type="default">
+              + 新增目录
+            </Button>
+          </div>
+          <TreeContainer>
+            <Tree
+              defaultExpandAll
+              className="draggable-tree"
+              // defaultExpandedKeys={expandedKeys}
+              draggable={{
+                icon: false,
+              }}
+              allowDrop={({ dropNode }) => !dropNode.isPage}
+              blockNode
+              onDragEnter={onDragEnter}
+              onDrop={onDrop}
+              treeData={gData}
+              showLine={true}
+              showIcon={false}
+              titleRender={(node: any) => {
+                return (
+                  <div
+                    className={`px-4 py-2 border border-teal-500 ${
+                      !hideNodes.includes(node.key)
+                        ? "bg-neutral-50"
+                        : "bg-gray-200"
+                    } rounded flex gap-2 justify-between items-center`}
+                  >
+                    <div className="flex">
+                      <div className="flex items-center mr-4">
+                        {node.isPage ? (
+                          <Icon
+                            className="icon"
+                            color="#4B4848"
+                            data-testid="pages-collapse-icon"
+                            icon="document"
+                            size={12}
+                          />
+                        ) : (
+                          <Icon
+                            className="icon"
+                            color="#4B4848"
+                            data-testid="fold-collapse-icon"
+                            icon="folder-close"
+                            size={12}
+                          />
+                        )}
+                      </div>
+                      <div>
+                        {node.isPage ? (
+                          node.title
+                        ) : (
+                          <Paragraph
+                            editable={{
+                              onChange: (value: string) =>
+                                nodeNameChange(value, node),
+                            }}
+                            style={{ marginBottom: 0 }}
+                          >
+                            {node.title}
+                          </Paragraph>
+                        )}
+                      </div>
+                    </div>
 
-      <ConfigContainer>
-        <Form form={form} labelCol={{ span: 4 }} wrapperCol={{ span: 12 }}>
-          <Form.Item label="应用名称">
-            <Input value={name} onChange={(e) => setName(e.target.value)} />
-          </Form.Item>
-          <Form.Item label="Logo地址">
-            <Input
-              value={logoUrl}
-              onChange={(e) => setLogoUrl(e.target.value)}
-            />
-          </Form.Item>
-          <Form.Item label="导航栏颜色">
-            <ColorPicker
-              changeColor={(c: string) => setColor(c)}
-              color={color}
-              showApplicationColors
-              showThemeColors
-            />
-          </Form.Item>
-        </Form>
-        <NavPreview color={color}>
-          <img src={logoUrl.trim() || DEFAULT_VIEWER_LOGO} />
-          <h2>{name}</h2>
-        </NavPreview>
-      </ConfigContainer>
-
-      <div data-no-touch-simulate>
-        <MenuContainer className="pageplug-rst">
-          <div>
-            <h2>
-              菜单导航
-              <Button onClick={addRootNode} type="primary">
-                新增一级菜单
-              </Button>
-            </h2>
-            <TreeContainer>
-              <SortableTree
-                treeData={treeData}
-                // theme={FileExplorerTheme}
-                rowHeight={64}
-                maxDepth={MAX_DEPTH}
-                shouldCopyOnOutsideDrop={false}
-                dndType={EXTERNAL_NODE_TYPE}
-                onChange={(treeData: any) => setTreeData(treeData)}
-                canNodeHaveChildren={(node: any) => !node.isPage}
-                generateNodeProps={({ node, path }: any) => ({
-                  title: renderTitle(node, path),
-                  buttons: [
-                    node.isPage || path.length >= MAX_DEPTH - 1 ? null : (
-                      <AddIcon
-                        key="add"
-                        width={16}
-                        height={16}
-                        color="#999"
-                        style={{ marginTop: 6, marginRight: 5 }}
-                        onClick={addNodeAt(node, path)}
+                    <div className="flex items-center gap-4">
+                      {!node.isPage && !size(node.children) ? (
+                        <Icon
+                          className="icon"
+                          color="#4B4848"
+                          data-testid="fold-collapse-icon"
+                          icon="trash"
+                          size={12}
+                          onClick={() => onDeleteMenu(node)}
+                        />
+                      ) : null}
+                      <Icon
+                        className="icon"
+                        color={hideNodes.includes(node.key) ? "red" : "#4B4848"}
+                        data-testid="fold-collapse-icon"
+                        icon={
+                          hideNodes.includes(node.key) ? "eye-off" : "eye-open"
+                        }
+                        size={12}
+                        onClick={() => toggleHidePage(node)}
                       />
-                    ),
-                    <DeleteIcon
-                      key="remove"
-                      width={16}
-                      height={16}
-                      color="#999"
-                      style={{ marginTop: 6 }}
-                      onClick={removeNode(path)}
-                    />,
-                  ],
-                  listIndex: 0,
-                  lowerSiblingCounts: [],
-                })}
-              />
-            </TreeContainer>
-          </div>
-          <div>
-            <h2>菜单隐藏页面</h2>
-            <TreeContainer>
-              <SortableTree
-                treeData={outsiderTree}
-                onChange={onOutsiderTreeChanged}
-                canNodeHaveChildren={(node: any) => !node.isPage}
-                shouldCopyOnOutsideDrop={false}
-                dndType={EXTERNAL_NODE_TYPE}
-                theme={FileExplorerTheme}
-                rowHeight={64}
-                maxDepth={1}
-              />
-            </TreeContainer>
-          </div>
-        </MenuContainer>
+                    </div>
+                  </div>
+                );
+              }}
+            />
+          </TreeContainer>
+        </div>
+        <Divider type="horizontal"></Divider>
+        <div className="flex flex-row-reverse p-1">
+          <Button type="primary" size="large" onClick={saveConfig}>
+            保存配置
+          </Button>
+        </div>
       </div>
-
-      <Button
-        type="primary"
-        size="large"
-        onClick={saveConfig}
-        style={{ margin: "20px 36px" }}
-      >
-        保存配置
-      </Button>
     </Wrapper>
   );
 }

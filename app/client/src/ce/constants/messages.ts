@@ -1411,9 +1411,9 @@ export const IN_APP_EMBED_SETTING = {
   upgradeHeadingForInviteModal: () => "使用嵌入功能需要先在设置中公开您的应用",
   upgradeContent: () => "想将嵌入企业内的系统",
   appsmithBusinessEdition: () => "升级至企业版使用",
-  secondaryHeadingForAppSettings: () => "Make your app public to embed",
+  secondaryHeadingForAppSettings: () => "公开应用嵌入",
   secondaryHeading: () =>
-    "Please contact your workspace admin to make the app public before embedding",
+    "请联系工作区管理员，使用嵌入功能需要先在设置中公开您的应用",
 };
 
 export const APP_NAVIGATION_SETTING = {

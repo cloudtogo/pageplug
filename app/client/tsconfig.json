@@ -27,6 +27,7 @@
     "baseUrl": "./src",
     "noFallthroughCasesInSwitch": true,
     "importsNotUsedAsValues": "remove",
+    "declaration": false,
   },
   "include": [
     "./src/**/*",

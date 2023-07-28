@@ -192,7 +192,7 @@ class DatasourceHomeScreen extends React.Component<Props> {
     const { currentApplication, pluginImages, plugins } = this.props;
     // console.log(pluginImages);
     const _pluginImages = mapValues(pluginImages, (o: any) => {
-      if (o.includes("oracle")) {
+      if (o.toLowerCase() === "oracle") {
         return "/logo/Oracle.svg";
       }
       return o;

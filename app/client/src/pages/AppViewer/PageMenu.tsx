@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import type {
   ApplicationPayload,

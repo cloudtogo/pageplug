@@ -34,40 +34,43 @@ const ColorfulLayout = styled.div<{
 
 const getIconType = (icon: any) => (icon ? `icon-${icon}` : undefined);
 
-const makeRouteNode = (pagesMap: any, newTree: any[]) => (node: any) => {
-  let item: any;
-  const icon = getIconType(node.icon);
-  if (node.isPage) {
-    if (pagesMap[node.title]) {
+const makeRouteNode =
+  (pagesMap: any, newTree: any[], hideRow: any[]) => (node: any) => {
+    let item: any;
+    const icon = getIconType(node.icon);
+    if (node.isPage) {
+      if (pagesMap[node.title]) {
+        item = {
+          name: node.title,
+          icon,
+          path: viewerURL({
+            pageId: pagesMap[node.title].pageId,
+          }),
+        };
+        pagesMap[node.title].visited = true;
+      }
+    } else if (node.children) {
+      const routes: any = [];
+      node.children.forEach(makeRouteNode(pagesMap, routes, hideRow));
       item = {
         name: node.title,
         icon,
-        path: viewerURL({
-          pageId: pagesMap[node.title].pageId,
-        }),
+        path: "/",
+        routes,
       };
-      pagesMap[node.title].visited = true;
+    } else {
+      item = {
+        name: node.title,
+        icon,
+        path: "/",
+      };
     }
-  } else if (node.children) {
-    const routes: any = [];
-    node.children.forEach(makeRouteNode(pagesMap, routes));
-    item = {
-      name: node.title,
-      icon,
-      path: "/",
-      routes,
-    };
-  } else {
-    item = {
-      name: node.title,
-      icon,
-      path: "/",
-    };
-  }
-  if (item) {
-    newTree.push(item);
-  }
-};
+    if (item) {
+      if (!hideRow.find((hn) => hn.pageId === node.pageId)) {
+        newTree.push(item);
+      }
+    }
+  };
 
 const StyledIcon = styled(Icon)`
   text-align: center;
@@ -114,8 +117,12 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
         }, {});
         const newMenuTree: any = [];
         const newOuterTree: any = [];
-        current.treeData.forEach(makeRouteNode(pagesMap, newMenuTree));
-        current.outsiderTree.forEach(makeRouteNode(pagesMap, newOuterTree));
+        current.treeData.forEach(
+          makeRouteNode(pagesMap, newMenuTree, current.outsiderTree),
+        );
+        current.outsiderTree.forEach(
+          makeRouteNode(pagesMap, newOuterTree, current.outsiderTree),
+        );
         const newPages = Object.values(pagesMap)
           .filter((p: any) => !p.visited)
           .map((p: any) => ({
@@ -125,7 +132,6 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
               pageId: p.pageId,
             }),
           }));
-
         init = {
           logoUrl: current.logoUrl,
           color: current.color,
@@ -141,19 +147,10 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
   if (!isInitialized) {
     return null;
   }
+  console.log(initState.treeData);
 
   if (isMobile || isEmbed) {
-    return <div>{children}</div>;
-  }
-
-  function CollapseToggle(props: { isOpen: boolean }) {
-    const { isOpen } = props;
-    return (
-      <StyledIcon
-        className={isOpen ? "open-collapse" : ""}
-        icon={IconNames.CHEVRON_LEFT}
-      />
-    );
+    return <div className="mobile-viewLayout">{children}</div>;
   }
 
   return (
@@ -162,32 +159,17 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
         title={appName}
         logo={initState.logoUrl || DEFAULT_VIEWER_LOGO}
         layout="mix"
-        // collapsedButtonRender={false}
-        // collapsed={collapsed}
-        // onCollapse={setCollapsed}
-        // postMenuData={(menuData) => {
-        //   return [
-        //     {
-        //       icon: collapsed ? (
-        //         <CollapseToggle isOpen={true} />
-        //       ) : (
-        //         <CollapseToggle isOpen={false} />
-        //       ),
-        //       name: collapsed ? "" : "收缩",
-        //       onTitleClick: () => setCollapsed(!collapsed),
-        //     },
-        //     ...(menuData || []),
-        //   ];
-        // }}
-        menuItemRender={(item: any, dom: any) => (
-          <a
-            onClick={() => {
-              history.push(item.path);
-            }}
-          >
-            {dom}
-          </a>
-        )}
+        menuItemRender={(item: any, dom: any) => {
+          return (
+            <a
+              onClick={() => {
+                history.push(item.path);
+              }}
+            >
+              {dom}
+            </a>
+          );
+        }}
         route={{
           routes: initState.treeData,
         }}

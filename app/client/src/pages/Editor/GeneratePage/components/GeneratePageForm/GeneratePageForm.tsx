@@ -170,7 +170,7 @@ function GeneratePageSubmitBtn({
       isLoading={isLoading}
       onClick={() => !disabled && onSubmit()}
       size={Size.large}
-      text="Generate Page"
+      text="生成新页面"
       type="button"
     />
   ) : null;
