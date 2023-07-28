@@ -7,8 +7,6 @@ import styled from "styled-components";
 import type { ProSettings } from "@ant-design/pro-components";
 import {
   PageContainer,
-  // ProCard,
-  // ProConfigProvider,
   ProLayout,
   // ProBreadcrumb,
 } from "@ant-design/pro-components";
@@ -89,7 +87,7 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
   const currentApp = useSelector(getCurrentApplication);
   const currentPage = useSelector(getCurrentPage);
   const pages = useSelector(getViewModePageList);
-  const [collapsed, setCollapsed] = useState(true);
+  // const [collapsed, setCollapsed] = useState(true);
   const appName = currentApp?.name;
   const viewerLayout = currentApp?.viewerLayout;
   const isHidden = !!currentPage?.isHidden;
@@ -147,7 +145,6 @@ function AppViewerLayout({ children, location }: AppViewerLayoutType) {
   if (!isInitialized) {
     return null;
   }
-  console.log(initState.treeData);
 
   if (isMobile || isEmbed) {
     return <div className="mobile-viewLayout">{children}</div>;
