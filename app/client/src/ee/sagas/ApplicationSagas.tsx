@@ -16,12 +16,17 @@ import {
   initDatasourceConnectionDuringImport,
   showReconnectDatasourcesModalSaga,
   fetchUnconfiguredDatasourceList,
+  fetchApplicationPreviewWxaCodeSaga,
 } from "ce/sagas/ApplicationSagas";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { all, takeLatest } from "redux-saga/effects";
 
 export default function* applicationSagas() {
   yield all([
+    takeLatest(
+      ReduxActionTypes.FETCH_APPLICATION_PREVIEW_INIT,
+      fetchApplicationPreviewWxaCodeSaga,
+    ),
     takeLatest(
       ReduxActionTypes.PUBLISH_APPLICATION_INIT,
       publishApplicationSaga,

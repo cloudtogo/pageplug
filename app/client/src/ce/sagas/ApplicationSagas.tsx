@@ -38,7 +38,6 @@ import { getUserApplicationsWorkspacesList } from "@appsmith/selectors/applicati
 import type { ApiResponse } from "api/ApiResponses";
 import history from "utils/history";
 import type { AppState } from "@appsmith/reducers";
-// import type { FetchApplicationPreviewPayload } from "@appsmith/actions/applicationActions";
 import {
   ApplicationVersion,
   fetchApplication,
@@ -812,9 +811,7 @@ export function* importApplicationSaga(
   }
 }
 
-export function* fetchApplicationPreviewWxaCodeSaga(
-  action: ReduxAction<FetchApplicationPayload>,
-) {
+export function* fetchApplicationPreviewWxaCodeSaga(action: ReduxAction<any>) {
   try {
     const { applicationId } = action.payload;
     const response: ApiResponse = yield call(PageApi.getPreviewWxaCode, {

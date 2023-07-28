@@ -26,9 +26,9 @@ module.exports = {
     configure: (webpackConfig) => {
       const config = {
         resolve: {
-          // alias: {
-          //   "lodash-es": "lodash",
-          // },
+          alias: {
+            "lodash-es": "lodash",
+          },
           fallback: {
             assert: false,
             stream: false,
