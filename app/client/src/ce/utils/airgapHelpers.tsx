@@ -1,5 +1,5 @@
 export const getAssetUrl = (src = "") => {
-  if (src === "/oracle.svg") {
+  if (src.toLowerCase() === "/oracle.svg") {
     return "/logo/Oracle.svg";
   }
   return src;

@@ -207,7 +207,7 @@ function AppViewer(props: Props) {
       document.body.style.fontFamily = "inherit";
     };
   }, [selectedTheme.properties.fontFamily.appFont]);
-
+  console.log("appviewer", isMobile, "isMobile");
   return (
     <ThemeProvider theme={lightTheme}>
       <EditorContextProvider renderMode="PAGE">
@@ -219,10 +219,15 @@ function AppViewer(props: Props) {
           description={pageDescription}
           name={currentApplicationDetails?.name}
         />
-        <AppViewerLayout>
-          <StableContainer>
-            <ContainerForBottom isMobile={isMobile}>
-              <AppViewerBodyContainer
+        <AppViewerLayout className="AppViewerLayout">
+          <StableContainer className="StableContainer">
+            <ContainerForBottom
+              isMobile={isMobile}
+              className="ContainerForBottom"
+            >
+              eeeeeeeee
+              {/* <AppViewerBodyContainer
+                className="AppViewerBodyContainer"
                 backgroundColor={
                   isMobile
                     ? "radial-gradient(#27b7b733, #ffec8f36)"
@@ -240,7 +245,7 @@ function AppViewer(props: Props) {
                 >
                   {isInitialized && registered && <AppViewerPageContainer />}
                 </AppViewerBody>
-              </AppViewerBodyContainer>
+              </AppViewerBodyContainer> */}
             </ContainerForBottom>
             <TabBar />
             <PreviewQRCode />

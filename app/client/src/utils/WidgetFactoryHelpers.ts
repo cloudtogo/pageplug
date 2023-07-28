@@ -180,7 +180,9 @@ export function enhancePropertyPaneConfig(
       const sectionName = (config[sectionIndex] as PropertyPaneSectionConfig)
         ?.sectionName;
       if (!sectionName || sectionName !== "General") {
-        log.error(`Invalid section index for feature: ${registeredFeature}`);
+        if (registeredFeature !== "dynamicHeight") {
+          log.error(`Invalid section index for feature: ${registeredFeature}`);
+        }
       }
       if (
         Array.isArray(config[sectionIndex].children) &&
