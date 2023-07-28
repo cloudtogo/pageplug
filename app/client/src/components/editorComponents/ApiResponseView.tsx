@@ -484,7 +484,7 @@ function ApiResponseView(props: Props) {
   const tabs = [
     {
       key: "response",
-      title: "返回结果",
+      title: "Response",
       panelComponent: (
         <ResponseTabWrapper>
           {Array.isArray(messages) && messages.length > 0 && (
@@ -572,53 +572,12 @@ function ApiResponseView(props: Props) {
               )}
             </ResponseDataContainer>
           )}
-          <ResponseDataContainer>
-            {isEmpty(response.statusCode) ? (
-              <NoResponseContainer>
-                <Icon name="no-response" />
-                <Text type={TextType.P1}>
-                  {EMPTY_RESPONSE_FIRST_HALF()}
-                  <InlineButton
-                    disabled={disabled}
-                    isLoading={isRunning}
-                    onClick={onRunClick}
-                    size={Size.medium}
-                    tag="button"
-                    text="运行"
-                    type="button"
-                  />
-                  {EMPTY_RESPONSE_LAST_HALF()}
-                </Text>
-              </NoResponseContainer>
-            ) : (
-              <ResponseBodyContainer>
-                {isString(response?.body) && isHtml(response?.body) ? (
-                  <ReadOnlyEditor
-                    folding
-                    height={"100%"}
-                    input={{
-                      value: response?.body,
-                    }}
-                  />
-                ) : responseTabs &&
-                  responseTabs.length > 0 &&
-                  selectedTabIndex !== -1 ? (
-                  <EntityBottomTabs
-                    onSelect={onResponseTabSelect}
-                    responseViewer
-                    selectedTabKey={responseDisplayFormat.value}
-                    tabs={responseTabs}
-                  />
-                ) : null}
-              </ResponseBodyContainer>
-            )}
-          </ResponseDataContainer>
         </ResponseTabWrapper>
       ),
     },
     {
       key: "headers",
-      title: "请求头",
+      title: "Headers",
       panelComponent: (
         <ResponseTabWrapper>
           {hasFailed && !isRunning && (
@@ -647,7 +606,7 @@ function ApiResponseView(props: Props) {
                     onClick={onRunClick}
                     size={Size.medium}
                     tag="button"
-                    text="运行"
+                    text="Run"
                     type="button"
                   />
                   {EMPTY_RESPONSE_LAST_HALF()}
@@ -718,7 +677,7 @@ function ApiResponseView(props: Props) {
                 }}
                 size={Size.medium}
                 tag="button"
-                text="取消请求"
+                text="Cancel Request"
                 type="button"
               />
             </div>
@@ -730,7 +689,7 @@ function ApiResponseView(props: Props) {
           <ResponseMetaWrapper>
             {response.statusCode && (
               <Flex>
-                <Text type={TextType.P3}>状态码: </Text>
+                <Text type={TextType.P3}>Status: </Text>
                 <StatusCodeText
                   accent="secondary"
                   className="t--response-status-code"
@@ -743,13 +702,13 @@ function ApiResponseView(props: Props) {
             <ResponseMetaInfo>
               {response.duration && (
                 <Flex>
-                  <Text type={TextType.P3}>耗时: </Text>
+                  <Text type={TextType.P3}>Time: </Text>
                   <Text type={TextType.H5}>{response.duration} ms</Text>
                 </Flex>
               )}
               {response.size && (
                 <Flex>
-                  <Text type={TextType.P3}>响应大小: </Text>
+                  <Text type={TextType.P3}>Size: </Text>
                   <Text type={TextType.H5}>
                     {formatBytes(parseInt(response.size))}
                   </Text>
@@ -757,9 +716,11 @@ function ApiResponseView(props: Props) {
               )}
               {!isEmpty(response?.body) && Array.isArray(response?.body) && (
                 <Flex>
-                  <Text type={TextType.P3}>返回结果: </Text>
+                  <Text type={TextType.P3}>Result: </Text>
                   <Text type={TextType.H5}>
-                    {`${response.body.length} 条记录`}
+                    {`${response?.body.length} Record${
+                      response?.body.length > 1 ? "s" : ""
+                    }`}
                   </Text>
                 </Flex>
               )}

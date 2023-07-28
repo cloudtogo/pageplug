@@ -51,8 +51,8 @@ export const Colors = {
   ALTO: "#DFDFDF",
 
   PRIMARY: primaryColor,
-  PRIMARY_DARK: darkenColor(primaryColor, 50),
-  PRIMARY_LIGHT: lightenColor(primaryColor, "0.93"),
+  PRIMARY_DARK: "#3ababc",
+  PRIMARY_LIGHT: "#CAECDC",
   GREEN: primaryColor,
   FOAM: "#D9FDED",
   LIGHT_GREEN_CYAN: "#e5f6ec",

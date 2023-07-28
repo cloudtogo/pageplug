@@ -2085,8 +2085,8 @@ export const dark: ColorType = {
     multiDropdownBoxHoverBg: darkShades[0],
     iconColor: darkShades[5],
     ctaTextColor: "#202223",
-    ctaBackgroundColor: "rgb(248, 106, 43, 0.1)",
-    ctaLearnMoreTextColor: "#f86a2b",
+    ctaBackgroundColor: "rgb(39, 183, 183, 0.1)",
+    ctaLearnMoreTextColor: "rgb(39 ,183 ,183 ,1)",
     connections: {
       error: "#f22b2b",
       connectionsCount: darkShades[11],
