@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import type { CSSProperties, ReactNode} from "react";
+import type { CSSProperties, ReactNode } from "react";
 import React, { useCallback, useMemo } from "react";
 import styled from "styled-components";
 
