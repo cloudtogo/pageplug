@@ -40,7 +40,8 @@
     "prettier": "prettier --check ./src && prettier --check ./cypress",
     "prettier:ci": "cd .. && yarn workspaces foreach -ptv run prettier",
     "check-types": "yarn tsc --noEmit",
-    "init-husky": "cd ../.. && husky install app/client/.husky"
+    "init-husky": "cd ../.. && husky install app/client/.husky",
+    "prettify": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\" \"src/**/*.js\""
   },
   "dependencies": {
     "@ant-design/pro-components": "^2.6.8",
