@@ -119,7 +119,8 @@ export const defaultNavigationSetting = {
 
 export const SIDEBAR_WIDTH = {
   REGULAR: 270,
-  MINIMAL: 66,
+  NEWREGULAR: 220,
+  MINIMAL: 64,
 };
 
 export const APPLICATION_TITLE_MAX_WIDTH = 224;
