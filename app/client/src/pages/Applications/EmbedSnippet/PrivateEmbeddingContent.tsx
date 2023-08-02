@@ -104,7 +104,7 @@ function PrivateEmbeddingContent(props: {
         )}
         <StyledText type={TextType.P2}>
           {createMessage(IN_APP_EMBED_SETTING.upgradeContent)}&nbsp;
-          <StyledAnchor
+          {/* <StyledAnchor
             onClick={() => {
               window.open(
                 PRICING_PAGE_URL(
@@ -118,7 +118,7 @@ function PrivateEmbeddingContent(props: {
             rel="noreferrer"
           >
             {createMessage(IN_APP_EMBED_SETTING.appsmithBusinessEdition)}
-          </StyledAnchor>
+          </StyledAnchor> */}
           .
         </StyledText>
       </SubContainer>
