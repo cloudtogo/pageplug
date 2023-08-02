@@ -23,6 +23,7 @@ import {
   getCurrentPageId,
   getMainCanvasProps,
   previewModeSelector,
+  isHiddenPage
 } from "selectors/editorSelectors";
 import { usePageContainerSizeHooks } from "./dragResizeHooks";
 import { getAppMode } from "selectors/entitiesSelector";
@@ -70,6 +71,7 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
   }
   const mainCanvasProps = useSelector(getMainCanvasProps);
   const isPreviewMode = useSelector(previewModeSelector);
+  const isHidden = useSelector(isHiddenPage);
   const currentPageId = useSelector(getCurrentPageId);
   const isCanvasInitialized = useSelector(getIsCanvasInitialized);
   const appLayout = useSelector(getCurrentApplicationLayout);
@@ -182,7 +184,8 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
       (appMode === APP_MODE.PUBLISHED ||
         isPreviewMode ||
         isAppSettingsPaneWithNavigationTabOpen) &&
-      !isMobile &&
+      !isMobile && 
+      !isHidden &&
       sidebarWidth
     ) {
       calculatedWidth -= sidebarWidth;
