@@ -23,7 +23,7 @@ import {
   getCurrentPageId,
   getMainCanvasProps,
   previewModeSelector,
-  isHiddenPage
+  isHiddenPage,
 } from "selectors/editorSelectors";
 import { usePageContainerSizeHooks } from "./dragResizeHooks";
 import { getAppMode } from "selectors/entitiesSelector";
@@ -184,7 +184,7 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
       (appMode === APP_MODE.PUBLISHED ||
         isPreviewMode ||
         isAppSettingsPaneWithNavigationTabOpen) &&
-      !isMobile && 
+      !isMobile &&
       !isHidden &&
       sidebarWidth
     ) {
