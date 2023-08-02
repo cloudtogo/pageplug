@@ -365,6 +365,13 @@ export const getCurrentPageName = createSelector(
       ?.pageName,
 );
 
+export const isHiddenPage = createSelector(
+  getPageListState,
+  (pageList: PageListReduxState) =>
+    pageList.pages.find((page) => page.pageId === pageList.currentPageId)
+      ?.isHidden,
+);
+
 export const getWidgetCards = createSelector(
   getWidgetConfigs,
   isMobileLayout,
