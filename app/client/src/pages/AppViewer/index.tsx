@@ -61,7 +61,7 @@ const AppViewerBody = styled.section<{
   align-items: stretch;
   justify-content: flex-start;
   height: calc(
-    100vh - ${(props) => (props.isMobile ? "0px" : "168px")} -
+    100vh - ${(props) => (props.isMobile ? "0px" : "0x")} -
       ${(props) => (props.showTabBar ? "60px" : "0px")} -
       ${({ headerHeight }) => headerHeight}px
   );
@@ -81,6 +81,7 @@ const AppViewerBodyContainer = styled.div<{
 const StableContainer = styled.div`
   position: relative;
   overflow: hidden;
+  height: 100vh;
 `;
 
 const ContainerForBottom = styled.div<{

@@ -177,7 +177,7 @@ class CanvasWidget extends ContainerWidget {
       this.props.isMobile,
       this.props.appPositioningType === AppPositioningTypes.AUTO,
     );
-    height = snapRows * GridDefaults.DEFAULT_GRID_ROW_HEIGHT;
+    height = snapRows * GridDefaults.DEFAULT_GRID_ROW_HEIGHT + 100;
     const style: CSSProperties = {
       width: "100%",
       height: this.props.isListWidgetCanvas ? "auto" : `${height}px`,
