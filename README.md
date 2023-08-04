@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="static/pageplug/pageplug_logo_banner.svg" width="360" height="160" alt="PagePlug">
+  <img src="static/pageplug/new-banner.svg" width="360" height="160" alt="PagePlug">
 </p>
 
 <h2 align="center">面向研发使用的低代码，让智慧的开发者们不再做重复的造轮子工作
