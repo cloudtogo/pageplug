@@ -5,7 +5,7 @@ COPY ./build /var/www/appsmith
 
 EXPOSE 80
 
-ENV APPSMITH_SERVER_PROXY_PASS="http://appsmith-internal-server:8080"
+ENV APPSMITH_SERVER_PROXY_PASS="http://pageplug-internal-server:8080"
 
 # This is the default nginx template file inside the container.
 # This is replaced by the install.sh script during a deployment
