@@ -1,0 +1,112 @@
+# 引入 本地.gitlab-ci.yml 文件
+
+stages:
+  - build
+  - docker_build
+  - test
+  # - deploy
+
+default:
+  tags:
+    - pageplug-ce
+
+variables:
+  HOST: harbor.cloud2go.cn
+  TAG: v1.9.20
+
+build-rts:
+  stage: build
+  script:
+    - cd app/rts
+    - ./build.sh
+  artifacts:
+    paths:
+      - app/rts/dist
+  cache:
+    paths:
+      - app/rts/node_modules
+
+build_client:
+  stage: build
+  before_script:
+    - cd app/client
+    - yarn config set registry http://registry.npmmirror.com/
+    - yarn
+  script:
+    - cd app/client
+    - yarn
+    - yarn build-win
+  artifacts:
+    paths:
+      - app/client/build
+  cache:
+    paths:
+      - app/node_modules
+      - app/client/node_modules
+
+build_server:
+  stage: build
+  before_script:
+    - cd app/server
+    - mvn clean compile
+    - bash ./build.sh -DskipTests
+  script:
+    - bash ./scripts/start-dev-server.sh
+  artifacts:
+    paths:
+      - app/server/dist
+  cache:
+    paths:
+      - app/server/dist
+
+docker_build_job:
+  stage: docker_build
+  needs:
+    - build_job
+  before_script:
+    - ls
+    - cd ..
+  script:
+    - docker pull harbor.cloud2go.cn/pageplug/pageplug-ce:v1.19.20
+    - docker build -t $HOST/pageplug/pageplug-ce:$TAG .
+    - docker push $HOST/pageplug/pageplug-ce:$TAG
+  cache:
+    paths:
+      - app/node_modules
+      - app/client/node_modules
+      - app/server/dist
+
+test_job:
+  stage: test
+  needs:
+    - build_job
+  script:
+    - echo "build success"
+# deploy-job:
+#   stage: deploy
+#   needs:
+#     - docker_build_job
+#   script:
+#     - |-
+#       result=$(kubectl set image deployment solar-controller *=$HOST/solarmesh/solar-controller:$TAG -n service-mesh --kubeconfig /root/cc)
+
+#       if [[ "$(echo $result | grep updated)" != ""  ]]; then
+#         # 镜像地址更新了，会自动重新部署
+#         echo 'UPDATED'
+#       else
+#       # 镜像地址与之前相同，需要触发重新部署
+#       echo 'NOT UPDATE'
+#       kubectl rollout restart deployment solar-controller -n service-mesh --kubeconfig /root/cc
+#       fi
+
+#deploy_k8s_job:   # The job name.
+#  image: registry.cn-hangzhou.aliyuncs.com/haoshuwei24/kubectl:1.16.6   # The image that is used in this stage.
+#  stage: deploy_k8s  # The name of the stage.
+#  tags:                      # The tag of the GitLab Runner image.
+#    - k8s-runner
+#  script:
+#    - mkdir -p /etc/deploy
+#    - echo $kube_config |base64 -d > $KUBECONFIG   # Configure the config file that is used to connect to the Kubernetes cluster.
+#    - sed -i "s/IMAGE_TAG/$CI_PIPELINE_ID/g" deployment.yaml  # Dynamically replace the image tag in the deployment file.
+#    - cat deployment.yaml
+#    - kubectl apply -f deployment.yaml
