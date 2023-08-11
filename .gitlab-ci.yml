@@ -62,7 +62,9 @@ build_server:
 docker_build_job:
   stage: docker_build
   needs:
-    - build_job
+    - build-rts
+    - build_client
+    - build_server
   before_script:
     - ls
     - cd ..
@@ -79,7 +81,9 @@ docker_build_job:
 test_job:
   stage: test
   needs:
-    - build_job
+    - build-rts
+    - build_client
+    - build_server
   script:
     - echo "build success"
 # deploy-job:
