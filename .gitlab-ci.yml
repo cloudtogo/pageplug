@@ -6,10 +6,6 @@ stages:
   - test
   # - deploy
 
-default:
-  tags:
-    - pageplug-ce
-
 variables:
   HOST: harbor.cloud2go.cn
   TAG: v1.9.20
