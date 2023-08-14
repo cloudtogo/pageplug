@@ -1,10 +1,8 @@
+import type { PropertyPaneConfig } from "constants/PropertyControlConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
-import { PropertyPaneConfig } from "constants/PropertyControlConstants";
-import {
-  CodeScannerWidgetProps,
-  ScannerLayout,
-} from "widgets/CodeScannerWidget/constants";
-
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
+import type { CodeScannerWidgetProps } from "widgets/CodeScannerWidget/constants";
+import { ScannerLayout } from "widgets/CodeScannerWidget/constants";
 export default [
   {
     sectionName: "标签",
@@ -26,6 +24,7 @@ export default [
             value: ScannerLayout.CLICK_TO_SCAN,
           },
         ],
+        hidden: isAutoLayout,
         isJSConvertible: false,
         isBindProperty: false,
         isTriggerProperty: false,
@@ -95,6 +94,7 @@ export default [
       },
     ],
   },
+
   {
     sectionName: "事件",
     children: [

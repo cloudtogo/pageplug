@@ -1,21 +1,24 @@
+/* eslint-disable prettier/prettier */
 import { css } from "styled-components";
-import { Colors, Color } from "./Colors";
+import type { Color } from "./Colors";
+import { Colors } from "./Colors";
 import * as FontFamilies from "./Fonts";
 import tinycolor from "tinycolor2";
 import { Alignment, Classes } from "@blueprintjs/core";
 import { AlertIcons } from "icons/AlertIcons";
-import { IconProps } from "constants/IconConstants";
-import { JSXElementConstructor } from "react";
 import { getAppsmithConfigs } from "@appsmith/configs";
 const { inCloudOS, workEnv } = getAppsmithConfigs();
-import { typography, Typography, TypographyKeys } from "./typography";
+import type { IconProps } from "constants/IconConstants";
+import type { JSXElementConstructor } from "react";
+import type { Typography, TypographyKeys } from "./typography";
+import { typography } from "./typography";
 
-import { LabelPosition } from "components/constants";
+import type { LabelPosition } from "components/constants";
 import {
   TABLE_SCROLLBAR_HEIGHT,
   TABLE_SCROLLBAR_WIDTH,
 } from "widgets/TableWidgetV2/component/Constants";
-export type FontFamily = typeof FontFamilies[keyof typeof FontFamilies];
+export type FontFamily = (typeof FontFamilies)[keyof typeof FontFamilies];
 
 export const IntentColors: Record<string, Color> = {
   primary: Colors.GREEN,
@@ -27,7 +30,7 @@ export const IntentColors: Record<string, Color> = {
   successLight: Colors.GREEN,
 };
 
-export type Intent = typeof IntentColors[keyof typeof IntentColors];
+export type Intent = (typeof IntentColors)[keyof typeof IntentColors];
 
 export const IntentIcons: Record<Intent, JSXElementConstructor<IconProps>> = {
   primary: AlertIcons.SUCCESS,
@@ -650,7 +653,7 @@ export const appColors = [
   "#FFEBFB",
 ] as const;
 
-export type AppColorCode = typeof appColors[number];
+export type AppColorCode = (typeof appColors)[number];
 
 const darkShades = [
   "#1A191C",
@@ -693,7 +696,7 @@ const lightShades = [
   "#E7E7E7",
 ] as const;
 
-type ShadeColor = typeof darkShades[number] | typeof lightShades[number];
+type ShadeColor = (typeof darkShades)[number] | (typeof lightShades)[number];
 
 type buttonVariant = {
   main: string;
@@ -2082,8 +2085,8 @@ export const dark: ColorType = {
     multiDropdownBoxHoverBg: darkShades[0],
     iconColor: darkShades[5],
     ctaTextColor: "#202223",
-    ctaBackgroundColor: "rgb(248, 106, 43, 0.1)",
-    ctaLearnMoreTextColor: "#f86a2b",
+    ctaBackgroundColor: "rgb(39, 183, 183, 0.1)",
+    ctaLearnMoreTextColor: "rgb(39 ,183 ,183 ,1)",
     connections: {
       error: "#f22b2b",
       connectionsCount: darkShades[11],

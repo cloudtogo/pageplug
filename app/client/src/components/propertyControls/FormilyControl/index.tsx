@@ -1,5 +1,6 @@
 import React from "react";
-import BaseControl, { ControlProps } from "../BaseControl";
+import type { ControlProps } from "../BaseControl";
+import BaseControl from "../BaseControl";
 import { Drawer, Button } from "antd";
 import { EyeOutlined, ToolOutlined } from "@ant-design/icons";
 import styled from "styled-components";
@@ -61,40 +62,14 @@ class FormilyControl extends BaseControl<ControlProps> {
   };
 
   render() {
-    const { workbenchType, showEditor } = this.state;
+    const { showEditor, workbenchType } = this.state;
     return (
       <div>
-        <Button block type="primary" onClick={this.toggle}>
+        <Button block onClick={this.toggle} type="primary">
           设计表单
         </Button>
         <Drawer
-          title={
-            <DrawerHeader>
-              <span>表单设计</span>
-              <Center>
-                <Button
-                  onClick={this.toggleDesignerMode}
-                  type="primary"
-                  shape="round"
-                  size="small"
-                  icon={
-                    workbenchType === "DESIGNABLE" ? (
-                      <EyeOutlined />
-                    ) : (
-                      <ToolOutlined />
-                    )
-                  }
-                >
-                  {workbenchType === "DESIGNABLE" ? "预览" : "编辑"}
-                </Button>
-              </Center>
-            </DrawerHeader>
-          }
-          open={showEditor}
-          onClose={this.toggle}
           afterOpenChange={this.onVisibleChanged}
-          height="100%"
-          placement="bottom"
           className="designable-drawer"
           footer={
             <div
@@ -109,6 +84,32 @@ class FormilyControl extends BaseControl<ControlProps> {
                 保存
               </Button>
             </div>
+          }
+          height="100%"
+          onClose={this.toggle}
+          open={showEditor}
+          placement="bottom"
+          title={
+            <DrawerHeader>
+              <span>表单设计</span>
+              <Center>
+                <Button
+                  icon={
+                    workbenchType === "DESIGNABLE" ? (
+                      <EyeOutlined rev={undefined} />
+                    ) : (
+                      <ToolOutlined rev={undefined} />
+                    )
+                  }
+                  onClick={this.toggleDesignerMode}
+                  shape="round"
+                  size="small"
+                  type="primary"
+                >
+                  {workbenchType === "DESIGNABLE" ? "预览" : "编辑"}
+                </Button>
+              </Center>
+            </DrawerHeader>
           }
         >
           {showEditor ? <Designer ref={this.designerRef} /> : null}

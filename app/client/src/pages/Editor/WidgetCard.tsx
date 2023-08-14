@@ -1,5 +1,5 @@
 import React from "react";
-import { WidgetCardProps } from "widgets/BaseWidget";
+import type { WidgetCardProps } from "widgets/BaseWidget";
 import styled from "styled-components";
 import { useWidgetDragResize } from "utils/hooks/dragResizeHooks";
 import AnalyticsUtil from "utils/AnalyticsUtil";
@@ -88,10 +88,7 @@ function WidgetCard(props: CardProps) {
     deselectAll();
   };
 
-  const type = `${props.details.type
-    .split("_")
-    .join("")
-    .toLowerCase()}`;
+  const type = `${props.details.type.split("_").join("").toLowerCase()}`;
   const className = `t--widget-card-draggable-${type}`;
   return (
     <Wrapper

@@ -30,7 +30,7 @@ import {
   ArrayCards,
 } from "@formily/antd-v5";
 import { Card, Slider, Rate } from "antd";
-import { TreeNode } from "@pind/designable-core";
+import type { TreeNode } from "@pind/designable-core";
 import { transformToSchema } from "@pind/designable-formily-transformer";
 
 const Text: React.FC<{

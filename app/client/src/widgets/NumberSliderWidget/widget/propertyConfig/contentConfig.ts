@@ -1,8 +1,10 @@
 import { Alignment } from "@blueprintjs/core";
+
 import { LabelPosition } from "components/constants";
 import { ValidationTypes } from "constants/WidgetValidation";
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
-import { NumberSliderWidgetProps } from "..";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
+import type { NumberSliderWidgetProps } from "..";
 import {
   defaultValueValidation,
   maxValueValidation,
@@ -115,6 +117,7 @@ export default [
         label: "位置",
         controlType: "ICON_TABS",
         fullWidth: true,
+        hidden: isAutoLayout,
         options: [
           { label: "左", value: LabelPosition.Left },
           { label: "上", value: LabelPosition.Top },

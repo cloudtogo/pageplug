@@ -1,11 +1,13 @@
-import React, { CSSProperties } from "react";
-import { ControlIcons } from "icons/ControlIcons";
-import { Icon, IconSize } from "design-system-old";
+/* eslint-disable prettier/prettier */
+import { Classes, Tooltip } from "@blueprintjs/core";
 import { Colors } from "constants/Colors";
-import styled from "styled-components";
-import { Tooltip, Classes } from "@blueprintjs/core";
+import { Icon, IconSize } from "design-system-old";
+import { ControlIcons } from "icons/ControlIcons";
+import type { CSSProperties } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { snipingModeSelector } from "selectors/editorSelectors";
+import styled from "styled-components";
 // I honestly can't think of a better name for this enum
 export enum Activities {
   HOVERING,
@@ -20,10 +22,13 @@ const StyledTooltip = styled(Tooltip)<{
     height: 100%;
   }
 `;
-const SettingsWrapper = styled.div`
+const WidgetNameBoundary = 1;
+const BORDER_RADIUS = 4;
+const SettingsWrapper = styled.div<{ widgetWidth: number; inverted: boolean }>`
   justify-self: flex-end;
   height: 100%;
-  padding: 0 10px;
+  padding: 0 5px;
+  margin-left: 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -35,12 +40,24 @@ const SettingsWrapper = styled.div`
       line-height: ${(props) => props.theme.fontSizes[3] - 1}px;
     }
   }
-  border-radius: 2px;
+  border: ${WidgetNameBoundary}px solid ${Colors.GREY_1};
+  ${(props) => {
+    if (props.inverted) {
+      return `border-bottom-left-radius: ${BORDER_RADIUS}px;
+      border-bottom-right-radius: ${BORDER_RADIUS}px;
+      border-top: none;`;
+    } else {
+      return `border-top-left-radius: ${BORDER_RADIUS}px;
+      border-top-right-radius: ${BORDER_RADIUS}px;
+      border-bottom: none;`;
+    }
+  }}
 `;
 
 const WidgetName = styled.span`
-  margin-right: ${(props) => props.theme.spaces[1] + 1}px;
-  margin-left: ${(props) => props.theme.spaces[3]}px;
+  width: inherit;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 `;
 
@@ -60,10 +77,11 @@ type SettingsControlProps = {
   activity: Activities;
   name: string;
   errorCount: number;
+  inverted: boolean;
+  widgetWidth: number;
 };
 
 const BindDataIcon = ControlIcons.BIND_DATA_CONTROL;
-const SettingsIcon = ControlIcons.SETTINGS_CONTROL;
 
 const getStyles = (
   activity: Activities,
@@ -85,17 +103,17 @@ const getStyles = (
   switch (activity) {
     case Activities.ACTIVE:
       return {
-        background: Colors.MINT_ORANGE,
+        background: Colors.PRIMARY_LIGHT,
         color: Colors.WHITE,
       };
     case Activities.HOVERING:
       return {
-        background: Colors.MINT_ORANGE_LIGHT,
-        color: Colors.BLACK_PEARL,
+        background: Colors.PRIMARY_DARK,
+        color: Colors.WHITE,
       };
     case Activities.SELECTED:
       return {
-        background: Colors.JAFFA_DARK,
+        background: Colors.PRIMARY,
         color: Colors.WHITE,
       };
     default:
@@ -108,19 +126,6 @@ const getStyles = (
 
 export function SettingsControl(props: SettingsControlProps) {
   const isSnipingMode = useSelector(snipingModeSelector);
-  const settingsIcon = (
-    <SettingsIcon
-      color={
-        !!props.errorCount
-          ? Colors.WHITE
-          : props.activity === Activities.HOVERING
-          ? Colors.BLACK_PEARL
-          : Colors.WHITE
-      }
-      height={16}
-      width={12}
-    />
-  );
   const errorIcon = (
     <StyledErrorIcon
       fillColor={Colors.WHITE}
@@ -138,8 +143,10 @@ export function SettingsControl(props: SettingsControlProps) {
       <SettingsWrapper
         className="t--widget-propertypane-toggle"
         data-testid="t--widget-propertypane-toggle"
+        inverted={props.inverted}
         onClick={props.toggleSettings}
         style={getStyles(props.activity, props.errorCount, isSnipingMode)}
+        widgetWidth={props.widgetWidth}
       >
         {!!props.errorCount && !isSnipingMode && (
           <>
@@ -153,10 +160,9 @@ export function SettingsControl(props: SettingsControlProps) {
         <WidgetName className="t--widget-name">
           {isSnipingMode ? `绑定到 ${props.name}` : props.name}
         </WidgetName>
-        {!isSnipingMode && settingsIcon}
       </SettingsWrapper>
     </StyledTooltip>
   );
 }
 
-export default SettingsControl;
+export default React.memo(SettingsControl);

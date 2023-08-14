@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import EditableText, {
   EditInteractionKind,
 } from "components/editorComponents/EditableText";
@@ -10,9 +11,11 @@ import styled from "styled-components";
 import { isEllipsisActive, removeSpecialChars } from "utils/helpers";
 
 import { TOOLTIP_HOVER_ON_DELAY } from "constants/AppConstants";
-import { ReactComponent as BetaIcon } from "assets/icons/menu/beta.svg";
 import NameEditorComponent from "components/utils/NameEditorComponent";
 import { ENTITY_EXPLORER_ACTION_NAME_CONFLICT_ERROR } from "@appsmith/constants/messages";
+import { importSvg } from "design-system-old";
+
+const BetaIcon = importSvg(() => import("assets/icons/menu/beta.svg"));
 
 export const searchHighlightSpanClassName = "token";
 export const searchTokenizationDelimiter = "!!";
@@ -88,8 +91,8 @@ export interface EntityNameProps {
   entityId: string;
   searchKeyword?: string;
   className?: string;
-  enterEditMode: () => void;
-  exitEditMode: () => void;
+  enterEditMode?: () => void;
+  exitEditMode?: () => void;
   nameTransformFn?: (input: string, limit?: number) => string;
   isBeta?: boolean;
 }
@@ -115,7 +118,7 @@ export const EntityName = React.memo(
     const searchHighlightedName = useMemo(() => {
       if (searchKeyword) {
         const regex = new RegExp(searchKeyword, "gi");
-        const delimited = updatedName.replace(regex, function(str) {
+        const delimited = updatedName.replace(regex, function (str) {
           return (
             searchTokenizationDelimiter + str + searchTokenizationDelimiter
           );

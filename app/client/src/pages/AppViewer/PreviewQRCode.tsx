@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import { isMobileLayout } from "selectors/applicationSelectors";
 import { fetchApplicationPreviewWxaCode } from "actions/applicationActions";
 import { Colors } from "constants/Colors";
@@ -74,11 +74,11 @@ export type PreviewQRCodeProps = {
 
 const PreviewQRCode = ({
   appId,
+  fetchWxaCode,
   imageData,
   isLoading,
-  loadFailed,
   isMobile,
-  fetchWxaCode,
+  loadFailed,
 }: PreviewQRCodeProps) => {
   if (!isMobile) {
     return null;

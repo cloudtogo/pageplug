@@ -1,22 +1,35 @@
 import React from "react";
 
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { DerivedPropertiesMap } from "utils/WidgetFactory";
-import { ValidationTypes } from "constants/WidgetValidation";
-import { WIDGET_PADDING } from "constants/WidgetConstants";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import { WIDGET_PADDING } from "constants/WidgetConstants";
+import { ValidationTypes } from "constants/WidgetValidation";
 import { base64ToBlob, createBlobUrl } from "utils/AppsmithUtils";
+import type { DerivedPropertiesMap } from "utils/WidgetFactory";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import { FileDataTypes } from "widgets/constants";
 
+import type { Stylesheet } from "entities/AppTheming";
 import CameraComponent from "../component";
-import {
-  CameraMode,
-  CameraModeTypes,
-  MediaCaptureStatusTypes,
-} from "../constants";
-import { Stylesheet } from "entities/AppTheming";
+import type { CameraMode } from "../constants";
+import { CameraModeTypes, MediaCaptureStatusTypes } from "../constants";
+import type { AutocompletionDefinitions } from "widgets/constants";
 
 class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "Camera widget allows users to take a picture or record videos through their system camera using browser permissions.",
+      "!url": "https://docs.appsmith.com/widget-reference/camera",
+      imageBlobURL: "string",
+      imageDataURL: "string",
+      imageRawBinary: "string",
+      videoBlobURL: "string",
+      videoDataURL: "string",
+      videoRawBinary: "string",
+    };
+  }
+
   static getPropertyPaneContentConfig() {
     return [
       {

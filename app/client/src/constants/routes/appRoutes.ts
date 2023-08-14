@@ -1,7 +1,7 @@
 // Leaving this require here. The path-to-regexp module has a commonJS version and an ESM one.
 // We are loading the correct one with the typings with our compilerOptions property "moduleResolution" set to "node". Ref: https://stackoverflow.com/questions/59013618/unable-to-find-module-path-to-regexp
 // All solutions from closed issues on their repo have been tried. Ref: https://github.com/pillarjs/path-to-regexp/issues/193
-const { match } = require("path-to-regexp");
+import { match } from "path-to-regexp";
 
 export const BUILDER_VIEWER_PATH_PREFIX = "/app/";
 export const BUILDER_PATH = `${BUILDER_VIEWER_PATH_PREFIX}:applicationSlug/:pageSlug(.*\-):pageId/edit`;
@@ -17,7 +17,8 @@ export const getViewerCustomPath = (customSlug: string, pageId: string) =>
   `${BUILDER_VIEWER_PATH_PREFIX}${customSlug}-${pageId}`;
 export const BUILDER_PATH_DEPRECATED = `/applications/:applicationId/pages/:pageId/edit`;
 export const VIEWER_PATH_DEPRECATED = `/applications/:applicationId/pages/:pageId`;
-export const VIEWER_PATH_DEPRECATED_REGEX = /\/applications\/[^/]+\/pages\/[^/]+/;
+export const VIEWER_PATH_DEPRECATED_REGEX =
+  /\/applications\/[^/]+\/pages\/[^/]+/;
 
 export const VIEWER_LAYOUT_CONFIG_PATH = `/viewerlayout`;
 export const VIEWER_FORK_PATH = `/fork`;
@@ -130,3 +131,6 @@ export const INTEGRATION_EDITOR_MODES = {
 export const PLACEHOLDER_APP_SLUG = "application";
 export const PLACEHOLDER_PAGE_ID = "pageId";
 export const PLACEHOLDER_PAGE_SLUG = "page";
+
+export const SHOW_FILE_PICKER_KEY = "showPicker";
+export const RESPONSE_STATUS = "response_status";

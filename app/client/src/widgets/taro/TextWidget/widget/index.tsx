@@ -1,9 +1,10 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType, TextSize } from "constants/WidgetConstants";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
+import type { WidgetType, TextSize } from "constants/WidgetConstants";
 import TextComponent from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
-import { DerivedPropertiesMap } from "utils/WidgetFactory";
+import type { DerivedPropertiesMap } from "utils/WidgetFactory";
 import LoadingWrapper from "../../LoadingWrapper";
 import { ControlIcons } from "icons/ControlIcons";
 

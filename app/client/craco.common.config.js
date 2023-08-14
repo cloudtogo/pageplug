@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const CracoAlias = require("craco-alias");
-const CracoLessPlugin = require('craco-less');
+const CracoLessPlugin = require("craco-less");
 const { DefinePlugin, EnvironmentPlugin } = require("webpack");
 const { merge } = require("webpack-merge");
+const CracoBabelLoader = require("craco-babel-loader");
+const path = require("path");
+const webpack = require("webpack");
 
 module.exports = {
   devServer: {
@@ -15,10 +19,16 @@ module.exports = {
       },
     },
   },
+  babel: {
+    plugins: ["babel-plugin-lodash"],
+  },
   webpack: {
-    configure: webpackConfig => {
+    configure: (webpackConfig) => {
       const config = {
         resolve: {
+          alias: {
+            "lodash-es": "lodash",
+          },
           fallback: {
             assert: false,
             stream: false,
@@ -32,7 +42,9 @@ module.exports = {
           rules: [
             {
               test: /\.m?js/,
-              resolve: { fullySpecified: false },
+              resolve: {
+                fullySpecified: false,
+              },
             },
           ],
         },
@@ -46,9 +58,20 @@ module.exports = {
             );
           },
         ],
+        // plugins: [
+        //   // Replace BlueprintJS’s icon component with our own implementation
+        //   // that code-splits icons away
+        //   new webpack.NormalModuleReplacementPlugin(
+        //     /@blueprintjs\/core\/lib\/\w+\/components\/icon\/icon\.\w+/,
+        //     require.resolve(
+        //       "./src/components/designSystems/blueprintjs/icon/index.js",
+        //     ),
+        //   ),
+        // ],
       };
       const scopePluginIndex = webpackConfig.resolve.plugins.findIndex(
-        ({ constructor }) => constructor && constructor.name === 'ModuleScopePlugin'
+        ({ constructor }) =>
+          constructor && constructor.name === "ModuleScopePlugin",
       );
       webpackConfig.resolve.plugins.splice(scopePluginIndex, 1);
       return merge(webpackConfig, config);
@@ -59,28 +82,41 @@ module.exports = {
         ENABLE_ADJACENT_HTML: true,
         ENABLE_TEMPLATE_CONTENT: true,
         ENABLE_CLONE_NODE: true,
-        ENABLE_SIZE_APIS: false
+        ENABLE_SIZE_APIS: false,
       }),
       new EnvironmentPlugin({
-        TARO_ENV: 'h5',
+        TARO_ENV: "h5",
       }),
-    ]
+    ],
   },
   style: {
     postcss: {
       loaderOptions: {
         postcssOptions: {
-          ident: 'postcss',
+          ident: "postcss",
           plugins: [
-            'tailwindcss',
-            'autoprefixer',
-            ['postcss-pageplug-pxtorem', {
-              h5Width: 450,
-            }],
-          ]
-        }
-      }
-    }
+            "tailwindcss",
+            "autoprefixer",
+            [
+              "postcss-pageplug-pxtorem",
+              {
+                h5Width: 450,
+              },
+            ],
+          ],
+        },
+      },
+      plugins: [
+        // Replace BlueprintJS’s icon component with our own implementation
+        // that code-splits icons away
+        new webpack.NormalModuleReplacementPlugin(
+          /@blueprintjs\/core\/lib\/\w+\/components\/icon\/icon\.\w+/,
+          require.resolve(
+            "./src/components/designSystems/blueprintjs/icon/index.js",
+          ),
+        ),
+      ],
+    },
   },
   plugins: [
     {
@@ -92,6 +128,12 @@ module.exports = {
         baseUrl: "./src",
         // tsConfigPath should point to the file where "baseUrl" and "paths" are specified
         tsConfigPath: "./tsconfig.path.json",
+      },
+    },
+    {
+      plugin: CracoBabelLoader,
+      options: {
+        includes: [path.resolve("packages")],
       },
     },
     {
@@ -113,31 +155,99 @@ module.exports = {
         },
       },
     },
+    {
+      // Prioritize the local src directory over node_modules.
+      // This matters for cases where `src/<dirname>` and `node_modules/<dirname>` both exist –
+      // e.g., when `<dirname>` is `entities`: https://github.com/appsmithorg/appsmith/pull/20964#discussion_r1124782356
+      plugin: {
+        overrideWebpackConfig: ({ webpackConfig }) => {
+          webpackConfig.resolve.modules = [
+            path.resolve(__dirname, "src"),
+            ...webpackConfig.resolve.modules,
+          ];
+          return webpackConfig;
+        },
+      },
+    },
   ],
   typescript: {
-    enableTypeChecking: false
+    enableTypeChecking: false,
   },
-  // babel: {
-  //   plugins: [
-  //     [
-  //       "import",
-  //       {
-  //         libraryName: "@taroify/core",
-  //         libraryDirectory: "",
-  //         style: true,
-  //       },
-  //       "@taroify/core",
-  //     ],
-  //     [
-  //       "import",
-  //       {
-  //         libraryName: "@taroify/icons",
-  //         libraryDirectory: "",
-  //         camel2DashComponentName: false,
-  //         style: () => "@taroify/icons/style",
-  //       },
-  //       "@taroify/icons",
-  //     ],
-  //   ],
-  // }
 };
+
+// plugins: [{
+//     plugin: CracoAlias,
+//     options: {
+//       source: "tsconfig",
+//       // baseUrl SHOULD be specified
+//       // plugin does not take it from tsconfig
+//       baseUrl: "./src",
+//       // tsConfigPath should point to the file where "baseUrl" and "paths" are specified
+//       tsConfigPath: "./tsconfig.path.json",
+//     },
+//   },
+//   {
+//     plugin: CracoBabelLoader,
+//     options: {
+//       includes: [path.resolve("packages")],
+//     },
+//   },
+//   {
+//     plugin: "prismjs",
+//     options: {
+//       languages: ["javascript"],
+//       plugins: [],
+//       theme: "twilight",
+//       css: false,
+//     },
+//   },
+//   {
+//     // plugin: CracoLessPlugin,
+//     // options: {
+//     //   lessLoaderOptions: {
+//     //     lessOptions: {
+//     //       javascriptEnabled: true,
+//     //     },
+//     // Prioritize the local src directory over node_modules.
+//     // This matters for cases where `src/<dirname>` and `node_modules/<dirname>` both exist –
+//     // e.g., when `<dirname>` is `entities`: https://github.com/appsmithorg/appsmith/pull/20964#discussion_r1124782356
+//     plugin: {
+//       overrideWebpackConfig: ({
+//         webpackConfig
+//       }) => {
+//         webpackConfig.resolve.modules = [
+//           path.resolve(__dirname, "src"),
+//           ...webpackConfig.resolve.modules,
+//         ];
+//         return webpackConfig;
+//       },
+//     },
+//   },
+// ],
+// typescript: {
+//   enableTypeChecking: false,
+// },
+// babel: {
+//   plugins: [
+//     [
+//       "import",
+//       {
+//         libraryName: "@taroify/core",
+//         libraryDirectory: "",
+//         style: true,
+//       },
+//       "@taroify/core",
+//     ],
+//     [
+//       "import",
+//       {
+//         libraryName: "@taroify/icons",
+//         libraryDirectory: "",
+//         camel2DashComponentName: false,
+//         style: () => "@taroify/icons/style",
+//       },
+//       "@taroify/icons",
+//     ],
+//   ],
+// }
+// };

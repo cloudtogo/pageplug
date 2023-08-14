@@ -1,15 +1,13 @@
 import React from "react";
 import styled from "styled-components";
 import { connect, useDispatch, useSelector } from "react-redux";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import { updatePage } from "actions/pageActions";
-import { UpdatePageRequest } from "api/PageApi";
+import type { UpdatePageRequest } from "api/PageApi";
 import { getViewModePageList, getCurrentPage } from "selectors/editorSelectors";
 import { isMobileLayout } from "selectors/applicationSelectors";
-import {
-  Page,
-  ReduxActionTypes,
-} from "@appsmith/constants/ReduxActionConstants";
+import type { Page } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import EditablePageName from "pages/Editor/Explorer/Entity/Name";
 import Loader from "pages/Editor/Explorer/Entity/Loader";
 import { resolveAsSpaceChar } from "utils/helpers";
@@ -122,7 +120,7 @@ const TabBar = ({ currentPage, isFull }: TabbarProps) => {
           }
         />
         {isEditing ? null : (
-          <Icon name="edit" size={IconSize.LARGE} onClick={startEditingName} />
+          <Icon name="edit" onClick={startEditingName} size={IconSize.LARGE} />
         )}
       </PropertyControl>
 
@@ -131,11 +129,11 @@ const TabBar = ({ currentPage, isFull }: TabbarProps) => {
         position={Position.TOP}
       >
         <AddSwitch
+          alignIndicator={Alignment.RIGHT}
           checked={!!pageIcon}
+          disabled={switchDisabled}
           large
           onChange={onToggle}
-          disabled={switchDisabled}
-          alignIndicator={Alignment.RIGHT}
         >
           添加到底部导航栏
         </AddSwitch>
@@ -151,8 +149,8 @@ const TabBar = ({ currentPage, isFull }: TabbarProps) => {
           <PropertyName>导航栏图标</PropertyName>
           <PropertyControl>
             <IconSelectControl
-              propertyValue={pageIcon}
               onIconSelected={onIconSelected}
+              propertyValue={pageIcon}
             />
           </PropertyControl>
         </>

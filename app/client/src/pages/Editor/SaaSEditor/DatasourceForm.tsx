@@ -3,44 +3,47 @@ import _, { merge } from "lodash";
 import { DATASOURCE_SAAS_FORM } from "@appsmith/constants/forms";
 import FormTitle from "pages/Editor/DataSourceEditor/FormTitle";
 import { Category } from "design-system-old";
-import { Datasource } from "entities/Datasource";
-import {
-  getFormValues,
-  InjectedFormProps,
-  isDirty,
-  reduxForm,
-} from "redux-form";
-import { RouteComponentProps } from "react-router";
+import type { Datasource } from "entities/Datasource";
+import { ActionType } from "entities/Datasource";
+import type { InjectedFormProps } from "redux-form";
+import { getFormValues, isDirty, reduxForm } from "redux-form";
+import type { RouteComponentProps } from "react-router";
 import { connect } from "react-redux";
-import { AppState } from "@appsmith/reducers";
+import styled from "styled-components";
+import type { AppState } from "@appsmith/reducers";
 import {
   getDatasource,
   getPluginImages,
   getDatasourceFormButtonConfig,
   getPlugin,
+  getPluginDocumentationLinks,
+  getDatasourceScopeValue,
 } from "selectors/entitiesSelector";
-import { ActionDataState } from "reducers/entityReducers/actionsReducer";
+import type { ActionDataState } from "reducers/entityReducers/actionsReducer";
+import type { JSONtoFormProps } from "../DataSourceEditor/JSONtoForm";
 import {
   ActionWrapper,
   EditDatasourceButton,
   FormTitleContainer,
   Header,
   JSONtoForm,
-  JSONtoFormProps,
   PluginImage,
 } from "../DataSourceEditor/JSONtoForm";
+import DatasourceInformation from "./../DataSourceEditor/DatasourceSection";
 import { getConfigInitialValues } from "components/formControls/utils";
 import Connected from "../DataSourceEditor/Connected";
 
 import {
   getCurrentApplicationId,
+  getGsheetProjectID,
+  getGsheetToken,
   getPagePermissions,
 } from "selectors/editorSelectors";
 import DatasourceAuth from "pages/common/datasourceAuth";
 import EntityNotFoundPane from "../EntityNotFoundPane";
 import { saasEditorDatasourceIdURL } from "RouteBuilder";
 import NewActionButton from "../DataSourceEditor/NewActionButton";
-import { Plugin } from "api/PluginApi";
+import type { Plugin } from "api/PluginApi";
 import { isDatasourceAuthorizedForQueryCreation } from "utils/editorContextUtils";
 import { PluginPackageName } from "entities/Action";
 import AuthMessage from "pages/common/datasourceAuth/AuthMessage";
@@ -53,6 +56,7 @@ import { TEMP_DATASOURCE_ID } from "constants/Datasource";
 import {
   createTempDatasourceFromForm,
   deleteTempDSFromDraft,
+  loadFilePickerAction,
   removeTempDatasource,
   setDatasourceViewMode,
   toggleSaveActionFlag,
@@ -60,11 +64,16 @@ import {
 } from "actions/datasourceActions";
 import SaveOrDiscardDatasourceModal from "../DataSourceEditor/SaveOrDiscardDatasourceModal";
 import {
-  GSHEET_AUTHORIZATION_ERROR,
   createMessage,
+  GOOGLE_SHEETS_INFO_BANNER_MESSAGE,
+  GSHEET_AUTHORIZATION_ERROR,
   SAVE_AND_AUTHORIZE_BUTTON_TEXT,
-} from "ce/constants/messages";
+} from "@appsmith/constants/messages";
 import { selectFeatureFlags } from "selectors/usersSelectors";
+import { getDatasourceErrorMessage } from "./errorUtils";
+import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+import { DocumentationLink } from "../QueryEditor/EditorJSONtoForm";
+import GoogleSheetFilePicker from "./GoogleSheetFilePicker";
 
 interface StateProps extends JSONtoFormProps {
   applicationId: string;
@@ -88,6 +97,10 @@ interface StateProps extends JSONtoFormProps {
   isDatasourceBeingSaved: boolean;
   isDatasourceBeingSavedFromPopup: boolean;
   isFormDirty: boolean;
+  gsheetToken?: string;
+  gsheetProjectID?: string;
+  documentationLink: string | undefined;
+  scopeValue?: string;
 }
 interface DatasourceFormFunctions {
   discardTempDatasource: () => void;
@@ -96,6 +109,7 @@ interface DatasourceFormFunctions {
   toggleSaveActionFromPopupFlag: (flag: boolean) => void;
   createTempDatasource: (data: any) => void;
   setDatasourceViewMode: (viewMode: boolean) => void;
+  loadFilePickerAction: () => void;
 }
 
 type DatasourceSaaSEditorProps = StateProps &
@@ -122,6 +136,13 @@ type State = {
   unblock(): void;
   navigation(): void;
 };
+
+const ViewModeWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #d0d7dd;
+  padding: 24px 20px;
+`;
 
 class DatasourceSaaSEditor extends JSONtoForm<Props, State> {
   constructor(props: Props) {
@@ -182,6 +203,7 @@ class DatasourceSaaSEditor extends JSONtoForm<Props, State> {
     if (!this.props.viewMode) {
       this.blockRoutes();
     }
+    this.props.loadFilePickerAction();
   }
 
   componentWillUnmount() {
@@ -259,17 +281,23 @@ class DatasourceSaaSEditor extends JSONtoForm<Props, State> {
       datasource,
       datasourceButtonConfiguration,
       datasourceId,
+      documentationLink,
+      featureFlags,
+      formConfig,
       formData,
+      gsheetProjectID,
+      gsheetToken,
       hiddenHeader,
       pageId,
       plugin,
       pluginPackageName,
+      scopeValue,
     } = this.props;
     const params: string = location.search;
     const viewMode =
       !hiddenHeader && new URLSearchParams(params).get("viewMode");
 
-    /* 
+    /*
       TODO: This flag will be removed once the multiple environment is merged to avoid design inconsistency between different datasources.
       Search for: GoogleSheetPluginFlag to check for all the google sheet conditional logic throughout the code.
     */
@@ -281,6 +309,22 @@ class DatasourceSaaSEditor extends JSONtoForm<Props, State> {
 
     const createFlow = datasourceId === TEMP_DATASOURCE_ID;
 
+    /*
+      Currently we show error message banner for google sheets only, but in future
+      if we want to extend this functionality for other plugins, we should be able
+      to extend this function for other plugins
+    */
+    const authErrorMessage = getDatasourceErrorMessage(formData, plugin);
+
+    const googleSheetsInfoMessage = createMessage(
+      GOOGLE_SHEETS_INFO_BANNER_MESSAGE,
+    );
+
+    const hideDatasourceSection =
+      isGoogleSheetPlugin &&
+      !isPluginAuthorized &&
+      authErrorMessage == GSHEET_AUTHORIZATION_ERROR;
+
     return (
       <>
         <form
@@ -291,7 +335,10 @@ class DatasourceSaaSEditor extends JSONtoForm<Props, State> {
           {!hiddenHeader && (
             <Header>
               <FormTitleContainer>
-                <PluginImage alt="数据源" src={this.props.pluginImage} />
+                <PluginImage
+                  alt="数据源"
+                  src={getAssetUrl(this.props.pluginImage)}
+                />
                 <FormTitle
                   disabled={!createFlow && !canManageDatasource}
                   focusOnMount={this.props.isNewDatasource}
@@ -336,10 +383,32 @@ class DatasourceSaaSEditor extends JSONtoForm<Props, State> {
           )}
           {!viewMode ? (
             <>
-              {datasource && isGoogleSheetPlugin && !isPluginAuthorized ? (
+              {/* This adds information banner when creating google sheets datasource,
+              this info banner explains why appsmith requires permissions from users google account */}
+              {!!featureFlags &&
+              !!featureFlags?.LIMITING_GOOGLE_SHEET_ACCESS &&
+              datasource &&
+              isGoogleSheetPlugin &&
+              datasource?.id === TEMP_DATASOURCE_ID ? (
+                <AuthMessage
+                  actionType={ActionType.DOCUMENTATION}
+                  calloutType="Notify"
+                  datasource={datasource}
+                  description={googleSheetsInfoMessage}
+                  pageId={pageId}
+                  style={{
+                    paddingTop: "24px",
+                  }}
+                />
+              ) : null}
+              {/* This adds error banner for google sheets datasource if the datasource is unauthorised */}
+              {datasource &&
+              isGoogleSheetPlugin &&
+              !isPluginAuthorized &&
+              datasource?.id !== TEMP_DATASOURCE_ID ? (
                 <AuthMessage
                   datasource={datasource}
-                  description={GSHEET_AUTHORIZATION_ERROR}
+                  description={authErrorMessage}
                   pageId={pageId}
                   style={{
                     paddingTop: "24px",
@@ -355,34 +424,50 @@ class DatasourceSaaSEditor extends JSONtoForm<Props, State> {
             <Connected />
           )}
           {viewMode && (
-            <Connected
-              errorComponent={
-                datasource && isGoogleSheetPlugin && !isPluginAuthorized ? (
-                  <AuthMessage
-                    actionType="authorize"
-                    datasource={datasource}
-                    description={GSHEET_AUTHORIZATION_ERROR}
-                    pageId={pageId}
-                  />
-                ) : null
-              }
-              showDatasourceSavedText={!isGoogleSheetPlugin}
-            />
+            <ViewModeWrapper>
+              <Connected
+                errorComponent={
+                  datasource && isGoogleSheetPlugin && !isPluginAuthorized ? (
+                    <AuthMessage
+                      actionType="authorize"
+                      datasource={datasource}
+                      description={authErrorMessage}
+                      pageId={pageId}
+                    />
+                  ) : null
+                }
+                showDatasourceSavedText={!isGoogleSheetPlugin}
+              />
+              {!_.isNil(formConfig) &&
+              !_.isNil(datasource) &&
+              !hideDatasourceSection ? (
+                <DatasourceInformation
+                  config={formConfig[0]}
+                  datasource={datasource}
+                  viewMode={!!viewMode}
+                />
+              ) : undefined}
+            </ViewModeWrapper>
           )}
           {/* Render datasource form call-to-actions */}
           {datasource && (
             <DatasourceAuth
               datasource={datasource}
               datasourceButtonConfiguration={datasourceButtonConfiguration}
+              datasourceDeleteTrigger={this.datasourceDeleteTrigger}
               formData={formData}
               getSanitizedFormData={_.memoize(this.getSanitizedData)}
               isInvalid={this.validate()}
               pageId={pageId}
+              scopeValue={scopeValue}
               shouldDisplayAuthMessage={!isGoogleSheetPlugin}
               shouldRender={!viewMode}
+              triggerSave={this.props.isDatasourceBeingSavedFromPopup}
             />
           )}
         </form>
+        {/* Documentation link opens up documentation in omnibar, for google sheets */}
+        {documentationLink && <DocumentationLink />}
         <SaveOrDiscardDatasourceModal
           datasourceId={datasourceId}
           datasourcePermissions={datasource?.userPermissions || []}
@@ -392,6 +477,13 @@ class DatasourceSaaSEditor extends JSONtoForm<Props, State> {
           onSave={this.onSave}
           saveButtonText={createMessage(SAVE_AND_AUTHORIZE_BUTTON_TEXT)}
         />
+        {!!gsheetToken ? (
+          <GoogleSheetFilePicker
+            datasourceId={datasourceId}
+            gsheetProjectID={gsheetProjectID}
+            gsheetToken={gsheetToken}
+          />
+        ) : null}
       </>
     );
   };
@@ -414,6 +506,13 @@ const mapStateToProps = (state: AppState, props: any) => {
   }
   merge(initialValues, datasource);
 
+  // get scopeValue to be shown in analytical events
+  const scopeValue = getDatasourceScopeValue(
+    state,
+    datasourceId,
+    DATASOURCE_SAAS_FORM,
+  );
+
   const datasourceButtonConfiguration = getDatasourceFormButtonConfig(
     state,
     formData?.pluginId,
@@ -435,10 +534,15 @@ const mapStateToProps = (state: AppState, props: any) => {
     ...pagePermissions,
   ]);
 
+  const gsheetToken = getGsheetToken(state);
+  const gsheetProjectID = getGsheetProjectID(state);
+  const documentationLinks = getPluginDocumentationLinks(state);
+
   return {
     datasource,
     datasourceButtonConfiguration,
     datasourceId,
+    documentationLink: documentationLinks[pluginId],
     isSaving: datasources.loading,
     isDeleting: !!datasource?.isDeleting,
     formData: formData,
@@ -463,6 +567,9 @@ const mapStateToProps = (state: AppState, props: any) => {
     isFormDirty,
     canCreateDatasourceActions,
     featureFlags: selectFeatureFlags(state),
+    gsheetToken,
+    gsheetProjectID,
+    scopeValue,
   };
 };
 
@@ -476,6 +583,7 @@ const mapDispatchToProps = (dispatch: any): DatasourceFormFunctions => ({
     dispatch(setDatasourceViewMode(viewMode)),
   createTempDatasource: (data: any) =>
     dispatch(createTempDatasourceFromForm(data)),
+  loadFilePickerAction: () => dispatch(loadFilePickerAction()),
 });
 
 export default connect(

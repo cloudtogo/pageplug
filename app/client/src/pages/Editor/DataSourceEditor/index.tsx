@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { getFormInitialValues, getFormValues, isDirty } from "redux-form";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import { get, isEqual } from "lodash";
 import {
   getPluginImages,
@@ -25,8 +25,8 @@ import {
 } from "@appsmith/constants/forms";
 import DataSourceEditorForm from "./DBForm";
 import RestAPIDatasourceForm from "./RestAPIDatasourceForm";
-import { Datasource } from "entities/Datasource";
-import { RouteComponentProps } from "react-router";
+import type { Datasource } from "entities/Datasource";
+import type { RouteComponentProps } from "react-router";
 import EntityNotFoundPane from "pages/Editor/EntityNotFoundPane";
 import { setGlobalSearchQuery } from "actions/globalSearchActions";
 import { toggleShowGlobalSearchModal } from "actions/globalSearchActions";
@@ -50,6 +50,8 @@ import { isDatasourceInViewMode } from "selectors/ui";
 import { getQueryParams } from "utils/URLUtils";
 import { TEMP_DATASOURCE_ID } from "constants/Datasource";
 import SaveOrDiscardDatasourceModal from "./SaveOrDiscardDatasourceModal";
+import styled from "styled-components";
+import DSDataFilter from "@appsmith/components/DSDataFilter";
 
 interface ReduxStateProps {
   datasourceId: string;
@@ -90,6 +92,19 @@ type Props = ReduxStateProps &
     pageId: string;
   }>;
 
+const DSEditorWrapper = styled.div`
+  height: calc(100vh - ${(props) => props.theme.headerHeight});
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+`;
+
+type DatasourceFilterState = {
+  id: string;
+  name: string;
+  userPermissions: string[];
+};
+
 /*
   **** State Variables Description ****
   showDialog: flag used to show/hide the datasource discard popup
@@ -101,6 +116,7 @@ type State = {
   showDialog: boolean;
   routesBlocked: boolean;
   readUrlParams: boolean;
+  filterParams: DatasourceFilterState;
 
   unblock(): void;
   navigation(): void;
@@ -220,6 +236,11 @@ class DatasourceEditorRouter extends React.Component<Props, State> {
       showDialog: false,
       routesBlocked: false,
       readUrlParams: false,
+      filterParams: {
+        id: "",
+        name: "",
+        userPermissions: [],
+      },
       unblock: () => {
         return undefined;
       },
@@ -386,6 +407,17 @@ class DatasourceEditorRouter extends React.Component<Props, State> {
     }
   }
 
+  updateFilter = (id: string, name: string, userPermissions: string[]) => {
+    this.setState({
+      ...this.state,
+      filterParams: {
+        id,
+        name,
+        userPermissions,
+      },
+    });
+  };
+
   renderSaveDisacardModal() {
     return (
       <SaveOrDiscardDatasourceModal
@@ -471,15 +503,23 @@ class DatasourceEditorRouter extends React.Component<Props, State> {
     // Default to old flow
     // Todo: later refactor to make this "AutoForm"
     return (
-      <>
-        <DataSourceEditor
-          {...this.props}
-          datasourceDeleteTrigger={this.datasourceDeleteTrigger}
-          datasourceId={datasourceId}
-          pageId={pageId}
-        />
-        {this.renderSaveDisacardModal()}
-      </>
+      <DSEditorWrapper>
+        {!viewMode && (
+          <DSDataFilter
+            pluginType={this.props.pluginType}
+            updateFilter={this.updateFilter}
+          />
+        )}
+        <>
+          <DataSourceEditor
+            {...this.props}
+            datasourceDeleteTrigger={this.datasourceDeleteTrigger}
+            datasourceId={datasourceId}
+            pageId={pageId}
+          />
+          {this.renderSaveDisacardModal()}
+        </>
+      </DSEditorWrapper>
     );
   }
 }
@@ -500,7 +540,8 @@ const mapStateToProps = (state: AppState, props: any): ReduxStateProps => {
   const isFormDirty =
     datasourceId === TEMP_DATASOURCE_ID ? true : isDirty(formName)(state);
   const initialValue = getFormInitialValues(formName)(state) as Datasource;
-  const defaultKeyValueArrayConfig = datasourcePane?.defaultKeyValueArrayConfig as any;
+  const defaultKeyValueArrayConfig =
+    datasourcePane?.defaultKeyValueArrayConfig as any;
 
   return {
     datasourceId,

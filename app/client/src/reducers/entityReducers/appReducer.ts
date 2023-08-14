@@ -1,12 +1,10 @@
 import { createReducer } from "utils/ReducerUtils";
-import {
-  ReduxAction,
-  ReduxActionTypes,
-} from "@appsmith/constants/ReduxActionConstants";
-import { User } from "constants/userConstants";
-import { APP_MODE } from "entities/App";
 import { getAppsmithConfigs } from "@appsmith/configs";
 const { inCloudOS } = getAppsmithConfigs();
+import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import type { User } from "constants/userConstants";
+import type { APP_MODE } from "entities/App";
 
 export type AuthUserState = {
   username: string;

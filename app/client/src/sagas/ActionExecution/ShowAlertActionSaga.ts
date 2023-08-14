@@ -8,7 +8,7 @@ import { getType, Types } from "utils/TypeHelpers";
 import { select } from "redux-saga/effects";
 import { isMobileLayout } from "selectors/applicationSelectors";
 import Taro from "@tarojs/taro";
-import { TShowAlertDescription } from "workers/Evaluation/fns/showAlert";
+import type { TShowAlertDescription } from "workers/Evaluation/fns/showAlert";
 
 export default function* showAlertSaga(action: TShowAlertDescription) {
   const { payload } = action;
@@ -21,10 +21,17 @@ export default function* showAlertSaga(action: TShowAlertDescription) {
     );
   }
 
-  const isMobile = yield select(isMobileLayout);
+  const isMobile: boolean = yield select(isMobileLayout);
   if (isMobile) {
+    let iconStr: any = "none";
+    if (payload.style === "success") {
+      iconStr = "success";
+    }
+    if (payload.style === "loading") {
+      iconStr = "loading";
+    }
     Taro.showToast({
-      icon: payload.style,
+      icon: iconStr,
       title: payload.message,
     });
     return;

@@ -1,7 +1,8 @@
 import * as React from "react";
 import styled from "styled-components";
 import { Button, Menu, MenuItem } from "@blueprintjs/core";
-import { ItemListRenderer, ItemRenderer, Select } from "@blueprintjs/select";
+import type { ItemListRenderer, ItemRenderer } from "@blueprintjs/select";
+import { Select } from "@blueprintjs/select";
 import { createVanIconComponent } from "@taroify/icons/van";
 import {
   NONE,
@@ -87,7 +88,7 @@ const renderVantIcon = (icon: string) => {
   return vantIcon;
 };
 
-const IconSelect = ({ onIconSelected, iconName }: IconSelectProps) => {
+const IconSelect = ({ iconName, onIconSelected }: IconSelectProps) => {
   const renderMenu: ItemListRenderer<IconType> = ({
     items,
     itemsParentRef,

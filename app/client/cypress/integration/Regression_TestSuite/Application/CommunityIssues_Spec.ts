@@ -66,8 +66,9 @@ describe("AForce - Community Issues page validations", function() {
     ee.SelectEntityByName("Table1", "Widgets");
     agHelper.AssertExistingToggleState("serversidepagination", "checked");
 
-    propPane.ValidatePropertyFieldValue("Default Selected Row", "0")
-    .then(($selectedRow: any) => {
+    propPane
+      .ValidatePropertyFieldValue("Default Selected Row", "0")
+      .then(($selectedRow: any) => {
         selectedRow = Number($selectedRow);
         table.AssertSelectedRow(selectedRow);
       });
@@ -204,7 +205,7 @@ describe("AForce - Community Issues page validations", function() {
   });
 
   it("7. Validate Filter table", () => {
-    var filterTitle = new Array();
+    let filterTitle = new Array();
     deployMode.DeployApp();
     table.WaitUntilTableLoad();
 
@@ -231,7 +232,7 @@ describe("AForce - Community Issues page validations", function() {
     });
 
     for (let i = 0; i < 8; i++) {
-      table.ReadTableRowColumnData(i, 1, 100).then(($cellData) => {
+      table.ReadTableRowColumnData(i, 1, "v1", 100).then(($cellData) => {
         if ($cellData.toLowerCase().includes("query"))
           filterTitle.push($cellData);
       });
@@ -245,12 +246,12 @@ describe("AForce - Community Issues page validations", function() {
 
     //Two filters - AND
     table.OpenNFilterTable("Votes", "greater than", "2");
-    table.ReadTableRowColumnData(0, 1, 3000).then(($cellData) => {
+    table.ReadTableRowColumnData(0, 1, "v1", 3000).then(($cellData) => {
       expect($cellData).to.eq("Combine queries from different datasources");
     });
 
     table.OpenNFilterTable("Title", "contains", "button", "AND", 1);
-    table.ReadTableRowColumnData(0, 1, 3000).then(($cellData) => {
+    table.ReadTableRowColumnData(0, 1, "v1", 3000).then(($cellData) => {
       expect($cellData).to.eq(
         "Change the video in the video player with a button click",
       );
@@ -297,16 +298,17 @@ describe("AForce - Community Issues page validations", function() {
     table.SearchTable("Suggestion", 2);
     table.WaitUntilTableLoad();
 
-    table.ReadTableRowColumnData(0, 0, 4000).then((cellData) => {
+    table.ReadTableRowColumnData(0, 0, "v1", 4000).then((cellData) => {
       expect(cellData).to.be.equal("Suggestion");
     });
 
-    table.ReadTableRowColumnData(0, 1, 1000).then((cellData) => {
+    table.ReadTableRowColumnData(0, 1).then((cellData) => {
       expect(cellData).to.be.equal("Adding Title Suggestion via script");
     });
   });
 
   it("9. Validate Updating issue from Details tab & Verify multiselect widget selected values", () => {
+    agHelper.Sleep(2000);
     agHelper.AssertElementAbsence(locator._widgetInDeployed("tabswidget"));
     agHelper.Sleep(2000);
     table.SelectTableRow(0, 1);
@@ -358,11 +360,11 @@ describe("AForce - Community Issues page validations", function() {
     );
     agHelper.ClickButton("Save");
     agHelper.Sleep(2000);
-    table.ReadTableRowColumnData(0, 0, 2000).then((cellData) => {
+    table.ReadTableRowColumnData(0, 0, "v1", 2000).then((cellData) => {
       expect(cellData).to.be.equal("Troubleshooting");
     });
 
-    table.ReadTableRowColumnData(0, 1, 1000).then((cellData) => {
+    table.ReadTableRowColumnData(0, 1).then((cellData) => {
       expect(cellData).to.be.equal(
         "Adding Title Suggestion via script-updating title",
       );
@@ -372,6 +374,7 @@ describe("AForce - Community Issues page validations", function() {
   });
 
   it("10. Validate Deleting the newly created issue", () => {
+    agHelper.Sleep(2000);
     agHelper.AssertElementAbsence(locator._widgetInDeployed("tabswidget"));
     table.SelectTableRow(0);
     agHelper.AssertElementVisible(locator._widgetInDeployed("tabswidget"));

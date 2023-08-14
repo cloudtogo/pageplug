@@ -26,7 +26,7 @@ const ItemWrapper = styled.div`
 `;
 
 type RenderComponentProps = {
-  focusedIndex: number | null | undefined;
+  focusedIndex?: number | null | undefined;
   index: number;
   item: {
     label: string;

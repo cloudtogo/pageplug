@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import BaseControl, { ControlProps } from "./BaseControl";
+import type { ControlProps } from "./BaseControl";
+import BaseControl from "./BaseControl";
 import { StyledPropertyPaneButton } from "./StyledControls";
 import { generateReactKey } from "utils/generators";
 import { getNextEntityName } from "utils/AppsmithUtils";
@@ -30,7 +31,7 @@ const AddMenuItemButton = styled(StyledPropertyPaneButton)`
 `;
 
 type State = {
-  focusedIndex: number | null;
+  focusedIndex?: number | null;
 };
 
 class MenuItemsControl extends BaseControl<ControlProps, State> {

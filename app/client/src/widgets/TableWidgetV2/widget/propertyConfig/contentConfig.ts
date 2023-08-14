@@ -1,25 +1,23 @@
-import { ValidationTypes } from "constants/WidgetValidation";
-import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
-import {
-  InlineEditingSaveOptions,
-  TableWidgetProps,
-} from "widgets/TableWidgetV2/constants";
-import {
-  totalRecordsCountValidation,
-  uniqueColumnNameValidation,
-  updateColumnOrderHook,
-  updateInlineEditingSaveOptionHook,
-  updateInlineEditingOptionDropdownVisibilityHook,
-  updateCustomColumnAliasOnLabelChange,
-} from "../propertyUtils";
 import {
   createMessage,
   TABLE_WIDGET_TOTAL_RECORD_TOOLTIP,
 } from "@appsmith/constants/messages";
-import panelConfig from "./PanelConfig";
+import type { PropertyPaneConfig } from "constants/PropertyControlConstants";
+import { ValidationTypes } from "constants/WidgetValidation";
+import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
+import type { TableWidgetProps } from "widgets/TableWidgetV2/constants";
+import { InlineEditingSaveOptions } from "widgets/TableWidgetV2/constants";
 import { composePropertyUpdateHook } from "widgets/WidgetUtils";
-import { PropertyPaneConfig } from "constants/PropertyControlConstants";
+import {
+  totalRecordsCountValidation,
+  uniqueColumnNameValidation,
+  updateColumnOrderHook,
+  updateCustomColumnAliasOnLabelChange,
+  updateInlineEditingOptionDropdownVisibilityHook,
+  updateInlineEditingSaveOptionHook,
+} from "../propertyUtils";
+import panelConfig from "./PanelConfig";
 
 export default [
   {
@@ -209,7 +207,7 @@ export default [
       {
         propertyName: "enableClientSideSearch",
         label: "前端搜索",
-        helpText: "Searches all results only on the data which is loaded",
+        helpText: "仅在加载的数据上搜索所有结果",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -219,7 +217,7 @@ export default [
       {
         propertyName: "defaultSearchText",
         label: "默认搜索内容",
-        helpText: "Adds a search text by default",
+        helpText: "添加一个默认搜索关键字",
         controlType: "INPUT_TEXT",
         placeholderText: "{{global.user.name}}",
         isBindProperty: true,
@@ -231,7 +229,7 @@ export default [
       {
         propertyName: "onSearchTextChanged",
         label: "onSearchTextChanged",
-        helpText: "Triggers an action when search text is modified by the user",
+        helpText: "修改搜索关键字时触发",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
         isBindProperty: true,
@@ -302,7 +300,7 @@ export default [
       {
         propertyName: "multiRowSelection",
         label: "支持多选",
-        helpText: "Allows users to select multiple rows",
+        helpText: "允许用户多选",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
