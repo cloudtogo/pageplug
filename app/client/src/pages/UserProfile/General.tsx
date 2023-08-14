@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { debounce } from "lodash";
 import {
@@ -12,16 +12,13 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUser } from "selectors/usersSelectors";
 import { forgotPasswordSubmitHandler } from "pages/UserAuth/helpers";
-import {
-  FORGOT_PASSWORD_SUCCESS_TEXT,
-  createMessage,
-} from "@appsmith/constants/messages";
+import { FORGOT_PASSWORD_SUCCESS_TEXT } from "@appsmith/constants/messages";
 import { logoutUser, updateUserDetails } from "actions/userActions";
 import UserProfileImagePicker from "./UserProfileImagePicker";
 import { Wrapper, FieldWrapper, LabelWrapper } from "./StyledComponents";
-import { getAppsmithConfigs } from "@appsmith/configs";
 import { ANONYMOUS_USERNAME } from "constants/userConstants";
-const { disableLoginForm } = getAppsmithConfigs();
+import { createMessage } from "design-system-old/build/constants/messages";
+import { getIsFormLoginEnabled } from "@appsmith/selectors/tenantSelectors";
 
 const ForgotPassword = styled.a`
   margin-top: 12px;
@@ -35,6 +32,8 @@ const ForgotPassword = styled.a`
 
 function General() {
   const user = useSelector(getCurrentUser);
+  const isFormLoginEnabled = useSelector(getIsFormLoginEnabled);
+  const [name, setName] = useState(user?.name);
   const dispatch = useDispatch();
   const forgotPassword = async () => {
     try {
@@ -95,7 +94,7 @@ function General() {
         <div style={{ flexDirection: "column", display: "flex" }}>
           {<Text type={TextType.P1}>{user?.email}</Text>}
 
-          {!disableLoginForm && (
+          {isFormLoginEnabled && (
             <ForgotPassword onClick={forgotPassword}>重置密码</ForgotPassword>
           )}
         </div>

@@ -1,9 +1,10 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import { View } from "@tarojs/components";
 import { Search } from "@taroify/core";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import { WidgetType } from "constants/WidgetConstants";
+import type { WidgetType } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 
 class MSearchWidget extends BaseWidget<MSearchWidgetProps, WidgetState> {
@@ -146,14 +147,8 @@ class MSearchWidget extends BaseWidget<MSearchWidgetProps, WidgetState> {
   };
 
   getPageView() {
-    const {
-      text,
-      placeholder,
-      rounded,
-      inputAlign,
-      readonly,
-      showButton,
-    } = this.props;
+    const { inputAlign, placeholder, readonly, rounded, showButton, text } =
+      this.props;
     const actionButton = showButton ? (
       <View onClick={this.onSearch}>搜索</View>
     ) : null;
@@ -161,16 +156,16 @@ class MSearchWidget extends BaseWidget<MSearchWidgetProps, WidgetState> {
     return (
       <View onClick={this.onClick}>
         <Search
-          value={text}
-          placeholder={placeholder}
-          shape={rounded ? "round" : "square"}
-          inputAlign={inputAlign}
-          readonly={readonly}
           action={actionButton}
           clearTrigger="always"
-          onClear={() => this.onValueChange("")}
+          inputAlign={inputAlign}
           onChange={(e) => this.onValueChange(e.detail.value)}
+          onClear={() => this.onValueChange("")}
           onSearch={this.onSearch}
+          placeholder={placeholder}
+          readonly={readonly}
+          shape={rounded ? "round" : "square"}
+          value={text}
         />
       </View>
     );

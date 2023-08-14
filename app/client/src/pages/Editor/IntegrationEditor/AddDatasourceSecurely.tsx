@@ -6,7 +6,7 @@ import { Colors } from "constants/Colors";
 
 const Wrapper = styled.div`
   border: 2px solid #d6d6d6;
-  padding: 23px;
+  padding: 16px 23px;
   flex-direction: row;
   display: flex;
   justify-content: space-between;
@@ -14,7 +14,7 @@ const Wrapper = styled.div`
   border-radius: ${(props) => props.theme.borderRadius};
 
   .datasource-img {
-    height: 108px;
+    height: 128px;
   }
 `;
 

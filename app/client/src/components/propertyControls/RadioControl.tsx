@@ -1,6 +1,8 @@
 import React from "react";
-import BaseControl, { ControlProps } from "./BaseControl";
-import { RadioComponent, OptionProps } from "design-system-old";
+import type { ControlProps } from "./BaseControl";
+import BaseControl from "./BaseControl";
+import type { OptionProps } from "design-system-old";
+import { RadioComponent } from "design-system-old";
 import styled from "styled-components";
 
 const Wrapper = styled.div`

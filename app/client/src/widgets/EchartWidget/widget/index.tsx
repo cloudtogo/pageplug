@@ -6,20 +6,39 @@ import { contentConfig, styleConfig } from "./propertyConfig";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { retryPromise } from "utils/AppsmithUtils";
 
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { DerivedPropertiesMap } from "utils/WidgetFactory";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
+import type { DerivedPropertiesMap } from "utils/WidgetFactory";
 import { Colors } from "constants/Colors";
-import { AllChartData, ChartType } from "../constants";
-import { Stylesheet } from "entities/AppTheming";
+import type { AllChartData, ChartType } from "../constants";
+import type { Stylesheet } from "entities/AppTheming";
+import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
 
 const EchartComponent = lazy(() =>
-  retryPromise(() =>
-    import(
-      /* webpackPrefetch: true, webpackChunkName: "charts" */ "../component"
-    ),
+  retryPromise(
+    () =>
+      import(
+        /* webpackPrefetch: true, webpackChunkName: "charts" */ "../component"
+      ),
   ),
 );
 class EchartWidget extends BaseWidget<EchartWidgetProps, WidgetState> {
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "EChart widget is used to view the graphical representation of your data. EChart is the go-to widget for your data visualisation needs.",
+      "!url": "https://echarts.apache.org/handbook/zh/get-started/",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      chartData: {
+        seriesName: "string",
+        data: "[$__chartDataPoint__$]",
+      },
+      xAxisName: "string",
+      yAxisName: "string",
+      selectedDataItem: "$__chartDataPoint__$",
+    };
+  }
   static getDerivedPropertiesMap(): DerivedPropertiesMap {
     return {};
   }
@@ -95,6 +114,7 @@ class EchartWidget extends BaseWidget<EchartWidgetProps, WidgetState> {
       <Suspense fallback={<Skeleton />}>
         <EchartComponent
           allowScroll={this.props.allowScroll}
+          backgroundColor={this.props.backgroundColor}
           borderRadius={this.props.borderRadius}
           boxShadow={this.props.boxShadow}
           chartData={this.props.chartData}
@@ -106,18 +126,17 @@ class EchartWidget extends BaseWidget<EchartWidgetProps, WidgetState> {
           isVisible={this.props.isVisible}
           key={this.props.widgetId}
           labelOrientation={this.props.labelOrientation}
+          listener={this.props.listener}
+          onDataPointClick={this.onDataPointClick}
+          onInstance={this.getEchartInstance}
+          onListener={this.listenerCallback}
           primaryColor={this.props.accentColor ?? Colors.ROYAL_BLUE_2}
-          backgroundColor={this.props.backgroundColor}
+          registerMapJsonUrl={this.props.registerMapJsonUrl}
+          registerMapName={this.props.registerMapName}
           setAdaptiveYMin={this.props.setAdaptiveYMin}
           widgetId={this.props.widgetId}
           xAxisName={this.props.xAxisName}
           yAxisName={this.props.yAxisName}
-          onDataPointClick={this.onDataPointClick}
-          onInstance={this.getEchartInstance}
-          registerMapName={this.props.registerMapName}
-          registerMapJsonUrl={this.props.registerMapJsonUrl}
-          listener={this.props.listener}
-          onListener={this.listenerCallback}
         />
       </Suspense>
     );

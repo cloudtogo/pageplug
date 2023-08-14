@@ -1,8 +1,10 @@
+/* eslint-disable react/display-name */
 import React, { useState, forwardRef } from "react";
 import styled from "styled-components";
 
 import { getRgbaColor } from "widgets/WidgetUtils";
-import { SliderSizes, thumbSizeMap } from "../utils";
+import type { SliderSizes } from "../utils";
+import { thumbSizeMap } from "../utils";
 
 interface ThumbProps {
   thumbBgColor: string;

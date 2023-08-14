@@ -8,6 +8,7 @@ import com.appsmith.server.helpers.RedisUtils;
 import com.appsmith.server.exceptions.AppsmithErrorCode;
 import com.appsmith.server.services.ApplicationPageService;
 import com.appsmith.server.services.ApplicationService;
+import com.appsmith.server.services.ApplicationSnapshotService;
 import com.appsmith.server.services.ThemeService;
 import com.appsmith.server.services.UserDataService;
 import com.appsmith.server.solutions.ApplicationFetcher;
@@ -54,6 +55,9 @@ public class ApplicationControllerTest {
     ImportExportApplicationService importExportApplicationService;
 
     @MockBean
+    ApplicationSnapshotService applicationSnapshotService;
+
+    @MockBean
     ThemeService themeService;
 
     @MockBean
@@ -82,7 +86,7 @@ public class ApplicationControllerTest {
     @WithMockUser
     public void whenFileUploadedWithLongHeader_thenVerifyErrorStatus() throws IOException {
 
-        Mockito.when(importExportApplicationService.extractFileAndSaveApplication(Mockito.any(), Mockito.any()))
+        Mockito.when(importExportApplicationService.extractFileAndUpdateNonGitConnectedApplication(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
                 .thenReturn(Mono.just(new ApplicationImportDTO()));
 
         final String fileName = getFileName(130 * 1024);
@@ -112,7 +116,7 @@ public class ApplicationControllerTest {
     @WithMockUser
     public void whenFileUploadedWithShortHeader_thenVerifySuccessStatus() throws IOException {
 
-        Mockito.when(importExportApplicationService.extractFileAndSaveApplication(Mockito.any(), Mockito.any()))
+        Mockito.when(importExportApplicationService.extractFileAndUpdateNonGitConnectedApplication(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
                 .thenReturn(Mono.just(new ApplicationImportDTO()));
 
         final String fileName = getFileName(2 * 1024);

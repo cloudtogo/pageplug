@@ -5,12 +5,14 @@ import styled from "styled-components";
 
 import { invisible } from "constants/DefaultTheme";
 import { getAppsmithConfigs } from "@appsmith/configs";
-import {
+import type {
   ChartDataPoint,
   ChartType,
   CustomFusionChartConfig,
   AllChartData,
   ChartSelectedDataPoint,
+} from "../constants";
+import {
   LabelOrientation,
   LABEL_ORIENTATION_COMPATIBLE_CHARTS,
 } from "../constants";
@@ -19,7 +21,7 @@ import log from "loglevel";
 import { Colors } from "constants/Colors";
 // Leaving this require here. Ref: https://stackoverflow.com/questions/41292559/could-not-find-a-declaration-file-for-module-module-name-path-to-module-nam/42505940#42505940
 // FusionCharts comes with its own typings so there is no need to separately import them. But an import from fusioncharts/core still requires a declaration file.
-const FusionCharts = require("fusioncharts");
+import FusionCharts from "fusioncharts";
 const plugins: Record<string, any> = {
   Charts: require("fusioncharts/fusioncharts.charts"),
   FusionTheme: require("fusioncharts/themes/fusioncharts.theme.fusion"),
@@ -54,6 +56,7 @@ export interface ChartComponentProps {
   chartName: string;
   chartType: ChartType;
   customFusionChartConfig: CustomFusionChartConfig;
+  hasOnDataPointClick: boolean;
   isVisible?: boolean;
   isLoading: boolean;
   setAdaptiveYMin: boolean;
@@ -69,7 +72,7 @@ export interface ChartComponentProps {
 }
 
 const CanvasContainer = styled.div<
-  Omit<ChartComponentProps, "onDataPointClick">
+  Omit<ChartComponentProps, "onDataPointClick" | "hasOnDataPointClick">
 >`
   border-radius: ${({ borderRadius }) => borderRadius};
   box-shadow: ${({ boxShadow }) => `${boxShadow}`} !important;
@@ -87,7 +90,7 @@ export const isLabelOrientationApplicableFor = (chartType: string) =>
   LABEL_ORIENTATION_COMPATIBLE_CHARTS.includes(chartType);
 
 class ChartComponent extends React.Component<ChartComponentProps> {
-  chartInstance = new FusionCharts();
+  chartInstance = new FusionCharts({});
 
   chartContainerId = this.props.widgetId + "chart-container";
 
@@ -211,10 +214,8 @@ class ChartComponent extends React.Component<ChartComponentProps> {
     const dataset = Object.keys(chartData).map((key: string, index) => {
       const item = get(chartData, `${key}`);
 
-      const seriesChartData: Array<Record<
-        string,
-        unknown
-      >> = getSeriesChartData(get(item, "data", []), categories);
+      const seriesChartData: Array<Record<string, unknown>> =
+        getSeriesChartData(get(item, "data", []), categories);
       return {
         seriesName: item.seriesName,
         color: item.color
@@ -509,10 +510,18 @@ class ChartComponent extends React.Component<ChartComponentProps> {
 
   render() {
     //eslint-disable-next-line  @typescript-eslint/no-unused-vars
-    const { onDataPointClick, ...rest } = this.props;
+    const { hasOnDataPointClick, onDataPointClick, ...rest } = this.props;
+
+    // Avoid propagating the click events to upwards
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const onClick = hasOnDataPointClick
+      ? (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => e.stopPropagation()
+      : undefined;
+
     return (
       <CanvasContainer
         className={this.props.isLoading ? "bp3-skeleton" : ""}
+        onClick={onClick}
         {...rest}
         id={this.chartContainerId}
       />

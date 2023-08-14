@@ -6,7 +6,8 @@ import { ValidationTypes } from "constants/WidgetValidation";
 import { Stylesheet } from "entities/AppTheming";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ConfigProvider } from "antd";
-
+// import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
 class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
   static getPropertyPaneContentConfig() {
     return [
@@ -206,6 +207,9 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
     return {
       themeColor: "{{appsmith.theme.colors.primaryColor}}",
     };
+  }
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {};
   }
 
   static getMetaPropertiesMap(): Record<string, undefined> {
