@@ -14,7 +14,7 @@ import {
 import { isMobileLayout } from "selectors/applicationSelectors";
 import Entity, { EntityClassNames } from "../Entity";
 import history, { NavigationMethod } from "utils/history";
-import { createPage, updatePage } from "actions/pageActions";
+import { createNewPageFromEntities, updatePage } from "actions/pageActions";
 import {
   currentPageIcon,
   defaultPageIcon,
@@ -23,9 +23,8 @@ import {
   appLayoutIcon,
 } from "../ExplorerIcons";
 import { ADD_PAGE_TOOLTIP, createMessage } from "@appsmith/constants/messages";
-import { Page } from "@appsmith/constants/ReduxActionConstants";
+import type { Page } from "@appsmith/constants/ReduxActionConstants";
 import { getNextEntityName } from "utils/AppsmithUtils";
-import { extractCurrentDSL } from "utils/WidgetPropsUtils";
 import styled from "styled-components";
 import PageContextMenu from "./PageContextMenu";
 import { resolveAsSpaceChar } from "utils/helpers";
@@ -38,10 +37,8 @@ import {
   saveExplorerStatus,
 } from "@appsmith/pages/Editor/Explorer/helpers";
 import { tailwindLayers } from "constants/Layers";
-import useResize, {
-  CallbackResponseType,
-  DIRECTION,
-} from "utils/hooks/useResize";
+import type { CallbackResponseType } from "utils/hooks/useResize";
+import useResize, { DIRECTION } from "utils/hooks/useResize";
 import AddPageContextMenu from "./AddPageContextMenu";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { useLocation } from "react-router";
@@ -50,7 +47,7 @@ import {
   hasCreatePagePermission,
   hasManagePagePermission,
 } from "@appsmith/utils/permissionHelpers";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import { TooltipComponent } from "design-system-old";
 
 const ENTITY_HEIGHT = 36;
@@ -145,11 +142,8 @@ function Pages() {
       "页面",
       pages.map((page: Page) => page.pageName),
     );
-    // Default layout is extracted by adding dynamically computed properties like min-height.
-    const defaultPageLayouts = [
-      { dsl: extractCurrentDSL(), layoutOnLoadActions: [] },
-    ];
-    dispatch(createPage(applicationId, name, defaultPageLayouts));
+
+    dispatch(createNewPageFromEntities(applicationId, name));
   }, [dispatch, pages, applicationId]);
 
   const onMenuClose = useCallback(() => openMenu(false), [openMenu]);

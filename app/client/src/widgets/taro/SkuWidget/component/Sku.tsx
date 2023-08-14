@@ -8,7 +8,7 @@ import React, {
   useRef,
 } from "react";
 import cls from "clsx";
-import { SkuActionType, SkuInstance, SkuProps } from "./PropsType";
+import type { SkuActionType, SkuInstance, SkuProps } from "./PropsType";
 import ActionBar from "../../ActionBarWidget/component";
 import { Image } from "@taroify/core";
 import { ScrollView } from "@tarojs/components";
@@ -49,10 +49,10 @@ const Sku = forwardRef<SkuInstance, SkuProps>((props, ref) => {
   const { tree = [] } = sku;
 
   const hasSku = useMemo(() => !sku.none_sku, [sku.none_sku]);
-  const hasSkuOrAttr = useMemo(() => hasSku || properties.length > 0, [
-    hasSku,
-    properties,
-  ]);
+  const hasSkuOrAttr = useMemo(
+    () => hasSku || properties.length > 0,
+    [hasSku, properties],
+  );
 
   const isSkuCombSelected = useMemo(() => {
     // SKU 未选完
@@ -393,11 +393,11 @@ const Sku = forwardRef<SkuInstance, SkuProps>((props, ref) => {
       <div className={cls(bem("header"), BORDER_BOTTOM)}>
         {props.showHeaderImage && (
           <Image
-            mode="aspectFit"
-            src={imgUrl}
-            key={imgUrl}
             className={cls(bem("header__img-wrap"))}
             fallback={<PhotoFail />}
+            key={imgUrl}
+            mode="aspectFit"
+            src={imgUrl}
           />
         )}
         <div className={cls(bem("header__goods-info"))}>
@@ -423,15 +423,15 @@ const Sku = forwardRef<SkuInstance, SkuProps>((props, ref) => {
             <SkuRow key={i} skuRow={skuTreeItem}>
               {skuTreeItem.v.map((skuValue: any, idx: number) => (
                 <SkuRowItem
+                  disableSoldoutSku={!!props.disableSoldoutSku}
                   key={idx}
+                  largeImageMode={skuTreeItem.largeImageMode}
+                  onSkuSelected={onSelect}
+                  previewIcon={props.previewIcon}
+                  selectedSku={state.selectedSku}
+                  skuKeyStr={`${skuTreeItem.k_s}`}
                   skuList={sku.list}
                   skuValue={skuValue}
-                  skuKeyStr={`${skuTreeItem.k_s}`}
-                  selectedSku={state.selectedSku}
-                  disableSoldoutSku={!!props.disableSoldoutSku}
-                  largeImageMode={skuTreeItem.largeImageMode}
-                  previewIcon={props.previewIcon}
-                  onSkuSelected={onSelect}
                 />
               ))}
             </SkuRow>
@@ -442,11 +442,11 @@ const Sku = forwardRef<SkuInstance, SkuProps>((props, ref) => {
               {skuTreeItem.v.map((skuValue, idx) => (
                 <SkuRowPropItem
                   key={idx}
-                  skuValue={skuValue}
-                  skuKeyStr={`${skuTreeItem.k_id}`}
-                  selectedProp={state.selectedProp}
                   multiple={skuTreeItem.is_multiple}
                   onSkuPropSelected={onPropSelect}
+                  selectedProp={state.selectedProp}
+                  skuKeyStr={`${skuTreeItem.k_id}`}
+                  skuValue={skuValue}
                 />
               ))}
             </SkuRow>
@@ -460,20 +460,20 @@ const Sku = forwardRef<SkuInstance, SkuProps>((props, ref) => {
     props.skuStepper || (
       <SkuStepper
         currentNum={state.selectedNum}
+        customStepperConfig={props.customStepperConfig}
+        disableStepperInput={props.disableStepperInput}
+        hideQuotaText={props.hideQuotaText}
         onChange={(currentValue) => {
           updateState({ selectedNum: parseInt(`${currentValue}`, 10) });
           if (props.onStepperChange) props.onStepperChange(currentValue);
         }}
-        stock={stock}
+        onSkuOverLimit={onOverLimit}
+        onSkuStepperState={onStepperState}
         quota={props.quota || 0}
         quotaUsed={props.quotaUsed || 0}
         startSaleNum={props.startSaleNum || 1}
-        disableStepperInput={props.disableStepperInput}
-        customStepperConfig={props.customStepperConfig}
         stepperTitle={props.stepperTitle}
-        hideQuotaText={props.hideQuotaText}
-        onSkuStepperState={onStepperState}
-        onSkuOverLimit={onOverLimit}
+        stock={stock}
       />
     );
 
@@ -495,19 +495,19 @@ const Sku = forwardRef<SkuInstance, SkuProps>((props, ref) => {
           <ActionBar>
             {props.showAddCartBtn && (
               <ActionBar.Button
-                type="warning"
                 color={props.color}
-                text={props.addCartText || "加入购物车"}
-                onClick={() => onBuyOrAddCart("add-cart")}
                 loading={props.addCartLoading}
+                onClick={() => onBuyOrAddCart("add-cart")}
+                text={props.addCartText || "加入购物车"}
+                type="warning"
               />
             )}
             <ActionBar.Button
-              type="danger"
               color={props.color}
-              text={props.buyText || "立即购买"}
-              onClick={() => onBuyOrAddCart("buy-clicked")}
               loading={props.buyLoading}
+              onClick={() => onBuyOrAddCart("buy-clicked")}
+              text={props.buyText || "立即购买"}
+              type="danger"
             />
           </ActionBar>
         </div>

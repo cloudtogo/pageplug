@@ -1,8 +1,13 @@
 import React from "react";
 // import Actions from "./actions";
-import TopActions, { topActionsPropsType } from "./top_actions";
-import BottomActions, { bottomActionsPropsType } from "./bottom_actions";
-import { Banner, BannerPropType } from "./banner";
+import type { topActionsPropsType } from "./top_actions";
+import TopActions from "./top_actions";
+import type { bottomActionsPropsType } from "./bottom_actions";
+import BottomActions from "./bottom_actions";
+import { Banner } from "./banner";
+import type { ActionsPropsType } from "./actions";
+import Actions from "./actions";
+import type { BannerPropType } from "./banner";
 
 export function TableHeader_Top(props: topActionsPropsType & BannerPropType) {
   const {

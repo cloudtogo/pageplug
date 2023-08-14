@@ -21,13 +21,17 @@
     "importHelpers": true,
     "typeRoots": [
       "./typings",
-      "./node_modules/@types"
+      "../node_modules/@types"
     ],
     "sourceMap": true,
     "baseUrl": "./src",
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "importsNotUsedAsValues": "remove",
+    "declaration": false,
   },
   "include": [
-    "./src/**/*"
-  ]
+    "./src/**/*",
+    "decs.d.ts",
+    "decs1.d.ts",
+  ],
 }

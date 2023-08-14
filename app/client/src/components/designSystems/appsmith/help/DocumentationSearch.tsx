@@ -1,4 +1,6 @@
-import React, { SyntheticEvent } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import type { SyntheticEvent } from "react";
+import React from "react";
 import algoliasearch from "algoliasearch/lite";
 import {
   InstantSearch,
@@ -9,13 +11,14 @@ import {
   PoweredBy,
 } from "react-instantsearch-dom";
 import "instantsearch.css/themes/algolia.css";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
+
 import styled from "styled-components";
 import { HelpIcons } from "icons/HelpIcons";
 import { HelpBaseURL } from "constants/HelpConstants";
 import { getDefaultRefinement } from "selectors/helpSelectors";
 import { getAppsmithConfigs } from "@appsmith/configs";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import {
   setHelpDefaultRefinement,
   setHelpModalVisibility,
@@ -23,19 +26,15 @@ import {
 import { Icon } from "@blueprintjs/core";
 import moment from "moment";
 import { getCurrentUser } from "selectors/usersSelectors";
-import { User } from "constants/userConstants";
+import type { User } from "constants/userConstants";
 import { Colors } from "constants/Colors";
 import {
   createMessage,
   APPSMITH_DISPLAY_VERSION,
 } from "@appsmith/constants/messages";
 
-const {
-  algolia,
-  appVersion,
-  cloudHosting,
-  intercomAppID,
-} = getAppsmithConfigs();
+const { algolia, appVersion, cloudHosting, intercomAppID } =
+  getAppsmithConfigs();
 const searchClient = algoliasearch(algolia.apiId, algolia.apiKey);
 
 const OenLinkIcon = HelpIcons.OPEN_LINK;
@@ -45,11 +44,8 @@ const ChatIcon = HelpIcons.CHAT;
 const DiscordIcon = HelpIcons.DISCORD;
 
 const StyledOpenLinkIcon = styled(OenLinkIcon)<{ color?: string }>`
-  position: absolute;
-  right: 14px;
-  top: 1px;
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   display: none;
 `;
 
@@ -67,24 +63,6 @@ const StyledGithubIcon = styled(GithubIcon)`
   position: absolute;
 `;
 
-const StyledChatIcon = styled(ChatIcon)`
-  &&& {
-    margin-left: 14px;
-    margin-right: 10.8px;
-    margin-top: 1px;
-    position: absolute;
-  }
-`;
-
-const StyledDiscordIcon = styled(DiscordIcon)`
-  &&& {
-    margin-left: 12px;
-    margin-right: 10.8px;
-    margin-top: 1px;
-    position: absolute;
-  }
-`;
-
 function Hit(props: { hit: { path: string } }) {
   return (
     <div
@@ -94,7 +72,7 @@ function Hit(props: { hit: { path: string } }) {
       }}
     >
       <div className="hit-name t--docHitTitle">
-        <StyledDocumentIcon color="#4b4848" height={14} width={11.2} />
+        <DocumentIcon color="#4b4848" height={14} width={11.2} />
         <Highlight attribute="title" hit={props.hit} />
         <StyledOpenLinkIcon
           className="t--docOpenLink open-link"
@@ -108,7 +86,9 @@ function Hit(props: { hit: { path: string } }) {
 function DefaultHelpMenuItem(props: {
   item: { label: string; link?: string; id?: string; icon: React.ReactNode };
   onSelect: () => void;
+  showIntercomConsent: (val: boolean) => void;
 }) {
+  const user = useSelector(getCurrentUser);
   return (
     <li className="ais-Hits-item">
       <div
@@ -118,10 +98,14 @@ function DefaultHelpMenuItem(props: {
           if (props.item.link) window.open(props.item.link, "_blank");
           if (props.item.id === "intercom-trigger") {
             if (intercomAppID && window.Intercom) {
-              window.Intercom("show");
+              if (user?.isIntercomConsentGiven || cloudHosting) {
+                window.Intercom("show");
+              } else {
+                props.showIntercomConsent(true);
+              }
             }
+            props.onSelect();
           }
-          props.onSelect();
         }}
       >
         <div className="hit-name t--docHitTitle">
@@ -130,8 +114,8 @@ function DefaultHelpMenuItem(props: {
           <StyledOpenLinkIcon
             className="t--docOpenLink open-link"
             color={"#4b4848"}
-            height={12}
-            width={12}
+            height={14}
+            width={14}
           />
         </div>
       </div>
@@ -190,7 +174,7 @@ const SearchContainer = styled.div`
     margin-bottom: 1em;
     width: 100%;
     margin: 0;
-    padding: 5px;
+    padding: 8px 16px;
     border: 0;
     cursor: pointer;
     box-shadow: none;
@@ -204,10 +188,15 @@ const SearchContainer = styled.div`
   }
 
   .hit-name {
-    font-size: 14px;
+    font-size: 12px;
     line-height: 16px;
+    letter-spacing: -0.195px;
+    height: 16px;
     color: #4b4848;
-    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
   }
 
   .ais-SearchBox-reset {
@@ -240,12 +229,10 @@ const SearchContainer = styled.div`
   }
 
   .ais-Highlight {
-    margin-left: 36px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     width: calc(100% - 36px);
-    display: inline-block;
   }
 
   .ais-Highlight-highlighted {
@@ -298,7 +285,7 @@ const HelpBody = styled.div<{ hideSearch?: boolean }>`
   ${(props) =>
     props.hideSearch
       ? `
-    padding: ${props.theme.spaces[2]}px;
+    padding: 0;
   `
       : `
     padding-top: 68px;
@@ -314,7 +301,7 @@ type Props = {
   hideMinimizeBtn?: boolean;
   user?: User;
 };
-type State = { showResults: boolean };
+type State = { showResults: boolean; showIntercomConsent: boolean };
 
 type HelpItem = {
   label: string;
@@ -335,7 +322,7 @@ const HELP_MENU_ITEMS: HelpItem[] = [
     link: "https://github.com/cloudtogo/pageplug/issues/new/choose",
   },
   // {
-  //   icon: <StyledDiscordIcon color="#4b4848" height={14} width={14} />,
+  //   icon: <DiscordIcon color="#4b4848" height={16} width={16} />,
   //   label: "Join our Discord",
   //   link: "https://discord.gg/rBTTVJp",
   // },
@@ -343,7 +330,7 @@ const HELP_MENU_ITEMS: HelpItem[] = [
 
 if (intercomAppID && window.Intercom) {
   HELP_MENU_ITEMS.push({
-    icon: <StyledChatIcon color="#4b4848" height={14} width={14} />,
+    icon: <ChatIcon color="#4b4848" height={16} width={16} />,
     label: "Chat with us",
     id: "intercom-trigger",
   });
@@ -364,6 +351,7 @@ class DocumentationSearch extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      showIntercomConsent: false,
       showResults: props.defaultRefinement.length > 0,
     };
   }
@@ -430,6 +418,9 @@ class DocumentationSearch extends React.Component<Props, State> {
                       item={item}
                       key={item.label}
                       onSelect={this.handleClose}
+                      showIntercomConsent={(val: boolean) =>
+                        this.setState({ showIntercomConsent: val })
+                      }
                     />
                   ))}
                 </ul>

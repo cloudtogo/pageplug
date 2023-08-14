@@ -1,3 +1,5 @@
+import type { PageErrorMessageProps } from "pages/common/ErrorPages/Components/PageErrorMessage";
+
 export function createMessage(
   format: (...strArgs: any[]) => string,
   ...args: any[]
@@ -108,6 +110,10 @@ export const TERMS_AND_CONDITIONS_LINK = () => `条款协议`;
 export const ERROR_500 = () => `抱歉，服务端出错了，我们正在拼命修复`;
 export const ERROR_0 = () => `无法连接到服务端，请检查你的网络连接`;
 export const ERROR_401 = () => `鉴权失败！请重新登录`;
+export const ERROR_413 = (maxFileSize: number) =>
+  `Payload too large. File size cannot exceed ${maxFileSize}MB.`;
+export const GENERIC_API_EXECUTION_ERROR = () => `API execution error`;
+export const APPSMITH_HTTP_ERROR_413 = () => `413 CONTENT_TOO_LARGE`;
 export const ERROR_403 = (entity: string, userEmail: string) =>
   `抱歉，你的账号 (${userEmail}) 没有权限更新 ${entity}，请联系管理员解决`;
 export const PAGE_NOT_FOUND_ERROR = () => `页面不存在`;
@@ -131,7 +137,12 @@ export const INVITE_USERS_SUBMIT_SUCCESS = () => `邀请成功`;
 export const INVITE_USER_SUBMIT_SUCCESS = () => `邀请成功`;
 export const INVITE_USERS_VALIDATION_EMAILS_EMPTY = () =>
   `请输入小伙伴们的邮箱`;
-
+export const USERS_HAVE_ACCESS_TO_ALL_APPS = () =>
+  "Users will have access to all applications in this workspace";
+export const USERS_HAVE_ACCESS_TO_ONLY_THIS_APP = () =>
+  "Users will only have access to this application";
+export const NO_USERS_INVITED = () => "You haven't invited any users yet";
+export const BUSINESS_EDITION_TEXT = () => "business edition";
 export const CREATE_PASSWORD_RESET_SUCCESS = () => `密码重置成功`;
 export const CREATE_PASSWORD_RESET_SUCCESS_LOGIN_LINK = () => `登录`;
 
@@ -155,6 +166,7 @@ export const ENABLE_TIME = () => `显示时间`;
 export const EDIT_APP = () => `编辑应用`;
 export const FORK_APP = () => `复制应用`;
 export const SIGN_IN = () => `登录`;
+export const SHARE_APP = () => `Share app`;
 
 export const EDITOR_HEADER = {
   saving: () => "正在保存",
@@ -284,6 +296,9 @@ export const OAUTH_AUTHORIZATION_APPSMITH_ERROR = "出错了";
 export const OAUTH_APPSMITH_TOKEN_NOT_FOUND = "没有发现 token";
 
 export const GSHEET_AUTHORIZATION_ERROR = "数据源未授权，请授权后继续操作";
+export const GSHEET_FILES_NOT_SELECTED =
+  "Datasource does not have access to any files, please authorize google sheets to use this data source";
+export const FILES_NOT_SELECTED_EVENT = () => "Files not selected";
 
 export const LOCAL_STORAGE_QUOTA_EXCEEDED_MESSAGE = () =>
   "本地存储失败！已超出本地最大存储限制";
@@ -308,15 +323,69 @@ export const BACK_TO_HOMEPAGE = () => "回到主页";
 // error pages
 export const PAGE_NOT_FOUND_TITLE = () => "404";
 export const PAGE_NOT_FOUND = () => "未找到页面";
-export const PAGE_SERVER_UNAVAILABLE_ERROR_CODE = () => "503";
-export const PAGE_SERVER_UNAVAILABLE_TITLE = () => "PagePlug 服务异常";
-export const PAGE_SERVER_UNAVAILABLE_DESCRIPTION = () => "请稍后重试";
 export const PAGE_SERVER_TIMEOUT_ERROR_CODE = () => "504";
 export const PAGE_SERVER_TIMEOUT_TITLE = () => "PagePlug 服务长时间无响应";
 export const PAGE_SERVER_TIMEOUT_DESCRIPTION = () => `请稍后重试`;
 export const PAGE_CLIENT_ERROR_TITLE = () => "糟糕，魔法失灵了！";
 export const PAGE_CLIENT_ERROR_DESCRIPTION = () =>
   "请联系 PagePlug 团队寻求帮助";
+
+export const PAGE_SERVER_UNAVAILABLE_ERROR_CODE = () => "503";
+
+// cloudHosting used in EE
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const PAGE_SERVER_UNAVAILABLE_TITLE = (cloudHosting: boolean) =>
+  "PagePlug 服务异常";
+
+export const PAGE_SERVER_UNAVAILABLE_DESCRIPTION = () => "请稍后重试";
+
+export const PAGE_SERVER_UNAVAILABLE_ERROR_MESSAGES = (
+  cloudHosting: boolean,
+): PageErrorMessageProps[] => {
+  if (cloudHosting) {
+    return [
+      {
+        text: "If the problem persists, please contact customer support",
+        links: [
+          {
+            from: 40,
+            to: 56,
+            href: "mailto: support@appsmith.com?subject=Appsmith 503 Server Error",
+          },
+        ],
+        addNewLine: true,
+      },
+    ];
+  } else {
+    return [
+      {
+        text: "If the problem persists, please contact your admin",
+        addNewLine: true,
+      },
+      {
+        text: "You can find more information on how to debug and access the logs here",
+        links: [
+          {
+            from: 66,
+            to: 70,
+            href: "https://docs.appsmith.com/learning-and-resources/how-to-guides/how-to-get-container-logs",
+          },
+        ],
+        addNewLine: true,
+      },
+      {
+        text: "A quick view of the server logs is accessible here",
+        links: [
+          {
+            from: 46,
+            to: 50,
+            href: "/supervisor/logtail/backend",
+          },
+        ],
+      },
+    ];
+  }
+};
 
 // comments
 export const POST = () => "提交";
@@ -369,6 +438,7 @@ export const NAVIGATE_TO = () => `跳转到`;
 export const SHOW_MESSAGE = () => `消息提示`;
 export const OPEN_MODAL = () => `打开弹窗`;
 export const CLOSE_MODAL = () => `关闭弹窗`;
+export const CLOSE = () => `关闭`;
 export const STORE_VALUE = () => `保存数据`;
 export const REMOVE_VALUE = () => `删除数据`;
 export const CLEAR_STORE = () => `清空数据`;
@@ -449,8 +519,20 @@ export const SKIP_TO_APPLICATION_TOOLTIP_DESCRIPTION = () =>
 export const SKIP_TO_APPLICATION = () => "跳过设置";
 export const SELECT_A_METHOD_TO_ADD_CREDENTIALS = () => "选择一种鉴权方式";
 export const DELETE_CONFIRMATION_MODAL_TITLE = () => `确认`;
-export const DELETE_CONFIRMATION_MODAL_SUBTITLE = (name?: string | null) =>
-  `你确实想从当前团队中删除 ${name} 吗？`;
+// export const DELETE_CONFIRMATION_MODAL_SUBTITLE = (name?: string | null) =>
+//   `你确实想从当前团队中删除 ${name} 吗？`;
+export const DELETE_CONFIRMATION_MODAL_SUBTITLE = (
+  name?: string | null,
+  entityType?: string,
+) =>
+  `You want to remove ${name} from this ${
+    entityType ===
+    `你确实想从当前${
+      entityType === "Application" ? "application" : "workspace"
+    }中删除 ${name} 吗？`
+      ? "application"
+      : "workspace"
+  }`;
 export const PARSING_ERROR = () => "语法错误：无法解析代码，请查看错误日志";
 export const PARSING_WARNING = () => "格式错误：在使用函数之前请先解决格式问题";
 export const JS_FUNCTION_CREATE_SUCCESS = () => "JS 函数创建成功";
@@ -1291,6 +1373,20 @@ export const PAGE_SETTINGS_SET_AS_HOMEPAGE_TOOLTIP_NON_HOME_PAGE = () =>
 export const PAGE_SETTINGS_ACTION_NAME_CONFLICT_ERROR = (name: string) =>
   `${name} 已经被占用`;
 
+export const CODE_EDITOR_LOADING_ERROR = (message?: string) =>
+  `Failed to load the code editor${message ? `: ${message}` : ""}`;
+
+export const UPDATE_VIA_IMPORT_SETTING = {
+  settingHeader: () => "Update through file import",
+  settingDesc: () => "Update app by importing file",
+  settingLabel: () => "Import",
+  settingContent: () =>
+    "This action will override your existing application. Please exercise caution while selecting the file to import.",
+  settingActionButtonTxt: () => "Import",
+  disabledForGit: () =>
+    "This feature is not supported for apps connected to Git version control. Please use Git Pull to update and sync your app.",
+};
+
 export const IN_APP_EMBED_SETTING = {
   applicationUrl: () => "应用地址",
   allowEmbeddingLabel: () => "支持嵌入",
@@ -1311,8 +1407,34 @@ export const IN_APP_EMBED_SETTING = {
   sectionContentHeader: () => "分享",
   sectionHeaderDesc: () => "共享应用，嵌入属性",
   showNavigationBar: () => "显示菜单导航",
+  upgradeHeading: () => "请联系管理员，使用嵌入功能需要先在设置中公开您的应用",
+  upgradeHeadingForInviteModal: () => "使用嵌入功能需要先在设置中公开您的应用",
+  upgradeContent: () => "想将嵌入企业内的系统",
+  appsmithBusinessEdition: () => "升级至企业版使用",
+  secondaryHeadingForAppSettings: () => "公开应用嵌入",
+  secondaryHeading: () =>
+    "请联系工作区管理员，使用嵌入功能需要先在设置中公开您的应用",
 };
 
+export const APP_NAVIGATION_SETTING = {
+  sectionHeader: () => "导航",
+  sectionHeaderDesc: () => "自定义导航栏",
+  showNavbarLabel: () => "显示导航条",
+  orientationLabel: () => "方向标签",
+  navStyleLabel: () => "标签变量",
+  positionLabel: () => "标签位置",
+  itemStyleLabel: () => "Item Style",
+  colorStyleLabel: () => "背景颜色",
+  logoLabel: () => "Logo",
+  logoConfigurationLabel: () => "Logo 配置",
+  showSignInLabel: () => "展示登录",
+  showSignInTooltip: () => "是否给未登录用户展示登录按钮",
+};
+
+export const LOCK_SIDEBAR_MESSAGE = () => `固定侧边栏`;
+export const CLOSE_SIDEBAR_MESSAGE = () => `关闭侧边栏`;
+
+// Datasource/New Query
 export const NEW_QUERY_BUTTON_TEXT = () => "新建查询";
 export const NEW_API_BUTTON_TEXT = () => "新建 API";
 export const GENERATE_NEW_PAGE_BUTTON_TEXT = () => "生成新页面";
@@ -1320,7 +1442,78 @@ export const RECONNECT_BUTTON_TEXT = () => "重连";
 export const SAVE_BUTTON_TEXT = () => "保存";
 export const SAVE_AND_AUTHORIZE_BUTTON_TEXT = () => "保存并鉴权";
 export const DISCARD_POPUP_DONT_SAVE_BUTTON_TEXT = () => "不保存";
+export const GSHEET_AUTHORISED_FILE_IDS_KEY = () =>
+  "Google sheets authorised file ids key";
+export const GOOGLE_SHEETS_INFO_BANNER_MESSAGE = () =>
+  "Appsmith will require access to your google drive to access google sheets.";
+export const GOOGLE_SHEETS_AUTHORIZE_DATASOURCE = () => "Authorize Datasource";
+export const GOOGLE_SHEETS_LEARN_MORE = () => "Learn more";
 
+//Layout Conversion flow
+export const CONVERT = () => "CONVERT";
+export const BUILD_RESPONSIVE = () => "Build Responsive Apps";
+export const BUILD_RESPONSIVE_TEXT = () =>
+  "Appsmith will convert your application's UI to auto layout, a new mode designed for building mobile-friendly apps in no time";
+export const BUILD_FIXED_LAYOUT = () => "Use Fixed Layout";
+export const BUILD_FIXED_LAYOUT_TEXT = () =>
+  "Appsmith will convert your application’s UI to fixed layout, the default mode.";
+export const USE_SNAPSHOT = () => "USE SNAPSHOT";
+export const USE_SNAPSHOT_HEADER = () => "Use Snapshot";
+export const DISCARD_SNAPSHOT_HEADER = () => "Discarding a Snapshot";
+export const SAVE_SNAPSHOT = () =>
+  "Save a Snapshot of your Current Layout for 5 days";
+export const SAVE_SNAPSHOT_TEXT = () =>
+  "We save a snapshot of your current layout so you can go back if auto-layout doesn't work for you in this beta.";
+export const CREATE_SNAPSHOT = () => "Creating a snapshot";
+export const CONVERTING_APP = () => "Converting your app";
+export const RESTORING_SNAPSHOT = () => "Removing changes made";
+export const REFRESH_THE_APP = () => "REFRESH THE APP";
+export const CONVERT_ANYWAYS = () => "CONVERT ANYWAYS";
+export const CONVERSION_SUCCESS_HEADER = () => "All done";
+export const DISCARD_SNAPSHOT_TEXT = () =>
+  "You are about to discard this snapshot:";
+export const CONVERSION_SUCCESS_TEXT = () =>
+  "Check all your pages and start using your new layout";
+export const CONVERSION_WARNING_HEADER = () =>
+  "All done, some adjustments needed";
+export const CONVERSION_WARNING_TEXT = () =>
+  "You might need to manually position some of the widgets your layout contains";
+export const CONVERSION_ERROR_HEADER = () => "Conversion Failed";
+export const CONVERSION_ERROR = () =>
+  "Appsmith ran into a critical error while trying to convert to auto layout";
+export const SEND_REPORT = () => "SEND US A REPORT";
+export const CONVERSION_ERROR_TEXT = () => "No changes were made to your app";
+export const DROPDOWN_LABEL_TEXT = () => "Target canvas size";
+export const CONVERSION_WARNING = () => "Conversion will change your layout";
+export const SNAPSHOT_LABEL = () =>
+  "To revert back to the original state use this snapshot";
+export const USE_SNAPSHOT_TEXT = () =>
+  "Your app will look and work exactly like it used to before the conversion. Widgets, datasources, queries, JS objects added and any changes you made after conversion will not be present.";
+export const SNAPSHOT_WARNING_MESSAGE = () =>
+  "Any changes you made after conversion will not be present.";
+export const CONVERT_TO_FIXED_TITLE = () => "Convert to Fixed Layout";
+export const CONVERT_TO_FIXED_BUTTON = () => "CONVERT TO Fixed-LAYOUT";
+export const CONVERT_TO_AUTO_TITLE = () => "Convert to Auto Layout";
+export const CONVERT_TO_AUTO_BUTTON = () => "CONVERT TO AUTO-LAYOUT";
+export const SNAPSHOT_BANNER_MESSAGE = () =>
+  "Confirm this layout is per expectations before you discard the snapshot. Use the snapshot to go back.";
+export const USE_SNAPSHOT_CTA = () => "USE SNAPSHOT";
+export const DISCARD_SNAPSHOT_CTA = () => "DISCARD SNAPSHOT";
+export const MORE_DETAILS = () => "More details";
+export const CONVERSION_ERROR_MESSAGE_HEADER = () =>
+  "To resolve this error please:";
+export const CONVERSION_ERROR_MESSAGE_TEXT_ONE = () =>
+  "Check your internet connection.";
+export const CONVERSION_ERROR_MESSAGE_TEXT_TWO = () =>
+  "Send us a report. Sending a report will only inform us that the failure happened and will give us your email address to reach out to.";
+export const SNAPSHOT_TIME_FROM_MESSAGE = (
+  timeSince: string,
+  readableDate: string,
+) => `Snapshot from ${timeSince} ago (${readableDate})`;
+export const SNAPSHOT_TIME_TILL_EXPIRATION_MESSAGE = (
+  timeTillExpiration: string,
+) => `Snapshot of your previous layout expires in ${timeTillExpiration}`;
+export const DISCARD = () => "DISCARD";
 // Alert options and labels for showMessage types
 export const ALERT_STYLE_OPTIONS = [
   { label: "信息", value: "'info'", id: "info" },
