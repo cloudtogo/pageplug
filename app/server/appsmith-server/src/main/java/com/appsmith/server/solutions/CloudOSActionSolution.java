@@ -204,8 +204,10 @@ public class CloudOSActionSolution {
         return workspaceService.create(organization)
                 .flatMap(org -> applicationForkingService.forkApplicationToWorkspace(appId, org.getId()))
                 .flatMap(application -> {
-                    return Mono.just("/org/" + application.getWorkspaceId() + "/applications/" + application.getId() + "/pages/" +
-                            application.getPages().stream()
+                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    //application.getApplication().getWorkspaceId()和后面一些相关get方法，因为1.9.20版本后对 对象进行修改，原来的写法是application.getWorkspaceId()
+                    return Mono.just("/org/" + application.getApplication().getWorkspaceId() + "/applications/" + application.getApplication().getId() + "/pages/" +
+                            application.getApplication().getPages().stream()
                                 .filter(ApplicationPage::isDefault)
                                 .map(ApplicationPage::getId)
                                 .findFirst()
@@ -231,10 +233,11 @@ public class CloudOSActionSolution {
                 .flatMap(org -> applicationForkingService.forkApplicationToWorkspace(appId, org.getId()))
                 .flatMap(application ->
                         Flux.fromIterable(instanceList)
-                                .flatMap(instance -> updateDatasourceUrl(instance, application))
+                                //此处的application.getApplication()也是进行修改！！！！！！
+                                .flatMap(instance -> updateDatasourceUrl(instance, application.getApplication()))
                                 .collectList()
-                                .thenReturn("/applications/" + application.getId() + "/pages/" +
-                                    application.getPages().stream()
+                                .thenReturn("/applications/" + application.getApplication().getId() + "/pages/" +
+                                    application.getApplication().getPages().stream()
                                         .filter(ApplicationPage::isDefault)
                                         .map(ApplicationPage::getId)
                                         .findFirst()

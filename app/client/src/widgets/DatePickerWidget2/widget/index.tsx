@@ -1,21 +1,28 @@
-import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { TextSize, WidgetType } from "constants/WidgetConstants";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import type { TextSize, WidgetType } from "constants/WidgetConstants";
+import React from "react";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import DatePickerComponent from "../component";
 
 import { ValidationTypes } from "constants/WidgetValidation";
-import { DerivedPropertiesMap } from "utils/WidgetFactory";
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
+import type { DerivedPropertiesMap } from "utils/WidgetFactory";
 
-import derivedProperties from "./parseDerivedProperties";
-import { DatePickerType, TimePrecision } from "../constants";
-import { LabelPosition } from "components/constants";
 import { Alignment } from "@blueprintjs/core";
+import { LabelPosition } from "components/constants";
+import type { Stylesheet } from "entities/AppTheming";
 import { GRID_DENSITY_MIGRATION_V1 } from "widgets/constants";
+import {
+  isAutoHeightEnabledForWidget,
+  DefaultAutocompleteDefinitions,
+} from "widgets/WidgetUtils";
+import type { DatePickerType } from "../constants";
+import { TimePrecision } from "../constants";
 import { DateFormatOptions } from "./constants";
-import { Stylesheet } from "entities/AppTheming";
-import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
+import derivedProperties from "./parseDerivedProperties";
+import type { AutocompletionDefinitions } from "widgets/constants";
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
 
 function allowedRange(value: any) {
   const allowedValues = [0, 1, 2, 3, 4, 5, 6];
@@ -39,6 +46,18 @@ function allowedRange(value: any) {
   };
 }
 class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "Datepicker is used to capture the date and time from a user. It can be used to filter data base on the input date range as well as to capture personal information such as date of birth",
+      "!url": "https://docs.appsmith.com/widget-reference/datepicker",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      selectedDate: "string",
+      formattedDate: "string",
+      isDisabled: "bool",
+    };
+  }
+
   static getPropertyPaneContentConfig() {
     return [
       {
@@ -83,8 +102,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
               params: {
                 fn: allowedRange,
                 expected: {
-                  type:
-                    "0 : 星期天\n1 : 星期一\n2 : 星期二\n3 : 星期三\n4 : 星期四\n5 : 星期五\n6 : 星期六",
+                  type: "0 : 星期天\n1 : 星期一\n2 : 星期二\n3 : 星期三\n4 : 星期四\n5 : 星期五\n6 : 星期六",
                   example: "0",
                   autocompleteDataType: AutocompleteDataType.STRING,
                 },
@@ -147,6 +165,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
             label: "位置",
             controlType: "ICON_TABS",
             fullWidth: true,
+            hidden: isAutoLayout,
             options: [
               { label: "自动", value: LabelPosition.Auto },
               { label: "左", value: LabelPosition.Left },
@@ -310,8 +329,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           {
             propertyName: "onDateSelected",
             label: "onDateSelected",
-            helpText:
-              "Triggers an action when a date is selected in the calendar",
+            helpText: "when a date is selected in the calendar",
             controlType: "ACTION_SELECTOR",
             isJSConvertible: true,
             isBindProperty: true,
@@ -320,7 +338,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           {
             propertyName: "onFocus",
             label: "onFocus",
-            helpText: "Triggers an action when the date picker receives focus",
+            helpText: "when the date picker receives focus",
             controlType: "ACTION_SELECTOR",
             isJSConvertible: true,
             isBindProperty: true,
@@ -329,7 +347,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
           {
             propertyName: "onBlur",
             label: "onBlur",
-            helpText: "Triggers an action when the date picker loses focus",
+            helpText: "when the date picker loses focus",
             controlType: "ACTION_SELECTOR",
             isJSConvertible: true,
             isBindProperty: true,
@@ -361,6 +379,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
             helpText: "设置标签字体大小",
             controlType: "DROP_DOWN",
             defaultValue: "0.875rem",
+            hidden: isAutoLayout,
             options: [
               {
                 label: "S",

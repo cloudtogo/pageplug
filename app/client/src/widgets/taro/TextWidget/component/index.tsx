@@ -1,13 +1,10 @@
 import * as React from "react";
 import { Text, View } from "@tarojs/components";
 import styled from "styled-components";
-import { ComponentProps } from "widgets/BaseComponent";
-import { TextAlign } from "../widget";
-import {
-  FontStyleTypes,
-  TextSize,
-  DEFAULT_FONT_SIZE,
-} from "constants/WidgetConstants";
+import type { ComponentProps } from "widgets/BaseComponent";
+import type { TextAlign } from "../widget";
+import type { TextSize } from "constants/WidgetConstants";
+import { FontStyleTypes, DEFAULT_FONT_SIZE } from "constants/WidgetConstants";
 import { fontSizeUtility } from "widgets/WidgetUtils";
 
 export const TextContainer = styled(View)`
@@ -63,14 +60,8 @@ export interface TextComponentProps extends ComponentProps {
 
 class TextComponent extends React.Component<TextComponentProps> {
   render() {
-    const {
-      backgroundColor,
-      fontSize,
-      fontStyle,
-      text,
-      textAlign,
-      textColor,
-    } = this.props;
+    const { backgroundColor, fontSize, fontStyle, text, textAlign, textColor } =
+      this.props;
     return (
       <TextContainer>
         <StyledText

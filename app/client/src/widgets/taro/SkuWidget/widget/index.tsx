@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
+import type { WidgetType } from "constants/WidgetConstants";
 import SkuComponent from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
@@ -275,7 +277,7 @@ class MSkuWidget extends BaseWidget<MSkuWidgetProps, MSkuWidgetState> {
     });
   };
 
-  onSkuSelected = ({ skuValue, selectedSku, selectedSkuComb }: any) => {
+  onSkuSelected = ({ selectedSku, selectedSkuComb, skuValue }: any) => {
     // console.log(skuValue, selectedSku, selectedSkuComb);
   };
 
@@ -293,15 +295,8 @@ class MSkuWidget extends BaseWidget<MSkuWidgetProps, MSkuWidgetState> {
   };
 
   getPageView() {
-    const {
-      goodsId,
-      price,
-      pic,
-      stockNum,
-      categories,
-      products,
-      color,
-    } = this.props;
+    const { categories, color, goodsId, pic, price, products, stockNum } =
+      this.props;
     const { addCartLoading, buyLoading } = this.state;
     const skuData = {
       goods_id: goodsId,
@@ -316,7 +311,7 @@ class MSkuWidget extends BaseWidget<MSkuWidgetProps, MSkuWidgetState> {
         hide_stock: false,
         tree: _.isArray(categories)
           ? categories.map((cate: Category) => {
-              const { name, key, values } = cate || {
+              const { key, name, values } = cate || {
                 name: "",
                 key: "",
                 values: [],
@@ -348,15 +343,15 @@ class MSkuWidget extends BaseWidget<MSkuWidgetProps, MSkuWidgetState> {
     };
     return (
       <SkuComponent
+        addCartLoading={addCartLoading}
+        buyLoading={buyLoading}
         color={color}
-        sku={skuData.sku}
         goods={skuData.goods_info}
         goodsId={skuData.goods_id}
         onAddCart={this.onSubmit("onAddCart")}
         onBuyClicked={this.onSubmit("onBuy")}
         onSkuSelected={this.onSkuSelected}
-        addCartLoading={addCartLoading}
-        buyLoading={buyLoading}
+        sku={skuData.sku}
       />
     );
   }

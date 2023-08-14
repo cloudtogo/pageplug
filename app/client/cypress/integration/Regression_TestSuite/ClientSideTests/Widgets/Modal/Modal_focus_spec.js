@@ -5,7 +5,7 @@ import { ObjectsRegistry } from "../../../../../support/Objects/Registry";
 const agHelper = ObjectsRegistry.AggregateHelper,
   ee = ObjectsRegistry.EntityExplorer;
 
-describe("Modal focus", function() {
+describe("Modal focus", function () {
   const someInputText = "some text";
 
   function setupModalWithInputWidget() {
@@ -48,7 +48,7 @@ describe("Modal focus", function() {
 
   it("1. Should focus on the input field when autofocus for the input field is enabled", () => {
     setupModalWithInputWidget();
-    cy.openPropertyPane("inputwidgetv2");
+    cy.openPropertyPaneFromModal("inputwidgetv2");
 
     // autofocus for input field is enabled
     cy.get(".t--property-control-autofocus")
@@ -61,29 +61,27 @@ describe("Modal focus", function() {
 
     //close Modal
     cy.get(widgets.modalCloseButton).click({ force: true });
+    cy.get(widgets.modalCloseButton).should("not.be.visible");
 
+    cy.wait(1500);
     //open the modal
-    cy.get(widgets.widgetBtn)
-      .contains("Submit")
-      .click({ force: true });
+    cy.get(widgets.widgetBtn).contains("Submit").click({ force: true });
     //check if the focus is on the input field
     cy.focused().should("have.value", someInputText);
   });
   it("2. Should not focus on the input field if autofocus is disabled", () => {
-    cy.openPropertyPane("inputwidgetv2");
-
+    cy.openPropertyPaneFromModal("inputwidgetv2");
     // autofocus for input field is disabled
     cy.get(".t--property-control-autofocus")
       .find(".bp3-switch input")
       .click({ force: true });
     //close Modal
-
     cy.get(widgets.modalCloseButton).click({ force: true });
+    cy.get(widgets.modalCloseButton).should("not.be.visible");
+
     //open the modal
     cy.get(widgets.modalWidget).should("not.exist");
-    cy.get(widgets.widgetBtn)
-      .contains("Submit")
-      .click({ force: true });
+    cy.get(widgets.widgetBtn).contains("Submit").click({ force: true });
     //check if the focus is not on the input field
     cy.focused().should("not.have.value", someInputText);
   });
