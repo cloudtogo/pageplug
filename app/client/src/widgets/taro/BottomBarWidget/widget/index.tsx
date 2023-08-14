@@ -1,14 +1,16 @@
-import React, { ReactNode } from "react";
+import type { ReactNode } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import WidgetFactory from "utils/WidgetFactory";
 import { ValidationTypes } from "constants/WidgetValidation";
 import BottomBarComponent from "../component";
-import { RenderMode } from "constants/WidgetConstants";
+import type { RenderMode } from "constants/WidgetConstants";
 import { generateClassName } from "utils/generators";
 import { getCanvasWidth } from "selectors/editorSelectors";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 
 export class MBottomBarWidget extends BaseWidget<
   MBottomBarWidgetProps,

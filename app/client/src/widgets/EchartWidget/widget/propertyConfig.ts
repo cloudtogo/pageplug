@@ -1,4 +1,4 @@
-import { EchartWidgetProps } from "widgets/EchartWidget/widget";
+import type { EchartWidgetProps } from "widgets/EchartWidget/widget";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 

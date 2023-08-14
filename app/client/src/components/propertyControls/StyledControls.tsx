@@ -1,19 +1,15 @@
-import React, { RefObject, useEffect, useRef } from "react";
+import type { RefObject } from "react";
+import React, { useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
 import { Classes, MenuItem, Menu } from "@blueprintjs/core";
-import { ContainerOrientation } from "constants/WidgetConstants";
+import type { ContainerOrientation } from "constants/WidgetConstants";
 import { DateRangeInput } from "@blueprintjs/datetime";
 import { Colors } from "constants/Colors";
 import { Skin } from "constants/DefaultTheme";
 import { ControlIcons } from "icons/ControlIcons";
 import { FormIcons } from "icons/FormIcons";
-import {
-  Button,
-  Dropdown,
-  InputWrapper,
-  TextInput,
-  TextInputProps,
-} from "design-system-old";
+import type { TextInputProps } from "design-system-old";
+import { Button, Dropdown, InputWrapper, TextInput } from "design-system-old";
 import { IconWrapper } from "constants/IconConstants";
 import useInteractionAnalyticsEvent from "utils/hooks/useInteractionAnalyticsEvent";
 import { Checkbox } from "design-system-old";
@@ -56,7 +52,7 @@ export const ControlPropertyLabelContainer = styled.div`
   label {
     color: ${Colors.GRAY_700};
     margin-bottom: ${(props) => props.theme.spaces[1]}px;
-    font-size: ${(props) => props.theme.fontSizes[2]}px;
+    font-size: ${(props) => props.theme.fontSizes[3]}px;
   }
   .underline {
     color: ${(props) => props.theme.colors.paneTextUnderline};
@@ -153,9 +149,6 @@ export const StyledMenuItem = styled(MenuItem)`
     color: ${(props) => props.theme.dropdown[Skin.LIGHT].inActiveText};
     padding: 4px 8px;
     margin: 4px 0px;
-    &.bp3-menu-item.bp3-intent-danger {
-      color: ${Colors.MINT_RED};
-    }
     &:hover {
       background: ${(props) => props.theme.dropdown[Skin.LIGHT].hoverBG};
       &&&.bp3-menu-item.bp3-intent-danger:hover {
@@ -222,9 +215,8 @@ export const StyledInputGroup = React.forwardRef(
   (props: TextInputProps, ref) => {
     let inputRef = useRef<HTMLInputElement>(null);
     const wrapperRef = useRef<HTMLInputElement>(null);
-    const { dispatchInteractionAnalyticsEvent } = useInteractionAnalyticsEvent<
-      HTMLInputElement
-    >(false, wrapperRef);
+    const { dispatchInteractionAnalyticsEvent } =
+      useInteractionAnalyticsEvent<HTMLInputElement>(false, wrapperRef);
 
     if (ref) inputRef = ref as RefObject<HTMLInputElement>;
 

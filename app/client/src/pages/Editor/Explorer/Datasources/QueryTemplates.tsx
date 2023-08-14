@@ -3,19 +3,20 @@ import styled from "styled-components";
 import { Colors } from "constants/Colors";
 import { useDispatch, useSelector } from "react-redux";
 import { createActionRequest } from "actions/pluginActionActions";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import { createNewQueryName } from "utils/AppsmithUtils";
 import {
   getCurrentApplicationId,
   getCurrentPageId,
 } from "selectors/editorSelectors";
-import { QueryAction } from "entities/Action";
+import type { QueryAction } from "entities/Action";
 import { Classes } from "@blueprintjs/core";
 import history from "utils/history";
-import { Datasource, QueryTemplate } from "entities/Datasource";
+import type { Datasource, QueryTemplate } from "entities/Datasource";
 import { INTEGRATION_TABS } from "constants/routes";
 import { getDatasource } from "selectors/entitiesSelector";
 import { integrationEditorURL } from "RouteBuilder";
+import { EntityClassNames } from "pages/Editor/Explorer/Entity";
 
 const Container = styled.div`
   border-radius: ${(props) => props.theme.borderRadius};
@@ -95,7 +96,7 @@ export function QueryTemplates(props: QueryTemplatesProps) {
   );
 
   return (
-    <Container>
+    <Container className={EntityClassNames.CONTEXT_MENU_CONTENT}>
       {props.templates.map((template) => {
         return (
           <TemplateType

@@ -5,6 +5,7 @@ import com.appsmith.external.datatypes.ClientDataType;
 import com.appsmith.external.dtos.DatasourceDTO;
 import com.appsmith.external.dtos.ExecuteActionDTO;
 import com.appsmith.external.dtos.ExecutePluginDTO;
+import com.appsmith.external.dtos.ParamProperty;
 import com.appsmith.external.exceptions.pluginExceptions.AppsmithPluginError;
 import com.appsmith.external.exceptions.pluginExceptions.AppsmithPluginException;
 import com.appsmith.external.exceptions.pluginExceptions.StaleConnectionException;
@@ -66,12 +67,14 @@ import com.appsmith.server.solutions.ApplicationPermission;
 import com.appsmith.server.solutions.DatasourcePermission;
 import com.appsmith.server.solutions.PagePermission;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.observation.ObservationRegistry;
 import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bson.types.ObjectId;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -110,10 +113,23 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.appsmith.external.constants.CommonFieldName.REDACTED_DATA;
-import static com.appsmith.external.constants.spans.ActionSpans.*;
+import static com.appsmith.external.constants.spans.ActionSpans.ACTION_EXECUTION_CACHED_ACTION;
+import static com.appsmith.external.constants.spans.ActionSpans.ACTION_EXECUTION_CACHED_DATASOURCE;
+import static com.appsmith.external.constants.spans.ActionSpans.ACTION_EXECUTION_CACHED_PLUGIN;
+import static com.appsmith.external.constants.spans.ActionSpans.ACTION_EXECUTION_DATASOURCE_CONTEXT;
+import static com.appsmith.external.constants.spans.ActionSpans.ACTION_EXECUTION_DATASOURCE_CONTEXT_REMOTE;
+import static com.appsmith.external.constants.spans.ActionSpans.ACTION_EXECUTION_EDITOR_CONFIG;
+import static com.appsmith.external.constants.spans.ActionSpans.ACTION_EXECUTION_REQUEST_PARSING;
+import static com.appsmith.external.constants.spans.ActionSpans.ACTION_EXECUTION_SERVER_EXECUTION;
+import static com.appsmith.external.constants.spans.ActionSpans.ACTION_EXECUTION_VALIDATE_AUTHENTICATION;
+import static com.appsmith.external.constants.spans.ActionSpans.GET_ACTION_REPOSITORY_CALL;
+import static com.appsmith.external.constants.spans.ActionSpans.GET_UNPUBLISHED_ACTION;
+import static com.appsmith.external.constants.spans.ActionSpans.GET_VIEW_MODE_ACTION;
 import static com.appsmith.external.helpers.AppsmithBeanUtils.copyNewFieldValuesIntoOldObject;
 import static com.appsmith.external.helpers.DataTypeStringUtils.getDisplayDataTypes;
 import static com.appsmith.external.helpers.PluginUtils.setValueSafelyInFormData;
@@ -135,19 +151,25 @@ public class NewActionServiceCEImpl extends BaseService<NewActionRepository, New
     public static final PluginType JS_PLUGIN_TYPE = PluginType.JS;
     public static final String JS_PLUGIN_PACKAGE_NAME = "js-plugin";
 
+
     private final NewActionRepository repository;
     private final DatasourceService datasourceService;
     private final PluginService pluginService;
+
     private final DatasourceContextService datasourceContextService;
+
     private final PluginExecutorHelper pluginExecutorHelper;
     private final MarketplaceService marketplaceService;
     private final PolicyGenerator policyGenerator;
     private final NewPageService newPageService;
     private final ApplicationService applicationService;
+
     private final SessionUserService sessionUserService;
     private final PolicyUtils policyUtils;
+
     private final ObjectMapper objectMapper;
     private final AuthenticationValidator authenticationValidator;
+
     private final ConfigService configService;
     private final ResponseUtils responseUtils;
 
@@ -158,6 +180,8 @@ public class NewActionServiceCEImpl extends BaseService<NewActionRepository, New
     private final ActionPermission actionPermission;
 
     private final ObservationRegistry observationRegistry;
+    private final Map<String, Plugin> defaultPluginMap = new HashMap<>();
+    private final AtomicReference<Plugin> jsTypePluginReference = new AtomicReference<>();
 
     public NewActionServiceCEImpl(Scheduler scheduler,
                                   Validator validator,
@@ -643,6 +667,7 @@ public class NewActionServiceCEImpl extends BaseService<NewActionRepository, New
                 });
     }
 
+    //=====================================================
     /**
      * Sets the param value to "" if key is not empty and value is null for each param
      *
@@ -691,6 +716,7 @@ public class NewActionServiceCEImpl extends BaseService<NewActionRepository, New
                 .flatMap(action -> getValidActionForExecution(executeActionDTO, actionId, action))
                 .cache();
     }
+
 
     /**
      * Fetches, validates and caches the datasource from actionDTO
@@ -1150,9 +1176,9 @@ public class NewActionServiceCEImpl extends BaseService<NewActionRepository, New
                                 String bindingValue = dto.getInvertParameterMap().get(pseudoBindingName);
                                 param.setKey(bindingValue);
                                 visitedBindings.add(bindingValue);
-                                //if the type is not an array e.g. "k1": "string" or "k1": "boolean"
+/*                                //if the type is not an array e.g. "k1": "string" or "k1": "boolean"
                                 if (dto.getParamProperties()
-                                        .get(pseudoBindingName) instanceof String) {
+                                        .get(pseudoBindingName) instanceof String ) {
                                     param.setClientDataType(ClientDataType.valueOf(String.valueOf(dto.getParamProperties()
                                                     .get(pseudoBindingName))
                                             .toUpperCase()));
@@ -1161,7 +1187,20 @@ public class NewActionServiceCEImpl extends BaseService<NewActionRepository, New
                                     //if the type is an array e.g. "k1": { "array": [ "string", "number", "string", "boolean"]
                                     LinkedHashMap<String, ArrayList> stringArrayListLinkedHashMap =
                                             (LinkedHashMap<String, ArrayList>) dto.getParamProperties()
-                                                    .get(pseudoBindingName);
+                                                    .get(pseudoBindingName);*/
+
+                                //!!!为了解决代码冲突应上而修改
+                                //if the type is not an array e.g. "k1": "string" or "k1": "boolean"
+                                if (dto.getAnalyticsProperties()
+                                        .get(pseudoBindingName) instanceof String ) {
+                                    param.setClientDataType(ClientDataType.valueOf(String.valueOf(dto.getParamProperties()
+                                                    .get(pseudoBindingName))
+                                            .toUpperCase()));
+                                } else if (dto.getAnalyticsProperties()
+                                        .get(pseudoBindingName) instanceof LinkedHashMap) {
+                                    //if the type is an array e.g. "k1": { "array": [ "string", "number", "string", "boolean"]
+                                    LinkedHashMap<String, ArrayList> stringArrayListLinkedHashMap =
+                                            (LinkedHashMap<String, ArrayList>) dto.getAnalyticsProperties().get(pseudoBindingName);
                                     Optional<String> firstKeyOpt = stringArrayListLinkedHashMap.keySet()
                                             .stream()
                                             .findFirst();
@@ -1223,7 +1262,6 @@ public class NewActionServiceCEImpl extends BaseService<NewActionRepository, New
                 .name(ACTION_EXECUTION_SERVER_EXECUTION)
                 .tap(Micrometer.observation(observationRegistry));
     }
-
 
     @Override
     public Mono<ActionDTO> getValidActionForExecution(ExecuteActionDTO executeActionDTO, String actionId, NewAction newAction) {
@@ -1512,6 +1550,7 @@ public class NewActionServiceCEImpl extends BaseService<NewActionRepository, New
         return MustacheHelper.renderFieldValues(configuration, replaceParamsMap);
     }
 
+//    ===============================================
     @Override
     public Mono<ActionDTO> findByUnpublishedNameAndPageId(String name, String pageId, AclPermission permission) {
         return repository.findByUnpublishedNameAndPageId(name, pageId, permission)
@@ -1610,14 +1649,17 @@ public class NewActionServiceCEImpl extends BaseService<NewActionRepository, New
 
                     return Mono.just(action);
                 })
-                .flatMap(this::sanitizeAction);
+                .collectList()
+                .flatMapMany(this::addMissingPluginDetailsIntoAllActions);
     }
 
     @Override
     public Flux<ActionViewDTO> getActionsForViewMode(String defaultApplicationId, String branchName) {
         return applicationService.findBranchedApplicationId(branchName, defaultApplicationId, applicationPermission.getReadPermission())
                 .flatMapMany(this::getActionsForViewMode)
-                .map(responseUtils::updateActionViewDTOWithDefaultResources);
+                .map(responseUtils::updateActionViewDTOWithDefaultResources)
+                .name(GET_VIEW_MODE_ACTION)
+                .tap(Micrometer.observation(observationRegistry));
     }
 
     @Override
@@ -1808,7 +1850,7 @@ public class NewActionServiceCEImpl extends BaseService<NewActionRepository, New
     }
 
     @Override
-    public Flux<ActionDTO> getUnpublishedActions(MultiValueMap<String, String> params) {
+    public Flux<ActionDTO> getUnpublishedActions(MultiValueMap<String, String> params, Boolean includeJsActions) {
         String name = null;
         List<String> pageIds = new ArrayList<>();
 
@@ -1823,22 +1865,50 @@ public class NewActionServiceCEImpl extends BaseService<NewActionRepository, New
             pageIds.add(params.getFirst(FieldName.PAGE_ID));
         }
 
+        Flux<NewAction> actionsFromRepository;
+
         if (params.getFirst(FieldName.APPLICATION_ID) != null) {
             // Fetch unpublished pages because GET actions is only called during edit mode. For view mode, different
             // function call is made which takes care of returning only the essential fields of an action
-            return applicationService
-                    .findById(params.getFirst(FieldName.APPLICATION_ID), applicationPermission.getReadPermission())
-                    .flatMapMany(application -> repository.findByApplicationIdAndViewMode(application.getId(), false, actionPermission.getReadPermission()))
-                    .flatMap(this::sanitizeAction)
-                    .flatMap(this::setTransientFieldsInUnpublishedAction);
+
+            if (FALSE.equals(includeJsActions)) {
+                actionsFromRepository = repository.findNonJsActionsByApplicationIdAndViewMode(params.getFirst(FieldName.APPLICATION_ID),
+                        false,
+                        actionPermission.getReadPermission());
+
+            } else {
+                actionsFromRepository = repository.findByApplicationIdAndViewMode(params.getFirst(FieldName.APPLICATION_ID),
+                        false,
+                        actionPermission.getReadPermission());
+            }
+
+        } else {
+
+            if (FALSE.equals(includeJsActions)) {
+                actionsFromRepository = repository.findAllNonJsActionsByNameAndPageIdsAndViewMode(name, pageIds, false,
+                        actionPermission.getReadPermission(),
+                        sort);
+            } else {
+                actionsFromRepository = repository.findAllActionsByNameAndPageIdsAndViewMode(name, pageIds, false,
+                        actionPermission.getReadPermission(),
+                        sort);
+            }
         }
-        return repository.findAllActionsByNameAndPageIdsAndViewMode(name, pageIds, false, actionPermission.getReadPermission(), sort)
-                .flatMap(this::sanitizeAction)
-                .flatMap(this::setTransientFieldsInUnpublishedAction);
+
+        return actionsFromRepository
+                .collectList()
+                .flatMapMany(this::addMissingPluginDetailsIntoAllActions)
+                .flatMap(this::setTransientFieldsInUnpublishedAction)
+                // this generates four different tags, (ApplicationId, FieldId) *(True, False)
+                .tag("includeJsAction", (params.get(FieldName.APPLICATION_ID) == null ? FieldName.PAGE_ID: FieldName.APPLICATION_ID )+ includeJsActions.toString())
+                .name(GET_ACTION_REPOSITORY_CALL)
+                .tap(Micrometer.observation(observationRegistry));
     }
 
     @Override
-    public Flux<ActionDTO> getUnpublishedActions(MultiValueMap<String, String> params, String branchName) {
+    public Flux<ActionDTO> getUnpublishedActions(MultiValueMap<String, String> params,
+                                                 String branchName,
+                                                 Boolean includeJsActions) {
 
         MultiValueMap<String, String> updatedParams = new LinkedMultiValueMap<>(params);
         // Get branched applicationId and pageId
@@ -1859,21 +1929,33 @@ public class NewActionServiceCEImpl extends BaseService<NewActionRepository, New
                     if (!CollectionUtils.isEmpty(params.get(FieldName.APPLICATION_ID)) && !StringUtils.isEmpty(applicationId)) {
                         updatedParams.set(FieldName.APPLICATION_ID, applicationId);
                     }
-                    return getUnpublishedActions(updatedParams);
+                    return getUnpublishedActions(updatedParams, includeJsActions);
                 })
                 .map(responseUtils::updateActionDTOWithDefaultResources);
     }
 
     @Override
+    public Flux<ActionDTO> getUnpublishedActions(MultiValueMap<String, String> params) {
+        return getUnpublishedActions(params, TRUE);
+    }
+
+    @Override
+    public Flux<ActionDTO> getUnpublishedActions(MultiValueMap<String, String> params, String branchName) {
+        return getUnpublishedActions(params, branchName, TRUE);
+    }
+
+    @Override
     public Flux<ActionDTO> getUnpublishedActionsExceptJs(MultiValueMap<String, String> params) {
-        return this.getUnpublishedActions(params)
+        return this.getUnpublishedActions(params, FALSE)
                 .filter(actionDTO -> !PluginType.JS.equals(actionDTO.getPluginType()));
     }
 
     @Override
     public Flux<ActionDTO> getUnpublishedActionsExceptJs(MultiValueMap<String, String> params, String branchName) {
-        return this.getUnpublishedActions(params, branchName)
-                .filter(actionDTO -> !PluginType.JS.equals(actionDTO.getPluginType()));
+        return this.getUnpublishedActions(params, branchName, FALSE)
+                .filter(actionDTO -> !PluginType.JS.equals(actionDTO.getPluginType()))
+                .name(GET_UNPUBLISHED_ACTION)
+                .tap(Micrometer.observation(observationRegistry));
     }
 
     /**
@@ -1892,6 +1974,66 @@ public class NewActionServiceCEImpl extends BaseService<NewActionRepository, New
         }
 
         return actionMono;
+    }
+
+    public Flux<NewAction> addMissingPluginDetailsIntoAllActions(List<NewAction> actionList) {
+
+        Mono<Map<String, Plugin>> pluginMapMono = Mono.just(defaultPluginMap);
+
+        /* This conditional would be false once per pod per restart, as soon as first request goes through
+        the default plugin map will have all the plugins and subsequent requests might not require to fetch again.
+         */
+
+        if (CollectionUtils.isEmpty(defaultPluginMap)) {
+            pluginMapMono = pluginService.getDefaultPlugins()
+                    .collectMap(Plugin::getId)
+                    .map(pluginMap -> {
+                        pluginMap.forEach((pluginId, plugin) -> {
+                            defaultPluginMap.put(pluginId, plugin);
+                            if (JS_PLUGIN_PACKAGE_NAME
+                                    .equals(plugin.getPackageName())) {
+                                jsTypePluginReference.set(plugin);
+                            }
+                        });
+                        return pluginMap;
+                    });
+        }
+
+        return pluginMapMono
+                .thenMany(Flux.fromIterable(actionList))
+                .flatMap(action-> {
+                    if (!isPluginTypeOrPluginIdMissing(action)) {
+                        return Mono.just(action);
+                    }
+                    return addMissingPluginDetailsToNewActionObjects(action);
+                });
+    }
+
+    private Mono<NewAction> addMissingPluginDetailsToNewActionObjects(NewAction action) {
+        ActionDTO actionDTO = action.getUnpublishedAction();
+        if (actionDTO == null) {
+            return Mono.just(action);
+        }
+
+        Datasource datasource = actionDTO.getDatasource();
+        if (actionDTO.getCollectionId() != null) {
+            action.setPluginType(JS_PLUGIN_TYPE);
+            action.setPluginId(jsTypePluginReference.get().getId());
+            return Mono.just(action);
+
+        } else if (datasource != null && datasource.getPluginId() != null) {
+            String pluginId = datasource.getPluginId();
+            action.setPluginId(pluginId);
+
+            if (defaultPluginMap.containsKey(pluginId)) {
+                Plugin plugin = defaultPluginMap.get(pluginId);
+                action.setPluginType(plugin.getType());
+            } else {
+                setPluginTypeFromId(action, pluginId);
+            }
+        }
+
+        return Mono.just(action);
     }
 
     @Override
@@ -2115,11 +2257,11 @@ public class NewActionServiceCEImpl extends BaseService<NewActionRepository, New
                     // Now add messages that would eventually be displayed to the developer user informing them
                     // about the action setting change.
                     if (!turnedOffActionNames.isEmpty()) {
-                        messages.add(turnedOffActionNames.toString() + " 将不再自动运行");
+                        messages.add(turnedOffActionNames.toString() + " will no longer be executed on page load");
                     }
 
                     if (!turnedOnActionNames.isEmpty()) {
-                        messages.add(turnedOnActionNames.toString() + " 将会在页面加载完成后自动运行");
+                        messages.add(turnedOnActionNames.toString() + " will be executed automatically on page load");
                     }
 
                     // Finally update the actions which require an update
@@ -2328,5 +2470,8 @@ public class NewActionServiceCEImpl extends BaseService<NewActionRepository, New
         }
         return analyticsProperties;
     }
+
+
+
 
 }

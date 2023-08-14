@@ -2,13 +2,10 @@ import {
   fetchApplication,
   fetchApplicationPreviewWxaCode,
 } from "actions/applicationActions";
+import { fetchCloudOSApi } from "actions/pageActions";
+import { setAppMode, updateAppStore } from "actions/pageActions";
+import type { ApplicationPayload } from "@appsmith/constants/ReduxActionConstants";
 import {
-  setAppMode,
-  updateAppStore,
-  fetchCloudOSApi,
-} from "actions/pageActions";
-import {
-  ApplicationPayload,
   ReduxActionErrorTypes,
   ReduxActionTypes,
 } from "@appsmith/constants/ReduxActionConstants";
@@ -23,7 +20,7 @@ import {
   isMobileLayout,
 } from "selectors/applicationSelectors";
 import history from "utils/history";
-import URLRedirect from "entities/URLRedirect/index";
+import type URLRedirect from "entities/URLRedirect/index";
 import URLGeneratorFactory from "entities/URLRedirect/factory";
 import { updateBranchLocally } from "actions/gitSyncActions";
 import { getCurrentGitBranch } from "selectors/gitSyncSelectors";
@@ -67,7 +64,6 @@ export default abstract class AppEngine {
 
   *loadAppData(payload: AppEnginePayload) {
     const { applicationId, branch, pageId, queryParams } = payload;
-
     // sync CloudOS api
     if (
       queryParams &&
@@ -100,9 +96,8 @@ export default abstract class AppEngine {
     if (!apiCalls)
       throw new PageNotFoundError(`Cannot find page with id: ${pageId}`);
     const application: ApplicationPayload = yield select(getCurrentApplication);
-    const currentGitBranch: ReturnType<typeof getCurrentGitBranch> = yield select(
-      getCurrentGitBranch,
-    );
+    const currentGitBranch: ReturnType<typeof getCurrentGitBranch> =
+      yield select(getCurrentGitBranch);
     yield put(
       updateAppStore(
         getPersistentAppStore(application.id, branch || currentGitBranch),
@@ -110,7 +105,7 @@ export default abstract class AppEngine {
     );
 
     // get weapp WxaCode preview image
-    const isMobile = yield select(isMobileLayout);
+    const isMobile: boolean = yield select(isMobileLayout);
     const isPublishedMode = this._mode === APP_MODE.PUBLISHED;
     if (isMobile && isPublishedMode) {
       yield failFastApiCalls(
