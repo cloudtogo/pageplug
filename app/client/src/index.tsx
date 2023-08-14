@@ -12,7 +12,7 @@ import AppRouter from "@appsmith/AppRouter";
 import * as Sentry from "@sentry/react";
 import { getCurrentThemeDetails } from "selectors/themeSelectors";
 import { connect } from "react-redux";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import { StyledToastContainer } from "design-system-old";
 import "./assets/styles/index.css";
 import "./index.less";
@@ -29,7 +29,7 @@ import "dayjs/locale/zh-cn";
 import { StyleProvider } from "@ant-design/cssinjs";
 // enable autofreeze only in development
 import { setAutoFreeze } from "immer";
-import AppErrorBoundary from "AppErrorBoundry";
+import AppErrorBoundary from "./AppErrorBoundry";
 const shouldAutoFreeze = process.env.NODE_ENV === "development";
 setAutoFreeze(shouldAutoFreeze);
 // taro-components polyfills
@@ -43,13 +43,14 @@ import "./taroifyStyles";
 applyPolyfills().then(() => {
   defineCustomElements(window);
 });
-// create taro runtime in React
+// // create taro runtime in React
 import { createReactApp } from "@tarojs/runtime";
 class Empty extends React.Component {
   render() {
     return null;
   }
 }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const inst = createReactApp(Empty, React, ReactDOM, {});
 // add touch emulator
 import "@vant/touch-emulator";
@@ -93,7 +94,7 @@ class ThemedApp extends React.Component<{
                 locale={zhCNantd}
                 theme={{
                   token: {
-                    colorPrimary: "#2cbba6",
+                    colorPrimary: "#27b7b7",
                   },
                 }}
               >
@@ -120,3 +121,13 @@ ReactDOM.render(<App />, document.getElementById("root"));
 if ((window as any).Cypress) {
   (window as any).store = store;
 }
+
+// 测试taro
+// import React from "react";
+// import ReactDOM from "react-dom";
+
+// import { View } from "@tarojs/components";
+// function App() {
+//   return <View></View>;
+// }
+// ReactDOM.render(<App />, document.getElementById("root"));

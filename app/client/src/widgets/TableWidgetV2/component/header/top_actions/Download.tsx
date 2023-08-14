@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-restricted-imports */
 import React, { memo } from "react";
 import {
   Popover,
@@ -7,7 +8,7 @@ import {
 } from "@blueprintjs/core";
 import { IconWrapper } from "constants/IconConstants";
 import { Colors } from "constants/Colors";
-import { ReactTableColumnProps } from "../../Constants";
+import type { ReactTableColumnProps } from "../../Constants";
 import { TableIconWrapper } from "../../TableStyledWrappers";
 import styled, { createGlobalStyle } from "styled-components";
 import ActionItem from "./ActionItem";

@@ -1,6 +1,6 @@
 import React, { isValidElement } from "react";
 import clsx from "clsx";
-import { ActionBarIconProps } from "./PropsType";
+import type { ActionBarIconProps } from "./PropsType";
 import { createVanIconComponent } from "@taroify/icons/van";
 import { Badge } from "@taroify/core";
 import { createBEM } from "../../rvStyle/bem";
@@ -9,7 +9,7 @@ const ActionBarIcon: React.FC<ActionBarIconProps> = (props) => {
   const bem = createBEM("rv-action-bar-icon");
 
   const renderIcon = () => {
-    const { badge, icon, color } = props;
+    const { badge, color, icon } = props;
     let iconContent = icon;
     if (typeof icon === "string") {
       const Icon = createVanIconComponent(icon);
@@ -23,11 +23,11 @@ const ActionBarIcon: React.FC<ActionBarIconProps> = (props) => {
 
   return (
     <div
-      role="button"
       className={clsx(props.className, bem())}
+      onClick={props.onClick}
+      role="button"
       style={props.style}
       tabIndex={0}
-      onClick={props.onClick}
     >
       {renderIcon()}
       {props.children || props.text}

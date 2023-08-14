@@ -1,8 +1,14 @@
 import { ButtonBoxShadowTypes } from "components/constants";
 import { Colors } from "constants/Colors";
+import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
 import { GridDefaults, WidgetHeightLimits } from "constants/WidgetConstants";
-import { WidgetProps } from "widgets/BaseWidget";
+import {
+  FlexVerticalAlignment,
+  ResponsiveBehavior,
+} from "utils/autoLayout/constants";
+import type { WidgetProps } from "widgets/BaseWidget";
 import IconSVG from "./icon.svg";
+import type { ContainerWidgetProps } from "./widget";
 import Widget from "./widget";
 
 export const CONFIG = {
@@ -54,6 +60,26 @@ export const CONFIG = {
       ],
     },
     version: 1,
+    flexVerticalAlignment: FlexVerticalAlignment.Top,
+    responsiveBehavior: ResponsiveBehavior.Fill,
+    minWidth: FILL_WIDGET_MIN_WIDTH,
+  },
+  autoLayout: {
+    widgetSize: [
+      {
+        viewportMinWidth: 0,
+        configuration: () => {
+          return {
+            minWidth: "280px",
+            minHeight: "50px",
+          };
+        },
+      },
+    ],
+    disableResizeHandles: (props: ContainerWidgetProps<WidgetProps>) => ({
+      // Disables vertical resize handles for all container widgets except for the List item container
+      vertical: !props.isListItemContainer,
+    }),
   },
   properties: {
     derived: Widget.getDerivedPropertiesMap(),
@@ -63,6 +89,7 @@ export const CONFIG = {
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
     stylesheetConfig: Widget.getStylesheetConfig(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
   },
 };
 

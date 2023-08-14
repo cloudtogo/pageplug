@@ -41,7 +41,6 @@ public class ImportExportApplicationServiceImpl extends ImportExportApplicationS
                                               NewPageRepository newPageRepository,
                                               NewActionService newActionService,
                                               SequenceService sequenceService,
-                                              ExamplesWorkspaceCloner examplesWorkspaceCloner,
                                               ActionCollectionRepository actionCollectionRepository,
                                               ActionCollectionService actionCollectionService,
                                               ThemeService themeService,
@@ -57,7 +56,7 @@ public class ImportExportApplicationServiceImpl extends ImportExportApplicationS
 
         super(datasourceService, sessionUserService, newActionRepository, datasourceRepository, pluginRepository,
                 workspaceService, applicationService, newPageService, applicationPageService, newPageRepository,
-                newActionService, sequenceService, examplesWorkspaceCloner, actionCollectionRepository,
+                newActionService, sequenceService, actionCollectionRepository,
                 actionCollectionService, themeService, analyticsService, customJSLibService, datasourcePermission,
                 workspacePermission, applicationPermission, pagePermission, actionPermission, gson, transactionalOperator);
     }

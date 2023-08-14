@@ -34,14 +34,14 @@ const UpgradeBanner = () => {
           </SettingsSubHeader>
         </main>
         <aside>
-          <Button
+          {/* <Button
             className="w-max min-w-48"
             icon="star-line"
             iconPosition="left"
             onClick={onUpgrade}
             size="large"
             text="升级"
-          />
+          /> */}
         </aside>
       </div>
     </div>

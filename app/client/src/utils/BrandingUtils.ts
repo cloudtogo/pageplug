@@ -13,9 +13,9 @@ import {
 const FAVICON_MAX_WIDTH = 32;
 const FAVICON_MAX_HEIGHT = 32;
 const DEFAULT_BRANDING_PRIMARY_COLOR = "#D7D7D7";
-export const APPSMITH_BRAND_PRIMARY_COLOR = "#2CBBA6";
+export const APPSMITH_BRAND_PRIMARY_COLOR = "#27b7b7";
 export const APPSMITH_BRAND_FAVICON_URL = "/static/img/favicon-pageplug.ico";
-export const APPSMITH_BRAND_LOGO_URL = "/static/img/pageplug_logo_black.svg";
+export const APPSMITH_BRAND_LOGO_URL = "/static/img/pageplug_logo_primary.png";
 
 /**
  * create brand colors from primary color
@@ -163,7 +163,7 @@ export const faivconImageValidator = (
   const image = new Image();
   image.src = window.URL.createObjectURL(file);
 
-  image.onload = function() {
+  image.onload = function () {
     const height = image.naturalHeight;
     const width = image.naturalWidth;
 

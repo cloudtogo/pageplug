@@ -1,12 +1,14 @@
-import { call, fork, put, race, select, take } from "redux-saga/effects";
-import {
+import { call, put, race, select, take } from "redux-saga/effects";
+import type {
   ReduxAction,
   ReduxActionWithPromise,
+} from "@appsmith/constants/ReduxActionConstants";
+import {
   ReduxActionTypes,
   ReduxActionErrorTypes,
 } from "@appsmith/constants/ReduxActionConstants";
 import { reset } from "redux-form";
-import UserApi, {
+import type {
   CreateUserRequest,
   CreateUserResponse,
   ForgotPasswordRequest,
@@ -16,13 +18,15 @@ import UserApi, {
   LeaveWorkspaceRequest,
 } from "@appsmith/api/UserApi";
 import { AUTH_LOGIN_URL, matchBuilderPath, SETUP } from "constants/routes";
+import UserApi from "@appsmith/api/UserApi";
 import history from "utils/history";
-import { ApiResponse } from "api/ApiResponses";
+import type { ApiResponse } from "api/ApiResponses";
 import {
   validateResponse,
   getResponseErrorMessage,
   callAPI,
 } from "sagas/ErrorSagas";
+import _get from "lodash/get";
 import {
   logoutUserSuccess,
   logoutUserError,
@@ -38,9 +42,12 @@ import { INVITE_USERS_TO_WORKSPACE_FORM } from "@appsmith/constants/forms";
 import PerformanceTracker, {
   PerformanceTransactionName,
 } from "utils/PerformanceTracker";
-import { ERROR_CODES } from "@appsmith/constants/ApiConstants";
-import { ANONYMOUS_USERNAME, User } from "constants/userConstants";
-import { flushErrorsAndRedirect } from "actions/errorActions";
+import type { User } from "constants/userConstants";
+import { ANONYMOUS_USERNAME } from "constants/userConstants";
+import {
+  flushErrorsAndRedirect,
+  safeCrashAppRequest,
+} from "actions/errorActions";
 import localStorage from "utils/localStorage";
 import { Toaster, Variant } from "design-system-old";
 import log from "loglevel";
@@ -55,19 +62,17 @@ import {
   getFirstTimeUserOnboardingApplicationId,
   getFirstTimeUserOnboardingIntroModalVisibility,
 } from "utils/storage";
-import {
-  initializeAnalyticsAndTrackers,
-  initializeSegmentWithoutTracking,
-} from "utils/AppsmithUtils";
-import { getAppsmithConfigs } from "ce/configs";
+import { initializeAnalyticsAndTrackers } from "utils/AppsmithUtils";
+import { getAppsmithConfigs } from "@appsmith/configs";
 import { getSegmentState } from "selectors/analyticsSelectors";
 import {
   segmentInitUncertain,
   segmentInitSuccess,
 } from "actions/analyticsActions";
-import { SegmentState } from "reducers/uiReducers/analyticsReducer";
-import FeatureFlags from "entities/FeatureFlags";
+import type { SegmentState } from "reducers/uiReducers/analyticsReducer";
+import type FeatureFlags from "entities/FeatureFlags";
 import UsagePulse from "usagePulse";
+import { isAirgapped } from "@appsmith/utils/airgapHelpers";
 
 const { inCloudOS } = getAppsmithConfigs();
 
@@ -129,34 +134,6 @@ export function* waitForSegmentInit(skipWithAnonymousId: boolean) {
   }
 }
 
-/*
- * Function to initiate usage tracking
- *  - For anonymous users we need segement id, so if telemetry is off
- *    we're intiating segment without tracking and once we get the id,
- *    analytics object is purged.
- */
-export function* initiateUsageTracking(payload: {
-  isAnonymousUser: boolean;
-  enableTelemetry: boolean;
-}) {
-  const appsmithConfigs = getAppsmithConfigs();
-
-  //To make sure that we're not tracking from previous session.
-  UsagePulse.stopTrackingActivity();
-
-  if (payload.isAnonymousUser) {
-    if (payload.enableTelemetry && appsmithConfigs.segment.enabled) {
-      UsagePulse.userAnonymousId = AnalyticsUtil.getAnonymousId();
-    } else {
-      yield initializeSegmentWithoutTracking();
-      UsagePulse.userAnonymousId = AnalyticsUtil.getAnonymousId();
-      AnalyticsUtil.removeAnalytics();
-    }
-  }
-
-  UsagePulse.startTrackingActivity();
-}
-
 export function* getCurrentUserSaga() {
   try {
     PerformanceTracker.startAsyncTracking(
@@ -169,10 +146,10 @@ export function* getCurrentUserSaga() {
     if (isValidResponse) {
       if (
         inCloudOS &&
-        !response.data.cloudOSLogged &&
+        !_get(response.data, "cloudOSLogged") &&
         matchBuilderPath(window.location.pathname)
       ) {
-        window.location.href = window.CLOUDOS_LOGIN_URL;
+        window.location.href = _get(window, "CLOUDOS_LOGIN_URL", "");
         return;
       }
       yield put({
@@ -192,12 +169,7 @@ export function* getCurrentUserSaga() {
       },
     });
 
-    yield put({
-      type: ReduxActionTypes.SAFE_CRASH_APPSMITH_REQUEST,
-      payload: {
-        code: ERROR_CODES.SERVER_ERROR,
-      },
-    });
+    yield put(safeCrashAppRequest());
   }
 }
 
@@ -205,7 +177,7 @@ export function* runUserSideEffectsSaga() {
   return;
   const currentUser: User = yield select(getCurrentUser);
   const { enableTelemetry } = currentUser;
-
+  const isAirgappedInstance = isAirgapped();
   if (enableTelemetry) {
     const promise = initializeAnalyticsAndTrackers();
 
@@ -220,22 +192,19 @@ export function* runUserSideEffectsSaga() {
     }
   }
 
-  if (
-    //@ts-expect-error: response is of type unknown
-    !currentUser.isAnonymous &&
-    currentUser.username !== ANONYMOUS_USERNAME
-  ) {
+  if (!currentUser.isAnonymous && currentUser.username !== ANONYMOUS_USERNAME) {
     enableTelemetry && AnalyticsUtil.identifyUser(currentUser);
   }
 
-  /*
-   * Forking it as we don't want to block application flow
-   */
-  yield fork(initiateUsageTracking, {
-    //@ts-expect-error: response is of type unknown
-    isAnonymousUser: currentUser.isAnonymous,
-    enableTelemetry,
-  });
+  if (!isAirgappedInstance) {
+    // We need to stop and start tracking activity to ensure that the tracking from previous session is not carried forward
+    UsagePulse.stopTrackingActivity();
+    UsagePulse.startTrackingActivity(
+      enableTelemetry && getAppsmithConfigs().segment.enabled,
+      currentUser?.isAnonymous ?? false,
+    );
+  }
+
   yield put(initAppLevelSocketConnection());
   yield put(initPageLevelSocketConnection());
 
@@ -545,11 +514,10 @@ export function* updateFirstTimeUserOnboardingSage() {
   const enable: string | null = yield getEnableFirstTimeUserOnboarding();
 
   if (enable) {
-    const applicationId: string = yield getFirstTimeUserOnboardingApplicationId() ||
-      "";
-    const introModalVisibility:
-      | string
-      | null = yield getFirstTimeUserOnboardingIntroModalVisibility();
+    const applicationId: string =
+      yield getFirstTimeUserOnboardingApplicationId() || "";
+    const introModalVisibility: string | null =
+      yield getFirstTimeUserOnboardingIntroModalVisibility();
     yield put({
       type: ReduxActionTypes.SET_ENABLE_FIRST_TIME_USER_ONBOARDING,
       payload: true,

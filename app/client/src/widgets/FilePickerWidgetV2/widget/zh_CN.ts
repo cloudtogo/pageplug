@@ -115,9 +115,9 @@ zh_CN.strings = {
   youHaveToAtLeastSelectX: "您至少要选择 %{smart_count} 个文件",
 };
 
-// There is just one form.
-if (typeof Uppy !== "undefined") {
-  globalThis.Uppy.locales.zh_CN = zh_CN;
-}
+// // There is just one form.
+// if (typeof Uppy !== "undefined") {
+//   globalThis.Uppy.locales.zh_CN = zh_CN;
+// }
 
 export default zh_CN;

@@ -17,4 +17,5 @@ public interface CreateDBTablePageSolutionCE {
                                                     CRUDPageResourceDTO pageResourceDTO,
                                                     String branchName);
 
+
 }

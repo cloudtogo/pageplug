@@ -1,8 +1,8 @@
-import { AppsmithUIConfigs } from "./types";
+// eslint-disable-next-line prettier/prettier
+import type { AppsmithUIConfigs } from "./types";
 import { Integrations } from "@sentry/tracing";
 import * as Sentry from "@sentry/react";
 import { createBrowserHistory } from "history";
-const history = createBrowserHistory();
 
 export interface INJECTED_CONFIGS {
   sentry: {
@@ -13,10 +13,6 @@ export interface INJECTED_CONFIGS {
   smartLook: {
     id: string;
   };
-  enableGoogleOAuth: boolean;
-  enableGithubOAuth: boolean;
-  disableLoginForm: boolean;
-  disableSignup: boolean;
   enableRapidAPI: boolean;
   segment: {
     apiKey: string;
@@ -50,6 +46,8 @@ export interface INJECTED_CONFIGS {
   disableIframeWidgetSandbox: boolean;
   inCloudOS: boolean;
   workEnv: string;
+  pricingUrl: string;
+  customerPortalUrl: string;
 }
 
 const capitalizeText = (text: string) => {
@@ -70,18 +68,6 @@ export const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
     smartLook: {
       id: process.env.REACT_APP_SMART_LOOK_ID || "",
     },
-    enableGoogleOAuth: process.env.REACT_APP_OAUTH2_GOOGLE_CLIENT_ID
-      ? process.env.REACT_APP_OAUTH2_GOOGLE_CLIENT_ID.length > 0
-      : false,
-    enableGithubOAuth: process.env.REACT_APP_OAUTH2_GITHUB_CLIENT_ID
-      ? process.env.REACT_APP_OAUTH2_GITHUB_CLIENT_ID.length > 0
-      : false,
-    disableLoginForm: process.env.APPSMITH_FORM_LOGIN_DISABLED
-      ? process.env.APPSMITH_FORM_LOGIN_DISABLED.length > 0
-      : false,
-    disableSignup: process.env.APPSMITH_SIGNUP_DISABLED
-      ? process.env.APPSMITH_SIGNUP_DISABLED.length > 0
-      : false,
     segment: {
       apiKey: process.env.REACT_APP_SEGMENT_KEY || "",
       ceKey: process.env.REACT_APP_SEGMENT_CE_KEY || "",
@@ -114,7 +100,7 @@ export const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
       ? process.env.REACT_APP_CLOUD_HOSTING.length > 0
       : false,
     appVersion: {
-      id: process.env.REACT_APP_VERSION_ID || "v1.9.10",
+      id: process.env.REACT_APP_VERSION_ID || "v1.9.20",
       releaseDate: process.env.REACT_APP_VERSION_RELEASE_DATE || "",
       edition: process.env.REACT_APP_VERSION_EDITION || "",
     },
@@ -135,6 +121,8 @@ export const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
       : false,
     inCloudOS: !!process.env.REACT_APP_IN_CLOUDOS,
     workEnv: process.env.REACT_APP_WORK_ENV || "",
+    pricingUrl: process.env.REACT_APP_PRICING_URL || "",
+    customerPortalUrl: process.env.REACT_APP_CUSTOMER_PORTAL_URL || "",
   };
 };
 
@@ -144,64 +132,65 @@ const getConfig = (fromENV: string, fromWindow = "") => {
   return { enabled: false, value: "" };
 };
 
-// TODO(Abhinav): See if this is called so many times, that we may need some form of memoization.
 export const getAppsmithConfigs = (): AppsmithUIConfigs => {
-  const { APPSMITH_FEATURE_CONFIGS } = window;
+  const APPSMITH_FEATURE_CONFIGS =
+    // This code might be called both from the main thread and a web worker
+    typeof window === "undefined" ? undefined : window.APPSMITH_FEATURE_CONFIGS;
   const ENV_CONFIG = getConfigsFromEnvVars();
   // const sentry = getConfig(ENV_CONFIG.sentry, APPSMITH_FEATURE_CONFIGS.sentry);
   const sentryDSN = getConfig(
     ENV_CONFIG.sentry.dsn,
-    APPSMITH_FEATURE_CONFIGS.sentry.dsn,
+    APPSMITH_FEATURE_CONFIGS?.sentry.dsn,
   );
   const sentryRelease = getConfig(
     ENV_CONFIG.sentry.release,
-    APPSMITH_FEATURE_CONFIGS.sentry.release,
+    APPSMITH_FEATURE_CONFIGS?.sentry.release,
   );
   const sentryENV = getConfig(
     ENV_CONFIG.sentry.environment,
-    APPSMITH_FEATURE_CONFIGS.sentry.environment,
+    APPSMITH_FEATURE_CONFIGS?.sentry.environment,
   );
   const segment = getConfig(
     ENV_CONFIG.segment.apiKey,
-    APPSMITH_FEATURE_CONFIGS.segment.apiKey,
+    APPSMITH_FEATURE_CONFIGS?.segment.apiKey,
   );
   const fusioncharts = getConfig(
     ENV_CONFIG.fusioncharts.licenseKey,
-    APPSMITH_FEATURE_CONFIGS.fusioncharts.licenseKey,
+    APPSMITH_FEATURE_CONFIGS?.fusioncharts.licenseKey,
   );
 
   const googleRecaptchaSiteKey = getConfig(
     ENV_CONFIG.googleRecaptchaSiteKey,
-    APPSMITH_FEATURE_CONFIGS.googleRecaptchaSiteKey,
+    APPSMITH_FEATURE_CONFIGS?.googleRecaptchaSiteKey,
   );
 
   // As the following shows, the config variables can be set using a combination
   // of env variables and injected configs
   const smartLook = getConfig(
     ENV_CONFIG.smartLook.id,
-    APPSMITH_FEATURE_CONFIGS.smartLook.id,
+    APPSMITH_FEATURE_CONFIGS?.smartLook.id,
   );
 
   const algoliaAPIID = getConfig(
     ENV_CONFIG.algolia.apiId,
-    APPSMITH_FEATURE_CONFIGS.algolia.apiId,
+    APPSMITH_FEATURE_CONFIGS?.algolia.apiId,
   );
   const algoliaAPIKey = getConfig(
     ENV_CONFIG.algolia.apiKey,
-    APPSMITH_FEATURE_CONFIGS.algolia.apiKey,
+    APPSMITH_FEATURE_CONFIGS?.algolia.apiKey,
   );
   const algoliaIndex = getConfig(
     ENV_CONFIG.algolia.indexName,
-    APPSMITH_FEATURE_CONFIGS.algolia.indexName,
+    APPSMITH_FEATURE_CONFIGS?.algolia.indexName,
   );
   const algoliaSnippetIndex = getConfig(
     ENV_CONFIG.algolia.indexName,
-    APPSMITH_FEATURE_CONFIGS.algolia.snippetIndex,
+    APPSMITH_FEATURE_CONFIGS?.algolia.snippetIndex,
   );
 
   const segmentCEKey = getConfig(
     ENV_CONFIG.segment.ceKey,
-    APPSMITH_FEATURE_CONFIGS.segment.ceKey,
+    APPSMITH_FEATURE_CONFIGS?.segment.ceKey,
   );
 
   // We enable segment tracking if either the Cloud API key is set or the self-hosted CE key is set
@@ -215,11 +204,16 @@ export const getAppsmithConfigs = (): AppsmithUIConfigs => {
       environment: sentryENV.value,
       normalizeDepth: 3,
       integrations: [
-        new Integrations.BrowserTracing({
-          // Can also use reactRouterV4Instrumentation
-          routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
-        }),
-      ],
+        typeof window === "undefined"
+          ? // The Browser Tracing instrumentation isn’t working (and is unnecessary) in the worker environment
+            undefined
+          : new Integrations.BrowserTracing({
+              // Can also use reactRouterV4Instrumentation
+              routingInstrumentation: Sentry.reactRouterV5Instrumentation(
+                createBrowserHistory(),
+              ),
+            }),
+      ].filter((i) => i !== undefined),
       tracesSampleRate: 0.1,
     },
     smartLook: {
@@ -247,38 +241,46 @@ export const getAppsmithConfigs = (): AppsmithUIConfigs => {
       apiKey: googleRecaptchaSiteKey.value,
     },
     enableRapidAPI:
-      ENV_CONFIG.enableRapidAPI || APPSMITH_FEATURE_CONFIGS.enableRapidAPI,
-    enableGithubOAuth:
-      ENV_CONFIG.enableGithubOAuth ||
-      APPSMITH_FEATURE_CONFIGS.enableGithubOAuth,
-    disableLoginForm:
-      ENV_CONFIG.disableLoginForm || APPSMITH_FEATURE_CONFIGS.disableLoginForm,
-    disableSignup:
-      ENV_CONFIG.disableSignup || APPSMITH_FEATURE_CONFIGS.disableSignup,
-    enableGoogleOAuth:
-      ENV_CONFIG.enableGoogleOAuth ||
-      APPSMITH_FEATURE_CONFIGS.enableGoogleOAuth,
+      ENV_CONFIG.enableRapidAPI ||
+      APPSMITH_FEATURE_CONFIGS?.enableRapidAPI ||
+      false,
     enableMixpanel:
-      ENV_CONFIG.enableMixpanel || APPSMITH_FEATURE_CONFIGS.enableMixpanel,
+      ENV_CONFIG.enableMixpanel ||
+      APPSMITH_FEATURE_CONFIGS?.enableMixpanel ||
+      false,
     cloudHosting:
-      ENV_CONFIG.cloudHosting || APPSMITH_FEATURE_CONFIGS.cloudHosting,
-    logLevel: ENV_CONFIG.logLevel || APPSMITH_FEATURE_CONFIGS.logLevel,
-    enableTNCPP: ENV_CONFIG.enableTNCPP || APPSMITH_FEATURE_CONFIGS.enableTNCPP,
-    appVersion: ENV_CONFIG.appVersion || APPSMITH_FEATURE_CONFIGS.appVersion,
+      ENV_CONFIG.cloudHosting ||
+      APPSMITH_FEATURE_CONFIGS?.cloudHosting ||
+      false,
+    logLevel:
+      ENV_CONFIG.logLevel || APPSMITH_FEATURE_CONFIGS?.logLevel || false,
+    enableTNCPP:
+      ENV_CONFIG.enableTNCPP || APPSMITH_FEATURE_CONFIGS?.enableTNCPP || false,
+    appVersion:
+      ENV_CONFIG.appVersion || APPSMITH_FEATURE_CONFIGS?.appVersion || false,
     intercomAppID:
-      ENV_CONFIG.intercomAppID || APPSMITH_FEATURE_CONFIGS.intercomAppID,
-    mailEnabled: ENV_CONFIG.mailEnabled || APPSMITH_FEATURE_CONFIGS.mailEnabled,
+      ENV_CONFIG.intercomAppID || APPSMITH_FEATURE_CONFIGS?.intercomAppID || "",
+    mailEnabled:
+      ENV_CONFIG.mailEnabled || APPSMITH_FEATURE_CONFIGS?.mailEnabled || false,
     cloudServicesBaseUrl:
       ENV_CONFIG.cloudServicesBaseUrl ||
-      APPSMITH_FEATURE_CONFIGS.cloudServicesBaseUrl,
+      APPSMITH_FEATURE_CONFIGS?.cloudServicesBaseUrl ||
+      "",
     appsmithSupportEmail: ENV_CONFIG.supportEmail,
     hideWatermark:
-      true ||
       ENV_CONFIG.hideWatermark ||
-      APPSMITH_FEATURE_CONFIGS.hideWatermark,
+      APPSMITH_FEATURE_CONFIGS?.hideWatermark ||
+      false,
     disableIframeWidgetSandbox:
       ENV_CONFIG.disableIframeWidgetSandbox ||
-      APPSMITH_FEATURE_CONFIGS.disableIframeWidgetSandbox,
+      APPSMITH_FEATURE_CONFIGS?.disableIframeWidgetSandbox ||
+      false,
+    pricingUrl:
+      ENV_CONFIG.pricingUrl || APPSMITH_FEATURE_CONFIGS?.pricingUrl || "",
+    customerPortalUrl:
+      ENV_CONFIG.customerPortalUrl ||
+      APPSMITH_FEATURE_CONFIGS?.customerPortalUrl ||
+      "",
     inCloudOS: ENV_CONFIG.inCloudOS,
     workEnv: ENV_CONFIG.workEnv,
   };

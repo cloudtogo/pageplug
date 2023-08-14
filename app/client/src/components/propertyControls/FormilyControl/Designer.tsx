@@ -21,11 +21,8 @@ import {
   transformToSchema,
   transformToTreeNode,
 } from "@pind/designable-formily-transformer";
-import {
-  createDesigner,
-  GlobalRegistry,
-  WorkbenchTypes,
-} from "@pind/designable-core";
+import type { WorkbenchTypes } from "@pind/designable-core";
+import { createDesigner, GlobalRegistry } from "@pind/designable-core";
 import { PreviewWidget } from "./PreviewWidget";
 import { sources } from "@pind/designable-formily-antd";
 
@@ -63,7 +60,7 @@ const FormilyDesigner = (props: any, ref: any) => {
     ref,
     () => ({
       getSchema: () => {
-        return transformToSchema(engine.getCurrentTree());
+        return transformToSchema(engine?.getCurrentTree());
       },
       setSchema: (schema: any) => {
         engine.setCurrentTree(transformToTreeNode(schema));
@@ -80,13 +77,13 @@ const FormilyDesigner = (props: any, ref: any) => {
     <Designer engine={engine}>
       <StudioPanel>
         <CompositePanel>
-          <CompositePanel.Item title="panels.Component" icon="Component">
+          <CompositePanel.Item icon="Component" title="panels.Component">
             <ResourceListWidget sources={Object.values({ ...sources })} />
           </CompositePanel.Item>
-          <CompositePanel.Item title="panels.OutlinedTree" icon="Outline">
+          <CompositePanel.Item icon="Outline" title="panels.OutlinedTree">
             <OutlineTreeWidget />
           </CompositePanel.Item>
-          <CompositePanel.Item title="panels.History" icon="History">
+          <CompositePanel.Item icon="History" title="panels.History">
             <HistoryWidget />
           </CompositePanel.Item>
         </CompositePanel>

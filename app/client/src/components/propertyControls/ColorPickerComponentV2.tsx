@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React, {
   useEffect,
   useRef,
@@ -12,7 +13,6 @@ import {
   PopoverInteractionKind,
   Classes,
 } from "@blueprintjs/core";
-import { ReactComponent as ColorPickerIcon } from "assets/icons/control/color-picker.svg";
 import { debounce, get } from "lodash";
 import { Colors } from "constants/Colors";
 import { useSelector } from "react-redux";
@@ -27,7 +27,13 @@ import { TAILWIND_COLORS } from "constants/ThemeConstants";
 import useDSEvent from "utils/hooks/useDSEvent";
 import { DSEventTypes } from "utils/AppsmithUtils";
 import { getBrandColors } from "@appsmith/selectors/tenantSelectors";
-const FocusTrap = require("focus-trap-react");
+import { importSvg } from "design-system-old";
+
+import FocusTrap from "focus-trap-react";
+
+const ColorPickerIcon = importSvg(
+  () => import("assets/icons/control/color-picker.svg"),
+);
 
 const MAX_COLS = 10;
 
@@ -423,9 +429,11 @@ const ColorPickerComponent = React.forwardRef(
                 currentFocus.current % MAX_COLS === 0
                   ? currentFocus.current - MAX_COLS
                   : totalColors - (totalColors % MAX_COLS);
-            (document.activeElement?.parentElement?.childNodes[
-              currentFocus.current
-            ] as any).focus();
+            (
+              document.activeElement?.parentElement?.childNodes[
+                currentFocus.current
+              ] as any
+            ).focus();
             break;
           }
           case "ArrowLeft": {
@@ -441,9 +449,11 @@ const ColorPickerComponent = React.forwardRef(
               if (currentFocus.current > totalColors)
                 currentFocus.current = totalColors - 1;
             }
-            (document.activeElement?.parentElement?.childNodes[
-              currentFocus.current
-            ] as any).focus();
+            (
+              document.activeElement?.parentElement?.childNodes[
+                currentFocus.current
+              ] as any
+            ).focus();
             break;
           }
           case "ArrowDown": {
@@ -454,9 +464,11 @@ const ColorPickerComponent = React.forwardRef(
             currentFocus.current = currentFocus.current + MAX_COLS;
             if (currentFocus.current >= totalColors)
               currentFocus.current = currentFocus.current % MAX_COLS;
-            (document.activeElement?.parentElement?.childNodes[
-              currentFocus.current
-            ] as any).focus();
+            (
+              document.activeElement?.parentElement?.childNodes[
+                currentFocus.current
+              ] as any
+            ).focus();
             break;
           }
           case "ArrowUp": {
@@ -472,9 +484,11 @@ const ColorPickerComponent = React.forwardRef(
                 currentFocus.current = nextIndex - MAX_COLS;
               else currentFocus.current = nextIndex;
             }
-            (document.activeElement?.parentElement?.childNodes[
-              currentFocus.current
-            ] as any).focus();
+            (
+              document.activeElement?.parentElement?.childNodes[
+                currentFocus.current
+              ] as any
+            ).focus();
             break;
           }
         }

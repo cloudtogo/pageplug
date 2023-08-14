@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
-import BaseControl, { ControlProps } from "../BaseControl";
+import type { ControlProps } from "../BaseControl";
+import BaseControl from "../BaseControl";
 import {
   StyledInputGroup,
   StyledPropertyPaneButton,
@@ -68,9 +69,10 @@ type RenderComponentProps = {
 function FieldControlComponent(props: RenderComponentProps) {
   const { deleteOption, index, item, updateOption } = props;
   const debouncedUpdate = debounce(updateOption, 1000);
-  const handleChange = useCallback(() => props.onEdit && props.onEdit(index), [
-    index,
-  ]);
+  const handleChange = useCallback(
+    () => props.onEdit && props.onEdit(index),
+    [index],
+  );
   return (
     <ItemWrapper>
       <StyledDragIcon height={20} width={20} />
@@ -85,7 +87,7 @@ function FieldControlComponent(props: RenderComponentProps) {
       <StyledDeleteIcon
         className="t--delete-tab-btn"
         height={20}
-        marginRight={12}
+        // marginRight={12}
         onClick={() => {
           deleteOption(index);
         }}

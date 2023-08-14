@@ -1,3 +1,5 @@
+/* eslint-disable react/react-in-jsx-scope */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
@@ -6,16 +8,11 @@ import {
   ADMIN_SETTINGS,
   APPSMITH_DISPLAY_VERSION,
   createMessage,
-  DOCUMENTATION,
-  WELCOME_TOUR,
 } from "@appsmith/constants/messages";
-import { getIsFetchingApplications } from "selectors/applicationSelectors";
+import { getIsFetchingApplications } from "@appsmith/selectors/applicationSelectors";
 import { getOnboardingWorkspaces } from "selectors/onboardingSelectors";
 import { getAppsmithConfigs } from "@appsmith/configs";
-import AnalyticsUtil from "utils/AnalyticsUtil";
 import { howMuchTimeBeforeText } from "utils/helpers";
-import { onboardingCreateApplication } from "actions/onboardingActions";
-import ProductUpdatesModal from "pages/Applications/ProductUpdatesModal";
 import { Colors } from "constants/Colors";
 import {
   DropdownOnSelectActions,
@@ -63,7 +60,6 @@ function LeftPaneBottomSection() {
   const howMuchTimeBefore = howMuchTimeBeforeText(appVersion.releaseDate);
   const user = useSelector(getCurrentUser);
   const tenantPermissions = useSelector(getTenantPermissions);
-
   return (
     <Wrapper>
       {showAdminSettings(user) && !isFetchingApplications && (

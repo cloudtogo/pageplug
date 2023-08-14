@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { useDispatch } from "react-redux";
-import { withRouter, RouteComponentProps } from "react-router";
-import { AppState } from "@appsmith/reducers";
-import {
+import type { RouteComponentProps } from "react-router";
+import { withRouter } from "react-router";
+import type { AppState } from "@appsmith/reducers";
+import type {
   AppViewerRouteParams,
   BuilderRouteParams,
-  GIT_BRANCH_QUERY_KEY,
 } from "constants/routes";
+import { GIT_BRANCH_QUERY_KEY } from "constants/routes";
 import {
   getIsInitialized,
   getAppViewHeaderHeight,
@@ -17,9 +18,10 @@ import AppViewerPageContainer from "./AppViewerPageContainer";
 import { editorInitializer } from "utils/editor/EditorUtils";
 import * as Sentry from "@sentry/react";
 import {
-  getViewModePageList,
+  getCurrentPageDescription,
   getShowTabBar,
   getCurrentPage,
+  getViewModePageList,
 } from "selectors/editorSelectors";
 import { isMobileLayout } from "selectors/applicationSelectors";
 import { getThemeDetails, ThemeMode } from "selectors/themeSelectors";
@@ -27,7 +29,7 @@ import TabBar from "components/designSystems/taro/TabBar";
 import PreviewQRCode from "./PreviewQRCode";
 import AppViewerLayout from "./AppViewerLayout";
 
-import webfontloader from "webfontloader";
+// import webfontloader from "webfontloader";
 import { getSearchQuery } from "utils/helpers";
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
 import { useSelector } from "react-redux";
@@ -43,6 +45,9 @@ import { initAppViewer } from "actions/initActions";
 import { WidgetGlobaStyles } from "globalStyles/WidgetGlobalStyles";
 import { getAppsmithConfigs } from "@appsmith/configs";
 import useWidgetFocus from "utils/hooks/useWidgetFocus/useWidgetFocus";
+import HtmlTitle from "./AppViewerHtmlTitle";
+import type { ApplicationPayload } from "@appsmith/constants/ReduxActionConstants";
+import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
 
 const AppViewerBody = styled.section<{
   showTabBar: boolean;
@@ -56,7 +61,7 @@ const AppViewerBody = styled.section<{
   align-items: stretch;
   justify-content: flex-start;
   height: calc(
-    100vh - ${(props) => (props.isMobile ? "0px" : "168px")} -
+    100vh - ${(props) => (props.isMobile ? "0px" : "0x")} -
       ${(props) => (props.showTabBar ? "60px" : "0px")} -
       ${({ headerHeight }) => headerHeight}px
   );
@@ -76,6 +81,7 @@ const AppViewerBodyContainer = styled.div<{
 const StableContainer = styled.div`
   position: relative;
   overflow: hidden;
+  height: 100vh;
 `;
 
 const ContainerForBottom = styled.div<{
@@ -113,6 +119,10 @@ function AppViewer(props: Props) {
   const currentPage = useSelector(getCurrentPage);
   const isEmbed = !!getSearchQuery(search, "embed") || !!currentPage?.isHidden;
   const { hideWatermark } = getAppsmithConfigs();
+  const pageDescription = useSelector(getCurrentPageDescription);
+  const currentApplicationDetails: ApplicationPayload | undefined = useSelector(
+    getCurrentApplication,
+  );
 
   const focusRef = useWidgetFocus();
 
@@ -174,7 +184,9 @@ function AppViewer(props: Props) {
 
   useEffect(() => {
     const header = document.querySelector(".js-appviewer-header");
-
+    if (document) {
+      document.title = currentApplicationDetails?.name || "pageplug";
+    }
     dispatch(setAppViewHeaderHeight(header?.clientHeight || 0));
   }, [pages.length, isInitialized]);
 
@@ -190,17 +202,7 @@ function AppViewer(props: Props) {
    * loads font for canvas based on theme
    */
   useEffect(() => {
-    if (selectedTheme.properties.fontFamily.appFont !== DEFAULT_FONT_NAME) {
-      webfontloader.load({
-        google: {
-          families: [
-            `${selectedTheme.properties.fontFamily.appFont}:300,400,500,700`,
-          ],
-        },
-      });
-    }
-
-    document.body.style.fontFamily = appFontFamily;
+    document.body.style.fontFamily = `${appFontFamily}, sans-serif`;
 
     return function reset() {
       document.body.style.fontFamily = "inherit";
@@ -214,13 +216,17 @@ function AppViewer(props: Props) {
           fontFamily={selectedTheme.properties.fontFamily.appFont}
           primaryColor={selectedTheme.properties.colors.primaryColor}
         />
+        <HtmlTitle
+          description={pageDescription}
+          name={currentApplicationDetails?.name}
+        />
         <AppViewerLayout>
           <StableContainer>
             <ContainerForBottom isMobile={isMobile}>
               <AppViewerBodyContainer
                 backgroundColor={
                   isMobile
-                    ? "radial-gradient(#2cbba633, #ffec8f36)"
+                    ? "radial-gradient(#27b7b733, #ffec8f36)"
                     : selectedTheme.properties.colors.backgroundColor
                 }
               >
@@ -235,16 +241,6 @@ function AppViewer(props: Props) {
                 >
                   {isInitialized && registered && <AppViewerPageContainer />}
                 </AppViewerBody>
-                {!hideWatermark && (
-                  <a
-                    className="fixed hidden right-8 bottom-4 z-3 hover:no-underline md:flex"
-                    href="https://appsmith.com"
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    <BrandingBadge />
-                  </a>
-                )}
               </AppViewerBodyContainer>
             </ContainerForBottom>
             <TabBar />

@@ -44,7 +44,7 @@ const HeaderContainer = styled.main<{ primaryColor: string }>`
   color: ${({ primaryColor }) => getComplementaryGrayscaleColor(primaryColor)};
 `;
 
-const MainText = styled.main<{ backgroundColor: string }>`
+const MainText = styled.main<{ backgroundColor?: string }>`
   color: ${({ backgroundColor }) =>
     getComplementaryGrayscaleColor(backgroundColor)};
 `;

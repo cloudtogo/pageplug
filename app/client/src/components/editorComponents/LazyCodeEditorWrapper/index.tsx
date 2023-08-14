@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 import React, { useState, useEffect, useRef } from "react";
 
 import Editor from "components/editorComponents/CodeEditor";

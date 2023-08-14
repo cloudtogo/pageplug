@@ -156,7 +156,7 @@ public class DatasourceStructure {
             this.error.setCode(((BaseException)error).getAppErrorCode());
         }
     }
-    
+
     /**
      * Instance creator is required while de-serialising using Gson as key instance can't be invoked with
      * no-args constructor
@@ -173,5 +173,5 @@ public class DatasourceStructure {
             return key;
         }
     }
-    
+
 }

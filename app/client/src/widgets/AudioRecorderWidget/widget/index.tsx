@@ -1,15 +1,17 @@
 import React from "react";
 
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import type { WidgetType } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
-import AudioRecorderComponent from "../component";
-import { DerivedPropertiesMap } from "utils/WidgetFactory";
+import type { Stylesheet } from "entities/AppTheming";
 import { createBlobUrl } from "utils/AppsmithUtils";
+import type { DerivedPropertiesMap } from "utils/WidgetFactory";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import { FileDataTypes } from "widgets/constants";
-import { Stylesheet } from "entities/AppTheming";
-
+import AudioRecorderComponent from "../component";
+import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
 export interface AudioRecorderWidgetProps extends WidgetProps {
   accentColor: string;
   borderRadius: string;
@@ -27,6 +29,18 @@ class AudioRecorderWidget extends BaseWidget<
   AudioRecorderWidgetProps,
   WidgetState
 > {
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "Audio recorder widget allows users to record using their microphone, listen to the playback, and export the data to a data source.",
+      "!url": "https://docs.appsmith.com/widget-reference/recorder",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      blobURL: "string",
+      dataURL: "string",
+      rawBinary: "string",
+    };
+  }
+
   static getPropertyPaneContentConfig() {
     return [
       {

@@ -1,9 +1,10 @@
 import React from "react";
-import BaseControl, { ControlData, ControlProps } from "./BaseControl";
+import type { ControlData, ControlProps } from "./BaseControl";
+import BaseControl from "./BaseControl";
 import moment from "moment-timezone";
 import styled from "styled-components";
 import { TimePrecision } from "@blueprintjs/datetime";
-import { WidgetProps } from "widgets/BaseWidget";
+import type { WidgetProps } from "widgets/BaseWidget";
 import { ISO_DATE_FORMAT } from "constants/WidgetValidation";
 import { DatePicker } from "design-system-old";
 import { isDynamicValue } from "utils/DynamicBindingUtils";
@@ -111,13 +112,13 @@ class DatePickerControl extends BaseControl<
           onChange={this.onDateSelected}
           parseDate={this.parseDate}
           placeholder="YYYY-MM-DD HH:mm"
-          locale="zh_CN"
-          localeUtils={MomentLocaleUtils}
-          clearButtonText="清空"
-          todayButtonText="今天"
-          showActionsBar
-          tabIndex={-1}
-          timePrecision={TimePrecision.MINUTE}
+          // locale="zh_CN"
+          // localeUtils={MomentLocaleUtils}
+          // clearButtonText="清空"
+          // todayButtonText="今天"
+          // showActionsBar
+          // tabIndex={-1}
+          // timePrecision={TimePrecision.MINUTE}
           value={value}
         />
       </DatePickerControlWrapper>
