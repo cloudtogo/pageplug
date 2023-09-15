@@ -1,54 +1,14 @@
 package com.appsmith.server.migrations;
 
 import com.appsmith.external.converters.ISOStringToInstantConverter;
-import com.appsmith.external.models.ActionDTO;
-import com.appsmith.external.models.BaseDomain;
-import com.appsmith.external.models.Datasource;
-import com.appsmith.external.models.PluginType;
-import com.appsmith.external.models.Policy;
-import com.appsmith.external.models.Property;
-import com.appsmith.external.models.QBaseDomain;
-import com.appsmith.external.models.QBranchAwareDomain;
-import com.appsmith.external.models.QDatasource;
+import com.appsmith.external.models.*;
 import com.appsmith.server.acl.AclPermission;
 import com.appsmith.server.acl.AppsmithRole;
 import com.appsmith.server.acl.PolicyGenerator;
 import com.appsmith.server.configurations.CommonConfig;
 import com.appsmith.server.constants.FieldName;
-import com.appsmith.server.domains.Action;
-import com.appsmith.server.domains.ActionCollection;
-import com.appsmith.server.domains.Application;
-import com.appsmith.server.domains.ApplicationPage;
-import com.appsmith.server.domains.Config;
-import com.appsmith.server.domains.CustomJSLib;
-import com.appsmith.server.domains.NewAction;
-import com.appsmith.server.domains.NewPage;
-import com.appsmith.server.domains.Organization;
-import com.appsmith.server.domains.Page;
-import com.appsmith.server.domains.PermissionGroup;
-import com.appsmith.server.domains.Plugin;
 import com.appsmith.server.domains.PricingPlan;
-import com.appsmith.server.domains.QActionCollection;
-import com.appsmith.server.domains.QApplication;
-import com.appsmith.server.domains.QConfig;
-import com.appsmith.server.domains.QNewAction;
-import com.appsmith.server.domains.QNewPage;
-import com.appsmith.server.domains.QOrganization;
-import com.appsmith.server.domains.QPermissionGroup;
-import com.appsmith.server.domains.QPlugin;
-import com.appsmith.server.domains.QTenant;
-import com.appsmith.server.domains.QTheme;
-import com.appsmith.server.domains.QUser;
-import com.appsmith.server.domains.QUserData;
-import com.appsmith.server.domains.QWorkspace;
-import com.appsmith.server.domains.Sequence;
-import com.appsmith.server.domains.Tenant;
-import com.appsmith.server.domains.Theme;
-import com.appsmith.server.domains.UsagePulse;
-import com.appsmith.server.domains.User;
-import com.appsmith.server.domains.UserData;
-import com.appsmith.server.domains.UserRole;
-import com.appsmith.server.domains.Workspace;
+import com.appsmith.server.domains.*;
 import com.appsmith.server.dtos.Permission;
 import com.appsmith.server.exceptions.AppsmithError;
 import com.appsmith.server.exceptions.AppsmithException;
@@ -90,13 +50,7 @@ import reactor.core.publisher.Flux;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -116,11 +70,7 @@ import static com.appsmith.server.constants.EnvVariables.APPSMITH_ADMIN_EMAILS;
 import static com.appsmith.server.constants.FieldName.DEFAULT_PERMISSION_GROUP;
 import static com.appsmith.server.constants.FieldName.PERMISSION_GROUP_ID;
 import static com.appsmith.server.helpers.CollectionUtils.findSymmetricDiff;
-import static com.appsmith.server.migrations.DatabaseChangelog1.dropIndexIfExists;
-import static com.appsmith.server.migrations.DatabaseChangelog1.ensureIndexes;
-import static com.appsmith.server.migrations.DatabaseChangelog1.getUpdatedDynamicBindingPathList;
-import static com.appsmith.server.migrations.DatabaseChangelog1.installPluginToAllWorkspaces;
-import static com.appsmith.server.migrations.DatabaseChangelog1.makeIndex;
+import static com.appsmith.server.migrations.DatabaseChangelog1.*;
 import static com.appsmith.server.migrations.MigrationHelperMethods.evictPermissionCacheForUsers;
 import static com.appsmith.server.repositories.BaseAppsmithRepositoryImpl.fieldName;
 import static java.lang.Boolean.TRUE;
@@ -3089,5 +3039,47 @@ public class DatabaseChangelog2 {
         oraclePlugin.setName("Oracle");
         oraclePlugin.setIconLocation("https://s3.us-east-2.amazonaws.com/assets.appsmith.com/oracle.svg");
         mongoTemplate.save(oraclePlugin);
+    }
+
+    @ChangeSet(order = "044", id = "add-dm-plugin", author = "")
+    public void addDmPlugin(MongoTemplate mongoTemplate) {
+        Plugin plugin = new Plugin();
+        plugin.setName("达梦");
+        plugin.setType(PluginType.DB);
+        plugin.setPackageName("dm-plugin");
+        plugin.setUiComponent("DbEditorForm");
+        plugin.setDatasourceComponent("AuthForm");
+        plugin.setGenerateCRUDPageComponent("SQL");
+        plugin.setResponseType(Plugin.ResponseType.TABLE);
+        plugin.setIconLocation("/logo/dm.svg");
+        plugin.setDocumentationLink("");
+        plugin.setDefaultInstall(true);
+        try {
+            mongoTemplate.insert(plugin);
+        } catch (DuplicateKeyException e) {
+            log.warn(plugin.getPackageName() + " already present in database.");
+        }
+        installPluginToAllWorkspaces(mongoTemplate, plugin.getId());
+    }
+
+    @ChangeSet(order = "045", id = "add-tidb-plugin", author = "")
+    public void addTidbPlugin(MongoTemplate mongoTemplate) {
+        Plugin plugin = new Plugin();
+        plugin.setName("TiDB");
+        plugin.setType(PluginType.DB);
+        plugin.setPackageName("tidb-plugin");
+        plugin.setUiComponent("DbEditorForm");
+        plugin.setDatasourceComponent("AuthForm");
+        plugin.setGenerateCRUDPageComponent("SQL");
+        plugin.setResponseType(Plugin.ResponseType.TABLE);
+        plugin.setIconLocation("/logo/tidb.svg");
+        plugin.setDocumentationLink("");
+        plugin.setDefaultInstall(true);
+        try {
+            mongoTemplate.insert(plugin);
+        } catch (DuplicateKeyException e) {
+            log.warn(plugin.getPackageName() + " already present in database.");
+        }
+        installPluginToAllWorkspaces(mongoTemplate, plugin.getId());
     }
 }
