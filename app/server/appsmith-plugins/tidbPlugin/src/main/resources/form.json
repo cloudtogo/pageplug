@@ -1,0 +1,142 @@
+{
+  "form": [
+    {
+      "sectionName": "连接",
+      "id": 1,
+      "children": [
+        {
+          "label": "连接模式",
+          "configProperty": "datasourceConfiguration.connection.mode",
+          "controlType": "DROP_DOWN",
+          "isRequired": true,
+          "initialValue": "READ_WRITE",
+          "options": [
+            {
+              "label": "只读",
+              "value": "READ_ONLY"
+            },
+            {
+              "label": "读 / 写",
+              "value": "READ_WRITE"
+            }
+          ]
+        },
+        {
+          "sectionName": null,
+          "children": [
+            {
+              "label": "主机地址",
+              "configProperty": "datasourceConfiguration.endpoints[*].host",
+              "controlType": "KEYVALUE_ARRAY",
+              "validationMessage": "Please enter a valid host",
+              "validationRegex": "^((?![/:]).)*$"
+            },
+            {
+              "label": "端口",
+              "configProperty": "datasourceConfiguration.endpoints[*].port",
+              "dataType": "NUMBER",
+              "controlType": "KEYVALUE_ARRAY"
+            }
+          ]
+        },
+        {
+          "label": "数据库名称",
+          "configProperty": "datasourceConfiguration.authentication.databaseName",
+          "controlType": "INPUT_TEXT",
+          "placeholderText": "数据库名称",
+          "initialValue": "admin"
+        }
+      ]
+    },
+    {
+      "sectionName": "身份认证",
+      "id": 2,
+      "children": [
+        {
+          "sectionName": null,
+          "children": [
+            {
+              "label": "用户名",
+              "configProperty": "datasourceConfiguration.authentication.username",
+              "controlType": "INPUT_TEXT",
+              "placeholderText": "用户名"
+            },
+            {
+              "label": "密码",
+              "configProperty": "datasourceConfiguration.authentication.password",
+              "dataType": "PASSWORD",
+              "controlType": "INPUT_TEXT",
+              "placeholderText": "密码",
+              "encrypted": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "sectionName": "SSL（选填）",
+      "children": [
+        {
+          "label": "SSL 模式",
+          "configProperty": "datasourceConfiguration.connection.ssl.authType",
+          "controlType": "DROP_DOWN",
+          "initialValue": "DEFAULT",
+          "options": [
+            {
+              "label": "Default",
+              "value": "DEFAULT"
+            },
+            {
+              "label": "Required",
+              "value": "REQUIRED"
+            },
+            {
+              "label": "Disabled",
+              "value": "DISABLED"
+            }
+          ]
+        },
+        {
+          "sectionName": null,
+          "hidden": true,
+          "children": [
+            {
+              "label": "Key File",
+              "configProperty": "datasourceConfiguration.connection.ssl.keyFile",
+              "controlType": "FILE_PICKER"
+            },
+            {
+              "label": "Certificate",
+              "configProperty": "datasourceConfiguration.connection.ssl.certificateFile",
+              "controlType": "FILE_PICKER"
+            }
+          ]
+        },
+        {
+          "sectionName": null,
+          "hidden": true,
+          "children": [
+            {
+              "label": "CA Certificate",
+              "configProperty": "datasourceConfiguration.connection.ssl.caCertificateFile",
+              "controlType": "FILE_PICKER"
+            },
+            {
+              "label": "PEM Certificate",
+              "configProperty": "datasourceConfiguration.connection.ssl.pemCertificate.file",
+              "controlType": "FILE_PICKER"
+            },
+            {
+              "label": "PEM Passphrase",
+              "configProperty": "datasourceConfiguration.connection.ssl.pemCertificate.password",
+              "dataType": "PASSWORD",
+              "controlType": "INPUT_TEXT",
+              "placeholderText": "PEM Passphrase"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
