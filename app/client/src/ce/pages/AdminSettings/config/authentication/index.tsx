@@ -27,6 +27,14 @@ import {
   getThirdPartyAuths,
   getIsFormLoginEnabled,
 } from "@appsmith/selectors/tenantSelectors";
+import {
+  FORM_LOGIN_DESC,
+  GITHUB_AUTH_DESC,
+  GOOGLE_AUTH_DESC,
+  OIDC_AUTH_DESC,
+  SAML_AUTH_DESC,
+  createMessage,
+} from "@appsmith/constants/messages";
 
 const FormAuth: AdminConfigType = {
   type: SettingCategories.FORM_AUTH,
@@ -60,7 +68,7 @@ const FormAuth: AdminConfigType = {
       controlType: SettingTypes.LINK,
       label: "账号密码登录不会校验邮箱是否有效",
       url: SIGNUP_RESTRICTION_DOC,
-      calloutType: "Warning",
+      calloutType: "warning",
     },
   ],
 };
@@ -69,7 +77,7 @@ const GoogleAuth: AdminConfigType = {
   type: SettingCategories.GOOGLE_AUTH,
   controlType: SettingTypes.GROUP,
   title: "Google 登录",
-  subText: "使用 Google 账号登录你的平台 (OAuth)",
+  subText: createMessage(GOOGLE_AUTH_DESC),
   canSave: true,
   settings: [
     {
@@ -85,7 +93,7 @@ const GoogleAuth: AdminConfigType = {
       category: SettingCategories.GOOGLE_AUTH,
       subCategory: SettingSubCategories.GOOGLE,
       controlType: SettingTypes.UNEDITABLEFIELD,
-      label: "JavaScript Origin URL",
+      label: "JavaScript origin URL",
       formName: JS_ORIGIN_URI_FORM,
       fieldName: "js-origin-url-form",
       value: "",
@@ -121,7 +129,7 @@ const GoogleAuth: AdminConfigType = {
       subCategory: SettingSubCategories.GOOGLE,
       controlType: SettingTypes.TEXTINPUT,
       controlSubType: SettingSubtype.TEXT,
-      label: "Client Secret",
+      label: "Client secret",
       isRequired: true,
     },
     {
@@ -140,7 +148,7 @@ const GithubAuth: AdminConfigType = {
   type: SettingCategories.GITHUB_AUTH,
   controlType: SettingTypes.GROUP,
   title: "Github 登录",
-  subText: "使用 Github 账号登录你的平台 (SAML)",
+  subText: createMessage(GITHUB_AUTH_DESC),
   canSave: true,
   settings: [
     {
@@ -166,7 +174,7 @@ const GithubAuth: AdminConfigType = {
       subCategory: SettingSubCategories.GITHUB,
       controlType: SettingTypes.TEXTINPUT,
       controlSubType: SettingSubtype.TEXT,
-      label: "Client Secret",
+      label: "Client secret",
       isRequired: true,
     },
   ],
@@ -176,47 +184,43 @@ export const FormAuthCallout: AuthMethodType = {
   id: "APPSMITH_FORM_LOGIN_AUTH",
   category: SettingCategories.FORM_AUTH,
   label: "账号密码登录",
-  subText: "允许用户使用账号密码登录你的平台",
+  subText: createMessage(FORM_LOGIN_DESC),
   image: Lock,
-  type: "LINK",
+  icon: "lock-password-line",
 };
 
 export const GoogleAuthCallout: AuthMethodType = {
   id: "APPSMITH_GOOGLE_AUTH",
   category: SettingCategories.GOOGLE_AUTH,
   label: "Google",
-  subText: "允许使用 Google 账号登录你的平台",
+  subText: createMessage(GOOGLE_AUTH_DESC),
   image: Google,
-  type: "LINK",
 };
 
 export const GithubAuthCallout: AuthMethodType = {
   id: "APPSMITH_GITHUB_AUTH",
   category: SettingCategories.GITHUB_AUTH,
   label: "Github",
-  subText: "允许使用 Github 账号登录你的平台",
+  subText: createMessage(GITHUB_AUTH_DESC),
   image: Github,
-  type: "LINK",
 };
 
 export const SamlAuthCallout: AuthMethodType = {
   id: "APPSMITH_SAML_AUTH",
   category: "saml",
   label: "SAML 2.0",
-  subText: `允许使用 SAML2 协议的单点登录服务登录你的平台`,
+  subText: createMessage(SAML_AUTH_DESC),
   image: SamlSso,
   needsUpgrade: true,
-  type: "OTHER",
 };
 
 export const OidcAuthCallout: AuthMethodType = {
   id: "APPSMITH_OIDC_AUTH",
   category: "oidc",
   label: "OIDC",
-  subText: `允许使用 OIDC 协议的单点登录服务登录你的平台`,
+  subText: createMessage(OIDC_AUTH_DESC),
   image: OIDC,
   needsUpgrade: true,
-  type: "OTHER",
 };
 
 const AuthMethods = [

@@ -201,7 +201,7 @@ export const contentConfig = [
       {
         propertyName: "useSourceData",
         helpText: "Use source data for hidden fields to show them in form data",
-        label: "Hidden Fields in Data",
+        label: "Hidden fields in data",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -403,14 +403,14 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
         label: "位置",
         helpText: "设置按钮图标对齐方向",
         controlType: "ICON_TABS",
-        fullWidth: true,
+        fullWidth: false,
         options: [
           {
-            icon: "VERTICAL_LEFT",
+            startIcon: "skip-left-line",
             value: "left",
           },
           {
-            icon: "VERTICAL_RIGHT",
+            startIcon: "skip-right-line",
             value: "right",
           },
         ],

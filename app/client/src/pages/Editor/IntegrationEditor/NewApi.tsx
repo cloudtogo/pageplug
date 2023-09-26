@@ -6,7 +6,6 @@ import {
   createTempDatasourceFromForm,
 } from "actions/datasourceActions";
 import type { AppState } from "@appsmith/reducers";
-import { Colors } from "constants/Colors";
 import CurlLogo from "assets/images/Curl-logo.svg";
 import PlusLogo from "assets/images/Plus-logo.svg";
 import type { GenerateCRUDEnabledPluginMap, Plugin } from "api/PluginApi";
@@ -15,13 +14,13 @@ import type { EventLocation } from "utils/AnalyticsUtil";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { CURL } from "constants/AppsmithActionConstants/ActionConstants";
 import { PluginPackageName, PluginType } from "entities/Action";
-import { Spinner } from "@blueprintjs/core";
 import { getQueryParams } from "utils/URLUtils";
 import { replacePluginIcon } from "utils/AppsmithUtils";
 import { getGenerateCRUDEnabledPluginMap } from "selectors/entitiesSelector";
 import { getIsGeneratePageInitiator } from "utils/GenerateCrudUtil";
 import { curlImportPageURL } from "RouteBuilder";
 import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+import { Spinner } from "design-system";
 
 const StyledContainer = styled.div`
   flex: 1;
@@ -33,7 +32,7 @@ const StyledContainer = styled.div`
     justify-content: center;
     text-align: center;
     letter-spacing: -0.24px;
-    color: ${Colors.BLACK};
+    color: var(--ads-v2-color-fg);
     font-weight: 400;
     text-decoration: none !important;
     flex-wrap: wrap;
@@ -88,24 +87,15 @@ const ApiCard = styled.div`
   height: 64px;
   border-radius: ${(props) => props.theme.borderRadius};
   &:hover {
-    background-color: ${Colors.GREY_1};
+    background-color: var(--ads-v2-color-bg-subtle);
     cursor: pointer;
   }
 
-  .content-icon-wrapper {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: ${Colors.GREY_2};
-    display: flex;
-    align-items: center;
-
-    .content-icon {
-      height: 28px;
-      width: auto;
-      margin: 0 auto;
-      max-width: 100%;
-    }
+  .content-icon {
+    height: 34px;
+    width: auto;
+    margin: 0 auto;
+    max-width: 100%;
   }
 
   .cta {
@@ -278,13 +268,11 @@ function NewApiScreen(props: Props) {
           onClick={() => handleOnClick(API_ACTION.CREATE_NEW_API)}
         >
           <CardContentWrapper data-testid="newapi-datasource-content-wrapper">
-            <div className="content-icon-wrapper">
-              <img
-                alt="New"
-                className="curlImage t--plusImage content-icon"
-                src={PlusLogo}
-              />
-            </div>
+            <img
+              alt="New"
+              className="curlImage t--plusImage content-icon"
+              src={PlusLogo}
+            />
             <p className="textBtn">REST API</p>
           </CardContentWrapper>
           {isCreating && <Spinner className="cta" size={25} />}
@@ -326,13 +314,11 @@ function NewApiScreen(props: Props) {
           onClick={() => handleOnClick(API_ACTION.CREATE_NEW_GRAPHQL_API)}
         >
           <CardContentWrapper>
-            <div className="content-icon-wrapper">
-              <img
-                alt="New"
-                className="curlImage t--plusImage content-icon"
-                src={PlusLogo}
-              />
-            </div>
+            <img
+              alt="New"
+              className="curlImage t--plusImage content-icon"
+              src={PlusLogo}
+            />
             <p className="textBtn">GraphQL API</p>
           </CardContentWrapper>
         </ApiCard>
@@ -351,15 +337,13 @@ function NewApiScreen(props: Props) {
             }}
           >
             <CardContentWrapper>
-              <div className="content-icon-wrapper">
-                <img
-                  alt={p.name}
-                  className={
-                    "content-icon saasImage t--saas-" + p.packageName + "-image"
-                  }
-                  src={getAssetUrl(p.iconLocation)}
-                />
-              </div>
+              <img
+                alt={p.name}
+                className={
+                  "content-icon saasImage t--saas-" + p.packageName + "-image"
+                }
+                src={getAssetUrl(p.iconLocation)}
+              />
               <p className="t--plugin-name textBtn">{p.name}</p>
             </CardContentWrapper>
           </ApiCard>

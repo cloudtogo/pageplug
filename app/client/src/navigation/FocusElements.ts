@@ -39,7 +39,7 @@ import {
   setDatasourceViewMode,
 } from "actions/datasourceActions";
 import { updateExplorerWidthAction } from "actions/explorerActions";
-import { setJsPaneConfigSelectedTabIndex } from "actions/jsPaneActions";
+import { setJsPaneConfigSelectedTab } from "actions/jsPaneActions";
 import {
   setAllPropertySectionState,
   setFocusablePropertyPaneField,
@@ -56,7 +56,7 @@ import { PluginPackageName } from "entities/Action";
 import { FocusEntity } from "navigation/FocusEntity";
 import { SelectionRequestType } from "sagas/WidgetSelectUtils";
 import { getExplorerWidth } from "selectors/explorerSelector";
-import { getJSPaneConfigSelectedTabIndex } from "selectors/jsPaneSelectors";
+import { getJSPaneConfigSelectedTab } from "selectors/jsPaneSelectors";
 import {
   getFocusablePropertyPaneField,
   getPropertyPaneWidth,
@@ -67,6 +67,7 @@ import { getDebuggerContext } from "selectors/debuggerSelectors";
 import { setDebuggerContext } from "actions/debuggerActions";
 import { DefaultDebuggerContext } from "reducers/uiReducers/debuggerReducer";
 import { NavigationMethod } from "../utils/history";
+import { JSEditorTab } from "../reducers/uiReducers/jsPaneReducer";
 
 export enum FocusElement {
   ApiPaneConfigTabs = "ApiPaneConfigTabs",
@@ -191,9 +192,9 @@ export const FocusElementsConfig: Record<FocusEntity, Config[]> = {
     },
     {
       name: FocusElement.JSPaneConfigTabs,
-      selector: getJSPaneConfigSelectedTabIndex,
-      setter: setJsPaneConfigSelectedTabIndex,
-      defaultValue: 0,
+      selector: getJSPaneConfigSelectedTab,
+      setter: setJsPaneConfigSelectedTab,
+      defaultValue: JSEditorTab.CODE,
     },
   ],
   [FocusEntity.QUERY]: [

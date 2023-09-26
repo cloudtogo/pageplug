@@ -1,4 +1,5 @@
 import { setLayoutConversionStateAction } from "actions/autoLayoutActions";
+import type { Page } from "@appsmith/constants/ReduxActionConstants";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
 import type { AppState } from "@appsmith/reducers";
@@ -13,25 +14,45 @@ import { getPageWidgets } from "selectors/entitiesSelector";
 import { convertNormalizedDSLToFixed } from "utils/DSLConversions/autoToFixedLayout";
 import convertToAutoLayout from "utils/DSLConversions/fixedToAutoLayout";
 import type { DSLWidget } from "widgets/constants";
-import { createSnapshotSaga } from "./SnapshotSagas";
+import {
+  createSnapshotSaga,
+  deleteApplicationSnapshotSaga,
+} from "./SnapshotSagas";
 import * as Sentry from "@sentry/react";
 import log from "loglevel";
 import { saveAllPagesSaga } from "./PageSagas";
 import { updateApplicationLayout } from "@appsmith/actions/applicationActions";
-import { getCurrentApplicationId } from "selectors/editorSelectors";
+import {
+  getCurrentApplicationId,
+  getPageList,
+} from "selectors/editorSelectors";
 import { updateApplicationLayoutType } from "./AutoLayoutUpdateSagas";
+import AnalyticsUtil from "utils/AnalyticsUtil";
 
 /**
  * This method is used to convert from Auto layout to Fixed layout
  * @param action
  */
 function* convertFromAutoToFixedSaga(action: ReduxAction<SupportedLayouts>) {
+  let appId = "";
+  let snapshotSaveSuccess = false;
   try {
+    const pageList: Page[] = yield select(getPageList);
     const pageWidgetsList: PageWidgetsReduxState = yield select(getPageWidgets);
+
+    appId = yield select(getCurrentApplicationId);
+
+    const notEmptyApp = isNotEmptyApp(pageWidgetsList);
 
     if (getShouldSaveSnapShot(pageWidgetsList)) {
       yield call(createSnapshotSaga);
     }
+
+    AnalyticsUtil.logEvent("CONVERT_AUTO_TO_FIXED", {
+      isNewApp: !notEmptyApp,
+      appId,
+    });
+    snapshotSaveSuccess = true;
 
     //Set conversion form to indicated conversion loading state
     yield put(
@@ -41,8 +62,9 @@ function* convertFromAutoToFixedSaga(action: ReduxAction<SupportedLayouts>) {
     const pageLayouts = [];
 
     //Convert all the pages into Fixed layout by iterating over the list
-    for (const [pageId, page] of Object.entries(pageWidgetsList)) {
-      const { dsl: normalizedDSL, layoutId } = page;
+    for (const page of pageList) {
+      const pageId = page?.pageId;
+      const { dsl: normalizedDSL, layoutId } = pageWidgetsList[pageId];
 
       const fixedLayoutDSL = convertNormalizedDSLToFixed(
         normalizedDSL,
@@ -72,14 +94,29 @@ function* convertFromAutoToFixedSaga(action: ReduxAction<SupportedLayouts>) {
       setLayoutConversionStateAction(CONVERSION_STATES.COMPLETED_SUCCESS),
     );
   } catch (e) {
-    log.error(e);
+    let error: Error = e;
+    if (error) {
+      error.message = `Layout Conversion Error - while Converting from Auto to Fixed Layout: ${error.message}`;
+    } else {
+      error = new Error(
+        "Layout Conversion Error - while Converting from Auto to Fixed Layout",
+      );
+    }
+
+    log.error(error);
+
+    if (snapshotSaveSuccess) {
+      yield call(deleteApplicationSnapshotSaga);
+    }
     //update conversion form state to error
     yield put(
-      setLayoutConversionStateAction(
-        CONVERSION_STATES.COMPLETED_ERROR,
-        e as Error,
-      ),
+      setLayoutConversionStateAction(CONVERSION_STATES.COMPLETED_ERROR, error),
     );
+
+    AnalyticsUtil.logEvent("CONVERSION_FAILURE", {
+      flow: "CONVERT_AUTO_TO_FIXED",
+      appId,
+    });
   }
 }
 
@@ -191,6 +228,17 @@ export default function* layoutConversionSagas() {
 
 //Function returns boolean, SnapShot should not be saved for a single empty canvas
 function getShouldSaveSnapShot(pageWidgetsList: PageWidgetsReduxState) {
+  const pageList = Object.values(pageWidgetsList);
+
+  if (pageList.length !== 1) return true;
+
+  const { dsl: pageDSL } = pageList[0];
+
+  return Object.keys(pageDSL).length !== 1;
+}
+
+//Function returns boolean, SnapShot should not be saved for a single empty canvas
+function isNotEmptyApp(pageWidgetsList: PageWidgetsReduxState) {
   const pageList = Object.values(pageWidgetsList);
 
   if (pageList.length !== 1) return true;

@@ -13,14 +13,11 @@ import EntityName from "./Name";
 import AddButton from "./AddButton";
 import Collapse from "./Collapse";
 import { useEntityUpdateState, useEntityEditState } from "../hooks";
-import Loader from "./Loader";
 import { Classes } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import useClick from "utils/hooks/useClick";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
-import { TooltipComponent } from "design-system-old";
-import { TOOLTIP_HOVER_ON_DELAY } from "constants/AppConstants";
 import { inGuidedTour } from "selectors/onboardingSelectors";
 import { toggleShowDeviationDialog } from "actions/onboardingActions";
 import Boxed from "pages/Editor/GuidedTour/Boxed";
@@ -28,12 +25,18 @@ import { GUIDED_TOUR_STEPS } from "pages/Editor/GuidedTour/constants";
 import { getEntityCollapsibleState } from "selectors/editorContextSelectors";
 import type { AppState } from "@appsmith/reducers";
 import { setEntityCollapsibleState } from "actions/editorContextActions";
+import { Tooltip, Tag, Spinner } from "design-system";
+import {
+  createMessage,
+  EXPLORER_BETA_ENTITY,
+} from "@appsmith/constants/messages";
 
 export enum EntityClassNames {
   CONTEXT_MENU = "entity-context-menu",
   CONTEXT_MENU_CONTENT = "entity-context-menu-content",
   RIGHT_ICON = "entity-right-icon",
   PRE_RIGHT_ICON = "entity-pre-right-icon",
+  ICON = "entity-icon",
   ADD_BUTTON = "t--entity-add-btn",
   NAME = "t--entity-name",
   COLLAPSE_TOGGLE = "t--entity-collapse-toggle",
@@ -43,7 +46,7 @@ export enum EntityClassNames {
   TOOLTIP = "t--entity-tooltp",
 }
 
-const ContextMenuWrapper = styled.div`
+export const ContextMenuWrapper = styled.div`
   height: 100%;
 `;
 
@@ -59,6 +62,11 @@ const Wrapper = styled.div<{ active: boolean }>`
       width: auto;
     }
   }
+
+  &.group {
+    font-weight: 500;
+  }
+  font-weight: 400;
 `;
 
 export const entityTooltipCSS = css`
@@ -71,6 +79,7 @@ export const entityTooltipCSS = css`
 export const EntityItem = styled.div<{
   active: boolean;
   step: number;
+  disabled?: boolean;
   spaced: boolean;
   highlight: boolean;
   isSticky: boolean;
@@ -96,21 +105,27 @@ export const EntityItem = styled.div<{
   height: 36px;
   width: 100%;
   display: inline-grid;
-  grid-template-columns: 20px auto 1fr auto auto auto;
+  grid-template-columns: 20px auto 1fr auto auto auto auto auto;
   grid-auto-flow: column dense;
-  border-radius: 0;
-  color: ${Colors.GRAY_800};
-  font-weight: 500;
+  border-radius: var(--ads-v2-border-radius);
+  color: var(--ads-v2-color-fg);
   cursor: pointer;
   align-items: center;
   &:hover {
     background: #f0f0f0;
   }
 
-  .${Classes.COLLAPSE_BODY} & {
-    color: ${Colors.GRAY_700};
-    font-weight: 400;
-  }
+  ${(props) =>
+    props.disabled &&
+    `
+    color: var(--ads-v2-color-fg-subtle);
+    &:hover {
+      background: transparent;
+    }
+    .${EntityClassNames.ICON} .ads-v2-icon {
+      color: var(--ads-v2-color-fg-subtle);
+    }
+  `}
 
   scroll-margin-top: 36px;
   scroll-snap-margin-top: 36px;
@@ -129,7 +144,7 @@ export const EntityItem = styled.div<{
   & .${EntityClassNames.COLLAPSE_TOGGLE} {
     svg {
       path {
-        fill: ${Colors.GRAY};
+        fill: var(--ads-v2-color-fg);
       }
     }
   }
@@ -159,7 +174,9 @@ export const EntityItem = styled.div<{
 
   & .${EntityClassNames.RIGHT_ICON}:hover {
     background: ${(props) =>
-      props.rightIconClickable ? Colors.SHARK2 : "initial"};
+      props.rightIconClickable
+        ? "var(--ads-v2-color-bg-brand-secondary-emphasis)"
+        : "initial"};
     svg {
       path {
         fill: ${(props) =>
@@ -179,7 +196,7 @@ export const EntityItem = styled.div<{
 
 const IconWrapper = styled.span`
   line-height: ${(props) => props.theme.lineHeights[0]}px;
-  color: ${Colors.CHARCOAL};
+  color: var(--ads-v2-color-fg);
   display: flex;
   align-items: center;
 
@@ -191,6 +208,15 @@ const IconWrapper = styled.span`
     width: 16px;
     height: 16px;
   }
+  margin-right: 4px;
+`;
+
+export const AddButtonWrapper = styled.div`
+  height: 100%;
+  width: 100%;
+`;
+
+const SubItemWrapper = styled.div`
   margin-right: 4px;
 `;
 
@@ -218,7 +244,7 @@ export type EntityProps = {
   onToggle?: (isOpen: boolean) => void;
   alwaysShowRightIcon?: boolean;
   onClickRightIcon?: () => void;
-  addButtonHelptext?: JSX.Element | string;
+  addButtonHelptext?: string;
   isBeta?: boolean;
   preRightIcon?: ReactNode;
   onClickPreRightIcon?: () => void;
@@ -307,19 +333,18 @@ export const Entity = forwardRef(
     useClick(itemRef, handleClick, noop);
 
     const addButton = props.customAddButton || (
-      <TooltipComponent
-        boundary="viewport"
-        className={EntityClassNames.TOOLTIP}
+      <Tooltip
         content={props.addButtonHelptext || ""}
-        disabled={!props.addButtonHelptext}
-        hoverOpenDelay={TOOLTIP_HOVER_ON_DELAY}
-        position="right"
+        isDisabled={!props.addButtonHelptext}
+        placement="right"
       >
-        <AddButton
-          className={`${EntityClassNames.ADD_BUTTON} ${props.className}`}
-          onClick={props.onCreate}
-        />
-      </TooltipComponent>
+        <AddButtonWrapper>
+          <AddButton
+            className={`${EntityClassNames.ADD_BUTTON} ${props.className}`}
+            onClick={props.onCreate}
+          />
+        </AddButtonWrapper>
+      </Tooltip>
     );
 
     return (
@@ -340,6 +365,8 @@ export const Entity = forwardRef(
             } t--entity-item`}
             data-guided-tour-id={`explorer-entity-${props.name}`}
             data-guided-tour-iid={props.name}
+            data-testid={`t--entity-item-${props.name}`}
+            disabled={!!props.disabled}
             highlight={!!props.highlight}
             id={"entity-" + props.entityId}
             isSticky={props.isSticky === true}
@@ -354,7 +381,12 @@ export const Entity = forwardRef(
               isVisible={!!props.children}
               onClick={toggleChildren}
             />
-            <IconWrapper onClick={handleClick}>{props.icon}</IconWrapper>
+            <IconWrapper
+              className={`${EntityClassNames.ICON}`}
+              onClick={handleClick}
+            >
+              {props.icon}
+            </IconWrapper>
             <EntityName
               className={`${EntityClassNames.NAME}`}
               enterEditMode={enterEditMode}
@@ -368,6 +400,18 @@ export const Entity = forwardRef(
               searchKeyword={props.searchKeyword}
               updateEntityName={updateNameCallback}
             />
+            {isUpdating && (
+              <SubItemWrapper>
+                <Spinner />
+              </SubItemWrapper>
+            )}
+            {props.isBeta && (
+              <SubItemWrapper>
+                <Tag isClosable={false}>
+                  {createMessage(EXPLORER_BETA_ENTITY)}
+                </Tag>
+              </SubItemWrapper>
+            )}
             {props.preRightIcon && (
               <IconWrapper
                 className={`${EntityClassNames.PRE_RIGHT_ICON} w-full h-full`}
@@ -388,7 +432,6 @@ export const Entity = forwardRef(
             {props.contextMenu && (
               <ContextMenuWrapper>{props.contextMenu}</ContextMenuWrapper>
             )}
-            <Loader isVisible={isUpdating} />
           </EntityItem>
           <Collapse
             active={props.active}

@@ -68,7 +68,6 @@ import { showReconnectDatasourceModal } from "@appsmith/actions/applicationActio
 import type { ApiResponse } from "api/ApiResponses";
 import type { GitConfig } from "entities/GitSync";
 import { GitSyncModalTab } from "entities/GitSync";
-import { Toaster, Variant } from "design-system-old";
 import {
   getCurrentAppGitMetaData,
   getCurrentApplication,
@@ -103,6 +102,7 @@ import { FocusEntity, identifyEntityFromPath } from "navigation/FocusEntity";
 import { getActions, getJSCollections } from "selectors/entitiesSelector";
 import type { Action } from "entities/Action";
 import type { JSCollectionDataState } from "reducers/entityReducers/jsActionsReducer";
+import { toast } from "design-system";
 
 export function* handleRepoLimitReachedError(response?: ApiResponse) {
   const { responseMeta } = response || {};
@@ -299,9 +299,8 @@ function* updateGlobalGitConfig(action: ReduxAction<GitConfig>) {
 
     if (isValidResponse) {
       yield put(fetchGlobalGitConfigInit());
-      Toaster.show({
-        text: createMessage(GIT_USER_UPDATED_SUCCESSFULLY),
-        variant: Variant.success,
+      toast.show(createMessage(GIT_USER_UPDATED_SUCCESSFULLY), {
+        kind: "success",
       });
     }
   } catch (error) {
@@ -504,9 +503,8 @@ function* updateLocalGitConfig(action: ReduxAction<GitConfig>) {
       // @ts-expect-error: response is of type unknown
       yield put(updateLocalGitConfigSuccess(response?.data));
       yield put(fetchLocalGitConfigInit());
-      Toaster.show({
-        text: createMessage(GIT_USER_UPDATED_SUCCESSFULLY),
-        variant: Variant.success,
+      toast.show(createMessage(GIT_USER_UPDATED_SUCCESSFULLY), {
+        kind: "success",
       });
     }
   } catch (error) {
@@ -625,7 +623,6 @@ function* fetchMergeStatusSaga(action: ReduxAction<MergeStatusPayload>) {
       yield put(fetchMergeStatusSuccess(response?.data));
     }
   } catch (error) {
-    // @ts-expect-error: fetchMergeStatusFailure expects string
     yield put(fetchMergeStatusFailure({ error, show: false }));
     if (!response || response?.responseMeta?.success) {
       throw error;
@@ -803,9 +800,8 @@ function* importAppFromGitSaga(action: ConnectToGitReduxAction) {
             pageId,
           });
           history.push(pageURL);
-          Toaster.show({
-            text: "应用导入成功",
-            variant: Variant.success,
+          toast.show("应用导入成功", {
+            kind: "success",
           });
         }
       }
@@ -856,10 +852,8 @@ export function* getSSHKeyPairSaga(action: GetSSHKeyPairReduxAction) {
       }
     }
   } catch (error) {
-    // @ts-expect-error: getSSHKeyPairError expects string
     yield put(getSSHKeyPairError({ error, show: false }));
     if (action.onErrorCallback) {
-      // @ts-expect-error: onErrorCallback expects string
       action.onErrorCallback(error);
     }
   }
@@ -894,7 +888,6 @@ export function* generateSSHKeyPairSaga(action: GenerateSSHKeyPairReduxAction) {
     }
   } catch (error) {
     if (action.onErrorCallback) {
-      // @ts-expect-error: onErrorCallback expects string
       action.onErrorCallback(error);
     }
     yield call(handleRepoLimitReachedError, response);
@@ -915,9 +908,8 @@ export function* deleteBranch({ payload }: ReduxAction<any>) {
       getLogToSentryFromResponse(response),
     );
     if (isValidResponse) {
-      Toaster.show({
-        text: createMessage(DELETE_BRANCH_SUCCESS, branchToDelete),
-        variant: Variant.success,
+      toast.show(createMessage(DELETE_BRANCH_SUCCESS, branchToDelete), {
+        kind: "success",
       });
       yield put(deleteBranchSuccess(response?.data));
       yield put(fetchBranchesInit({ pruneBranches: true }));

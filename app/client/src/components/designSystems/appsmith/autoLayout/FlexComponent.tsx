@@ -33,6 +33,7 @@ export type AutoLayoutProps = {
   parentId?: string;
   responsiveBehavior?: ResponsiveBehavior;
   selected?: boolean;
+  isResizeDisabled?: boolean;
   widgetId: string;
   widgetName: string;
   widgetType: WidgetType;
@@ -97,14 +98,18 @@ export function FlexComponent(props: AutoLayoutProps) {
     }${WIDGET_PADDING}px, ${WIDGET_PADDING}px, 0px)`,
   };
   const widgetDimensionsEditCss = {
-    width: isResizing
-      ? "auto"
-      : `${props.componentWidth - WIDGET_PADDING * 2 + RESIZE_BORDER_BUFFER}px`,
-    height: isResizing
-      ? "auto"
-      : `${
-          props.componentHeight - WIDGET_PADDING * 2 + RESIZE_BORDER_BUFFER
-        }px`,
+    width:
+      isResizing && !props.isResizeDisabled
+        ? "auto"
+        : `${
+            props.componentWidth - WIDGET_PADDING * 2 + RESIZE_BORDER_BUFFER
+          }px`,
+    height:
+      isResizing && !props.isResizeDisabled
+        ? "auto"
+        : `${
+            props.componentHeight - WIDGET_PADDING * 2 + RESIZE_BORDER_BUFFER
+          }px`,
     margin: WIDGET_PADDING / 2 + "px",
   };
   const flexComponentStyle: CSSProperties = useMemo(() => {

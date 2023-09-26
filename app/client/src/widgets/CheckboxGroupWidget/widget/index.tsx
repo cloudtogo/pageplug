@@ -25,7 +25,6 @@ import type { OptionProps, SelectAllState } from "../constants";
 import { SelectAllStates } from "../constants";
 import type { AutocompletionDefinitions } from "widgets/constants";
 import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
-import { AppPositioningTypes } from "reducers/entityReducers/pageListReducer";
 
 export function defaultSelectedValuesValidation(
   value: unknown,
@@ -176,13 +175,14 @@ class CheckboxGroupWidget extends BaseWidget<
             propertyName: "labelAlignment",
             label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
+            fullWidth: false,
             options: [
               {
-                icon: "LEFT_ALIGN",
+                startIcon: "align-left",
                 value: Alignment.LEFT,
               },
               {
-                icon: "RIGHT_ALIGN",
+                startIcon: "align-right",
                 value: Alignment.RIGHT,
               },
             ],
@@ -387,11 +387,11 @@ class CheckboxGroupWidget extends BaseWidget<
             controlType: "BUTTON_GROUP",
             options: [
               {
-                icon: "BOLD_FONT",
+                icon: "text-bold",
                 value: "BOLD",
               },
               {
-                icon: "ITALICS_FONT",
+                icon: "text-italic",
                 value: "ITALIC",
               },
             ],
@@ -538,9 +538,6 @@ class CheckboxGroupWidget extends BaseWidget<
               GRID_DENSITY_MIGRATION_V1 >
             1
           )
-        }
-        isAutoLayout={
-          this.props.appPositioningType === AppPositioningTypes.AUTO
         }
         isDisabled={this.props.isDisabled}
         isDynamicHeightEnabled={isAutoHeightEnabledForWidget(this.props)}

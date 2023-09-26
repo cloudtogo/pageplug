@@ -128,7 +128,7 @@ function* restoreApplicationFromSnapshotSaga() {
 }
 
 //Saga to delete application snapshot
-function* deleteApplicationSnapshotSaga() {
+export function* deleteApplicationSnapshotSaga() {
   let response: ApiResponse | undefined;
   try {
     const applicationId: string = yield select(getCurrentApplicationId);

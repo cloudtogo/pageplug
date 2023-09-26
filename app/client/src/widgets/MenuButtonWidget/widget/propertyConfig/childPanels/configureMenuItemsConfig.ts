@@ -115,13 +115,14 @@ export default {
           helpText:
             "设置菜单项图标对齐方向，通过 {{currentItem}} 绑定当前菜单项数据",
           controlType: "ICON_TABS",
+          fullWidth: false,
           options: [
             {
-              icon: "VERTICAL_LEFT",
+              startIcon: "skip-left-line",
               value: "left",
             },
             {
-              icon: "VERTICAL_RIGHT",
+              startIcon: "skip-right-line",
               value: "right",
             },
           ],

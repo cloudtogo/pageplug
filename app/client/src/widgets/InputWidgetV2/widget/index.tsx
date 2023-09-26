@@ -453,14 +453,14 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               label: "位置",
               helpText: "设置输入框图标的对齐方式",
               controlType: "ICON_TABS",
-              fullWidth: true,
+              fullWidth: false,
               options: [
                 {
-                  icon: "VERTICAL_LEFT",
+                  startIcon: "skip-left-line",
                   value: "left",
                 },
                 {
-                  icon: "VERTICAL_RIGHT",
+                  startIcon: "skip-right-line",
                   value: "right",
                 },
               ],
