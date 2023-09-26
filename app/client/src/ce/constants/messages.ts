@@ -141,7 +141,7 @@ export const USERS_HAVE_ACCESS_TO_ALL_APPS = () =>
   "Users will have access to all applications in this workspace";
 export const USERS_HAVE_ACCESS_TO_ONLY_THIS_APP = () =>
   "Users will only have access to this application";
-export const NO_USERS_INVITED = () => "You haven't invited any users yet";
+export const NO_USERS_INVITED = () => "未开通邮件服务";
 export const BUSINESS_EDITION_TEXT = () => "business edition";
 export const CREATE_PASSWORD_RESET_SUCCESS = () => `密码重置成功`;
 export const CREATE_PASSWORD_RESET_SUCCESS_LOGIN_LINK = () => `登录`;
@@ -150,6 +150,18 @@ export const DELETING_APPLICATION = () => `正在删除应用...`;
 export const DUPLICATING_APPLICATION = () => `正在拷贝应用...`;
 
 export const FORGOT_PASSWORD_PAGE_LOGIN_LINK = () => `返回登录`;
+export const USER_PROFILE_PICTURE_UPLOAD_FAILED = () =>
+  "Unable to upload display picture.";
+export const UPDATE_USER_DETAILS_FAILED = () =>
+  "Unable to update user details.";
+export const USER_DISPLAY_PICTURE_FILE_INVALID = () =>
+  "File content doesn't seem to be an image. Please verify.";
+export const USER_DISPLAY_NAME_CHAR_CHECK_FAILED = () =>
+  "No special characters allowed except .'-";
+export const USER_DISPLAY_NAME_PLACEHOLDER = () => "Display name";
+export const USER_DISPLAY_PICTURE_PLACEHOLDER = () => "Display picture";
+export const USER_EMAIL_PLACEHOLDER = () => "Email";
+export const USER_RESET_PASSWORD = () => "Reset password";
 export const ADD_API_TO_PAGE_SUCCESS_MESSAGE = (actionName: string) =>
   `${actionName} API 添加成功`;
 export const INPUT_WIDGET_DEFAULT_VALIDATION_ERROR = () => `无效输入`;
@@ -812,6 +824,7 @@ export const SNIPPET_DESCRIPTION = () =>
 export const DOC_DESCRIPTION = () => `通过文档找到答案`;
 export const NAV_DESCRIPTION = () => `导航到任意页面、组件或者文件`;
 export const ACTION_OPERATION_DESCRIPTION = () => `新建查询、API 或者 JS 对象`;
+export const TABLE_WIDGET_VALIDATION_ASSIST_PROMPT = () => `访问当前单元格 `;
 
 export const TRIGGER_ACTION_VALIDATION_ERROR = (
   functionName: string,
@@ -882,6 +895,9 @@ export const ONBOARDING_CHECKLIST_DEPLOY_APPLICATIONS = {
 
 export const ONBOARDING_CHECKLIST_FOOTER = () =>
   "不知道从何下手？请跟随我们的指引进行操作吧";
+
+export const ONBOARDING_TELEMETRY_POPUP = () =>
+  "We only collect usage data to make Appsmith better for everyone. Visit admin settings to toggle this off.";
 
 //Introduction modal
 export const HOW_APPSMITH_WORKS = () => "这是 PagePlug 的功能概述";
@@ -954,6 +970,7 @@ export const API_EDITOR_TAB_TITLES = {
 };
 export const ACTION_EXECUTION_MESSAGE = (actionType: string) =>
   `正在请求 ${actionType}`;
+export const ACTION_EXECUTION_CANCEL = () => "Cancel request";
 
 export const WELCOME_FORM_HEADER = () => "让我们更好的了解你！";
 export const WELCOME_FORM_FULL_NAME = () => "姓名";
@@ -1026,9 +1043,16 @@ export const TEST_EMAIL_SUCCESS_TROUBLESHOOT = () => "疑难杂症";
 export const TEST_EMAIL_FAILURE = () => "测试邮件发送失败";
 export const DISCONNECT_AUTH_ERROR = () => "不能断开唯一已连接的鉴权方式";
 export const MANDATORY_FIELDS_ERROR = () => "必填字段不能为空";
+export const FORM_LOGIN_DESC = () => "允许用户使用账号密码登录你的平台";
+export const GOOGLE_AUTH_DESC = () => "使用 Google 账号登录你的平台 (OAuth)";
+export const GITHUB_AUTH_DESC = () => "使用 Github 账号登录你的平台 (SAML)";
+export const SAML_AUTH_DESC = () =>
+  "允许使用 SAML2 协议的单点登录服务登录你的平台";
+export const OIDC_AUTH_DESC = () =>
+  "允许使用 OIDC 协议的单点登录服务登录你的平台";
 
 // Audit logs begin
-export const AUDIT_LOGS = () => "Audit Logs";
+export const AUDIT_LOGS = () => "Audit logs";
 export const TRY_AGAIN_WITH_YOUR_FILTER = () => "Try again with your filter";
 
 // Audit logs Upgrade page begin
@@ -1036,7 +1060,7 @@ export const INTRODUCING = (featureName: string) =>
   `Introducing ${featureName}`;
 export const AUDIT_LOGS_UPGRADE_PAGE_SUB_HEADING = () =>
   "See a timestamped trail of events in your workspace. Filter by type of event, user, resource ID, and time. Drill down into each event to investigate further.";
-export const SECURITY_AND_COMPLIANCE = () => "Security & Compliance";
+export const SECURITY_AND_COMPLIANCE = () => "Security & compliance";
 export const SECURITY_AND_COMPLIANCE_DETAIL1 = () =>
   "Proactively derisk misconfigured permissions, roll back changes from a critical security event, and keep checks against your compliance policies.";
 export const SECURITY_AND_COMPLIANCE_DETAIL2 = () =>
@@ -1044,7 +1068,7 @@ export const SECURITY_AND_COMPLIANCE_DETAIL2 = () =>
 export const DEBUGGING = () => "Debugging";
 export const DEBUGGING_DETAIL1 = () =>
   "Debug with a timeline of events filtered by user and resource ID, correlate them with end-user and app developer actions, and investigate back to the last known good state of your app.";
-export const INCIDENT_MANAGEMENT = () => "Incident Management";
+export const INCIDENT_MANAGEMENT = () => "Incident management";
 export const INCIDENT_MANAGEMENT_DETAIL1 = () =>
   "Go back in time from an incident to see who did what, correlate events with breaking changes, and run RCAs to remediate incidents for now and the future.";
 export const AVAILABLE_ON_BUSINESS = () => "Available on a business plan only";
@@ -1055,7 +1079,7 @@ export const EXCLUSIVE_TO_BUSINESS = (featureName: string) =>
 
 // Access control upgrade page begin
 export const GRANULAR_ACCESS_CONTROL_FOR_TEAMS = () =>
-  "Granular Access Controls for teams";
+  "granular access controls for teams";
 export const ACCESS_CONTROL_UPGRADE_PAGE_SUB_HEADING = () =>
   "Control all permissions for all resources in your apps in a workspace. Manage permissions granularly by attributes. Use permissions and user groups to easily define access levels.";
 export const SECURITY_APPS_LEAST_PRIVILEGE = () =>
@@ -1095,6 +1119,7 @@ export const JS_TOGGLE_DISABLED_MESSAGE = "清空字段回退";
 export const PROPERTY_PANE_EMPTY_SEARCH_RESULT_MESSAGE = "没有发现任何属性";
 export const PROPERTY_SEARCH_INPUT_PLACEHOLDER = "搜索组件属性";
 export const HELP_MESSAGE = "帮助";
+export const EXPLORER_BETA_ENTITY = () => "BETA";
 
 // API Pane
 export const API_PANE_NO_BODY = () => "当前请求没有请求体";
@@ -1440,35 +1465,37 @@ export const NEW_API_BUTTON_TEXT = () => "新建 API";
 export const GENERATE_NEW_PAGE_BUTTON_TEXT = () => "生成新页面";
 export const RECONNECT_BUTTON_TEXT = () => "重连";
 export const SAVE_BUTTON_TEXT = () => "保存";
+export const TEST_BUTTON_TEXT = () => "测试";
 export const SAVE_AND_AUTHORIZE_BUTTON_TEXT = () => "保存并鉴权";
 export const DISCARD_POPUP_DONT_SAVE_BUTTON_TEXT = () => "不保存";
 export const GSHEET_AUTHORISED_FILE_IDS_KEY = () =>
   "Google sheets authorised file ids key";
 export const GOOGLE_SHEETS_INFO_BANNER_MESSAGE = () =>
   "Appsmith will require access to your google drive to access google sheets.";
-export const GOOGLE_SHEETS_AUTHORIZE_DATASOURCE = () => "Authorize Datasource";
+export const GOOGLE_SHEETS_AUTHORIZE_DATASOURCE = () => "Authorize datasource";
 export const GOOGLE_SHEETS_LEARN_MORE = () => "Learn more";
+export const DATASOURCE_SCHEMA_NOT_AVAILABLE = () => "Schema is not available";
 
 //Layout Conversion flow
-export const CONVERT = () => "CONVERT";
-export const BUILD_RESPONSIVE = () => "Build Responsive Apps";
+export const CONVERT = () => "Convert layout";
+export const BUILD_RESPONSIVE = () => "Build responsive apps";
 export const BUILD_RESPONSIVE_TEXT = () =>
   "Appsmith will convert your application's UI to auto layout, a new mode designed for building mobile-friendly apps in no time";
-export const BUILD_FIXED_LAYOUT = () => "Use Fixed Layout";
+export const BUILD_FIXED_LAYOUT = () => "Use fixed-layout";
 export const BUILD_FIXED_LAYOUT_TEXT = () =>
   "Appsmith will convert your application’s UI to fixed layout, the default mode.";
-export const USE_SNAPSHOT = () => "USE SNAPSHOT";
+export const USE_SNAPSHOT = () => "Use snapshot";
 export const USE_SNAPSHOT_HEADER = () => "Use Snapshot";
 export const DISCARD_SNAPSHOT_HEADER = () => "Discarding a Snapshot";
 export const SAVE_SNAPSHOT = () =>
-  "Save a Snapshot of your Current Layout for 5 days";
+  "Save a snapshot of your current layout for 5 days";
 export const SAVE_SNAPSHOT_TEXT = () =>
   "We save a snapshot of your current layout so you can go back if auto-layout doesn't work for you in this beta.";
 export const CREATE_SNAPSHOT = () => "Creating a snapshot";
 export const CONVERTING_APP = () => "Converting your app";
 export const RESTORING_SNAPSHOT = () => "Removing changes made";
-export const REFRESH_THE_APP = () => "REFRESH THE APP";
-export const CONVERT_ANYWAYS = () => "CONVERT ANYWAYS";
+export const REFRESH_THE_APP = () => "Refresh the app";
+export const CONVERT_ANYWAYS = () => "Convert anyways";
 export const CONVERSION_SUCCESS_HEADER = () => "All done";
 export const DISCARD_SNAPSHOT_TEXT = () =>
   "You are about to discard this snapshot:";
@@ -1481,7 +1508,7 @@ export const CONVERSION_WARNING_TEXT = () =>
 export const CONVERSION_ERROR_HEADER = () => "Conversion Failed";
 export const CONVERSION_ERROR = () =>
   "Appsmith ran into a critical error while trying to convert to auto layout";
-export const SEND_REPORT = () => "SEND US A REPORT";
+export const SEND_REPORT = () => "Send us a report";
 export const CONVERSION_ERROR_TEXT = () => "No changes were made to your app";
 export const DROPDOWN_LABEL_TEXT = () => "Target canvas size";
 export const CONVERSION_WARNING = () => "Conversion will change your layout";
@@ -1497,8 +1524,8 @@ export const CONVERT_TO_AUTO_TITLE = () => "Convert to Auto Layout";
 export const CONVERT_TO_AUTO_BUTTON = () => "CONVERT TO AUTO-LAYOUT";
 export const SNAPSHOT_BANNER_MESSAGE = () =>
   "Confirm this layout is per expectations before you discard the snapshot. Use the snapshot to go back.";
-export const USE_SNAPSHOT_CTA = () => "USE SNAPSHOT";
-export const DISCARD_SNAPSHOT_CTA = () => "DISCARD SNAPSHOT";
+export const USE_SNAPSHOT_CTA = () => "Use snapshot";
+export const DISCARD_SNAPSHOT_CTA = () => "Discard snapshot";
 export const MORE_DETAILS = () => "More details";
 export const CONVERSION_ERROR_MESSAGE_HEADER = () =>
   "To resolve this error please:";
@@ -1513,7 +1540,7 @@ export const SNAPSHOT_TIME_FROM_MESSAGE = (
 export const SNAPSHOT_TIME_TILL_EXPIRATION_MESSAGE = (
   timeTillExpiration: string,
 ) => `Snapshot of your previous layout expires in ${timeTillExpiration}`;
-export const DISCARD = () => "DISCARD";
+export const DISCARD = () => "Discard";
 // Alert options and labels for showMessage types
 export const ALERT_STYLE_OPTIONS = [
   { label: "信息", value: "'info'", id: "info" },

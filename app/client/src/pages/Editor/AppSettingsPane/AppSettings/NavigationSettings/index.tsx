@@ -20,7 +20,10 @@ import type { UpdateApplicationPayload } from "@appsmith/api/ApplicationApi";
 import equal from "fast-deep-equal";
 import { getCurrentApplicationId } from "selectors/editorSelectors";
 import { updateApplication } from "@appsmith/actions/applicationActions";
-import { Spinner } from "design-system-old";
+import { Spinner } from "design-system";
+import LogoInput from "@appsmith/pages/Editor/NavigationSettings/LogoInput";
+import SwitchSettingForLogoConfiguration from "./SwitchSettingForLogoConfiguration";
+import { selectFeatureFlags } from "selectors/usersSelectors";
 
 /**
  * TODO - @Dhruvik - ImprovedAppNav
@@ -40,6 +43,7 @@ export type UpdateSetting = (
 function NavigationSettings() {
   const application = useSelector(getCurrentApplication);
   const applicationId = useSelector(getCurrentApplicationId);
+  const featureFlags = useSelector(selectFeatureFlags);
   const dispatch = useDispatch();
   const [navigationSetting, setNavigationSetting] = useState(
     application?.applicationDetail?.navigationSetting,
@@ -150,12 +154,12 @@ function NavigationSettings() {
               {
                 label: _.startCase(NAVIGATION_SETTINGS.ORIENTATION.TOP),
                 value: NAVIGATION_SETTINGS.ORIENTATION.TOP,
-                // icon: <NavOrientationTopIcon />,
+                // startIcon:<NavOrientationTopIcon />,
               },
               {
                 label: _.startCase(NAVIGATION_SETTINGS.ORIENTATION.SIDE),
                 value: NAVIGATION_SETTINGS.ORIENTATION.SIDE,
-                // icon: <NavOrientationSideIcon />,
+                // startIcon:<NavOrientationSideIcon />,
               },
             ]}
             updateSetting={updateSetting}
@@ -176,7 +180,7 @@ function NavigationSettings() {
                 {
                   label: _.startCase(NAVIGATION_SETTINGS.NAV_STYLE.STACKED),
                   value: NAVIGATION_SETTINGS.NAV_STYLE.STACKED,
-                  // icon: <NavStyleStackedIcon />,
+                  // startIcon:<NavStyleStackedIcon />,
                   hidden:
                     navigationSetting?.orientation ===
                     NAVIGATION_SETTINGS.ORIENTATION.SIDE,
@@ -184,7 +188,7 @@ function NavigationSettings() {
                 {
                   label: _.startCase(NAVIGATION_SETTINGS.NAV_STYLE.INLINE),
                   value: NAVIGATION_SETTINGS.NAV_STYLE.INLINE,
-                  // icon: <NavStyleInlineIcon />,
+                  // startIcon:<NavStyleInlineIcon />,
                   hidden:
                     navigationSetting?.orientation ===
                     NAVIGATION_SETTINGS.ORIENTATION.SIDE,
@@ -192,7 +196,7 @@ function NavigationSettings() {
                 {
                   label: _.startCase(NAVIGATION_SETTINGS.NAV_STYLE.SIDEBAR),
                   value: NAVIGATION_SETTINGS.NAV_STYLE.SIDEBAR,
-                  // icon: <NavStyleSidebarIcon />,
+                  // startIcon:<NavStyleSidebarIcon />,
                   hidden:
                     navigationSetting?.orientation ===
                     NAVIGATION_SETTINGS.ORIENTATION.TOP,
@@ -205,7 +209,7 @@ function NavigationSettings() {
                 // {
                 //   label: _.startCase(NAVIGATION_SETTINGS.NAV_STYLE.MINIMAL),
                 //   value: NAVIGATION_SETTINGS.NAV_STYLE.MINIMAL,
-                //   icon: <NavStyleMinimalIcon />,
+                //   startIcon:<NavStyleMinimalIcon />,
                 //   hidden:
                 //     navigationSetting?.orientation ===
                 //     NAVIGATION_SETTINGS.ORIENTATION.TOP,
@@ -228,12 +232,12 @@ function NavigationSettings() {
               {
                 label: _.startCase(NAVIGATION_SETTINGS.POSITION.STATIC),
                 value: NAVIGATION_SETTINGS.POSITION.STATIC,
-                icon: <NavPositionStaticIcon />,
+                startIcon:<NavPositionStaticIcon />,
               },
               {
                 label: _.startCase(NAVIGATION_SETTINGS.POSITION.STICKY),
                 value: NAVIGATION_SETTINGS.POSITION.STICKY,
-                icon: <NavPositionStickyIcon />,
+                startIcon:<NavPositionStickyIcon />,
               },
             ]}
             updateSetting={updateSetting}
@@ -282,67 +286,66 @@ function NavigationSettings() {
             navigationSetting={navigationSetting}
             options={[
               {
-                label: _.startCase(NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT),
                 value: NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT,
-                icon: (
-                  <ColorStyleIcon
-                    colorStyle={NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT}
-                  />
+                label: (
+                  <div className="flex items-center">
+                    <ColorStyleIcon
+                      colorStyle={NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT}
+                    />
+                    <span>
+                      {_.startCase(NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT)}
+                    </span>
+                  </div>
                 ),
               },
               {
-                label: _.startCase(NAVIGATION_SETTINGS.COLOR_STYLE.THEME),
                 value: NAVIGATION_SETTINGS.COLOR_STYLE.THEME,
-                icon: (
-                  <ColorStyleIcon
-                    colorStyle={NAVIGATION_SETTINGS.COLOR_STYLE.THEME}
-                  />
+                label: (
+                  <div className="flex items-center">
+                    <ColorStyleIcon
+                      colorStyle={NAVIGATION_SETTINGS.COLOR_STYLE.THEME}
+                    />
+                    <span>
+                      {_.startCase(NAVIGATION_SETTINGS.COLOR_STYLE.THEME)}
+                    </span>
+                  </div>
                 ),
               },
             ]}
             updateSetting={updateSetting}
           />
 
-          {/**
-           * TODO - @Dhruvik - ImprovedAppNav
-           * Hiding logo config for v1
-           * https://www.notion.so/appsmith/Logo-configuration-option-can-be-multiselect-2a436598539c4db99d1f030850fd8918?pvs=4
-           */}
-          {/* <LogoConfiguration
-            navigationSetting={navigationSetting}
-            options={[
-              {
-                label: _.startCase(
-                  NAVIGATION_SETTINGS.LOGO_CONFIGURATION.LOGO_AND_APPLICATION_TITLE,
-                ),
-                value:
-                  NAVIGATION_SETTINGS.LOGO_CONFIGURATION.LOGO_AND_APPLICATION_TITLE,
-              },
-              {
-                label: _.startCase(
-                  NAVIGATION_SETTINGS.LOGO_CONFIGURATION.LOGO_ONLY,
-                ),
-                value: NAVIGATION_SETTINGS.LOGO_CONFIGURATION.LOGO_ONLY,
-              },
-              {
-                label: _.startCase(
-                  NAVIGATION_SETTINGS.LOGO_CONFIGURATION.APPLICATION_TITLE_ONLY,
-                ),
-                value:
-                  NAVIGATION_SETTINGS.LOGO_CONFIGURATION.APPLICATION_TITLE_ONLY,
-              },
-              {
-                label: _.startCase(
-                  NAVIGATION_SETTINGS.LOGO_CONFIGURATION
-                    .NO_LOGO_OR_APPLICATION_TITLE,
-                ),
-                value:
-                  NAVIGATION_SETTINGS.LOGO_CONFIGURATION
-                    .NO_LOGO_OR_APPLICATION_TITLE,
-              },
-            ]}
-            updateSetting={updateSetting}
-          /> */}
+          {(navigationSetting?.logoAssetId ||
+            featureFlags.APP_NAVIGATION_LOGO_UPLOAD) && (
+            <>
+              <SwitchSettingForLogoConfiguration
+                keyName="logo"
+                label={createMessage(APP_NAVIGATION_SETTING.showLogoLabel)}
+                logoConfigurationSwitches={logoConfigurationSwitches}
+                setLogoConfigurationSwitches={setLogoConfigurationSwitches}
+              />
+
+              {(navigationSetting?.logoConfiguration ===
+                NAVIGATION_SETTINGS.LOGO_CONFIGURATION
+                  .LOGO_AND_APPLICATION_TITLE ||
+                navigationSetting?.logoConfiguration ===
+                  NAVIGATION_SETTINGS.LOGO_CONFIGURATION.LOGO_ONLY) && (
+                <LogoInput
+                  navigationSetting={navigationSetting}
+                  updateSetting={updateSetting}
+                />
+              )}
+            </>
+          )}
+
+          <SwitchSettingForLogoConfiguration
+            keyName="applicationTitle"
+            label={createMessage(
+              APP_NAVIGATION_SETTING.showApplicationTitleLabel,
+            )}
+            logoConfigurationSwitches={logoConfigurationSwitches}
+            setLogoConfigurationSwitches={setLogoConfigurationSwitches}
+          />
 
           <SwitchSetting
             keyName="showSignIn"

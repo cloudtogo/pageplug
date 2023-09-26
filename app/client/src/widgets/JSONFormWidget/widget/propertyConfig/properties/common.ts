@@ -380,11 +380,11 @@ const COMMON_PROPERTIES = {
         controlType: "BUTTON_GROUP",
         options: [
           {
-            icon: "BOLD_FONT",
+            icon: "text-bold",
             value: "BOLD",
           },
           {
-            icon: "ITALICS_FONT",
+            icon: "text-italic",
             value: "ITALIC",
           },
         ],

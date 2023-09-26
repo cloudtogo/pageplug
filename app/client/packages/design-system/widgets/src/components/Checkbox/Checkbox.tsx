@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React, { forwardRef } from "react";
 
 import type {
@@ -18,7 +19,7 @@ export const Checkbox = forwardRef(
 
     return (
       <StyledCheckbox labelPosition={labelPosition} ref={ref} {...rest}>
-        {children && <Text className="label">{children}</Text>}
+        {children && <Text>{children}</Text>}
       </StyledCheckbox>
     );
   },

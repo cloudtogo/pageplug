@@ -530,14 +530,14 @@ const PROPERTIES = {
         label: "图标对齐",
         helpText: "设置图标对齐方式",
         controlType: "ICON_TABS",
-        fullWidth: true,
+        fullWidth: false,
         options: [
           {
-            icon: "VERTICAL_LEFT",
+            startIcon: "skip-left-line",
             value: "left",
           },
           {
-            icon: "VERTICAL_RIGHT",
+            startIcon: "skip-right-line",
             value: "right",
           },
         ],

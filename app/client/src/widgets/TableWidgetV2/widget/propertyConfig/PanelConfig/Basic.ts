@@ -118,7 +118,7 @@ export default {
     {
       helpText: "Takes in an array of items to display the menu items.",
       propertyName: "sourceData",
-      label: "Source Data",
+      label: "Source data",
       controlType: "TABLE_COMPUTE_VALUE",
       placeholderText: "{{Query1.data}}",
       isBindProperty: true,
@@ -153,10 +153,10 @@ export default {
       propertyName: "configureMenuItems",
       controlType: "OPEN_CONFIG_PANEL",
       buttonConfig: {
-        label: "Item Configuration",
+        label: "Configure",
         icon: "settings-2-line",
       },
-      label: "Configure Menu Items",
+      label: "Configure menu items",
       isBindProperty: false,
       isTriggerProperty: false,
       hidden: (props: TableWidgetProps, propertyPath: string) =>
@@ -180,7 +180,7 @@ export default {
       helpText: "Menu items",
       propertyName: "menuItems",
       controlType: "MENU_ITEMS",
-      label: "Menu Items",
+      label: "Menu items",
       isBindProperty: false,
       isTriggerProperty: false,
       hidden: (props: TableWidgetProps, propertyPath: string) => {
@@ -286,13 +286,14 @@ export default {
                 label: "位置",
                 helpText: "设置菜单项图标对齐方向",
                 controlType: "ICON_TABS",
+                fullWidth: false,
                 options: [
                   {
-                    icon: "VERTICAL_LEFT",
+                    startIcon: "skip-left-line",
                     value: "left",
                   },
                   {
-                    icon: "VERTICAL_RIGHT",
+                    startIcon: "skip-right-line",
                     value: "right",
                   },
                 ],

@@ -65,7 +65,7 @@ export const CodeEditorWithGutterStyles = css`
   }
   .${RUN_GUTTER_CLASSNAME} {
     cursor: pointer;
-    color: #f86a2b;
+    color: var(--ads-v2-color-fg-brand);
   }
   .CodeMirror-linenumbers {
     width: max-content;

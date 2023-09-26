@@ -5,7 +5,6 @@ import { Provider } from "react-redux";
 import { ThemeProvider } from "styled-components";
 import { taroifyTheme } from "constants/DefaultTheme";
 import { appInitializer } from "utils/AppUtils";
-import { Slide } from "react-toastify";
 import store, { runSagaMiddleware } from "./store";
 import { LayersContext, Layers } from "constants/Layers";
 import AppRouter from "@appsmith/AppRouter";
@@ -13,7 +12,7 @@ import * as Sentry from "@sentry/react";
 import { getCurrentThemeDetails } from "selectors/themeSelectors";
 import { connect } from "react-redux";
 import type { AppState } from "@appsmith/reducers";
-import { StyledToastContainer } from "design-system-old";
+import { Toast } from "design-system";
 import "./assets/styles/index.css";
 import "./index.less";
 import "design-system-old/build/css/design-system-old.css";
@@ -78,14 +77,7 @@ class ThemedApp extends React.Component<{
   render() {
     return (
       <ThemeProvider theme={this.props.currentTheme}>
-        <StyledToastContainer
-          autoClose={5000}
-          closeButton={false}
-          draggable={false}
-          hideProgressBar
-          pauseOnHover={false}
-          transition={Slide}
-        />
+        <Toast />
         <GlobalStyles />
         <AppErrorBoundary>
           <IntlProvider locale="zh-CN" messages={zhCN}>

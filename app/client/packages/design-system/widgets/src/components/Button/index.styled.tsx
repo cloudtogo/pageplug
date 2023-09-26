@@ -74,8 +74,9 @@ export const StyledButton = styled(HeadlessButton)<ButtonProps>`
     box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-bd-focus);
   }
 
-  &.is-disabled {
-    pointer-events: none;
+  &[data-disabled],
+  &[aria-disabled] {
+    cursor: default;
     opacity: var(--opacity-disabled);
   }
 

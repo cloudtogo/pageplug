@@ -3,7 +3,6 @@ import { Helmet } from "react-helmet";
 import { connect } from "react-redux";
 import type { RouteComponentProps } from "react-router-dom";
 import { withRouter } from "react-router-dom";
-import { Spinner } from "@blueprintjs/core";
 import type { BuilderRouteParams } from "constants/routes";
 import type { AppState } from "@appsmith/reducers";
 import MainContainer from "./MainContainer";
@@ -43,6 +42,7 @@ import TemplatesModal from "pages/Templates/TemplatesModal";
 import ReconnectDatasourceModal from "./gitSync/ReconnectDatasourceModal";
 import MultiPaneContainer from "pages/Editor/MultiPaneContainer";
 import { isMultiPaneActive } from "selectors/multiPaneSelectors";
+import { Spinner } from "design-system";
 
 type EditorProps = {
   currentApplicationId?: string;
@@ -178,8 +178,7 @@ class Editor extends Component<Props> {
         <CenteredWrapper
           style={{ height: `calc(100vh - ${theme.smallHeaderHeight})` }}
         >
-          {/* load3 */}
-          <Spinner />
+          <Spinner size="lg" />
         </CenteredWrapper>
       );
     }

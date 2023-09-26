@@ -4,9 +4,9 @@ import styled from "styled-components";
 import { useWidgetDragResize } from "utils/hooks/dragResizeHooks";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { generateReactKey } from "utils/generators";
-import { Colors } from "constants/Colors";
 import { useWidgetSelection } from "utils/hooks/useWidgetSelection";
 import { IconWrapper } from "constants/IconConstants";
+import { Colors } from "constants/Colors";
 
 type CardProps = {
   details: WidgetCardProps;
@@ -14,7 +14,7 @@ type CardProps = {
 
 export const Wrapper = styled.div`
   padding: 10px 5px 10px 5px;
-  border-radius: 0px;
+  border-radius: var(--ads-v2-border-radius);
   border: none;
   position: relative;
   color: ${Colors.MINT_BLACK};
@@ -23,6 +23,10 @@ export const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: ${(props) => props.theme.borderRadius};
+  cursor: grab;
+  img {
+    cursor: grab;
+  }
 
   & > div {
     display: flex;
@@ -57,10 +61,10 @@ export const IconLabel = styled.h5`
   min-height: 32px;
   text-align: center;
   margin: 0;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   font-weight: ${(props) => props.theme.fontWeights[1]};
   flex-shrink: 1;
-  font-size: ${(props) => props.theme.fontSizes[1]}px;
+  font-size: 11px;
   line-height: ${(props) => props.theme.lineHeights[2]}px;
   color: ${Colors.MINT_BLACK};
 

@@ -134,11 +134,12 @@ class AudioRecorderWidget extends BaseWidget<
         ],
       },
       {
-        sectionName: "轮廓",
+        sectionName: "边框和阴影",
         children: [
           {
             propertyName: "borderRadius",
             label: "边框圆角",
+            helpText: "将图标按钮的外边框边缘转为圆角",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -148,6 +149,7 @@ class AudioRecorderWidget extends BaseWidget<
           {
             propertyName: "boxShadow",
             label: "阴影",
+            helpText: "设置组件阴影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,

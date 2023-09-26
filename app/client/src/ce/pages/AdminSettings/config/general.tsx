@@ -15,11 +15,6 @@ import BrandingBadge from "pages/AppViewer/BrandingBadge";
 import { TagInput } from "design-system-old";
 import localStorage from "utils/localStorage";
 import isUndefined from "lodash/isUndefined";
-import { importRemixIcon } from "design-system-old";
-
-const QuestionFillIcon = importRemixIcon(
-  () => import("remixicon-react/QuestionFillIcon"),
-);
 
 export const APPSMITH_INSTANCE_NAME_SETTING_SETTING: Setting = {
   id: "APPSMITH_INSTANCE_NAME",
@@ -79,8 +74,8 @@ export const APPSMITH_HIDE_WATERMARK_SETTING: Setting = {
   name: "APPSMITH_HIDE_WATERMARK",
   category: SettingCategories.GENERAL,
   controlType: SettingTypes.CHECKBOX,
-  label: "Appsmith Watermark",
-  text: "Show Appsmith Watermark",
+  label: "Appsmith watermark",
+  text: "Show Appsmith watermark",
   needsUpgrade: false,
   isDisabled: () => true,
   textSuffix: <BrandingBadge />,
@@ -105,9 +100,9 @@ export const APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING: Setting = {
       {
         badge: "不推荐",
         tooltip: {
-          icon: <QuestionFillIcon />,
+          icon: "question-line",
           text: "Lets all domains, including malicious ones, embed your Appsmith apps. ",
-          linkText: "SEE WHY THIS IS RISKY",
+          linkText: "Find out why it's risky",
           link: "https://docs.appsmith.com/getting-started/setup/instance-configuration/frame-ancestors#why-should-i-control-this",
         },
         label: "允许嵌入到任何地方",

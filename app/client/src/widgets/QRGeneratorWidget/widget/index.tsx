@@ -85,7 +85,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           {
             propertyName: "disableLink",
             helpText: "Controls parsing text as Link",
-            label: "Disable Link",
+            label: "Disable link",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -99,7 +99,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "backgroundColor",
-            label: "Cell Background Color",
+            label: "Cell background color",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -132,7 +132,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "truncateButtonColor",
-            label: "Truncate Button Color",
+            label: "Truncate button color",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -171,7 +171,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "fontSize",
-            label: "Text Size",
+            label: "Text size",
             controlType: "DROP_DOWN",
             defaultValue: "1rem",
             options: [
@@ -215,7 +215,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "fontFamily",
-            label: "Font Family",
+            label: "Font family",
             controlType: "DROP_DOWN",
             options: [
               {
@@ -273,11 +273,11 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
             controlType: "BUTTON_GROUP",
             options: [
               {
-                icon: "BOLD_FONT",
+                startIcon: "text-bold",
                 value: "BOLD",
               },
               {
-                icon: "ITALICS_FONT",
+                startIcon: "text-italic",
                 value: "ITALIC",
               },
             ],
@@ -288,19 +288,19 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "textAlign",
-            label: "Text Align",
+            label: "Text align",
             controlType: "ICON_TABS",
             options: [
               {
-                icon: "LEFT_ALIGN",
+                startIcon: "align-left",
                 value: "LEFT",
               },
               {
-                icon: "CENTER_ALIGN",
+                startIcon: "align-center",
                 value: "CENTER",
               },
               {
-                icon: "RIGHT_ALIGN",
+                startIcon: "align-right",
                 value: "RIGHT",
               },
             ],
@@ -380,7 +380,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           {
             propertyName: "disableLink",
             helpText: "Controls parsing text as Link",
-            label: "Disable Link",
+            label: "Disable link",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -399,7 +399,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
         children: [
           {
             propertyName: "fontFamily",
-            label: "Font Family",
+            label: "Font family",
             controlType: "DROP_DOWN",
             options: [
               {
@@ -545,7 +545,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
           },
           {
             propertyName: "truncateButtonColor",
-            label: "Truncate Button Color",
+            label: "Truncate button color",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -572,15 +572,15 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
             controlType: "ICON_TABS",
             options: [
               {
-                icon: "LEFT_ALIGN",
+                startIcon: "align-left",
                 value: "LEFT",
               },
               {
-                icon: "CENTER_ALIGN",
+                startIcon: "align-center",
                 value: "CENTER",
               },
               {
-                icon: "RIGHT_ALIGN",
+                startIcon: "align-right",
                 value: "RIGHT",
               },
             ],
@@ -596,11 +596,11 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
             controlType: "BUTTON_GROUP",
             options: [
               {
-                icon: "BOLD_FONT",
+                icon: "text-bold",
                 value: "BOLD",
               },
               {
-                icon: "ITALICS_FONT",
+                icon: "text-italic",
                 value: "ITALIC",
               },
             ],

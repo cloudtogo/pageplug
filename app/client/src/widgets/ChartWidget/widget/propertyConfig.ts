@@ -184,7 +184,7 @@ export const contentConfig = [
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText: "Series Name",
+            helpText: "Series name",
             propertyName: "seriesName",
             label: "序列名称",
             controlType: "INPUT_TEXT",

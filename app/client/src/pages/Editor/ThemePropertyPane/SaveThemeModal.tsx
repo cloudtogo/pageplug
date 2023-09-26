@@ -2,13 +2,6 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import AnalyticsUtil from "utils/AnalyticsUtil";
-import {
-  Button,
-  Category,
-  DialogComponent as Dialog,
-  Size,
-  TextInput,
-} from "design-system-old";
 import { saveSelectedThemeAction } from "actions/appThemingActions";
 import { getCurrentApplicationId } from "selectors/editorSelectors";
 import { getAppThemes } from "selectors/appThemingSelectors";
@@ -18,6 +11,16 @@ import {
   APLHANUMERIC_HYPHEN_SLASH_SPACE_ERROR,
   UNIQUE_NAME_ERROR,
 } from "@appsmith/constants/messages";
+import {
+  Button,
+  Input,
+  Text,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+} from "design-system";
 
 interface SaveThemeModalProps {
   isOpen: boolean;
@@ -114,50 +117,58 @@ function SaveThemeModal(props: SaveThemeModalProps) {
   };
 
   return (
-    <Dialog
-      canOutsideClickClose
-      isOpen={isOpen}
-      onClose={onClose}
-      title="保存主题"
+    <Modal
+      onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          onClose();
+        }
+      }}
+      open={isOpen}
     >
-      <div id="save-theme-modal">
-        <form data-cy="save-theme-form" noValidate onSubmit={onSubmit}>
-          <div className="pb-6 space-y-3">
-            <p>你可以保存你的自定义主题给其他应用使用</p>
-            <div className="mt-6 space-y-2">
-              <h3 className="text-gray-700">你的主题名称</h3>
-              <TextInput
+      <ModalContent
+        id="save-theme-modal"
+        onInteractOutside={(e) => {
+          e.preventDefault();
+        }}
+        style={{ width: "640px" }}
+      >
+        <ModalHeader>保存主题</ModalHeader>
+        <ModalBody>
+          <div className="flex flex-col gap-2">
+            <Text kind="action-l">你可以保存你的自定义主题给其他应用使用</Text>
+            <form data-testid="save-theme-form" noValidate onSubmit={onSubmit}>
+              <Input
                 autoFocus
-                errorMsg={!inputValidator.isValid ? inputValidator.message : ""}
-                fill
+                errorMessage={
+                  !inputValidator.isValid ? inputValidator.message : undefined
+                }
+                isRequired
+                label="你的主题名称"
                 name="name"
                 onChange={onChangeName}
                 placeholder="我的主题"
+                size="md"
               />
-            </div>
+            </form>
           </div>
-
-          <div className="">
-            <div className="flex items-center space-x-3">
-              <Button
-                category={Category.secondary}
-                onClick={onClose}
-                size={Size.medium}
-                text="取消"
-              />
-              <Button
-                category={Category.primary}
-                disabled={!name}
-                onClick={onSubmit}
-                size={Size.medium}
-                text="保存主题"
-                type="submit"
-              />
-            </div>
+        </ModalBody>
+        <ModalFooter>
+          <div className="flex gap-3">
+            <Button kind="secondary" onClick={onClose} size="md">
+              取消
+            </Button>
+            <Button
+              isDisabled={!name}
+              onClick={onSubmit}
+              size="md"
+              type="submit"
+            >
+              保存主题
+            </Button>
           </div>
-        </form>
-      </div>
-    </Dialog>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 }
 

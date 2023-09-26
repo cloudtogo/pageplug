@@ -1,6 +1,4 @@
 import React, { useCallback } from "react";
-import styled from "styled-components";
-import { Colors } from "constants/Colors";
 import { useDispatch, useSelector } from "react-redux";
 import { createActionRequest } from "actions/pluginActionActions";
 import type { AppState } from "@appsmith/reducers";
@@ -10,36 +8,18 @@ import {
   getCurrentPageId,
 } from "selectors/editorSelectors";
 import type { QueryAction } from "entities/Action";
-import { Classes } from "@blueprintjs/core";
 import history from "utils/history";
 import type { Datasource, QueryTemplate } from "entities/Datasource";
 import { INTEGRATION_TABS } from "constants/routes";
-import { getDatasource } from "selectors/entitiesSelector";
+import { getDatasource, getPlugin } from "selectors/entitiesSelector";
 import { integrationEditorURL } from "RouteBuilder";
-import { EntityClassNames } from "pages/Editor/Explorer/Entity";
-
-const Container = styled.div`
-  border-radius: ${(props) => props.theme.borderRadius};
-  background-color: ${Colors.MINT_GRAY};
-  color: ${Colors.MINT_BLACK};
-  min-width: 160px;
-  padding: 5px;
-`;
-
-const TemplateType = styled.div`
-  color: ${Colors.MINT_BLACK};
-  border-radius: ${(props) => props.theme.borderRadius};
-  padding: 8px;
-  &:hover {
-    cursor: pointer;
-    color: ${Colors.MINT_GREEN};
-    background: #eee;
-  }
-`;
+import { MenuItem } from "design-system";
+import type { Plugin } from "api/PluginApi";
 
 type QueryTemplatesProps = {
   templates: QueryTemplate[];
   datasourceId: string;
+  onSelect: () => void;
 };
 
 export function QueryTemplates(props: QueryTemplatesProps) {
@@ -49,6 +29,9 @@ export function QueryTemplates(props: QueryTemplatesProps) {
   const currentPageId = useSelector(getCurrentPageId);
   const dataSource: Datasource | undefined = useSelector((state: AppState) =>
     getDatasource(state, props.datasourceId),
+  );
+  const plugin: Plugin | undefined = useSelector((state: AppState) =>
+    getPlugin(state, !!dataSource?.pluginId ? dataSource.pluginId : ""),
   );
   const createQueryAction = useCallback(
     (template: QueryTemplate) => {
@@ -74,6 +57,8 @@ export function QueryTemplates(props: QueryTemplatesProps) {
             actionType: "Query",
             from: "explorer-template",
             dataSource: dataSource?.name,
+            datasourceId: props.datasourceId,
+            pluginName: plugin?.name,
           },
           ...queryactionConfiguration,
         }),
@@ -96,19 +81,21 @@ export function QueryTemplates(props: QueryTemplatesProps) {
   );
 
   return (
-    <Container className={EntityClassNames.CONTEXT_MENU_CONTENT}>
+    <>
       {props.templates.map((template) => {
         return (
-          <TemplateType
-            className={Classes.POPOVER_DISMISS}
+          <MenuItem
             key={template.title}
-            onClick={() => createQueryAction(template)}
+            onSelect={() => {
+              createQueryAction(template);
+              props.onSelect();
+            }}
           >
             {template.title}
-          </TemplateType>
+          </MenuItem>
         );
       })}
-    </Container>
+    </>
   );
 }
 

@@ -68,15 +68,15 @@ export default {
       controlType: "BUTTON_GROUP",
       options: [
         {
-          icon: "BOLD_FONT",
+          icon: "text-bold",
           value: "BOLD",
         },
         {
-          icon: "ITALICS_FONT",
+          icon: "text-italic",
           value: "ITALIC",
         },
         {
-          icon: "UNDERLINE",
+          icon: "text-underline",
           value: "UNDERLINE",
         },
       ],
@@ -108,15 +108,15 @@ export default {
       fullWidth: true,
       options: [
         {
-          icon: "LEFT_ALIGN",
+          startIcon: "align-left",
           value: "LEFT",
         },
         {
-          icon: "CENTER_ALIGN",
+          startIcon: "align-center",
           value: "CENTER",
         },
         {
-          icon: "RIGHT_ALIGN",
+          startIcon: "align-right",
           value: "RIGHT",
         },
       ],
@@ -154,15 +154,15 @@ export default {
       fullWidth: true,
       options: [
         {
-          icon: "VERTICAL_TOP",
+          startIcon: "vertical-align-top",
           value: "TOP",
         },
         {
-          icon: "VERTICAL_CENTER",
+          startIcon: "vertical-align-middle",
           value: "CENTER",
         },
         {
-          icon: "VERTICAL_BOTTOM",
+          startIcon: "vertical-align-bottom",
           value: "BOTTOM",
         },
       ],

@@ -402,7 +402,7 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     label: () => "Widget",
     exampleText: "resetWidget('Modal1', true)",
     options: (props: FieldProps) => props.widgetOptionTree,
-    defaultText: "Select Widget",
+    defaultText: "Select widget",
     getter: (value: any) => {
       return enumTypeGetter(value, 0);
     },
