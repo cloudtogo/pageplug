@@ -109,19 +109,11 @@ function* errorCallbackHandler(triggerMeta: TriggerMeta, listenerId?: string) {
         { error: sanitizeGeolocationError(error) },
         listenerId,
       );
-    logActionExecutionError(
-      error.message,
-      triggerMeta.source,
-      triggerMeta.triggerPropertyName,
-    );
+    logActionExecutionError(error.message, true);
   }
 }
 
-export function* getCurrentLocationSaga(
-  action: TGetGeoLocationDescription,
-  _: EventType,
-  triggerMeta: TriggerMeta,
-) {
+export function* getCurrentLocationSaga(action: TGetGeoLocationDescription) {
   const { payload: actionPayload } = action;
   try {
     const location: GeolocationPosition = yield call(
@@ -132,11 +124,7 @@ export function* getCurrentLocationSaga(
     yield put(setUserCurrentGeoLocation(currentLocation));
     return currentLocation;
   } catch (error) {
-    logActionExecutionError(
-      (error as Error).message,
-      triggerMeta.source,
-      triggerMeta.triggerPropertyName,
-    );
+    logActionExecutionError((error as Error).message, true);
     if (error instanceof GeolocationPositionError) {
       const sanitizedError = sanitizeGeolocationError(error);
       throw new GeoLocationError(sanitizedError.message, [sanitizedError]);
@@ -176,20 +164,12 @@ export function* getEchartSaga(
     if (_instance) {
       const res = _instance[funcName](options);
       if (funcName === "getDom") {
-        logActionExecutionError(
-          "postmessage could not be cloned",
-          triggerMeta.source,
-          triggerMeta.triggerPropertyName,
-        );
+        logActionExecutionError("postmessage could not be cloned", true);
       }
       return [res];
     }
   } catch (error) {
-    logActionExecutionError(
-      (error as Error).message,
-      triggerMeta.source,
-      triggerMeta.triggerPropertyName,
-    );
+    logActionExecutionError((error as Error).message, true);
     return [error];
   }
 }
@@ -206,8 +186,7 @@ export function* watchCurrentLocation(
     // at a given point in time, only one watch is active
     logActionExecutionError(
       "A watchLocation is already active. Clear it before before starting a new one",
-      triggerMeta.source,
-      triggerMeta.triggerPropertyName,
+      true,
     );
 
     return;
@@ -233,16 +212,9 @@ export function* watchCurrentLocation(
   );
 }
 
-export function* stopWatchCurrentLocation(
-  eventType: EventType,
-  triggerMeta: TriggerMeta,
-) {
+export function* stopWatchCurrentLocation() {
   if (watchId === undefined) {
-    logActionExecutionError(
-      "No location watch active",
-      triggerMeta.source,
-      triggerMeta.triggerPropertyName,
-    );
+    logActionExecutionError("No location watch active", true);
     return;
   }
   navigator.geolocation.clearWatch(watchId);

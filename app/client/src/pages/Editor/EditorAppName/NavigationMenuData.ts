@@ -2,7 +2,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import type { noop } from "lodash";
 
-import { Toaster, Variant } from "design-system-old";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { APPLICATIONS_URL } from "constants/routes";
 
@@ -22,6 +21,7 @@ import { getCurrentApplicationId } from "selectors/editorSelectors";
 import { redoAction, undoAction } from "actions/pageActions";
 import { redoShortCut, undoShortCut } from "utils/helpers";
 import { openAppSettingsPaneAction } from "actions/appSettingsPaneActions";
+import { toast } from "design-system";
 import type { ThemeProp } from "widgets/constants";
 
 type NavigationMenuDataProps = ThemeProp & {
@@ -61,9 +61,8 @@ export const GetNavigationMenuData = ({
       });
       history.push(APPLICATIONS_URL);
     } else {
-      Toaster.show({
-        text: "删除应用时发生了错误",
-        variant: Variant.danger,
+      toast.show("删除应用时发生了错误", {
+        kind: "error",
       });
     }
   };
@@ -120,14 +119,14 @@ export const GetNavigationMenuData = ({
       children: [
         {
           text: "社区",
-          onClick: () => openExternalLink("https://appsmith-fans.cn/"),
+          onClick: () => openExternalLink("https://community.appsmith.com/"),
           type: MenuTypes.MENU,
           isVisible: true,
           isOpensNewWindow: true,
         },
         {
           text: "文档",
-          onClick: () => openExternalLink("https://docs.appsmith.com/"),
+          onClick: () => openExternalLink("https://docs.pageplug.cn"),
           type: MenuTypes.MENU,
           isVisible: true,
           isOpensNewWindow: true,

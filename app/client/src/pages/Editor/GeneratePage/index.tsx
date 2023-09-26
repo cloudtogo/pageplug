@@ -1,52 +1,28 @@
 import React from "react";
 import styled from "styled-components";
 import PageContent from "./components/PageContent";
-import { Colors } from "constants/Colors";
-import { Icon } from "@blueprintjs/core";
-import { getTypographyByKey, Text, TextType } from "design-system-old";
+import { Text } from "design-system";
+import { BackButton } from "components/utils/helperComponents";
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   height: 100%;
+  padding: var(--ads-v2-spaces-7);
 `;
 
 const HeadingContainer = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-top: 50px;
-`;
-
-const Heading = styled.h1`
-  font-size: 40px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 48px;
-  letter-spacing: 0px;
-  text-align: center;
-  margin: 0;
-  font-family: ${(props) => props.theme.fonts.text};
-`;
-
-const SubHeading = styled.p`
-  ${getTypographyByKey("p1")};
-  margin: 20px 0px;
-  color: ${Colors.BLACK};
-  text-align: center;
-`;
-
-const Back = styled.span`
-  height: 30px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding-left: 16px;
+  padding-top: var(--ads-v2-spaces-4);
 `;
 
 const Header = styled.div`
   width: 100%;
+
+  > a {
+    margin: 0;
+  }
 `;
 
 function GeneratePage() {
@@ -57,23 +33,15 @@ function GeneratePage() {
     <Container>
       {isGenerateFormPage ? (
         <Header>
-          <Back onClick={() => history.back()}>
-            <Icon icon="chevron-left" iconSize={16} />
-            <Text
-              style={{ color: Colors.DIESEL, lineHeight: "14px" }}
-              type={TextType.P1}
-            >
-              返回
-            </Text>
-          </Back>
+          <BackButton />
         </Header>
       ) : null}
 
       <HeadingContainer>
-        <Heading> {heading}</Heading>
+        <Text kind="heading-l">{heading}</Text>
       </HeadingContainer>
       {isGenerateFormPage ? (
-        <SubHeading>自动为你的数据创建增删改查页面</SubHeading>
+        <Text renderAs="p">自动为你的数据创建增删改查页面</Text>
       ) : null}
 
       <PageContent />

@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Size } from "design-system-old";
+import { Button } from "design-system";
 
 import Page from "./Page";
 import { createMessage } from "@appsmith/constants/messages";
@@ -17,15 +17,13 @@ function ServerUnavailable() {
     <Page
       cta={
         <Button
-          category="primary"
           className="button-position"
-          fill="true"
+          kind="primary"
           onClick={() => window.location.reload()}
-          size={Size.large}
-          tag="button"
-          text={"重试"}
-          variant="info"
-        />
+          size="md"
+        >
+          重试
+        </Button>
       }
       errorCode={createMessage(PAGE_SERVER_UNAVAILABLE_ERROR_CODE)}
       errorMessages={PAGE_SERVER_UNAVAILABLE_ERROR_MESSAGES(!!cloudHosting)}

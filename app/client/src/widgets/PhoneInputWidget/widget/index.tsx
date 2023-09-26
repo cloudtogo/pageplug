@@ -108,6 +108,7 @@ class PhoneInputWidget extends BaseInputWidget<
               controlType: "DROP_DOWN",
               searchPlaceholderText: "通过国家名称或编号搜索",
               options: ISDCodeDropdownOptions,
+              virtual: true,
               isJSConvertible: true,
               isBindProperty: true,
               isTriggerProperty: false,

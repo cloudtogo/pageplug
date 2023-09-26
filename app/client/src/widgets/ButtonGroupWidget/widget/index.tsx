@@ -201,14 +201,14 @@ class ButtonGroupWidget extends BaseWidget<
                                 label: "位置",
                                 helpText: "设置菜单项图标对齐方向",
                                 controlType: "ICON_TABS",
-                                fullWidth: true,
+                                fullWidth: false,
                                 options: [
                                   {
-                                    icon: "VERTICAL_LEFT",
+                                    startIcon: "skip-left-line",
                                     value: "left",
                                   },
                                   {
-                                    icon: "VERTICAL_RIGHT",
+                                    startIcon: "skip-right-line",
                                     value: "right",
                                   },
                                 ],
@@ -339,14 +339,14 @@ class ButtonGroupWidget extends BaseWidget<
                       label: "位置",
                       helpText: "设置按钮图标的对齐位置",
                       controlType: "ICON_TABS",
-                      fullWidth: true,
+                      fullWidth: false,
                       options: [
                         {
-                          icon: "VERTICAL_LEFT",
+                          startIcon: "skip-left-line",
                           value: "left",
                         },
                         {
-                          icon: "VERTICAL_RIGHT",
+                          startIcon: "skip-right-line",
                           value: "right",
                         },
                       ],

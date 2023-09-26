@@ -43,10 +43,10 @@ import AppsmithConsole from "utils/AppsmithConsole";
 import { isMobileLayout } from "selectors/applicationSelectors";
 
 import WidgetFactory from "utils/WidgetFactory";
-import { Toaster } from "design-system-old";
 import type { WidgetProps } from "widgets/BaseWidget";
 import { selectWidgetInitAction } from "actions/widgetSelectionActions";
 import { SelectionRequestType } from "./WidgetSelectUtils";
+import { toast } from "design-system";
 import { getIsAutoLayout } from "selectors/editorSelectors";
 import { recalculateAutoLayoutColumnsAndSave } from "./AutoLayoutUpdateSagas";
 import {
@@ -242,7 +242,7 @@ export function* closeModalSaga(
 
 export function* resizeModalSaga(resizeAction: ReduxAction<ModalWidgetResize>) {
   try {
-    Toaster.clear();
+    toast.dismiss();
     const start = performance.now();
     const { canvasWidgetId, height, widgetId, width } = resizeAction.payload;
 

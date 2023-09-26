@@ -231,13 +231,14 @@ class DropdownWidget extends BaseWidget<DropdownWidgetProps, WidgetState> {
             propertyName: "labelAlignment",
             label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
+            fullWidth: false,
             options: [
               {
-                icon: "LEFT_ALIGN",
+                startIcon: "align-left",
                 value: Alignment.LEFT,
               },
               {
-                icon: "RIGHT_ALIGN",
+                startIcon: "align-right",
                 value: Alignment.RIGHT,
               },
             ],
@@ -329,11 +330,11 @@ class DropdownWidget extends BaseWidget<DropdownWidgetProps, WidgetState> {
             controlType: "BUTTON_GROUP",
             options: [
               {
-                icon: "BOLD_FONT",
+                startIcon: "text-bold",
                 value: "BOLD",
               },
               {
-                icon: "ITALICS_FONT",
+                startIcon: "text-italic",
                 value: "ITALIC",
               },
             ],

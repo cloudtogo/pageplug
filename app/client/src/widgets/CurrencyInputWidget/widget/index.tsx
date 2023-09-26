@@ -199,6 +199,7 @@ class CurrencyInputWidget extends BaseInputWidget<
               controlType: "DROP_DOWN",
               searchPlaceholderText: "通过名称或者编号搜索",
               options: CurrencyDropdownOptions,
+              virtual: true,
               isJSConvertible: true,
               isBindProperty: true,
               isTriggerProperty: false,
@@ -219,7 +220,7 @@ class CurrencyInputWidget extends BaseInputWidget<
             {
               helpText: "货币精确到小数点后几位",
               propertyName: "decimals",
-              label: "Decimals Allowed",
+              label: "Decimals allowed",
               controlType: "DROP_DOWN",
               options: [
                 {

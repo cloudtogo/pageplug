@@ -1,13 +1,10 @@
-import { Toaster, ToastTypeOptions, Variant } from "design-system-old";
 import AppsmithConsole from "utils/AppsmithConsole";
-import {
-  ActionValidationError,
-  TriggerFailureError,
-} from "sagas/ActionExecution/errorUtils";
+import { ActionValidationError } from "sagas/ActionExecution/errorUtils";
 import { getType, Types } from "utils/TypeHelpers";
 import { select } from "redux-saga/effects";
 import { isMobileLayout } from "selectors/applicationSelectors";
 import Taro from "@tarojs/taro";
+import { toast } from "design-system";
 import type { TShowAlertDescription } from "workers/Evaluation/fns/showAlert";
 
 export default function* showAlertSaga(action: TShowAlertDescription) {
@@ -20,7 +17,6 @@ export default function* showAlertSaga(action: TShowAlertDescription) {
       getType(payload.message),
     );
   }
-
   const isMobile: boolean = yield select(isMobileLayout);
   if (isMobile) {
     let iconStr: any = "none";
@@ -36,32 +32,23 @@ export default function* showAlertSaga(action: TShowAlertDescription) {
     });
     return;
   }
-
-  let variant;
+  let kind: "success" | "info" | "warning" | "error" | undefined = undefined;
   switch (payload.style) {
     case "info":
-      variant = Variant.info;
+      kind = "info";
       break;
     case "success":
-      variant = Variant.success;
+      kind = "success";
       break;
     case "warning":
-      variant = Variant.warning;
+      kind = "warning";
       break;
     case "error":
-      variant = Variant.danger;
+      kind = "error";
       break;
   }
-  if (payload.style && !variant) {
-    throw new TriggerFailureError(
-      `Toast type needs to be a one of ${Object.values(ToastTypeOptions).join(
-        ", ",
-      )}`,
-    );
-  }
-  Toaster.show({
-    text: payload.message,
-    variant: variant,
+  toast.show(payload.message, {
+    kind: kind,
   });
   AppsmithConsole.info({
     text: payload.style

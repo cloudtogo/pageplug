@@ -110,7 +110,6 @@ import PerformanceTracker, {
   PerformanceTransactionName,
 } from "utils/PerformanceTracker";
 import log from "loglevel";
-import { Toaster, Variant } from "design-system-old";
 import { migrateIncorrectDynamicBindingPathLists } from "utils/migrations/IncorrectDynamicBindingPathLists";
 import * as Sentry from "@sentry/react";
 import { ERROR_CODES } from "@appsmith/constants/ApiConstants";
@@ -140,8 +139,12 @@ import { getUsedActionNames } from "selectors/actionSelectors";
 import { getPageList } from "selectors/entitiesSelector";
 import { setPreviewModeAction } from "actions/editorActions";
 import { SelectionRequestType } from "sagas/WidgetSelectUtils";
+import { toast } from "design-system";
 import { getCurrentGitBranch } from "selectors/gitSyncSelectors";
 import type { MainCanvasReduxState } from "reducers/uiReducers/mainCanvasReducer";
+import { UserCancelledActionExecutionError } from "./ActionExecution/errorUtils";
+import { getCurrentWorkspaceId } from "@appsmith/selectors/workspaceSelectors";
+import { getInstanceId } from "@appsmith/selectors/tenantSelectors";
 
 const WidgetTypes = WidgetFactory.widgetTypes;
 
@@ -532,9 +535,8 @@ function* savePageSaga(action: ReduxAction<{ isRetry?: boolean }>) {
       // Show toast messages from the server
       if (messages && messages.length && !guidedTourEnabled) {
         savePageResponse.data.messages.forEach((message) => {
-          Toaster.show({
-            text: message,
-            type: Variant.info,
+          toast.show(message, {
+            kind: "info",
           });
         });
       }
@@ -570,6 +572,10 @@ function* savePageSaga(action: ReduxAction<{ isRetry?: boolean }>) {
         failed: true,
       },
     );
+
+    if (error instanceof UserCancelledActionExecutionError) {
+      return;
+    }
 
     yield put({
       type: ReduxActionErrorTypes.SAVE_PAGE_ERROR,
@@ -703,8 +709,18 @@ export function* createNewPageFromEntity(
     const { applicationId, blockNavigation, name } =
       createPageAction?.payload || {};
 
+    const workspaceId: string = yield select(getCurrentWorkspaceId);
+    const instanceId: string | undefined = yield select(getInstanceId);
+
     yield put(
-      createPage(applicationId, name, defaultPageLayouts, blockNavigation),
+      createPage(
+        applicationId,
+        name,
+        defaultPageLayouts,
+        workspaceId,
+        blockNavigation,
+        instanceId,
+      ),
     );
   } catch (error) {
     yield put({
@@ -1261,9 +1277,8 @@ export function* generateTemplatePageSaga(
         }),
       );
       // TODO : Add it to onSuccessCallback
-      Toaster.show({
-        text: "页面创建成功！",
-        variant: Variant.success,
+      toast.show("页面创建成功！", {
+        kind: "success",
       });
 
       yield put(

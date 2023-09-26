@@ -37,19 +37,27 @@ export class LightModeTheme implements ColorModeTheme {
 
   public getColors = () => {
     return {
-      bg: this.bg,
-      bgAccent: this.bgAccent,
-      bgAccentHover: this.bgAccentHover,
-      bgAccentActive: this.bgAccentActive,
-      bgAccentSubtleHover: this.bgAccentSubtleHover,
-      bgAccentSubtleActive: this.bgAccentSubtleActive,
-      fg: this.fg,
-      fgAccent: this.fgAccent,
-      fgOnAccent: this.fgOnAccent,
-      bdAccent: this.bdAccent,
-      bdNeutral: this.bdNeutral,
-      bdNeutralHover: this.bdNeutralHover,
-      bdFocus: this.bdFocus,
+      // bg
+      bg: this.bg.toString({ format: "hex" }),
+      bgAccent: this.bgAccent.toString({ format: "hex" }),
+      bgAccentHover: this.bgAccentHover.toString({ format: "hex" }),
+      bgAccentActive: this.bgAccentActive.toString({ format: "hex" }),
+      bgAccentSubtleHover: this.bgAccentSubtleHover.toString({ format: "hex" }),
+      bgAccentSubtleActive: this.bgAccentSubtleActive.toString({
+        format: "hex",
+      }),
+      bgAssistive: this.bgAssistive.toString(),
+      // fg
+      fg: this.fg.toString({ format: "hex" }),
+      fgAccent: this.fgAccent.toString({ format: "hex" }),
+      fgOnAccent: this.fgOnAccent.toString({ format: "hex" }),
+      fgNegative: this.fgNegative,
+      fgOnAssistive: this.fgOnAssistive.toString({ format: "hex" }),
+      // bd
+      bdAccent: this.bdAccent.toString({ format: "hex" }),
+      bdNeutral: this.bdNeutral.toString({ format: "hex" }),
+      bdNeutralHover: this.bdNeutralHover.toString({ format: "hex" }),
+      bdFocus: this.bdFocus.toString({ format: "hex" }),
       bdNegative: this.bdNegative,
       bdNegativeHover: this.bdNegativeHover,
     };
@@ -203,74 +211,79 @@ export class LightModeTheme implements ColorModeTheme {
     return lighten(this.bgAccentSubtle, 0.99);
   }
 
+  private get bgAssistive() {
+    return this.fg.clone();
+  }
+
   /*
    * Foreground colors
    */
   private get fg() {
     if (this.seedIsAchromatic) {
-      return setLch(this.seedColor, {
-        l: 0.12,
-        c: 0,
-      });
+      color.oklch.l = 0.12;
+      color.oklch.c = 0;
+      return color;
     }
 
-    return setLch(this.seedColor, {
-      l: 0.12,
-      c: 0.032,
-    });
+    color.oklch.l = 0.12;
+    color.oklch.c = 0.032;
+    return color;
   }
 
   private get fgAccent() {
-    if (contrast(this.seedColor, this.bg) >= -60) {
+    const color = this.seedColor.clone();
+
+    if (this.bg.contrastAPCA(this.seedColor) <= 60) {
       if (this.seedIsAchromatic) {
-        return setLch(this.seedColor, {
-          l: 0.25,
-          c: 0,
-        });
+        color.oklch.l = 0.45;
+        color.oklch.c = 0;
+        return color;
       }
 
-      return setLch(this.seedColor, {
-        l: 0.25,
-        c: 0.064,
-      });
+      color.oklch.l = 0.45;
+      color.oklch.c = 0.164;
+      return color;
     }
 
     return this.seedColor;
   }
 
   private get fgOnAccent() {
-    if (contrast(this.seedColor, this.bg) <= -60) {
-      if (this.seedIsAchromatic) {
-        return setLch(this.seedColor, {
-          l: 0.985,
-          c: 0,
-        });
-      }
-
-      return setLch(this.seedColor, {
-        l: 0.985,
-        c: 0.016,
-      });
-    }
+    const tint = this.seedColor.clone();
+    const shade = this.seedColor.clone();
 
     if (this.seedIsAchromatic) {
-      return setLch(this.seedColor, {
-        l: 0.15,
-        c: 0,
-      });
+      tint.oklch.c = 0;
+      shade.oklch.c = 0;
     }
 
-    return setLch(this.seedColor, {
-      l: 0.15,
-      c: 0.064,
-    });
+    tint.oklch.l = 0.96;
+    shade.oklch.l = 0.23;
+
+    if (
+      -this.bgAccent.contrastAPCA(tint) >= this.bgAccent.contrastAPCA(shade)
+    ) {
+      return tint;
+    }
+
+    return shade;
+  }
+
+  private get fgNegative() {
+    return "#d91921";
+  }
+
+  private get fgOnAssistive() {
+    return this.bg.clone();
   }
 
   /*
    * Border colors
    */
   private get bdAccent() {
-    if (contrast(this.seedColor, this.bg) >= -25) {
+    const color = this.seedColor.clone();
+
+    if (this.bg.contrastAPCA(this.seedColor) <= 25) {
       if (this.seedIsAchromatic) {
         return setLch(this.seedColor, {
           l: 0.15,

@@ -29,6 +29,8 @@ import EmbedSettings from "./EmbedSettings";
 import NavigationSettings from "./NavigationSettings";
 import { updateAppSettingsPaneSelectedTabAction } from "actions/appSettingsPaneActions";
 import AnalyticsUtil from "utils/AnalyticsUtil";
+import { Divider } from "design-system";
+import { ImportAppSettings } from "./ImportAppSettings";
 
 export enum AppSettingsTabs {
   General,
@@ -53,6 +55,19 @@ const SectionContent = styled.div`
   .underline {
     color: ${(props) => props.theme.colors.paneTextUnderline};
   }
+`;
+
+const SectionTitle = styled.p`
+  padding-top: 0.75rem;
+  padding-bottom: 0.5rem;
+  font-weight: var(--ads-v2-font-weight-bold);
+  color: var(--ads-v2-color-fg-emphasis);
+`;
+
+const PageSectionTitle = styled.p`
+  padding: 10px 1rem 10px 1rem;
+  font-weight: var(--ads-v2-font-weight-bold);
+  color: var(--ads-v2-color-fg-emphasis);
 `;
 
 const ThemeContentWrapper = styled.div`
@@ -125,7 +140,7 @@ function AppSettings() {
     },
     {
       id: "t--theme-settings-header",
-      icon: "edit-line",
+      icon: "pencil-line",
       isSelected: selectedTab.type === AppSettingsTabs.Theme,
       name: createMessage(THEME_SETTINGS_SECTION_HEADER),
       onClick: () => {
@@ -154,17 +169,11 @@ function AppSettings() {
   return (
     <Wrapper className="flex flex-row">
       <div className="w-1/2">
-        {SectionHeadersConfig.filter((s, i) => (isMobile ? i !== 1 : true)).map(
-          (config) => (
-            <SectionHeader key={config.name} {...config} />
-          ),
-        )}
-        <div
-          className={`border-t-[1px] border-[color:var(--appsmith-color-black-300)]`}
-        />
-        <div className="font-medium px-4 py-[10px]">
-          {PAGE_SETTINGS_SECTION_HEADER()}
-        </div>
+        {SectionHeadersConfig.map((config) => (
+          <SectionHeader key={config.name} {...config} />
+        ))}
+        <Divider />
+        <PageSectionTitle>{PAGE_SETTINGS_SECTION_HEADER()}</PageSectionTitle>
         <DraggablePageList
           onPageSelect={(pageId: string) =>
             setSelectedTab({
@@ -182,9 +191,9 @@ function AppSettings() {
             case AppSettingsTabs.General:
               return (
                 <div className="px-4">
-                  <div className="pt-3 pb-2 font-medium text-[color:var(--appsmith-color-black-800)]">
+                  <SectionTitle>
                     {GENERAL_SETTINGS_SECTION_CONTENT_HEADER()}
-                  </div>
+                  </SectionTitle>
                   <GeneralSettings />
                 </div>
               );
@@ -192,9 +201,9 @@ function AppSettings() {
               return (
                 <>
                   <div className="px-4">
-                    <div className="pt-3 pb-2 font-medium text-[color:var(--appsmith-color-black-800)]">
+                    <SectionTitle>
                       {THEME_SETTINGS_SECTION_CONTENT_HEADER()}
-                    </div>
+                    </SectionTitle>
                   </div>
                   <ThemeContentWrapper>
                     <ThemePropertyPane />
@@ -205,11 +214,11 @@ function AppSettings() {
               return (
                 selectedTab.page && (
                   <div className="px-4">
-                    <div className="pt-3 pb-2 font-medium text-[color:var(--appsmith-color-black-800)] text-ellipsis whitespace-nowrap overflow-hidden">
+                    <SectionTitle>
                       {selectedTab.page.pageName +
                         " " +
                         PAGE_SETTINGS_SECTION_CONTENT_HEADER()}
-                    </div>
+                    </SectionTitle>
                     <PageSettings page={selectedTab.page} />
                   </div>
                 )

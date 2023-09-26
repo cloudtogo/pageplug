@@ -2,9 +2,9 @@ import * as Sentry from "@sentry/react";
 
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { PopoverPosition } from "@blueprintjs/core";
 import { isMobileLayout } from "selectors/applicationSelectors";
-import { Button, Category, Size, TooltipComponent } from "design-system-old";
+import { Button, Tooltip } from "design-system";
+
 import { openAppSettingsPaneAction } from "actions/appSettingsPaneActions";
 import ConversionButton from "../CanvasLayoutConversion/ConversionButton";
 import { MainContainerLayoutControl } from "../MainContainerLayoutControl";
@@ -13,10 +13,12 @@ import {
   isAutoLayoutEnabled,
 } from "selectors/editorSelectors";
 import styled from "styled-components";
-import { Colors } from "constants/Colors";
 
 const Title = styled.p`
-  color: ${Colors.GRAY_800};
+  color: var(--ads-v2-color-fg);
+`;
+const MainHeading = styled.h3`
+  color: var(--ads-v2-color-fg-emphasis);
 `;
 export function CanvasPropertyPane() {
   const dispatch = useDispatch();
@@ -30,7 +32,9 @@ export function CanvasPropertyPane() {
   const isAutoLayout = useSelector(getIsAutoLayout);
   return (
     <div className="relative ">
-      <h3 className="px-4 py-3 text-sm font-medium uppercase">全局配置</h3>
+      <MainHeading className="px-4 py-3 text-sm font-medium">
+        全局配置
+      </MainHeading>
 
       <div className="mt-3 space-y-6">
         <div className="px-4 space-y-2">
@@ -41,8 +45,8 @@ export function CanvasPropertyPane() {
               <MainContainerLayoutControl />
             </>
           )}
-          {/* {isAutoLayoutFeatureEnabled && <ConversionButton />} */}
-          <TooltipComponent
+          {isAutoLayoutFeatureEnabled && <ConversionButton />}
+          <Tooltip
             content={
               isMobile ? null : (
                 <>
@@ -51,17 +55,18 @@ export function CanvasPropertyPane() {
                 </>
               )
             }
-            position={PopoverPosition.BOTTOM}
+            placement="bottom"
           >
             <Button
-              category={Category.secondary}
-              fill
-              id="t--app-settings-cta"
+              UNSAFE_width="100%"
+              className="t--app-settings-cta"
+              kind="secondary"
               onClick={openAppSettingsPane}
-              size={Size.medium}
-              text="应用设置"
-            />
-          </TooltipComponent>
+              size="md"
+            >
+              应用设置
+            </Button>
+          </Tooltip>
         </div>
       </div>
     </div>
