@@ -1,13 +1,12 @@
 import React from "react";
 import type { ControlData, ControlProps } from "./BaseControl";
 import BaseControl from "./BaseControl";
-import moment from "moment-timezone";
+import moment from "moment";
 import { TimePrecision } from "@blueprintjs/datetime";
 import type { WidgetProps } from "widgets/BaseWidget";
 import { ISO_DATE_FORMAT } from "constants/WidgetValidation";
 import { DatePicker } from "design-system";
 import { isDynamicValue } from "utils/DynamicBindingUtils";
-import MomentLocaleUtils from "react-day-picker/moment";
 
 class DatePickerControl extends BaseControl<
   DatePickerControlProps,

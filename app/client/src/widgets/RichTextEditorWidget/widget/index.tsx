@@ -16,7 +16,7 @@ import {
 import type { WidgetProps, WidgetState } from "../../BaseWidget";
 import BaseWidget from "../../BaseWidget";
 
-import type { Stylesheet } from "entities/AppTheming";
+import type { SetterConfig, Stylesheet } from "entities/AppTheming";
 import type { AutocompletionDefinitions } from "widgets/constants";
 
 export enum RTEFormats {
@@ -50,6 +50,7 @@ class RichTextEditorWidget extends BaseWidget<
             helpText: "内容输入方式，支持HTML和Markdown",
             label: "输入格式",
             controlType: "ICON_TABS",
+            defaultValue: "html",
             fullWidth: true,
             options: [
               {
@@ -393,6 +394,25 @@ class RichTextEditorWidget extends BaseWidget<
       },
     });
   };
+
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {
+        setVisibility: {
+          path: "isVisible",
+          type: "boolean",
+        },
+        setDisabled: {
+          path: "isDisabled",
+          type: "boolean",
+        },
+        setRequired: {
+          path: "isRequired",
+          type: "boolean",
+        },
+      },
+    };
+  }
 
   getPageView() {
     let value = this.props.text ?? "";

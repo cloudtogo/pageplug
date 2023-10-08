@@ -1,7 +1,7 @@
 import type { Datasource } from "entities/Datasource";
 import { isStoredDatasource, PluginType } from "entities/Action";
 import React, { memo, useCallback, useEffect, useState } from "react";
-import { isNil } from "lodash";
+import { debounce, isEmpty } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import CollapseComponent from "components/utils/CollapseComponent";
 import {
@@ -39,12 +39,20 @@ import {
 } from "selectors/editorSelectors";
 import {
   hasCreateDatasourceActionPermission,
+  hasCreatePagePermission,
   hasDeleteDatasourcePermission,
   hasManageDatasourcePermission,
 } from "@appsmith/utils/permissionHelpers";
 import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
 import { MenuWrapper, StyledMenu } from "components/utils/formComponents";
 import { DatasourceEditEntryPoints } from "constants/Datasource";
+import {
+  isEnvironmentConfigured,
+  getCurrentEnvironment,
+  doesAnyDsConfigExist,
+  DB_NOT_SUPPORTED,
+} from "@appsmith/utils/Environments";
+import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
 
 const Wrapper = styled.div`
   padding: 15px;
@@ -138,8 +146,7 @@ function DatasourceCard(props: DatasourceCardProps) {
     getGenerateCRUDEnabledPluginMap,
   );
   const { datasource, plugin } = props;
-  const supportTemplateGeneration =
-    !!generateCRUDSupportedPlugin[datasource.pluginId];
+  const envSupportedDs = !DB_NOT_SUPPORTED.includes(plugin.type);
 
   const pageId = useSelector(getCurrentPageId);
 
@@ -156,6 +163,11 @@ function DatasourceCard(props: DatasourceCardProps) {
   const datasourcePermissions = datasource?.userPermissions || [];
 
   const pagePermissions = useSelector(getPagePermissions);
+
+  const userAppPermissions = useSelector(
+    (state: AppState) => getCurrentApplication(state)?.userPermissions ?? [],
+  );
+  const canCreatePages = hasCreatePagePermission(userAppPermissions);
 
   const canCreateDatasourceActions = hasCreateDatasourceActionPermission([
     ...datasourcePermissions,
@@ -174,6 +186,12 @@ function DatasourceCard(props: DatasourceCardProps) {
 
   const isDeletingDatasource = !!datasource.isDeleting;
 
+  const onCloseMenu = debounce(() => setConfirmDelete(false), 20);
+
+  const supportTemplateGeneration =
+    !!generateCRUDSupportedPlugin[datasource.pluginId];
+  const canGeneratePage = canCreateDatasourceActions && canCreatePages;
+
   useEffect(() => {
     if (confirmDelete && !isDeletingDatasource) {
       setConfirmDelete(false);
@@ -183,6 +201,8 @@ function DatasourceCard(props: DatasourceCardProps) {
   const currentFormConfig: Array<any> =
     datasourceFormConfigs[datasource?.pluginId ?? ""];
   const QUERY = queriesWithThisDatasource > 1 ? "查询" : "查询";
+
+  const currentEnv = getCurrentEnvironment();
 
   const editDatasource = useCallback(() => {
     AnalyticsUtil.logEvent("DATASOURCE_CARD_EDIT_ACTION");
@@ -220,7 +240,7 @@ function DatasourceCard(props: DatasourceCardProps) {
   }, [datasource.id, plugin]);
 
   const routeToGeneratePage = () => {
-    if (!supportTemplateGeneration) {
+    if (!supportTemplateGeneration || !canGeneratePage) {
       // disable button when it doesn't support page generation
       return;
     }
@@ -242,6 +262,19 @@ function DatasourceCard(props: DatasourceCardProps) {
     AnalyticsUtil.logEvent("DATASOURCE_CARD_DELETE_ACTION");
     dispatch(deleteDatasource({ id: datasource.id }));
   };
+  const isDSAuthorizedForQueryCreation = isDatasourceAuthorizedForQueryCreation(
+    datasource,
+    plugin,
+  );
+
+  const showReconnectButton = !(
+    isDSAuthorizedForQueryCreation &&
+    (envSupportedDs ? isEnvironmentConfigured(datasource, currentEnv) : true)
+  );
+
+  const showCreateNewActionButton = envSupportedDs
+    ? doesAnyDsConfigExist(datasource, currentEnv)
+    : true;
 
   return (
     <Wrapper
@@ -274,36 +307,39 @@ function DatasourceCard(props: DatasourceCardProps) {
             </Queries>
           </div>
           <ButtonsWrapper className="action-wrapper">
-            {(!datasource.isConfigured || supportTemplateGeneration) &&
-              isDatasourceAuthorizedForQueryCreation(datasource, plugin) && (
-                <Button
-                  className={
-                    datasource.isConfigured
-                      ? "t--generate-template"
-                      : "t--reconnect-btn"
-                  }
-                  kind="secondary"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    datasource.isConfigured
-                      ? routeToGeneratePage()
-                      : editDatasource();
-                  }}
-                  size="md"
-                >
-                  {datasource.isConfigured
-                    ? createMessage(GENERATE_NEW_PAGE_BUTTON_TEXT)
-                    : createMessage(RECONNECT_BUTTON_TEXT)}
-                </Button>
-              )}
-            {datasource.isConfigured && (
+            {supportTemplateGeneration && !showReconnectButton && (
+              <Button
+                className={"t--generate-template"}
+                isDisabled={!canGeneratePage}
+                kind="secondary"
+                onClick={(e: any) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  routeToGeneratePage();
+                }}
+                size="md"
+              >
+                {createMessage(GENERATE_NEW_PAGE_BUTTON_TEXT)}
+              </Button>
+            )}
+            {showReconnectButton && (
+              <Button
+                className={"t--reconnect-btn"}
+                kind="secondary"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  editDatasource();
+                }}
+                size="md"
+              >
+                {createMessage(RECONNECT_BUTTON_TEXT)}
+              </Button>
+            )}
+            {showCreateNewActionButton && (
               <NewActionButton
                 datasource={datasource}
-                disabled={
-                  !canCreateDatasourceActions ||
-                  !isDatasourceAuthorizedForQueryCreation(datasource, plugin)
-                }
+                disabled={!canCreateDatasourceActions || showReconnectButton}
                 eventFrom="active-datasources"
                 pluginType={plugin.type}
               />
@@ -365,7 +401,7 @@ function DatasourceCard(props: DatasourceCardProps) {
           </ButtonsWrapper>
         </DatasourceCardHeader>
       </DatasourceCardMainBody>
-      {!isNil(currentFormConfig) && (
+      {!isEmpty(currentFormConfig) && (
         <CollapseComponentWrapper
           onClick={(e) => {
             e.stopPropagation();
@@ -380,6 +416,7 @@ function DatasourceCard(props: DatasourceCardProps) {
               <RenderDatasourceInformation
                 config={currentFormConfig[0]}
                 datasource={datasource}
+                showOnlyCurrentEnv
               />
             </DatasourceInfo>
           </CollapseComponent>

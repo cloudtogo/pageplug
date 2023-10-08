@@ -18,9 +18,9 @@ RUN sed -i s@/ports.ubuntu.com/@/mirrors.ustc.edu.cn/@g /etc/apt/sources.list
 RUN apt-get update \
   && apt-get upgrade --yes \
   && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends --yes \
-  supervisor curl cron certbot nginx gnupg wget netcat openssh-client \
-  software-properties-common gettext \
-  python3-pip python-setuptools git ca-certificates-java \
+    supervisor curl cron nfs-common certbot nginx gnupg wget netcat openssh-client \
+    software-properties-common gettext \
+    python3-pip python3-requests python-setuptools git ca-certificates-java \
   && wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add - \
   && echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list \
   && apt-get update && apt-get install --no-install-recommends --yes temurin-17-jdk \
@@ -30,11 +30,11 @@ RUN apt-get update \
 # Install MongoDB v5.0.14, Redis, NodeJS - Service Layer, PostgreSQL v13
 RUN curl --silent --show-error --location https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add - \
   && echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-5.0.list \
-  && curl --silent --show-error --location https://deb.nodesource.com/setup_16.x | bash - \
+  && curl --silent --show-error --location https://deb.nodesource.com/setup_18.x | bash - \
   && echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list \
   && curl --silent --show-error --location https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
   && apt update \
-  && apt-get install --no-install-recommends --yes mongodb-org=5.0.14 nodejs redis build-essential postgresql-13 \
+  && apt-get install --no-install-recommends --yes mongodb-org nodejs redis build-essential postgresql-13 \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -56,6 +56,10 @@ VOLUME [ "/appsmith-stacks" ]
 # Add backend server - Application Layer
 ARG JAR_FILE=./app/server/dist/server-*.jar
 ARG PLUGIN_JARS=./app/server/dist/plugins/*.jar
+
+ARG APPSMITH_CLOUD_SERVICES_BASE_URL
+ENV APPSMITH_CLOUD_SERVICES_BASE_URL=${APPSMITH_CLOUD_SERVICES_BASE_URL}
+
 ARG APPSMITH_SEGMENT_CE_KEY
 ENV APPSMITH_SEGMENT_CE_KEY=${APPSMITH_SEGMENT_CE_KEY}
 #Create the plugins directory
@@ -81,11 +85,11 @@ COPY ./deploy/docker/templates/nginx/* \
   templates/
 
 # Add bootstrapfile
-COPY ./deploy/docker/entrypoint.sh ./deploy/docker/scripts/* ./
+COPY ./deploy/docker/entrypoint.sh ./deploy/docker/scripts/* info.*json ./
 
 # Add util tools
 COPY ./deploy/docker/utils ./utils
-RUN cd ./utils && npm install && npm install -g .
+RUN cd ./utils && npm install --only=prod && npm install --only=prod -g .
 
 # Add process config to be run by supervisord
 COPY ./deploy/docker/templates/supervisord.conf /etc/supervisor/supervisord.conf

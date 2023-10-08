@@ -9,6 +9,8 @@ import {
   ADMIN_BRANDING_FAVICON_DIMENSION_ERROR,
 } from "@appsmith/constants/messages";
 import { toast } from "design-system";
+import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
+import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
 
 const FAVICON_MAX_WIDTH = 32;
 const FAVICON_MAX_HEIGHT = 32;
@@ -96,7 +98,7 @@ export const logoImageValidator = (
     return false;
   }
 
-  // case 3: image selected
+  // case 3: check image type
   const validTypes = ["image/jpeg", "image/png"];
 
   if (!validTypes.includes(file.type)) {
@@ -107,7 +109,7 @@ export const logoImageValidator = (
     return false;
   }
 
-  // case 4: check size
+  // case 4: check image dimension
   const image = new Image();
   image.src = window.URL.createObjectURL(file);
 
@@ -135,8 +137,8 @@ export const faivconImageValidator = (
   // case 1: no file selected
   if (!file) return false;
 
-  // case 2: file size > 2mb
-  if (file.size > 2 * 1024 * 1024) {
+  // case 2: file size > 1mb
+  if (file.size > 1 * 1024 * 1024) {
     toast.show(createMessage(ADMIN_BRANDING_FAVICON_SIZE_ERROR), {
       kind: "error",
     });
@@ -144,7 +146,7 @@ export const faivconImageValidator = (
     return false;
   }
 
-  // case 3: image selected
+  // case 3: check image type
   const validTypes = [
     "image/jpeg",
     "image/png",
@@ -161,7 +163,7 @@ export const faivconImageValidator = (
     return false;
   }
 
-  // case 4: check size
+  // case 4: check image dimension
   const image = new Image();
   image.src = window.URL.createObjectURL(file);
 

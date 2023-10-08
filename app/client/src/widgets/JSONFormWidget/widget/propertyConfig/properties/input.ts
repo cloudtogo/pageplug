@@ -231,7 +231,34 @@ const PROPERTIES = {
           },
         },
         hidden: (...args: HiddenFnParams) =>
-          getSchemaItem(...args).fieldTypeNotIncludes(INPUT_TYPES),
+          getSchemaItem(...args).fieldTypeNotIncludes(INPUT_TYPES) ||
+          getSchemaItem(...args).fieldTypeMatches(FieldType.PHONE_NUMBER_INPUT),
+        dependencies: ["schema"],
+      },
+      {
+        helpText:
+          "Sets the default text of the widget. The text is updated if the default text changes",
+        propertyName: "defaultValue",
+        label: "Default value",
+        controlType: "JSON_FORM_COMPUTE_VALUE",
+        placeholderText: "(000) 000-0000",
+        isBindProperty: true,
+        isTriggerProperty: false,
+        validation: {
+          type: ValidationTypes.FUNCTION,
+          params: {
+            fn: defaultValueValidation,
+            expected: {
+              type: "string",
+              example: `(000) 000-0000`,
+              autocompleteDataType: AutocompleteDataType.STRING,
+            },
+          },
+        },
+        hidden: (...args: HiddenFnParams) =>
+          getSchemaItem(...args).fieldTypeNotMatches(
+            FieldType.PHONE_NUMBER_INPUT,
+          ),
         dependencies: ["schema"],
       },
       {
@@ -258,6 +285,7 @@ const PROPERTIES = {
         enableSearch: true,
         dropdownHeight: "195px",
         controlType: "DROP_DOWN",
+        virtual: true,
         searchPlaceholderText: "通过名称或者编号搜索",
         options: CurrencyDropdownOptions,
         hidden: (...args: HiddenFnParams) =>
@@ -530,6 +558,7 @@ const PROPERTIES = {
         label: "图标对齐",
         helpText: "设置图标对齐方式",
         controlType: "ICON_TABS",
+        defaultValue: "left",
         fullWidth: false,
         options: [
           {

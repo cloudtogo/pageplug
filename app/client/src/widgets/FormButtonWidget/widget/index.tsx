@@ -298,6 +298,7 @@ class FormButtonWidget extends ButtonWidget {
             label: "图标位置",
             helpText: "设置图标位置",
             controlType: "ICON_TABS",
+            defaultValue: "left",
             options: [
               {
                 startIcon: "align-left",

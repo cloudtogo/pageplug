@@ -36,17 +36,15 @@ import {
   getPlugin,
   getEditorConfig,
   getSettingConfig,
-  getActions,
   getPlugins,
   getGenerateCRUDEnabledPluginMap,
 } from "selectors/entitiesSelector";
-import type { Action, ApiActionConfig, QueryAction } from "entities/Action";
-import { isGraphqlPlugin, PluginType } from "entities/Action";
+import type { Action, QueryAction } from "entities/Action";
+import { PluginType } from "entities/Action";
 import {
   createActionRequest,
   setActionProperty,
 } from "actions/pluginActionActions";
-import { createNewApiName, createNewQueryName } from "utils/AppsmithUtils";
 import { getQueryParams } from "utils/URLUtils";
 import { isEmpty, merge } from "lodash";
 import { getConfigInitialValues } from "components/formControls/utils";
@@ -63,9 +61,8 @@ import {
 } from "actions/evaluationActions";
 import { updateReplayEntity } from "actions/pageActions";
 import { ENTITY_TYPE } from "entities/AppsmithConsole";
-import type { EventLocation } from "utils/AnalyticsUtil";
+import type { EventLocation } from "@appsmith/utils/analyticsUtilTypes";
 import AnalyticsUtil from "utils/AnalyticsUtil";
-import type { ActionDataState } from "reducers/entityReducers/actionsReducer";
 import {
   datasourcesEditorIdURL,
   generateTemplateFormURL,
@@ -75,8 +72,6 @@ import {
 import type { GenerateCRUDEnabledPluginMap, Plugin } from "api/PluginApi";
 import { UIComponentTypes } from "api/PluginApi";
 import { getUIComponent } from "pages/Editor/QueryEditor/helpers";
-import { DEFAULT_API_ACTION_CONFIG } from "constants/ApiEditorConstants/ApiEditorConstants";
-import { DEFAULT_GRAPHQL_ACTION_CONFIG } from "constants/ApiEditorConstants/GraphQLEditorConstants";
 import { FormDataPaths } from "workers/Evaluation/formEval";
 import { fetchDynamicValuesSaga } from "./FormEvaluationSaga";
 import type { FormEvalOutput } from "reducers/evaluationReducers/formEvaluationReducer";
@@ -85,6 +80,11 @@ import { hasManageActionPermission } from "@appsmith/utils/permissionHelpers";
 import { getIsGeneratePageInitiator } from "utils/GenerateCrudUtil";
 import { toast } from "design-system";
 import type { CreateDatasourceSuccessAction } from "actions/datasourceActions";
+import { createDefaultActionPayload } from "./ActionSagas";
+import {
+  DB_NOT_SUPPORTED,
+  getCurrentEnvironment,
+} from "@appsmith/utils/Environments";
 
 // Called whenever the query being edited is changed via the URL or query pane
 function* changeQuerySaga(actionPayload: ReduxAction<{ id: string }>) {
@@ -193,6 +193,7 @@ function* formValueChangeSaga(
 
     const plugins: Plugin[] = yield select(getPlugins);
     const uiComponent = getUIComponent(values.pluginId, plugins);
+    const plugin = plugins.find((p) => p.id === values.pluginId);
 
     if (field === "datasource.id") {
       const datasource: Datasource | undefined = yield select(
@@ -261,9 +262,21 @@ function* formValueChangeSaga(
       getDatasource,
       values.datasource.id,
     );
+    const datasourceStorages = datasource?.datasourceStorages || {};
 
     // Editing form fields triggers evaluations.
     // We pass the action to run form evaluations when the dataTree evaluation is complete
+    let currentEnvironment = getCurrentEnvironment();
+    const pluginType = plugin?.type;
+    if (
+      (!!pluginType && DB_NOT_SUPPORTED.includes(pluginType)) ||
+      !datasourceStorages.hasOwnProperty(currentEnvironment) ||
+      !datasourceStorages[currentEnvironment].hasOwnProperty(
+        "datasourceConfiguration",
+      )
+    ) {
+      currentEnvironment = Object.keys(datasourceStorages)[0];
+    }
     const postEvalActions =
       uiComponent === UIComponentTypes.UQIDbEditorForm
         ? [
@@ -274,7 +287,7 @@ function* formValueChangeSaga(
               values.pluginId,
               field,
               hasRouteChanged,
-              datasource?.datasourceConfiguration,
+              datasourceStorages[currentEnvironment].datasourceConfiguration,
             ),
           ]
         : [];
@@ -323,7 +336,6 @@ function* handleQueryCreatedSaga(actionPayload: ReduxAction<QueryAction>) {
     actionPayload.payload;
   const pageId: string = yield select(getCurrentPageId);
   if (pluginType !== PluginType.DB && pluginType !== PluginType.REMOTE) return;
-  yield put(initialize(QUERY_EDITOR_FORM_NAME, actionPayload.payload));
   const pluginTemplates: Record<string, unknown> = yield select(
     getPluginTemplates,
   );
@@ -459,53 +471,15 @@ function* createNewQueryForDatasourceSaga(
     from: EventLocation;
   }>,
 ) {
-  const { datasourceId, pageId } = action.payload;
+  const { datasourceId } = action.payload;
   if (!datasourceId) return;
-  const datasource: Datasource = yield select(getDatasource, datasourceId);
-  const actions: ActionDataState = yield select(getActions);
 
-  const plugin: Plugin = yield select(getPlugin, datasource?.pluginId);
-  const pluginType: PluginType = plugin?.type;
-  const isGraphql: boolean = isGraphqlPlugin(plugin);
-
-  // If the datasource is Graphql then get Graphql default config else Api config
-  const DEFAULT_CONFIG = isGraphql
-    ? DEFAULT_GRAPHQL_ACTION_CONFIG
-    : DEFAULT_API_ACTION_CONFIG;
-
-  const DEFAULT_HEADERS = isGraphql
-    ? DEFAULT_GRAPHQL_ACTION_CONFIG.headers
-    : DEFAULT_API_ACTION_CONFIG.headers;
-
-  /* Removed Datasource Headers because they already exists in inherited headers so should not be duplicated to Newer APIs creation as datasource is already attached to it. While for older APIs we can start showing message on the UI from the API from messages key in Actions object. */
-  const defaultApiActionConfig: ApiActionConfig = {
-    ...DEFAULT_CONFIG,
-    headers: DEFAULT_HEADERS,
-  };
-
-  const newActionName =
-    pluginType === PluginType.DB
-      ? createNewQueryName(actions, pageId || "")
-      : createNewApiName(actions, pageId || "");
-
-  const createActionPayload = {
-    name: newActionName,
-    pageId,
-    pluginId: datasource?.pluginId,
-    datasource: {
-      id: datasourceId,
-    },
-    eventData: {
-      actionType: pluginType === PluginType.DB ? "Query" : "API",
-      from: action.payload.from,
-      dataSource: datasource.name,
-      datasourceId: datasourceId,
-      pluginName: plugin?.name,
-      isMock: !!datasource?.isMock,
-    },
-    actionConfiguration:
-      plugin?.type === PluginType.API ? defaultApiActionConfig : {},
-  };
+  const createActionPayload: Partial<Action> = yield call(
+    createDefaultActionPayload,
+    action.payload.pageId,
+    action.payload.datasourceId,
+    action.payload.from,
+  );
 
   yield put(createActionRequest(createActionPayload));
 }

@@ -21,6 +21,11 @@ import {
   INVITE_USERS_VALIDATION_ROLE_EMPTY,
   USERS_HAVE_ACCESS_TO_ALL_APPS,
   NO_USERS_INVITED,
+  BUSINESS_EDITION_TEXT,
+  INVITE_USER_RAMP_TEXT,
+  CUSTOM_ROLES_RAMP_TEXT,
+  CUSTOM_ROLE_DISABLED_OPTION_TEXT,
+  CUSTOM_ROLE_TEXT,
 } from "@appsmith/constants/messages";
 import { isEmail } from "utils/formhelpers";
 import {
@@ -41,6 +46,7 @@ import {
   Option,
   Tooltip,
   toast,
+  Link,
 } from "design-system";
 import { getInitialsFromName } from "utils/AppsmithUtils";
 import ManageUsers from "pages/workspace/ManageUsers";
@@ -52,6 +58,13 @@ import {
 import { USER_PHOTO_ASSET_URL } from "constants/userConstants";
 import { importSvg } from "design-system-old";
 import type { WorkspaceUserRoles } from "@appsmith/constants/workspaceConstants";
+import { getRampLink, showProductRamps } from "selectors/rampSelectors";
+import {
+  RAMP_NAME,
+  RampFeature,
+  RampSection,
+} from "utils/ProductRamps/RampsControlList";
+import BusinessTag from "components/BusinessTag";
 
 const NoEmailConfigImage = importSvg(
   () => import("assets/images/email-not-configured.svg"),
@@ -165,6 +178,18 @@ export const ErrorTextContainer = styled.div`
   }
 `;
 
+export const WorkspaceText = styled.div`
+  a {
+    display: inline;
+  }
+`;
+export const CustomRoleRampTooltip = styled(Tooltip)`
+  pointer-events: auto;
+`;
+export const RampLink = styled(Link)`
+  display: inline;
+`;
+
 export const StyledCheckbox = styled(Checkbox)`
   height: 16px;
 
@@ -229,12 +254,94 @@ const validate = (values: any) => {
   return errors;
 };
 
+function InviteUserText({
+  isApplicationInvite,
+}: {
+  isApplicationInvite: boolean;
+}) {
+  const rampLinkSelector = getRampLink({
+    section: RampSection.AppShare,
+    feature: RampFeature.Gac,
+  });
+  const rampLink = useSelector(rampLinkSelector);
+  const showRampSelector = showProductRamps(RAMP_NAME.INVITE_USER_TO_APP);
+  const canShowRamp = useSelector(showRampSelector);
+  return (
+    <Text
+      color="var(--ads-v2-color-fg)"
+      data-testid="helper-message"
+      kind="action-m"
+    >
+      {canShowRamp && isApplicationInvite ? (
+        <>
+          {createMessage(INVITE_USER_RAMP_TEXT)}
+          <Link kind="primary" target="_blank" to={rampLink}>
+            {createMessage(BUSINESS_EDITION_TEXT)}
+          </Link>
+        </>
+      ) : (
+        createMessage(USERS_HAVE_ACCESS_TO_ALL_APPS)
+      )}
+    </Text>
+  );
+}
+
+export function CustomRolesRamp() {
+  const [dynamicProps, setDynamicProps] = useState<any>({});
+  const rampLinkSelector = getRampLink({
+    section: RampSection.WorkspaceShare,
+    feature: RampFeature.Gac,
+  });
+  const rampLink = useSelector(rampLinkSelector);
+  const rampText = (
+    <Text color="var(--ads-v2-color-white)" kind="action-m">
+      {createMessage(CUSTOM_ROLES_RAMP_TEXT)}{" "}
+      <RampLink
+        className="inline"
+        kind="primary"
+        onClick={() => {
+          setDynamicProps({ visible: false });
+          window.open(rampLink, "_blank");
+          // This reset of prop is required because, else the tooltip will be controlled by the state
+          setTimeout(() => {
+            setDynamicProps({});
+          }, 1);
+        }}
+      >
+        {createMessage(BUSINESS_EDITION_TEXT)}
+      </RampLink>
+    </Text>
+  );
+  return (
+    <CustomRoleRampTooltip
+      content={rampText}
+      placement="right"
+      {...dynamicProps}
+    >
+      <div className="flex flex-col gap-1">
+        <div className="flex gap-1">
+          <Text color="var(--ads-v2-color-fg-emphasis)" kind="heading-xs">
+            {createMessage(CUSTOM_ROLE_TEXT)}
+          </Text>
+          <BusinessTag size="md" />
+        </div>
+        <Text kind="body-s">
+          {createMessage(CUSTOM_ROLE_DISABLED_OPTION_TEXT)}
+        </Text>
+      </div>
+    </CustomRoleRampTooltip>
+  );
+}
+
 function WorkspaceInviteUsersForm(props: any) {
   const [emailError, setEmailError] = useState("");
   const [selectedOption, setSelectedOption] = useState<any[]>([]);
   const userRef = React.createRef<HTMLDivElement>();
   // const history = useHistory();
   const selectedId = props?.selected?.id;
+
+  const showRampSelector = showProductRamps(RAMP_NAME.CUSTOM_ROLES);
+  const canShowRamp = useSelector(showRampSelector);
 
   const selected = useMemo(
     () =>
@@ -347,15 +454,6 @@ function WorkspaceInviteUsersForm(props: any) {
       setSelectedOption([option]);
     }
   };
-  const getLabel = (selectedOption: Partial<DropdownOption>[]) => {
-    return (
-      <span data-testid="t--dropdown-label" style={{ width: "100%" }}>
-        <Text type={TextType.P1}>{`${
-          selected ? selectedOption[0].label : `${selectedOption?.length} 已选`
-        }`}</Text>
-      </span>
-    );
-  };
 
   const errorHandler = (error: string) => {
     setEmailError(error);
@@ -387,6 +485,7 @@ function WorkspaceInviteUsersForm(props: any) {
             ...(cloudHosting ? { users: usersAsStringsArray } : {}),
             role: roles,
             numberOfUsersInvited: usersAsStringsArray.length,
+            orgId: props.workspaceId,
           });
           return inviteUsersToWorkspace(
             {
@@ -469,6 +568,11 @@ function WorkspaceInviteUsersForm(props: any) {
                   </div>
                 </Option>
               ))}
+              {canShowRamp && (
+                <Option disabled>
+                  <CustomRolesRamp />
+                </Option>
+              )}
             </Select>
           </div>
           <div>
@@ -483,7 +587,12 @@ function WorkspaceInviteUsersForm(props: any) {
             </Button>
           </div>
         </StyledInviteFieldGroup>
-
+        <div className="flex gap-2 mt-2 items-start">
+          <Icon className="mt-1" name="user-3-line" size="md" />
+          <WorkspaceText>
+            <InviteUserText isApplicationInvite={isApplicationInvite} />
+          </WorkspaceText>
+        </div>
         {isLoading ? (
           <div className="pt-4 overflow-hidden">
             <Spinner size="lg" />

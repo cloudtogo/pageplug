@@ -1,9 +1,9 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
 import {
-  createMessage,
   APP_NAVIGATION_SETTING,
+  createMessage,
 } from "@appsmith/constants/messages";
 // import { ReactComponent as NavOrientationTopIcon } from "assets/icons/settings/nav-orientation-top.svg";
 // import { ReactComponent as NavOrientationSideIcon } from "assets/icons/settings/nav-orientation-side.svg";
@@ -23,7 +23,7 @@ import { updateApplication } from "@appsmith/actions/applicationActions";
 import { Spinner } from "design-system";
 import LogoInput from "@appsmith/pages/Editor/NavigationSettings/LogoInput";
 import SwitchSettingForLogoConfiguration from "./SwitchSettingForLogoConfiguration";
-import { selectFeatureFlags } from "selectors/usersSelectors";
+import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
 
 /**
  * TODO - @Dhruvik - ImprovedAppNav
@@ -40,6 +40,11 @@ export type UpdateSetting = (
   value: NavigationSetting[keyof NavigationSetting],
 ) => void;
 
+export type LogoConfigurationSwitches = {
+  logo: boolean;
+  applicationTitle: boolean;
+};
+
 function NavigationSettings() {
   const application = useSelector(getCurrentApplication);
   const applicationId = useSelector(getCurrentApplicationId);
@@ -48,6 +53,82 @@ function NavigationSettings() {
   const [navigationSetting, setNavigationSetting] = useState(
     application?.applicationDetail?.navigationSetting,
   );
+
+  const [logoConfigurationSwitches, setLogoConfigurationSwitches] =
+    useState<LogoConfigurationSwitches>({
+      logo: false,
+      applicationTitle: false,
+    });
+
+  useEffect(() => {
+    setNavigationSetting(application?.applicationDetail?.navigationSetting);
+
+    // Logo configuration
+    switch (navigationSetting?.logoConfiguration) {
+      case NAVIGATION_SETTINGS.LOGO_CONFIGURATION.APPLICATION_TITLE_ONLY:
+        setLogoConfigurationSwitches({
+          logo: false,
+          applicationTitle: true,
+        });
+        break;
+      case NAVIGATION_SETTINGS.LOGO_CONFIGURATION.LOGO_AND_APPLICATION_TITLE:
+        setLogoConfigurationSwitches({
+          logo: true,
+          applicationTitle: true,
+        });
+        break;
+      case NAVIGATION_SETTINGS.LOGO_CONFIGURATION.LOGO_ONLY:
+        setLogoConfigurationSwitches({
+          logo: true,
+          applicationTitle: false,
+        });
+        break;
+      case NAVIGATION_SETTINGS.LOGO_CONFIGURATION.NO_LOGO_OR_APPLICATION_TITLE:
+        setLogoConfigurationSwitches({
+          logo: false,
+          applicationTitle: false,
+        });
+        break;
+      default:
+        break;
+    }
+  }, [application?.applicationDetail?.navigationSetting]);
+
+  useEffect(() => {
+    if (
+      logoConfigurationSwitches.logo &&
+      logoConfigurationSwitches.applicationTitle
+    ) {
+      updateSetting(
+        "logoConfiguration",
+        NAVIGATION_SETTINGS.LOGO_CONFIGURATION.LOGO_AND_APPLICATION_TITLE,
+      );
+    } else if (
+      logoConfigurationSwitches.logo &&
+      !logoConfigurationSwitches.applicationTitle
+    ) {
+      updateSetting(
+        "logoConfiguration",
+        NAVIGATION_SETTINGS.LOGO_CONFIGURATION.LOGO_ONLY,
+      );
+    } else if (
+      !logoConfigurationSwitches.logo &&
+      logoConfigurationSwitches.applicationTitle
+    ) {
+      updateSetting(
+        "logoConfiguration",
+        NAVIGATION_SETTINGS.LOGO_CONFIGURATION.APPLICATION_TITLE_ONLY,
+      );
+    } else if (
+      !logoConfigurationSwitches.logo &&
+      !logoConfigurationSwitches.applicationTitle
+    ) {
+      updateSetting(
+        "logoConfiguration",
+        NAVIGATION_SETTINGS.LOGO_CONFIGURATION.NO_LOGO_OR_APPLICATION_TITLE,
+      );
+    }
+  }, [logoConfigurationSwitches]);
 
   const updateSetting = useCallback(
     debounce(
@@ -126,6 +207,8 @@ function NavigationSettings() {
     ),
     [navigationSetting],
   );
+
+
 
   // if (!navigationSetting) {
   //   return (
@@ -316,7 +399,7 @@ function NavigationSettings() {
           />
 
           {(navigationSetting?.logoAssetId ||
-            featureFlags.APP_NAVIGATION_LOGO_UPLOAD) && (
+            featureFlags.release_appnavigationlogoupload_enabled) && (
             <>
               <SwitchSettingForLogoConfiguration
                 keyName="logo"

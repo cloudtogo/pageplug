@@ -11,12 +11,12 @@ describe("Update a user's name", function () {
 
     cy.generateUUID().then((uid) => {
       username = uid;
-      cy.get("[data-cy=t--display-name]").clear();
-      cy.get("[data-cy=t--display-name]").click().type(username);
+      cy.get("[data-testid=t--display-name]").clear();
+      cy.get("[data-testid=t--display-name]").click().type(username);
       // Waiting as the input onchange has a debounce
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(2000);
-      cy.get(".t--back").click();
+      cy.get(".t--admin-settings-back-button").click();
       cy.reload();
       cy.get(homePage.profileMenu).click();
       cy.get(".t--user-name").contains(username);
@@ -32,14 +32,14 @@ describe("Update a user's name", function () {
     // Waiting as the input onchange has a debounce
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(2000);
-    cy.get(".react-tabs .cs-text")
+    cy.get(".ads-v2-input__input-section-input")
       .last()
-      .invoke("text")
+      .invoke("val")
       .then((text) => {
-        const someText = text;
-        expect(someText).to.equal(Cypress.env("USERNAME"));
+        expect(text).to.equal(Cypress.env("USERNAME"));
       });
-    cy.get(".react-tabs a").last().contains("Reset Password").click();
+
+    cy.get(".ads-v2-button__content").last().contains("Reset password").click();
     cy.wait("@resetPwd").should(
       "have.nested.property",
       "response.body.responseMeta.status",

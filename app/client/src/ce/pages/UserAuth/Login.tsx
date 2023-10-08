@@ -47,6 +47,8 @@ import {
   getThirdPartyAuths,
   getIsFormLoginEnabled,
 } from "@appsmith/selectors/tenantSelectors";
+import Helmet from "react-helmet";
+import { useHtmlPageTitle } from "@appsmith/utils";
 
 const validate = (values: LoginFormValues, props: ValidateProps) => {
   const errors: LoginFormValues = {};
@@ -87,6 +89,7 @@ export function Login(props: LoginFormProps) {
   const isFormLoginEnabled = useSelector(getIsFormLoginEnabled);
   const socialLoginList = useSelector(getThirdPartyAuths);
   const queryParams = new URLSearchParams(location.search);
+  const htmlPageTitle = useHtmlPageTitle();
   const invalidCredsForgotPasswordLinkText = createMessage(
     LOGIN_PAGE_INVALID_CREDS_FORGOT_PASSWORD_LINK,
   );
@@ -134,6 +137,10 @@ export function Login(props: LoginFormProps) {
       subtitle={createMessage(LOGIN_PAGE_SUBTITLE)}
       title={createMessage(LOGIN_PAGE_TITLE)}
     >
+      <Helmet>
+        <title>{htmlPageTitle}</title>
+      </Helmet>
+
       {showError && (
         <Callout
           kind="error"

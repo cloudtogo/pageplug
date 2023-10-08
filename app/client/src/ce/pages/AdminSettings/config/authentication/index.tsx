@@ -6,8 +6,8 @@ import {
 } from "constants/ThirdPartyConstants";
 import type { AdminConfigType } from "@appsmith/pages/AdminSettings/config/types";
 import {
+  CategoryType,
   SettingCategories,
-  SettingSubCategories,
   SettingSubtype,
   SettingTypes,
 } from "@appsmith/pages/AdminSettings/config/types";
@@ -18,10 +18,6 @@ import SamlSso from "assets/images/saml.svg";
 import OIDC from "assets/images/oidc.svg";
 import Github from "assets/images/Github.png";
 import Lock from "assets/images/lock-password-line.svg";
-import {
-  JS_ORIGIN_URI_FORM,
-  REDIRECT_URL_FORM,
-} from "@appsmith/constants/forms";
 import { useSelector } from "react-redux";
 import {
   getThirdPartyAuths,
@@ -35,19 +31,24 @@ import {
   SAML_AUTH_DESC,
   createMessage,
 } from "@appsmith/constants/messages";
+import { isSAMLEnabled, isOIDCEnabled } from "@appsmith/utils/planHelpers";
+import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
+import store from "store";
+
+const featureFlags = selectFeatureFlags(store.getState());
 
 const FormAuth: AdminConfigType = {
   type: SettingCategories.FORM_AUTH,
+  categoryType: CategoryType.GENERAL,
   controlType: SettingTypes.GROUP,
   title: "账号密码登录",
-  subText: "为你的 PagePlug 开启账号密码登录",
+  subText: createMessage(FORM_LOGIN_DESC),
   canSave: true,
   isConnected: false,
   settings: [
     {
       id: "APPSMITH_FORM_LOGIN_DISABLED",
       category: SettingCategories.FORM_AUTH,
-      subCategory: SettingSubCategories.FORMLOGIN,
       controlType: SettingTypes.TOGGLE,
       label: "登录",
       toggleText: (value: boolean) => (value ? "关闭" : "开启"),
@@ -55,7 +56,6 @@ const FormAuth: AdminConfigType = {
     {
       id: "APPSMITH_SIGNUP_DISABLED",
       category: SettingCategories.FORM_AUTH,
-      subCategory: SettingSubCategories.FORMLOGIN,
       controlType: SettingTypes.TOGGLE,
       label: "注册",
       toggleText: (value: boolean) =>
@@ -64,7 +64,6 @@ const FormAuth: AdminConfigType = {
     {
       id: "APPSMITH_FORM_CALLOUT_BANNER",
       category: SettingCategories.FORM_AUTH,
-      subCategory: SettingSubCategories.FORMLOGIN,
       controlType: SettingTypes.LINK,
       label: "账号密码登录不会校验邮箱是否有效",
       url: SIGNUP_RESTRICTION_DOC,
@@ -75,6 +74,7 @@ const FormAuth: AdminConfigType = {
 
 const GoogleAuth: AdminConfigType = {
   type: SettingCategories.GOOGLE_AUTH,
+  categoryType: CategoryType.GENERAL,
   controlType: SettingTypes.GROUP,
   title: "Google 登录",
   subText: createMessage(GOOGLE_AUTH_DESC),
@@ -83,7 +83,6 @@ const GoogleAuth: AdminConfigType = {
     {
       id: "APPSMITH_OAUTH2_GOOGLE_READ_MORE",
       category: SettingCategories.GOOGLE_AUTH,
-      subCategory: SettingSubCategories.GOOGLE,
       controlType: SettingTypes.LINK,
       label: "如何配置？",
       url: GOOGLE_SIGNUP_SETUP_DOC,
@@ -91,10 +90,8 @@ const GoogleAuth: AdminConfigType = {
     {
       id: "APPSMITH_OAUTH2_GOOGLE_JS_ORIGIN_URL",
       category: SettingCategories.GOOGLE_AUTH,
-      subCategory: SettingSubCategories.GOOGLE,
       controlType: SettingTypes.UNEDITABLEFIELD,
       label: "JavaScript origin URL",
-      formName: JS_ORIGIN_URI_FORM,
       fieldName: "js-origin-url-form",
       value: "",
       tooltip:
@@ -104,20 +101,17 @@ const GoogleAuth: AdminConfigType = {
     {
       id: "APPSMITH_OAUTH2_GOOGLE_REDIRECT_URL",
       category: SettingCategories.GOOGLE_AUTH,
-      subCategory: SettingSubCategories.GOOGLE,
       controlType: SettingTypes.UNEDITABLEFIELD,
       label: "Redirect URL",
-      formName: REDIRECT_URL_FORM,
       fieldName: "redirect-url-form",
       value: "/login/oauth2/code/google",
       tooltip:
-        "This URL will be used while configuring the Google OAuth Client ID's authorized Redirect URIs",
+        "This URL will be used while configuring the Google OAuth Client ID's authorized redirect URIs",
       helpText: "Paste this URL in your Google developer console.",
     },
     {
       id: "APPSMITH_OAUTH2_GOOGLE_CLIENT_ID",
       category: SettingCategories.GOOGLE_AUTH,
-      subCategory: SettingSubCategories.GOOGLE,
       controlType: SettingTypes.TEXTINPUT,
       controlSubType: SettingSubtype.TEXT,
       label: "Client ID",
@@ -126,7 +120,6 @@ const GoogleAuth: AdminConfigType = {
     {
       id: "APPSMITH_OAUTH2_GOOGLE_CLIENT_SECRET",
       category: SettingCategories.GOOGLE_AUTH,
-      subCategory: SettingSubCategories.GOOGLE,
       controlType: SettingTypes.TEXTINPUT,
       controlSubType: SettingSubtype.TEXT,
       label: "Client secret",
@@ -135,7 +128,6 @@ const GoogleAuth: AdminConfigType = {
     {
       id: "APPSMITH_SIGNUP_ALLOWED_DOMAINS",
       category: SettingCategories.GOOGLE_AUTH,
-      subCategory: SettingSubCategories.GOOGLE,
       controlType: SettingTypes.TEXTINPUT,
       controlSubType: SettingSubtype.TEXT,
       label: "允许域名",
@@ -146,6 +138,7 @@ const GoogleAuth: AdminConfigType = {
 
 const GithubAuth: AdminConfigType = {
   type: SettingCategories.GITHUB_AUTH,
+  categoryType: CategoryType.GENERAL,
   controlType: SettingTypes.GROUP,
   title: "Github 登录",
   subText: createMessage(GITHUB_AUTH_DESC),
@@ -154,15 +147,35 @@ const GithubAuth: AdminConfigType = {
     {
       id: "APPSMITH_OAUTH2_GITHUB_READ_MORE",
       category: SettingCategories.GITHUB_AUTH,
-      subCategory: SettingSubCategories.GITHUB,
       controlType: SettingTypes.LINK,
       label: "如何配置？",
       url: GITHUB_SIGNUP_SETUP_DOC,
     },
     {
+      id: "APPSMITH_OAUTH2_GITHUB_HOMEPAGE_URL",
+      category: SettingCategories.GITHUB_AUTH,
+      controlType: SettingTypes.UNEDITABLEFIELD,
+      label: "Homepage URL",
+      fieldName: "homepage-url-form",
+      value: "",
+      tooltip:
+        "This URL will be used while configuring the GitHub OAuth Client ID's homepage URL",
+      helpText: "Paste this URL in your GitHub developer settings.",
+    },
+    {
+      id: "APPSMITH_OAUTH2_GITHUB_REDIRECT_URL",
+      category: SettingCategories.GITHUB_AUTH,
+      controlType: SettingTypes.UNEDITABLEFIELD,
+      label: "Redirect URL",
+      fieldName: "callback-url-form",
+      value: "/login/oauth2/code/github",
+      tooltip:
+        "This URL will be used while configuring the GitHub OAuth Client ID's Authorization callback URL",
+      helpText: "Paste this URL in your GitHub developer settings.",
+    },
+    {
       id: "APPSMITH_OAUTH2_GITHUB_CLIENT_ID",
       category: SettingCategories.GITHUB_AUTH,
-      subCategory: SettingSubCategories.GITHUB,
       controlType: SettingTypes.TEXTINPUT,
       controlSubType: SettingSubtype.TEXT,
       label: "Client ID",
@@ -171,7 +184,6 @@ const GithubAuth: AdminConfigType = {
     {
       id: "APPSMITH_OAUTH2_GITHUB_CLIENT_SECRET",
       category: SettingCategories.GITHUB_AUTH,
-      subCategory: SettingSubCategories.GITHUB,
       controlType: SettingTypes.TEXTINPUT,
       controlSubType: SettingSubtype.TEXT,
       label: "Client secret",
@@ -187,6 +199,7 @@ export const FormAuthCallout: AuthMethodType = {
   subText: createMessage(FORM_LOGIN_DESC),
   image: Lock,
   icon: "lock-password-line",
+  isFeatureEnabled: true,
 };
 
 export const GoogleAuthCallout: AuthMethodType = {
@@ -195,6 +208,7 @@ export const GoogleAuthCallout: AuthMethodType = {
   label: "Google",
   subText: createMessage(GOOGLE_AUTH_DESC),
   image: Google,
+  isFeatureEnabled: true,
 };
 
 export const GithubAuthCallout: AuthMethodType = {
@@ -203,24 +217,25 @@ export const GithubAuthCallout: AuthMethodType = {
   label: "Github",
   subText: createMessage(GITHUB_AUTH_DESC),
   image: Github,
+  isFeatureEnabled: true,
 };
 
 export const SamlAuthCallout: AuthMethodType = {
   id: "APPSMITH_SAML_AUTH",
-  category: "saml",
+  category: SettingCategories.SAML_AUTH,
   label: "SAML 2.0",
   subText: createMessage(SAML_AUTH_DESC),
   image: SamlSso,
-  needsUpgrade: true,
+  isFeatureEnabled: isSAMLEnabled(featureFlags),
 };
 
 export const OidcAuthCallout: AuthMethodType = {
   id: "APPSMITH_OIDC_AUTH",
-  category: "oidc",
+  category: SettingCategories.OIDC_AUTH,
   label: "OIDC",
   subText: createMessage(OIDC_AUTH_DESC),
   image: OIDC,
-  needsUpgrade: true,
+  isFeatureEnabled: isOIDCEnabled(featureFlags),
 };
 
 const AuthMethods = [
@@ -244,6 +259,7 @@ function AuthMain() {
 export const config: AdminConfigType = {
   icon: "lock-password-line",
   type: SettingCategories.AUTHENTICATION,
+  categoryType: CategoryType.GENERAL,
   controlType: SettingTypes.PAGE,
   title: "身份认证",
   canSave: false,

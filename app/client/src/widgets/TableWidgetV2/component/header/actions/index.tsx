@@ -144,31 +144,74 @@ function Actions(props: ActionsPropsType) {
       )}
       {(props.isVisibleFilters ||
         props.isVisibleDownload ||
-        props.allowAddNewRow) && (
-        <CommonFunctionsMenuWrapper tableSizes={props.tableSizes}>
-          {props.isVisibleFilters && (
-            <TableFilters
+        props.allowAddNewRow) &&
+        !!props.columns.length && (
+          <CommonFunctionsMenuWrapper tableSizes={props.tableSizes}>
+            {props.isVisibleFilters && (
+              <TableFilters
+                accentColor={props.accentColor}
+                applyFilter={props.applyFilter}
+                borderRadius={props.borderRadius}
+                columns={props.columns}
+                filters={props.filters}
+                widgetId={props.widgetId}
+              />
+            )}
+
+            {props.isVisibleDownload && (
+              <TableDataDownload
+                borderRadius={props.borderRadius}
+                columns={props.tableColumns}
+                data={props.tableData}
+                delimiter={props.delimiter}
+                widgetName={props.widgetName}
+              />
+            )}
+
+            {props.allowAddNewRow && (
+              <ActionItem
+                borderRadius={props.borderRadius}
+                className="t--add-new-row"
+                disabled={props.disableAddNewRow}
+                disabledMessage="Save or discard the unsaved row to add a new row"
+                icon="add"
+                selectMenu={props.onAddNewRow}
+                selected={false}
+                title="Add new row"
+                width={12}
+              />
+            )}
+          </CommonFunctionsMenuWrapper>
+        )}
+
+      {!!props.columns.length &&
+        props.isVisiblePagination &&
+        props.serverSidePaginationEnabled && (
+          <PaginationWrapper>
+            {props.totalRecordsCount ? (
+              <TableHeaderContentWrapper className="show-page-items">
+                {props.totalRecordsCount} Records
+              </TableHeaderContentWrapper>
+            ) : null}
+            <PaginationItemWrapper
               accentColor={props.accentColor}
-              applyFilter={props.applyFilter}
               borderRadius={props.borderRadius}
               columns={props.columns}
               filters={props.filters}
               widgetId={props.widgetId}
             />
-          )}
-
-          {props.isVisibleDownload && (
-            <TableDataDownload
+            {props.isVisibleDownload && (
+              <TableDataDownload
               borderRadius={props.borderRadius}
               columns={props.tableColumns}
               data={props.tableData}
               delimiter={props.delimiter}
               widgetName={props.widgetName}
-            />
-          )}
+              />
+            )}
 
-          {props.allowAddNewRow && (
-            <ActionItem
+            {props.allowAddNewRow && (
+              <ActionItem
               borderRadius={props.borderRadius}
               className="t--add-new-row"
               disabled={props.disableAddNewRow}
@@ -178,9 +221,9 @@ function Actions(props: ActionsPropsType) {
               selected={false}
               title="新增一行"
               width={12}
-            />
-          )}
-        </CommonFunctionsMenuWrapper>
+              />
+            )}
+        </PaginationWrapper>
       )}
 
       {props.isVisiblePagination && props.serverSidePaginationEnabled && (
@@ -221,10 +264,26 @@ function Actions(props: ActionsPropsType) {
             <PaginationItemWrapper
               accentColor={props.accentColor}
               borderRadius={props.borderRadius}
-              className="page-item"
-              selected
+              className="t--table-widget-next-page"
+              disabled={
+                !!props.totalRecordsCount &&
+                props.pageNo === props.pageCount - 1
+              }
+              onClick={() => {
+                if (
+                  !(
+                    !!props.totalRecordsCount &&
+                    props.pageNo === props.pageCount - 1
+                  )
+                )
+                  props.nextPageClick();
+              }}
             >
-              {props.pageNo + 1}
+              <Icon
+                color={Colors.HIT_GRAY}
+                icon="chevron-right"
+                iconSize={16}
+              />
             </PaginationItemWrapper>
           )}
           <PaginationItemWrapper

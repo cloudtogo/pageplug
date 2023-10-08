@@ -1,8 +1,8 @@
 const commonlocators = require("../../../../../locators/commonlocators.json");
 const formWidgetsPage = require("../../../../../locators/FormWidgets.json");
-const dsl = require("../../../../../fixtures/formdsl1.json");
 const publishPage = require("../../../../../locators/publishWidgetspage.json");
 const widgetsPage = require("../../../../../locators/Widgets.json");
+import * as _ from "../../../../../support/Objects/ObjectsCore";
 
 /**
  * A function to set the content inside an RTE widget
@@ -34,24 +34,24 @@ const testCursorPoistion = (textValueLen, tinyMceId) => {
 
 describe("RichTextEditor Widget Functionality", function () {
   before(() => {
-    cy.addDsl(dsl);
+    _.agHelper.AddDsl("formdsl1");
   });
 
   beforeEach(() => {
-    cy.wait(7000);
+    cy.wait(3000);
     cy.openPropertyPane("richtexteditorwidget");
   });
 
   it("1. RichTextEditor-Edit Text area with HTML body functionality", function () {
     //changing the Text Name
     cy.widgetText(
-      this.data.RichTextEditorName,
+      this.dataSet.RichTextEditorName,
       formWidgetsPage.richTextEditorWidget,
       widgetsPage.widgetNameSpan,
     );
 
     //Edit the text area with Html
-    cy.testJsontext("defaultvalue", this.data.HtmlText);
+    cy.testJsontext("defaultvalue", this.dataSet.HtmlText);
 
     //Validate Html
     cy.validateHTMLText(
@@ -59,12 +59,13 @@ describe("RichTextEditor Widget Functionality", function () {
       "h1",
       "This is a Heading",
     );
-    cy.PublishtheApp();
+    _.deployMode.DeployApp();
     cy.validateHTMLText(
       publishPage.richTextEditorWidget,
       "h1",
       "This is a Heading",
     );
+    _.deployMode.NavigateBacktoEditor();
   });
 
   it("2. RichTextEditor-Enable Validation", function () {
@@ -75,12 +76,12 @@ describe("RichTextEditor Widget Functionality", function () {
       commonlocators.disabledBtn,
     );
 
-    cy.PublishtheApp();
+    _.deployMode.DeployApp();
     cy.validateEnableWidget(
       publishPage.richTextEditorWidget,
       commonlocators.disabledBtn,
     );
-    cy.get(publishPage.backToEditor).click({ force: true });
+    _.deployMode.NavigateBacktoEditor();
     cy.openPropertyPane("richtexteditorwidget");
 
     //Check the Disabled checkbox
@@ -90,26 +91,27 @@ describe("RichTextEditor Widget Functionality", function () {
       commonlocators.disabledBtn,
     );
 
-    cy.PublishtheApp();
+    _.deployMode.DeployApp();
     cy.validateDisableWidget(
       publishPage.richTextEditorWidget,
       commonlocators.disabledBtn,
     );
+    _.deployMode.NavigateBacktoEditor();
   });
 
   it("3. RichTextEditor-check Visible field  validation", function () {
     // Uncheck the visible checkbox
     cy.UncheckWidgetProperties(commonlocators.visibleCheckbox);
-    cy.PublishtheApp();
+    _.deployMode.DeployApp();
     cy.get(publishPage.richTextEditorWidget).should("not.exist");
-
-    cy.get(publishPage.backToEditor).click({ force: true });
+    _.deployMode.NavigateBacktoEditor();
     cy.openPropertyPane("richtexteditorwidget");
 
     // RichTextEditor-uncheck Visible field validation
     cy.CheckWidgetProperties(commonlocators.visibleCheckbox);
-    cy.PublishtheApp();
+    _.deployMode.DeployApp();
     cy.get(publishPage.richTextEditorWidget).should("be.visible");
+    _.deployMode.NavigateBacktoEditor();
   });
 
   it("4. RichTextEditor-check Hide toolbar field validation", function () {
@@ -119,13 +121,13 @@ describe("RichTextEditor Widget Functionality", function () {
       formWidgetsPage.richTextEditorWidget,
       commonlocators.rteToolbar,
     );
-    cy.PublishtheApp();
+    _.deployMode.DeployApp();
     cy.validateToolbarHidden(
       publishPage.richTextEditorWidget,
       commonlocators.rteToolbar,
     );
 
-    cy.get(publishPage.backToEditor).click({ force: true });
+    _.deployMode.NavigateBacktoEditor();
     cy.openPropertyPane("richtexteditorwidget");
 
     //RichTextEditor-uncheck Hide toolbar field validation - // Uncheck the Hide toolbar checkbox
@@ -134,11 +136,12 @@ describe("RichTextEditor Widget Functionality", function () {
       formWidgetsPage.richTextEditorWidget,
       commonlocators.rteToolbar,
     );
-    cy.PublishtheApp();
+    _.deployMode.DeployApp();
     cy.validateToolbarVisible(
       publishPage.richTextEditorWidget,
       commonlocators.rteToolbar,
     );
+    _.deployMode.NavigateBacktoEditor();
   });
 
   it("5. Reset RichTextEditor", function () {

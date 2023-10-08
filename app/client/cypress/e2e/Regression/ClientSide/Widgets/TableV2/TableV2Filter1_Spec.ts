@@ -1,147 +1,37 @@
-import { ObjectsRegistry } from "../../../../../support/Objects/Registry";
+import {
+  agHelper,
+  locators,
+  entityExplorer,
+  propPane,
+  deployMode,
+  table,
+  draggableWidgets,
+  assertHelper,
+} from "../../../../../support/Objects/ObjectsCore";
 
-let dataSet: any;
-const agHelper = ObjectsRegistry.AggregateHelper,
-  ee = ObjectsRegistry.EntityExplorer,
-  table = ObjectsRegistry.Table,
-  homePage = ObjectsRegistry.HomePage,
-  deployMode = ObjectsRegistry.DeployMode,
-  propPane = ObjectsRegistry.PropertyPane;
-
-describe("Verify various Table_Filter combinations", function() {
-  before(() => {
-    cy.fixture("example").then(function(data: any) {
-      dataSet = data;
-    });
-  });
-
-  it("1. Adding Data to Table Widget", function() {
-    ee.DragDropWidgetNVerify("tablewidgetv2", 650, 250);
-    //propPane.EnterJSContext("Table data", JSON.stringify(dataSet.TableInput));
+describe("Verify various Table_Filter combinations", function () {
+  it("1. Verify Table Filter for 'empty'", function () {
+    entityExplorer.DragDropWidgetNVerify("tablewidgetv2", 650, 250);
+    table.AddSampleTableData();
     propPane.UpdatePropertyFieldValue(
       "Table data",
-      JSON.stringify(dataSet.TableInput),
+      JSON.stringify(this.dataSet.TableInput),
     );
-    agHelper.ValidateNetworkStatus("@updateLayout", 200);
+    assertHelper.AssertNetworkStatus("@updateLayout", 200);
     cy.get("body").type("{esc}");
-    /*
-      Changing id and orderAmount to "Plain Text" column type
-      so that the tests that depend on id and orderAmount
-      being "Plain Text" type do not fail.
-      From this PR onwards columns with number data (like id and orderAmount here)
-      will be auto-assigned as "NUMBER" type column
-    */
+
     table.ChangeColumnType("id", "Plain text", "v2");
     table.ChangeColumnType("orderAmount", "Plain text", "v2");
 
-    deployMode.DeployApp();
-  });
-
-  it("2. Table Widget Search Functionality", function() {
-    table.ReadTableRowColumnData(1, 3, "v2").then((cellData) => {
-      expect(cellData).to.eq("Lindsay Ferguson");
-      table.SearchTable(cellData);
-      table.ReadTableRowColumnData(0, 3, "v2").then((afterSearch) => {
-        expect(afterSearch).to.eq("Lindsay Ferguson");
-      });
-    });
-    table.RemoveSearchTextNVerify("2381224", "v2");
-
-    table.SearchTable("7434532");
-    table.ReadTableRowColumnData(0, 3, "v2").then((afterSearch) => {
-      expect(afterSearch).to.eq("Byron Fields");
-    });
-    table.RemoveSearchTextNVerify("2381224", "v2");
-  });
-
-  it("3. Verify Table Filter for 'contain'", function() {
-    table.OpenNFilterTable("userName", "contains", "Lindsay");
-    table.ReadTableRowColumnData(0, 3, "v2").then(($cellData) => {
-      expect($cellData).to.eq("Lindsay Ferguson");
-    });
-    table.RemoveFilterNVerify("2381224", true, true, 0, "v2");
-  });
-
-  it("4. Verify Table Filter for 'does not contain'", function() {
-    table.ReadTableRowColumnData(1, 4, "v2").then(($cellData) => {
-      expect($cellData).to.eq("Tuna Salad");
-    });
-    table.OpenNFilterTable("productName", "does not contain", "Tuna");
-    table.ReadTableRowColumnData(1, 4, "v2").then(($cellData) => {
-      expect($cellData).to.eq("Beef steak");
-    });
-    table.RemoveFilterNVerify("2381224", true, true, 0, "v2");
-  });
-
-  it("5. Verify Table Filter for 'starts with'", function() {
-    table.ReadTableRowColumnData(4, 4, "v2").then(($cellData) => {
-      expect($cellData).to.eq("Avocado Panini");
-    });
-    table.OpenNFilterTable("productName", "starts with", "Avo");
-    table.ReadTableRowColumnData(0, 4, "v2").then(($cellData) => {
-      expect($cellData).to.eq("Avocado Panini");
-    });
-    table.RemoveFilterNVerify("2381224", true, true, 0, "v2");
-  });
-
-  it("6. Verify Table Filter for 'ends with' - case sensitive", function() {
-    table.ReadTableRowColumnData(1, 4, "v2").then(($cellData) => {
-      expect($cellData).to.eq("Tuna Salad");
-    });
-    table.OpenNFilterTable("productName", "ends with", "wich");
-    table.ReadTableRowColumnData(1, 4, "v2").then(($cellData) => {
-      expect($cellData).to.eq("Chicken Sandwich");
-    });
-    table.RemoveFilterNVerify("2381224", true, true, 0, "v2");
-  });
-
-  it("7. Verify Table Filter for 'ends with' - case insenstive", function() {
-    table.ReadTableRowColumnData(1, 4, "v2").then(($cellData) => {
-      expect($cellData).to.eq("Tuna Salad");
-    });
-    table.OpenNFilterTable("productName", "ends with", "WICH");
-    table.ReadTableRowColumnData(1, 4, "v2").then(($cellData) => {
-      expect($cellData).to.eq("Chicken Sandwich");
-    });
-    table.RemoveFilterNVerify("2381224", true, true, 0, "v2");
-  });
-
-  it("8. Verify Table Filter for 'ends with' - on wrong column", function() {
-    table.ReadTableRowColumnData(1, 4, "v2").then(($cellData) => {
-      expect($cellData).to.eq("Tuna Salad");
-    });
-    table.OpenNFilterTable("userName", "ends with", "WICH");
-    table.WaitForTableEmpty("v2");
-    table.RemoveFilterNVerify("2381224", true, true, 0, "v2");
-  });
-
-  it("9. Verify Table Filter for 'is exactly' - case sensitive", function() {
-    table.ReadTableRowColumnData(2, 4, "v2").then(($cellData) => {
-      expect($cellData).to.eq("Beef steak");
-    });
-    table.OpenNFilterTable("productName", "is exactly", "Beef steak");
-    table.ReadTableRowColumnData(0, 4, "v2").then(($cellData) => {
-      expect($cellData).to.eq("Beef steak");
-    });
-    table.RemoveFilterNVerify("2381224", true, true, 0, "v2");
-  });
-
-  it("10. Verify Table Filter for 'is exactly' - case insensitive", function() {
-    table.ReadTableRowColumnData(2, 4, "v2").then(($cellData) => {
-      expect($cellData).to.eq("Beef steak");
-    });
-    table.OpenNFilterTable("productName", "is exactly", "Beef STEAK");
-    table.WaitForTableEmpty("v2");
-    table.RemoveFilterNVerify("2381224", true, true, 0, "v2");
-  });
-
-  it("11. Verify Table Filter for 'empty'", function() {
+    deployMode.DeployApp(locators._widgetInDeployed(draggableWidgets.TABLE));
+    table.WaitUntilTableLoad(0, 0, "v2");
     table.OpenNFilterTable("email", "empty");
+    agHelper.Sleep(2000); //table to filter & records to disappear
     table.WaitForTableEmpty("v2");
     table.RemoveFilterNVerify("2381224", true, true, 0, "v2");
   });
 
-  it("12. Verify Table Filter for 'not empty'", function() {
+  it("2. Verify Table Filter for 'not empty'", function () {
     table.ReadTableRowColumnData(4, 5, "v2").then(($cellData) => {
       expect($cellData).to.eq("7.99");
     });
@@ -152,7 +42,7 @@ describe("Verify various Table_Filter combinations", function() {
     table.RemoveFilterNVerify("2381224", true, true, 0, "v2");
   });
 
-  it("13. Verify Table Filter - Where Edit - Change condition along with input value", function() {
+  it("3. Verify Table Filter - Where Edit - Change condition along with input value", function () {
     table.ReadTableRowColumnData(0, 3, "v2").then(($cellData) => {
       expect($cellData).to.eq("Michael Lawson");
     });
@@ -164,21 +54,14 @@ describe("Verify various Table_Filter combinations", function() {
 
     //Change condition - 1st time
     agHelper.GetNClick(table._filterConditionDropdown);
-    cy.get(table._dropdownText)
-      .contains("empty")
-      .click();
+    cy.get(table._dropdownText).contains("empty").click();
     agHelper.ClickButton("APPLY");
     table.WaitForTableEmpty("v2");
 
     //Change condition - 2nd time
     agHelper.GetNClick(table._filterConditionDropdown);
-    cy.get(table._dropdownText)
-      .contains("contains")
-      .click();
-    agHelper
-      .GetNClick(table._filterInputValue, 0)
-      .type("19")
-      .wait(500);
+    cy.get(table._dropdownText).contains("contains").click();
+    agHelper.GetNClick(table._filterInputValue, 0).type("19").wait(500);
     agHelper.ClickButton("APPLY");
     table.ReadTableRowColumnData(0, 3, "v2").then(($cellData) => {
       expect($cellData).to.eq("Tobias Funke");
@@ -186,7 +69,7 @@ describe("Verify various Table_Filter combinations", function() {
     table.RemoveFilterNVerify("2381224", true, false, 0, "v2");
   });
 
-  it("14. Verify Table Filter - Where Edit - Single Column, Condition & input value", function() {
+  it("4. Verify Table Filter - Where Edit - Single Column, Condition & input value", function () {
     table.ReadTableRowColumnData(0, 3, "v2").then(($cellData) => {
       expect($cellData).to.eq("Michael Lawson");
     });
@@ -204,9 +87,7 @@ describe("Verify various Table_Filter combinations", function() {
 
     //Change condition - 1st time
     agHelper.GetNClick(table._filterConditionDropdown);
-    cy.get(table._dropdownText)
-      .contains("does not contain")
-      .click();
+    cy.get(table._dropdownText).contains("does not contain").click();
     agHelper.ClickButton("APPLY");
     table.ReadTableRowColumnData(0, 4, "v2").then(($cellData) => {
       expect($cellData).to.eq("Tuna Salad");
@@ -217,22 +98,14 @@ describe("Verify various Table_Filter combinations", function() {
 
     //Change condition - column value
     agHelper.GetNClick(table._filterColumnsDropdown);
-    cy.get(table._dropdownText)
-      .contains("userName")
-      .click();
+    cy.get(table._dropdownText).contains("userName").click();
     agHelper.GetNClick(table._filterConditionDropdown);
-    cy.get(table._dropdownText)
-      .contains("does not contain")
-      .click();
+    cy.get(table._dropdownText).contains("does not contain").click();
     agHelper.ClickButton("APPLY");
     table.WaitForTableEmpty("v2");
 
     //Change input value
-    agHelper
-      .GetNClick(table._filterInputValue, 0)
-      .clear()
-      .type("i")
-      .wait(500);
+    agHelper.GetNClick(table._filterInputValue, 0).clear().type("i").wait(500);
     agHelper.ClickButton("APPLY");
     table.ReadTableRowColumnData(0, 3, "v2").then(($cellData) => {
       expect($cellData).to.eq("Ryan Holmes");
@@ -241,7 +114,7 @@ describe("Verify various Table_Filter combinations", function() {
     table.RemoveFilterNVerify("2381224", true, false, 0, "v2");
   });
 
-  it("15. Verify Table Filter for OR operator - different row match", function() {
+  it("5. Verify Table Filter for OR operator - different row match", function () {
     table.ReadTableRowColumnData(2, 3, "v2").then(($cellData) => {
       expect($cellData).to.eq("Tobias Funke");
     });
@@ -257,7 +130,7 @@ describe("Verify various Table_Filter combinations", function() {
     table.RemoveFilterNVerify("2381224", true, false, 0, "v2");
   });
 
-  it("16. Verify Table Filter for OR operator - same row match", function() {
+  it("6. Verify Table Filter for OR operator - same row match", function () {
     table.ReadTableRowColumnData(0, 3, "v2").then(($cellData) => {
       expect($cellData).to.eq("Michael Lawson");
     });
@@ -271,8 +144,7 @@ describe("Verify various Table_Filter combinations", function() {
     });
     table.RemoveFilterNVerify("2381224", true, false, 0, "v2");
   });
-
-  it("17. Verify Table Filter for OR operator - two 'ORs'", function() {
+  it("7. Verify Table Filter for OR operator - two 'ORs'", function () {
     table.ReadTableRowColumnData(0, 3, "v2").then(($cellData) => {
       expect($cellData).to.eq("Michael Lawson");
     });
@@ -291,7 +163,7 @@ describe("Verify various Table_Filter combinations", function() {
     table.RemoveFilterNVerify("2381224", true, false, 0, "v2");
   });
 
-  it("18. Verify Table Filter for AND operator - different row match", function() {
+  it("8. Verify Table Filter for AND operator - different row match", function () {
     table.ReadTableRowColumnData(3, 3, "v2").then(($cellData) => {
       expect($cellData).to.eq("Byron Fields");
     });
@@ -304,7 +176,7 @@ describe("Verify various Table_Filter combinations", function() {
     table.RemoveFilterNVerify("2381224", true, false, 0, "v2");
   });
 
-  it("19. Verify Table Filter for AND operator - same row match", function() {
+  it("9. Verify Table Filter for AND operator - same row match", function () {
     table.ReadTableRowColumnData(0, 3, "v2").then(($cellData) => {
       expect($cellData).to.eq("Michael Lawson");
     });
@@ -319,7 +191,7 @@ describe("Verify various Table_Filter combinations", function() {
     table.RemoveFilterNVerify("2381224", true, false, 0, "v2");
   });
 
-  it("20. Verify Table Filter for AND operator - same row match - edit input text value", function() {
+  it("10. Verify Table Filter for AND operator - same row match - edit input text value", function () {
     table.ReadTableRowColumnData(0, 3, "v2").then(($cellData) => {
       expect($cellData).to.eq("Michael Lawson");
     });

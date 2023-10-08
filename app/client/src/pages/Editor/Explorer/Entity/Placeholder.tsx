@@ -15,6 +15,8 @@ const Wrapper = styled.div<{ step: number }>`
   & p {
     margin-bottom: 0;
   }
+  word-wrap: break-word;
+  width: 100%;
 `;
 
 export function EntityPlaceholder(props: {

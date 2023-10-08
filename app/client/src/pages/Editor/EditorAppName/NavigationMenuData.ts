@@ -26,10 +26,12 @@ import type { ThemeProp } from "widgets/constants";
 
 type NavigationMenuDataProps = ThemeProp & {
   editMode: typeof noop;
+  setForkApplicationModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const GetNavigationMenuData = ({
   editMode,
+  setForkApplicationModalOpen,
 }: NavigationMenuDataProps): MenuItemData[] => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -43,11 +45,34 @@ export const GetNavigationMenuData = ({
     currentApplication?.userPermissions ?? [],
     PERMISSION_TYPE.EXPORT_APPLICATION,
   );
+  const hasEditPermission = isPermitted(
+    currentApplication?.userPermissions ?? [],
+    PERMISSION_TYPE.MANAGE_APPLICATION,
+  );
   const openExternalLink = useCallback((link: string) => {
     if (link) {
       window.open(link, "_blank");
     }
   }, []);
+
+  const exportAppAsJSON = () => {
+    const id = `t--export-app-link`;
+    const existingLink = document.getElementById(id);
+    existingLink && existingLink.remove();
+    const link = document.createElement("a");
+
+    const branchName = currentApplication?.gitApplicationMetadata?.branchName;
+    link.href = getExportAppAPIRoute(applicationId, branchName);
+    link.id = id;
+    document.body.appendChild(link);
+    // @ts-expect-error: Types are not available
+    if (!window.Cypress) {
+      link.click();
+    }
+    toast.show(`Successfully exported ${currentApplication?.name}`, {
+      kind: "success",
+    });
+  };
 
   const openAppSettingsPane = () => dispatch(openAppSettingsPaneAction());
 
@@ -151,8 +176,13 @@ export const GetNavigationMenuData = ({
     },
     {
       text: "导出应用",
-      onClick: () =>
-        applicationId && openExternalLink(getExportAppAPIRoute(applicationId)),
+      onClick: () => setForkApplicationModalOpen(true),
+      type: MenuTypes.MENU,
+      isVisible: isApplicationIdPresent && hasEditPermission,
+    },
+    {
+      text: "Export application",
+      onClick: exportAppAsJSON,
       type: MenuTypes.MENU,
       isVisible: isApplicationIdPresent && hasExportPermission,
     },

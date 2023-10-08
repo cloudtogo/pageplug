@@ -14,6 +14,7 @@ import { Tooltip, Icon } from "design-system";
 import { COPY_ELEMENT, createMessage } from "@appsmith/constants/messages";
 import CollapseToggle from "./CollapseToggle";
 import AnalyticsUtil from "utils/AnalyticsUtil";
+import { Colors } from "constants/Colors";
 
 const Wrapper = styled.div<{ step: number }>`
   &&&& {

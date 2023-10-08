@@ -32,7 +32,6 @@ import Pages from "pages/Editor/Explorer/Pages";
 import { EntityProperties } from "pages/Editor/Explorer/Entity/EntityProperties";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { SIDEBAR_ID } from "constants/Explorer";
-import { isMultiPaneActive } from "selectors/multiPaneSelectors";
 import { getIsAppSettingsPaneWithNavigationTabOpen } from "selectors/appSettingsPaneSelectors";
 import { EntityClassNames } from "pages/Editor/Explorer/Entity";
 import { getEditingEntityName } from "selectors/entitiesSelector";
@@ -64,9 +63,7 @@ export const EntityExplorerSidebar = memo((props: Props) => {
   const dispatch = useDispatch();
   const active = useSelector(getExplorerActive);
   const sidebarRef = useRef<HTMLDivElement>(null);
-  let pinned = useSelector(getExplorerPinned);
-  const isMultiPane = useSelector(isMultiPaneActive);
-  if (isMultiPane) pinned = false;
+  const pinned = useSelector(getExplorerPinned);
   const isPreviewMode = useSelector(previewModeSelector);
   const isAppSettingsPaneWithNavigationTabOpen = useSelector(
     getIsAppSettingsPaneWithNavigationTabOpen,
@@ -200,7 +197,7 @@ export const EntityExplorerSidebar = memo((props: Props) => {
   return (
     <div
       className={classNames({
-        [`js-entity-explorer t--entity-explorer transform transition-all flex h-[inherit] duration-400 border-r ${tailwindLayers.entityExplorer}`]:
+        [`js-entity-explorer t--entity-explorer transition-transform transform  flex h-[inherit] duration-400 border-r ${tailwindLayers.entityExplorer}`]:
           true,
         relative: pinned && !isPreviewingApp,
         "-translate-x-full": (!pinned && !active) || isPreviewingApp,

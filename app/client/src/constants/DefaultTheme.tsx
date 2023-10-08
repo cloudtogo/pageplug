@@ -3039,7 +3039,7 @@ export const theme: Theme = {
     },
   },
   actionSidePane: {
-    width: 265,
+    width: 280,
   },
   onboarding: {
     statusBarHeight: 92,

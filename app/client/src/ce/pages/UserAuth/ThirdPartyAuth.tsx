@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import type { SocialLoginType } from "@appsmith/constants/SocialLogin";
 import { getSocialLoginButtonProps } from "@appsmith/constants/SocialLogin";
-import type { EventName } from "utils/AnalyticsUtil";
+import type { EventName } from "@appsmith/utils/analyticsUtilTypes";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { useLocation } from "react-router-dom";
 import PerformanceTracker, {
@@ -15,11 +15,6 @@ const ThirdPartyAuthWrapper = styled.div`
   flex-direction: column;
   gap: var(--ads-v2-spaces-3);
 `;
-
-export const SocialLoginTypes = {
-  GOOGLE: "google",
-  GITHUB: "github",
-};
 
 type SignInType = "SIGNIN" | "SIGNUP";
 
@@ -58,10 +53,14 @@ function SocialLoginButton(props: {
       }}
       renderAs="a"
       size="md"
-      startIcon={props.name.toLowerCase() + `-fill`}
+      startIcon={
+        ["Google", "Github"].includes(props.name)
+          ? props.name.toLowerCase() + `-fill`
+          : "key-2-line"
+      }
     >
       <div className="login-method" data-testid={`login-with-${props.name}`}>
-        {props.label ?? `${props.name} 登录`}
+        {props.label ?? `${props.name}登录`}
       </div>
     </Button>
   );

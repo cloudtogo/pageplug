@@ -38,7 +38,10 @@ const generateWidget = memoize(function getWidgetComponent(
   );
 });
 
-export const registerWidget = (Widget: any, config: WidgetConfiguration) => {
+export const registerWidget = (
+  Widget: typeof BaseWidget,
+  config: WidgetConfiguration,
+) => {
   const ProfiledWidget = generateWidget(
     Widget,
     !!config.needsMeta,
@@ -63,12 +66,15 @@ export const registerWidget = (Widget: any, config: WidgetConfiguration) => {
     config.properties.stylesheetConfig,
     config.properties.autocompleteDefinitions,
     config.autoLayout,
+    config.properties.setterConfig,
   );
+
   configureWidget(config);
 };
 
 export const configureWidget = (config: WidgetConfiguration) => {
   let features: Record<string, unknown> = {};
+
   if (config.features) {
     Object.keys(config.features).forEach((registeredFeature: string) => {
       features = Object.assign(
@@ -85,6 +91,7 @@ export const configureWidget = (config: WidgetConfiguration) => {
     ...config.defaults,
     ...features,
     searchTags: config.searchTags,
+    tags: config.tags,
     type: config.type,
     hideCard: !!config.hideCard || !config.iconSVG,
     isDeprecated: !!config.isDeprecated,
@@ -99,6 +106,7 @@ export const configureWidget = (config: WidgetConfiguration) => {
   };
 
   const nonSerialisableWidgetConfigs: Record<string, unknown> = {};
+
   Object.values(NonSerialisableWidgetConfigs).forEach((entry) => {
     if (_config[entry] !== undefined) {
       nonSerialisableWidgetConfigs[entry] = _config[entry];
@@ -110,7 +118,12 @@ export const configureWidget = (config: WidgetConfiguration) => {
     config.type,
     nonSerialisableWidgetConfigs,
   );
+
   WidgetFactory.storeWidgetConfig(config.type, _config);
+
+  if (config.methods) {
+    WidgetFactory.setWidgetMethods(config.type, config.methods);
+  }
 
   store.dispatch({
     type: ReduxActionTypes.ADD_WIDGET_CONFIG,

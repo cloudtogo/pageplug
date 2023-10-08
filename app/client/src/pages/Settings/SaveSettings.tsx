@@ -1,5 +1,11 @@
 import React from "react";
-import { createMessage } from "@appsmith/constants/messages";
+import {
+  RESET_BUTTON,
+  SAVE_AND_REFRESH_BUTTON,
+  SAVE_AND_RESTART_BUTTON,
+  SAVE_BUTTON,
+  createMessage,
+} from "@appsmith/constants/messages";
 import { Button } from "design-system";
 import styled from "styled-components";
 
@@ -25,15 +31,39 @@ const SettingsButtonWrapper = styled.div`
 `;
 
 type SaveAdminSettingsProps = {
+  isOnlyTenantConfig?: boolean;
   isSaving?: boolean;
+  needsRefresh?: boolean;
   onSave?: () => void;
   onClear?: () => void;
   settings: Record<string, string>;
   valid: boolean;
+  updatedTenantSettings?: string[];
 };
 
 const saveAdminSettings = (props: SaveAdminSettingsProps) => {
-  const { isSaving, onClear, onSave, settings, valid } = props;
+  const {
+    isOnlyTenantConfig = false,
+    isSaving,
+    needsRefresh = false,
+    onClear,
+    onSave,
+    settings,
+    updatedTenantSettings,
+    valid,
+  } = props;
+
+  let saveButtonText = SAVE_AND_RESTART_BUTTON;
+
+  if (needsRefresh) {
+    saveButtonText = SAVE_AND_REFRESH_BUTTON;
+  } else if (
+    isOnlyTenantConfig ||
+    (updatedTenantSettings?.length === Object.keys(settings).length &&
+      updatedTenantSettings?.length !== 0)
+  ) {
+    saveButtonText = SAVE_BUTTON;
+  }
 
   return (
     <SettingsButtonWrapper>
@@ -44,7 +74,7 @@ const saveAdminSettings = (props: SaveAdminSettingsProps) => {
         onClick={onSave}
         size="md"
       >
-        {createMessage(() => "保存并重启服务")}
+        {createMessage(saveButtonText)}
       </Button>
       <Button
         className="t--admin-settings-reset-button"
@@ -53,7 +83,7 @@ const saveAdminSettings = (props: SaveAdminSettingsProps) => {
         onClick={onClear}
         size="md"
       >
-        {createMessage(() => "重置")}
+        {createMessage(RESET_BUTTON)}
       </Button>
     </SettingsButtonWrapper>
   );

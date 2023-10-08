@@ -61,7 +61,6 @@ import {
   IconContainer,
   PEEK_STYLE_PERSIST_CLASS,
 } from "components/editorComponents/CodeEditor/styledComponents";
-import { bindingMarker } from "components/editorComponents/CodeEditor/MarkHelpers/bindingMarker";
 import {
   entityMarker,
   NAVIGATE_TO_ATTRIBUTE,
@@ -70,7 +69,7 @@ import {
   bindingHint,
   sqlHint,
 } from "components/editorComponents/CodeEditor/hintHelpers";
-import BindingPrompt from "./BindingPrompt";
+
 import { showBindingPrompt } from "./BindingPromptHelper";
 import { Button } from "design-system";
 import "codemirror/addon/fold/brace-fold";
@@ -102,6 +101,7 @@ import { getLintAnnotations, getLintTooltipDirection } from "./lintHelpers";
 import { executeCommandAction } from "actions/apiPaneActions";
 import { startingEntityUpdate } from "actions/editorActions";
 import type { SlashCommandPayload } from "entities/Action";
+import { SlashCommand } from "entities/Action";
 import type { Indices } from "constants/Layers";
 import { replayHighlightClass } from "globalStyles/portals";
 import {
@@ -143,12 +143,12 @@ import {
   saveAndAutoIndentCode,
 } from "./utils/saveAndAutoIndent";
 import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
-import { selectFeatureFlags } from "selectors/usersSelectors";
+import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
 import { AIWindow } from "@appsmith/components/editorComponents/GPT";
 import classNames from "classnames";
 import {
   APPSMITH_AI,
-  askAIEnabled,
+  isAIEnabled,
 } from "@appsmith/components/editorComponents/GPT/trigger";
 import {
   getAllDatasourceTableKeys,
@@ -158,12 +158,12 @@ import { debug } from "loglevel";
 import { PeekOverlayExpressionIdentifier, SourceType } from "@shared/ast";
 import type { MultiplexingModeConfig } from "components/editorComponents/CodeEditor/modes";
 import { MULTIPLEXING_MODE_CONFIGS } from "components/editorComponents/CodeEditor/modes";
-import { getAppsmithConfigs } from "@appsmith/configs";
+import { getDeleteLineShortcut } from "./utils/deleteLine";
+import { CodeEditorSignPosting } from "@appsmith/components/editorComponents/CodeEditorSignPosting";
+import { getFocusablePropertyPaneField } from "selectors/propertyPaneSelectors";
 
 type ReduxStateProps = ReturnType<typeof mapStateToProps>;
 type ReduxDispatchProps = ReturnType<typeof mapDispatchToProps>;
-
-const { cloudHosting } = getAppsmithConfigs();
 
 export type CodeEditorExpected = {
   type: string;
@@ -274,7 +274,7 @@ const getEditorIdentifier = (props: EditorProps): string => {
 
 class CodeEditor extends Component<Props, State> {
   static defaultProps = {
-    marking: [bindingMarker, entityMarker],
+    marking: [entityMarker],
     hinting: [bindingHint, commandsHelper, sqlHint.hinter],
     lineCommentString: "//",
   };
@@ -318,6 +318,12 @@ class CodeEditor extends Component<Props, State> {
       props.input.value,
     );
     this.multiplexConfig = MULTIPLEXING_MODE_CONFIGS[this.props.mode];
+    /**
+     * Decides if AI is enabled by looking at repo, feature flags, props and environment
+     */
+    this.AIEnabled =
+      isAIEnabled(this.props.featureFlags, this.props.mode) &&
+      Boolean(this.props.AIAssisted);
   }
 
   componentDidMount(): void {
@@ -376,6 +382,9 @@ class CodeEditor extends Component<Props, State> {
         [getSaveAndAutoIndentKey()]: (editor) => {
           saveAndAutoIndentCode(editor);
           AnalyticsUtil.logEvent("PRETTIFY_AND_SAVE_KEYBOARD_SHORTCUT");
+        },
+        [getDeleteLineShortcut()]: () => {
+          return;
         },
       };
 
@@ -483,6 +492,10 @@ class CodeEditor extends Component<Props, State> {
   handleSlashCommandSelection = (...args: any) => {
     const [command] = args;
     if (command === APPSMITH_AI) {
+      this.props.executeCommand({
+        actionType: SlashCommand.ASK_AI,
+        args: {},
+      });
       this.setState({ showAIWindow: true });
     }
     this.handleAutocompleteVisibility(this.editor);
@@ -529,13 +542,50 @@ class CodeEditor extends Component<Props, State> {
       //Refresh editor when the container height is increased.
       this.debounceEditorRefresh();
     }
-    if (identifierHasChanged && shouldFocusOnPropertyControl()) {
-      setTimeout(() => {
-        if (this.props.editorIsFocused) {
-          this.editor.focus();
-        }
-      }, 200);
+
+    const entityInformation = this.getEntityInformation();
+    const isWidgetType = entityInformation.entityType === ENTITY_TYPE.WIDGET;
+
+    const hasFocusedValueChanged =
+      getEditorIdentifier(this.props) !== this.props.focusedProperty;
+
+    if (hasFocusedValueChanged && isWidgetType) {
+      if (this.state.showAIWindow) {
+        this.setState({ showAIWindow: false });
+      }
     }
+
+    if (identifierHasChanged) {
+      if (this.state.showAIWindow) {
+        this.setState({ showAIWindow: false });
+      }
+
+      if (shouldFocusOnPropertyControl()) {
+        setTimeout(() => {
+          if (this.props.editorIsFocused) {
+            this.editor.focus();
+          }
+        }, 200);
+      }
+    } else if (this.props.editorLastCursorPosition) {
+      // This is for when we want to change cursor positions
+      // for e.g navigating to a line from the debugger
+      if (
+        !isEqual(
+          this.props.editorLastCursorPosition,
+          prevProps.editorLastCursorPosition,
+        ) &&
+        this.props.editorLastCursorPosition.origin ===
+          CursorPositionOrigin.Navigation
+      ) {
+        setTimeout(() => {
+          if (this.props.editorIsFocused) {
+            this.editor.focus();
+          }
+        }, 200);
+      }
+    }
+
     this.editor.operation(() => {
       if (prevProps.lintErrors !== this.props.lintErrors) {
         this.lintCode(this.editor);
@@ -555,7 +605,7 @@ class CodeEditor extends Component<Props, State> {
          * and we check if they are different because the input value has changed
          * and not because the editor value has changed
          * */
-        if (inputValue !== editorValue && inputValue !== previousInputValue) {
+        if (inputValue !== editorValue) {
           // If it is focused update it only if the identifier has changed
           // if not focused, can be updated
           if (this.state.isFocused) {
@@ -755,7 +805,10 @@ class CodeEditor extends Component<Props, State> {
         .extractExpressionAtPosition(chIndex)
         .then((lineExpression: string) => {
           const paths = _.toPath(lineExpression);
-          if (!this.isPathLibrary(paths)) {
+          if (
+            !this.isPathLibrary(paths) &&
+            paths[0] in this.props.dynamicData
+          ) {
             this.showPeekOverlay(lineExpression, paths, tokenElement);
           } else {
             this.hidePeekOverlay();
@@ -844,7 +897,20 @@ class CodeEditor extends Component<Props, State> {
         }
         break;
       case "Escape":
-        if (this.state.isFocused && !this.state.hinterOpen) {
+        /*
+         * We only want focus to go out for code editors in JS pane with binding prompts
+         * This is so the esc closes the binding prompt.
+         * but this is not needed in the JS Object editor, since there are no prompts there
+         * So we check for the following so the JS editor does not have this behaviour -
+         * isFocused : editor is focused
+         * hinterOpen : autocomplete hinter is closed
+         * this.isBindingPromptOpen : binding prompt (type / for commands) is closed
+         */
+        if (
+          this.state.isFocused &&
+          !this.state.hinterOpen &&
+          this.isBindingPromptOpen()
+        ) {
           this.codeEditorTarget.current?.focus();
           this.codeEditorTarget.current?.dispatchEvent(
             interactionAnalyticsEvent({ key: e.key }),
@@ -1117,11 +1183,6 @@ class CodeEditor extends Component<Props, State> {
     changeObj?: CodeMirror.EditorChangeLinkedList,
   ) => {
     const value = this.editor?.getValue() || "";
-    if (changeObj && changeObj.origin === "complete") {
-      AnalyticsUtil.logEvent("AUTO_COMPLETE_SELECT", {
-        searchString: changeObj.text[0],
-      });
-    }
     const inputValue = this.props.input.value || "";
     // console.log(inputValue, "handleChange");
     if (
@@ -1221,6 +1282,8 @@ class CodeEditor extends Component<Props, State> {
           entityInformation.entityId = entity.widgetId;
           if (isTriggerPath)
             entityInformation.expectedType = AutocompleteDataType.FUNCTION;
+
+          entityInformation.widgetType = entity.type;
         }
       }
       entityInformation.propertyPath = propertyPath;
@@ -1267,6 +1330,14 @@ class CodeEditor extends Component<Props, State> {
     // Check if the user is trying to comment out the line, in that case we should not show autocomplete
     const isCtrlOrCmdPressed = event.metaKey || event.ctrlKey;
 
+    const isAltKeyPressed = event.altKey;
+
+    // If alt key is pressed, do not show autocomplete
+    // Windows and Linux use Alt + Enter to add a new line
+    // Alt key is used to enter non-english characters which are invalid entity names
+    // So we can safely disable autocomplete when alt key is pressed
+    if (isAltKeyPressed) return;
+
     if (isModifierKey(key)) return;
     const code = `${event.ctrlKey ? "Ctrl+" : ""}${event.code}`;
     if (isCloseKey(code) || isCloseKey(key)) {
@@ -1276,13 +1347,19 @@ class CodeEditor extends Component<Props, State> {
     }
     const cursor = cm.getCursor();
     const line = cm.getLine(cursor.line);
+    const token = cm.getTokenAt(cursor);
     let showAutocomplete = false;
     const prevChar = line[cursor.ch - 1];
 
-    /* Check if the character before cursor is completable to show autocomplete which backspacing */
-    if (key === "/" && !isCtrlOrCmdPressed) {
+    // If the token is a comment or string, do not show autocomplete
+    if (token?.type && ["comment", "string"].includes(token.type)) return;
+    if (isCtrlOrCmdPressed) {
+      // If cmd or ctrl is pressed only show autocomplete for space key
+      showAutocomplete = key === " ";
+    } else if (key === "/") {
       showAutocomplete = true;
     } else if (event.code === "Backspace") {
+      /* Check if the character before cursor is completable to show autocomplete which backspacing */
       showAutocomplete = !!prevChar && /[a-zA-Z_0-9.]/.test(prevChar);
     } else if (key === "{") {
       /* Autocomplete for { should show up only when a user attempts to write {{}} and not a code block. */
@@ -1446,24 +1523,6 @@ class CodeEditor extends Component<Props, State> {
     }
     const entityInformation = this.getEntityInformation();
 
-    /**
-     * Decides if AI is enabled by looking at repo, feature flags, props and environment
-     */
-    this.AIEnabled = Boolean(
-      askAIEnabled &&
-        this.props.featureFlags.ask_ai &&
-        this.props.AIAssisted &&
-        cloudHosting,
-    );
-
-    /**
-     * AI button is to be shown when following conditions are satisfied
-     * Enabled by feature flag and repo permissions
-     * Editor value is empty and editor is hovered or focused
-     * AI window is not open already
-     */
-    const showAIButton =
-      this.AIEnabled && !this.props.input.value && !this.state.showAIWindow;
     const showSlashCommandButton =
       showLightningMenu !== false &&
       !this.state.isFocused &&
@@ -1497,22 +1556,6 @@ class CodeEditor extends Component<Props, State> {
         skin={this.props.theme === EditorTheme.DARK ? Skin.DARK : Skin.LIGHT}
       >
         <div className="flex absolute gap-1 top-[6px] right-[6px] z-4 justify-center">
-          <Button
-            className={classNames(
-              "ai-trigger invisible",
-              this.state.isFocused && "!visible",
-              !showAIButton && "!hidden",
-            )}
-            kind="tertiary"
-            onClick={(e) => {
-              e.stopPropagation();
-              this.setState({ showAIWindow: true });
-            }}
-            size="sm"
-            tabIndex={-1}
-          >
-            AI
-          </Button>
           <Button
             className={classNames(
               "commands-button invisible",
@@ -1557,12 +1600,14 @@ class CodeEditor extends Component<Props, State> {
             currentValue={this.props.input.value}
             dataTreePath={dataTreePath}
             enableAIAssistance={this.AIEnabled}
+            entity={entityInformation}
             isOpen={this.state.showAIWindow}
             mode={this.props.mode}
             triggerContext={this.props.expected}
             update={this.updateValueWithAIResponse}
           >
             <EditorWrapper
+              AIEnabled
               border={border}
               borderLess={borderLess}
               className={`${className} ${replayHighlightClass} ${
@@ -1580,6 +1625,7 @@ class CodeEditor extends Component<Props, State> {
               isNotHover={this.state.isFocused || this.state.isOpened}
               isRawView={this.props.isRawView}
               isReadOnly={this.props.isReadOnly}
+              mode={this.props.mode}
               onMouseMove={this.handleLintTooltip}
               onMouseOver={this.handleMouseMove}
               ref={this.editorWrapperRef}
@@ -1609,9 +1655,12 @@ class CodeEditor extends Component<Props, State> {
                 ref={this.codeEditorTarget}
                 tabIndex={0}
               >
-                <BindingPrompt
+                <CodeEditorSignPosting
                   editorTheme={this.props.theme}
+                  forComp="editor"
+                  isAIEnabled={this.AIEnabled}
                   isOpen={this.isBindingPromptOpen()}
+                  mode={this.props.mode}
                   promptMessage={this.props.promptMessage}
                   showLightningMenu={this.props.showLightningMenu}
                 />
@@ -1655,6 +1704,7 @@ const mapStateToProps = (state: AppState, props: EditorProps) => ({
   featureFlags: selectFeatureFlags(state),
   datasourceTableKeys: getAllDatasourceTableKeys(state, props.dataTreePath),
   installedLibraries: selectInstalledLibraries(state),
+  focusedProperty: getFocusablePropertyPaneField(state),
 });
 
 const mapDispatchToProps = (dispatch: any) => ({

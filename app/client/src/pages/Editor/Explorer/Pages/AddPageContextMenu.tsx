@@ -16,7 +16,6 @@ import {
   CREATE_PAGE,
   GENERATE_PAGE_ACTION_TITLE,
 } from "@appsmith/constants/messages";
-// import { isMobileLayout } from "selectors/applicationSelectors";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import {
   Menu,
@@ -54,7 +53,6 @@ function AddPageContextMenu({
   const [show, setShow] = useState(openMenu);
   const dispatch = useDispatch();
   const { pageId } = useParams<ExplorerURLParams>();
-  // const isMobile = useSelector(isMobileLayout);
   const isAutoLayout = useSelector(getIsAutoLayout);
   const isAirgappedInstance = isAirgapped();
 

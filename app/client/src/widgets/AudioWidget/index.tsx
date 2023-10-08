@@ -1,15 +1,16 @@
 import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
 import { ResponsiveBehavior } from "utils/autoLayout/constants";
-
 import IconSVG from "./icon.svg";
 import Widget from "./widget";
 import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
 import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "音频",
   iconSVG: IconSVG,
+  tags: [WIDGET_TAGS.MEDIA],
   needsMeta: true,
   searchTags: ["mp3", "sound", "wave", "player", "audio"],
   defaults: {
@@ -29,6 +30,8 @@ export const CONFIG = {
     meta: Widget.getMetaPropertiesMap(),
     config: Widget.getPropertyPaneConfig(),
     contentConfig: Widget.getPropertyPaneContentConfig(),
+    setterConfig: Widget.getSetterConfig(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
   },
   autoLayout: {
     widgetSize: [

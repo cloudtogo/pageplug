@@ -167,6 +167,10 @@ import CodeScannerWidget, {
 import ListWidgetV2, {
   CONFIG as LIST_WIDGET_CONFIG_V2,
 } from "widgets/ListWidgetV2";
+import {
+  ButtonWidget as ButtonWidgetV2,
+  CONFIG as BUTTON_WIDGET_CONFIG_V2,
+} from "widgets/ButtonWidgetV2";
 
 import FormilyWidget, {
   CONFIG as FORMILY_WIDGET_CONFIG,
@@ -283,6 +287,7 @@ export const ALL_WIDGETS_AND_CONFIG: [any, WidgetConfiguration][] = [
   [CategorySliderWidget, CATEGORY_SLIDER_WIDGET_CONFIG],
   [CodeScannerWidget, CODE_SCANNER_WIDGET_CONFIG],
   [ListWidgetV2, LIST_WIDGET_CONFIG_V2],
+  [ButtonWidgetV2, BUTTON_WIDGET_CONFIG_V2],
 
   [FormilyWidget, FORMILY_WIDGET_CONFIG],
 

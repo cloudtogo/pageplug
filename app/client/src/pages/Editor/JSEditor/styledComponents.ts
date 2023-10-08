@@ -15,7 +15,7 @@ export const CodeEditorWithGutterStyles = css`
   }
   .${RUN_GUTTER_CLASSNAME} {
     cursor: pointer;
-    color: var(--ads-color-brand);
+    color: var(--ads-v2-color-fg-brand);
   }
   .CodeMirror-linenumbers {
     width: max-content;
@@ -105,7 +105,7 @@ export const TabbedViewContainer = styled.div<{ isExecuting: boolean }>`
     }
     .ads-v2-tabs__panel {
       ${CodeEditorWithGutterStyles};
-      height: calc(100% - 40px);
+      height: calc(100% - 38px);
       margin-top: 0px;
       background-color: var(--ads-v2-color-bg);
       .CodeEditorTarget {

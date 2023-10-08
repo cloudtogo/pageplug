@@ -835,6 +835,7 @@ export default [
                   label: "图标对齐",
                   helpText: "设置菜单按钮图标对齐方式",
                   controlType: "ICON_TABS",
+                  defaultValue: "left",
                   options: [
                     {
                       startIcon: "align-left",
@@ -1308,6 +1309,7 @@ export default [
                             label: "图标对齐",
                             helpText: "设置菜单项图标对齐方向",
                             controlType: "ICON_TABS",
+                            defaultValue: "left",
                             options: [
                               {
                                 startIcon: "align-left",

@@ -305,11 +305,7 @@ export function Item(props: {
 
 const LeftPaneDataSection = styled.div<{ isBannerVisible?: boolean }>`
   position: relative;
-  height: calc(
-    100vh -
-      ${(props) =>
-        props.theme.homePage.header + 24 + (props.isBannerVisible ? 48 : 0)}px
-  );
+  height: calc(100vh - ${(props) => 48 + (props.isBannerVisible ? 48 : 0)}px);
   display: flex;
   flex-direction: column;
 `;
@@ -424,6 +420,7 @@ export function LeftPane(props: LeftPaneProps) {
     <LeftPaneWrapper isBannerVisible={isBannerVisible}>
       <LeftPaneSection
         heading={createMessage(WORKSPACES_HEADING)}
+        isBannerVisible={isBannerVisible}
         isFetchingApplications={isFetchingApplications}
       >
         <WorkpsacesNavigator data-testid="t--left-panel">
@@ -734,6 +731,21 @@ export function ApplicationsSection(props: any) {
         const hasCreateNewApplicationPermission =
           hasCreateNewAppPermission(workspace.userPermissions) && !isMobile;
 
+        const onClickAddNewButton = (workspaceId: string) => {
+          if (
+            Object.entries(creatingApplicationMap).length === 0 ||
+            (creatingApplicationMap && !creatingApplicationMap[workspaceId])
+          ) {
+            createNewApplication(
+              getNextEntityName(
+                "Untitled application ",
+                applications.map((el: any) => el.name),
+              ),
+              workspaceId,
+            );
+          }
+        };
+
         const showWorkspaceMenuOptions =
           canInviteToWorkspace ||
           hasManageWorkspacePermissions ||
@@ -784,34 +796,25 @@ export function ApplicationsSection(props: any) {
                         INVITE_USERS_PLACEHOLDER,
                         cloudHosting,
                       )}
-                      title={`邀请小伙伴到应用组 ${workspace.name}`}
-                      trigger={
-                        <Button
-                          category={Category.secondary}
-                          icon={"share-line"}
-                          size={Size.medium}
-                          tag="button"
-                          text={"分享"}
-                        />
-                      }
-                      workspaceId={workspace.id}
+                      workspace={workspace}
                     />
                   )}
                   {hasCreateNewApplicationPermission &&
                     !isFetchingApplications &&
-                    applications.length !== 0 && [
-                      <CreateApp
-                        applications={applications}
-                        key="pc"
-                        orgId={workspace.id}
-                      />,
-                      <CreateApp
-                        applications={applications}
-                        isMobile
-                        key="mobile"
-                        orgId={workspace.id}
-                      />,
-                    ]}
+                    applications.length !== 0 && (
+                      <Button
+                        className="t--new-button createnew"
+                        isLoading={
+                          creatingApplicationMap &&
+                          creatingApplicationMap[workspace.id]
+                        }
+                        onClick={() => onClickAddNewButton(workspace.id)}
+                        size="md"
+                        startIcon={"plus"}
+                      >
+                        新增
+                      </Button>
+                    )}
                   {(currentUser || isFetchingApplications) &&
                     !isMobile &&
                     showWorkspaceMenuOptions && (
@@ -886,7 +889,7 @@ export function ApplicationsSection(props: any) {
                                 }
                                 startIcon="settings-2-line"
                               >
-                                配置
+                                设置
                               </MenuItem>
                             </>
                           )}
@@ -922,41 +925,33 @@ export function ApplicationsSection(props: any) {
                             )}
                           {canInviteToWorkspace && (
                             <MenuItem
-                              icon="logout"
-                              onSelect={(e: React.MouseEvent) => {
-                                e.stopPropagation();
+                              className="error-menuitem"
+                              onSelect={() => {
                                 !warnLeavingWorkspace
                                   ? setWarnLeavingWorkspace(true)
                                   : leaveWS(workspace.id);
                               }}
-                              text={
-                                !warnLeavingWorkspace
-                                  ? "退出应用组"
-                                  : "确定退出应用组吗？"
-                              }
-                              type={
-                                !warnLeavingWorkspace ? undefined : "warning"
-                              }
-                            />
+                              startIcon="logout"
+                            >
+                              {!warnLeavingWorkspace
+                                ? "离开应用组"
+                                : "你确定吗?"}
+                            </MenuItem>
                           )}
                           {applications.length === 0 && canDeleteWorkspace && (
                             <MenuItem
-                              icon="trash"
-                              onSelect={(e: React.MouseEvent) => {
-                                e.stopPropagation();
+                              className="error-menuitem"
+                              onSelect={() => {
                                 warnDeleteWorkspace
                                   ? handleDeleteWorkspace(workspace.id)
                                   : setWarnDeleteWorkspace(true);
                               }}
-                              text={
-                                !warnDeleteWorkspace
-                                  ? "删除应用组"
-                                  : "确定删除应用组吗？"
-                              }
-                              type={
-                                !warnDeleteWorkspace ? undefined : "warning"
-                              }
-                            />
+                              startIcon="delete-bin-line"
+                            >
+                              {!warnDeleteWorkspace
+                                ? "删除应用组"
+                                : "你确定吗?"}
+                            </MenuItem>
                           )}
                         </MenuContent>
                       </Menu>
@@ -991,22 +986,18 @@ export function ApplicationsSection(props: any) {
                   <span>应用组是空的</span>
                   {/* below component is duplicate. This is because of cypress test were failing */}
                   {hasCreateNewApplicationPermission && (
-                    <div
-                      className="flex justify-between"
-                      style={{ width: 272 }}
+                    <Button
+                      className="t--new-button createnew"
+                      isLoading={
+                        creatingApplicationMap &&
+                        creatingApplicationMap[workspace.id]
+                      }
+                      onClick={() => onClickAddNewButton(workspace.id)}
+                      size="md"
+                      startIcon={"plus"}
                     >
-                      <CreateApp
-                        applications={applications}
-                        key="pc"
-                        orgId={workspace.id}
-                      />
-                      <CreateApp
-                        applications={applications}
-                        isMobile
-                        key="mobile"
-                        orgId={workspace.id}
-                      />
-                    </div>
+                      新增
+                    </Button>
                   )}
                 </NoAppsFound>
               )}
@@ -1078,6 +1069,7 @@ export class Applications<
 
   componentWillUnmount() {
     this.props.setHeaderMetaData(false, false);
+    this.props.searchApplications("");
   }
 
   public render() {

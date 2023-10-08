@@ -4,8 +4,18 @@ import { BranchListItemContainer } from "./BranchListItemContainer";
 import DefaultTag from "./DefaultTag";
 import { useHover } from "../hooks";
 import BranchMoreMenu from "./BranchMoreMenu";
-import { Tooltip, Text } from "design-system";
+import { Tooltip, Text, Spinner } from "design-system";
 import { isEllipsisActive } from "utils/helpers";
+import { useSelector } from "react-redux";
+import { getBranchSwitchingDetails } from "selectors/gitSyncSelectors";
+import styled from "styled-components";
+
+const OptionsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+`;
 
 export function BranchListItem({
   active,
@@ -20,7 +30,9 @@ export function BranchListItem({
   const [hover] = useHover(itemRef);
   const textRef = React.useRef<HTMLSpanElement>(null);
   const [isMoreMenuOpen, setIsMoreMenuOpen] = React.useState(false);
-
+  const { isSwitchingBranch, switchingToBranch } = useSelector(
+    getBranchSwitchingDetails,
+  );
   useEffect(() => {
     if (itemRef.current && shouldScrollIntoView) {
       scrollIntoView(itemRef.current, {
@@ -62,13 +74,18 @@ export function BranchListItem({
           {isDefault && <DefaultTag />}
         </span>
       </Tooltip>
-      {(hover || isMoreMenuOpen) && (
-        <BranchMoreMenu
-          branchName={branch}
-          open={isMoreMenuOpen}
-          setOpen={setIsMoreMenuOpen}
-        />
-      )}
+      <OptionsContainer>
+        {switchingToBranch === branch && isSwitchingBranch && (
+          <Spinner size="md" />
+        )}
+        {(hover || isMoreMenuOpen) && (
+          <BranchMoreMenu
+            branchName={branch}
+            open={isMoreMenuOpen}
+            setOpen={setIsMoreMenuOpen}
+          />
+        )}
+      </OptionsContainer>
     </BranchListItemContainer>
   );
 }

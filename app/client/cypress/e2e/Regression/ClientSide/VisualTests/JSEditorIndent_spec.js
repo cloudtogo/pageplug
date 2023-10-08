@@ -1,6 +1,14 @@
-import * as _ from "../../../../support/Objects/ObjectsCore";
+import {
+  agHelper,
+  debuggerHelper,
+  entityExplorer,
+  homePage,
+  jsEditor,
+  apiPage,
+  dataSources,
+} from "../../../../support/Objects/ObjectsCore";
 
-describe("JSEditor Indendation - Visual tests", () => {
+describe.skip("JSEditor Indendation - Visual tests", () => {
   it("6. TC 1933 - jSEditor prettify verification on cloned application", () => {
     const appname = localStorage.getItem("AppName");
     _.jsEditor.CreateJSObject(
@@ -43,18 +51,18 @@ myFun2: async () => {
     );
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjBeforePrettify6");
 
-    _.agHelper.ActionContextMenuWithInPane("Prettify code");
-    _.agHelper.Sleep(2000); //allowing time to prettify!
+    agHelper.ActionContextMenuWithInPane({ action: "Prettify code" });
+    agHelper.Sleep(2000); //allowing time to prettify!
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify6");
 
     // taking a snap after clicking inside the editor to make sure prettify has not reverted
     _.agHelper.GetNClick(_.jsEditor._lineinJsEditor(26));
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify6");
 
-    _.homePage.NavigateToHome();
-    _.homePage.ForkApplication(appname);
-    _.entityExplorer.ExpandCollapseEntity("Queries/JS");
-    _.entityExplorer.SelectEntityByName("JSObject1", "Queries/JS");
+    homePage.NavigateToHome();
+    homePage.ForkApplication(appname);
+    entityExplorer.ExpandCollapseEntity("Queries/JS");
+    entityExplorer.SelectEntityByName("JSObject1", "Queries/JS");
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify6");
   });
 
@@ -100,23 +108,23 @@ myFun2: async () => {
 
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjBeforePrettify7");
 
-    _.agHelper.ActionContextMenuWithInPane("Prettify code");
-    _.agHelper.Sleep(); //allowing time to prettify!
+    agHelper.ActionContextMenuWithInPane({ action: "Prettify code" });
+    agHelper.Sleep(); //allowing time to prettify!
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify7");
 
     // taking a snap after clicking inside the editor to make sure prettify has not reverted
     _.agHelper.GetNClick(_.jsEditor._lineinJsEditor(26));
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify7");
 
-    _.entityExplorer.ClonePage("Page1");
-    _.entityExplorer.ExpandCollapseEntity("Queries/JS");
-    _.entityExplorer.SelectEntityByName("JSObject1", "Queries/JS");
-    _.agHelper.Sleep(3000);
+    entityExplorer.ClonePage("Page1");
+    entityExplorer.ExpandCollapseEntity("Queries/JS");
+    entityExplorer.SelectEntityByName("JSObject1", "Queries/JS");
+    agHelper.Sleep(3000);
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify7");
   });
 
   it("1. TC 1864 : JSEditor validation for Prettify code with lint errors, triggered by menu option", () => {
-    _.jsEditor.CreateJSObject(
+    jsEditor.CreateJSObject(
       `export default {
 myVar1: [], myVar2: {},myFun1: () => {
 let allFuncs = [
@@ -142,8 +150,8 @@ return Promise.all(allFuncs).then(() => showAlert("Wonderful! all apis executed"
 
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjBeforePrettify1");
 
-    _.agHelper.ActionContextMenuWithInPane("Prettify code");
-    _.agHelper.Sleep(2000); //allowing time to prettify!
+    agHelper.ActionContextMenuWithInPane({ action: "Prettify code" });
+    agHelper.Sleep(2000); //allowing time to prettify!
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify1");
 
     // taking a snap after clicking inside the editor to make sure prettify has not reverted
@@ -152,7 +160,7 @@ return Promise.all(allFuncs).then(() => showAlert("Wonderful! all apis executed"
   });
 
   it("2. TC 1916, 1917 : JSEditor validation for Prettify code with no errors, triggered by menu option", () => {
-    _.jsEditor.CreateJSObject(
+    jsEditor.CreateJSObject(
       `export default {
 myFun1: () => {
 console.log("hi");
@@ -193,8 +201,8 @@ myFun2: async () => {
 
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjBeforePrettify2");
 
-    _.agHelper.ActionContextMenuWithInPane("Prettify code");
-    _.agHelper.Sleep(2000); //allowing time to prettify!
+    agHelper.ActionContextMenuWithInPane({ action: "Prettify code" });
+    agHelper.Sleep(2000); //allowing time to prettify!
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify2");
 
     // taking a snap after clicking inside the editor to make sure prettify has not reverted
@@ -209,13 +217,13 @@ myFun2: async () => {
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify2");
 
     // click dropdown to change function and make sure prettify has not reverted
-    _.jsEditor.SelectFunctionDropdown("myFun2");
+    jsEditor.SelectFunctionDropdown("myFun2");
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify2");
     _.agHelper.AssertContains("ran successfully", "not.exist");
   });
 
   it("3. TC 1863 : JSEditor validation for Prettify code with lint errors, triggered by keyboard shortcut", () => {
-    _.jsEditor.CreateJSObject(
+    jsEditor.CreateJSObject(
       `export default {
 myVar1: [],
 myVar2: {},
@@ -251,12 +259,12 @@ myFun2: async () => {
       .matchImageSnapshot("jsObjAfterPrettify3");
 
     // taking a snap after clicking inside the editor to make sure prettify has not reverted
-    _.agHelper.GetNClick("div.CodeMirror");
+    agHelper.GetNClick("div.CodeMirror");
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify3");
   });
 
   it("4. TC 1863 : JSEditor validation for Prettify code with no errors, triggered by keyboard shortcut", () => {
-    _.jsEditor.CreateJSObject(
+    jsEditor.CreateJSObject(
       `export default {
 myVar1: [],
 myVar2: {},
@@ -314,7 +322,7 @@ myFun2: async () => {
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify4_1");
 
     // click dropdown to change function and make sure prettify has not reverted
-    _.jsEditor.SelectFunctionDropdown("myFun2");
+    jsEditor.SelectFunctionDropdown("myFun2");
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify4_1");
     _.agHelper.AssertContains("ran successfully", "not.exist");
   });
@@ -334,5 +342,22 @@ myFun2: async () => {
 
     cy.get("div.CodeMirror").type("{cmd+leftArrow}");
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterGoLineStartSmart5");
+  });
+
+  it("5. Bug 25325 Check if the JS Object in body field is formatted properly on save", () => {
+    apiPage.CreateApi("FirstAPI");
+    apiPage.SelectPaneTab("Body");
+    apiPage.SelectSubTab("JSON");
+    dataSources.EnterQuery(
+      `{{
+        {
+          "title": this.params.title,
+              "due": this.params.due,
+                  assignee: this.params.assignee
+                  }
+      }}`,
+    );
+    cy.get("body").type(agHelper.isMac ? "{meta}S" : "{ctrl}S");
+    cy.get(apiPage.jsonBody).matchImageSnapshot("formattedJSONBodyAfterSave");
   });
 });

@@ -23,6 +23,7 @@ import * as rateWidgetMigrations from "./migrations/RateWidgetMigrations";
 import * as codeScannerWidgetMigrations from "./migrations/CodeScannerWidgetMigrations";
 import * as migrateLabelPosition from "./migrations/MigrateLabelPosition";
 import * as migrateAutoHeight from "./migrations/autoHeightMigrations";
+import * as chartMigrations from "./migrations/ChartWidget";
 
 type Migration = {
   functionLookup: {
@@ -753,6 +754,70 @@ const migrations: Migration[] = [
       },
     ],
     version: 77,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: tableMigrations,
+        functionName:
+          "migrateBindingPrefixSuffixForInlineEditValidationControl",
+      },
+    ],
+    version: 78,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: tableMigrations,
+        functionName: "migrateTableWidgetTableDataJsMode",
+      },
+    ],
+    version: 79,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: selectWidgetMigration,
+        functionName: "migrateSelectWidgetOptionToSourceData",
+      },
+    ],
+    version: 80,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: selectWidgetMigration,
+        functionName: "migrateSelectWidgetSourceDataBindingPathList",
+      },
+    ],
+    version: 81,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: chartMigrations,
+        functionName: "migrateChartWidgetLabelOrientationStaggerOption",
+      },
+    ],
+    version: 82,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: chartMigrations,
+        functionName: "migrateAddShowHideDataPointLabels",
+      },
+    ],
+    version: 83,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: selectWidgetMigration,
+        functionName: "migrateSelectWidgetAddSourceDataPropertyPathList",
+      },
+    ],
+    version: 84,
   },
 ];
 

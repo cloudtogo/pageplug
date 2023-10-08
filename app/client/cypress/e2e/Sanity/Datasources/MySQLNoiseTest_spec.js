@@ -1,13 +1,14 @@
 const queryLocators = require("../../../locators/QueryEditor.json");
 const datasourceEditor = require("../../../locators/DatasourcesEditor.json");
-const dsl = require("../../../fixtures/noiseDsl.json");
+import { agHelper, dataSources } from "../../../support/Objects/ObjectsCore";
 const commonlocators = require("../../../locators/commonlocators.json");
 
 describe("MySQL noise test", function () {
   let datasourceName;
 
   beforeEach(() => {
-    cy.addDsl(dsl);
+    agHelper.AddDsl("noiseDsl");
+
     cy.startRoutesForDatasource();
   });
 
@@ -27,15 +28,10 @@ describe("MySQL noise test", function () {
       cy.NavigateToActiveDSQueryPane(datasourceName);
     });
     cy.get(queryLocators.queryNameField).type("NoiseTestQuery");
-    cy.get(queryLocators.templateMenu).click();
     // mySQL query to fetch data
-    cy.get(".CodeMirror textarea")
-      .first()
-      .focus()
-      .type("SELECT * FROM users where role = 'Admin' ORDER BY id LIMIT 10", {
-        force: true,
-        parseSpecialCharSequences: false,
-      });
+    dataSources.EnterQuery(
+      "SELECT * FROM users where role = 'Admin' ORDER BY id LIMIT 10",
+    );
     cy.WaitAutoSave();
     cy.runQuery();
     cy.NavigateToAPI_Panel();
@@ -57,7 +53,7 @@ describe("MySQL noise test", function () {
     cy.get(".bp3-button-text:contains('Refresh Query')").click({ force: true });
     cy.wait(2000);
     cy.get(commonlocators.toastmsg).contains(
-      "UncaughtPromiseRejection: NoiseTestQuery failed to execute",
+      "NoiseTestQuery failed to execute",
     );
     cy.wait("@postExecute").then(({ response }) => {
       expect(response.body.data.statusCode).to.eq("200 OK");

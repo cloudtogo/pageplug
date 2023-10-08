@@ -1,7 +1,7 @@
 /**
- * Sample configuration to be appended to cypress.env.json file
+ * Sample configuration to be appended to app/client/cypress.env.json file
  * Documentation on using it is here : https://github.com/appsmithorg/appsmith/blob/release/contributions/docs/TestAutomation.md
- * 
+ *
  * "RAPID_MODE": {
         "enabled" : true, // Set it to true to enable rapid mode, otherwise set it to false
         "appName": "5f8e1666", // Pass your app name here. Given value is a sample value for reference

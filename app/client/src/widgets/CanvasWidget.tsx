@@ -36,6 +36,10 @@ class CanvasWidget extends ContainerWidget {
     return "CANVAS_WIDGET";
   }
 
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {};
+  }
+
   getCanvasProps(): DSLWidget & { minHeight: number } {
     return {
       ...this.props,

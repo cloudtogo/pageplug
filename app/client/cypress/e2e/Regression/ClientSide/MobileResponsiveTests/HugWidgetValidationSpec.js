@@ -1,34 +1,10 @@
-const dsl = require("../../../../fixtures/ImageHugWidgetDsl.json");
-const commonlocators = require("../../../../locators/commonlocators.json");
-import { ObjectsRegistry } from "../../../../support/Objects/Registry";
-const agHelper = ObjectsRegistry.AggregateHelper;
+import * as _ from "../../../../support/Objects/ObjectsCore";
 
-describe("Validating Mobile Views", function () {
-  afterEach(() => {
-    agHelper.SaveLocalStorageCache();
-  });
-
-  beforeEach(() => {
-    agHelper.RestoreLocalStorageCache();
-  });
-  it("Validate change with height width for widgets", function () {
-    cy.wait(5000);
-    cy.get(commonlocators.autoConvert).click({
-      force: true,
-    });
-    cy.wait(2000);
-    cy.get(commonlocators.convert).click({
-      force: true,
-    });
-    cy.wait(2000);
-    cy.get(commonlocators.refreshApp).click({
-      force: true,
-    });
-    cy.wait(2000);
-    cy.addDsl(dsl);
-    cy.wait(5000); //for dsl to settle
-    cy.PublishtheApp();
-    cy.wait(2000);
+describe("Validating Mobile Views for Hug Widget", function () {
+  it("1. Validate change with height width for hug widget - image widget", function () {
+    _.autoLayout.ConvertToAutoLayoutAndVerify(false);
+    cy.dragAndDropToCanvas("imagewidget", { x: 300, y: 600 });
+    _.deployMode.DeployApp();
     cy.get(".t--widget-imagewidget").first().should("be.visible");
   });
   //Added viewports of iphone14 and samsung galaxy s22 for testing purpose

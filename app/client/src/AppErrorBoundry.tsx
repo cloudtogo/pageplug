@@ -4,11 +4,7 @@ import AppCrashImage from "assets/images/404-image.png";
 import * as Sentry from "@sentry/react";
 import log from "loglevel";
 import AnalyticsUtil from "utils/AnalyticsUtil";
-<<<<<<< HEAD
-import { Colors } from "constants/Colors";
-=======
 import { Button } from "design-system";
->>>>>>> c8d13d9ccaae2176aa0be53be467745cfb00e7ef
 
 const Wrapper = styled.div`
   display: flex;

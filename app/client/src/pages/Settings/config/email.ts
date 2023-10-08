@@ -6,6 +6,7 @@ import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { isNil, omitBy } from "lodash";
 import type { AdminConfigType } from "@appsmith/pages/AdminSettings/config/types";
 import {
+  CategoryType,
   SettingCategories,
   SettingSubtype,
   SettingTypes,
@@ -14,6 +15,7 @@ import {
 export const config: AdminConfigType = {
   icon: "mail-line",
   type: SettingCategories.EMAIL,
+  categoryType: CategoryType.GENERAL,
   controlType: SettingTypes.GROUP,
   title: "邮箱",
   canSave: true,
@@ -113,6 +115,8 @@ export const config: AdminConfigType = {
                 smtpHost: settings["APPSMITH_MAIL_HOST"],
                 smtpPort: settings["APPSMITH_MAIL_PORT"],
                 fromEmail: settings["APPSMITH_MAIL_FROM"],
+                starttlsEnabled:
+                  settings["APPSMITH_MAIL_SMTP_TLS_ENABLED"] || false,
                 username: settings["APPSMITH_MAIL_USERNAME"],
                 password: settings["APPSMITH_MAIL_PASSWORD"],
               },

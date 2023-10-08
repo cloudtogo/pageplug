@@ -22,6 +22,7 @@ import TopStacked from "../TopStacked";
 import { HeaderRow, StyledNav } from "./TopHeader.styled";
 import TopInline from "../TopInline";
 import BackToHomeButton from "@appsmith/pages/AppViewer/BackToHomeButton";
+import BackToAppsButton from "./BackToAppsButton";
 
 type TopHeaderProps = {
   currentApplicationDetails?: ApplicationPayload;
@@ -30,6 +31,7 @@ type TopHeaderProps = {
   currentUser?: User;
   isMenuOpen: boolean;
   setMenuOpen: (isMenuOpen: boolean) => void;
+  showUserSettings: boolean;
 };
 
 const TopHeader = (props: TopHeaderProps) => {
@@ -101,43 +103,49 @@ const TopHeader = (props: TopHeaderProps) => {
             />
           )}
 
-        <section className="relative flex items-center space-x-3 z-1 ml-auto py-3">
-          {currentApplicationDetails && currentApplicationDetails?.id && (
-            <div className="hidden space-x-1 md:flex">
-              <ShareButton
-                currentApplicationDetails={currentApplicationDetails}
-                currentWorkspaceId={currentWorkspaceId}
-              />
+        {props.showUserSettings && (
+          <section className="relative flex items-center space-x-3 z-1 ml-auto py-3">
+            {currentApplicationDetails && currentApplicationDetails?.id && (
+              <div className="hidden space-x-1 md:flex">
+                <ShareButton
+                  currentApplicationDetails={currentApplicationDetails}
+                  currentWorkspaceId={currentWorkspaceId}
+                />
 
+                <HeaderRightItemContainer>
+                  <PrimaryCTA
+                    className="t--back-to-editor"
+                    navColorStyle={navColorStyle}
+                    primaryColor={primaryColor}
+                    url={editorURL}
+                  />
+
+                  <BackToAppsButton
+                    currentApplicationDetails={currentApplicationDetails}
+                  />
+                </HeaderRightItemContainer>
+              </div>
+            )}
+
+            {currentUser && currentUser.username !== ANONYMOUS_USERNAME && (
               <HeaderRightItemContainer>
-                <PrimaryCTA
-                  className="t--back-to-editor"
+                <ProfileDropdown
+                  modifiers={{
+                    offset: {
+                      enabled: true,
+                      offset: `0, 0`,
+                    },
+                  }}
+                  name={currentUser.name}
                   navColorStyle={navColorStyle}
+                  photoId={currentUser?.photoId}
                   primaryColor={primaryColor}
-                  url={editorURL}
+                  userName={currentUser?.username || ""}
                 />
               </HeaderRightItemContainer>
-            </div>
-          )}
-
-          {currentUser && currentUser.username !== ANONYMOUS_USERNAME && (
-            <HeaderRightItemContainer>
-              <ProfileDropdown
-                modifiers={{
-                  offset: {
-                    enabled: true,
-                    offset: `0, 0`,
-                  },
-                }}
-                name={currentUser.name}
-                navColorStyle={navColorStyle}
-                photoId={currentUser?.photoId}
-                primaryColor={primaryColor}
-                userName={currentUser?.username || ""}
-              />
-            </HeaderRightItemContainer>
-          )}
-        </section>
+            )}
+          </section>
+        )}
       </HeaderRow>
 
       {currentApplicationDetails?.applicationDetail?.navigationSetting

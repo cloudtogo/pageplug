@@ -78,6 +78,7 @@ export default [
         label: "位置",
         helpText: "设置菜单按钮图标对齐方式",
         controlType: "ICON_TABS",
+        defaultValue: "left",
         fullWidth: false,
         options: [
           {

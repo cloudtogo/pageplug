@@ -35,6 +35,7 @@ export default {
       label: "图标位置",
       helpText: "设置按钮图标位置",
       controlType: "ICON_TABS",
+      defaultValue: "left",
       fullWidth: false,
       options: [
         {

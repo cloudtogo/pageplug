@@ -5,17 +5,19 @@ export class AdminSettings {
   public locator = ObjectsRegistry.CommonLocators;
   public homePage = ObjectsRegistry.HomePage;
 
-  private _adminSettingsBtn = '[data-testid="t--admin-settings-menu-option"]';
+  public _adminSettingsBtn = '[data-testid="t--admin-settings-menu-option"]';
   private _settingsList = ".t--settings-category-list";
   public _usersTab = ".t--settings-category-users";
   public _roles = (user: string) =>
     "//span[contains(text(), '" +
     user +
     "')]/parent::div/parent::a/parent::td/following-sibling::td[1]";
+  public _instanceName =
+    "//label[text()='Instance name']/following-sibling::div//input";
 
   public NavigateToAdminSettings() {
     this.homePage.NavigateToHome();
     this.agHelper.GetNClick(this._adminSettingsBtn);
-    this.agHelper.AssertElementVisible(this._settingsList);
+    this.agHelper.AssertElementVisibility(this._settingsList);
   }
 }

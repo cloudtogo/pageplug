@@ -26,8 +26,8 @@ import {
   InputTypes,
   NumberInputStepButtonPosition,
 } from "widgets/BaseInputWidget/constants";
-import { getParsedText } from "./Utilities";
-import type { Stylesheet } from "entities/AppTheming";
+import type { SetterConfig, Stylesheet } from "entities/AppTheming";
+import { getParsedText, isInputTypeEmailOrPassword } from "./Utilities";
 import {
   isAutoHeightEnabledForWidget,
   DefaultAutocompleteDefinitions,
@@ -59,14 +59,20 @@ export function defaultValueValidation(
   }
 
   const { inputType } = props;
+
+  if (_.isBoolean(value) || _.isNil(value) || _.isUndefined(value)) {
+    return {
+      isValid: false,
+      parsed: value,
+      messages: [STRING_ERROR_MESSAGE],
+    };
+  }
+
   let parsed;
   switch (inputType) {
     case "NUMBER":
-      if (_.isNil(value)) {
-        parsed = null;
-      } else {
-        parsed = Number(value);
-      }
+      parsed = Number(value);
+
       let isValid, messages;
 
       if (_.isString(value) && value.trim() === "") {
@@ -251,12 +257,19 @@ function InputTypeUpdateHook(
     }
   }
 
+  //if input type is email or password default the autofill state to be true
+  // the user needs to explicity set autofill to fault disable autofill
+  updates.push({
+    propertyPath: "shouldAllowAutofill",
+    propertyValue: isInputTypeEmailOrPassword(propertyValue),
+  });
+
   return updates;
 }
 
 class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
   static getAutocompleteDefinitions(): AutocompletionDefinitions {
-    return {
+    const definitions: AutocompletionDefinitions = {
       "!doc":
         "An input text field is used to capture a users textual input such as their names, numbers, emails etc. Inputs are used in forms and can have custom validations.",
       "!url": "https://docs.appsmith.com/widget-reference/input",
@@ -265,15 +278,12 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
         "!doc": "The text value of the input",
         "!url": "https://docs.appsmith.com/widget-reference/input",
       },
-      inputText: {
-        "!type": "string",
-        "!doc": "The unformatted text value of the input",
-        "!url": "https://docs.appsmith.com/widget-reference/input",
-      },
       isValid: "bool",
       isVisible: DefaultAutocompleteDefinitions.isVisible,
       isDisabled: "bool",
     };
+
+    return definitions;
   }
   static getPropertyPaneContentConfig() {
     return mergeWidgetConfig(
@@ -453,6 +463,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               label: "位置",
               helpText: "设置输入框图标的对齐方式",
               controlType: "ICON_TABS",
+              defaultValue: "left",
               fullWidth: false,
               options: [
                 {
@@ -587,6 +598,30 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
     }
   };
 
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {
+        setVisibility: {
+          path: "isVisible",
+          type: "boolean",
+        },
+        setDisabled: {
+          path: "isDisabled",
+          type: "boolean",
+        },
+        setRequired: {
+          path: "isRequired",
+          type: "boolean",
+        },
+        setValue: {
+          path: "defaultText",
+          type: "string",
+          accessor: "text",
+        },
+      },
+    };
+  }
+
   resetWidgetText = () => {
     this.props.updateWidgetMetaProperty("inputText", "");
     this.props.updateWidgetMetaProperty(
@@ -672,6 +707,11 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
       conditionalProps.buttonPosition = NumberInputStepButtonPosition.NONE;
     }
 
+    const autoFillProps =
+      !this.props.shouldAllowAutofill &&
+      isInputTypeEmailOrPassword(this.props.inputType)
+        ? { autoComplete: "off" }
+        : {};
     return (
       <InputComponent
         accentColor={this.props.accentColor}

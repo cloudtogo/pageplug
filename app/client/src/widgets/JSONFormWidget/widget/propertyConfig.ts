@@ -33,6 +33,19 @@ export const sourceDataValidationFn = (
     };
   }
 
+  if (_.isNumber(value) || _.isBoolean(value)) {
+    return {
+      isValid: false,
+      parsed: {},
+      messages: [
+        {
+          name: "ValidationError",
+          message: `Source data cannot be ${value}`,
+        },
+      ],
+    };
+  }
+
   if (_.isNil(value)) {
     return {
       isValid: true,
@@ -313,6 +326,7 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
         propertyName: `${prefix}.buttonVariant`,
         label: "按钮类型",
         controlType: "ICON_TABS",
+        defaultValue: ButtonVariantTypes.PRIMARY,
         fullWidth: true,
         helpText: "设置图标按钮类型",
         options: [
@@ -403,6 +417,7 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
         label: "位置",
         helpText: "设置按钮图标对齐方向",
         controlType: "ICON_TABS",
+        defaultValue: "left",
         fullWidth: false,
         options: [
           {

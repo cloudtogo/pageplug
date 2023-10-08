@@ -115,6 +115,7 @@ export default {
           helpText:
             "设置菜单项图标对齐方向，通过 {{currentItem}} 绑定当前菜单项数据",
           controlType: "ICON_TABS",
+          defaultValue: "left",
           fullWidth: false,
           options: [
             {

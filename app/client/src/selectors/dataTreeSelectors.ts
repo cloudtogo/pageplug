@@ -9,6 +9,7 @@ import {
 import type { DataTree, WidgetEntity } from "entities/DataTree/dataTreeFactory";
 import { DataTreeFactory } from "entities/DataTree/dataTreeFactory";
 import {
+  getIsMobileBreakPoint,
   getMetaWidgets,
   getWidgetsForEval,
   getWidgetsMeta,
@@ -18,10 +19,11 @@ import { getPageList } from "./appViewSelectors";
 import type { AppState } from "@appsmith/reducers";
 import { getSelectedAppThemeProperties } from "./appThemingSelectors";
 import type { LoadingEntitiesState } from "reducers/evaluationReducers/loadingEntitiesReducer";
-import { get } from "lodash";
+import _, { get } from "lodash";
 import type { EvaluationError } from "utils/DynamicBindingUtils";
 import { getEvalErrorPath } from "utils/DynamicBindingUtils";
 import ConfigTreeActions from "utils/configTree";
+import { DATATREE_INTERNAL_KEYWORDS } from "constants/WidgetValidation";
 
 export const getUnevaluatedDataTree = createSelector(
   getActionsForCurrentPage,
@@ -34,6 +36,7 @@ export const getUnevaluatedDataTree = createSelector(
   getPluginDependencyConfig,
   getSelectedAppThemeProperties,
   getMetaWidgets,
+  getIsMobileBreakPoint,
   (
     actions,
     jsActions,
@@ -45,6 +48,7 @@ export const getUnevaluatedDataTree = createSelector(
     pluginDependencyConfig,
     selectedAppThemeProperty,
     metaWidgets,
+    isMobile,
   ) => {
     const pageList = pageListPayload || [];
     return DataTreeFactory.create({
@@ -58,6 +62,7 @@ export const getUnevaluatedDataTree = createSelector(
       pluginDependencyConfig,
       theme: selectedAppThemeProperty,
       metaWidgets,
+      isMobile,
     });
   },
 );
@@ -96,7 +101,7 @@ export const getWidgetEvalValues = createSelector(
 export const getDataTreeForAutocomplete = createSelector(
   getDataTree,
   (tree: DataTree) => {
-    return tree;
+    return _.omit(tree, Object.keys(DATATREE_INTERNAL_KEYWORDS));
   },
 );
 

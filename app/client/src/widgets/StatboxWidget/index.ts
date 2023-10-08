@@ -5,9 +5,8 @@ import {
   Positioning,
   ResponsiveBehavior,
 } from "utils/autoLayout/constants";
-import { GridDefaults } from "constants/WidgetConstants";
+import { GridDefaults, WIDGET_TAGS } from "constants/WidgetConstants";
 import type { WidgetProps } from "widgets/BaseWidget";
-
 import IconSVG from "./icon.svg";
 import Widget from "./widget";
 import type { FlattenedWidgetProps } from "widgets/constants";
@@ -29,7 +28,9 @@ export const CONFIG = {
   name: "统计框",
   searchTags: ["statbox"],
   iconSVG: IconSVG,
+  tags: [WIDGET_TAGS.DISPLAY],
   needsMeta: true,
+  searchTags: ["statbox"],
   isCanvas: true,
   canvasHeightOffset: (props: WidgetProps): number => {
     const offset =
@@ -251,6 +252,7 @@ export const CONFIG = {
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
     stylesheetConfig: Widget.getStylesheetConfig(),
+    setterConfig: Widget.getSetterConfig(),
     autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
   },
   autoLayout: {

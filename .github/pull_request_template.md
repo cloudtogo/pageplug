@@ -57,9 +57,12 @@ Media
 - [ ] PR is being merged under a feature flag
 
 
-### QA activity:
-- [ ] Test plan has been approved by relevant developers
-- [ ] Test plan has been peer reviewed by QA
-- [ ] Cypress test cases have been added and approved by either SDET or manual QA
-- [ ] Organized project review call with relevant stakeholders after Round 1/2 of QA
-- [ ] Added Test Plan Approved label after reveiwing all Cypress test
+#### QA activity:
+- [ ] [Speedbreak features](https://github.com/appsmithorg/TestSmith/wiki/Guidelines-for-test-plans#speedbreakers-) have been covered
+- [ ] Test plan covers all impacted features and [areas of interest](https://github.com/appsmithorg/TestSmith/wiki/Guidelines-for-test-plans#areas-of-interest-)
+- [ ] Test plan has been peer reviewed by project stakeholders and other QA members
+- [ ] Manually tested functionality on DP
+- [ ] We had an implementation alignment call with stakeholders post QA Round 2
+- [ ] Cypress test cases have been added and approved by SDET/manual QA
+- [ ] Added `Test Plan Approved` label after Cypress tests were reviewed
+- [ ] Added `Test Plan Approved` label after JUnit tests were reviewed

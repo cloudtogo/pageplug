@@ -10,6 +10,7 @@ import type { TableWidgetProps } from "widgets/TableWidgetV2/constants";
 import { InlineEditingSaveOptions } from "widgets/TableWidgetV2/constants";
 import { composePropertyUpdateHook } from "widgets/WidgetUtils";
 import {
+  tableDataValidation,
   totalRecordsCountValidation,
   uniqueColumnNameValidation,
   updateColumnOrderHook,
@@ -28,17 +29,31 @@ export default [
         propertyName: "tableData",
         label: "数据",
         controlType: "INPUT_TEXT",
+        controlConfig: {
+          searchableColumn: true,
+        },
         placeholderText: '[{ "name": "John" }]',
         inputType: "ARRAY",
         isBindProperty: true,
         isTriggerProperty: false,
+        isJSConvertible: true,
         validation: {
-          type: ValidationTypes.OBJECT_ARRAY,
+          type: ValidationTypes.FUNCTION,
           params: {
-            default: [],
+            fn: tableDataValidation,
+            expected: {
+              type: "Array",
+              example: `[{ "name": "John" }]`,
+              autocompleteDataType: AutocompleteDataType.ARRAY,
+            },
           },
         },
         evaluationSubstitutionType: EvaluationSubstitutionType.SMART_SUBSTITUTE,
+        shouldSwitchToNormalMode: (
+          isDynamic: boolean,
+          isToggleDisabled: boolean,
+          triggerFlag?: boolean,
+        ) => triggerFlag && isDynamic && !isToggleDisabled,
       },
       {
         helpText: "表格数据列定义",
@@ -82,6 +97,7 @@ export default [
         helpText: "选择如何保存编辑的单元格数据",
         label: "更新模式",
         controlType: "ICON_TABS",
+        defaultValue: InlineEditingSaveOptions.ROW_LEVEL,
         fullWidth: true,
         isBindProperty: true,
         isTriggerProperty: false,
