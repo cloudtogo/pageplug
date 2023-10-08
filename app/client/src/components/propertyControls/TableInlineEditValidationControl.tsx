@@ -24,7 +24,7 @@ import {
   TABLE_WIDGET_VALIDATION_ASSIST_PROMPT,
 } from "@appsmith/constants/messages";
 
-const PromptMessage = styled.span`
+export const PromptMessage = styled.span`
   line-height: 17px;
 
   > .code-wrapper {

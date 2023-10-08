@@ -187,7 +187,8 @@ export const ENABLE_TIME = () => `显示时间`;
 export const EDIT_APP = () => `编辑应用`;
 export const FORK_APP = () => `复制应用`;
 export const SIGN_IN = () => `登录`;
-export const SHARE_APP = () => `Share app`;
+export const SHARE_APP = () => `分享应用`;
+export const ALL_APPS = () => `所有应用`;
 
 export const EDITOR_HEADER = {
   saving: () => "正在保存",
@@ -790,6 +791,7 @@ export const ERROR_COMMITTING = () => "提交时出错";
 export const CONFIRM_SSH_KEY = () => "请确保你的 SSH Key 有写权限";
 export const READ_DOCUMENTATION = () => "查看文档";
 export const LEARN_MORE = () => "了解更多";
+export const I_UNDERSTAND = () => "我理解了";
 export const GIT_NO_UPDATED_TOOLTIP = () => "没有更新";
 
 export const FIND_OR_CREATE_A_BRANCH = () => "查找或创建一个分支";
@@ -1275,6 +1277,10 @@ export const DISCONNECT_AUTH_METHOD = () => "断开连接";
 export const DISCONNECT_CONFIRMATION = () => "你确定吗？";
 
 // Branding
+export const ADMIN_BRANDING_SETTINGS_TITLE_UPGRADE = () =>
+  "为您的工作区定制品牌";
+export const ADMIN_BRANDING_SETTINGS_SUBTITLE_UPGRADE = () =>
+  "通过几次点击，使您的工作区和应用程序看起来更像您自己，就像以下示例一样。上传您的标志和网站图标，设置您的主色调，并预览新的外观。要保存您喜欢的外观，请升级到我们的企业版。";
 export const ADMIN_BRANDING_SETTINGS_TITLE = () => "为你的平台自定义品牌";
 export const ADMIN_BRANDING_SETTINGS_SUBTITLE = () =>
   "自由定制你的 LOGO 和品牌色，如果需要使用此功能请升级到商业版";

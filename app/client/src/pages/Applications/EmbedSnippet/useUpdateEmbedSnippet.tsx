@@ -21,8 +21,6 @@ import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
 
 const regex = /^[1-9][0-9]{0,3}((px)|(em)|(%)|(vw)|(vh))?$/;
 
-const regex = /^[1-9][0-9]{0,3}((px)|(em)|(%)|(vw)|(vh))?$/;
-
 const embedSettingContentConfig = {
   [AppsmithFrameAncestorsSetting.ALLOW_EMBEDDING_EVERYWHERE]: {
     icon: "global-line",
