@@ -10672,6 +10672,7 @@ __metadata:
     jest-preview: ^0.3.1
     jest-styled-components: ^7.0.8
     js-beautify: ^1.14.0
+    js-regex-pl: ^1.0.1
     js-sha256: ^0.9.0
     jshint: ^2.13.4
     json5: ^2.2.3
@@ -21387,6 +21388,13 @@ __metadata:
   version: 1.1.6
   resolution: "js-levenshtein@npm:1.1.6"
   checksum: 409f052a7f1141be4058d97da7860e08efd97fc588b7a4c5cfa0548bc04f6d576644dae65ab630266dff685d56fb90d494e03d4d79cb484c287746b4f1bf0694
+  languageName: node
+  linkType: hard
+
+"js-regex-pl@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "js-regex-pl@npm:1.0.1"
+  checksum: c80e05ccea8a0ce12e432e8bd8278e5351affd0c255cd23d68d7efe04b2e1cd44f2949f7efc3f12e8871ad95d0ef86c43eac3bab665cd5c69599829b1f94c0de
   languageName: node
   linkType: hard
 
