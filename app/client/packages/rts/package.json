@@ -11,7 +11,7 @@
     "test:jest": "APPSMITH_API_BASE_URL=http jest --watch ",
     "lint": "yarn g:lint",
     "prettier": "yarn g:prettier",
-    "build": "bash ./build.sh",
+    "build": "./build.sh",
     "start": "./start-server.sh"
   },
   "dependencies": {

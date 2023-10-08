@@ -5,11 +5,11 @@ import { Field, getFormValues } from "redux-form";
 import styled from "styled-components";
 import type { SettingComponentProps } from "./Common";
 import type { FormTextFieldProps } from "components/utils/ReduxFormTextField";
-import { Button, Checkbox, Text } from "design-system";
+import { Checkbox, Text } from "design-system";
 import { useSelector } from "react-redux";
 import { SETTINGS_FORM_NAME } from "@appsmith/constants/forms";
-import useOnUpgrade from "utils/hooks/useOnUpgrade";
-import type { EventName } from "utils/AnalyticsUtil";
+import { isTenantConfig } from "@appsmith/utils/adminSettingsHelpers";
+import BusinessTag from "components/BusinessTag";
 
 const CheckboxWrapper = styled.div`
   display: grid;
@@ -20,14 +20,12 @@ const CheckboxWrapper = styled.div`
 `;
 
 type CheckboxProps = {
-  label?: string;
+  label?: React.ReactNode;
   id?: string;
   isDisabled?: boolean;
   needsUpgrade?: boolean;
   text: string;
   labelSuffix?: React.ReactElement;
-  upgradeLogEventName?: EventName;
-  upgradeIntercomMessage?: string;
   isPropertyDisabled?: boolean;
 };
 
@@ -40,10 +38,6 @@ function FieldCheckboxWithCheckboxText(props: CheckboxProps) {
   ) {
     const { isPropertyDisabled, labelSuffix } = props;
     const val = componentProps.input.value;
-    const { onUpgrade } = useOnUpgrade({
-      logEventName: props.upgradeLogEventName,
-      intercomMessage: props.upgradeIntercomMessage,
-    });
 
     function onCheckbox(value?: boolean) {
       const CheckboxValue = isPropertyDisabled ? !value : value;
@@ -66,11 +60,6 @@ function FieldCheckboxWithCheckboxText(props: CheckboxProps) {
           {props.text}
         </Checkbox>
         <div>{labelSuffix}</div>
-        {props.needsUpgrade && (
-          <Button kind="secondary" onClick={onUpgrade}>
-            Upgrade
-          </Button>
-        )}
       </CheckboxWrapper>
     );
   };
@@ -83,19 +72,22 @@ const StyledFieldCheckboxGroup = styled.div`
 const formValuesSelector = getFormValues(SETTINGS_FORM_NAME);
 
 export function CheckboxComponent({ setting }: SettingComponentProps) {
-  const settings = useSelector(formValuesSelector);
+  const settings: Record<string, any> = useSelector(formValuesSelector);
 
   return (
     <StyledFieldCheckboxGroup>
-      <Text
-        className="admin-settings-form-group-label pt-2 pb-2"
-        color="var(--ads-v2-color-fg)"
-        data-testid="admin-settings-form-group-label"
-        kind="heading-xs"
-        renderAs="p"
-      >
-        {setting.label}
-      </Text>
+      <div className="flex gap-1 items-center">
+        <Text
+          className="admin-settings-form-group-label pt-2 pb-2"
+          color="var(--ads-v2-color-fg)"
+          data-testid="admin-settings-form-group-label"
+          kind="heading-xs"
+          renderAs="p"
+        >
+          {setting.label}
+        </Text>
+        {setting.needsUpgrade && <BusinessTag />}
+      </div>
       <Field
         component={FieldCheckboxWithCheckboxText({
           label: setting.label,
@@ -104,9 +96,9 @@ export function CheckboxComponent({ setting }: SettingComponentProps) {
           isDisabled: setting.isDisabled && setting.isDisabled(settings),
           needsUpgrade: setting.needsUpgrade,
           labelSuffix: setting.textSuffix,
-          upgradeLogEventName: setting.upgradeLogEventName,
-          upgradeIntercomMessage: setting.upgradeIntercomMessage,
-          isPropertyDisabled: !setting.name?.toLowerCase().includes("enable"),
+          isPropertyDisabled: isTenantConfig(setting.id)
+            ? false
+            : !setting.name?.toLowerCase().includes("enable"),
         })}
         name={setting.name}
       />

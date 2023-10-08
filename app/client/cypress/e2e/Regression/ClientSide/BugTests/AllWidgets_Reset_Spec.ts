@@ -2,7 +2,16 @@ import testdata from "../../../../fixtures/testdata.json";
 import commonlocators from "../../../../locators/commonlocators.json";
 import * as _ from "../../../../support/Objects/ObjectsCore";
 
-const widgetsToTest = {
+const widgetsToTest: Record<
+  string,
+  {
+    widgetName: string;
+    widgetPrefixName: string;
+    textBindingValue: string;
+    assertWidgetReset: () => void;
+    setupWidget?: () => void;
+  }
+> = {
   [_.draggableWidgets.MULTISELECT]: {
     widgetName: "MultiSelect",
     widgetPrefixName: "MultiSelect1",
@@ -25,6 +34,9 @@ const widgetsToTest = {
     textBindingValue: testdata.tableBindingValue,
     assertWidgetReset: () => {
       selectTableAndReset();
+    },
+    setupWidget: () => {
+      _.table.AddSampleTableData();
     },
   },
   [_.draggableWidgets.SWITCHGROUP]: {
@@ -125,7 +137,7 @@ const widgetsToTest = {
     },
   },
   */
-  [_.draggableWidgets.PHONEINPUT]: {
+  [_.draggableWidgets.PHONE_INPUT]: {
     widgetName: "PhoneInput",
     widgetPrefixName: "PhoneInput1",
     textBindingValue: testdata.phoneBindingValue,
@@ -194,7 +206,7 @@ function selectTableAndReset() {
 }
 
 function selectSwitchGroupAndReset() {
-  cy.get(".bp3-control-indicator").last().click({ force: true });
+  _.agHelper.CheckUncheck(_.locators._checkboxTypeByOption("Red"));
   _.agHelper.GetNAssertElementText(
     _.locators._textWidgetInDeployed,
     "RED",
@@ -409,10 +421,12 @@ Object.entries(widgetsToTest).forEach(([widgetSelector, testConfig]) => {
     });
 
     it(`1. DragDrop Widget ${testConfig.widgetName}`, () => {
-      cy.fixture("defaultMetaDsl").then((val: any) => {
-        _.agHelper.AddDsl(val);
-      });
+      _.agHelper.AddDsl("defaultMetaDsl");
       _.entityExplorer.DragDropWidgetNVerify(widgetSelector, 300, 100);
+
+      if (testConfig.setupWidget) {
+        testConfig.setupWidget();
+      }
     });
 
     it("2. Bind Button on click  and Text widget content", () => {
@@ -427,14 +441,14 @@ Object.entries(widgetsToTest).forEach(([widgetSelector, testConfig]) => {
       _.propPane.UpdatePropertyFieldValue("Text", testConfig.textBindingValue);
     });
 
-    it("3. Publish the app and check the reset assertWidgetReset", () => {
+    it(`3. Publish the app and check the reset of ${testConfig.widgetName}`, () => {
       // Set onClick assertWidgetReset, storing value
-      _.deployMode.DeployApp();
+      _.deployMode.DeployApp(_.locators._widgetInDeployed(widgetSelector));
       testConfig.assertWidgetReset();
-      _.agHelper.AssertContains("Reset Success!");
+      _.agHelper.ValidateToastMessage("Reset Success!");
     });
 
-    it(`4. Delete ${testConfig.widgetName} the widgets on canvas`, () => {
+    it(`4. Delete ${testConfig.widgetName} widget from canvas`, () => {
       _.deployMode.NavigateBacktoEditor();
       _.entityExplorer.SelectEntityByName(
         `${testConfig.widgetPrefixName}`,

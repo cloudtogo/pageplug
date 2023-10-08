@@ -209,14 +209,12 @@ class DatasourceHomeScreen extends React.Component<Props> {
                 }}
               >
                 <DatasourceContentWrapper data-testid="database-datasource-content-wrapper">
-                  <div className="dataSourceImageWrapper">
-                    <img
-                      alt="Datasource"
-                      className="dataSourceImage"
-                      data-testid="database-datasource-image"
-                      src={getAssetUrl(_pluginImages[plugin.id])}
-                    />
-                  </div>
+                  <img
+                    alt="Datasource"
+                    className="dataSourceImage"
+                    data-testid="database-datasource-image"
+                    src={getAssetUrl(pluginImages[plugin.id])}
+                  />
                   <p className="t--plugin-name textBtn">{plugin.name}</p>
                 </DatasourceContentWrapper>
               </DatasourceCard>

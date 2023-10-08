@@ -4,9 +4,17 @@ import type { InjectedFormProps } from "redux-form";
 import { Tag } from "@blueprintjs/core";
 import { isString, noop } from "lodash";
 import type { Datasource } from "entities/Datasource";
-import { getPluginImages } from "selectors/entitiesSelector";
+import {
+  getPluginImages,
+  getPluginNameFromId,
+} from "selectors/entitiesSelector";
 import FormControl from "../FormControl";
-import type { Action, QueryAction, SaaSAction } from "entities/Action";
+import {
+  PluginName,
+  type Action,
+  type QueryAction,
+  type SaaSAction,
+} from "entities/Action";
 import { useDispatch, useSelector } from "react-redux";
 import ActionNameEditor from "components/editorComponents/ActionNameEditor";
 import DropdownField from "components/editorComponents/form/fields/DropdownField";
@@ -79,7 +87,7 @@ import { getErrorAsString } from "sagas/ActionExecution/errorUtils";
 import type { UpdateActionPropertyActionPayload } from "actions/pluginActionActions";
 import Guide from "pages/Editor/GuidedTour/Guide";
 import { inGuidedTour } from "selectors/onboardingSelectors";
-import { EDITOR_TABS } from "constants/QueryEditorConstants";
+import { EDITOR_TABS, SQL_DATASOURCES } from "constants/QueryEditorConstants";
 import type { FormEvalOutput } from "reducers/evaluationReducers/formEvaluationReducer";
 import { isValidFormConfig } from "reducers/evaluationReducers/formEvaluationReducer";
 import {
@@ -123,6 +131,15 @@ import { ENTITY_TYPE as SOURCE_ENTITY_TYPE } from "entities/AppsmithConsole";
 import { DocsLink, openDoc } from "../../../constants/DocumentationLinks";
 import ActionExecutionInProgressView from "components/editorComponents/ActionExecutionInProgressView";
 import { CloseDebugger } from "components/editorComponents/Debugger/DebuggerTabs";
+import { isAIEnabled } from "@appsmith/components/editorComponents/GPT/trigger";
+import { editorSQLModes } from "components/editorComponents/CodeEditor/sql/config";
+import { EditorFormSignPosting } from "@appsmith/components/editorComponents/EditorFormSignPosting";
+import { DatasourceStructureContext } from "../Explorer/Datasources/DatasourceStructureContainer";
+import {
+  selectFeatureFlagCheck,
+  selectFeatureFlags,
+} from "@appsmith/selectors/featureFlagsSelectors";
+import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
 
 const QueryFormContainer = styled.form`
   flex: 1;
@@ -301,12 +318,12 @@ const DocumentationButton = styled(Button)`
 
 const SidebarWrapper = styled.div<{ show: boolean }>`
   border-left: 1px solid var(--ads-v2-color-border);
-  padding: 0 var(--ads-v2-spaces-7) var(--ads-v2-spaces-7);
-  overflow: auto;
+  padding: 0 var(--ads-v2-spaces-4) var(--ads-v2-spaces-4);
+  overflow: hidden;
   border-bottom: 0;
   display: ${(props) => (props.show ? "flex" : "none")};
   width: ${(props) => props.theme.actionSidePane.width}px;
-  margin-top: 38px;
+  margin-top: 10px;
   /* margin-left: var(--ads-v2-spaces-7); */
 `;
 
@@ -351,6 +368,7 @@ type QueryFormProps = {
     id,
     value,
   }: UpdateActionPropertyActionPayload) => void;
+  datasourceId: string;
 };
 
 type ReduxProps = {
@@ -421,6 +439,28 @@ export function EditorJSONtoForm(props: Props) {
   const canCreateDatasource = hasCreateDatasourcePermission(
     userWorkspacePermissions,
   );
+
+  // get the current action's plugin name
+  const currentActionPluginName = useSelector((state: AppState) =>
+    getPluginNameFromId(state, currentActionConfig?.pluginId || ""),
+  );
+
+  let actionBody = "";
+  if (!!currentActionConfig?.actionConfiguration) {
+    if ("formData" in currentActionConfig?.actionConfiguration) {
+      // if the action has a formData (the action is postUQI e.g. Oracle)
+      actionBody =
+        currentActionConfig.actionConfiguration.formData?.body?.data || "";
+    } else {
+      // if the action is pre UQI, the path is different e.g. mySQL
+      actionBody = currentActionConfig.actionConfiguration?.body || "";
+    }
+  }
+
+  // if (the body is empty and the action is an sql datasource) or the user does not have permission, block action execution.
+  const blockExecution =
+    (!actionBody && SQL_DATASOURCES.includes(currentActionPluginName)) ||
+    !isExecutePermitted;
 
   // Query is executed even once during the session, show the response data.
   if (executedQueryData) {
@@ -840,9 +880,35 @@ export function EditorJSONtoForm(props: Props) {
     dispatch(setDebuggerSelectedTab(tabKey));
   }, []);
 
+  const isPostgresPlugin = currentActionPluginName === PluginName.POSTGRES;
+  const featureFlags = useSelector(selectFeatureFlags);
+  const editorMode = isPostgresPlugin
+    ? editorSQLModes.POSTGRESQL_WITH_BINDING
+    : editorSQLModes.MYSQL_WITH_BINDING;
+
+  const isAIEnabledForPosting =
+    isPostgresPlugin && isAIEnabled(featureFlags, editorMode);
+
   // close the debugger
   //TODO: move this to a common place
   const onClose = () => dispatch(showDebugger(false));
+
+  // A/B feature flag for datasource structure.
+  const isEnabledForDSSchema = useSelector((state) =>
+    selectFeatureFlagCheck(state, FEATURE_FLAG.ab_ds_schema_enabled),
+  );
+
+  // A/B feature flag for query binding.
+  const isEnabledForQueryBinding = useSelector((state) =>
+    selectFeatureFlagCheck(state, FEATURE_FLAG.ab_ds_binding_enabled),
+  );
+
+  // here we check for normal conditions for opening action pane
+  // or if any of the flags are true, We should open the actionpane by default.
+  const shouldOpenActionPaneByDefault =
+    ((hasDependencies || !!output) && !guidedTourEnabled) ||
+    ((isEnabledForDSSchema || isEnabledForQueryBinding) &&
+      currentActionPluginName !== PluginName.SMTP);
 
   // when switching between different redux forms, make sure this redux form has been initialized before rendering anything.
   // the initialized prop below comes from redux-form.
@@ -868,22 +934,6 @@ export function EditorJSONtoForm(props: Props) {
               name={currentActionConfig ? currentActionConfig.name : ""}
               pageId={pageId}
             />
-            {/* <SearchSnippets
-              className="search-snippets"
-              entityId={currentActionConfig?.id}
-              entityType={ENTITY_TYPE.ACTION}
-              onClick={() => {
-                dispatch(
-                  executeCommandAction({
-                    actionType: SlashCommand.NEW_SNIPPET,
-                    args: {
-                      entityId: currentActionConfig?.id,
-                      entityType: ENTITY_TYPE.ACTION,
-                    },
-                  }),
-                );
-              }}
-            /> */}
             <DropdownSelect>
               <DropdownField
                 className={"t--switch-datasource"}
@@ -907,7 +957,7 @@ export function EditorJSONtoForm(props: Props) {
             <Button
               className="t--run-query"
               data-guided-tour-iid="run-query"
-              isDisabled={!isExecutePermitted}
+              isDisabled={blockExecution}
               isLoading={isRunning}
               onClick={onRunClick}
               size="md"
@@ -944,6 +994,11 @@ export function EditorJSONtoForm(props: Props) {
                     className="tab-panel"
                     value={EDITOR_TABS.QUERY}
                   >
+                    <EditorFormSignPosting
+                      isAIEnabled={isAIEnabledForPosting}
+                      mode={editorMode}
+                    />
+
                     <SettingsWrapper>
                       {editorConfig && editorConfig.length > 0 ? (
                         renderConfig(editorConfig)
@@ -1060,14 +1115,15 @@ export function EditorJSONtoForm(props: Props) {
                 )}
             </SecondaryWrapper>
           </div>
-          <SidebarWrapper
-            show={(hasDependencies || !!output) && !guidedTourEnabled}
-          >
+          <SidebarWrapper show={shouldOpenActionPaneByDefault}>
             <ActionRightPane
               actionName={actionName}
+              context={DatasourceStructureContext.QUERY_EDITOR}
+              datasourceId={props.datasourceId}
               entityDependencies={entityDependencies}
               hasConnections={hasDependencies}
               hasResponse={!!output}
+              pluginId={props.pluginId}
               suggestedWidgets={executedQueryData?.suggestedWidgets}
             />
           </SidebarWrapper>

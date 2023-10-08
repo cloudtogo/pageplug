@@ -16,7 +16,6 @@ import type {
   CreateApplicationRequest,
   CreateApplicationResponse,
   DeleteApplicationRequest,
-  DeleteNavigationLogoRequest,
   FetchApplicationPayload,
   FetchApplicationResponse,
   FetchUnconfiguredDatasourceListResponse,
@@ -55,7 +54,6 @@ import {
   updateCurrentApplicationEmbedSetting,
   updateCurrentApplicationIcon,
   updateCurrentApplicationForkingEnabled,
-  updateApplicationNavigationLogoSuccessAction,
 } from "@appsmith/actions/applicationActions";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import {
@@ -104,7 +102,7 @@ import { GUIDED_TOUR_STEPS } from "pages/Editor/GuidedTour/constants";
 import { builderURL, viewerURL } from "RouteBuilder";
 import { getDefaultPageId as selectDefaultPageId } from "sagas/selectors";
 import PageApi from "api/PageApi";
-import { identity, merge, pickBy } from "lodash";
+import { identity, isEmpty, merge, pickBy } from "lodash";
 import { checkAndGetPluginFormConfigsSaga } from "sagas/PluginSagas";
 import { getPageList, getPluginForm } from "selectors/entitiesSelector";
 import { getConfigInitialValues } from "components/formControls/utils";
@@ -123,7 +121,11 @@ import {
   defaultNavigationSetting,
   keysOfNavigationSetting,
 } from "constants/AppConstants";
-import { setAllEntityCollapsibleStates } from "../../actions/editorContextActions";
+import { setAllEntityCollapsibleStates } from "actions/editorContextActions";
+import { getCurrentEnvironment } from "@appsmith/utils/Environments";
+import { selectFeatureFlagCheck } from "@appsmith/selectors/featureFlagsSelectors";
+import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
+import { generateReactKey } from "utils/generators";
 
 export const getDefaultPageId = (
   pages?: ApplicationPagePayload[],
@@ -621,6 +623,28 @@ export function* createApplicationSaga(
         // ensures user receives the updates in the app just created
         yield put(reconnectAppLevelWebsocket());
         yield put(reconnectPageLevelWebsocket());
+
+        const tableWidgetExperimentEnabled: boolean = yield select(
+          selectFeatureFlagCheck,
+          FEATURE_FLAG.ab_table_widget_activation_enabled,
+        );
+        if (tableWidgetExperimentEnabled) {
+          yield take(ReduxActionTypes.FETCH_WORKSPACE_SUCCESS);
+          yield put({
+            type: ReduxActionTypes.WIDGET_ADD_CHILD,
+            payload: {
+              widgetId: "0",
+              type: "TABLE_WIDGET_V2",
+              leftColumn: 15,
+              topRow: 6,
+              columns: 34,
+              rows: 28,
+              parentRowSpace: 10,
+              parentColumnSpace: 13.390625,
+              newWidgetId: generateReactKey(),
+            },
+          });
+        }
       }
     }
   } catch (error) {
@@ -643,7 +667,10 @@ export function* forkApplicationSaga(
       application: ApplicationResponsePayload;
       isPartialImport: boolean;
       unConfiguredDatasourceList: Datasource[];
-    }> = yield call(ApplicationApi.forkApplication, action.payload);
+    }> = yield call(ApplicationApi.forkApplication, {
+      applicationId: action.payload.applicationId,
+      workspaceId: action.payload.workspaceId,
+    });
     const isValidResponse: boolean = yield validateResponse(response);
     if (isValidResponse) {
       yield put(resetCurrentApplication());
@@ -662,12 +689,24 @@ export function* forkApplicationSaga(
       yield put({
         type: ReduxActionTypes.SET_CURRENT_WORKSPACE_ID,
         payload: {
-          id: action.payload.workspaceId,
+          workspaceId: action.payload.workspaceId,
         },
       });
       const pageURL = builderURL({
         pageId: application.defaultPageId as string,
       });
+
+      if (action.payload.editMode) {
+        const appId = application.id;
+        const pageId = application.defaultPageId;
+        yield put({
+          type: ReduxActionTypes.FETCH_APPLICATION_INIT,
+          payload: {
+            applicationId: appId,
+            pageId,
+          },
+        });
+      }
       history.push(pageURL);
 
       const isEditorInitialized: boolean = yield select(getIsEditorInitialized);
@@ -854,7 +893,19 @@ export function* fetchUnconfiguredDatasourceList(
 }
 
 export function* initializeDatasourceWithDefaultValues(datasource: Datasource) {
-  if (!datasource.datasourceConfiguration) {
+  let currentEnvironment = getCurrentEnvironment();
+  if (!datasource.datasourceStorages.hasOwnProperty(currentEnvironment)) {
+    // if the currentEnvironemnt is not present for use here, take the first key from datasourceStorages
+    currentEnvironment = Object.keys(datasource.datasourceStorages)[0];
+  }
+  // Added isEmpty instead of ! condition as ! does not account for
+  // datasourceConfiguration being empty
+  if (
+    isEmpty(
+      datasource.datasourceStorages[currentEnvironment]
+        ?.datasourceConfiguration,
+    )
+  ) {
     yield call(checkAndGetPluginFormConfigsSaga, datasource.pluginId);
     const formConfig: Record<string, unknown>[] = yield select(
       getPluginForm,
@@ -864,11 +915,13 @@ export function* initializeDatasourceWithDefaultValues(datasource: Datasource) {
       getConfigInitialValues,
       formConfig,
     );
-    const payload = merge(initialValues, datasource);
+    const payload = merge(
+      initialValues,
+      datasource.datasourceStorages[currentEnvironment],
+    );
     payload.isConfigured = false; // imported datasource as not configured yet
-    const response: ApiResponse = yield DatasourcesApi.updateDatasource(
+    const response: ApiResponse = yield DatasourcesApi.updateDatasourceStorage(
       payload,
-      datasource.id,
     );
     const isValidResponse: boolean = yield validateResponse(response);
     if (isValidResponse) {

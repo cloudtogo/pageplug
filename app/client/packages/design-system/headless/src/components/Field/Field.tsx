@@ -1,14 +1,15 @@
 import React, { forwardRef } from "react";
 import type { SpectrumFieldProps } from "@react-types/label";
+import type { Ref } from "react";
 
 import { Label } from "./Label";
 import { ErrorText } from "./ErrorText";
 
 export type FieldProps = SpectrumFieldProps;
 
-export type FieldRef = any;
+export type FieldRef = Ref<HTMLDivElement>;
 
-export const Field = forwardRef((props: FieldProps, ref: FieldRef) => {
+const _Field = (props: FieldProps, ref: FieldRef) => {
   const {
     children,
     elementType,
@@ -41,24 +42,6 @@ export const Field = forwardRef((props: FieldProps, ref: FieldRef) => {
     );
   };
 
-  const renderChildren = () => {
-    if (labelPosition === "side") {
-      return (
-        <div className="wrapper">
-          {children}
-          {hasErrorText && renderErrorText()}
-        </div>
-      );
-    }
-
-    return (
-      <>
-        {children}
-        {hasErrorText && renderErrorText()}
-      </>
-    );
-  };
-
   const labelAndContextualHelp = label && (
     <Label
       {...labelProps}
@@ -85,8 +68,13 @@ export const Field = forwardRef((props: FieldProps, ref: FieldRef) => {
       data-position={labelPosition}
       ref={ref}
     >
-      <div>{labelAndContextualHelp}</div>
-      {renderChildren()}
+      {labelAndContextualHelp}
+      <div data-field-wrapper="">
+        {children}
+        {hasErrorText && renderErrorText()}
+      </div>
     </div>
   );
-});
+};
+
+export const Field = forwardRef(_Field);

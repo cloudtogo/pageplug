@@ -8,6 +8,7 @@ import {
   getOAuthAccessToken,
   createDatasourceFromForm,
   toggleSaveActionFlag,
+  updateDatasourceAuthState,
 } from "actions/datasourceActions";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { getCurrentApplicationId } from "selectors/editorSelectors";
@@ -34,13 +35,19 @@ import { integrationEditorURL } from "RouteBuilder";
 import { getQueryParams } from "utils/URLUtils";
 import type { AppsmithLocationState } from "utils/history";
 import type { PluginType } from "entities/Action";
+import {
+  getCurrentEnvName,
+  getCurrentEditingEnvID,
+} from "@appsmith/utils/Environments";
 
 interface Props {
   datasource: Datasource;
   formData: Datasource | ApiDatasourceForm;
   getSanitizedFormData: () => Datasource;
+  currentEnvironment: string;
   isInvalid: boolean;
   pageId?: string;
+  formName: string;
   viewMode?: boolean;
   shouldRender?: boolean;
   isInsideReconnectModal?: boolean;
@@ -48,7 +55,10 @@ interface Props {
   pluginType: PluginType;
   pluginName: string;
   pluginPackageName: string;
-  setDatasourceViewMode: (viewMode: boolean) => void;
+  setDatasourceViewMode: (payload: {
+    datasourceId: string;
+    viewMode: boolean;
+  }) => void;
   isSaving: boolean;
   isTesting: boolean;
   shouldDisplayAuthMessage?: boolean;
@@ -56,6 +66,7 @@ interface Props {
   isFormDirty?: boolean;
   scopeValue?: string;
   showFilterComponent: boolean;
+  onCancel: () => void;
 }
 
 export type DatasourceFormButtonTypes = Record<string, string[]>;
@@ -63,6 +74,7 @@ export type DatasourceFormButtonTypes = Record<string, string[]>;
 export enum AuthorizationStatus {
   SUCCESS = "success",
   APPSMITH_ERROR = "appsmith_error",
+  ACCESS_DENIED = "access_denied",
 }
 
 export enum DatasourceButtonTypeEnum {
@@ -118,6 +130,7 @@ const StyledAuthMessage = styled.div`
 `;
 
 function DatasourceAuth({
+  currentEnvironment,
   datasource,
   datasourceButtonConfiguration = [
     DatasourceButtonTypeEnum.CANCEL,
@@ -126,7 +139,7 @@ function DatasourceAuth({
   formData,
   getSanitizedFormData,
   isInvalid,
-  pageId: pageIdProp,
+  pageId: pageIdProp = "",
   pluginType,
   pluginName,
   pluginPackageName,
@@ -140,12 +153,15 @@ function DatasourceAuth({
   scopeValue,
   isInsideReconnectModal,
   showFilterComponent,
+  onCancel,
 }: Props) {
   const shouldRender = !viewMode || isInsideReconnectModal;
   const authType =
     formData && "authType" in formData
       ? formData?.authType
-      : formData?.datasourceConfiguration?.authentication?.authenticationType;
+      : formData?.datasourceStorages &&
+        formData?.datasourceStorages[currentEnvironment]
+          ?.datasourceConfiguration?.authentication?.authenticationType;
 
   const { id: datasourceId } = datasource;
   const applicationId = useSelector(getCurrentApplicationId);
@@ -162,10 +178,9 @@ function DatasourceAuth({
   const { pageId: pageIdQuery } = useParams<ExplorerURLParams>();
   const history = useHistory<AppsmithLocationState>();
 
-  const pageId = (pageIdQuery || pageIdProp) as string;
-
-  const dsName = datasource?.name;
-  const orgId = datasource?.workspaceId;
+  const pageId = isInsideReconnectModal
+    ? pageIdProp
+    : ((pageIdQuery || pageIdProp) as string);
 
   useEffect(() => {
     if (authType === AuthType.OAUTH2) {
@@ -184,27 +199,33 @@ function DatasourceAuth({
           !showFilePicker);
       if (status && shouldNotify) {
         const display_message = search.get("display_message");
-        const oauthReason = status;
-        AnalyticsUtil.logEvent("DATASOURCE_AUTHORIZE_RESULT", {
-          dsName,
-          oauthReason,
-          orgId,
-          pluginName,
-        });
         if (status !== AuthorizationStatus.SUCCESS) {
           const message =
             status === AuthorizationStatus.APPSMITH_ERROR
               ? OAUTH_AUTHORIZATION_APPSMITH_ERROR
               : OAUTH_AUTHORIZATION_FAILED;
           toast.show(display_message || message, { kind: "error" });
+          AnalyticsUtil.logEvent("DATASOURCE_AUTH_COMPLETE", {
+            applicationId: applicationId,
+            datasourceId: datasourceId,
+            pageId: pageId,
+            oAuthPassOrFailVerdict: status,
+            workspaceId: datasource?.workspaceId,
+            datasourceName: datasource?.name,
+            pluginName: pluginName,
+          });
+
+          if (status === AuthorizationStatus.ACCESS_DENIED) {
+            dispatch(
+              updateDatasourceAuthState(
+                datasource,
+                AuthenticationStatus.FAILURE_ACCESS_DENIED,
+              ),
+            );
+          }
         } else {
           dispatch(getOAuthAccessToken(datasourceId));
         }
-        AnalyticsUtil.logEvent("DATASOURCE_AUTH_COMPLETE", {
-          applicationId,
-          datasourceId,
-          pageId,
-        });
       }
     }
   }, [authType]);
@@ -218,10 +239,13 @@ function DatasourceAuth({
       }
     }
   }, [triggerSave]);
-
   const isAuthorized =
-    datasource?.datasourceConfiguration?.authentication
-      ?.authenticationStatus === AuthenticationStatus.SUCCESS;
+    datasource?.datasourceStorages && authType === AuthType.OAUTH2
+      ? datasource?.datasourceStorages[getCurrentEditingEnvID()]
+          ?.datasourceConfiguration?.authentication?.isAuthorized
+      : datasource?.datasourceStorages[currentEnvironment]
+          ?.datasourceConfiguration?.authentication?.authenticationStatus ===
+        AuthenticationStatus.SUCCESS;
 
   // Button Operations for respective buttons.
 
@@ -231,6 +255,8 @@ function DatasourceAuth({
       pageId: pageId,
       appId: applicationId,
       datasourceId: datasourceId,
+      environmentId: currentEnvironment,
+      environmentName: getCurrentEnvName(),
       pluginName: pluginName,
     });
     dispatch(testDatasource(getSanitizedFormData()));
@@ -242,6 +268,8 @@ function DatasourceAuth({
     AnalyticsUtil.logEvent("SAVE_DATA_SOURCE_CLICK", {
       pageId: pageId,
       appId: applicationId,
+      environmentId: currentEnvironment,
+      environmentName: getCurrentEnvName(),
       pluginName: pluginName || "",
       pluginPackageName: pluginPackageName || "",
     });
@@ -253,6 +281,7 @@ function DatasourceAuth({
       dispatch(
         updateDatasource(
           getSanitizedFormData(),
+          currentEnvironment,
           undefined,
           undefined,
           isInsideReconnectModal,
@@ -277,6 +306,7 @@ function DatasourceAuth({
       dispatch(
         updateDatasource(
           getSanitizedFormData(),
+          currentEnvironment,
           pluginType
             ? redirectAuthorizationCode(pageId, datasourceId, pluginType)
             : undefined,
@@ -284,15 +314,14 @@ function DatasourceAuth({
       );
     }
     AnalyticsUtil.logEvent("DATASOURCE_AUTHORIZE_CLICK", {
-      dsName,
-      orgId,
-      pluginName,
-      scopeValue,
+      dsName: datasource?.name,
+      orgId: datasource?.workspaceId,
+      pluginName: pluginName,
+      scopeValue: scopeValue,
     });
   };
 
   const createMode = datasourceId === TEMP_DATASOURCE_ID;
-
   const datasourceButtonsComponentMap = (buttonType: string): JSX.Element => {
     return {
       [DatasourceButtonType.TEST]: (
@@ -322,7 +351,9 @@ function DatasourceAuth({
                 params: getQueryParams(),
               });
               history.push(URL);
-            } else setDatasourceViewMode(true);
+            } else {
+              !!onCancel && onCancel();
+            }
           }}
           size="md"
         >
@@ -333,7 +364,9 @@ function DatasourceAuth({
         <Button
           className="t--save-datasource"
           isDisabled={
-            isInvalid || !isFormDirty || (!createMode && !canManageDatasource)
+            isInvalid ||
+            (!createMode && !isFormDirty) ||
+            (!createMode && !canManageDatasource)
           }
           isLoading={isSaving}
           key={buttonType}

@@ -11,9 +11,9 @@ import {
   ButtonStyleTypes,
   ButtonVariantTypes,
 } from "components/constants";
-import type { PropertyHookUpdates } from "constants/PropertyControlConstants";
 import { BoxShadowTypes } from "components/designSystems/appsmith/WidgetStyleContainer";
-import { Theme } from "constants/DefaultTheme";
+import type { Theme } from "constants/DefaultTheme";
+import type { PropertyUpdates } from "widgets/constants";
 import {
   CANVAS_SELECTOR,
   CONTAINER_GRID_PADDING,
@@ -34,9 +34,7 @@ import { rgbaMigrationConstantV56 } from "./constants";
 import type { ContainerWidgetProps } from "./ContainerWidget/widget";
 import type { SchemaItem } from "./JSONFormWidget/constants";
 import { WIDGET_COMPONENT_BOUNDARY_CLASS } from "constants/componentClassNameConstants";
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const punycode = require("punycode/");
+import punycode from "punycode";
 
 type SanitizeOptions = {
   existingKeys?: string[];
@@ -674,7 +672,7 @@ export const getMainCanvas = () =>
  * - Often times we would wanna call more than one hook when a property is
  *   changed. Use this hook instead of nested calls
  *
- * Eack hook should either return `undefined` or an array of PropertyHookUpdates
+ * Eack hook should either return `undefined` or an array of PropertyUpdates
  * this function ignores the undefined and concats all the property update array.
  */
 export function composePropertyUpdateHook(
@@ -683,16 +681,16 @@ export function composePropertyUpdateHook(
       props: any,
       propertyPath: string,
       propertyValue: any,
-    ) => Array<PropertyHookUpdates> | undefined
+    ) => Array<PropertyUpdates> | undefined
   >,
 ): (
   props: any,
   propertyPath: string,
   propertyValue: any,
-) => Array<PropertyHookUpdates> | undefined {
+) => Array<PropertyUpdates> | undefined {
   return (props: any, propertyPath: string, propertyValue: any) => {
     if (updateFunctions.length) {
-      let updates: PropertyHookUpdates[] = [];
+      let updates: PropertyUpdates[] = [];
 
       updateFunctions.forEach((func) => {
         if (typeof func === "function") {
@@ -921,6 +919,10 @@ export const checkForOnClick = (e: React.MouseEvent<HTMLElement>) => {
     target &&
     target !== currentTarget
   ) {
+    /**
+     * NOTE: target.__reactProps$ returns undefined in cypress, therefore the below targetReactProps will be null.
+     * Due to this the traversed target element's react props such as onClick will get ignored.
+     **/
     const targetReactProps = findReactInstanceProps(target);
 
     const hasOnClickableEvent = Boolean(

@@ -50,6 +50,7 @@ import websocketSagas from "sagas/WebsocketSagas/WebsocketSagas";
 import actionExecutionChangeListeners from "sagas/WidgetLoadingSaga";
 import widgetOperationSagas from "sagas/WidgetOperationSagas";
 import oneClickBindingSaga from "sagas/OneClickBindingSaga";
+import entityNavigationSaga from "sagas/NavigationSagas";
 
 export const sagas = [
   initSagas,
@@ -103,4 +104,5 @@ export const sagas = [
   layoutConversionSagas,
   snapshotSagas,
   oneClickBindingSaga,
+  entityNavigationSaga,
 ];

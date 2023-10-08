@@ -5,15 +5,10 @@ import { Layers } from "constants/Layers";
 import { DebuggerTrigger } from "components/editorComponents/Debugger";
 import HelpButton from "pages/Editor/HelpButton";
 import ManualUpgrades from "./ManualUpgrades";
-import PaneCountSwitcher from "pages/common/PaneCountSwitcher";
-import { useSelector } from "react-redux";
-import { isMultiPaneActive } from "selectors/multiPaneSelectors";
-import { Button } from "design-system";
-import SwitchEnvironment from "@appsmith/components/SwitchEnvironment";
-
 import { getAppsmithConfigs } from "@appsmith/configs";
 const { inCloudOS } = getAppsmithConfigs();
-
+import { Button } from "design-system";
+import SwitchEnvironment from "@appsmith/components/SwitchEnvironment";
 const Container = styled.div`
   width: 100%;
   height: ${(props) => props.theme.bottomBarHeight};
@@ -23,7 +18,6 @@ const Container = styled.div`
   background-color: ${(props) => props.theme.colors.editorBottomBar.background};
   z-index: ${Layers.bottomBar};
   border-top: solid 1px var(--ads-v2-color-border);
-  padding-left: ${(props) => props.theme.spaces[11]}px;
 `;
 
 const Wrapper = styled.div`
@@ -32,30 +26,29 @@ const Wrapper = styled.div`
   justify-content: space-between;
 `;
 
-export default function BottomBar(props: { className?: string }) {
-  const isMultiPane = useSelector(isMultiPaneActive);
+export default function BottomBar({ viewMode }: { viewMode: boolean }) {
   return (
-    <Container className={props.className ?? ""}>
-      {inCloudOS ? <span /> : <QuickGitActions />}
-      {/* <div className="flex justify-between items-center gap-1"> */}
+      <Container>
+        {inCloudOS ? <span /> : <QuickGitActions />}
       <Wrapper>
-        <SwitchEnvironment />
-        <QuickGitActions />
+        <SwitchEnvironment viewMode={viewMode} />
+        {!viewMode && <QuickGitActions />}
       </Wrapper>
-      <Wrapper>
-        <ManualUpgrades showTooltip>
-          <Button
-            className="t--upgrade"
-            isIconButton
-            kind="tertiary"
-            size="md"
-            startIcon="upgrade"
-          />
-        </ManualUpgrades>
-        <DebuggerTrigger />
-        {/* <HelpButton /> */}
-        {isMultiPane && <PaneCountSwitcher />}
-      </Wrapper>
+      {!viewMode && (
+        <Wrapper>
+          <ManualUpgrades showTooltip>
+            <Button
+              className="t--upgrade"
+              isIconButton
+              kind="tertiary"
+              size="md"
+              startIcon="upgrade"
+            />
+          </ManualUpgrades>
+          <DebuggerTrigger />
+          <HelpButton />
+        </Wrapper>
+      )}
     </Container>
   );
 }

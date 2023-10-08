@@ -7,6 +7,7 @@ import type {
   Setting,
 } from "@appsmith/pages/AdminSettings/config/types";
 import {
+  CategoryType,
   SettingCategories,
   SettingSubtype,
   SettingTypes,
@@ -17,7 +18,7 @@ import localStorage from "utils/localStorage";
 import isUndefined from "lodash/isUndefined";
 
 export const APPSMITH_INSTANCE_NAME_SETTING_SETTING: Setting = {
-  id: "APPSMITH_INSTANCE_NAME",
+  id: "instanceName",
   category: SettingCategories.GENERAL,
   controlType: SettingTypes.TEXTINPUT,
   controlSubType: SettingSubtype.TEXT,
@@ -76,12 +77,9 @@ export const APPSMITH_HIDE_WATERMARK_SETTING: Setting = {
   controlType: SettingTypes.CHECKBOX,
   label: "Appsmith watermark",
   text: "Show Appsmith watermark",
-  needsUpgrade: false,
+  needsUpgrade: true,
   isDisabled: () => true,
   textSuffix: <BrandingBadge />,
-  upgradeLogEventName: "ADMIN_SETTINGS_UPGRADE_WATERMARK",
-  upgradeIntercomMessage:
-    "Hello, I would like to upgrade and remove the watermark.",
 };
 
 export enum AppsmithFrameAncestorsSetting {
@@ -171,6 +169,7 @@ export const APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING: Setting = {
 export const config: AdminConfigType = {
   icon: "settings-2-line",
   type: SettingCategories.GENERAL,
+  categoryType: CategoryType.GENERAL,
   controlType: SettingTypes.GROUP,
   title: "通用",
   canSave: true,

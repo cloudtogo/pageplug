@@ -1,37 +1,16 @@
-const dsl = require("../../../../fixtures/inputWidgetMobileDsl.json");
-const commonlocators = require("../../../../locators/commonlocators.json");
-import { ObjectsRegistry } from "../../../../support/Objects/Registry";
-const agHelper = ObjectsRegistry.AggregateHelper;
+import * as _ from "../../../../support/Objects/ObjectsCore";
+
 let theight;
 let twidth;
 
-describe("Validating Mobile Views", function () {
-  afterEach(() => {
-    agHelper.SaveLocalStorageCache();
-  });
-
-  beforeEach(() => {
-    agHelper.RestoreLocalStorageCache();
-  });
-  it("Validate change with height width for widgets", function () {
-    cy.wait(5000);
-    cy.get(commonlocators.autoConvert).click({
-      force: true,
-    });
-    cy.wait(2000);
-    cy.get(commonlocators.convert).click({
-      force: true,
-    });
-    cy.wait(2000);
-    cy.get(commonlocators.refreshApp).click({
-      force: true,
-    });
-    cy.wait(2000);
-    cy.addDsl(dsl);
-    cy.wait(5000); //for dsl to settle
-    //cy.openPropertyPane("containerwidget");
-    cy.PublishtheApp();
-    cy.wait(2000);
+describe("Validating Mobile Views for Fill Widget", function () {
+  it("Validate change with height width for fill widget - Input widget", function () {
+    _.autoLayout.ConvertToAutoLayoutAndVerify(false);
+    cy.dragAndDropToCanvas("inputwidgetv2", { x: 100, y: 200 });
+    cy.dragAndDropToCanvas("inputwidgetv2", { x: 10, y: 20 });
+    _.deployMode.DeployApp();
+    cy.get(".t--widget-inputwidgetv2").first().should("be.visible");
+    cy.get(".t--widget-inputwidgetv2").last().should("be.visible");
     cy.get(".t--widget-inputwidgetv2")
       .invoke("css", "height")
       .then((newheight) => {

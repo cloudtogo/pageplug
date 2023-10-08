@@ -1,4 +1,5 @@
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import type { EntityInfo } from "pages/Editor/EntityNavigation/types";
 
 /**
  * init action that sets preview mode. navigates to canvas when payload is true
@@ -48,15 +49,13 @@ export const deleteCanvasCardsState = () => ({
  * action that update canvas layout
  *
  * @param width
- * @param scale
  * @returns
  */
-export const updateCanvasLayoutAction = (width: number, scale = 1) => {
+export const updateCanvasLayoutAction = (width: number) => {
   return {
     type: ReduxActionTypes.UPDATE_CANVAS_LAYOUT,
     payload: {
       width,
-      scale,
     },
   };
 };
@@ -69,3 +68,10 @@ export const updateCanvasLayoutAction = (width: number, scale = 1) => {
 export const startingEntityUpdate = () => ({
   type: ReduxActionTypes.ENTITY_UPDATE_STARTED,
 });
+
+export const navigateToEntity = (payload: EntityInfo) => {
+  return {
+    type: ReduxActionTypes.NAVIGATE_TO_ENTITY,
+    payload,
+  };
+};

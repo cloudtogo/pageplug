@@ -23,7 +23,6 @@ import {
 } from "@appsmith/constants/messages";
 import FormTextField from "components/utils/ReduxFormTextField";
 import ThirdPartyAuth from "@appsmith/pages/UserAuth/ThirdPartyAuth";
-import { ThirdPartyLoginRegistry } from "pages/UserAuth/ThirdPartyLoginRegistry";
 import { FormGroup } from "design-system-old";
 import { Button, Link, Callout } from "design-system";
 import { isEmail, isStrongPassword, isEmptyString } from "utils/formhelpers";
@@ -48,6 +47,8 @@ import {
   getIsFormLoginEnabled,
   getThirdPartyAuths,
 } from "@appsmith/selectors/tenantSelectors";
+import Helmet from "react-helmet";
+import { useHtmlPageTitle } from "@appsmith/utils";
 
 declare global {
   interface Window {
@@ -88,12 +89,17 @@ export function SignUp(props: SignUpFormProps) {
         search,
       });
     }
+
+    AnalyticsUtil.logEvent("SIGNUP_REACHED", {
+      referrer: document.referrer,
+    });
   }, []);
   const { emailValue: email, error, pristine, submitting, valid } = props;
   const isFormValid = valid && email && !isEmptyString(email);
-  const socialLoginList = ThirdPartyLoginRegistry.get();
+  const socialLoginList = useSelector(getThirdPartyAuths);
   const shouldDisableSignupButton = pristine || !isFormValid;
   const location = useLocation();
+  const htmlPageTitle = useHtmlPageTitle();
 
   const recaptchaStatus = useScript(
     `https://www.google.com/recaptcha/api.js?render=${googleRecaptchaSiteKey.apiKey}`,
@@ -167,6 +173,10 @@ export function SignUp(props: SignUpFormProps) {
       subtitle={createMessage(SIGNUP_PAGE_SUBTITLE)}
       title={createMessage(SIGNUP_PAGE_TITLE)}
     >
+      <Helmet>
+        <title>{htmlPageTitle}</title>
+      </Helmet>
+
       {showError && <Callout kind="error">{errorMessage}</Callout>}
       {socialLoginList.length > 0 && (
         <ThirdPartyAuth logins={socialLoginList} type={"SIGNUP"} />

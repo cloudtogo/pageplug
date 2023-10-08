@@ -81,4 +81,15 @@ export type EchartTheme = {
   backgroundColor?: string;
   color?: string[];
   [key: string]: any;
+}
+
+export type SetterConfig = {
+  __setters: {
+    [key: string]: {
+      path: string;
+      type: string;
+      disabled?: string;
+      accessor?: string;
+    };
+  };
 };

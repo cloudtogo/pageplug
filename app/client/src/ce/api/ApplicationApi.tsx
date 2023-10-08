@@ -105,6 +105,7 @@ export interface DeleteApplicationRequest {
 export interface ForkApplicationRequest {
   applicationId: string;
   workspaceId: string;
+  editMode?: boolean;
 }
 
 export type GetAllApplicationResponse = ApiResponse<ApplicationPagePayload[]>;
@@ -227,6 +228,15 @@ export interface PageDefaultMeta {
   default: boolean;
 }
 
+export interface UploadNavigationLogoRequest {
+  applicationId: string;
+  logo: File;
+  onSuccessCallback?: () => void;
+}
+
+export interface DeleteNavigationLogoRequest {
+  applicationId: string;
+}
 export interface snapShotApplicationRequest {
   applicationId: string;
 }

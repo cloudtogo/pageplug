@@ -11,7 +11,6 @@ import {
   getCurrentApplicationId,
   getCurrentPageId,
 } from "selectors/editorSelectors";
-import { isMobileLayout } from "selectors/applicationSelectors";
 import Entity, { EntityClassNames } from "../Entity";
 import history, { NavigationMethod } from "utils/history";
 import { createNewPageFromEntities, updatePage } from "actions/pageActions";
@@ -42,12 +41,11 @@ import {
   hasManagePagePermission,
 } from "@appsmith/utils/permissionHelpers";
 import type { AppState } from "@appsmith/reducers";
-<<<<<<< HEAD
 import { TooltipComponent } from "design-system-old";
-=======
 import { getCurrentWorkspaceId } from "@appsmith/selectors/workspaceSelectors";
 import { getInstanceId } from "@appsmith//selectors/tenantSelectors";
->>>>>>> c8d13d9ccaae2176aa0be53be467745cfb00e7ef
+import classNames from "classnames";
+import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
 
 const ENTITY_HEIGHT = 36;
 const MIN_PAGES_HEIGHT = 60;
@@ -99,7 +97,7 @@ function Pages() {
   const storedHeightKey = "pagesContainerHeight_" + applicationId;
   const storedHeight = localStorage.getItem(storedHeightKey);
   const location = useLocation();
-  const isMobile = useSelector(isMobileLayout);
+  const featureFlags = useSelector(selectFeatureFlags);
 
   const resizeAfterCallback = (data: CallbackResponseType) => {
     localStorage.setItem(storedHeightKey, data.height.toString());
@@ -160,18 +158,18 @@ function Pages() {
 
   const onMenuClose = useCallback(() => openMenu(false), [openMenu]);
 
-  const viewerMenuEditIcon = React.useMemo(
-    () => (
-      <TooltipComponent
-        boundary="viewport"
-        content={`设计项目菜单`}
-        position="bottom"
-      >
-        {appLayoutIcon}
-      </TooltipComponent>
-    ),
-    [],
-  );
+  // const viewerMenuEditIcon = React.useMemo(
+  //   () => (
+  //     <TooltipComponent
+  //       boundary="viewport"
+  //       content={`设计项目菜单`}
+  //       position="bottom"
+  //     >
+  //       {appLayoutIcon}
+  //     </TooltipComponent>
+  //   ),
+  //   [],
+  // );
 
   const navToLayoutEditor = useCallback(() => {
     history.push(viewerLayoutEditorURL({ pageId: currentPageId }));
@@ -246,7 +244,10 @@ function Pages() {
       <StyledEntity
         addButtonHelptext={createMessage(ADD_PAGE_TOOLTIP)}
         alwaysShowRightIcon
-        className="group pages"
+        className={classNames({
+          "group pages": true,
+          "p-3 pb-0": featureFlags.release_widgetdiscovery_enabled,
+        })}
         collapseRef={pageResizeRef}
         customAddButton={
           <AddPageContextMenu
@@ -262,11 +263,10 @@ function Pages() {
           isPagesOpen === null || isPagesOpen === undefined ? true : isPagesOpen
         }
         name="页面"
-        // onClickPreRightIcon={onPin}
         onToggle={onPageToggle}
         pagesSize={ENTITY_HEIGHT * pages.length}
         onClickPreRightIcon={navToLayoutEditor}
-        preRightIcon={isMobile ? null : viewerMenuEditIcon}
+        // preRightIcon={isMobile ? null : viewerMenuEditIcon}
         searchKeyword={""}
         showAddButton={canCreatePages}
         step={0}

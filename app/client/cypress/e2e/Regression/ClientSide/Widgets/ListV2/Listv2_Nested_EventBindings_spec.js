@@ -46,13 +46,7 @@ describe("Listv2 - Event bindings spec", () => {
       .type("inner input updated");
 
     // click the button on inner list 1st row.
-<<<<<<< HEAD
-    cy.get(widgetSelector("Button3"))
-      .find("button")
-      .click({ force: true });
-=======
     cy.get(widgetSelector("Button3")).find("button").click({ force: true });
->>>>>>> 5fd2e20e53ca4ac615a696ab618085a1a85df296
 
     cy.wait(1000);
 

@@ -27,6 +27,7 @@ const PROPERTIES = {
         helpText: "设置字段对齐方式",
         label: "对齐",
         controlType: "ICON_TABS",
+        defaultValue: "LEFT",
         fullWidth: true,
         isBindProperty: true,
         isTriggerProperty: false,

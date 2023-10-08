@@ -162,35 +162,6 @@ const PRIMARY_MENU_IDS = {
   CREATE_NEW: "CREATE_NEW",
 };
 
-const SECONDARY_MENU_IDS = {
-  API: "API",
-  DATABASE: "DATABASE",
-  MOCK_DATABASE: "MOCK_DATABASE",
-};
-
-const SECONDARY_MENU: TabProp[] = [
-  {
-    key: "API",
-    title: "API接口",
-    panelComponent: <div />,
-  },
-  {
-    key: "DATABASE",
-    title: "数据库",
-    panelComponent: <div />,
-  },
-];
-const getSecondaryMenu = (hasActiveSources: boolean) => {
-  const mockDbMenu = {
-    key: "MOCK_DATABASE",
-    title: "样例数据库",
-    panelComponent: <div />,
-  };
-  return hasActiveSources
-    ? [...SECONDARY_MENU, mockDbMenu]
-    : [mockDbMenu, ...SECONDARY_MENU];
-};
-
 const getSecondaryMenuIds = (hasActiveSources = false) => {
   return {
     API: 0 + (hasActiveSources ? 0 : 1),
@@ -264,6 +235,45 @@ function CreateNewAPI({
         isCreating={isCreating}
         location={location}
         pageId={pageId}
+        showSaasAPIs={false}
+        showUnsupportedPluginDialog={showUnsupportedPluginDialog}
+      />
+    </div>
+  );
+}
+
+function CreateNewSaasIntegration({
+  active,
+  history,
+  isCreating,
+  pageId,
+  showUnsupportedPluginDialog,
+}: any) {
+  const newSaasAPIRef = useRef<HTMLDivElement>(null);
+  const isMounted = useRef(false);
+
+  useEffect(() => {
+    if (active && newSaasAPIRef.current) {
+      isMounted.current &&
+        scrollIntoView(newSaasAPIRef.current, {
+          behavior: "smooth",
+          scrollMode: "always",
+          block: "start",
+          boundary: document.getElementById("new-integrations-wrapper"),
+        });
+    } else {
+      isMounted.current = true;
+    }
+  }, [active]);
+  return (
+    <div id="new-saas-api" ref={newSaasAPIRef}>
+      <Text type={TextType.H2}>Saas Integrations</Text>
+      <NewApiScreen
+        history={history}
+        isCreating={isCreating}
+        location={location}
+        pageId={pageId}
+        showSaasAPIs
         showUnsupportedPluginDialog={showUnsupportedPluginDialog}
       />
     </div>
@@ -509,6 +519,17 @@ class IntegrationsHomeScreen extends React.Component<
             pageId={pageId}
             showUnsupportedPluginDialog={this.showUnsupportedPluginDialog}
           />
+          <CreateNewSaasIntegration
+            active={
+              activeSecondaryMenuId ===
+              getSecondaryMenuIds(dataSources.length > 0).API
+            }
+            history={history}
+            isCreating={isCreating}
+            location={location}
+            pageId={pageId}
+            showUnsupportedPluginDialog={this.showUnsupportedPluginDialog}
+          />
           {dataSources.length > 0 &&
             this.props.mockDatasources.length > 0 &&
             mockDataSection}
@@ -583,36 +604,6 @@ class IntegrationsHomeScreen extends React.Component<
             <ResizerMainContainer>
               <ResizerContentContainer className="integrations-content-container">
                 {currentScreen}
-                {activePrimaryMenuId === PRIMARY_MENU_IDS.CREATE_NEW && (
-                  <VerticalMenu>
-                    {getSecondaryMenu(dataSources.length > 0).map((item) => {
-                      return (
-                        <VerticalMenuItem
-                          aria-selected={
-                            this.state.activeSecondaryMenuId ===
-                            getSecondaryMenuIds(dataSources.length > 0)[
-                              item.key as keyof typeof SECONDARY_MENU_IDS
-                            ]
-                          }
-                          key={
-                            getSecondaryMenuIds(dataSources.length > 0)[
-                              item.key as keyof typeof SECONDARY_MENU_IDS
-                            ]
-                          }
-                          onClick={() =>
-                            this.onSelectSecondaryMenu(
-                              getSecondaryMenuIds(dataSources.length > 0)[
-                                item.key as keyof typeof SECONDARY_MENU_IDS
-                              ],
-                            )
-                          }
-                        >
-                          {item.title}
-                        </VerticalMenuItem>
-                      );
-                    })}
-                  </VerticalMenu>
-                )}
               </ResizerContentContainer>
               {showDebugger && <Debugger />}
             </ResizerMainContainer>

@@ -11,11 +11,6 @@ import {
   MAIN_CONTAINER_WIDGET_ID,
 } from "constants/WidgetConstants";
 import { APP_MODE } from "entities/App";
-// import { SIDE_NAV_WIDTH } from "pages/common/SideNav";
-// import { AppPositioningTypes } from "reducers/entityReducers/pageListReducer";
-// import { getIsAppSettingsPaneOpen } from "selectors/appSettingsPaneSelectors";
-// import { AppPositioningTypes } from "reducers/entityReducers/pageListReducer";
-import { SIDE_NAV_WIDTH } from "pages/common/SideNav";
 import { AppPositioningTypes } from "reducers/entityReducers/pageListReducer";
 import {
   getCurrentApplicationLayout,
@@ -37,11 +32,6 @@ import {
   getIsAppSettingsPaneWithNavigationTabOpen,
 } from "selectors/appSettingsPaneSelectors";
 import {
-  getPaneCount,
-  getTabsPaneWidth,
-  isMultiPaneActive,
-} from "selectors/multiPaneSelectors";
-import {
   getAppSidebarPinned,
   getCurrentApplication,
   getSidebarWidth,
@@ -52,6 +42,7 @@ import { scrollbarWidth } from "utils/helpers";
 import { useWindowSizeHooks } from "./dragResizeHooks";
 import type { AppState } from "@appsmith/reducers";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { useLocation } from "react-router";
 
 const BORDERS_WIDTH = 2;
 const GUTTER_WIDTH = 72;
@@ -76,9 +67,6 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
   const isCanvasInitialized = useSelector(getIsCanvasInitialized);
   const appLayout = useSelector(getCurrentApplicationLayout);
   const isAppSettingsPaneOpen = useSelector(getIsAppSettingsPaneOpen);
-  const tabsPaneWidth = useSelector(getTabsPaneWidth);
-  const isMultiPane = useSelector(isMultiPaneActive);
-  const paneCount = useSelector(getPaneCount);
   const appPositioningType = useSelector(getCurrentAppPositioningType);
   const isAppSidebarPinned = useSelector(getAppSidebarPinned);
   const sidebarWidth = useSelector(getSidebarWidth);
@@ -91,6 +79,10 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
     (state: AppState) => state.ui.widgetDragResize.isAutoCanvasResizing,
   );
   const [isCanvasResizing, setIsCanvasResizing] = useState<boolean>(false);
+  const { search } = useLocation();
+  const queryParams = new URLSearchParams(search);
+  const isEmbed = queryParams.get("embed");
+  const isNavbarVisibleInEmbeddedApp = queryParams.get("navbar");
 
   // /**
   //  * calculates min height
@@ -165,21 +157,18 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
       calculatedWidth -= explorerWidth;
     }
 
-    if (isMultiPane) {
-      calculatedWidth = screenWidth - scrollbarWidth() - tabsPaneWidth - 100;
-      if (paneCount === 3) calculatedWidth -= propertyPaneWidth;
-    }
-
     /**
      * If there is
      * 1. a sidebar for navigation,
      * 2. it is pinned,
-     * 3. and device is not mobile
+     * 3. device is not mobile
+     * 4. and it is not an embedded app
      * we need to subtract the sidebar width as well in the following modes -
      * 1. Preview
      * 2. App settings open with navigation tab
      * 3. Published
      */
+    const isEmbeddedAppWithNavVisible = isEmbed && isNavbarVisibleInEmbeddedApp;
     if (
       (appMode === APP_MODE.PUBLISHED ||
         isPreviewMode ||
@@ -235,23 +224,8 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
   const resizeToLayout = () => {
     const calculatedWidth = calculateCanvasWidth();
     const { width: rightColumn } = mainCanvasProps || {};
-    let scale = 1;
-    if (isMultiPane && appLayout?.type !== "FLUID") {
-      let canvasSpace =
-        screenWidth -
-        tabsPaneWidth -
-        SIDE_NAV_WIDTH -
-        GUTTER_WIDTH -
-        BORDERS_WIDTH;
-      if (paneCount === 3) canvasSpace -= propertyPaneWidth;
-      // Scale will always be between 0.5 to 1
-      scale = Math.max(
-        Math.min(+Math.abs(canvasSpace / calculatedWidth).toFixed(2), 1),
-        0.5,
-      );
-      dispatch(updateCanvasLayoutAction(calculatedWidth, scale));
-    } else if (rightColumn !== calculatedWidth || !isCanvasInitialized) {
-      dispatch(updateCanvasLayoutAction(calculatedWidth, scale));
+    if (rightColumn !== calculatedWidth || !isCanvasInitialized) {
+      dispatch(updateCanvasLayoutAction(calculatedWidth));
     }
     return calculatedWidth;
   };
@@ -259,8 +233,6 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
   const debouncedResize = useCallback(debounce(resizeToLayout, 250), [
     mainCanvasProps,
     screenWidth,
-    tabsPaneWidth,
-    paneCount,
   ]);
 
   const immediateDebouncedResize = useCallback(debounce(resizeToLayout), [
@@ -298,7 +270,7 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
 
   useEffect(() => {
     if (isCanvasInitialized) debouncedResize();
-  }, [screenWidth, tabsPaneWidth, paneCount]);
+  }, [screenWidth]);
 
   /**
    * resize the layout if any of the following thing changes:

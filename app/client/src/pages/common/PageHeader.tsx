@@ -2,7 +2,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { connect, useDispatch, useSelector } from "react-redux";
-import { getCurrentUser, selectFeatureFlags } from "selectors/usersSelectors";
+import { getCurrentUser } from "selectors/usersSelectors";
 import styled from "styled-components";
 import StyledHeader from "components/designSystems/appsmith/StyledHeader";
 import type { AppState } from "@appsmith/reducers";
@@ -66,12 +66,6 @@ const HeaderSection = styled.div`
   }
 `;
 
-// const StyledTwoLineHamburger = styled(TwoLineHamburger)`
-//   fill: ${Colors.BLACK};
-//   width: 22px;
-//   height: 22px;
-//   cursor: pointer;
-// `;
 const Tabs = styled.div`
   display: flex;
   font-size: 14px;
@@ -168,8 +162,6 @@ export function PageHeader(props: PageHeaderProps) {
     "inherit",
   );
 
-  const featureFlags = useSelector(selectFeatureFlags);
-
   useEffect(() => {
     dispatch(getTemplateNotificationSeenAction());
   }, []);
@@ -194,7 +186,7 @@ export function PageHeader(props: PageHeaderProps) {
 
   const showTabs = useMemo(() => {
     return tabs.some((tab) => tab.matcher(location.pathname));
-  }, [featureFlags, location.pathname]);
+  }, [location.pathname]);
 
   const isAirgappedInstance = isAirgapped();
 

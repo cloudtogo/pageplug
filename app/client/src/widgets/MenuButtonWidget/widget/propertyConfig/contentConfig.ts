@@ -27,6 +27,7 @@ export default [
         helpText: "设置菜单项数据源",
         label: "菜单项数据源",
         controlType: "ICON_TABS",
+        defaultValue: MenuItemsSource.STATIC,
         fullWidth: true,
         options: [
           {

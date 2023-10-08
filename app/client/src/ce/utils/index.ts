@@ -9,3 +9,11 @@ export const addItemsInContextMenu = (
 ) => {
   return moreActionItems;
 };
+
+export const useHtmlPageTitle = () => {
+  return "Appsmith";
+};
+
+export const isCEMode = () => {
+  return true;
+};

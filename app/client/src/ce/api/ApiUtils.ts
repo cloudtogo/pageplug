@@ -26,7 +26,10 @@ import { getAppsmithConfigs } from "@appsmith/configs";
 import * as Sentry from "@sentry/react";
 import { CONTENT_TYPE_HEADER_KEY } from "constants/ApiEditorConstants/CommonApiConstants";
 import { isAirgapped } from "@appsmith/utils/airgapHelpers";
-import { getEnvironmentIdForHeader } from "@appsmith/api/ApiUtils";
+import {
+  getCurrentEnvironment,
+  getCurrentEditingEnvID,
+} from "@appsmith/utils/Environments";
 
 const executeActionRegex = /actions\/execute/;
 const timeoutErrorRegex = /timeout of (\d+)ms exceeded/;
@@ -93,10 +96,14 @@ export const apiRequestInterceptor = (config: AxiosRequestConfig) => {
   }
 
   // Add header for environment name
-  const activeEnv = getEnvironmentIdForHeader();
+  const activeEnv = getCurrentEnvironment();
 
   if (activeEnv && config.headers) {
-    config.headers.environmentId = activeEnv;
+    if (config.url?.indexOf("/code") !== -1) {
+      config.headers.environmentId = getCurrentEditingEnvID();
+    } else {
+      config.headers.environmentId = activeEnv;
+    }
   }
 
   const anonymousId = AnalyticsUtil.getAnonymousId();
@@ -200,7 +207,9 @@ export const apiFailureResponseInterceptor = (error: any) => {
             )}`,
           }),
         );
+        Sentry.captureException(error);
         return Promise.reject({
+          ...error,
           code: ERROR_CODES.REQUEST_NOT_AUTHORISED,
           message: "Unauthorized. Redirecting to login page...",
           show: false,
@@ -212,7 +221,9 @@ export const apiFailureResponseInterceptor = (error: any) => {
         (SERVER_ERROR_CODES.RESOURCE_NOT_FOUND.includes(errorData.error.code) ||
           SERVER_ERROR_CODES.UNABLE_TO_FIND_PAGE.includes(errorData.error.code))
       ) {
+        Sentry.captureException(error);
         return Promise.reject({
+          ...error,
           code: ERROR_CODES.PAGE_NOT_FOUND,
           message: "Resource Not Found",
           show: false,
