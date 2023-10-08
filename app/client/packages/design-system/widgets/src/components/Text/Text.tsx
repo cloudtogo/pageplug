@@ -1,34 +1,41 @@
-import React from "react";
+import { getTypographyClassName } from "@design-system/theming";
+import React, { forwardRef } from "react";
 import { StyledText } from "./index.styled";
-// eslint-disable-next-line prettier/prettier
-import type { fontFamilyTypes } from "../../utils/typography";
+import classNames from "classnames";
 
-export type TextProps = {
-  children: React.ReactNode;
-  isLoading?: boolean;
-  isDisabled?: boolean;
-  fontFamily?: fontFamilyTypes;
-  fontSize?: string;
-  color?: string;
-  fontWeight?: "normal" | "bold" | "bolder" | "lighter";
-  textDecoration?: "none" | "underline" | "line-through";
-  fontStyle?: "normal" | "italic";
-  textAlign?: "left" | "center" | "right";
-  capHeight?: number;
-  lineGap?: number;
-  as?: keyof JSX.IntrinsicElements;
-  lineClamp?: number;
-  className?: string;
+import type { Ref } from "react";
+import type { TextProps } from "./types";
+
+const _Text = (props: TextProps, ref: Ref<HTMLParagraphElement>) => {
+  const {
+    children,
+    className,
+    color = "default",
+    fontWeight,
+    isBold = false,
+    isItalic = false,
+    lineClamp,
+    textAlign = "left",
+    variant = "body",
+    ...rest
+  } = props;
+
+  return (
+    <StyledText
+      $fontWeight={fontWeight}
+      $isBold={isBold}
+      $isItalic={isItalic}
+      $lineClamp={lineClamp}
+      $textAlign={textAlign}
+      $variant={variant}
+      className={classNames(className, getTypographyClassName(variant))}
+      color={color}
+      ref={ref}
+      {...rest}
+    >
+      <span>{children}</span>
+    </StyledText>
+  );
 };
 
-export const Text = React.forwardRef<HTMLParagraphElement, TextProps>(
-  (props, ref) => {
-    const { children, ...rest } = props;
-
-    return (
-      <StyledText ref={ref} {...rest}>
-        <span>{children}</span>
-      </StyledText>
-    );
-  },
-);
+export const Text = forwardRef(_Text);

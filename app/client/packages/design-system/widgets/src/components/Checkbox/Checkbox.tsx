@@ -13,14 +13,14 @@ export type CheckboxProps = HeadlessCheckboxProps & {
   labelPosition?: "left" | "right";
 };
 
-export const Checkbox = forwardRef(
-  (props: CheckboxProps, ref: HeadlessCheckboxRef) => {
-    const { children, labelPosition = "right", ...rest } = props;
+const _Checkbox = (props: CheckboxProps, ref: HeadlessCheckboxRef) => {
+  const { children, labelPosition = "right", ...rest } = props;
 
-    return (
-      <StyledCheckbox labelPosition={labelPosition} ref={ref} {...rest}>
-        {children && <Text>{children}</Text>}
-      </StyledCheckbox>
-    );
-  },
-);
+  return (
+    <StyledCheckbox labelPosition={labelPosition} ref={ref} {...rest}>
+      {children && <Text>{children}</Text>}
+    </StyledCheckbox>
+  );
+};
+
+export const Checkbox = forwardRef(_Checkbox);

@@ -1,20 +1,25 @@
-import * as _ from "../../../../../support/Objects/ObjectsCore";
-
-const { agHelper, apiPage, entityExplorer, jsEditor, locators, propPane } = _;
+import {
+  agHelper,
+  locators,
+  entityExplorer,
+  jsEditor,
+  propPane,
+  apiPage,
+  draggableWidgets,
+} from "../../../../support/Objects/ObjectsCore";
 
 describe("UI to Code", () => {
   before(() => {
-    cy.fixture("buttondsl").then((val: any) => {
-      agHelper.AddDsl(val);
-    });
-    apiPage.CreateApi("Api1", "GET");
+    entityExplorer.DragDropWidgetNVerify(draggableWidgets.BUTTON);
+    entityExplorer.NavigateToSwitcher("Explorer");
+    apiPage.CreateApi();
     apiPage.CreateApi("Api2", "POST");
   });
 
   beforeEach(() => {
     entityExplorer.SelectEntityByName("Button1", "Widgets");
     propPane.EnterJSContext("onClick", "");
-    jsEditor.DisableJSContext("onClick");
+    propPane.ToggleJSMode("onClick", false);
   });
 
   it("1. adds an action", () => {
@@ -39,7 +44,7 @@ describe("UI to Code", () => {
     // Add second action
     propPane.SelectPlatformFunction("onClick", "Navigate to");
     propPane.SelectActionByTitleAndValue("Navigate to", "Select page");
-    agHelper.GetNClick(_.propPane._navigateToType("URL"));
+    agHelper.GetNClick(propPane._navigateToType("URL"));
     agHelper.TypeText(
       propPane._actionSelectorFieldByLabel("Enter URL"),
       "https://google.com",
@@ -122,7 +127,7 @@ describe("UI to Code", () => {
     // Add second action
     propPane.SelectPlatformFunction("onClick", "Navigate to");
     propPane.SelectActionByTitleAndValue("Navigate to", "Select page");
-    agHelper.GetNClick(_.propPane._navigateToType("URL"));
+    agHelper.GetNClick(propPane._navigateToType("URL"));
     agHelper.TypeText(
       propPane._actionSelectorFieldByLabel("Enter URL"),
       "https://google.com",
@@ -206,7 +211,7 @@ describe("UI to Code", () => {
     // Add second action
     propPane.SelectPlatformFunction("onClick", "Navigate to");
     propPane.SelectActionByTitleAndValue("Navigate to", "Select page");
-    agHelper.GetNClick(_.propPane._navigateToType("URL"));
+    agHelper.GetNClick(propPane._navigateToType("URL"));
     agHelper.TypeText(
       propPane._actionSelectorFieldByLabel("Enter URL"),
       "https://google.com",
@@ -292,7 +297,6 @@ describe("UI to Code", () => {
     agHelper.GetNClick(propPane._actionSelectorPopupClose);
 
     agHelper.GetNClick(propPane._actionCardByTitle("Show alert"));
-
     agHelper.GetNClick(propPane._actionCallbacks);
 
     // add a success callback
@@ -316,14 +320,11 @@ describe("UI to Code", () => {
       Api2.run().then(() => { showAlert("Hello") }).catch(() => { showAlert("World") });
      })}}`,
     );
-    jsEditor.DisableJSContext("onClick");
+    propPane.ToggleJSMode("onClick", false);
 
     // Select the card to show the callback button
     propPane.SelectActionByTitleAndValue("Execute a query", "Api1.run");
     agHelper.GetNClick(propPane._actionSelectorPopupClose);
-
-    // Click on the callback button
-    agHelper.GetNClick(propPane._actionCallbacks);
 
     // Edit the success callback of the nested Api2.run
     propPane.SelectActionByTitleAndValue("Execute a query", "Api2.run");
@@ -358,29 +359,26 @@ describe("UI to Code", () => {
       Api2.run().then(() => { showAlert("Hello") }).catch(() => { showAlert("World") });
      })}}`,
     );
-    jsEditor.DisableJSContext("onClick");
+    propPane.ToggleJSMode("onClick", false);
 
     // Select the card to show the callback button
     propPane.SelectActionByTitleAndValue("Execute a query", "Api1.run");
     agHelper.GetNClick(propPane._actionSelectorPopupClose);
 
-    // Click on the callback button
-    agHelper.GetNClick(propPane._actionCallbacks);
-
     // Edit the success callback of the nested Api2.run
     propPane.SelectActionByTitleAndValue("Execute a query", "Api2.run");
-    cy.get(
-      jsEditor._lineinPropertyPaneJsEditor(
-        2,
-        propPane._actionSelectorFieldContentByLabel("Params"),
-      ),
-    ).type("val: 1");
+    agHelper.EnterActionValue(
+      "Params",
+      `{{{
+        val: 1
+      }}}`,
+    );
 
     agHelper.GetNClick(propPane._actionSelectorPopupClose);
 
     propPane.ValidateJSFieldValue(
       "onClick",
-      `{{Api1.run().then(() => {  Api2.run({    val: 1    // "key": "value",  }).then(() => {    showAlert("Hello");  }).catch(() => {    showAlert("World");  });});}}`,
+      `{{Api1.run().then(() => {  Api2.run({    val: 1  }).then(() => {    showAlert("Hello");  }).catch(() => {    showAlert("World");  });});}}`,
     );
   });
 
@@ -392,14 +390,13 @@ describe("UI to Code", () => {
        })
        `,
     );
-    jsEditor.DisableJSContext("onClick");
+    propPane.ToggleJSMode("onClick", false);
 
     // Select the card to show the callback button
     propPane.SelectActionByTitleAndValue("Execute a query", "Api1.run");
     agHelper.GetNClick(propPane._actionSelectorPopupClose);
 
     // Click on the callback button
-    agHelper.GetNClick(propPane._actionCallbacks);
     agHelper.GetNClick(propPane._actionAddCallback("success"));
     agHelper.GetNClick(locators._dropDownValue("Store value")).wait(500);
 
@@ -411,13 +408,13 @@ describe("UI to Code", () => {
 
   it("9. correctly configures a setInterval action", () => {
     propPane.SelectPlatformFunction("onClick", "Set interval");
-
-    cy.get(
-      jsEditor._lineinPropertyPaneJsEditor(
-        2,
-        propPane._actionSelectorFieldContentByLabel("Callback function"),
-      ),
-    ).type("{enter}showAlert('Hello'){enter}//");
+    agHelper.EnterActionValue(
+      "Callback function",
+      `{{() => {
+        // add code here
+        showAlert('Hello')
+      }}}`,
+    );
 
     agHelper.TypeText(
       propPane._actionSelectorFieldByLabel("Id"),
@@ -427,7 +424,7 @@ describe("UI to Code", () => {
 
     propPane.ValidateJSFieldValue(
       "onClick",
-      `{{setInterval(() => {  // add c  showAlert(\'Hello\');  // ode here}, 5000, \'interval-id\');}}`,
+      `{{setInterval(() => {  // add code here  showAlert('Hello');}, 5000, 'interval-id');}}`,
     );
   });
 });

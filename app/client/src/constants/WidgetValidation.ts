@@ -16,6 +16,7 @@ export enum ValidationTypes {
   FUNCTION = "FUNCTION",
   SAFE_URL = "SAFE_URL",
   ARRAY_OF_TYPE_OR_TYPE = "ARRAY_OF_TYPE_OR_TYPE",
+  UNION = "UNION",
 }
 
 export type ValidationResponse = {
@@ -23,6 +24,7 @@ export type ValidationResponse = {
   parsed: any;
   messages?: Array<Error>;
   transformed?: any;
+  isParsedValueTheSame?: boolean;
 };
 
 export type Validator = (
@@ -34,12 +36,16 @@ export type Validator = (
 
 export const ISO_DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.sssZ";
 
-export const DATA_TREE_KEYWORDS = {
+export const DATATREE_INTERNAL_KEYWORDS = {
   actionPaths: "actionPaths",
-  appsmith: "appsmith",
   global: "global",
   pageList: "pageList",
   [EXECUTION_PARAM_KEY]: EXECUTION_PARAM_KEY,
+};
+
+export const DATA_TREE_KEYWORDS = {
+  appsmith: "appsmith",
+  ...DATATREE_INTERNAL_KEYWORDS,
 };
 
 export const JAVASCRIPT_KEYWORDS = {

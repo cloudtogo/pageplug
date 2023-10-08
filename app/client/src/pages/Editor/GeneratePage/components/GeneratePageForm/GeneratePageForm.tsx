@@ -54,13 +54,8 @@ import {
 } from "../constants";
 import { Bold, Label, SelectWrapper } from "./styles";
 import type { GeneratePagePayload } from "./types";
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { getCurrentApplicationId } from "selectors/editorSelectors";
 
-import {
-  getFirstTimeUserOnboardingComplete,
-  getIsFirstTimeUserOnboardingEnabled,
-} from "selectors/onboardingSelectors";
 import { datasourcesEditorIdURL, integrationEditorURL } from "RouteBuilder";
 import { PluginPackageName } from "entities/Action";
 import { getCurrentAppWorkspace } from "@appsmith/selectors/workspaceSelectors";
@@ -236,10 +231,6 @@ function GeneratePageForm() {
     useState<string>("");
   const datasourcesStructure = useSelector(getDatasourcesStructure);
 
-  const isFetchingDatasourceStructure = useSelector(
-    getIsFetchingDatasourceStructure,
-  );
-
   const generateCRUDSupportedPlugin: GenerateCRUDEnabledPluginMap = useSelector(
     getGenerateCRUDEnabledPluginMap,
   );
@@ -252,6 +243,10 @@ function GeneratePageForm() {
 
   const [selectedDatasource, selectDataSource] = useState<DropdownOption>(
     DEFAULT_DROPDOWN_OPTION,
+  );
+
+  const isFetchingDatasourceStructure = useSelector((state: AppState) =>
+    getIsFetchingDatasourceStructure(state, selectedDatasource.id || ""),
   );
 
   const [isSelectedTableEmpty, setIsSelectedTableEmpty] =
@@ -291,13 +286,6 @@ function GeneratePageForm() {
 
   const { bucketList, failedFetchingBucketList, isFetchingBucketList } =
     useS3BucketList();
-
-  const isFirstTimeUserOnboardingEnabled = useSelector(
-    getIsFirstTimeUserOnboardingEnabled,
-  );
-  const isFirstTimeUserOnboardingComplete = useSelector(
-    getFirstTimeUserOnboardingComplete,
-  );
 
   const onSelectDataSource = useCallback(
     (
@@ -567,18 +555,6 @@ function GeneratePageForm() {
 
     AnalyticsUtil.logEvent("GEN_CRUD_PAGE_FORM_SUBMIT");
     dispatch(generateTemplateToUpdatePage(payload));
-    if (isFirstTimeUserOnboardingEnabled) {
-      dispatch({
-        type: ReduxActionTypes.SET_FIRST_TIME_USER_ONBOARDING_APPLICATION_ID,
-        payload: "",
-      });
-    }
-    if (isFirstTimeUserOnboardingComplete) {
-      dispatch({
-        type: ReduxActionTypes.SET_FIRST_TIME_USER_ONBOARDING_COMPLETE,
-        payload: false,
-      });
-    }
   };
 
   const handleFormSubmit = () => {

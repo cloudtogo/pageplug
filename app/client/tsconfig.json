@@ -28,7 +28,10 @@
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "typeRoots": ["./typings", "./node_modules/@types"],
+    "typeRoots": [
+      "./typings",
+      "./node_modules/@types"
+    ],
     "sourceMap": true,
     "baseUrl": "./src",
     "noFallthroughCasesInSwitch": true,
@@ -41,5 +44,7 @@
     "decs1.d.ts",
     "./packages",
   ],
-  "exclude": ["./packages/rts", "**/*.stories.tsx"]
+  "exclude": [
+    "./packages/rts"
+  ]
 }

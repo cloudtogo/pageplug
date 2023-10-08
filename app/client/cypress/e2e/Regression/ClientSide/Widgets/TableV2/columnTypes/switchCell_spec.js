@@ -1,45 +1,43 @@
-import { ObjectsRegistry } from "../../../../../../support/Objects/Registry";
 const publishPage = require("../../../../../../locators/publishWidgetspage.json");
 const commonLocators = require("../../../../../../locators/commonlocators.json");
 import widgetsJson from "../../../../../../locators/Widgets.json";
-
-const propPane = ObjectsRegistry.PropertyPane;
-const agHelper = ObjectsRegistry.AggregateHelper;
+import {
+  agHelper,
+  entityExplorer,
+  propPane,
+  deployMode,
+  draggableWidgets,
+} from "../../../../../../support/Objects/ObjectsCore";
 
 const tableData = `[
-    {
-      "step": "#1",
-      "task": "Drop a table",
-      "status": "✅",
-      "action": "",
-      "completed": true
-    },
-    {
-      "step": "#2",
-      "task": "Create a query fetch_users with the Mock DB",
-      "status": "--",
-      "action": "",
-      "completed": true
-    },
-    {
-      "step": "#3",
-      "task": "Bind the query using => fetch_users.data",
-      "status": "--",
-      "action": "",
-    "completed": false
-    }
+  {
+    "step": "#1",
+    "task": "Drop a table",
+    "status": "✅",
+    "action": "",
+    "completed": true
+  },
+  {
+    "step": "#2",
+    "task": "Create a query fetch_users with the Mock DB",
+    "status": "--",
+    "action": "",
+    "completed": true
+  },
+  {
+    "step": "#3",
+    "task": "Bind the query using => fetch_users.data",
+    "status": "--",
+    "action": "",
+  "completed": false
+  }
   ]`;
 
 const switchSelector = " .bp3-switch input[type='checkbox']";
 describe("Switch column type funtionality test", () => {
   before(() => {
-    cy.dragAndDropToCanvas("tablewidgetv2", {
-      x: 150,
-      y: 300,
-    });
-    cy.openPropertyPane("tablewidgetv2");
-    propPane.RemoveText("tabledata");
-    propPane.UpdatePropertyFieldValue("Table data", tableData);
+    entityExplorer.DragDropWidgetNVerify(draggableWidgets.TABLE);
+    propPane.EnterJSContext("Table data", tableData);
     cy.editColumn("completed");
     cy.changeColumnType("Switch");
   });
@@ -49,16 +47,15 @@ describe("Switch column type funtionality test", () => {
       cy.get(selector + switchSelector).should("exist");
     });
     // Toggle visiblity
-    propPane.ToggleOnOrOff("Visible", "off");
-    cy.PublishtheApp();
+    propPane.TogglePropertyState("Visible", "Off");
+    deployMode.DeployApp();
     cy.getTableV2DataSelector("0", "4").then((selector) => {
       cy.get(selector).should("not.exist");
     });
-    cy.get(publishPage.backToEditor).click();
-
+    deployMode.NavigateBacktoEditor();
     cy.openPropertyPane("tablewidgetv2");
     cy.editColumn("completed");
-    propPane.ToggleOnOrOff("Visible");
+    propPane.TogglePropertyState("Visible");
     cy.getTableV2DataSelector("0", "4").then((selector) => {
       cy.get(selector + switchSelector).should("exist");
     });
@@ -103,11 +100,11 @@ describe("Switch column type funtionality test", () => {
       const selector = $elemClass + switchSelector;
 
       // Verify if switch is disabled when Editable is off
-      propPane.ToggleOnOrOff("Editable", "off");
+      agHelper.AssertExistingToggleState("Editable", "false");
       cy.get(selector).should("be.disabled");
 
       // Verify if switch is enabled when Editable is on
-      propPane.ToggleOnOrOff("Editable");
+      propPane.TogglePropertyState("Editable");
       cy.get(selector).should("be.enabled");
 
       // Verify checked and unchecked
@@ -119,18 +116,16 @@ describe("Switch column type funtionality test", () => {
 
       // Check if onCheckChange is availabe when Editable is true and hidden on false
       cy.get(".t--add-action-onChange").should("be.visible");
-      propPane.ToggleOnOrOff("Editable", "off");
+      propPane.TogglePropertyState("Editable", "Off");
       cy.get(".t--add-action-onChange").should("not.exist");
 
       // Verify on check change handler
-      propPane.ToggleOnOrOff("Editable");
+      propPane.TogglePropertyState("Editable");
       propPane.SelectPlatformFunction("onChange", "Show alert");
       agHelper.EnterActionValue("Message", "This is a test message");
       cy.get(selector).click({ force: true }); // unChecked
       cy.wait(100);
-      cy.get("div.Toastify__toast")
-        .contains("This is a test message")
-        .should("be.visible");
+      agHelper.ValidateToastMessage("This is a test message");
     });
   });
 

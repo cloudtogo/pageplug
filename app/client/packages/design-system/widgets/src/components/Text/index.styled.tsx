@@ -1,69 +1,64 @@
+import type { TypographyFontWeight } from "@design-system/theming";
 import styled, { css } from "styled-components";
 
-// eslint-disable-next-line prettier/prettier
-import type { TextProps } from "./Text";
-import { createTypographyStyles } from "../../utils/typography";
+import type { StyledTextProp } from "./types";
 
-const shouldForwardProp = (prop: any) => {
-  const propsToOmit = [
-    "fontWeight",
-    "fontStyle",
-    "color",
-    "textAlign",
-    "textDecoration",
-    "lineClamp",
-  ];
+const truncateStyles = css<StyledTextProp>`
+  ${(props) => {
+    const { $lineClamp } = props;
 
-  return !propsToOmit.includes(prop);
-};
-
-const typographyStyles = css`
-  ${(props: TextProps) => {
-    const { capHeight = 10, fontFamily, lineGap = 8 } = props;
-    const styles = createTypographyStyles({ fontFamily, lineGap, capHeight });
-
-    return styles;
-  }}
-`;
-
-/**
- * adds Truncate styles
- * truncate -> trucate text to single line
- * lineClamp -> truncate text to multiple lines
- *
- * @param {TextProps} props
- * @returns {string}
- */
-const truncateStyles = css`
-  ${(props: TextProps) => {
-    const { lineClamp } = props;
-
-    if (typeof lineClamp === "number") {
+    if (typeof $lineClamp === "number") {
       return css`
         span {
           display: -webkit-box;
-          -webkit-line-clamp: ${lineClamp};
+          -webkit-line-clamp: ${$lineClamp};
           -webkit-box-orient: vertical;
           overflow: hidden;
-          text-overflow: ellipsis;
-          word-break: break-all;
+          overflow-wrap: break-word;
         }
       `;
     }
 
-    return "";
-  }}
+    return css`
+      span {
+        overflow-wrap: break-word;
+      }
+    `;
+  }}}
 `;
 
-export const StyledText = styled.div.withConfig({
-  shouldForwardProp,
-})<TextProps>`
-  color: ${({ color }) => color};
-  font-weight: ${({ fontWeight }) => fontWeight};
-  text-decoration: ${({ textDecoration }) => textDecoration};
-  font-style: ${({ fontStyle }) => fontStyle};
-  text-align: ${({ textAlign }) => textAlign};
+const getFontWeight = (
+  fontWeight?: keyof typeof TypographyFontWeight,
+  isBold?: boolean,
+) => {
+  if (fontWeight) return fontWeight;
 
-  ${truncateStyles}
-  ${typographyStyles}
+  return isBold ? "bold" : "inherit";
+};
+
+export const StyledText = styled.div<StyledTextProp>`
+  font-weight: ${({ $fontWeight, $isBold }) =>
+    getFontWeight($fontWeight, $isBold)};
+  font-style: ${({ $isItalic }) => ($isItalic ? "italic" : "normal")};
+  text-align: ${({ $textAlign }) => $textAlign};
+  width: 100%;
+
+  color: ${({ color }) => {
+    switch (true) {
+      case color === "default":
+        return "inherit";
+      case color === "neutral":
+        return "var(--color-fg-neutral)";
+      case color === "positive":
+        return "var(--color-fg-positive)";
+      case color === "warning":
+        return "var(--color-fg-warning)";
+      case color === "negative":
+        return "var(--color-fg-negative)";
+      default:
+        return "inherit";
+    }
+  }};
+
+  ${truncateStyles};
 `;

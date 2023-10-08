@@ -491,6 +491,7 @@ export function CanvasSelectionArena({
       getRelativeScrollingParent={getNearestParentCanvas}
       id={getSlidingArenaName(widgetId)}
       ref={canvasRef}
+      shouldObserveIntersection={isDraggingForSelection}
       showCanvas={shouldShow}
       snapColSpace={snapColumnSpace}
       snapRowSpace={snapRowSpace}

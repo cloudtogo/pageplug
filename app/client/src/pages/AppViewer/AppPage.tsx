@@ -16,6 +16,7 @@ import { NAVIGATION_SETTINGS } from "constants/AppConstants";
 import { PageView, PageViewContainer } from "./AppPage.styled";
 import { useIsMobileDevice } from "utils/hooks/useDeviceDetect";
 import { APP_MODE } from "entities/App";
+import { useLocation } from "react-router";
 
 type AppPageProps = {
   appName?: string;
@@ -33,7 +34,13 @@ export function AppPage(props: AppPageProps) {
   const isMobile = useIsMobileDevice();
   const appMode = useSelector(getAppMode);
   const isPublished = appMode === APP_MODE.PUBLISHED;
-  useDynamicAppLayout(true);
+  const { search } = useLocation();
+  const queryParams = new URLSearchParams(search);
+  const isEmbed = queryParams.get("embed");
+  const isNavbarVisibleInEmbeddedApp = queryParams.get("navbar");
+  const isEmbeddedAppWithNavVisible = isEmbed && isNavbarVisibleInEmbeddedApp;
+
+  useDynamicAppLayout();
 
   useEffect(() => {
     AnalyticsUtil.logEvent("PAGE_LOAD", {
@@ -52,7 +59,9 @@ export function AppPage(props: AppPageProps) {
         isAppSidebarPinned
       }
       isPublished={isPublished}
-      sidebarWidth={isMobile ? 0 : sidebarWidth}
+      sidebarWidth={
+        isMobile || (isEmbed && !isEmbeddedAppWithNavVisible) ? 0 : sidebarWidth
+      }
     >
       <PageView className="t--app-viewer-page" width={props.canvasWidth}>
         {props.widgetsStructure.widgetId &&

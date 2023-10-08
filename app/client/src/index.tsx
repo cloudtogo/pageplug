@@ -1,3 +1,6 @@
+// This file must be executed as early as possible to ensure the preloads are triggered ASAP
+import "./preload-route-chunks";
+
 import React from "react";
 import "./wdyr";
 import ReactDOM from "react-dom";
@@ -29,8 +32,6 @@ import { StyleProvider } from "@ant-design/cssinjs";
 // enable autofreeze only in development
 import { setAutoFreeze } from "immer";
 import AppErrorBoundary from "./AppErrorBoundry";
-const shouldAutoFreeze = process.env.NODE_ENV === "development";
-setAutoFreeze(shouldAutoFreeze);
 // taro-components polyfills
 import { ConfigProvider as TaroifyTheme } from "@taroify/core";
 import {
@@ -55,6 +56,9 @@ const inst = createReactApp(Empty, React, ReactDOM, {});
 import "@vant/touch-emulator";
 import "react-sortable-tree-patch-react-17/style.css";
 
+const shouldAutoFreeze = process.env.NODE_ENV === "development";
+
+setAutoFreeze(shouldAutoFreeze);
 runSagaMiddleware();
 
 appInitializer();

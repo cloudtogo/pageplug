@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { Checkbox, Text } from "design-system";
 import { filterTemplates } from "actions/templateActions";
-import { createMessage, FILTERS } from "@appsmith/constants/messages";
 import {
   getFilterListSelector,
   getTemplateFilterSelector,
@@ -100,7 +99,8 @@ function FilterItem({ item, onSelect, selected }: FilterItemProps) {
       <Checkbox
         // backgroundColor={Colors.GREY_900}
         // className="filter"
-        defaultSelected={selected}
+        isSelected={selected}
+        name={item.label}
         onChange={onClick}
         value={item.label}
       >
@@ -115,6 +115,12 @@ function FilterCategory({
   label,
   selectedFilters,
 }: FilterCategoryProps) {
+  const filterLabelsToDisplay: Record<string, string> = useMemo(
+    () => ({
+      functions: "teams",
+    }),
+    [],
+  );
   // const [expand, setExpand] = useState(!!selectedFilters.length);
   const dispatch = useDispatch();
   // This indicates how many filter items do we want to show, the rest are hidden
@@ -145,7 +151,7 @@ function FilterCategory({
   return (
     <FilterCategoryWrapper>
       <StyledFilterCategory kind="body-m" renderAs="h4">
-        {`${label} `}
+        {`${filterLabelsToDisplay[label] ?? label} `}
         {!!selectedFilters.length && `(${selectedFilters.length})`}
       </StyledFilterCategory>
       <ListWrapper>
@@ -197,9 +203,6 @@ function Filters() {
 
   return (
     <FilterMainContainer>
-      <StyledFilterCategory className={"title"} kind="heading-s" renderAs="h3">
-        {createMessage(FILTERS)}
-      </StyledFilterCategory>
       <FilterWrapper className="filter-wrapper">
         {Object.keys(filters).map((filter) => {
           return (

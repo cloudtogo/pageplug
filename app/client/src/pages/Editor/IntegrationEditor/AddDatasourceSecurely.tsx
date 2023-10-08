@@ -1,8 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Secure from "assets/images/secure.svg";
-import Datasource from "assets/images/undraw_data_source.svg";
-import { Colors } from "constants/Colors";
+import AppsmithDatasource from "assets/images/appsmith-datasource.png";
 
 const Wrapper = styled.div`
   border: 2px solid var(--ads-v2-color-border);
@@ -54,7 +53,7 @@ function AddDatasourceSecurely() {
           立即连接数据源来构建您的业务，您的全部数据都是加密传输，我们永远不会存储您的任何数据。
         </Content>
       </div>
-      <img className="datasource-img" src={Datasource} />
+      <img className="datasource-img" src={AppsmithDatasource} />
     </Wrapper>
   );
 }

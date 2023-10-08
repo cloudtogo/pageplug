@@ -37,6 +37,9 @@ import {
   PERMISSION_TYPE,
 } from "@appsmith/utils/permissionHelpers";
 import { getInitials } from "utils/AppsmithUtils";
+import { CustomRolesRamp } from "./WorkspaceInviteUsersForm";
+import { showProductRamps } from "selectors/rampSelectors";
+import { RAMP_NAME } from "utils/ProductRamps/RampsControlList";
 
 const { cloudHosting } = getAppsmithConfigs();
 
@@ -196,6 +199,9 @@ export default function MemberSettings(props: PageProps) {
 
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const showRampSelector = showProductRamps(RAMP_NAME.CUSTOM_ROLES);
+  const canShowRamp = useSelector(showRampSelector);
 
   useEffect(() => {
     dispatch(fetchUsersForWorkspace(workspaceId));
@@ -389,7 +395,7 @@ export default function MemberSettings(props: PageProps) {
               roleChangingUserInfo &&
               roleChangingUserInfo.username === data.username
             }
-            listHeight={300}
+            listHeight={400}
             onSelect={(_value: string, option: any) => {
               dispatch(
                 changeWorkspaceUserRole(workspaceId, option.key, data.username),
@@ -413,6 +419,11 @@ export default function MemberSettings(props: PageProps) {
                 </div>
               </Option>
             ))}
+            {canShowRamp && (
+              <Option disabled>
+                <CustomRolesRamp />
+              </Option>
+            )}
           </Select>
         );
       },
@@ -551,6 +562,11 @@ export default function MemberSettings(props: PageProps) {
                           </div>
                         </Option>
                       ))}
+                      {canShowRamp && (
+                        <Option disabled>
+                          <CustomRolesRamp />
+                        </Option>
+                      )}
                     </Select>
                   )}
                   <DeleteIcon

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // Heavily inspired from https://github.com/codemirror/CodeMirror/blob/master/addon/tern/tern.js
 import type { Server, Def } from "tern";
-import type { Hint } from "codemirror";
+import type { Hint, Hints } from "codemirror";
 import type CodeMirror from "codemirror";
 import {
   getDynamicStringSegments,
@@ -17,6 +17,8 @@ import {
   getCodeMirrorNamespaceFromDoc,
   getCodeMirrorNamespaceFromEditor,
 } from "../getCodeMirrorNamespace";
+import AnalyticsUtil from "utils/AnalyticsUtil";
+import { findIndex } from "lodash";
 
 const bigDoc = 250;
 const cls = "CodeMirror-Tern-";
@@ -82,6 +84,7 @@ type RequestQuery = {
   includeKeywords?: boolean;
   depth?: number;
   sort?: boolean;
+  expandWordForward?: boolean;
 };
 
 export type DataTreeDefEntityInformation = {
@@ -210,6 +213,8 @@ class CodeMirrorTernService {
     const cursor = cm.getCursor();
     const { extraChars } = this.getFocusedDocValueAndPos(doc);
 
+    const query = this.getQueryForAutocomplete(cm);
+
     let completions: Completion[] = [];
     let after = "";
     const { end, start } = data;
@@ -232,6 +237,9 @@ class CodeMirrorTernService {
       after = '"]';
     }
 
+    const token = cm.getTokenAt(cursor);
+    const handleAutocompleteSelection = dotToBracketNotationAtToken(token);
+
     for (let i = 0; i < data.completions.length; ++i) {
       const completion = data.completions[i];
       const isCustomKeyword = isCustomKeywordType(completion.name);
@@ -239,13 +247,14 @@ class CodeMirrorTernService {
       if (isCustomKeyword) {
         completion.isKeyword = true;
       }
-
       let className = typeToIcon(completion.type, completion.isKeyword);
       const dataType = getDataType(completion.type);
       if (data.guess) className += " " + cls + "guess";
       let completionText = completion.name + after;
       if (dataType === "FUNCTION" && !completion.origin?.startsWith("LIB/")) {
-        completionText = completionText + "()";
+        if (token.type !== "string" && token.string !== "[") {
+          completionText = completionText + "()";
+        }
       }
       const codeMirrorCompletion: Completion = {
         text: completionText,
@@ -286,6 +295,8 @@ class CodeMirrorTernService {
           cursorHorizontalPos,
         );
         completions = [...completions, ...keywordCompletions];
+      } else {
+        codeMirrorCompletion.hint = handleAutocompleteSelection;
       }
       completions.push(codeMirrorCompletion);
     }
@@ -295,7 +306,7 @@ class CodeMirrorTernService {
 
     completions = AutocompleteSorter.sort(
       completions,
-      this.fieldEntityInformation,
+      { ...this.fieldEntityInformation, token },
       this.defEntityInformation.get(
         this.fieldEntityInformation.entityName || "",
       ),
@@ -308,9 +319,20 @@ class CodeMirrorTernService {
       to: to,
       list: completions,
       selectedHint: indexToBeSelected,
+      lineValue,
+      query: this.getQueryForAutocomplete(cm),
     };
     let tooltip: HTMLElement | undefined = undefined;
     const CodeMirror = getCodeMirrorNamespaceFromEditor(cm);
+
+    CodeMirror.on(obj, "shown", () => {
+      AnalyticsUtil.logEvent("AUTO_COMPLETE_SHOW", {
+        query,
+        numberOfResults: completions.filter(
+          (completion) => !completion.isHeader,
+        ).length,
+      });
+    });
     CodeMirror.on(obj, "close", () => this.remove(tooltip));
     CodeMirror.on(obj, "update", () => this.remove(tooltip));
     CodeMirror.on(
@@ -349,7 +371,7 @@ class CodeMirrorTernService {
   }
 
   async getHint(cm: CodeMirror.Editor) {
-    const hints = await new Promise((resolve) => {
+    const hints: Record<string, any> = await new Promise((resolve) => {
       this.request(
         cm,
         {
@@ -361,6 +383,7 @@ class CodeMirrorTernService {
           caseInsensitive: true,
           guess: false,
           inLiteral: true,
+          depth: 3,
         },
         (error, data) => this.requestCallback(error, data, cm, resolve),
       );
@@ -369,7 +392,29 @@ class CodeMirrorTernService {
     // When a function is picked, move the cursor between the parenthesis
     const CodeMirror = getCodeMirrorNamespaceFromEditor(cm);
     CodeMirror.on(hints, "pick", (selected: CommandsCompletion) => {
-      if (selected.type === AutocompleteDataType.FUNCTION) {
+      const hintsWithoutHeaders = hints.list.filter(
+        (h: Record<string, unknown>) => h.isHeader !== true,
+      );
+
+      const selectedResultIndex = findIndex(
+        hintsWithoutHeaders,
+        (item: Record<string, unknown>) =>
+          item.displayText === selected.displayText,
+      );
+
+      AnalyticsUtil.logEvent("AUTO_COMPLETE_SELECT", {
+        selectedResult: selected.text,
+        query: hints.query,
+        selectedResultIndex,
+        selectedResultType: selected.type,
+        isBestMatch:
+          selectedResultIndex <= AutocompleteSorter.bestMatchEndIndex,
+        isExternalLibrary: selected.origin?.startsWith("LIB/"),
+        libraryNamespace: selected.origin?.split("/")[1],
+      });
+
+      const hasParenthesis = selected.text.endsWith("()");
+      if (selected.type === AutocompleteDataType.FUNCTION && hasParenthesis) {
         cm.setCursor({
           line: cm.getCursor().line,
           ch: cm.getCursor().ch - 1,
@@ -454,7 +499,6 @@ class CodeMirrorTernService {
     if (!allowFragments) delete query.fullDocs;
     query.lineCharPositions = true;
     query.includeKeywords = true;
-    query.depth = 0;
     query.sort = true;
     if (query.end == null) {
       const positions = pos || doc.doc.getCursor("end");
@@ -587,6 +631,7 @@ class CodeMirrorTernService {
     value: string;
     end: { line: number; ch: number };
     extraChars: number;
+    isSingleDynamicValue?: boolean;
   } {
     const cursor = doc.doc.getCursor("end");
     const value = this.docValue(doc);
@@ -602,6 +647,7 @@ class CodeMirrorTernService {
           ch: cursor.ch,
         },
         extraChars,
+        isSingleDynamicValue: isDynamicValue(value),
       };
     }
 
@@ -860,6 +906,29 @@ class CodeMirrorTernService {
   setEntityInformation(entityInformation: FieldEntityInformation) {
     this.fieldEntityInformation = entityInformation;
   }
+
+  getQueryForAutocomplete(cm: CodeMirror.Editor) {
+    const doc = this.findDoc(cm.getDoc());
+    const lineValue = this.lineValue(doc);
+    const { end, extraChars, isSingleDynamicValue } =
+      this.getFocusedDocValueAndPos(doc);
+    let extraCharsInString = extraChars;
+    const endOfString = end.ch + extraChars;
+
+    if (isSingleDynamicValue) {
+      extraCharsInString += 2;
+    }
+
+    const stringFromEndCh = lineValue.substring(
+      extraCharsInString,
+      endOfString,
+    );
+
+    const splitBySpace = stringFromEndCh.split(" ");
+    const query = splitBySpace[splitBySpace.length - 1];
+
+    return query;
+  }
 }
 
 export const createCompletionHeader = (name: string): Completion => ({
@@ -875,3 +944,30 @@ export const createCompletionHeader = (name: string): Completion => ({
 export default new CodeMirrorTernService({
   async: true,
 });
+
+function dotToBracketNotationAtToken(token: CodeMirror.Token) {
+  return (cm: CodeMirror.Editor, hints: Hints, curr: Hint) => {
+    let completion = curr.text;
+    if (token.type === "string") {
+      // | represents the cursor
+      // Cases like JSObject1["myV|"]
+      cm.replaceRange(completion, hints.from, hints.to);
+      return;
+    } else if (token.type === null && token.state?.lexical?.type === "]") {
+      // Cases like JSObject1[|]
+      cm.replaceRange(`"${completion}"`, hints.from, hints.to);
+      return;
+    }
+    const splitByDotOperator = completion.split(".");
+    if (splitByDotOperator.length === 1) {
+      const splitByBracketOperator = completion.split("[");
+      if (splitByBracketOperator.length === 1) {
+        if (completion.includes(" ")) {
+          completion = `["${completion}"]`;
+          hints.from.ch -= 1;
+        }
+      }
+    }
+    cm.replaceRange(completion, hints.from, hints.to);
+  };
+}

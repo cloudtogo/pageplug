@@ -117,7 +117,14 @@ function* restoreApplicationFromSnapshotSaga() {
         setLayoutConversionStateAction(CONVERSION_STATES.COMPLETED_SUCCESS),
       );
     }
-  } catch (error) {
+  } catch (e: any) {
+    let error: Error = e;
+    if (error) {
+      error.message = `Layout conversion error - while restoring snapshot: ${error.message}`;
+    } else {
+      error = new Error("Layout conversion error - while restoring snapshot");
+    }
+
     log.error(error);
     //update conversion form state to error
     yield put(
@@ -159,7 +166,7 @@ function* updateSnapshotDetailsSaga() {
     );
     yield put(
       updateSnapshotDetails(
-        snapShotDetails
+        snapShotDetails && snapShotDetails.updatedTime
           ? { lastUpdatedTime: snapShotDetails.updatedTime?.toString() }
           : undefined,
       ),
@@ -177,8 +184,7 @@ export default function* snapshotSagas() {
     ),
     takeLatest(
       [
-        ReduxActionTypes.INIT_CANVAS_LAYOUT,
-        ReduxActionTypes.FETCH_SNAPSHOT,
+        ReduxActionTypes.FETCH_LAYOUT_SNAPSHOT_DETAILS,
         ReduxActionTypes.START_CONVERSION_FLOW,
       ],
       updateSnapshotDetailsSaga,

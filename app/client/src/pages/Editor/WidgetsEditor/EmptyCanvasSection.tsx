@@ -21,7 +21,6 @@ import {
   TEMPLATE_CARD_DESCRIPTION,
   TEMPLATE_CARD_TITLE,
 } from "@appsmith/constants/messages";
-import { isMobileLayout } from "selectors/applicationSelectors";
 import { deleteCanvasCardsState } from "actions/editorActions";
 import { isAirgapped } from "@appsmith/utils/airgapHelpers";
 import { Icon } from "design-system";
@@ -81,7 +80,6 @@ function CanvasTopSection() {
   const dispatch = useDispatch();
   const showCanvasTopSection = useSelector(showCanvasTopSectionSelector);
   const inPreviewMode = useSelector(previewModeSelector);
-  const isMobile = useSelector(isMobileLayout);
   const { pageId } = useParams<ExplorerURLParams>();
   const { applicationSlug, pageSlug } = useSelector(selectURLSlugs);
   const isAutoLayout = useSelector(getIsAutoLayout);
@@ -92,7 +90,7 @@ function CanvasTopSection() {
     }
   }, [showCanvasTopSection, inPreviewMode]);
 
-  if (!showCanvasTopSection || isMobile) return null;
+  if (!showCanvasTopSection) return null;
 
   const showTemplatesModal = () => {
     dispatch(showTemplatesModalAction(true));

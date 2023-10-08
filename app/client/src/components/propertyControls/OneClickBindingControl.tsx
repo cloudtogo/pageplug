@@ -1,4 +1,5 @@
 import WidgetQueryGeneratorForm from "components/editorComponents/WidgetQueryGeneratorForm";
+import type { Alias } from "components/editorComponents/WidgetQueryGeneratorForm/types";
 import React from "react";
 import type { ControlProps } from "./BaseControl";
 import BaseControl from "./BaseControl";
@@ -11,17 +12,62 @@ class OneClickBindingControl extends BaseControl<OneClickBindingControlProps> {
     return "ONE_CLICK_BINDING_CONTROL";
   }
 
-  public onUpdatePropertyValue(value: string) {
-    this.props.onPropertyChange?.(this.props.propertyName, value, false, true);
+  /*
+   * Commenting out as we're not able to switch between the js modes without value being overwritten
+   * with default value by platform
+   */
+  static canDisplayValueInUI(
+    config: OneClickBindingControlProps,
+    value: any,
+  ): boolean {
+    // {{query1.data}} || sample data
+    return (
+      /^{{[^.]*\.data}}$/gi.test(value) ||
+      config.controlConfig?.sampleData === value
+    );
   }
+
+  static shouldValidateValueOnDynamicPropertyOff() {
+    return false;
+  }
+
+  public onUpdatePropertyValue = (
+    value = "",
+    makeDynamicPropertyPath?: boolean,
+  ) => {
+    this.props.onPropertyChange?.(
+      this.props.propertyName,
+      value,
+      false,
+      makeDynamicPropertyPath,
+    );
+  };
+
+  private getErrorMessage = () => {
+    const errorObj =
+      this.props.widgetProperties.__evaluation__?.errors?.[
+        this.props.propertyName
+      ];
+
+    if (errorObj?.[0]?.errorMessage) {
+      return errorObj[0].errorMessage.message;
+    } else {
+      return "";
+    }
+  };
 
   public render() {
     return (
       <WidgetQueryGeneratorForm
-        entityId={this.props.widgetProperties.widgetId}
-        expectedType={this.props.expected?.autocompleteDataType}
-        onUpdate={(value: string) => this.onUpdatePropertyValue(value)}
+        aliases={this.props.controlConfig.aliases}
+        errorMsg={this.getErrorMessage()}
+        expectedType={this.props.expected?.autocompleteDataType || ""}
+        onUpdate={this.onUpdatePropertyValue}
         propertyPath={this.props.propertyName}
+        propertyValue={this.props.propertyValue}
+        sampleData={this.props.controlConfig.sampleData}
+        searchableColumn={this.props.controlConfig.searchableColumn}
+        widgetId={this.props.widgetProperties.widgetId}
       />
     );
   }
@@ -29,4 +75,10 @@ class OneClickBindingControl extends BaseControl<OneClickBindingControlProps> {
 
 export default OneClickBindingControl;
 
-export type OneClickBindingControlProps = ControlProps;
+export type OneClickBindingControlProps = ControlProps & {
+  controlConfig: {
+    aliases: Alias[];
+    searchableColumn: boolean;
+    sampleData: string;
+  };
+};
