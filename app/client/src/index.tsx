@@ -117,13 +117,3 @@ ReactDOM.render(<App />, document.getElementById("root"));
 if ((window as any).Cypress) {
   (window as any).store = store;
 }
-
-// 测试taro
-// import React from "react";
-// import ReactDOM from "react-dom";
-
-// import { View } from "@tarojs/components";
-// function App() {
-//   return <View></View>;
-// }
-// ReactDOM.render(<App />, document.getElementById("root"));
