@@ -27,14 +27,14 @@
           ]
         },
         {
-          "label": "Connection String URI Key",
+          "label": "Connection string URI key",
           "configProperty": "datasourceConfiguration.properties[1].key",
           "controlType": "INPUT_TEXT",
-          "initialValue": "Connection String URI",
+          "initialValue": "Connection string URI",
           "hidden": true
         },
         {
-          "label": "Connection String URI",
+          "label": "Connection string URI",
           "placeholderText": "mongodb+srv://<username>:<password>@test-db.swrsq.mongodb.net/myDatabase",
           "configProperty": "datasourceConfiguration.properties[1].value",
           "controlType": "INPUT_TEXT",
@@ -47,7 +47,7 @@
         {
           "label": "连接模式",
           "configProperty": "datasourceConfiguration.connection.mode",
-          "controlType": "DROP_DOWN",
+          "controlType": "SEGMENTED_CONTROL",
           "initialValue": "READ_WRITE",
           "options": [
             {
@@ -111,7 +111,8 @@
                 "path": "datasourceConfiguration.properties[0].value",
                 "comparison": "EQUALS",
                 "value": "Yes"
-              }
+              },
+              "placeholderText": "27017"
             }
           ]
         },
@@ -144,7 +145,7 @@
           "initialValue": "admin"
         },
         {
-          "label": "认证类型",
+          "label": "Authentication type",
           "configProperty": "datasourceConfiguration.authentication.authType",
           "controlType": "DROP_DOWN",
           "initialValue": "SCRAM_SHA_1",

@@ -19,5 +19,4 @@ public class CloudOSApiResponse implements AppsmithDomain {
 
     // error message
     String message;
-
 }
