@@ -8,6 +8,7 @@
       "makePublic:applications"
     ],
     "name": "valid_application",
+    "slug": "valid_application_slug",
     "isPublic": false,
     "appIsExample": false,
     "color": "#EA6179",
@@ -42,7 +43,7 @@
         "sshProxyEnabled": false,
         "properties": [
           {
-            "key": "Use Mongo Connection String URI",
+            "key": "Use mongo connection string URI",
             "value": "No"
           }
         ]
@@ -588,8 +589,7 @@
           "paginationType": "NONE",
           "encodeParamsToggle": true,
           "body": "() => {\n\t\t//write code here\n\t\treturn \"Hi\"\n\t}",
-          "jsArguments": [],
-          "isAsync": false
+          "jsArguments": []
         },
         "executeOnLoad": false,
         "isValid": true,

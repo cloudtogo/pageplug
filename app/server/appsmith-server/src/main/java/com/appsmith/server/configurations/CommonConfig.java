@@ -10,6 +10,7 @@ import jakarta.validation.ValidatorFactory;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ import org.springframework.util.StringUtils;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,9 +34,6 @@ public class CommonConfig {
 
     private static final String ELASTIC_THREAD_POOL_NAME = "appsmith-elastic-pool";
     public static final Integer LATEST_INSTANCE_SCHEMA_VERSION = 2;
-
-    @Value("${appsmith.instance.name:}")
-    private String instanceName;
 
     @Setter(AccessLevel.NONE)
     private boolean isSignupDisabled = false;
@@ -68,6 +67,10 @@ public class CommonConfig {
     private String rtsPort;
 
     private List<String> allowedDomains;
+
+    private String mongoDBVersion;
+
+    private static final String MIN_SUPPORTED_MONGODB_VERSION = "5.0.0";
 
     @Bean
     public Scheduler scheduler() {
@@ -129,8 +132,22 @@ public class CommonConfig {
         // If `true`, then disable signup. If anything else, including empty string, then signups will be enabled.
         isSignupDisabled = "true".equalsIgnoreCase(value);
     }
-    
+
     public String getRtsBaseUrl() {
         return "http://127.0.0.1:" + rtsPort;
+    }
+
+    public boolean isMongoUptoDate() {
+        ComparableVersion minSupportedVersion = new ComparableVersion(MIN_SUPPORTED_MONGODB_VERSION);
+        ComparableVersion connectedMongoVersion = new ComparableVersion(mongoDBVersion);
+        return minSupportedVersion.compareTo(connectedMongoVersion) <= 0;
+    }
+
+    public boolean isConnectedMongoVersionAvailable() {
+        return mongoDBVersion != null;
+    }
+
+    public Long getCurrentTimeInstantEpochMilli() {
+        return Instant.now().toEpochMilli();
     }
 }
