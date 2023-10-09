@@ -2,8 +2,6 @@ package com.appsmith.external.models;
 
 import lombok.*;
 
-import java.util.Map;
-
 @ToString
 @Getter
 @Setter
@@ -19,5 +17,4 @@ public class CloudOSDeployService implements AppsmithDomain {
 
     // service address
     String serviceAddress;
-
 }

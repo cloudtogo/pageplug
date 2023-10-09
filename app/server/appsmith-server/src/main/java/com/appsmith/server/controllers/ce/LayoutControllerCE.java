@@ -12,7 +12,7 @@ import com.appsmith.server.services.LayoutActionService;
 import com.appsmith.server.services.LayoutService;
 import com.appsmith.server.solutions.RefactoringSolution;
 import com.fasterxml.jackson.annotation.JsonView;
-
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,8 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import reactor.core.publisher.Mono;
 
-import jakarta.validation.Valid;
-
 @RequestMapping(Url.LAYOUT_URL)
 @Slf4j
 public class LayoutControllerCE {
@@ -38,7 +36,8 @@ public class LayoutControllerCE {
     private final RefactoringSolution refactoringSolution;
 
     @Autowired
-    public LayoutControllerCE(LayoutService layoutService,
+    public LayoutControllerCE(
+            LayoutService layoutService,
             LayoutActionService layoutActionService,
             RefactoringSolution refactoringSolution) {
         this.service = layoutService;
@@ -48,7 +47,8 @@ public class LayoutControllerCE {
 
     @JsonView(Views.Public.class)
     @PostMapping("/pages/{defaultPageId}")
-    public Mono<ResponseDTO<Layout>> createLayout(@PathVariable String defaultPageId,
+    public Mono<ResponseDTO<Layout>> createLayout(
+            @PathVariable String defaultPageId,
             @Valid @RequestBody Layout layout,
             @RequestHeader(name = FieldName.BRANCH_NAME, required = false) String branchName) {
         return service.createLayout(defaultPageId, layout, branchName)
@@ -57,7 +57,8 @@ public class LayoutControllerCE {
 
     @JsonView(Views.Public.class)
     @GetMapping("/{layoutId}/pages/{defaultPageId}")
-    public Mono<ResponseDTO<Layout>> getLayout(@PathVariable String defaultPageId,
+    public Mono<ResponseDTO<Layout>> getLayout(
+            @PathVariable String defaultPageId,
             @PathVariable String layoutId,
             @RequestHeader(name = FieldName.BRANCH_NAME, required = false) String branchName) {
         return service.getLayout(defaultPageId, layoutId, false, branchName)
@@ -66,29 +67,34 @@ public class LayoutControllerCE {
 
     @JsonView(Views.Public.class)
     @PutMapping("/application/{applicationId}")
-    public Mono<ResponseDTO<Integer>> updateMultipleLayouts(@PathVariable String applicationId,
+    public Mono<ResponseDTO<Integer>> updateMultipleLayouts(
+            @PathVariable String applicationId,
             @RequestHeader(name = FieldName.BRANCH_NAME, required = false) String branchName,
             @RequestBody @Valid UpdateMultiplePageLayoutDTO request) {
         log.debug("update multiple layout received for application {} branch {}", applicationId, branchName);
-        return layoutActionService.updateMultipleLayouts(applicationId, branchName, request)
+        return layoutActionService
+                .updateMultipleLayouts(applicationId, branchName, request)
                 .map(updatedCount -> new ResponseDTO<>(HttpStatus.OK.value(), updatedCount, null));
     }
 
     @JsonView(Views.Public.class)
     @PutMapping("/{layoutId}/pages/{pageId}")
-    public Mono<ResponseDTO<LayoutDTO>> updateLayout(@PathVariable String pageId,
+    public Mono<ResponseDTO<LayoutDTO>> updateLayout(
+            @PathVariable String pageId,
             @RequestParam String applicationId,
             @PathVariable String layoutId,
             @RequestBody Layout layout,
             @RequestHeader(name = FieldName.BRANCH_NAME, required = false) String branchName) {
         log.debug("update layout received for page {}", pageId);
-        return layoutActionService.updateLayout(pageId, applicationId, layoutId, layout, branchName)
+        return layoutActionService
+                .updateLayout(pageId, applicationId, layoutId, layout, branchName)
                 .map(created -> new ResponseDTO<>(HttpStatus.OK.value(), created, null));
     }
 
     @JsonView(Views.Public.class)
     @GetMapping("/{layoutId}/pages/{pageId}/view")
-    public Mono<ResponseDTO<Layout>> getLayoutView(@PathVariable String pageId,
+    public Mono<ResponseDTO<Layout>> getLayoutView(
+            @PathVariable String pageId,
             @PathVariable String layoutId,
             @RequestHeader(name = FieldName.BRANCH_NAME, required = false) String branchName) {
         return service.getLayout(pageId, layoutId, true, branchName)
@@ -97,10 +103,11 @@ public class LayoutControllerCE {
 
     @JsonView(Views.Public.class)
     @PutMapping("/refactor")
-    public Mono<ResponseDTO<LayoutDTO>> refactorWidgetName(@RequestBody RefactorNameDTO refactorNameDTO,
+    public Mono<ResponseDTO<LayoutDTO>> refactorWidgetName(
+            @RequestBody RefactorNameDTO refactorNameDTO,
             @RequestHeader(name = FieldName.BRANCH_NAME, required = false) String branchName) {
-        return refactoringSolution.refactorWidgetName(refactorNameDTO, branchName)
+        return refactoringSolution
+                .refactorWidgetName(refactorNameDTO, branchName)
                 .map(created -> new ResponseDTO<>(HttpStatus.OK.value(), created, null));
     }
-
 }

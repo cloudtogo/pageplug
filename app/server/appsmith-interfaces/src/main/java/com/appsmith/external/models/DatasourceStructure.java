@@ -90,6 +90,7 @@ public class DatasourceStructure {
     public static class PrimaryKey implements Key {
         String name;
         List<String> columnNames;
+
         public String getType() {
             return "primary key";
         }
@@ -101,6 +102,7 @@ public class DatasourceStructure {
         String name;
         List<String> fromColumns;
         List<String> toColumns;
+
         public String getType() {
             return "foreign key";
         }
@@ -153,7 +155,7 @@ public class DatasourceStructure {
         this.error.setMessage(error.getMessage());
 
         if (error instanceof BaseException) {
-            this.error.setCode(((BaseException)error).getAppErrorCode());
+            this.error.setCode(((BaseException) error).getAppErrorCode());
         }
     }
 
@@ -173,5 +175,4 @@ public class DatasourceStructure {
             return key;
         }
     }
-
 }
