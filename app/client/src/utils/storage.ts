@@ -244,15 +244,28 @@ export const setFirstTimeUserOnboardingApplicationId = async (id: string) => {
   }
 };
 
-export const getFirstTimeUserOnboardingApplicationId = async () => {
+export const removeFirstTimeUserOnboardingApplicationId = async (
+  id: string,
+) => {
   try {
-    const id = await store.getItem(
-      STORAGE_KEYS.FIRST_TIME_USER_ONBOARDING_APPLICATION_ID,
+    let ids: unknown = await store.getItem(
+      STORAGE_KEYS.FIRST_TIME_USER_ONBOARDING_APPLICATION_IDS,
     );
-    return id;
+
+    if (ids) {
+      ids = JSON.parse(ids as string);
+      if (Array.isArray(ids)) {
+        ids = ids.filter((exisitingId) => exisitingId !== id);
+        await store.setItem(
+          STORAGE_KEYS.FIRST_TIME_USER_ONBOARDING_APPLICATION_IDS,
+          JSON.stringify(ids),
+        );
+      }
+    }
+    return true;
   } catch (error) {
     log.error(
-      "An error occurred while fetching FIRST_TIME_USER_ONBOARDING_APPLICATION_ID",
+      "An error occurred while setting FIRST_TIME_USER_ONBOARDING_APPLICATION_IDS",
     );
     log.error(error);
   }
