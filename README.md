@@ -96,12 +96,12 @@ PagePlug提供很多针对安全性的支持，包括身份验证、授权、加
   [体验地址](https://lowcode.methodot.com/applications/64fa8c756fbfd93d5cd5cafa/pages/64fa8c756fbfd93d5cd5cb07/?hmsr=G1&hmpl=A2)  
   PagePlug 制作的一个典型CRUD项目，实现了基本增删改查、后端分页、搜索过滤、弹窗表单、复杂表单等功能
 
-- 企业CRM系统（PC web应用）  
+- 企业CRM系统（PC web应用）
   [体验地址](https://lowcode.methodot.com/applications/6322a6d63892ca140cb87551/pages/6322a6d63892ca140cb87555?embed=1/?hmsr=G1&hmpl=A1)  
   PagePlug 制作的简单CRM项目，实现了线索、商机和客户的信息管理
 
-- 跨境电商仓库管理系统（PC web应用）
-  [体验地址](https://lowcode.methodot.com/app/application/page-6524c1cc6fbfd93d5cd64b97?embed=1/?hmsr=G1&hmpl=A1) 
+- 跨境电商仓库管理系统（PC web应用）[体验地址](https://lowcode.methodot.com/app/application/page-6524c1cc6fbfd93d5cd64b97?embed=1/?hmsr=G1&hmpl=A1) 
+
   该库存管理模版是一款旨在帮助企业高效管理库存的系统，该系统允许用户管理多个仓库的产品和库存、以及跟踪供应商产品和管理供应商
 
 - Echarts示例  
