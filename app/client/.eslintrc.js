@@ -11,7 +11,7 @@ const baseNoRestrictedImports =
   baseEslintConfig.rules["@typescript-eslint/no-restricted-imports"][1];
 
 const eslintConfig = {
-  extends: ["./.eslintrc.base.json"],
+  extends: ["../.eslintrc.base.json"],
   rules: {
     "@typescript-eslint/no-explicit-any": "off",
     "react/display-name": "off",

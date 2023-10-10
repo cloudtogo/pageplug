@@ -60,7 +60,7 @@ import {
 } from "actions/websocketActions";
 import {
   getEnableFirstTimeUserOnboarding,
-  getFirstTimeUserOnboardingApplicationId,
+  getFirstTimeUserOnboardingApplicationIds,
   getFirstTimeUserOnboardingIntroModalVisibility,
 } from "utils/storage";
 import { initializeAnalyticsAndTrackers } from "utils/AppsmithUtils";
@@ -525,7 +525,7 @@ export function* updateFirstTimeUserOnboardingSage() {
 
   if (enable) {
     const applicationId: string =
-      yield getFirstTimeUserOnboardingApplicationId() || "";
+      yield getFirstTimeUserOnboardingApplicationIds() || "";
     const introModalVisibility: string | null =
       yield getFirstTimeUserOnboardingIntroModalVisibility();
     yield put({
