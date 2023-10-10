@@ -386,7 +386,7 @@ function* selectWidgetSaga(
 }
 
 // Signposting sagas
-function* setEnableFirstTimeUserOnboarding(action: ReduxAction<boolean>) {
+function* setFirstTimeUserOnboardingApplicationId(action: ReduxAction<string>) {
   yield storeFirstTimeUserOnboardingApplicationId(action.payload);
 
   const applicationIds: string[] =
@@ -397,8 +397,17 @@ function* setEnableFirstTimeUserOnboarding(action: ReduxAction<boolean>) {
   });
 }
 
-function* setFirstTimeUserOnboardingApplicationId(action: ReduxAction<string>) {
-  yield storeFirstTimeUserOnboardingApplicationId(action.payload);
+function* removeFirstTimeUserOnboardingApplicationIdSaga(
+  action: ReduxAction<string>,
+) {
+  yield call(removeFirstTimeUserOnboardingApplicationId, action.payload);
+
+  const applicationIds: string[] =
+    yield getFirstTimeUserOnboardingApplicationIds();
+  yield put({
+    type: ReduxActionTypes.SET_FIRST_TIME_USER_ONBOARDING_APPLICATION_IDS,
+    payload: applicationIds.filter((id) => id !== action.payload),
+  });
 }
 
 function* setFirstTimeUserOnboardingIntroModalVisibility(
@@ -549,12 +558,12 @@ export default function* onboardingActionSagas() {
     takeLatest(ReduxActionTypes.FOCUS_WIDGET_PROPERTY, focusWidgetPropertySaga),
     takeLatest(ReduxActionTypes.LOAD_GUIDED_TOUR_INIT, loadGuidedTourInitSaga),
     takeLatest(
-      ReduxActionTypes.SET_ENABLE_FIRST_TIME_USER_ONBOARDING,
-      setEnableFirstTimeUserOnboarding,
-    ),
-    takeLatest(
       ReduxActionTypes.SET_FIRST_TIME_USER_ONBOARDING_APPLICATION_ID,
       setFirstTimeUserOnboardingApplicationId,
+    ),
+    takeLatest(
+      ReduxActionTypes.REMOVE_FIRST_TIME_USER_ONBOARDING_APPLICATION_ID,
+      removeFirstTimeUserOnboardingApplicationIdSaga,
     ),
     takeLatest(
       ReduxActionTypes.SET_SHOW_FIRST_TIME_USER_ONBOARDING_MODAL,

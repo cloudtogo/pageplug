@@ -515,30 +515,6 @@ export const ApplicationsWrapper = styled.div<{ isMobile: boolean }>`
   `}
 `;
 
-const spreadKeyframes = (init: number) => {
-  const frames = Array.from(Array(21))
-    .map((a, i) => {
-      return `
-        ${i * 5}% { --spread: ${init + i}px; }
-      `;
-    })
-    .join("\n");
-  return keyframes`${frames}`;
-};
-
-const SpreadButton = styled(Button)`
-  --spread: 20px;
-  &:hover {
-    animation: ${spreadKeyframes(20)} 0.6s infinite;
-    background: ${(props) => props.theme.colors.applications.bg};
-  }
-
-  & svg {
-    width: 18px;
-    height: 18px;
-  }
-`;
-
 export function ApplicationsSection(props: any) {
   const enableImportExport = true;
   const dispatch = useDispatch();
@@ -657,9 +633,9 @@ export function ApplicationsSection(props: any) {
 
   const CreateApp = ({ applications, isMobile, orgId }: any) => {
     return (
-      <SpreadButton
+      <Button
         className="t--new-button createnew"
-        icon={"plus"}
+        startIcon={"plus"}
         isLoading={creatingApplicationMap && creatingApplicationMap[orgId]}
         onClick={() => {
           if (
@@ -676,10 +652,10 @@ export function ApplicationsSection(props: any) {
             );
           }
         }}
-        size={Size.medium}
-        tag="button"
-        text={`创建${isMobile ? "移动" : "桌面"}应用`}
-      />
+        size="md"
+      >
+        {`创建${isMobile ? "移动" : "桌面"}应用`}
+      </Button>
     );
   };
   const handleFormOpenOrClose = useCallback((isOpen: boolean) => {
@@ -730,21 +706,6 @@ export function ApplicationsSection(props: any) {
         );
         const hasCreateNewApplicationPermission =
           hasCreateNewAppPermission(workspace.userPermissions) && !isMobile;
-
-        const onClickAddNewButton = (workspaceId: string) => {
-          if (
-            Object.entries(creatingApplicationMap).length === 0 ||
-            (creatingApplicationMap && !creatingApplicationMap[workspaceId])
-          ) {
-            createNewApplication(
-              getNextEntityName(
-                "Untitled application ",
-                applications.map((el: any) => el.name),
-              ),
-              workspaceId,
-            );
-          }
-        };
 
         const showWorkspaceMenuOptions =
           canInviteToWorkspace ||
@@ -801,20 +762,19 @@ export function ApplicationsSection(props: any) {
                   )}
                   {hasCreateNewApplicationPermission &&
                     !isFetchingApplications &&
-                    applications.length !== 0 && (
-                      <Button
-                        className="t--new-button createnew"
-                        isLoading={
-                          creatingApplicationMap &&
-                          creatingApplicationMap[workspace.id]
-                        }
-                        onClick={() => onClickAddNewButton(workspace.id)}
-                        size="md"
-                        startIcon={"plus"}
-                      >
-                        新增
-                      </Button>
-                    )}
+                    applications.length !== 0 && [
+                      <CreateApp
+                        applications={applications}
+                        key="pc"
+                        orgId={workspace.id}
+                      />,
+                      <CreateApp
+                        applications={applications}
+                        isMobile
+                        key="mobile"
+                        orgId={workspace.id}
+                      />,
+                    ]}
                   {(currentUser || isFetchingApplications) &&
                     !isMobile &&
                     showWorkspaceMenuOptions && (
@@ -986,18 +946,22 @@ export function ApplicationsSection(props: any) {
                   <span>应用组是空的</span>
                   {/* below component is duplicate. This is because of cypress test were failing */}
                   {hasCreateNewApplicationPermission && (
-                    <Button
-                      className="t--new-button createnew"
-                      isLoading={
-                        creatingApplicationMap &&
-                        creatingApplicationMap[workspace.id]
-                      }
-                      onClick={() => onClickAddNewButton(workspace.id)}
-                      size="md"
-                      startIcon={"plus"}
+                    <div
+                      className="flex justify-between"
+                      style={{ width: 272 }}
                     >
-                      新增
-                    </Button>
+                      <CreateApp
+                        applications={applications}
+                        key="pc"
+                        orgId={workspace.id}
+                      />
+                      <CreateApp
+                        applications={applications}
+                        isMobile
+                        key="mobile"
+                        orgId={workspace.id}
+                      />
+                    </div>
                   )}
                 </NoAppsFound>
               )}

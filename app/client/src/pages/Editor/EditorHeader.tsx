@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, lazy, Suspense } from "react";
+import React, { useCallback, useEffect, useState, lazy, Suspense, useMemo } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import classNames from "classnames";
 import type { ApplicationPayload } from "@appsmith/constants/ReduxActionConstants";
@@ -355,6 +355,102 @@ export function EditorHeader() {
     (user) => user.username !== currentUser?.username,
   );
 
+  const tabs = useMemo(() => {
+    return [
+      {
+        key: "INVITE",
+        title: createMessage(INVITE_TAB),
+        component: AppInviteUsersForm,
+      },
+      {
+        key: "EMBED",
+        title: createMessage(IN_APP_EMBED_SETTING.embed),
+        component: EmbedSnippetForm,
+        customProps: {
+          changeTabIndex: 0,
+        },
+      },
+    ];
+  }, []);
+
+  // if (inCloudOS) {
+  //   const savedMessage = createMessage(EDITOR_HEADER_SAVE_INDICATOR);
+  //   const savedTime = lastUpdatedTime
+  //     ? `${savedMessage} ${moment(lastUpdatedTime * 1000).fromNow()}`
+  //     : savedMessage;
+  //   return (
+  //     <ThemeProvider theme={theme}>
+  //       <HeaderWrapper className="pr-3">
+  //         <HeaderSection className="space-x-3">
+  //           <HamburgerContainer
+  //             className={classNames({
+  //               "relative flex items-center justify-center p-0 text-gray-800 transition-all transform duration-400":
+  //                 true,
+  //               "-translate-x-full opacity-0": isPreviewMode,
+  //               "translate-x-0 opacity-100": !isPreviewMode,
+  //             })}
+  //           >
+  //             <TooltipComponent
+  //               content={
+  //                 <div className="flex items-center justify-between">
+  //                   <span>
+  //                     {!pinned
+  //                       ? createMessage(LOCK_ENTITY_EXPLORER_MESSAGE)
+  //                       : createMessage(CLOSE_ENTITY_EXPLORER_MESSAGE)}
+  //                   </span>
+  //                   <span className="ml-4 text-xs text-gray-300">
+  //                     {modText()} /
+  //                   </span>
+  //                 </div>
+  //               }
+  //               position="bottom-left"
+  //             >
+  //               <div
+  //                 className="relative w-4 h-4 text-trueGray-600 group t--pin-entity-explorer"
+  //                 onMouseEnter={onMenuHover}
+  //               >
+  //                 <MenuIcon className="absolute w-4 h-4 transition-opacity cursor-pointer fill-current group-hover:opacity-0" />
+  //                 {!pinned && (
+  //                   <UnpinIcon
+  //                     className="absolute w-4 h-4 transition-opacity opacity-0 cursor-pointer fill-current group-hover:opacity-100"
+  //                     onClick={onPin}
+  //                   />
+  //                 )}
+  //                 {pinned && (
+  //                   <PinIcon
+  //                     className="absolute w-4 h-4 transition-opacity opacity-0 cursor-pointer fill-current group-hover:opacity-100"
+  //                     onClick={onPin}
+  //                   />
+  //                 )}
+  //               </div>
+  //             </TooltipComponent>
+  //           </HamburgerContainer>
+  //           <ToggleModeButton showSelectedMode={!isPopoverOpen} />
+  //         </HeaderSection>
+  //         <HeaderSection
+  //           className={classNames({
+  //             "-translate-y-full opacity-0": isPreviewMode,
+  //             "translate-y-0 opacity-100": !isPreviewMode,
+  //             "transition-all transform duration-400": true,
+  //           })}
+  //         />
+  //         <HeaderSection className="space-x-3">
+  //           <EditorSaveIndicator />
+  //           <span style={{ color: "#8a8a8a" }}>{savedTime}</span>
+  //           {/* <StyledDeployButton
+  //             className="t--application-publish-btn"
+  //             isLoading={isPublishing}
+  //             onClick={handlePublish}
+  //             size={Size.small}
+  //             text={"提交"}
+  //             style={{ padding: "6px 20px" }}
+  //           /> */}
+  //         </HeaderSection>
+  //       </HeaderWrapper>
+  //     </ThemeProvider>
+  //   );
+  // }
+
   return (
       <ThemeProvider theme={theme}>
         <HeaderWrapper
@@ -561,9 +657,9 @@ export function EditorHeader() {
               </div>
             </Boxed>
           </HeaderSection>
-          {/* // <Suspense fallback={<span />}>
-        //   <GlobalSearch />
-        // </Suspense> */}
+          {/* <Suspense fallback={<span />}>
+            <GlobalSearch />
+          </Suspense> */}
           {isSnipingMode && (
             <BindingBanner className="t--sniping-mode-banner">
               选择一个组件绑定
