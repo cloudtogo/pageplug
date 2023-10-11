@@ -25,11 +25,11 @@ const selectForceOpenWidgetPanel = (state: AppState) =>
 const options = [
   {
     value: "explorer",
-    label: "Explorer",
+    label: "资源管理器",
   },
   {
     value: "widgets",
-    label: "Widgets",
+    label: "组件",
   },
 ];
 

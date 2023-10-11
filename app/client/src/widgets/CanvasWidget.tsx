@@ -26,9 +26,6 @@ import { AppPositioningTypes } from "reducers/entityReducers/pageListReducer";
 import type { AutocompletionDefinitions } from "widgets/constants";
 
 class CanvasWidget extends ContainerWidget {
-  static getAutocompleteDefinitions(): AutocompletionDefinitions {
-    return {};
-  }
   static getPropertyPaneConfig() {
     return [];
   }
