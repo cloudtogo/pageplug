@@ -14,7 +14,6 @@ import PerformanceTracker, {
   PerformanceTransactionName,
 } from "utils/PerformanceTracker";
 import {
-  getFirstTimeUserOnboardingComplete,
   getIsFirstTimeUserOnboardingEnabled,
 } from "selectors/onboardingSelectors";
 import Explorer from "pages/Editor/Explorer";
@@ -79,9 +78,6 @@ export const EntityExplorerSidebar = memo((props: Props) => {
     props.onDragEnd,
   );
   const [tooltipIsOpen, setTooltipIsOpen] = useState(false);
-  const isFirstTimeUserOnboardingComplete = useSelector(
-    getFirstTimeUserOnboardingComplete,
-  );
   const isEditingEntityName = useSelector(getEditingEntityName);
   PerformanceTracker.startTracking(PerformanceTransactionName.SIDE_BAR_MOUNT);
   useEffect(() => {
@@ -213,8 +209,7 @@ export const EntityExplorerSidebar = memo((props: Props) => {
         ref={sidebarRef}
         style={{ width: props.width }}
       >
-        {(enableFirstTimeUserOnboarding ||
-          isFirstTimeUserOnboardingComplete) && <OnboardingStatusbar />}
+        {enableFirstTimeUserOnboarding && <OnboardingStatusbar />}
         {/* PagesContainer */}
         <Pages />
         {/* Popover that contains the bindings info */}
@@ -248,7 +243,7 @@ export const EntityExplorerSidebar = memo((props: Props) => {
             placement="right"
             visible={tooltipIsOpen && !resizer.resizing}
           >
-            <div />
+            <></>
           </Tooltip>
         </div>
       </StyledResizer>
