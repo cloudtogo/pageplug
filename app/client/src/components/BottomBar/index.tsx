@@ -29,14 +29,14 @@ const Wrapper = styled.div`
 export default function BottomBar({ viewMode }: { viewMode: boolean }) {
   return (
       <Container>
-        {inCloudOS ? <span /> : <QuickGitActions />}
-      <Wrapper>
-        <SwitchEnvironment viewMode={viewMode} />
-        {!viewMode && <QuickGitActions />}
-      </Wrapper>
-      {!viewMode && (
+        {/* {inCloudOS ? <span /> : <QuickGitActions />} */}
         <Wrapper>
-          <ManualUpgrades showTooltip>
+          <SwitchEnvironment viewMode={viewMode} />
+          {!viewMode && <QuickGitActions />}
+        </Wrapper>
+        {!viewMode && (
+          <Wrapper>
+            <ManualUpgrades showTooltip>
             <Button
               className="t--upgrade"
               isIconButton
@@ -44,11 +44,11 @@ export default function BottomBar({ viewMode }: { viewMode: boolean }) {
               size="md"
               startIcon="upgrade"
             />
-          </ManualUpgrades>
-          <DebuggerTrigger />
-          <HelpButton />
-        </Wrapper>
-      )}
+            </ManualUpgrades>
+            <DebuggerTrigger />
+            <HelpButton />
+          </Wrapper>
+        )}
     </Container>
   );
 }
