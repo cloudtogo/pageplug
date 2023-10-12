@@ -350,7 +350,7 @@ function NewApiScreen(props: Props) {
                 className="curlImage t--curlImage content-icon"
                 src={CurlLogo}
               />
-              <p className="textBtn">CURL 导入</p>
+              <p className="textBtn">CURL import</p>
             </CardContentWrapper>
           </ApiCard>
         )}
