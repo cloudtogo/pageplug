@@ -263,7 +263,6 @@ function NewApiScreen(props: Props) {
       ? p.packageName === PluginPackageName.GRAPHQL
       : p.type === PluginType.SAAS || p.type === PluginType.REMOTE,
   );
-  console.log("API_PLUGINS", API_PLUGINS);
 
   return (
     <StyledContainer>

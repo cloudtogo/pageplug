@@ -59,11 +59,11 @@ export default function ExplorerSubMenu({
   const [show, setShow] = useState(openMenu);
   const fileOperations = useFilteredFileOperations(query);
 
-  const pageId = useSelector(getCurrentPageId);
-  const dispatch = useDispatch();
-  const filteredFileOperations = fileOperations.filter(
+  const filteredFileOperations = fileOperations?.filter(
     (item: any) => item.kind !== SEARCH_ITEM_TYPES.sectionTitle,
   );
+  const pageId = useSelector(getCurrentPageId);
+  const dispatch = useDispatch();
   const plugins = useSelector((state: AppState) => {
     return state.entities.plugins.list;
   });

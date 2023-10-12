@@ -45,7 +45,7 @@ export const useFilteredFileOperations = (query = "") => {
   // helper map for sorting based on recent usage
   const recentlyUsedOrderMap = useMemo(
     () =>
-      recentDatasourceIds.reduce((map: Record<string, number>, id, index) => {
+      recentDatasourceIds?.reduce((map: Record<string, number>, id, index) => {
         map[id] = index;
         return map;
       }, {}),
@@ -127,7 +127,7 @@ export const getFilteredAndSortedFileOperations = (
     if (showCreateQuery) {
       fileOperations.push({
         desc: "",
-        title: "Create a query",
+        title: "新建查询",
         kind: SEARCH_ITEM_TYPES.sectionTitle,
       });
     }
