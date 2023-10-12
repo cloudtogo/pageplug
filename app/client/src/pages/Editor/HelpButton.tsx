@@ -237,7 +237,7 @@ function HelpButton() {
               size="md"
               startIcon="question-line"
             >
-              Help
+              帮助
             </Button>
           </Tooltip>
           {showUnreadSteps && <UnreadSteps className="unread" />}

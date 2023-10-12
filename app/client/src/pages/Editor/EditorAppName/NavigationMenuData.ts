@@ -181,7 +181,7 @@ export const GetNavigationMenuData = ({
       isVisible: isApplicationIdPresent && hasEditPermission,
     },
     {
-      text: "Export application",
+      text: "导入应用",
       onClick: exportAppAsJSON,
       type: MenuTypes.MENU,
       isVisible: isApplicationIdPresent && hasExportPermission,
