@@ -133,6 +133,7 @@ export function* reportSWStatus() {
 
 export function* startAppEngine(action: ReduxAction<AppEnginePayload>) {
   try {
+    console.log("startAppEngine called");
     const engine: AppEngine = AppEngineFactory.create(
       action.payload.mode,
       action.payload.mode,
@@ -214,6 +215,7 @@ function* updateURLSaga(action: ReduxURLChangeAction) {
 }
 
 function* appEngineSaga(action: ReduxAction<AppEnginePayload>) {
+  console.log("appEngineSaga called");
   yield race({
     task: call(startAppEngine, action),
     cancel: take(ReduxActionTypes.RESET_EDITOR_REQUEST),
@@ -257,6 +259,7 @@ function* eagerPageInitSaga() {
 }
 
 export default function* watchInitSagas() {
+  console.log("watchInitSagas called");
   yield all([
     takeLeading(
       [
