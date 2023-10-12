@@ -107,7 +107,6 @@ export default class AppEditorEngine extends AppEngine {
     toLoadPageId: string,
     applicationId: string,
   ) {
-    console.log("loadPageThemesAndActions called");
     const initActionsCalls = [
       fetchPage(toLoadPageId, true),
       fetchActions({ applicationId }, []),
@@ -153,7 +152,6 @@ export default class AppEditorEngine extends AppEngine {
   }
 
   private *loadPluginsAndDatasources() {
-    console.log("loadPluginsAndDatasources called");
     const isAirgappedInstance = isAirgapped();
     const initActions = [fetchPlugins(), fetchDatasources(), fetchPageDSLs()];
 
@@ -198,7 +196,6 @@ export default class AppEditorEngine extends AppEngine {
   }
 
   public *loadAppEntities(toLoadPageId: string, applicationId: string): any {
-    console.log("loadAppEntities called");
     yield call(this.loadPageThemesAndActions, toLoadPageId, applicationId);
     yield call(this.loadPluginsAndDatasources);
   }

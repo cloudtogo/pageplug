@@ -428,7 +428,7 @@ export const Entity = forwardRef(
                 {props.rightIcon}
               </IconWrapper>
             )}
-            {!showAddButton && addButton}
+            {showAddButton && addButton}
             {props.contextMenu && (
               <ContextMenuWrapper>{props.contextMenu}</ContextMenuWrapper>
             )}
