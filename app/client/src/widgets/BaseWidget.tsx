@@ -734,7 +734,6 @@ abstract class BaseWidget<
   };
 
   private getWidgetView(): ReactNode {
-    console.log("this.props", this.props);
     let content: ReactNode;
 
     switch (this.props.renderMode) {

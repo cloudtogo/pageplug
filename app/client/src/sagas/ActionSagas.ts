@@ -1023,4 +1023,36 @@ function* updateEntitySavingStatus() {
 }
 
 export function* watchActionSagas() {
+  yield all([
+    takeEvery(ReduxActionTypes.SET_ACTION_PROPERTY, setActionPropertySaga),
+    takeEvery(ReduxActionTypes.FETCH_ACTIONS_INIT, fetchActionsSaga),
+    takeEvery(
+      ReduxActionTypes.FETCH_ACTIONS_VIEW_MODE_INIT,
+      fetchActionsForViewModeSaga,
+    ),
+    takeEvery(ReduxActionTypes.CREATE_ACTION_INIT, createActionSaga),
+    takeLatest(ReduxActionTypes.UPDATE_ACTION_INIT, updateActionSaga),
+    takeLatest(ReduxActionTypes.DELETE_ACTION_INIT, deleteActionSaga),
+    takeLatest(ReduxActionTypes.BIND_DATA_ON_CANVAS, bindDataOnCanvasSaga),
+    takeLatest(ReduxActionTypes.SAVE_ACTION_NAME_INIT, saveActionName),
+    takeLatest(ReduxActionTypes.MOVE_ACTION_INIT, moveActionSaga),
+    takeLatest(ReduxActionTypes.COPY_ACTION_INIT, copyActionSaga),
+    takeLatest(
+      ReduxActionTypes.FETCH_ACTIONS_FOR_PAGE_INIT,
+      fetchActionsForPageSaga,
+    ),
+    takeEvery(ReduxActionTypes.MOVE_ACTION_SUCCESS, handleMoveOrCopySaga),
+    takeEvery(ReduxActionTypes.COPY_ACTION_SUCCESS, handleMoveOrCopySaga),
+    takeEvery(ReduxActionErrorTypes.MOVE_ACTION_ERROR, handleMoveOrCopySaga),
+    takeEvery(ReduxActionErrorTypes.COPY_ACTION_ERROR, handleMoveOrCopySaga),
+    takeLatest(
+      ReduxActionTypes.TOGGLE_ACTION_EXECUTE_ON_LOAD_INIT,
+      toggleActionExecuteOnLoadSaga,
+    ),
+    takeLatest(ReduxActionTypes.EXECUTE_COMMAND, executeCommandSaga),
+    takeLatest(
+      ReduxActionTypes.ENTITY_UPDATE_STARTED,
+      updateEntitySavingStatus,
+    ),
+  ]);
 }
