@@ -44,6 +44,7 @@ function* fetchPluginsSaga(
   action: ReduxAction<{ workspaceId?: string } | undefined>,
 ) {
   try {
+    console.log("fetchPluginsSaga called");
     let workspaceId: string = yield select(getCurrentWorkspaceId);
     if (action.payload?.workspaceId) workspaceId = action.payload?.workspaceId;
 
@@ -62,6 +63,7 @@ function* fetchPluginsSaga(
       });
     }
   } catch (error) {
+    console.log("error", error);
     yield put({
       type: ReduxActionErrorTypes.FETCH_PLUGINS_ERROR,
       payload: { error },
@@ -71,6 +73,7 @@ function* fetchPluginsSaga(
 
 function* fetchPluginFormConfigsSaga() {
   try {
+    console.log("fetchPluginFormConfigsSaga called");
     const datasources: Datasource[] = yield select(getDatasources);
     const plugins: Plugin[] = yield select(getPlugins);
     // Add plugins of all the datasources of their workspace
@@ -217,11 +220,13 @@ export function* checkAndGetPluginFormConfigsSaga(pluginId: string) {
 type GetPluginFormConfigParams = { id: string; type: string };
 
 function* getPluginFormConfig({ id }: GetPluginFormConfigParams) {
+  console.log("getPluginFormConfig called");
   yield call(checkAndGetPluginFormConfigsSaga, id);
 }
 
 function* getDefaultPluginsSaga() {
   try {
+    console.log("getDefaultPluginsSaga called");
     const response: ApiResponse<DefaultPlugin> = yield call(
       PluginsApi.fetchDefaultPlugins,
     );
@@ -243,6 +248,7 @@ function* getDefaultPluginsSaga() {
 }
 
 function* root() {
+  console.log("root called");
   yield all([
     takeEvery(ReduxActionTypes.FETCH_PLUGINS_REQUEST, fetchPluginsSaga),
     takeEvery(

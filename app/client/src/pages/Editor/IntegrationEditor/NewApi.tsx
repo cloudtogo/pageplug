@@ -263,6 +263,7 @@ function NewApiScreen(props: Props) {
       ? p.packageName === PluginPackageName.GRAPHQL
       : p.type === PluginType.SAAS || p.type === PluginType.REMOTE,
   );
+  console.log("API_PLUGINS", API_PLUGINS);
 
   return (
     <StyledContainer>
@@ -350,7 +351,7 @@ function NewApiScreen(props: Props) {
                 className="curlImage t--curlImage content-icon"
                 src={CurlLogo}
               />
-              <p className="textBtn">CURL import</p>
+              <p className="textBtn">CURL 导入</p>
             </CardContentWrapper>
           </ApiCard>
         )}

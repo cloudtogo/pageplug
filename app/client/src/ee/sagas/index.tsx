@@ -1,11 +1,12 @@
 export * from "ce/sagas";
 import { sagas as CE_Sagas } from "ce/sagas";
+import settingSaga from "@appsmith/sagas/settingSagas";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { call, all, spawn, race, take } from "redux-saga/effects";
 import log from "loglevel";
 import * as sentry from "@sentry/react";
 
-const sagasArr = [...CE_Sagas];
+const sagasArr = [...CE_Sagas, settingSaga];
 
 export function* rootSaga(sagasToRun = sagasArr): any {
   // This race effect ensures that we fail as soon as the first safe crash is dispatched.

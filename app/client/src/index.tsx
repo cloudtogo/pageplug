@@ -92,6 +92,21 @@ class ThemedApp extends React.Component<{
                   token: {
                     colorPrimary: "#27b7b7",
                   },
+                  components: {
+                    Menu: {
+                      darkItemBg: "rgba(255, 255, 255, 0)", // 暗黑模式下的 菜单横条背景
+                      darkItemSelectedBg: "rgba(255, 255, 255, 0.2)", // 暗黑模式下的 选中的菜单项背景
+                      darkItemSelectedColor: "rgba(0, 0, 0, 0.88)",
+                      darkItemHoverColor: "rgba(0, 0, 0, 0.88)",
+                      darkSubMenuItemBg: "rgba(255, 255, 255, 0.1)",
+                      darkItemColor: "rgba(0, 0, 0, 1)", // 字体颜色
+                      subMenuItemBorderRadius: 10,
+                      itemBorderRadius: 10,
+                      horizontalItemBorderRadius: 5,
+                      itemMarginBlock: 10,
+                      horizontalLineHeight: "38px",
+                    },
+                  },
                 }}
               >
                 <TaroifyTheme theme={taroifyTheme}>
