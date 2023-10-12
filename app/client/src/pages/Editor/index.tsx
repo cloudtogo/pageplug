@@ -146,7 +146,7 @@ class Editor extends Component<Props> {
   }
 
   public render() {
-    if (this.props.isEditorInitialized || this.props.loadingGuidedTour) {
+    if (!this.props.isEditorInitialized || this.props.loadingGuidedTour) {
       return (
         <CenteredWrapper
           style={{ height: `calc(100vh - ${theme.smallHeaderHeight})` }}
