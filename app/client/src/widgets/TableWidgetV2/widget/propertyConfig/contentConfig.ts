@@ -28,7 +28,7 @@ export default [
         helpText: "表格数组数据",
         propertyName: "tableData",
         label: "数据",
-        controlType: "INPUT_TEXT",
+        controlType: "ONE_CLICK_BINDING_CONTROL",
         controlConfig: {
           searchableColumn: true,
         },
