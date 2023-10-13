@@ -8,6 +8,7 @@ import AppInviteUsersForm from "pages/workspace/AppInviteUsersForm";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import PagePlugLogo from "assets/images/pageplug_icon_mint.svg";
 import { Link } from "react-router-dom";
+import type { AppState } from "@appsmith/reducers";
 import {
   getCurrentApplicationId,
   getCurrentPageId,
@@ -51,6 +52,7 @@ import {
   TabPanel,
 } from "design-system";
 import { Profile } from "pages/common/ProfileImage";
+import HelpBar from "components/editorComponents/GlobalSearch/HelpBar";
 import { getTheme, ThemeMode } from "selectors/themeSelectors";
 import ToggleModeButton from "pages/Editor/ToggleModeButton";
 import { snipingModeSelector } from "selectors/editorSelectors";
@@ -258,6 +260,10 @@ export function EditorHeader() {
   const currentUser = useSelector(getCurrentUser);
 
   const deployLink = useHref(viewerURL, { pageId });
+
+  const lastUpdatedTime = useSelector(
+    (state: AppState) => state.ui.editor.lastUpdatedTime,
+  );
   const isAppSettingsPaneWithNavigationTabOpen = useSelector(
     getIsAppSettingsPaneWithNavigationTabOpen,
   );
@@ -355,23 +361,23 @@ export function EditorHeader() {
     (user) => user.username !== currentUser?.username,
   );
 
-  const tabs = useMemo(() => {
-    return [
-      {
-        key: "INVITE",
-        title: createMessage(INVITE_TAB),
-        component: AppInviteUsersForm,
-      },
-      {
-        key: "EMBED",
-        title: createMessage(IN_APP_EMBED_SETTING.embed),
-        component: EmbedSnippetForm,
-        customProps: {
-          changeTabIndex: 0,
-        },
-      },
-    ];
-  }, []);
+  // const tabs = useMemo(() => {
+  //   return [
+  //     {
+  //       key: "INVITE",
+  //       title: createMessage(INVITE_TAB),
+  //       component: AppInviteUsersForm,
+  //     },
+  //     {
+  //       key: "EMBED",
+  //       title: createMessage(IN_APP_EMBED_SETTING.embed),
+  //       component: EmbedSnippetForm,
+  //       customProps: {
+  //         changeTabIndex: 0,
+  //       },
+  //     },
+  //   ];
+  // }, []);
 
   // if (inCloudOS) {
   //   const savedMessage = createMessage(EDITOR_HEADER_SAVE_INDICATOR);
@@ -456,7 +462,8 @@ export function EditorHeader() {
         <HeaderWrapper
           className="pl-1 pr-1 overflow-hidden"
           data-testid="t--appsmith-editor-header"
-        >
+      >
+          {/* 左侧 */}
           <HeaderSection className="space-x-2">
             {!signpostingEnabled && (
               <Tooltip
@@ -556,6 +563,7 @@ export function EditorHeader() {
             </Tooltip>
             <EditorSaveIndicator />
           </HeaderSection>
+          {/* 中间-全局搜索*/}
           <HeaderSection
             className={classNames({
               "-translate-y-full opacity-0": isPreviewMode,
@@ -564,8 +572,9 @@ export function EditorHeader() {
               "help-bar": "true",
             })}
           >
-            {/* <HelpBar /> */}
+            <HelpBar />
           </HeaderSection>
+          {/* 右侧 */}
           <HeaderSection className="gap-x-1">
             <Boxed
               alternative={<EndTour />}
@@ -657,9 +666,9 @@ export function EditorHeader() {
               </div>
             </Boxed>
           </HeaderSection>
-          {/* <Suspense fallback={<span />}>
+          <Suspense fallback={<span />}>
             <GlobalSearch />
-          </Suspense> */}
+          </Suspense>
           {isSnipingMode && (
             <BindingBanner className="t--sniping-mode-banner">
               选择一个组件绑定
