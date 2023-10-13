@@ -494,7 +494,7 @@ export function useDatasource(searchText: string) {
         />
       );
     } else {
-      return <Placeholder>Connect data</Placeholder>;
+      return <Placeholder>连接数据</Placeholder>;
     }
   }, [
     config,

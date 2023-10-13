@@ -39,9 +39,9 @@ export const PluginFormInputFieldMap: Record<
 };
 
 export const DATASOURCE_DROPDOWN_SECTIONS = {
-  CONNECT_TO_QUERY: "Connect to Query",
-  CHOOSE_DATASOURCE_TO_CONNECT: "Choose datasource to connect",
-  OTHER_ACTIONS: "Other actions",
+  CONNECT_TO_QUERY: "连接Query",
+  CHOOSE_DATASOURCE_TO_CONNECT: "选择数据源连接",
+  OTHER_ACTIONS: "其他行为",
 };
 
 export const DEFAULT_QUERY_OPTIONS_COUNTS_TO_SHOW = 4;
