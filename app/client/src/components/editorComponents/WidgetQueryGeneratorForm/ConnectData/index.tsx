@@ -15,7 +15,7 @@ export function ConnectData() {
         onClick={onClick}
         size="md"
       >
-        Connect data
+        连接数据
       </StyledButton>
     );
   } else {

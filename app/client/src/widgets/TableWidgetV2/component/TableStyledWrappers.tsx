@@ -78,7 +78,7 @@ export const TableWrapper = styled.div<{
 
     &.simplebar-vertical {
       direction: rtl;
-      top: ${(props) => props.tableSizes.TABLE_HEADER_HEIGHT - 10}px;
+      top: ${(props) => props.tableSizes?.TABLE_HEADER_HEIGHT - 10}px;
       width: ${TABLE_SCROLLBAR_WIDTH}px;
       &.simplebar-hover {
         width: 10px;
@@ -150,8 +150,8 @@ export const TableWrapper = styled.div<{
           ? "1px solid var(--wds-color-border-onaccent)"
           : "none"};
       position: relative;
-      font-size: ${(props) => props.tableSizes.ROW_FONT_SIZE}px;
-      line-height: ${(props) => props.tableSizes.ROW_FONT_SIZE}px;
+      font-size: ${(props) => props.tableSizes?.ROW_FONT_SIZE}px;
+      line-height: ${(props) => props.tableSizes?.ROW_FONT_SIZE}px;
       :last-child {
         border-right: 0;
         .resizer {
@@ -182,14 +182,14 @@ export const TableWrapper = styled.div<{
     .th {
       padding: 0 10px 0 0;
       height: ${(props) =>
-        props.isHeaderVisible ? props.tableSizes.COLUMN_HEADER_HEIGHT : 40}px;
+        props.isHeaderVisible ? props.tableSizes?.COLUMN_HEADER_HEIGHT : 40}px;
       line-height: ${(props) =>
-        props.isHeaderVisible ? props.tableSizes.COLUMN_HEADER_HEIGHT : 40}px;
+        props.isHeaderVisible ? props.tableSizes?.COLUMN_HEADER_HEIGHT : 40}px;
       background: var(--wds-color-bg);
       font-weight: bold;
     }
     .td {
-      min-height: ${(props) => props.tableSizes.ROW_HEIGHT}px;
+      min-height: ${(props) => props.tableSizes?.ROW_HEIGHT}px;
       padding: 0;
     }
     .thead {
@@ -278,7 +278,7 @@ export const TableWrapper = styled.div<{
     cursor: grab;
     display: inline-block;
     width: 100%;
-    height: ${(props) => props.tableSizes.COLUMN_HEADER_HEIGHT};
+    height: ${(props) => props.tableSizes?.COLUMN_HEADER_HEIGHT};
     &.reorder-line {
       width: 1px;
       height: 100%;
@@ -315,8 +315,8 @@ export const TableWrapper = styled.div<{
   }
   .column-menu {
     cursor: pointer;
-    height: ${(props) => props.tableSizes.COLUMN_HEADER_HEIGHT}px;
-    line-height: ${(props) => props.tableSizes.COLUMN_HEADER_HEIGHT}px;
+    height: ${(props) => props.tableSizes?.COLUMN_HEADER_HEIGHT}px;
+    line-height: ${(props) => props.tableSizes?.COLUMN_HEADER_HEIGHT}px;
   }
   .th {
     display: flex !important;
@@ -337,8 +337,8 @@ export const TableWrapper = styled.div<{
     }
   }
   .input-group {
-    height: ${(props) => props.tableSizes.COLUMN_HEADER_HEIGHT}px;
-    line-height: ${(props) => props.tableSizes.COLUMN_HEADER_HEIGHT}px;
+    height: ${(props) => props.tableSizes?.COLUMN_HEADER_HEIGHT}px;
+    line-height: ${(props) => props.tableSizes?.COLUMN_HEADER_HEIGHT}px;
     padding: 0 5px;
   }
 

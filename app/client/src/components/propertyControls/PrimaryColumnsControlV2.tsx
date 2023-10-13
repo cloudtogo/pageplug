@@ -155,7 +155,7 @@ class PrimaryColumnsControlV2 extends BaseControl<ControlProps, State> {
 
     // If there are no columns, show empty state
     if (Object.keys(columns).length === 0) {
-      return <EmptyStateLabel>Table columns will appear here</EmptyStateLabel>;
+      return <EmptyStateLabel>表格所有列将会出现在这</EmptyStateLabel>;
     }
     // Get an empty array of length of columns
     let columnOrder: string[] = new Array(Object.keys(columns).length);
