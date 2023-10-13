@@ -62,7 +62,7 @@ class PrimaryColumnDropdownControl extends BaseControl<ControlProps> {
       <div className="w-full h-full" ref={this.containerRef}>
         <Select
           onSelect={this.onItemSelect}
-          placeholder="No selection."
+          placeholder="未选择"
           value={selected ? selected.value : undefined}
         >
           {options.map((option) => (

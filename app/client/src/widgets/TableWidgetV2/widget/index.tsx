@@ -592,6 +592,21 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
           // Maintain original columnOrder and keep new columns at the end
           let newColumnOrder = _.intersection(columnOrder, newColumnIds);
           newColumnOrder = _.union(newColumnOrder, newColumnIds);
+
+          const compareColumns = (a: string, b: string) => {
+            const aSticky = tableColumns[a].sticky || "none";
+            const bSticky = tableColumns[b].sticky || "none";
+
+            if (aSticky === bSticky) {
+              return 0;
+            }
+
+            return SORT_ORDER[aSticky] - SORT_ORDER[bSticky];
+          };
+
+          // Sort the column order to retain the position of frozen columns
+          newColumnOrder.sort(compareColumns);
+
           propertiesToAdd["columnOrder"] = newColumnOrder;
 
           /**

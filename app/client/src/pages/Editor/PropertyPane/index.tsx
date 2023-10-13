@@ -6,6 +6,7 @@ import { PanelStack, Classes } from "@blueprintjs/core";
 import { get } from "lodash";
 import { getSelectedWidgets } from "selectors/ui";
 import PropertyPaneView from "./PropertyPaneView";
+// import DatasourceDropdown from "../../../components/editorComponents/WidgetQueryGeneratorForm/CommonControls/DatasourceDropdown";
 
 const StyledPanelStack = styled(PanelStack)`
   height: 100%;
@@ -45,6 +46,7 @@ function PropertyPane() {
       }}
       ref={panelWrapperRef}
     >
+      {/* <DatasourceDropdown /> */}
       <StyledPanelStack
         initialPanel={{
           component: PropertyPaneView,

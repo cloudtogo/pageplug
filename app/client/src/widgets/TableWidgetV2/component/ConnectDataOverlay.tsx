@@ -43,14 +43,14 @@ export function ConnectDataOverlay(props: { onConnectData: () => void }) {
     <Wrapper>
       <Container>
         <Header className="t--cypress-table-overlay-header">
-          Connect your data or use sample data to display table
+          连接你的数据或者使用简单的数据展示表格
         </Header>
         <ConnecData
           className="t--cypress-table-overlay-connectdata"
           onClick={props.onConnectData}
           size="md"
         >
-          Connect data
+          连接数据
         </ConnecData>
       </Container>
     </Wrapper>
