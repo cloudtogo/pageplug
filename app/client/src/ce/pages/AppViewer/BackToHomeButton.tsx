@@ -1,11 +1,15 @@
 /* eslint-disable @typescript-eslint/no-restricted-imports */
-import React, { useEffect } from "react";
+import React, { useEffect , useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import AppsIcon from "remixicon-react/AppsLineIcon";
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
 import type { NavigationSetting } from "constants/AppConstants";
 import { NAVIGATION_SETTINGS } from "constants/AppConstants";
+import {
+  getCurrentApplication,
+  isMobileLayout,
+} from "selectors/applicationSelectors";
 import {
   getMenuItemBackgroundColorOnHover,
   getMenuItemTextColor,
@@ -67,7 +71,29 @@ function BackToHomeButton(props: BackToHomeButtonProps) {
     setIsLogoVisible,
   } = props;
   const selectedTheme = useSelector(getSelectedAppTheme);
+  const currentApp = useSelector(getCurrentApplication);
 
+  const viewerLayout = currentApp?.viewerLayout;
+  const initState = useMemo(() => {
+    let init = {
+      logoUrl: "",
+      color: "",
+    };
+    if (viewerLayout) {
+      try {
+        const current = JSON.parse(viewerLayout);
+        init = {
+          logoUrl: current.logoUrl,
+          color: current.color,
+        };
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    return init;
+  }, [viewerLayout]);
+  const appLogo =
+  initState.logoUrl || "https://img.icons8.com/doodle/2x/koala.png";
   useEffect(() => {
     if (setIsLogoVisible) {
       setIsLogoVisible(false);
@@ -87,13 +113,17 @@ function BackToHomeButton(props: BackToHomeButtonProps) {
         primaryColor={primaryColor}
         to="/applications"
       >
-        <StyledAppIcon
-          borderRadius={selectedTheme.properties.borderRadius.appBorderRadius}
-          className="p-1 w-7 h-7"
-          forSidebar={forSidebar}
-          navColorStyle={navColorStyle}
-          primaryColor={primaryColor}
-        />
+         {appLogo ? (
+          <img src={appLogo} alt="app logo" className="p-0.5 w-8 h-8" />
+        ) : (
+          <StyledAppIcon
+            borderRadius={selectedTheme.properties.borderRadius.appBorderRadius}
+            className="p-1 w-7 h-7"
+            forSidebar={forSidebar}
+            navColorStyle={navColorStyle}
+            primaryColor={primaryColor}
+          />
+        )}
       </StyledLink>
     </TooltipComponent>
   );
