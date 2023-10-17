@@ -4,14 +4,8 @@ import com.appsmith.external.plugins.SmartSubstitutionInterface;
 import oracle.jdbc.OracleArray;
 import oracle.jdbc.OracleBlob;
 import oracle.sql.CLOB;
-import org.apache.commons.lang.ObjectUtils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.text.MessageFormat;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,7 +17,6 @@ import java.util.regex.Pattern;
 
 import static com.appsmith.external.helpers.PluginUtils.getColumnsListForJdbcPlugin;
 import static com.appsmith.external.helpers.PluginUtils.safelyCloseSingleConnectionFromHikariCP;
-import static java.lang.Boolean.FALSE;
 
 public class OracleExecuteUtils implements SmartSubstitutionInterface {
     public static final String DATE_COLUMN_TYPE_NAME = "date";
@@ -120,15 +113,9 @@ public class OracleExecuteUtils implements SmartSubstitutionInterface {
             List<String> columnsList,
             ResultSet resultSet,
             Boolean isResultSet,
-            Boolean preparedStatement,
-            Statement statement,
-            PreparedStatement preparedQuery)
+            int updateCount)
             throws SQLException {
         if (!isResultSet) {
-            Object updateCount = FALSE.equals(preparedStatement)
-                    ? ObjectUtils.defaultIfNull(statement.getUpdateCount(), 0)
-                    : ObjectUtils.defaultIfNull(preparedQuery.getUpdateCount(), 0);
-
             rowsList.add(Map.of(AFFECTED_ROWS_KEY, updateCount));
         } else {
             ResultSetMetaData metaData = resultSet.getMetaData();
