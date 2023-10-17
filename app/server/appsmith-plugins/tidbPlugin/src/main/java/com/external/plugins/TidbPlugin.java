@@ -14,12 +14,12 @@ import com.appsmith.external.plugins.SmartSubstitutionInterface;
 import com.external.plugins.datatypes.TidbSpecificDataTypes;
 import com.external.plugins.exceptions.TidbErrorMessages;
 import com.external.plugins.exceptions.TidbPluginError;
+import com.external.plugins.utils.QueryUtils;
 import com.external.plugins.utils.TidbDatasourceUtils;
 import com.external.plugins.utils.TidbErrorUtils;
-import com.external.plugins.utils.QueryUtils;
 import io.r2dbc.pool.ConnectionPool;
-import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.*;
+import io.r2dbc.spi.Connection;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ObjectUtils;
 import org.mariadb.r2dbc.message.server.ColumnDefinitionPacket;
@@ -38,8 +38,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
 
@@ -71,21 +71,21 @@ public class TidbPlugin extends BasePlugin {
      * | test       |         4 | lastname    | varchar     |           1 |            |                |
      * +------------+-----------+-------------+-------------+-------------+------------+----------------+
      */
-    private static final String COLUMNS_QUERY = "select tab.table_name as table_name,\n" +
-            "       col.ordinal_position as column_id,\n" +
-            "       col.column_name as column_name,\n" +
-            "       col.data_type as column_type,\n" +
-            "       col.is_nullable = 'YES' as is_nullable,\n" +
-            "       col.column_key,\n" +
-            "       col.extra\n" +
-            "from information_schema.tables as tab\n" +
-            "         inner join information_schema.columns as col\n" +
-            "                    on col.table_schema = tab.table_schema\n" +
-            "                        and col.table_name = tab.table_name\n" +
-            "where tab.table_type = 'BASE TABLE'\n" +
-            "  and tab.table_schema = database()\n" +
-            "order by tab.table_name,\n" +
-            "         col.ordinal_position;";
+    private static final String COLUMNS_QUERY =
+            "select tab.table_name as table_name,\n" + "       col.ordinal_position as column_id,\n"
+                    + "       col.column_name as column_name,\n"
+                    + "       col.data_type as column_type,\n"
+                    + "       col.is_nullable = 'YES' as is_nullable,\n"
+                    + "       col.column_key,\n"
+                    + "       col.extra\n"
+                    + "from information_schema.tables as tab\n"
+                    + "         inner join information_schema.columns as col\n"
+                    + "                    on col.table_schema = tab.table_schema\n"
+                    + "                        and col.table_name = tab.table_name\n"
+                    + "where tab.table_type = 'BASE TABLE'\n"
+                    + "  and tab.table_schema = database()\n"
+                    + "order by tab.table_name,\n"
+                    + "         col.ordinal_position;";
 
     /**
      * Example output for KEYS_QUERY:
@@ -95,22 +95,22 @@ public class TidbPlugin extends BasePlugin {
      * | PRIMARY         | mytestdb    | test       | p               | id          | NULL           | NULL          | NULL           |
      * +-----------------+-------------+------------+-----------------+-------------+----------------+---------------+----------------+
      */
-    private static final String KEYS_QUERY = "select i.constraint_name,\n" +
-            "       i.TABLE_SCHEMA as self_schema,\n" +
-            "       i.table_name as self_table,\n" +
-            "       if(i.constraint_type = 'FOREIGN KEY', 'f', 'p') as constraint_type,\n" +
-            "       k.column_name as self_column, -- k.ordinal_position, k.position_in_unique_constraint,\n" +
-            "       k.referenced_table_schema as foreign_schema,\n" +
-            "       k.referenced_table_name as foreign_table,\n" +
-            "       k.referenced_column_name as foreign_column\n" +
-            "from information_schema.table_constraints i\n" +
-            "         left join information_schema.key_column_usage k\n" +
-            "             on i.constraint_name = k.constraint_name and i.table_name = k.table_name\n" +
-            "where i.table_schema = database()\n" +
-            "  and k.constraint_schema = database()\n" +
+    private static final String KEYS_QUERY = "select i.constraint_name,\n" + "       i.TABLE_SCHEMA as self_schema,\n"
+            + "       i.table_name as self_table,\n"
+            + "       if(i.constraint_type = 'FOREIGN KEY', 'f', 'p') as constraint_type,\n"
+            + "       k.column_name as self_column, -- k.ordinal_position, k.position_in_unique_constraint,\n"
+            + "       k.referenced_table_schema as foreign_schema,\n"
+            + "       k.referenced_table_name as foreign_table,\n"
+            + "       k.referenced_column_name as foreign_column\n"
+            + "from information_schema.table_constraints i\n"
+            + "         left join information_schema.key_column_usage k\n"
+            + "             on i.constraint_name = k.constraint_name and i.table_name = k.table_name\n"
+            + "where i.table_schema = database()\n"
+            + "  and k.constraint_schema = database()\n"
+            +
             // "  and i.enforced = 'YES'\n" +  // Looks like this is not available on all versions of MySQL.
-            "  and i.constraint_type in ('FOREIGN KEY', 'PRIMARY KEY')\n" +
-            "order by i.table_name, i.constraint_name, k.position_in_unique_constraint;";
+            "  and i.constraint_type in ('FOREIGN KEY', 'PRIMARY KEY')\n"
+            + "order by i.table_name, i.constraint_name, k.position_in_unique_constraint;";
 
     public TidbPlugin(PluginWrapper wrapper) {
         super(wrapper);
@@ -137,10 +137,11 @@ public class TidbPlugin extends BasePlugin {
          * @return
          */
         @Override
-        public Mono<ActionExecutionResult> executeParameterized(ConnectionPool connection,
-                                                                ExecuteActionDTO executeActionDTO,
-                                                                DatasourceConfiguration datasourceConfiguration,
-                                                                ActionConfiguration actionConfiguration) {
+        public Mono<ActionExecutionResult> executeParameterized(
+                ConnectionPool connection,
+                ExecuteActionDTO executeActionDTO,
+                DatasourceConfiguration datasourceConfiguration,
+                ActionConfiguration actionConfiguration) {
 
             final Map<String, Object> requestData = new HashMap<>();
 
@@ -170,7 +171,9 @@ public class TidbPlugin extends BasePlugin {
             if (!StringUtils.hasLength(query)) {
                 ActionExecutionResult errorResult = new ActionExecutionResult();
                 errorResult.setIsExecutionSuccess(false);
-                errorResult.setErrorInfo(new AppsmithPluginException(AppsmithPluginError.PLUGIN_EXECUTE_ARGUMENT_ERROR, TidbErrorMessages.MISSING_PARAMETER_QUERY_ERROR_MSG));
+                errorResult.setErrorInfo(new AppsmithPluginException(
+                        AppsmithPluginError.PLUGIN_EXECUTE_ARGUMENT_ERROR,
+                        TidbErrorMessages.MISSING_PARAMETER_QUERY_ERROR_MSG));
                 ActionExecutionRequest actionExecutionRequest = new ActionExecutionRequest();
                 actionExecutionRequest.setProperties(requestData);
                 errorResult.setRequest(actionExecutionRequest);
@@ -185,22 +188,24 @@ public class TidbPlugin extends BasePlugin {
                 return executeCommon(connection, actionConfiguration, FALSE, null, null, requestData);
             }
 
-            //This has to be executed as Prepared Statement
+            // This has to be executed as Prepared Statement
             // First extract all the bindings in order
             List<MustacheBindingToken> mustacheKeysInOrder = MustacheHelper.extractMustacheKeysInOrder(query);
             // Replace all the bindings with a ? as expected in a prepared statement.
             String updatedQuery = MustacheHelper.replaceMustacheWithQuestionMark(query, mustacheKeysInOrder);
             // Set the query with bindings extracted and replaced with '?' back in config
             actionConfiguration.setBody(updatedQuery);
-            return executeCommon(connection, actionConfiguration, TRUE, mustacheKeysInOrder, executeActionDTO, requestData);
+            return executeCommon(
+                    connection, actionConfiguration, TRUE, mustacheKeysInOrder, executeActionDTO, requestData);
         }
 
-        public Mono<ActionExecutionResult> executeCommon(ConnectionPool connectionPool,
-                                                         ActionConfiguration actionConfiguration,
-                                                         Boolean preparedStatement,
-                                                         List<MustacheBindingToken> mustacheValuesInOrder,
-                                                         ExecuteActionDTO executeActionDTO,
-                                                         Map<String, Object> requestData) {
+        public Mono<ActionExecutionResult> executeCommon(
+                ConnectionPool connectionPool,
+                ActionConfiguration actionConfiguration,
+                Boolean preparedStatement,
+                List<MustacheBindingToken> mustacheValuesInOrder,
+                ExecuteActionDTO executeActionDTO,
+                Map<String, Object> requestData) {
             String query = actionConfiguration.getBody();
 
             /**
@@ -213,12 +218,9 @@ public class TidbPlugin extends BasePlugin {
             String finalQuery = QueryUtils.removeQueryComments(query);
 
             if (preparedStatement && isIsOperatorUsed(finalQuery)) {
-                return Mono.error(
-                        new AppsmithPluginException(
-                                TidbPluginError.IS_KEYWORD_NOT_ALLOWED_IN_PREPARED_STATEMENT,
-                                TidbErrorMessages.IS_KEYWORD_NOT_SUPPORTED_IN_PS_ERROR_MSG
-                        )
-                );
+                return Mono.error(new AppsmithPluginException(
+                        TidbPluginError.IS_KEYWORD_NOT_ALLOWED_IN_PREPARED_STATEMENT,
+                        TidbErrorMessages.IS_KEYWORD_NOT_SUPPORTED_IN_PS_ERROR_MSG));
             }
 
             boolean isSelectOrShowOrDescQuery = getIsSelectOrShowOrDescQuery(finalQuery);
@@ -227,19 +229,21 @@ public class TidbPlugin extends BasePlugin {
             final List<String> columnsList = new ArrayList<>();
             Map<String, Object> psParams = preparedStatement ? new LinkedHashMap<>() : null;
             String transformedQuery = preparedStatement ? replaceQuestionMarkWithDollarIndex(finalQuery) : finalQuery;
-            List<RequestParamDTO> requestParams = List.of(new RequestParamDTO(ACTION_CONFIGURATION_BODY,
-                    transformedQuery, null, null, psParams));
+            List<RequestParamDTO> requestParams =
+                    List.of(new RequestParamDTO(ACTION_CONFIGURATION_BODY, transformedQuery, null, null, psParams));
 
             return Mono.usingWhen(
                             connectionPool.create(),
                             connection -> {
-                                // TODO: add JUnit TC for the `connection.validate` check. Not sure how to do it at the moment.
+                                // TODO: add JUnit TC for the `connection.validate` check. Not sure how to do it at the
+                                // moment.
                                 Flux<Result> resultFlux = Mono.from(connection.validate(ValidationDepth.REMOTE))
                                         .timeout(Duration.ofSeconds(VALIDATION_CHECK_TIMEOUT))
                                         .onErrorMap(TimeoutException.class, error -> new StaleConnectionException())
                                         .flatMapMany(isValid -> {
                                             if (isValid) {
-                                                return createAndExecuteQueryFromConnection(finalQuery,
+                                                return createAndExecuteQueryFromConnection(
+                                                        finalQuery,
                                                         connection,
                                                         preparedStatement,
                                                         mustacheValuesInOrder,
@@ -253,18 +257,17 @@ public class TidbPlugin extends BasePlugin {
                                 Mono<List<Map<String, Object>>> resultMono;
                                 if (isSelectOrShowOrDescQuery) {
                                     resultMono = resultFlux
-                                            .flatMap(result ->
-                                                    result.map((row, meta) -> {
-                                                                rowsList.add(getRow(row, meta));
+                                            .flatMap(result -> result.map((row, meta) -> {
+                                                rowsList.add(getRow(row, meta));
 
-                                                                if (columnsList.isEmpty()) {
-                                                                    meta.getColumnMetadatas().forEach(columnMetadata -> columnsList.add(columnMetadata.getName()));
-                                                                }
+                                                if (columnsList.isEmpty()) {
+                                                    meta.getColumnMetadatas()
+                                                            .forEach(columnMetadata ->
+                                                                    columnsList.add(columnMetadata.getName()));
+                                                }
 
-                                                                return result;
-                                                            }
-                                                    )
-                                            )
+                                                return result;
+                                            }))
                                             .collectList()
                                             .thenReturn(rowsList);
                                 } else {
@@ -273,12 +276,8 @@ public class TidbPlugin extends BasePlugin {
                                             .collectList()
                                             .map(list -> list.get(list.size() - 1))
                                             .map(rowsUpdated -> {
-                                                rowsList.add(
-                                                        Map.of(
-                                                                "affectedRows",
-                                                                ObjectUtils.defaultIfNull(rowsUpdated, 0)
-                                                        )
-                                                );
+                                                rowsList.add(Map.of(
+                                                        "affectedRows", ObjectUtils.defaultIfNull(rowsUpdated, 0)));
                                                 return rowsList;
                                             });
                                 }
@@ -296,16 +295,31 @@ public class TidbPlugin extends BasePlugin {
                                             if (error instanceof StaleConnectionException) {
                                                 return Mono.error(error);
                                             } else if (error instanceof R2dbcBadGrammarException) {
-                                                R2dbcBadGrammarException r2dbcBadGrammarException = ((R2dbcBadGrammarException) error);
-                                                error = new AppsmithPluginException(TidbPluginError.INVALID_QUERY_SYNTAX, r2dbcBadGrammarException.getMessage(), "SQLSTATE: " + r2dbcBadGrammarException.getSqlState());
+                                                R2dbcBadGrammarException r2dbcBadGrammarException =
+                                                        ((R2dbcBadGrammarException) error);
+                                                error = new AppsmithPluginException(
+                                                        TidbPluginError.INVALID_QUERY_SYNTAX,
+                                                        r2dbcBadGrammarException.getMessage(),
+                                                        "SQLSTATE: " + r2dbcBadGrammarException.getSqlState());
                                             } else if (error instanceof R2dbcPermissionDeniedException) {
-                                                R2dbcPermissionDeniedException r2dbcPermissionDeniedException = (R2dbcPermissionDeniedException) error;
-                                                error = new AppsmithPluginException(TidbPluginError.MISSING_REQUIRED_PERMISSION, r2dbcPermissionDeniedException.getMessage(), "SQLSTATE: " + r2dbcPermissionDeniedException.getSqlState());
+                                                R2dbcPermissionDeniedException r2dbcPermissionDeniedException =
+                                                        (R2dbcPermissionDeniedException) error;
+                                                error = new AppsmithPluginException(
+                                                        TidbPluginError.MISSING_REQUIRED_PERMISSION,
+                                                        r2dbcPermissionDeniedException.getMessage(),
+                                                        "SQLSTATE: " + r2dbcPermissionDeniedException.getSqlState());
                                             } else if (error instanceof R2dbcException) {
                                                 R2dbcException r2dbcException = (R2dbcException) error;
-                                                error = new AppsmithPluginException(TidbPluginError.QUERY_EXECUTION_FAILED, TidbErrorMessages.QUERY_EXECUTION_FAILED_ERROR_MSG, r2dbcException.getMessage(), "SQLSTATE: " + r2dbcException.getSqlState());
+                                                error = new AppsmithPluginException(
+                                                        TidbPluginError.QUERY_EXECUTION_FAILED,
+                                                        TidbErrorMessages.QUERY_EXECUTION_FAILED_ERROR_MSG,
+                                                        r2dbcException.getMessage(),
+                                                        "SQLSTATE: " + r2dbcException.getSqlState());
                                             } else if (!(error instanceof AppsmithPluginException)) {
-                                                error = new AppsmithPluginException(TidbPluginError.QUERY_EXECUTION_FAILED, TidbErrorMessages.QUERY_EXECUTION_FAILED_ERROR_MSG, error);
+                                                error = new AppsmithPluginException(
+                                                        TidbPluginError.QUERY_EXECUTION_FAILED,
+                                                        TidbErrorMessages.QUERY_EXECUTION_FAILED_ERROR_MSG,
+                                                        error);
                                             }
                                             ActionExecutionResult result = new ActionExecutionResult();
                                             result.setIsExecutionSuccess(false);
@@ -324,8 +338,7 @@ public class TidbPlugin extends BasePlugin {
                                             return result;
                                         });
                             },
-                            Connection::close
-                    )
+                            Connection::close)
                     .onErrorMap(TimeoutException.class, error -> new StaleConnectionException())
                     .onErrorMap(PoolShutdownException.class, error -> new StaleConnectionException())
                     .onErrorMap(R2dbcNonTransientResourceException.class, error -> new StaleConnectionException())
@@ -334,17 +347,17 @@ public class TidbPlugin extends BasePlugin {
 
         boolean isIsOperatorUsed(String query) {
             String queryKeyWordsOnly = query.replaceAll(MATCH_QUOTED_WORDS_REGEX, "");
-            return Arrays.stream(queryKeyWordsOnly.split("\\s"))
-                    .anyMatch(word -> IS_KEY.equalsIgnoreCase(word.trim()));
+            return Arrays.stream(queryKeyWordsOnly.split("\\s")).anyMatch(word -> IS_KEY.equalsIgnoreCase(word.trim()));
         }
 
-        private Flux<Result> createAndExecuteQueryFromConnection(String query,
-                                                                 Connection connection,
-                                                                 Boolean preparedStatement,
-                                                                 List<MustacheBindingToken> mustacheValuesInOrder,
-                                                                 ExecuteActionDTO executeActionDTO,
-                                                                 Map<String, Object> requestData,
-                                                                 Map psParams) {
+        private Flux<Result> createAndExecuteQueryFromConnection(
+                String query,
+                Connection connection,
+                Boolean preparedStatement,
+                List<MustacheBindingToken> mustacheValuesInOrder,
+                ExecuteActionDTO executeActionDTO,
+                Map<String, Object> requestData,
+                Map psParams) {
 
             Statement connectionStatement = connection.createStatement(query);
             if (FALSE.equals(preparedStatement) || mustacheValuesInOrder == null || mustacheValuesInOrder.isEmpty()) {
@@ -355,26 +368,23 @@ public class TidbPlugin extends BasePlugin {
 
             List<Map.Entry<String, String>> parameters = new ArrayList<>();
             try {
-                connectionStatement = (Statement) this.smartSubstitutionOfBindings(connectionStatement,
-                        mustacheValuesInOrder,
-                        executeActionDTO.getParams(),
-                        parameters);
+                connectionStatement = (Statement) this.smartSubstitutionOfBindings(
+                        connectionStatement, mustacheValuesInOrder, executeActionDTO.getParams(), parameters);
 
                 requestData.put("ps-parameters", parameters);
 
                 IntStream.range(0, parameters.size())
-                        .forEachOrdered(i ->
-                                psParams.put(
-                                        getPSParamLabel(i + 1),
-                                        new PsParameterDTO(parameters.get(i).getKey(), parameters.get(i).getValue())));
+                        .forEachOrdered(i -> psParams.put(
+                                getPSParamLabel(i + 1),
+                                new PsParameterDTO(
+                                        parameters.get(i).getKey(),
+                                        parameters.get(i).getValue())));
 
             } catch (AppsmithPluginException e) {
                 return Flux.error(e);
             }
 
-
             return Flux.from(connectionStatement.execute());
-
         }
 
         @Override
@@ -383,22 +393,25 @@ public class TidbPlugin extends BasePlugin {
                     .flatMap(ConnectionPool::create)
                     .flatMap(conn -> Mono.from(conn.close()))
                     .then(Mono.just(new DatasourceTestResult()))
-                    .onErrorResume(error -> Mono.just(new DatasourceTestResult(
-                            TIDB_ERROR_UTILS.getReadableError(error))));
+                    .onErrorResume(
+                            error -> Mono.just(new DatasourceTestResult(TIDB_ERROR_UTILS.getReadableError(error))));
         }
 
         @Override
-        public Object substituteValueInInput(int index,
-                                             String binding,
-                                             String value,
-                                             Object input,
-                                             List<Map.Entry<String, String>> insertedParams,
-                                             Object... args) {
+        public Object substituteValueInInput(
+                int index,
+                String binding,
+                String value,
+                Object input,
+                List<Map.Entry<String, String>> insertedParams,
+                Object... args) {
 
             Statement connectionStatement = (Statement) input;
             Param param = (Param) args[0];
-            AppsmithType appsmithType = DataTypeServiceUtils.getAppsmithType(param.getClientDataType(), value, TidbSpecificDataTypes.pluginSpecificTypes);
-            Map.Entry<String, String> parameter = new SimpleEntry<>(value, appsmithType.type().toString());
+            AppsmithType appsmithType = DataTypeServiceUtils.getAppsmithType(
+                    param.getClientDataType(), value, TidbSpecificDataTypes.pluginSpecificTypes);
+            Map.Entry<String, String> parameter =
+                    new SimpleEntry<>(value, appsmithType.type().toString());
             insertedParams.add(parameter);
 
             switch (appsmithType.type()) {
@@ -424,9 +437,10 @@ public class TidbPlugin extends BasePlugin {
 
             List<String> identicalColumns = getIdenticalColumns(columnNames);
             if (!CollectionUtils.isEmpty(identicalColumns)) {
-                messages.add("Your TiDB query result may not have all the columns because duplicate column names " +
-                        "were found for the column(s): " + String.join(", ", identicalColumns) + ". You may use the " +
-                        "SQL keyword 'as' to rename the duplicate column name(s) and resolve this issue.");
+                messages.add("Your TiDB query result may not have all the columns because duplicate column names "
+                        + "were found for the column(s): "
+                        + String.join(", ", identicalColumns) + ". You may use the "
+                        + "SQL keyword 'as' to rename the duplicate column name(s) and resolve this issue.");
             }
 
             return messages;
@@ -437,7 +451,8 @@ public class TidbPlugin extends BasePlugin {
          * 2. Return the row as a map {column_name -> column_value}.
          */
         private Map<String, Object> getRow(Row row, RowMetadata meta) {
-            Iterator<ColumnDefinitionPacket> iterator = (Iterator<ColumnDefinitionPacket>) meta.getColumnMetadatas().iterator();
+            Iterator<ColumnDefinitionPacket> iterator =
+                    (Iterator<ColumnDefinitionPacket>) meta.getColumnMetadatas().iterator();
             Map<String, Object> processedRow = new LinkedHashMap<>();
 
             while (iterator.hasNext()) {
@@ -450,15 +465,12 @@ public class TidbPlugin extends BasePlugin {
                 if (LocalDate.class.toString().equalsIgnoreCase(javaTypeName) && columnValue != null) {
                     columnValue = DateTimeFormatter.ISO_DATE.format(row.get(columnName, LocalDate.class));
                 } else if ((LocalDateTime.class.toString().equalsIgnoreCase(javaTypeName)) && columnValue != null) {
-                    columnValue = DateTimeFormatter.ISO_DATE_TIME.format(
-                            LocalDateTime.of(
+                    columnValue = DateTimeFormatter.ISO_DATE_TIME.format(LocalDateTime.of(
                                     row.get(columnName, LocalDateTime.class).toLocalDate(),
-                                    row.get(columnName, LocalDateTime.class).toLocalTime()
-                            )
-                    ) + "Z";
+                                    row.get(columnName, LocalDateTime.class).toLocalTime()))
+                            + "Z";
                 } else if (LocalTime.class.toString().equalsIgnoreCase(javaTypeName) && columnValue != null) {
-                    columnValue = DateTimeFormatter.ISO_TIME.format(row.get(columnName,
-                            LocalTime.class));
+                    columnValue = DateTimeFormatter.ISO_TIME.format(row.get(columnName, LocalTime.class));
                 } else if (java.time.Year.class.toString().equalsIgnoreCase(javaTypeName) && columnValue != null) {
                     columnValue = row.get(columnName, LocalDate.class).getYear();
                 } else if (JSON_DB_TYPE.equals(sqlColumnType)) {
@@ -498,16 +510,20 @@ public class TidbPlugin extends BasePlugin {
 
             String lastQuery = queries[queries.length - 1].trim();
 
-            return
-                    Arrays.asList("select", "show", "describe", "desc")
-                            .contains(lastQuery.trim().split("\\s+")[0].toLowerCase());
+            return Arrays.asList("select", "show", "describe", "desc")
+                    .contains(lastQuery.trim().split("\\s+")[0].toLowerCase());
         }
 
         @Override
-        public Mono<ActionExecutionResult> execute(ConnectionPool connection,
-                                                   DatasourceConfiguration datasourceConfiguration, ActionConfiguration actionConfiguration) {
+        public Mono<ActionExecutionResult> execute(
+                ConnectionPool connection,
+                DatasourceConfiguration datasourceConfiguration,
+                ActionConfiguration actionConfiguration) {
             // Unused function
-            return Mono.error(new AppsmithPluginException(TidbPluginError.QUERY_EXECUTION_FAILED, TidbErrorMessages.QUERY_EXECUTION_FAILED_ERROR_MSG, "Unsupported Operation"));
+            return Mono.error(new AppsmithPluginException(
+                    TidbPluginError.QUERY_EXECUTION_FAILED,
+                    TidbErrorMessages.QUERY_EXECUTION_FAILED_ERROR_MSG,
+                    "Unsupported Operation"));
         }
 
         @Override
@@ -524,7 +540,8 @@ public class TidbPlugin extends BasePlugin {
         @Override
         public void datasourceDestroy(ConnectionPool connectionPool) {
             if (connectionPool != null) {
-                connectionPool.disposeLater()
+                connectionPool
+                        .disposeLater()
                         .onErrorResume(exception -> {
                             log.debug("In datasourceDestroy function error mode.", exception);
                             return Mono.empty();
@@ -540,8 +557,8 @@ public class TidbPlugin extends BasePlugin {
         }
 
         @Override
-        public Mono<DatasourceStructure> getStructure(ConnectionPool connectionPool,
-                                                      DatasourceConfiguration datasourceConfiguration) {
+        public Mono<DatasourceStructure> getStructure(
+                ConnectionPool connectionPool, DatasourceConfiguration datasourceConfiguration) {
             final DatasourceStructure structure = new DatasourceStructure();
             final Map<String, DatasourceStructure.Table> tablesByName = new LinkedHashMap<>();
             final Map<String, DatasourceStructure.Key> keyRegistry = new HashMap<>();
@@ -554,7 +571,9 @@ public class TidbPlugin extends BasePlugin {
                                         .onErrorMap(TimeoutException.class, error -> new StaleConnectionException())
                                         .flatMapMany(isValid -> {
                                             if (isValid) {
-                                                return connection.createStatement(COLUMNS_QUERY).execute();
+                                                return connection
+                                                        .createStatement(COLUMNS_QUERY)
+                                                        .execute();
                                             } else {
                                                 return Flux.error(new StaleConnectionException());
                                             }
@@ -567,7 +586,9 @@ public class TidbPlugin extends BasePlugin {
                                             });
                                         })
                                         .collectList()
-                                        .thenMany(Flux.from(connection.createStatement(KEYS_QUERY).execute()))
+                                        .thenMany(Flux.from(connection
+                                                .createStatement(KEYS_QUERY)
+                                                .execute()))
                                         .flatMap(result -> {
                                             return result.map((row, meta) -> {
                                                 getKeyInfo(row, meta, tablesByName, keyRegistry);
@@ -587,19 +608,18 @@ public class TidbPlugin extends BasePlugin {
                                             return structure;
                                         })
                                         .onErrorMap(e -> {
-                                            if (!(e instanceof AppsmithPluginException) && !(e instanceof StaleConnectionException)) {
+                                            if (!(e instanceof AppsmithPluginException)
+                                                    && !(e instanceof StaleConnectionException)) {
                                                 return new AppsmithPluginException(
                                                         AppsmithPluginError.PLUGIN_GET_STRUCTURE_ERROR,
                                                         TidbErrorMessages.GET_STRUCTURE_ERROR_MSG,
-                                                        e.getMessage()
-                                                );
+                                                        e.getMessage());
                                             }
 
                                             return e;
                                         });
                             },
-                            Connection::close
-                    )
+                            Connection::close)
                     .onErrorMap(TimeoutException.class, error -> new StaleConnectionException())
                     .onErrorMap(PoolShutdownException.class, error -> new StaleConnectionException())
                     .subscribeOn(scheduler);
