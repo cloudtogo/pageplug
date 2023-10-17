@@ -233,7 +233,6 @@ public class OraclePlugin extends BasePlugin {
                         ResultSet resultSet = null;
                         PreparedStatement preparedQuery = null;
                         boolean isResultSet;
-                        int updateCount;
 
                         // Log HikariCP status
                         logHikariCPStatus(
@@ -244,18 +243,6 @@ public class OraclePlugin extends BasePlugin {
                                 statement = connectionFromPool.createStatement();
                                 isResultSet = statement.execute(query);
                                 resultSet = statement.getResultSet();
-                                updateCount = statement.getUpdateCount();
-                                if (!isResultSet) {
-                                    boolean moreResults = statement.getMoreResults();
-                                    while (moreResults || statement.getUpdateCount() != -1) {
-                                        if (moreResults) {
-                                            isResultSet = true;
-                                            resultSet = statement.getResultSet();
-                                            break;
-                                        }
-                                        moreResults = statement.getMoreResults();
-                                    }
-                                }
                             } else {
                                 preparedQuery = connectionFromPool.prepareStatement(query);
 
@@ -273,21 +260,16 @@ public class OraclePlugin extends BasePlugin {
                                 requestData.put("ps-parameters", parameters);
                                 isResultSet = preparedQuery.execute();
                                 resultSet = preparedQuery.getResultSet();
-                                updateCount = preparedQuery.getUpdateCount();
-                                if (!isResultSet) {
-                                    boolean moreResults = preparedQuery.getMoreResults();
-                                    while (moreResults || preparedQuery.getUpdateCount() != -1) {
-                                        if (moreResults) {
-                                            isResultSet = true;
-                                            resultSet = preparedQuery.getResultSet();
-                                            break;
-                                        }
-                                        moreResults = preparedQuery.getMoreResults();
-                                    }
-                                }
                             }
 
-                            populateRowsAndColumns(rowsList, columnsList, resultSet, isResultSet, updateCount);
+                            populateRowsAndColumns(
+                                    rowsList,
+                                    columnsList,
+                                    resultSet,
+                                    isResultSet,
+                                    preparedStatement,
+                                    statement,
+                                    preparedQuery);
                         } catch (SQLException e) {
                             log.debug(Thread.currentThread().getName()
                                     + ": In the OraclePlugin, got action execution error");

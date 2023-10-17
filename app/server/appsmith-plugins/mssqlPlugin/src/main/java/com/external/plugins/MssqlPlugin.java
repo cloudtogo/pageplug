@@ -193,7 +193,6 @@ public class MssqlPlugin extends BasePlugin {
                         Statement statement = null;
                         PreparedStatement preparedQuery = null;
                         ResultSet resultSet = null;
-                        int updateCount = 0;
                         List<Map<String, Object>> rowsList = new ArrayList<>(50);
                         final List<String> columnsList = new ArrayList<>();
 
@@ -248,18 +247,6 @@ public class MssqlPlugin extends BasePlugin {
                                 statement = sqlConnectionFromPool.createStatement();
                                 isResultSet = statement.execute(query);
                                 resultSet = statement.getResultSet();
-                                updateCount = statement.getUpdateCount();
-                                if (!isResultSet) {
-                                    boolean moreResults = statement.getMoreResults();
-                                    while (moreResults || statement.getUpdateCount() != -1) {
-                                        if (moreResults) {
-                                            isResultSet = true;
-                                            resultSet = statement.getResultSet();
-                                            break;
-                                        }
-                                        moreResults = statement.getMoreResults();
-                                    }
-                                }
                             } else {
                                 preparedQuery = sqlConnectionFromPool.prepareStatement(query);
 
@@ -278,22 +265,16 @@ public class MssqlPlugin extends BasePlugin {
 
                                 isResultSet = preparedQuery.execute();
                                 resultSet = preparedQuery.getResultSet();
-                                updateCount = preparedQuery.getUpdateCount();
-                                if (!isResultSet) {
-                                    boolean moreResults = preparedQuery.getMoreResults();
-                                    while (moreResults || preparedQuery.getUpdateCount() != -1) {
-                                        if (moreResults) {
-                                            isResultSet = true;
-                                            resultSet = preparedQuery.getResultSet();
-                                            break;
-                                        }
-                                        moreResults = preparedQuery.getMoreResults();
-                                    }
-                                }
                             }
 
                             MssqlExecuteUtils.populateRowsAndColumns(
-                                    rowsList, columnsList, resultSet, isResultSet, updateCount);
+                                    rowsList,
+                                    columnsList,
+                                    resultSet,
+                                    isResultSet,
+                                    preparedStatement,
+                                    statement,
+                                    preparedQuery);
 
                         } catch (SQLException e) {
                             return Mono.error(new AppsmithPluginException(
