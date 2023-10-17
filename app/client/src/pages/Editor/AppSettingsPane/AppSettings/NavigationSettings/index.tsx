@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
 import {
-  APP_NAVIGATION_SETTING,
   createMessage,
+  APP_NAVIGATION_SETTING,
 } from "@appsmith/constants/messages";
 // import { ReactComponent as NavOrientationTopIcon } from "assets/icons/settings/nav-orientation-top.svg";
 // import { ReactComponent as NavOrientationSideIcon } from "assets/icons/settings/nav-orientation-side.svg";
@@ -51,7 +51,7 @@ function NavigationSettings() {
   const featureFlags = useSelector(selectFeatureFlags);
   const dispatch = useDispatch();
   const [navigationSetting, setNavigationSetting] = useState(
-    application?.applicationDetail?.navigationSetting,
+    application?.applicationDetail?.navigationSetting || {},
   );
 
   const [logoConfigurationSwitches, setLogoConfigurationSwitches] =
@@ -226,7 +226,7 @@ function NavigationSettings() {
         updateSetting={updateSetting}
         value={!!navigationSetting?.showNavbar}
       />
-
+      
       {navigationSetting?.showNavbar && (
         <>
           <ButtonGroupSetting
@@ -235,14 +235,14 @@ function NavigationSettings() {
             navigationSetting={navigationSetting}
             options={[
               {
-                label: _.startCase(NAVIGATION_SETTINGS.ORIENTATION.TOP),
+                label: "顶部",
                 value: NAVIGATION_SETTINGS.ORIENTATION.TOP,
-                // startIcon:<NavOrientationTopIcon />,
+                // icon: <NavOrientationTopIcon />,
               },
               {
-                label: _.startCase(NAVIGATION_SETTINGS.ORIENTATION.SIDE),
+                label: "侧边",
                 value: NAVIGATION_SETTINGS.ORIENTATION.SIDE,
-                // startIcon:<NavOrientationSideIcon />,
+                // icon: <NavOrientationSideIcon />,
               },
             ]}
             updateSetting={updateSetting}
@@ -261,17 +261,17 @@ function NavigationSettings() {
               navigationSetting={navigationSetting}
               options={[
                 {
-                  label: _.startCase(NAVIGATION_SETTINGS.NAV_STYLE.STACKED),
+                  label: "堆叠",
                   value: NAVIGATION_SETTINGS.NAV_STYLE.STACKED,
-                  // startIcon:<NavStyleStackedIcon />,
+                  // icon: <NavStyleStackedIcon />,
                   hidden:
                     navigationSetting?.orientation ===
                     NAVIGATION_SETTINGS.ORIENTATION.SIDE,
                 },
                 {
-                  label: _.startCase(NAVIGATION_SETTINGS.NAV_STYLE.INLINE),
+                  label: "行内",
                   value: NAVIGATION_SETTINGS.NAV_STYLE.INLINE,
-                  // startIcon:<NavStyleInlineIcon />,
+                  // icon: <NavStyleInlineIcon />,
                   hidden:
                     navigationSetting?.orientation ===
                     NAVIGATION_SETTINGS.ORIENTATION.SIDE,
@@ -279,7 +279,7 @@ function NavigationSettings() {
                 {
                   label: _.startCase(NAVIGATION_SETTINGS.NAV_STYLE.SIDEBAR),
                   value: NAVIGATION_SETTINGS.NAV_STYLE.SIDEBAR,
-                  // startIcon:<NavStyleSidebarIcon />,
+                  // icon: <NavStyleSidebarIcon />,
                   hidden:
                     navigationSetting?.orientation ===
                     NAVIGATION_SETTINGS.ORIENTATION.TOP,
@@ -292,7 +292,7 @@ function NavigationSettings() {
                 // {
                 //   label: _.startCase(NAVIGATION_SETTINGS.NAV_STYLE.MINIMAL),
                 //   value: NAVIGATION_SETTINGS.NAV_STYLE.MINIMAL,
-                //   startIcon:<NavStyleMinimalIcon />,
+                //   icon: <NavStyleMinimalIcon />,
                 //   hidden:
                 //     navigationSetting?.orientation ===
                 //     NAVIGATION_SETTINGS.ORIENTATION.TOP,
@@ -315,12 +315,12 @@ function NavigationSettings() {
               {
                 label: _.startCase(NAVIGATION_SETTINGS.POSITION.STATIC),
                 value: NAVIGATION_SETTINGS.POSITION.STATIC,
-                startIcon:<NavPositionStaticIcon />,
+                icon: <NavPositionStaticIcon />,
               },
               {
                 label: _.startCase(NAVIGATION_SETTINGS.POSITION.STICKY),
                 value: NAVIGATION_SETTINGS.POSITION.STICKY,
-                startIcon:<NavPositionStickyIcon />,
+                icon: <NavPositionStickyIcon />,
               },
             ]}
             updateSetting={updateSetting}
@@ -369,29 +369,21 @@ function NavigationSettings() {
             navigationSetting={navigationSetting}
             options={[
               {
+                label: "浅色",
                 value: NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT,
-                label: (
-                  <div className="flex items-center">
-                    <ColorStyleIcon
-                      colorStyle={NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT}
-                    />
-                    <span>
-                      {_.startCase(NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT)}
-                    </span>
-                  </div>
+                icon: (
+                  <ColorStyleIcon
+                    colorStyle={NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT}
+                  />
                 ),
               },
               {
+                label: "主题色",
                 value: NAVIGATION_SETTINGS.COLOR_STYLE.THEME,
-                label: (
-                  <div className="flex items-center">
-                    <ColorStyleIcon
-                      colorStyle={NAVIGATION_SETTINGS.COLOR_STYLE.THEME}
-                    />
-                    <span>
-                      {_.startCase(NAVIGATION_SETTINGS.COLOR_STYLE.THEME)}
-                    </span>
-                  </div>
+                icon: (
+                  <ColorStyleIcon
+                    colorStyle={NAVIGATION_SETTINGS.COLOR_STYLE.THEME}
+                  />
                 ),
               },
             ]}

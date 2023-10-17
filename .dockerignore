@@ -1,5 +1,5 @@
 *
 !./app/server/dist
 !./app/client/build
-!./app/rts
+!./app/client/packages/rts
 !./deploy/docker

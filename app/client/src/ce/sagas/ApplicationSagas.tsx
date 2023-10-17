@@ -1064,6 +1064,10 @@ export function* uploadNavigationLogoSaga(
 export default function* applicationSagas() {
   yield all([
     takeLatest(
+      ReduxActionTypes.FETCH_APPLICATION_PREVIEW_INIT,
+      fetchApplicationPreviewWxaCodeSaga,
+    ),
+    takeLatest(
       ReduxActionTypes.PUBLISH_APPLICATION_INIT,
       publishApplicationSaga,
     ),

@@ -105,7 +105,7 @@ const TopHeader = (props: TopHeaderProps) => {
 
         {props.showUserSettings && (
           <section className="relative flex items-center space-x-3 z-1 ml-auto py-3">
-            {currentApplicationDetails && currentApplicationDetails?.id && (
+            {/* {currentApplicationDetails && currentApplicationDetails?.id && (
               <div className="hidden space-x-1 md:flex">
                 <ShareButton
                   currentApplicationDetails={currentApplicationDetails}
@@ -125,7 +125,7 @@ const TopHeader = (props: TopHeaderProps) => {
                   />
                 </HeaderRightItemContainer>
               </div>
-            )}
+            )} */}
 
             {currentUser && currentUser.username !== ANONYMOUS_USERNAME && (
               <HeaderRightItemContainer>
