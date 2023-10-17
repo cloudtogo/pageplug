@@ -1,5 +1,8 @@
 FROM harbor.cloud2go.cn/pageplug/ubuntu-20.04:base
 
+# Define volumes - Service Layer
+VOLUME [ "/appsmith-stacks" ]
+
 # ------------------------------------------------------------------------
 # Add backend server - Application Layer
 ARG JAR_FILE=./app/server/dist/server-*.jar
