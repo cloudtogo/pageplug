@@ -19,7 +19,7 @@
         {
           "label": "使用预置语句",
           "subtitle": "使查询语句参数化，这能够有效的防止 SQL 注入",
-          "configProperty": "actionConfiguration.pluginSpecifiedTemplates[0].value",
+          "configProperty": "actionConfiguration.formData.preparedStatement.data",
           "controlType": "SWITCH",
           "initialValue": true
         },
