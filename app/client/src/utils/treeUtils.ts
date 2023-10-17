@@ -21,6 +21,21 @@ export const mapTree = (tree: Tree, callback: (tree: Tree) => Tree) => {
   return { ...mapped };
 };
 
+export const mapClearTree = (tree: Tree, callback: (tree: Tree) => Tree) => {
+  if (!callback(tree)) {
+    // 不符合条件的节点，直接返回 null，表示删除该节点
+    return null;
+  }
+  const mapped = callback(tree);
+  if (tree.children && tree.children.length) {
+    const children: any = tree.children
+      .map((branch) => mapClearTree(branch, callback))
+      .filter(Boolean);
+    return { ...mapped, children };
+  }
+  return { ...mapped };
+};
+
 /**
  * This function sorts the object's value which is array of string.
  *

@@ -15,16 +15,23 @@ public class TidbSpecificDataTypes {
 
         pluginSpecificTypes.put(ClientDataType.BOOLEAN, List.of(new TidbBooleanType()));
 
-        pluginSpecificTypes.put(
-                ClientDataType.NUMBER,
-                List.of(new IntegerType(), new LongType(), new DoubleType(), new BigDecimalType()));
+        pluginSpecificTypes.put(ClientDataType.NUMBER, List.of(
+                new IntegerType(),
+                new LongType(),
+                new DoubleType(),
+                new BigDecimalType()
+        ));
 
         pluginSpecificTypes.put(ClientDataType.OBJECT, List.of(new JsonObjectType()));
 
-        pluginSpecificTypes.put(
-                ClientDataType.STRING,
-                List.of(new TimeType(), new TidbDateType(), new TidbDateTimeType(), new StringType()));
+        pluginSpecificTypes.put(ClientDataType.STRING, List.of(
+                new TimeType(),
+                new TidbDateType(),
+                new TidbDateTimeType(),
+                new StringType()
+        ));
 
         pluginSpecificTypes.put(ClientDataType.ARRAY, List.of(new StringType()));
     }
+
 }

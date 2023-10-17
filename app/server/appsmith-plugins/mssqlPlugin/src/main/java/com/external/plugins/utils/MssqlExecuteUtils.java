@@ -1,6 +1,13 @@
 package com.external.plugins.utils;
 
-import java.sql.*;
+import org.apache.commons.lang.ObjectUtils;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -11,6 +18,7 @@ import java.util.Map;
 
 import static com.appsmith.external.helpers.PluginUtils.getColumnsListForJdbcPlugin;
 import static com.appsmith.external.helpers.PluginUtils.safelyCloseSingleConnectionFromHikariCP;
+import static java.lang.Boolean.FALSE;
 
 public class MssqlExecuteUtils {
 
@@ -62,10 +70,16 @@ public class MssqlExecuteUtils {
             List<String> columnsList,
             ResultSet resultSet,
             boolean isResultSet,
-            int updateCount)
+            Boolean preparedStatement,
+            Statement statement,
+            PreparedStatement preparedQuery)
             throws SQLException {
 
         if (!isResultSet) {
+            Object updateCount = FALSE.equals(preparedStatement)
+                    ? ObjectUtils.defaultIfNull(statement.getUpdateCount(), 0)
+                    : ObjectUtils.defaultIfNull(preparedQuery.getUpdateCount(), 0);
+
             rowsList.add(Map.of("affectedRows", updateCount));
         } else {
             ResultSetMetaData metaData = resultSet.getMetaData();

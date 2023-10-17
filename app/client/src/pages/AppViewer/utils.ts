@@ -7,6 +7,7 @@ import {
   getComplementaryGrayscaleColor,
   isLightColor,
 } from "widgets/WidgetUtils";
+import { viewerURL } from "RouteBuilder";
 
 // Menu Item Background Color - Active
 export const getMenuItemBackgroundColorWhenActive = (
@@ -140,3 +141,44 @@ export const getSignInButtonStyles = (
 
   return styles;
 };
+
+const getIconType = (icon: any) => (icon ? `icon-${icon}` : undefined);
+
+
+export const makeRouteNode =
+  (pagesMap: any, newTree: any[], hideRow: any[]) => (node: any) => {
+    let item: any;
+    const icon = getIconType(node.icon);
+    if (node.isPage) {
+      if (pagesMap[node.title]) {
+        item = {
+          name: node.title,
+          icon,
+          path: viewerURL({
+            pageId: pagesMap[node.title].pageId,
+          }),
+        };
+        pagesMap[node.title].visited = true;
+      }
+    } else if (node.children) {
+      const routes: any = [];
+      node.children.forEach(makeRouteNode(pagesMap, routes, hideRow));
+      item = {
+        name: node.title,
+        icon,
+        path: "/",
+        routes,
+      };
+    } else {
+      item = {
+        name: node.title,
+        icon,
+        path: "/",
+      };
+    }
+    if (item) {
+      if (!hideRow.find((hn) => hn.pageId === node.pageId)) {
+        newTree.push(item);
+      }
+    }
+  };

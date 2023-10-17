@@ -21,17 +21,18 @@ import { useHref } from "pages/Editor/utils";
 import { builderURL } from "RouteBuilder";
 import TopHeader from "./components/TopHeader";
 import Sidebar from "./Sidebar";
-import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
+import {
+  getCurrentApplication,
+  isMobileLayout,
+} from "@appsmith/selectors/applicationSelectors";
 import { useIsMobileDevice } from "utils/hooks/useDeviceDetect";
 import { setAppViewHeaderHeight } from "actions/appViewActions";
-import AnalyticsUtil from "utils/AnalyticsUtil";
 
 export function Navigation() {
   const { search } = useLocation();
   const queryParams = new URLSearchParams(search);
-  const isEmbed = queryParams.get("embed") === "true";
-  const showNavBar = queryParams.get("navbar") === "true";
-  const hideHeader = isEmbed && !showNavBar;
+  const isEmbed = queryParams.get("embed");
+  const hideHeader = !!isEmbed;
   const [isMenuOpen, setMenuOpen] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
   const pageId = useSelector(getCurrentPageId);
@@ -47,7 +48,7 @@ export function Navigation() {
   const pages = useSelector(getViewModePageList);
   const isMobile = useIsMobileDevice();
   const dispatch = useDispatch();
-
+  const isMobileApp = useSelector(isMobileLayout);
   useEffect(() => {
     const header = document.querySelector(".js-appviewer-header");
 
@@ -61,13 +62,6 @@ export function Navigation() {
     currentApplicationDetails?.applicationDetail?.navigationSetting
       ?.orientation,
   ]);
-  useEffect(() => {
-    if (showNavBar && currentApplicationDetails) {
-      AnalyticsUtil.logEvent("APP_VIEWED_WITH_NAVBAR", {
-        id: currentApplicationDetails.id,
-      });
-    }
-  }, [showNavBar, currentApplicationDetails]);
 
   const renderNavigation = () => {
     if (
@@ -80,15 +74,7 @@ export function Navigation() {
            * We need to add top header since we want the current mobile
            * navigation experience until we create the new sidebar for mobile.
            */}
-          {isMobile ? null : (
-            // <TopHeader
-            //   currentApplicationDetails={currentApplicationDetails}
-            //   currentUser={currentUser}
-            //   currentWorkspaceId={currentWorkspaceId}
-            //   isMenuOpen={isMenuOpen}
-            //   pages={pages}
-            //   setMenuOpen={setMenuOpen}
-            // />
+          {isMobile || isMobileApp ? null : (
             <Sidebar
               currentApplicationDetails={currentApplicationDetails}
               currentUser={currentUser}
@@ -100,16 +86,22 @@ export function Navigation() {
         </>
       );
     }
+    
+    if (isMobileApp || hideHeader) {
+      return null;
+    }
 
-    return null;
-    // <TopHeader
-    //   currentApplicationDetails={currentApplicationDetails}
-    //   currentUser={currentUser}
-    //   currentWorkspaceId={currentWorkspaceId}
-    //   isMenuOpen={isMenuOpen}
-    //   pages={pages}
-    //   setMenuOpen={setMenuOpen}
-    // />
+    return (
+      <TopHeader
+        currentApplicationDetails={currentApplicationDetails}
+        currentUser={currentUser}
+        currentWorkspaceId={currentWorkspaceId}
+        isMenuOpen={isMenuOpen}
+        pages={pages}
+        setMenuOpen={setMenuOpen}
+        showUserSettings={!isEmbed}
+      />
+    );
   };
 
   if (hideHeader) return <HtmlTitle />;
@@ -134,7 +126,7 @@ export function Navigation() {
           url={editorURL}
         />
 
-        <TourCompletionMessage />
+        <TourCompletionMessage /> 
       </div>
     </ThemeProvider>
   );

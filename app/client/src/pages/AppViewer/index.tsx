@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { useDispatch } from "react-redux";
 import type { RouteComponentProps } from "react-router";
@@ -15,6 +15,7 @@ import {
 } from "selectors/appViewSelectors";
 import EditorContextProvider from "components/editorComponents/EditorContextProvider";
 import AppViewerPageContainer from "./AppViewerPageContainer";
+import { editorInitializer } from "utils/editor/EditorUtils";
 import * as Sentry from "@sentry/react";
 import {
   getCurrentPageDescription,
@@ -48,7 +49,6 @@ import HtmlTitle from "./AppViewerHtmlTitle";
 import BottomBar from "components/BottomBar";
 import type { ApplicationPayload } from "@appsmith/constants/ReduxActionConstants";
 import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
-import { editorInitializer } from "../../utils/editor/EditorUtils";
 import { widgetInitialisationSuccess } from "../../actions/widgetActions";
 import { areEnvironmentsFetched } from "@appsmith/selectors/environmentSelectors";
 import { datasourceEnvEnabled } from "@appsmith/selectors/featureFlagsSelectors";
@@ -67,15 +67,14 @@ const AppViewerBody = styled.section<{
   hasPages: boolean;
   headerHeight: number;
   showGuidedTourMessage: boolean;
-  showBottomBar: boolean;
 }>`
   display: flex;
   flex-direction: row;
   align-items: stretch;
   justify-content: flex-start;
   height: calc(
-    100vh -
-      ${(props) => (props.showBottomBar ? props.theme.bottomBarHeight : "0px")} -
+    100vh - ${(props) => (props.isMobile ? "0px" : "0px")} -
+      ${(props) => (props.showTabBar ? "60px" : "0px")} -
       ${({ headerHeight }) => headerHeight}px
   );
   --view-mode-header-height: ${({ headerHeight }) => headerHeight}px;
@@ -94,7 +93,7 @@ const AppViewerBodyContainer = styled.div<{
 const StableContainer = styled.div`
   position: relative;
   overflow: hidden;
-  height: 100vh;
+  // height: 100vh;
 `;
 
 const ContainerForBottom = styled.div<{
@@ -160,7 +159,20 @@ function AppViewer(props: Props) {
     editorInitializer().then(() => {
       dispatch(widgetInitialisationSuccess());
     });
-  });
+    // onMount initPage
+    if (applicationId || pageId) {
+      dispatch(
+        initAppViewer({
+          applicationId,
+          branch,
+          pageId,
+          mode: APP_MODE.PUBLISHED,
+        }),
+      );
+    }
+  }, []);
+
+
   /**
    * initialize the app if branch, pageId or application is changed
    */
@@ -227,64 +239,49 @@ function AppViewer(props: Props) {
   const backgroundForBody = isWDSV2Enabled
     ? "var(--color-bg)"
     : selectedTheme.properties.colors.backgroundColor;
+  
+  let appViewerBodyContainerBg =
+  backgroundForBody;
+  if (isMobile) {
+    appViewerBodyContainerBg = "radial-gradient(#2cbba633, #ffec8f36)";
+  }
+  if (selectedTheme.properties.colors.backgroundUrl) {
+    appViewerBodyContainerBg = `url(${selectedTheme.properties.colors.backgroundUrl}) no-repeat fixed center ${backgroundForBody}`;
+  }
 
   return (
-  <WDSThemeProvider theme={theme}>
     <ThemeProvider theme={lightTheme}>
       <EditorContextProvider renderMode="PAGE">
-        {!isWDSV2Enabled && (
-            <WidgetGlobaStyles
-              fontFamily={selectedTheme.properties.fontFamily.appFont}
-              primaryColor={selectedTheme.properties.colors.primaryColor}
-            />
-          )}
+        <WidgetGlobaStyles
+          fontFamily={selectedTheme.properties.fontFamily.appFont}
+          primaryColor={selectedTheme.properties.colors.primaryColor}
+        />
         <HtmlTitle
           description={pageDescription}
           name={currentApplicationDetails?.name}
         />
-        <AppViewerLayout>
-          <StableContainer>
-            <ContainerForBottom isMobile={isMobile}>
-              <AppViewerBodyContainer
-                backgroundColor={
-                  isMobile
-                    ? "radial-gradient(#27b7b733, #ffec8f36)"
-                    : selectedTheme.properties.colors.backgroundColor
-                }
-              >
-                <AppViewerBody
-                  className={CANVAS_SELECTOR}
-                  showTabBar={showTabBar}
-                  isMobile={isMobile || isEmbed}
-                  hasPages={pages.length > 1}
-                  headerHeight={headerHeight}
-                  ref={focusRef}
-                  showGuidedTourMessage={showGuidedTourMessage}
-                >
-                  {isInitialized && <AppViewerPageContainer />}
-                  </AppViewerBody>
-                  {showBottomBar && <BottomBar viewMode />}
-                  {!hideWatermark && (
-                    <a
-                      className={`fixed hidden right-8 ${
-                        showBottomBar ? "bottom-12" : "bottom-4"
-                      } z-3 hover:no-underline md:flex`}
-                      href="https://appsmith.com"
-                      rel="noreferrer"
-                      target="_blank"
-                    >
-                      <BrandingBadge />
-                    </a>
-                  )}
-              </AppViewerBodyContainer>
-            </ContainerForBottom>
-            <TabBar />
-            <PreviewQRCode />
-          </StableContainer>
-        </AppViewerLayout>
+        {/* <AppViewerLayout> */}
+        <ContainerForBottom isMobile={isMobile}>
+          <AppViewerBodyContainer backgroundColor={appViewerBodyContainerBg}>
+            <AppViewerBody
+              className={CANVAS_SELECTOR}
+              showTabBar={showTabBar}
+              showBottomBar={showBottomBar}
+              isMobile={isMobile || isEmbed}
+              hasPages={pages.length > 1}
+              headerHeight={headerHeight}
+              ref={focusRef}
+              showGuidedTourMessage={showGuidedTourMessage}
+            >
+              {isInitialized && <AppViewerPageContainer />}
+            </AppViewerBody>
+          </AppViewerBodyContainer>
+        </ContainerForBottom>
+        <TabBar />
+        <PreviewQRCode />
+        {/* </AppViewerLayout> */}
       </EditorContextProvider>
     </ThemeProvider>
-  </WDSThemeProvider>
   );
 }
 

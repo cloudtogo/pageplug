@@ -151,19 +151,19 @@ function AppSettings() {
       },
       subText: createMessage(THEME_SETTINGS_SECTION_HEADER_DESC),
     },
-    // {
-    //   id: "t--navigation-settings-header",
-    //   icon: "hamburger",
-    //   isSelected: selectedTab.type === AppSettingsTabs.Navigation,
-    //   name: createMessage(APP_NAVIGATION_SETTING.sectionHeader),
-    //   onClick: () => {
-    //     setSelectedTab({ type: AppSettingsTabs.Navigation });
-    //     AnalyticsUtil.logEvent("APP_SETTINGS_SECTION_CLICK", {
-    //       section: "Navigation",
-    //     });
-    //   },
-    //   subText: createMessage(APP_NAVIGATION_SETTING.sectionHeaderDesc),
-    // },
+    {
+      id: "t--navigation-settings-header",
+      icon: "hamburger",
+      isSelected: selectedTab.type === AppSettingsTabs.Navigation,
+      name: createMessage(APP_NAVIGATION_SETTING.sectionHeader),
+      onClick: () => {
+        setSelectedTab({ type: AppSettingsTabs.Navigation });
+        AnalyticsUtil.logEvent("APP_SETTINGS_SECTION_CLICK", {
+          section: "Navigation",
+        });
+      },
+      subText: createMessage(APP_NAVIGATION_SETTING.sectionHeaderDesc),
+    },
   ];
 
   return (

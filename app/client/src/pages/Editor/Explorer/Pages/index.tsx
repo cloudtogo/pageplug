@@ -40,13 +40,14 @@ import {
   hasCreatePagePermission,
   hasManagePagePermission,
 } from "@appsmith/utils/permissionHelpers";
+import { isMobileLayout } from "selectors/applicationSelectors";
 import type { AppState } from "@appsmith/reducers";
-import { TooltipComponent } from "design-system-old";
 import { getCurrentWorkspaceId } from "@appsmith/selectors/workspaceSelectors";
 import { getInstanceId } from "@appsmith//selectors/tenantSelectors";
 import classNames from "classnames";
 import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
-
+import { TooltipComponent  } from "design-system-old";
+import { Icon } from "@blueprintjs/core";
 const ENTITY_HEIGHT = 36;
 const MIN_PAGES_HEIGHT = 60;
 
@@ -98,6 +99,7 @@ function Pages() {
   const storedHeight = localStorage.getItem(storedHeightKey);
   const location = useLocation();
   const featureFlags = useSelector(selectFeatureFlags);
+  const isMobile = useSelector(isMobileLayout);
 
   const resizeAfterCallback = (data: CallbackResponseType) => {
     localStorage.setItem(storedHeightKey, data.height.toString());
@@ -158,19 +160,21 @@ function Pages() {
 
   const onMenuClose = useCallback(() => openMenu(false), [openMenu]);
 
-  // const viewerMenuEditIcon = React.useMemo(
-  //   () => (
-  //     <TooltipComponent
-  //       boundary="viewport"
-  //       content={`设计项目菜单`}
-  //       position="bottom"
-  //     >
-  //       {appLayoutIcon}
-  //     </TooltipComponent>
-  //   ),
-  //   [],
-  // );
-
+  const viewerMenuEditIcon = (
+    <TooltipComponent
+      className="flex-grow"
+      boundary="viewport"
+      content={`设计项目菜单`}
+      position="bottom"
+    >
+      {/* {appLayoutIcon} */}
+      <Icon
+        color="#000000"
+        icon="page-layout"
+        iconSize={16}
+      />
+    </TooltipComponent>
+  );
   const navToLayoutEditor = useCallback(() => {
     history.push(viewerLayoutEditorURL({ pageId: currentPageId }));
   }, [currentPageId]);
@@ -239,6 +243,8 @@ function Pages() {
     [pages, currentPageId, applicationId, location.pathname],
   );
 
+  console.log(isMobile, "isMobile", viewerMenuEditIcon)
+
   return (
     <RelativeContainer>
       <StyledEntity
@@ -266,7 +272,7 @@ function Pages() {
         onToggle={onPageToggle}
         pagesSize={ENTITY_HEIGHT * pages.length}
         onClickPreRightIcon={navToLayoutEditor}
-        // preRightIcon={isMobile ? null : viewerMenuEditIcon}
+        preRightIcon={isMobile ? null : viewerMenuEditIcon}
         searchKeyword={""}
         showAddButton={canCreatePages}
         step={0}
