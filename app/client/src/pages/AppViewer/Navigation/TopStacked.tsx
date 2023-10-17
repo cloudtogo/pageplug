@@ -1,20 +1,39 @@
 /* eslint-disable react/react-in-jsx-scope */
-import { useRef, useEffect, useState, useCallback, useMemo } from "react";
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
 import { useLocation } from "react-router-dom";
-import MenuItemContainer from "./components/MenuItemContainer";
-import MenuItem from "./components/MenuItem";
+import { NavLink } from "react-router-dom";
+import { getAppMode } from "@appsmith/selectors/applicationSelectors";
+import { APP_MODE } from "entities/App";
+import history from "utils/history";
+import { builderURL, viewerURL } from "RouteBuilder";
+// import MenuItemContainer from "./components/MenuItemContainer";
+// import MenuItem from "./components/MenuItem";
 import type {
   ApplicationPayload,
   Page,
 } from "@appsmith/constants/ReduxActionConstants";
+import { Icon, IconSize } from "design-system-old";
 import useThrottledRAF from "utils/hooks/useThrottledRAF";
-import _ from "lodash";
+import {
+  get as _get,
+  size as _size,
+  head as _head,
+  clone as _clone,
+} from "lodash";
 import { NAVIGATION_SETTINGS } from "constants/AppConstants";
-import { get } from "lodash";
 import { useSelector } from "react-redux";
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
+import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
+import { Menu } from "antd";
+import { mapClearTree } from "utils/treeUtils";
 import { Container, ScrollBtnContainer } from "./TopStacked.styled";
-import React from "react";
+import { makeRouteNode } from "../utils";
 
 // TODO - @Dhruvik - ImprovedAppNav
 // Replace with NavigationProps if nothing changes
@@ -27,10 +46,11 @@ type TopStackedProps = {
 export function TopStacked(props: TopStackedProps) {
   const { currentApplicationDetails, pages } = props;
   const selectedTheme = useSelector(getSelectedAppTheme);
+  const appMode = useSelector(getAppMode);
   const navColorStyle =
     currentApplicationDetails?.applicationDetail?.navigationSetting
       ?.colorStyle || NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT;
-  const primaryColor = get(
+  const primaryColor = _get(
     selectedTheme,
     "properties.colors.primaryColor",
     "inherit",
@@ -45,13 +65,123 @@ export function TopStacked(props: TopStackedProps) {
   const [isScrolling, setIsScrolling] = useState(false);
   const [isScrollingLeft, setIsScrollingLeft] = useState(false);
 
+  const currentApp = useSelector(getCurrentApplication);
+
+  const viewerLayout = currentApp?.viewerLayout;
+  const getPath = (it: any, pagesMap: any, title: string) => {
+    if (!it.pageId) return "";
+    const pageURL =
+      appMode === APP_MODE.PUBLISHED
+        ? viewerURL({
+            pageId: pagesMap[title]?.pageId,
+          })
+        : builderURL({
+            pageId: pagesMap[title]?.pageId,
+          });
+    return pageURL;
+  };
+
+  const gotToPath = (pId: string, path: string) => {
+    history.push(path);
+  };
+
+  const initState = useMemo(() => {
+    let menudata: any = [];
+    if (viewerLayout && pages.length) {
+      try {
+        const current = JSON.parse(viewerLayout);
+        const pagesMap = pages.reduce((a: any, c: any) => {
+          a[c.pageName] = { ...c };
+          return a;
+        }, {});
+        const newMenuTree: any = [];
+        current?.treeData.forEach(
+          makeRouteNode(pagesMap, newMenuTree, current.outsiderTree),
+        );
+        menudata = current?.treeData.map((itdata: any) => {
+          return mapClearTree(itdata, (item: any) => {
+            const path = getPath(item, pagesMap, item.title);
+            if (
+              current.outsiderTree.find((n: any) => n.pageId === item.pageId)
+            ) {
+              return false;
+            }
+            return {
+              ...item,
+              children: _size(item.children) ? item.children : null,
+              label: item.pageId ? (
+                <a
+                  key={item.pageId}
+                  onClick={() => gotToPath(item.pageId, path)}
+                >
+                  {item.title}
+                </a>
+              ) : (
+                item.title
+              ),
+            };
+          });
+        });
+        const newPages = Object.values(pagesMap)
+          .filter(
+            (p: any) =>
+              !p.visited &&
+              !current.outsiderTree.find((n: any) => n.pageId === p.pageId),
+          )
+          .map((p: any) => {
+            const path = getPath(p, pagesMap, p.pageName);
+            return {
+              title: p.pageName,
+              pageId: p.pageId,
+              isPage: true,
+              key: p.pageId,
+              label: p.pageId ? (
+                <a key={p.pageId} onClick={() => gotToPath(p.pageId, path)}>
+                  {p.pageName}
+                </a>
+              ) : (
+                p.pageName
+              ),
+              children: null,
+            };
+          });
+        menudata = menudata.concat(newPages);
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      const pagesMap = pages.reduce((a: any, c: any) => {
+        a[c.pageName] = { ...c };
+        return a;
+      }, {});
+      menudata = pages.map((p) => {
+        const path = getPath(p, pagesMap, p.pageName);
+        return {
+          title: p.pageName,
+          pageId: p.pageId,
+          isPage: true,
+          key: p.pageId,
+          label: p.pageId ? (
+            <a key={p.pageId} onClick={() => gotToPath(p.pageId, path)}>
+              {p.pageName}
+            </a>
+          ) : (
+            p.pageName
+          ),
+          children: null,
+        };
+      });
+    }
+    return {
+      menudata,
+    };
+  }, [viewerLayout, pages, currentApplicationDetails]);
   useEffect(() => {
     setQuery(window.location.search);
   }, [location]);
-
   // Mark default page as first page
   const appPages = useMemo(() => {
-    const list = _.clone(pages);
+    const list = _clone(pages);
     if (list.length > 1) {
       list.forEach((item, i) => {
         if (item.isDefault) {
@@ -112,11 +242,25 @@ export function TopStacked(props: TopStackedProps) {
     return clear;
   }, [isScrolling, isScrollingLeft]);
 
-  if (appPages.length <= 1) return null;
-
+  if (
+    !_size(initState.menudata) ||
+    (_size(initState.menudata) === 1 &&
+      !_get(initState.menudata, ["0", "children"], ""))
+  ) {
+    return null;
+  }
+  // console.log(initState.menudata, "menudata");
+  const current_theme =
+    _get(
+      currentApplicationDetails,
+      ["applicationDetail", "navigationSetting", "colorStyle"],
+      "theme",
+    ) === "theme"
+      ? "dark"
+      : "light";
   return (
     <Container
-      className="relative hidden px-6 h-11 md:flex t--app-viewer-navigation-top-stacked"
+      className="relative px-6 py-1 t--app-viewer-navigation-top-stacked"
       navColorStyle={navColorStyle}
       primaryColor={primaryColor}
     >
@@ -136,11 +280,21 @@ export function TopStacked(props: TopStackedProps) {
       )}
 
       <div
-        className="flex w-full hidden-scrollbar gap-x-2  items-center"
+        className="w-full hidden-scrollbar gap-x-2  items-center"
         onScroll={() => setShowScrollArrows()}
         ref={measuredTabsRef}
       >
-        {appPages.map((page) => {
+        <Menu
+          defaultSelectedKeys={_get(_head(initState.menudata), "key")}
+          mode="horizontal"
+          theme={current_theme}
+          items={initState.menudata}
+          className="rootSideMenu"
+          style={{
+            border: "none",
+          }}
+        />
+        {/* {appPages.map((page) => {
           return (
             <MenuItemContainer
               isTabActive={pathname.indexOf(page.pageId) > -1}
@@ -158,9 +312,8 @@ export function TopStacked(props: TopStackedProps) {
               />
             </MenuItemContainer>
           );
-        })}
+        })} */}
       </div>
-
       {tabsScrollable && (
         <ScrollBtnContainer
           className="right-0 scroll-arrows"
