@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import type {
   ApplicationPayload,
   Page,
 } from "@appsmith/constants/ReduxActionConstants";
 import { NAVIGATION_SETTINGS, SIDEBAR_WIDTH } from "constants/AppConstants";
-import { get } from "lodash";
+import { get, head as _head, size } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
@@ -13,7 +13,7 @@ import MenuItem from "./components/MenuItem";
 import ShareButton from "./components/ShareButton";
 import PrimaryCTA from "../PrimaryCTA";
 import { useHref } from "pages/Editor/utils";
-import { builderURL } from "RouteBuilder";
+import { builderURL, viewerURL } from "RouteBuilder";
 import {
   getCurrentPageId,
   previewModeSelector,
@@ -24,7 +24,7 @@ import SidebarProfileComponent from "./components/SidebarProfileComponent";
 import CollapseButton from "./components/CollapseButton";
 import classNames from "classnames";
 import { useMouse } from "@mantine/hooks";
-import { getAppSidebarPinned } from "@appsmith/selectors/applicationSelectors";
+import { getAppSidebarPinned, getCurrentApplication, getAppMode } from "@appsmith/selectors/applicationSelectors";
 import { setIsAppSidebarPinned } from "@appsmith/actions/applicationActions";
 import {
   StyledCtaContainer,
@@ -38,6 +38,14 @@ import { getIsAppSettingsPaneWithNavigationTabOpen } from "selectors/appSettings
 import BackToHomeButton from "@appsmith/pages/AppViewer/BackToHomeButton";
 import MenuItemContainer from "./components/MenuItemContainer";
 import BackToAppsButton from "./components/BackToAppsButton";
+import history from "utils/history";
+import { APP_MODE } from "entities/App";
+import type { MenuProps } from "antd";
+import { Menu } from "antd";
+import { mapClearTree } from "utils/treeUtils";
+type MenuItem = Required<MenuProps>["items"][number];
+import { NavLink } from "react-router-dom";
+import { makeRouteNode } from "../utils";
 
 type SidebarProps = {
   currentApplicationDetails?: ApplicationPayload;
@@ -49,6 +57,7 @@ type SidebarProps = {
 
 export function Sidebar(props: SidebarProps) {
   const selectedTheme = useSelector(getSelectedAppTheme);
+  const appMode = useSelector(getAppMode);
   const { currentApplicationDetails, currentUser, currentWorkspaceId, pages } =
     props;
   const navColorStyle =
@@ -85,6 +94,120 @@ export function Sidebar(props: SidebarProps) {
     getIsAppSettingsPaneWithNavigationTabOpen,
   );
   const [isLogoVisible, setIsLogoVisible] = useState(false);
+
+  const currentApp = useSelector(getCurrentApplication);
+
+  const viewerLayout = currentApp?.viewerLayout;
+
+  const getPath = (it: any, pagesMap: any, title: string) => {
+    if (!it.pageId) return "";
+    const pageURL =
+      appMode === APP_MODE.PUBLISHED
+        ? viewerURL({
+            pageId: pagesMap[title].pageId,
+          })
+        : builderURL({
+            pageId: pagesMap[title].pageId,
+          });
+    return pageURL;
+  };
+
+  const gotToPath = (pId: string, path: string) => {
+    history.push(path);
+  };
+
+  const initState = useMemo(() => {
+    let menudata: any = [];
+    if (viewerLayout && pages.length) {
+      try {
+        const current = JSON.parse(viewerLayout);
+        const pagesMap = pages.reduce((a: any, c: any) => {
+          a[c.pageName] = { ...c };
+          return a;
+        }, {});
+        const newMenuTree: any = [];
+        current.treeData.forEach(
+          makeRouteNode(pagesMap, newMenuTree, current.outsiderTree),
+        );
+        menudata = current?.treeData.map((itdata: any) => {
+          return mapClearTree(itdata, (item: any) => {
+            const path = getPath(item, pagesMap, item.title);
+            if (
+              current.outsiderTree.find((n: any) => n.pageId === item.pageId)
+            ) {
+              return false;
+            }
+            return {
+              ...item,
+              children: size(item.children) ? item.children : null,
+              label: item.pageId ? (
+                <a
+                  key={item.pageId}
+                  onClick={() => gotToPath(item.pageId, path)}
+                >
+                  {item.title}
+                </a>
+              ) : (
+                item.title
+              ),
+            };
+          });
+        });
+        const newPages = Object.values(pagesMap)
+          .filter(
+            (p: any) =>
+              !p.visited &&
+              !current.outsiderTree.find((n: any) => n.pageId === p.pageId),
+          )
+          .map((p: any) => {
+            const path = getPath(p, pagesMap, p.pageName);
+            return {
+              title: p.pageName,
+              pageId: p.pageId,
+              isPage: true,
+              key: p.pageId,
+              label: p.pageId ? (
+                <a key={p.pageId} onClick={() => gotToPath(p.pageId, path)}>
+                  {p.pageName}
+                </a>
+              ) : (
+                p.pageName
+              ),
+              children: null,
+            };
+          });
+        menudata = menudata.concat(newPages);
+        // console.log(newPages, "newPages");
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      const pagesMap = pages.reduce((a: any, c: any) => {
+        a[c.pageName] = { ...c };
+        return a;
+      }, {});
+      menudata = pages.map((p) => {
+        const path = getPath(p, pagesMap, p.pageName);
+        return {
+          title: p.pageName,
+          pageId: p.pageId,
+          isPage: true,
+          key: p.pageId,
+          label: p.pageId ? (
+            <a key={p.pageId} onClick={() => gotToPath(p.pageId, path)}>
+              {p.pageName}{" "}
+            </a>
+          ) : (
+            p.pageName
+          ),
+          children: null,
+        };
+      });
+    }
+    return {
+      menudata,
+    };
+  }, [viewerLayout, pages, currentApplicationDetails]);
 
   useEffect(() => {
     setQuery(window.location.search);
@@ -136,6 +259,15 @@ export function Sidebar(props: SidebarProps) {
 
     return prefix + suffix;
   };
+
+  const current_theme =
+    get(
+      currentApplicationDetails,
+      ["applicationDetail", "navigationSetting", "colorStyle"],
+      "theme",
+    ) === "theme"
+      ? "dark"
+      : "light";
 
   return (
     <StyledSidebar
@@ -193,7 +325,18 @@ export function Sidebar(props: SidebarProps) {
         navColorStyle={navColorStyle}
         primaryColor={primaryColor}
       >
-        {appPages.map((page) => {
+         <Menu
+          defaultSelectedKeys={get(_head(initState.menudata), "key")}
+          mode="inline"
+          theme={current_theme}
+          inlineCollapsed={!isOpen}
+          items={initState.menudata}
+          className="rootSideMenu"
+          style={{
+            border: "none",
+          }}
+        />
+        {/* {appPages.map((page) => {
           return (
             <MenuItemContainer
               forSidebar
@@ -212,12 +355,12 @@ export function Sidebar(props: SidebarProps) {
               />
             </MenuItemContainer>
           );
-        })}
+        })} */}
       </StyledMenuContainer>
 
       {props.showUserSettings && (
         <StyledFooter navColorStyle={navColorStyle} primaryColor={primaryColor}>
-          {currentApplicationDetails && (
+          {/* {currentApplicationDetails && (
             <StyledCtaContainer>
               <ShareButton
                 currentApplicationDetails={currentApplicationDetails}
@@ -241,7 +384,7 @@ export function Sidebar(props: SidebarProps) {
                 isMinimal={isMinimal}
               />
             </StyledCtaContainer>
-          )}
+          )} */}
 
           <SidebarProfileComponent
             currentUser={currentUser}
