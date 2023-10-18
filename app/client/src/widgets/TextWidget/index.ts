@@ -37,7 +37,7 @@ export const CONFIG = {
     "字符",
   ],
   defaults: {
-    text: "Hello {{appsmith.user.name || appsmith.user.email}}",
+    text: "Hello {{global.user.name || global.user.email}}",
     fontSize: DEFAULT_FONT_SIZE,
     fontStyle: "BOLD",
     textAlign: "LEFT",
