@@ -35,10 +35,10 @@ export const CONFIG = {
     labelPosition: LabelPosition.Top,
     labelAlignment: Alignment.LEFT,
     labelWidth: 5,
-    options: [
-      { label: "蓝", value: "BLUE" },
-      { label: "绿", value: "GREEN" },
-      { label: "红", value: "RED" },
+    sourceData: [
+      { label: "蓝", code: "BLUE" },
+      { label: "绿", code: "GREEN" },
+      { label: "红", code: "RED" },
     ],
     optionLabel: "name",
     optionValue: "code",
