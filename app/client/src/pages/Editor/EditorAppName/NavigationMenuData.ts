@@ -175,13 +175,13 @@ export const GetNavigationMenuData = ({
       ],
     },
     {
-      text: "导出应用",
+      text: "复制应用",
       onClick: () => setForkApplicationModalOpen(true),
       type: MenuTypes.MENU,
       isVisible: isApplicationIdPresent && hasEditPermission,
     },
     {
-      text: "导入应用",
+      text: "导出应用",
       onClick: exportAppAsJSON,
       type: MenuTypes.MENU,
       isVisible: isApplicationIdPresent && hasExportPermission,

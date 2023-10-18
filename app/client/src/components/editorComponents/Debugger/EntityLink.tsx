@@ -222,6 +222,7 @@ function EntityLink(props: EntityLinkProps) {
 
 type EntityLinkProps = {
   uiComponent: DebuggerLinkUI;
+  plugin?: Plugin;
   errorType?: LOG_TYPE;
   errorSubType?: string;
   appsmithErrorCode?: string;

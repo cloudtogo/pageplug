@@ -77,7 +77,7 @@ export default function LogEntityLink(props: LogItemProps) {
     // this case is highly unlikely to happen.
     return <img alt="icon" src={undefined} />;
   };
-
+  const plugin = props.iconId ? pluginGroups[props.iconId] : undefined;
   return (
     <div>
       {props.source && (
