@@ -110,9 +110,9 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
         sectionName: "数据",
         children: [
           {
-            helpText: "让用户选择一项，选项值必须唯一",
-            propertyName: "options",
-            label: "选项",
+            helpText: "接受一个对象数组以显示选项。使用 {{}} 绑定来自 API 的数据。",
+            propertyName: "sourceData",
+            label: "源数据",
             controlType: "ONE_CLICK_BINDING_CONTROL",
             controlConfig: {
               aliases: [
@@ -155,9 +155,10 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText: "默认选中这个值",
-            propertyName: "defaultOptionValue",
-            label: "默认选中值",
+            helpText:
+              "选择或设置来自源数据的字段作为显示标签",
+            propertyName: "optionLabel",
+            label: "Label key",
             controlType: "DROP_DOWN",
             customJSControl: "WRAPPED_CODE_EDITOR",
             controlConfig: {
@@ -188,7 +189,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
             additionalAutoComplete: getLabelValueAdditionalAutocompleteData,
           },
           {
-            helpText: "Choose or set a field from source data as the value",
+            helpText: "选择或设置来自源数据的字段作为数值",
             propertyName: "optionValue",
             label: "Value key",
             controlType: "DROP_DOWN",
@@ -221,9 +222,9 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
             additionalAutoComplete: getLabelValueAdditionalAutocompleteData,
           },
           {
-            helpText: "Selects the option with value by default",
+            helpText: "默认情况下选择具有特定值的选项",
             propertyName: "defaultOptionValue",
-            label: "Default selected value",
+            label: "默认选中值",
             controlType: "WRAPPED_CODE_EDITOR",
             controlConfig: {
               wrapperCode: {

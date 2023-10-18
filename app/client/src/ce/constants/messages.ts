@@ -1529,6 +1529,12 @@ export const IN_APP_EMBED_SETTING = {
   applicationUrl: () => "应用地址",
   allowEmbeddingLabel: () => "支持嵌入",
   allowEmbeddingTooltip: () => "应用可以嵌入到任何域名下，包括那些恶意网站",
+  forkApplicationConfirmation: {
+    title: () => "允许开发者将此应用fork到他们的工作区吗？",
+    body: () => "允许开发者复制您的应用到他们的工作区",
+    cancel: () => "取消",
+    confirm: () => "允许fork",
+  },
   copy: () => "复制",
   copied: () => "已复制",
   limitEmbeddingLabel: () => "限制嵌入",
@@ -1545,8 +1551,20 @@ export const IN_APP_EMBED_SETTING = {
   sectionContentHeader: () => "分享",
   sectionHeaderDesc: () => "共享应用，嵌入属性",
   showNavigationBar: () => "显示菜单导航",
+  forkContentHeader: () => "fork",
+  forkLabel: () => "使应用程序可fork",
+  forkLabelTooltip: () => "允许开发者将您的应用复制到他们的工作区",
   upgradeHeading: () => "请联系管理员，使用嵌入功能需要先在设置中公开您的应用",
   upgradeHeadingForInviteModal: () => "使用嵌入功能需要先在设置中公开您的应用",
+  upgradeSubheadingForInviteModal: () =>
+    "通过访问共享设置，将您的应用程序公开，并轻松将您的 Pageplug 应用嵌入传统应用程序中",
+  privateAppsText: () => "私有应用",
+  rampSubtextModal: () =>
+      "在我们的企业版中，嵌入私有 Pageplug 应用程序并通过SSO无缝进行用户身份验证",
+  rampSubtextSidebar: () =>
+      "要嵌入私有的 Pageplug 应用程序并通过SSO无缝进行用户身份验证，请尝试我们的 ",
+  rampLinktext: () => "体验企业版",
+  rampLinktextvariant2: () => "企业版",
   upgradeContent: () => "想将嵌入企业内的系统",
   appsmithBusinessEdition: () => "升级至企业版使用",
   secondaryHeadingForAppSettings: () => "公开应用嵌入",

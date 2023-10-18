@@ -109,10 +109,9 @@ class MultiSelectWidget extends BaseWidget<
         sectionName: "数据",
         children: [
           {
-            helpText: "允许用户多选，每个选项的值必须唯一",
-            propertyName: "options",
-            label: "选项",
-            placeholderText: '[{ "label": "选项1", "value": "选项2" }]',
+            helpText: "接受一个对象数组以显示选项。使用 {{}} 绑定来自 API 的数据。",
+            propertyName: "sourceData",
+            label: "源数据",
             controlType: "ONE_CLICK_BINDING_CONTROL",
             controlConfig: {
               aliases: [
@@ -137,6 +136,7 @@ class MultiSelectWidget extends BaseWidget<
               ),
             },
             isJSConvertible: true,
+            placeholderText: '[{ "label": "Option1", "value": "Option2" }]',
             isBindProperty: true,
             isTriggerProperty: false,
             validation: {
@@ -154,9 +154,10 @@ class MultiSelectWidget extends BaseWidget<
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText: "设置默认选中的选项值",
-            propertyName: "defaultOptionValue",
-            label: "默认选中值",
+            helpText:
+              "选择或设置源数据中的字段作为显示标签",
+            propertyName: "optionLabel",
+            label: "Label key",
             controlType: "DROP_DOWN",
             customJSControl: "WRAPPED_CODE_EDITOR",
             controlConfig: {
@@ -186,7 +187,7 @@ class MultiSelectWidget extends BaseWidget<
             additionalAutoComplete: getLabelValueAdditionalAutocompleteData,
           },
           {
-            helpText: "Choose or set a field from source data as the value",
+            helpText: "选择或设置源数据中的字段作为数值",
             propertyName: "optionValue",
             label: "Value key",
             controlType: "DROP_DOWN",
@@ -219,9 +220,9 @@ class MultiSelectWidget extends BaseWidget<
             additionalAutoComplete: getLabelValueAdditionalAutocompleteData,
           },
           {
-            helpText: "Selects the option(s) with value by default",
+            helpText: "默认选中值",
             propertyName: "defaultOptionValue",
-            label: "Default selected values",
+            label: "默认选中值",
             controlType: "WRAPPED_CODE_EDITOR",
             controlConfig: {
               wrapperCode: {

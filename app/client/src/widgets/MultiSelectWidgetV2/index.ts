@@ -35,10 +35,10 @@ export const CONFIG = {
     labelAlignment: Alignment.LEFT,
     labelWidth: 5,
     labelTextSize: "0.875rem",
-    options: [
-      { label: "蓝", value: "BLUE" },
-      { label: "绿", value: "GREEN" },
-      { label: "红", value: "RED" },
+    sourceData: [
+      { label: "蓝", code: "BLUE" },
+      { label: "绿", code: "GREEN" },
+      { label: "红", code: "RED" },
     ],
     optionLabel: "name",
     optionValue: "code",
