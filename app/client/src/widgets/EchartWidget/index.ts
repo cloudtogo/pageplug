@@ -2,6 +2,7 @@ import Widget from "./widget";
 import IconSVG from "./icon.svg";
 import { generateReactKey } from "widgets/WidgetUtils";
 import { ECHART_TYPE_MAP } from "./constants";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 const DEFAUTL_CHART = {
   name: "",
   chartName: "秋季系列",
@@ -42,6 +43,7 @@ export const CONFIG = {
   name: "Echarts", // The display name which will be made in uppercase and show in the widgets panel ( can have spaces )
   iconSVG: IconSVG,
   needsMeta: true, // Defines if this widget adds any meta properties
+  tags: [WIDGET_TAGS.SUGGESTED_WIDGETS],
   searchTags: ["graph", "echart", "chart", "visualisations"],
   defaults: {
     widgetName: "Echarts",

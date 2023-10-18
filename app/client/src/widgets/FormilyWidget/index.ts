@@ -1,5 +1,6 @@
 import Widget from "./widget";
 import IconSVG from "./icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 export const CONFIG = {
   features: {
@@ -11,6 +12,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "Formily表单",
   searchTags: ["form", "submit"],
+  tags: [WIDGET_TAGS.SUGGESTED_WIDGETS],
   iconSVG: IconSVG,
   needsMeta: true,
   isCanvas: false,
