@@ -125,4 +125,7 @@
   --ads-old-color-black: #000000;
 
   --ads-orange-accent: #ffefdb;
+
+  /* override */
+  --ads-v2-color-orange-700: #27b7b7 !important;
 }
