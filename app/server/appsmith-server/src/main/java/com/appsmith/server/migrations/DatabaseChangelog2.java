@@ -3049,7 +3049,6 @@ public class DatabaseChangelog2 {
         plugin.setPackageName("dm-plugin");
         plugin.setUiComponent("DbEditorForm");
         plugin.setDatasourceComponent("AuthForm");
-        plugin.setGenerateCRUDPageComponent("SQL");
         plugin.setResponseType(Plugin.ResponseType.TABLE);
         plugin.setIconLocation("/logo/dm.svg");
         plugin.setDocumentationLink("");
