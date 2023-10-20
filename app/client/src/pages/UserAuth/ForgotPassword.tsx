@@ -97,7 +97,6 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
       <StyledForm onSubmit={handleSubmit(forgotPasswordSubmitHandler)}>
         <FormGroup
           intent={error ? "danger" : "none"}
-          label={createMessage(FORGOT_PASSWORD_PAGE_EMAIL_INPUT_LABEL)}
         >
           <FormTextField
             disabled={submitting}
@@ -105,6 +104,7 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
             placeholder={createMessage(
               FORGOT_PASSWORD_PAGE_EMAIL_INPUT_PLACEHOLDER,
             )}
+            startIcon="emoji"
           />
         </FormGroup>
         <FormActions>
