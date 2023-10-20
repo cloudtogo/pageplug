@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Redirect, useLocation } from "react-router-dom";
 import { connect, useSelector } from "react-redux";
 import type { InjectedFormProps, DecoratedFormProps } from "redux-form";
@@ -49,6 +49,9 @@ import {
 } from "@appsmith/selectors/tenantSelectors";
 import Helmet from "react-helmet";
 import { useHtmlPageTitle } from "@appsmith/utils";
+import FooterLinks from "pages/UserAuth/FooterLinks";
+import EmailSVGIcon from "ce/components/svg/Email";
+import PasswordSVGIcon from "ce/components/svg/Password";
 
 const validate = (values: LoginFormValues, props: ValidateProps) => {
   const errors: LoginFormValues = {};
@@ -117,19 +120,17 @@ export function Login(props: LoginFormProps) {
     forgotPasswordURL += `?email=${props.emailValue}`;
   }
 
+  // 第三方登录
   const footerSection = isFormLoginEnabled && (
-    <div className="px-2 py-4 flex align-center justify-center text-base text-center text-[color:var(--ads-v2\-color-fg)] text-[14px]">
-      {createMessage(NEW_TO_APPSMITH)}
-      <Link
-        className="t--sign-up t--signup-link pl-[var(--ads-v2\-spaces-3)]"
-        kind="primary"
-        target="_self"
-        to={signupURL}
-      >
-        {createMessage(LOGIN_PAGE_SIGN_UP_LINK_TEXT)}
-      </Link>
+    <div className="w-[min(400px,80%)] rounded-[var(--ads-v2\-border-radius)]  border-[color:var(--ads-v2\-color-border)] .login-bg">
+      <FooterLinks />
     </div>
   );
+
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  const showPassword = () => {
+    setIsShowPassword(!isShowPassword);
+  }
 
   return (
     <Container
@@ -140,7 +141,7 @@ export function Login(props: LoginFormProps) {
       <Helmet>
         <title>{htmlPageTitle}</title>
       </Helmet>
-
+      {/* 错误信息 */}
       {showError && (
         <Callout
           kind="error"
@@ -160,34 +161,34 @@ export function Login(props: LoginFormProps) {
             : createMessage(LOGIN_PAGE_INVALID_CREDS_ERROR)}
         </Callout>
       )}
-      {socialLoginList.length > 0 && (
-        <ThirdPartyAuth logins={socialLoginList} type={"SIGNIN"} />
-      )}
+      {/* 账号密码 */}
       {isFormLoginEnabled && (
         <>
           <SpacedSubmitForm action={loginURL} method="POST">
             <FormGroup
               intent={error ? "danger" : "none"}
-              label={createMessage(LOGIN_PAGE_EMAIL_INPUT_LABEL)}
             >
               <FormTextField
                 autoFocus
                 name={LOGIN_FORM_EMAIL_FIELD_NAME}
                 placeholder={createMessage(LOGIN_PAGE_EMAIL_INPUT_PLACEHOLDER)}
                 type="email"
+                startIcon="null"
               />
+              <EmailSVGIcon className="relative top-[-27px] right-[-6px] w-4"/>
             </FormGroup>
             <FormGroup
               intent={error ? "danger" : "none"}
-              label={createMessage(LOGIN_PAGE_PASSWORD_INPUT_LABEL)}
             >
               <FormTextField
                 name={LOGIN_FORM_PASSWORD_FIELD_NAME}
                 placeholder={createMessage(
                   LOGIN_PAGE_PASSWORD_INPUT_PLACEHOLDER,
                 )}
-                type="password"
+                type={isShowPassword ? "text" : "password"}
+                startIcon={isShowPassword ? "eye-on" : "null"}
               />
+              <PasswordSVGIcon className="relative top-[-25px] right-[-6px] w-4" showPassword={showPassword} />
             </FormGroup>
 
             <FormActions>
@@ -209,13 +210,28 @@ export function Login(props: LoginFormProps) {
               </Button>
             </FormActions>
           </SpacedSubmitForm>
-          <Link
-            className="justify-center"
-            target="_self"
-            to={forgotPasswordURL}
-          >
-            {createMessage(LOGIN_PAGE_FORGOT_PASSWORD_TEXT)}
-          </Link>
+          <div className="flex-space-between">
+            <div className="flex myfont">
+              {createMessage(NEW_TO_APPSMITH)}
+              <Link
+                className="t--sign-up t--signup-link pl-[var(--ads-v2\-spaces-3)] fs-16"
+                kind="primary"
+                target="_self"
+                to={signupURL}
+              >
+                {createMessage(LOGIN_PAGE_SIGN_UP_LINK_TEXT)}
+              </Link>
+            </div>
+            <div>
+              <Link
+                className="justify-center fs-16"
+                target="_self"
+                to={forgotPasswordURL}
+              >
+                {createMessage(LOGIN_PAGE_FORGOT_PASSWORD_TEXT)}
+              </Link>
+            </div>
+          </div>
         </>
       )}
     </Container>

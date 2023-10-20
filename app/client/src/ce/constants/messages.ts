@@ -47,7 +47,7 @@ export const ENTER_VIDEO_URL = () => `请填写有效的地址`;
 export const ENTER_AUDIO_URL = () => `请填写有效的地址`;
 
 export const FORM_VALIDATION_EMPTY_PASSWORD = () => `请输入密码`;
-export const FORM_VALIDATION_PASSWORD_RULE = () => `密码必须是 6 ~ 256 个字符`;
+export const FORM_VALIDATION_PASSWORD_RULE = () => `请输入6位字符以上的密码`;
 export const FORM_VALIDATION_INVALID_PASSWORD = FORM_VALIDATION_PASSWORD_RULE;
 
 export const LOGIN_PAGE_SUBTITLE = () => `使用你的团队邮箱`;
@@ -59,12 +59,12 @@ export const LOGIN_PAGE_PASSWORD_INPUT_PLACEHOLDER = () => `请输入密码`;
 export const LOGIN_PAGE_INVALID_CREDS_ERROR = () =>
   `密码校验失败，请重试，或者点击下面的按钮重置密码`;
 export const LOGIN_PAGE_INVALID_CREDS_FORGOT_PASSWORD_LINK = () => `重置密码`;
-export const NEW_TO_APPSMITH = () => `是新朋友吗？`;
+export const NEW_TO_APPSMITH = () => `新朋友？`;
 
 export const LOGIN_PAGE_LOGIN_BUTTON_TEXT = () => `登录`;
 export const LOGIN_PAGE_FORGOT_PASSWORD_TEXT = () => `忘记密码`;
 export const LOGIN_PAGE_REMEMBER_ME_LABEL = () => `记住我`;
-export const LOGIN_PAGE_SIGN_UP_LINK_TEXT = () => `注册`;
+export const LOGIN_PAGE_SIGN_UP_LINK_TEXT = () => `注册账号`;
 export const SIGNUP_PAGE_TITLE = () => `免费注册账号`;
 export const SIGNUP_PAGE_SUBTITLE = () => `使用你的团队邮箱`;
 export const SIGNUP_PAGE_EMAIL_INPUT_LABEL = () => `邮箱`;
