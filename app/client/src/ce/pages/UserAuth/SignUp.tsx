@@ -8,9 +8,7 @@ import { useHistory, useLocation, withRouter } from "react-router-dom";
 import { SpacedSubmitForm, FormActions } from "pages/UserAuth/StyledComponents";
 import {
   SIGNUP_PAGE_TITLE,
-  SIGNUP_PAGE_EMAIL_INPUT_LABEL,
   SIGNUP_PAGE_EMAIL_INPUT_PLACEHOLDER,
-  SIGNUP_PAGE_PASSWORD_INPUT_LABEL,
   SIGNUP_PAGE_PASSWORD_INPUT_PLACEHOLDER,
   SIGNUP_PAGE_LOGIN_LINK_TEXT,
   FORM_VALIDATION_EMPTY_PASSWORD,
@@ -22,7 +20,6 @@ import {
   SIGNUP_PAGE_SUBTITLE,
 } from "@appsmith/constants/messages";
 import FormTextField from "components/utils/ReduxFormTextField";
-import ThirdPartyAuth from "@appsmith/pages/UserAuth/ThirdPartyAuth";
 import { FormGroup } from "design-system-old";
 import { Button, Link, Callout } from "design-system";
 import { isEmail, isStrongPassword, isEmptyString } from "utils/formhelpers";
@@ -44,8 +41,7 @@ import { useScript, ScriptStatus, AddScriptTo } from "utils/hooks/useScript";
 import { getIsSafeRedirectURL } from "utils/helpers";
 import Container from "pages/UserAuth/Container";
 import {
-  getIsFormLoginEnabled,
-  getThirdPartyAuths,
+  getIsFormLoginEnabled
 } from "@appsmith/selectors/tenantSelectors";
 import Helmet from "react-helmet";
 import { useHtmlPageTitle } from "@appsmith/utils";
@@ -96,7 +92,6 @@ export function SignUp(props: SignUpFormProps) {
   }, []);
   const { emailValue: email, error, pristine, submitting, valid } = props;
   const isFormValid = valid && email && !isEmptyString(email);
-  const socialLoginList = useSelector(getThirdPartyAuths);
   const shouldDisableSignupButton = pristine || !isFormValid;
   const location = useLocation();
   const htmlPageTitle = useHtmlPageTitle();
@@ -153,23 +148,9 @@ export function SignUp(props: SignUpFormProps) {
     }
   };
 
-  const footerSection = (
-    <div className="px-2 py-4 flex align-center justify-center text-base text-center text-[color:var(--ads-v2\-color-fg)] text-[14px]">
-      {createMessage(ALREADY_HAVE_AN_ACCOUNT)}
-      <Link
-        className="t--sign-up t--signup-link pl-[var(--ads-v2\-spaces-3)]"
-        kind="primary"
-        target="_self"
-        to={AUTH_LOGIN_URL}
-      >
-        {createMessage(SIGNUP_PAGE_LOGIN_LINK_TEXT)}
-      </Link>
-    </div>
-  );
-
   return (
     <Container
-      footer={footerSection}
+      footer={null}
       subtitle={createMessage(SIGNUP_PAGE_SUBTITLE)}
       title={createMessage(SIGNUP_PAGE_TITLE)}
     >
@@ -178,9 +159,6 @@ export function SignUp(props: SignUpFormProps) {
       </Helmet>
 
       {showError && <Callout kind="error">{errorMessage}</Callout>}
-      {socialLoginList.length > 0 && (
-        <ThirdPartyAuth logins={socialLoginList} type={"SIGNUP"} />
-      )}
       {isFormLoginEnabled && (
         <SpacedSubmitForm
           action={signupURL.toString()}
@@ -190,18 +168,17 @@ export function SignUp(props: SignUpFormProps) {
         >
           <FormGroup
             intent={error ? "danger" : "none"}
-            label={createMessage(SIGNUP_PAGE_EMAIL_INPUT_LABEL)}
           >
             <FormTextField
               autoFocus
               name="email"
               placeholder={createMessage(SIGNUP_PAGE_EMAIL_INPUT_PLACEHOLDER)}
               type="email"
+              startIcon="emoji"
             />
           </FormGroup>
           <FormGroup
             intent={error ? "danger" : "none"}
-            label={createMessage(SIGNUP_PAGE_PASSWORD_INPUT_LABEL)}
           >
             <FormTextField
               name="password"
@@ -209,6 +186,7 @@ export function SignUp(props: SignUpFormProps) {
                 SIGNUP_PAGE_PASSWORD_INPUT_PLACEHOLDER,
               )}
               type="password"
+              startIcon="eye-on"
             />
           </FormGroup>
           <FormActions>
@@ -232,6 +210,17 @@ export function SignUp(props: SignUpFormProps) {
           </FormActions>
         </SpacedSubmitForm>
       )}
+      <div className="flex-middle myfont">
+        {createMessage(ALREADY_HAVE_AN_ACCOUNT)}
+        <Link
+          className="t--sign-up t--signup-link pl-[var(--ads-v2\-spaces-3)] fs-16"
+          kind="primary"
+          target="_self"
+          to={AUTH_LOGIN_URL}
+        >
+          {createMessage(SIGNUP_PAGE_LOGIN_LINK_TEXT)}
+        </Link>
+      </div>
     </Container>
   );
 }

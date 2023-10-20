@@ -1,20 +1,40 @@
 import React from "react";
 import styled from "styled-components";
+import { useLocation } from "react-router-dom";
+import { Button } from "design-system";
+
 import type { SocialLoginType } from "@appsmith/constants/SocialLogin";
 import { getSocialLoginButtonProps } from "@appsmith/constants/SocialLogin";
 import type { EventName } from "@appsmith/utils/analyticsUtilTypes";
 import AnalyticsUtil from "utils/AnalyticsUtil";
-import { useLocation } from "react-router-dom";
 import PerformanceTracker, {
   PerformanceTransactionName,
 } from "utils/PerformanceTracker";
-import { Button } from "design-system";
+import Api from "api/Api";
+import Github from "assets/images/Github.svg";
+import Wechat from "assets/images/WeChat.svg";
 
 const ThirdPartyAuthWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: var(--ads-v2-spaces-3);
+  justify-content: center;
+  align-item: center;
 `;
+
+const LogoImg = styled.img`
+  width: 30px;
+  vertical-align: bottom;
+  display: inline-block;
+  margin-right: 10px;
+`;
+
+const onWechatLoginClick = () => {
+  const requestUrl = "v1/wxLogin/code";
+  Api.get(requestUrl).then(({ data }) => {
+    const url = data.redirectUrl;
+    const newTab: any = window.open(url, "_self");
+    newTab.focus();
+  });
+};
 
 type SignInType = "SIGNIN" | "SIGNUP";
 
@@ -32,10 +52,13 @@ function SocialLoginButton(props: {
   if (redirectUrl != null) {
     url += `?redirectUrl=${encodeURIComponent(redirectUrl)}`;
   }
+  // 后续添加
+  const _map = [
+    { name: 'Github', src: Github }
+  ]
   return (
-    <Button
+    <a
       href={url}
-      kind="secondary"
       onClick={() => {
         let eventName: EventName = "LOGIN_CLICK";
         if (props.type === "SIGNUP") {
@@ -51,18 +74,10 @@ function SocialLoginButton(props: {
           loginMethod: props.name.toUpperCase(),
         });
       }}
-      renderAs="a"
-      size="md"
-      startIcon={
-        ["Google", "Github"].includes(props.name)
-          ? props.name.toLowerCase() + `-fill`
-          : "key-2-line"
-      }
+
     >
-      <div className="login-method" data-testid={`login-with-${props.name}`}>
-        {props.label ?? `${props.name}登录`}
-      </div>
-    </Button>
+      <LogoImg src={_map.find((item) => item.name ===props.name)?.src} alt="还没找到图片"/>
+    </a>
   );
 }
 
@@ -70,12 +85,16 @@ export function ThirdPartyAuth(props: {
   logins: SocialLoginType[];
   type: SignInType;
 }) {
+  console.log("logins", getSocialLoginButtonProps(props.logins));
   const socialLoginButtons = getSocialLoginButtonProps(props.logins).map(
     (item) => {
       return <SocialLoginButton key={item.name} {...item} type={props.type} />;
     },
   );
-  return <ThirdPartyAuthWrapper>{socialLoginButtons}</ThirdPartyAuthWrapper>;
+  return <ThirdPartyAuthWrapper>
+    {props.logins.includes("wechat") && <LogoImg src={Wechat} onClick={onWechatLoginClick}/>}
+    {socialLoginButtons}
+  </ThirdPartyAuthWrapper>;
 }
 
 export default ThirdPartyAuth;

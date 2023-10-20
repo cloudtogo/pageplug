@@ -71,3 +71,50 @@ input::placeholder,
 textarea::placeholder {
   color: var(--ads-v2-color-fg-subtle);
 }
+
+/* login page */
+.login-page-bg {
+  background-image: url('../images/login-bg.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.login-bg {
+  background-color: transparent !important;
+}
+
+.login-img {
+  height: 5rem;
+  width: 257px;
+}
+
+.flex-space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.flex-middle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.fs-16, .ads-v2-link__text {
+  font-size: 16px !important;
+  color: #13C2C2 !important;
+}
+
+.myfont {
+  font-size: 16px;
+  color: #000000E5;
+}
+
+.ads-v2-input__input-section-input:focus:enabled:not(:read-only) {
+  --input-color-border: #13C2C2 !important;
+}
+
+.sc-easbae > .ads-v2-button[data-disabled="true"] > .ads-v2-button__content {
+  background-color: #00000042;
+  border-color: #00000042;
+}

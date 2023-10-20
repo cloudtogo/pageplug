@@ -126,6 +126,12 @@
 
   --ads-orange-accent: #ffefdb;
 
-  /* override */
+  /* override brand color*/
+  --ads-v2-color-orange-900: #27b7b7 !important;
+  --ads-v2-color-orange-800: #27b7b7 !important; /* Secondary */
   --ads-v2-color-orange-700: #27b7b7 !important;
+  --ads-v2-color-orange-600: #27b7b7 !important;
+  --ads-v2-color-orange-500: #27b7b7 !important; /* Primary */
+  --ads-v2-color-orange-400: #27b7b7 !important;
+  --ads-v2-color-orange-300: #27b7b7 !important;
 }

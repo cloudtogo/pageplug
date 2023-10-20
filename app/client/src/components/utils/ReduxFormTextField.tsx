@@ -53,6 +53,7 @@ export type FormTextFieldProps = {
   autoFocus?: boolean;
   hideErrorMessage?: boolean;
   isRequired?: boolean;
+  startIcon?: string;
 };
 
 function ReduxFormTextField(props: FormTextFieldProps) {
