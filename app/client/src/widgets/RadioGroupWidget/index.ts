@@ -21,7 +21,7 @@ export const CONFIG = {
   defaults: {
     rows: 6,
     columns: 20,
-    animateLoading: true,
+    animateLoading: false,
     label: "标签",
     labelPosition: LabelPosition.Top,
     labelAlignment: Alignment.LEFT,

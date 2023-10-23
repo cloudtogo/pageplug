@@ -48,7 +48,7 @@ export const CONFIG = {
     columns: 24,
     borderColor: Colors.GREY_5,
     borderWidth: "1",
-    animateLoading: true,
+    animateLoading: false,
     widgetName: "Form",
     backgroundColor: Colors.WHITE,
     children: [],

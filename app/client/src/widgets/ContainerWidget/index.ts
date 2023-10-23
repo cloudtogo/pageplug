@@ -48,7 +48,7 @@ export const CONFIG = {
     borderColor: Colors.GREY_5,
     borderWidth: "1",
     boxShadow: ButtonBoxShadowTypes.NONE,
-    animateLoading: true,
+    animateLoading: false,
     children: [],
     blueprint: {
       view: [

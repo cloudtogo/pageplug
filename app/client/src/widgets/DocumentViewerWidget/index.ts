@@ -22,7 +22,7 @@ export const CONFIG = {
     rows: 40,
     columns: 24,
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
     responsiveBehavior: ResponsiveBehavior.Fill,
   },
   properties: {

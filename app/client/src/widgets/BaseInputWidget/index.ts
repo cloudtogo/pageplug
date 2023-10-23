@@ -29,7 +29,7 @@ export const CONFIG = {
     resetOnSubmit: true,
     isRequired: false,
     isDisabled: false,
-    animateLoading: true,
+    animateLoading: false,
     responsiveBehavior: ResponsiveBehavior.Fill,
     minWidth: FILL_WIDGET_MIN_WIDTH,
   },
