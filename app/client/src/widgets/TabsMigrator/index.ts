@@ -11,7 +11,7 @@ export const CONFIG = {
     columns: 1,
     widgetName: "Skeleton",
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
   },
   properties: {
     derived: Widget.getDerivedPropertiesMap(),

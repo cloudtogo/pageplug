@@ -30,7 +30,7 @@ export const CONFIG = {
     version: 1,
     isRequired: false,
     isDisabled: false,
-    animateLoading: true,
+    animateLoading: false,
     placement: ButtonPlacementTypes.CENTER,
     responsiveBehavior: ResponsiveBehavior.Fill,
   },

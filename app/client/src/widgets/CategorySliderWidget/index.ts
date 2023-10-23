@@ -30,7 +30,7 @@ export const CONFIG = {
     shouldScroll: false,
     shouldTruncate: false,
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
     labelText: "尺寸",
     labelPosition: LabelPosition.Left,
     labelAlignment: Alignment.LEFT,

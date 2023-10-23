@@ -23,7 +23,7 @@ export const CONFIG = {
     shouldScroll: false,
     shouldTruncate: false,
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
   },
   properties: {
     derived: Widget.getDerivedPropertiesMap(),

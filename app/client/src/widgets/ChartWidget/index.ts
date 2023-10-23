@@ -22,7 +22,7 @@ export const CONFIG = {
     chartName: "销售报告",
     allowScroll: false,
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
     responsiveBehavior: ResponsiveBehavior.Fill,
     minWidth: FILL_WIDGET_MIN_WIDTH,
     showDataPointLabel: false,

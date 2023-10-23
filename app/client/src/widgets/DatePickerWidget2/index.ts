@@ -45,7 +45,7 @@ export const CONFIG = {
     shortcuts: false,
     firstDayOfWeek: 1,
     timePrecision: TimePrecision.MINUTE,
-    animateLoading: true,
+    animateLoading: false,
     responsiveBehavior: ResponsiveBehavior.Fill,
     minWidth: FILL_WIDGET_MIN_WIDTH,
   },
