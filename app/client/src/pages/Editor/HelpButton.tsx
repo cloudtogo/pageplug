@@ -78,13 +78,13 @@ type HelpItem = {
 const HELP_MENU_ITEMS: HelpItem[] = [
   {
     icon: "book-line",
-    label: "Documentation",
-    link: "https://docs.appsmith.com/",
+    label: "文档",
+    link: "https://docs.pageplug.cn/",
   },
   {
     icon: "bug-line",
-    label: "Report a bug",
-    link: "https://github.com/appsmithorg/appsmith/issues/new/choose",
+    label: "反馈Bug",
+    link: "https://github.com/cloudtogo/pageplug/issues",
   },
 ];
 
@@ -265,7 +265,7 @@ function HelpButton() {
                     }}
                     startIcon="guide"
                   >
-                    Try guided tour
+                    新手体验
                   </MenuItem>
                   <MenuSeparator />
                 </>
