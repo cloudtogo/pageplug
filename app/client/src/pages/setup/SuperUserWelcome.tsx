@@ -98,14 +98,15 @@ export default memo(function SuperUserWelcome() {
           <Banner />
           <SuperUserForm />
         </StyledTextBanner>
-        <StyledImageBanner>
+        {/* 隐藏图片 */}
+        {/* <StyledImageBanner>
           <div className="flex self-start w-2/6 h-16 ml-56">
             <img src={getAssetUrl(getAppsmithLogo())} />
           </div>
           <div className="flex w-5/6 my-1 h-4/6">
             <img className="w-full" src={getAssetUrl(getWelcomeImage())} />
           </div>
-        </StyledImageBanner>
+        </StyledImageBanner> */}
       </LandingPageContent>
     </LandingPageWrapper>
   );
