@@ -35,7 +35,7 @@ export const CONFIG = {
     labelPosition: LabelPosition.Left,
     isDisabled: false,
     isRequired: false,
-    animateLoading: true,
+    animateLoading: false,
     responsiveBehavior: ResponsiveBehavior.Fill,
     minWidth: FILL_WIDGET_MIN_WIDTH,
   },

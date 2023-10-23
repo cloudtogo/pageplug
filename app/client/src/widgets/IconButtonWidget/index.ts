@@ -21,7 +21,7 @@ export const CONFIG = {
     columns: 4,
     widgetName: "IconButton",
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
     responsiveBehavior: ResponsiveBehavior.Hug,
     minWidth: ICON_BUTTON_MIN_WIDTH,
   },

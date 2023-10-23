@@ -28,7 +28,7 @@ export const CONFIG = {
     canFreezeColumn: true,
     columnUpdatedAt: Date.now(),
     columns: 34,
-    animateLoading: true,
+    animateLoading: false,
     defaultSelectedRowIndex: 0,
     defaultSelectedRowIndices: [0],
     label: "数据",

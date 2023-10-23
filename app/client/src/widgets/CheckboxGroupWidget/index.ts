@@ -20,7 +20,7 @@ export const CONFIG = {
   defaults: {
     rows: 6,
     columns: 23,
-    animateLoading: true,
+    animateLoading: false,
     labelTextSize: "0.875rem",
     options: [
       { label: "蓝", value: "BLUE" },

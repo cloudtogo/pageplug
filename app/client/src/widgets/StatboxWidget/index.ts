@@ -46,7 +46,7 @@ export const CONFIG = {
   defaults: {
     rows: 14,
     columns: 22,
-    animateLoading: true,
+    animateLoading: false,
     widgetName: "Statbox",
     backgroundColor: "white",
     borderWidth: "1",

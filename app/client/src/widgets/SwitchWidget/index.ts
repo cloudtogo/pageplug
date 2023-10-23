@@ -33,7 +33,7 @@ export const CONFIG = {
     labelPosition: LabelPosition.Left,
     version: 1,
     isDisabled: false,
-    animateLoading: true,
+    animateLoading: false,
     responsiveBehavior: ResponsiveBehavior.Fill,
   },
   properties: {

@@ -62,7 +62,7 @@ export const CONFIG = {
     hasMetaWidgets: true,
     rows: 40,
     columns: 24,
-    animateLoading: true,
+    animateLoading: false,
     gridType: "vertical",
     //positioning: Positioning.Fixed,
     minWidth: FILL_WIDGET_MIN_WIDTH,

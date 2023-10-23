@@ -26,7 +26,7 @@ export const CONFIG = {
     columns: 24,
     widgetName: "Iframe",
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
     responsiveBehavior: ResponsiveBehavior.Fill,
   },
   properties: {

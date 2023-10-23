@@ -21,7 +21,7 @@ export const CONFIG = {
     shouldTruncate: false,
     overflow: OverflowTypes.NONE,
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
   },
   properties: {
     derived: Widget.getDerivedPropertiesMap(),

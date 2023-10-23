@@ -39,7 +39,7 @@ export const CONFIG = {
     shouldScroll: false,
     shouldTruncate: false,
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
     sliderSize: "m",
     responsiveBehavior: ResponsiveBehavior.Fill,
   },

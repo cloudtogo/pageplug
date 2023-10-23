@@ -63,7 +63,7 @@ export const CONFIG = {
     xAxisName: DEFAUTL_CHART.xAxisName,
     yAxisName: DEFAUTL_CHART.yAxisName,
     allowScroll: false,
-    animateLoading: true,
+    animateLoading: false,
     customEchartConfig: {
       title: {
         text: "Referer of a Website",

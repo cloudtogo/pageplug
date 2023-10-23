@@ -24,7 +24,7 @@ export const CONFIG = {
   defaults: {
     rows: 7,
     columns: 20,
-    animateLoading: true,
+    animateLoading: false,
     options: [
       {
         label: "蓝",

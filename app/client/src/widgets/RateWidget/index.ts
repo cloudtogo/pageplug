@@ -21,7 +21,7 @@ export const CONFIG = {
   defaults: {
     rows: 4,
     columns: 20,
-    animateLoading: true,
+    animateLoading: false,
     maxCount: 5,
     defaultRate: 3,
     activeColor: Colors.RATE_ACTIVE,

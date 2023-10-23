@@ -40,7 +40,7 @@ export const CONFIG = {
     responsiveBehavior: ResponsiveBehavior.Fill,
     minWidth: FILL_WIDGET_MIN_WIDTH,
     useSourceData: false,
-    animateLoading: true,
+    animateLoading: false,
     backgroundColor: "#fff",
     columns: 25,
     disabledWhenInvalid: true,

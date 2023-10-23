@@ -26,7 +26,7 @@ export const CONFIG = {
     buttonVariant: ButtonVariantTypes.PRIMARY,
     isVisible: true,
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
     responsiveBehavior: ResponsiveBehavior.Fill,
     minWidth: FILL_WIDGET_MIN_WIDTH,
     groupButtons: {
