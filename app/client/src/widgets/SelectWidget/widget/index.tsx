@@ -548,21 +548,21 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
           },
         ],
       },
-      {
-        sectionName: "颜色",
-        children: [
-          {
-            propertyName: "accentColor",
-            label: "强调色",
-            controlType: "COLOR_PICKER",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-            invisible: true,
-          },
-        ],
-      },
+      // {
+      //   sectionName: "颜色",
+      //   children: [
+      //     {
+      //       propertyName: "accentColor",
+      //       label: "强调色",
+      //       controlType: "COLOR_PICKER",
+      //       isJSConvertible: true,
+      //       isBindProperty: true,
+      //       isTriggerProperty: false,
+      //       validation: { type: ValidationTypes.TEXT },
+      //       invisible: true,
+      //     },
+      //   ],
+      // },
       {
         sectionName: "轮廓样式",
         children: [
