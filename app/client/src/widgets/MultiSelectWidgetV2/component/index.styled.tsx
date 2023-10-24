@@ -508,6 +508,7 @@ export const MultiSelectContainer = styled.div<{
       width: 100%;
       transition: none;
       background-color: white;
+      border: 1px solid var(--wds-color-border);
 
       .rc-select-selection-item {
         background: none;
