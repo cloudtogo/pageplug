@@ -71,10 +71,6 @@ export const StyledLink = styled(Link)<{ $active: boolean }>`
   &:hover:not(.active) {
     background-color: var(--ads-v2-color-bg-subtle);
   }
-
-  &:hover:not(.active) {
-    background-color: var(--ads-v2-color-bg-subtle);
-  }
 `;
 
 export const SettingName = styled(Text)<{ active?: boolean }>`
@@ -197,7 +193,7 @@ export default function LeftPane() {
       {isSuperUser && (
         <HeaderContainer>
           <StyledHeader kind="heading-s" renderAs="p">
-            Admin settings
+            管理员设置
           </StyledHeader>
           <Categories
             categories={categories}
@@ -208,7 +204,7 @@ export default function LeftPane() {
       )}
       <HeaderContainer>
         <StyledHeader kind="heading-s" renderAs="p">
-          管理员设置
+          访问控制
         </StyledHeader>
         <Categories
           categories={filteredAclCategories}
