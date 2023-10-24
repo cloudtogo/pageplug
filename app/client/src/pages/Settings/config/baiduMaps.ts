@@ -1,6 +1,7 @@
 import { BAIDU_MAPS_SETUP_DOC } from "constants/ThirdPartyConstants";
 import {
   AdminConfigType,
+  CategoryType,
   SettingCategories,
   SettingSubtype,
   SettingTypes,
@@ -10,6 +11,7 @@ export const config: AdminConfigType = {
   icon: "map-pin-2-line",
   type: SettingCategories.BAIDU_MAPS,
   controlType: SettingTypes.GROUP,
+  categoryType: CategoryType.GENERAL,
   title: "百度地图",
   canSave: true,
   settings: [
