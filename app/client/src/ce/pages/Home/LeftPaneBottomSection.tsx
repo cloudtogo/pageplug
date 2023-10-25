@@ -82,17 +82,18 @@ function LeftPaneBottomSection() {
             text={createMessage(ADMIN_SETTINGS)}
           />
         )}
-        <MenuItem
+        {/* 隐藏 */}
+        {/* <MenuItem
           icon="discord"
           onSelect={() => {
             window.open("https://discord.gg/rBTTVJp", "_blank");
           }}
           text={"Join our discord"}
-        />
+        /> */}
         <MenuItem
           icon="book"
           onSelect={() => {
-            window.open("https://docs.appsmith.com/", "_blank");
+            window.open("https://docs.pageplug.cn/", "_blank");
           }}
           text={createMessage(DOCUMENTATION)}
         />
@@ -108,7 +109,8 @@ function LeftPaneBottomSection() {
           }}
           text={createMessage(WELCOME_TOUR)}
         />
-        <MenuItem
+        {/* 隐藏 */}
+        {/* <MenuItem
           containerClassName={"t--product-updates-btn"}
           data-testid="t--product-updates-btn"
           icon="updates"
@@ -116,7 +118,7 @@ function LeftPaneBottomSection() {
             setIsProductUpdatesModalOpen(true);
           }}
           text="What's new?"
-        />
+        /> */}
         <ProductUpdatesModal
           isOpen={isProductUpdatesModalOpen}
           onClose={() => setIsProductUpdatesModalOpen(false)}

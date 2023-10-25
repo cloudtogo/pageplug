@@ -26,7 +26,6 @@ export const CONFIG = {
   },
   type: Widget.getWidgetType(),
   name: "统计框",
-  searchTags: ["statbox"],
   iconSVG: IconSVG,
   tags: [WIDGET_TAGS.DISPLAY],
   needsMeta: true,
@@ -46,7 +45,7 @@ export const CONFIG = {
   defaults: {
     rows: 14,
     columns: 22,
-    animateLoading: true,
+    animateLoading: false,
     widgetName: "Statbox",
     backgroundColor: "white",
     borderWidth: "1",

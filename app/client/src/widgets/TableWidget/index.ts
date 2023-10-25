@@ -26,7 +26,7 @@ export const CONFIG = {
     responsiveBehavior: ResponsiveBehavior.Fill,
     rows: 28,
     columns: 34,
-    animateLoading: true,
+    animateLoading: false,
     defaultSelectedRow: "0",
     label: "数据",
     widgetName: "Table",

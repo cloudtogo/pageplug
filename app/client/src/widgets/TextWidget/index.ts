@@ -25,7 +25,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "文本",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.SUGGESTED_WIDGETS, WIDGET_TAGS.CONTENT],
+  tags: [WIDGET_TAGS.DISPLAY],
   searchTags: [
     "typography",
     "paragraph",
@@ -48,7 +48,7 @@ export const CONFIG = {
     shouldTruncate: false,
     overflow: OverflowTypes.NONE,
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
     responsiveBehavior: ResponsiveBehavior.Fill,
     minWidth: FILL_WIDGET_MIN_WIDTH,
     blueprint: {

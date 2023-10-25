@@ -213,8 +213,8 @@ export const contentConfig = [
       },
       {
         propertyName: "useSourceData",
-        helpText: "Use source data for hidden fields to show them in form data",
-        label: "Hidden fields in data",
+        helpText: "使用源数据来填充隐藏字段，以便在表单数据中显示它们。",
+        label: "隐藏数据中的字段。",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -297,7 +297,7 @@ export const contentConfig = [
       {
         propertyName: "onSubmit",
         helpText: "点击提交按钮时触发",
-        label: "onSubmit",
+        label: "提交时",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
         isBindProperty: true,

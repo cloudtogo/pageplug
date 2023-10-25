@@ -146,22 +146,14 @@ const typeOperatorsMap: Record<ReadOnlyColumnTypes, DropdownOption[]> = {
     { label: "not empty", value: "notEmpty", type: "" },
   ],
   [ColumnTypes.NUMBER]: [
-    { label: "is equal to", value: "isEqualTo", type: "input" },
-    { label: "not equal to", value: "notEqualTo", type: "input" },
-    { label: "greater than", value: "greaterThan", type: "input" },
-    {
-      label: "greater than or equal to",
-      value: "greaterThanEqualTo",
-      type: "input",
-    },
-    { label: "less than", value: "lessThan", type: "input" },
-    {
-      label: "less than or equal to",
-      value: "lessThanEqualTo",
-      type: "input",
-    },
-    { label: "empty", value: "empty", type: "" },
-    { label: "not empty", value: "notEmpty", type: "" },
+    { label: "等于", value: "isEqualTo", type: "input" },
+    { label: "不等于", value: "notEqualTo", type: "input" },
+    { label: "大于", value: "greaterThan", type: "input" },
+    { label: "大于或等于", value: "greaterThanEqualTo", type: "input" },
+    { label: "小于", value: "lessThan", type: "input" },
+    { label: "小于或等于", value: "lessThanEqualTo", type: "input" },
+    { label: "空", value: "empty", type: "" },
+    { label: "非空", value: "notEmpty", type: "" }
   ],
   [ColumnTypes.CHECKBOX]: [
     { label: "is checked", value: "isChecked", type: "" },
@@ -302,7 +294,7 @@ function RenderInput(props: {
       className={props.className}
       defaultValue={value}
       onChange={onChange}
-      placeholder="Enter value"
+      placeholder="输入值"
       type="text"
     />
   );
@@ -593,7 +585,7 @@ function Fields(props: CascadeFieldProps & { state: CascadeFieldState }) {
           borderRadius={props.borderRadius}
           className="t--table-filter-columns-dropdown"
           columns={props.columns}
-          placeholder="Attribute"
+          placeholder="属性"
           selectItem={selectColumn}
           showType
           value={column}

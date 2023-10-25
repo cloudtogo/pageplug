@@ -121,15 +121,13 @@ public class FieldNameCE {
     public static final String EDIT_MODE_THEME = "editModeTheme";
     public static final String FLOW_NAME = "flowName";
     public static final String ADMINISTRATOR = "Administrator";
-    public static final String WORKSPACE_ADMINISTRATOR_DESCRIPTION = "Can modify all workspace settings including "
-            + "editing applications, inviting other users to the workspace and exporting applications "
-            + "from the workspace";
+    public static final String WORKSPACE_ADMINISTRATOR_DESCRIPTION = "可以修改所有工作区设置，包括编辑应用程序、邀请其他用户加入工作区以及从工作区导出应用程序。";
     public static final String DEVELOPER = "Developer";
     public static String WORKSPACE_DEVELOPER_DESCRIPTION =
-            "Can edit and view applications along with inviting other " + "users to the workspace";
+            "可以编辑和查看应用程序，还可以邀请其他用户加入工作区。";
     public static final String VIEWER = "App Viewer";
     public static final String WORKSPACE_VIEWER_DESCRIPTION =
-            "Can view applications and invite other users to view " + "applications";
+            "可以查看应用程序，并邀请其他用户查看应用程序。";
     public static final String USER_GROUP = "userGroup";
     public static final Object GROUP_ID = "groupId";
     public static final Object USERNAME = "username";

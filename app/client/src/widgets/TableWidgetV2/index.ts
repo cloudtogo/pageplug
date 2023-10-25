@@ -18,7 +18,7 @@ export const CONFIG = {
   name: "表格",
   searchTags: ["datagrid", "table"],
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.SUGGESTED_WIDGETS, WIDGET_TAGS.DISPLAY],
+  tags: [WIDGET_TAGS.DISPLAY],
   needsMeta: true,
   needsHeightForContent: true,
   defaults: {
@@ -28,7 +28,7 @@ export const CONFIG = {
     canFreezeColumn: true,
     columnUpdatedAt: Date.now(),
     columns: 34,
-    animateLoading: true,
+    animateLoading: false,
     defaultSelectedRowIndex: 0,
     defaultSelectedRowIndices: [0],
     label: "数据",

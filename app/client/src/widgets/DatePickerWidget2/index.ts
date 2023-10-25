@@ -21,7 +21,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "日期选择器",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.INPUTS],
+  tags: [WIDGET_TAGS.SELECT],
   needsMeta: true,
   searchTags: ["calendar", "date picker"],
   defaults: {
@@ -45,7 +45,7 @@ export const CONFIG = {
     shortcuts: false,
     firstDayOfWeek: 1,
     timePrecision: TimePrecision.MINUTE,
-    animateLoading: true,
+    animateLoading: false,
     responsiveBehavior: ResponsiveBehavior.Fill,
     minWidth: FILL_WIDGET_MIN_WIDTH,
   },

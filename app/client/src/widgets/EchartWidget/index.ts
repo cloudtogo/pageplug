@@ -43,7 +43,7 @@ export const CONFIG = {
   name: "Echarts", // The display name which will be made in uppercase and show in the widgets panel ( can have spaces )
   iconSVG: IconSVG,
   needsMeta: true, // Defines if this widget adds any meta properties
-  tags: [WIDGET_TAGS.SUGGESTED_WIDGETS],
+  tags: [WIDGET_TAGS.DISPLAY],
   searchTags: ["graph", "echart", "chart", "visualisations"],
   defaults: {
     widgetName: "Echarts",
@@ -63,7 +63,7 @@ export const CONFIG = {
     xAxisName: DEFAUTL_CHART.xAxisName,
     yAxisName: DEFAUTL_CHART.yAxisName,
     allowScroll: false,
-    animateLoading: true,
+    animateLoading: false,
     customEchartConfig: {
       title: {
         text: "Referer of a Website",

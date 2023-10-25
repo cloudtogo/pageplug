@@ -10,7 +10,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "音频",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.MEDIA],
+  tags: [WIDGET_TAGS.FEATRUE],
   needsMeta: true,
   searchTags: ["mp3", "sound", "wave", "player", "audio"],
   defaults: {
@@ -20,7 +20,7 @@ export const CONFIG = {
     url: getAssetUrl(`${ASSETS_CDN_URL}/widgets/birds_chirping.mp3`),
     autoPlay: false,
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
     responsiveBehavior: ResponsiveBehavior.Fill,
     minWidth: FILL_WIDGET_MIN_WIDTH,
   },

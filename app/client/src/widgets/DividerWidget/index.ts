@@ -9,7 +9,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "分隔线",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.LAYOUT],
+  tags: [WIDGET_TAGS.GERNERAL],
   searchTags: ["line", "divider"],
   defaults: {
     rows: 4,
@@ -23,7 +23,7 @@ export const CONFIG = {
     thickness: 2,
     isVisible: true,
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
     responsiveBehavior: ResponsiveBehavior.Fill,
     minWidth: FILL_WIDGET_MIN_WIDTH,
   },

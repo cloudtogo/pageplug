@@ -23,6 +23,7 @@ import {
   NO_USERS_INVITED,
   BUSINESS_EDITION_TEXT,
   INVITE_USER_RAMP_TEXT,
+  INVITE_USER_RAMP_TEXT2,
   CUSTOM_ROLES_RAMP_TEXT,
   CUSTOM_ROLE_DISABLED_OPTION_TEXT,
   CUSTOM_ROLE_TEXT,
@@ -278,6 +279,7 @@ function InviteUserText({
           <Link kind="primary" target="_blank" to={rampLink}>
             {createMessage(BUSINESS_EDITION_TEXT)}
           </Link>
+          {createMessage(INVITE_USER_RAMP_TEXT2)}
         </>
       ) : (
         createMessage(USERS_HAVE_ACCESS_TO_ALL_APPS)
