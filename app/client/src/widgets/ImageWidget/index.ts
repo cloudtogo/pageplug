@@ -9,7 +9,7 @@ export const CONFIG = {
   name: "图片",
   searchTags: ["picture", "image"],
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.MEDIA],
+  tags: [WIDGET_TAGS.DISPLAY],
   defaults: {
     defaultImage: getAssetUrl(`${ASSETS_CDN_URL}/widgets/default.png`),
     imageShape: "RECTANGLE",
@@ -22,7 +22,7 @@ export const CONFIG = {
     columns: 12,
     widgetName: "Image",
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
   },
   properties: {
     derived: Widget.getDerivedPropertiesMap(),

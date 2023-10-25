@@ -20,7 +20,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "开关",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.TOGGLES],
+  tags: [WIDGET_TAGS.SELECT],
   needsMeta: true,
   searchTags: ["boolean", "switch"],
   defaults: {
@@ -33,7 +33,7 @@ export const CONFIG = {
     labelPosition: LabelPosition.Left,
     version: 1,
     isDisabled: false,
-    animateLoading: true,
+    animateLoading: false,
     responsiveBehavior: ResponsiveBehavior.Fill,
   },
   properties: {

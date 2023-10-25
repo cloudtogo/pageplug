@@ -11,7 +11,7 @@ export const CONFIG = {
   searchTags: ["range slider"],
   needsMeta: true,
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.SLIDERS],
+  tags: [WIDGET_TAGS.DISPLAY],
   defaults: {
     min: 0,
     max: 100,
@@ -39,7 +39,7 @@ export const CONFIG = {
     shouldScroll: false,
     shouldTruncate: false,
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
     sliderSize: "m",
     responsiveBehavior: ResponsiveBehavior.Fill,
   },

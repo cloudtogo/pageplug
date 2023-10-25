@@ -324,7 +324,7 @@ const PROPERTIES = {
       {
         propertyName: "decimalsInCurrency",
         helpText: "货币精确到小数点后几位",
-        label: "Decimals Allowed",
+        label: "允许小数",
         controlType: "DROP_DOWN",
         options: [
           {

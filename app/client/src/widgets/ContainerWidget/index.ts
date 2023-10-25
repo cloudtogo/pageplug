@@ -19,7 +19,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "容器",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.LAYOUT],
+  tags: [WIDGET_TAGS.GERNERAL],
   isCanvas: true,
   features: {
     dynamicHeight: {
@@ -48,7 +48,7 @@ export const CONFIG = {
     borderColor: Colors.GREY_5,
     borderWidth: "1",
     boxShadow: ButtonBoxShadowTypes.NONE,
-    animateLoading: true,
+    animateLoading: false,
     children: [],
     blueprint: {
       view: [

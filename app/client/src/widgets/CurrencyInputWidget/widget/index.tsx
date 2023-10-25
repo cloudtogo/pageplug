@@ -253,7 +253,7 @@ class CurrencyInputWidget extends BaseInputWidget<
             {
               helpText: "货币精确到小数点后几位",
               propertyName: "decimals",
-              label: "Decimals allowed",
+              label: "允许小数",
               controlType: "DROP_DOWN",
               options: [
                 {

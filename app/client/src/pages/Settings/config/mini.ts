@@ -1,5 +1,6 @@
 import {
   AdminConfigType,
+  CategoryType,
   SettingCategories,
   SettingSubtype,
   SettingTypes,
@@ -9,6 +10,7 @@ export const config: AdminConfigType = {
   icon: "mobile",
   type: SettingCategories.MINI,
   controlType: SettingTypes.GROUP,
+  categoryType: CategoryType.GENERAL,
   title: "小程序",
   canSave: true,
   settings: [
