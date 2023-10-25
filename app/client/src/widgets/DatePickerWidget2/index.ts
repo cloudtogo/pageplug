@@ -21,7 +21,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "日期选择器",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.INPUTS],
+  tags: [WIDGET_TAGS.SELECT],
   needsMeta: true,
   searchTags: ["calendar", "date picker"],
   defaults: {

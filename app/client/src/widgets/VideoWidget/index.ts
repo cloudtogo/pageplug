@@ -10,7 +10,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "视频",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.MEDIA],
+  tags: [WIDGET_TAGS.FEATRUE],
   needsMeta: true,
   searchTags: ["youtube", "video"],
   defaults: {

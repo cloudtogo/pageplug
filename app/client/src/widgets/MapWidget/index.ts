@@ -10,7 +10,7 @@ export const CONFIG = {
   name: "地图",
   iconSVG: IconSVG,
   searchTags: ["map"],
-  tags: [WIDGET_TAGS.CONTENT],
+  tags: [WIDGET_TAGS.DISPLAY],
   needsMeta: true,
   defaults: {
     rows: 40,

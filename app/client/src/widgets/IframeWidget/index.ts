@@ -15,7 +15,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "Iframe",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.DISPLAY],
+  tags: [WIDGET_TAGS.GERNERAL],
   needsMeta: true,
   searchTags: ["embed", "html"],
   defaults: {

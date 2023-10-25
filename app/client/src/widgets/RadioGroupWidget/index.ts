@@ -9,7 +9,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "单选组",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.TOGGLES],
+  tags: [WIDGET_TAGS.SELECT],
   needsMeta: true,
   features: {
     dynamicHeight: {
