@@ -175,7 +175,7 @@ export function Login(props: LoginFormProps) {
                 type="email"
                 startIcon="null"
               />
-              <EmailSVGIcon className="relative top-[-27px] right-[-6px] w-4"/>
+              <EmailSVGIcon className="icon-position w-4"/>
             </FormGroup>
             <FormGroup
               intent={error ? "danger" : "none"}
@@ -188,7 +188,7 @@ export function Login(props: LoginFormProps) {
                 type={isShowPassword ? "text" : "password"}
                 startIcon={isShowPassword ? "eye-on" : "null"}
               />
-              <PasswordSVGIcon className="relative top-[-25px] right-[-6px] w-4" showPassword={showPassword} />
+              <PasswordSVGIcon className="icon-position w-4" showPassword={showPassword} isShowPassword={isShowPassword}/>
             </FormGroup>
 
             <FormActions>

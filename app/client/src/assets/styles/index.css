@@ -114,7 +114,21 @@ textarea::placeholder {
   --input-color-border: #13C2C2 !important;
 }
 
+.ads-v2-input__input-section-input:focus {
+  background-color: var(--ads-v2-color-bg) !important;
+}
+
 .sc-easbae > .ads-v2-button[data-disabled="true"] > .ads-v2-button__content {
   background-color: #00000042;
   border-color: #00000042;
+}
+
+.bp3-form-content {
+  position: relative;
+}
+
+.icon-position {
+  position: absolute;
+  top: 9px;
+  left: 7px;
 }
