@@ -8,7 +8,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "录音器",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.EXTERNAL],
+  tags: [WIDGET_TAGS.FEATRUE],
   needsMeta: true,
   searchTags: ["sound recorder", "voice recorder", "audio recorder"],
   defaults: {

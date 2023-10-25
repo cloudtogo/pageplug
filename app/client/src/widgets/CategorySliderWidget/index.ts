@@ -11,7 +11,7 @@ export const CONFIG = {
   needsMeta: true,
   searchTags: ["range", "category slider"],
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.SLIDERS],
+  tags: [WIDGET_TAGS.DISPLAY],
   defaults: {
     options: [
       { label: "特别小", value: "xs" },

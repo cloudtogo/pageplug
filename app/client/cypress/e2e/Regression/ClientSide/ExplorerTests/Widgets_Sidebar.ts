@@ -8,17 +8,12 @@ import {
 describe("Entity explorer tests related to widgets and validation", function () {
   // Taken from here appsmith/app/client/src/constants/WidgetConstants.tsx
   const WIDGET_TAGS: Record<string, string> = {
-    SUGGESTED_WIDGETS: "Suggested",
-    INPUTS: "Inputs",
-    BUTTONS: "Buttons",
-    SELECT: "Select",
-    DISPLAY: "Display",
-    LAYOUT: "Layout",
-    MEDIA: "Media",
-    TOGGLES: "Toggles",
-    SLIDERS: "Sliders",
-    CONTENT: "Content",
-    EXTERNAL: "External",
+    GERNERAL: "通用",
+    SELECT: "选择",
+    INPUTS: "输入",
+    DISPLAY: "展示",
+    BUTTONS: "按钮",
+    FEATRUE: "功能",
   };
 
   // Taken from here appsmith/app/client/src/constants/WidgetConstants.tsx

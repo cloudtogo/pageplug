@@ -50,9 +50,9 @@ const LIST_WIDGET_NESTING_ERROR =
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
-  name: "List",
+  name: "列表",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.SUGGESTED_WIDGETS, WIDGET_TAGS.DISPLAY],
+  tags: [WIDGET_TAGS.DISPLAY],
   needsMeta: true,
   isCanvas: true,
   defaults: {

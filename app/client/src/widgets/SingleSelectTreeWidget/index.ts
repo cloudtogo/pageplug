@@ -16,7 +16,7 @@ export const CONFIG = {
     },
   },
   type: Widget.getWidgetType(),
-  name: "下拉树形单选",
+  name: "树形单选",
   searchTags: ["dropdown", "tree select"],
   iconSVG: IconSVG,
   tags: [WIDGET_TAGS.SELECT],

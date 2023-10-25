@@ -11,7 +11,7 @@ export const CONFIG = {
   searchTags: ["range slider"],
   needsMeta: true,
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.SLIDERS],
+  tags: [WIDGET_TAGS.DISPLAY],
   defaults: {
     min: 0,
     max: 100,

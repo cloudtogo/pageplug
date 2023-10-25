@@ -34,7 +34,7 @@ export const CONFIG = {
   name: "JSON表单",
   searchTags: ["json form"],
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.SUGGESTED_WIDGETS, WIDGET_TAGS.LAYOUT],
+  tags: [WIDGET_TAGS.INPUTS],
   needsMeta: true,
   defaults: {
     responsiveBehavior: ResponsiveBehavior.Fill,
