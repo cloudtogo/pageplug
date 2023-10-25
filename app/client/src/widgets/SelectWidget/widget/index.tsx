@@ -128,9 +128,9 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
               ],
               sampleData: JSON.stringify(
                 [
-                  { name: "Blue", code: "BLUE" },
-                  { name: "Green", code: "GREEN" },
-                  { name: "Red", code: "RED" },
+                  { name: "蓝", code: "BLUE" },
+                  { name: "绿", code: "GREEN" },
+                  { name: "红", code: "RED" },
                 ],
                 null,
                 2,
