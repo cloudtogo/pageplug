@@ -231,11 +231,6 @@ import MTextWidget, {
   CONFIG as TARO_TEXT_WIDGET_CONFIG,
 } from "widgets/taro/TextWidget";
 
-// import PickerWidget, {
-//   PickerWidgetProps,
-//   ProfiledPickerWidget,
-// } from "widgets/taro/PickerWidget";
-
 export const ALL_WIDGETS_AND_CONFIG: [any, WidgetConfiguration][] = [
   [CanvasWidget, CANVAS_WIDGET_CONFIG],
   [SkeletonWidget, SKELETON_WIDGET_CONFIG],
@@ -288,9 +283,8 @@ export const ALL_WIDGETS_AND_CONFIG: [any, WidgetConfiguration][] = [
   [CodeScannerWidget, CODE_SCANNER_WIDGET_CONFIG],
   [ListWidgetV2, LIST_WIDGET_CONFIG_V2],
   [ButtonWidgetV2, BUTTON_WIDGET_CONFIG_V2],
-
   [FormilyWidget, FORMILY_WIDGET_CONFIG],
-
+  //Taro
   [MButtonWidget, TARO_BUTTON_WIDGET_CONFIG],
   [MActionBarWidget, TARO_ACITON_BAR_WIDGET_CONFIG],
   [MBottomBarWidget, TARO_BOTTOM_BAR_WIDGET_CONFIG],

@@ -10,4 +10,7 @@
   --appsmith-search-input-focus-mobile-border-color: var(--appsmith-color-black-900);
   --appsmith-search-input-mobile-border-color: var(--appsmith-color-black-400);
   overflow-x: hidden;
+
+  /* text can select */
+  user-select: text;
 }
