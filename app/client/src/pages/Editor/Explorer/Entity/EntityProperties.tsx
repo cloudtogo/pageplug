@@ -34,7 +34,6 @@ const EntityInfoContainer = styled.div`
   min-width: 220px;
   max-width: 400px;
   max-height: ${BindingContainerMaxHeight}px;
-  overflow-y: hidden;
   border-radius: var(--ads-v2-border-radius);
   border: 1px solid var(--ads-v2-color-border-muted);
   box-shadow: var(--ads-v2-shadow-popovers);

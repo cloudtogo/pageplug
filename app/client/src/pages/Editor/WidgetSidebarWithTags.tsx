@@ -111,7 +111,7 @@ function WidgetSidebarWithTags({ isActive }: { isActive: boolean }) {
             }
 
             // We don't need to show suggested widgets when the user is searching
-            if (isSearching && tag === WIDGET_TAGS.SUGGESTED_WIDGETS) {
+            if (isSearching && tag === WIDGET_TAGS.GERNERAL) {
               return null;
             }
 
@@ -135,7 +135,7 @@ function WidgetSidebarWithTags({ isActive }: { isActive: boolean }) {
 
                 <CollapsibleContent>
                   <div className="grid items-stretch grid-cols-3 gap-x-2 gap-y-1 justify-items-stretch">
-                    {tag === WIDGET_TAGS.SUGGESTED_WIDGETS
+                    {tag === WIDGET_TAGS.GERNERAL
                       ? sortBy(cardsForThisTag, (widget) => {
                           return SUGGESTED_WIDGETS_ORDER[widget.type];
                         }).map((card) => (

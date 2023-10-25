@@ -10,7 +10,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "视频",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.MEDIA],
+  tags: [WIDGET_TAGS.FEATRUE],
   needsMeta: true,
   searchTags: ["youtube", "video"],
   defaults: {
@@ -20,7 +20,7 @@ export const CONFIG = {
     url: getAssetUrl(`${ASSETS_CDN_URL}/widgets/bird.mp4`),
     autoPlay: false,
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
     backgroundColor: "#000",
     responsiveBehavior: ResponsiveBehavior.Fill,
   },

@@ -268,7 +268,7 @@ function TableFilterPaneContent(props: TableFilterProps) {
               icon={<AddIcon className="w-5 h-5" color={props.accentColor} />}
               onClick={addFilter}
               size="small"
-              text="Add Filter"
+              text="添加过滤条件"
             />
             <ButtonActionsWrapper>
               <Button
@@ -277,7 +277,7 @@ function TableFilterPaneContent(props: TableFilterProps) {
                 buttonVariant={ButtonVariantTypes.SECONDARY}
                 className="t--clear-all-filter-btn"
                 onClick={clearFilters}
-                text="CLEAR ALL"
+                text="清除所有"
               />
               <Button
                 borderRadius={props.borderRadius}
@@ -285,7 +285,7 @@ function TableFilterPaneContent(props: TableFilterProps) {
                 buttonVariant={ButtonVariantTypes.PRIMARY}
                 className="t--apply-filter-btn"
                 onClick={applyFilter}
-                text="APPLY"
+                text="应用"
               />
             </ButtonActionsWrapper>
           </ButtonWrapper>

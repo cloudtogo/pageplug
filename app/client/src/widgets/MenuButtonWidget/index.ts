@@ -17,7 +17,7 @@ export const CONFIG = {
     isCompact: false,
     isDisabled: false,
     isVisible: true,
-    animateLoading: true,
+    animateLoading: false,
     menuItemsSource: MenuItemsSource.STATIC,
     menuItems: {
       menuItem1: {

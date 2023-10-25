@@ -9,7 +9,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "扫码器",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.EXTERNAL],
+  tags: [WIDGET_TAGS.FEATRUE],
   needsMeta: true,
   searchTags: [
     "barcode scanner",
@@ -30,7 +30,7 @@ export const CONFIG = {
     version: 1,
     isRequired: false,
     isDisabled: false,
-    animateLoading: true,
+    animateLoading: false,
     placement: ButtonPlacementTypes.CENTER,
     responsiveBehavior: ResponsiveBehavior.Fill,
   },

@@ -24,7 +24,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "下拉单选",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.SUGGESTED_WIDGETS, WIDGET_TAGS.SELECT],
+  tags: [WIDGET_TAGS.SELECT],
   needsMeta: true,
   searchTags: ["dropdown", "select"],
   defaults: {
@@ -49,7 +49,7 @@ export const CONFIG = {
     isFilterable: true,
     isRequired: false,
     isDisabled: false,
-    animateLoading: true,
+    animateLoading: false,
     labelTextSize: "0.875rem",
     responsiveBehavior: ResponsiveBehavior.Fill,
     minWidth: FILL_WIDGET_MIN_WIDTH,

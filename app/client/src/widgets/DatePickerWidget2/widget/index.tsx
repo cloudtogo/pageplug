@@ -285,9 +285,9 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
         sectionName: "属性",
         children: [
           {
-            helpText: "Show help text or details about current selection",
+            helpText: "显示关于当前选项的帮助文本或详细信息",
             propertyName: "labelTooltip",
-            label: "Tooltip",
+            label: "提示",
             controlType: "INPUT_TEXT",
             placeholderText: "Add tooltip text here",
             isBindProperty: true,

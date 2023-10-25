@@ -31,7 +31,7 @@ export const CONFIG = {
     isRequired: false,
     isDisabled: false,
     allowCurrencyChange: false,
-    animateLoading: true,
+    animateLoading: false,
   },
   properties: {
     derived: Widget.getDerivedPropertiesMap(),

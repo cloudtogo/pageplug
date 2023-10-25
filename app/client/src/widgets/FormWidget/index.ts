@@ -22,7 +22,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "表单",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.LAYOUT],
+  tags: [WIDGET_TAGS.INPUTS],
   needsMeta: true,
   isCanvas: true,
   features: {
@@ -48,7 +48,7 @@ export const CONFIG = {
     columns: 24,
     borderColor: Colors.GREY_5,
     borderWidth: "1",
-    animateLoading: true,
+    animateLoading: false,
     widgetName: "Form",
     backgroundColor: Colors.WHITE,
     children: [],

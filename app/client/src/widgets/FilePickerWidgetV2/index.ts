@@ -28,7 +28,7 @@ export const CONFIG = {
     version: 1,
     isRequired: false,
     isDisabled: false,
-    animateLoading: true,
+    animateLoading: false,
     responsiveBehavior: ResponsiveBehavior.Hug,
     minWidth: BUTTON_MIN_WIDTH,
   },

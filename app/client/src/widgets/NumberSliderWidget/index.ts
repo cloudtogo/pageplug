@@ -11,7 +11,7 @@ export const CONFIG = {
   needsMeta: true,
   searchTags: ["range", "number slider"],
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.SLIDERS],
+  tags: [WIDGET_TAGS.DISPLAY],
   defaults: {
     min: 0,
     max: 100,
@@ -32,7 +32,7 @@ export const CONFIG = {
     shouldScroll: false,
     shouldTruncate: false,
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
     labelText: "百分比",
     labelPosition: LabelPosition.Top,
     labelAlignment: Alignment.LEFT,

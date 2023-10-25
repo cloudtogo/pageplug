@@ -15,7 +15,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "Iframe",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.DISPLAY],
+  tags: [WIDGET_TAGS.GERNERAL],
   needsMeta: true,
   searchTags: ["embed", "html"],
   defaults: {
@@ -26,7 +26,7 @@ export const CONFIG = {
     columns: 24,
     widgetName: "Iframe",
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
     responsiveBehavior: ResponsiveBehavior.Fill,
   },
   properties: {

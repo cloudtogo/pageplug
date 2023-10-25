@@ -10,7 +10,7 @@ export const CONFIG = {
   name: "地图",
   iconSVG: IconSVG,
   searchTags: ["map"],
-  tags: [WIDGET_TAGS.CONTENT],
+  tags: [WIDGET_TAGS.DISPLAY],
   needsMeta: true,
   defaults: {
     rows: 40,
@@ -26,7 +26,7 @@ export const CONFIG = {
     defaultMarkers: [{ lat: 25.122, long: 50.132, title: "位置1" }],
     isClickedMarkerCentered: true,
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
     responsiveBehavior: ResponsiveBehavior.Fill,
     minWidth: FILL_WIDGET_MIN_WIDTH,
   },

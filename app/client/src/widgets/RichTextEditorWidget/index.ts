@@ -12,7 +12,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "富文本编辑器",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.INPUTS],
+  tags: [WIDGET_TAGS.FEATRUE],
   needsMeta: true,
   searchTags: ["input", "rte", "rich text editor"],
   features: {
@@ -26,7 +26,7 @@ export const CONFIG = {
     defaultText: "编辑器初始<b>内容</b>",
     rows: 20,
     columns: 24,
-    animateLoading: true,
+    animateLoading: false,
     isDisabled: false,
     isVisible: true,
     isRequired: false,

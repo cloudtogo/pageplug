@@ -611,7 +611,7 @@ export function EditorHeader() {
                 open={showModal}
               >
                 <ModalContent style={{ width: "640px" }}>
-                  <ModalHeader>Application Invite</ModalHeader>
+                  <ModalHeader>应用分享</ModalHeader>
                   <ModalBody>
                     <Tabs
                       onValueChange={(value) => setActiveTab(value)}

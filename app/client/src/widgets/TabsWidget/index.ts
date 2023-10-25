@@ -16,7 +16,7 @@ export const CONFIG = {
   name: "标签页",
   searchTags: ["tabs"],
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.LAYOUT],
+  tags: [WIDGET_TAGS.DISPLAY],
   needsMeta: true,
   isCanvas: true,
   // TODO(abhinav): Default config like these are not serializable
@@ -51,7 +51,7 @@ export const CONFIG = {
     columns: 24,
     shouldScrollContents: false,
     widgetName: "Tabs",
-    animateLoading: true,
+    animateLoading: false,
     borderWidth: 1,
     borderColor: Colors.GREY_5,
     backgroundColor: Colors.WHITE,

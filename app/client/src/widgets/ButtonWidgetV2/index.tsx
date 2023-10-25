@@ -21,7 +21,7 @@ export const CONFIG = {
     },
   },
   defaults: {
-    animateLoading: true,
+    animateLoading: false,
     text: "Submit",
     buttonVariant: BUTTON_VARIANTS.FILLED,
     buttonColor: BUTTON_COLORS.ACCENT,

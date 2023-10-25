@@ -49,7 +49,7 @@ export function FormDialogComponent(props: FormDialogComponentProps) {
           size="md"
           startIcon={"share-line"}
         >
-          Share
+          分享
         </Button>
       )}
       <Modal
@@ -59,7 +59,7 @@ export function FormDialogComponent(props: FormDialogComponentProps) {
         <ModalContent style={{ width: "640px" }}>
           <ModalHeader>
             <div className="text-ellipsis overflow-hidden whitespace-nowrap">
-              {props.title || `Invite Users to ${props.workspace.name}`}
+              {props.title || `邀请小伙伴到 ${props.workspace.name}`}
             </div>
           </ModalHeader>
           <ModalBody>

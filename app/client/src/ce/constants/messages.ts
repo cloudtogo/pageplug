@@ -140,7 +140,9 @@ export const INVITE_USER_SUBMIT_SUCCESS = () => `邀请成功`;
 export const INVITE_USERS_VALIDATION_EMAILS_EMPTY = () =>
   `请输入小伙伴们的邮箱`;
 export const INVITE_USER_RAMP_TEXT = () =>
-  "用户将有权访问工作区中的所有应用程序。 对于应用程序级的访问，请尝试我们的";
+  "如需使用更多的用户权限功能，可升级至";
+export const INVITE_USER_RAMP_TEXT2 = () =>
+  "。如需申请企业版使用体验，可以联系社区—静静申请license";
 export const CUSTOM_ROLES_RAMP_TEXT = () =>
   "要构建和分配自定义角色，请尝试我们的";
 export const CUSTOM_ROLE_TEXT = () => "自定义权限";
@@ -151,7 +153,7 @@ export const USERS_HAVE_ACCESS_TO_ALL_APPS = () =>
 export const USERS_HAVE_ACCESS_TO_ONLY_THIS_APP = () =>
   "用户只能访问此应用程序";
 export const NO_USERS_INVITED = () => "未开通邮件服务";
-export const BUSINESS_EDITION_TEXT = () => "business edition";
+export const BUSINESS_EDITION_TEXT = () => "企业版";
 export const CREATE_PASSWORD_RESET_SUCCESS = () => `密码重置成功`;
 export const CREATE_PASSWORD_RESET_SUCCESS_LOGIN_LINK = () => `登录`;
 
@@ -205,7 +207,7 @@ export const CREATE_NEW_APPLICATION = () => `新建应用`;
 export const SEARCH_APPS = () => `搜索应用`;
 export const GETTING_STARTED = () => `马上开始`;
 export const WORKSPACES_HEADING = () => `应用组`;
-export const WELCOME_TOUR = () => `欢迎光临`;
+export const WELCOME_TOUR = () => `新手引导`;
 export const NO_APPS_FOUND = () => `没有发现相关应用`;
 
 // Lightning menu

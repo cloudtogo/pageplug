@@ -16,7 +16,7 @@ export const CONFIG = {
     },
   },
   type: Widget.getWidgetType(),
-  name: "下拉树形多选",
+  name: "树形多选",
   iconSVG: IconSVG,
   tags: [WIDGET_TAGS.SELECT],
   needsMeta: true,
@@ -25,7 +25,7 @@ export const CONFIG = {
     rows: 7,
     columns: 20,
     mode: "SHOW_ALL",
-    animateLoading: true,
+    animateLoading: false,
     options: [
       {
         label: "蓝",
