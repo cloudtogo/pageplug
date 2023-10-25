@@ -24,7 +24,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "下拉单选",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.SUGGESTED_WIDGETS, WIDGET_TAGS.SELECT],
+  tags: [WIDGET_TAGS.SELECT],
   needsMeta: true,
   searchTags: ["dropdown", "select"],
   defaults: {

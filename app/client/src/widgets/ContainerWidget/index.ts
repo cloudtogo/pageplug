@@ -19,7 +19,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "容器",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.LAYOUT],
+  tags: [WIDGET_TAGS.GERNERAL],
   isCanvas: true,
   features: {
     dynamicHeight: {

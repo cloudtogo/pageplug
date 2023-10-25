@@ -15,7 +15,7 @@ export const CONFIG = {
   name: "开关组", // The display name which will be made in uppercase and show in the widgets panel ( can have spaces )
   searchTags: ["switch group"],
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.TOGGLES],
+  tags: [WIDGET_TAGS.SELECT],
   needsMeta: true, // Defines if this widget adds any meta properties
   isCanvas: false, // Defines if this widget has a canvas within in which we can drop other widgets
   defaults: {

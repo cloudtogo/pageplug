@@ -229,17 +229,12 @@ export const MAX_MODAL_WIDTH_FROM_MAIN_WIDTH = 0.95;
 export const FILE_SIZE_LIMIT_FOR_BLOBS = 5000 * 1024; // 5MB
 
 export const WIDGET_TAGS = {
-  SUGGESTED_WIDGETS: "Suggested",
-  INPUTS: "Inputs",
-  BUTTONS: "Buttons",
-  SELECT: "Select",
-  DISPLAY: "Display",
-  LAYOUT: "Layout",
-  MEDIA: "Media",
-  TOGGLES: "Toggles",
-  SLIDERS: "Sliders",
-  CONTENT: "Content",
-  EXTERNAL: "External",
+  GERNERAL: "通用",
+  SELECT: "选择",
+  INPUTS: "输入",
+  DISPLAY: "展示",
+  BUTTONS: "按钮",
+  FEATRUE: "功能",
 } as const;
 
 export type WidgetTags = (typeof WIDGET_TAGS)[keyof typeof WIDGET_TAGS];

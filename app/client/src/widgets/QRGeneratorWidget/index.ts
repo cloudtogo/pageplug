@@ -1,4 +1,4 @@
-import { DEFAULT_FONT_SIZE } from "constants/WidgetConstants";
+import { DEFAULT_FONT_SIZE, WIDGET_TAGS } from "constants/WidgetConstants";
 import { OverflowTypes } from "./constants";
 import IconSVG from "./icon.svg";
 import Widget from "./widget";
@@ -6,6 +6,7 @@ import Widget from "./widget";
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "二维码生成器",
+  tags: [WIDGET_TAGS.FEATRUE],
   iconSVG: IconSVG,
   searchTags: ["typography", "paragraph", "label", "qrgenerator"],
   defaults: {

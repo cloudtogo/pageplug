@@ -16,7 +16,7 @@ export const CONFIG = {
     },
   },
   type: Widget.getWidgetType(),
-  name: "下拉树形多选",
+  name: "树形多选",
   iconSVG: IconSVG,
   tags: [WIDGET_TAGS.SELECT],
   needsMeta: true,

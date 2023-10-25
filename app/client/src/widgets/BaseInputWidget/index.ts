@@ -1,6 +1,7 @@
 import { Alignment } from "@blueprintjs/core";
 import { LabelPosition } from "components/constants";
 import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 import { ResponsiveBehavior } from "utils/autoLayout/constants";
 
 import IconSVG from "./icon.svg";
@@ -10,6 +11,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "输入框",
   hideCard: true,
+  tags: [WIDGET_TAGS.INPUTS],
   iconSVG: IconSVG,
   needsMeta: true,
   defaults: {

@@ -26,7 +26,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "弹窗",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.LAYOUT],
+  tags: [WIDGET_TAGS.FEATRUE],
   needsMeta: true,
   isCanvas: true,
   features: {

@@ -12,7 +12,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "Formily表单",
   searchTags: ["form", "submit"],
-  tags: [WIDGET_TAGS.SUGGESTED_WIDGETS],
+  tags: [WIDGET_TAGS.INPUTS],
   iconSVG: IconSVG,
   needsMeta: true,
   isCanvas: false,

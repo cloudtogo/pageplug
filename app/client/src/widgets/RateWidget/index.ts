@@ -15,7 +15,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "评分",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.CONTENT],
+  tags: [WIDGET_TAGS.SELECT],
   needsMeta: true,
   searchTags: ["stars", "rate"],
   defaults: {

@@ -12,7 +12,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "富文本编辑器",
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.INPUTS],
+  tags: [WIDGET_TAGS.FEATRUE],
   needsMeta: true,
   searchTags: ["input", "rte", "rich text editor"],
   features: {

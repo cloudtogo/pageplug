@@ -18,7 +18,7 @@ export const CONFIG = {
   name: "表格",
   searchTags: ["datagrid", "table"],
   iconSVG: IconSVG,
-  tags: [WIDGET_TAGS.SUGGESTED_WIDGETS, WIDGET_TAGS.DISPLAY],
+  tags: [WIDGET_TAGS.DISPLAY],
   needsMeta: true,
   needsHeightForContent: true,
   defaults: {
