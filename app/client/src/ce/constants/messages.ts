@@ -1134,18 +1134,18 @@ export const SAVE_BUTTON = () => "保存";
 export const SAVE_AND_RESTART_BUTTON = () => "保存并重新启动";
 export const SAVE_AND_REFRESH_BUTTON = () => "保存并刷新";
 export const RESET_BUTTON = () => "重置";
-export const BUSINESS_TAG = () => "商业版";
+export const BUSINESS_TAG = () => "企业版";
 export const ENTERPRISE_TAG = () => "企业版";
 
 // Upgrade pages begin
-export const AVAILABLE_ON_BUSINESS = () => "仅适用于商业计划";
+export const AVAILABLE_ON_BUSINESS = () => "仅适用于企业计划";
 export const EXCLUSIVE_TO_BUSINESS = (featureName: string) =>
-  `${featureName} 功能仅适用于商业版工作区`;
+  `${featureName} 功能仅适用于企业版工作区`;
 export const AVAILABLE_ON_ENTERPRISE = () => "仅适用于 Pageplug 企业版";
 // Upgrade pages end
 
 // Audit logs begin
-export const AUDIT_LOGS = () => "Audit logs";
+export const AUDIT_LOGS = () => "审计日志";
 export const TRY_AGAIN_WITH_YOUR_FILTER = () => "Try again with your filter";
 
 // Audit logs Upgrade page begin

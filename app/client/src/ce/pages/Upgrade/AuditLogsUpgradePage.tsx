@@ -26,7 +26,7 @@ export function AuditLogsUpgradePage() {
   });
 
   const header: Header = {
-    heading: createMessage(INTRODUCING, "audit logs"),
+    heading: createMessage(INTRODUCING, "审计日志"),
     subHeadings: [createMessage(AUDIT_LOGS_UPGRADE_PAGE_SUB_HEADING)],
   };
   const carousel: Carousel = {
@@ -74,7 +74,7 @@ export function AuditLogsUpgradePage() {
     onClick: () => {
       onUpgrade();
     },
-    message: createMessage(EXCLUSIVE_TO_BUSINESS, ["audit logs"]),
+    message: createMessage(EXCLUSIVE_TO_BUSINESS, ["审计日志"]),
   };
   const props = { header, carousel, footer };
   return <UpgradePage {...props} />;

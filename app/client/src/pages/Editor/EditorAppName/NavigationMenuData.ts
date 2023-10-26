@@ -143,13 +143,6 @@ export const GetNavigationMenuData = ({
       isVisible: true,
       children: [
         {
-          text: "社区",
-          onClick: () => openExternalLink("https://community.appsmith.com/"),
-          type: MenuTypes.MENU,
-          isVisible: true,
-          isOpensNewWindow: true,
-        },
-        {
           text: "文档",
           onClick: () => openExternalLink("https://docs.pageplug.cn"),
           type: MenuTypes.MENU,

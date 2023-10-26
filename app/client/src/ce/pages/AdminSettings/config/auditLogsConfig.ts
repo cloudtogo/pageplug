@@ -12,7 +12,7 @@ export const config: AdminConfigType = {
   categoryType: CategoryType.OTHER,
   controlType: SettingTypes.PAGE,
   component: AuditLogsUpgradePage,
-  title: "Audit logs",
+  title: "审计日志",
   canSave: false,
   needsUpgrade: true,
 } as AdminConfigType;

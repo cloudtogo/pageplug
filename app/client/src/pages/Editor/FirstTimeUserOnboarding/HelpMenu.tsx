@@ -24,20 +24,20 @@ type HelpItem = {
 const HELP_MENU_ITEMS: HelpItem[] = [
   {
     icon: "book-line",
-    label: "Documentation",
-    link: "https://docs.appsmith.com/",
+    label: "文档",
+    link: "https://docs.pageplug.cn/",
   },
   {
     icon: "bug-line",
-    label: "Report a bug",
-    link: "https://github.com/appsmithorg/appsmith/issues/new/choose",
+    label: "报告一个bug",
+    link: "https://github.com/cloudtogo/pageplug/issues",
   },
 ];
 
 if (intercomAppID && window.Intercom) {
   HELP_MENU_ITEMS.push({
     icon: "chat-help",
-    label: "Chat with us",
+    label: "联系我们",
     id: "intercom-trigger",
   });
 }
@@ -75,7 +75,7 @@ function HelpMenu(props: {
             color="var(--ads-v2-color-bg-brand-secondary)"
             kind="heading-xs"
           >
-            Help & Resources
+            帮助 & 资源
           </Text>
           <div className="flex gap-2 flex-wrap mt-2">
             <Button
@@ -87,7 +87,7 @@ function HelpMenu(props: {
               }}
               startIcon={"guide"}
             >
-              Try guided tour
+              新手指引
             </Button>
             {HELP_MENU_ITEMS.map((item) => {
               return (
