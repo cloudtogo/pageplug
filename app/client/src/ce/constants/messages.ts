@@ -73,10 +73,10 @@ export const SIGNUP_PAGE_NAME_INPUT_PLACEHOLDER = () => `昵称`;
 export const SIGNUP_PAGE_NAME_INPUT_LABEL = () => `昵称`;
 export const SIGNUP_PAGE_PASSWORD_INPUT_LABEL = () => `密码`;
 export const SIGNUP_PAGE_PASSWORD_INPUT_PLACEHOLDER = () => `密码`;
-export const SIGNUP_PAGE_LOGIN_LINK_TEXT = () => `登录`;
+export const SIGNUP_PAGE_LOGIN_LINK_TEXT = () => `立即登录`;
 export const SIGNUP_PAGE_NAME_INPUT_SUBTEXT = () => `我们应该怎么称呼你？`;
 export const SIGNUP_PAGE_SUBMIT_BUTTON_TEXT = () => `注册`;
-export const ALREADY_HAVE_AN_ACCOUNT = () => `已经有账号了吗？`;
+export const ALREADY_HAVE_AN_ACCOUNT = () => `已有账号？`;
 
 export const SIGNUP_PAGE_SUCCESS = () => `恭喜注册成功！`;
 export const SIGNUP_PAGE_SUCCESS_LOGIN_BUTTON_TEXT = () => `登录`;
