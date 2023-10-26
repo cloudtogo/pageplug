@@ -6,8 +6,11 @@ import { ValidationTypes } from "constants/WidgetValidation";
 import { Stylesheet } from "entities/AppTheming";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ConfigProvider } from "antd";
-// import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
+import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
 import type { AutocompletionDefinitions } from "widgets/constants";
+import type {
+  SetterConfig
+} from "entities/AppTheming";
 class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
   static getPropertyPaneContentConfig() {
     return [
@@ -209,12 +212,15 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
     };
   }
   static getAutocompleteDefinitions(): AutocompletionDefinitions {
-    return {};
+    return {
+      formData: "[$__formData__$]",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+    };
   }
 
-  static getMetaPropertiesMap(): Record<string, undefined> {
+  static getMetaPropertiesMap(): Record<string, any> {
     return {
-      formData: undefined,
+      formData: [],
     };
   }
 
@@ -227,6 +233,16 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
       },
     });
   };
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {
+        setVisibility: {
+          path: "isVisible",
+          type: "boolean",
+        }
+      },
+    };
+  }
 
   getPageView() {
     const {

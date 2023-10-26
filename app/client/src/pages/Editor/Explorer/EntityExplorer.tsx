@@ -94,11 +94,13 @@ function EntityExplorer({ isActive }: { isActive: boolean }) {
       }`}
       ref={explorerRef}
     >
+      {/* 组件 */}
       <ExplorerWidgetGroup
         addWidgetsFn={showWidgetsSidebar}
         searchKeyword=""
         step={0}
       />
+      {/* 查询 */}
       <Files />
       {noResults && (
         <NoResult
@@ -108,7 +110,9 @@ function EntityExplorer({ isActive }: { isActive: boolean }) {
           title="没有找到相关实体"
         />
       )}
+      {/* 数据源 */}
       <Datasources />
+      {/* 工具库 */}
       <JSDependencies />
     </Wrapper>
   );
