@@ -92,7 +92,7 @@ function WidgetSidebarWithTags({ isActive }: { isActive: boolean }) {
           autoFocus
           id={ENTITY_EXPLORER_SEARCH_ID}
           onChange={search}
-          placeholder="Search widgets"
+          placeholder="搜索组件"
           ref={searchInputRef}
           type="text"
         />
@@ -111,9 +111,9 @@ function WidgetSidebarWithTags({ isActive }: { isActive: boolean }) {
             }
 
             // We don't need to show suggested widgets when the user is searching
-            if (isSearching && tag === WIDGET_TAGS.GERNERAL) {
-              return null;
-            }
+            // if (isSearching && tag === WIDGET_TAGS.GERNERAL) {
+            //   return null;
+            // }
 
             return (
               <Collapsible
