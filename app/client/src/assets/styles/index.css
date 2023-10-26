@@ -85,7 +85,7 @@ textarea::placeholder {
 }
 
 .login-img {
-  height: 5rem;
+  height: 4rem;
   width: 257px;
 }
 
@@ -131,4 +131,23 @@ textarea::placeholder {
   position: absolute;
   top: 9px;
   left: 7px;
+}
+/* 下划线去掉 */
+.a_link:hover {
+  text-decoration: none !important;
+}
+/* 按钮禁用状态 */
+.ads-v2-button:disabled > .ads-v2-button__content {
+    background-color: #aabdba;
+    border: 1px solid #aabdba;
+}
+/* 消息提示 */
+.my-msg.ant-message-notice-error > .ant-message-notice-content {
+  border: 1px solid #FF5449 !important;
+  background-color: #fff0ed !important;
+}
+
+.my-msg.ant-message-notice-success > .ant-message-notice-content {
+  border: 1px solid #34C724 !important;
+  background-color: #E3F9E9 !important;
 }

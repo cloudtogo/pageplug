@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import type { InjectedFormProps } from "redux-form";
 import { reduxForm, formValueSelector } from "redux-form";
 import { AUTH_LOGIN_URL } from "constants/routes";
+import Helmet from "react-helmet";
 import { SIGNUP_FORM_NAME } from "@appsmith/constants/forms";
 import type { RouteComponentProps } from "react-router-dom";
 import { useHistory, useLocation, withRouter } from "react-router-dom";
@@ -40,11 +41,11 @@ import { useScript, ScriptStatus, AddScriptTo } from "utils/hooks/useScript";
 
 import { getIsSafeRedirectURL } from "utils/helpers";
 import Container from "pages/UserAuth/Container";
-import {
-  getIsFormLoginEnabled
-} from "@appsmith/selectors/tenantSelectors";
-import Helmet from "react-helmet";
+import { getIsFormLoginEnabled } from "@appsmith/selectors/tenantSelectors";
 import { useHtmlPageTitle } from "@appsmith/utils";
+import PasswordSVGIcon from "ce/components/svg/Password";
+import EmailSVGIcon from "ce/components/svg/Email";
+import { message } from "antd";
 
 declare global {
   interface Window {
@@ -148,6 +149,22 @@ export function SignUp(props: SignUpFormProps) {
     }
   };
 
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  const showPassword = () => {
+    setIsShowPassword(!isShowPassword);
+  };
+
+  useEffect(() => {
+    if (showError) {
+      message.open({
+        type: "error",
+        duration: 3,
+        content: errorMessage,
+        className: "my-msg",
+      });
+    }
+  }, []);
+
   return (
     <Container
       footer={null}
@@ -158,35 +175,36 @@ export function SignUp(props: SignUpFormProps) {
         <title>{htmlPageTitle}</title>
       </Helmet>
 
-      {showError && <Callout kind="error">{errorMessage}</Callout>}
       {isFormLoginEnabled && (
         <SpacedSubmitForm
           action={signupURL.toString()}
           id="signup-form"
           method="POST"
-          onSubmit={(e) => handleSubmit(e)}
+          onSubmit={(e: any) => handleSubmit(e)}
         >
-          <FormGroup
-            intent={error ? "danger" : "none"}
-          >
+          <FormGroup intent={error ? "danger" : "none"}>
             <FormTextField
               autoFocus
               name="email"
               placeholder={createMessage(SIGNUP_PAGE_EMAIL_INPUT_PLACEHOLDER)}
               type="email"
-              startIcon="emoji"
+              startIcon="null"
             />
+            <EmailSVGIcon className="icon-position w-4" />
           </FormGroup>
-          <FormGroup
-            intent={error ? "danger" : "none"}
-          >
+          <FormGroup intent={error ? "danger" : "none"}>
             <FormTextField
               name="password"
               placeholder={createMessage(
                 SIGNUP_PAGE_PASSWORD_INPUT_PLACEHOLDER,
               )}
-              type="password"
-              startIcon="eye-on"
+              type={isShowPassword ? "text" : "password"}
+              startIcon={isShowPassword ? "eye-on" : "null"}
+            />
+            <PasswordSVGIcon
+              className="icon-position w-4"
+              showPassword={showPassword}
+              isShowPassword={isShowPassword}
             />
           </FormGroup>
           <FormActions>
@@ -210,10 +228,11 @@ export function SignUp(props: SignUpFormProps) {
           </FormActions>
         </SpacedSubmitForm>
       )}
+      {/* 底部提示 */}
       <div className="flex-middle myfont">
         {createMessage(ALREADY_HAVE_AN_ACCOUNT)}
         <Link
-          className="t--sign-up t--signup-link pl-[var(--ads-v2\-spaces-3)] fs-16"
+          className="t--sign-up t--signup-link pl-[var(--ads-v2\-spaces-3)] fs-16 a_link"
           kind="primary"
           target="_self"
           to={AUTH_LOGIN_URL}
