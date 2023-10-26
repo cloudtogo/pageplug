@@ -187,6 +187,11 @@ export default function LeftPane() {
       return category;
     })
     .filter(Boolean) as Category[];
+  // handle data
+  const filteredAclCategories_temp = filteredAclCategories.filter(
+    (item) => item.title !== "Provisioning",
+  );
+  filteredAclCategories_temp[0].title = "部门 角色权限";
 
   return (
     <Wrapper>
@@ -204,10 +209,10 @@ export default function LeftPane() {
       )}
       <HeaderContainer>
         <StyledHeader kind="heading-s" renderAs="p">
-          访问控制
+          权限管理
         </StyledHeader>
         <Categories
-          categories={filteredAclCategories}
+          categories={filteredAclCategories_temp}
           currentCategory={category}
           currentSubCategory={subCategory}
         />
