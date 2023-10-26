@@ -4,10 +4,12 @@ import type { RouteComponentProps } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 import type { InjectedFormProps } from "redux-form";
 import { change, reduxForm, formValueSelector } from "redux-form";
+import { toast } from "design-system";
 import StyledForm from "components/editorComponents/Form";
 import { FormActions, FormMessagesContainer } from "./StyledComponents";
 import {
-  FORGOT_PASSWORD_PAGE_EMAIL_INPUT_LABEL,
+  ALREADY_HAVE_AN_ACCOUNT,
+  SIGNUP_PAGE_LOGIN_LINK_TEXT,
   FORGOT_PASSWORD_PAGE_EMAIL_INPUT_PLACEHOLDER,
   FORGOT_PASSWORD_PAGE_SUBMIT_BUTTON_TEXT,
   FORGOT_PASSWORD_PAGE_TITLE,
@@ -27,6 +29,8 @@ import type { ForgotPasswordFormValues } from "./helpers";
 import { forgotPasswordSubmitHandler } from "./helpers";
 import { getAppsmithConfigs } from "@appsmith/configs";
 import Container from "./Container";
+import EmailSVGIcon from "ce/components/svg/Email";
+import { message } from "antd";
 
 const { mailEnabled } = getAppsmithConfigs();
 
@@ -58,6 +62,26 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
     }
   }, [props.emailValue]);
 
+  useEffect(() => {
+    if (!mailEnabled) {
+      message.open({
+        type: "error",
+        duration: 1,
+        content: "系统未开通邮件服务，不能正常发送重置邮件",
+        className: "my-msg",
+      });
+    }
+  }, []);
+
+  if (submitSucceeded) {
+    message.open({
+      type: "success",
+      duration: 1,
+      content: `密码重置链接已经发送到你的邮箱 ${props.emailValue} ，请查收确认`,
+      className: "my-msg",
+    });
+  }
+
   return (
     <Container
       subtitle={
@@ -73,39 +97,19 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
       title={createMessage(FORGOT_PASSWORD_PAGE_TITLE)}
     >
       <FormMessagesContainer>
-        {submitSucceeded && (
-          <Callout kind="success">
-            {createMessage(FORGOT_PASSWORD_SUCCESS_TEXT, props.emailValue)}
-          </Callout>
-        )}
-        {!mailEnabled && (
-          <Callout
-            kind="warning"
-            links={[
-              {
-                to: "https://docs.appsmith.com/v/v1.2.1/setup/docker/email",
-                target: "_blank",
-                children: "配置邮件服务",
-              },
-            ]}
-          >
-            系统未开通邮件服务，不能正常发送重置邮件
-          </Callout>
-        )}
         {submitFailed && error && <Callout kind="warning">{error}</Callout>}
       </FormMessagesContainer>
       <StyledForm onSubmit={handleSubmit(forgotPasswordSubmitHandler)}>
-        <FormGroup
-          intent={error ? "danger" : "none"}
-        >
+        <FormGroup intent={error ? "danger" : "none"}>
           <FormTextField
             disabled={submitting}
             name="email"
             placeholder={createMessage(
               FORGOT_PASSWORD_PAGE_EMAIL_INPUT_PLACEHOLDER,
             )}
-            startIcon="emoji"
+            startIcon="null"
           />
+          <EmailSVGIcon className="icon-position w-4" />
         </FormGroup>
         <FormActions>
           <Button
@@ -118,6 +122,18 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
           </Button>
         </FormActions>
       </StyledForm>
+      {/* 底部提示 */}
+      <div className="flex-middle myfont">
+        {createMessage(ALREADY_HAVE_AN_ACCOUNT)}
+        <Link
+          className="t--sign-up t--signup-link pl-[var(--ads-v2\-spaces-3)] fs-16 a_link"
+          kind="primary"
+          target="_self"
+          to={AUTH_LOGIN_URL}
+        >
+          {createMessage(SIGNUP_PAGE_LOGIN_LINK_TEXT)}
+        </Link>
+      </div>
     </Container>
   );
 };

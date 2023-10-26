@@ -130,7 +130,7 @@ export function Login(props: LoginFormProps) {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const showPassword = () => {
     setIsShowPassword(!isShowPassword);
-  }
+  };
 
   return (
     <Container
@@ -165,9 +165,7 @@ export function Login(props: LoginFormProps) {
       {isFormLoginEnabled && (
         <>
           <SpacedSubmitForm action={loginURL} method="POST">
-            <FormGroup
-              intent={error ? "danger" : "none"}
-            >
+            <FormGroup intent={error ? "danger" : "none"}>
               <FormTextField
                 autoFocus
                 name={LOGIN_FORM_EMAIL_FIELD_NAME}
@@ -175,11 +173,9 @@ export function Login(props: LoginFormProps) {
                 type="email"
                 startIcon="null"
               />
-              <EmailSVGIcon className="icon-position w-4"/>
+              <EmailSVGIcon className="icon-position w-4" />
             </FormGroup>
-            <FormGroup
-              intent={error ? "danger" : "none"}
-            >
+            <FormGroup intent={error ? "danger" : "none"}>
               <FormTextField
                 name={LOGIN_FORM_PASSWORD_FIELD_NAME}
                 placeholder={createMessage(
@@ -188,7 +184,11 @@ export function Login(props: LoginFormProps) {
                 type={isShowPassword ? "text" : "password"}
                 startIcon={isShowPassword ? "eye-on" : "null"}
               />
-              <PasswordSVGIcon className="icon-position w-4" showPassword={showPassword} isShowPassword={isShowPassword}/>
+              <PasswordSVGIcon
+                className="icon-position w-4"
+                showPassword={showPassword}
+                isShowPassword={isShowPassword}
+              />
             </FormGroup>
 
             <FormActions>
@@ -210,11 +210,12 @@ export function Login(props: LoginFormProps) {
               </Button>
             </FormActions>
           </SpacedSubmitForm>
+          {/* 底部提示 */}
           <div className="flex-space-between">
             <div className="flex myfont">
               {createMessage(NEW_TO_APPSMITH)}
               <Link
-                className="t--sign-up t--signup-link pl-[var(--ads-v2\-spaces-3)] fs-16"
+                className="a_link t--sign-up t--signup-link pl-[var(--ads-v2\-spaces-3)] fs-16"
                 kind="primary"
                 target="_self"
                 to={signupURL}
@@ -224,7 +225,7 @@ export function Login(props: LoginFormProps) {
             </div>
             <div>
               <Link
-                className="justify-center fs-16"
+                className="justify-center fs-16 a_link"
                 target="_self"
                 to={forgotPasswordURL}
               >
