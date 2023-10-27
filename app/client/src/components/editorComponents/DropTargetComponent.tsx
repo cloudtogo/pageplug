@@ -26,7 +26,7 @@ import {
   previewModeSelector,
 } from "selectors/editorSelectors";
 import { useWidgetSelection } from "utils/hooks/useWidgetSelection";
-import EmptyCanvas from "assets/images/undraw_blank_canvas.svg";
+import EmptyCanvas from "assets/images/undraw_blank_canvas-1.svg";
 import { getDragDetails } from "sagas/selectors";
 import { useAutoHeightUIState } from "utils/hooks/autoHeightUIHooks";
 import {
@@ -72,7 +72,6 @@ const EmptyContainer = styled.div`
   margin-top: -180px;
   margin-left: -200px;
   text-align: center;
-  opacity: 0.5;
 
   & h2 {
     color: #666;
