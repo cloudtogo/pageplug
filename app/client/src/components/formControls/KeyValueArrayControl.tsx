@@ -263,7 +263,7 @@ function KeyValueRow(
         size="md"
         startIcon="add-more"
       >
-        Add more
+        增加
       </AddMoreButton>
     </>
   ) : null;
