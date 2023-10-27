@@ -289,7 +289,6 @@ const TabContainerView = styled.div`
 
     & > .ads-v2-tabs__panel {
       height: calc(100% - 50px);
-      overflow-y: scroll;
     }
   }
 `;

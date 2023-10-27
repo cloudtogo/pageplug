@@ -122,7 +122,7 @@ textarea::placeholder {
   background-color: #00000042;
   border-color: #00000042;
 }
-
+/* 图标hack处理 */
 .bp3-form-content {
   position: relative;
 }
@@ -132,6 +132,7 @@ textarea::placeholder {
   top: 9px;
   left: 7px;
 }
+
 /* 下划线去掉 */
 .a_link:hover {
   text-decoration: none !important;
@@ -150,4 +151,12 @@ textarea::placeholder {
 .my-msg.ant-message-notice-success > .ant-message-notice-content {
   border: 1px solid #34C724 !important;
   background-color: #E3F9E9 !important;
+}
+/* 邀请页调整 */
+.t--invite-user-btn {
+  width: 55px;
+}
+
+.t--property-control-wrapper .ads-v2-segmented-control {
+  width: 100%;
 }

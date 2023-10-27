@@ -359,31 +359,31 @@ class DatasourceRestAPIEditor extends React.Component<Props> {
         <FormInputContainer data-location-id={btoa("ssl")}>
           {this.renderCheckboxViaFormControl(
             "connection.ssl.authTypeControl",
-            "Use Self-Signed Certificate",
+            "使用自签名证书",
             "",
             true,
           )}
         </FormInputContainer>
         {this.renderSelfSignedCertificateFields()}
-        <Collapsible title="Headers">
+        <Collapsible title="请求头">
           <FormInputContainer
             className="t--headers-array"
             data-location-id={btoa("headers")}
           >
-            {this.renderKeyValueControlViaFormControl("headers", "请求头", "", false)}
+            {this.renderKeyValueControlViaFormControl("headers", "", "", false)}
           </FormInputContainer>
         </Collapsible>
-        <Collapsible title="Query parameters">
+        <Collapsible title="查询参数">
           <FormInputContainer data-location-id={btoa("queryParameters")}>
             {this.renderKeyValueControlViaFormControl(
               "queryParameters",
-              "查询参数",
+              "",
               "",
               false,
             )}
           </FormInputContainer>
         </Collapsible>
-        <Collapsible title="Authentication">
+        <Collapsible title="认证类型">
           <FormInputContainer data-location-id={btoa("authType")}>
             {this.renderDropdownControlViaFormControl(
               "authType",
@@ -409,7 +409,7 @@ class DatasourceRestAPIEditor extends React.Component<Props> {
                   value: AuthType.bearerToken,
                 },
               ],
-              "Authentication type",
+              "",
               "",
               false,
               "",
