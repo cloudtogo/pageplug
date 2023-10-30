@@ -229,12 +229,12 @@ export const MAX_MODAL_WIDTH_FROM_MAIN_WIDTH = 0.95;
 export const FILE_SIZE_LIMIT_FOR_BLOBS = 5000 * 1024; // 5MB
 
 export const WIDGET_TAGS = {
-  GERNERAL: "通用",
-  SELECT: "选择",
-  INPUTS: "输入",
-  DISPLAY: "展示",
-  BUTTONS: "按钮",
-  FEATRUE: "功能",
+  GERNERAL: "通用类",
+  SELECT: "数据输入-选择器组件",
+  INPUTS: "数据录入-输入器组件",
+  DISPLAY: "数据展示类",
+  BUTTONS: "按钮类",
+  FEATRUE: "功能类",
 } as const;
 
 export type WidgetTags = (typeof WIDGET_TAGS)[keyof typeof WIDGET_TAGS];
