@@ -20,13 +20,14 @@ import { ALL_LANGUAGE_CHARACTERS_REGEX } from "constants/Regex";
 import { createMessage } from "design-system-old/build/constants/messages";
 import { notEmptyValidator, TextType } from "design-system-old";
 import { getIsFormLoginEnabled } from "@appsmith/selectors/tenantSelectors";
+import Api from "api/Api";
 
 type ButtonProps = {
   wechatEnable?: boolean;
 };
 
 const BindButton = styled.button<ButtonProps>`
-  width: 96px;
+  width: ${(props) => (props.wechatEnable ? "135px" : "96px")};
   height: 32px;
   border: 1px solid ${(props) => (props.wechatEnable ? "#D4DAD9" : "#13c2c2")};
   border-radius: 4px;
@@ -85,12 +86,18 @@ function General() {
   };
 
   if (user?.email === ANONYMOUS_USERNAME) return null;
-  const [wechatEnable, setwechatEnable] = useState(false);
 
   const onBindwechatClick = () => {
-    setwechatEnable(!wechatEnable);
+    const requestUrl = "v1/wxLogin/code";
+    Api.get(requestUrl).then(({ data }) => {
+      const url = data.redirectUrl;
+      const newWindow: any = window.open(url, "_self");
+      newWindow.focus();
+    });
   };
-
+  const isWXBind = user?.authorizations?.some(
+    (item) => item.source === "WECHAT",
+  );
   return (
     <Wrapper>
       <FieldWrapper>
@@ -163,12 +170,14 @@ function General() {
         </LabelWrapper>
         <div style={{ flexDirection: "column", display: "flex" }}>
           {
-            <BindButton wechatEnable={wechatEnable} onClick={onBindwechatClick}>
-              绑定微信
+            <BindButton
+              wechatEnable={isWXBind}
+              onClick={onBindwechatClick}
+              disabled={isWXBind}
+            >
+              {isWXBind ? "微信已绑定邮箱" : "绑定微信"}
             </BindButton>
           }
-
-          {wechatEnable ? <Text>微信已绑定邮箱</Text> : <Text>'</Text>}
         </div>
       </FieldWrapper>
     </Wrapper>
