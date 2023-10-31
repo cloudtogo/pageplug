@@ -23,6 +23,7 @@ export type TableSizes = {
   TABLE_HEADER_HEIGHT: number;
   ROW_HEIGHT: number;
   ROW_FONT_SIZE: number;
+  TABLE_FOOTER_HEIGHT: number;
   VERTICAL_PADDING: number;
   EDIT_ICON_TOP: number;
   ROW_VIRTUAL_OFFSET: number;
@@ -57,6 +58,7 @@ export const TABLE_SIZES: { [key: string]: TableSizes } = {
   [CompactModeTypes.DEFAULT]: {
     COLUMN_HEADER_HEIGHT: 32,
     TABLE_HEADER_HEIGHT: 40,
+    TABLE_FOOTER_HEIGHT: 40,
     ROW_HEIGHT: 40,
     ROW_FONT_SIZE: 14,
     VERTICAL_PADDING: 6,
@@ -67,6 +69,7 @@ export const TABLE_SIZES: { [key: string]: TableSizes } = {
   [CompactModeTypes.SHORT]: {
     COLUMN_HEADER_HEIGHT: 32,
     TABLE_HEADER_HEIGHT: 40,
+    TABLE_FOOTER_HEIGHT: 40,
     ROW_HEIGHT: 30,
     ROW_FONT_SIZE: 12,
     VERTICAL_PADDING: 0,
@@ -77,6 +80,7 @@ export const TABLE_SIZES: { [key: string]: TableSizes } = {
   [CompactModeTypes.TALL]: {
     COLUMN_HEADER_HEIGHT: 32,
     TABLE_HEADER_HEIGHT: 40,
+    TABLE_FOOTER_HEIGHT: 40,
     ROW_HEIGHT: 60,
     ROW_FONT_SIZE: 18,
     VERTICAL_PADDING: 16,

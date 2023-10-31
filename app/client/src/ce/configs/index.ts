@@ -21,6 +21,7 @@ export interface INJECTED_CONFIGS {
   fusioncharts: {
     licenseKey: string;
   };
+  enableWeChatOAuth: boolean;
   enableMixpanel: boolean;
   google: string;
   enableTNCPP: boolean;
@@ -75,6 +76,9 @@ export const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
     fusioncharts: {
       licenseKey: process.env.REACT_APP_FUSIONCHARTS_LICENSE_KEY || "",
     },
+    enableWeChatOAuth: process.env.APPSMITH_WX_CLIENT_ID
+      ? process.env.APPSMITH_WX_CLIENT_SECRET.length > 0
+      : false,
     enableMixpanel: process.env.REACT_APP_SEGMENT_KEY
       ? process.env.REACT_APP_SEGMENT_KEY.length > 0
       : false,
@@ -243,6 +247,10 @@ export const getAppsmithConfigs = (): AppsmithUIConfigs => {
     enableRapidAPI:
       ENV_CONFIG.enableRapidAPI ||
       APPSMITH_FEATURE_CONFIGS?.enableRapidAPI ||
+      false,
+    enableWeChatOAuth:
+      ENV_CONFIG.enableWeChatOAuth ||
+      APPSMITH_FEATURE_CONFIGS?.enableWeChatOAuth ||
       false,
     enableMixpanel:
       ENV_CONFIG.enableMixpanel ||

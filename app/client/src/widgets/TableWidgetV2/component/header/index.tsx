@@ -52,16 +52,7 @@ export function TableHeader_Bottom(
     ...ActionProps
   } = props;
 
-  return isAddRowInProgress ? (
-    <Banner
-      accentColor={accentColor}
-      borderRadius={borderRadius}
-      boxShadow={boxShadow}
-      disabledAddNewRowSave={disabledAddNewRowSave}
-      isAddRowInProgress={isAddRowInProgress}
-      onAddNewRowAction={onAddNewRowAction}
-    />
-  ) : (
+  return (
     <BottomActions
       accentColor={accentColor}
       borderRadius={borderRadius}

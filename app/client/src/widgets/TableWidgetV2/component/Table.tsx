@@ -295,11 +295,20 @@ export function Table(props: TableProps) {
       height: isHeaderVisible
         ? props.height -
           tableSizes.TABLE_HEADER_HEIGHT -
+          (props.isVisiblePagination ? tableSizes.TABLE_FOOTER_HEIGHT : 0) -
           TABLE_SCROLLBAR_HEIGHT -
           SCROLL_BAR_OFFSET
-        : props.height - TABLE_SCROLLBAR_HEIGHT - SCROLL_BAR_OFFSET,
+        : props.height -
+          TABLE_SCROLLBAR_HEIGHT -
+          SCROLL_BAR_OFFSET -
+          (props.isVisiblePagination ? tableSizes.TABLE_FOOTER_HEIGHT : 0),
     };
-  }, [isHeaderVisible, props.height, tableSizes.TABLE_HEADER_HEIGHT]);
+  }, [
+    isHeaderVisible,
+    props.height,
+    tableSizes.TABLE_HEADER_HEIGHT,
+    props.isVisiblePagination,
+  ]);
 
   const shouldUseVirtual =
     props.serverSidePaginationEnabled &&
@@ -393,7 +402,7 @@ export function Table(props: TableProps) {
                 />
               </TableHeaderInnerWrapper>
             </TableHeaderWrapper>
-        </SimpleBar>
+          </SimpleBar>
         )}
         {/* 表格内容 */}
         <div
@@ -407,96 +416,94 @@ export function Table(props: TableProps) {
           ref={tableWrapperRef}
         >
           <div {...getTableProps()} className="table column-freeze">
-          {!shouldUseVirtual && (
-            <StaticTable
-              accentColor={props.accentColor}
-              borderRadius={props.borderRadius}
-              canFreezeColumn={props.canFreezeColumn}
-              columns={props.columns}
-              disableDrag={props.disableDrag}
-              editMode={props.editMode}
-              enableDrag={props.enableDrag}
-              getTableBodyProps={getTableBodyProps}
-              handleAllRowSelectClick={handleAllRowSelectClick}
-              handleColumnFreeze={props.handleColumnFreeze}
-              handleReorderColumn={props.handleReorderColumn}
-              headerGroups={headerGroups}
-              height={props.height}
-              isAddRowInProgress={props.isAddRowInProgress}
-              isResizingColumn={isResizingColumn}
-              isSortable={props.isSortable}
-              multiRowSelection={props?.multiRowSelection}
-              pageSize={props.pageSize}
-              prepareRow={prepareRow}
-              primaryColumnId={props.primaryColumnId}
-              ref={scrollBarRef}
-              rowSelectionState={rowSelectionState}
-              scrollContainerStyles={scrollContainerStyles}
-              selectTableRow={props.selectTableRow}
-              selectedRowIndex={props.selectedRowIndex}
-              selectedRowIndices={props.selectedRowIndices}
-              sortTableColumn={props.sortTableColumn}
-              subPage={subPage}
-              tableSizes={tableSizes}
-              totalColumnsWidth={totalColumnsWidth}
-              useVirtual={shouldUseVirtual}
-              widgetId={props.widgetId}
-              width={props.width}
-            />
-          )}
+            {!shouldUseVirtual && (
+              <StaticTable
+                accentColor={props.accentColor}
+                borderRadius={props.borderRadius}
+                canFreezeColumn={props.canFreezeColumn}
+                columns={props.columns}
+                disableDrag={props.disableDrag}
+                editMode={props.editMode}
+                enableDrag={props.enableDrag}
+                getTableBodyProps={getTableBodyProps}
+                handleAllRowSelectClick={handleAllRowSelectClick}
+                handleColumnFreeze={props.handleColumnFreeze}
+                handleReorderColumn={props.handleReorderColumn}
+                headerGroups={headerGroups}
+                height={props.height}
+                isAddRowInProgress={props.isAddRowInProgress}
+                isResizingColumn={isResizingColumn}
+                isSortable={props.isSortable}
+                multiRowSelection={props?.multiRowSelection}
+                pageSize={props.pageSize}
+                prepareRow={prepareRow}
+                primaryColumnId={props.primaryColumnId}
+                ref={scrollBarRef}
+                rowSelectionState={rowSelectionState}
+                scrollContainerStyles={scrollContainerStyles}
+                selectTableRow={props.selectTableRow}
+                selectedRowIndex={props.selectedRowIndex}
+                selectedRowIndices={props.selectedRowIndices}
+                sortTableColumn={props.sortTableColumn}
+                subPage={subPage}
+                tableSizes={tableSizes}
+                totalColumnsWidth={totalColumnsWidth}
+                useVirtual={shouldUseVirtual}
+                widgetId={props.widgetId}
+                width={props.width}
+                isVisiblePagination={props.isVisiblePagination}
+              />
+            )}
 
-          {shouldUseVirtual && (
-            <VirtualTable
-              accentColor={props.accentColor}
-              borderRadius={props.borderRadius}
-              canFreezeColumn={props.canFreezeColumn}
-              columns={props.columns}
-              disableDrag={props.disableDrag}
-              editMode={props.editMode}
-              enableDrag={props.enableDrag}
-              getTableBodyProps={getTableBodyProps}
-              handleAllRowSelectClick={handleAllRowSelectClick}
-              handleColumnFreeze={props.handleColumnFreeze}
-              handleReorderColumn={props.handleReorderColumn}
-              headerGroups={headerGroups}
-              height={props.height}
-              isAddRowInProgress={props.isAddRowInProgress}
-              isResizingColumn={isResizingColumn}
-              isSortable={props.isSortable}
-              multiRowSelection={props?.multiRowSelection}
-              pageSize={props.pageSize}
-              prepareRow={prepareRow}
-              primaryColumnId={props.primaryColumnId}
-              ref={scrollBarRef}
-              rowSelectionState={rowSelectionState}
-              scrollContainerStyles={scrollContainerStyles}
-              selectTableRow={props.selectTableRow}
-              selectedRowIndex={props.selectedRowIndex}
-              selectedRowIndices={props.selectedRowIndices}
-              sortTableColumn={props.sortTableColumn}
-              subPage={subPage}
-              tableSizes={tableSizes}
-              totalColumnsWidth={totalColumnsWidth}
-              useVirtual={shouldUseVirtual}
-              widgetId={props.widgetId}
-              width={props.width}
-            />
-          )}
+            {shouldUseVirtual && (
+              <VirtualTable
+                accentColor={props.accentColor}
+                borderRadius={props.borderRadius}
+                canFreezeColumn={props.canFreezeColumn}
+                columns={props.columns}
+                disableDrag={props.disableDrag}
+                editMode={props.editMode}
+                enableDrag={props.enableDrag}
+                getTableBodyProps={getTableBodyProps}
+                handleAllRowSelectClick={handleAllRowSelectClick}
+                handleColumnFreeze={props.handleColumnFreeze}
+                handleReorderColumn={props.handleReorderColumn}
+                headerGroups={headerGroups}
+                height={props.height}
+                isAddRowInProgress={props.isAddRowInProgress}
+                isResizingColumn={isResizingColumn}
+                isSortable={props.isSortable}
+                multiRowSelection={props?.multiRowSelection}
+                pageSize={props.pageSize}
+                prepareRow={prepareRow}
+                primaryColumnId={props.primaryColumnId}
+                ref={scrollBarRef}
+                rowSelectionState={rowSelectionState}
+                scrollContainerStyles={scrollContainerStyles}
+                selectTableRow={props.selectTableRow}
+                selectedRowIndex={props.selectedRowIndex}
+                selectedRowIndices={props.selectedRowIndices}
+                sortTableColumn={props.sortTableColumn}
+                subPage={subPage}
+                tableSizes={tableSizes}
+                totalColumnsWidth={totalColumnsWidth}
+                useVirtual={shouldUseVirtual}
+                widgetId={props.widgetId}
+                width={props.width}
+                isVisiblePagination={props.isVisiblePagination}
+              />
+            )}
           </div>
         </div>
         {/* 表格工具栏-底部 */}
-        {isHeaderVisible && (
-          <SimpleBar
-            style={{
-              maxHeight: tableSizes.TABLE_HEADER_HEIGHT,
-            }}
-          >
+        {props.isVisiblePagination && (
           <TableHeaderWrapper
             backgroundColor={Colors.WHITE}
             ref={tableHeaderWrapperRef}
             serverSidePaginationEnabled={props.serverSidePaginationEnabled}
             tableSizes={tableSizes}
             width={props.width}
+            topBoxShadow
           >
             <TableHeaderInnerWrapper
               backgroundColor={Colors.WHITE}
@@ -535,7 +542,6 @@ export function Table(props: TableProps) {
               />
             </TableHeaderInnerWrapper>
           </TableHeaderWrapper>
-          </SimpleBar>
         )}
       </TableWrapper>
     </>

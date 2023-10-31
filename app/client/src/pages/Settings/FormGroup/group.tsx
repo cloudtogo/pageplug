@@ -52,6 +52,7 @@ const GroupBody = styled.div`
     > div {
       margin-top: 0px;
       margin-bottom: 12px;
+      width: 638px;
     }
   }
   &&&& {
