@@ -39,9 +39,9 @@ const onWechatLoginClick = () => {
 type SignInType = "SIGNIN" | "SIGNUP";
 
 function SocialLoginButton(props: {
-  logo: string;
+  logo?: string;
   name: string;
-  url: string;
+  url?: string;
   label?: string;
   type: SignInType;
 }) {
@@ -53,9 +53,7 @@ function SocialLoginButton(props: {
     url += `?redirectUrl=${encodeURIComponent(redirectUrl)}`;
   }
   // 后续添加
-  const _map = [
-    { name: 'Github', src: Github }
-  ]
+  const _map = [{ name: "Github", src: Github }];
   return (
     <a
       href={url}
@@ -74,9 +72,11 @@ function SocialLoginButton(props: {
           loginMethod: props.name.toUpperCase(),
         });
       }}
-
     >
-      <LogoImg src={_map.find((item) => item.name ===props.name)?.src} alt="还没找到图片"/>
+      <LogoImg
+        src={_map.find((item) => item.name === props.name)?.src}
+        alt="还没找到图片"
+      />
     </a>
   );
 }
@@ -85,16 +85,19 @@ export function ThirdPartyAuth(props: {
   logins: SocialLoginType[];
   type: SignInType;
 }) {
-  console.log("logins", getSocialLoginButtonProps(props.logins));
-  const socialLoginButtons = getSocialLoginButtonProps(props.logins).map(
-    (item) => {
+  const socialLoginButtons = getSocialLoginButtonProps(props.logins)
+    .filter((item) => item?.name !== "Wechat") // 滤除微信
+    .map((item) => {
       return <SocialLoginButton key={item.name} {...item} type={props.type} />;
-    },
+    });
+  return (
+    <ThirdPartyAuthWrapper>
+      {props?.logins?.includes("wechat") && (
+        <LogoImg src={Wechat} onClick={onWechatLoginClick} />
+      )}
+      {socialLoginButtons}
+    </ThirdPartyAuthWrapper>
   );
-  return <ThirdPartyAuthWrapper>
-    {props.logins.includes("wechat") && <LogoImg src={Wechat} onClick={onWechatLoginClick}/>}
-    {socialLoginButtons}
-  </ThirdPartyAuthWrapper>;
 }
 
 export default ThirdPartyAuth;

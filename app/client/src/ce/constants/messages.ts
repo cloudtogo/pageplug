@@ -169,10 +169,10 @@ export const USER_DISPLAY_PICTURE_FILE_INVALID = () =>
   "File content doesn't seem to be an image. Please verify.";
 export const USER_DISPLAY_NAME_CHAR_CHECK_FAILED = () =>
   "No special characters allowed except .'-";
-export const USER_DISPLAY_NAME_PLACEHOLDER = () => "Display name";
-export const USER_DISPLAY_PICTURE_PLACEHOLDER = () => "Display picture";
+export const USER_DISPLAY_NAME_PLACEHOLDER = () => "用户名";
+export const USER_DISPLAY_PICTURE_PLACEHOLDER = () => "头像";
 export const USER_EMAIL_PLACEHOLDER = () => "Email";
-export const USER_RESET_PASSWORD = () => "Reset password";
+export const USER_RESET_PASSWORD = () => "重置密码";
 export const ADD_API_TO_PAGE_SUCCESS_MESSAGE = (actionName: string) =>
   `${actionName} API 添加成功`;
 export const INPUT_WIDGET_DEFAULT_VALIDATION_ERROR = () => `无效输入`;

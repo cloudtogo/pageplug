@@ -15,7 +15,7 @@ export const INVITE_USERS_VALIDATION_EMAIL_LIST = () =>
 
 export const REMOVE = () => "Remove";
 
-export const DISPLAY_IMAGE_UPLOAD_LABEL = () => "Upload Display Picture";
+export const DISPLAY_IMAGE_UPLOAD_LABEL = () => "上传头像";
 
 export const ADD_REACTION = () => "Add Reaction";
 

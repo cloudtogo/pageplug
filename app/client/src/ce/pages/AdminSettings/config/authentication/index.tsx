@@ -228,6 +228,15 @@ const WeChatAuth: AdminConfigType = {
       forceHidden: true,
     },
     {
+      id: "APPSMITH_WX_CLIENT_ID",
+      category: SettingCategories.WECHAT_AUTH,
+      subCategory: SettingSubCategories.WECHAT,
+      controlType: SettingTypes.TEXTINPUT,
+      controlSubType: SettingSubtype.TEXT,
+      label: "Client ID",
+      isRequired: true,
+    },
+    {
       id: "APPSMITH_WX_CLIENT_SECRET",
       category: SettingCategories.WECHAT_AUTH,
       subCategory: SettingSubCategories.WECHAT,
@@ -293,7 +302,7 @@ const WeChatCallout: AuthMethodType = {
   image: WeChat,
   isConnected: enableWeChatOAuth,
   needsUpgrade: false,
-  isFeatureEnabled: false,
+  isFeatureEnabled: true,
 };
 
 const AuthMethods = [

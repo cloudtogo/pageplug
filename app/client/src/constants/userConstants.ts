@@ -18,7 +18,7 @@ export type User = {
   adminSettingsVisible?: boolean;
   isAnonymous?: boolean;
   isIntercomConsentGiven?: boolean;
-  bindWeChat: boolean;
+  authorizations: any[];
 };
 
 export interface UserApplication {
@@ -41,7 +41,7 @@ export const DefaultCurrentUserDetails: User = {
   enableTelemetry: false,
   adminSettingsVisible: false,
   isIntercomConsentGiven: false,
-  bindWeChat: false,
+  authorizations: [],
 };
 
 // TODO keeping it here instead of the USER_API since it leads to cyclic deps errors during tests
