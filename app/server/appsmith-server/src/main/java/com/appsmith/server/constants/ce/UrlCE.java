@@ -39,8 +39,9 @@ public class UrlCE {
 
     public static final String PRODUCT_ALERT = BASE_URL + VERSION + "/product-alert";
 
-    // 修改的！！！
     public static final String CLOUDOS_URL = BASE_URL + VERSION + "/cloudos";
+
+    public static final String WX_LOGIN_URL = BASE_URL + VERSION + "/wxLogin";
 
     // Sub-paths
     public static final String MOCKS = "/mocks";
