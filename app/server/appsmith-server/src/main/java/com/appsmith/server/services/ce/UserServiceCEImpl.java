@@ -820,7 +820,7 @@ public class UserServiceCEImpl extends BaseService<UserRepository, User, String>
                             commonConfig.isCloudHosting() ? true : userData.isIntercomConsentGiven());
                     profile.setSuperUser(isSuperUser);
                     profile.setConfigurable(!StringUtils.isEmpty(commonConfig.getEnvFilePath()));
-
+                    profile.setAuthorizations(userFromDb.getOAuth2Authorizations());
                     return profile;
                 });
     }

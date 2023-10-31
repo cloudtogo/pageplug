@@ -17,8 +17,7 @@ public enum TidbPluginError implements BasePluginError {
             "Query execution error",
             ErrorType.INTERNAL_ERROR,
             "{1}",
-            "{2}"
-    ),
+            "{2}"),
     TIDB_PLUGIN_ERROR(
             500,
             "PE-TIDB-5001",
@@ -27,8 +26,7 @@ public enum TidbPluginError implements BasePluginError {
             "Query execution error",
             ErrorType.INTERNAL_ERROR,
             "{1}",
-            "{2}"
-    ),
+            "{2}"),
     IS_KEYWORD_NOT_ALLOWED_IN_PREPARED_STATEMENT(
             500,
             "PE-TIDB-4001",
@@ -37,8 +35,7 @@ public enum TidbPluginError implements BasePluginError {
             "Query configuration is invalid",
             ErrorType.ACTION_CONFIGURATION_ERROR,
             "{1}",
-            "{2}"
-    ),
+            "{2}"),
     INVALID_QUERY_SYNTAX(
             400,
             "PE-TIDB-4002",
@@ -47,8 +44,7 @@ public enum TidbPluginError implements BasePluginError {
             "Query syntax error",
             ErrorType.ACTION_CONFIGURATION_ERROR,
             "{0}",
-            "{1}"
-    ),
+            "{1}"),
     MISSING_REQUIRED_PERMISSION(
             403,
             "PE-TIDB-4003",
@@ -57,8 +53,7 @@ public enum TidbPluginError implements BasePluginError {
             "Required permission missing",
             ErrorType.AUTHENTICATION_ERROR,
             "{0}",
-            "{1}"
-    ),
+            "{1}"),
     ;
     private final Integer httpErrorCode;
     private final String appErrorCode;
@@ -71,8 +66,15 @@ public enum TidbPluginError implements BasePluginError {
 
     private final String downstreamErrorCode;
 
-    TidbPluginError(Integer httpErrorCode, String appErrorCode, String message, AppsmithErrorAction errorAction,
-                    String title, ErrorType errorType, String downstreamErrorMessage, String downstreamErrorCode) {
+    TidbPluginError(
+            Integer httpErrorCode,
+            String appErrorCode,
+            String message,
+            AppsmithErrorAction errorAction,
+            String title,
+            ErrorType errorType,
+            String downstreamErrorMessage,
+            String downstreamErrorCode) {
         this.httpErrorCode = httpErrorCode;
         this.appErrorCode = appErrorCode;
         this.errorType = errorType;
@@ -87,7 +89,9 @@ public enum TidbPluginError implements BasePluginError {
         return new MessageFormat(this.message).format(args);
     }
 
-    public String getErrorType() { return this.errorType.toString(); }
+    public String getErrorType() {
+        return this.errorType.toString();
+    }
 
     public String getDownstreamErrorMessage(Object... args) {
         return replacePlaceholderWithValue(this.downstreamErrorMessage, args);
