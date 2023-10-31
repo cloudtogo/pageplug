@@ -77,7 +77,7 @@ export function SettingsForm(
   const { category, selected: subCategory } = params;
   const settingsDetails = getSettingsConfig(category, subCategory);
   const { settings, settingsConfig } = props;
-  const details = getSettingDetail(category, subCategory);
+  const details = getSettingDetail(category, subCategory) as any;
   const dispatch = useDispatch();
   const isSavable = AdminConfig.savableCategories.includes(
     subCategory ?? category,
@@ -101,6 +101,9 @@ export function SettingsForm(
       !isTenantConfig(s.id),
   );
 
+  const addconfig = details?.settings?.find(
+    (item: any) => item.label === "Redirect URL",
+  );
   const saveChangedSettings = () => {
     const settingsKeyLength = Object.keys(props.settings).length;
     const isOnlyEnvSettings =
@@ -110,7 +113,14 @@ export function SettingsForm(
       updatedTenantSettings.length !== settingsKeyLength;
     if (isOnlyEnvSettings) {
       // only env settings
-      dispatch(saveSettings(props.settings));
+      const settings = { ...props.settings };
+      // 检查 addconfig 是否为 undefined
+      if (addconfig !== undefined) {
+        // 如果不为 undefined，则添加对应的属性
+        settings[addconfig.id] = `${window.location.origin}${addconfig.value}`;
+      }
+      // 调用 dispatch 保存设置
+      dispatch(saveSettings(settings));
     } else {
       // only tenant settings
       const config: any = {};

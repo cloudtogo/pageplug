@@ -45,6 +45,7 @@ export interface AppsmithUIConfigs {
   enableRapidAPI: boolean;
   enableMixpanel: boolean;
   enableTNCPP: boolean;
+  enableWeChatOAuth: boolean;
 
   cloudHosting: boolean;
 

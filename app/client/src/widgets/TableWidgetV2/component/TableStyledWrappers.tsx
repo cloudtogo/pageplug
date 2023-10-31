@@ -684,6 +684,7 @@ export const TableHeaderWrapper = styled.div<{
   width: number;
   tableSizes: TableSizes;
   backgroundColor?: Color;
+  topBoxShadow?: boolean;
 }>`
   position: relative;
   display: flex;
@@ -694,6 +695,8 @@ export const TableHeaderWrapper = styled.div<{
   }
   height: ${(props) => props.tableSizes.TABLE_HEADER_HEIGHT}px;
   min-height: ${(props) => props.tableSizes.TABLE_HEADER_HEIGHT}px;
+  box-shadow: ${(props) =>
+    props.topBoxShadow ? "rgba(33, 35, 38, 0.1) 0px -10px 10px -10px" : ""};
 `;
 
 export const TableHeaderInnerWrapper = styled.div<{
