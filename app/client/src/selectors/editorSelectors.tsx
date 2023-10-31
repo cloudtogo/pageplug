@@ -370,9 +370,9 @@ export const isHiddenPage = createSelector(
 
 export const getWidgetCards = createSelector(
   getWidgetConfigs,
-  isMobileLayout,
   getIsAutoLayout,
-  (_state) => selectFeatureFlagCheck(_state, FEATURE_FLAG.ab_wds_enabled),
+  (_state: AppState) =>
+    selectFeatureFlagCheck(_state, FEATURE_FLAG.ab_wds_enabled),
   (widgetConfigs, isAutoLayout, isWDSEnabled) => {
     const cards = Object.values(widgetConfigs.config).filter((config) => {
       // if wds_vs is not enabled, hide all wds_v2 widgets
