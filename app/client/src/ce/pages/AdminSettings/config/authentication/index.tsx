@@ -3,11 +3,13 @@ import {
   GITHUB_SIGNUP_SETUP_DOC,
   GOOGLE_SIGNUP_SETUP_DOC,
   SIGNUP_RESTRICTION_DOC,
+  WX_SIGNUP_SETUP_DOC,
 } from "constants/ThirdPartyConstants";
 import type { AdminConfigType } from "@appsmith/pages/AdminSettings/config/types";
 import {
   CategoryType,
   SettingCategories,
+  SettingSubCategories,
   SettingSubtype,
   SettingTypes,
 } from "@appsmith/pages/AdminSettings/config/types";
@@ -34,7 +36,11 @@ import {
 import { isSAMLEnabled, isOIDCEnabled } from "@appsmith/utils/planHelpers";
 import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
 import store from "store";
+import WeChat from "assets/images/WeChat.svg";
+import { getAppsmithConfigs } from "@appsmith/configs";
+import { getWXLoginClientId } from "ce/selectors/settingsSelectors";
 
+const { enableWeChatOAuth } = getAppsmithConfigs();
 const featureFlags = selectFeatureFlags(store.getState());
 
 const FormAuth: AdminConfigType = {
@@ -192,6 +198,47 @@ const GithubAuth: AdminConfigType = {
   ],
 };
 
+const WeChatAuth: AdminConfigType = {
+  type: SettingCategories.WECHAT_AUTH,
+  controlType: SettingTypes.GROUP,
+  title: "微信登录",
+  subText: "让你可以微信账号进行登录",
+  canSave: true,
+  isConnected: enableWeChatOAuth,
+  categoryType: CategoryType.OTHER,
+  settings: [
+    {
+      id: "APPSMITH_OAUTH2_OIDC_READ_MORE",
+      category: SettingCategories.WECHAT_AUTH,
+      subCategory: SettingSubCategories.WECHAT,
+      controlType: SettingTypes.LINK,
+      label: "如何配置？",
+      url: WX_SIGNUP_SETUP_DOC,
+    },
+    {
+      id: "APPSMITH_WX_CLIENT_REDIRECT_URL",
+      category: SettingCategories.WECHAT_AUTH,
+      subCategory: SettingSubCategories.WECHAT,
+      controlType: SettingTypes.UNEDITABLEFIELD,
+      label: "Redirect URL",
+      fieldName: "oidc-redirect-url",
+      formName: "OidcRedirectUrl",
+      value: "/api/v1/wxLogin/callback",
+      helpText: "拷贝到你的认证服务器配置中",
+      forceHidden: true,
+    },
+    {
+      id: "APPSMITH_WX_CLIENT_SECRET",
+      category: SettingCategories.WECHAT_AUTH,
+      subCategory: SettingSubCategories.WECHAT,
+      controlType: SettingTypes.TEXTINPUT,
+      controlSubType: SettingSubtype.TEXT,
+      label: "Client Secret",
+      isRequired: true,
+    },
+  ],
+};
+
 export const FormAuthCallout: AuthMethodType = {
   id: "APPSMITH_FORM_LOGIN_AUTH",
   category: SettingCategories.FORM_AUTH,
@@ -238,17 +285,32 @@ export const OidcAuthCallout: AuthMethodType = {
   isFeatureEnabled: isOIDCEnabled(featureFlags),
 };
 
+const WeChatCallout: AuthMethodType = {
+  id: "APPSMITH_WECHAT_AUTH",
+  category: SettingCategories.WECHAT_AUTH,
+  label: "微信",
+  subText: `允许使用 微信账号登录你的平台`,
+  image: WeChat,
+  isConnected: enableWeChatOAuth,
+  needsUpgrade: false,
+  isFeatureEnabled: false,
+};
+
 const AuthMethods = [
   // OidcAuthCallout,
   // SamlAuthCallout,
   GoogleAuthCallout,
   GithubAuthCallout,
   FormAuthCallout,
+  WeChatCallout,
 ];
 
 function AuthMain() {
+  const WXLoginClientId = useSelector(getWXLoginClientId);
   FormAuthCallout.isConnected = useSelector(getIsFormLoginEnabled);
   const socialLoginList = useSelector(getThirdPartyAuths);
+  WeChatAuth.isConnected = WeChatCallout.isConnected =
+    socialLoginList.includes("wechat") || !!WXLoginClientId;
   GoogleAuth.isConnected = GoogleAuthCallout.isConnected =
     socialLoginList.includes("google");
   GithubAuth.isConnected = GithubAuthCallout.isConnected =
@@ -263,6 +325,6 @@ export const config: AdminConfigType = {
   controlType: SettingTypes.PAGE,
   title: "身份认证",
   canSave: false,
-  children: [FormAuth, GoogleAuth, GithubAuth],
+  children: [FormAuth, GoogleAuth, GithubAuth, WeChatAuth],
   component: AuthMain,
 };

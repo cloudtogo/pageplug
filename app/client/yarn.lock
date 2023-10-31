@@ -9113,6 +9113,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-resizable@npm:^3.0.4":
+  version: 3.0.6
+  resolution: "@types/react-resizable@npm:3.0.6"
+  dependencies:
+    "@types/react": "*"
+  checksum: da5594b42ae5ab0c6ce27abb54cc3f1d5738e6905c2dac2beb2b12f941b47469d94dc3309274627b9d8a3ee9cc7bdf2c463d73e2a61a098dc80326c2d83ea237
+  languageName: node
+  linkType: hard
+
 "@types/react-router-dom@npm:^5.1.2":
   version: 5.3.3
   resolution: "@types/react-router-dom@npm:5.3.3"
@@ -10303,6 +10312,7 @@ __metadata:
     "@types/react-modal": ^3.13.1
     "@types/react-page-visibility": ^6.4.1
     "@types/react-redux": ^7.0.1
+    "@types/react-resizable": ^3.0.4
     "@types/react-router-dom": ^5.1.2
     "@types/react-select": ^3.0.5
     "@types/react-syntax-highlighter": ^13.5.2
@@ -10459,6 +10469,7 @@ __metadata:
     rc-pagination: ^3.1.3
     rc-select: ^14.1.9
     rc-tree-select: ^5.4.0
+    rc-trigger: ^5.3.4
     re-reselect: ^3.4.0
     react: ^17.0.2
     react-append-to-body: ^2.0.26
@@ -10470,6 +10481,7 @@ __metadata:
     react-dnd-touch-backend: 11.1.3
     react-documents: ^1.0.4
     react-dom: ^17.0.2
+    react-draggable: 4.4.4
     react-full-screen: ^1.1.0
     react-fusioncharts: ^3.1.2
     react-google-recaptcha: ^2.1.0
@@ -10488,6 +10500,7 @@ __metadata:
     react-qr-barcode-scanner: ^1.0.6
     react-rating: ^2.0.5
     react-redux: ^7.2.4
+    react-resizable: ^3.0.5
     react-responsive: ^9.0.0-beta.3
     react-router: ^5.1.2
     react-router-dom: ^5.1.2
@@ -25924,7 +25937,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.5.0, prop-types@npm:^15.5.10, prop-types@npm:^15.5.4, prop-types@npm:^15.5.8, prop-types@npm:^15.5.9, prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:15.x, prop-types@npm:^15.5.0, prop-types@npm:^15.5.10, prop-types@npm:^15.5.4, prop-types@npm:^15.5.8, prop-types@npm:^15.5.9, prop-types@npm:^15.6.0, prop-types@npm:^15.6.1, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -26902,7 +26915,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rc-trigger@npm:^5.3.1":
+"rc-trigger@npm:^5.3.1, rc-trigger@npm:^5.3.4":
   version: 5.3.4
   resolution: "rc-trigger@npm:5.3.4"
   dependencies:
@@ -27349,6 +27362,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-draggable@npm:4.4.4":
+  version: 4.4.4
+  resolution: "react-draggable@npm:4.4.4"
+  dependencies:
+    clsx: ^1.1.1
+    prop-types: ^15.6.0
+  peerDependencies:
+    react: ">= 16.3.0"
+    react-dom: ">= 16.3.0"
+  checksum: b8258a58938c261a79f1b9ffd67774283c1ac732423c1c9c9f5fe4d17a06886edd659891e445ba089828ca59f1885e5b909262e24cf60640b8ed05c8499c88bb
+  languageName: node
+  linkType: hard
+
+"react-draggable@npm:^4.0.3":
+  version: 4.4.6
+  resolution: "react-draggable@npm:4.4.6"
+  dependencies:
+    clsx: ^1.1.1
+    prop-types: ^15.8.1
+  peerDependencies:
+    react: ">= 16.3.0"
+    react-dom: ">= 16.3.0"
+  checksum: 9b15aac59244873ac4561c5a2bead43a56e18d406e0a5f242bd4f9d151c074530c02b99387983104bf43417292f9cf8d063e554ed08d88792235e3fbc965f1b8
+  languageName: node
+  linkType: hard
+
 "react-element-to-jsx-string@npm:^15.0.0":
   version: 15.0.0
   resolution: "react-element-to-jsx-string@npm:15.0.0"
@@ -27787,6 +27826,18 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 2c7fe9cbd766f5e54beb4bec2e2efb2de3583037b23fef8fa511ab426ed7f1ae992382db5acd8ab5bfb030a4b93a06a2ebca41377d6eeaf0e6791bb0a59616a4
+  languageName: node
+  linkType: hard
+
+"react-resizable@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "react-resizable@npm:3.0.5"
+  dependencies:
+    prop-types: 15.x
+    react-draggable: ^4.0.3
+  peerDependencies:
+    react: ">= 16.3"
+  checksum: 616a10205acfaf8cc3aa0824b60f6d037eef87143d8f338cf826deb74a353db9b9baad67a65dc8535fe90840bfc3e1b8a901f9c247033ffeec2f30405ac7528e
   languageName: node
   linkType: hard
 
