@@ -1,5 +1,6 @@
 package com.appsmith.server.dtos.ce;
 
+import com.appsmith.server.domains.OAuth2Authorization;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -62,4 +63,6 @@ public class UserProfileCE_DTO {
     public boolean isCredentialsNonExpired() {
         return this.isEnabled;
     }
+
+    private Set<OAuth2Authorization> authorizations;
 }
