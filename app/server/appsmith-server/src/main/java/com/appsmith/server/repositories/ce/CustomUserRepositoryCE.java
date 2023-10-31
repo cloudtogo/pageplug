@@ -1,6 +1,7 @@
 package com.appsmith.server.repositories.ce;
 
 import com.appsmith.server.acl.AclPermission;
+import com.appsmith.server.domains.LoginSource;
 import com.appsmith.server.domains.User;
 import com.appsmith.server.repositories.AppsmithRepository;
 import com.querydsl.core.types.dsl.StringPath;
@@ -30,4 +31,6 @@ public interface CustomUserRepositoryCE extends AppsmithRepository<User> {
             int skip,
             StringPath sortKey,
             Sort.Direction sortDirection);
+
+    Mono<User> findBySourceAndOpenId(LoginSource loginSource, String openId);
 }
