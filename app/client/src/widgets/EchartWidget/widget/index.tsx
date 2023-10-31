@@ -14,6 +14,7 @@ import type { AllChartData, ChartType } from "../constants";
 import type { Stylesheet } from "entities/AppTheming";
 import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
 import type { AutocompletionDefinitions } from "widgets/constants";
+import type { SetterConfig } from "entities/AppTheming";
 
 const EchartComponent = lazy(() =>
   retryPromise(
@@ -37,6 +38,20 @@ class EchartWidget extends BaseWidget<EchartWidgetProps, WidgetState> {
       xAxisName: "string",
       yAxisName: "string",
       selectedDataItem: "$__chartDataPoint__$",
+    };
+  }
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {
+        setVisibility: {
+          path: "isVisible",
+          type: "boolean",
+        },
+        setURL: {
+          path: "docUrl",
+          type: "string",
+        },
+      },
     };
   }
   static getDerivedPropertiesMap(): DerivedPropertiesMap {
