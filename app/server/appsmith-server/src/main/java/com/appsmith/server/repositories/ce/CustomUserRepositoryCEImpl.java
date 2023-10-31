@@ -2,6 +2,8 @@ package com.appsmith.server.repositories.ce;
 
 import com.appsmith.server.acl.AclPermission;
 import com.appsmith.server.constants.FieldName;
+import com.appsmith.server.domains.LoginSource;
+import com.appsmith.server.domains.QOAuth2Authorization;
 import com.appsmith.server.domains.QUser;
 import com.appsmith.server.domains.User;
 import com.appsmith.server.repositories.BaseAppsmithRepositoryImpl;
@@ -107,5 +109,20 @@ public class CustomUserRepositoryCEImpl extends BaseAppsmithRepositoryImpl<User>
         Set<String> systemGeneratedEmails = new HashSet<>();
         systemGeneratedEmails.add(FieldName.ANONYMOUS_USER);
         return systemGeneratedEmails;
+    }
+
+    @Override
+    public Mono<User> findBySourceAndOpenId(LoginSource loginSource, String openId) {
+        Criteria andCriteria = new Criteria();
+        andCriteria.andOperator(
+                Criteria.where(fieldName(QOAuth2Authorization.oAuth2Authorization.source))
+                        .is(loginSource),
+                Criteria.where(fieldName(QOAuth2Authorization.oAuth2Authorization.openId))
+                        .is(openId));
+        Criteria criteria =
+                Criteria.where(fieldName(QUser.user.oAuth2Authorizations)).elemMatch(andCriteria);
+        Query query = new Query();
+        query.addCriteria(criteria);
+        return mongoOperations.findOne(query, User.class);
     }
 }

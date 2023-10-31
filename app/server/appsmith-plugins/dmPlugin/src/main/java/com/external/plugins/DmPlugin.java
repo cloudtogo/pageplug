@@ -27,9 +27,9 @@ import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.*;
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.*;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.IntStream;
@@ -58,9 +58,15 @@ public class DmPlugin extends BasePlugin {
         public static final Scheduler scheduler = Schedulers.boundedElastic();
 
         @Override
-        public Mono<ActionExecutionResult> execute(HikariDataSource connection, DatasourceConfiguration datasourceConfiguration, ActionConfiguration actionConfiguration) {
+        public Mono<ActionExecutionResult> execute(
+                HikariDataSource connection,
+                DatasourceConfiguration datasourceConfiguration,
+                ActionConfiguration actionConfiguration) {
             // Unused function
-            return Mono.error(new AppsmithPluginException(DmPluginError.QUERY_EXECUTION_FAILED, DmErrorMessages.QUERY_EXECUTION_FAILED_ERROR_MSG, "Unsupported Operation"));
+            return Mono.error(new AppsmithPluginException(
+                    DmPluginError.QUERY_EXECUTION_FAILED,
+                    DmErrorMessages.QUERY_EXECUTION_FAILED_ERROR_MSG,
+                    "Unsupported Operation"));
         }
 
         @Override
@@ -68,8 +74,10 @@ public class DmPlugin extends BasePlugin {
             try {
                 Class.forName(JDBC_DRIVER);
             } catch (ClassNotFoundException e) {
-                return Mono.error(new AppsmithPluginException(DmPluginError.DM_PLUGIN_ERROR,
-                        DmErrorMessages.DM_JDBC_DRIVER_LOADING_ERROR_MSG, e.getMessage()));
+                return Mono.error(new AppsmithPluginException(
+                        DmPluginError.DM_PLUGIN_ERROR,
+                        DmErrorMessages.DM_JDBC_DRIVER_LOADING_ERROR_MSG,
+                        e.getMessage()));
             }
 
             return Mono.fromCallable(() -> {
@@ -90,23 +98,28 @@ public class DmPlugin extends BasePlugin {
         }
 
         @Override
-        public Mono<DatasourceStructure> getStructure(HikariDataSource connection, DatasourceConfiguration datasourceConfiguration) {
+        public Mono<DatasourceStructure> getStructure(
+                HikariDataSource connection, DatasourceConfiguration datasourceConfiguration) {
             return DmDatasourceUtils.getStructure(connection, datasourceConfiguration);
         }
 
         @Override
-        public Mono<ActionExecutionResult> executeParameterized(HikariDataSource connection, ExecuteActionDTO executeActionDTO, DatasourceConfiguration datasourceConfiguration, ActionConfiguration actionConfiguration) {
+        public Mono<ActionExecutionResult> executeParameterized(
+                HikariDataSource connection,
+                ExecuteActionDTO executeActionDTO,
+                DatasourceConfiguration datasourceConfiguration,
+                ActionConfiguration actionConfiguration) {
             final Map<String, Object> formData = actionConfiguration.getFormData();
             String query = getDataValueSafelyFromFormData(formData, BODY, STRING_TYPE, null);
             // Check for query parameter before performing the probably expensive fetch connection from the pool op.
             if (isBlank(query)) {
-                return Mono.error(new AppsmithPluginException(AppsmithPluginError.PLUGIN_EXECUTE_ARGUMENT_ERROR,
-                        DmErrorMessages.MISSING_QUERY_ERROR_MSG));
+                return Mono.error(new AppsmithPluginException(
+                        AppsmithPluginError.PLUGIN_EXECUTE_ARGUMENT_ERROR, DmErrorMessages.MISSING_QUERY_ERROR_MSG));
             }
 
             Boolean isPreparedStatement = TRUE;
-            Object preparedStatementObject = getDataValueSafelyFromFormData(formData, PREPARED_STATEMENT,
-                    OBJECT_TYPE, TRUE);
+            Object preparedStatementObject =
+                    getDataValueSafelyFromFormData(formData, PREPARED_STATEMENT, OBJECT_TYPE, TRUE);
             if (preparedStatementObject instanceof Boolean) {
                 isPreparedStatement = (Boolean) preparedStatementObject;
             } else if (preparedStatementObject instanceof String) {
@@ -136,16 +149,22 @@ public class DmPlugin extends BasePlugin {
                 updatedQuery = removeSemicolonFromQuery(updatedQuery);
             }
             setDataValueSafelyInFormData(formData, BODY, updatedQuery);
-            return executeCommon(connection, datasourceConfiguration, actionConfiguration, TRUE,
-                    mustacheKeysInOrder, executeActionDTO);
+            return executeCommon(
+                    connection,
+                    datasourceConfiguration,
+                    actionConfiguration,
+                    TRUE,
+                    mustacheKeysInOrder,
+                    executeActionDTO);
         }
 
-        private Mono<ActionExecutionResult> executeCommon(HikariDataSource connectionPool,
-                                                          DatasourceConfiguration datasourceConfiguration,
-                                                          ActionConfiguration actionConfiguration,
-                                                          Boolean preparedStatement,
-                                                          List<MustacheBindingToken> mustacheValuesInOrder,
-                                                          ExecuteActionDTO executeActionDTO) {
+        private Mono<ActionExecutionResult> executeCommon(
+                HikariDataSource connectionPool,
+                DatasourceConfiguration datasourceConfiguration,
+                ActionConfiguration actionConfiguration,
+                Boolean preparedStatement,
+                List<MustacheBindingToken> mustacheValuesInOrder,
+                ExecuteActionDTO executeActionDTO) {
 
             final Map<String, Object> requestData = new HashMap<>();
             requestData.put("preparedStatement", TRUE.equals(preparedStatement));
@@ -153,14 +172,14 @@ public class DmPlugin extends BasePlugin {
             final Map<String, Object> formData = actionConfiguration.getFormData();
             String query = getDataValueSafelyFromFormData(formData, BODY, STRING_TYPE, null);
             if (isBlank(query)) {
-                return Mono.error(new AppsmithPluginException(AppsmithPluginError.PLUGIN_EXECUTE_ARGUMENT_ERROR,
-                        DmErrorMessages.MISSING_QUERY_ERROR_MSG));
+                return Mono.error(new AppsmithPluginException(
+                        AppsmithPluginError.PLUGIN_EXECUTE_ARGUMENT_ERROR, DmErrorMessages.MISSING_QUERY_ERROR_MSG));
             }
 
             Map<String, Object> psParams = preparedStatement ? new LinkedHashMap<>() : null;
             String transformedQuery = preparedStatement ? replaceQuestionMarkWithDollarIndex(query) : query;
-            List<RequestParamDTO> requestParams = List.of(new RequestParamDTO(ACTION_CONFIGURATION_BODY,
-                    transformedQuery, null, null, psParams));
+            List<RequestParamDTO> requestParams =
+                    List.of(new RequestParamDTO(ACTION_CONFIGURATION_BODY, transformedQuery, null, null, psParams));
 
             return Mono.fromCallable(() -> {
                         Connection connectionFromPool;
@@ -168,13 +187,15 @@ public class DmPlugin extends BasePlugin {
                         try {
                             connectionFromPool = getConnectionFromConnectionPool(connectionPool);
                         } catch (SQLException | StaleConnectionException e) {
-                            // The function can throw either StaleConnectionException or SQLException. The underlying hikari
+                            // The function can throw either StaleConnectionException or SQLException. The underlying
+                            // hikari
                             // library throws SQLException in case the pool is closed or there is an issue initializing
                             // the connection pool which can also be translated in our world to StaleConnectionException
                             // and should then trigger the destruction and recreation of the pool.
                             log.debug("Exception Occurred while getting connection from pool" + e.getMessage());
                             e.printStackTrace(System.out);
-                            return Mono.error(e instanceof StaleConnectionException ? e : new StaleConnectionException());
+                            return Mono.error(
+                                    e instanceof StaleConnectionException ? e : new StaleConnectionException());
                         }
 
                         List<Map<String, Object>> rowsList = new ArrayList<>(50);
@@ -186,8 +207,8 @@ public class DmPlugin extends BasePlugin {
                         boolean isResultSet;
 
                         // Log HikariCP status
-                        logHikariCPStatus(MessageFormat.format("Before executing Dm query [{0}]", query),
-                                connectionPool);
+                        logHikariCPStatus(
+                                MessageFormat.format("Before executing Dm query [{0}]", query), connectionPool);
 
                         try {
                             if (FALSE.equals(preparedStatement)) {
@@ -198,34 +219,42 @@ public class DmPlugin extends BasePlugin {
                                 preparedQuery = connectionFromPool.prepareStatement(query);
 
                                 List<Map.Entry<String, String>> parameters = new ArrayList<>();
-                                preparedQuery = (PreparedStatement) smartSubstitutionOfBindings(preparedQuery,
-                                        mustacheValuesInOrder,
-                                        executeActionDTO.getParams(),
-                                        parameters);
+                                preparedQuery = (PreparedStatement) smartSubstitutionOfBindings(
+                                        preparedQuery, mustacheValuesInOrder, executeActionDTO.getParams(), parameters);
 
                                 IntStream.range(0, parameters.size())
-                                        .forEachOrdered(i ->
-                                                psParams.put(
-                                                        getPSParamLabel(i + 1),
-                                                        new PsParameterDTO(parameters.get(i).getKey(), parameters.get(i).getValue())));
+                                        .forEachOrdered(i -> psParams.put(
+                                                getPSParamLabel(i + 1),
+                                                new PsParameterDTO(
+                                                        parameters.get(i).getKey(),
+                                                        parameters.get(i).getValue())));
 
                                 requestData.put("ps-parameters", parameters);
                                 isResultSet = preparedQuery.execute();
                                 resultSet = preparedQuery.getResultSet();
                             }
 
-                            populateRowsAndColumns(rowsList, columnsList, resultSet, isResultSet, preparedStatement,
-                                    statement, preparedQuery);
+                            populateRowsAndColumns(
+                                    rowsList,
+                                    columnsList,
+                                    resultSet,
+                                    isResultSet,
+                                    preparedStatement,
+                                    statement,
+                                    preparedQuery);
                         } catch (SQLException e) {
-                            log.debug(Thread.currentThread().getName() + ": In the dmPlugin, got action execution error");
+                            log.debug(
+                                    Thread.currentThread().getName() + ": In the dmPlugin, got action execution error");
                             log.debug(e.getMessage());
-                            return Mono.error(new AppsmithPluginException(DmPluginError.QUERY_EXECUTION_FAILED,
-                                    DmErrorMessages.QUERY_EXECUTION_FAILED_ERROR_MSG, e.getMessage(),
+                            return Mono.error(new AppsmithPluginException(
+                                    DmPluginError.QUERY_EXECUTION_FAILED,
+                                    DmErrorMessages.QUERY_EXECUTION_FAILED_ERROR_MSG,
+                                    e.getMessage(),
                                     "SQLSTATE: " + e.getSQLState()));
                         } finally {
                             // Log HikariCP status
-                            logHikariCPStatus(MessageFormat.format("After executing DM query [{0}]", query),
-                                    connectionPool);
+                            logHikariCPStatus(
+                                    MessageFormat.format("After executing DM query [{0}]", query), connectionPool);
 
                             closeConnectionPostExecution(resultSet, statement, preparedQuery, connectionFromPool);
                         }
@@ -266,22 +295,30 @@ public class DmPlugin extends BasePlugin {
 
             List<String> identicalColumns = getIdenticalColumns(columnNames);
             if (!CollectionUtils.isEmpty(identicalColumns)) {
-                messages.add("Your DmSQL query result may not have all the columns because duplicate column " +
-                        "names were found for the column(s): " + String.join(", ", identicalColumns) + ". You may use" +
-                        " the SQL keyword 'as' to rename the duplicate column name(s) and resolve this issue.");
+                messages.add("Your DmSQL query result may not have all the columns because duplicate column "
+                        + "names were found for the column(s): "
+                        + String.join(", ", identicalColumns) + ". You may use"
+                        + " the SQL keyword 'as' to rename the duplicate column name(s) and resolve this issue.");
             }
 
             return messages;
         }
 
-
         @Override
-        public Object substituteValueInInput(int index, String binding, String value, Object input, List<Map.Entry<String, String>> insertedParams, Object... args) throws AppsmithPluginException {
+        public Object substituteValueInInput(
+                int index,
+                String binding,
+                String value,
+                Object input,
+                List<Map.Entry<String, String>> insertedParams,
+                Object... args)
+                throws AppsmithPluginException {
             PreparedStatement preparedStatement = (PreparedStatement) input;
             Param param = (Param) args[0];
             DataType valueType;
-            valueType = DataTypeServiceUtils.getAppsmithType(param.getClientDataType(), value,
-                    DmSpecificDataTypes.pluginSpecificTypes).type();
+            valueType = DataTypeServiceUtils.getAppsmithType(
+                            param.getClientDataType(), value, DmSpecificDataTypes.pluginSpecificTypes)
+                    .type();
             Map.Entry<String, String> parameter = new AbstractMap.SimpleEntry<>(value, valueType.toString());
             insertedParams.add(parameter);
 
@@ -345,7 +382,8 @@ public class DmPlugin extends BasePlugin {
                     // set in the commented part of
                     // the query. Ignore the exception
                 } else {
-                    throw new AppsmithPluginException(AppsmithPluginError.PLUGIN_EXECUTE_ARGUMENT_ERROR,
+                    throw new AppsmithPluginException(
+                            AppsmithPluginError.PLUGIN_EXECUTE_ARGUMENT_ERROR,
                             String.format(DmErrorMessages.QUERY_PREPARATION_FAILED_ERROR_MSG, value, binding),
                             e.getMessage());
                 }
