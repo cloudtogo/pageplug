@@ -147,7 +147,6 @@ function DatasourceAuth({
   isTesting,
   viewMode,
   shouldDisplayAuthMessage = true,
-  setDatasourceViewMode,
   triggerSave,
   isFormDirty,
   scopeValue,
