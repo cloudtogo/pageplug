@@ -78,6 +78,7 @@ function ExplorerContent() {
   };
   const { value: activeOption } = options[activeSwitchIndex];
 
+  const isMobile = useSelector((state) => state.ui.mainCanvas.isMobile);
   return (
     <div
       className={`flex-1 flex flex-col overflow-hidden ${tailwindLayers.entityExplorer}`}
@@ -93,7 +94,13 @@ function ExplorerContent() {
         />
       </div>
 
-      {featureFlags.release_widgetdiscovery_enabled ? (
+      {/* {!featureFlags.release_widgetdiscovery_enabled ? (
+        <WidgetSidebarWithTags isActive={activeOption === "widgets"} />
+      ) : (
+        <WidgetSidebar isActive={activeOption === "widgets"} />
+      )} */}
+      {/* 换种方案 */}
+      {!isMobile ? (
         <WidgetSidebarWithTags isActive={activeOption === "widgets"} />
       ) : (
         <WidgetSidebar isActive={activeOption === "widgets"} />

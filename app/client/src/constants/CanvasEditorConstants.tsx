@@ -4,7 +4,9 @@ export type OccupiedSpace = {
   top: number;
   bottom: number;
   id: string;
+  type?: string;
   parentId?: string;
+  floatLayout?: boolean;
 };
 
 export type WidgetSpace = {
@@ -17,6 +19,7 @@ export type WidgetSpace = {
   parentId?: string;
   isDropTarget?: boolean;
   fixedHeight?: number;
+  floatLayout?: boolean;
 };
 
 export const zIndexLayers = {

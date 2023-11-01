@@ -9,6 +9,7 @@ import type {
   AppLayoutConfig,
   PageListReduxState,
 } from "reducers/entityReducers/pageListReducer";
+import type { WidgetConfigReducerState } from "reducers/entityReducers/widgetConfigReducer";
 import type { WidgetCardProps, WidgetProps } from "widgets/BaseWidget";
 
 import type { Page } from "@appsmith/constants/ReduxActionConstants";
@@ -371,9 +372,12 @@ export const isHiddenPage = createSelector(
 export const getWidgetCards = createSelector(
   getWidgetConfigs,
   getIsAutoLayout,
-  (_state: AppState) =>
-    selectFeatureFlagCheck(_state, FEATURE_FLAG.ab_wds_enabled),
-  (widgetConfigs, isAutoLayout, isWDSEnabled) => {
+  (_state: any) => selectFeatureFlagCheck(_state, FEATURE_FLAG.ab_wds_enabled),
+  (
+    widgetConfigs: WidgetConfigReducerState,
+    isAutoLayout: boolean,
+    isWDSEnabled: boolean,
+  ) => {
     const cards = Object.values(widgetConfigs.config).filter((config) => {
       // if wds_vs is not enabled, hide all wds_v2 widgets
       if (
@@ -383,21 +387,20 @@ export const getWidgetCards = createSelector(
         return false;
       }
 
-      if (isAirgapped()) {
-        return config.widgetName !== "Map" && !config.hideCard;
-      }
-
       // if wds is enabled, only show the wds_v2 widgets
       if (isWDSEnabled === true) {
         return Object.values(WDS_V2_WIDGET_MAP).includes(config.type);
       }
 
-      return !config.hideCard;
+      return isAirgapped()
+        ? config.widgetName !== "Map" && !config.hideCard
+        : !config.hideCard && config.isMobile;
     });
 
     const _cards: WidgetCardProps[] = cards.map((config) => {
       const {
         detachFromLayout = false,
+        floatLayout = false,
         displayName,
         iconSVG,
         key,
@@ -419,6 +422,7 @@ export const getWidgetCards = createSelector(
         rows,
         columns,
         detachFromLayout,
+        floatLayout,
         displayName,
         icon: iconSVG,
         searchTags,
@@ -610,6 +614,8 @@ const getOccupiedSpacesForContainer = (
       top: widget.topRow,
       bottom: widget.bottomRow,
       right: widget.rightColumn,
+      type: widget.type,
+      floatLayout: !!widget.floatLayout,
     };
     return occupiedSpace;
   });
@@ -640,6 +646,7 @@ const getWidgetSpacesForContainer = (
       right: widget[rightColumnMap],
       type: widget.type,
       isDropTarget: checkIsDropTarget(widget.type),
+      floatLayout: !!widget.floatLayout,
       fixedHeight,
     };
     return occupiedSpace;
