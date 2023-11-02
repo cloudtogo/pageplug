@@ -35,6 +35,7 @@ type VirtualTableProps = TableColumnHeaderProps & {
   totalColumnsWidth?: number;
   scrollContainerStyles: any;
   useVirtual: boolean;
+  isVisiblePagination?: boolean;
 };
 
 const VirtualTable = (props: VirtualTableProps, ref: React.Ref<SimpleBar>) => {
@@ -75,6 +76,7 @@ const VirtualTable = (props: VirtualTableProps, ref: React.Ref<SimpleBar>) => {
           useVirtual={props.useVirtual}
           widgetId={props.widgetId}
           width={props.width}
+          isVisiblePagination={props.isVisiblePagination}
         />
       )}
     </SimpleBar>

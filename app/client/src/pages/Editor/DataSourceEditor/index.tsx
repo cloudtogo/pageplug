@@ -38,8 +38,6 @@ import type { Datasource, DatasourceStorage } from "entities/Datasource";
 import { ToastMessageType } from "entities/Datasource";
 import type { RouteComponentProps } from "react-router";
 import EntityNotFoundPane from "pages/Editor/EntityNotFoundPane";
-import { setGlobalSearchQuery } from "actions/globalSearchActions";
-import { toggleShowGlobalSearchModal } from "actions/globalSearchActions";
 import { DatasourceComponentTypes } from "api/PluginApi";
 import DatasourceSaasForm from "../SaaSEditor/DatasourceForm";
 import {

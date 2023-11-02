@@ -55,6 +55,7 @@ if [[ $use_https == 1 ]]; then
 
 server {
   listen 443 ssl http2;
+  listen 8160;
   server_name _;
   ssl_certificate $ssl_cert_path;
   ssl_certificate_key $ssl_key_path;
