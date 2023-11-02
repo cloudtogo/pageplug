@@ -547,7 +547,7 @@ function ReconnectDatasourceModal() {
         onInteractOutside={handleClose}
         overlayClassName="reconnect-datasource-modal"
       >
-        <ModalHeader>Reconnect datasources</ModalHeader>
+        <ModalHeader>重连数据源</ModalHeader>
         <ModalBodyWrapper>
           <BodyContainer>
             <Title>

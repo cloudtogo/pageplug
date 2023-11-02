@@ -11,6 +11,7 @@ import { CODE_EDITOR_LOADING_ERROR } from "@appsmith/constants/messages";
 import assertNever from "assert-never/index";
 import log from "loglevel";
 import { toast } from "design-system";
+import CodeEditorPanel from "../CodeEditor/CodeEditorPanel";
 
 let CachedCodeEditor: typeof CodeEditor | undefined;
 
@@ -173,6 +174,8 @@ function LazyCodeEditor({
     "editor" | "editor-focused" | "fallback"
   >("fallback");
   const [showLoadingProgress, setShowLoadingProgress] = useState(false);
+  const [panelVisible, setPanelVisible] = useState(false);
+  const [isHovered, setPanelIsHovered] = useState(false);
 
   const stateMachine = useRef(
     new LazyCodeEditorStateMachine((state) => {
@@ -213,18 +216,64 @@ function LazyCodeEditor({
       throw new Error(
         "CodeEditor is not loaded. This is likely an issue with the state machine.",
       );
+    const content = (flag?: any) => {
+      const panelEditorStyle = !flag
+        ? {
+            border: "none",
+            borderLess: true,
+            folding: true,
+            height: "100%",
+            hideEvaluatedValue: true,
+            mode: "javascript",
+            showLightningMenu: false,
+            showLineNumbers: true,
+            size: "EXTENDED",
+            tabBehaviour: "INDENT",
+            theme: "LIGHT",
+          }
+        : {};
+      return (
+        <div
+          className={
+            flag && panelVisible
+              ? "pointer-events-none opacity-50 h-full w-ful"
+              : "h-full w-full"
+          }
+        >
+          <LazyEditorWrapper
+            className="t--lazyCodeEditor-editor"
+            ref={editorWrapperRef}
+          >
+            <CachedCodeEditor
+              input={input}
+              placeholder={placeholder}
+              {...otherProps}
+              {...panelEditorStyle}
+            />
+          </LazyEditorWrapper>
+        </div>
+      );
+    };
+    if (otherProps.isJSObject) {
+      return content(true);
+    }
 
     return (
-      <LazyEditorWrapper
-        className="t--lazyCodeEditor-editor"
-        ref={editorWrapperRef}
+      <div
+        onMouseEnter={() => setPanelIsHovered(true)}
+        onMouseLeave={() => setPanelIsHovered(false)}
+        onFocus={() => setPanelIsHovered(true)}
       >
-        <CachedCodeEditor
-          input={input}
-          placeholder={placeholder}
-          {...otherProps}
+        {content(true)}
+        <CodeEditorPanel
+          editor={content()}
+          onPanelVisibleChange={(v: boolean) => {
+            setPanelVisible(v);
+          }}
+          isShow={isHovered}
+          source={otherProps.evaluatedPopUpLabel}
         />
-      </LazyEditorWrapper>
+      </div>
     );
   }
 

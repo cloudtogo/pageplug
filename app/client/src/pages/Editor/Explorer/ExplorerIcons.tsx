@@ -11,6 +11,7 @@ import { Icon } from "design-system";
 import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
 import { importSvg } from "design-system-old";
 import { Colors } from "constants/Colors";
+import { replacePluginIcon } from "utils/AppsmithUtils";
 
 const ApiIcon = importSvg(() => import("assets/icons/menu/api-colored.svg"));
 const CurlIcon = importSvg(() => import("assets/images/Curl-logo.svg"));
@@ -101,11 +102,9 @@ const PluginIcon = styled.img`
 
 export const getPluginIcon = (plugin?: Plugin) => {
   if (plugin && plugin.iconLocation) {
+    const logo_location = replacePluginIcon(plugin.iconLocation);
     return (
-      <PluginIcon
-        alt={plugin.packageName}
-        src={getAssetUrl(plugin.iconLocation)}
-      />
+      <PluginIcon alt={plugin.packageName} src={getAssetUrl(logo_location)} />
     );
   }
   return <PluginIcon alt="plugin-placeholder" src={ImageAlt} />;

@@ -25,7 +25,7 @@ export const CONFIG = {
   iconSVG: IconSVG,
   tags: [WIDGET_TAGS.SELECT],
   needsMeta: true,
-  searchTags: ["dropdown", "tags"],
+  searchTags: ["dropdown", "tags", "MultiSelect"],
   defaults: {
     rows: 7,
     columns: 20,
