@@ -53,7 +53,7 @@ class Empty extends React.Component {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const inst = createReactApp(Empty, React, ReactDOM, {});
 // add touch emulator
-import "@vant/touch-emulator";
+// import "@vant/touch-emulator";
 import "react-sortable-tree-patch-react-17/style.css";
 
 const shouldAutoFreeze = process.env.NODE_ENV === "development";

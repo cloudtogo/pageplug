@@ -50,6 +50,7 @@ import {
   setPageIdForImport,
   setWorkspaceIdForImport,
   showReconnectDatasourceModal,
+  updateApplicationNavigationLogoSuccessAction,
   updateApplicationNavigationSettingAction,
   updateCurrentApplicationEmbedSetting,
   updateCurrentApplicationIcon,
@@ -1089,10 +1090,6 @@ export default function* applicationSagas() {
       setDefaultApplicationPageSaga,
     ),
     takeLatest(ReduxActionTypes.DELETE_APPLICATION_INIT, deleteApplicationSaga),
-    takeLatest(
-      ReduxActionTypes.DUPLICATE_APPLICATION_INIT,
-      duplicateApplicationSaga,
-    ),
     takeLatest(ReduxActionTypes.IMPORT_APPLICATION_INIT, importApplicationSaga),
     takeLatest(
       ReduxActionTypes.FETCH_APPLICATION_PREVIEW_INIT,

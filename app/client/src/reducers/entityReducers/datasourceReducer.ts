@@ -40,6 +40,7 @@ export interface DatasourceDataState {
     isFetchingSheets: boolean;
     isFetchingColumns: boolean;
   };
+  recentDatasources: string[];
 }
 
 const initialState: DatasourceDataState = {
@@ -66,6 +67,7 @@ const initialState: DatasourceDataState = {
     isFetchingSheets: false,
     isFetchingColumns: false,
   },
+  recentDatasources: [],
 };
 
 const datasourceReducer = createReducer(initialState, {

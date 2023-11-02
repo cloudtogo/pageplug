@@ -27,13 +27,14 @@ import {
 import equal from "fast-deep-equal/es6";
 
 const Section = styled.section<{
-  height: number;
+  theight: number;
   isMobile: boolean;
 }>`
   background: ${({ isMobile }) => (isMobile ? "#fff" : "transparent")};
   width: ${({ isMobile }) => (isMobile ? "450px" : "100%")};
   height: 100%;
-  min-height: ${({ height, isMobile }) => (isMobile ? `${height}px` : "unset")};
+  min-height: ${({ theight, isMobile }) =>
+    isMobile ? `${theight}px` : "unset"};
   margin: 0 auto;
   position: relative;
   overflow: auto;
@@ -115,7 +116,7 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
 
   return (
     <Section
-      height={widgetsStructure.bottomRow + fixedHeight + AUTO_HEIGHT_PADDING}
+      theight={widgetsStructure.bottomRow + fixedHeight + AUTO_HEIGHT_PADDING}
       isMobile={isMobile}
       id="art-board"
     >

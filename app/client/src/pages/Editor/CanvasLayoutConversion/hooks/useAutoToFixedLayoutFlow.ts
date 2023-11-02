@@ -56,12 +56,12 @@ export const useAutoToFixedLayoutFlow = (
       selectDropDown: {
         options: [
           {
-            label: "Desktop",
+            label: "电脑桌面",
             value: "DESKTOP",
             startIcon: "desktop",
           },
           {
-            label: "Mobile device",
+            label: "移动设备",
             value: "MOBILE",
             startIcon: "mobile",
           },

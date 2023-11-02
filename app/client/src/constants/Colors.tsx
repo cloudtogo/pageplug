@@ -52,7 +52,7 @@ export const Colors = {
 
   PRIMARY: primaryColor,
   PRIMARY_DARK: "#3ababc",
-  PRIMARY_LIGHT: "#CAECDC",
+  PRIMARY_LIGHT: "#4fb2b4",
   GREEN: primaryColor,
   FOAM: "#D9FDED",
   LIGHT_GREEN_CYAN: "#e5f6ec",

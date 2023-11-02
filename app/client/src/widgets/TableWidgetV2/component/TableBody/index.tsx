@@ -80,6 +80,7 @@ type BodyPropsType = {
   width?: number;
   tableSizes: TableSizes;
   innerElementType?: ReactElementType;
+  isVisiblePagination?: boolean;
 };
 
 const TableVirtualBodyComponent = React.forwardRef(
@@ -91,6 +92,9 @@ const TableVirtualBodyComponent = React.forwardRef(
           height={
             props.height -
             props.tableSizes.TABLE_HEADER_HEIGHT -
+            (props.isVisiblePagination
+              ? props.tableSizes.TABLE_FOOTER_HEIGHT
+              : 0) -
             2 * WIDGET_PADDING
           }
           innerElementType={props.innerElementType}

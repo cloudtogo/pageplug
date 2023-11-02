@@ -70,8 +70,11 @@ import type { OneClickBindingControlProps } from "./OneClickBindingControl";
 import OneClickBindingControl from "./OneClickBindingControl";
 import type { WrappedCodeEditorControlProps } from "./WrappedCodeEditorControl";
 import WrappedCodeEditorControl from "./WrappedCodeEditorControl";
+import type { JsDataControllProps } from "components/propertyControls/JSControl";
+import JsDataControl from "components/propertyControls/JSControl";
 
 export const PropertyControls = {
+  JsDataControl,
   InputTextControl,
   DropDownControl,
   SwitchControl,
@@ -124,6 +127,7 @@ export const PropertyControls = {
 };
 
 export type PropertyControlPropsType =
+  | JsDataControllProps
   | ControlProps
   | InputControlProps
   | DropDownControlProps

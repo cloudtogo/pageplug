@@ -10,6 +10,9 @@ export const BodyContainer = styled.div`
   .ads-v2-input__input-section-icon[data-has-onclick="true"] * {
     cursor: pointer !important;
   }
+  .ur--has-border {
+    width: 638px;
+  }
 `;
 
 const HeaderWrapper = styled.div`

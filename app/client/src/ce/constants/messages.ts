@@ -169,10 +169,10 @@ export const USER_DISPLAY_PICTURE_FILE_INVALID = () =>
   "File content doesn't seem to be an image. Please verify.";
 export const USER_DISPLAY_NAME_CHAR_CHECK_FAILED = () =>
   "No special characters allowed except .'-";
-export const USER_DISPLAY_NAME_PLACEHOLDER = () => "Display name";
-export const USER_DISPLAY_PICTURE_PLACEHOLDER = () => "Display picture";
+export const USER_DISPLAY_NAME_PLACEHOLDER = () => "用户名";
+export const USER_DISPLAY_PICTURE_PLACEHOLDER = () => "头像";
 export const USER_EMAIL_PLACEHOLDER = () => "Email";
-export const USER_RESET_PASSWORD = () => "Reset password";
+export const USER_RESET_PASSWORD = () => "重置密码";
 export const ADD_API_TO_PAGE_SUCCESS_MESSAGE = (actionName: string) =>
   `${actionName} API 添加成功`;
 export const INPUT_WIDGET_DEFAULT_VALIDATION_ERROR = () => `无效输入`;
@@ -1621,14 +1621,14 @@ export const GSHEETS_SCHEMA_NO_DATA = () =>
   "没有要显示的数据记录，或者表头从索引 1 以外的索引开始";
 
 //Layout Conversion flow
-export const CONVERT = () => "Convert layout";
-export const BUILD_RESPONSIVE = () => "Build responsive apps";
+export const CONVERT = () => "转换布局";
+export const BUILD_RESPONSIVE = () => "构建响应式应用";
 export const BUILD_RESPONSIVE_TEXT = () =>
-  "Pageplug will convert your application's UI to auto-layout, a new mode designed for building mobile-friendly apps in no time";
-export const BUILD_FIXED_LAYOUT = () => "Use fixed-layout";
+  "Pageplug 将把应用程序的 UI 转换为自动布局，这是一种新的模式，专门用于在短时间内构建移动友好的应用程序";
+export const BUILD_FIXED_LAYOUT = () => "使用固定布局";
 export const BUILD_FIXED_LAYOUT_TEXT = () =>
-  "Pageplug will convert your application’s UI to fixed layout, the default mode.";
-export const USE_SNAPSHOT = () => "Use snapshot";
+  "Pageplug 将把应用程序的 UI 转换为固定布局(默认模式)。";
+export const USE_SNAPSHOT = () => "使用快照";
 export const USE_SNAPSHOT_HEADER = () => "使用快照";
 export const DISCARD_SNAPSHOT_HEADER = () => "丢弃快照";
 export const SAVE_SNAPSHOT = () =>
@@ -1680,10 +1680,10 @@ export const CONVERSION_ERROR_MESSAGE_TEXT_TWO = () =>
 export const SNAPSHOT_TIME_FROM_MESSAGE = (
   timeSince: string,
   readableDate: string,
-) => `Snapshot from ${timeSince} ago (${readableDate})`;
+) => `${timeSince} 之前的快照 (${readableDate})`;
 export const SNAPSHOT_TIME_TILL_EXPIRATION_MESSAGE = (
   timeTillExpiration: string,
-) => `Snapshot of your previous layout expires in ${timeTillExpiration}`;
+) => `你之前的快照布局将在${timeTillExpiration}内过期`;
 export const DISCARD = () => "Discard";
 // Alert options and labels for showMessage types
 export const ALERT_STYLE_OPTIONS = [

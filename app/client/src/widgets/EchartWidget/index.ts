@@ -3,6 +3,8 @@ import IconSVG from "./icon.svg";
 import { generateReactKey } from "widgets/WidgetUtils";
 import { ECHART_TYPE_MAP } from "./constants";
 import { WIDGET_TAGS } from "constants/WidgetConstants";
+import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
+import { ResponsiveBehavior } from "utils/autoLayout/constants";
 const DEFAUTL_CHART = {
   name: "",
   chartName: "秋季系列",
@@ -99,6 +101,8 @@ export const CONFIG = {
         },
       ],
     },
+    responsiveBehavior: ResponsiveBehavior.Fill,
+    minWidth: FILL_WIDGET_MIN_WIDTH,
   },
   properties: {
     derived: Widget.getDerivedPropertiesMap(),
@@ -109,6 +113,20 @@ export const CONFIG = {
     styleConfig: Widget.getPropertyPaneStyleConfig(),
     stylesheetConfig: Widget.getStylesheetConfig(),
     autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
+    setterConfig: Widget.getSetterConfig(),
+  },
+  autoLayout: {
+    widgetSize: [
+      {
+        viewportMinWidth: 0,
+        configuration: () => {
+          return {
+            minWidth: "280px",
+            minHeight: "300px",
+          };
+        },
+      },
+    ],
   },
 };
 

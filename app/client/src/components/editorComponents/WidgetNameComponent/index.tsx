@@ -48,7 +48,7 @@ const PositionStyle = styled.div<{
   cursor: pointer;
   top: ${(props) =>
     props.topRow > 2
-      ? `${-1 * WidgetNameComponentHeight + 1 + props.positionOffset[0]}px`
+      ? `${-1 * WidgetNameComponentHeight + props.positionOffset[0] - 4}px`
       : `calc(100% - ${1 + props.positionOffset[0]}px)`};
   height: ${WidgetNameComponentHeight}px;
   right: ${(props) => props.positionOffset[1]}px;

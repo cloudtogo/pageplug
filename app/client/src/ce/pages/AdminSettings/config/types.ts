@@ -49,6 +49,13 @@ export enum SettingSubtype {
   PASSWORD = "password",
 }
 
+export const SettingSubCategories = {
+  GOOGLE: "google signup",
+  GITHUB: "github signup",
+  FORMLOGIN: "form login",
+  WECHAT: "微信登录",
+};
+
 export type Setting = ControlType & {
   id: string;
   category?: string;
@@ -79,6 +86,7 @@ export type Setting = ControlType & {
   calloutType?: CalloutKind;
   advanced?: Setting[];
   isRequired?: boolean;
+  forceHidden?: boolean;
   formName?: string;
   fieldName?: string;
   dropdownOptions?: Partial<SelectOptionProps>[];
@@ -116,6 +124,7 @@ export const SettingCategories = {
   ACCESS_CONTROL: "access-control",
   PROVISIONING: "provisioning",
   BRANDING: "branding",
+  WECHAT_AUTH: "wechat-auth",
   SAML_AUTH: "saml-auth",
   OIDC_AUTH: "oidc-auth",
 };

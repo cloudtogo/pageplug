@@ -55,6 +55,7 @@ export const CONFIG = {
   tags: [WIDGET_TAGS.DISPLAY],
   needsMeta: true,
   isCanvas: true,
+  searchTags: ["list"],
   defaults: {
     backgroundColor: "transparent",
     itemBackgroundColor: "#FFFFFF",
