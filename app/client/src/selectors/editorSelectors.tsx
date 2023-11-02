@@ -373,10 +373,12 @@ export const getWidgetCards = createSelector(
   getWidgetConfigs,
   getIsAutoLayout,
   (_state: any) => selectFeatureFlagCheck(_state, FEATURE_FLAG.ab_wds_enabled),
+  isMobileLayout,
   (
     widgetConfigs: WidgetConfigReducerState,
     isAutoLayout: boolean,
     isWDSEnabled: boolean,
+    isMobile: boolean,
   ) => {
     const cards = Object.values(widgetConfigs.config).filter((config) => {
       // if wds_vs is not enabled, hide all wds_v2 widgets
@@ -387,14 +389,21 @@ export const getWidgetCards = createSelector(
         return false;
       }
 
+      if (isAirgapped()) {
+        return config.widgetName !== "Map" && !config.hideCard;
+      }
+
       // if wds is enabled, only show the wds_v2 widgets
       if (isWDSEnabled === true) {
         return Object.values(WDS_V2_WIDGET_MAP).includes(config.type);
       }
 
-      return isAirgapped()
-        ? config.widgetName !== "Map" && !config.hideCard
-        : !config.hideCard && config.isMobile;
+      // 筛选小程序
+      if (isMobile) {
+        return config.isMobile;
+      }
+
+      return !config.hideCard;
     });
 
     const _cards: WidgetCardProps[] = cards.map((config) => {
