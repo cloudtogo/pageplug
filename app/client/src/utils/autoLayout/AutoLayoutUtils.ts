@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import type {
   AlignmentColumnData,
   FlexLayer,
@@ -10,7 +9,6 @@ import {
   GridDefaults,
   MAIN_CONTAINER_WIDGET_ID,
   WIDGET_PADDING,
-  CONTAINER_GRID_PADDING,
   DefaultDimensionMap,
   AUTO_LAYOUT_CONTAINER_PADDING,
   MAX_MODAL_WIDTH_FROM_MAIN_WIDTH,
@@ -507,7 +505,10 @@ function getCanvasWidth(
 
   //modal will be the total width instead of the mainCanvasWidth
   if (widget.type === "MODAL_WIDGET") {
-    width = widget.width;
+    width = Math.min(
+      widget.width,
+      mainCanvasWidth * MAX_MODAL_WIDTH_FROM_MAIN_WIDTH,
+    );
   }
 
   while (stack.length) {
@@ -529,9 +530,9 @@ function getPadding(canvas: FlattenedWidgetProps): number {
   if (canvas.widgetId === MAIN_CONTAINER_WIDGET_ID) {
     padding = FLEXBOX_PADDING * 2;
   } else if (canvas.type === "CONTAINER_WIDGET") {
-    padding = (CONTAINER_GRID_PADDING + FLEXBOX_PADDING) * 2;
+    padding = (AUTO_LAYOUT_CONTAINER_PADDING + FLEXBOX_PADDING) * 2;
   } else if (canvas.isCanvas) {
-    padding = CONTAINER_GRID_PADDING * 2;
+    padding = AUTO_LAYOUT_CONTAINER_PADDING * 2;
   }
 
   if (canvas.noPad) {
