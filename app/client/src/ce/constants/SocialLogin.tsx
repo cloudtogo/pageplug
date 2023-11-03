@@ -1,6 +1,6 @@
 import { GoogleOAuthURL, GithubOAuthURL } from "./ApiConstants";
 
-import GithubLogo from "assets/images/Github.png";
+import GithubLogo from "assets/images/Github.svg";
 import GoogleLogo from "assets/images/Google.png";
 export type SocialLoginButtonProps = {
   url?: string;

@@ -17,9 +17,13 @@ import type { AuthMethodType } from "./AuthPage";
 import { AuthPage } from "./AuthPage";
 import Google from "assets/images/Google.png";
 import SamlSso from "assets/images/saml.svg";
-import OIDC from "assets/images/oidc.svg";
-import Github from "assets/images/Github.png";
+import OIDC from "assets/images/OIDC.svg";
+import Github from "assets/images/Github.svg";
 import Lock from "assets/images/lock-password-line.svg";
+import WeChat from "assets/images/WeChat.svg";
+import BusinessWeChat from "assets/images/BusinessWeChat.svg";
+import Dingding from "assets/images/Dingding.svg";
+
 import { useSelector } from "react-redux";
 import {
   getThirdPartyAuths,
@@ -32,11 +36,13 @@ import {
   OIDC_AUTH_DESC,
   SAML_AUTH_DESC,
   createMessage,
+  BUSINESS_WECHAT_AUTH_DESC,
+  WECHAT_AUTH_DESC,
+  DINGDING_AUTH_DESC,
 } from "@appsmith/constants/messages";
 import { isSAMLEnabled, isOIDCEnabled } from "@appsmith/utils/planHelpers";
 import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
 import store from "store";
-import WeChat from "assets/images/WeChat.svg";
 import { getAppsmithConfigs } from "@appsmith/configs";
 import { getWXLoginClientId } from "ce/selectors/settingsSelectors";
 
@@ -100,9 +106,8 @@ const GoogleAuth: AdminConfigType = {
       label: "JavaScript origin URL",
       fieldName: "js-origin-url-form",
       value: "",
-      tooltip:
-        "This URL will be used while configuring the Google OAuth Client ID's authorized JavaScript origins",
-      helpText: "Paste this URL in your Google developer console.",
+      tooltip: "这个URL将在配置Google OAuth Client ID的授权JavaScript源时使用",
+      helpText: "请将这个URL粘贴到您的Google开发者控制台中。",
     },
     {
       id: "APPSMITH_OAUTH2_GOOGLE_REDIRECT_URL",
@@ -111,9 +116,8 @@ const GoogleAuth: AdminConfigType = {
       label: "Redirect URL",
       fieldName: "redirect-url-form",
       value: "/login/oauth2/code/google",
-      tooltip:
-        "This URL will be used while configuring the Google OAuth Client ID's authorized redirect URIs",
-      helpText: "Paste this URL in your Google developer console.",
+      tooltip: "这个URL将在配置Google OAuth Client ID的授权重定向URI时使用。",
+      helpText: "请将这个URL粘贴到您的Google开发者控制台中。",
     },
     {
       id: "APPSMITH_OAUTH2_GOOGLE_CLIENT_ID",
@@ -164,9 +168,8 @@ const GithubAuth: AdminConfigType = {
       label: "Homepage URL",
       fieldName: "homepage-url-form",
       value: "",
-      tooltip:
-        "This URL will be used while configuring the GitHub OAuth Client ID's homepage URL",
-      helpText: "Paste this URL in your GitHub developer settings.",
+      tooltip: "这个URL将用于配置GitHub OAuth Client ID的主页URL。",
+      helpText: "请将这个URL粘贴到您的GitHub开发者设置中。",
     },
     {
       id: "APPSMITH_OAUTH2_GITHUB_REDIRECT_URL",
@@ -175,9 +178,8 @@ const GithubAuth: AdminConfigType = {
       label: "Redirect URL",
       fieldName: "callback-url-form",
       value: "/login/oauth2/code/github",
-      tooltip:
-        "This URL will be used while configuring the GitHub OAuth Client ID's Authorization callback URL",
-      helpText: "Paste this URL in your GitHub developer settings.",
+      tooltip: "这个URL将用于配置GitHub OAuth Client ID的授权回调URL。",
+      helpText: "请将这个URL粘贴到您的GitHub开发者设置中。",
     },
     {
       id: "APPSMITH_OAUTH2_GITHUB_CLIENT_ID",
@@ -198,11 +200,22 @@ const GithubAuth: AdminConfigType = {
   ],
 };
 
+const OIDCAuth: AdminConfigType = {
+  type: SettingCategories.WECHAT_AUTH,
+  controlType: SettingTypes.GROUP,
+  title: "OIDC登录",
+  subText: "让你可以用OIDC账号进行登录",
+  canSave: true,
+  isConnected: false,
+  categoryType: CategoryType.OTHER,
+  settings: [],
+};
+
 const WeChatAuth: AdminConfigType = {
   type: SettingCategories.WECHAT_AUTH,
   controlType: SettingTypes.GROUP,
   title: "微信登录",
-  subText: "让你可以微信账号进行登录",
+  subText: "让你可以用微信账号进行登录",
   canSave: true,
   isConnected: enableWeChatOAuth,
   categoryType: CategoryType.OTHER,
@@ -248,6 +261,28 @@ const WeChatAuth: AdminConfigType = {
   ],
 };
 
+const BusinessWeChatAuth: AdminConfigType = {
+  type: SettingCategories.WECHAT_AUTH,
+  controlType: SettingTypes.GROUP,
+  title: "企业微信登录",
+  subText: "让你可以用企业微信账号进行登录",
+  canSave: true,
+  isConnected: false,
+  categoryType: CategoryType.OTHER,
+  settings: [],
+};
+
+const DingdingAuth: AdminConfigType = {
+  type: SettingCategories.WECHAT_AUTH,
+  controlType: SettingTypes.GROUP,
+  title: "钉钉登录",
+  subText: "让你可以用钉钉账号进行登录",
+  canSave: true,
+  isConnected: false,
+  categoryType: CategoryType.OTHER,
+  settings: [],
+};
+
 export const FormAuthCallout: AuthMethodType = {
   id: "APPSMITH_FORM_LOGIN_AUTH",
   category: SettingCategories.FORM_AUTH,
@@ -291,27 +326,51 @@ export const OidcAuthCallout: AuthMethodType = {
   label: "OIDC",
   subText: createMessage(OIDC_AUTH_DESC),
   image: OIDC,
-  isFeatureEnabled: isOIDCEnabled(featureFlags),
+  isFeatureEnabled: false,
 };
 
 const WeChatCallout: AuthMethodType = {
   id: "APPSMITH_WECHAT_AUTH",
   category: SettingCategories.WECHAT_AUTH,
   label: "微信",
-  subText: `允许使用 微信账号登录你的平台`,
+  subText: createMessage(WECHAT_AUTH_DESC),
   image: WeChat,
   isConnected: enableWeChatOAuth,
   needsUpgrade: false,
   isFeatureEnabled: true,
 };
 
+const BusinessWeChatCallout: AuthMethodType = {
+  id: "APPSMITH_BUSINESS_WECHAT_AUTH",
+  category: SettingCategories.BUSINESS_WECHAT_AUTH,
+  label: "企业微信",
+  subText: createMessage(BUSINESS_WECHAT_AUTH_DESC),
+  image: BusinessWeChat,
+  isConnected: false,
+  needsUpgrade: false,
+  isFeatureEnabled: false,
+};
+
+const DingdingCallout: AuthMethodType = {
+  id: "APPSMITH_DINGDING_AUTH",
+  category: SettingCategories.DINGDING_AUTH,
+  label: "钉钉",
+  subText: createMessage(DINGDING_AUTH_DESC),
+  image: Dingding,
+  isConnected: false,
+  needsUpgrade: false,
+  isFeatureEnabled: false,
+};
+
 const AuthMethods = [
-  // OidcAuthCallout,
+  OidcAuthCallout,
   // SamlAuthCallout,
   GoogleAuthCallout,
   GithubAuthCallout,
   FormAuthCallout,
   WeChatCallout,
+  BusinessWeChatCallout,
+  DingdingCallout,
 ];
 
 function AuthMain() {
@@ -334,6 +393,14 @@ export const config: AdminConfigType = {
   controlType: SettingTypes.PAGE,
   title: "身份认证",
   canSave: false,
-  children: [FormAuth, GoogleAuth, GithubAuth, WeChatAuth],
+  children: [
+    FormAuth,
+    GoogleAuth,
+    GithubAuth,
+    OIDCAuth,
+    WeChatAuth,
+    BusinessWeChatAuth,
+    DingdingAuth,
+  ],
   component: AuthMain,
 };
