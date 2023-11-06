@@ -1,5 +1,5 @@
-@import './tailwind.css';
-@import './tailwind-preflight.css';
+@import "./tailwind.css";
+@import "./tailwind-preflight.css";
 
 /**
 * ---------------------------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ textarea::placeholder {
 
 /* login page */
 .login-page-bg {
-  background-image: url('../images/login-bg.png');
+  background-image: url("../images/login-bg.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center;
@@ -100,18 +100,19 @@ textarea::placeholder {
   align-items: center;
 }
 
-.fs-16, .ads-v2-link__text {
+.fs-16,
+.ads-v2-link__text {
   font-size: 16px !important;
-  color: #13C2C2 !important;
+  color: #13c2c2 !important;
 }
 
 .myfont {
   font-size: 16px;
-  color: #000000E5;
+  color: #000000e5;
 }
 
 .ads-v2-input__input-section-input:focus:enabled:not(:read-only) {
-  --input-color-border: #13C2C2 !important;
+  --input-color-border: #13c2c2 !important;
 }
 
 .ads-v2-input__input-section-input:focus {
@@ -139,18 +140,22 @@ textarea::placeholder {
 }
 /* 按钮禁用状态 */
 .ads-v2-button:disabled > .ads-v2-button__content {
-    background-color: #aabdba;
-    border: 1px solid #aabdba;
+  background-color: #aabdba;
+  border: 1px solid #aabdba;
+}
+.t--connection.ads-v2-button:disabled > .ads-v2-button__content {
+  background-color: transparent;
+  border: transparent;
 }
 /* 消息提示 */
 .my-msg.ant-message-notice-error > .ant-message-notice-content {
-  border: 1px solid #FF5449 !important;
+  border: 1px solid #ff5449 !important;
   background-color: #fff0ed !important;
 }
 
 .my-msg.ant-message-notice-success > .ant-message-notice-content {
-  border: 1px solid #34C724 !important;
-  background-color: #E3F9E9 !important;
+  border: 1px solid #34c724 !important;
+  background-color: #e3f9e9 !important;
 }
 /* 邀请页调整 */
 .t--invite-user-btn {
@@ -159,4 +164,9 @@ textarea::placeholder {
 
 .t--property-control-wrapper .ads-v2-segmented-control {
   width: 100%;
+}
+
+.t--change-theme-btn.temp-class:hover {
+  background-color: #13c2c2;
+  border: 1px solid #13c2c2;
 }

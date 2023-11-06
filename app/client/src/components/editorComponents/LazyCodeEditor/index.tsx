@@ -263,6 +263,7 @@ function LazyCodeEditor({
         onMouseEnter={() => setPanelIsHovered(true)}
         onMouseLeave={() => setPanelIsHovered(false)}
         onFocus={() => setPanelIsHovered(true)}
+        className="w-full h-full"
       >
         {content(true)}
         <CodeEditorPanel

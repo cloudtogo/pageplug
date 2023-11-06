@@ -71,7 +71,7 @@ function EchartThemeEditor() {
             >
               <Button
                 category={Category.primary}
-                className="t--change-theme-btn"
+                className="t--change-theme-btn temp-class"
                 onClick={onClickChangeThemeButton}
                 size={Size.medium}
                 text="选择Echart主题"
