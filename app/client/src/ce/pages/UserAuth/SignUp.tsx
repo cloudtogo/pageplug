@@ -158,7 +158,7 @@ export function SignUp(props: SignUpFormProps) {
     if (showError) {
       message.open({
         type: "error",
-        duration: 3,
+        duration: 5,
         content: errorMessage,
         className: "my-msg",
       });
