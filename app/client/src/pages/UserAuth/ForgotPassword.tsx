@@ -62,25 +62,19 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
     }
   }, [props.emailValue]);
 
-  useEffect(() => {
-    if (!mailEnabled) {
+  const submit = () => {
+    if (mailEnabled) {
       message.open({
-        type: "error",
-        duration: 1,
-        content: "系统未开通邮件服务，不能正常发送重置邮件",
+        type: "success",
+        duration: 5,
+        content: `密码重置链接已经发送到你的邮箱 ${props.emailValue} ，请查收确认`,
         className: "my-msg",
       });
     }
-  }, []);
+    props.reset();
+  };
 
-  if (submitSucceeded) {
-    message.open({
-      type: "success",
-      duration: 1,
-      content: `密码重置链接已经发送到你的邮箱 ${props.emailValue} ，请查收确认`,
-      className: "my-msg",
-    });
-  }
+  console.log("submitSucceeded", submitSucceeded);
 
   return (
     <Container
@@ -97,6 +91,20 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
       title={createMessage(FORGOT_PASSWORD_PAGE_TITLE)}
     >
       <FormMessagesContainer>
+        {!mailEnabled && (
+          <Callout
+            kind="warning"
+            links={[
+              {
+                to: "https://docs.pageplug.cn/%E5%AD%A6%E4%B9%A0%E6%96%87%E6%A1%A3/%E9%85%8D%E7%BD%AE%E9%82%AE%E7%AE%B1%E6%9C%8D%E5%8A%A1",
+                target: "_blank",
+                children: "如何配置？",
+              },
+            ]}
+          >
+            系统未开通邮件服务，不能正常发送重置邮件
+          </Callout>
+        )}
         {submitFailed && error && <Callout kind="warning">{error}</Callout>}
       </FormMessagesContainer>
       <StyledForm onSubmit={handleSubmit(forgotPasswordSubmitHandler)}>
@@ -113,10 +121,11 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
         </FormGroup>
         <FormActions>
           <Button
-            isDisabled={!isEmail(props.emailValue)}
+            isDisabled={!(mailEnabled && isEmail(props.emailValue))}
             isLoading={submitting}
             size="md"
             type="submit"
+            onClick={submit}
           >
             {createMessage(FORGOT_PASSWORD_PAGE_SUBMIT_BUTTON_TEXT)}
           </Button>

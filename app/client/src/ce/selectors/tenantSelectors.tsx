@@ -42,3 +42,5 @@ export const getIsFormLoginEnabled = (state: AppState): boolean =>
 
 export const getInstanceId = (state: AppState): string =>
   state.tenant?.instanceId;
+export const getIsFormSignupEnable = (state: AppState): boolean =>
+  !state.settings.config?.APPSMITH_SIGNUP_DISABLED;
