@@ -15,12 +15,10 @@ type CardProps = {
 };
 
 export const Wrapper = styled.div`
-  padding: 10px 5px 10px 5px;
   border-radius: var(--ads-v2-border-radius);
   border: none;
   position: relative;
   color: ${Colors.MINT_BLACK};
-  height: 72px;
   display: flex;
   align-items: flex-start;
   justify-content: center;

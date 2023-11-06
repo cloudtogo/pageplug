@@ -128,6 +128,7 @@ export function ThemeCard(props: ThemeCard) {
           "border relative group transition-all t--theme-card": true,
           "overflow-hidden": !selectable,
           "hover:shadow-xl cursor-pointer": selectable,
+          "temp-class": true,
         })}
         onClick={changeSelectedTheme}
       >
