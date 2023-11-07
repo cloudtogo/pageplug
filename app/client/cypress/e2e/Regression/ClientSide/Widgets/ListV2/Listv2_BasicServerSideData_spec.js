@@ -348,7 +348,7 @@ describe("List widget v2 - Basic server side data tests", () => {
       // Click the editing field
       cy.get(queryLocators.queryNameField).type("Query2");
 
-      // switching off Use Prepared Statement toggle
+      // switching off 使用预处理 toggle
       cy.get(queryLocators.switch).last().click({
         force: true,
       });
@@ -392,7 +392,7 @@ describe("List widget v2 - Basic server side data tests", () => {
       // Click the editing field
       cy.get(queryLocators.queryNameField).type("Query2");
 
-      // switching off Use Prepared Statement toggle
+      // switching off 使用预处理 toggle
       cy.get(queryLocators.switch).last().click({
         force: true,
       });
