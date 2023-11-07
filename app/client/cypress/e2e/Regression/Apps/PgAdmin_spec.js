@@ -25,7 +25,7 @@ describe("PgAdmin Clone App", function () {
       "SELECT schema_name FROM information_schema.schemata;",
       "get_schema",
     );
-    // switching off Use Prepared Statement toggle
+    // switching off 使用预处理 toggle
     dataSources.ToggleUsePreparedStatement(false);
     dataSources.RunQuery();
 
