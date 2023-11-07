@@ -210,7 +210,7 @@ describe("List widget V2 page number and page size", () => {
       // Click the editing field
       cy.get(queryLocators.queryNameField).type("Query1");
 
-      // switching off Use Prepared Statement toggle
+      // switching off 使用预处理 toggle
       cy.get(queryLocators.switch).last().click({ force: true });
 
       _.dataSources.EnterQuery(

@@ -605,13 +605,13 @@ function GeneratePageForm() {
 
   if (!fetchingDatasourceConfigs) {
     if (datasourceTableOptions.length === 0) {
-      tableDropdownErrorMsg = `Couldn't find any ${pluginField.TABLE}, Please select another datasource`;
+      tableDropdownErrorMsg = `找不到任何${pluginField.TABLE}, 请选择另一个数据源`;
     }
     if (fetchingDatasourceConfigError) {
-      tableDropdownErrorMsg = `Failed fetching datasource structure, Please check your datasource configuration`;
+      tableDropdownErrorMsg = `获取数据源结构失败，请检查你的数据源配置`;
     }
     if (isSelectedTableEmpty) {
-      tableDropdownErrorMsg = `Couldn't find any columns, Please select table with columns.`;
+      tableDropdownErrorMsg = `找不到任何列，请选择有列的表。`;
     }
   }
 
@@ -764,7 +764,7 @@ function GeneratePageForm() {
         {showEditDatasourceBtn && (
           <div>
             <Button kind="primary" onClick={goToEditDatasource} size="md">
-              Edit datasource
+              编辑数据源
             </Button>
           </div>
         )}
