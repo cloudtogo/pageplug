@@ -1,5 +1,6 @@
 import React, { memo } from "react";
 import styled from "styled-components";
+import Lottie from "lottie-react";
 import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
 import { useEffect } from "react";
 import { playWelcomeAnimation } from "utils/helpers";
@@ -10,6 +11,7 @@ import {
 } from "@appsmith/constants/messages";
 import { SuperUserForm } from "./GetStarted";
 import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+import Animation from "assets/lottie/Animation.json";
 
 const LandingPageWrapper = styled.div`
   width: 100%;
@@ -99,14 +101,14 @@ export default memo(function SuperUserWelcome() {
           <SuperUserForm />
         </StyledTextBanner>
         {/* 隐藏图片 */}
-        {/* <StyledImageBanner>
+        <StyledImageBanner>
           <div className="flex self-start w-2/6 h-16 ml-56">
-            <img src={getAssetUrl(getAppsmithLogo())} />
+            <h1>Pageplug_</h1>
           </div>
           <div className="flex w-5/6 my-1 h-4/6">
-            <img className="w-full" src={getAssetUrl(getWelcomeImage())} />
+            <Lottie animationData={Animation} loop autoplay />
           </div>
-        </StyledImageBanner> */}
+        </StyledImageBanner>
       </LandingPageContent>
     </LandingPageWrapper>
   );

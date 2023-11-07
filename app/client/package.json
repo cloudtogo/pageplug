@@ -155,6 +155,7 @@
     "lodash": "^4.17.21",
     "lodash-es": "4.17.21",
     "loglevel": "^1.7.1",
+    "lottie-react": "^2.4.0",
     "lottie-web": "^5.7.4",
     "mammoth": "^1.5.1",
     "marked": "^4.0.18",
