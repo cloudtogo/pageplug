@@ -17,8 +17,8 @@
           "subtitle": "Ask confirmation from the user each time before refreshing data"
         },
         {
-          "label": "Use Prepared Statement",
-          "subtitle": "Turning on Prepared Statement makes your queries resilient against bad things like SQL injections. However, it cannot be used if your dynamic binding contains any SQL keywords like 'SELECT', 'WHERE', 'AND', etc.",
+          "label": "使用预处理",
+          "subtitle": "打开预处理可以使您的查询对 SQL 注入之类的问题具有弹性。但是，如果您的动态绑定包含任何 SQL 关键字，如‘ SELECT’、‘ WHERE’、‘ AND’等，则不能使用它。",
           "configProperty": "actionConfiguration.formData.preparedStatement.data",
           "controlType": "SWITCH",
           "initialValue": true

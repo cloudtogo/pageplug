@@ -47,7 +47,9 @@ export function PrivateEmbedRampModal() {
     section: RampSection.ShareModal,
     feature: RampFeature.PrivateEmbeds,
   });
-  const rampLink = useSelector(rampLinkSelector);
+  // const rampLink = useSelector(rampLinkSelector);
+  const rampLink =
+    "https://docs.pageplug.cn/%E5%95%86%E4%B8%9A%E7%89%88&%E4%BC%81%E4%B8%9A%E7%89%88/%E4%BB%B7%E6%A0%BC%E8%A1%A8";
   const showRampSelector = showProductRamps(RAMP_NAME.PRIVATE_EMBED);
   const canShowRamp = useSelector(showRampSelector);
   if (canShowRamp) {

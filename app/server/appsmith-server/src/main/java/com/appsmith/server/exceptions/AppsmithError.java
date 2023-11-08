@@ -564,7 +564,7 @@ public enum AppsmithError {
     SIGNUP_DISABLED(
             403,
             AppsmithErrorCode.SIGNUP_DISABLED.getCode(),
-            "Signup is restricted on this instance of Appsmith. Please contact the administrator to get an invite for user {0}.",
+            "注册功能已被关闭，请联系管理员处理",
             AppsmithErrorAction.DEFAULT,
             "Signup disabled",
             ErrorType.INTERNAL_ERROR,
