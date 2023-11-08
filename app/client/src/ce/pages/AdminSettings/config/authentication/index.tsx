@@ -201,7 +201,7 @@ const GithubAuth: AdminConfigType = {
 };
 
 const OIDCAuth: AdminConfigType = {
-  type: SettingCategories.WECHAT_AUTH,
+  type: SettingCategories.OIDC_AUTH,
   controlType: SettingTypes.GROUP,
   title: "OIDC登录",
   subText: "让你可以用OIDC账号进行登录",

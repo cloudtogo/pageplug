@@ -1,19 +1,18 @@
 import type { ERROR_CODES } from "@appsmith/constants/ApiConstants";
 import type { Workspace } from "@appsmith/constants/workspaceConstants";
-import type { ApplicationVersion } from "actions/applicationActions";
 import type {
   AppEmbedSetting,
   ApplicationPagePayload,
   EvaluationVersion,
   GitApplicationMetadata,
 } from "@appsmith/api/ApplicationApi";
+import type { ApplicationVersion } from "@appsmith/actions/applicationActions";
+import type { NavigationSetting } from "constants/AppConstants";
+import type { WidgetCardProps, WidgetProps } from "widgets/BaseWidget";
 import type {
   LayoutOnLoadActionErrors,
   PageAction,
 } from "constants/AppsmithActionConstants/ActionConstants";
-import type { WidgetCardProps, WidgetProps } from "widgets/BaseWidget";
-
-import type { NavigationSetting } from "constants/AppConstants";
 import type {
   AppLayoutConfig,
   AppPositioningTypeConfig,
@@ -482,6 +481,7 @@ const ActionTypes = {
   CHANGE_WORKSPACE_USER_ROLE_SUCCESS: "CHANGE_WORKSPACE_USER_ROLE_SUCCESS",
   UPDATE_USER_DETAILS_INIT: "UPDATE_USER_DETAILS_INIT",
   UPDATE_USER_DETAILS_SUCCESS: "UPDATE_USER_DETAILS_SUCCESS",
+  UPDATE_USER_INTERCOM_CONSENT: "UPDATE_USER_INTERCOM_CONSENT",
   SET_DEFAULT_REFINEMENT: "SET_DEFAULT_REFINEMENT",
   SET_HELP_MODAL_OPEN: "SET_HELP_MODAL_OPEN",
   SAVE_ACTION_NAME_INIT: "SAVE_ACTION_NAME_INIT",

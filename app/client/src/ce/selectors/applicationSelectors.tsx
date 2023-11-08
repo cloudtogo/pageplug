@@ -201,22 +201,19 @@ export const getSidebarWidth = (state: AppState) => {
       ?.navigationSetting;
   const isAppSidebarPinned = state.ui.applications.isAppSidebarPinned;
 
-  // if (
-  //   navigationSetting?.showNavbar !== false &&
-  //   navigationSetting?.orientation === NAVIGATION_SETTINGS.ORIENTATION.SIDE &&
-  //   isAppSidebarPinned
-  // ) {
-  //   if (navigationSetting?.navStyle === NAVIGATION_SETTINGS.NAV_STYLE.MINIMAL) {
-  //     return SIDEBAR_WIDTH.MINIMAL;
-  //   } else {
-  //     return SIDEBAR_WIDTH.REGULAR;
-  //   }
-  // }
-  if (isAppSidebarPinned) {
-    return 250;
-  } else {
-    return 64;
+  if (
+    navigationSetting?.showNavbar !== false &&
+    navigationSetting?.orientation === NAVIGATION_SETTINGS.ORIENTATION.SIDE &&
+    isAppSidebarPinned
+  ) {
+    if (navigationSetting?.navStyle === NAVIGATION_SETTINGS.NAV_STYLE.MINIMAL) {
+      return SIDEBAR_WIDTH.MINIMAL;
+    } else {
+      return SIDEBAR_WIDTH.REGULAR;
+    }
   }
+
+  return 0;
 };
 
 export const getIsUploadingNavigationLogo = (state: AppState) => {
