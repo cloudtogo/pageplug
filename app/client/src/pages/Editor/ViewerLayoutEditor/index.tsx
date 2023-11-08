@@ -21,7 +21,7 @@ import { builderURL } from "RouteBuilder";
 //   walk,
 // } from "react-sortable-tree-patch-react-17/dist/index.cjs.js";
 // import FileExplorerTheme from "react-sortable-tree-theme-full-node-drag";
-// import IconSelect from "./IconSelect";
+import IconSelect from "./IconSelect";
 import { Button, Input, Form, message, Tree, Divider, Typography } from "antd";
 import ColorPickerComponent from "components/propertyControls/ColorPickerComponentV2";
 import { updateApplication } from "actions/applicationActions";
@@ -42,7 +42,7 @@ const { Paragraph } = Typography;
 const x = 3;
 const y = 2;
 const z = 1;
-const defaultData: DataNode[] = [];
+const defaultData: (DataNode & { iconName: string })[] = [];
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -370,6 +370,7 @@ function PagesEditor() {
         outsiderTree: _outsiderTree,
       }),
     };
+    console.log("gData", data);
     dispatch(updateApplication(applicationId, data));
     message.success("保存成功");
   };
@@ -379,6 +380,7 @@ function PagesEditor() {
       gData.concat({
         title: "一级目录",
         key: generateUuid(),
+        iconName: "",
       }),
     );
   };
@@ -414,6 +416,16 @@ function PagesEditor() {
       });
     });
     setGData(gData);
+  };
+  interface SelectedIcons {
+    [key: string]: string | undefined;
+  }
+  const [selectedIcons, setSelectedIcons] = useState<SelectedIcons>({});
+  const handleIconSelected = (key: string, icon: any) => {
+    setSelectedIcons((prevSelectedIcons) => ({
+      ...prevSelectedIcons,
+      [key]: icon,
+    }));
   };
 
   return (
@@ -498,19 +510,27 @@ function PagesEditor() {
                             color="#4B4848"
                             data-testid="pages-collapse-icon"
                             icon="document"
-                            size={12}
+                            size={14}
                           />
                         ) : (
-                          <Icon
-                            className="icon"
-                            color="#4B4848"
-                            data-testid="fold-collapse-icon"
-                            icon="folder-close"
-                            size={12}
+                          // <Icon
+                          //   className="icon"
+                          //   color="#4B4848"
+                          //   data-testid="fold-collapse-icon"
+                          //   icon="folder-close"
+                          //   size={12}
+                          // />
+                          <IconSelect
+                            iconName={selectedIcons[node.key]}
+                            onIconSelected={(icon) => {
+                              node.iconName = icon;
+                              handleIconSelected(node.key, icon);
+                            }}
                           />
                         )}
                       </div>
-                      <div>
+
+                      <div className="flex justify-center items-center">
                         {node.isPage ? (
                           node.title
                         ) : (

@@ -1524,14 +1524,14 @@ export const CODE_EDITOR_LOADING_ERROR = (message?: string) =>
   `Failed to load the code editor${message ? `: ${message}` : ""}`;
 
 export const UPDATE_VIA_IMPORT_SETTING = {
-  settingHeader: () => "Update through file import",
-  settingDesc: () => "Update app by importing file",
-  settingLabel: () => "Import",
+  settingHeader: () => "通过文件导入更新",
+  settingDesc: () => "通过导入文件更新应用程序",
+  settingLabel: () => "导入",
   settingContent: () =>
-    "This action will override your existing application. Please exercise caution while selecting the file to import.",
-  settingActionButtonTxt: () => "Import",
+    "此操作将覆盖您现有的应用程序。在选择要导入的文件时，请谨慎操作。",
+  settingActionButtonTxt: () => "导入",
   disabledForGit: () =>
-    "This feature is not supported for apps connected to Git version control. Please use git pull to update and sync your app.",
+    "此功能不支持与 Git 版本控制连接的应用程序。请使用 git pull 命令来更新和同步您的应用程序。",
 };
 
 export const IN_APP_EMBED_SETTING = {
@@ -1594,6 +1594,10 @@ export const APP_NAVIGATION_SETTING = {
   logoConfigurationLabel: () => "Logo 配置",
   showSignInLabel: () => "展示登录",
   showSignInTooltip: () => "是否给未登录用户展示登录按钮",
+  logoUploadFormatError: () => `上传的文件必须是 .PNG 或 .JPG 格式。`,
+  logoUploadSizeError: () => `上传的文件大小必须小于 1MB。`,
+  showLogoLabel: () => "显示logo",
+  showApplicationTitleLabel: () => "显示应用程序标题",
 };
 
 export const LOCK_SIDEBAR_MESSAGE = () => `固定侧边栏`;
