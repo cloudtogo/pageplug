@@ -125,6 +125,8 @@ export const SettingCategories = {
   PROVISIONING: "provisioning",
   BRANDING: "branding",
   WECHAT_AUTH: "wechat-auth",
+  BUSINESS_WECHAT_AUTH: "business-wechat-auth",
+  DINGDING_AUTH: "dingding-auth",
   SAML_AUTH: "saml-auth",
   OIDC_AUTH: "oidc-auth",
 };

@@ -142,7 +142,7 @@ function DatasourceCard(props: DatasourceCardProps) {
             onClick={editDatasource}
             startIcon={"pencil-line"}
           >
-            Edit Datasource
+            编辑数据源
           </EditDatasourceButton>
           <ActionButton
             buttonStyle="PRIMARY"

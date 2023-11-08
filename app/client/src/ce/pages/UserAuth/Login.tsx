@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Redirect, useLocation } from "react-router-dom";
 import { connect, useSelector } from "react-redux";
 import type { InjectedFormProps, DecoratedFormProps } from "redux-form";
@@ -28,6 +28,7 @@ import {
 } from "@appsmith/constants/messages";
 import { FormGroup } from "design-system-old";
 import { Button, Link, Callout } from "design-system";
+import { message } from "antd";
 import FormTextField from "components/utils/ReduxFormTextField";
 import ThirdPartyAuth from "@appsmith/pages/UserAuth/ThirdPartyAuth";
 import { ThirdPartyLoginRegistry } from "pages/UserAuth/ThirdPartyLoginRegistry";
@@ -46,6 +47,7 @@ import Container from "pages/UserAuth/Container";
 import {
   getThirdPartyAuths,
   getIsFormLoginEnabled,
+  getIsFormSignupEnable,
 } from "@appsmith/selectors/tenantSelectors";
 import Helmet from "react-helmet";
 import { useHtmlPageTitle } from "@appsmith/utils";
@@ -90,6 +92,7 @@ export function Login(props: LoginFormProps) {
   const isFormValid = valid && email && !isEmptyString(email);
   const location = useLocation();
   const isFormLoginEnabled = useSelector(getIsFormLoginEnabled);
+  const isFormSignupEnabled = useSelector(getIsFormSignupEnable);
   const socialLoginList = useSelector(getThirdPartyAuths);
   const queryParams = new URLSearchParams(location.search);
   const htmlPageTitle = useHtmlPageTitle();
@@ -121,7 +124,7 @@ export function Login(props: LoginFormProps) {
   }
 
   // 第三方登录
-  const footerSection = isFormLoginEnabled && (
+  const footerSection = (
     <div className="w-[min(400px,80%)] rounded-[var(--ads-v2\-border-radius)]  border-[color:var(--ads-v2\-color-border)] .login-bg">
       <FooterLinks />
     </div>
@@ -132,6 +135,16 @@ export function Login(props: LoginFormProps) {
     setIsShowPassword(!isShowPassword);
   };
 
+  useEffect(() => {
+    if (showError) {
+      message.open({
+        type: "error",
+        duration: 5,
+        content: "密码校验失败，请重试，或者点击下面的按钮重置密码",
+        className: "my-msg",
+      });
+    }
+  }, []);
   return (
     <Container
       footer={footerSection}
@@ -141,8 +154,8 @@ export function Login(props: LoginFormProps) {
       <Helmet>
         <title>{htmlPageTitle}</title>
       </Helmet>
-      {/* 错误信息 */}
-      {showError && (
+      {/* 错误信息 改用弹窗 */}
+      {/* {showError && (
         <Callout
           kind="error"
           links={
@@ -160,7 +173,7 @@ export function Login(props: LoginFormProps) {
             ? errorMessage
             : createMessage(LOGIN_PAGE_INVALID_CREDS_ERROR)}
         </Callout>
-      )}
+      )} */}
       {/* 账号密码 */}
       {isFormLoginEnabled && (
         <>
@@ -212,17 +225,21 @@ export function Login(props: LoginFormProps) {
           </SpacedSubmitForm>
           {/* 底部提示 */}
           <div className="flex-space-between">
-            <div className="flex myfont">
-              {createMessage(NEW_TO_APPSMITH)}
-              <Link
-                className="a_link t--sign-up t--signup-link pl-[var(--ads-v2\-spaces-3)] fs-16"
-                kind="primary"
-                target="_self"
-                to={signupURL}
-              >
-                {createMessage(LOGIN_PAGE_SIGN_UP_LINK_TEXT)}
-              </Link>
-            </div>
+            {isFormSignupEnabled ? (
+              <div className="flex myfont">
+                {createMessage(NEW_TO_APPSMITH)}
+                <Link
+                  className="a_link t--sign-up t--signup-link pl-[var(--ads-v2\-spaces-3)] fs-16"
+                  kind="primary"
+                  target="_self"
+                  to={signupURL}
+                >
+                  {createMessage(LOGIN_PAGE_SIGN_UP_LINK_TEXT)}
+                </Link>
+              </div>
+            ) : (
+              <div></div>
+            )}
             <div>
               <Link
                 className="justify-center fs-16 a_link"

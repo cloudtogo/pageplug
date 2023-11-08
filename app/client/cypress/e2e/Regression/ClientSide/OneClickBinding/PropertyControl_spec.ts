@@ -132,7 +132,7 @@ describe("excludeForAirgap", "One click binding control", () => {
     );
     agHelper.AssertElementExist(
       oneClickBindingLocator.tableError(
-        "Appsmith server timed out when fetching structure. Please reach out to appsmith customer support to resolve this.",
+        "pageplug服务器在获取结构时超时。请联系 pageplug技术支持来解决这个问题。",
       ),
     );
   });
