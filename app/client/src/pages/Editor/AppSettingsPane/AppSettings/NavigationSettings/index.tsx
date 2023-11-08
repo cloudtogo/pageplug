@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
 import {
-  createMessage,
   APP_NAVIGATION_SETTING,
+  createMessage,
 } from "@appsmith/constants/messages";
 // import { ReactComponent as NavOrientationTopIcon } from "assets/icons/settings/nav-orientation-top.svg";
 // import { ReactComponent as NavOrientationSideIcon } from "assets/icons/settings/nav-orientation-side.svg";
@@ -30,7 +30,6 @@ import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
  * Revisit these imports in v1.1
  * https://www.notion.so/appsmith/Ship-Faster-33b32ed5b6334810a0b4f42e03db4a5b?pvs=4
  */
-// import LogoConfiguration from "./LogoConfiguration";
 // import { ReactComponent as NavPositionStickyIcon } from "assets/icons/settings/nav-position-sticky.svg";
 // import { ReactComponent as NavPositionStaticIcon } from "assets/icons/settings/nav-position-static.svg";
 // import { ReactComponent as NavStyleMinimalIcon } from "assets/icons/settings/nav-style-minimal.svg";
@@ -51,9 +50,8 @@ function NavigationSettings() {
   const featureFlags = useSelector(selectFeatureFlags);
   const dispatch = useDispatch();
   const [navigationSetting, setNavigationSetting] = useState(
-    application?.applicationDetail?.navigationSetting || {},
+    application?.applicationDetail?.navigationSetting,
   );
-
   const [logoConfigurationSwitches, setLogoConfigurationSwitches] =
     useState<LogoConfigurationSwitches>({
       logo: false,
@@ -141,7 +139,7 @@ function NavigationSettings() {
           isPlainObject(navigationSetting) &&
           !isEmpty(navigationSetting)
         ) {
-          const newSettings = {
+          const newSettings: NavigationSetting = {
             ...navigationSetting,
             [key]: value,
           };
@@ -189,14 +187,9 @@ function NavigationSettings() {
             //   }
             // }
 
-            if (payload.applicationDetail) {
-              payload.applicationDetail.navigationSetting =
-                newSettings as NavigationSetting;
-            } else {
-              payload.applicationDetail = {
-                navigationSetting: newSettings as NavigationSetting,
-              };
-            }
+            payload.applicationDetail = {
+              navigationSetting: newSettings,
+            };
 
             dispatch(updateApplication(applicationId, payload));
             setNavigationSetting(newSettings);
@@ -208,15 +201,13 @@ function NavigationSettings() {
     [navigationSetting],
   );
 
-
-
-  // if (!navigationSetting) {
-  //   return (
-  //     <div className="px-4 py-10 w-full flex justify-center">
-  //       <Spinner size="extraExtraExtraExtraLarge" />
-  //     </div>
-  //   );
-  // }
+  if (!navigationSetting) {
+    return (
+      <div className="px-4 py-10 w-full flex justify-center">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
 
   return (
     <div className="px-4">
@@ -226,7 +217,7 @@ function NavigationSettings() {
         updateSetting={updateSetting}
         value={!!navigationSetting?.showNavbar}
       />
-      
+
       {navigationSetting?.showNavbar && (
         <>
           <ButtonGroupSetting
@@ -237,12 +228,12 @@ function NavigationSettings() {
               {
                 label: "顶部",
                 value: NAVIGATION_SETTINGS.ORIENTATION.TOP,
-                // icon: <NavOrientationTopIcon />,
+                // startIcon:<NavOrientationTopIcon />,
               },
               {
                 label: "侧边",
                 value: NAVIGATION_SETTINGS.ORIENTATION.SIDE,
-                // icon: <NavOrientationSideIcon />,
+                // startIcon:<NavOrientationSideIcon />,
               },
             ]}
             updateSetting={updateSetting}
@@ -250,7 +241,8 @@ function NavigationSettings() {
 
           {/**
            * TODO - @Dhruvik - ImprovedAppNav
-           * Remove check for orientation = top in v1.1
+           * Remove check for orientation = top when adding sidebar minimal to show sidebar
+           * variants as well.
            * https://www.notion.so/appsmith/Ship-Faster-33b32ed5b6334810a0b4f42e03db4a5b
            */}
           {navigationSetting?.orientation ===
@@ -263,7 +255,7 @@ function NavigationSettings() {
                 {
                   label: "堆叠",
                   value: NAVIGATION_SETTINGS.NAV_STYLE.STACKED,
-                  // icon: <NavStyleStackedIcon />,
+                  // startIcon:<NavStyleStackedIcon />,
                   hidden:
                     navigationSetting?.orientation ===
                     NAVIGATION_SETTINGS.ORIENTATION.SIDE,
@@ -271,7 +263,7 @@ function NavigationSettings() {
                 {
                   label: "行内",
                   value: NAVIGATION_SETTINGS.NAV_STYLE.INLINE,
-                  // icon: <NavStyleInlineIcon />,
+                  // startIcon:<NavStyleInlineIcon />,
                   hidden:
                     navigationSetting?.orientation ===
                     NAVIGATION_SETTINGS.ORIENTATION.SIDE,
@@ -279,7 +271,7 @@ function NavigationSettings() {
                 {
                   label: _.startCase(NAVIGATION_SETTINGS.NAV_STYLE.SIDEBAR),
                   value: NAVIGATION_SETTINGS.NAV_STYLE.SIDEBAR,
-                  // icon: <NavStyleSidebarIcon />,
+                  // startIcon:<NavStyleSidebarIcon />,
                   hidden:
                     navigationSetting?.orientation ===
                     NAVIGATION_SETTINGS.ORIENTATION.TOP,
@@ -292,7 +284,7 @@ function NavigationSettings() {
                 // {
                 //   label: _.startCase(NAVIGATION_SETTINGS.NAV_STYLE.MINIMAL),
                 //   value: NAVIGATION_SETTINGS.NAV_STYLE.MINIMAL,
-                //   icon: <NavStyleMinimalIcon />,
+                //   startIcon:<NavStyleMinimalIcon />,
                 //   hidden:
                 //     navigationSetting?.orientation ===
                 //     NAVIGATION_SETTINGS.ORIENTATION.TOP,
@@ -315,12 +307,12 @@ function NavigationSettings() {
               {
                 label: _.startCase(NAVIGATION_SETTINGS.POSITION.STATIC),
                 value: NAVIGATION_SETTINGS.POSITION.STATIC,
-                icon: <NavPositionStaticIcon />,
+                startIcon:<NavPositionStaticIcon />,
               },
               {
                 label: _.startCase(NAVIGATION_SETTINGS.POSITION.STICKY),
                 value: NAVIGATION_SETTINGS.POSITION.STICKY,
-                icon: <NavPositionStickyIcon />,
+                startIcon:<NavPositionStickyIcon />,
               },
             ]}
             updateSetting={updateSetting}
@@ -369,21 +361,29 @@ function NavigationSettings() {
             navigationSetting={navigationSetting}
             options={[
               {
-                label: "浅色",
                 value: NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT,
-                icon: (
-                  <ColorStyleIcon
-                    colorStyle={NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT}
-                  />
+                label: (
+                  <div className="flex items-center">
+                    <ColorStyleIcon
+                      colorStyle={NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT}
+                    />
+                    <span>
+                      {_.startCase(NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT)}
+                    </span>
+                  </div>
                 ),
               },
               {
-                label: "主题色",
                 value: NAVIGATION_SETTINGS.COLOR_STYLE.THEME,
-                icon: (
-                  <ColorStyleIcon
-                    colorStyle={NAVIGATION_SETTINGS.COLOR_STYLE.THEME}
-                  />
+                label: (
+                  <div className="flex items-center">
+                    <ColorStyleIcon
+                      colorStyle={NAVIGATION_SETTINGS.COLOR_STYLE.THEME}
+                    />
+                    <span>
+                      {_.startCase(NAVIGATION_SETTINGS.COLOR_STYLE.THEME)}
+                    </span>
+                  </div>
                 ),
               },
             ]}

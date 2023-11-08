@@ -10,7 +10,6 @@ import SectionHeader from "./SectionHeader";
 import DraggablePageList from "./DraggablePageList";
 import PageSettings from "./PageSettings";
 import { getAppSettingsPane } from "selectors/appSettingsPaneSelectors";
-import { isMobileLayout } from "selectors/applicationSelectors";
 import {
   APP_NAVIGATION_SETTING,
   createMessage,
@@ -23,6 +22,7 @@ import {
   THEME_SETTINGS_SECTION_CONTENT_HEADER,
   THEME_SETTINGS_SECTION_HEADER,
   THEME_SETTINGS_SECTION_HEADER_DESC,
+  UPDATE_VIA_IMPORT_SETTING,
 } from "@appsmith/constants/messages";
 import { Colors } from "constants/Colors";
 import EmbedSettings from "./EmbedSettings";
@@ -38,6 +38,7 @@ export enum AppSettingsTabs {
   Theme,
   Navigation,
   Page,
+  Import,
 }
 
 export interface SelectedTab {
@@ -78,7 +79,6 @@ const ThemeContentWrapper = styled.div`
 function AppSettings() {
   const { context } = useSelector(getAppSettingsPane);
   const pages: Page[] = useSelector(selectAllPages);
-  const isMobile = useSelector(isMobileLayout);
   const dispatch = useDispatch();
 
   const [selectedTab, setSelectedTab] = useState<SelectedTab>({
@@ -164,6 +164,19 @@ function AppSettings() {
       },
       subText: createMessage(APP_NAVIGATION_SETTING.sectionHeaderDesc),
     },
+    {
+      id: "t--update-via-import",
+      icon: "download-line",
+      isSelected: selectedTab.type === AppSettingsTabs.Import,
+      name: createMessage(UPDATE_VIA_IMPORT_SETTING.settingLabel),
+      onClick: () => {
+        setSelectedTab({ type: AppSettingsTabs.Import });
+        AnalyticsUtil.logEvent("APP_SETTINGS_SECTION_CLICK", {
+          section: "Import",
+        });
+      },
+      subText: createMessage(UPDATE_VIA_IMPORT_SETTING.settingDesc),
+    },
   ];
 
   return (
@@ -227,6 +240,8 @@ function AppSettings() {
               return <EmbedSettings />;
             case AppSettingsTabs.Navigation:
               return <NavigationSettings />;
+            case AppSettingsTabs.Import:
+              return <ImportAppSettings />;
           }
         })()}
       </SectionContent>
