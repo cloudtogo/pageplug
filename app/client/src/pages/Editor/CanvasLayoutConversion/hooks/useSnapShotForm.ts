@@ -105,7 +105,8 @@ export const useSnapShotForm = () => {
   const conversionState = useSelector(
     (state: AppState) => state.ui.layoutConversion.conversionState,
   );
-  const readableSnapShotDetails = useSelector(getReadableSnapShotDetails);
+  const lastUpdatedTime = useSelector(getSnapshotUpdatedTime);
+  const readableSnapShotDetails = getReadableSnapShotDetails(lastUpdatedTime);
   const dispatch = useDispatch();
 
   const snapshotFlowStates = snapShotFlow(dispatch, readableSnapShotDetails);

@@ -206,7 +206,7 @@ function WidgetsEditor() {
               sidebarWidth={isPreviewingNavigation ? sidebarWidth : 0}
             >
               {shouldShowSnapShotBanner && (
-                <div className="absolute top-0 z-1 w-full">
+                <div className="absolute top-0 z-2 w-full">
                   <SnapShotBannerCTA />
                 </div>
               )}

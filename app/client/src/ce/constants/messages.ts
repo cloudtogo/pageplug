@@ -146,6 +146,7 @@ export const INVITE_USER_RAMP_TEXT2 = () =>
 export const CUSTOM_ROLES_RAMP_TEXT = () =>
   "要构建和分配自定义角色，请尝试我们的";
 export const CUSTOM_ROLE_TEXT = () => "自定义权限";
+export const BUSINESS_PRICE_URL = "https://docs.pageplug.cn/%E5%95%86%E4%B8%9A%E7%89%88&%E4%BC%81%E4%B8%9A%E7%89%88/%E4%BB%B7%E6%A0%BC%E8%A1%A8";
 export const CUSTOM_ROLE_DISABLED_OPTION_TEXT = () =>
   "可以访问特定应用程序或仅访问应用程序中的某些页面和查询";
 export const USERS_HAVE_ACCESS_TO_ALL_APPS = () =>
@@ -1130,6 +1131,12 @@ export const SAML_AUTH_DESC = () =>
   "允许使用 SAML2 协议的单点登录服务登录你的平台";
 export const OIDC_AUTH_DESC = () =>
   "允许使用 OIDC 协议的单点登录服务登录你的平台";
+export const WECHAT_AUTH_DESC = () =>
+  "允许使用 微信账号登录你的平台";
+export const BUSINESS_WECHAT_AUTH_DESC = () =>
+  "允许使用 企业微信账号登录你的平台";
+export const DINGDING_AUTH_DESC = () =>
+  "允许使用 钉钉账号登录你的平台";
 export const SAVE_BUTTON = () => "保存";
 export const SAVE_AND_RESTART_BUTTON = () => "保存并重新启动";
 export const SAVE_AND_REFRESH_BUTTON = () => "保存并刷新";
@@ -1562,7 +1569,7 @@ export const IN_APP_EMBED_SETTING = {
     "通过访问共享设置，将您的应用程序公开，并轻松将您的 Pageplug 应用嵌入传统应用程序中",
   privateAppsText: () => "私有应用",
   rampSubtextModal: () =>
-      "在我们的企业版中，嵌入私有 Pageplug 应用程序并通过SSO无缝进行用户身份验证",
+      "在我们的企业版中，嵌入私有 Pageplug 应用程序并通过SSO无缝进行用户身份验证，可以联系Pageplug静静申请",
   rampSubtextSidebar: () =>
       "要嵌入私有的 Pageplug 应用程序并通过SSO无缝进行用户身份验证，请尝试我们的 ",
   rampLinktext: () => "体验企业版",
@@ -1664,8 +1671,8 @@ export const SNAPSHOT_WARNING_MESSAGE = () =>
   "在转换后进行的任何更改都将不再存在。";
 export const CONVERT_TO_FIXED_TITLE = () => "转换为固定布局";
 export const CONVERT_TO_FIXED_BUTTON = () => "转换为固定布局（测试版）";
-export const CONVERT_TO_AUTO_TITLE = () => "转换为自动布局";
-export const CONVERT_TO_AUTO_BUTTON = () => "转换为自动布局（测试版）";
+export const CONVERT_TO_AUTO_TITLE = () => "转换为响应式布局";
+export const CONVERT_TO_AUTO_BUTTON = () => "转换为响应式布局（测试版）";
 export const SNAPSHOT_BANNER_MESSAGE = () =>
   "在丢弃快照之前，请确认此布局是否符合预期。使用快照返回。";
 export const USE_SNAPSHOT_CTA = () => "使用快照";
@@ -1684,7 +1691,7 @@ export const SNAPSHOT_TIME_FROM_MESSAGE = (
 export const SNAPSHOT_TIME_TILL_EXPIRATION_MESSAGE = (
   timeTillExpiration: string,
 ) => `你之前的快照布局将在${timeTillExpiration}内过期`;
-export const DISCARD = () => "Discard";
+export const DISCARD = () => "丢弃";
 // Alert options and labels for showMessage types
 export const ALERT_STYLE_OPTIONS = [
   { label: "信息", value: "'info'", id: "info" },
