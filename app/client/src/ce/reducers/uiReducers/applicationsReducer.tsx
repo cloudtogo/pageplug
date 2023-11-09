@@ -43,6 +43,9 @@ export const initialState: ApplicationsReduxState = {
   importingApplication: false,
   importedApplication: null,
   showAppInviteUsersDialog: false,
+  previewWxaCode: "",
+  isFetchingPreviewWxaCode: false,
+  previewWxaCodeFailed: false,
   isImportAppModalOpen: false,
   workspaceIdForImport: null,
   pageIdForImport: "",
@@ -158,6 +161,16 @@ export const handlers = {
 
     return newState;
   },
+  [ReduxActionTypes.CURRENT_APPLICATION_CHART_THEME_UPDATE]: (
+    state: ApplicationsReduxState,
+    action: ReduxAction<{ chartTheme: string }>,
+  ) => ({
+    ...state,
+    currentApplication: {
+      ...state.currentApplication,
+      chartTheme: action.payload.chartTheme,
+    },
+  }),
   [ReduxActionTypes.CURRENT_APPLICATION_NAME_UPDATE]: (
     state: ApplicationsReduxState,
     action: ReduxAction<{ name: string; slug: string }>,
@@ -187,6 +200,16 @@ export const handlers = {
     currentApplication: {
       ...state.currentApplication,
       appLayout: action.payload,
+    },
+  }),
+  [ReduxActionTypes.CURRENT_APPLICATION_VIEWER_LAYOUT_UPDATE]: (
+    state: ApplicationsReduxState,
+    action: ReduxAction<{ viewerLayout: string }>,
+  ) => ({
+    ...state,
+    currentApplication: {
+      ...state.currentApplication,
+      viewerLayout: action.payload,
     },
   }),
   [ReduxActionTypes.CREATE_APPLICATION_INIT]: (
@@ -709,6 +732,9 @@ export interface ApplicationsReduxState {
   isSavingWorkspaceInfo: boolean;
   importingApplication: boolean;
   showAppInviteUsersDialog: boolean;
+  previewWxaCode: string;
+  isFetchingPreviewWxaCode: boolean;
+  previewWxaCodeFailed: boolean;
   importedApplication: unknown;
   isImportAppModalOpen: boolean;
   workspaceIdForImport: any;

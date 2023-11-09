@@ -370,7 +370,6 @@ function PagesEditor() {
         outsiderTree: _outsiderTree,
       }),
     };
-    console.log("gData", data);
     dispatch(updateApplication(applicationId, data));
     message.success("保存成功");
   };
