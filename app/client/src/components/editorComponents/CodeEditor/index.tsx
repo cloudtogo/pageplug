@@ -28,6 +28,7 @@ import { getDataTreeForAutocomplete } from "selectors/dataTreeSelectors";
 import EvaluatedValuePopup from "components/editorComponents/CodeEditor/EvaluatedValuePopup";
 import type { WrappedFieldInputProps } from "redux-form";
 import _, { debounce, isEqual } from "lodash";
+import scrollIntoView from "scroll-into-view-if-needed";
 
 import type {
   DataTree,
@@ -120,8 +121,6 @@ import {
   getCodeEditorLastCursorPosition,
   getIsInputFieldFocused,
 } from "selectors/editorContextSelectors";
-import scrollIntoView from "scroll-into-view-if-needed";
-
 import type { CodeEditorFocusState } from "actions/editorContextActions";
 import { setEditorFieldFocusAction } from "actions/editorContextActions";
 import { updateCustomDef } from "utils/autocomplete/customDefUtils";
@@ -1184,7 +1183,6 @@ class CodeEditor extends Component<Props, State> {
   ) => {
     const value = this.editor?.getValue() || "";
     const inputValue = this.props.input.value || "";
-    // console.log(inputValue, "handleChange");
     if (
       this.props.input.onChange &&
       ((value !== inputValue && this.state.isFocused) ||
@@ -1256,6 +1254,8 @@ class CodeEditor extends Component<Props, State> {
     const configTree = ConfigTreeActions.getConfigTree();
     const entityInformation: FieldEntityInformation = {
       expectedType: expected?.autocompleteDataType,
+      example: expected?.example,
+      mode: this.props.mode,
     };
 
     if (dataTreePath) {
@@ -1504,7 +1504,6 @@ class CodeEditor extends Component<Props, State> {
       height,
       hideEvaluatedValue,
       hoverInteraction,
-      input,
       showLightningMenu,
       size,
       theme,
@@ -1535,13 +1534,6 @@ class CodeEditor extends Component<Props, State> {
       isInvalid = Boolean(this.props.isInvalid);
     }
 
-    // show features like evaluatedvaluepopup or binding prompts
-    const showFeatures =
-      this.state.isFocused &&
-      !hideEvaluatedValue &&
-      ("evaluatedValue" in this.props ||
-        ("dataTreePath" in this.props && !!dataTreePath));
-
     const showEvaluatedValue =
       this.showFeatures() &&
       (this.state.isDynamic || isInvalid) &&
@@ -1555,7 +1547,8 @@ class CodeEditor extends Component<Props, State> {
         isNotHover={this.state.isFocused || this.state.isOpened}
         skin={this.props.theme === EditorTheme.DARK ? Skin.DARK : Skin.LIGHT}
       >
-        <div className="flex absolute gap-1 top-[6px] right-[6px] z-4 justify-center">
+        {/* jh说注释掉 */}
+        {/* <div className="flex absolute gap-1 top-[6px] right-[6px] z-4 justify-center">
           <Button
             className={classNames(
               "commands-button invisible",
@@ -1574,7 +1567,7 @@ class CodeEditor extends Component<Props, State> {
           >
             /
           </Button>
-        </div>
+        </div> */}
 
         <EvaluatedValuePopup
           dataTreePath={this.props.dataTreePath}
@@ -1672,7 +1665,7 @@ class CodeEditor extends Component<Props, State> {
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  API documentation
+                  API 文档
                 </a>
               )}
               {this.props.rightIcon && (
