@@ -42,7 +42,7 @@ const { Paragraph } = Typography;
 const x = 3;
 const y = 2;
 const z = 1;
-const defaultData: (DataNode & { iconName: string })[] = [];
+const defaultData: (DataNode & { icon: string })[] = [];
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -370,7 +370,6 @@ function PagesEditor() {
         outsiderTree: _outsiderTree,
       }),
     };
-    console.log("gData", data);
     dispatch(updateApplication(applicationId, data));
     message.success("保存成功");
   };
@@ -380,7 +379,7 @@ function PagesEditor() {
       gData.concat({
         title: "一级目录",
         key: generateUuid(),
-        iconName: "",
+        icon: "",
       }),
     );
   };
@@ -420,7 +419,7 @@ function PagesEditor() {
   interface SelectedIcons {
     [key: string]: string | undefined;
   }
-  const [selectedIcons, setSelectedIcons] = useState<SelectedIcons>({});
+  const [, setSelectedIcons] = useState<SelectedIcons>({});
   const handleIconSelected = (key: string, icon: any) => {
     setSelectedIcons((prevSelectedIcons) => ({
       ...prevSelectedIcons,
@@ -521,9 +520,9 @@ function PagesEditor() {
                           //   size={12}
                           // />
                           <IconSelect
-                            iconName={selectedIcons[node.key]}
+                            iconName={node.icon}
                             onIconSelected={(icon) => {
-                              node.iconName = icon;
+                              node.icon = icon;
                               handleIconSelected(node.key, icon);
                             }}
                           />

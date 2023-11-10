@@ -184,7 +184,7 @@ export default function DetailsForm(
 
             {!isAirgapped() && (
               <Checkbox defaultSelected name="signupForNewsletter" value="true">
-                I want security and product updates.
+                我要安全和产品更新。
               </Checkbox>
             )}
           </div>

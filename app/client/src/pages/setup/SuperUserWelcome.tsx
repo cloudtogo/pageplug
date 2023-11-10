@@ -12,6 +12,7 @@ import {
 import { SuperUserForm } from "./GetStarted";
 import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
 import Animation from "assets/lottie/Animation.json";
+import Pageplug from "assets/images/pageplug_logo_mint.png";
 
 const LandingPageWrapper = styled.div`
   width: 100%;
@@ -103,7 +104,7 @@ export default memo(function SuperUserWelcome() {
         {/* 隐藏图片 */}
         <StyledImageBanner>
           <div className="flex self-start w-2/6 h-16 ml-56">
-            <h1>Pageplug_</h1>
+            <img src={Pageplug} alt="Pageplug" />
           </div>
           <div className="flex w-5/6 my-1 h-4/6">
             <Lottie animationData={Animation} loop autoplay />
