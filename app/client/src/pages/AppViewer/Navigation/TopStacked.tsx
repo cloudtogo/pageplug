@@ -6,6 +6,7 @@ import React, {
   useCallback,
   useMemo,
 } from "react";
+import { View } from "@tarojs/components";
 import { useLocation } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { getAppMode } from "@appsmith/selectors/applicationSelectors";
@@ -118,6 +119,11 @@ export function TopStacked(props: TopStackedProps) {
                 </a>
               ) : (
                 item.title
+              ),
+              icon: (
+                <View
+                  className={`van-icon van-icon-${item.icon} taroify-icon taroify-icon--inherit hydrated`}
+                />
               ),
             };
           });

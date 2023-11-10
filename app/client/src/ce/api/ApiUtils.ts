@@ -211,7 +211,7 @@ export const apiFailureResponseInterceptor = (error: any) => {
         return Promise.reject({
           ...error,
           code: ERROR_CODES.REQUEST_NOT_AUTHORISED,
-          message: "Unauthorized. Redirecting to login page...",
+          message: "未授权，重定向回登录页...",
           show: false,
         });
       }

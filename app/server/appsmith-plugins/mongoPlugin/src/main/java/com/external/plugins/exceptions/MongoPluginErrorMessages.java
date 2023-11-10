@@ -49,46 +49,29 @@ public class MongoPluginErrorMessages {
     ************************************************************************************************************************************************
     */
 
-    public static final String DS_CREATION_FAILED_ERROR_MSG =
-            "One or more arguments in the datasource configuration is invalid.";
+    public static final String DS_CREATION_FAILED_ERROR_MSG = "数据源配置无效，请检查配置参数是否正确。";
 
-    public static final String DS_TIMEOUT_ERROR_MSG =
-            "Connection timed out. Please check if the datasource configuration fields have "
-                    + "been filled correctly.";
+    public static final String DS_TIMEOUT_ERROR_MSG = "连接超时，请检查数据源配置字段是否填写正确。";
 
-    public static final String DS_GET_STRUCTURE_ERROR_MSG =
-            "Appsmith has failed to get database structure. Please provide read permission on"
-                    + " the database to fix this.";
+    public static final String DS_GET_STRUCTURE_ERROR_MSG = "Pageplug 无法获取数据库结构，请确保数据库具有读取权限以解决此问题。";
 
-    public static final String DS_DEFAULT_DATABASE_NAME_INVALID_ERROR_MSG =
-            "Default database name is invalid, no database found with this name.";
+    public static final String DS_DEFAULT_DATABASE_NAME_INVALID_ERROR_MSG = "默认数据库名称无效，找不到该名称对应的数据库。";
 
-    public static final String DS_EMPTY_CONNECTION_URI_ERROR_MSG =
-            "'Mongo Connection string URI' field is empty. Please edit the 'Mongo Connection "
-                    + "URI' field to provide a connection uri to connect with.";
+    public static final String DS_EMPTY_CONNECTION_URI_ERROR_MSG = "“Mongo 连接字符串 URI”字段为空，请编辑“Mongo 连接 URI”字段以提供连接 URI。";
 
-    public static final String DS_INVALID_CONNECTION_STRING_URI_ERROR_MSG =
-            "Mongo Connection string URI does not seem to be in the correct format. Please " + "check the URI once.";
+    public static final String DS_INVALID_CONNECTION_STRING_URI_ERROR_MSG = "Mongo 连接字符串 URI 的格式似乎不正确，请检查 URI。";
 
-    public static final String DS_MISSING_DEFAULT_DATABASE_NAME_ERROR_MSG = "Missing default database name.";
-    public static final String DS_INVALID_AUTH_DATABASE_NAME =
-            "Authentication database name is invalid, no database found with this name.";
-    public static final String DS_MISSING_ENDPOINTS_ERROR_MSG = "Missing endpoint(s).";
-    public static final String DS_NO_PORT_EXPECTED_IN_REPLICA_SET_CONNECTION_ERROR_MSG =
-            "REPLICA_SET connections should not be given a port."
-                    + " If you are trying to specify all the shards, please add more than one.";
+    public static final String DS_MISSING_DEFAULT_DATABASE_NAME_ERROR_MSG = "缺少默认数据库名称。";
 
-    public static final String DS_USING_URI_BUT_EXPECTED_FORM_FIELDS_ERROR_MSG =
-            "It seems that you are trying to use a mongo connection string URI. Please "
-                    + "extract relevant fields and fill the form with extracted values. For "
-                    + "details, please check out the Appsmith's documentation for Mongo database. "
-                    + "Alternatively, you may use 'Import from connection string URI' option from the "
-                    + "dropdown labelled 'Use mongo connection string URI' to use the URI connection string"
-                    + " directly.";
+    public static final String DS_INVALID_AUTH_DATABASE_NAME = "认证数据库名称无效，找不到该名称对应的数据库。";
 
-    public static final String DS_INVALID_AUTH_TYPE_ERROR_MSG = "Invalid authType. Must be one of %s";
+    public static final String DS_MISSING_ENDPOINTS_ERROR_MSG = "缺少端口。";
 
-    public static final String DS_SSL_CONFIGURATION_FETCHING_ERROR_MSG =
-            "Appsmith server has failed to fetch SSL configuration from datasource configuration "
-                    + "form. Please reach out to Appsmith customer support to resolve this.";
+    public static final String DS_NO_PORT_EXPECTED_IN_REPLICA_SET_CONNECTION_ERROR_MSG = "不应为 REPLICA_SET 连接指定端口。如果您要指定所有分片，请添加多个。";
+
+    public static final String DS_USING_URI_BUT_EXPECTED_FORM_FIELDS_ERROR_MSG = "似乎您正在尝试使用 MongoDB 连接字符串 URI。请提取相关字段并使用提取的值填写表单。有关详细信息，请查阅 Pageplug 的 MongoDB 文档。或者，您可以直接使用“使用 MongoDB 连接字符串 URI”下拉菜单中的“从连接字符串 URI 导入”选项使用 URI 连接字符串。";
+
+    public static final String DS_INVALID_AUTH_TYPE_ERROR_MSG = "无效的 authType。必须是以下值之一：%s";
+
+    public static final String DS_SSL_CONFIGURATION_FETCHING_ERROR_MSG = "Pageplug 服务器无法从数据源配置表单中获取 SSL 配置。请联系 Pageplug 客户支持解决此问题。";
 }
