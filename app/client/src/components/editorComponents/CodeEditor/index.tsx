@@ -1293,6 +1293,7 @@ class CodeEditor extends Component<Props, State> {
 
   handleAutocompleteVisibility = (cm: CodeMirror.Editor) => {
     if (!this.state.isFocused) return;
+    if (!this.props.autoComplete) return;
     const entityInformation = this.getEntityInformation();
     const { blockCompletions } = this.props;
     let hinterOpen = false;
@@ -1682,6 +1683,7 @@ class CodeEditor extends Component<Props, State> {
 const mapStateToProps = (state: AppState, props: EditorProps) => ({
   dynamicData: getDataTreeForAutocomplete(state),
   datasources: state.entities.datasources,
+  autoComplete: state.form.QueryEditorForm.values.autoComplete || false,
   pluginIdToImageLocation: getPluginIdToImageLocation(state),
   recentEntities: getRecentEntityIds(state),
   lintErrors: getEntityLintErrors(state, props.dataTreePath),
