@@ -85,8 +85,8 @@ textarea::placeholder {
 }
 
 .login-img {
-  height: 4rem;
-  width: 257px;
+  height: 90px;
+  width: 261px;
 }
 
 .flex-space-between {
@@ -130,7 +130,7 @@ textarea::placeholder {
 
 .icon-position {
   position: absolute;
-  top: 9px;
+  top: 15px;
   left: 7px;
 }
 
@@ -169,4 +169,22 @@ textarea::placeholder {
 .t--change-theme-btn.temp-class:hover {
   background-color: #13c2c2;
   border: 1px solid #13c2c2;
+}
+
+.pp-height .ads-v2-input__input-section-input {
+  height: 48px;
+}
+
+button.ads-v2-button.pp-height {
+  height: 48px;
+}
+
+.pp-font span.ads-v2-button__content-children {
+  height: 28px;
+  width: 50px;
+  font-family: Source Han Sans CN VF;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 28px;
+  letter-spacing: 0.5em;
 }
