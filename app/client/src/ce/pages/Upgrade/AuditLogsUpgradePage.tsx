@@ -1,9 +1,9 @@
 import React from "react";
 import type { Carousel, Header } from "./types";
 import UpgradePage from "./UpgradePage";
-import DebuggingImage from "assets/svg/upgrade/audit-logs/debugging.svg";
-import IncidentManagementImage from "assets/svg/upgrade/audit-logs/incident-management.svg";
-import SecurityAndComplianceImage from "assets/svg/upgrade/audit-logs/security-and-compliance.svg";
+import DebuggingImage from "assets/images/upgrade/audit-logs/log-1.png";
+import IncidentManagementImage from "assets/images/upgrade/audit-logs/log-2.png";
+import SecurityAndComplianceImage from "assets/images/upgrade/audit-logs/log-3.png";
 import {
   AUDIT_LOGS_UPGRADE_PAGE_SUB_HEADING,
   createMessage,
