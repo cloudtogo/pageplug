@@ -185,6 +185,7 @@ export function Login(props: LoginFormProps) {
                 placeholder={createMessage(LOGIN_PAGE_EMAIL_INPUT_PLACEHOLDER)}
                 type="email"
                 startIcon="null"
+                className="pp-height"
               />
               <EmailSVGIcon className="icon-position w-4" />
             </FormGroup>
@@ -196,6 +197,7 @@ export function Login(props: LoginFormProps) {
                 )}
                 type={isShowPassword ? "text" : "password"}
                 startIcon={isShowPassword ? "eye-on" : "null"}
+                className="pp-height"
               />
               <PasswordSVGIcon
                 className="icon-position w-4"
@@ -218,6 +220,7 @@ export function Login(props: LoginFormProps) {
                 }}
                 size="md"
                 type="submit"
+                className="pp-height pp-font"
               >
                 {createMessage(LOGIN_PAGE_LOGIN_BUTTON_TEXT)}
               </Button>
