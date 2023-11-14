@@ -24,7 +24,11 @@ import SidebarProfileComponent from "./components/SidebarProfileComponent";
 import CollapseButton from "./components/CollapseButton";
 import classNames from "classnames";
 import { useMouse } from "@mantine/hooks";
-import { getAppSidebarPinned, getCurrentApplication, getAppMode } from "@appsmith/selectors/applicationSelectors";
+import {
+  getAppSidebarPinned,
+  getCurrentApplication,
+  getAppMode,
+} from "@appsmith/selectors/applicationSelectors";
 import { setIsAppSidebarPinned } from "@appsmith/actions/applicationActions";
 import {
   StyledCtaContainer,
@@ -33,6 +37,7 @@ import {
   StyledMenuContainer,
   StyledSidebar,
 } from "./Sidebar.styled";
+import { View } from "@tarojs/components";
 import { getCurrentThemeDetails } from "selectors/themeSelectors";
 import { getIsAppSettingsPaneWithNavigationTabOpen } from "selectors/appSettingsPaneSelectors";
 import BackToHomeButton from "@appsmith/pages/AppViewer/BackToHomeButton";
@@ -42,10 +47,11 @@ import history from "utils/history";
 import { APP_MODE } from "entities/App";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
-import { mapClearTree } from "utils/treeUtils";
+import { filterHiddenTreeData, mapClearTree } from "utils/treeUtils";
 type MenuItem = Required<MenuProps>["items"][number];
 import { NavLink } from "react-router-dom";
 import { makeRouteNode } from "../utils";
+import NavigationLogo from "@appsmith/pages/AppViewer/NavigationLogo";
 
 type SidebarProps = {
   currentApplicationDetails?: ApplicationPayload;
@@ -69,6 +75,10 @@ export function Sidebar(props: SidebarProps) {
   const isMinimal =
     currentApplicationDetails?.applicationDetail?.navigationSetting
       ?.navStyle === NAVIGATION_SETTINGS.NAV_STYLE.MINIMAL;
+  const logoConfiguration =
+    currentApplicationDetails?.applicationDetail?.navigationSetting
+      ?.logoConfiguration ||
+    NAVIGATION_SETTINGS.LOGO_CONFIGURATION.LOGO_AND_APPLICATION_TITLE;
   const primaryColor = get(
     selectedTheme,
     "properties.colors.primaryColor",
@@ -149,6 +159,13 @@ export function Sidebar(props: SidebarProps) {
                 </a>
               ) : (
                 item.title
+              ),
+              icon: (
+                <View
+                  className={`van-icon van-icon-${
+                    item.icon ? item.icon : "orders-o"
+                  } taroify-icon taroify-icon--inherit hydrated`}
+                />
               ),
             };
           });
@@ -288,6 +305,7 @@ export function Sidebar(props: SidebarProps) {
             "flex-col": isLogoVisible,
           })}
         >
+          <NavigationLogo logoConfiguration={logoConfiguration} />
           {currentUser?.username !== ANONYMOUS_USERNAME && (
             <BackToHomeButton
               forSidebar
@@ -298,15 +316,21 @@ export function Sidebar(props: SidebarProps) {
             />
           )}
 
-          {!isMinimal && (
-            <ApplicationName
-              appName={currentApplicationDetails?.name}
-              forSidebar
-              navColorStyle={navColorStyle}
-              navStyle={navStyle}
-              primaryColor={primaryColor}
-            />
-          )}
+          {!isMinimal &&
+            (logoConfiguration ===
+              NAVIGATION_SETTINGS.LOGO_CONFIGURATION
+                .LOGO_AND_APPLICATION_TITLE ||
+              logoConfiguration ===
+                NAVIGATION_SETTINGS.LOGO_CONFIGURATION
+                  .APPLICATION_TITLE_ONLY) && (
+              <ApplicationName
+                appName={currentApplicationDetails?.name}
+                forSidebar
+                navColorStyle={navColorStyle}
+                navStyle={navStyle}
+                primaryColor={primaryColor}
+              />
+            )}
         </div>
 
         {!isMinimal && (
@@ -325,15 +349,16 @@ export function Sidebar(props: SidebarProps) {
         navColorStyle={navColorStyle}
         primaryColor={primaryColor}
       >
-         <Menu
+        <Menu
           defaultSelectedKeys={get(_head(initState.menudata), "key")}
           mode="inline"
           theme={current_theme}
           inlineCollapsed={!isOpen}
-          items={initState.menudata}
+          items={filterHiddenTreeData(initState.menudata)}
           className="rootSideMenu"
           style={{
             border: "none",
+            backgroundColor: "transparent",
           }}
         />
         {/* {appPages.map((page) => {

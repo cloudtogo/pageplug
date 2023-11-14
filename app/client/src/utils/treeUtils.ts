@@ -86,3 +86,19 @@ export function removeNodeByKey(data: any, key?: string) {
   }
   return false;
 }
+
+export function filterHiddenTreeData(data: any, parentIsHidden = false) {
+  return data
+    .filter((node: any) => !node.isHidden)
+    .map((node: any) => {
+      const isHidden = parentIsHidden || node.isHidden;
+
+      if (node.children) {
+        node.children = filterHiddenTreeData(node.children, isHidden);
+      }
+
+      node.isHidden = isHidden;
+
+      return node;
+    });
+}
