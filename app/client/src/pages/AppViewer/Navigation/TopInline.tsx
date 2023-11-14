@@ -10,6 +10,7 @@ import type {
   ApplicationPayload,
   Page,
 } from "@appsmith/constants/ReduxActionConstants";
+import { View } from "@tarojs/components";
 import history from "utils/history";
 // import { NAVIGATION_SETTINGS } from "constants/AppConstants";
 import { useWindowSizeHooks } from "utils/hooks/dragResizeHooks";
@@ -28,7 +29,7 @@ import { throttle, get as _get, size as _size, head as _head } from "lodash";
 import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
 import { Menu } from "antd";
 import { makeRouteNode } from "../utils";
-import { mapClearTree } from "utils/treeUtils";
+import { filterHiddenTreeData, mapClearTree } from "utils/treeUtils";
 // TODO - @Dhruvik - ImprovedAppNav
 // Replace with NavigationProps if nothing changes
 // appsmith/app/client/src/pages/AppViewer/Navigation/constants.ts
@@ -115,6 +116,13 @@ export function TopInline(props: TopInlineProps) {
                 </a>
               ) : (
                 item.title
+              ),
+              icon: (
+                <View
+                  className={`van-icon van-icon-${
+                    item.icon ? item.icon : "orders-o"
+                  } taroify-icon taroify-icon--inherit hydrated`}
+                />
               ),
             };
           });
@@ -242,10 +250,11 @@ export function TopInline(props: TopInlineProps) {
         defaultSelectedKeys={_get(_head(initState.menudata), "key")}
         mode="horizontal"
         theme={current_theme}
-        items={initState.menudata}
+        items={filterHiddenTreeData(initState.menudata)}
         className="rootSideMenu"
         style={{
           border: "none",
+          backgroundColor: "transparent",
         }}
       />
       {/* {appPages.map(
