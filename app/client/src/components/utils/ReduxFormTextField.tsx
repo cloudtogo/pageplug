@@ -54,6 +54,7 @@ export type FormTextFieldProps = {
   hideErrorMessage?: boolean;
   isRequired?: boolean;
   startIcon?: string;
+  className?: string;
 };
 
 function ReduxFormTextField(props: FormTextFieldProps) {

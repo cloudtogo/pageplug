@@ -74,7 +74,19 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
     props.reset();
   };
 
-  console.log("submitSucceeded", submitSucceeded);
+  useEffect(() => {
+    if (!mailEnabled) {
+      message.open({
+        type: "error",
+        duration: 30,
+        content: `系统未开通邮件服务，不能正常发送重置邮件`,
+        className: "my-msg",
+      });
+    }
+    return () => {
+      message.destroy();
+    };
+  }, []);
 
   return (
     <Container
@@ -91,7 +103,7 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
       title={createMessage(FORGOT_PASSWORD_PAGE_TITLE)}
     >
       <FormMessagesContainer>
-        {!mailEnabled && (
+        {/* {!mailEnabled && (
           <Callout
             kind="warning"
             links={[
@@ -104,7 +116,7 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
           >
             系统未开通邮件服务，不能正常发送重置邮件
           </Callout>
-        )}
+        )} */}
         {submitFailed && error && <Callout kind="warning">{error}</Callout>}
       </FormMessagesContainer>
       <StyledForm onSubmit={handleSubmit(forgotPasswordSubmitHandler)}>
@@ -116,6 +128,7 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
               FORGOT_PASSWORD_PAGE_EMAIL_INPUT_PLACEHOLDER,
             )}
             startIcon="null"
+            className="pp-height"
           />
           <EmailSVGIcon className="icon-position w-4" />
         </FormGroup>
@@ -126,6 +139,7 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
             size="md"
             type="submit"
             onClick={submit}
+            className="pp-height pp-font"
           >
             {createMessage(FORGOT_PASSWORD_PAGE_SUBMIT_BUTTON_TEXT)}
           </Button>

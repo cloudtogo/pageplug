@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  MouseEventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import styled, { useTheme } from "styled-components";
 import { useHistory } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
@@ -42,7 +48,7 @@ const { Paragraph } = Typography;
 const x = 3;
 const y = 2;
 const z = 1;
-const defaultData: (DataNode & { icon: string })[] = [];
+const defaultData: (DataNode & { icon: string; isHidden: boolean })[] = [];
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -380,6 +386,7 @@ function PagesEditor() {
         title: "一级目录",
         key: generateUuid(),
         icon: "",
+        isHidden: false,
       }),
     );
   };
@@ -398,12 +405,20 @@ function PagesEditor() {
   };
 
   const toggleHidePage = (node: any) => {
-    if (hideNodes.includes(node.key)) {
-      // 打开
-      setHideNodes(hideNodes.filter((p: any) => p !== node.key));
-    } else {
-      setHideNodes([...hideNodes, node.key]); // 隐藏
-    }
+    // if (hideNodes.includes(node.key)) {
+    //   // 打开
+    //   setHideNodes(hideNodes.filter((p: any) => p !== node.key));
+    // } else {
+    //   setHideNodes([...hideNodes, node.key]); // 隐藏
+    // }
+    gData.map((gnode: any) => {
+      return mapTree(gnode, (gn: any) => {
+        if (gn.key === node.key) {
+          gn.isHidden = !gn.isHidden;
+        }
+      });
+    });
+    setGData(gData);
   };
 
   const nodeNameChange = (name: string, node: any) => {
@@ -559,11 +574,9 @@ function PagesEditor() {
                       ) : null}
                       <Icon
                         className="icon"
-                        color={hideNodes.includes(node.key) ? "red" : "#4B4848"}
+                        color={node.isHidden ? "red" : "#4B4848"}
                         data-testid="fold-collapse-icon"
-                        icon={
-                          hideNodes.includes(node.key) ? "eye-off" : "eye-open"
-                        }
+                        icon={node.isHidden ? "eye-off" : "eye-open"}
                         size={12}
                         onClick={() => toggleHidePage(node)}
                       />

@@ -5,6 +5,7 @@ import type { EventName } from "@appsmith/utils/analyticsUtilTypes";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { getAppsmithConfigs } from "@appsmith/configs";
 import { pricingPageUrlSource } from "@appsmith/utils/licenseHelpers";
+import { BUSINESS_PRICE_URL } from "ce/constants/messages";
 
 type Props = {
   logEventName?: EventName;
@@ -22,7 +23,7 @@ const useOnUpgrade = (props: Props) => {
       logEventData,
     );
     window.open(
-      "https://docs.pageplug.cn/%E5%95%86%E4%B8%9A%E7%89%88&%E4%BC%81%E4%B8%9A%E7%89%88/%E4%BB%B7%E6%A0%BC%E8%A1%A8",
+      BUSINESS_PRICE_URL,
       "_blank",
     );
   };
