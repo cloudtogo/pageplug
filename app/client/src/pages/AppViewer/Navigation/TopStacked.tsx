@@ -32,7 +32,7 @@ import { useSelector } from "react-redux";
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
 import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
 import { Menu } from "antd";
-import { mapClearTree } from "utils/treeUtils";
+import { mapClearTree, filterHiddenTreeData } from "utils/treeUtils";
 import { Container, ScrollBtnContainer } from "./TopStacked.styled";
 import { makeRouteNode } from "../utils";
 
@@ -122,7 +122,9 @@ export function TopStacked(props: TopStackedProps) {
               ),
               icon: (
                 <View
-                  className={`van-icon van-icon-${item.icon} taroify-icon taroify-icon--inherit hydrated`}
+                  className={`van-icon van-icon-${
+                    item.icon ? item.icon : "orders-o"
+                  } taroify-icon taroify-icon--inherit hydrated`}
                 />
               ),
             };
@@ -294,10 +296,11 @@ export function TopStacked(props: TopStackedProps) {
           defaultSelectedKeys={_get(_head(initState.menudata), "key")}
           mode="horizontal"
           theme={current_theme}
-          items={initState.menudata}
+          items={filterHiddenTreeData(initState.menudata)}
           className="rootSideMenu"
           style={{
             border: "none",
+            backgroundColor: "transparent",
           }}
         />
         {/* {appPages.map((page) => {
