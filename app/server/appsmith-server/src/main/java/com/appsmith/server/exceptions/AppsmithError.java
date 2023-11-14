@@ -379,8 +379,8 @@ public enum AppsmithError {
     INVALID_GIT_REPO(
             400,
             AppsmithErrorCode.INVALID_GIT_REPO.getCode(),
-            "The remote repository is not empty. Please create a new empty repository and configure the SSH keys. "
-                    + "If you wish to clone and build an application from an existing remote repository, please use the \"Import from a Git repository\" option in the home page.",
+            "远程存储库不是空的。请创建一个新的空存储库并配置 SSH 密钥。 "
+                    + "如果您希望从现有的远程存储库克隆和构建应用程序，请在主页中使用 \"从 Git 存储库导入\" 选项。",
             AppsmithErrorAction.DEFAULT,
             "Invalid Git repository",
             ErrorType.GIT_CONFIGURATION_ERROR,

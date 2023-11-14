@@ -787,7 +787,7 @@ export const GIT_TYPE_REPO_NAME_FOR_REVOKING_ACCESS = (name: string) =>
 export const APPLICATION_NAME = () => "应用名称";
 export const NOT_OPTIONS = () => "没有可选项！";
 export const OPEN_REPO = () => "打开仓库SITORY";
-export const CONNECTING_REPO = () => "连接到 git 仓库sitory";
+export const CONNECTING_REPO = () => "连接到 git 仓库";
 export const IMPORTING_APP_FROM_GIT = () => "从 git 导入应用";
 export const ERROR_CONNECTING = () => "连接时出错";
 export const ERROR_COMMITTING = () => "提交时出错";
@@ -1670,7 +1670,7 @@ export const CONVERSION_WARNING = () => "转换将更改您的布局";
 export const SNAPSHOT_LABEL = () =>
   "要返回到原始状态，请使用此快照";
 export const USE_SNAPSHOT_TEXT = () =>
-  "您的应用将与转换之前完全相同。在转换后添加的小部件、数据源、查询、JS 对象以及您所做的任何更改都将不再存在。";
+  "您的应用将回到转换之前的状态，转换后所进行的操作（例如添加组件、数据源、查询、JS等等）都将被抹掉";
 export const SNAPSHOT_WARNING_MESSAGE = () =>
   "在转换后进行的任何更改都将不再存在。";
 export const CONVERT_TO_FIXED_TITLE = () => "转换为固定布局";
@@ -1678,9 +1678,9 @@ export const CONVERT_TO_FIXED_BUTTON = () => "转换为固定布局（测试版�
 export const CONVERT_TO_AUTO_TITLE = () => "转换为响应式布局";
 export const CONVERT_TO_AUTO_BUTTON = () => "转换为响应式布局（测试版）";
 export const SNAPSHOT_BANNER_MESSAGE = () =>
-  "在丢弃快照之前，请确认此布局是否符合预期。使用快照返回。";
-export const USE_SNAPSHOT_CTA = () => "使用快照";
-export const DISCARD_SNAPSHOT_CTA = () => "丢弃快照";
+  "在丢弃快照之前，是否还原到快照版本布局？";
+export const USE_SNAPSHOT_CTA = () => "是";
+export const DISCARD_SNAPSHOT_CTA = () => "否";
 export const MORE_DETAILS = () => "更多详情";
 export const CONVERSION_ERROR_MESSAGE_HEADER = () =>
   "要解决此错误，请执行以下操作：";
