@@ -189,6 +189,7 @@ export function SignUp(props: SignUpFormProps) {
               placeholder={createMessage(SIGNUP_PAGE_EMAIL_INPUT_PLACEHOLDER)}
               type="email"
               startIcon="null"
+              className="pp-height"
             />
             <EmailSVGIcon className="icon-position w-4" />
           </FormGroup>
@@ -200,6 +201,7 @@ export function SignUp(props: SignUpFormProps) {
               )}
               type={isShowPassword ? "text" : "password"}
               startIcon={isShowPassword ? "eye-on" : "null"}
+              className="pp-height"
             />
             <PasswordSVGIcon
               className="icon-position w-4"
@@ -222,6 +224,7 @@ export function SignUp(props: SignUpFormProps) {
               }}
               size="md"
               type="submit"
+              className="pp-height pp-font"
             >
               {createMessage(SIGNUP_PAGE_SUBMIT_BUTTON_TEXT)}
             </Button>
