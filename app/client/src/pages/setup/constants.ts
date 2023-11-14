@@ -21,7 +21,7 @@ export const roleOptions: OptionType[] = [
     value: "operations",
   },
   {
-    label: "商业分析师",
+    label: "企业分析师",
     value: "business analyst",
   },
   {

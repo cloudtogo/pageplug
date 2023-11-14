@@ -20,7 +20,7 @@ function Container(props: ContainerProps) {
     <div className="flex flex-col items-center gap-4 my-auto min-w-min">
       <div className="bg-white border-[color:var(--ads-v2\-color-border)] border-t-[color:var(--ads-v2\-color-border-brand)] px-6 w-[min(400px,80%)] flex flex-col gap-6 t--login-container rounded-[var(--ads-v2\-border-radius)] login-bg">
         <img
-          className="mx-auto login-img mb-16"
+          className="mx-auto login-img"
           src={getAssetUrl(tenantConfig.brandLogoUrl)}
         />
         {children}

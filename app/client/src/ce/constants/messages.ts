@@ -787,7 +787,7 @@ export const GIT_TYPE_REPO_NAME_FOR_REVOKING_ACCESS = (name: string) =>
 export const APPLICATION_NAME = () => "应用名称";
 export const NOT_OPTIONS = () => "没有可选项！";
 export const OPEN_REPO = () => "打开仓库SITORY";
-export const CONNECTING_REPO = () => "连接到 git 仓库sitory";
+export const CONNECTING_REPO = () => "连接到 git 仓库";
 export const IMPORTING_APP_FROM_GIT = () => "从 git 导入应用";
 export const ERROR_CONNECTING = () => "连接时出错";
 export const ERROR_COMMITTING = () => "提交时出错";
@@ -1193,7 +1193,7 @@ export const RESTRICT_PUBLIC_EXPOSURE = () =>
 export const RESTRICT_PUBLIC_EXPOSURE_DETAIL1 = () =>
   "积极禁止非管理员或非超级管理员用户组从您的环境、域和安全边界公开分享您的应用程序或导出应用程序数据。";
 export const ACCESS_CONTROL_UPGRADE_PAGE_FOOTER = () =>
-  "通过升级到我们的商业版，解锁细粒度访问控制、审计日志和单点登录等增强安全性和可靠性功能。";
+  "通过升级到我们的企业版，解锁细粒度访问控制、审计日志和单点登录等增强安全性和可靠性功能。";
 // 访问控制升级页面结束
 
 // 配置升级页面开始
@@ -1292,7 +1292,7 @@ export const ADMIN_BRANDING_SETTINGS_SUBTITLE_UPGRADE = () =>
   "通过几次点击，使您的工作区和应用程序看起来更像您自己，就像以下示例一样。上传您的标志和网站图标，设置您的主色调，并预览新的外观。要保存您喜欢的外观，请升级到我们的企业版。";
 export const ADMIN_BRANDING_SETTINGS_TITLE = () => "为你的平台自定义品牌";
 export const ADMIN_BRANDING_SETTINGS_SUBTITLE = () =>
-  "自由定制你的 LOGO 和品牌色，如果需要使用此功能请升级到商业版";
+  "自由定制你的 LOGO 和品牌色，如果需要使用此功能请升级到企业版";
 export const ADMIN_BRANDING_COLOR_TOOLTIP = () =>
   `当你选择主色后，我们会自动为你生成辅助色和强调色，你也可以随时调整它们`;
 export const ADMIN_BRANDING_LOGO_SIZE_ERROR = () => `上传文件大小不能超过 2MB`;
@@ -1317,7 +1317,7 @@ export const ADMIN_BRANDING_COLOR_TOOLTIP_FONT = () => `用于按钮文字颜色
 export const ADMIN_BRANDING_COLOR_TOOLTIP_DISABLED = () =>
   `用于禁用按钮背景颜色`;
 export const ADMIN_BRANDING_UPGRADE_INTERCOM_MESSAGE = () =>
-  `你好，我想试试 PagePlug 商业版 😀`;
+  `你好，我想试试 PagePlug 企业版 😀`;
 
 // Guided tour
 // -- STEPS ---
@@ -1670,7 +1670,7 @@ export const CONVERSION_WARNING = () => "转换将更改您的布局";
 export const SNAPSHOT_LABEL = () =>
   "要返回到原始状态，请使用此快照";
 export const USE_SNAPSHOT_TEXT = () =>
-  "您的应用将与转换之前完全相同。在转换后添加的小部件、数据源、查询、JS 对象以及您所做的任何更改都将不再存在。";
+  "您的应用将回到转换之前的状态，转换后所进行的操作（例如添加组件、数据源、查询、JS等等）都将被抹掉";
 export const SNAPSHOT_WARNING_MESSAGE = () =>
   "在转换后进行的任何更改都将不再存在。";
 export const CONVERT_TO_FIXED_TITLE = () => "转换为固定布局";
@@ -1678,9 +1678,9 @@ export const CONVERT_TO_FIXED_BUTTON = () => "转换为固定布局（测试版�
 export const CONVERT_TO_AUTO_TITLE = () => "转换为响应式布局";
 export const CONVERT_TO_AUTO_BUTTON = () => "转换为响应式布局（测试版）";
 export const SNAPSHOT_BANNER_MESSAGE = () =>
-  "在丢弃快照之前，请确认此布局是否符合预期。使用快照返回。";
-export const USE_SNAPSHOT_CTA = () => "使用快照";
-export const DISCARD_SNAPSHOT_CTA = () => "丢弃快照";
+  "在丢弃快照之前，是否还原到快照版本布局？";
+export const USE_SNAPSHOT_CTA = () => "是";
+export const DISCARD_SNAPSHOT_CTA = () => "否";
 export const MORE_DETAILS = () => "更多详情";
 export const CONVERSION_ERROR_MESSAGE_HEADER = () =>
   "要解决此错误，请执行以下操作：";
@@ -1735,7 +1735,7 @@ export const customJSLibraryMessages = {
 
 // Business Edition upgrade page
 export const MOVE_TO_BUSINESS_EDITION = (trailingChar: string) =>
-  `升级到商业版本${trailingChar ? trailingChar : ""}`;
+  `升级到企业版本${trailingChar ? trailingChar : ""}`;
 
 //Datasource environment
 export const START_SWITCH_ENVIRONMENT = (environment: string) =>
