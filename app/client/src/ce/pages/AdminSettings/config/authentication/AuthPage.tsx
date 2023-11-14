@@ -142,6 +142,9 @@ export function ActionButton({ method }: { method: AuthMethodType }) {
         kind={"secondary"}
         onClick={() => onClickHandler(method)}
         size="md"
+        {...(!method.isConnected && !method?.isFeatureEnabled
+          ? { startIcon: "star-line", kind: "primary" }
+          : {})}
       >
         {createMessage(
           method.isConnected
