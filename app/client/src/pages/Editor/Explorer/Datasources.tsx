@@ -168,16 +168,15 @@ const Datasources = React.memo(() => {
           step={1}
         />
       )}
-      {otherDS.length ? (
-        <ShowAllButton
-          endIcon="arrow-right-line"
-          kind="tertiary"
-          onClick={listDatasource}
-          size="sm"
-        >
-          查看所有数据源
-        </ShowAllButton>
-      ) : null}
+
+      <ShowAllButton
+        endIcon="arrow-right-line"
+        kind="tertiary"
+        onClick={listDatasource}
+        size="sm"
+      >
+        查看所有数据源
+      </ShowAllButton>
     </Entity>
   );
 });
