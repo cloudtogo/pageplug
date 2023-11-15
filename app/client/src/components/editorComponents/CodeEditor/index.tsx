@@ -1683,7 +1683,7 @@ class CodeEditor extends Component<Props, State> {
 const mapStateToProps = (state: AppState, props: EditorProps) => ({
   dynamicData: getDataTreeForAutocomplete(state),
   datasources: state.entities.datasources,
-  autoComplete: state.form.QueryEditorForm.values.autoComplete || false,
+  autoComplete: state.form?.QueryEditorForm?.values?.autoComplete || false,
   pluginIdToImageLocation: getPluginIdToImageLocation(state),
   recentEntities: getRecentEntityIds(state),
   lintErrors: getEntityLintErrors(state, props.dataTreePath),

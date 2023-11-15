@@ -1639,9 +1639,9 @@ export const BUILD_RESPONSIVE_TEXT = () =>
 export const BUILD_FIXED_LAYOUT = () => "使用固定布局";
 export const BUILD_FIXED_LAYOUT_TEXT = () =>
   "Pageplug 将把应用程序的 UI 转换为固定布局(默认模式)。";
-export const USE_SNAPSHOT = () => "使用快照";
-export const USE_SNAPSHOT_HEADER = () => "使用快照";
-export const DISCARD_SNAPSHOT_HEADER = () => "丢弃快照";
+export const USE_SNAPSHOT = () => "返回快照";
+export const USE_SNAPSHOT_HEADER = () => "返回快照";
+export const DISCARD_SNAPSHOT_HEADER = () => "保存最新";
 export const SAVE_SNAPSHOT = () =>
   "保存您当前布局的快照，有效期为5天";
 export const SAVE_SNAPSHOT_TEXT = () =>
@@ -1653,7 +1653,7 @@ export const REFRESH_THE_APP = () => "刷新应用";
 export const CONVERT_ANYWAYS = () => "仍然转换";
 export const CONVERSION_SUCCESS_HEADER = () => "全部完成";
 export const DISCARD_SNAPSHOT_TEXT = () =>
-  "您即将丢弃此快照：";
+  "点击保存，将保存当前修改为最新快照，并且丢弃此快照：";
 export const CONVERSION_SUCCESS_TEXT = () =>
   "检查您的所有页面并开始使用新布局";
 export const CONVERSION_WARNING_HEADER = () =>
@@ -1668,7 +1668,7 @@ export const CONVERSION_ERROR_TEXT = () => "您的应用没有进行任何更改
 export const DROPDOWN_LABEL_TEXT = () => "目标画布大小";
 export const CONVERSION_WARNING = () => "转换将更改您的布局";
 export const SNAPSHOT_LABEL = () =>
-  "要返回到原始状态，请使用此快照";
+  "要返回到原始状态，请点击返回快照";
 export const USE_SNAPSHOT_TEXT = () =>
   "您的应用将回到转换之前的状态，转换后所进行的操作（例如添加组件、数据源、查询、JS等等）都将被抹掉";
 export const SNAPSHOT_WARNING_MESSAGE = () =>
@@ -1678,7 +1678,7 @@ export const CONVERT_TO_FIXED_BUTTON = () => "转换为固定布局（测试版�
 export const CONVERT_TO_AUTO_TITLE = () => "转换为响应式布局";
 export const CONVERT_TO_AUTO_BUTTON = () => "转换为响应式布局（测试版）";
 export const SNAPSHOT_BANNER_MESSAGE = () =>
-  "在丢弃快照之前，是否还原到快照版本布局？";
+  "是否还原到快照版本布局？";
 export const USE_SNAPSHOT_CTA = () => "是";
 export const DISCARD_SNAPSHOT_CTA = () => "否";
 export const MORE_DETAILS = () => "更多详情";
@@ -1695,7 +1695,7 @@ export const SNAPSHOT_TIME_FROM_MESSAGE = (
 export const SNAPSHOT_TIME_TILL_EXPIRATION_MESSAGE = (
   timeTillExpiration: string,
 ) => `你之前的快照布局将在${timeTillExpiration}内过期`;
-export const DISCARD = () => "丢弃";
+export const DISCARD = () => "保存";
 // Alert options and labels for showMessage types
 export const ALERT_STYLE_OPTIONS = [
   { label: "信息", value: "'info'", id: "info" },
