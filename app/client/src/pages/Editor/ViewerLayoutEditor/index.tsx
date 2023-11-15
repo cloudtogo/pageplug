@@ -274,7 +274,9 @@ function PagesEditor() {
   }, [pages]);
 
   const initNewTree = (tree: any) => {
-    const _formatTree = processTreeData(tree);
+    const _formatTree = currentLayout
+      ? JSON.parse(currentLayout)?.treeData
+      : processTreeData(tree);
     setGData(_formatTree);
   };
 
