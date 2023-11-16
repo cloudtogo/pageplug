@@ -87,6 +87,7 @@ textarea::placeholder {
 .login-img {
   height: 90px;
   width: 261px;
+  object-fit: contain;
 }
 
 .flex-space-between {

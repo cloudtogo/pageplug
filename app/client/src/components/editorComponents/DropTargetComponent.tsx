@@ -88,7 +88,7 @@ function Onboarding() {
   return (
     <EmptyContainer>
       {/* <CanvasEmpty /> */}
-      <img src={EmptyCanvas} />
+      <img src={EmptyCanvas} style={{ opacity: 0.1 }} />
       <h2>开始构建你的应用</h2>
       <p style={{ margin: "18px 0 0" }}>点击“组件”右侧 + 按钮添加组件</p>
       <p>点击“数据源”右侧 + 按钮添加数据源</p>
