@@ -204,6 +204,9 @@ function PagesEditor() {
   const pageId = useSelector(getCurrentPageId);
   const appName = useSelector(getCurrentApplication)?.name;
   const currentLayout = useSelector(getCurrentApplication)?.viewerLayout;
+  const currentApplicationPages = useSelector(
+    (state) => state.entities.pageList.pages,
+  );
   const pages = useSelector(getVisiblePageList);
   const appPrimaryColor = useSelector(getSelectedAppThemeProperties)?.colors
     .primaryColor;
@@ -213,7 +216,7 @@ function PagesEditor() {
       logoUrl: "",
       name: "",
       color: appPrimaryColor,
-      treeData: pages.map((p) => ({
+      treeData: currentApplicationPages.map((p) => ({
         title: p.pageName,
         pageId: p.pageId,
         isPage: true,
@@ -222,7 +225,7 @@ function PagesEditor() {
     };
     if (currentLayout) {
       try {
-        const pagesMap = pages.reduce((a: any, p: any) => {
+        const pagesMap = currentApplicationPages.reduce((a: any, p: any) => {
           a[p.pageName] = p.pageId;
           return a;
         }, {});
@@ -250,7 +253,7 @@ function PagesEditor() {
   const [, setSymbol] = useState<any>();
 
   useEffect(() => {
-    const pagesMap = pages.reduce((a: any, c: any) => {
+    const pagesMap = currentApplicationPages.reduce((a: any, c: any) => {
       a[c.pageId] = { ...c };
       return a;
     }, {});
@@ -271,7 +274,7 @@ function PagesEditor() {
     setOutsiderTree(newOuterTree);
     setHideNodes(newOuterTree.map((o: any) => o.pageId));
     initNewTree(_tree);
-  }, [pages]);
+  }, [currentApplicationPages]);
 
   const initNewTree = (tree: any) => {
     const _formatTree = processTreeData(tree);
@@ -422,14 +425,15 @@ function PagesEditor() {
   };
 
   const nodeNameChange = (name: string, node: any) => {
-    gData.map((gnode: any) => {
+    const updatedGData: any = gData.map((gnode: any) => {
       return mapTree(gnode, (gn: any) => {
         if (gn.key === node.key) {
-          gn.title = name;
+          return { ...gn, title: name };
         }
+        return gn;
       });
     });
-    setGData(gData);
+    setGData(updatedGData);
   };
   interface SelectedIcons {
     [key: string]: string | undefined;
