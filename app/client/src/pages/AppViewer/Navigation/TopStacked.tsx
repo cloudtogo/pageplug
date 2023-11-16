@@ -297,7 +297,7 @@ export function TopStacked(props: TopStackedProps) {
           mode="horizontal"
           theme={current_theme}
           items={filterHiddenTreeData(initState.menudata)}
-          className="rootSideMenu"
+          className="rootSideMenu pp-menu"
           style={{
             border: "none",
             backgroundColor: "transparent",

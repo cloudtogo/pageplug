@@ -189,3 +189,33 @@ button.ads-v2-button.pp-height {
   line-height: 28px;
   letter-spacing: 0.5em;
 }
+
+.ant-menu-dark.pp-menu
+  > .ant-menu-overflow-item.ant-menu-item.ant-menu-item-selected {
+  background-color: rgba(0, 0, 0, 0.09);
+}
+
+.pp-menu.ant-menu-dark
+  > .ant-menu-overflow-item.ant-menu-submenu.ant-menu-submenu-selected {
+  background-color: rgba(0, 0, 0, 0.09);
+}
+
+.ant-menu-dark
+  > .ant-menu-vertical
+  > .ant-menu-submenu-open.ant-menu-submenu-active {
+  background-color: transparent;
+}
+
+.ant-menu-dark
+  > .ant-menu-vertical
+  > .ant-menu-submenu-open.ant-menu-submenu-active
+  > .ant-menu-submenu-title {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.ant-menu-dark
+  .ant-menu-submenu.ant-menu-submenu-vertical.ant-menu-submenu-selected
+  > .ant-menu-submenu-title {
+  background-color: transparent;
+  color: rgba(0, 0, 0, 0.8);
+}
