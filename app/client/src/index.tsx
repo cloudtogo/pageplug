@@ -92,6 +92,15 @@ class ThemedApp extends React.Component<{
                   token: {
                     colorPrimary: "#27b7b7",
                   },
+                  components: {
+                    Menu: {
+                      darkItemColor: "rgba(0, 0, 0, 0.8)",
+                      darkItemHoverColor: "rgba(0, 0, 0, 0.8)",
+                      darkItemSelectedColor: "#fff",
+                      darkItemSelectedBg: "rgba(0, 0, 0, 0.09)",
+                      darkSubMenuItemBg: "transparent",
+                    },
+                  },
                 }}
               >
                 <TaroifyTheme theme={taroifyTheme}>
