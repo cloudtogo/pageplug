@@ -355,7 +355,7 @@ export function Sidebar(props: SidebarProps) {
           theme={current_theme}
           inlineCollapsed={!isOpen}
           items={filterHiddenTreeData(initState.menudata)}
-          className="rootSideMenu"
+          className="rootSideMenu pp-menu"
           style={{
             border: "none",
             backgroundColor: "transparent",
