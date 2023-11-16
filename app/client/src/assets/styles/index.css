@@ -189,3 +189,55 @@ button.ads-v2-button.pp-height {
   line-height: 28px;
   letter-spacing: 0.5em;
 }
+
+.ant-menu-dark.rootSideMenu.pp-menu {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.pp-menu
+  > .ant-menu-overflow-item.ant-menu-item.ant-menu-item-active.ant-menu-item-selected:hover {
+  background-color: rgba(0, 0, 0, 0.09);
+}
+
+.pp-menu > li.ant-menu-overflow-item.ant-menu-item.ant-menu-item-selected {
+  background-color: rgba(0, 0, 0, 0.09);
+  color: rgba(0, 0, 0, 0.8);
+}
+
+li.ant-menu-overflow-item.ant-menu-submenu.ant-menu-submenu-open.ant-menu-submenu-active.ant-menu-submenu-selected {
+  background-color: rgba(0, 0, 0, 0.09);
+}
+
+.ant-menu-overflow-item.ant-menu-submenu.ant-menu-submenu-horizontal.ant-menu-submenu-selected {
+  background-color: rgba(0, 0, 0, 0.09);
+}
+
+li.ant-menu-overflow-item.ant-menu-submenu.ant-menu-submenu-horizontal.ant-menu-submenu-open.ant-menu-submenu-active.ant-menu-submenu-selected:hover {
+  background-color: rgba(0, 0, 0, 0.09);
+}
+
+/* 子菜单的气泡框 */
+.ant-menu-submenu.ant-menu-submenu-popup.ant-menu.ant-menu-dark
+  > ul.ant-menu.ant-menu-sub {
+  color: rgba(0, 0, 0, 0.8);
+  background: transparent;
+}
+
+.ant-menu-submenu.ant-menu-submenu-popup.ant-menu.ant-menu-dark
+  > ul.ant-menu.ant-menu-sub
+  > .ant-menu-item.ant-menu-item-active {
+  color: rgba(0, 0, 0, 0.8);
+  background: transparent;
+}
+
+.ant-menu.ant-menu-sub > .ant-menu-item.ant-menu-item-selected {
+  background-color: rgba(0, 0, 0, 0.09);
+}
+
+.ant-menu-dark.rootSideMenu.pp-menu .ant-menu.ant-menu-sub {
+  background: transparent;
+}
+
+.ant-menu-dark.rootSideMenu.pp-menu > .ant-menu-item-selected {
+  background-color: rgba(0, 0, 0, 0.09);
+}
