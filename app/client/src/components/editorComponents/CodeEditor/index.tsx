@@ -160,7 +160,7 @@ import { MULTIPLEXING_MODE_CONFIGS } from "components/editorComponents/CodeEdito
 import { getDeleteLineShortcut } from "./utils/deleteLine";
 import { CodeEditorSignPosting } from "@appsmith/components/editorComponents/CodeEditorSignPosting";
 import { getFocusablePropertyPaneField } from "selectors/propertyPaneSelectors";
-
+import { editorSQLModes } from "./sql/config";
 type ReduxStateProps = ReturnType<typeof mapStateToProps>;
 type ReduxDispatchProps = ReturnType<typeof mapDispatchToProps>;
 
@@ -1293,7 +1293,14 @@ class CodeEditor extends Component<Props, State> {
 
   handleAutocompleteVisibility = (cm: CodeMirror.Editor) => {
     if (!this.state.isFocused) return;
-    if (!this.props.autoComplete) return;
+    /* sqlmode add a switch to control the code autocomplete */
+    if (
+      _.find(editorSQLModes, (it) => it === this.props.mode) &&
+      !this.props.autoComplete
+    ) {
+      return;
+    }
+    
     const entityInformation = this.getEntityInformation();
     const { blockCompletions } = this.props;
     let hinterOpen = false;
@@ -1683,7 +1690,7 @@ class CodeEditor extends Component<Props, State> {
 const mapStateToProps = (state: AppState, props: EditorProps) => ({
   dynamicData: getDataTreeForAutocomplete(state),
   datasources: state.entities.datasources,
-  autoComplete: state.form?.QueryEditorForm?.values?.autoComplete || false,
+  autoComplete: state.form?.QueryEditorForm,
   pluginIdToImageLocation: getPluginIdToImageLocation(state),
   recentEntities: getRecentEntityIds(state),
   lintErrors: getEntityLintErrors(state, props.dataTreePath),
