@@ -102,6 +102,9 @@ public class Action extends BaseDomain {
     Boolean confirmBeforeExecute = false;
 
     @JsonView(Views.Public.class)
+    Boolean autoComplete = true;
+
+    @JsonView(Views.Public.class)
     Documentation documentation;
 
     /**

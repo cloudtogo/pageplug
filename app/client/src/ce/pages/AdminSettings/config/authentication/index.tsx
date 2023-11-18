@@ -17,7 +17,7 @@ import type { AuthMethodType } from "./AuthPage";
 import { AuthPage } from "./AuthPage";
 import Google from "assets/images/Google.png";
 import SamlSso from "assets/images/saml.svg";
-import OIDC from "assets/images/OIDC.svg";
+import OIDC from "assets/images/oidc.svg";
 import Github from "assets/images/Github.svg";
 import Lock from "assets/images/lock-password-line.svg";
 import WeChat from "assets/images/WeChat.svg";

@@ -46,7 +46,7 @@ import { getCurrentWorkspaceId } from "@appsmith/selectors/workspaceSelectors";
 import { getInstanceId } from "@appsmith//selectors/tenantSelectors";
 import classNames from "classnames";
 import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
-import { TooltipComponent  } from "design-system-old";
+import { TooltipComponent } from "design-system-old";
 import { Icon } from "@blueprintjs/core";
 const ENTITY_HEIGHT = 36;
 const MIN_PAGES_HEIGHT = 60;
@@ -168,11 +168,7 @@ function Pages() {
       position="bottom"
     >
       {/* {appLayoutIcon} */}
-      <Icon
-        color="#000000"
-        icon="page-layout"
-        iconSize={16}
-      />
+      <Icon color="#000000" icon="page-layout" iconSize={16} />
     </TooltipComponent>
   );
   const navToLayoutEditor = useCallback(() => {
@@ -243,7 +239,7 @@ function Pages() {
     [pages, currentPageId, applicationId, location.pathname],
   );
 
-  console.log(isMobile, "isMobile", viewerMenuEditIcon)
+  // console.log(isMobile, "isMobile", viewerMenuEditIcon)
 
   return (
     <RelativeContainer>

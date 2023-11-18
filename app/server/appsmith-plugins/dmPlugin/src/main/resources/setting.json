@@ -29,13 +29,6 @@
           "configProperty": "actionConfiguration.timeoutInMillisecond",
           "controlType": "INPUT_TEXT",
           "dataType": "NUMBER"
-        },
-        {
-          "label": "开启智能提示",
-          "initialValue": false,
-          "configProperty": "autoComplete",
-          "controlType": "SWITCH",
-          "subtitle": "是否在输入时开启智能补全"
         }
       ]
     }
