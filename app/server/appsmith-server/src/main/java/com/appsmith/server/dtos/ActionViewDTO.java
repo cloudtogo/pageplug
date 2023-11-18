@@ -33,6 +33,9 @@ public class ActionViewDTO {
     Boolean confirmBeforeExecute;
 
     @JsonView(Views.Public.class)
+    Boolean autoComplete;
+
+    @JsonView(Views.Public.class)
     Set<String> jsonPathKeys;
 
     @JsonView(Views.Internal.class)
