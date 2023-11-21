@@ -156,7 +156,7 @@ export function Table(props: TableProps) {
     props.serverSidePaginationEnabled &&
     props.totalRecordsCount &&
     props.data.length
-      ? Math.ceil(props.totalRecordsCount / props.data.length)
+      ? Math.ceil(props.totalRecordsCount / props.pageSize)
       : Math.ceil(props.data.length / props.pageSize);
   const currentPageIndex = props.pageNo < pageCount ? props.pageNo : 0;
   const {
