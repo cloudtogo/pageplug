@@ -966,6 +966,7 @@ export interface WidgetCardProps {
   isBeta?: boolean;
   isMobile?: boolean;
   tags?: WidgetTags[];
+  isScreen: boolean;
 }
 
 export const WidgetOperations = {
