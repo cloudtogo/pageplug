@@ -13,9 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import PerformanceTracker, {
   PerformanceTransactionName,
 } from "utils/PerformanceTracker";
-import {
-  getIsFirstTimeUserOnboardingEnabled,
-} from "selectors/onboardingSelectors";
+import { getIsFirstTimeUserOnboardingEnabled } from "selectors/onboardingSelectors";
 import Explorer from "pages/Editor/Explorer";
 import { setExplorerActiveAction } from "actions/explorerActions";
 import {
