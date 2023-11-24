@@ -8,9 +8,7 @@ import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ConfigProvider } from "antd";
 import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
 import type { AutocompletionDefinitions } from "widgets/constants";
-import type {
-  SetterConfig
-} from "entities/AppTheming";
+import type { SetterConfig } from "entities/AppTheming";
 class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
   static getPropertyPaneContentConfig() {
     return [
@@ -239,7 +237,7 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
         setVisibility: {
           path: "isVisible",
           type: "boolean",
-        }
+        },
       },
     };
   }

@@ -458,224 +458,224 @@ export function EditorHeader() {
   // }
 
   return (
-      <ThemeProvider theme={theme}>
-        <HeaderWrapper
-          className="pl-1 pr-1 overflow-hidden"
-          data-testid="t--appsmith-editor-header"
+    <ThemeProvider theme={theme}>
+      <HeaderWrapper
+        className="pl-1 pr-1 overflow-hidden"
+        data-testid="t--appsmith-editor-header"
       >
-          {/* 左侧 */}
-          <HeaderSection className="space-x-2">
-            {!signpostingEnabled && (
-              <Tooltip
-                content={
-                  <div className="flex items-center justify-between">
-                    <span>
-                      {!pinned
-                        ? createMessage(LOCK_ENTITY_EXPLORER_MESSAGE)
-                        : createMessage(CLOSE_ENTITY_EXPLORER_MESSAGE)}
-                    </span>
-                    <span className="ml-4">{modText()} /</span>
-                  </div>
-                }
-                placement="bottomLeft"
+        {/* 左侧 */}
+        <HeaderSection className="space-x-2">
+          {!signpostingEnabled && (
+            <Tooltip
+              content={
+                <div className="flex items-center justify-between">
+                  <span>
+                    {!pinned
+                      ? createMessage(LOCK_ENTITY_EXPLORER_MESSAGE)
+                      : createMessage(CLOSE_ENTITY_EXPLORER_MESSAGE)}
+                  </span>
+                  <span className="ml-4">{modText()} /</span>
+                </div>
+              }
+              placement="bottomLeft"
+            >
+              <SidebarNavButton
+                className={classNames({
+                  "transition-all transform duration-400": true,
+                  "-translate-x-full opacity-0": isPreviewingApp,
+                  "translate-x-0 opacity-100": !isPreviewingApp,
+                })}
+                data-testid="sidebar-nav-button"
+                kind="tertiary"
+                onClick={onPin}
+                size="md"
               >
-                <SidebarNavButton
-                  className={classNames({
-                    "transition-all transform duration-400": true,
-                    "-translate-x-full opacity-0": isPreviewingApp,
-                    "translate-x-0 opacity-100": !isPreviewingApp,
-                  })}
-                  data-testid="sidebar-nav-button"
-                  kind="tertiary"
-                  onClick={onPin}
-                  size="md"
+                <div
+                  className="t--pin-entity-explorer group relative"
+                  onMouseEnter={onMenuHover}
                 >
-                  <div
-                    className="t--pin-entity-explorer group relative"
-                    onMouseEnter={onMenuHover}
-                  >
+                  <Icon
+                    className="absolute transition-opacity group-hover:opacity-0"
+                    name="hamburger"
+                    size="md"
+                  />
+                  {pinned && (
                     <Icon
-                      className="absolute transition-opacity group-hover:opacity-0"
-                      name="hamburger"
+                      className="absolute transition-opacity opacity-0 group-hover:opacity-100"
+                      name="menu-fold"
+                      onClick={onPin}
                       size="md"
                     />
-                    {pinned && (
-                      <Icon
-                        className="absolute transition-opacity opacity-0 group-hover:opacity-100"
-                        name="menu-fold"
-                        onClick={onPin}
-                        size="md"
-                      />
-                    )}
-                    {!pinned && (
-                      <Icon
-                        className="absolute transition-opacity opacity-0 group-hover:opacity-100"
-                        name="menu-unfold"
-                        onClick={onPin}
-                        size="md"
-                      />
-                    )}
-                  </div>
-                </SidebarNavButton>
-              </Tooltip>
-            )}
-
-            <Tooltip content={createMessage(LOGO_TOOLTIP)} placement="bottomLeft">
-              <AppsmithLink to={APPLICATIONS_URL}>
-                <PagePlugLogoImg
-                  alt="PagePlug logo"
-                  className="t--appsmith-logo"
-                  src={PagePlugLogo}
-                />
-              </AppsmithLink>
+                  )}
+                  {!pinned && (
+                    <Icon
+                      className="absolute transition-opacity opacity-0 group-hover:opacity-100"
+                      name="menu-unfold"
+                      onClick={onPin}
+                      size="md"
+                    />
+                  )}
+                </div>
+              </SidebarNavButton>
             </Tooltip>
+          )}
 
-            <Tooltip
-              content={createMessage(RENAME_APPLICATION_TOOLTIP)}
-              isDisabled={isPopoverOpen}
-              placement="bottom"
-            >
-              <div>
-                <EditorAppName
-                  applicationId={applicationId}
-                  className="t--application-name editable-application-name max-w-48"
-                  defaultSavingState={
-                    isSavingName ? SavingState.STARTED : SavingState.NOT_STARTED
-                  }
-                  defaultValue={currentApplication?.name || ""}
-                  editInteractionKind={EditInteractionKind.SINGLE}
-                  fill
-                  isError={isErroredSavingName}
-                  isNewApp={
-                    applicationList.filter((el) => el.id === applicationId)
-                      .length > 0
-                  }
-                  isPopoverOpen={isPopoverOpen}
-                  onBlur={(value: string) =>
-                    updateApplicationDispatch(applicationId || "", {
-                      name: value,
-                      currentApp: true,
-                    })
-                  }
-                  setIsPopoverOpen={setIsPopoverOpen}
-                />
-              </div>
-            </Tooltip>
-            <EditorSaveIndicator />
-          </HeaderSection>
-          {/* 中间-全局搜索*/}
-          <HeaderSection
-            className={classNames({
-              "-translate-y-full opacity-0": isPreviewMode,
-              "translate-y-0 opacity-100": !isPreviewMode,
-              "transition-all transform duration-400": true,
-              "help-bar": "true",
-            })}
+          <Tooltip content={createMessage(LOGO_TOOLTIP)} placement="bottomLeft">
+            <AppsmithLink to={APPLICATIONS_URL}>
+              <PagePlugLogoImg
+                alt="PagePlug logo"
+                className="t--appsmith-logo"
+                src={PagePlugLogo}
+              />
+            </AppsmithLink>
+          </Tooltip>
+
+          <Tooltip
+            content={createMessage(RENAME_APPLICATION_TOOLTIP)}
+            isDisabled={isPopoverOpen}
+            placement="bottom"
           >
-            <HelpBar />
-          </HeaderSection>
-          {/* 右侧 */}
-          <HeaderSection className="gap-x-1">
-            <Boxed
-              alternative={<EndTour />}
-              step={GUIDED_TOUR_STEPS.BUTTON_ONSUCCESS_BINDING}
-            >
-              <RealtimeAppEditors applicationId={applicationId} />
-              <ToggleModeButton />
-              {applicationId && (
-                <Tooltip
-                  content={
-                    filteredSharedUserList.length
-                      ? createMessage(
+            <div>
+              <EditorAppName
+                applicationId={applicationId}
+                className="t--application-name editable-application-name max-w-48"
+                defaultSavingState={
+                  isSavingName ? SavingState.STARTED : SavingState.NOT_STARTED
+                }
+                defaultValue={currentApplication?.name || ""}
+                editInteractionKind={EditInteractionKind.SINGLE}
+                fill
+                isError={isErroredSavingName}
+                isNewApp={
+                  applicationList.filter((el) => el.id === applicationId)
+                    .length > 0
+                }
+                isPopoverOpen={isPopoverOpen}
+                onBlur={(value: string) =>
+                  updateApplicationDispatch(applicationId || "", {
+                    name: value,
+                    currentApp: true,
+                  })
+                }
+                setIsPopoverOpen={setIsPopoverOpen}
+              />
+            </div>
+          </Tooltip>
+          <EditorSaveIndicator />
+        </HeaderSection>
+        {/* 中间-全局搜索*/}
+        <HeaderSection
+          className={classNames({
+            "-translate-y-full opacity-0": isPreviewMode,
+            "translate-y-0 opacity-100": !isPreviewMode,
+            "transition-all transform duration-400": true,
+            "help-bar": "true",
+          })}
+        >
+          <HelpBar />
+        </HeaderSection>
+        {/* 右侧 */}
+        <HeaderSection className="gap-x-1">
+          <Boxed
+            alternative={<EndTour />}
+            step={GUIDED_TOUR_STEPS.BUTTON_ONSUCCESS_BINDING}
+          >
+            <RealtimeAppEditors applicationId={applicationId} />
+            <ToggleModeButton />
+            {applicationId && (
+              <Tooltip
+                content={
+                  filteredSharedUserList.length
+                    ? createMessage(
                         SHARE_BUTTON_TOOLTIP_WITH_USER(
                           filteredSharedUserList.length,
                         ),
                       )
-                      : createMessage(SHARE_BUTTON_TOOLTIP)
-                  }
-                  placement="bottom"
-                >
-                  <Button
-                    className="t--application-share-btn"
-                    kind="tertiary"
-                    onClick={() => setShowModal(true)}
-                    size="md"
-                    startIcon="share-line"
-                  >
-                    {createMessage(EDITOR_HEADER.share)}
-                  </Button>
-                </Tooltip>
-              )}
-              <Modal
-                onOpenChange={(isOpen) => setShowModal(isOpen)}
-                open={showModal}
+                    : createMessage(SHARE_BUTTON_TOOLTIP)
+                }
+                placement="bottom"
               >
-                <ModalContent style={{ width: "640px" }}>
-                  <ModalHeader>应用分享</ModalHeader>
-                  <ModalBody>
-                    <Tabs
-                      onValueChange={(value) => setActiveTab(value)}
-                      value={activeTab}
-                    >
-                      <TabsList>
-                        <Tab data-testid="t--tab-INVITE" value="invite">
-                          {createMessage(INVITE_TAB)}
-                        </Tab>
-                        <Tab data-tesid="t--tab-EMBED" value="embed">
-                          {createMessage(IN_APP_EMBED_SETTING.embed)}
-                        </Tab>
-                      </TabsList>
-                      <TabPanel value="invite">
-                        <AppInviteUsersForm
-                          applicationId={applicationId}
-                          placeholder={createMessage(
-                            INVITE_USERS_PLACEHOLDER,
-                            cloudHosting,
-                          )}
-                          workspaceId={workspaceId}
-                        />
-                      </TabPanel>
-                      <TabPanel value="embed">
-                        <EmbedSnippetForm
-                          changeTab={() => setActiveTab("invite")}
-                        />
-                      </TabPanel>
-                    </Tabs>
-                  </ModalBody>
-                </ModalContent>
-              </Modal>
-              <div className="flex items-center">
-                <Tooltip
-                  content={createMessage(DEPLOY_BUTTON_TOOLTIP)}
-                  placement="bottomRight"
+                <Button
+                  className="t--application-share-btn"
+                  kind="tertiary"
+                  onClick={() => setShowModal(true)}
+                  size="md"
+                  startIcon="share-line"
                 >
-                  <Button
-                    className="t--application-publish-btn"
-                    data-guided-tour-iid="deploy"
-                    isLoading={isPublishing}
-                    kind="tertiary"
-                    onClick={() => handleClickDeploy(true)}
-                    size="md"
-                    startIcon={"rocket"}
+                  {createMessage(EDITOR_HEADER.share)}
+                </Button>
+              </Tooltip>
+            )}
+            <Modal
+              onOpenChange={(isOpen) => setShowModal(isOpen)}
+              open={showModal}
+            >
+              <ModalContent style={{ width: "640px" }}>
+                <ModalHeader>应用分享</ModalHeader>
+                <ModalBody>
+                  <Tabs
+                    onValueChange={(value) => setActiveTab(value)}
+                    value={activeTab}
                   >
-                    {DEPLOY_MENU_OPTION()}
-                  </Button>
-                </Tooltip>
+                    <TabsList>
+                      <Tab data-testid="t--tab-INVITE" value="invite">
+                        {createMessage(INVITE_TAB)}
+                      </Tab>
+                      <Tab data-tesid="t--tab-EMBED" value="embed">
+                        {createMessage(IN_APP_EMBED_SETTING.embed)}
+                      </Tab>
+                    </TabsList>
+                    <TabPanel value="invite">
+                      <AppInviteUsersForm
+                        applicationId={applicationId}
+                        placeholder={createMessage(
+                          INVITE_USERS_PLACEHOLDER,
+                          cloudHosting,
+                        )}
+                        workspaceId={workspaceId}
+                      />
+                    </TabPanel>
+                    <TabPanel value="embed">
+                      <EmbedSnippetForm
+                        changeTab={() => setActiveTab("invite")}
+                      />
+                    </TabPanel>
+                  </Tabs>
+                </ModalBody>
+              </ModalContent>
+            </Modal>
+            <div className="flex items-center">
+              <Tooltip
+                content={createMessage(DEPLOY_BUTTON_TOOLTIP)}
+                placement="bottomRight"
+              >
+                <Button
+                  className="t--application-publish-btn"
+                  data-guided-tour-iid="deploy"
+                  isLoading={isPublishing}
+                  kind="tertiary"
+                  onClick={() => handleClickDeploy(true)}
+                  size="md"
+                  startIcon={"rocket"}
+                >
+                  {DEPLOY_MENU_OPTION()}
+                </Button>
+              </Tooltip>
 
-                <DeployLinkButtonDialog link={deployLink} trigger="" />
-              </div>
-            </Boxed>
-          </HeaderSection>
-          <Suspense fallback={<span />}>
-            <GlobalSearch />
-          </Suspense>
-          {isSnipingMode && (
-            <BindingBanner className="t--sniping-mode-banner">
-              选择一个组件绑定
-            </BindingBanner>
-          )}
-        </HeaderWrapper>
-      </ThemeProvider>
+              <DeployLinkButtonDialog link={deployLink} trigger="" />
+            </div>
+          </Boxed>
+        </HeaderSection>
+        <Suspense fallback={<span />}>
+          <GlobalSearch />
+        </Suspense>
+        {isSnipingMode && (
+          <BindingBanner className="t--sniping-mode-banner">
+            选择一个组件绑定
+          </BindingBanner>
+        )}
+      </HeaderWrapper>
+    </ThemeProvider>
   );
 }
 

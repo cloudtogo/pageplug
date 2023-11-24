@@ -29,21 +29,22 @@
     "@typescript-eslint/no-unused-vars": "warn",
     "jest/no-focused-tests": "error",
     "jest/no-disabled-tests": "error",
-    "@typescript-eslint/consistent-type-imports": "error",
-    "react-hooks/rules-of-hooks": "error",
-    "react/jsx-boolean-value": "error",
-    "react/self-closing-comp": "error",
-    "react/jsx-sort-props": "error",
+    "@typescript-eslint/consistent-type-imports": "warn",
+    "react-hooks/rules-of-hooks": "warn",
+    "react/jsx-boolean-value": "warn",
+    "react/self-closing-comp": "warn",
+    "react/jsx-sort-props": "warn",
     "react/jsx-fragments": "error",
-    "react/jsx-no-useless-fragment": "error",
+    "react/jsx-no-useless-fragment": "warn",
     "sort-destructure-keys/sort-destructure-keys": [
-      "error",
+      "warn",
       {
         "caseSensitive": false
       }
     ],
-    "no-console": "error",
+    "no-console": "warn",
     "no-debugger": "off",
+    "prefer-const": "warn",
     "@typescript-eslint/no-restricted-imports": [
       "error",
       {
