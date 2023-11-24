@@ -38,7 +38,8 @@ export const initialState: any = {
     onBoarding: {
       firstTimeUserOnboardingComplete: false,
       showFirstTimeUserOnboardingModal: true,
-      enableFirstTimeUserOnboarding: true,
+      firstTimeUserOnboardingApplicationIds: ["1"],
+      stepState: [],
     },
     theme: {
       theme: {

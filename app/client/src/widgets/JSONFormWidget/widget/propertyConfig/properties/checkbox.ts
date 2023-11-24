@@ -1,10 +1,7 @@
 import { ValidationTypes } from "constants/WidgetValidation";
 import { FieldType } from "widgets/JSONFormWidget/constants";
-import {
-  HiddenFnParams,
-  getSchemaItem,
-  getAutocompleteProperties,
-} from "../helper";
+import type { HiddenFnParams } from "../helper";
+import { getSchemaItem, getAutocompleteProperties } from "../helper";
 
 const PROPERTIES = {
   content: {
@@ -45,6 +42,7 @@ const PROPERTIES = {
         helpText: "设置字段对齐方式",
         label: "对齐",
         controlType: "ICON_TABS",
+        defaultValue: "LEFT",
         fullWidth: true,
         options: [
           {

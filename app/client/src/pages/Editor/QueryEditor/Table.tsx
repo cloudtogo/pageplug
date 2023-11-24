@@ -1,9 +1,8 @@
 import React from "react";
-import styled, { withTheme } from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { FixedSizeList } from "react-window";
-import { useTable, useBlockLayout } from "react-table";
+import { useTable, useBlockLayout, useResizeColumns } from "react-table";
 
-import { Colors } from "constants/Colors";
 import { scrollbarWidth } from "utils/helpers";
 import { getType, Types } from "utils/TypeHelpers";
 import ErrorBoundary from "components/editorComponents/ErrorBoundry";
@@ -12,13 +11,12 @@ import ErrorBoundary from "components/editorComponents/ErrorBoundry";
 // We need to decouple the platform stuff from the widget stuff
 import { CellWrapper } from "widgets/TableWidget/component/TableStyledWrappers";
 import AutoToolTipComponent from "widgets/TableWidget/component/AutoToolTipComponent";
-import { Theme } from "constants/DefaultTheme";
 import { isArray, uniqueId } from "lodash";
+import type { Theme } from "constants/DefaultTheme";
 
 interface TableProps {
   data: Record<string, any>[];
   tableBodyHeight?: number;
-  theme: Theme;
 }
 
 const TABLE_SIZES = {
@@ -33,16 +31,17 @@ const NoDataMessage = styled.span`
   margin-left: 24px;
 `;
 
+// TODO: replace with ads table
 export const TableWrapper = styled.div`
   width: 100%;
-  height: 100%;
-  background: white;
-  border: 1px solid ${Colors.GEYSER_LIGHT};
+  height: auto;
+  background: var(--ads-v2-color-bg);
+  border: 1px solid var(--ads-v2-color-border);
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  overflow: hidden;
+  overflow: scroll;
   .tableWrap {
     height: 100%;
     display: block;
@@ -51,12 +50,12 @@ export const TableWrapper = styled.div`
   }
   .table {
     border-spacing: 0;
-    color: ${Colors.THUNDER};
+    color: var(--ads-v2-color-fg);
     position: relative;
-    background: ${Colors.ATHENS_GRAY_DARKER};
+    background: var(--ads-v2-color-gray-50);
     display: table;
     width: 100%;
-    height: 100%;
+    height: auto;
     .thead,
     .tbody {
       overflow: hidden;
@@ -69,29 +68,29 @@ export const TableWrapper = styled.div`
     }
     .tr {
       overflow: hidden;
-      border-right: 1px solid ${Colors.GEYSER_LIGHT};
+      border-right: 1px solid var(--ads-v2-color-border);
       :nth-child(even) {
-        background: ${Colors.ATHENS_GRAY_DARKER};
+        background: var(--ads-v2-color-gray-50);
       }
       :nth-child(odd) {
-        background: ${Colors.WHITE};
+        background: var(--ads-v2-color-bg);
       }
       &.selected-row {
-        background: ${Colors.POLAR};
+        background: var(--ads-v2-color-bg-subtle);
         &:hover {
-          background: ${Colors.POLAR};
+          background: var(--ads-v2-color-bg-subtle);
         }
       }
       &:hover {
-        background: ${Colors.ATHENS_GRAY};
+        background: var(--ads-v2-color-gray-50);
       }
     }
     .th,
     .td {
       margin: 0;
       padding: 9px 10px;
-      border-bottom: 1px solid ${Colors.GEYSER_LIGHT};
-      border-right: 1px solid ${Colors.GEYSER_LIGHT};
+      border-bottom: 1px solid var(--ads-v2-color-border);
+      border-right: 1px solid var(--ads-v2-color-border);
       position: relative;
       font-size: ${TABLE_SIZES.ROW_FONT_SIZE}px;
       line-height: ${TABLE_SIZES.ROW_FONT_SIZE}px;
@@ -110,7 +109,7 @@ export const TableWrapper = styled.div`
         ${"" /* prevents from scrolling while dragging on touch devices */}
         touch-action:none;
         &.isResizing {
-          cursor: isResizing;
+          cursor: n-resize;
         }
       }
     }
@@ -118,7 +117,7 @@ export const TableWrapper = styled.div`
       padding: 0 10px 0 0;
       height: ${TABLE_SIZES.COLUMN_HEADER_HEIGHT}px;
       line-height: ${TABLE_SIZES.COLUMN_HEADER_HEIGHT}px;
-      background: ${Colors.ATHENS_GRAY_DARKER};
+      background: var(--ads-v2-color-gray-50);
     }
     .td {
       height: ${TABLE_SIZES.ROW_HEIGHT}px;
@@ -132,7 +131,7 @@ export const TableWrapper = styled.div`
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    color: ${Colors.OXFORD_BLUE};
+    color: var(--ads-v2-color-fg);
     font-weight: 500;
     padding-left: 10px;
     &.sorted {
@@ -150,7 +149,6 @@ export const TableWrapper = styled.div`
     opacity: 0.6;
   }
   .column-menu {
-    cursor: pointer;
     height: ${TABLE_SIZES.COLUMN_HEADER_HEIGHT}px;
     line-height: ${TABLE_SIZES.COLUMN_HEADER_HEIGHT}px;
   }
@@ -158,10 +156,10 @@ export const TableWrapper = styled.div`
     display: flex;
     justify-content: space-between;
     &.highlight-left {
-      border-left: 2px solid ${Colors.GREEN};
+      border-left: 2px solid var(--ads-v2-color-border-success);
     }
     &.highlight-right {
-      border-right: 2px solid ${Colors.GREEN};
+      border-right: 2px solid var(--ads-v2-color-border-success);
     }
   }
 `;
@@ -208,30 +206,24 @@ export const getScrollBarWidth = (tableBodyEle: any, scrollBarW: number) => {
 };
 
 function Table(props: TableProps) {
+  const theme = useTheme() as Theme;
   const tableBodyRef = React.useRef<HTMLElement>();
+
   const data = React.useMemo(() => {
-    const emptyString = "";
     /* Check for length greater than 0 of rows returned from the query for mappings keys */
     if (!!props.data && isArray(props.data) && props.data.length > 0) {
-      const keys = Object.keys(props.data[0]);
-      keys.forEach((key) => {
-        if (key === emptyString) {
-          const value = props.data[0][key];
-          delete props.data[0][key];
-          props.data[0][uniqueId()] = value;
-        }
-      });
-
       return props.data;
     }
 
     return [];
   }, [props.data]);
+
   const columns = React.useMemo(() => {
     if (data.length) {
       return Object.keys(data[0]).map((key: any) => {
+        const uniqueKey = uniqueId();
         return {
-          Header: key,
+          Header: key === "" ? uniqueKey : key,
           accessor: key,
           Cell: renderCell,
         };
@@ -240,16 +232,6 @@ function Table(props: TableProps) {
 
     return [];
   }, [data]);
-
-  const responseTypePanelHeight = 24;
-
-  const tableBodyHeightComputed =
-    (props.tableBodyHeight || window.innerHeight) -
-    TABLE_SIZES.COLUMN_HEADER_HEIGHT -
-    props.theme.tabPanelHeight -
-    TABLE_SIZES.SCROLL_SIZE -
-    responseTypePanelHeight -
-    2 * props.theme.spaces[4]; //top and bottom padding
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -273,7 +255,29 @@ function Table(props: TableProps) {
       defaultColumn,
     },
     useBlockLayout,
+    useResizeColumns,
   );
+
+  const responseTypePanelHeight = 24;
+  const tableRowHeight = 35;
+
+  // height of response pane with respect to other constants.
+  let tableBodyHeightComputed =
+    (props.tableBodyHeight || window.innerHeight) -
+    TABLE_SIZES.COLUMN_HEADER_HEIGHT -
+    theme.tabPanelHeight -
+    TABLE_SIZES.SCROLL_SIZE -
+    responseTypePanelHeight -
+    2 * theme.spaces[4]; //top and bottom padding
+
+  // actual height of all the rows.
+  const actualHeightOfAllRows = rows.length * tableRowHeight;
+
+  // if the actual height of all the rows is less than computed table body height
+  // set the height of the body to it.
+  if (rows.length && actualHeightOfAllRows < tableBodyHeightComputed) {
+    tableBodyHeightComputed = actualHeightOfAllRows;
+  }
 
   const tableBodyEle = tableBodyRef?.current;
   const scrollBarW = React.useMemo(() => scrollbarWidth(), []);
@@ -339,6 +343,12 @@ function Table(props: TableProps) {
                         >
                           <AutoToolTipComponent title={column.render("Header")}>
                             {column.render("Header")}
+                            <div
+                              {...column.getResizerProps()}
+                              className={`resizer ${
+                                column.isResizing ? "isResizing" : ""
+                              }`}
+                            />
                           </AutoToolTipComponent>
                         </div>
                       </div>
@@ -366,4 +376,4 @@ function Table(props: TableProps) {
   );
 }
 
-export default withTheme(Table);
+export default Table;

@@ -1,6 +1,6 @@
-import { useDispatch, useSelector } from "react-redux";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { snipingModeSelector } from "selectors/editorSelectors";
 import { getIsCanvasInitialized } from "selectors/mainCanvasSelectors";
 
@@ -114,11 +114,13 @@ export const useWidgetDragResize = () => {
         dragGroupActualParent = "",
         draggingGroupCenter = {},
         startPoints,
+        draggedOn,
       }: {
         isDragging: boolean;
         dragGroupActualParent?: string;
         draggingGroupCenter?: Record<string, any>;
         startPoints?: any;
+        draggedOn?: string;
       }) => {
         if (isDragging) {
           document.body.classList.add("dragging");
@@ -132,6 +134,7 @@ export const useWidgetDragResize = () => {
             dragGroupActualParent,
             draggingGroupCenter,
             startPoints,
+            draggedOn,
           },
         });
       },
@@ -189,10 +192,10 @@ export const usePageContainerSizeHooks = () => {
 
   const onResize = () => {
     const container = document.getElementsByClassName(
-      "ant-pro-basicLayout-content",
+      "ant-pro-page-container-children-content",
     )[0];
     updateWindowSize({
-      width: container?.clientWidth || window.innerWidth,
+      width: container?.children[0]?.clientWidth || window.innerWidth,
       height: window.innerHeight,
     });
   };

@@ -5,11 +5,7 @@ set -o nounset
 set -o pipefail
 set -o xtrace
 
-http_conf="/opt/appsmith/templates/nginx-app-http.conf.template.sh"
-https_conf="/opt/appsmith/templates/nginx-app-https.conf.template.sh"
 ssl_conf_path="/appsmith-stacks/data/certificate/conf"
-
-APP_TEMPLATE="$http_conf"
 
 mkdir -pv "$ssl_conf_path"
 
@@ -57,32 +53,39 @@ fi
 
 # Check exist certificate with given custom domain
 # Heroku not support for custom domain, only generate HTTP config if deploying on Heroku
+use_https=0
 if [[ -n ${APPSMITH_CUSTOM_DOMAIN-} ]] && [[ -z ${DYNO-} ]]; then
-  APP_TEMPLATE="$https_conf"
+  use_https=1
   if ! [[ -e "/etc/letsencrypt/live/$APPSMITH_CUSTOM_DOMAIN" ]]; then
     source "/opt/appsmith/init_ssl_cert.sh"
     if ! init_ssl_cert "$APPSMITH_CUSTOM_DOMAIN"; then
       echo "Status code from init_ssl_cert is $?"
-      APP_TEMPLATE="$http_conf"
+      use_https=0
     fi
   fi
 fi
 
-bash "$APP_TEMPLATE" "${APPSMITH_CUSTOM_DOMAIN-}" > /etc/nginx/sites-available/default
+bash /opt/appsmith/templates/nginx-app.conf.sh "$use_https" "${APPSMITH_CUSTOM_DOMAIN-}" > /etc/nginx/sites-available/default
 
-index_html_served=/opt/appsmith/editor/index.html
-index_html_original=/opt/appsmith/index.html.original
-if [[ ! -f $index_html_original ]]; then
-  cp -v "$index_html_served" "$index_html_original"
-fi
+apply-env-vars() {
+  original="$1"
+  served="$2"
+  if [[ ! -f $original ]]; then
+    cp -v "$served" "$original"
+  fi
+  node -e '
+  const fs = require("fs")
+  const content = fs.readFileSync("'"$original"'", "utf8").replace(
+    /\b__(APPSMITH_[A-Z0-9_]+)__\b/g,
+    (placeholder, name) => (process.env[name] || "")
+  )
+  fs.writeFileSync("'"$served"'", content)
+  '
+  pushd "$(dirname "$served")"
+  gzip --keep --force "$(basename "$served")"
+  popd
+}
 
-node -e '
-const fs = require("fs")
-const content = fs.readFileSync("'"$index_html_original"'", "utf8").replace(
-  /\b__(APPSMITH_[A-Z0-9_]+)__\b/g,
-  (placeholder, name) => (process.env[name] || "")
-)
-fs.writeFileSync("'"$index_html_served"'", content)
-'
+apply-env-vars /opt/appsmith/index.html.original /opt/appsmith/editor/index.html
 
 exec nginx -g "daemon off;error_log stderr info;"

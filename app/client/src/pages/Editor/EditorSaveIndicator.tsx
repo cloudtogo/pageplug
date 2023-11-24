@@ -1,95 +1,44 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import moment from "moment/moment";
-
-import { AppState } from "@appsmith/reducers";
-import { TooltipComponent } from "design-system";
-import { HeaderIcons } from "icons/HeaderIcons";
+import { TextType, Text } from "design-system-old";
 import { getIsPageSaving, getPageSavingError } from "selectors/editorSelectors";
-import {
-  createMessage,
-  EDITOR_HEADER_SAVE_INDICATOR,
-} from "@appsmith/constants/messages";
 import { Colors } from "constants/Colors";
-import { Icon } from "design-system";
+import { createMessage, EDITOR_HEADER } from "@appsmith/constants/messages";
+import { Icon, Spinner } from "design-system";
 
 const SaveStatusContainer = styled.div`
-  border-radius: 50%;
-  display: flex;
   align-items: center;
-  justify-content: center;
-  .bp3-popover-target {
-    display: flex;
-  }
-`;
-
-const StyledLoader = styled(Icon)`
-  animation: spin 2s linear infinite;
-  @keyframes spin {
-    100% {
-      transform: rotate(360deg);
-    }
-  }
+  display: flex;
 `;
 
 export function EditorSaveIndicator() {
-  const [lastUpdatedTimeMessage, setLastUpdatedTimeMessage] = useState<string>(
-    createMessage(EDITOR_HEADER_SAVE_INDICATOR),
-  );
-
-  const lastUpdatedTime = useSelector(
-    (state: AppState) => state.ui.editor.lastUpdatedTime,
-  );
   const isSaving = useSelector(getIsPageSaving);
   const pageSaveError = useSelector(getPageSavingError);
 
-  const findLastUpdatedTimeMessage = () => {
-    const savedMessage = createMessage(EDITOR_HEADER_SAVE_INDICATOR);
-    setLastUpdatedTimeMessage(
-      lastUpdatedTime
-        ? `${savedMessage} ${moment(lastUpdatedTime * 1000).fromNow()}`
-        : savedMessage,
-    );
-  };
-
   let saveStatusIcon: React.ReactNode;
+  let saveStatusText = "";
   if (isSaving) {
-    saveStatusIcon = (
-      <StyledLoader className="t--save-status-is-saving" name="loader" />
-    );
+    saveStatusIcon = <Spinner className="t--save-status-is-saving" />;
+    saveStatusText = createMessage(EDITOR_HEADER.saving);
   } else {
-    if (!pageSaveError) {
+    if (pageSaveError) {
       saveStatusIcon = (
-        <TooltipComponent
-          content={lastUpdatedTimeMessage}
-          hoverOpenDelay={200}
-          onOpening={findLastUpdatedTimeMessage}
-        >
-          <HeaderIcons.SAVE_SUCCESS
-            className="t--save-status-success"
-            color={Colors.GREEN}
-            height={20}
-            width={20}
-          />
-        </TooltipComponent>
+        <Icon className={"t--save-status-error"} name="cloud-off-line" />
       );
-    } else {
-      saveStatusIcon = (
-        <HeaderIcons.SAVE_FAILURE
-          className={"t--save-status-error"}
-          color={Colors.WARNING_SOLID}
-          height={20}
-          width={20}
-        />
-      );
+      saveStatusText = createMessage(EDITOR_HEADER.saveFailed);
     }
   }
 
+  if (!pageSaveError && !isSaving) return null;
+
   return (
-    <SaveStatusContainer className={"t--save-status-container"}>
+    <SaveStatusContainer className={"t--save-status-container gap-x-1"}>
       {saveStatusIcon}
+      <Text color={Colors.GREY_9} type={TextType.P3}>
+        {saveStatusText}
+      </Text>
     </SaveStatusContainer>
   );
 }

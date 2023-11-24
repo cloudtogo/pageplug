@@ -1,9 +1,12 @@
-import Widget from "./widget";
-import IconSVG from "./icon.svg";
+import { LabelPosition } from "components/constants";
+import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
+import { ResponsiveBehavior } from "utils/autoLayout/constants";
+import { DynamicHeight } from "utils/WidgetFeatures";
 import { CONFIG as BaseConfig } from "widgets/BaseInputWidget";
 import { getDefaultISDCode } from "./component/ISDCodeDropdown";
-import { LabelPosition } from "components/constants";
-import { DynamicHeight } from "utils/WidgetFeatures";
+import IconSVG from "./icon.svg";
+import Widget from "./widget";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 export const CONFIG = {
   features: {
@@ -16,6 +19,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "手机号输入框",
   iconSVG: IconSVG,
+  tags: [WIDGET_TAGS.INPUTS],
   needsMeta: true,
   searchTags: ["call", "phone input"],
   defaults: {
@@ -27,6 +31,8 @@ export const CONFIG = {
     defaultDialCode: getDefaultISDCode().dial_code,
     allowDialCodeChange: false,
     allowFormatting: true,
+    responsiveBehavior: ResponsiveBehavior.Fill,
+    minWidth: FILL_WIDGET_MIN_WIDTH,
   },
   properties: {
     derived: Widget.getDerivedPropertiesMap(),
@@ -36,6 +42,33 @@ export const CONFIG = {
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
     stylesheetConfig: Widget.getStylesheetConfig(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
+    setterConfig: Widget.getSetterConfig(),
+  },
+  autoLayout: {
+    disabledPropsDefaults: {
+      labelPosition: LabelPosition.Top,
+      labelTextSize: "0.875rem",
+    },
+    defaults: {
+      rows: 6.6,
+    },
+    autoDimension: {
+      height: true,
+    },
+    widgetSize: [
+      {
+        viewportMinWidth: 0,
+        configuration: () => {
+          return {
+            minWidth: "160px",
+          };
+        },
+      },
+    ],
+    disableResizeHandles: {
+      vertical: true,
+    },
   },
 };
 

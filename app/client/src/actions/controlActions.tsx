@@ -1,10 +1,10 @@
-import {
-  ReduxActionTypes,
+import type {
   ReduxAction,
   ReduxActionType,
 } from "@appsmith/constants/ReduxActionConstants";
-import { UpdateWidgetsPayload } from "reducers/entityReducers/canvasWidgetsReducer";
-import { DynamicPath } from "utils/DynamicBindingUtils";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import type { UpdateWidgetsPayload } from "reducers/entityReducers/canvasWidgetsReducer";
+import type { DynamicPath } from "utils/DynamicBindingUtils";
 
 export const updateWidgetPropertyRequest = (
   widgetId: string,
@@ -25,7 +25,7 @@ export interface BatchPropertyUpdatePayload {
   modify?: Record<string, unknown>; //Key value pairs of paths and values to update
   remove?: string[]; //Array of paths to delete
   triggerPaths?: string[]; // Array of paths in the modify and remove list which are trigger paths
-  postUpdateAction?: ReduxActionType; // Array of action types we need to dispatch after propert updates.
+  postUpdateAction?: ReduxActionType; // Array of action types we need to dispatch after property updates.
 }
 
 export const batchUpdateWidgetProperty = (
@@ -38,6 +38,17 @@ export const batchUpdateWidgetProperty = (
     widgetId,
     updates,
     shouldReplay,
+  },
+});
+
+export const batchUpdateWidgetDynamicProperty = (
+  widgetId: string,
+  updates: BatchUpdateDynamicPropertyUpdates[],
+): ReduxAction<BatchUpdateWidgetDynamicPropertyPayload> => ({
+  type: ReduxActionTypes.BATCH_SET_WIDGET_DYNAMIC_PROPERTY,
+  payload: {
+    widgetId,
+    updates,
   },
 });
 export const batchUpdateMultipleWidgetProperties = (
@@ -65,6 +76,7 @@ export const setWidgetDynamicProperty = (
   propertyPath: string,
   isDynamic: boolean,
   shouldRejectDynamicBindingPathList = true,
+  skipValidation = false,
 ): ReduxAction<SetWidgetDynamicPropertyPayload> => {
   return {
     type: ReduxActionTypes.SET_WIDGET_DYNAMIC_PROPERTY,
@@ -73,16 +85,28 @@ export const setWidgetDynamicProperty = (
       propertyPath,
       isDynamic,
       shouldRejectDynamicBindingPathList,
+      skipValidation,
     },
   };
 };
 
 export const updateMultipleWidgetPropertiesAction = (
   widgetsToUpdate: UpdateWidgetsPayload,
+  shouldEval = false,
 ) => {
   return {
     type: ReduxActionTypes.UPDATE_MULTIPLE_WIDGET_PROPERTIES,
-    payload: widgetsToUpdate,
+    payload: { widgetsToUpdate, shouldEval },
+  };
+};
+
+export const updateMultipleMetaWidgetPropertiesAction = (
+  widgetsToUpdate: UpdateWidgetsPayload,
+  shouldEval = false,
+) => {
+  return {
+    type: ReduxActionTypes.UPDATE_MULTIPLE_META_WIDGET_PROPERTIES,
+    payload: { widgetsToUpdate, shouldEval },
   };
 };
 
@@ -113,6 +137,17 @@ export interface SetWidgetDynamicPropertyPayload {
   propertyPath: string;
   isDynamic: boolean;
   shouldRejectDynamicBindingPathList?: boolean;
+  skipValidation?: boolean;
+}
+
+export type BatchUpdateDynamicPropertyUpdates = Omit<
+  SetWidgetDynamicPropertyPayload,
+  "widgetId"
+>;
+
+export interface BatchUpdateWidgetDynamicPropertyPayload {
+  widgetId: string;
+  updates: BatchUpdateDynamicPropertyUpdates[];
 }
 
 export interface DeleteWidgetPropertyPayload {

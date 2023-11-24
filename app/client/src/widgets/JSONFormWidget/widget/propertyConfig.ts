@@ -1,17 +1,16 @@
 import { Alignment } from "@blueprintjs/core";
 
-import generatePanelPropertyConfig from "./propertyConfig/generatePanelPropertyConfig";
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
-import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import { JSONFormWidgetProps } from ".";
-import { ROOT_SCHEMA_KEY } from "../constants";
+import { ButtonPlacementTypes, ButtonVariantTypes } from "components/constants";
+import type { OnButtonClickProps } from "components/propertyControls/ButtonControl";
 import { ValidationTypes } from "constants/WidgetValidation";
-import { ButtonVariantTypes, ButtonPlacementTypes } from "components/constants";
-import { ButtonWidgetProps } from "widgets/ButtonWidget/widget";
-import { OnButtonClickProps } from "components/propertyControls/ButtonControl";
-import { ComputedSchemaStatus, computeSchema } from "./helper";
+import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
 import { EVALUATION_PATH } from "utils/DynamicBindingUtils";
-
+import type { ButtonWidgetProps } from "widgets/ButtonWidget/widget";
+import type { JSONFormWidgetProps } from ".";
+import { ROOT_SCHEMA_KEY } from "../constants";
+import { ComputedSchemaStatus, computeSchema } from "./helper";
+import generatePanelPropertyConfig from "./propertyConfig/generatePanelPropertyConfig";
 const MAX_NESTING_LEVEL = 5;
 
 const panelConfig = generatePanelPropertyConfig(MAX_NESTING_LEVEL);
@@ -25,7 +24,25 @@ export const sourceDataValidationFn = (
     return {
       isValid: false,
       parsed: {},
-      messages: ["Source data cannot be empty."],
+      messages: [
+        {
+          name: "ValidationError",
+          message: "Source data cannot be empty.",
+        },
+      ],
+    };
+  }
+
+  if (_.isNumber(value) || _.isBoolean(value)) {
+    return {
+      isValid: false,
+      parsed: {},
+      messages: [
+        {
+          name: "ValidationError",
+          message: `Source data cannot be ${value}`,
+        },
+      ],
     };
   }
 
@@ -52,7 +69,7 @@ export const sourceDataValidationFn = (
     return {
       isValid: false,
       parsed: {},
-      messages: [(e as Error).message],
+      messages: [e as Error],
     };
   }
 };
@@ -155,6 +172,7 @@ export const contentConfig = [
           "schema",
           "fieldLimitExceeded",
           "childStylesheet",
+          "dynamicPropertyPathList",
         ],
         evaluatedDependencies: ["sourceData"],
       },
@@ -187,6 +205,16 @@ export const contentConfig = [
         propertyName: "isVisible",
         helpText: "控制组件的显示/隐藏",
         label: "是否显示",
+        controlType: "SWITCH",
+        isJSConvertible: true,
+        isBindProperty: true,
+        isTriggerProperty: false,
+        validation: { type: ValidationTypes.BOOLEAN },
+      },
+      {
+        propertyName: "useSourceData",
+        helpText: "使用源数据来填充隐藏字段，以便在表单数据中显示它们。",
+        label: "隐藏数据中的字段。",
         controlType: "SWITCH",
         isJSConvertible: true,
         isBindProperty: true,
@@ -269,7 +297,7 @@ export const contentConfig = [
       {
         propertyName: "onSubmit",
         helpText: "点击提交按钮时触发",
-        label: "onSubmit",
+        label: "提交时",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
         isBindProperty: true,
@@ -298,6 +326,7 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
         propertyName: `${prefix}.buttonVariant`,
         label: "按钮类型",
         controlType: "ICON_TABS",
+        defaultValue: ButtonVariantTypes.PRIMARY,
         fullWidth: true,
         helpText: "设置图标按钮类型",
         options: [
@@ -388,14 +417,15 @@ const generateButtonStyleControlsV2For = (prefix: string) => [
         label: "位置",
         helpText: "设置按钮图标对齐方向",
         controlType: "ICON_TABS",
-        fullWidth: true,
+        defaultValue: "left",
+        fullWidth: false,
         options: [
           {
-            icon: "VERTICAL_LEFT",
+            startIcon: "skip-left-line",
             value: "left",
           },
           {
-            icon: "VERTICAL_RIGHT",
+            startIcon: "skip-right-line",
             value: "right",
           },
         ],

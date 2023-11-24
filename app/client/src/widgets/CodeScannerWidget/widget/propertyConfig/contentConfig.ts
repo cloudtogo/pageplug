@@ -1,10 +1,16 @@
+import type { PropertyPaneConfig } from "constants/PropertyControlConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
-import { PropertyPaneConfig } from "constants/PropertyControlConstants";
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
+import { DefaultMobileCameraTypes } from "widgets/constants";
+import type { CodeScannerWidgetProps } from "widgets/CodeScannerWidget/constants";
+import { ScannerLayout } from "widgets/CodeScannerWidget/constants";
 import {
-  CodeScannerWidgetProps,
-  ScannerLayout,
-} from "widgets/CodeScannerWidget/constants";
-
+  BACK_CAMERA_LABEL,
+  DEFAULT_CAMERA_LABEL,
+  DEFAULT_CAMERA_LABEL_DESCRIPTION,
+  FRONT_CAMERA_LABEL,
+  createMessage,
+} from "@appsmith/constants/messages";
 export default [
   {
     sectionName: "标签",
@@ -13,6 +19,7 @@ export default [
         propertyName: "scannerLayout",
         label: "扫码方式",
         controlType: "ICON_TABS",
+        defaultValue: ScannerLayout.ALWAYS_ON,
         fullWidth: true,
         helpText:
           "选择扫码方式。直接扫码：让组件直接展示扫码相机；点击扫码：组件显示为按钮，点击后弹出扫码相机。",
@@ -26,6 +33,7 @@ export default [
             value: ScannerLayout.CLICK_TO_SCAN,
           },
         ],
+        hidden: isAutoLayout,
         isJSConvertible: false,
         isBindProperty: false,
         isTriggerProperty: false,
@@ -93,8 +101,38 @@ export default [
           props.scannerLayout === ScannerLayout.ALWAYS_ON,
         dependencies: ["scannerLayout"],
       },
+      {
+        propertyName: "defaultCamera",
+        label: createMessage(DEFAULT_CAMERA_LABEL),
+        helpText: createMessage(DEFAULT_CAMERA_LABEL_DESCRIPTION),
+        controlType: "DROP_DOWN",
+        defaultValue: DefaultMobileCameraTypes.BACK,
+        options: [
+          {
+            label: createMessage(FRONT_CAMERA_LABEL),
+            value: DefaultMobileCameraTypes.FRONT,
+          },
+          {
+            label: createMessage(BACK_CAMERA_LABEL),
+            value: DefaultMobileCameraTypes.BACK,
+          },
+        ],
+        isBindProperty: true,
+        isTriggerProperty: false,
+        validation: {
+          type: ValidationTypes.TEXT,
+          params: {
+            allowedValues: [
+              DefaultMobileCameraTypes.FRONT,
+              DefaultMobileCameraTypes.BACK,
+            ],
+            default: DefaultMobileCameraTypes.BACK,
+          },
+        },
+      },
     ],
   },
+
   {
     sectionName: "事件",
     children: [

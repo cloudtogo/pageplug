@@ -1,17 +1,20 @@
-import {
+import type {
   ApplicationPayload,
   ReduxAction,
+} from "@appsmith/constants/ReduxActionConstants";
+import {
   ReduxActionErrorTypes,
   ReduxActionTypes,
 } from "@appsmith/constants/ReduxActionConstants";
 import { all, put, takeEvery, call, select, take } from "redux-saga/effects";
-import TemplatesAPI, {
+import type {
   ImportTemplateResponse,
   FetchTemplateResponse,
   TemplateFiltersResponse,
 } from "api/TemplatesApi";
+import TemplatesAPI from "api/TemplatesApi";
 import history from "utils/history";
-import { getDefaultPageId } from "./ApplicationSagas";
+import { getDefaultPageId } from "@appsmith/sagas/ApplicationSagas";
 import {
   getAllTemplates,
   setTemplateNotificationSeenAction,
@@ -25,7 +28,10 @@ import { validateResponse } from "./ErrorSagas";
 import { builderURL } from "RouteBuilder";
 import { getCurrentApplicationId } from "selectors/editorSelectors";
 import { getCurrentWorkspaceId } from "@appsmith/selectors/workspaceSelectors";
-import { fetchApplication } from "actions/applicationActions";
+import {
+  fetchApplication,
+  showReconnectDatasourceModal,
+} from "@appsmith/actions/applicationActions";
 import { APP_MODE } from "entities/App";
 import {
   executePageLoadActions,
@@ -33,12 +39,15 @@ import {
 } from "actions/pluginActionActions";
 import { fetchJSCollections } from "actions/jsActionActions";
 import { failFastApiCalls } from "./InitSagas";
-import { Toaster, Variant } from "design-system";
 import { fetchDatasources } from "actions/datasourceActions";
 import { fetchPluginFormConfigs } from "actions/pluginActions";
 import { fetchAllPageEntityCompletion, saveLayout } from "actions/pageActions";
-import { showReconnectDatasourceModal } from "actions/applicationActions";
 import { getAllPageIds } from "./selectors";
+import { fetchPageDSLSaga } from "sagas/PageSagas";
+import { toast } from "design-system";
+import { isAirgapped } from "@appsmith/utils/airgapHelpers";
+
+const isAirgappedInstance = isAirgapped();
 
 function* getAllTemplatesSaga() {
   try {
@@ -220,6 +229,7 @@ function* forkTemplateToApplicationSaga(
       : undefined;
     const applicationId: string = yield select(getCurrentApplicationId);
     const workspaceId: string = yield select(getCurrentWorkspaceId);
+    const prevPageIds: string[] = yield select(getAllPageIds);
     const response: ImportTemplateResponse = yield call(
       TemplatesAPI.importTemplateToApplication,
       action.payload.templateId,
@@ -235,11 +245,27 @@ function* forkTemplateToApplicationSaga(
       }),
     );
     const isValid: boolean = yield validateResponse(response);
-
     if (isValid) {
       yield call(postPageAdditionSaga, applicationId);
       const pages: string[] = yield select(getAllPageIds);
+      const templatePageIds: string[] = pages.filter(
+        (pageId) => !prevPageIds.includes(pageId),
+      );
+      const pageDSLs: unknown = yield all(
+        templatePageIds.map((pageId: string) => {
+          return call(fetchPageDSLSaga, pageId);
+        }),
+      );
 
+      yield put({
+        type: ReduxActionTypes.FETCH_PAGE_DSLS_SUCCESS,
+        payload: pageDSLs,
+      });
+
+      yield put({
+        type: ReduxActionTypes.UPDATE_PAGE_LIST,
+        payload: pageDSLs,
+      });
       if (response.data.isPartialImport) {
         yield put(
           showReconnectDatasourceModal({
@@ -266,10 +292,12 @@ function* forkTemplateToApplicationSaga(
       });
       yield put(getAllTemplates());
 
-      Toaster.show({
-        text: `Pages from '${action.payload.templateName}' template added successfully`,
-        variant: Variant.success,
-      });
+      toast.show(
+        `Pages from '${action.payload.templateName}' template added successfully`,
+        {
+          kind: "success",
+        },
+      );
     }
   } catch (error) {
     yield put({
@@ -303,33 +331,35 @@ function* getTemplateFiltersSaga() {
   }
 }
 
+// TODO: Refactor and handle this airgap check in a better way - posssibly in root sagas (sangeeth)
 export default function* watchActionSagas() {
-  yield all([
-    takeEvery(ReduxActionTypes.GET_ALL_TEMPLATES_INIT, getAllTemplatesSaga),
-    takeEvery(ReduxActionTypes.GET_TEMPLATE_INIT, getTemplateSaga),
-    takeEvery(
-      ReduxActionTypes.GET_SIMILAR_TEMPLATES_INIT,
-      getSimilarTemplatesSaga,
-    ),
-    takeEvery(
-      ReduxActionTypes.IMPORT_TEMPLATE_TO_WORKSPACE_INIT,
-      importTemplateToWorkspaceSaga,
-    ),
-    takeEvery(
-      ReduxActionTypes.GET_TEMPLATE_NOTIFICATION_SEEN,
-      getTemplateNotificationSeenSaga,
-    ),
-    takeEvery(
-      ReduxActionTypes.SET_TEMPLATE_NOTIFICATION_SEEN,
-      setTemplateNotificationSeenSaga,
-    ),
-    takeEvery(
-      ReduxActionTypes.IMPORT_TEMPLATE_TO_APPLICATION_INIT,
-      forkTemplateToApplicationSaga,
-    ),
-    takeEvery(
-      ReduxActionTypes.GET_TEMPLATE_FILTERS_INIT,
-      getTemplateFiltersSaga,
-    ),
-  ]);
+  if (!isAirgappedInstance)
+    yield all([
+      takeEvery(ReduxActionTypes.GET_ALL_TEMPLATES_INIT, getAllTemplatesSaga),
+      takeEvery(ReduxActionTypes.GET_TEMPLATE_INIT, getTemplateSaga),
+      takeEvery(
+        ReduxActionTypes.GET_SIMILAR_TEMPLATES_INIT,
+        getSimilarTemplatesSaga,
+      ),
+      takeEvery(
+        ReduxActionTypes.IMPORT_TEMPLATE_TO_WORKSPACE_INIT,
+        importTemplateToWorkspaceSaga,
+      ),
+      takeEvery(
+        ReduxActionTypes.GET_TEMPLATE_NOTIFICATION_SEEN,
+        getTemplateNotificationSeenSaga,
+      ),
+      takeEvery(
+        ReduxActionTypes.SET_TEMPLATE_NOTIFICATION_SEEN,
+        setTemplateNotificationSeenSaga,
+      ),
+      takeEvery(
+        ReduxActionTypes.IMPORT_TEMPLATE_TO_APPLICATION_INIT,
+        forkTemplateToApplicationSaga,
+      ),
+      takeEvery(
+        ReduxActionTypes.GET_TEMPLATE_FILTERS_INIT,
+        getTemplateFiltersSaga,
+      ),
+    ]);
 }

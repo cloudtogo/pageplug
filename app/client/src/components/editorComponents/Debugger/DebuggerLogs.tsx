@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
-import styled, { DefaultTheme, useTheme } from "styled-components";
+import type { DefaultTheme } from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { get, isUndefined } from "lodash";
 import { LOG_CATEGORY, Severity } from "entities/AppsmithConsole";
 import FilterHeader from "./FilterHeader";
@@ -14,14 +15,17 @@ import {
   LOGS_FILTER_OPTION_SYSTEM,
   NO_LOGS,
 } from "@appsmith/constants/messages";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUser } from "selectors/usersSelectors";
 import bootIntercom from "utils/bootIntercom";
+import type { Theme } from "constants/DefaultTheme";
 import { thinScrollbar } from "constants/DefaultTheme";
-import { IconName } from "@blueprintjs/core";
+import type { IconName } from "@blueprintjs/core";
 import AnalyticsUtil from "utils/AnalyticsUtil";
+import { getDebuggerSelectedFilter } from "selectors/debuggerSelectors";
+import { setDebuggerSelectedFilter } from "actions/debuggerActions";
 
-const LIST_HEADER_HEIGHT = "38px";
+export const LIST_HEADER_HEIGHT = "38px";
 
 const ContainerWrapper = styled.div`
   overflow: hidden;
@@ -29,10 +33,11 @@ const ContainerWrapper = styled.div`
 `;
 
 export const ListWrapper = styled.div`
+  overflow-wrap: anywhere;
   overflow: auto;
   height: calc(100% - ${LIST_HEADER_HEIGHT});
   ${thinScrollbar};
-  padding-bottom: 25px;
+  padding-bottom: 37px;
 `;
 
 type Props = {
@@ -64,12 +69,13 @@ const LOGS_FILTER_OPTIONS = (theme: DefaultTheme) => [
 ];
 
 function DebbuggerLogs(props: Props) {
-  const [filter, setFilter] = useState("");
   const [searchQuery, setSearchQuery] = useState(props.searchQuery);
+  const filter = useSelector(getDebuggerSelectedFilter);
+  const dispatch = useDispatch();
   const filteredLogs = useFilteredLogs(searchQuery, filter);
   const { next, paginatedData } = usePagination(filteredLogs);
   const listRef = useRef<HTMLDivElement>(null);
-  const theme = useTheme();
+  const theme = useTheme() as Theme;
   const selectedFilter = useMemo(
     () => LOGS_FILTER_OPTIONS(theme).find((option) => option.value === filter),
     [filter, theme],
@@ -108,7 +114,7 @@ function DebbuggerLogs(props: Props) {
 
   const handleFilterChange = (filter: string | undefined) => {
     if (!isUndefined(filter)) {
-      setFilter(filter);
+      dispatch(setDebuggerSelectedFilter(filter));
 
       AnalyticsUtil.logEvent("DEBUGGER_FILTER_CHANGED", {
         filter: filter.length > 0 ? filter : "ALL",

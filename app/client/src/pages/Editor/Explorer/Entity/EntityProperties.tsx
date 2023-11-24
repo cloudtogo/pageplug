@@ -1,28 +1,30 @@
 import React, { useCallback, useEffect } from "react";
 import EntityProperty from "./EntityProperty";
 import { isFunction } from "lodash";
+import type { EntityDefinitionsOptions } from "@appsmith/utils/autocomplete/EntityDefinitions";
 import {
   entityDefinitions,
-  EntityDefinitionsOptions,
-} from "utils/autocomplete/EntityDefinitions";
+  getPropsForJSActionEntity,
+} from "@appsmith/utils/autocomplete/EntityDefinitions";
 import { ENTITY_TYPE } from "entities/DataTree/dataTreeFactory";
 import { useDispatch, useSelector } from "react-redux";
 import PerformanceTracker, {
   PerformanceTransactionName,
 } from "utils/PerformanceTracker";
 import * as Sentry from "@sentry/react";
-import { AppState } from "@appsmith/reducers";
-import { getPropsForJSActionEntity } from "utils/autocomplete/EntityDefinitions";
+import type { AppState } from "@appsmith/reducers";
 import { isEmpty } from "lodash";
 import { getCurrentPageId } from "selectors/editorSelectors";
 import classNames from "classnames";
 import styled from "styled-components";
-import { ControlIcons } from "icons/ControlIcons";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
-import { JSCollectionData } from "reducers/entityReducers/jsActionsReducer";
+import type { JSCollectionData } from "reducers/entityReducers/jsActionsReducer";
 import AnalyticsUtil from "utils/AnalyticsUtil";
+import { EntityClassNames } from ".";
+import { Button } from "design-system";
+import WidgetFactory from "utils/WidgetFactory";
 
-const CloseIcon = ControlIcons.CLOSE_CONTROL;
+// const CloseIcon = ControlIcons.CLOSE_CONTROL;
 
 const BindingContainerMaxHeight = 300;
 const EntityHeight = 36;
@@ -32,7 +34,9 @@ const EntityInfoContainer = styled.div`
   min-width: 220px;
   max-width: 400px;
   max-height: ${BindingContainerMaxHeight}px;
-  overflow-y: hidden;
+  border-radius: var(--ads-v2-border-radius);
+  border: 1px solid var(--ads-v2-color-border-muted);
+  box-shadow: var(--ads-v2-shadow-popovers);
 `;
 
 const selectEntityInfo = (state: AppState) => state.ui.explorer.entityInfo;
@@ -40,9 +44,8 @@ const selectEntityInfo = (state: AppState) => state.ui.explorer.entityInfo;
 export function EntityProperties() {
   const ref = React.createRef<HTMLDivElement>();
   const dispatch = useDispatch();
-  const { entityId, entityName, entityType, show } = useSelector(
-    selectEntityInfo,
-  );
+  const { entityId, entityName, entityType, show } =
+    useSelector(selectEntityInfo);
   const pageId = useSelector(getCurrentPageId) || "";
   PerformanceTracker.startTracking(
     PerformanceTransactionName.ENTITY_EXPLORER_ENTITY,
@@ -53,7 +56,7 @@ export function EntityProperties() {
     );
   });
   const widgetEntity = useSelector((state: AppState) => {
-    const pageWidgets = state.ui.pageWidgets[pageId];
+    const pageWidgets = state.ui.pageWidgets[pageId]?.dsl;
     if (pageWidgets) {
       return pageWidgets[entityId];
     }
@@ -150,6 +153,7 @@ export function EntityProperties() {
       break;
     case ENTITY_TYPE.ACTION:
       config = (entityDefinitions.ACTION as any)(entity as any);
+
       if (config) {
         entityProperties = Object.keys(config)
           .filter((k) => k.indexOf("!") === -1)
@@ -190,15 +194,18 @@ export function EntityProperties() {
         | "SKELETON_WIDGET"
         | "TABS_MIGRATOR_WIDGET"
       > = entity.type;
-      config = entityDefinitions[type];
+      config = WidgetFactory.getAutocompleteDefinitions(type);
       if (!config) {
         return null;
       }
 
       if (isFunction(config)) config = config(entity);
+      const settersConfig =
+        WidgetFactory.getWidgetSetterConfig(type)?.__setters;
 
       entityProperties = Object.keys(config)
         .filter((k) => k.indexOf("!") === -1)
+        .filter((k) => settersConfig && !settersConfig[k])
         .map((widgetProperty) => {
           return {
             propertyName: widgetProperty,
@@ -212,20 +219,23 @@ export function EntityProperties() {
   return (
     <EntityInfoContainer
       className={classNames({
-        "absolute bp3-popover overflow-y-auto overflow-x-hidden bg-white pb-4 flex flex-col justify-center z-10 delay-150 transition-all": true,
+        "absolute bp3-popover overflow-y-auto overflow-x-hidden bg-white pb-2 flex flex-col justify-center z-10 delay-150 transition-all":
+          true,
         "-left-100": !show,
+        [EntityClassNames.CONTEXT_MENU_CONTENT]: true,
       })}
       ref={ref}
     >
       <div className="h-auto overflow-y-auto overflow-x-hidden relative">
-        <div className="sticky top-0 text-sm px-3 bg-white z-5 pt-4 pb-1 font-medium flex flex-row items-center justify-between w-[100%]">
+        <div className="sticky top-0 text-sm px-3 z-5 pt-2 pb-1 font-medium flex flex-row items-center justify-between w-[100%]">
           可绑定变量
-          <CloseIcon
+          <Button
             className="t--entity-property-close"
-            color="black"
-            height={18}
+            isIconButton
+            kind="tertiary"
             onClick={closeContainer}
-            width={18}
+            size="sm"
+            startIcon="close-control"
           />
         </div>
         {entityProperties.map((entityProperty: any) => (

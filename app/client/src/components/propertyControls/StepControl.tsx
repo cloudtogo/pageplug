@@ -1,8 +1,9 @@
 import React from "react";
-import BaseControl, { ControlProps } from "./BaseControl";
-import { StepComponent } from "design-system";
+import type { ControlProps } from "./BaseControl";
+import BaseControl from "./BaseControl";
+import { NumberInput } from "design-system";
+import type { DSEventDetail } from "utils/AppsmithUtils";
 import {
-  DSEventDetail,
   DSEventTypes,
   DS_EVENT,
   emitInteractionAnalyticsEvent,
@@ -12,7 +13,7 @@ const MIN = 0;
 const MAX = 100;
 
 class StepControl extends BaseControl<StepControlProps> {
-  componentRef = React.createRef<HTMLDivElement>();
+  componentRef = React.createRef<HTMLInputElement>();
 
   componentDidMount() {
     this.componentRef.current?.addEventListener(
@@ -47,37 +48,30 @@ class StepControl extends BaseControl<StepControlProps> {
         min: MIN,
         max: MAX,
         steps: 5,
-        displayFormat: (value: number): string => {
-          return `${value}%`;
-        },
+        suffix: "%",
       };
     }
     return {
       min: MIN,
       max: MAX,
       steps: 1,
-      displayFormat: (value: number): string => {
-        return `${value}`;
-      },
     };
   };
 
   render() {
-    const { displayFormat, max, min, steps } = this.getStepTypeControls();
+    const { max, min, steps, suffix } = this.getStepTypeControls();
     return (
-      <StepComponent
-        displayFormat={displayFormat}
+      <NumberInput
         max={max}
         min={min}
-        onChange={(value: number, isUpdatedViaKeyboard: boolean) => {
-          this.updateProperty(
-            this.props.propertyName,
-            value,
-            isUpdatedViaKeyboard,
-          );
+        // TODO: UI builders -> confirm isUpdatedViaKeyboard is needed going forward
+        onChange={(value: string | undefined, isUpdatedViaKeyboard = false) => {
+          const v = value ? parseFloat(value.replace(/[^0-9.-]+/g, "")) : 0;
+          this.updateProperty(this.props.propertyName, v, isUpdatedViaKeyboard);
         }}
         ref={this.componentRef}
-        steps={steps}
+        scale={steps}
+        suffix={suffix}
         value={this.props.propertyValue}
       />
     );

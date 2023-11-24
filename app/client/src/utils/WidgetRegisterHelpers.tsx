@@ -3,36 +3,50 @@ import React from "react";
 import * as Sentry from "@sentry/react";
 import store from "store";
 
-import BaseWidget from "widgets/BaseWidget";
+import type BaseWidget from "widgets/BaseWidget";
 import WidgetFactory, { NonSerialisableWidgetConfigs } from "./WidgetFactory";
 
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
-import withMeta from "widgets/MetaHOC";
-import { generateReactKey } from "./generators";
 import { memoize } from "lodash";
+import type { WidgetConfiguration } from "widgets/constants";
+import withMeta from "widgets/MetaHOC";
+import withWidgetProps from "widgets/withWidgetProps";
+import { generateReactKey } from "./generators";
+import type { RegisteredWidgetFeatures } from "./WidgetFeatures";
 import {
-  RegisteredWidgetFeatures,
   WidgetFeaturePropertyEnhancements,
   WidgetFeatureProps,
 } from "./WidgetFeatures";
-import { WidgetConfiguration } from "widgets/constants";
-import withWidgetProps from "widgets/withWidgetProps";
+import { withLazyRender } from "widgets/withLazyRender";
 
 const generateWidget = memoize(function getWidgetComponent(
   Widget: typeof BaseWidget,
   needsMeta: boolean,
+  eagerRender: boolean,
 ) {
   let widget = needsMeta ? withMeta(Widget) : Widget;
+
   //@ts-expect-error: type mismatch
   widget = withWidgetProps(widget);
+
+  //@ts-expect-error: type mismatch
+  widget = eagerRender ? widget : withLazyRender(widget);
+
   return Sentry.withProfiler(
     // @ts-expect-error: Types are not available
     widget,
   );
 });
 
-export const registerWidget = (Widget: any, config: WidgetConfiguration) => {
-  const ProfiledWidget = generateWidget(Widget, !!config.needsMeta);
+export const registerWidget = (
+  Widget: typeof BaseWidget,
+  config: WidgetConfiguration,
+) => {
+  const ProfiledWidget = generateWidget(
+    Widget,
+    !!config.needsMeta,
+    !!config.eagerRender,
+  );
 
   WidgetFactory.registerWidgetBuilder(
     config.type,
@@ -50,12 +64,17 @@ export const registerWidget = (Widget: any, config: WidgetConfiguration) => {
     config.features,
     config.properties.loadingProperties,
     config.properties.stylesheetConfig,
+    config.properties.autocompleteDefinitions,
+    config.autoLayout,
+    config.properties.setterConfig,
   );
+
   configureWidget(config);
 };
 
 export const configureWidget = (config: WidgetConfiguration) => {
   let features: Record<string, unknown> = {};
+
   if (config.features) {
     Object.keys(config.features).forEach((registeredFeature: string) => {
       features = Object.assign(
@@ -72,6 +91,7 @@ export const configureWidget = (config: WidgetConfiguration) => {
     ...config.defaults,
     ...features,
     searchTags: config.searchTags,
+    tags: config.tags,
     type: config.type,
     hideCard: !!config.hideCard || !config.iconSVG,
     isDeprecated: !!config.isDeprecated,
@@ -81,10 +101,12 @@ export const configureWidget = (config: WidgetConfiguration) => {
     iconSVG: config.iconSVG,
     isCanvas: config.isCanvas,
     canvasHeightOffset: config.canvasHeightOffset,
+    needsHeightForContent: config.needsHeightForContent,
     isMobile: config.isMobile,
   };
 
   const nonSerialisableWidgetConfigs: Record<string, unknown> = {};
+
   Object.values(NonSerialisableWidgetConfigs).forEach((entry) => {
     if (_config[entry] !== undefined) {
       nonSerialisableWidgetConfigs[entry] = _config[entry];
@@ -96,7 +118,12 @@ export const configureWidget = (config: WidgetConfiguration) => {
     config.type,
     nonSerialisableWidgetConfigs,
   );
+
   WidgetFactory.storeWidgetConfig(config.type, _config);
+
+  if (config.methods) {
+    WidgetFactory.setWidgetMethods(config.type, config.methods);
+  }
 
   store.dispatch({
     type: ReduxActionTypes.ADD_WIDGET_CONFIG,

@@ -1,56 +1,49 @@
-import React, { useEffect } from "react";
-import styled, { css } from "styled-components";
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
 import { connect, useSelector } from "react-redux";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import { getCurrentWorkspaceId } from "@appsmith/selectors/workspaceSelectors";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
-import { CopyToClipboard } from "design-system";
 import {
   isPermitted,
   PERMISSION_TYPE,
 } from "@appsmith/utils/permissionHelpers";
-import WorkspaceInviteUsersForm, {
-  InviteButtonWidth,
-} from "@appsmith/pages/workspace/WorkspaceInviteUsersForm";
+import WorkspaceInviteUsersForm from "@appsmith/pages/workspace/WorkspaceInviteUsersForm";
 import { getCurrentUser } from "selectors/usersSelectors";
-import { Text, TextType, Toggle } from "design-system";
 import { ANONYMOUS_USERNAME } from "constants/userConstants";
-import { Colors } from "constants/Colors";
 import { viewerURL } from "RouteBuilder";
 import { fetchWorkspace } from "@appsmith/actions/workspaceActions";
 import useWorkspace from "utils/hooks/useWorkspace";
+import {
+  createMessage,
+  INVITE_USERS_PLACEHOLDER,
+  IN_APP_EMBED_SETTING,
+  MAKE_APPLICATION_PUBLIC,
+  MAKE_APPLICATION_PUBLIC_TOOLTIP,
+} from "@appsmith/constants/messages";
+import { getAppsmithConfigs } from "@appsmith/configs";
+import { hasInviteUserToApplicationPermission } from "@appsmith/utils/permissionHelpers";
+import { Button, Icon, Switch, Tooltip } from "design-system";
+import AnalyticsUtil from "utils/AnalyticsUtil";
 
-const StyledCopyToClipBoard = styled(CopyToClipboard)`
-  margin-bottom: 24px;
+const { cloudHosting } = getAppsmithConfigs();
+
+const SwitchContainer = styled.div`
+  flex-basis: 220px;
 `;
 
-const CommonTitleTextStyle = css`
-  color: ${Colors.CHARCOAL};
-  font-weight: normal;
-`;
-
-const Title = styled.div`
-  padding: 0 0 8px 0;
-  & > span[type="h5"] {
-    ${CommonTitleTextStyle}
-  }
-`;
-
-const ShareWithPublicOption = styled.div`
+const BottomContainer = styled.div<{ canInviteToApplication?: boolean }>`
   display: flex;
-  margin-bottom: 8px;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  ${({ canInviteToApplication }) =>
+    canInviteToApplication
+      ? `border-top: 1px solid var(--ads-v2-color-border);`
+      : `none`};
 
-  & > span[type="h5"] {
-    ${CommonTitleTextStyle}
-    color: ${Colors.COD_GRAY};
+  .self-center {
+    line-height: normal;
   }
-`;
-
-const ShareToggle = styled.div`
-  flex-basis: 46px;
-  height: 23px;
 `;
 
 function AppInviteUsersForm(props: any) {
@@ -64,19 +57,43 @@ function AppInviteUsersForm(props: any) {
     isChangingViewAccess,
     isFetchingApplication,
   } = props;
-
+  const [isCopied, setIsCopied] = useState(false);
   const currentWorkspaceId = useSelector(getCurrentWorkspaceId);
   const currentWorkspace = useWorkspace(currentWorkspaceId);
   const userWorkspacePermissions = currentWorkspace.userPermissions ?? [];
   const userAppPermissions = currentApplicationDetails?.userPermissions ?? [];
-  const canInviteToWorkspace = isPermitted(
-    userWorkspacePermissions,
-    PERMISSION_TYPE.INVITE_USER_TO_WORKSPACE,
-  );
+  const canInviteToApplication = hasInviteUserToApplicationPermission([
+    ...userWorkspacePermissions,
+    ...userAppPermissions,
+  ]);
   const canShareWithPublic = isPermitted(
     userAppPermissions,
     PERMISSION_TYPE.MAKE_PUBLIC_APPLICATION,
   );
+  const copyToClipboard = (e: any) => {
+    e.preventDefault();
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(appViewEndPoint);
+    } else {
+      // text area method for http urls where navigator.clipboard doesn't work
+      const textArea = document.createElement("textarea");
+      textArea.value = appViewEndPoint;
+      // make the textarea out of viewport
+      textArea.style.position = "absolute";
+      textArea.style.opacity = "0";
+      document.body.appendChild(textArea);
+      textArea.select();
+      new Promise((res, rej) => {
+        // here the magic happens
+        document.execCommand("copy") ? res(appViewEndPoint) : rej();
+        textArea.remove();
+      });
+    }
+    setIsCopied(true);
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 3000);
+  };
 
   const appViewEndPoint = React.useMemo(() => {
     const url = viewerURL({
@@ -86,48 +103,73 @@ function AppInviteUsersForm(props: any) {
   }, [defaultPageId]);
 
   useEffect(() => {
-    if (currentUser?.name !== ANONYMOUS_USERNAME && canInviteToWorkspace) {
+    if (currentUser?.name !== ANONYMOUS_USERNAME && canInviteToApplication) {
       fetchCurrentWorkspace(props.workspaceId);
     }
   }, [props.workspaceId, fetchCurrentWorkspace, currentUser?.name]);
 
   return (
     <>
-      {canShareWithPublic && (
-        <ShareWithPublicOption>
-          <Text type={TextType.H5}>开启免登访问，允许游客访问应用</Text>
-          <ShareToggle className="t--share-public-toggle">
+      {canInviteToApplication && (
+        <WorkspaceInviteUsersForm
+          applicationId={applicationId}
+          isApplicationInvite
+          placeholder={createMessage(INVITE_USERS_PLACEHOLDER, cloudHosting)}
+          workspaceId={props.workspaceId}
+        />
+      )}
+      <BottomContainer
+        canInviteToApplication={canInviteToApplication}
+        className={`${canInviteToApplication ? "pt-3" : ""}`}
+      >
+        <Button
+          className="flex gap-1.5 cursor-pointer"
+          data-testid={"copy-application-url"}
+          endIcon="links-line"
+          kind="tertiary"
+          onClick={(e) => copyToClipboard(e)}
+          size="md"
+        >
+          {`${
+            isCopied
+              ? createMessage(IN_APP_EMBED_SETTING.copied)
+              : createMessage(IN_APP_EMBED_SETTING.copy)
+          } ${createMessage(IN_APP_EMBED_SETTING.applicationUrl)}`}
+        </Button>
+        {canShareWithPublic && (
+          <SwitchContainer className="t--share-public-toggle">
             {currentApplicationDetails && (
-              <Toggle
-                disabled={isChangingViewAccess || isFetchingApplication}
-                isLoading={isChangingViewAccess || isFetchingApplication}
-                onToggle={() => {
+              <Switch
+                isDisabled={isChangingViewAccess || isFetchingApplication}
+                isSelected={currentApplicationDetails.isPublic}
+                onChange={() => {
+                  AnalyticsUtil.logEvent("MAKE_APPLICATION_PUBLIC", {
+                    isPublic: !currentApplicationDetails.isPublic,
+                  });
                   changeAppViewAccess(
                     applicationId,
                     !currentApplicationDetails.isPublic,
                   );
                 }}
-                value={currentApplicationDetails.isPublic}
-              />
+              >
+                {createMessage(MAKE_APPLICATION_PUBLIC)}
+                <div onClick={(e: any) => e.preventDefault()}>
+                  <Tooltip
+                    content={createMessage(MAKE_APPLICATION_PUBLIC_TOOLTIP)}
+                    placement="top"
+                  >
+                    <Icon
+                      className="-ml-2 cursor-pointer"
+                      name="question-line"
+                      size="md"
+                    />
+                  </Tooltip>
+                </div>
+              </Switch>
             )}
-          </ShareToggle>
-        </ShareWithPublicOption>
-      )}
-      <Title>
-        <Text type={TextType.H5}>应用分享链接</Text>
-      </Title>
-      <StyledCopyToClipBoard
-        btnWidth={InviteButtonWidth}
-        className="t--deployed-url"
-        copyText={appViewEndPoint}
-      />
-
-      {canInviteToWorkspace && (
-        <WorkspaceInviteUsersForm
-          isApplicationInvite
-          workspaceId={props.workspaceId}
-        />
-      )}
+          </SwitchContainer>
+        )}
+      </BottomContainer>
     </>
   );
 }

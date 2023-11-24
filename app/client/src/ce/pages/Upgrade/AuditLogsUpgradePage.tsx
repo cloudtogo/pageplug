@@ -1,13 +1,12 @@
 import React from "react";
-import { Carousel, Header } from "./types";
+import type { Carousel, Header } from "./types";
 import UpgradePage from "./UpgradePage";
-import DebuggingImage from "assets/svg/upgrade/audit-logs/debugging.svg";
-import IncidentManagementImage from "assets/svg/upgrade/audit-logs/incident-management.svg";
-import SecurityAndComplianceImage from "assets/svg/upgrade/audit-logs/security-and-compliance.svg";
-import { createMessage } from "design-system/build/constants/messages";
+import DebuggingImage from "assets/images/upgrade/audit-logs/log-1.png";
+import IncidentManagementImage from "assets/images/upgrade/audit-logs/log-2.png";
+import SecurityAndComplianceImage from "assets/images/upgrade/audit-logs/log-3.png";
 import {
-  AUDIT_LOGS,
   AUDIT_LOGS_UPGRADE_PAGE_SUB_HEADING,
+  createMessage,
   DEBUGGING,
   DEBUGGING_DETAIL1,
   EXCLUSIVE_TO_BUSINESS,
@@ -17,19 +16,17 @@ import {
   SECURITY_AND_COMPLIANCE,
   SECURITY_AND_COMPLIANCE_DETAIL1,
   SECURITY_AND_COMPLIANCE_DETAIL2,
-  UPGRADE_TO_EE_FEATURE,
 } from "@appsmith/constants/messages";
 import useOnUpgrade from "utils/hooks/useOnUpgrade";
 
 export function AuditLogsUpgradePage() {
   const { onUpgrade } = useOnUpgrade({
-    logEventName: "ADMIN_SETTINGS_UPGRADE_HOOK",
+    logEventName: "AUDIT_LOGS_UPGRADE_ADMIN_SETTINGS",
     logEventData: { source: "AuditLogs" },
-    intercomMessage: createMessage(UPGRADE_TO_EE_FEATURE, "Audit Logs"),
   });
 
   const header: Header = {
-    heading: createMessage(INTRODUCING, createMessage(AUDIT_LOGS)),
+    heading: createMessage(INTRODUCING, "审计日志"),
     subHeadings: [createMessage(AUDIT_LOGS_UPGRADE_PAGE_SUB_HEADING)],
   };
   const carousel: Carousel = {
@@ -55,13 +52,17 @@ export function AuditLogsUpgradePage() {
     ],
     targets: [
       <img
-        alt="Security & Compliance"
+        alt={createMessage(SECURITY_AND_COMPLIANCE)}
         key="security-and-compliance"
         src={SecurityAndComplianceImage}
       />,
-      <img alt="Debugging" key="debugging" src={DebuggingImage} />,
       <img
-        alt="Incident management"
+        alt={createMessage(DEBUGGING)}
+        key="debugging"
+        src={DebuggingImage}
+      />,
+      <img
+        alt={createMessage(INCIDENT_MANAGEMENT)}
         key="incident-management"
         src={IncidentManagementImage}
       />,
@@ -73,7 +74,7 @@ export function AuditLogsUpgradePage() {
     onClick: () => {
       onUpgrade();
     },
-    message: createMessage(EXCLUSIVE_TO_BUSINESS, ["audit logs"]),
+    message: createMessage(EXCLUSIVE_TO_BUSINESS, ["审计日志"]),
   };
   const props = { header, carousel, footer };
   return <UpgradePage {...props} />;

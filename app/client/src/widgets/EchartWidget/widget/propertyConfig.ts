@@ -1,4 +1,4 @@
-import { EchartWidgetProps } from "widgets/EchartWidget/widget";
+import type { EchartWidgetProps } from "widgets/EchartWidget/widget";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 
@@ -57,21 +57,21 @@ export const contentConfig = [
         controlType: "INPUT_TEXT",
         isBindProperty: true,
         isTriggerProperty: false,
-        // validation: {
-        //   type: ValidationTypes.OBJECT,
-        //   params: {
-        //     allowedKeys: [
-        //       {
-        //         type: ValidationTypes.ARRAY,
-        //         name: "series",
-        //         params: {
-        //           default: [] || {},
-        //           required: true,
-        //         },
-        //       },
-        //     ],
-        //   },
-        // },
+        validation: {
+          type: ValidationTypes.OBJECT,
+          // params: {
+          //   allowedKeys: [
+          //     {
+          //       type: ValidationTypes.ARRAY,
+          //       name: "series",
+          //       params: {
+          //         default: [] || {},
+          //         required: true,
+          //       },
+          //     },
+          //   ],
+          // },
+        },
         hidden: (props: EchartWidgetProps) =>
           props.chartType !== "CUSTOM_CHART",
         dependencies: ["chartType"],
@@ -185,7 +185,7 @@ export const contentConfig = [
     sectionName: "坐标轴配置",
     children: [
       {
-        helpText: "设置x轴标签",
+        helpText: "设置x轴标签(默认图表)",
         propertyName: "xAxisName",
         placeholderText: "日期",
         label: "x轴标签",
@@ -197,7 +197,7 @@ export const contentConfig = [
         dependencies: ["chartType"],
       },
       {
-        helpText: "设置y轴标签",
+        helpText: "设置y轴标签(默认图表)",
         propertyName: "yAxisName",
         placeholderText: "收入",
         label: "y轴标签",

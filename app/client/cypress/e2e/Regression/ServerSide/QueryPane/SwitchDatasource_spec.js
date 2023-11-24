@@ -1,0 +1,45 @@
+const datasource = require("../../../../locators/DatasourcesEditor.json");
+import { dataSources, agHelper } from "../../../../support/Objects/ObjectsCore";
+describe("Switch datasource", function () {
+  let guid, dsName_1, dsName_2, MongoDB;
+  beforeEach(() => {
+    cy.startRoutesForDatasource();
+  });
+
+  it("1. Create postgres datasource", function () {
+    dataSources.CreateDataSource("Postgres");
+    cy.get("@dsName").then(($dsName) => {
+      dsName_1 = $dsName;
+    });
+  });
+  it("2. Create another postgres datasource", function () {
+    dataSources.CreateDataSource("Postgres");
+    cy.get("@dsName").then(($dsName) => {
+      dsName_2 = $dsName;
+    });
+  });
+
+  it("3. Create mongo datasource", function () {
+    dataSources.CreateDataSource("Mongo");
+    cy.get("@dsName").then(($dsName) => {
+      MongoDB = $dsName;
+    });
+  });
+
+  it("4. By switching datasources execute a query with both the datasources", function () {
+    dataSources.CreateQueryFromActiveTab(dsName_1);
+    cy.get(".rc-select-show-arrow").click();
+    cy.contains(".rc-select-item-option-content", dsName_2).click().wait(1000);
+    cy.runQuery();
+    // Confirm mongo datasource is not present in the switch datasources dropdown
+    cy.get(".rc-select-show-arrow").click();
+    cy.get(".rc-select-item-option-content").should("not.have", MongoDB);
+  });
+
+  after(() => {
+    dataSources.DeleteQuery("Query1");
+    cy.deleteDatasource(MongoDB);
+    cy.deleteDatasource(dsName_1);
+    cy.deleteDatasource(dsName_2);
+  });
+});

@@ -1,17 +1,22 @@
 import React from "react";
 import { Alignment } from "@blueprintjs/core";
-import { isString, xor } from "lodash";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { DerivedPropertiesMap } from "utils/WidgetFactory";
-import { ValidationTypes } from "constants/WidgetValidation";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
+import { isString, xor } from "lodash";
+import type { DerivedPropertiesMap } from "utils/WidgetFactory";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
+
 import { LabelPosition } from "components/constants";
-import { TextSize } from "constants/WidgetConstants";
+import type { TextSize } from "constants/WidgetConstants";
+import type { SetterConfig, Stylesheet } from "entities/AppTheming";
 import { GRID_DENSITY_MIGRATION_V1 } from "widgets/constants";
-import { Stylesheet } from "entities/AppTheming";
-import SwitchGroupComponent, { OptionProps } from "../component";
 import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
+import type { OptionProps } from "../component";
+import SwitchGroupComponent from "../component";
+import type { AutocompletionDefinitions } from "widgets/constants";
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
 
 class SwitchGroupWidget extends BaseWidget<
   SwitchGroupWidgetProps,
@@ -101,7 +106,8 @@ class SwitchGroupWidget extends BaseWidget<
             propertyName: "labelPosition",
             label: "位置",
             controlType: "ICON_TABS",
-            fullWidth: true,
+            fullWidth: false,
+            hidden: isAutoLayout,
             options: [
               { label: "自动", value: LabelPosition.Auto },
               { label: "左", value: LabelPosition.Left },
@@ -117,13 +123,14 @@ class SwitchGroupWidget extends BaseWidget<
             propertyName: "labelAlignment",
             label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
+            fullWidth: false,
             options: [
               {
-                icon: "LEFT_ALIGN",
+                startIcon: "align-left",
                 value: Alignment.LEFT,
               },
               {
-                icon: "RIGHT_ALIGN",
+                startIcon: "align-right",
                 value: Alignment.RIGHT,
               },
             ],
@@ -243,6 +250,25 @@ class SwitchGroupWidget extends BaseWidget<
     ];
   }
 
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {
+        setVisibility: {
+          path: "isVisible",
+          type: "boolean",
+        },
+        setDisable: {
+          path: "isDisabled",
+          type: "boolean",
+        },
+        setRequired: {
+          path: "isRequired",
+          type: "boolean",
+        },
+      },
+    };
+  }
+
   static getPropertyPaneStyleConfig() {
     return [
       {
@@ -305,14 +331,14 @@ class SwitchGroupWidget extends BaseWidget<
             propertyName: "labelStyle",
             label: "强调",
             helpText: "设置标签字体是否加粗或斜体",
-            controlType: "BUTTON_TABS",
+            controlType: "BUTTON_GROUP",
             options: [
               {
-                icon: "BOLD_FONT",
+                icon: "text-bold",
                 value: "BOLD",
               },
               {
-                icon: "ITALICS_FONT",
+                icon: "text-italic",
                 value: "ITALIC",
               },
             ],
@@ -331,6 +357,7 @@ class SwitchGroupWidget extends BaseWidget<
             helpText: "设置组件对齐方式",
             label: "对齐",
             controlType: "ICON_TABS",
+            defaultValue: Alignment.LEFT,
             fullWidth: true,
             isBindProperty: true,
             isTriggerProperty: false,
@@ -368,6 +395,15 @@ class SwitchGroupWidget extends BaseWidget<
   static getStylesheetConfig(): Stylesheet {
     return {
       accentColor: "{{appsmith.theme.colors.primaryColor}}",
+    };
+  }
+
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "Switch group widget allows users to create many switch components which can easily by used in a form",
+      "!url": "https://docs.appsmith.com/widget-reference/switch-group",
+      selectedValues: "[string]",
     };
   }
 

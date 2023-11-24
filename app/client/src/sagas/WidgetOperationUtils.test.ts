@@ -1,10 +1,10 @@
-import { OccupiedSpace } from "constants/CanvasEditorConstants";
+import type { OccupiedSpace } from "constants/CanvasEditorConstants";
 import { klona } from "klona";
 import { get } from "lodash";
-import { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
-import { CanvasWidgetsStructureReduxState } from "reducers/entityReducers/canvasWidgetsStructureReducer";
-import { WidgetProps } from "widgets/BaseWidget";
-import { FlattenedWidgetProps } from "widgets/constants";
+import type { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
+import type { WidgetProps } from "widgets/BaseWidget";
+import type { FlattenedWidgetProps } from "widgets/constants";
+import type { CopiedWidgetGroup } from "./WidgetOperationUtils";
 import {
   handleIfParentIsListWidgetWhilePasting,
   handleSpecificCasesWhilePasting,
@@ -18,12 +18,10 @@ import {
   changeIdsOfPastePositions,
   getVerticallyAdjustedPositions,
   getNewPositionsForCopiedWidgets,
-  CopiedWidgetGroup,
   getPastePositionMapFromMousePointer,
   getReflowedPositions,
   getWidgetsFromIds,
   getValueFromTree,
-  resizeCanvasToLowestWidget,
   resizePublishedMainCanvasToLowestWidget,
 } from "./WidgetOperationUtils";
 
@@ -688,11 +686,11 @@ describe("WidgetOperationSaga", () => {
         },
       },
     };
-    const result = purgeOrphanedDynamicPaths((input as any) as WidgetProps);
+    const result = purgeOrphanedDynamicPaths(input as any as WidgetProps);
     expect(result).toStrictEqual(expected);
   });
   it("should return boundaries of selected Widgets", () => {
-    const selectedWidgets = ([
+    const selectedWidgets = [
       {
         id: "1234",
         topRow: 10,
@@ -707,7 +705,7 @@ describe("WidgetOperationSaga", () => {
         rightColumn: 60,
         bottomRow: 70,
       },
-    ] as any) as WidgetProps[];
+    ] as any as WidgetProps[];
     expect(getBoundariesFromSelectedWidgets(selectedWidgets)).toEqual({
       totalWidth: 40,
       totalHeight: 60,
@@ -718,11 +716,11 @@ describe("WidgetOperationSaga", () => {
   });
   describe("test getSnappedGrid", () => {
     it("should return snapGrids for a ContainerWidget", () => {
-      const canvasWidget = ({
+      const canvasWidget = {
         widgetId: "1234",
         type: "CONTAINER_WIDGET",
         noPad: true,
-      } as any) as WidgetProps;
+      } as any as WidgetProps;
       expect(getSnappedGrid(canvasWidget, 250)).toEqual({
         padding: 4,
         snapGrid: {
@@ -732,11 +730,11 @@ describe("WidgetOperationSaga", () => {
       });
     });
     it("should return snapGrids for non ContainerWidget", () => {
-      const canvasWidget = ({
+      const canvasWidget = {
         widgetId: "1234",
         type: "LIST_WIDGET",
         noPad: false,
-      } as any) as WidgetProps;
+      } as any as WidgetProps;
       expect(getSnappedGrid(canvasWidget, 250)).toEqual({
         padding: 10,
         snapGrid: {
@@ -805,7 +803,7 @@ describe("WidgetOperationSaga", () => {
         bottom: 100,
       },
     ] as OccupiedSpace[];
-    const copiedWidgets = ([
+    const copiedWidgets = [
       {
         id: "1234",
         top: 10,
@@ -820,7 +818,7 @@ describe("WidgetOperationSaga", () => {
         right: 60,
         bottom: 70,
       },
-    ] as any) as OccupiedSpace[];
+    ] as any as OccupiedSpace[];
     expect(
       getVerticallyAdjustedPositions(copiedWidgets, selectedWidgets, 30),
     ).toEqual({
@@ -841,7 +839,7 @@ describe("WidgetOperationSaga", () => {
     });
   });
   it("should test getNewPositionsForCopiedWidgets", () => {
-    const copiedGroups = ([
+    const copiedGroups = [
       {
         widgetId: "1234",
         list: [
@@ -864,7 +862,7 @@ describe("WidgetOperationSaga", () => {
           },
         ],
       },
-    ] as any) as CopiedWidgetGroup[];
+    ] as any as CopiedWidgetGroup[];
     expect(
       getNewPositionsForCopiedWidgets(copiedGroups, 10, 40, 20, 10),
     ).toEqual([
@@ -885,7 +883,7 @@ describe("WidgetOperationSaga", () => {
     ]);
   });
   it("should test getPastePositionMapFromMousePointer", () => {
-    const copiedGroups = ([
+    const copiedGroups = [
       {
         widgetId: "1234",
         list: [
@@ -908,7 +906,7 @@ describe("WidgetOperationSaga", () => {
           },
         ],
       },
-    ] as any) as CopiedWidgetGroup[];
+    ] as any as CopiedWidgetGroup[];
     expect(
       getPastePositionMapFromMousePointer(copiedGroups, 10, 40, 20, 10),
     ).toEqual({
@@ -1799,7 +1797,7 @@ describe("getValueFromTree - ", () => {
   });
 
   describe("test resizeCanvasToLowestWidget and resizePublishedMainCanvasToLowestWidget", () => {
-    const widgets = ({
+    const widgets = {
       0: { bottomRow: 100, children: ["1", "2"], type: "CANVAS_WIDGET" },
       1: {
         bottomRow: 10,
@@ -1810,39 +1808,7 @@ describe("getValueFromTree - ", () => {
       2: { bottomRow: 35, children: [] },
       3: { bottomRow: 15, children: [] },
       4: { bottomRow: 20, children: [] },
-    } as unknown) as CanvasWidgetsReduxState;
-
-    it("should modify main container's bottomRow to minHeight of canvas when it is greater than bottomRow of lowest widget", () => {
-      const currentWidgets = klona(widgets);
-      const bottomRow = resizeCanvasToLowestWidget(
-        currentWidgets,
-        "0",
-        currentWidgets["0"].bottomRow,
-        450,
-      );
-      expect(bottomRow).toEqual(450);
-    });
-
-    it("should modify main container's bottomRow to lowest bottomRow of canvas when minHeight is lesser than bottomRow of lowest widget", () => {
-      const currentWidgets = klona(widgets);
-      const bottomRow = resizeCanvasToLowestWidget(
-        currentWidgets,
-        "0",
-        currentWidgets["0"].bottomRow,
-        140,
-      );
-      expect(bottomRow).toEqual(430);
-    });
-
-    it("should modify main container's bottomRow to lowest bottomRow of canvas when minHeight is lesser than bottomRow of lowest widget", () => {
-      const currentWidgets = klona(widgets);
-      const bottomRow = resizeCanvasToLowestWidget(
-        currentWidgets,
-        "1",
-        currentWidgets["1"].bottomRow,
-      );
-      expect(bottomRow).toEqual(260);
-    });
+    } as unknown as CanvasWidgetsReduxState;
 
     it("should trim canvas close to the lowest bottomRow of it's children widget", () => {
       const currentWidgets = klona(widgets);

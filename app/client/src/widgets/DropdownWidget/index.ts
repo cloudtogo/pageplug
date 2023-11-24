@@ -2,6 +2,7 @@ import { Alignment } from "@blueprintjs/core";
 import { LabelPosition } from "components/constants";
 import IconSVG from "./icon.svg";
 import Widget from "./widget";
+import type { SnipingModeProperty, PropertyUpdates } from "widgets/constants";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
@@ -33,7 +34,7 @@ export const CONFIG = {
     isFilterable: false,
     isRequired: false,
     isDisabled: false,
-    animateLoading: true,
+    animateLoading: false,
   },
   properties: {
     derived: Widget.getDerivedPropertiesMap(),
@@ -41,6 +42,20 @@ export const CONFIG = {
     meta: Widget.getMetaPropertiesMap(),
     config: Widget.getPropertyPaneConfig(),
     stylesheetConfig: Widget.getStylesheetConfig(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
+  },
+  methods: {
+    getSnipingModeUpdates: (
+      propValueMap: SnipingModeProperty,
+    ): PropertyUpdates[] => {
+      return [
+        {
+          propertyPath: "options",
+          propertyValue: propValueMap.data,
+          isDynamicPropertyPath: true,
+        },
+      ];
+    },
   },
 };
 

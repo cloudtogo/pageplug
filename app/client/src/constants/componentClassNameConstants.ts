@@ -1,8 +1,8 @@
-export function getStickyCanvasName(widgetId: string) {
+export function getSlidingArenaName(widgetId: string) {
   return `div-selection-${widgetId}`;
 }
 
-export function getSlidingCanvasName(widgetId: string) {
+export function getStickyCanvasName(widgetId: string) {
   return `canvas-selection-${widgetId}`;
 }
 
@@ -11,3 +11,5 @@ export function getBaseWidgetClassName(id?: string) {
 }
 
 export const POSITIONED_WIDGET = "positioned-widget";
+
+export const WIDGET_COMPONENT_BOUNDARY_CLASS = "widget-component-boundary";

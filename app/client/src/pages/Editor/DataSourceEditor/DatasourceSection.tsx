@@ -1,13 +1,24 @@
-import { Datasource } from "entities/Datasource";
 import React from "react";
-import { map, get, isEmpty, isArray } from "lodash";
-import { Colors } from "constants/Colors";
+import type { Datasource } from "entities/Datasource";
+import { map, get, isArray } from "lodash";
 import styled from "styled-components";
-import { isHidden } from "components/formControls/utils";
+import { isHidden, isKVArray } from "components/formControls/utils";
 import log from "loglevel";
+import { ComparisonOperationsEnum } from "components/formControls/BaseControl";
+import type { AppState } from "@appsmith/reducers";
+import { connect } from "react-redux";
+import { datasourceEnvEnabled } from "@appsmith/selectors/featureFlagsSelectors";
+import {
+  DB_NOT_SUPPORTED,
+  getCurrentEnvironment,
+} from "@appsmith/utils/Environments";
+import { getPlugin } from "selectors/entitiesSelector";
+import type { PluginType } from "entities/Action";
+import { getDefaultEnvId } from "@appsmith/api/ApiUtils";
+import { EnvConfigSection } from "@appsmith/components/EnvConfigSection";
 
 const Key = styled.div`
-  color: ${Colors.DOVE_GRAY};
+  color: var(--ads-v2-color-fg-muted);
   font-size: 14px;
   display: inline-block;
 `;
@@ -15,54 +26,125 @@ const Key = styled.div`
 const Value = styled.div`
   font-size: 14px;
   font-weight: 500;
+  color: var(--ads-v2-color-fg);
   display: inline-block;
   margin-left: 5px;
-  word-break: break-all;
 `;
 
 const ValueWrapper = styled.div`
   display: inline-block;
-  margin-left: 10px;
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
 `;
 
 const FieldWrapper = styled.div`
-  &:not(first-child) {
+  &:first-child {
     margin-top: 9px;
   }
 `;
 
-export const renderDatasourceSection = (
-  config: any,
+type RenderDatasourceSectionProps = {
+  config: any;
+  datasource: Datasource;
+  viewMode?: boolean;
+  showOnlyCurrentEnv?: boolean;
+  currentEnv: string;
+  isEnvEnabled: boolean;
+};
+const renderKVArray = (
+  children: Array<any>,
+  currentEnvironment: string,
   datasource: Datasource,
-): any => {
+) => {
+  try {
+    // setup config for each child
+    const firstConfigProperty =
+      `datasourceStorages.${currentEnvironment}.` +
+        children[0].configProperty || children[0].configProperty;
+    const configPropertyInfo = firstConfigProperty.split("[*].");
+    const values = get(datasource, configPropertyInfo[0], null);
+    const renderValues: Array<
+      Array<{
+        key: string;
+        value: any;
+        label: string;
+      }>
+    > = children.reduce(
+      (
+        acc,
+        { configProperty, label }: { configProperty: string; label: string },
+      ) => {
+        const configPropertyKey = configProperty.split("[*].")[1];
+        values.forEach((value: any, index: number) => {
+          if (!acc[index]) {
+            acc[index] = [];
+          }
+
+          acc[index].push({
+            key: configPropertyKey,
+            label,
+            value: value[configPropertyKey],
+          });
+        });
+        return acc;
+      },
+      [],
+    );
+    return renderValues.map((renderValue, index: number) => (
+      <FieldWrapper key={`${firstConfigProperty}.${index}`}>
+        {renderValue.map(({ key, label, value }) => (
+          <ValueWrapper key={`${firstConfigProperty}.${key}.${index}`}>
+            <Key>{label}: </Key>
+            <Value>{value}</Value>
+          </ValueWrapper>
+        ))}
+      </FieldWrapper>
+    ));
+  } catch (e) {
+    return;
+  }
+};
+
+export function renderDatasourceSection(
+  section: any,
+  currentEnvironment: string,
+  datasource: Datasource,
+  viewMode: boolean | undefined,
+) {
   return (
     <React.Fragment key={datasource.id}>
-      {map(config.children, (section) => {
-        if (isHidden(datasource, section.hidden)) return null;
+      {map(section.children, (section) => {
+        if (
+          isHidden(
+            datasource.datasourceStorages[currentEnvironment],
+            section.hidden,
+            undefined,
+            viewMode,
+          )
+        )
+          return null;
         if ("children" in section) {
-          return renderDatasourceSection(section, datasource);
+          if (isKVArray(section.children)) {
+            return renderKVArray(
+              section.children,
+              currentEnvironment,
+              datasource,
+            );
+          }
+
+          return renderDatasourceSection(
+            section,
+            currentEnvironment,
+            datasource,
+            viewMode,
+          );
         } else {
           try {
             const { configProperty, controlType, label } = section;
+            const customConfigProperty =
+              `datasourceStorages.${currentEnvironment}.` + configProperty;
             const reactKey = datasource.id + "_" + label;
-            let value = get(datasource, configProperty);
-
-            if (!value || (isArray(value) && value.length < 1)) {
-              return;
-            }
-
-            if (controlType === "KEYVALUE_ARRAY") {
-              const configPropertyInfo = configProperty.split("[*].");
-              const values = get(datasource, configPropertyInfo[0], null);
-
-              if (values && !isEmpty(values)) {
-                const keyValuePair = values[0];
-                value = keyValuePair[configPropertyInfo[1]];
-              } else {
-                value = "";
-              }
-            }
-
             if (controlType === "FIXED_KEY_INPUT") {
               return (
                 <FieldWrapper key={reactKey}>
@@ -72,28 +154,7 @@ export const renderDatasourceSection = (
               );
             }
 
-            if (controlType === "KEY_VAL_INPUT") {
-              return (
-                <FieldWrapper key={reactKey}>
-                  <Key>{label}</Key>
-                  {value &&
-                    value.map((val: { key: string; value: string }) => {
-                      return (
-                        <div key={val.key}>
-                          <div style={{ display: "inline-block" }}>
-                            <Key>Key: </Key>
-                            <Value>{val.key}</Value>
-                          </div>
-                          <ValueWrapper>
-                            <Key>Value: </Key>
-                            <Value>{val.value}</Value>
-                          </ValueWrapper>
-                        </div>
-                      );
-                    })}
-                </FieldWrapper>
-              );
-            }
+            let value = get(datasource, customConfigProperty);
 
             if (controlType === "DROP_DOWN") {
               if (Array.isArray(section.options)) {
@@ -104,6 +165,45 @@ export const renderDatasourceSection = (
                   value = option.label;
                 }
               }
+            }
+
+            if (
+              !value &&
+              !!viewMode &&
+              !!section.hidden &&
+              "comparison" in section.hidden &&
+              section.hidden.comparison === ComparisonOperationsEnum.VIEW_MODE
+            ) {
+              value = section.initialValue;
+            }
+
+            if (!value || (isArray(value) && value.length < 1)) {
+              return;
+            }
+
+            if (isArray(value)) {
+              return (
+                <FieldWrapper>
+                  <Key>{label}: </Key>
+                  {value.map(
+                    (
+                      { key, value }: { key: string; value: any },
+                      index: number,
+                    ) => (
+                      <div key={`${reactKey}.${index}`}>
+                        <div style={{ display: "inline-block" }}>
+                          <Key>Key: </Key>
+                          <Value>{key}</Value>
+                        </div>
+                        <ValueWrapper>
+                          <Key>Value: </Key>
+                          <Value>{value}</Value>
+                        </ValueWrapper>
+                      </div>
+                    ),
+                  )}
+                </FieldWrapper>
+              );
             }
 
             return (
@@ -118,4 +218,51 @@ export const renderDatasourceSection = (
       })}
     </React.Fragment>
   );
+}
+
+class RenderDatasourceInformation extends React.Component<RenderDatasourceSectionProps> {
+  render() {
+    const {
+      config,
+      currentEnv,
+      datasource,
+      isEnvEnabled,
+      showOnlyCurrentEnv,
+      viewMode,
+    } = this.props;
+    const { datasourceStorages } = datasource;
+
+    if (showOnlyCurrentEnv || !isEnvEnabled) {
+      // in this case, we will show the env that is present in datasourceStorages
+
+      if (!datasourceStorages) {
+        return null;
+      }
+      return renderDatasourceSection(config, currentEnv, datasource, viewMode);
+    }
+
+    return (
+      <EnvConfigSection
+        config={config}
+        currentEnv={currentEnv}
+        datasource={datasource}
+        viewMode={viewMode}
+      />
+    );
+  }
+}
+const mapStateToProps = (state: AppState, ownProps: any) => {
+  const { datasource } = ownProps;
+  const pluginId = datasource.pluginId;
+  const plugin = getPlugin(state, pluginId);
+  const pluginType = plugin?.type;
+  const isEnvEnabled = DB_NOT_SUPPORTED.includes(pluginType as PluginType)
+    ? false
+    : datasourceEnvEnabled(state);
+  return {
+    currentEnv: isEnvEnabled ? getCurrentEnvironment() : getDefaultEnvId(),
+    isEnvEnabled,
+  };
 };
+
+export default connect(mapStateToProps)(RenderDatasourceInformation);

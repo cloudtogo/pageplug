@@ -1,8 +1,7 @@
 import React from "react";
 import { Checkbox, Classes } from "@blueprintjs/core";
-import styled, { css, keyframes } from "styled-components";
+import styled, { css, keyframes, createGlobalStyle } from "styled-components";
 import { Colors } from "constants/Colors";
-import { createGlobalStyle } from "constants/DefaultTheme";
 import {
   LabelPosition,
   LABEL_MARGIN_OLD_SELECT,
@@ -12,7 +11,7 @@ import {
   labelLayoutStyles,
   LABEL_CONTAINER_CLASS,
   multiSelectInputContainerStyles,
-} from "design-system";
+} from "@design-system/widgets-old";
 import { lightenColor } from "widgets/WidgetUtils";
 import CheckIcon from "assets/icons/widget/checkbox/check-icon.svg";
 
@@ -395,7 +394,7 @@ export const MultiSelectContainer = styled.div<{
 
   /**
     When the label is on the left it is not center aligned
-    here set height to auto and not 100% because the input 
+    here set height to auto and not 100% because the input
     has fixed height and stretch the container.
   */
   ${({ labelPosition }) => {
@@ -509,6 +508,7 @@ export const MultiSelectContainer = styled.div<{
       width: 100%;
       transition: none;
       background-color: white;
+      border: 1px solid var(--wds-color-border);
 
       .rc-select-selection-item {
         background: none;
@@ -628,10 +628,10 @@ export const MultiSelectContainer = styled.div<{
             : "var(--wds-color-border-danger)"};
       &:hover {
         border: 1px solid
-        ${(props) =>
-          props.isValid
-            ? "var(--wds-color-border-hover)"
-            : "var(--wds-color-border-danger-hover)"};
+          ${(props) =>
+            props.isValid
+              ? "var(--wds-color-border-hover)"
+              : "var(--wds-color-border-danger-hover)"};
       }
     }
   }

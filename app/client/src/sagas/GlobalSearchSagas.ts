@@ -1,7 +1,5 @@
-import {
-  ReduxActionTypes,
-  ReduxAction,
-} from "@appsmith/constants/ReduxActionConstants";
+import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import {
   all,
   call,
@@ -16,21 +14,20 @@ import {
   restoreRecentEntitiesSuccess,
   setRecentEntities,
 } from "actions/globalSearchActions";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import {
   getCurrentApplicationId,
   getIsEditorInitialized,
 } from "selectors/editorSelectors";
-import { RecentEntity } from "components/editorComponents/GlobalSearch/utils";
+import type { RecentEntity } from "components/editorComponents/GlobalSearch/utils";
 import log from "loglevel";
 import { getCurrentGitBranch } from "selectors/gitSyncSelectors";
+import type { FocusEntity, FocusEntityInfo } from "navigation/FocusEntity";
 
 const getRecentEntitiesKey = (applicationId: string, branch?: string) =>
   branch ? `${applicationId}-${branch}` : applicationId;
 
-export function* updateRecentEntitySaga(
-  actionPayload: ReduxAction<RecentEntity>,
-) {
+export function* updateRecentEntitySaga(entityInfo: FocusEntityInfo) {
   try {
     const branch: string | undefined = yield select(getCurrentGitBranch);
 
@@ -55,7 +52,7 @@ export function* updateRecentEntitySaga(
 
     yield all(waitForEffects);
 
-    const { payload: entity } = actionPayload;
+    const { entity, id, pageId } = entityInfo;
     let recentEntities: RecentEntity[] = yield select(
       (state: AppState) => state.ui.globalSearch.recentEntities,
     );
@@ -63,10 +60,10 @@ export function* updateRecentEntitySaga(
     recentEntities = recentEntities.slice();
 
     recentEntities = recentEntities.filter(
-      (recentEntity: { type: string; id: string }) =>
-        recentEntity.id !== entity.id,
+      (recentEntity: { type: FocusEntity; id: string }) =>
+        recentEntity.id !== id,
     );
-    recentEntities.unshift(entity);
+    recentEntities.unshift(<RecentEntity>{ type: entity, id, pageId });
     recentEntities = recentEntities.slice(0, 6);
 
     yield put(setRecentEntities(recentEntities));
@@ -98,7 +95,6 @@ export function* restoreRecentEntities(
 
 export default function* globalSearchSagas() {
   yield all([
-    takeLatest(ReduxActionTypes.UPDATE_RECENT_ENTITY, updateRecentEntitySaga),
     takeLatest(
       ReduxActionTypes.RESTORE_RECENT_ENTITIES_REQUEST,
       restoreRecentEntities,

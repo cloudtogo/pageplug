@@ -1,22 +1,20 @@
 import React from "react";
-import DynamicTextField from "components/editorComponents/form/fields/DynamicTextField";
+import styled from "styled-components";
 
-import styled from "constants/DefaultTheme";
+import DynamicTextField from "components/editorComponents/form/fields/DynamicTextField";
 import FormRow from "components/editorComponents/FormRow";
 import { PaginationType } from "entities/Action";
 import RadioFieldGroup from "components/editorComponents/form/fields/RadioGroupField";
-import { Button, Category, Classes, Size, Text, TextType } from "design-system";
-import {
-  CodeEditorBorder,
-  EditorTheme,
-} from "components/editorComponents/CodeEditor/EditorConfig";
-import { GifPlayer } from "design-system";
-import lightmodeGif from "assets/icons/gifs/config_pagination_lightmode.gif";
-import darkmodeGif from "assets/icons/gifs/config_pagination_darkmode.gif";
-import lightmodeThumbnail from "assets/icons/gifs/lightmode_thumbnail.png";
-import darkmodeThumbnail from "assets/icons/gifs/darkmode_thumbnail.png";
+import { Classes, Text, TextType } from "design-system-old";
+import { Button } from "design-system";
+import type { EditorTheme } from "components/editorComponents/CodeEditor/EditorConfig";
+import { CodeEditorBorder } from "components/editorComponents/CodeEditor/EditorConfig";
+import { GifPlayer } from "design-system-old";
+import thumbnail from "assets/icons/gifs/thumbnail.png";
+import configPagination from "assets/icons/gifs/config_pagination.gif";
 
 interface PaginationProps {
+  actionName: string;
   onTestClick: (test?: "PREV" | "NEXT") => void;
   paginationType: PaginationType;
   theme?: EditorTheme;
@@ -34,7 +32,7 @@ const PaginationFieldWrapper = styled.div`
 const Step = styled(Text)`
   display: block;
   margin-bottom: ${(props) => props.theme.spaces[5]}px;
-  color: ${(props) => props.theme.colors.apiPane.pagination.label};
+  color: var(--ads-v2-color-fg);
   margin-left: ${(props) => props.theme.spaces[11] + 2}px;
 `;
 
@@ -42,7 +40,7 @@ const StepTitle = styled.div`
   display: flex;
   margin-bottom: ${(props) => props.theme.spaces[4]}px;
   span {
-    color: ${(props) => props.theme.colors.apiPane.pagination.stepTitle};
+    color: var(--ads-v2-color-fg);
   }
 `;
 
@@ -55,15 +53,14 @@ const PaginationTypeView = styled.div`
 
 const PaginationSection = styled.div`
   display: flex;
-  padding: ${(props) => props.theme.spaces[8]}px
-    ${(props) => props.theme.spaces[12]}px;
+  padding: var(--ads-v2-spaces-4) 0 0 0;
 `;
 
 const Example = styled(Text)`
   display: block;
   margin-left: ${(props) => props.theme.spaces[11] + 2}px;
   margin-bottom: ${(props) => props.theme.spaces[3]}px;
-  color: ${(props) => props.theme.colors.apiPane.pagination.label};
+  color: var(--ads-v2-color-fg);
 `;
 
 const BindingKey = styled.div`
@@ -72,9 +69,9 @@ const BindingKey = styled.div`
   margin-left: ${(props) => props.theme.spaces[11] + 2}px;
   width: fit-content;
   span {
-    color: ${(props) => props.theme.colors.apiPane.pagination.label};
+    color: var(--ads-v2-color-fg);
   }
-  background: ${(props) => props.theme.colors.apiPane.pagination.bindingBg};
+  background: var(--ads-v2-color-bg);
 `;
 
 const GifContainer = styled.div`
@@ -138,19 +135,10 @@ export default function Pagination(props: PaginationProps) {
                 </BindingKey>
               </div>
               <GifContainer>
-                <GifPlayer
-                  gif={
-                    props.theme === EditorTheme.LIGHT
-                      ? lightmodeGif
-                      : darkmodeGif
-                  }
-                  thumbnail={
-                    props.theme === EditorTheme.LIGHT
-                      ? lightmodeThumbnail
-                      : darkmodeThumbnail
-                  }
-                />
-                <Text type={TextType.P3}>1. 如何配置表格分页</Text>
+                <GifPlayer gif={configPagination} thumbnail={thumbnail} />
+                <Text type={TextType.P3}>
+                  1. 如何配置表格分页
+                </Text>
               </GifContainer>
             </PaginationTypeView>,
             <PaginationTypeView key={PaginationType.URL}>
@@ -166,69 +154,60 @@ export default function Pagination(props: PaginationProps) {
                 <Step type={TextType.P1}>配置上一页、下一页 url </Step>
                 <Step type={TextType.P1}>上一页 url</Step>
                 <PaginationFieldWrapper
-                  data-replay-id={btoa("actionConfiguration.prev")}
+                  data-location-id={btoa("actionConfiguration.prev")}
                 >
                   <DynamicTextField
                     border={CodeEditorBorder.ALL_SIDE}
                     className="t--apiFormPaginationPrev"
+                    evaluatedPopUpLabel="Previous Url"
                     fill={!!true}
+                    focusElementName={`${props.actionName}.actionConfiguration.prev`}
                     height="100%"
                     name="actionConfiguration.prev"
                     theme={props.theme}
                   />
                   <Button
-                    category={Category.secondary}
                     className="t--apiFormPaginationPrevTest"
-                    height="auto"
+                    kind="secondary"
                     onClick={() => {
                       props.onTestClick("PREV");
                     }}
-                    size={Size.medium}
-                    tag="button"
-                    text={"Test"}
-                    type="button"
-                  />
+                    size="md"
+                  >
+                    Test
+                  </Button>
                 </PaginationFieldWrapper>
                 <Step type={TextType.P1}>下一页 url</Step>
                 <PaginationFieldWrapper
-                  data-replay-id={btoa("actionConfiguration.next")}
+                  data-location-id={btoa("actionConfiguration.next")}
                 >
                   <DynamicTextField
                     border={CodeEditorBorder.ALL_SIDE}
                     className="t--apiFormPaginationNext"
+                    evaluatedPopUpLabel="Next Url"
                     fill={!!true}
+                    focusElementName={`${props.actionName}.actionConfiguration.next`}
                     height="100%"
                     name="actionConfiguration.next"
                     theme={props.theme}
                   />
                   <Button
-                    category={Category.secondary}
                     className="t--apiFormPaginationNextTest"
-                    height="auto"
+                    kind="secondary"
                     onClick={() => {
                       props.onTestClick("NEXT");
                     }}
-                    size={Size.medium}
-                    tag="button"
-                    text={"Test"}
-                    type="button"
-                  />
+                    size="md"
+                  >
+                    Test
+                  </Button>
                 </PaginationFieldWrapper>
               </div>
               <GifContainer>
-                <GifPlayer
-                  gif={
-                    props.theme === EditorTheme.LIGHT
-                      ? lightmodeGif
-                      : darkmodeGif
-                  }
-                  thumbnail={
-                    props.theme === EditorTheme.LIGHT
-                      ? lightmodeThumbnail
-                      : darkmodeThumbnail
-                  }
-                />
-                <Text type={TextType.P3}>1. 如何配置表格分页</Text>
+                <GifPlayer gif={configPagination} thumbnail={thumbnail} />
+                <Text type={TextType.P3}>
+                  1. 如何配置表格分页
+                </Text>
               </GifContainer>
             </PaginationTypeView>,
           ]}

@@ -19,7 +19,7 @@ import {
 import SaveThemeModal from "../SaveThemeModal";
 // import { AppTheme } from "entities/AppTheming";
 import AnalyticsUtil from "utils/AnalyticsUtil";
-import { Button, Category, Size } from "design-system";
+import { Button, Category, Size } from "design-system-old";
 // import { getCurrentApplicationId } from "selectors/editorSelectors";
 import BetaCard from "components/editorComponents/BetaCard";
 
@@ -71,7 +71,7 @@ function EchartThemeEditor() {
             >
               <Button
                 category={Category.primary}
-                className="t--change-theme-btn"
+                className="t--change-theme-btn temp-class"
                 onClick={onClickChangeThemeButton}
                 size={Size.medium}
                 text="选择Echart主题"

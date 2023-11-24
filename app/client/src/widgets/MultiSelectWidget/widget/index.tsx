@@ -1,22 +1,23 @@
-import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import type { WidgetType } from "constants/WidgetConstants";
+import type { ValidationResponse } from "constants/WidgetValidation";
+import { ValidationTypes } from "constants/WidgetValidation";
 import { isArray } from "lodash";
-import {
-  ValidationResponse,
-  ValidationTypes,
-} from "constants/WidgetValidation";
+import React from "react";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 
-import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import MultiSelectComponent from "../component";
-import { Layers } from "constants/Layers";
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
-import { MinimumPopupRows, GRID_DENSITY_MIGRATION_V1 } from "widgets/constants";
-import { LabelPosition } from "components/constants";
 import { Alignment } from "@blueprintjs/core";
-import { DraftValueType } from "rc-select/lib/Select";
-import { Stylesheet } from "entities/AppTheming";
+import { LabelPosition } from "components/constants";
+import { Layers } from "constants/Layers";
+import type { SetterConfig, Stylesheet } from "entities/AppTheming";
+import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
+import type { DraftValueType } from "rc-select/lib/Select";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
+import { GRID_DENSITY_MIGRATION_V1, MinimumPopupRows } from "widgets/constants";
+import MultiSelectComponent from "../component";
+import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
 
 function defaultOptionValueValidation(value: unknown): ValidationResponse {
   let values: string[] = [];
@@ -47,6 +48,32 @@ class MultiSelectWidget extends BaseWidget<
   MultiSelectWidgetProps,
   WidgetState
 > {
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "MultiSelect is used to capture user input/s from a specified list of permitted inputs. A MultiSelect captures multiple choices from a list of options",
+      "!url": "https://docs.appsmith.com/widget-reference/dropdown",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      filterText: {
+        "!type": "string",
+        "!doc": "The filter text for Server side filtering",
+      },
+      selectedOptionValues: {
+        "!type": "[string]",
+        "!doc": "The array of values selected in a multi select dropdown",
+        "!url": "https://docs.appsmith.com/widget-reference/dropdown",
+      },
+      selectedOptionLabels: {
+        "!type": "[string]",
+        "!doc":
+          "The array of selected option labels in a multi select dropdown",
+        "!url": "https://docs.appsmith.com/widget-reference/dropdown",
+      },
+      isDisabled: "bool",
+      options: "[$__dropdownOption__$]",
+    };
+  }
+
   static getPropertyPaneConfig() {
     return [
       {
@@ -219,13 +246,14 @@ class MultiSelectWidget extends BaseWidget<
             propertyName: "labelAlignment",
             label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
+            fullWidth: false,
             options: [
               {
-                icon: "LEFT_ALIGN",
+                startIcon: "align-left",
                 value: Alignment.LEFT,
               },
               {
-                icon: "RIGHT_ALIGN",
+                startIcon: "align-right",
                 value: Alignment.RIGHT,
               },
             ],
@@ -324,14 +352,14 @@ class MultiSelectWidget extends BaseWidget<
           {
             propertyName: "labelStyle",
             label: "字体样式",
-            controlType: "BUTTON_TABS",
+            controlType: "BUTTON_GROUP",
             options: [
               {
-                icon: "BOLD_FONT",
+                startIcon: "text-bold",
                 value: "BOLD",
               },
               {
-                icon: "ITALICS_FONT",
+                startIcon: "text-italic",
                 value: "ITALIC",
               },
             ],
@@ -413,6 +441,30 @@ class MultiSelectWidget extends BaseWidget<
       accentColor: "{{appsmith.theme.colors.primaryColor}}",
       borderRadius: "{{appsmith.theme.borderRadius.appBorderRadius}}",
       boxShadow: "none",
+    };
+  }
+
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {
+        setVisibility: {
+          path: "isVisible",
+          type: "boolean",
+        },
+        setDisabled: {
+          path: "isDisabled",
+          type: "boolean",
+        },
+        setRequired: {
+          path: "isRequired",
+          type: "boolean",
+        },
+        setSelectedOptions: {
+          path: "defaultOptionValue",
+          type: "array",
+          accessor: "selectedOptionValues",
+        },
+      },
     };
   }
 

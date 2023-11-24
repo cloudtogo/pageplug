@@ -5,6 +5,7 @@
 app/client/cypress.env.json
 dist
 stacks
+/info.json
 
 # to ignore the node_modeules folder
 node_modules
@@ -19,7 +20,6 @@ deploy/ansible/appsmith_playbook/inventory
 # performance tests
 app/client/perf/traces/*
 .history
-stacks
 
 # helm dependencies
 deploy/helm/charts
@@ -35,3 +35,7 @@ app/client/yalc.lock
 .fleet/*
 app/client/.fleet/*
 *debug.log
+
+# Observability related local storage
+utils/observability/tempo-data/*
+app/shared/ast/build

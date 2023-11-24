@@ -1,12 +1,13 @@
-import { WidgetProps } from "widgets/BaseWidget";
-import { Alignment } from "@blueprintjs/core";
-import { IconName, IconNames } from "@blueprintjs/icons";
-import {
+import type { WidgetProps } from "widgets/BaseWidget";
+import type { Alignment } from "@blueprintjs/core";
+import type { IconName } from "@blueprintjs/icons";
+import { IconNames } from "@blueprintjs/icons";
+import type {
   ButtonBorderRadius,
   ButtonVariant,
   ButtonPlacement,
 } from "components/constants";
-import { RenderMode } from "constants/WidgetConstants";
+import type { RenderMode } from "constants/WidgetConstants";
 
 export enum MenuItemsSource {
   STATIC = "STATIC",
@@ -34,12 +35,14 @@ export interface ConfigureMenuItems {
   config: MenuItem;
 }
 
+export type MenuItems = Record<string, MenuItem>;
+
 export interface MenuButtonWidgetProps extends WidgetProps {
   label?: string;
   isDisabled?: boolean;
   isVisible?: boolean;
   isCompact?: boolean;
-  menuItems: Record<string, MenuItem>;
+  menuItems: MenuItems;
   getVisibleItems: () => Array<MenuItem>;
   menuVariant?: ButtonVariant;
   menuColor?: string;
@@ -51,15 +54,15 @@ export interface MenuButtonWidgetProps extends WidgetProps {
   menuItemsSource: MenuItemsSource;
   configureMenuItems: ConfigureMenuItems;
   sourceData?: Array<Record<string, unknown>>;
-  sourceDataKeys?: Array<string>;
 }
 
 export interface MenuButtonComponentProps {
   label?: string;
   isDisabled?: boolean;
+  shouldFitContent: boolean;
   isVisible?: boolean;
   isCompact?: boolean;
-  menuItems: Record<string, MenuItem>;
+  menuItems: MenuItems;
   getVisibleItems: () => Array<MenuItem>;
   menuVariant?: ButtonVariant;
   menuColor?: string;
@@ -77,11 +80,13 @@ export interface MenuButtonComponentProps {
   menuItemsSource: MenuItemsSource;
   configureMenuItems: ConfigureMenuItems;
   sourceData?: Array<Record<string, unknown>>;
-  sourceDataKeys?: Array<string>;
+  maxWidth?: number;
+  minWidth?: number;
+  minHeight?: number;
 }
 
 export interface PopoverContentProps {
-  menuItems: Record<string, MenuItem>;
+  menuItems: MenuItems;
   getVisibleItems: () => Array<MenuItem>;
   onItemClicked: (onClick: string | undefined, index: number) => void;
   isCompact?: boolean;
@@ -90,7 +95,6 @@ export interface PopoverContentProps {
   menuItemsSource: MenuItemsSource;
   configureMenuItems: ConfigureMenuItems;
   sourceData?: Array<Record<string, unknown>>;
-  sourceDataKeys?: Array<string>;
 }
 
 export const ICON_NAMES = Object.keys(IconNames).map(

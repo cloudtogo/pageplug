@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ComponentProps } from "widgets/BaseComponent";
+import type { ComponentProps } from "widgets/BaseComponent";
 import "@uppy/core/dist/style.css";
 import "@uppy/dashboard/dist/style.css";
 import "@uppy/webcam/dist/style.css";
@@ -19,7 +19,7 @@ class FilePickerComponent extends React.Component<
 
   openModal = () => {
     if (!this.props.isDisabled) {
-      this.props.uppy.getPlugin("Dashboard").openModal();
+      this.props.openModal();
     }
   };
 
@@ -40,7 +40,7 @@ class FilePickerComponent extends React.Component<
   }
 
   public closeModal() {
-    this.props.uppy.getPlugin("Dashboard").closeModal();
+    this.props.closeModal();
   }
 }
 
@@ -50,7 +50,8 @@ export interface FilePickerComponentState {
 
 export interface FilePickerComponentProps extends ComponentProps {
   label: string;
-  uppy: any;
+  openModal: () => void;
+  closeModal: () => void;
   isLoading: boolean;
   files?: any[];
 }

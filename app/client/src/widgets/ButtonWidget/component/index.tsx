@@ -1,18 +1,12 @@
 import React, { useRef, useState } from "react";
 import styled, { createGlobalStyle, css } from "styled-components";
 import Interweave from "interweave";
-import {
-  IButtonProps,
-  MaybeElement,
-  Button,
-  Alignment,
-  Position,
-  Classes,
-} from "@blueprintjs/core";
+import type { IButtonProps, MaybeElement } from "@blueprintjs/core";
+import { Button, Alignment, Position, Classes } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
-import { IconName } from "@blueprintjs/icons";
+import type { IconName } from "@blueprintjs/icons";
 
-import { ComponentProps } from "widgets/BaseComponent";
+import type { ComponentProps } from "widgets/BaseComponent";
 
 import { useScript, ScriptStatus, AddScriptTo } from "utils/hooks/useScript";
 import {
@@ -20,18 +14,16 @@ import {
   GOOGLE_RECAPTCHA_DOMAIN_ERROR,
   createMessage,
 } from "@appsmith/constants/messages";
-import { Toaster, Variant } from "design-system";
 
 import ReCAPTCHA from "react-google-recaptcha";
 import { Colors } from "constants/Colors";
 import _ from "lodash";
-import {
+import type {
   ButtonPlacement,
   ButtonVariant,
-  ButtonVariantTypes,
   RecaptchaType,
-  RecaptchaTypes,
 } from "components/constants";
+import { ButtonVariantTypes, RecaptchaTypes } from "components/constants";
 import {
   getCustomBackgroundColor,
   getCustomBorderColor,
@@ -41,7 +33,8 @@ import {
 } from "widgets/WidgetUtils";
 import { DragContainer } from "./DragContainer";
 import { buttonHoverActiveStyles } from "./utils";
-import { ThemeProp } from "widgets/constants";
+import type { ThemeProp } from "widgets/constants";
+import { toast } from "design-system";
 
 const RecaptchaWrapper = styled.div`
   position: relative;
@@ -72,38 +65,21 @@ const TooltipStyles = createGlobalStyle`
   }
 `;
 
-/*
-  Don't use buttonHoverActiveStyles in a nested function it won't work -
-
-  const buttonHoverActiveStyles = css ``
-
-  const Button = styled.button`
-  // won't work
-    ${({ buttonColor, theme }) => {
-      &:hover, &:active {
-        ${buttonHoverActiveStyles}
-      }
-    }}
-
-  // will work
-  &:hover, &:active {
-    ${buttonHoverActiveStyles}
-  }`
-*/
-
 const buttonBaseStyle = css<ThemeProp & ButtonStyleProps>`
-height: 100%;
-background-image: none !important;
-font-weight: ${(props) => props.theme.fontWeights[2]};
-outline: none;
-padding: 0px 10px;
-gap: 8px;
+  height: 100%;
+  background-image: none !important;
+  font-weight: ${(props) => props.theme.fontWeights[2]};
+  outline: none;
+  padding: 0px 10px;
+  gap: 8px;
 
-&:hover, &:active {
-  ${buttonHoverActiveStyles}
- }
+  &:hover,
+  &:active,
+  &:focus {
+    ${buttonHoverActiveStyles}
+  }
 
-${({ buttonColor, buttonVariant, theme }) => `
+  ${({ buttonColor, buttonVariant, theme }) => `
     background: ${
       getCustomBackgroundColor(buttonVariant, buttonColor) !== "none"
         ? getCustomBackgroundColor(buttonVariant, buttonColor)
@@ -115,8 +91,10 @@ ${({ buttonColor, buttonVariant, theme }) => `
 
     &:disabled, &.${Classes.DISABLED} {
     cursor: not-allowed;
-    background-color: ${buttonVariant !== ButtonVariantTypes.TERTIARY &&
-      "var(--wds-color-bg-disabled)"} !important;
+    background-color: ${
+      buttonVariant !== ButtonVariantTypes.TERTIARY &&
+      "var(--wds-color-bg-disabled)"
+    } !important;
     color: var(--wds-color-text-disabled) !important;
     box-shadow: none !important;
     pointer-events: none;
@@ -140,13 +118,10 @@ ${({ buttonColor, buttonVariant, theme }) => `
   }
 
   & > span {
-    max-height: 100%;
-    max-width: 99%;
+    display: inline-block;
     text-overflow: ellipsis;
     overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
+    white-space: nowrap;
     line-height: normal;
 
     color: ${
@@ -157,18 +132,18 @@ ${({ buttonColor, buttonVariant, theme }) => `
   }
 `}
 
-border-radius: ${({ borderRadius }) => borderRadius};
-box-shadow: ${({ boxShadow }) => `${boxShadow ?? "none"}`} !important;
+  border-radius: ${({ borderRadius }) => borderRadius};
+  box-shadow: ${({ boxShadow }) => `${boxShadow ?? "none"}`} !important;
 
-${({ placement }) =>
-  placement
-    ? `
+  ${({ placement }) =>
+    placement
+      ? `
     justify-content: ${getCustomJustifyContent(placement)};
     & > span.bp3-button-text {
       flex: unset !important;
     }
   `
-    : ""}
+      : ""}
 `;
 
 export const StyledButton = styled((props) => (
@@ -193,7 +168,11 @@ export type ButtonStyleProps = {
   borderRadius?: string;
   iconName?: IconName;
   iconAlign?: Alignment;
+  shouldFitContent?: boolean;
   placement?: ButtonPlacement;
+  maxWidth?: number;
+  minWidth?: number;
+  minHeight?: number;
 };
 
 // To be used in any other part of the app
@@ -210,6 +189,9 @@ export function BaseButton(props: IButtonProps & ButtonStyleProps) {
     iconAlign,
     iconName,
     loading,
+    maxWidth,
+    minHeight,
+    minWidth,
     onClick,
     placement,
     rightIcon,
@@ -224,7 +206,11 @@ export function BaseButton(props: IButtonProps & ButtonStyleProps) {
       buttonVariant={buttonVariant}
       disabled={disabled}
       loading={loading}
+      maxWidth={maxWidth}
+      minHeight={minHeight}
+      minWidth={minWidth}
       onClick={onClick}
+      shouldFitContent={props.shouldFitContent}
       showInAllModes
     >
       <StyledButton
@@ -277,6 +263,7 @@ interface ButtonComponentProps extends ComponentProps {
   onClick?: (event: React.MouseEvent<HTMLElement>) => void;
   isDisabled?: boolean;
   isLoading: boolean;
+  shouldFitContent: boolean;
   rightIcon?: IconName | MaybeElement;
   type: ButtonType;
   buttonColor?: string;
@@ -288,6 +275,9 @@ interface ButtonComponentProps extends ComponentProps {
   iconAlign?: Alignment;
   placement?: ButtonPlacement;
   className?: string;
+  minWidth?: number;
+  minHeight?: number;
+  maxWidth?: number;
 }
 
 type RecaptchaV2ComponentPropType = {
@@ -408,6 +398,10 @@ function RecaptchaV3Component(
   );
 }
 
+const Wrapper = styled.div`
+  height: 100%;
+`;
+
 function BtnWrapper(
   props: {
     children: any;
@@ -417,25 +411,25 @@ function BtnWrapper(
     onClick?: (event: React.MouseEvent<HTMLElement>) => void;
   } & RecaptchaProps,
 ) {
+  const hasOnClick = Boolean(
+    props.onClick && !props.isLoading && !props.isDisabled,
+  );
   if (!props.googleRecaptchaKey) {
     return (
-      <div
+      <Wrapper
         className={props.className}
-        onClick={(e: React.MouseEvent<HTMLElement>) =>
-          props.onClick && !props.isLoading && props.onClick(e)
-        }
+        onClick={hasOnClick ? props.onClick : undefined}
       >
         {props.children}
-      </div>
+      </Wrapper>
     );
   } else {
     const handleError = (
       event: React.MouseEvent<HTMLElement>,
       error: string,
     ) => {
-      Toaster.show({
-        text: error,
-        variant: Variant.danger,
+      toast.show(error, {
+        kind: "error",
       });
       props.onClick && !props.isLoading && props.onClick(event);
     };
@@ -471,8 +465,12 @@ function ButtonComponent(props: ButtonComponentProps & RecaptchaProps) {
         iconAlign={props.iconAlign}
         iconName={props.iconName}
         loading={props.isLoading}
+        maxWidth={props.maxWidth}
+        minHeight={props.minHeight}
+        minWidth={props.minWidth}
         placement={props.placement}
         rightIcon={props.rightIcon}
+        shouldFitContent={props.shouldFitContent}
         text={props.text}
         type={props.type}
       />

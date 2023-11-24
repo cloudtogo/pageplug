@@ -1,45 +1,69 @@
 import { createSelector } from "reselect";
 
-import { AppState } from "@appsmith/reducers";
-import { WidgetConfigReducerState } from "reducers/entityReducers/widgetConfigReducer";
-import { WidgetCardProps, WidgetProps } from "widgets/BaseWidget";
-import {
+import type { AppState } from "@appsmith/reducers";
+import type {
   CanvasWidgetsReduxState,
   FlattenedWidgetProps,
 } from "reducers/entityReducers/canvasWidgetsReducer";
-import { PageListReduxState } from "reducers/entityReducers/pageListReducer";
+import type {
+  AppLayoutConfig,
+  PageListReduxState,
+} from "reducers/entityReducers/pageListReducer";
+import type { WidgetConfigReducerState } from "reducers/entityReducers/widgetConfigReducer";
+import type { WidgetCardProps, WidgetProps } from "widgets/BaseWidget";
 
-import { OccupiedSpace, WidgetSpace } from "constants/CanvasEditorConstants";
+import type { Page } from "@appsmith/constants/ReduxActionConstants";
+import { ApplicationVersion } from "@appsmith/actions/applicationActions";
+import type {
+  OccupiedSpace,
+  WidgetSpace,
+} from "constants/CanvasEditorConstants";
+import { PLACEHOLDER_APP_SLUG, PLACEHOLDER_PAGE_SLUG } from "constants/routes";
+import {
+  DefaultDimensionMap,
+  MAIN_CONTAINER_WIDGET_ID,
+  RenderModes,
+} from "constants/WidgetConstants";
+import { APP_MODE } from "entities/App";
+import type {
+  DataTree,
+  ConfigTree,
+  WidgetEntity,
+  WidgetEntityConfig,
+} from "entities/DataTree/dataTreeFactory";
+import { find, sortBy } from "lodash";
+import { AppPositioningTypes } from "reducers/entityReducers/pageListReducer";
+import {
+  getDataTree,
+  getLoadingEntities,
+  getConfigTree,
+} from "selectors/dataTreeSelectors";
+import type { MainCanvasReduxState } from "reducers/uiReducers/mainCanvasReducer";
+
 import {
   getActions,
   getCanvasWidgets,
   getJSCollections,
 } from "selectors/entitiesSelector";
-import {
-  MAIN_CONTAINER_WIDGET_ID,
-  RenderModes,
-  WidgetType,
-} from "constants/WidgetConstants";
-import CanvasWidgetsNormalizer from "normalizers/CanvasWidgetsNormalizer";
-import { DataTree, DataTreeWidget } from "entities/DataTree/dataTreeFactory";
-import { ContainerWidgetProps } from "widgets/ContainerWidget/widget";
-import { find, sortBy } from "lodash";
-import { APP_MODE } from "entities/App";
-import { getDataTree, getLoadingEntities } from "selectors/dataTreeSelectors";
-import { Page } from "@appsmith/constants/ReduxActionConstants";
-import { PLACEHOLDER_APP_SLUG, PLACEHOLDER_PAGE_SLUG } from "constants/routes";
-import { ApplicationVersion } from "actions/applicationActions";
-import { MainCanvasReduxState } from "reducers/uiReducers/mainCanvasReducer";
+import { checkIsDropTarget } from "utils/WidgetFactoryHelpers";
 import {
   buildChildWidgetTree,
+  buildFlattenedChildCanvasWidgets,
   createCanvasWidget,
   createLoadingWidget,
 } from "utils/widgetRenderUtils";
-import WidgetFactory, {
-  NonSerialisableWidgetConfigs,
-} from "utils/WidgetFactory";
+import type { ContainerWidgetProps } from "widgets/ContainerWidget/widget";
 import { LOCAL_STORAGE_KEYS } from "utils/localStorage";
+import type { CanvasWidgetStructure } from "widgets/constants";
+import { denormalize } from "utils/canvasStructureHelpers";
 import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
+import WidgetFactory from "utils/WidgetFactory";
+import { isAirgapped } from "@appsmith/utils/airgapHelpers";
+import { nestDSL } from "@shared/dsl";
+import { getIsAnonymousDataPopupVisible } from "./onboardingSelectors";
+import { WDS_V2_WIDGET_MAP } from "components/wds/constants";
+import { selectFeatureFlagCheck } from "@appsmith/selectors/featureFlagsSelectors";
+import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
 
 const getIsDraggingOrResizing = (state: AppState) =>
   state.ui.widgetDragResize.isResizing || state.ui.widgetDragResize.isDragging;
@@ -59,6 +83,9 @@ const getWidgets = (state: AppState): CanvasWidgetsReduxState =>
 export const getIsEditorInitialized = (state: AppState) =>
   state.ui.editor.initialized;
 
+export const getIsWidgetConfigBuilt = (state: AppState) =>
+  state.ui.editor.widgetConfigBuilt;
+
 export const getIsEditorLoading = (state: AppState) =>
   state.ui.editor.loadingStates.loading;
 
@@ -75,6 +102,8 @@ export const getIsPageSaving = (state: AppState) => {
   const savingApis = state.ui.apiPane.isSaving;
   const savingJSObjects = state.ui.jsPane.isSaving;
   const isSavingAppTheme = state.ui.appTheming.isSaving;
+  const isSavingNavigationSetting =
+    state.ui.applications.isSavingNavigationSetting;
 
   Object.keys(savingApis).forEach((apiId) => {
     areApisSaving = savingApis[apiId] || areApisSaving;
@@ -89,7 +118,8 @@ export const getIsPageSaving = (state: AppState) => {
     areApisSaving ||
     areJsObjectsSaving ||
     isSavingAppTheme ||
-    state.ui.editor.loadingStates.savingEntity
+    state.ui.editor.loadingStates.savingEntity ||
+    isSavingNavigationSetting
   );
 };
 
@@ -121,6 +151,10 @@ export const getCurrentLayoutId = (state: AppState) =>
 
 export const getPageList = (state: AppState) => state.entities.pageList.pages;
 
+export const getVisiblePageList = createSelector(getPageList, (list) => {
+  return list.filter((page) => !page.isHidden);
+});
+
 export const getPageById = (pageId: string) =>
   createSelector(getPageList, (pages: Page[]) =>
     pages.find((page) => page.pageId === pageId),
@@ -151,6 +185,12 @@ export const selectCurrentPageSlug = createSelector(
     pages.find((page) => page.pageId === pageId)?.slug || PLACEHOLDER_PAGE_SLUG,
 );
 
+export const getCurrentPageDescription = createSelector(
+  getCurrentPageId,
+  getPageList,
+  (pageId, pages) => pages.find((page) => page.pageId === pageId)?.description,
+);
+
 export const selectPageSlugToIdMap = createSelector(getPageList, (pages) =>
   pages.reduce((acc, page: Page) => {
     // Comeback
@@ -163,8 +203,8 @@ export const getCurrentApplication = (state: AppState) =>
   state.ui.applications.currentApplication;
 
 export const getCurrentApplicationId = (state: AppState) =>
-  state.entities.pageList.applicationId ||
-  ""; /** this is set during init can assume it to be defined */
+  state.entities.pageList.applicationId || "";
+/** this is set during init can assume it to be defined */
 
 export const selectCurrentApplicationSlug = (state: AppState) =>
   state.ui.applications.currentApplication?.slug || PLACEHOLDER_APP_SLUG;
@@ -229,11 +269,49 @@ export const getCurrentPage = createSelector(
   },
 );
 
-export const getCurrentApplicationLayout = (state: AppState) =>
-  state.ui.applications.currentApplication?.appLayout;
+const defaultLayout: AppLayoutConfig = {
+  type: "FLUID",
+};
+
+const getAppLayout = (state: AppState) =>
+  state.ui.applications.currentApplication?.appLayout || defaultLayout;
+
+export const getAppPositioningType = (state: AppState) => {
+  if (
+    state.ui.applications?.currentApplication?.applicationDetail?.appPositioning
+      ?.type
+  ) {
+    return AppPositioningTypes[
+      state.ui.applications.currentApplication?.applicationDetail
+        ?.appPositioning?.type
+    ];
+  }
+  return AppPositioningTypes.FIXED;
+};
+
+export const getCurrentAppPositioningType = createSelector(
+  getAppPositioningType,
+  (appPositionType: AppPositioningTypes): AppPositioningTypes => {
+    return appPositionType || AppPositioningTypes.FIXED;
+  },
+);
+
+export const getIsAutoLayout = createSelector(
+  getCurrentAppPositioningType,
+  (positioningType) => positioningType === AppPositioningTypes.AUTO,
+);
+
+export const getCurrentApplicationLayout = createSelector(
+  getAppLayout,
+  getCurrentAppPositioningType,
+  (appLayout: AppLayoutConfig, appPositionType) => {
+    return appPositionType === AppPositioningTypes.FIXED
+      ? appLayout
+      : defaultLayout;
+  },
+);
 
 export const getCanvasWidth = (state: AppState) => state.ui.mainCanvas.width;
-
 export const getMainCanvasProps = (state: AppState) => state.ui.mainCanvas;
 
 export const isMobileLayout = (state: AppState) =>
@@ -247,6 +325,36 @@ export const getShowTabBar = createSelector(
   },
 );
 
+export const getMetaWidgets = (state: AppState) => state.entities.metaWidgets;
+
+export const getMetaWidget = (metaWidgetId: string) =>
+  createSelector(getMetaWidgets, (metaWidgets) => {
+    return metaWidgets[metaWidgetId];
+  });
+
+export const getMetaWidgetChildrenStructure = (
+  parentWidgetId: string,
+  type: string,
+  hasMetaWidgets = false,
+) =>
+  createSelector(getMetaWidgets, (metaWidgets) => {
+    if (!hasMetaWidgets) return [];
+
+    const structure: CanvasWidgetStructure[] = [];
+
+    Object.values(metaWidgets).forEach((metaWidget) => {
+      if (metaWidget.parentId === parentWidgetId) {
+        structure.push(
+          denormalize(metaWidget.widgetId, metaWidgets, {
+            widgetTypeForHaltingRecursion: type,
+          }),
+        );
+      }
+    });
+
+    return structure;
+  });
+
 export const getCurrentPageName = createSelector(
   getPageListState,
   (pageList: PageListReduxState) =>
@@ -254,66 +362,150 @@ export const getCurrentPageName = createSelector(
       ?.pageName,
 );
 
-/**
- * This returns the number of rows which is not occupied by a Canvas Widget within
- * a parent container like widget of type widgetType
- * For example, the Tabs Widget takes 4 rows for the tabs
- * @param widgetType Type of widget
- * @param props Widget properties
- * @returns the offset in rows
- */
-export const getCanvasHeightOffset = (
-  widgetType: WidgetType,
-  props: WidgetProps,
-) => {
-  // Get the non serialisable configs for the widget type
-  const config:
-    | Record<NonSerialisableWidgetConfigs, unknown>
-    | undefined = WidgetFactory.nonSerialisableWidgetConfigMap.get(widgetType);
-  let offset = 0;
-  // If this widget has a registered canvasHeightOffset function
-  if (config?.canvasHeightOffset) {
-    // Run the function to get the offset value
-    offset = (config.canvasHeightOffset as (props: WidgetProps) => number)(
-      props,
-    );
-  }
-  return offset;
-};
+export const isHiddenPage = createSelector(
+  getPageListState,
+  (pageList: PageListReduxState) =>
+    pageList.pages.find((page) => page.pageId === pageList.currentPageId)
+      ?.isHidden,
+);
 
 export const getWidgetCards = createSelector(
   getWidgetConfigs,
+  getIsAutoLayout,
+  (_state: any) => selectFeatureFlagCheck(_state, FEATURE_FLAG.ab_wds_enabled),
   isMobileLayout,
-  (widgetConfigs: WidgetConfigReducerState, isMobile: boolean) => {
-    const cards = Object.values(widgetConfigs.config).filter(
-      (config) =>
-        !config.hideCard && (isMobile ? config.isMobile : !config.isMobile),
-    );
+  (
+    widgetConfigs: WidgetConfigReducerState,
+    isAutoLayout: boolean,
+    isWDSEnabled: boolean,
+    isMobile: boolean,
+  ) => {
+    const cards = Object.values(widgetConfigs.config).filter((config) => {
+      // if wds_vs is not enabled, hide all wds_v2 widgets
+      if (
+        Object.values(WDS_V2_WIDGET_MAP).includes(config.type) &&
+        isWDSEnabled === false
+      ) {
+        return false;
+      }
+
+      if (isAirgapped()) {
+        return config.widgetName !== "Map" && !config.hideCard;
+      }
+
+      // if wds is enabled, only show the wds_v2 widgets
+      if (isWDSEnabled === true) {
+        return Object.values(WDS_V2_WIDGET_MAP).includes(config.type);
+      }
+
+      // 筛选小程序
+      if (isMobile) {
+        return config.isMobile;
+      }
+
+      return !config.hideCard;
+    });
 
     const _cards: WidgetCardProps[] = cards.map((config) => {
       const {
-        columns,
         detachFromLayout = false,
+        floatLayout = false,
         displayName,
         iconSVG,
         key,
-        rows,
         searchTags,
+        tags,
         type,
       } = config;
+      let { columns, rows } = config;
+      const autoLayoutConfig = WidgetFactory.getWidgetAutoLayoutConfig(type);
+
+      if (isAutoLayout && autoLayoutConfig) {
+        rows = autoLayoutConfig?.defaults?.rows ?? rows;
+        columns = autoLayoutConfig?.defaults?.columns ?? columns;
+      }
+
       return {
         key,
         type,
         rows,
         columns,
         detachFromLayout,
+        floatLayout,
         displayName,
         icon: iconSVG,
         searchTags,
+        tags,
+        isDynamicHeight: isAutoHeightEnabledForWidget(config as WidgetProps),
       };
     });
     const sortedCards = sortBy(_cards, ["displayName"]);
+
     return sortedCards;
+  },
+);
+const getIsMobileBreakPoint = (state: AppState) => state.ui.mainCanvas.isMobile;
+export const getIsAutoLayoutMobileBreakPoint = createSelector(
+  getIsAutoLayout,
+  getIsMobileBreakPoint,
+  (isAutoLayout, isMobileBreakPoint) => {
+    return isAutoLayout && isMobileBreakPoint;
+  },
+);
+
+export const getDimensionMap = createSelector(
+  getIsAutoLayoutMobileBreakPoint,
+  (isAutoLayoutMobileBreakPoint: boolean) => {
+    return isAutoLayoutMobileBreakPoint
+      ? {
+          leftColumn: "mobileLeftColumn",
+          rightColumn: "mobileRightColumn",
+          topRow: "mobileTopRow",
+          bottomRow: "mobileBottomRow",
+        }
+      : DefaultDimensionMap;
+  },
+);
+const addWidgetDimensionProxy = (
+  dimensionMap: any,
+  widgets: CanvasWidgetsReduxState,
+) => {
+  const dimensions = Object.keys(dimensionMap);
+  const proxyHandler = {
+    get(target: any, prop: any) {
+      if (dimensions.includes(prop)) {
+        const actualMap = dimensionMap[prop];
+        if (!!target[actualMap]) {
+          return target[actualMap];
+        }
+      }
+      return Reflect.get(target, prop);
+    },
+  };
+  return Object.keys(widgets).reduce((allWidgets, each) => {
+    const widget = { ...allWidgets[each] };
+    const proxyWidget = new Proxy(widget, proxyHandler);
+    allWidgets = {
+      ...allWidgets,
+      [each]: proxyWidget,
+    };
+    return allWidgets;
+  }, widgets);
+};
+export const getWidgetsForBreakpoint = createSelector(
+  getDimensionMap,
+  getIsAutoLayoutMobileBreakPoint,
+  getWidgets,
+  (
+    dimensionMap: any,
+    isAutoLayoutMobileBreakPoint: boolean,
+    widgets: CanvasWidgetsReduxState,
+  ): CanvasWidgetsReduxState => {
+    if (isAutoLayoutMobileBreakPoint) {
+      return addWidgetDimensionProxy(dimensionMap, widgets);
+    } else {
+      return widgets;
+    }
   },
 );
 
@@ -329,6 +521,7 @@ export const computeMainContainerWidget = (
 export const getMainContainer = (
   canvasWidgets: CanvasWidgetsReduxState,
   evaluatedDataTree: DataTree,
+  configTree: ConfigTree,
   mainCanvasProps: MainCanvasReduxState,
 ) => {
   const canvasWidget = computeMainContainerWidget(
@@ -339,25 +532,35 @@ export const getMainContainer = (
   //TODO: Need to verify why `evaluatedDataTree` is required here.
   const evaluatedWidget = find(evaluatedDataTree, {
     widgetId: MAIN_CONTAINER_WIDGET_ID,
-  }) as DataTreeWidget;
-  return createCanvasWidget(canvasWidget, evaluatedWidget);
+  }) as WidgetEntity;
+  const evaluatedWidgetConfig = find(configTree, {
+    widgetId: MAIN_CONTAINER_WIDGET_ID,
+  }) as WidgetEntityConfig;
+  return createCanvasWidget(
+    canvasWidget,
+    evaluatedWidget,
+    evaluatedWidgetConfig,
+  );
 };
 
 export const getCanvasWidgetDsl = createSelector(
   getCanvasWidgets,
   getDataTree,
+  getConfigTree,
   getLoadingEntities,
   getMainCanvasProps,
   (
     canvasWidgets: CanvasWidgetsReduxState,
     evaluatedDataTree,
+    configTree,
     loadingEntities,
     mainCanvasProps,
   ): ContainerWidgetProps<WidgetProps> => {
-    const widgets: Record<string, DataTreeWidget> = {
+    const widgets: Record<string, WidgetEntity> = {
       [MAIN_CONTAINER_WIDGET_ID]: getMainContainer(
         canvasWidgets,
         evaluatedDataTree,
+        configTree,
         mainCanvasProps,
       ),
     };
@@ -367,11 +570,15 @@ export const getCanvasWidgetDsl = createSelector(
         const canvasWidget = canvasWidgets[widgetKey];
         const evaluatedWidget = find(evaluatedDataTree, {
           widgetId: widgetKey,
-        }) as DataTreeWidget;
+        }) as WidgetEntity;
+        const evaluatedWidgetConfig = find(configTree, {
+          widgetId: widgetKey,
+        });
         if (evaluatedWidget) {
           widgets[widgetKey] = createCanvasWidget(
             canvasWidget,
             evaluatedWidget,
+            evaluatedWidgetConfig,
           );
         } else {
           widgets[widgetKey] = createLoadingWidget(canvasWidget);
@@ -380,21 +587,28 @@ export const getCanvasWidgetDsl = createSelector(
           canvasWidget.widgetName,
         );
       });
-
-    return CanvasWidgetsNormalizer.denormalize("0", {
-      canvasWidgets: widgets,
-    });
+    return nestDSL(widgets);
   },
 );
 
 export const getChildWidgets = createSelector(
   [
     getCanvasWidgets,
+    getMetaWidgets,
     getDataTree,
     getLoadingEntities,
+    getConfigTree,
     (_state: AppState, widgetId: string) => widgetId,
   ],
   buildChildWidgetTree,
+);
+
+export const getFlattenedChildCanvasWidgets = createSelector(
+  [
+    getCanvasWidgets,
+    (_state: AppState, parentWidgetId: string) => parentWidgetId,
+  ],
+  buildFlattenedChildCanvasWidgets,
 );
 
 const getOccupiedSpacesForContainer = (
@@ -409,6 +623,8 @@ const getOccupiedSpacesForContainer = (
       top: widget.topRow,
       bottom: widget.bottomRow,
       right: widget.rightColumn,
+      type: widget.type,
+      floatLayout: !!widget.floatLayout,
     };
     return occupiedSpace;
   });
@@ -417,7 +633,14 @@ const getOccupiedSpacesForContainer = (
 const getWidgetSpacesForContainer = (
   containerWidgetId: string,
   widgets: FlattenedWidgetProps[],
+  dimensionMap: typeof DefaultDimensionMap,
 ): WidgetSpace[] => {
+  const {
+    bottomRow: bottomRowMap,
+    leftColumn: leftColumnMap,
+    rightColumn: rightColumnMap,
+    topRow: topRowMap,
+  } = dimensionMap;
   return widgets.map((widget) => {
     const hasAutoHeight = isAutoHeightEnabledForWidget(widget);
     const fixedHeight = hasAutoHeight
@@ -426,11 +649,13 @@ const getWidgetSpacesForContainer = (
     const occupiedSpace: WidgetSpace = {
       id: widget.widgetId,
       parentId: containerWidgetId,
-      left: widget.leftColumn,
-      top: widget.topRow,
-      bottom: widget.bottomRow,
-      right: widget.rightColumn,
+      left: widget[leftColumnMap],
+      top: widget[topRowMap],
+      bottom: widget[bottomRowMap],
+      right: widget[rightColumnMap],
       type: widget.type,
+      isDropTarget: checkIsDropTarget(widget.type),
+      floatLayout: !!widget.floatLayout,
       fixedHeight,
     };
     return occupiedSpace;
@@ -447,9 +672,10 @@ const getWidgetSpacesForContainer = (
 const generateOccupiedSpacesMap = (
   widgets: CanvasWidgetsReduxState,
   fetchNow = true,
-): { [containerWidgetId: string]: OccupiedSpace[] } | undefined => {
+  dimensionMap = DefaultDimensionMap,
+): { [containerWidgetId: string]: WidgetSpace[] } | undefined => {
   const occupiedSpaces: {
-    [containerWidgetId: string]: OccupiedSpace[];
+    [containerWidgetId: string]: WidgetSpace[];
   } = {};
   if (!fetchNow) return;
   // Get all widgets with type "CONTAINER_WIDGET" and has children
@@ -470,9 +696,10 @@ const generateOccupiedSpacesMap = (
       );
       // Get the occupied spaces in this container
       // Assign it to the containerWidgetId key in occupiedSpaces
-      occupiedSpaces[containerWidgetId] = getOccupiedSpacesForContainer(
+      occupiedSpaces[containerWidgetId] = getWidgetSpacesForContainer(
         containerWidgetId,
         childWidgets.map((widgetId) => widgets[widgetId]),
+        dimensionMap,
       );
     });
   }
@@ -522,19 +749,21 @@ export const getOccupiedSpaces = createSelector(
 );
 
 export const getOccupiedSpacesGroupedByParentCanvas = createSelector(
-  getWidgets,
+  getWidgetsForBreakpoint,
   (
     widgets: CanvasWidgetsReduxState,
   ): {
     occupiedSpaces: {
-      [parentCanvasWidgetId: string]: Array<
+      [parentCanvasWidgetId: string]: Record<
+        string,
         OccupiedSpace & { originalTop: number; originalBottom: number }
       >;
     };
     canvasLevelMap: Record<string, number>;
   } => {
     const occupiedSpaces: {
-      [parentCanvasWidgetId: string]: Array<
+      [parentCanvasWidgetId: string]: Record<
+        string,
         OccupiedSpace & { originalTop: number; originalBottom: number }
       >;
     } = {};
@@ -566,7 +795,7 @@ export const getOccupiedSpacesGroupedByParentCanvas = createSelector(
         }
         canvasLevelMap[canvasWidget.widgetId] = level;
         // Initialise the occupied spaces with an empty array
-        occupiedSpaces[canvasWidgetId] = [];
+        occupiedSpaces[canvasWidgetId] = {};
         // If this canvas widget has children
         if (canvasWidget.children && canvasWidget.children.length > 0) {
           // Iterate through all children
@@ -578,7 +807,7 @@ export const getOccupiedSpacesGroupedByParentCanvas = createSelector(
             // (unlike a modal widget or another canvas widget)
             if (!widget.detachFromLayout) {
               // Add the occupied space co-ordinates to the initialised array
-              occupiedSpaces[canvasWidgetId].push({
+              occupiedSpaces[canvasWidgetId][widget.widgetId] = {
                 id: widget.widgetId,
                 parentId: canvasWidgetId,
                 left: widget.leftColumn,
@@ -587,7 +816,7 @@ export const getOccupiedSpacesGroupedByParentCanvas = createSelector(
                 right: widget.rightColumn,
                 originalTop: widget.originalTopRow,
                 originalBottom: widget.originalBottomRow,
-              });
+              };
             }
           });
         }
@@ -604,6 +833,7 @@ export const getOccupiedSpacesGroupedByParentCanvas = createSelector(
 export const getOccupiedSpacesWhileMoving = createSelector(
   getWidgets,
   getIsDraggingOrResizing,
+  getDimensionMap,
   generateOccupiedSpacesMap,
 );
 
@@ -661,6 +891,7 @@ const generateWidgetSpacesForContainer = (
   widgets: CanvasWidgetsReduxState,
   fetchNow: boolean,
   containerId: string | undefined,
+  dimensionMap: typeof DefaultDimensionMap,
 ): WidgetSpace[] | undefined => {
   if (containerId === null || containerId === undefined || !fetchNow)
     return undefined;
@@ -680,6 +911,7 @@ const generateWidgetSpacesForContainer = (
   const occupiedSpaces = getWidgetSpacesForContainer(
     containerId,
     childWidgets.map((widgetId) => widgets[widgetId]),
+    dimensionMap,
   );
   return occupiedSpaces;
 };
@@ -705,9 +937,21 @@ export function getContainerOccupiedSpacesSelectorWhileResizing(
 export function getContainerWidgetSpacesSelector(
   containerId: string | undefined,
 ) {
-  return createSelector(getWidgets, (widgets: CanvasWidgetsReduxState) => {
-    return generateWidgetSpacesForContainer(widgets, true, containerId);
-  });
+  return createSelector(
+    getWidgets,
+    getDimensionMap,
+    (
+      widgets: CanvasWidgetsReduxState,
+      dimensionMap: typeof DefaultDimensionMap,
+    ) => {
+      return generateWidgetSpacesForContainer(
+        widgets,
+        true,
+        containerId,
+        dimensionMap,
+      );
+    },
+  );
 }
 
 // same as getOccupiedSpaces but gets only the container specific occupied Spaces
@@ -717,15 +961,22 @@ export function getContainerWidgetSpacesSelectorWhileMoving(
   return createSelector(
     getWidgets,
     getIsDraggingOrResizing,
-    (widgets: CanvasWidgetsReduxState, isDraggingOrResizing: boolean) => {
+    getDimensionMap,
+    (
+      widgets: CanvasWidgetsReduxState,
+      isDraggingOrResizing: boolean,
+      dimensionMap,
+    ) => {
       return generateWidgetSpacesForContainer(
         widgets,
         isDraggingOrResizing,
         containerId,
+        dimensionMap,
       );
     },
   );
 }
+
 export const getActionById = createSelector(
   [getActions, (state: any, props: any) => props.match.params.apiId],
   (actions, id) => {
@@ -792,17 +1043,25 @@ export const showCanvasTopSectionSelector = createSelector(
   getCanvasWidgets,
   previewModeSelector,
   getCurrentPageId,
-  (canvasWidgets, inPreviewMode, pageId) => {
+  getIsAnonymousDataPopupVisible,
+  (canvasWidgets, inPreviewMode, pageId, isAnonymousDataPopupVisible) => {
     const state = JSON.parse(
       localStorage.getItem(LOCAL_STORAGE_KEYS.CANVAS_CARDS_STATE) ?? "{}",
     );
     if (
       !state[pageId] ||
       Object.keys(canvasWidgets).length > 1 ||
-      inPreviewMode
+      inPreviewMode ||
+      isAnonymousDataPopupVisible
     )
       return false;
 
     return true;
   },
 );
+
+export const getGsheetToken = (state: AppState) =>
+  state.entities.datasources.gsheetToken;
+
+export const getGsheetProjectID = (state: AppState) =>
+  state.entities.datasources.gsheetProjectID;

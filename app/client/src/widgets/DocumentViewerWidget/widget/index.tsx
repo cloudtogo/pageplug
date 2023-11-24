@@ -1,18 +1,22 @@
+import type { ValidationResponse } from "constants/WidgetValidation";
+import { ValidationTypes } from "constants/WidgetValidation";
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import DocumentViewerComponent from "../component";
-import {
-  ValidationTypes,
-  ValidationResponse,
-} from "constants/WidgetValidation";
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
+import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
+import type { SetterConfig } from "entities/AppTheming";
 
 export function documentUrlValidation(value: unknown): ValidationResponse {
   // applied validations if value exist
   if (value) {
     const whiteSpaceRegex = /\s/g;
-    const urlRegex = /(?:https:\/\/|www)?([\da-z.-]+)\.([a-z.]{2,6})[/\w .-]*\/?/;
-    const base64Regex = /^\s*data:([a-z]+\/[a-z]+(;[a-z\-]+\=[a-z\-]+)?)?(;base64)?,[a-z0-9\!\$\&\'\,\(\)\*\+\,\;\=\-\.\_\~\:\@\/\?\%\s]*\s*$/i;
+    const urlRegex =
+      /(?:https:\/\/|www)?([\da-z.-]+)\.([a-z.]{2,6})[/\w .-]*\/?/;
+    const base64Regex =
+      /^\s*data:([a-z]+\/[a-z]+(;[a-z\-]+\=[a-z\-]+)?)?(;base64)?,[a-z0-9\!\$\&\'\,\(\)\*\+\,\;\=\-\.\_\~\:\@\/\?\%\s]*\s*$/i;
     if (
       urlRegex.test(value as string) &&
       !whiteSpaceRegex.test(value as string)
@@ -34,7 +38,12 @@ export function documentUrlValidation(value: unknown): ValidationResponse {
         return {
           isValid: false,
           parsed: "",
-          messages: ["填写的 URL / Base64 无效"],
+          messages: [
+            {
+              name: "ValidationError",
+              message: "填写的 URL / Base64 无效",
+            },
+          ],
         };
       }
     } else if (base64Regex.test(value as string)) {
@@ -48,7 +57,12 @@ export function documentUrlValidation(value: unknown): ValidationResponse {
       return {
         isValid: false,
         parsed: "",
-        messages: ["填写的 URL / Base64 无效"],
+        messages: [
+          {
+            name: "ValidationError",
+            message: "填写的 URL / Base64 无效",
+          },
+        ],
       };
     }
   }
@@ -56,7 +70,7 @@ export function documentUrlValidation(value: unknown): ValidationResponse {
   return {
     isValid: true,
     parsed: "",
-    messages: [""],
+    messages: [{ name: "", message: "" }],
   };
 }
 
@@ -71,7 +85,7 @@ class DocumentViewerWidget extends BaseWidget<
         children: [
           {
             helpText:
-              "需要预览文档的链接。如果是 URL，支持的文件扩展名包括 txt、pdf、docx、ppt、pptx 和 xlsx；如果是 base64，不支持 ppt。",
+              "需要预览文档的链接。如果是 URL，支持的文件扩展名包括 txt、pdf、docx、ppt、pptx 和 xlsx；如果是 base64，不支持 ppt/pptx。",
             propertyName: "docUrl",
             label: "文档链接",
             controlType: "INPUT_TEXT",
@@ -119,6 +133,30 @@ class DocumentViewerWidget extends BaseWidget<
         ],
       },
     ];
+  }
+
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {
+        setVisibility: {
+          path: "isVisible",
+          type: "boolean",
+        },
+        setURL: {
+          path: "docUrl",
+          type: "string",
+        },
+      },
+    };
+  }
+
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc": "Document viewer widget is used to show documents on a page",
+      "!url": "https://docs.appsmith.com/reference/widgets/document-viewer",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      docUrl: "string",
+    };
   }
 
   getPageView() {

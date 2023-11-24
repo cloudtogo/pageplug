@@ -1,10 +1,9 @@
 import { createReducer } from "utils/ReducerUtils";
-import {
-  ReduxAction,
-  ReduxActionTypes,
-} from "@appsmith/constants/ReduxActionConstants";
-import { User } from "constants/userConstants";
-import { APP_MODE } from "entities/App";
+import { getAppsmithConfigs } from "@appsmith/configs";
+import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import type { User } from "constants/userConstants";
+import type { APP_MODE } from "entities/App";
 
 export type AuthUserState = {
   username: string;
@@ -23,10 +22,7 @@ export type UrlDataState = {
   fullPath: string;
 };
 
-export type AppStoreState = {
-  transient: Record<string, unknown>;
-  persistent: Record<string, unknown>;
-};
+export type AppStoreState = Record<string, unknown>;
 
 export type AppDataState = {
   mode?: APP_MODE;
@@ -56,10 +52,7 @@ const initialState: AppDataState = {
     hash: "",
     fullPath: "",
   },
-  store: {
-    transient: {},
-    persistent: {},
-  },
+  store: {},
   geolocation: {
     canBeRequested: "geolocation" in navigator,
     currentPosition: {},
@@ -95,28 +88,13 @@ const appReducer = createReducer(initialState, {
       URL: action.payload,
     };
   },
-  [ReduxActionTypes.UPDATE_APP_TRANSIENT_STORE]: (
+  [ReduxActionTypes.UPDATE_APP_STORE]: (
     state: AppDataState,
     action: ReduxAction<Record<string, unknown>>,
   ) => {
     return {
       ...state,
-      store: {
-        ...state.store,
-        transient: action.payload,
-      },
-    };
-  },
-  [ReduxActionTypes.UPDATE_APP_PERSISTENT_STORE]: (
-    state: AppDataState,
-    action: ReduxAction<Record<string, unknown>>,
-  ) => {
-    return {
-      ...state,
-      store: {
-        ...state.store,
-        persistent: action.payload,
-      },
+      store: action.payload,
     };
   },
   [ReduxActionTypes.SET_USER_CURRENT_GEO_LOCATION]: (

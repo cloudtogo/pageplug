@@ -1,228 +1,151 @@
-import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
-import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import derivedProperties from "./parseDerivedProperties";
-import { isArray, isFinite, isString, LoDashStatic, xorWith } from "lodash";
-import equal from "fast-deep-equal/es6";
-import {
-  ValidationResponse,
-  ValidationTypes,
-} from "constants/WidgetValidation";
-import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import MultiSelectComponent from "../component";
-import { DraftValueType, LabelInValueType } from "rc-select/lib/Select";
-import { Layers } from "constants/Layers";
-import { MinimumPopupRows, GRID_DENSITY_MIGRATION_V1 } from "widgets/constants";
-import { LabelPosition } from "components/constants";
 import { Alignment } from "@blueprintjs/core";
-import { Stylesheet } from "entities/AppTheming";
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
-import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
-
-export function defaultOptionValueValidation(
-  value: unknown,
-  props: MultiSelectWidgetProps,
-  _: LoDashStatic,
-): ValidationResponse {
-  let isValid = false;
-  let parsed: any[] = [];
-  let message = "";
-  const isServerSideFiltered = props.serverSideFiltering;
-  // TODO: options shouldn't get un-eval values;
-  let options = props.options;
-
-  const DEFAULT_ERROR_MESSAGE =
-    "value should match: Array<string | number> | Array<{label: string, value: string | number}>";
-  const MISSING_FROM_OPTIONS =
-    "Some or all default values are missing from options. Please update the values.";
-  const MISSING_FROM_OPTIONS_AND_WRONG_FORMAT =
-    "Default value is missing in options. Please use [{label : <string | num>, value : < string | num>}] format to show default for server side data";
-  /*
-   * Function to check if the object has `label` and `value`
-   */
-  const hasLabelValue = (obj: any) => {
-    return (
-      _.isPlainObject(obj) &&
-      obj.hasOwnProperty("label") &&
-      obj.hasOwnProperty("value") &&
-      _.isString(obj.label) &&
-      (_.isString(obj.value) || _.isFinite(obj.value))
-    );
-  };
-
-  /*
-   * Function to check for duplicate values in array
-   */
-  const hasUniqueValues = (arr: Array<string>) => {
-    const uniqueValues = new Set(arr);
-
-    return uniqueValues.size === arr.length;
-  };
-
-  /*
-   * When value is "['green', 'red']", "[{label: 'green', value: 'green'}]" and "green, red"
-   */
-  if (_.isString(value) && value.trim() !== "") {
-    try {
-      /*
-       * when value is "['green', 'red']", "[{label: 'green', value: 'green'}]"
-       */
-      const parsedValue = JSON.parse(value);
-      // Only parse value if resulting value is an array or string
-      if (Array.isArray(parsedValue) || _.isString(parsedValue)) {
-        value = parsedValue;
-      }
-    } catch (e) {
-      /*
-       * when value is "green, red", JSON.parse throws error
-       */
-      const splitByComma = (value as string).split(",") || [];
-
-      value = splitByComma.map((s) => s.trim());
-    }
-  }
-
-  /*
-   * When value is "['green', 'red']", "[{label: 'green', value: 'green'}]" and "green, red"
-   */
-  if (Array.isArray(value)) {
-    if (value.every((val) => _.isString(val) || _.isFinite(val))) {
-      /*
-       * When value is ["green", "red"]
-       */
-      if (hasUniqueValues(value)) {
-        isValid = true;
-        parsed = value;
-      } else {
-        parsed = [];
-        message = "values must be unique. Duplicate values found";
-      }
-    } else if (value.every(hasLabelValue)) {
-      /*
-       * When value is [{label: "green", value: "red"}]
-       */
-      if (hasUniqueValues(value.map((val) => val.value))) {
-        isValid = true;
-        parsed = value;
-      } else {
-        parsed = [];
-        message = "path:value must be unique. Duplicate values found";
-      }
-    } else {
-      /*
-       * When value is [true, false], [undefined, undefined] etc.
-       */
-      parsed = [];
-      message = DEFAULT_ERROR_MESSAGE;
-    }
-  } else if (_.isString(value) && value.trim() === "") {
-    /*
-     * When value is an empty string
-     */
-    isValid = true;
-    parsed = [];
-  } else if (_.isNumber(value) || _.isString(value)) {
-    /*
-     * When value is a number or just a single string e.g "Blue"
-     */
-    isValid = true;
-    parsed = [value];
-  } else {
-    /*
-     * When value is undefined, null, {} etc.
-     */
-    parsed = [];
-    message = DEFAULT_ERROR_MESSAGE;
-  }
-
-  if (isValid && !_.isNil(parsed) && !_.isEmpty(parsed)) {
-    if (!Array.isArray(options) && typeof options === "string") {
-      try {
-        const parsedOptions = JSON.parse(options);
-        if (Array.isArray(parsedOptions)) {
-          options = parsedOptions;
-        } else {
-          options = [];
-        }
-      } catch (e) {
-        options = [];
-      }
-    }
-
-    const parsedValue = parsed;
-    const areValuesPresent = parsedValue.every((value) => {
-      const index = _.findIndex(
-        options,
-        (option) => option.value === value || option.value === value.value,
-      );
-      return index !== -1;
-    });
-
-    if (!areValuesPresent) {
-      isValid = false;
-      if (!isServerSideFiltered) {
-        message = MISSING_FROM_OPTIONS;
-      } else {
-        if (!parsed.every(hasLabelValue)) {
-          message = MISSING_FROM_OPTIONS_AND_WRONG_FORMAT;
-        } else {
-          message = MISSING_FROM_OPTIONS;
-        }
-      }
-    }
-  }
-  return {
-    isValid,
-    parsed,
-    messages: [message],
-  };
-}
+import { LabelPosition } from "components/constants";
+import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import { Layers } from "constants/Layers";
+import type { WidgetType } from "constants/WidgetConstants";
+import { ValidationTypes } from "constants/WidgetValidation";
+import type { SetterConfig, Stylesheet } from "entities/AppTheming";
+import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
+import equal from "fast-deep-equal/es6";
+import { isArray, isFinite, isString, xorWith } from "lodash";
+import type { DraftValueType, LabelInValueType } from "rc-select/lib/Select";
+import React from "react";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
+import { GRID_DENSITY_MIGRATION_V1, MinimumPopupRows } from "widgets/constants";
+import {
+  isAutoHeightEnabledForWidget,
+  DefaultAutocompleteDefinitions,
+} from "widgets/WidgetUtils";
+import MultiSelectComponent from "../component";
+import derivedProperties from "./parseDerivedProperties";
+import type { AutocompletionDefinitions } from "widgets/constants";
+import {
+  defaultValueExpressionPrefix,
+  getDefaultValueExpressionSuffix,
+  getOptionLabelValueExpressionPrefix,
+  optionLabelValueExpressionSuffix,
+} from "../constants";
+import {
+  defaultOptionValueValidation,
+  labelKeyValidation,
+  getLabelValueAdditionalAutocompleteData,
+  getLabelValueKeyOptions,
+  valueKeyValidation,
+} from "./propertyUtils";
+import type {
+  WidgetQueryConfig,
+  WidgetQueryGenerationFormConfig,
+} from "WidgetQueryGenerators/types";
 
 class MultiSelectWidget extends BaseWidget<
   MultiSelectWidgetProps,
   WidgetState
 > {
+  static getQueryGenerationConfig(widget: WidgetProps) {
+    return {
+      select: {
+        where: `${widget.widgetName}.filterText`,
+      },
+    };
+  }
+
+  static getPropertyUpdatesForQueryBinding(
+    queryConfig: WidgetQueryConfig,
+    widget: WidgetProps,
+    formConfig: WidgetQueryGenerationFormConfig,
+  ) {
+    let modify;
+
+    if (queryConfig.select) {
+      modify = {
+        sourceData: queryConfig.select.data,
+        optionLabel: formConfig.aliases.find((d) => d.name === "label")?.alias,
+        optionValue: formConfig.aliases.find((d) => d.name === "value")?.alias,
+        defaultOptionValue: "",
+        serverSideFiltering: true,
+        onFilterUpdate: queryConfig.select.run,
+      };
+    }
+
+    return {
+      modify,
+    };
+  }
+
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "MultiSelect is used to capture user input/s from a specified list of permitted inputs. A MultiSelect captures multiple choices from a list of options",
+      "!url": "https://docs.appsmith.com/widget-reference/dropdown",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      filterText: {
+        "!type": "string",
+        "!doc": "The filter text for Server side filtering",
+      },
+      selectedOptionValues: {
+        "!type": "[string]",
+        "!doc": "The array of values selected in a multi select dropdown",
+        "!url": "https://docs.appsmith.com/widget-reference/dropdown",
+      },
+      selectedOptionLabels: {
+        "!type": "[string]",
+        "!doc":
+          "The array of selected option labels in a multi select dropdown",
+        "!url": "https://docs.appsmith.com/widget-reference/dropdown",
+      },
+      isDisabled: "bool",
+      isValid: "bool",
+      isDirty: "bool",
+      options: "[$__dropdownOption__$]",
+    };
+  }
+
   static getPropertyPaneContentConfig() {
     return [
       {
         sectionName: "数据",
         children: [
           {
-            helpText: "允许用户多选，每个选项的值必须唯一",
-            propertyName: "options",
-            label: "选项",
-            controlType: "INPUT_TEXT",
-            placeholderText: '[{ "label": "选项1", "value": "选项2" }]',
+            helpText: "接受一个对象数组以显示选项。使用 {{}} 绑定来自 API 的数据。",
+            propertyName: "sourceData",
+            label: "源数据",
+            controlType: "ONE_CLICK_BINDING_CONTROL",
+            controlConfig: {
+              aliases: [
+                {
+                  name: "label",
+                  isSearcheable: true,
+                  isRequired: true,
+                },
+                {
+                  name: "value",
+                  isRequired: true,
+                },
+              ],
+              sampleData: JSON.stringify(
+                [
+                  { name: "蓝", code: "BLUE" },
+                  { name: "绿", code: "GREEN" },
+                  { name: "红", code: "RED" },
+                ],
+                null,
+                2,
+              ),
+            },
+            isJSConvertible: true,
+            placeholderText: '[{ "label": "Option1", "value": "Option2" }]',
             isBindProperty: true,
             isTriggerProperty: false,
-            isJSConvertible: false,
             validation: {
               type: ValidationTypes.ARRAY,
               params: {
-                unique: ["value"],
                 children: {
                   type: ValidationTypes.OBJECT,
                   params: {
                     required: true,
-                    allowedKeys: [
-                      {
-                        name: "label",
-                        type: ValidationTypes.TEXT,
-                        params: {
-                          default: "",
-                          requiredKey: true,
-                        },
-                      },
-                      {
-                        name: "value",
-                        type: ValidationTypes.TEXT,
-                        params: {
-                          default: "",
-                          requiredKey: true,
-                        },
-                      },
-                    ],
                   },
                 },
               },
@@ -231,10 +154,82 @@ class MultiSelectWidget extends BaseWidget<
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText: "设置默认选中的选项值",
+            helpText:
+              "选择或设置源数据中的字段作为显示标签",
+            propertyName: "optionLabel",
+            label: "Label key",
+            controlType: "DROP_DOWN",
+            customJSControl: "WRAPPED_CODE_EDITOR",
+            controlConfig: {
+              wrapperCode: {
+                prefix: getOptionLabelValueExpressionPrefix,
+                suffix: optionLabelValueExpressionSuffix,
+              },
+            },
+            placeholderText: "",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            isJSConvertible: true,
+            evaluatedDependencies: ["sourceData"],
+            options: getLabelValueKeyOptions,
+            alwaysShowSelected: true,
+            validation: {
+              type: ValidationTypes.FUNCTION,
+              params: {
+                fn: labelKeyValidation,
+                expected: {
+                  type: "String or Array<string>",
+                  example: `color | ["blue", "green"]`,
+                  autocompleteDataType: AutocompleteDataType.STRING,
+                },
+              },
+            },
+            additionalAutoComplete: getLabelValueAdditionalAutocompleteData,
+          },
+          {
+            helpText: "选择或设置源数据中的字段作为数值",
+            propertyName: "optionValue",
+            label: "Value key",
+            controlType: "DROP_DOWN",
+            customJSControl: "WRAPPED_CODE_EDITOR",
+            controlConfig: {
+              wrapperCode: {
+                prefix: getOptionLabelValueExpressionPrefix,
+                suffix: optionLabelValueExpressionSuffix,
+              },
+            },
+            placeholderText: "",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            isJSConvertible: true,
+            evaluatedDependencies: ["sourceData"],
+            options: getLabelValueKeyOptions,
+            alwaysShowSelected: true,
+            validation: {
+              type: ValidationTypes.FUNCTION,
+              params: {
+                fn: valueKeyValidation,
+                expected: {
+                  type: "String or Array<string | number | boolean>",
+                  example: `color | [1, "orange"]`,
+                  autocompleteDataType: AutocompleteDataType.STRING,
+                },
+              },
+              dependentPaths: ["sourceData"],
+            },
+            additionalAutoComplete: getLabelValueAdditionalAutocompleteData,
+          },
+          {
+            helpText: "默认选中值",
             propertyName: "defaultOptionValue",
             label: "默认选中值",
-            controlType: "SELECT_DEFAULT_VALUE_CONTROL",
+            controlType: "WRAPPED_CODE_EDITOR",
+            controlConfig: {
+              wrapperCode: {
+                prefix: defaultValueExpressionPrefix,
+                suffix: getDefaultValueExpressionSuffix,
+              },
+            },
             placeholderText: "[GREEN]",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -248,6 +243,7 @@ class MultiSelectWidget extends BaseWidget<
                   autocompleteDataType: AutocompleteDataType.ARRAY,
                 },
               },
+              dependentPaths: ["serverSideFiltering", "options"],
             },
             dependencies: ["serverSideFiltering", "options"],
           },
@@ -272,6 +268,7 @@ class MultiSelectWidget extends BaseWidget<
             label: "位置",
             controlType: "ICON_TABS",
             fullWidth: true,
+            hidden: isAutoLayout,
             options: [
               { label: "自动", value: LabelPosition.Auto },
               { label: "左", value: LabelPosition.Left },
@@ -287,13 +284,14 @@ class MultiSelectWidget extends BaseWidget<
             propertyName: "labelAlignment",
             label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
+            fullWidth: false,
             options: [
               {
-                icon: "LEFT_ALIGN",
+                startIcon: "align-left",
                 value: Alignment.LEFT,
               },
               {
-                icon: "RIGHT_ALIGN",
+                startIcon: "align-right",
                 value: Alignment.RIGHT,
               },
             ],
@@ -385,7 +383,7 @@ class MultiSelectWidget extends BaseWidget<
             propertyName: "labelTooltip",
             label: "提示",
             controlType: "INPUT_TEXT",
-            placeholderText: "请至少输入 6 个字符",
+            placeholderText: "添加提示信息",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -456,7 +454,7 @@ class MultiSelectWidget extends BaseWidget<
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the dropdown opens",
+            helpText: "when the dropdown opens",
             propertyName: "onDropdownOpen",
             label: "onDropdownOpen",
             controlType: "ACTION_SELECTOR",
@@ -465,7 +463,7 @@ class MultiSelectWidget extends BaseWidget<
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the dropdown closes",
+            helpText: "when the dropdown closes",
             propertyName: "onDropdownClose",
             label: "onDropdownClose",
             controlType: "ACTION_SELECTOR",
@@ -499,6 +497,7 @@ class MultiSelectWidget extends BaseWidget<
             helpText: "设置标签字体大小",
             controlType: "DROP_DOWN",
             defaultValue: "0.875rem",
+            hidden: isAutoLayout,
             options: [
               {
                 label: "S",
@@ -540,14 +539,14 @@ class MultiSelectWidget extends BaseWidget<
             propertyName: "labelStyle",
             label: "强调",
             helpText: "设置标签字体是否加粗或斜体",
-            controlType: "BUTTON_TABS",
+            controlType: "BUTTON_GROUP",
             options: [
               {
-                icon: "BOLD_FONT",
+                icon: "text-bold",
                 value: "BOLD",
               },
               {
-                icon: "ITALICS_FONT",
+                icon: "text-italic",
                 value: "ITALIC",
               },
             ],
@@ -608,6 +607,7 @@ class MultiSelectWidget extends BaseWidget<
 
   static getDerivedPropertiesMap() {
     return {
+      options: `{{(()=>{${derivedProperties.getOptions}})()}}`,
       value: `{{this.selectedOptionValues}}`,
       isValid: `{{(()=>{${derivedProperties.getIsValid}})()}}`,
       selectedOptionValues: `{{(()=>{${derivedProperties.getSelectedOptionValues}})()}}`,
@@ -656,6 +656,30 @@ class MultiSelectWidget extends BaseWidget<
     if (hasChanges && this.props.isDirty) {
       this.props.updateWidgetMetaProperty("isDirty", false);
     }
+  }
+
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {
+        setVisibility: {
+          path: "isVisible",
+          type: "boolean",
+        },
+        setDisabled: {
+          path: "isDisabled",
+          type: "boolean",
+        },
+        setRequired: {
+          path: "isRequired",
+          type: "boolean",
+        },
+        setSelectedOptions: {
+          path: "defaultOptionValue",
+          type: "array",
+          accessor: "selectedOptionValues",
+        },
+      },
+    };
   }
 
   getPageView() {

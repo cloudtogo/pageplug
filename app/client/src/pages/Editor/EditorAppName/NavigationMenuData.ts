@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { noop } from "lodash";
+import type { noop } from "lodash";
 
-import { Toaster, Variant } from "design-system";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { APPLICATIONS_URL } from "constants/routes";
 
-import { MenuItemData, MenuTypes } from "./NavigationMenuItem";
+import type { MenuItemData } from "./NavigationMenuItem";
+import { MenuTypes } from "./NavigationMenuItem";
 import { useCallback } from "react";
 import { getExportAppAPIRoute } from "@appsmith/constants/ApiConstants";
 
@@ -15,20 +15,23 @@ import {
   isPermitted,
   PERMISSION_TYPE,
 } from "@appsmith/utils/permissionHelpers";
-import { getCurrentApplication } from "selectors/applicationSelectors";
+import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
 import { Colors } from "constants/Colors";
 import { getCurrentApplicationId } from "selectors/editorSelectors";
 import { redoAction, undoAction } from "actions/pageActions";
 import { redoShortCut, undoShortCut } from "utils/helpers";
 import { openAppSettingsPaneAction } from "actions/appSettingsPaneActions";
-import { ThemeProp } from "widgets/constants";
+import { toast } from "design-system";
+import type { ThemeProp } from "widgets/constants";
 
 type NavigationMenuDataProps = ThemeProp & {
   editMode: typeof noop;
+  setForkApplicationModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const GetNavigationMenuData = ({
   editMode,
+  setForkApplicationModalOpen,
 }: NavigationMenuDataProps): MenuItemData[] => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -42,11 +45,34 @@ export const GetNavigationMenuData = ({
     currentApplication?.userPermissions ?? [],
     PERMISSION_TYPE.EXPORT_APPLICATION,
   );
+  const hasEditPermission = isPermitted(
+    currentApplication?.userPermissions ?? [],
+    PERMISSION_TYPE.MANAGE_APPLICATION,
+  );
   const openExternalLink = useCallback((link: string) => {
     if (link) {
       window.open(link, "_blank");
     }
   }, []);
+
+  const exportAppAsJSON = () => {
+    const id = `t--export-app-link`;
+    const existingLink = document.getElementById(id);
+    existingLink && existingLink.remove();
+    const link = document.createElement("a");
+
+    const branchName = currentApplication?.gitApplicationMetadata?.branchName;
+    link.href = getExportAppAPIRoute(applicationId, branchName);
+    link.id = id;
+    document.body.appendChild(link);
+    // @ts-expect-error: Types are not available
+    if (!window.Cypress) {
+      link.click();
+    }
+    toast.show(`Successfully exported ${currentApplication?.name}`, {
+      kind: "success",
+    });
+  };
 
   const openAppSettingsPane = () => dispatch(openAppSettingsPaneAction());
 
@@ -60,9 +86,8 @@ export const GetNavigationMenuData = ({
       });
       history.push(APPLICATIONS_URL);
     } else {
-      Toaster.show({
-        text: "删除应用时发生了错误",
-        variant: Variant.danger,
+      toast.show("删除应用时发生了错误", {
+        kind: "error",
       });
     }
   };
@@ -118,15 +143,8 @@ export const GetNavigationMenuData = ({
       isVisible: true,
       children: [
         {
-          text: "社区",
-          onClick: () => openExternalLink("https://appsmith-fans.cn/"),
-          type: MenuTypes.MENU,
-          isVisible: true,
-          isOpensNewWindow: true,
-        },
-        {
           text: "文档",
-          onClick: () => openExternalLink("https://docs.appsmith.com/"),
+          onClick: () => openExternalLink("https://docs.pageplug.cn"),
           type: MenuTypes.MENU,
           isVisible: true,
           isOpensNewWindow: true,
@@ -150,9 +168,14 @@ export const GetNavigationMenuData = ({
       ],
     },
     {
+      text: "复制应用",
+      onClick: () => setForkApplicationModalOpen(true),
+      type: MenuTypes.MENU,
+      isVisible: isApplicationIdPresent && hasEditPermission,
+    },
+    {
       text: "导出应用",
-      onClick: () =>
-        applicationId && openExternalLink(getExportAppAPIRoute(applicationId)),
+      onClick: exportAppAsJSON,
       type: MenuTypes.MENU,
       isVisible: isApplicationIdPresent && hasExportPermission,
     },

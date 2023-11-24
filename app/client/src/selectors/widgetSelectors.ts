@@ -1,7 +1,6 @@
 import { createSelector } from "reselect";
-import { AppState } from "@appsmith/reducers";
-// import * as echarts from "echarts";
-import {
+import type { AppState } from "@appsmith/reducers";
+import type {
   CanvasWidgetsReduxState,
   FlattenedWidgetProps,
 } from "reducers/entityReducers/canvasWidgetsReducer";
@@ -16,11 +15,15 @@ import {
 } from "./ui";
 import { MAIN_CONTAINER_WIDGET_ID } from "constants/WidgetConstants";
 import { get } from "lodash";
-import { getAppMode } from "selectors/applicationSelectors";
+import {
+  getAppMode,
+  isMobileLayout,
+} from "@appsmith/selectors/applicationSelectors";
 import { APP_MODE } from "entities/App";
 import { getIsTableFilterPaneVisible } from "selectors/tableFilterSelectors";
 import { getIsAutoHeightWithLimitsChanging } from "utils/hooks/autoHeightUIHooks";
-import { isMobileLayout } from "./editorSelectors";
+import { getIsPropertyPaneVisible } from "./propertyPaneSelectors";
+import { previewModeSelector } from "./editorSelectors";
 
 export const getIsDraggingOrResizing = (state: AppState) =>
   state.ui.widgetDragResize.isResizing || state.ui.widgetDragResize.isDragging;
@@ -172,21 +175,27 @@ export const shouldWidgetIgnoreClicksSelector = (widgetId: string) => {
     getIsTableFilterPaneVisible,
     (state: AppState) => state.ui.widgetDragResize.isResizing,
     (state: AppState) => state.ui.widgetDragResize.isDragging,
+    (state: AppState) => state.ui.canvasSelection.isDraggingForSelection,
     getAppMode,
+    previewModeSelector,
     getIsAutoHeightWithLimitsChanging,
     (
       focusedWidgetId,
       isTableFilterPaneVisible,
       isResizing,
       isDragging,
+      isDraggingForSelection,
       appMode,
+      isPreviewMode,
       isAutoHeightWithLimitsChanging,
     ) => {
       const isFocused = focusedWidgetId === widgetId;
 
       return (
+        isDraggingForSelection ||
         isResizing ||
         isDragging ||
+        isPreviewMode ||
         appMode !== APP_MODE.EDIT ||
         !isFocused ||
         isTableFilterPaneVisible ||
@@ -195,3 +204,52 @@ export const shouldWidgetIgnoreClicksSelector = (widgetId: string) => {
     },
   );
 };
+
+export const getSelectedWidgetAncestry = (state: AppState) =>
+  state.ui.widgetDragResize.selectedWidgetAncestry;
+
+export const getEntityExplorerWidgetAncestry = (state: AppState) =>
+  state.ui.widgetDragResize.entityExplorerAncestry;
+
+export const getEntityExplorerWidgetsToExpand = createSelector(
+  getEntityExplorerWidgetAncestry,
+  (selectedWidgetAncestry: string[]) => {
+    return selectedWidgetAncestry.slice(1);
+  },
+);
+
+export const showWidgetAsSelected = (widgetId: string) => {
+  return createSelector(
+    getLastSelectedWidget,
+    getSelectedWidgets,
+    (lastSelectedWidgetId, selectedWidgets) => {
+      return (
+        lastSelectedWidgetId === widgetId ||
+        (selectedWidgets.length > 1 && selectedWidgets.includes(widgetId))
+      );
+    },
+  );
+};
+
+export const getFirstSelectedWidgetInList = createSelector(
+  getSelectedWidgets,
+  (selectedWidgets) => {
+    return selectedWidgets?.length ? selectedWidgets[0] : undefined;
+  },
+);
+
+export const isCurrentWidgetActiveInPropertyPane = (widgetId: string) => {
+  return createSelector(
+    getIsPropertyPaneVisible,
+    getFirstSelectedWidgetInList,
+    (isPaneVisible, firstSelectedWidgetId) => {
+      return isPaneVisible && firstSelectedWidgetId === widgetId;
+    },
+  );
+};
+
+export const isResizingOrDragging = createSelector(
+  (state: AppState) => state.ui.widgetDragResize.isResizing,
+  (state: AppState) => state.ui.widgetDragResize.isDragging,
+  (isResizing, isDragging) => !!isResizing || !!isDragging,
+);

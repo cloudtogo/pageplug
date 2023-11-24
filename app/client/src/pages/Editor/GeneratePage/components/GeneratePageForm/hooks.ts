@@ -1,20 +1,20 @@
 import { useEffect, useState, useCallback } from "react";
-import { DropdownOptions } from "../constants";
-import { Datasource } from "entities/Datasource";
-import { GenerateCRUDEnabledPluginMap } from "api/PluginApi";
+import type { DropdownOptions } from "../constants";
+import type { Datasource } from "entities/Datasource";
+import type { GenerateCRUDEnabledPluginMap } from "api/PluginApi";
 import { CONNECT_NEW_DATASOURCE_OPTION_ID } from "../DataSourceOption";
-import {
-  executeDatasourceQuery,
-  executeDatasourceQuerySuccessPayload,
-} from "actions/datasourceActions";
-import { DropdownOption } from "design-system";
+import type { executeDatasourceQuerySuccessPayload } from "actions/datasourceActions";
+import { executeDatasourceQuery } from "actions/datasourceActions";
+import type { DropdownOption } from "design-system-old";
 import { useDispatch } from "react-redux";
+import { getCurrentEnvironment } from "@appsmith/utils/Environments";
+import { PluginPackageName } from "entities/Action";
 
 export const FAKE_DATASOURCE_OPTION = {
   CONNECT_NEW_DATASOURCE_OPTION: {
     id: CONNECT_NEW_DATASOURCE_OPTION_ID,
     label: "新建数据源连接",
-    value: "Connect New Datasource",
+    value: CONNECT_NEW_DATASOURCE_OPTION_ID,
     data: {
       pluginId: "",
     },
@@ -22,25 +22,39 @@ export const FAKE_DATASOURCE_OPTION = {
 };
 
 export const useDatasourceOptions = ({
+  canCreateDatasource,
   datasources,
   generateCRUDSupportedPlugin,
 }: {
+  canCreateDatasource: boolean;
   datasources: Datasource[];
   generateCRUDSupportedPlugin: GenerateCRUDEnabledPluginMap;
 }) => {
   const [dataSourceOptions, setDataSourceOptions] = useState<DropdownOptions>(
     [],
   );
+  const currentEnvironment = getCurrentEnvironment();
 
   useEffect(() => {
     // On mount of component and on change of datasources, Update the list.
     const unSupportedDatasourceOptions: DropdownOptions = [];
     const supportedDatasourceOptions: DropdownOptions = [];
     let newDataSourceOptions: DropdownOptions = [];
-    newDataSourceOptions.push(
-      FAKE_DATASOURCE_OPTION.CONNECT_NEW_DATASOURCE_OPTION,
-    );
-    datasources.forEach(({ id, isValid, name, pluginId }) => {
+    if (canCreateDatasource) {
+      newDataSourceOptions.push(
+        FAKE_DATASOURCE_OPTION.CONNECT_NEW_DATASOURCE_OPTION,
+      );
+    }
+    datasources.forEach(({ datasourceStorages, id, name, pluginId }) => {
+      // Doing this since g sheets plugin is not supported for environments
+      // and we need to show the option in the dropdown
+      const isGoogleSheetPlugin =
+        generateCRUDSupportedPlugin.hasOwnProperty(pluginId) &&
+        generateCRUDSupportedPlugin[pluginId] ===
+          PluginPackageName.GOOGLE_SHEETS;
+      const datasourceStorage = isGoogleSheetPlugin
+        ? Object.values(datasourceStorages)[0]
+        : datasourceStorages[currentEnvironment];
       const datasourceObject = {
         id,
         label: name,
@@ -48,7 +62,7 @@ export const useDatasourceOptions = ({
         data: {
           pluginId,
           isSupportedForTemplate: !!generateCRUDSupportedPlugin[pluginId],
-          isValid,
+          isValid: datasourceStorage?.isValid,
         },
       };
       if (generateCRUDSupportedPlugin[pluginId])
@@ -114,12 +128,10 @@ export const useSpreadSheets = ({
 
   // const [spreadsheetsList, setSpreadsheets] = useState<DropdownOption[]>([]);
 
-  const [isFetchingSpreadsheets, setIsFetchingSpreadsheets] = useState<boolean>(
-    false,
-  );
-  const [failedFetchingSpreadsheets, setFailedFetchingSpreadsheets] = useState<
-    boolean
-  >(false);
+  const [isFetchingSpreadsheets, setIsFetchingSpreadsheets] =
+    useState<boolean>(false);
+  const [failedFetchingSpreadsheets, setFailedFetchingSpreadsheets] =
+    useState<boolean>(false);
 
   // TODO :- Create loading state and set Loading state false on success or error
   const onFetchAllSpreadsheetFailure = useCallback(() => {
@@ -221,6 +233,14 @@ export type FetchSheetsList = {
   requestObject?: Record<any, string>;
 };
 
+export type FetchSheetData = {
+  selectedDatasourceId: string;
+  selectedSpreadsheetUrl: string;
+  selectedSheetName: string;
+  pluginId: string;
+  requestObject?: Record<any, string>;
+};
+
 export type UseSheetListReturn = {
   sheetsList: DropdownOption[];
   isFetchingSheetsList: boolean;
@@ -232,17 +252,27 @@ export type UseSheetListReturn = {
   }: FetchSheetsList) => void;
 };
 
+export type UseSheetDataReturn = {
+  sheetData: Array<any>;
+  isFetchingSheetData: boolean;
+  failedFetchingSheetData: boolean;
+  fetchSheetData: ({
+    requestObject,
+    selectedDatasourceId,
+    selectedSheetName,
+    selectedSpreadsheetUrl,
+  }: FetchSheetData) => void;
+};
+
 export const useSheetsList = (): UseSheetListReturn => {
   const dispatch = useDispatch();
 
   const [sheetsList, setSheetsList] = useState<DropdownOption[]>([]);
 
-  const [isFetchingSheetsList, setIsFetchingSheetsList] = useState<boolean>(
-    false,
-  );
-  const [failedFetchingSheetsList, setFailedFetchingSheetsList] = useState<
-    boolean
-  >(false);
+  const [isFetchingSheetsList, setIsFetchingSheetsList] =
+    useState<boolean>(false);
+  const [failedFetchingSheetsList, setFailedFetchingSheetsList] =
+    useState<boolean>(false);
 
   const onFetchAllSheetFailure = useCallback(() => {
     setIsFetchingSheetsList(false);
@@ -315,6 +345,90 @@ export const useSheetsList = (): UseSheetListReturn => {
   };
 };
 
+export const useSheetData = (): UseSheetDataReturn => {
+  const dispatch = useDispatch();
+
+  const [sheetData, setSheetData] = useState<any>([]);
+
+  const [isFetchingSheetData, setIsFetchingSheetData] =
+    useState<boolean>(false);
+  const [failedFetchingSheetData, setFailedFetchingSheetData] =
+    useState<boolean>(false);
+
+  const onFetchAllSheetFailure = useCallback(() => {
+    setIsFetchingSheetData(false);
+    setFailedFetchingSheetData(true);
+  }, [setIsFetchingSheetData]);
+
+  const onFetchAllSheetSuccess = useCallback(
+    (
+      payload: executeDatasourceQuerySuccessPayload<
+        Array<{ label: string; value: string }>
+      >,
+    ) => {
+      setIsFetchingSheetData(false);
+      if (payload.data && payload.data.trigger) {
+        const responseBody = payload.data.trigger;
+        if (Array.isArray(responseBody)) {
+          setSheetData(responseBody);
+        } else {
+          // to handle error like "401 Unauthorized"
+        }
+      }
+    },
+    [setSheetData, setIsFetchingSheetData],
+  );
+
+  const fetchSheetData = useCallback(
+    ({
+      pluginId,
+      selectedDatasourceId,
+      selectedSheetName,
+      selectedSpreadsheetUrl,
+    }: FetchSheetData) => {
+      setSheetData([]);
+      setIsFetchingSheetData(true);
+      setFailedFetchingSheetData(false);
+      const formattedRequestData = {
+        datasourceId: selectedDatasourceId,
+        displayType: "DROP_DOWN",
+        parameters: {
+          sheetUrl: selectedSpreadsheetUrl,
+          sheetName: selectedSheetName,
+          queryFormat: "ROWS",
+          tableHeaderIndex: 1,
+        },
+        pluginId: pluginId,
+        requestType: "SHEET_DATA",
+      };
+      dispatch(
+        executeDatasourceQuery({
+          payload: {
+            datasourceId: selectedDatasourceId,
+            data: formattedRequestData,
+          },
+          onSuccessCallback: onFetchAllSheetSuccess,
+          onErrorCallback: onFetchAllSheetFailure,
+        }),
+      );
+    },
+    [
+      setSheetData,
+      onFetchAllSheetSuccess,
+      onFetchAllSheetFailure,
+      setIsFetchingSheetData,
+      setFailedFetchingSheetData,
+    ],
+  );
+
+  return {
+    sheetData,
+    isFetchingSheetData,
+    failedFetchingSheetData,
+    fetchSheetData,
+  };
+};
+
 export type FetchColumnHeaderListParams = {
   selectedDatasourceId: string;
   selectedSpreadsheetUrl: string;
@@ -343,13 +457,10 @@ export const useSheetColumnHeaders = () => {
     [],
   );
 
-  const [isFetchingColumnHeaderList, setIsFetchingColumnHeaderList] = useState<
-    boolean
-  >(false);
-  const [
-    errorFetchingColumnHeaderList,
-    setErrorFetchingColumnHeaderList,
-  ] = useState<string>("");
+  const [isFetchingColumnHeaderList, setIsFetchingColumnHeaderList] =
+    useState<boolean>(false);
+  const [errorFetchingColumnHeaderList, setErrorFetchingColumnHeaderList] =
+    useState<string>("");
 
   const onFetchColumnHeadersFailure = useCallback(
     (error: string) => {
@@ -440,12 +551,10 @@ export const useS3BucketList = () => {
   const dispatch = useDispatch();
 
   const [bucketList, setBucketList] = useState<Array<string>>([]);
-  const [isFetchingBucketList, setIsFetchingBucketList] = useState<boolean>(
-    false,
-  );
-  const [failedFetchingBucketList, setFailedFetchingBucketList] = useState<
-    boolean
-  >(false);
+  const [isFetchingBucketList, setIsFetchingBucketList] =
+    useState<boolean>(false);
+  const [failedFetchingBucketList, setFailedFetchingBucketList] =
+    useState<boolean>(false);
   const onFetchBucketSuccess = useCallback(
     (
       payload: executeDatasourceQuerySuccessPayload<{

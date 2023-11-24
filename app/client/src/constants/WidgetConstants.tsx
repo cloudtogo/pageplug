@@ -1,6 +1,7 @@
-import { SupportedLayouts } from "reducers/entityReducers/pageListReducer";
-import { WidgetType as FactoryWidgetType } from "utils/WidgetFactory";
+import type { SupportedLayouts } from "reducers/entityReducers/pageListReducer";
+import type { WidgetType as FactoryWidgetType } from "utils/WidgetFactory";
 import { THEMEING_TEXT_SIZES } from "./ThemeConstants";
+import type { WidgetCardProps } from "widgets/BaseWidget";
 export type WidgetType = FactoryWidgetType;
 
 export const SKELETON_WIDGET_TYPE = "SKELETON_WIDGET";
@@ -11,7 +12,7 @@ export const PositionTypes: { [id: string]: string } = {
   ABSOLUTE: "ABSOLUTE",
   CONTAINER_DIRECTION: "CONTAINER_DIRECTION",
 };
-export type PositionType = typeof PositionTypes[keyof typeof PositionTypes];
+export type PositionType = (typeof PositionTypes)[keyof typeof PositionTypes];
 
 export type CSSUnit =
   | "px"
@@ -36,12 +37,12 @@ export type RenderMode =
   | "PAGE"
   | "CANVAS_SELECTED";
 
-export const RenderModes: { [id: string]: RenderMode } = {
-  COMPONENT_PANE: "COMPONENT_PANE",
-  CANVAS: "CANVAS",
-  PAGE: "PAGE",
-  CANVAS_SELECTED: "CANVAS_SELECTED",
-};
+export enum RenderModes {
+  COMPONENT_PANE = "COMPONENT_PANE",
+  CANVAS = "CANVAS",
+  PAGE = "PAGE",
+  CANVAS_SELECTED = "CANVAS_SELECTED",
+}
 
 export const CSSUnits: { [id: string]: CSSUnit } = {
   PIXEL: "px",
@@ -71,7 +72,7 @@ export const layoutConfigurations: LayoutConfigurations = {
   MOBILE_FLUID: { minWidth: 450, maxWidth: 450 },
 };
 
-export const LATEST_PAGE_VERSION = 71;
+export const LATEST_PAGE_VERSION = 85;
 
 export const GridDefaults = {
   DEFAULT_CELL_SIZE: 1,
@@ -86,11 +87,27 @@ export const GridDefaults = {
 
 export const CANVAS_MIN_HEIGHT = 380;
 
+export const DefaultDimensionMap = {
+  leftColumn: "leftColumn",
+  rightColumn: "rightColumn",
+  topRow: "topRow",
+  bottomRow: "bottomRow",
+};
+
 // Note: Widget Padding + Container Padding === DEFAULT_GRID_ROW_HEIGHT to gracefully lose one row when a container is used,
 // which wud allow the user to place elements centered inside a container(columns are rendered proportionally so it take cares of itself).
 
 export const CONTAINER_GRID_PADDING =
   GridDefaults.DEFAULT_GRID_ROW_HEIGHT * 0.6;
+
+/**
+ * Padding introduced by container-like widgets in AutoLayout mode.
+ * FlexComponent - margin: 2px (2 * 2 = 4px) [Deploy mode = 4px ( 4 * 2 = 8px)]
+ * ResizeWrapper - padding: 1px, border: 1px (2 * 2 = 4px) [Deploy mode = 0px]
+ * ContainerComponent - border: 1px (1 * 2 = 2px) [Deploy mode = 2px]
+ * Total - 5px (5 * 2 = 10px)
+ */
+export const AUTO_LAYOUT_CONTAINER_PADDING = 5;
 
 export const WIDGET_PADDING = GridDefaults.DEFAULT_GRID_ROW_HEIGHT * 0.4;
 
@@ -98,6 +115,7 @@ export const WIDGET_CLASSNAME_PREFIX = "WIDGET_";
 export const MAIN_CONTAINER_WIDGET_ID = "0";
 export const MAIN_CONTAINER_WIDGET_NAME = "MainContainer";
 export const MODAL_PORTAL_CLASSNAME = "bp3-modal-widget";
+export const MODAL_PORTAL_OVERLAY_CLASSNAME = "bp3-overlay-zindex";
 export const CANVAS_SELECTOR = "canvas";
 
 export const DEFAULT_CENTER = { lat: -34.397, lng: 150.644 };
@@ -131,6 +149,10 @@ export const WIDGET_STATIC_PROPS = {
   rightColumn: true,
   topRow: true,
   bottomRow: true,
+  mobileTopRow: true,
+  mobileBottomRow: true,
+  mobileLeftColumn: true,
+  mobileRightColumn: true,
   minHeight: true,
   parentColumnSpace: true,
   parentRowSpace: true,
@@ -143,15 +165,21 @@ export const WIDGET_STATIC_PROPS = {
   detachFromLayout: true,
   noContainerOffset: false,
   height: false,
+  topRowBeforeCollapse: false,
+  bottomRowBeforeCollapse: false,
 };
 
 export const WIDGET_DSL_STRUCTURE_PROPS = {
+  bottomRow: true,
   children: true,
+  requiresFlatWidgetChildren: true,
+  hasMetaWidgets: true,
+  isMetaWidget: true,
+  parentId: true,
+  referencedWidgetId: true,
+  topRow: true,
   type: true,
   widgetId: true,
-  parentId: true,
-  topRow: true,
-  bottomRow: true,
 };
 
 export type TextSize = keyof typeof TextSizes;
@@ -182,4 +210,45 @@ export const WIDGET_PROPS_TO_SKIP_FROM_EVAL = {
   iconSVG: true,
   version: true,
   displayName: true,
+  topRowBeforeCollapse: false,
+  bottomRowBeforeCollapse: false,
+  tags: false,
 };
+
+/**
+ * This is the padding that is applied to the flexbox container.
+ * It is also used to calculate widget positions and highlight placements.
+ */
+export const FLEXBOX_PADDING = 4;
+
+/**
+ * max width of modal widget constant as a multiplier of Main canvasWidth
+ */
+export const MAX_MODAL_WIDTH_FROM_MAIN_WIDTH = 0.95;
+
+export const FILE_SIZE_LIMIT_FOR_BLOBS = 5000 * 1024; // 5MB
+
+export const WIDGET_TAGS = {
+  GERNERAL: "通用类",
+  SELECT: "数据输入-选择器组件",
+  INPUTS: "数据录入-输入器组件",
+  DISPLAY: "数据展示类",
+  BUTTONS: "按钮类",
+  FEATRUE: "功能类",
+} as const;
+
+export type WidgetTags = (typeof WIDGET_TAGS)[keyof typeof WIDGET_TAGS];
+
+export type WidgetCardsGroupedByTags = Record<WidgetTags, WidgetCardProps[]>;
+
+export const SUGGESTED_WIDGETS_ORDER: Record<WidgetType, number> = {
+  TABLE_WIDGET_V2: 1,
+  JSON_FORM_WIDGET: 2,
+  INPUT_WIDGET_V2: 3,
+  TEXT_WIDGET: 4,
+  SELECT_WIDGET: 5,
+  LIST_WIDGET_V2: 6,
+};
+
+// Constant key to show walkthrough for a widget -> stores widget id
+export const WIDGET_ID_SHOW_WALKTHROUGH = "WIDGET_ID_SHOW_WALKTHROUGH";

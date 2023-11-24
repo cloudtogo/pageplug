@@ -6,19 +6,24 @@ import {
   getPluginEditorConfigs,
   getJSCollectionsForCurrentPage,
 } from "./entitiesSelector";
+import type { DataTree, WidgetEntity } from "entities/DataTree/dataTreeFactory";
+import { DataTreeFactory } from "entities/DataTree/dataTreeFactory";
 import {
-  DataTree,
-  DataTreeFactory,
-  DataTreeWidget,
-} from "entities/DataTree/dataTreeFactory";
-import { getWidgetsForEval, getWidgetsMeta } from "sagas/selectors";
+  getIsMobileBreakPoint,
+  getMetaWidgets,
+  getWidgetsForEval,
+  getWidgetsMeta,
+} from "sagas/selectors";
 import "url-search-params-polyfill";
 import { getPageList } from "./appViewSelectors";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import { getSelectedAppThemeProperties } from "./appThemingSelectors";
-import { LoadingEntitiesState } from "reducers/evaluationReducers/loadingEntitiesReducer";
-import { get } from "lodash";
-import { EvaluationError, getEvalErrorPath } from "utils/DynamicBindingUtils";
+import type { LoadingEntitiesState } from "reducers/evaluationReducers/loadingEntitiesReducer";
+import _, { get } from "lodash";
+import type { EvaluationError } from "utils/DynamicBindingUtils";
+import { getEvalErrorPath } from "utils/DynamicBindingUtils";
+import ConfigTreeActions from "utils/configTree";
+import { DATATREE_INTERNAL_KEYWORDS } from "constants/WidgetValidation";
 
 export const getUnevaluatedDataTree = createSelector(
   getActionsForCurrentPage,
@@ -30,6 +35,8 @@ export const getUnevaluatedDataTree = createSelector(
   getPluginEditorConfigs,
   getPluginDependencyConfig,
   getSelectedAppThemeProperties,
+  getMetaWidgets,
+  getIsMobileBreakPoint,
   (
     actions,
     jsActions,
@@ -40,6 +47,8 @@ export const getUnevaluatedDataTree = createSelector(
     editorConfigs,
     pluginDependencyConfig,
     selectedAppThemeProperty,
+    metaWidgets,
+    isMobile,
   ) => {
     const pageList = pageListPayload || [];
     return DataTreeFactory.create({
@@ -52,6 +61,8 @@ export const getUnevaluatedDataTree = createSelector(
       editorConfigs,
       pluginDependencyConfig,
       theme: selectedAppThemeProperty,
+      metaWidgets,
+      isMobile,
     });
   },
 );
@@ -76,9 +87,13 @@ export const getIsWidgetLoading = createSelector(
 export const getDataTree = (state: AppState): DataTree =>
   state.evaluations.tree;
 
+export const getConfigTree = (): any => {
+  return ConfigTreeActions.getConfigTree();
+};
+
 export const getWidgetEvalValues = createSelector(
   [getDataTree, (_state: AppState, widgetName: string) => widgetName],
-  (tree: DataTree, widgetName: string) => tree[widgetName] as DataTreeWidget,
+  (tree: DataTree, widgetName: string) => tree[widgetName] as WidgetEntity,
 );
 
 // For autocomplete. Use actions cached responses if
@@ -86,9 +101,10 @@ export const getWidgetEvalValues = createSelector(
 export const getDataTreeForAutocomplete = createSelector(
   getDataTree,
   (tree: DataTree) => {
-    return tree;
+    return _.omit(tree, Object.keys(DATATREE_INTERNAL_KEYWORDS));
   },
 );
+
 export const getPathEvalErrors = createSelector(
   [
     getDataTreeForAutocomplete,

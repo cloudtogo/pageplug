@@ -2,6 +2,9 @@ package com.appsmith.server.notifications;
 
 import com.appsmith.server.configurations.EmailConfig;
 import com.appsmith.server.helpers.TemplateUtils;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,9 +15,6 @@ import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
@@ -42,7 +42,8 @@ public class EmailSender {
         return sendMail(to, subject, text, params, null);
     }
 
-    public Mono<Boolean> sendMail(String to, String subject, String text, Map<String, ? extends Object> params, String replyTo) {
+    public Mono<Boolean> sendMail(
+            String to, String subject, String text, Map<String, ? extends Object> params, String replyTo) {
 
         /**
          * Creating a publisher which sends email in a blocking fashion, subscribing on the bounded elastic
@@ -97,7 +98,7 @@ public class EmailSender {
             if (emailConfig.getMailFrom() != null) {
                 helper.setFrom(emailConfig.getMailFrom());
             }
-            if(StringUtils.hasLength(replyTo)) {
+            if (StringUtils.hasLength(replyTo)) {
                 helper.setReplyTo(replyTo);
             } else if (REPLY_TO != null) {
                 helper.setReplyTo(REPLY_TO);
@@ -108,7 +109,11 @@ public class EmailSender {
 
             log.debug("Email sent successfully to {} with subject {}", to, subject);
         } catch (MessagingException e) {
-            log.error("Unable to create the mime message while sending an email to {} with subject: {}. Cause: ", to, subject, e);
+            log.error(
+                    "Unable to create the mime message while sending an email to {} with subject: {}. Cause: ",
+                    to,
+                    subject,
+                    e);
         } catch (MailException e) {
             log.error("Unable to send email. Cause: ", e);
         }

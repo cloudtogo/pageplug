@@ -2,6 +2,8 @@ package com.appsmith.server.repositories;
 
 import com.appsmith.external.models.BaseDomain;
 import com.appsmith.server.constants.FieldName;
+import com.mongodb.client.result.UpdateResult;
+import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
@@ -19,8 +21,11 @@ import reactor.core.publisher.Mono;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
@@ -36,40 +41,62 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
  * @param <T>  The domain class that extends {@link BaseDomain}. This is required because we use default fields in
  *             {@link BaseDomain} such as `deleted`
  * @param <ID> The ID field that extends Serializable interface
+ *             <p>
+ *             In case you are wondering why we have two different repository implementation classes i.e.
+ *             BaseRepositoryImpl.java and BaseAppsmithRepositoryCEImpl.java, Arpit's comments on this might be helpful:
+ *             ```
+ *             BaseRepository is required for running any JPA queries. This doesn’t invoke any ACL permissions. This is used when
+ *             we wish to fetch data from the DB without ACL. For eg, Fetching a user by username during login
+ *             Usage example:
+ *             ActionCollectionRepositoryCE extends BaseRepository to power JPA queries using the ReactiveMongoRepository.
+ *             AppsmithRepository is the one that we should use by default (unless the use case demands that we don’t need ACL).
+ *             It is implemented by BaseAppsmithRepositoryCEImpl and BaseAppsmithRepositoryImpl. This interface allows us to
+ *             define custom Mongo queries by including the delete functionality & ACL permissions.
+ *             Usage example:
+ *             CustomActionCollectionRepositoryCE extends AppsmithRepository and then implements the functions defined there.
+ *             I agree that the naming is a little confusing. Open to hearing better naming suggestions so that we can improve
+ *             the understanding of these interfaces.
+ *             ```
+ *             Ref: https://theappsmith.slack.com/archives/CPQNLFHTN/p1669100205502599?thread_ts=1668753437.497369&cid=CPQNLFHTN
  */
 @Slf4j
-public class BaseRepositoryImpl<T extends BaseDomain, ID extends Serializable> extends SimpleReactiveMongoRepository<T, ID>
-        implements BaseRepository<T, ID> {
+public class BaseRepositoryImpl<T extends BaseDomain, ID extends Serializable>
+        extends SimpleReactiveMongoRepository<T, ID> implements BaseRepository<T, ID> {
 
     protected final MongoEntityInformation<T, ID> entityInformation;
     protected final ReactiveMongoOperations mongoOperations;
 
-    public BaseRepositoryImpl(@NonNull MongoEntityInformation<T, ID> entityInformation,
-                              @NonNull ReactiveMongoOperations mongoOperations) {
+    public BaseRepositoryImpl(
+            @NonNull MongoEntityInformation<T, ID> entityInformation,
+            @NonNull ReactiveMongoOperations mongoOperations) {
         super(entityInformation, mongoOperations);
         this.entityInformation = entityInformation;
         this.mongoOperations = mongoOperations;
     }
 
     private Criteria notDeleted() {
-        return new Criteria().andOperator(
-                new Criteria().orOperator(
-                        where(FieldName.DELETED).exists(false),
-                        where(FieldName.DELETED).is(false)
-                ),
-                new Criteria().orOperator(
-                        where(FieldName.DELETED_AT).exists(false),
-                        where(FieldName.DELETED_AT).is(null)
-                )
-        );
+        return new Criteria()
+                .andOperator(
+                        new Criteria()
+                                .orOperator(
+                                        where(FieldName.DELETED).exists(false),
+                                        where(FieldName.DELETED).is(false)),
+                        new Criteria()
+                                .orOperator(
+                                        where(FieldName.DELETED_AT).exists(false),
+                                        where(FieldName.DELETED_AT).is(null)));
     }
 
     private Criteria getIdCriteria(Object id) {
         return where(entityInformation.getIdAttribute()).is(id);
     }
 
+    /**
+     * When `fieldName` is blank, this method will return the entire object. Otherwise, it will return only the value
+     * against the `fieldName` property in the matching object.
+     */
     @Override
-    public Mono<T> findById(ID id) {
+    public Mono<T> findByIdAndFieldNames(ID id, List<String> fieldNames) {
         Assert.notNull(id, "The given id must not be null!");
         return ReactiveSecurityContextHolder.getContext()
                 .map(ctx -> ctx.getAuthentication())
@@ -78,7 +105,16 @@ public class BaseRepositoryImpl<T extends BaseDomain, ID extends Serializable> e
                     Query query = new Query(getIdCriteria(id));
                     query.addCriteria(notDeleted());
 
-                    return mongoOperations.query(entityInformation.getJavaType())
+                    if (fieldNames != null && fieldNames.size() > 0) {
+                        fieldNames.forEach(fieldName -> {
+                            if (!isBlank(fieldName)) {
+                                query.fields().include(fieldName);
+                            }
+                        });
+                    }
+
+                    return mongoOperations
+                            .query(entityInformation.getJavaType())
                             .inCollection(entityInformation.getCollectionName())
                             .matching(query)
                             .one();
@@ -86,9 +122,35 @@ public class BaseRepositoryImpl<T extends BaseDomain, ID extends Serializable> e
     }
 
     @Override
+    public Mono<T> findById(ID id) {
+        return this.findByIdAndFieldNames(id, null);
+    }
+
+    @Override
     public Mono<T> findByIdAndBranchName(ID id, String branchName) {
         // branchName will be ignored and this method is overridden for the services which are shared across branches
         return this.findById(id);
+    }
+
+    /**
+     * This method is supposed to update the given list of field names with the associated values in an object as opposed to replacing the entire object.
+     */
+    @Override
+    public Mono<UpdateResult> updateByIdAndFieldNames(@NotNull ID id, @NotNull Map<String, Object> fieldNameValueMap) {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(ctx -> ctx.getAuthentication())
+                .map(auth -> auth.getPrincipal())
+                .flatMap(principal -> {
+                    Query query = new Query(getIdCriteria(id));
+                    query.addCriteria(notDeleted());
+
+                    Update update = new Update();
+                    fieldNameValueMap.forEach((fieldName, fieldValue) -> {
+                        update.set(fieldName, fieldValue);
+                    });
+
+                    return mongoOperations.updateFirst(query, update, entityInformation.getJavaType());
+                });
     }
 
     @Override
@@ -98,7 +160,8 @@ public class BaseRepositoryImpl<T extends BaseDomain, ID extends Serializable> e
                 .map(auth -> auth.getPrincipal())
                 .flatMapMany(principal -> {
                     Query query = new Query(notDeleted());
-                    return mongoOperations.find(query, entityInformation.getJavaType(), entityInformation.getCollectionName());
+                    return mongoOperations.find(
+                            query, entityInformation.getJavaType(), entityInformation.getCollectionName());
                 });
     }
 
@@ -111,21 +174,20 @@ public class BaseRepositoryImpl<T extends BaseDomain, ID extends Serializable> e
                 .map(ctx -> ctx.getAuthentication())
                 .map(auth -> auth.getPrincipal())
                 .flatMapMany(principal -> {
-
-                    Criteria criteria = new Criteria().andOperator(
-                            //Older check for deleted
-                            new Criteria().orOperator(
-                                    where(FieldName.DELETED).exists(false),
-                                    where(FieldName.DELETED).is(false)
-                            ),
-                            //New check for deleted
-                            new Criteria().orOperator(
-                                    where(FieldName.DELETED_AT).exists(false),
-                                    where(FieldName.DELETED_AT).is(null)
-                            ),
-                            // Set the criteria as the example
-                            new Criteria().alike(example)
-                    );
+                    Criteria criteria = new Criteria()
+                            .andOperator(
+                                    // Older check for deleted
+                                    new Criteria()
+                                            .orOperator(
+                                                    where(FieldName.DELETED).exists(false),
+                                                    where(FieldName.DELETED).is(false)),
+                                    // New check for deleted
+                                    new Criteria()
+                                            .orOperator(
+                                                    where(FieldName.DELETED_AT).exists(false),
+                                                    where(FieldName.DELETED_AT).is(null)),
+                                    // Set the criteria as the example
+                                    new Criteria().alike(example));
 
                     Query query = new Query(criteria)
                             .collation(entityInformation.getCollation()) //
@@ -167,16 +229,21 @@ public class BaseRepositoryImpl<T extends BaseDomain, ID extends Serializable> e
                     Query query = new Query(getIdCriteria(id));
                     query.addCriteria(notDeleted());
 
-                    Update update = new Update();
-                    update.set(FieldName.DELETED, true);
-                    update.set(FieldName.DELETED_AT, Instant.now());
-                    return mongoOperations.updateFirst(query, update, entityInformation.getJavaType())
+                    return mongoOperations
+                            .updateFirst(query, getForArchive(), entityInformation.getJavaType())
                             .map(result -> result.getModifiedCount() > 0 ? true : false);
                 });
     }
 
+    public Update getForArchive() {
+        Update update = new Update();
+        update.set(FieldName.DELETED, true);
+        update.set(FieldName.DELETED_AT, Instant.now());
+        return update;
+    }
+
     @Override
-    public Mono<Boolean> archiveAllById(List<ID> ids) {
+    public Mono<Boolean> archiveAllById(Collection<ID> ids) {
         Assert.notNull(ids, "The given ids must not be null!");
         Assert.notEmpty(ids, "The given list of ids must not be empty!");
 
@@ -188,10 +255,8 @@ public class BaseRepositoryImpl<T extends BaseDomain, ID extends Serializable> e
                     query.addCriteria(new Criteria().where(FieldName.ID).in(ids));
                     query.addCriteria(notDeleted());
 
-                    Update update = new Update();
-                    update.set(FieldName.DELETED, true);
-                    update.set(FieldName.DELETED_AT, Instant.now());
-                    return mongoOperations.updateMulti(query, update, entityInformation.getJavaType())
+                    return mongoOperations
+                            .updateMulti(query, getForArchive(), entityInformation.getJavaType())
                             .map(result -> result.getModifiedCount() > 0 ? true : false);
                 });
     }

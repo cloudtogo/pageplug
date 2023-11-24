@@ -1,25 +1,34 @@
-import { ActionValidationConfigMap } from "constants/PropertyControlConstants";
-import { UserLogObject } from "entities/AppsmithConsole";
-import { AppTheme } from "entities/AppTheming";
-import { DataTree, UnEvalTree } from "entities/DataTree/dataTreeFactory";
-import { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
+import type {
+  ConfigTree,
+  unEvalAndConfigTree,
+} from "entities/DataTree/dataTreeFactory";
+import type { ActionValidationConfigMap } from "constants/PropertyControlConstants";
+import type { AppTheme } from "entities/AppTheming";
 
-import {
-  DependencyMap,
-  EvalError,
-  EVAL_WORKER_ACTIONS,
-} from "utils/DynamicBindingUtils";
-import { JSUpdate } from "utils/JSPaneUtils";
-import { WidgetTypeConfigMap } from "utils/WidgetFactory";
-import { EvalMetaUpdates } from "workers/common/DataTreeEvaluator/types";
-import { WorkerRequest } from "workers/common/types";
-import { DataTreeDiff } from "./evaluationUtils";
+import type { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
+import type { MetaWidgetsReduxState } from "reducers/entityReducers/metaWidgetsReducer";
+import type { DependencyMap, EvalError } from "utils/DynamicBindingUtils";
+import type {
+  EVAL_WORKER_ASYNC_ACTION,
+  EVAL_WORKER_SYNC_ACTION,
+} from "@appsmith/workers/Evaluation/evalWorkerActions";
+import type { JSUpdate } from "utils/JSPaneUtils";
+import type { WidgetTypeConfigMap } from "utils/WidgetFactory";
+import type { EvalMetaUpdates } from "@appsmith/workers/common/DataTreeEvaluator/types";
+import type { WorkerRequest } from "@appsmith/workers/common/types";
+import type { DataTreeDiff } from "@appsmith/workers/Evaluation/evaluationUtils";
+import type { APP_MODE } from "entities/App";
+import type { DiffWithReferenceState } from "./helpers";
 
-export type EvalWorkerRequest = WorkerRequest<any, EVAL_WORKER_ACTIONS>;
+export type EvalWorkerSyncRequest = WorkerRequest<any, EVAL_WORKER_SYNC_ACTION>;
+export type EvalWorkerASyncRequest = WorkerRequest<
+  any,
+  EVAL_WORKER_ASYNC_ACTION
+>;
 export type EvalWorkerResponse = EvalTreeResponseData | boolean | unknown;
 
 export interface EvalTreeRequestData {
-  unevalTree: UnEvalTree;
+  unevalTree: unEvalAndConfigTree;
   widgetTypeConfigMap: WidgetTypeConfigMap;
   widgets: CanvasWidgetsReduxState;
   theme: AppTheme;
@@ -27,17 +36,28 @@ export interface EvalTreeRequestData {
   allActionValidationConfig: {
     [actionId: string]: ActionValidationConfigMap;
   };
-  requiresLinting: boolean;
+  forceEvaluation: boolean;
+  metaWidgets: MetaWidgetsReduxState;
+  appMode?: APP_MODE;
 }
+
 export interface EvalTreeResponseData {
-  dataTree: DataTree;
   dependencies: DependencyMap;
   errors: EvalError[];
   evalMetaUpdates: EvalMetaUpdates;
   evaluationOrder: string[];
+  reValidatedPaths: string[];
   jsUpdates: Record<string, JSUpdate>;
   logs: unknown[];
-  userLogs: UserLogObject[];
   unEvalUpdates: DataTreeDiff[];
   isCreateFirstTree: boolean;
+  configTree: ConfigTree;
+  staleMetaIds: string[];
+  removedPaths: Array<{ entityId: string; fullpath: string }>;
+  isNewWidgetAdded: boolean;
+  undefinedEvalValuesMap: Record<string, boolean>;
+  jsVarsCreatedEvent?: { path: string; type: string }[];
+  updates: DiffWithReferenceState[];
 }
+
+export type JSVarMutatedEvents = Record<string, { path: string; type: string }>;

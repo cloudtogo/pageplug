@@ -8,8 +8,8 @@ import {
   take,
   takeLatest,
 } from "redux-saga/effects";
+import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
 import {
-  ReduxAction,
   ReduxActionTypes,
   ReduxActionErrorTypes,
 } from "@appsmith/constants/ReduxActionConstants";
@@ -19,28 +19,29 @@ import {
   getIsSavingEntity,
 } from "selectors/editorSelectors";
 import { getJSCollection, getJSCollections } from "selectors/entitiesSelector";
-import {
+import type {
   JSCollectionData,
   JSCollectionDataState,
 } from "reducers/entityReducers/jsActionsReducer";
 import { createNewJSFunctionName } from "utils/AppsmithUtils";
 import { getQueryParams } from "utils/URLUtils";
-import { JSCollection, JSAction } from "entities/JSCollection";
+import type { JSCollection, JSAction } from "entities/JSCollection";
 import { createJSCollectionRequest } from "actions/jsActionActions";
 import history from "utils/history";
-import { executeFunction } from "./EvaluationsSaga";
-import { getJSCollectionIdFromURL } from "pages/Editor/Explorer/helpers";
+import { executeJSFunction } from "./EvaluationsSaga";
+import { getJSCollectionIdFromURL } from "@appsmith/pages/Editor/Explorer/helpers";
+import type { JSUpdate } from "utils/JSPaneUtils";
 import {
   getDifferenceInJSCollection,
-  JSUpdate,
   pushLogsForObjectUpdate,
   createDummyJSCollectionActions,
 } from "utils/JSPaneUtils";
-import JSActionAPI, {
+import type {
   JSCollectionCreateUpdateResponse,
   RefactorAction,
   SetFunctionPropertyPayload,
 } from "api/JSActionAPI";
+import JSActionAPI from "api/JSActionAPI";
 import ActionAPI from "api/ActionAPI";
 import {
   updateJSCollectionSuccess,
@@ -51,14 +52,12 @@ import {
 } from "actions/jsPaneActions";
 import { getCurrentWorkspaceId } from "@appsmith/selectors/workspaceSelectors";
 import { getPluginIdOfPackageName } from "sagas/selectors";
-import { Toaster, Variant } from "design-system";
 import { PluginPackageName, PluginType } from "entities/Action";
 import {
   createMessage,
   ERROR_JS_COLLECTION_RENAME_FAIL,
   JS_EXECUTION_SUCCESS,
   JS_EXECUTION_FAILURE,
-  JS_EXECUTION_FAILURE_TOASTER,
   JS_EXECUTION_SUCCESS_TOASTER,
   JS_FUNCTION_CREATE_SUCCESS,
   JS_FUNCTION_DELETE_SUCCESS,
@@ -68,21 +67,30 @@ import { validateResponse } from "./ErrorSagas";
 import AppsmithConsole from "utils/AppsmithConsole";
 import { ENTITY_TYPE, PLATFORM_ERROR } from "entities/AppsmithConsole";
 import LOG_TYPE from "entities/AppsmithConsole/logtype";
-import PageApi, { FetchPageResponse } from "api/PageApi";
+import type { FetchPageResponse } from "api/PageApi";
+import PageApi from "api/PageApi";
 import { updateCanvasWithDSL } from "sagas/PageSagas";
 import { set } from "lodash";
 import { updateReplayEntity } from "actions/pageActions";
 import { jsCollectionIdURL } from "RouteBuilder";
-import { ApiResponse } from "api/ApiResponses";
+import type { ApiResponse } from "api/ApiResponses";
 import { shouldBeDefined } from "utils/helpers";
 import { ModalType } from "reducers/uiReducers/modalActionReducer";
 import { requestModalConfirmationSaga } from "sagas/UtilSagas";
 import { UserCancelledActionExecutionError } from "sagas/ActionExecution/errorUtils";
 import { APP_MODE } from "entities/App";
-import { getAppMode } from "selectors/applicationSelectors";
-import AnalyticsUtil, { EventLocation } from "utils/AnalyticsUtil";
+import { getAppMode } from "@appsmith/selectors/applicationSelectors";
+import type { EventLocation } from "@appsmith/utils/analyticsUtilTypes";
+import AnalyticsUtil from "utils/AnalyticsUtil";
 import { DebugButton } from "../components/editorComponents/Debugger/DebugCTA";
 import { checkAndLogErrorsIfCyclicDependency } from "./helper";
+import { toast } from "design-system";
+import { setDebuggerSelectedTab, showDebugger } from "actions/debuggerActions";
+import { DEBUGGER_TAB_KEYS } from "components/editorComponents/Debugger/helpers";
+import { getDebuggerSelectedTab } from "selectors/debuggerSelectors";
+
+const CONSOLE_DOT_LOG_INVOCATION_REGEX =
+  /console.log[.call | .apply]*\s*\(.*?\)/gm;
 
 function* handleCreateNewJsActionSaga(
   action: ReduxAction<{ pageId: string; from: EventLocation }>,
@@ -218,6 +226,7 @@ function* handleEachUpdateJSCollection(update: JSUpdate) {
           updateCollection = true;
           jsActionTobeUpdated.actions = nonDeletedActions;
         }
+
         if (updateCollection) {
           newActions.forEach((action) => {
             AnalyticsUtil.logEvent("JS_OBJECT_FUNCTION_ADDED", {
@@ -237,7 +246,11 @@ function* handleEachUpdateJSCollection(update: JSUpdate) {
   }
 }
 
-export function* makeUpdateJSCollection(jsUpdates: Record<string, JSUpdate>) {
+export function* makeUpdateJSCollection(
+  action: ReduxAction<Record<string, JSUpdate>>,
+) {
+  const jsUpdates: Record<string, JSUpdate> = action.payload;
+
   yield all(
     Object.keys(jsUpdates).map((key) =>
       call(handleEachUpdateJSCollection, jsUpdates[key]),
@@ -259,9 +272,8 @@ function* updateJSCollection(data: {
   try {
     const { deletedActions, jsCollection, newActions, updatedActions } = data;
     if (jsCollection) {
-      const response: JSCollectionCreateUpdateResponse = yield JSActionAPI.updateJSCollection(
-        jsCollection,
-      );
+      const response: JSCollectionCreateUpdateResponse =
+        yield JSActionAPI.updateJSCollection(jsCollection);
       const isValidResponse: boolean = yield validateResponse(response);
       if (isValidResponse) {
         if (newActions && newActions.length) {
@@ -319,9 +331,8 @@ function* handleJSObjectNameChangeSuccessSaga(
   yield take(ReduxActionTypes.FETCH_JS_ACTIONS_FOR_PAGE_SUCCESS);
   if (!actionObj) {
     // Error case, log to sentry
-    Toaster.show({
-      text: createMessage(ERROR_JS_COLLECTION_RENAME_FAIL, ""),
-      variant: Variant.danger,
+    toast.show(createMessage(ERROR_JS_COLLECTION_RENAME_FAIL, ""), {
+      kind: "error",
     });
 
     return;
@@ -346,8 +357,9 @@ export function* handleExecuteJSFunctionSaga(data: {
   collectionName: string;
   action: JSAction;
   collectionId: string;
+  isExecuteJSFunc: boolean;
 }): any {
-  const { action, collectionId, collectionName } = data;
+  const { action, collectionId, collectionName, isExecuteJSFunc } = data;
   const actionId = action.id;
   const appMode: APP_MODE = yield select(getAppMode);
   yield put(
@@ -357,9 +369,7 @@ export function* handleExecuteJSFunctionSaga(data: {
       collectionId,
     }),
   );
-
   const isEntitySaving = yield select(getIsSavingEntity);
-
   /**
    * Only start executing when no entity in the application is saving
    * This ensures that execution doesn't get carried out on stale values
@@ -371,15 +381,26 @@ export function* handleExecuteJSFunctionSaga(data: {
 
   try {
     const { isDirty, result } = yield call(
-      executeFunction,
+      executeJSFunction,
       collectionName,
       action,
       collectionId,
     );
+    // open response tab in debugger on runnning js action.
+    if (window.location.pathname.includes(collectionId)) {
+      yield put(showDebugger(true));
+
+      const debuggerSelectedTab = yield select(getDebuggerSelectedTab);
+
+      yield put(
+        setDebuggerSelectedTab(
+          debuggerSelectedTab || DEBUGGER_TAB_KEYS.RESPONSE_TAB,
+        ),
+      );
+    }
     yield put({
       type: ReduxActionTypes.EXECUTE_JS_FUNCTION_SUCCESS,
       payload: {
-        results: result,
         collectionId,
         actionId,
         isDirty,
@@ -394,13 +415,20 @@ export function* handleExecuteJSFunctionSaga(data: {
       },
       state: { response: result },
     });
-    appMode === APP_MODE.EDIT &&
-      !isDirty &&
-      Toaster.show({
-        text: createMessage(JS_EXECUTION_SUCCESS_TOASTER, action.name),
-        variant: Variant.success,
+
+    const showSuccessToast = appMode === APP_MODE.EDIT && !isDirty;
+    showSuccessToast &&
+      isExecuteJSFunc &&
+      !window.location.pathname.includes(collectionId) &&
+      toast.show(createMessage(JS_EXECUTION_SUCCESS_TOASTER, action.name), {
+        kind: "success",
       });
   } catch (error) {
+    // open response tab in debugger on runnning js action.
+    if (window.location.pathname.includes(collectionId)) {
+      yield put(showDebugger(true));
+      yield put(setDebuggerSelectedTab(DEBUGGER_TAB_KEYS.RESPONSE_TAB));
+    }
     AppsmithConsole.addErrors([
       {
         payload: {
@@ -414,25 +442,16 @@ export function* handleExecuteJSFunctionSaga(data: {
           },
           messages: [
             {
-              message: (error as Error).message,
+              message: {
+                name: (error as Error).name,
+                message: (error as Error).message,
+              },
               type: PLATFORM_ERROR.PLUGIN_EXECUTION,
             },
           ],
         },
       },
     ]);
-    Toaster.show({
-      text:
-        (error as Error).message || createMessage(JS_EXECUTION_FAILURE_TOASTER),
-      variant: Variant.danger,
-      showDebugButton: {
-        component: DebugButton,
-        componentProps: {
-          className: "t--toast-debug-button",
-          source: "TOAST",
-        },
-      },
-    });
   }
 }
 
@@ -463,15 +482,21 @@ export function* handleStartExecuteJSFunctionSaga(
       throw new UserCancelledActionExecutionError();
     }
   }
+
   AnalyticsUtil.logEvent("JS_OBJECT_FUNCTION_RUN", {
     name: action.name,
     num_params: action.actionConfiguration?.jsArguments?.length,
-    from: from,
+    from,
+    consoleStatements:
+      action.actionConfiguration?.body?.match(CONSOLE_DOT_LOG_INVOCATION_REGEX)
+        ?.length || 0,
   });
+
   yield call(handleExecuteJSFunctionSaga, {
     collectionName: collectionName,
     action: action,
     collectionId: collectionId,
+    isExecuteJSFunc: false,
   });
 }
 
@@ -486,9 +511,8 @@ function* handleUpdateJSCollectionBody(
   jsCollection["body"] = actionPayload.payload.body;
   try {
     if (jsCollection) {
-      const response: JSCollectionCreateUpdateResponse = yield JSActionAPI.updateJSCollection(
-        jsCollection,
-      );
+      const response: JSCollectionCreateUpdateResponse =
+        yield JSActionAPI.updateJSCollection(jsCollection);
       const isValidResponse: boolean = yield validateResponse(response);
       if (isValidResponse) {
         // @ts-expect-error: response is of type unknown
@@ -539,9 +563,8 @@ function* handleRefactorJSActionNameSaga(
     };
     // call to refactor action
     try {
-      const refactorResponse: ApiResponse = yield JSActionAPI.updateJSCollectionActionRefactor(
-        requestData,
-      );
+      const refactorResponse: ApiResponse =
+        yield JSActionAPI.updateJSCollectionActionRefactor(requestData);
 
       const isRefactorSuccessful: boolean = yield validateResponse(
         refactorResponse,
@@ -612,9 +635,8 @@ function* handleUpdateJSFunctionPropertySaga(
         return jsAction;
       });
       collection.actions = updatedActions;
-      const response: ApiResponse<JSCollectionCreateUpdateResponse> = yield JSActionAPI.updateJSCollection(
-        collection,
-      );
+      const response: ApiResponse<JSCollectionCreateUpdateResponse> =
+        yield JSActionAPI.updateJSCollection(collection);
       const isValidResponse: boolean = yield validateResponse(response);
       if (isValidResponse) {
         const fieldToBeUpdated = propertyName.replace(
@@ -627,7 +649,7 @@ function* handleUpdateJSFunctionPropertySaga(
           source: {
             type: ENTITY_TYPE.JSACTION,
             name: collection.name + "." + action.name,
-            id: actionId,
+            id: action.collectionId,
             propertyPath: fieldToBeUpdated,
           },
           state: {
@@ -679,7 +701,7 @@ function* toggleFunctionExecuteOnLoadSaga(
         source: {
           type: ENTITY_TYPE.JSACTION,
           name: collection.name + "." + jsAction?.name,
-          id: actionId,
+          id: collectionId,
           propertyPath: "executeOnLoad",
         },
         state: {

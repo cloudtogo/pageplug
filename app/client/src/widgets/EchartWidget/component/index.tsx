@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useEffect, useRef, useState } from "react";
 import * as _ from "lodash";
 import macarons from "theme/echart/macarons.json";
@@ -217,15 +216,11 @@ function EchartComponent(props: EchartComponentProps) {
      * 如果在opts.replaceMerge里指定组件类型，这类组件会进行替换合并。
      * 否则，会进行普通合并
      */
-    const replaceMerge: string[] = [];
 
-    if (NO_AXIS[chartType]) {
-      replaceMerge.push("xAxis", "yAxis");
+    if (NO_AXIS[chartType] && chartType !== "CUSTOM_CHART") {
       _.set(newOption, "yAxis.show", false);
       _.set(newOption, "xAxis.show", false);
     } else {
-      _.set(newOption, "yAxis.show", true);
-      _.set(newOption, "xAxis.show", true);
     }
     const newOptions: any = convertStringFunciton(newOption);
     const usedMap: boolean =

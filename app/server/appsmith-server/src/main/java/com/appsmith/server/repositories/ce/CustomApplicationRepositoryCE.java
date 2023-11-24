@@ -10,6 +10,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public interface CustomApplicationRepositoryCE extends AppsmithRepository<Application> {
@@ -33,7 +35,8 @@ public interface CustomApplicationRepositoryCE extends AppsmithRepository<Applic
 
     Flux<Application> findByClonedFromApplicationId(String applicationId, AclPermission permission);
 
-    Mono<UpdateResult> addPageToApplication(String applicationId, String pageId, boolean isDefault, String defaultPageId);
+    Mono<UpdateResult> addPageToApplication(
+            String applicationId, String pageId, boolean isDefault, String defaultPageId);
 
     Mono<UpdateResult> setPages(String applicationId, List<ApplicationPage> pages);
 
@@ -41,13 +44,24 @@ public interface CustomApplicationRepositoryCE extends AppsmithRepository<Applic
 
     Mono<UpdateResult> setGitAuth(String applicationId, GitAuth gitAuth, AclPermission aclPermission);
 
-    Mono<Application> getApplicationByGitBranchAndDefaultApplicationId(String defaultApplicationId, String branchName, AclPermission aclPermission);
+    Mono<Application> getApplicationByGitBranchAndDefaultApplicationId(
+            String defaultApplicationId, String branchName, Optional<AclPermission> permission);
+
+    Mono<Application> getApplicationByGitBranchAndDefaultApplicationId(
+            String defaultApplicationId, String branchName, AclPermission aclPermission);
+
+    Mono<Application> getApplicationByGitBranchAndDefaultApplicationId(
+            String defaultApplicationId,
+            List<String> projectionFieldNames,
+            String branchName,
+            AclPermission aclPermission);
 
     Flux<Application> getApplicationByGitDefaultApplicationId(String defaultApplicationId, AclPermission permission);
 
     Mono<List<String>> getAllApplicationId(String workspaceId);
 
-    Mono<UpdateResult> setAppTheme(String applicationId, String editModeThemeId, String publishedModeThemeId, AclPermission aclPermission);
+    Mono<UpdateResult> setAppTheme(
+            String applicationId, String editModeThemeId, String publishedModeThemeId, AclPermission aclPermission);
 
     Mono<Long> countByWorkspaceId(String workspaceId);
 
@@ -56,4 +70,17 @@ public interface CustomApplicationRepositoryCE extends AppsmithRepository<Applic
     Flux<Application> getGitConnectedApplicationByWorkspaceId(String workspaceId);
 
     Mono<Application> getApplicationByDefaultApplicationIdAndDefaultBranch(String defaultApplicationId);
+
+    Mono<UpdateResult> updateFieldByDefaultIdAndBranchName(
+            String defaultId,
+            String defaultIdPath,
+            Map<String, Object> fieldNameValueMap,
+            String branchName,
+            String branchNamePath,
+            AclPermission permission);
+
+    Mono<Application> findByNameAndWorkspaceId(String applicationName, String workspaceId, AclPermission permission);
+
+    Flux<String> getAllApplicationIdsInWorkspaceAccessibleToARoleWithPermission(
+            String workspaceId, AclPermission permission, String permissionGroupId);
 }

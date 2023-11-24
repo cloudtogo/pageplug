@@ -1,11 +1,9 @@
 import React from "react";
-import { DndProvider } from "react-dnd";
+import { ThemeProvider } from "styled-components";
 import TestRenderer from "react-test-renderer";
-import TouchBackend from "react-dnd-touch-backend";
-
 import DragLayerComponent from "./DragLayerComponent";
 import { RenderModes } from "constants/WidgetConstants";
-import { ThemeProvider, theme } from "constants/DefaultTheme";
+import { theme } from "constants/DefaultTheme";
 
 describe("DragLayerComponent", () => {
   it("it checks noPad prop", () => {
@@ -37,14 +35,7 @@ describe("DragLayerComponent", () => {
     };
     const testRenderer = TestRenderer.create(
       <ThemeProvider theme={theme}>
-        <DndProvider
-          backend={TouchBackend}
-          options={{
-            enableMouseEvents: true,
-          }}
-        >
-          <DragLayerComponent {...dummyWidget} />
-        </DndProvider>
+        <DragLayerComponent {...dummyWidget} />
       </ThemeProvider>,
     );
     const testInstance = testRenderer.root;

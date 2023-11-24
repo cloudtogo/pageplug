@@ -2,6 +2,9 @@ import Widget from "./widget";
 import IconSVG from "./icon.svg";
 import { generateReactKey } from "widgets/WidgetUtils";
 import { ECHART_TYPE_MAP } from "./constants";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
+import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
+import { ResponsiveBehavior } from "utils/autoLayout/constants";
 const DEFAUTL_CHART = {
   name: "",
   chartName: "秋季系列",
@@ -42,6 +45,7 @@ export const CONFIG = {
   name: "Echarts", // The display name which will be made in uppercase and show in the widgets panel ( can have spaces )
   iconSVG: IconSVG,
   needsMeta: true, // Defines if this widget adds any meta properties
+  tags: [WIDGET_TAGS.DISPLAY],
   searchTags: ["graph", "echart", "chart", "visualisations"],
   defaults: {
     widgetName: "Echarts",
@@ -61,25 +65,44 @@ export const CONFIG = {
     xAxisName: DEFAUTL_CHART.xAxisName,
     yAxisName: DEFAUTL_CHART.yAxisName,
     allowScroll: false,
-    animateLoading: true,
+    animateLoading: false,
     customEchartConfig: {
       title: {
-        text: "基础折线图",
+        text: "Referer of a Website",
+        subtext: "Fake Data",
+        left: "center",
       },
-      xAxis: {
-        type: "category",
-        data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      tooltip: {
+        trigger: "item",
       },
-      yAxis: {
-        type: "value",
+      legend: {
+        orient: "vertical",
+        left: "left",
       },
       series: [
         {
-          data: [150, 230, 224, 218, 135, 147, 260],
-          type: "line",
+          name: "Access From",
+          type: "pie",
+          radius: "50%",
+          data: [
+            { value: 1048, name: "Search Engine" },
+            { value: 735, name: "Direct" },
+            { value: 580, name: "Email" },
+            { value: 484, name: "Union Ads" },
+            { value: 300, name: "Video Ads" },
+          ],
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: "rgba(0, 0, 0, 0.5)",
+            },
+          },
         },
       ],
     },
+    responsiveBehavior: ResponsiveBehavior.Fill,
+    minWidth: FILL_WIDGET_MIN_WIDTH,
   },
   properties: {
     derived: Widget.getDerivedPropertiesMap(),
@@ -89,6 +112,21 @@ export const CONFIG = {
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
     stylesheetConfig: Widget.getStylesheetConfig(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
+    setterConfig: Widget.getSetterConfig(),
+  },
+  autoLayout: {
+    widgetSize: [
+      {
+        viewportMinWidth: 0,
+        configuration: () => {
+          return {
+            minWidth: "280px",
+            minHeight: "300px",
+          };
+        },
+      },
+    ],
   },
 };
 

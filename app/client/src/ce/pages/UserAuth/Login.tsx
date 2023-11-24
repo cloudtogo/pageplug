@@ -1,13 +1,8 @@
-import React from "react";
-import { Link, Redirect, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Redirect, useLocation } from "react-router-dom";
 import { connect, useSelector } from "react-redux";
-import {
-  InjectedFormProps,
-  reduxForm,
-  formValueSelector,
-  isDirty,
-  DecoratedFormProps,
-} from "redux-form";
+import type { InjectedFormProps, DecoratedFormProps } from "redux-form";
+import { reduxForm, formValueSelector, isDirty } from "redux-form";
 import {
   LOGIN_FORM_NAME,
   LOGIN_FORM_EMAIL_FIELD_NAME,
@@ -31,22 +26,17 @@ import {
   createMessage,
   LOGIN_PAGE_SUBTITLE,
 } from "@appsmith/constants/messages";
-import { Button, FormGroup, FormMessage, Size } from "design-system";
+import { FormGroup } from "design-system-old";
+import { Button, Link, Callout } from "design-system";
+import { message } from "antd";
 import FormTextField from "components/utils/ReduxFormTextField";
 import ThirdPartyAuth from "@appsmith/pages/UserAuth/ThirdPartyAuth";
 import { ThirdPartyLoginRegistry } from "pages/UserAuth/ThirdPartyLoginRegistry";
 import { isEmail, isEmptyString } from "utils/formhelpers";
-import { LoginFormValues } from "pages/UserAuth/helpers";
-import { withTheme } from "styled-components";
-import { Theme } from "constants/DefaultTheme";
+import type { LoginFormValues } from "pages/UserAuth/helpers";
 
-import {
-  SpacedSubmitForm,
-  FormActions,
-  ForgotPasswordLink,
-} from "pages/UserAuth/StyledComponents";
+import { SpacedSubmitForm, FormActions } from "pages/UserAuth/StyledComponents";
 import AnalyticsUtil from "utils/AnalyticsUtil";
-import { getAppsmithConfigs } from "@appsmith/configs";
 import { LOGIN_SUBMIT_PATH } from "@appsmith/constants/ApiConstants";
 import PerformanceTracker, {
   PerformanceTransactionName,
@@ -54,7 +44,16 @@ import PerformanceTracker, {
 import { getIsSafeRedirectURL } from "utils/helpers";
 import { getCurrentUser } from "selectors/usersSelectors";
 import Container from "pages/UserAuth/Container";
-const { disableLoginForm } = getAppsmithConfigs();
+import {
+  getThirdPartyAuths,
+  getIsFormLoginEnabled,
+  getIsFormSignupEnable,
+} from "@appsmith/selectors/tenantSelectors";
+import Helmet from "react-helmet";
+import { useHtmlPageTitle } from "@appsmith/utils";
+import FooterLinks from "pages/UserAuth/FooterLinks";
+import EmailSVGIcon from "ce/components/svg/Email";
+import PasswordSVGIcon from "ce/components/svg/Password";
 
 const validate = (values: LoginFormValues, props: ValidateProps) => {
   const errors: LoginFormValues = {};
@@ -79,9 +78,7 @@ const validate = (values: LoginFormValues, props: ValidateProps) => {
 
 type LoginFormProps = {
   emailValue: string;
-} & InjectedFormProps<LoginFormValues, { emailValue: string }> & {
-    theme: Theme;
-  };
+} & InjectedFormProps<LoginFormValues, { emailValue: string }>;
 
 type ValidateProps = {
   isPasswordFieldDirty?: boolean;
@@ -94,8 +91,11 @@ export function Login(props: LoginFormProps) {
   const { emailValue: email, error, valid } = props;
   const isFormValid = valid && email && !isEmptyString(email);
   const location = useLocation();
-  const socialLoginList = ThirdPartyLoginRegistry.get();
+  const isFormLoginEnabled = useSelector(getIsFormLoginEnabled);
+  const isFormSignupEnabled = useSelector(getIsFormSignupEnable);
+  const socialLoginList = useSelector(getThirdPartyAuths);
   const queryParams = new URLSearchParams(location.search);
+  const htmlPageTitle = useHtmlPageTitle();
   const invalidCredsForgotPasswordLinkText = createMessage(
     LOGIN_PAGE_INVALID_CREDS_FORGOT_PASSWORD_LINK,
   );
@@ -123,84 +123,93 @@ export function Login(props: LoginFormProps) {
     forgotPasswordURL += `?email=${props.emailValue}`;
   }
 
-  const footerSection = !disableLoginForm && (
-    <div className="px-2 py-4 text-base text-center border-b">
-      {createMessage(NEW_TO_APPSMITH)}
-      <Link
-        className="t--sign-up  ml-2 text-[color:var(--ads-color-brand)] hover:text-[color:var(--ads-color-brand)] t--signup-link"
-        to={signupURL}
-      >
-        {createMessage(LOGIN_PAGE_SIGN_UP_LINK_TEXT)}
-      </Link>
+  // 第三方登录
+  const footerSection = (
+    <div className="w-[min(400px,80%)] rounded-[var(--ads-v2\-border-radius)]  border-[color:var(--ads-v2\-color-border)] .login-bg">
+      <FooterLinks />
     </div>
   );
 
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  const showPassword = () => {
+    setIsShowPassword(!isShowPassword);
+  };
+
+  useEffect(() => {
+    if (showError) {
+      message.open({
+        type: "error",
+        duration: 5,
+        content: "密码校验失败，请重试，或者点击下面的按钮重置密码",
+        className: "my-msg",
+      });
+    }
+  }, []);
   return (
     <Container
       footer={footerSection}
       subtitle={createMessage(LOGIN_PAGE_SUBTITLE)}
       title={createMessage(LOGIN_PAGE_TITLE)}
     >
-      {showError && (
-        <FormMessage
-          actions={
+      <Helmet>
+        <title>{htmlPageTitle}</title>
+      </Helmet>
+      {/* 错误信息 改用弹窗 */}
+      {/* {showError && (
+        <Callout
+          kind="error"
+          links={
             !!errorMessage
-              ? []
+              ? undefined
               : [
                   {
-                    linkElement: (
-                      <Link to={FORGOT_PASSWORD_URL}>
-                        {invalidCredsForgotPasswordLinkText}
-                      </Link>
-                    ),
-                    text: invalidCredsForgotPasswordLinkText,
-                    intent: "success",
+                    children: invalidCredsForgotPasswordLinkText,
+                    to: FORGOT_PASSWORD_URL,
                   },
                 ]
           }
-          intent="danger"
-          linkAs={Link}
-          message={
-            !!errorMessage && errorMessage !== "true"
-              ? errorMessage
-              : createMessage(LOGIN_PAGE_INVALID_CREDS_ERROR)
-          }
-        />
-      )}
-      {socialLoginList.length > 0 && (
-        <ThirdPartyAuth logins={socialLoginList} type={"SIGNIN"} />
-      )}
-      {!disableLoginForm && (
+        >
+          {!!errorMessage && errorMessage !== "true"
+            ? errorMessage
+            : createMessage(LOGIN_PAGE_INVALID_CREDS_ERROR)}
+        </Callout>
+      )} */}
+      {/* 账号密码 */}
+      {isFormLoginEnabled && (
         <>
           <SpacedSubmitForm action={loginURL} method="POST">
-            <FormGroup
-              intent={error ? "danger" : "none"}
-              label={createMessage(LOGIN_PAGE_EMAIL_INPUT_LABEL)}
-            >
+            <FormGroup intent={error ? "danger" : "none"}>
               <FormTextField
                 autoFocus
                 name={LOGIN_FORM_EMAIL_FIELD_NAME}
                 placeholder={createMessage(LOGIN_PAGE_EMAIL_INPUT_PLACEHOLDER)}
                 type="email"
+                startIcon="null"
+                className="pp-height"
               />
+              <EmailSVGIcon className="icon-position w-4" />
             </FormGroup>
-            <FormGroup
-              intent={error ? "danger" : "none"}
-              label={createMessage(LOGIN_PAGE_PASSWORD_INPUT_LABEL)}
-            >
+            <FormGroup intent={error ? "danger" : "none"}>
               <FormTextField
                 name={LOGIN_FORM_PASSWORD_FIELD_NAME}
                 placeholder={createMessage(
                   LOGIN_PAGE_PASSWORD_INPUT_PLACEHOLDER,
                 )}
-                type="password"
+                type={isShowPassword ? "text" : "password"}
+                startIcon={isShowPassword ? "eye-on" : "null"}
+                className="pp-height"
+              />
+              <PasswordSVGIcon
+                className="icon-position w-4"
+                showPassword={showPassword}
+                isShowPassword={isShowPassword}
               />
             </FormGroup>
 
             <FormActions>
               <Button
-                disabled={!isFormValid}
-                fill
+                isDisabled={!isFormValid}
+                kind="primary"
                 onClick={() => {
                   PerformanceTracker.startTracking(
                     PerformanceTransactionName.LOGIN_CLICK,
@@ -209,18 +218,41 @@ export function Login(props: LoginFormProps) {
                     loginMethod: "EMAIL",
                   });
                 }}
-                size={Size.large}
-                tag="button"
-                text={createMessage(LOGIN_PAGE_LOGIN_BUTTON_TEXT)}
+                size="md"
                 type="submit"
-              />
+                className="pp-height pp-font"
+              >
+                {createMessage(LOGIN_PAGE_LOGIN_BUTTON_TEXT)}
+              </Button>
             </FormActions>
           </SpacedSubmitForm>
-          <ForgotPasswordLink>
-            <Link to={forgotPasswordURL}>
-              {createMessage(LOGIN_PAGE_FORGOT_PASSWORD_TEXT)}
-            </Link>
-          </ForgotPasswordLink>
+          {/* 底部提示 */}
+          <div className="flex-space-between">
+            {isFormSignupEnabled ? (
+              <div className="flex myfont">
+                {createMessage(NEW_TO_APPSMITH)}
+                <Link
+                  className="a_link t--sign-up t--signup-link pl-[var(--ads-v2\-spaces-3)] fs-16"
+                  kind="primary"
+                  target="_self"
+                  to={signupURL}
+                >
+                  {createMessage(LOGIN_PAGE_SIGN_UP_LINK_TEXT)}
+                </Link>
+              </div>
+            ) : (
+              <div></div>
+            )}
+            <div>
+              <Link
+                className="justify-center fs-16 a_link"
+                target="_self"
+                to={forgotPasswordURL}
+              >
+                {createMessage(LOGIN_PAGE_FORGOT_PASSWORD_TEXT)}
+              </Link>
+            </div>
+          </div>
         </>
       )}
     </Container>
@@ -239,5 +271,5 @@ export default connect((state) => ({
     validate,
     touchOnBlur: false,
     form: LOGIN_FORM_NAME,
-  })(withTheme(Login)),
+  })(Login),
 );

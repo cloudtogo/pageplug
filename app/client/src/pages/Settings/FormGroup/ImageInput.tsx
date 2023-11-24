@@ -1,14 +1,14 @@
-import {
-  Field,
-  WrappedFieldInputProps,
-  WrappedFieldMetaProps,
-} from "redux-form";
-import { Button, Size } from "design-system";
+import type { WrappedFieldInputProps, WrappedFieldMetaProps } from "redux-form";
+import { Field } from "redux-form";
+import { Button } from "design-system";
 import React, { memo, useRef, useState, useEffect } from "react";
 
-import { FormTextFieldProps } from "components/utils/ReduxFormTextField";
+import type { FormTextFieldProps } from "components/utils/ReduxFormTextField";
 
-import { FormGroup, SettingComponentProps } from "./Common";
+import type { SettingComponentProps } from "./Common";
+import { FormGroup } from "./Common";
+import { ContentBox } from "../components";
+import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
 
 type ImageInputProps = {
   value?: any;
@@ -43,7 +43,7 @@ export const ImageInput = (props: ImageInputProps) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
 
-        reader.onloadend = function() {
+        reader.onloadend = function () {
           setPreview(reader.result);
         };
 
@@ -56,21 +56,19 @@ export const ImageInput = (props: ImageInputProps) => {
   }, [defaultValue]);
 
   return (
-    <div
+    <ContentBox
       className={`relative flex items-center justify-center w-full border h-28 group ${
         className ? className : ""
       }`}
     >
-      <img alt="Preview" className="h-8" src={preview || value} />
-      <div className="absolute inset-0 items-center justify-center hidden gap-2 bg-black group-hover:flex bg-opacity-20">
-        <Button
-          icon="upload-line"
-          iconPosition="left"
-          onClick={onFileInputClick}
-          size={Size.medium}
-          text="上传图片"
-        >
-          上传图片
+      <img
+        alt="Preview"
+        className="h-8"
+        src={getAssetUrl((preview as any) || value)}
+      />
+      <div className="absolute inset-0 items-center justify-center hidden gap-2 group-hover:flex bg-opacity-20 hover-state">
+        <Button onClick={onFileInputClick} size="md" startIcon="upload-line">
+          上传文件
         </Button>
       </div>
 
@@ -81,7 +79,7 @@ export const ImageInput = (props: ImageInputProps) => {
         ref={fileInputRef}
         type="file"
       />
-    </div>
+    </ContentBox>
   );
 };
 

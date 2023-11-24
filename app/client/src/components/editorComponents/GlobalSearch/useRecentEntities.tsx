@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import { getPageList } from "selectors/editorSelectors";
 import {
   getActions,
@@ -8,12 +8,19 @@ import {
 } from "selectors/entitiesSelector";
 import { SEARCH_ITEM_TYPES } from "./utils";
 import { get } from "lodash";
-import { JSCollectionData } from "reducers/entityReducers/jsActionsReducer";
+import type { JSCollectionData } from "reducers/entityReducers/jsActionsReducer";
+import { FocusEntity } from "navigation/FocusEntity";
+import type { DataTreeEntityObject } from "entities/DataTree/dataTreeFactory";
+import { useMemo } from "react";
 
 const recentEntitiesSelector = (state: AppState) =>
   state.ui.globalSearch.recentEntities || [];
-
-const useResentEntities = () => {
+const emptyArr: any = [];
+const useResentEntities = (): Array<
+  DataTreeEntityObject & {
+    entityType: FocusEntity;
+  }
+> => {
   const widgetsMap = useSelector(getAllWidgetsMap);
   const recentEntities = useSelector(recentEntitiesSelector);
   const actions = useSelector(getActions);
@@ -22,52 +29,56 @@ const useResentEntities = () => {
     return state.entities.datasources.list;
   });
 
-  const pages = useSelector(getPageList) || [];
-
-  const populatedRecentEntities = (recentEntities || [])
-    .map((entity) => {
-      const { id, params, type } = entity;
-      if (type === "page") {
-        const result = pages.find((page) => page.pageId === id);
-        if (result) {
-          return {
-            ...result,
-            entityType: type,
-            kind: SEARCH_ITEM_TYPES.page,
-          };
-        } else {
-          return null;
-        }
-      } else if (type === "datasource") {
-        const datasource = reducerDatasources.find(
-          (reducerDatasource) => reducerDatasource.id === id,
-        );
-        return (
-          datasource && {
-            ...datasource,
-            entityType: type,
-            pageId: params?.pageId,
+  const pages = useSelector(getPageList);
+  const result = useMemo(
+    () =>
+      (recentEntities || emptyArr)
+        .map((entity) => {
+          const { id, pageId, type } = entity;
+          if (type === FocusEntity.PAGE) {
+            if (!pages) return null;
+            const result = pages.find((page) => page.pageId === id);
+            if (result) {
+              return {
+                ...result,
+                entityType: type,
+                kind: SEARCH_ITEM_TYPES.page,
+              };
+            } else {
+              return null;
+            }
+          } else if (type === FocusEntity.DATASOURCE) {
+            const datasource = reducerDatasources.find(
+              (reducerDatasource) => reducerDatasource.id === id,
+            );
+            return (
+              datasource && {
+                ...datasource,
+                entityType: type,
+                pageId,
+              }
+            );
+          } else if (type === FocusEntity.API || type === FocusEntity.QUERY)
+            return {
+              ...actions.find((action) => action?.config?.id === id),
+              entityType: type,
+            };
+          else if (type === FocusEntity.JS_OBJECT)
+            return {
+              ...jsActions.find(
+                (action: JSCollectionData) => action?.config?.id === id,
+              ),
+              entityType: type,
+            };
+          else if (type === FocusEntity.PROPERTY_PANE) {
+            return { ...get(widgetsMap, id, null), entityType: type };
           }
-        );
-      } else if (type === "action")
-        return {
-          ...actions.find((action) => action?.config?.id === id),
-          entityType: type,
-        };
-      else if (type === "jsAction")
-        return {
-          ...jsActions.find(
-            (action: JSCollectionData) => action?.config?.id === id,
-          ),
-          entityType: type,
-        };
-      else if (type === "widget") {
-        return { ...get(widgetsMap, id, null), entityType: type };
-      }
-    })
-    .filter(Boolean);
+        })
+        .filter(Boolean),
+    [recentEntities, actions, jsActions, pages, reducerDatasources, widgetsMap],
+  );
 
-  return populatedRecentEntities;
+  return result;
 };
 
 export default useResentEntities;

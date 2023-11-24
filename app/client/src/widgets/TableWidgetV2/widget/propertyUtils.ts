@@ -1,18 +1,21 @@
 import { Alignment } from "@blueprintjs/core";
-import { CellAlignmentTypes, ColumnProperties } from "../component/Constants";
-import {
-  ColumnTypes,
-  InlineEditingSaveOptions,
-  TableWidgetProps,
-} from "../constants";
-import _, { get, isBoolean } from "lodash";
+import type { ColumnProperties } from "../component/Constants";
+import { StickyType } from "../component/Constants";
+import { CellAlignmentTypes } from "../component/Constants";
+import type { TableWidgetProps } from "../constants";
+import { ColumnTypes, InlineEditingSaveOptions } from "../constants";
+import _, { findIndex, get, isBoolean } from "lodash";
 import { Colors } from "constants/Colors";
 import {
   combineDynamicBindings,
   getDynamicBindings,
 } from "utils/DynamicBindingUtils";
-import { createEditActionColumn } from "./utilities";
-import { PropertyHookUpdates } from "constants/PropertyControlConstants";
+import {
+  createEditActionColumn,
+  generateNewColumnOrderFromStickyValue,
+} from "./utilities";
+import type { PropertyUpdates } from "widgets/constants";
+import { MenuItemsSource } from "widgets/MenuButtonWidget/constants";
 
 export function totalRecordsCountValidation(
   value: unknown,
@@ -187,8 +190,20 @@ export const updateColumnOrderHook = (
     propertyValue: any;
   }> = [];
   if (props && propertyValue && /^primaryColumns\.\w+$/.test(propertyPath)) {
-    const oldColumnOrder = props.columnOrder || [];
-    const newColumnOrder = [...oldColumnOrder, propertyValue.id];
+    const newColumnOrder = [...(props.columnOrder || [])];
+
+    const rightColumnIndex = findIndex(
+      newColumnOrder,
+      (colName: string) =>
+        props.primaryColumns[colName]?.sticky === StickyType.RIGHT,
+    );
+
+    if (rightColumnIndex !== -1) {
+      newColumnOrder.splice(rightColumnIndex, 0, propertyValue.id);
+    } else {
+      newColumnOrder.splice(newColumnOrder.length, 0, propertyValue.id);
+    }
+
     propertiesToUpdate.push({
       propertyPath: "columnOrder",
       propertyValue: newColumnOrder,
@@ -226,7 +241,7 @@ export const updateInlineEditingOptionDropdownVisibilityHook = (
   props: TableWidgetProps,
   propertyPath: string,
   propertyValue: any,
-): Array<PropertyHookUpdates> | undefined => {
+): Array<PropertyUpdates> | undefined => {
   let propertiesToUpdate = [];
 
   if (
@@ -299,6 +314,31 @@ export const updateInlineEditingOptionDropdownVisibilityHook = (
 };
 
 const CELL_EDITABLITY_PATH_REGEX = /^primaryColumns\.(\w+)\.isCellEditable$/;
+
+/**
+ * Hook that updates frozen column's old indices and also adds columns to the frozen positions.
+ */
+export const updateColumnOrderWhenFrozen = (
+  props: TableWidgetProps,
+  propertyPath: string,
+  propertyValue: string,
+) => {
+  if (props && props.columnOrder) {
+    const newColumnOrder = generateNewColumnOrderFromStickyValue(
+      props.primaryColumns,
+      props.columnOrder,
+      propertyPath.split(".")[1],
+      propertyValue,
+    );
+
+    return [
+      {
+        propertyPath: "columnOrder",
+        propertyValue: newColumnOrder,
+      },
+    ];
+  }
+};
 /*
  * Hook that updates column level editability when cell level editability is
  * updaed.
@@ -455,7 +495,7 @@ export const updateInlineEditingSaveOptionHook = (
   props: TableWidgetProps,
   propertyPath: string,
   propertyValue: any,
-): Array<PropertyHookUpdates> | undefined => {
+): Array<PropertyUpdates> | undefined => {
   if (propertyValue !== InlineEditingSaveOptions.ROW_LEVEL) {
     const columnsArray = Object.values(props.primaryColumns);
     const edtiActionColumn = columnsArray.find(
@@ -528,14 +568,14 @@ export function updateThemeStylesheetsInColumns(
   props: TableWidgetProps,
   propertyPath: string,
   propertyValue: any,
-): Array<PropertyHookUpdates> | undefined {
+): Array<PropertyUpdates> | undefined {
   const regex = /^primaryColumns\.(\w+)\.(.*)$/;
   const matches = propertyPath.match(regex);
   const columnId = matches?.[1];
   const columnProperty = matches?.[2];
 
   if (columnProperty === "columnType") {
-    const propertiesToUpdate: Array<PropertyHookUpdates> = [];
+    const propertiesToUpdate: Array<PropertyUpdates> = [];
     const oldColumnType = get(props, `primaryColumns.${columnId}.columnType`);
     const newColumnType = propertyValue;
 
@@ -629,7 +669,7 @@ export const updateCustomColumnAliasOnLabelChange = (
   props: TableWidgetProps,
   propertyPath: string,
   propertyValue: unknown,
-): Array<PropertyHookUpdates> | undefined => {
+): Array<PropertyUpdates> | undefined => {
   // alias will be updated along with label change only for custom columns
   const regex = /^primaryColumns\.(customColumn\d+)\.label$/;
   if (propertyPath?.length && regex.test(propertyPath)) {
@@ -640,4 +680,372 @@ export const updateCustomColumnAliasOnLabelChange = (
       },
     ];
   }
+};
+
+export const allowedFirstDayOfWeekRange = (value: number) => {
+  const allowedValues = [0, 1, 2, 3, 4, 5, 6];
+  const isValid = allowedValues.includes(Number(value));
+  return {
+    isValid: isValid,
+    parsed: isValid ? Number(value) : 0,
+    messages: isValid ? [] : ["Number should be between 0-6."],
+  };
+};
+
+export const hideByMenuItemsSource = (
+  props: TableWidgetProps,
+  propertyPath: string,
+  menuItemsSource: MenuItemsSource,
+) => {
+  const baseProperty = getBasePropertyPath(propertyPath);
+  const currentMenuItemsSource = get(
+    props,
+    `${baseProperty}.menuItemsSource`,
+    "",
+  );
+
+  return currentMenuItemsSource === menuItemsSource;
+};
+
+export const hideIfMenuItemsSourceDataIsFalsy = (
+  props: TableWidgetProps,
+  propertyPath: string,
+) => {
+  const baseProperty = getBasePropertyPath(propertyPath);
+  const sourceData = get(props, `${baseProperty}.sourceData`, "");
+
+  return !sourceData;
+};
+
+export const updateMenuItemsSource = (
+  props: TableWidgetProps,
+  propertyPath: string,
+  propertyValue: unknown,
+): Array<{ propertyPath: string; propertyValue: unknown }> | undefined => {
+  const propertiesToUpdate: Array<{
+    propertyPath: string;
+    propertyValue: unknown;
+  }> = [];
+  const baseProperty = getBasePropertyPath(propertyPath);
+  const menuItemsSource = get(props, `${baseProperty}.menuItemsSource`);
+
+  if (propertyValue === ColumnTypes.MENU_BUTTON && !menuItemsSource) {
+    // Sets the default value for menuItemsSource to static when
+    // selecting the menu button column type for the first time
+    propertiesToUpdate.push({
+      propertyPath: `${baseProperty}.menuItemsSource`,
+      propertyValue: MenuItemsSource.STATIC,
+    });
+  } else {
+    const sourceData = get(props, `${baseProperty}.sourceData`);
+    const configureMenuItems = get(props, `${baseProperty}.configureMenuItems`);
+    const isMenuItemsSourceChangedFromStaticToDynamic =
+      menuItemsSource === MenuItemsSource.STATIC &&
+      propertyValue === MenuItemsSource.DYNAMIC;
+
+    if (isMenuItemsSourceChangedFromStaticToDynamic) {
+      if (!sourceData) {
+        propertiesToUpdate.push({
+          propertyPath: `${baseProperty}.sourceData`,
+          propertyValue: [],
+        });
+      }
+
+      if (!configureMenuItems) {
+        propertiesToUpdate.push({
+          propertyPath: `${baseProperty}.configureMenuItems`,
+          propertyValue: {
+            label: "Configure menu items",
+            id: "config",
+            config: {
+              id: "config",
+              label: "Menu Item",
+              isVisible: true,
+              isDisabled: false,
+            },
+          },
+        });
+      }
+    }
+  }
+
+  return propertiesToUpdate?.length ? propertiesToUpdate : undefined;
+};
+
+export function selectColumnOptionsValidation(
+  value: unknown,
+  props: TableWidgetProps,
+  _?: any,
+) {
+  let _isValid = true,
+    _parsed,
+    _message = "";
+  let uniqueValues: Set<unknown>;
+  const invalidArrayValueMessage = `This value does not evaluate to type: { "label": string | number, "value": string | number | boolean }`;
+  const invalidMessage = `This value does not evaluate to type Array<{ "label": string | number, "value": string | number | boolean }>`;
+  const allowedValueTypes = ["string", "number", "boolean"];
+  const allowedLabelTypes = ["string", "number"];
+
+  const generateErrorMessagePrefix = (
+    rowIndex: number | null,
+    optionIndex: number,
+  ) => {
+    return `Invalid entry at${
+      rowIndex !== null ? ` Row: ${rowIndex}` : ""
+    } index: ${optionIndex}.`;
+  };
+
+  const generateInvalidArrayValueMessage = (
+    rowIndex: number | null,
+    optionIndex: number,
+  ) =>
+    `${generateErrorMessagePrefix(
+      rowIndex,
+      optionIndex,
+    )} ${invalidArrayValueMessage}`;
+
+  const validateOption = (
+    option: any,
+    rowIndex: number | null,
+    optionIndex: number,
+  ) => {
+    /*
+     *  Option should
+     *    1. be an object
+     *    2. have label property
+     *    3. label should be of type string | number
+     *    4. have value property
+     *    5. value should be of type string | number | boolean
+     *    6. value should be unique amoig the options array
+     */
+    if (!_.isObject(option)) {
+      // 1
+      return `${generateErrorMessagePrefix(
+        rowIndex,
+        optionIndex,
+      )} This value does not evaluate to type: { "label": string | number, "value": string | number | boolean }`;
+    }
+
+    if (!option.hasOwnProperty("label")) {
+      // 2
+      return `${generateErrorMessagePrefix(
+        rowIndex,
+        optionIndex,
+      )} Missing required key: label`;
+    }
+
+    if (!allowedLabelTypes.includes(typeof option.label)) {
+      // 3
+      return `${generateErrorMessagePrefix(
+        rowIndex,
+        optionIndex,
+      )} label does not evaluate to type ${allowedLabelTypes.join(" | ")}`;
+    }
+
+    if (!option.hasOwnProperty("value")) {
+      // 4
+      return `${generateErrorMessagePrefix(
+        rowIndex,
+        optionIndex,
+      )} Missing required key: value`;
+    }
+
+    if (!allowedValueTypes.includes(typeof option.value)) {
+      // 5
+      return `${generateErrorMessagePrefix(
+        rowIndex,
+        optionIndex,
+      )} value does not evaluate to type ${allowedValueTypes.join(" | ")}`;
+    }
+
+    if (uniqueValues.has(option.value)) {
+      // 6
+      return `Duplicate values found for the following properties, in the array entries, that must be unique -- value.`;
+    } else {
+      uniqueValues.add(option.value);
+    }
+
+    return "";
+  };
+
+  try {
+    if (value === "" || _.isNil(value)) {
+      // empty values
+      return {
+        isValid: true,
+        parsed: [],
+        messages: [""],
+      };
+    } else if (typeof value === "string") {
+      // json string
+      const _value = JSON.parse(value);
+      if (Array.isArray(_value)) {
+        value = _value;
+      } else {
+        _isValid = false;
+        _message = invalidMessage;
+      }
+    }
+
+    if (Array.isArray(value)) {
+      if (value.length) {
+        //when value is array of option json string
+        if (value.every((d) => _.isString(d))) {
+          value = value.map((d) => JSON.parse(d));
+        }
+
+        if (Array.isArray(value) && Array.isArray(value[0])) {
+          // value is array of array of label, value
+          //Value should be an array of array
+          if (!value.every((d) => Array.isArray(d))) {
+            _parsed = [];
+            _isValid = false;
+            _message = invalidMessage;
+          } else {
+            _parsed = value;
+            _isValid = true;
+
+            for (let i = 0; i < value.length; i++) {
+              uniqueValues = new Set();
+
+              for (let j = 0; j < value[i].length; j++) {
+                if (_.isNil(value[i][j])) {
+                  _isValid = false;
+                  _message = generateInvalidArrayValueMessage(i, j);
+                  _parsed = [];
+                  break;
+                }
+                if ((_message = validateOption(value[i][j], i, j))) {
+                  _isValid = false;
+                  break;
+                }
+              }
+
+              if (!_isValid) {
+                break;
+              }
+            }
+          }
+        } else {
+          uniqueValues = new Set();
+          _parsed = value;
+          _isValid = true;
+          for (let i = 0; i < (value as Array<unknown>).length; i++) {
+            if (_.isNil((value as Array<unknown>)[i])) {
+              _isValid = false;
+              _message = generateInvalidArrayValueMessage(null, i);
+              _parsed = [];
+              break;
+            }
+
+            if (
+              (_message = validateOption((value as Array<unknown>)[i], null, i))
+            ) {
+              _isValid = false;
+              break;
+            }
+          }
+        }
+      } else {
+        _isValid = true;
+        _parsed = [];
+      }
+    } else {
+      _parsed = [];
+      _isValid = false;
+      _message = invalidMessage;
+    }
+  } catch (e) {
+    _parsed = [];
+    _isValid = false;
+    _message = invalidMessage;
+  }
+
+  return {
+    isValid: _isValid,
+    parsed: _parsed,
+    messages: [_message],
+  };
+}
+
+export const getColumnPath = (propPath: string) =>
+  propPath.split(".").slice(0, 2).join(".");
+
+export const tableDataValidation = (
+  value: unknown,
+  props: TableWidgetProps,
+  _?: any,
+) => {
+  const invalidResponse = {
+    isValid: false,
+    parsed: [],
+    messages: [
+      {
+        name: "TypeError",
+        message: `This value does not evaluate to type Array<Object>}`,
+      },
+    ],
+  };
+
+  if (value === "") {
+    return {
+      isValid: true,
+      parsed: [],
+    };
+  }
+
+  if (value === undefined || value === null) {
+    return {
+      isValid: false,
+      parsed: [],
+      messages: [
+        {
+          name: "ValidationError",
+          message: "Data is undefined, re-run your query or fix the data",
+        },
+      ],
+    };
+  }
+
+  if (!_.isString(value) && !Array.isArray(value)) {
+    return invalidResponse;
+  }
+
+  let parsed = value;
+
+  if (_.isString(value)) {
+    try {
+      parsed = JSON.parse(value as string);
+    } catch (e) {
+      return invalidResponse;
+    }
+  }
+
+  if (Array.isArray(parsed)) {
+    if (parsed.length === 0) {
+      return {
+        isValid: true,
+        parsed: [],
+      };
+    }
+
+    for (let i = 0; i < parsed.length; i++) {
+      if (!_.isPlainObject(parsed[i])) {
+        return {
+          isValid: false,
+          parsed: [],
+          messages: [
+            {
+              name: "ValidationError",
+              message: `Invalid object at index ${i}`,
+            },
+          ],
+        };
+      }
+    }
+
+    return { isValid: true, parsed };
+  }
+
+  return invalidResponse;
 };

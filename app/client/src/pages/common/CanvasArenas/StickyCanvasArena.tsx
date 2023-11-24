@@ -1,5 +1,7 @@
-import styled from "constants/DefaultTheme";
-import React, { forwardRef, RefObject, useEffect, useRef } from "react";
+import type { RefObject } from "react";
+import React, { forwardRef, useEffect, useRef } from "react";
+import styled from "styled-components";
+
 import ResizeObserver from "resize-observer-polyfill";
 
 interface StickyCanvasArenaProps {
@@ -13,6 +15,7 @@ interface StickyCanvasArenaProps {
   getRelativeScrollingParent: (child: HTMLDivElement) => Element | null;
   canExtend: boolean;
   ref: StickyCanvasArenaRef;
+  shouldObserveIntersection: boolean;
 }
 
 interface StickyCanvasArenaRef {
@@ -41,6 +44,7 @@ export const StickyCanvasArena = forwardRef(
       canvasPadding,
       getRelativeScrollingParent,
       id,
+      shouldObserveIntersection,
       showCanvas,
       snapColSpace,
       snapRows,
@@ -53,11 +57,13 @@ export const StickyCanvasArena = forwardRef(
         entries.forEach(updateCanvasStylesIntersection);
       }),
     );
+
     const resizeObserver = useRef(
       new ResizeObserver(() => {
         observeSlider();
       }),
     );
+
     const { devicePixelRatio: scale = 1 } = window;
 
     const repositionSliderCanvas = (entry: IntersectionObserverEntry) => {
@@ -74,9 +80,10 @@ export const StickyCanvasArena = forwardRef(
     };
 
     const rescaleSliderCanvas = (entry: IntersectionObserverEntry) => {
+      const canvasCtx: CanvasRenderingContext2D =
+        stickyCanvasRef.current.getContext("2d");
       stickyCanvasRef.current.height = entry.intersectionRect.height * scale;
       stickyCanvasRef.current.width = entry.intersectionRect.width * scale;
-      const canvasCtx: any = stickyCanvasRef.current.getContext("2d");
       canvasCtx.scale(scale, scale);
     };
 
@@ -84,20 +91,26 @@ export const StickyCanvasArena = forwardRef(
       entry: IntersectionObserverEntry,
     ) => {
       if (slidingArenaRef.current) {
-        const parentCanvas: Element | null = getRelativeScrollingParent(
-          slidingArenaRef.current,
-        );
+        requestAnimationFrame(() => {
+          const parentCanvas: Element | null = getRelativeScrollingParent(
+            slidingArenaRef.current,
+          );
 
-        if (parentCanvas && stickyCanvasRef.current) {
-          repositionSliderCanvas(entry);
-          rescaleSliderCanvas(entry);
-        }
+          if (parentCanvas && stickyCanvasRef.current) {
+            repositionSliderCanvas(entry);
+            rescaleSliderCanvas(entry);
+          }
+        });
       }
     };
+
     const observeSlider = () => {
-      interSectionObserver.current.disconnect();
-      if (slidingArenaRef.current) {
-        interSectionObserver.current.observe(slidingArenaRef.current);
+      // This is to make sure the canvas observes and changes only when needed like when dragging or drw to select.
+      if (shouldObserveIntersection) {
+        interSectionObserver.current.disconnect();
+        if (slidingArenaRef && slidingArenaRef.current) {
+          interSectionObserver.current.observe(slidingArenaRef.current);
+        }
       }
     };
     const observeSliderHoc = (slidingArena: Element) => () => {
@@ -106,8 +119,17 @@ export const StickyCanvasArena = forwardRef(
     };
 
     useEffect(() => {
-      observeSlider();
-    }, [showCanvas, snapRows, canExtend, snapColSpace, snapRowSpace]);
+      if (slidingArenaRef.current) {
+        observeSlider();
+      }
+    }, [
+      showCanvas,
+      snapRows,
+      canExtend,
+      snapColSpace,
+      snapRowSpace,
+      shouldObserveIntersection,
+    ]);
 
     useEffect(() => {
       let parentCanvas: Element | null;
@@ -122,10 +144,11 @@ export const StickyCanvasArena = forwardRef(
       return () => {
         parentCanvas?.removeEventListener("scroll", observerCallback);
         parentCanvas?.removeEventListener("mouseover", observerCallback);
-        resizeObserver.current.unobserve(slidingArena);
+        if (slidingArenaRef && slidingArenaRef.current) {
+          resizeObserver.current.unobserve(slidingArena);
+        }
       };
-    }, []);
-
+    }, [shouldObserveIntersection]);
     return (
       <>
         <canvas
@@ -133,6 +156,9 @@ export const StickyCanvasArena = forwardRef(
           data-testid={canvasId}
           id={canvasId}
           ref={stickyCanvasRef}
+          style={{
+            position: "absolute",
+          }}
         />
         <StyledCanvasSlider
           data-testid={id}

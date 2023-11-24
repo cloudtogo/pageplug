@@ -1,30 +1,33 @@
-import { WidgetType } from "constants/WidgetConstants";
-import {
+import type { WidgetType } from "constants/WidgetConstants";
+import type {
   EvaluationReduxAction,
   ReduxAction,
-  ReduxActionTypes,
   UpdateCanvasPayload,
+  AnyReduxAction,
+} from "@appsmith/constants/ReduxActionConstants";
+import {
+  ReduxActionTypes,
   ReduxActionErrorTypes,
   WidgetReduxActionTypes,
   ReplayReduxActionTypes,
-  AnyReduxAction,
 } from "@appsmith/constants/ReduxActionConstants";
+import type { DynamicPath } from "utils/DynamicBindingUtils";
 import AnalyticsUtil from "utils/AnalyticsUtil";
-import { WidgetOperation } from "widgets/BaseWidget";
-import {
+import type { WidgetOperation } from "widgets/BaseWidget";
+import type {
   FetchPageRequest,
   PageLayout,
   SavePageResponse,
   UpdatePageRequest,
   UpdatePageResponse,
 } from "api/PageApi";
-import { UrlDataState } from "reducers/entityReducers/appReducer";
-import { APP_MODE } from "entities/App";
-import { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
-import { GenerateTemplatePageRequest } from "api/PageApi";
-import { ENTITY_TYPE } from "entities/AppsmithConsole";
-import { Replayable } from "entities/Replay/ReplayEntity/ReplayEditor";
-import { StoreValueActionDescription } from "entities/DataTree/actionTriggers";
+import type { UrlDataState } from "reducers/entityReducers/appReducer";
+import type { APP_MODE } from "entities/App";
+import type { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
+import type { GenerateTemplatePageRequest } from "api/PageApi";
+import type { ENTITY_TYPE } from "entities/AppsmithConsole";
+import type { Replayable } from "entities/Replay/ReplayEntity/ReplayEditor";
+import * as Sentry from "@sentry/react";
 
 export interface FetchPageListPayload {
   applicationId: string;
@@ -82,10 +85,11 @@ export const fetchPageSuccess = (): EvaluationReduxAction<undefined> => {
   };
 };
 
-export const fetchPublishedPageSuccess = (): EvaluationReduxAction<undefined> => ({
-  type: ReduxActionTypes.FETCH_PUBLISHED_PAGE_SUCCESS,
-  payload: undefined,
-});
+export const fetchPublishedPageSuccess =
+  (): EvaluationReduxAction<undefined> => ({
+    type: ReduxActionTypes.FETCH_PUBLISHED_PAGE_SUCCESS,
+    payload: undefined,
+  });
 
 /**
  * After all page entities are fetched like DSL, actions and JsObjects,
@@ -166,10 +170,14 @@ export const createPage = (
   applicationId: string,
   pageName: string,
   layouts: Partial<PageLayout>[],
+  orgId: string,
   blockNavigation?: boolean,
+  instanceId?: string,
 ) => {
   AnalyticsUtil.logEvent("CREATE_PAGE", {
     pageName,
+    orgId,
+    instanceId,
   });
   return {
     type: ReduxActionTypes.CREATE_PAGE_INIT,
@@ -177,6 +185,28 @@ export const createPage = (
       applicationId,
       name: pageName,
       layouts,
+      blockNavigation,
+    },
+  };
+};
+
+export const createNewPageFromEntities = (
+  applicationId: string,
+  pageName: string,
+  orgId: string,
+  blockNavigation?: boolean,
+  instanceId?: string,
+) => {
+  AnalyticsUtil.logEvent("CREATE_PAGE", {
+    pageName,
+    orgId,
+    instanceId,
+  });
+  return {
+    type: ReduxActionTypes.CREATE_NEW_PAGE_FROM_ENTITIES,
+    payload: {
+      applicationId,
+      name: pageName,
       blockNavigation,
     },
   };
@@ -217,6 +247,14 @@ export const clonePageSuccess = (
 };
 
 export const updatePage = (payload: UpdatePageRequest) => {
+  // Update page *needs* id to be there. We found certain scenarios
+  // where this was not happening and capturing the error to know gather
+  // more info: https://github.com/appsmithorg/appsmith/issues/16435
+  if (!payload.id) {
+    Sentry.captureException(
+      new Error("Attempting to update page without page id"),
+    );
+  }
   return {
     type: ReduxActionTypes.UPDATE_PAGE_INIT,
     payload,
@@ -255,6 +293,7 @@ export type WidgetAddChild = {
   newWidgetId: string;
   tabId: string;
   props?: Record<string, any>;
+  dynamicBindingPathList?: DynamicPath[];
 };
 
 export type WidgetRemoveChild = {
@@ -278,10 +317,14 @@ export type MultipleWidgetDeletePayload = {
 export type WidgetResize = {
   widgetId: string;
   parentId: string;
-  leftColumn: number;
-  rightColumn: number;
-  topRow: number;
-  bottomRow: number;
+  leftColumn?: number;
+  rightColumn?: number;
+  topRow?: number;
+  bottomRow?: number;
+  mobileLeftColumn?: number;
+  mobileRightColumn?: number;
+  mobileTopRow?: number;
+  mobileBottomRow?: number;
   snapColumnSpace: number;
   snapRowSpace: number;
 };
@@ -348,30 +391,12 @@ export const setAppMode = (payload: APP_MODE): ReduxAction<APP_MODE> => {
   };
 };
 
-export const updateAppStoreEvaluated = (
-  storeValueAction?: StoreValueActionDescription["payload"],
-) => ({
-  type: ReduxActionTypes.UPDATE_APP_STORE_EVALUATED,
-  payload: storeValueAction,
-});
-
-export const updateAppTransientStore = (
+export const updateAppStore = (
   payload: Record<string, unknown>,
-  storeValueAction?: StoreValueActionDescription["payload"],
-): EvaluationReduxAction<Record<string, unknown>> => ({
-  type: ReduxActionTypes.UPDATE_APP_TRANSIENT_STORE,
-  payload,
-  postEvalActions: [updateAppStoreEvaluated(storeValueAction)],
-});
-
-export const updateAppPersistentStore = (
-  payload: Record<string, unknown>,
-  storeValueAction?: StoreValueActionDescription["payload"],
 ): EvaluationReduxAction<Record<string, unknown>> => {
   return {
-    type: ReduxActionTypes.UPDATE_APP_PERSISTENT_STORE,
+    type: ReduxActionTypes.UPDATE_APP_STORE,
     payload,
-    postEvalActions: [updateAppStoreEvaluated(storeValueAction)],
   };
 };
 
@@ -386,6 +411,7 @@ export type GenerateCRUDSuccess = {
     name: string;
     isDefault?: boolean;
     slug: string;
+    description?: string;
   };
   isNewPage: boolean;
 };
@@ -458,6 +484,7 @@ export function redoAction() {
     },
   };
 }
+
 /**
  * action for delete page
  *

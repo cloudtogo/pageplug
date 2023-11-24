@@ -1,16 +1,17 @@
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
-import { ValidationTypes } from "constants/WidgetValidation";
-import { LabelPosition } from "components/constants";
 import { Alignment } from "@blueprintjs/core";
+import { LabelPosition } from "components/constants";
+import { ValidationTypes } from "constants/WidgetValidation";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
+import type { RangeSliderWidgetProps } from "..";
 import {
-  maxValueValidation,
-  minValueValidation,
-  minRangeValidation,
-  stepSizeValidation,
-  startValueValidation,
   endValueValidation,
+  maxValueValidation,
+  minRangeValidation,
+  minValueValidation,
+  startValueValidation,
+  stepSizeValidation,
 } from "../../validations";
-import { RangeSliderWidgetProps } from "..";
 
 export default [
   {
@@ -157,6 +158,7 @@ export default [
         label: "位置",
         controlType: "ICON_TABS",
         fullWidth: true,
+        hidden: isAutoLayout,
         options: [
           { label: "左", value: LabelPosition.Left },
           { label: "上", value: LabelPosition.Top },
@@ -171,13 +173,14 @@ export default [
         propertyName: "labelAlignment",
         label: "对齐",
         controlType: "LABEL_ALIGNMENT_OPTIONS",
+        fullWidth: false,
         options: [
           {
-            icon: "LEFT_ALIGN",
+            startIcon: "align-left",
             value: Alignment.LEFT,
           },
           {
-            icon: "RIGHT_ALIGN",
+            startIcon: "align-right",
             value: Alignment.RIGHT,
           },
         ],

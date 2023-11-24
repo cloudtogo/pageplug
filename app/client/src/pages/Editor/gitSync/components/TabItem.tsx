@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { Theme } from "constants/DefaultTheme";
-import { getTypographyByKey, TabProp } from "design-system";
+import type { Theme } from "constants/DefaultTheme";
+import type { TabProp } from "design-system-old";
+import { getTypographyByKey } from "design-system-old";
 import { Colors } from "constants/Colors";
 
 type WrapperProps = {
@@ -14,7 +15,7 @@ const getSelectedStyles = (props: WrapperProps) =>
   props.selected
     ? `color: ${props.theme.colors.tabItemBackgroundFill.highlightTextColor};
       font-weight: 500;
-      border-bottom: 2px solid ${props.theme.colors.info.light};
+      border-bottom: 2px solid var(--ads-color-brand);
 
      `
     : `color: ${Colors.GREY_7}
@@ -45,7 +46,7 @@ export default function TabItem(props: {
 }) {
   const { selected, tab, vertical } = props;
   return (
-    <Wrapper key={tab.title} selected={selected} vertical={vertical}>
+    <Wrapper key={tab.key} selected={selected} vertical={vertical}>
       {tab.title}
     </Wrapper>
   );

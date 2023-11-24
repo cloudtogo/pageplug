@@ -1,6 +1,6 @@
-import { ApplicationVersion } from "actions/applicationActions";
+import { ApplicationVersion } from "@appsmith/actions/applicationActions";
 import { setPageAsDefault, updatePage } from "actions/pageActions";
-import { UpdatePageRequest } from "api/PageApi";
+import type { UpdatePageRequest } from "api/PageApi";
 import {
   PAGE_SETTINGS_SHOW_PAGE_NAV,
   PAGE_SETTINGS_PAGE_NAME_LABEL,
@@ -14,75 +14,41 @@ import {
   PAGE_SETTINGS_SHOW_PAGE_NAV_TOOLTIP,
   PAGE_SETTINGS_SET_AS_HOMEPAGE_TOOLTIP_NON_HOME_PAGE,
   PAGE_SETTINGS_ACTION_NAME_CONFLICT_ERROR,
-} from "ce/constants/messages";
-import { Page } from "ce/constants/ReduxActionConstants";
+} from "@appsmith/constants/messages";
+import type { Page } from "@appsmith/constants/ReduxActionConstants";
 import { hasManagePagePermission } from "@appsmith/utils/permissionHelpers";
 import classNames from "classnames";
-import { Colors } from "constants/Colors";
-import { Text, TextInput, TextType } from "design-system";
-import AdsSwitch from "design-system/build/Switch";
-import ManualUpgrades from "pages/Editor/BottomBar/ManualUpgrades";
+import { Input, Switch } from "design-system";
+import ManualUpgrades from "components/BottomBar/ManualUpgrades";
 import PropertyHelpLabel from "pages/Editor/PropertyPane/PropertyHelpLabel";
 import React, { useCallback, useEffect, useState } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import {
   getCurrentApplicationId,
   selectApplicationVersion,
-  isMobileLayout,
 } from "selectors/editorSelectors";
+import { isMobileLayout } from "selectors/applicationSelectors";
 import { getUpdatingEntity } from "selectors/explorerSelector";
 import { getPageLoadingState } from "selectors/pageListSelectors";
 import styled from "styled-components";
 import TextLoaderIcon from "../Components/TextLoaderIcon";
-import { getUrlPreview } from "../Utils";
-import { AppState } from "@appsmith/reducers";
+import { filterAccentedAndSpecialCharacters, getUrlPreview } from "../Utils";
+import type { AppState } from "@appsmith/reducers";
 import { getUsedActionNames } from "selectors/actionSelectors";
 import { isNameValid, resolveAsSpaceChar } from "utils/helpers";
 
-const SwitchWrapper = styled.div`
-  &&&&&&&
-    .bp3-control.bp3-switch
-    input:checked:disabled
-    ~ .bp3-control-indicator {
-    background: ${Colors.GREY_200};
-  }
-
-  .bp3-control.bp3-switch
-    input:checked:disabled
-    ~ .bp3-control-indicator::before {
-    box-shadow: none;
-  }
-`;
-
 const UrlPreviewWrapper = styled.div`
-  height: 54px;
+  height: 52px;
+  color: var(--ads-v2-color-fg);
+  border-radius: var(--ads-v2-border-radius);
+  background-color: var(--ads-v2-color-bg-subtle);
+  line-height: 1.17;
 `;
 
 const UrlPreviewScroll = styled.div`
   height: 48px;
   overflow-y: auto;
-
-  /* width */
-  ::-webkit-scrollbar {
-    width: 3px;
-  }
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #bec4c4;
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
 `;
-
-const specialCharacterCheckRegex = /^[A-Za-z0-9\s\-]+$/g;
 
 function PageSettings(props: { page: Page }) {
   const dispatch = useDispatch();
@@ -102,7 +68,9 @@ function PageSettings(props: { page: Page }) {
 
   const [pageName, setPageName] = useState(page.pageName);
   const [isPageNameSaving, setIsPageNameSaving] = useState(false);
-  const [isPageNameValid, setIsPageNameValid] = useState(true);
+  const [isPageNameValid, setIsPageNameValid] = useState<string | undefined>(
+    undefined,
+  );
 
   const [customSlug, setCustomSlug] = useState(page.customSlug);
   const [isCustomSlugSaving, setIsCustomSlugSaving] = useState(false);
@@ -156,7 +124,7 @@ function PageSettings(props: { page: Page }) {
   }, [isUpdatingEntity]);
 
   const savePageName = useCallback(() => {
-    if (!canManagePages || !isPageNameValid || page.pageName === pageName)
+    if (!canManagePages || !!isPageNameValid || page.pageName === pageName)
       return;
     const payload: UpdatePageRequest = {
       id: page.pageId,
@@ -189,9 +157,26 @@ function PageSettings(props: { page: Page }) {
     [page.pageId, isShown],
   );
 
+  const onPageNameChange = (value: string) => {
+    let isValid = undefined;
+    if (!value || value.trim().length === 0) {
+      isValid = PAGE_SETTINGS_NAME_EMPTY_MESSAGE();
+    } else if (value !== page.pageName && hasActionNameConflict(value)) {
+      isValid = PAGE_SETTINGS_ACTION_NAME_CONFLICT_ERROR(value);
+    }
+
+    setIsPageNameValid(isValid);
+    setPageName(resolveAsSpaceChar(value, 30));
+  };
+
+  const onPageSlugChange = (value: string) => {
+    value.length > 0
+      ? setCustomSlug(filterAccentedAndSpecialCharacters(value))
+      : setCustomSlug(value);
+  };
+
   return (
     <>
-      <Text type={TextType.P1}>{PAGE_SETTINGS_PAGE_NAME_LABEL()}</Text>
       <div
         className={classNames({
           "pt-1 pb-2 relative": true,
@@ -199,162 +184,137 @@ function PageSettings(props: { page: Page }) {
         })}
       >
         {isPageNameSaving && <TextLoaderIcon />}
-        <TextInput
+        <Input
           defaultValue={pageName}
-          disabled={!canManagePages}
-          fill
+          errorMessage={isPageNameValid}
           id="t--page-settings-name"
+          isDisabled={!canManagePages}
+          label={PAGE_SETTINGS_PAGE_NAME_LABEL()}
           onBlur={savePageName}
-          onChange={(value: string) =>
-            setPageName(resolveAsSpaceChar(value, 30))
-          }
+          onChange={(value: string) => onPageNameChange(value)}
           onKeyPress={(ev: React.KeyboardEvent) => {
             if (ev.key === "Enter") {
               savePageName();
             }
           }}
           placeholder="页面名称"
-          type="input"
-          validator={(value: string) => {
-            let result: { isValid: boolean; message?: string } = {
-              isValid: true,
-            };
-            if (!value || value.trim().length === 0) {
-              result = {
-                isValid: false,
-                message: PAGE_SETTINGS_NAME_EMPTY_MESSAGE(),
-              };
-            } else if (
-              value !== page.pageName &&
-              hasActionNameConflict(value)
-            ) {
-              result = {
-                isValid: false,
-                message: PAGE_SETTINGS_ACTION_NAME_CONFLICT_ERROR(value),
-              };
-            }
-            setIsPageNameValid(result.isValid);
-            return result;
-          }}
+          size="md"
+          type="text"
           value={pageName}
         />
       </div>
 
-      {isMobile ? null : (
-        <>
-          <Text type={TextType.P1}>{PAGE_SETTINGS_PAGE_URL_LABEL()}</Text>
-          {appNeedsUpdate && (
-            <div
-              className={`pt-1 text-[color:var(--appsmith-color-black-700)] text-[13px]`}
-              style={{ lineHeight: "1.31" }}
-            >
-              {PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_1()}{" "}
-              <ManualUpgrades inline>
-                <a>
-                  <u className="text-[color:var(--appsmith-color-black-900)]">
-                    {PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_2()}
-                  </u>
-                </a>
-              </ManualUpgrades>{" "}
-              {PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_3()}
-            </div>
-          )}
-          <div
-            className={classNames({
-              "py-1 relative": true,
-              "pb-2": appNeedsUpdate,
-            })}
+      {appNeedsUpdate && (
+        <div
+          className={`pt-1 text-[color:var(--appsmith-color-black-700)] text-[13px]`}
+          style={{ lineHeight: "1.31" }}
+        >
+          {PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_1()}{" "}
+          <ManualUpgrades inline>
+            <a>
+              <u className="text-[color:var(--appsmith-color-black-900)]">
+                {PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_2()}
+              </u>
+            </a>
+          </ManualUpgrades>{" "}
+          {PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_3()}
+        </div>
+      )}
+      <div
+        className={classNames({
+          "py-1 relative": true,
+          "pb-2": appNeedsUpdate,
+        })}
+      >
+        {isCustomSlugSaving && <TextLoaderIcon />}
+        <Input
+          defaultValue={customSlug}
+          id="t--page-settings-custom-slug"
+          isDisabled={!canManagePages}
+          isReadOnly={appNeedsUpdate}
+          label={PAGE_SETTINGS_PAGE_URL_LABEL()}
+          onBlur={saveCustomSlug}
+          onChange={(value: string) => onPageSlugChange(value)}
+          onKeyPress={(ev: React.KeyboardEvent) => {
+            if (ev.key === "Enter") {
+              saveCustomSlug();
+            }
+          }}
+          placeholder="页面 URL"
+          size="md"
+          type="text"
+          value={customSlug}
+        />
+      </div>
+
+      {!appNeedsUpdate && (
+        <UrlPreviewWrapper className="mb-2">
+          <UrlPreviewScroll
+            className="py-1 pl-2 mr-0.5 text-xs break-all"
+            onCopy={() => {
+              navigator.clipboard.writeText(
+                location.protocol +
+                  "//" +
+                  window.location.hostname +
+                  pathPreview.relativePath,
+              );
+            }}
+            style={{ lineHeight: "1.17" }}
           >
-            {isCustomSlugSaving && <TextLoaderIcon />}
-            <TextInput
-              defaultValue={customSlug}
-              disabled={!canManagePages}
-              fill
-              id="t--page-settings-custom-slug"
-              onBlur={saveCustomSlug}
-              onChange={(value: string) =>
-                value.length > 0
-                  ? specialCharacterCheckRegex.test(value) &&
-                    setCustomSlug(value)
-                  : setCustomSlug(value)
-              }
-              onKeyPress={(ev: React.KeyboardEvent) => {
-                if (ev.key === "Enter") {
-                  saveCustomSlug();
-                }
-              }}
-              placeholder="页面 URL"
-              readOnly={appNeedsUpdate}
-              type="input"
-              value={customSlug}
-            />
-          </div>
-
-          {!appNeedsUpdate && (
-            <UrlPreviewWrapper
-              className={`mb-2 bg-[color:var(--appsmith-color-black-100)]`}
-            >
-              <UrlPreviewScroll
-                className={`py-1 pl-2 mr-0.5 text-[color:var(--appsmith-color-black-700)] text-xs break-all`}
-                onCopy={() => {
-                  navigator.clipboard.writeText(
-                    location.protocol +
-                      "//" +
-                      window.location.hostname +
-                      pathPreview.relativePath,
-                  );
-                }}
-                style={{ lineHeight: "1.17" }}
-              >
-                {location.protocol}
-                {"//"}
-                {window.location.hostname}
-                {Array.isArray(pathPreview.splitRelativePath) && (
-                  <>
-                    {pathPreview.splitRelativePath[0]}
-                    <strong
-                      className={`text-[color:var(--appsmith-color-black-800))]`}
-                    >
-                      {pathPreview.splitRelativePath[1]}
-                    </strong>
-                    {pathPreview.splitRelativePath[2]}
-                    {pathPreview.splitRelativePath[3]}
-                  </>
-                )}
-                {!Array.isArray(pathPreview.splitRelativePath) &&
-                  pathPreview.splitRelativePath}
-              </UrlPreviewScroll>
-            </UrlPreviewWrapper>
-          )}
-
-          <div className="flex justify-between content-center pb-2">
-            <div className="pt-0.5 text-[color:var(--appsmith-color-black-700)]">
-              <PropertyHelpLabel
-                label={PAGE_SETTINGS_SHOW_PAGE_NAV()}
-                lineHeight="1.17"
-                maxWidth="217px"
-                tooltip={PAGE_SETTINGS_SHOW_PAGE_NAV_TOOLTIP()}
-              />
-            </div>
-            <SwitchWrapper>
-              <AdsSwitch
-                checked={isShown}
-                className="mb-0"
-                disabled={isShownSaving || !canManagePages}
-                id="t--page-settings-show-nav-control"
-                large
-                onChange={() => {
-                  setIsShown(!isShown);
-                  saveIsShown(!isShown);
-                }}
-              />
-            </SwitchWrapper>
-          </div>
-        </>
+            {location.protocol}
+            {"//"}
+            {window.location.hostname}
+            {Array.isArray(pathPreview.splitRelativePath) && (
+              <>
+                {pathPreview.splitRelativePath[0]}
+                <strong
+                  className={`text-[color:var(--appsmith-color-black-800))]`}
+                >
+                  {pathPreview.splitRelativePath[1]}
+                </strong>
+                {pathPreview.splitRelativePath[2]}
+                {pathPreview.splitRelativePath[3]}
+              </>
+            )}
+            {!Array.isArray(pathPreview.splitRelativePath) &&
+              pathPreview.splitRelativePath}
+          </UrlPreviewScroll>
+        </UrlPreviewWrapper>
       )}
 
+      <div className="flex justify-between content-center pb-2">
+        <Switch
+          className="mb-0"
+          id="t--page-settings-show-nav-control"
+          isDisabled={isShownSaving || !canManagePages}
+          isSelected={isShown}
+          onChange={() => {
+            setIsShown(!isShown);
+            saveIsShown(!isShown);
+          }}
+        >
+          <PropertyHelpLabel
+            label={PAGE_SETTINGS_SHOW_PAGE_NAV()}
+            lineHeight="1.17"
+            maxWidth="217px"
+            tooltip={PAGE_SETTINGS_SHOW_PAGE_NAV_TOOLTIP()}
+          />
+        </Switch>
+      </div>
+
       <div className="flex justify-between content-center">
-        <div className="pt-0.5 text-[color:var(--appsmith-color-black-700)]">
+        <Switch
+          className="mb-0"
+          id="t--page-settings-home-page-control"
+          isDisabled={isDefaultSaving || page.isDefault || !canManagePages}
+          isSelected={isDefault}
+          onChange={() => {
+            if (!canManagePages) return;
+            setIsDefault(!isDefault);
+            setIsDefaultSaving(true);
+            dispatch(setPageAsDefault(page.pageId, applicationId));
+          }}
+        >
           <PropertyHelpLabel
             label={PAGE_SETTINGS_SET_AS_HOMEPAGE()}
             lineHeight="1.17"
@@ -365,22 +325,7 @@ function PageSettings(props: { page: Page }) {
                 : PAGE_SETTINGS_SET_AS_HOMEPAGE_TOOLTIP_NON_HOME_PAGE()
             }
           />
-        </div>
-        <SwitchWrapper>
-          <AdsSwitch
-            checked={isDefault}
-            className="mb-0"
-            disabled={isDefaultSaving || page.isDefault || !canManagePages}
-            id="t--page-settings-home-page-control"
-            large
-            onChange={() => {
-              if (!canManagePages) return;
-              setIsDefault(!isDefault);
-              setIsDefaultSaving(true);
-              dispatch(setPageAsDefault(page.pageId, applicationId));
-            }}
-          />
-        </SwitchWrapper>
+        </Switch>
       </div>
     </>
   );

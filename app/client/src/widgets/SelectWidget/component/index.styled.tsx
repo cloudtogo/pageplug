@@ -1,16 +1,17 @@
+import type { PropsWithChildren } from "react";
 import { Classes, ControlGroup } from "@blueprintjs/core";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { Colors } from "constants/Colors";
 
-import { DropdownOption } from "../constants";
+import type { DropdownOption } from "../constants";
 import { Select } from "@blueprintjs/select";
-import {
-  BlueprintCSSTransform,
-  createGlobalStyle,
-} from "constants/DefaultTheme";
+import { BlueprintCSSTransform } from "constants/DefaultTheme";
 import { isEmptyOrNill } from "../../../utils/helpers";
 import { LabelPosition, LABEL_MARGIN_OLD_SELECT } from "components/constants";
-import { labelLayoutStyles, LABEL_CONTAINER_CLASS } from "design-system";
+import {
+  labelLayoutStyles,
+  LABEL_CONTAINER_CLASS,
+} from "widgets/components/LabelWithTooltip";
 import { lightenColor } from "widgets/WidgetUtils";
 import { CommonSelectFilterStyle } from "widgets/MultiSelectWidgetV2/component/index.styled";
 
@@ -69,15 +70,19 @@ export const StyledControlGroup = styled(ControlGroup)<{
   }
 `;
 
-const SingleDropDown = Select.ofType<DropdownOption>();
-export const StyledSingleDropDown = styled(SingleDropDown)<{
+type StyledSingleDropDownProps = PropsWithChildren<{
   value: string;
   isValid: boolean;
   hasError?: boolean;
   borderRadius: string;
   boxShadow?: string;
   accentColor?: string;
-}>`
+}>;
+
+const SingleDropDown = Select.ofType<DropdownOption>();
+export const StyledSingleDropDown = styled(
+  SingleDropDown,
+)<StyledSingleDropDownProps>`
   div {
     flex: 1 1 auto;
   }
@@ -88,6 +93,7 @@ export const StyledSingleDropDown = styled(SingleDropDown)<{
       height: 100%;
     }
   }
+
   &&&& .${Classes.BUTTON} {
     display: flex;
     width: 100%;
@@ -220,17 +226,17 @@ export const DropdownContainer = styled.div<{
 
   /**
     When the label is on the left it is not center aligned
-    here set height to auto and not 100% because the input 
+    here set height to auto and not 100% because the input
     has fixed height and stretch the container.
   */
     ${({ labelPosition }) => {
-      if (labelPosition === LabelPosition.Left) {
-        return `
+    if (labelPosition === LabelPosition.Left) {
+      return `
       height: auto !important;
       align-items: stretch;
       `;
-      }
-    }}
+    }
+  }}
 
   & .${LABEL_CONTAINER_CLASS} {
     label {

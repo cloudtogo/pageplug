@@ -1,3 +1,5 @@
+import type { PageErrorMessageProps } from "pages/common/ErrorPages/Components/PageErrorMessage";
+
 export function createMessage(
   format: (...strArgs: any[]) => string,
   ...args: any[]
@@ -6,15 +8,17 @@ export function createMessage(
 }
 
 /*
-  For self hosted, it displays the string "Appsmith Community v1.10.0" or "Appsmith Business v1.10.0".
-  For cloud hosting, it displays "Appsmith v1.10.0".
-  This is because Appsmith Cloud doesn't support business features yet.
+  For self hosted, it displays the string "Pageplug Community v1.10.0" or "Pageplug Business v1.10.0".
+  For cloud hosting, it displays "Pageplug v1.10.0".
+  This is because Pageplug Cloud doesn't support business features yet.
  */
 export const APPSMITH_DISPLAY_VERSION = (
   edition: string,
   version: string,
   cloudHosting: boolean,
 ) => `PagePlug ${!cloudHosting ? edition : ""} ${version}`;
+export const INTERCOM_CONSENT_MESSAGE = () =>
+  `我们可以获取您的电子邮件以获得更好的支持吗？`;
 export const YES = () => `是的`;
 export const ARE_YOU_SURE = () => `确定吗？`;
 export const ERROR_ADD_API_INVALID_URL = () =>
@@ -43,7 +47,7 @@ export const ENTER_VIDEO_URL = () => `请填写有效的地址`;
 export const ENTER_AUDIO_URL = () => `请填写有效的地址`;
 
 export const FORM_VALIDATION_EMPTY_PASSWORD = () => `请输入密码`;
-export const FORM_VALIDATION_PASSWORD_RULE = () => `密码必须是 6 ~ 42 个字符`;
+export const FORM_VALIDATION_PASSWORD_RULE = () => `请输入6位字符以上的密码`;
 export const FORM_VALIDATION_INVALID_PASSWORD = FORM_VALIDATION_PASSWORD_RULE;
 
 export const LOGIN_PAGE_SUBTITLE = () => `使用你的团队邮箱`;
@@ -55,12 +59,12 @@ export const LOGIN_PAGE_PASSWORD_INPUT_PLACEHOLDER = () => `请输入密码`;
 export const LOGIN_PAGE_INVALID_CREDS_ERROR = () =>
   `密码校验失败，请重试，或者点击下面的按钮重置密码`;
 export const LOGIN_PAGE_INVALID_CREDS_FORGOT_PASSWORD_LINK = () => `重置密码`;
-export const NEW_TO_APPSMITH = () => `是新朋友吗？`;
+export const NEW_TO_APPSMITH = () => `新朋友？`;
 
 export const LOGIN_PAGE_LOGIN_BUTTON_TEXT = () => `登录`;
 export const LOGIN_PAGE_FORGOT_PASSWORD_TEXT = () => `忘记密码`;
 export const LOGIN_PAGE_REMEMBER_ME_LABEL = () => `记住我`;
-export const LOGIN_PAGE_SIGN_UP_LINK_TEXT = () => `注册`;
+export const LOGIN_PAGE_SIGN_UP_LINK_TEXT = () => `注册账号`;
 export const SIGNUP_PAGE_TITLE = () => `免费注册账号`;
 export const SIGNUP_PAGE_SUBTITLE = () => `使用你的团队邮箱`;
 export const SIGNUP_PAGE_EMAIL_INPUT_LABEL = () => `邮箱`;
@@ -69,10 +73,10 @@ export const SIGNUP_PAGE_NAME_INPUT_PLACEHOLDER = () => `昵称`;
 export const SIGNUP_PAGE_NAME_INPUT_LABEL = () => `昵称`;
 export const SIGNUP_PAGE_PASSWORD_INPUT_LABEL = () => `密码`;
 export const SIGNUP_PAGE_PASSWORD_INPUT_PLACEHOLDER = () => `密码`;
-export const SIGNUP_PAGE_LOGIN_LINK_TEXT = () => `登录`;
+export const SIGNUP_PAGE_LOGIN_LINK_TEXT = () => `立即登录`;
 export const SIGNUP_PAGE_NAME_INPUT_SUBTEXT = () => `我们应该怎么称呼你？`;
 export const SIGNUP_PAGE_SUBMIT_BUTTON_TEXT = () => `注册`;
-export const ALREADY_HAVE_AN_ACCOUNT = () => `已经有账号了吗？`;
+export const ALREADY_HAVE_AN_ACCOUNT = () => `已有账号？`;
 
 export const SIGNUP_PAGE_SUCCESS = () => `恭喜注册成功！`;
 export const SIGNUP_PAGE_SUCCESS_LOGIN_BUTTON_TEXT = () => `登录`;
@@ -108,11 +112,18 @@ export const TERMS_AND_CONDITIONS_LINK = () => `条款协议`;
 export const ERROR_500 = () => `抱歉，服务端出错了，我们正在拼命修复`;
 export const ERROR_0 = () => `无法连接到服务端，请检查你的网络连接`;
 export const ERROR_401 = () => `鉴权失败！请重新登录`;
+export const ERROR_413 = (maxFileSize: number) =>
+  `Payload too large. File size cannot exceed ${maxFileSize}MB.`;
+export const GENERIC_API_EXECUTION_ERROR = () => `API execution error`;
+export const APPSMITH_HTTP_ERROR_413 = () => `413 CONTENT_TOO_LARGE`;
 export const ERROR_403 = (entity: string, userEmail: string) =>
   `抱歉，你的账号 (${userEmail}) 没有权限更新 ${entity}，请联系管理员解决`;
 export const PAGE_NOT_FOUND_ERROR = () => `页面不存在`;
 export const INVALID_URL_ERROR = () => `无效地址`;
-
+export const MAKE_APPLICATION_PUBLIC = () => "公开应用";
+export const MAKE_APPLICATION_PUBLIC_TOOLTIP = () =>
+  "让任何人无需登录即可访问你的应用";
+export const INVITE_TAB = () => "邀请";
 export const INVITE_USERS_VALIDATION_EMAIL_LIST = () => `包含无效邮箱地址`;
 export const INVITE_USERS_VALIDATION_ROLE_EMPTY = () => `请选择角色`;
 
@@ -128,7 +139,22 @@ export const INVITE_USERS_SUBMIT_SUCCESS = () => `邀请成功`;
 export const INVITE_USER_SUBMIT_SUCCESS = () => `邀请成功`;
 export const INVITE_USERS_VALIDATION_EMAILS_EMPTY = () =>
   `请输入小伙伴们的邮箱`;
-
+export const INVITE_USER_RAMP_TEXT = () =>
+  "如需使用更多的用户权限功能，可升级至";
+export const INVITE_USER_RAMP_TEXT2 = () =>
+  "。如需申请企业版使用体验，可以联系社区—静静申请license";
+export const CUSTOM_ROLES_RAMP_TEXT = () =>
+  "要构建和分配自定义角色，请尝试我们的";
+export const CUSTOM_ROLE_TEXT = () => "自定义权限";
+export const BUSINESS_PRICE_URL = "https://docs.pageplug.cn/%E5%95%86%E4%B8%9A%E7%89%88&%E4%BC%81%E4%B8%9A%E7%89%88/%E4%BB%B7%E6%A0%BC%E8%A1%A8";
+export const CUSTOM_ROLE_DISABLED_OPTION_TEXT = () =>
+  "可以访问特定应用程序或仅访问应用程序中的某些页面和查询";
+export const USERS_HAVE_ACCESS_TO_ALL_APPS = () =>
+  "用户将有权访问此工作区中的所有应用程序";
+export const USERS_HAVE_ACCESS_TO_ONLY_THIS_APP = () =>
+  "用户只能访问此应用程序";
+export const NO_USERS_INVITED = () => "未开通邮件服务";
+export const BUSINESS_EDITION_TEXT = () => "企业版";
 export const CREATE_PASSWORD_RESET_SUCCESS = () => `密码重置成功`;
 export const CREATE_PASSWORD_RESET_SUCCESS_LOGIN_LINK = () => `登录`;
 
@@ -136,6 +162,18 @@ export const DELETING_APPLICATION = () => `正在删除应用...`;
 export const DUPLICATING_APPLICATION = () => `正在拷贝应用...`;
 
 export const FORGOT_PASSWORD_PAGE_LOGIN_LINK = () => `返回登录`;
+export const USER_PROFILE_PICTURE_UPLOAD_FAILED = () =>
+  "Unable to upload display picture.";
+export const UPDATE_USER_DETAILS_FAILED = () =>
+  "Unable to update user details.";
+export const USER_DISPLAY_PICTURE_FILE_INVALID = () =>
+  "File content doesn't seem to be an image. Please verify.";
+export const USER_DISPLAY_NAME_CHAR_CHECK_FAILED = () =>
+  "No special characters allowed except .'-";
+export const USER_DISPLAY_NAME_PLACEHOLDER = () => "用户名";
+export const USER_DISPLAY_PICTURE_PLACEHOLDER = () => "头像";
+export const USER_EMAIL_PLACEHOLDER = () => "Email";
+export const USER_RESET_PASSWORD = () => "重置密码";
 export const ADD_API_TO_PAGE_SUCCESS_MESSAGE = (actionName: string) =>
   `${actionName} API 添加成功`;
 export const INPUT_WIDGET_DEFAULT_VALIDATION_ERROR = () => `无效输入`;
@@ -152,13 +190,25 @@ export const ENABLE_TIME = () => `显示时间`;
 export const EDIT_APP = () => `编辑应用`;
 export const FORK_APP = () => `复制应用`;
 export const SIGN_IN = () => `登录`;
+export const SHARE_APP = () => `分享应用`;
+export const ALL_APPS = () => `所有应用`;
+
+export const EDITOR_HEADER = {
+  saving: () => "正在保存",
+  saveFailed: () => "保存失败",
+  share: () => "分享",
+  previewTooltip: {
+    text: () => "预览",
+    shortcut: () => "P",
+  },
+};
 
 // Homepage
 export const CREATE_NEW_APPLICATION = () => `新建应用`;
 export const SEARCH_APPS = () => `搜索应用`;
 export const GETTING_STARTED = () => `马上开始`;
 export const WORKSPACES_HEADING = () => `应用组`;
-export const WELCOME_TOUR = () => `欢迎光临`;
+export const WELCOME_TOUR = () => `新手引导`;
 export const NO_APPS_FOUND = () => `没有发现相关应用`;
 
 // Lightning menu
@@ -255,6 +305,7 @@ export const ERROR_WIDGET_COPY_NO_WIDGET_SELECTED = () => `请选择要复制的
 export const ERROR_WIDGET_COPY_NOT_ALLOWED = () => `不能复制该组件`;
 export const WIDGET_CUT = (widgetName: string) => `${widgetName} 剪切成功`;
 export const ERROR_WIDGET_CUT_NO_WIDGET_SELECTED = () => `请选择要剪切的组件`;
+export const ERROR_WIDGET_CUT_NOT_ALLOWED = () => `不能剪切该组件`;
 export const SELECT_ALL_WIDGETS_MSG = () => `已选中页面中所有的组件`;
 export const ERROR_ADD_WIDGET_FROM_QUERY = () => `组件添加失败`;
 
@@ -269,6 +320,11 @@ export const OAUTH_AUTHORIZATION_FAILED = "鉴权失败！请查看详情";
 export const OAUTH_AUTHORIZATION_APPSMITH_ERROR = "出错了";
 export const OAUTH_APPSMITH_TOKEN_NOT_FOUND = "没有发现 token";
 
+export const GSHEET_AUTHORIZATION_ERROR = "数据源未授权，请授权后继续操作";
+export const GSHEET_FILES_NOT_SELECTED =
+  "Datasource does not have access to any files, please authorize google sheets to use this data source";
+export const FILES_NOT_SELECTED_EVENT = () => "Files not selected";
+
 export const LOCAL_STORAGE_QUOTA_EXCEEDED_MESSAGE = () =>
   "本地存储失败！已超出本地最大存储限制";
 export const LOCAL_STORAGE_NO_SPACE_LEFT_ON_DEVICE_MESSAGE = () =>
@@ -282,7 +338,7 @@ export const OMNIBAR_PLACEHOLDER_NAV = () => "搜索组件和查询";
 export const OMNIBAR_PLACEHOLDER_DOC = () => "搜索文档";
 export const CREATE_NEW_OMNIBAR_PLACEHOLDER = () =>
   "新建查询、API 或者静态 JS 对象";
-export const HELPBAR_PLACEHOLDER = () => "快速搜索/导航";
+export const HELPBAR_PLACEHOLDER = () => "搜索";
 export const NO_SEARCH_DATA_TEXT = () => "没有找到相关内容";
 
 export const WIDGET_BIND_HELP = () => "不知道怎么从组件获取信息吗？";
@@ -292,15 +348,69 @@ export const BACK_TO_HOMEPAGE = () => "回到主页";
 // error pages
 export const PAGE_NOT_FOUND_TITLE = () => "404";
 export const PAGE_NOT_FOUND = () => "未找到页面";
-export const PAGE_SERVER_UNAVAILABLE_ERROR_CODE = () => "503";
-export const PAGE_SERVER_UNAVAILABLE_TITLE = () => "PagePlug 服务异常";
-export const PAGE_SERVER_UNAVAILABLE_DESCRIPTION = () => "请稍后重试";
 export const PAGE_SERVER_TIMEOUT_ERROR_CODE = () => "504";
 export const PAGE_SERVER_TIMEOUT_TITLE = () => "PagePlug 服务长时间无响应";
 export const PAGE_SERVER_TIMEOUT_DESCRIPTION = () => `请稍后重试`;
 export const PAGE_CLIENT_ERROR_TITLE = () => "糟糕，魔法失灵了！";
 export const PAGE_CLIENT_ERROR_DESCRIPTION = () =>
   "请联系 PagePlug 团队寻求帮助";
+
+export const PAGE_SERVER_UNAVAILABLE_ERROR_CODE = () => "503";
+
+// cloudHosting used in EE
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const PAGE_SERVER_UNAVAILABLE_TITLE = (cloudHosting: boolean) =>
+  "PagePlug 服务异常";
+
+export const PAGE_SERVER_UNAVAILABLE_DESCRIPTION = () => "请稍后重试";
+
+export const PAGE_SERVER_UNAVAILABLE_ERROR_MESSAGES = (
+  cloudHosting: boolean,
+): PageErrorMessageProps[] => {
+  if (cloudHosting) {
+    return [
+      {
+        text: "If the problem persists, please contact customer support",
+        links: [
+          {
+            from: 40,
+            to: 56,
+            href: "mailto: support@appsmith.com?subject=Pageplug 503 Server Error",
+          },
+        ],
+        addNewLine: true,
+      },
+    ];
+  } else {
+    return [
+      {
+        text: "If the problem persists, please contact your admin",
+        addNewLine: true,
+      },
+      {
+        text: "You can find more information on how to debug and access the logs here",
+        links: [
+          {
+            from: 66,
+            to: 70,
+            href: "https://docs.appsmith.com/learning-and-resources/how-to-guides/how-to-get-container-logs",
+          },
+        ],
+        addNewLine: true,
+      },
+      {
+        text: "A quick view of the server logs is accessible here",
+        links: [
+          {
+            from: 46,
+            to: 50,
+            href: "/supervisor/logtail/backend",
+          },
+        ],
+      },
+    ];
+  }
+};
 
 // comments
 export const POST = () => "提交";
@@ -353,6 +463,7 @@ export const NAVIGATE_TO = () => `跳转到`;
 export const SHOW_MESSAGE = () => `消息提示`;
 export const OPEN_MODAL = () => `打开弹窗`;
 export const CLOSE_MODAL = () => `关闭弹窗`;
+export const CLOSE = () => `关闭`;
 export const STORE_VALUE = () => `保存数据`;
 export const REMOVE_VALUE = () => `删除数据`;
 export const CLEAR_STORE = () => `清空数据`;
@@ -404,12 +515,16 @@ export const JS_SETTINGS_CONFIRM_EXECUTION_SUBTEXT = () =>
 export const JS_SETTINGS_EXECUTE_TIMEOUT = () => "函数超时（毫秒）";
 export const ASYNC_FUNCTION_SETTINGS_HEADING = () => "异步函数设置";
 export const NO_ASYNC_FUNCTIONS = () => "这个 JS 对象中没有异步函数";
+export const FUNCTION_SETTINGS_HEADING = () => "函数设置";
+export const NO_JS_FUNCTIONS = () => "这个JS对象中没有函数";
 export const NO_JS_FUNCTION_TO_RUN = (JSObjectName: string) =>
   `${JSObjectName} 没有函数`;
 export const NO_JS_FUNCTION_RETURN_VALUE = (JSFunctionName: string) =>
   `${JSFunctionName} 没有返回任何数据，你给函数添加了返回吗？`;
 
 // Import/Export Application features
+export const ERROR_IMPORTING_APPLICATION_TO_WORKSPACE = () =>
+  "导入应用错误. 找不到应用组";
 export const IMPORT_APPLICATION_MODAL_TITLE = () => "导入应用";
 export const IMPORT_APPLICATION_MODAL_LABEL = () => "你想从哪里导入你的应用？";
 export const IMPORT_APP_FROM_FILE_TITLE = () => "从文件导入";
@@ -431,10 +546,23 @@ export const SKIP_TO_APPLICATION_TOOLTIP_HEADER = () => "这个操作是不可�
 export const SKIP_TO_APPLICATION_TOOLTIP_DESCRIPTION = () =>
   `你可以随时重连数据源，只是你的应用可能会无法使用`;
 export const SKIP_TO_APPLICATION = () => "跳过设置";
+export const SKIP_CONFIGURATION = () => "跳过配置";
 export const SELECT_A_METHOD_TO_ADD_CREDENTIALS = () => "选择一种鉴权方式";
 export const DELETE_CONFIRMATION_MODAL_TITLE = () => `确认`;
-export const DELETE_CONFIRMATION_MODAL_SUBTITLE = (name?: string | null) =>
-  `你确实想从当前团队中删除 ${name} 吗？`;
+// export const DELETE_CONFIRMATION_MODAL_SUBTITLE = (name?: string | null) =>
+//   `你确实想从当前团队中删除 ${name} 吗？`;
+export const DELETE_CONFIRMATION_MODAL_SUBTITLE = (
+  name?: string | null,
+  entityType?: string,
+) =>
+  `You want to remove ${name} from this ${
+    entityType ===
+    `你确实想从当前${
+      entityType === "Application" ? "application" : "workspace"
+    }中删除 ${name} 吗？`
+      ? "application"
+      : "workspace"
+  }`;
 export const PARSING_ERROR = () => "语法错误：无法解析代码，请查看错误日志";
 export const PARSING_WARNING = () => "格式错误：在使用函数之前请先解决格式问题";
 export const JS_FUNCTION_CREATE_SUCCESS = () => "JS 函数创建成功";
@@ -453,6 +581,9 @@ export const BULK_WIDGET_REMOVED = (widgetName: string) =>
   `${widgetName} 已删除`;
 export const BULK_WIDGET_ADDED = (widgetName: string) =>
   `${widgetName} 恢复成功`;
+
+export const ACTION_CONFIGURATION_CHANGED = (name: string) =>
+  `${name}'s configuration has changed`;
 
 // Generate page from DB Messages
 
@@ -507,6 +638,22 @@ export const SNIPPET_INSERT = () => `按 ⏎ 插入`;
 export const SNIPPET_COPY = () => `按 ⏎ 复制`;
 export const SNIPPET_EXECUTE = () => `按 ⏎ 运行`;
 export const APPLY_SEARCH_CATEGORY = () => `⏎ 跳转`;
+export const BINDING_SECTION_LABEL = () => "绑定";
+export const ADD_NEW_WIDGET_SUB_HEADING = () => "选择如何显示数据。";
+export const CONNECT_EXISTING_WIDGET_LABEL = () => "选择一个小部件";
+export const CONNECT_EXISTING_WIDGET_SUB_HEADING = () => "替换现有小部件的数据";
+export const NO_EXISTING_WIDGETS = () => "在新小部件中显示数据";
+export const BINDING_WALKTHROUGH_TITLE = () => "显示您的数据";
+export const BINDING_WALKTHROUGH_DESC = () => "您可以替换页面上现有小部件的数据，或者选择一个新的小部件。";
+export const BINDINGS_DISABLED_TOOLTIP = () => "只有在成功获得查询响应时才能显示数据。";
+export const TABLE_OR_COLUMN_NOT_FOUND = () => "未找到表格或列。";
+export const DATASOURCE_STRUCTURE_INPUT_PLACEHOLDER_TEXT = () => "搜索表格或属性";
+export const SCHEMA_LABEL = () => "模式";
+export const STRUCTURE_NOT_FETCHED = () => "我们无法获取数据库的模式。";
+export const TEST_DATASOURCE_AND_FIX_ERRORS = () => "测试数据源并修复错误。";
+export const LOADING_SCHEMA = () => "加载模式...";
+export const SCHEMA_WALKTHROUGH_TITLE = () => "快速查询数据";
+export const SCHEMA_WALKTHROUGH_DESC = () => "从数据库表格中选择一个模板，以快速创建您的第一个查询。";
 
 // Git sync
 export const CONNECTED_TO_GIT = () => "已连接到 Git";
@@ -640,13 +787,14 @@ export const GIT_TYPE_REPO_NAME_FOR_REVOKING_ACCESS = (name: string) =>
 export const APPLICATION_NAME = () => "应用名称";
 export const NOT_OPTIONS = () => "没有可选项！";
 export const OPEN_REPO = () => "打开仓库SITORY";
-export const CONNECTING_REPO = () => "连接到 git 仓库sitory";
+export const CONNECTING_REPO = () => "连接到 git 仓库";
 export const IMPORTING_APP_FROM_GIT = () => "从 git 导入应用";
 export const ERROR_CONNECTING = () => "连接时出错";
 export const ERROR_COMMITTING = () => "提交时出错";
 export const CONFIRM_SSH_KEY = () => "请确保你的 SSH Key 有写权限";
 export const READ_DOCUMENTATION = () => "查看文档";
 export const LEARN_MORE = () => "了解更多";
+export const I_UNDERSTAND = () => "我理解了";
 export const GIT_NO_UPDATED_TOOLTIP = () => "没有更新";
 
 export const FIND_OR_CREATE_A_BRANCH = () => "查找或创建一个分支";
@@ -668,19 +816,23 @@ export const DISCARD_CHANGES = () => "丢弃修改";
 // GIT DEPLOY begin
 export const DEPLOY = () => "发布";
 export const DEPLOY_YOUR_APPLICATION = () => "发布你的应用";
+export const CHANGES_APP_SETTINGS = () => "应用设置已修改";
+export const CHANGES_THEME = () => "主题已修改";
 export const CHANGES_SINCE_LAST_DEPLOYMENT = () => "上次发布以来的修改";
 export const CHANGES_ONLY_USER = () => "上次提交以来的用户修改";
 export const CHANGES_MADE_SINCE_LAST_COMMIT = () => "上次提交以来的修改";
-export const CHANGES_ONLY_MIGRATION = () => "上次提交以来 Appsmith 的更新";
+export const CHANGES_ONLY_MIGRATION = () => "上次提交以来 Pageplug 的更新";
 export const CHANGES_USER_AND_MIGRATION = () =>
-  "上次提交以来 Appsmith 的更新和用户修改";
+  "上次提交以来 Pageplug 的更新和用户修改";
 export const CURRENT_PAGE_DISCARD_WARNING = (page: string) =>
   `当前页面 (${page}) 在丢弃列表中`;
+export const DISCARD_MESSAGE = () =>
+  `放弃这些更改后，某些更改可能会重新出现，这些更改支持 Pageplug 的新功能。您可以安全地提交它们到您的存储库。`;
 // GIT DEPLOY end
 
 // GIT CHANGE LIST begin
 export const CHANGES_FROM_APPSMITH = () =>
-  "Some changes are platform upgrades from Appsmith.";
+  "Some changes are platform upgrades from Pageplug.";
 export const TRY_TO_PULL = () =>
   "We will try to pull before pushing your changes.";
 export const NOT_PUSHED_YET = () =>
@@ -714,6 +866,7 @@ export const SNIPPET_DESCRIPTION = () =>
 export const DOC_DESCRIPTION = () => `通过文档找到答案`;
 export const NAV_DESCRIPTION = () => `导航到任意页面、组件或者文件`;
 export const ACTION_OPERATION_DESCRIPTION = () => `新建查询、API 或者 JS 对象`;
+export const TABLE_WIDGET_VALIDATION_ASSIST_PROMPT = () => `访问当前单元格 `;
 
 export const TRIGGER_ACTION_VALIDATION_ERROR = (
   functionName: string,
@@ -757,6 +910,14 @@ export const ONBOARDING_CHECKLIST_BODY = () =>
   "开始你的第一个应用吧，你可以自由探索，或者跟随指引了解 PagePlug 的基本用法";
 export const ONBOARDING_CHECKLIST_COMPLETE_TEXT = () => "完成";
 
+export const SIGNPOSTING_POPUP_SUBTITLE = () =>
+  "Here’s what you need to do to build your first app:";
+export const SIGNPOSTING_SUCCESS_POPUP = {
+  title: () => "🎉 Awesome! You’ve explored the basics of Pageplug",
+  subtitle: () =>
+    "You can carry on building the app from here on. If you are still not sure, checkout our documentation or try guided tour.",
+};
+
 export const ONBOARDING_CHECKLIST_CONNECT_DATA_SOURCE = {
   bold: () => "连接你的数据源",
   normal: () => "开始构建应用",
@@ -781,9 +942,40 @@ export const ONBOARDING_CHECKLIST_DEPLOY_APPLICATIONS = {
   bold: () => "发布你的应用",
   normal: () => "你可以看到应用立即可用了",
 };
+export const SIGNPOSTING_LAST_STEP_TOOLTIP = () => "就快完成了！";
+export const SIGNPOSTING_TOOLTIP = {
+  DEFAULT: {
+    content: () =>
+      "完成这5个步骤，以了解构建应用程序并部署它的基础知识。这将花费您5分钟的时间。",
+  },
+  CONNECT_A_DATASOURCE: {
+    content: () => "让我们添加一个数据源",
+  },
+  CREATE_QUERY: {
+    content: () => "数据源已连接。现在让我们编写您的第一个查询。",
+  },
+  ADD_WIDGET: {
+    content: () => "查询看起来不错，对吧？接下来，让我们构建我们的用户界面。",
+  },
+  CONNECT_DATA_TO_WIDGET: {
+    content: () =>
+      "太简单了。将您在第2步中编写的查询与此小部件中的数据相连接。",
+  },
+  DEPLOY_APPLICATION: {
+    content: () =>
+      "部署您的应用程序，以查看它实时运行并与用户共享。",
+  },
+  DOCUMENTATION: {
+    content: () => "打开文档",
+  },
+};
+
 
 export const ONBOARDING_CHECKLIST_FOOTER = () =>
   "不知道从何下手？请跟随我们的指引进行操作吧";
+
+export const ONBOARDING_TELEMETRY_POPUP = () =>
+  "我们仅收集使用数据，以使 Pageplug 对我们都更好。访问管理员设置以关闭此功能。";
 
 //Introduction modal
 export const HOW_APPSMITH_WORKS = () => "这是 PagePlug 的功能概述";
@@ -856,9 +1048,12 @@ export const API_EDITOR_TAB_TITLES = {
 };
 export const ACTION_EXECUTION_MESSAGE = (actionType: string) =>
   `正在请求 ${actionType}`;
+export const ACTION_EXECUTION_CANCEL = () => "Cancel request";
 
 export const WELCOME_FORM_HEADER = () => "让我们更好的了解你！";
 export const WELCOME_FORM_FULL_NAME = () => "姓名";
+export const WELCOME_FORM_FIRST_NAME = () => "姓";
+export const WELCOME_FORM_LAST_NAME = () => "名";
 export const WELCOME_FORM_EMAIL_ID = () => "邮箱";
 export const WELCOME_FORM_CREATE_PASSWORD = () => "创建密码";
 export const WELCOME_FORM_VERIFY_PASSWORD = () => "校验密码";
@@ -890,8 +1085,9 @@ export const ADD_DATASOURCE_TOOLTIP = () => "添加数据源或者创建新的�
 export const ADD_WIDGET_TOOLTIP = () => "查找、添加组件";
 export const HELP_RESOURCE_TOOLTIP = () => "帮助资源";
 export const COPY_ELEMENT = () => "复制元素";
+export const SHOW_TEMPLATES = () => "添加一个查询";
 export const LAYOUT_DROPDOWN_TOOLTIP = () => "选择你的应用宽度";
-export const DEPLOY_BUTTON_TOOLTIP = () => "发布应用的当前版本";
+export const DEPLOY_BUTTON_TOOLTIP = () => "发布最新应用";
 export const SHARE_BUTTON_TOOLTIP = () => "邀请你的团队到 PagePlug";
 export const SHARE_BUTTON_TOOLTIP_WITH_USER = (length: number) => () =>
   `和 ${length} 位小伙伴共享`;
@@ -928,53 +1124,94 @@ export const TEST_EMAIL_SUCCESS_TROUBLESHOOT = () => "疑难杂症";
 export const TEST_EMAIL_FAILURE = () => "测试邮件发送失败";
 export const DISCONNECT_AUTH_ERROR = () => "不能断开唯一已连接的鉴权方式";
 export const MANDATORY_FIELDS_ERROR = () => "必填字段不能为空";
+export const FORM_LOGIN_DESC = () => "允许用户使用账号密码登录你的平台";
+export const GOOGLE_AUTH_DESC = () => "使用 Google 账号登录你的平台 (OAuth)";
+export const GITHUB_AUTH_DESC = () => "使用 Github 账号登录你的平台 (SAML)";
+export const SAML_AUTH_DESC = () =>
+  "允许使用 SAML2 协议的单点登录服务登录你的平台";
+export const OIDC_AUTH_DESC = () =>
+  "允许使用 OIDC 协议的单点登录服务登录你的平台";
+export const WECHAT_AUTH_DESC = () =>
+  "允许使用 微信账号登录你的平台";
+export const BUSINESS_WECHAT_AUTH_DESC = () =>
+  "允许使用 企业微信账号登录你的平台";
+export const DINGDING_AUTH_DESC = () =>
+  "允许使用 钉钉账号登录你的平台";
+export const SAVE_BUTTON = () => "保存";
+export const SAVE_AND_RESTART_BUTTON = () => "保存并重新启动";
+export const SAVE_AND_REFRESH_BUTTON = () => "保存并刷新";
+export const RESET_BUTTON = () => "重置";
+export const BUSINESS_TAG = () => "企业版";
+export const ENTERPRISE_TAG = () => "企业版";
+
+// Upgrade pages begin
+export const AVAILABLE_ON_BUSINESS = () => "仅适用于企业计划";
+export const EXCLUSIVE_TO_BUSINESS = (featureName: string) =>
+  `${featureName} 功能仅适用于企业版工作区`;
+export const AVAILABLE_ON_ENTERPRISE = () => "仅适用于 Pageplug 企业版";
+// Upgrade pages end
 
 // Audit logs begin
-export const AUDIT_LOGS = () => "Audit Logs";
+export const AUDIT_LOGS = () => "审计日志";
 export const TRY_AGAIN_WITH_YOUR_FILTER = () => "Try again with your filter";
 
 // Audit logs Upgrade page begin
 export const INTRODUCING = (featureName: string) =>
-  `Introducing ${featureName}`;
+  `介绍 ${featureName}`;
 export const AUDIT_LOGS_UPGRADE_PAGE_SUB_HEADING = () =>
-  "See a timestamped trail of events in your workspace. Filter by type of event, user, resource ID, and time. Drill down into each event to investigate further.";
-export const SECURITY_AND_COMPLIANCE = () => "Security & Compliance";
+  "查看工作区事件的时间戳记录。按事件类型、用户、资源ID和时间进行筛选。深入研究每个事件以进行进一步的调查。";
+export const SECURITY_AND_COMPLIANCE = () => "安全性与合规性";
 export const SECURITY_AND_COMPLIANCE_DETAIL1 = () =>
-  "Proactively derisk misconfigured permissions, roll back changes from a critical security event, and keep checks against your compliance policies.";
+  "主动减少配置不当的权限风险，回滚重大安全事件的更改，以及进行合规政策的检查。";
 export const SECURITY_AND_COMPLIANCE_DETAIL2 = () =>
-  "Exports to popular compliance tools coming soon";
-export const DEBUGGING = () => "Debugging";
+  "即将支持导出到流行的合规性工具";
+export const DEBUGGING = () => "调试";
 export const DEBUGGING_DETAIL1 = () =>
-  "Debug with a timeline of events filtered by user and resource ID, correlate them with end-user and app developer actions, and investigate back to the last known good state of your app.";
-export const INCIDENT_MANAGEMENT = () => "Incident Management";
+  "使用按用户和资源ID筛选的事件时间轴进行调试，将其与最终用户和应用程序开发人员的操作进行关联，并调查应用程序的最后已知良好状态。";
+export const INCIDENT_MANAGEMENT = () => "事件管理";
 export const INCIDENT_MANAGEMENT_DETAIL1 = () =>
-  "Go back in time from an incident to see who did what, correlate events with breaking changes, and run RCAs to remediate incidents for now and the future.";
-export const AVAILABLE_ON_BUSINESS = () => "Available on a business plan only";
-export const EXCLUSIVE_TO_BUSINESS = (featureName: string) =>
-  `The ${featureName} feature is exclusive to workspaces on the Business Plan`;
+  "从事件回溯，查看谁做了什么，将事件与重大变更关联，并进行根本原因分析以纠正现在和将来的事件。";
+
 // Audit logs Upgrade page end
 // Audit logs end
 
-// Access control upgrade page begin
+// 访问控制升级页面开始
 export const GRANULAR_ACCESS_CONTROL_FOR_TEAMS = () =>
-  "Granular Access Controls for teams";
+  "团队的细粒度访问控制";
 export const ACCESS_CONTROL_UPGRADE_PAGE_SUB_HEADING = () =>
-  "Control view, create, edit, delete, share, and export permissions for all resources in your apps in a workspace. Manage permissions by attributes as granularly or broadly as you want. Use permissions and user groups to easily define access levels of new and existing users.";
+  "在工作区中控制应用程序中所有资源的所有权限。通过属性细粒度管理权限。使用权限和用户组轻松定义访问级别。";
 export const SECURITY_APPS_LEAST_PRIVILEGE = () =>
-  "Secure apps by the least privilege needed";
+  "按需最小化应用程序的权限";
 export const SECURITY_APPS_LEAST_PRIVILEGE_DETAIL1 = () =>
-  "Create roles by the least privilege needed as defaults, e.g.: View only, assign them to users in groups, e.g.: Marketing, and modify for special access, e.g.: Content creators_Execute queries";
+  `创建默认情况下所需的最低权限角色，例如：仅查看，将它们分配给用户组中的用户，例如：营销，并根据特殊访问情况进行修改，例如：内容创建者_执行查询。`;
 export const PREVENT_ACCIDENTAL_DAMAGE = () =>
-  "Prevent accidental damage to data";
+  "防止意外损害数据";
 export const PREVENT_ACCIDENTAL_DAMAGE_DETAIL1 = () =>
-  `Assign edit and delete permissions to an entire group, then modify granularly so non-native users of your data don’t drop a table or bulk-delete streaming data records before you can say, “Retrieve”.`;
+  `将编辑和删除权限分配给整个用户组，然后进行细粒度修改，以便数据的非原生用户在您可以说“检索”之前不会删除表或批量删除流数据记录。`;
 export const RESTRICT_PUBLIC_EXPOSURE = () =>
-  "Restrict public exposure of sensitive data";
+  "限制敏感数据的公开访问";
 export const RESTRICT_PUBLIC_EXPOSURE_DETAIL1 = () =>
-  "Proactively disallow groups of non-admin or non-super-admin users from publicly sharing your app or exporting app data out of your environment, domain, and security perimeters.";
+  "积极禁止非管理员或非超级管理员用户组从您的环境、域和安全边界公开分享您的应用程序或导出应用程序数据。";
 export const ACCESS_CONTROL_UPGRADE_PAGE_FOOTER = () =>
-  "Unlock granular access controls along with audit logs and SSO for enhanced security and reliability with an upgrade to our Business edition.";
-// Access control upgrade page end
+  "通过升级到我们的企业版，解锁细粒度访问控制、审计日志和单点登录等增强安全性和可靠性功能。";
+// 访问控制升级页面结束
+
+// 配置升级页面开始
+export const USER_PROVISIONING_FOR_ENTERPRISES = () =>
+  "通过身份提供者管理 Pageplug 用户";
+export const PROVISIONING_UPGRADE_PAGE_SUB_HEADING = () =>
+  `集中添加和移除 Pageplug 用户。将现有组同步到 Pageplug 中。`;
+export const PROVISION_DEPROVISION_USERS = () =>
+  "通过您的 IdP 提供和取消提供用户";
+export const PROVISION_DEPROVISION_USERS_DETAIL1 = () =>
+  `使用 SCIM 协议，通过您的 IdP 控制用户的授权和访问 Pageplug 工作区和应用程序。<div>&nbsp;</div><div><span style="font-style: italic;font-weight: normal;">更多协议即将推出</span></div>`;
+export const AUTO_GROUP_SYNC = () => "自动组同步";
+export const AUTO_GROUP_SYNC_DETAIL1 = () =>
+  `当您将它们从您的 IdP 同步到 Pageplug 时，轻松管理组的访问权限。`;
+export const PROVISIONING_UPGRADE_PAGE_FOOTER = () =>
+  "通过 Pageplug 企业版，加强您的 Pageplug 应用程序的安全性，包括细粒度访问控制、审计日志、自定义单点登录等功能。";
+// 配置升级页面结束
+
 
 //
 export const WELCOME_FORM_NON_SUPER_USER_ROLE_DROPDOWN = () =>
@@ -997,14 +1234,24 @@ export const JS_TOGGLE_DISABLED_MESSAGE = "清空字段回退";
 export const PROPERTY_PANE_EMPTY_SEARCH_RESULT_MESSAGE = "没有发现任何属性";
 export const PROPERTY_SEARCH_INPUT_PLACEHOLDER = "搜索组件属性";
 export const HELP_MESSAGE = "帮助";
+export const EXPLORER_BETA_ENTITY = () => "BETA";
+export const BINDING_WIDGET_WALKTHROUGH_TITLE = () => "小部件属性";
+export const BINDING_WIDGET_WALKTHROUGH_DESC = () =>
+  `我们已经为您设置了表格数据属性。您可以随时更改它。属性窗格是配置小部件的中央枢纽，可以轻松修改设置。`;
 
 // API Pane
 export const API_PANE_NO_BODY = () => "当前请求没有请求体";
+export const API_PANE_AUTO_GENERATED_HEADER = () =>
+  "PagePlug 会根据 API 的请求体类型自动生成请求头 content-type，如果需要覆盖它，请新建 content-type 请求头字段";
+export const API_PANE_DUPLICATE_HEADER = (headerName: string) =>
+  `这个重复的请求头会被你添加的 ${headerName} 请求头覆盖`;
 
 export const TABLE_WIDGET_TOTAL_RECORD_TOOLTIP = () =>
   "保存数据表的总行数，用来在分页的时候计算是否还有下一页/上一页";
 export const CREATE_DATASOURCE_TOOLTIP = () => "添加新数据源";
-export const ADD_QUERY_JS_TOOLTIP = () => "新建";
+export const ADD_QUERY_JS_TOOLTIP = () => "新建查询 / JS对象";
+export const LIST_WIDGET_V2_TOTAL_RECORD_TOOLTIP = () =>
+  "计算总数据行数，这个可以帮助我们计算出应该展示的页数";
 
 // Add datasource
 export const GENERATE_APPLICATION_TITLE = () => "新建页面";
@@ -1039,9 +1286,13 @@ export const DISCONNECT_AUTH_METHOD = () => "断开连接";
 export const DISCONNECT_CONFIRMATION = () => "你确定吗？";
 
 // Branding
+export const ADMIN_BRANDING_SETTINGS_TITLE_UPGRADE = () =>
+  "为您的工作区定制品牌";
+export const ADMIN_BRANDING_SETTINGS_SUBTITLE_UPGRADE = () =>
+  "通过几次点击，使您的工作区和应用程序看起来更像您自己，就像以下示例一样。上传您的标志和网站图标，设置您的主色调，并预览新的外观。要保存您喜欢的外观，请升级到我们的企业版。";
 export const ADMIN_BRANDING_SETTINGS_TITLE = () => "为你的平台自定义品牌";
 export const ADMIN_BRANDING_SETTINGS_SUBTITLE = () =>
-  "自由定制你的 LOGO 和品牌色，如果需要使用此功能请升级到商业版";
+  "自由定制你的 LOGO 和品牌色，如果需要使用此功能请升级到企业版";
 export const ADMIN_BRANDING_COLOR_TOOLTIP = () =>
   `当你选择主色后，我们会自动为你生成辅助色和强调色，你也可以随时调整它们`;
 export const ADMIN_BRANDING_LOGO_SIZE_ERROR = () => `上传文件大小不能超过 2MB`;
@@ -1065,6 +1316,8 @@ export const ADMIN_BRANDING_COLOR_TOOLTIP_HOVER = () => `用于按钮 hover 颜�
 export const ADMIN_BRANDING_COLOR_TOOLTIP_FONT = () => `用于按钮文字颜色`;
 export const ADMIN_BRANDING_COLOR_TOOLTIP_DISABLED = () =>
   `用于禁用按钮背景颜色`;
+export const ADMIN_BRANDING_UPGRADE_INTERCOM_MESSAGE = () =>
+  `你好，我想试试 PagePlug 企业版 😀`;
 
 // Guided tour
 // -- STEPS ---
@@ -1212,7 +1465,11 @@ export const CLEAN_URL_UPDATE = {
     "引用了 <strong>appsmith.URL.fullpath</strong> 和 <strong>appsmith.URL.pathname</strong> 的属性会有显示出变化",
 };
 
-export const MEMBERS_TAB_TITLE = (length: number) => `成员 (${length})`;
+export const MEMBERS_TAB_TITLE = (
+  length: number,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  cloudHosting?: boolean,
+) => `成员 (${length})`;
 
 export const CREATE_PAGE = () => "新建空白页面";
 export const CANVAS_NEW_PAGE_CARD = () => "新建页面";
@@ -1263,6 +1520,182 @@ export const PAGE_SETTINGS_SET_AS_HOMEPAGE_TOOLTIP_NON_HOME_PAGE = () =>
 export const PAGE_SETTINGS_ACTION_NAME_CONFLICT_ERROR = (name: string) =>
   `${name} 已经被占用`;
 
+export const CODE_EDITOR_LOADING_ERROR = (message?: string) =>
+  `Failed to load the code editor${message ? `: ${message}` : ""}`;
+
+export const UPDATE_VIA_IMPORT_SETTING = {
+  settingHeader: () => "通过文件导入更新",
+  settingDesc: () => "通过导入文件更新应用程序",
+  settingLabel: () => "导入",
+  settingContent: () =>
+    "此操作将覆盖您现有的应用程序。在选择要导入的文件时，请谨慎操作。",
+  settingActionButtonTxt: () => "导入",
+  disabledForGit: () =>
+    "此功能不支持与 Git 版本控制连接的应用程序。请使用 git pull 命令来更新和同步您的应用程序。",
+};
+
+export const IN_APP_EMBED_SETTING = {
+  applicationUrl: () => "应用地址",
+  allowEmbeddingLabel: () => "支持嵌入",
+  allowEmbeddingTooltip: () => "应用可以嵌入到任何域名下，包括那些恶意网站",
+  forkApplicationConfirmation: {
+    title: () => "允许开发者将此应用fork到他们的工作区吗？",
+    body: () => "允许开发者复制您的应用到他们的工作区",
+    cancel: () => "取消",
+    confirm: () => "允许fork",
+  },
+  copy: () => "复制",
+  copied: () => "已复制",
+  limitEmbeddingLabel: () => "限制嵌入",
+  limitEmbeddingTooltip: () => "应用只能嵌入到特定的域名下",
+  disableEmbeddingLabel: () => "不能嵌入",
+  disableEmbeddingTooltip: () => "应用不能被嵌入到任何域名下",
+  embed: () => "嵌入",
+  embedSnippetTitle: () => "复制嵌入代码",
+  change: () => "修改",
+  copiedEmbedCode: () => "嵌入代码已复制",
+  embedSize: () => "嵌入宽高",
+  previewEmbeddedApp: () => "预览嵌入应用",
+  sectionHeader: () => "分享 & 嵌入",
+  sectionContentHeader: () => "分享",
+  sectionHeaderDesc: () => "共享应用，嵌入属性",
+  showNavigationBar: () => "显示菜单导航",
+  forkContentHeader: () => "fork",
+  forkLabel: () => "使应用程序可fork",
+  forkLabelTooltip: () => "允许开发者将您的应用复制到他们的工作区",
+  upgradeHeading: () => "请联系管理员，使用嵌入功能需要先在设置中公开您的应用",
+  upgradeHeadingForInviteModal: () => "使用嵌入功能需要先在设置中公开您的应用",
+  upgradeSubheadingForInviteModal: () =>
+    "通过访问共享设置，将您的应用程序公开，并轻松将您的 Pageplug 应用嵌入传统应用程序中",
+  privateAppsText: () => "私有应用",
+  rampSubtextModal: () =>
+      "在我们的企业版中，嵌入私有 Pageplug 应用程序并通过SSO无缝进行用户身份验证，可以联系Pageplug静静申请",
+  rampSubtextSidebar: () =>
+      "要嵌入私有的 Pageplug 应用程序并通过SSO无缝进行用户身份验证，请尝试我们的 ",
+  rampLinktext: () => "体验企业版",
+  rampLinktextvariant2: () => "企业版",
+  upgradeContent: () => "想将嵌入企业内的系统",
+  appsmithBusinessEdition: () => "升级至企业版使用",
+  secondaryHeadingForAppSettings: () => "公开应用嵌入",
+  secondaryHeading: () =>
+    "请联系工作区管理员，使用嵌入功能需要先在设置中公开您的应用",
+};
+
+export const APP_NAVIGATION_SETTING = {
+  sectionHeader: () => "导航",
+  sectionHeaderDesc: () => "自定义导航栏",
+  showNavbarLabel: () => "显示导航条",
+  orientationLabel: () => "方向标签",
+  navStyleLabel: () => "标签变量",
+  positionLabel: () => "标签位置",
+  itemStyleLabel: () => "Item Style",
+  colorStyleLabel: () => "背景颜色",
+  logoLabel: () => "Logo",
+  logoConfigurationLabel: () => "Logo 配置",
+  showSignInLabel: () => "展示登录",
+  showSignInTooltip: () => "是否给未登录用户展示登录按钮",
+  logoUploadFormatError: () => `上传的文件必须是 .PNG 或 .JPG 格式。`,
+  logoUploadSizeError: () => `上传的文件大小必须小于 1MB。`,
+  showLogoLabel: () => "显示logo",
+  showApplicationTitleLabel: () => "显示应用程序标题",
+};
+
+export const LOCK_SIDEBAR_MESSAGE = () => `固定侧边栏`;
+export const CLOSE_SIDEBAR_MESSAGE = () => `关闭侧边栏`;
+
+// Datasource/New Query
+export const NEW_QUERY_BUTTON_TEXT = () => "新建查询";
+export const NEW_API_BUTTON_TEXT = () => "新建 API";
+export const GENERATE_NEW_PAGE_BUTTON_TEXT = () => "生成新页面";
+export const RECONNECT_BUTTON_TEXT = () => "重连";
+export const SAVE_BUTTON_TEXT = () => "保存";
+export const TEST_BUTTON_TEXT = () => "测试";
+export const SAVE_AND_AUTHORIZE_BUTTON_TEXT = () => "保存并鉴权";
+export const DISCARD_POPUP_DONT_SAVE_BUTTON_TEXT = () => "不保存";
+export const GSHEET_AUTHORISED_FILE_IDS_KEY = () =>
+  "Google sheets authorised file ids key";
+export const GOOGLE_SHEETS_INFO_BANNER_MESSAGE = () =>
+  "Pageplug will require access to your google drive to access google sheets.";
+export const GOOGLE_SHEETS_AUTHORIZE_DATASOURCE = () => "Authorize datasource";
+export const GOOGLE_SHEETS_LEARN_MORE = () => "Learn more";
+export const DATASOURCE_SCHEMA_NOT_AVAILABLE = () => "Schema is not available";
+export const DATASOURCE_INTERCOM_TEXT = () =>
+  "您需要帮助设置 Google Sheets 数据源吗？";
+export const GOOGLE_SHEETS_ASK_FOR_SUPPORT = () => "寻求支持";
+export const GOOGLE_SHEETS_FILE_PICKER_TITLE = () =>
+  "选择要查询的 Google Sheets";
+export const GSHEETS_GENERATE_PAGE_BUTTON = () => "生成新页面";
+export const GSHEETS_ERR_FETCHING_PREVIEW_DATA = () =>
+  "在获取数据时出现了一些问题";
+export const GSHEETS_FETCHING_PREVIEW_DATA = () => "正在加载数据";
+export const GSHEETS_SCHEMA_NO_DATA = () =>
+  "没有要显示的数据记录，或者表头从索引 1 以外的索引开始";
+
+//Layout Conversion flow
+export const CONVERT = () => "转换布局";
+export const BUILD_RESPONSIVE = () => "构建响应式应用";
+export const BUILD_RESPONSIVE_TEXT = () =>
+  "Pageplug 将把应用程序的 UI 转换为自动布局，这是一种新的模式，专门用于在短时间内构建移动友好的应用程序";
+export const BUILD_FIXED_LAYOUT = () => "使用固定布局";
+export const BUILD_FIXED_LAYOUT_TEXT = () =>
+  "Pageplug 将把应用程序的 UI 转换为固定布局(默认模式)。";
+export const USE_SNAPSHOT = () => "返回快照";
+export const USE_SNAPSHOT_HEADER = () => "返回快照";
+export const DISCARD_SNAPSHOT_HEADER = () => "保存最新";
+export const SAVE_SNAPSHOT = () =>
+  "保存您当前布局的快照，有效期为5天";
+export const SAVE_SNAPSHOT_TEXT = () =>
+  "我们保存您当前布局的快照，以便在此测试版中如果自动布局不适合您，您可以返回。";
+export const CREATE_SNAPSHOT = () => "创建快照";
+export const CONVERTING_APP = () => "正在转换您的应用";
+export const RESTORING_SNAPSHOT = () => "还原快照";
+export const REFRESH_THE_APP = () => "刷新应用";
+export const CONVERT_ANYWAYS = () => "仍然转换";
+export const CONVERSION_SUCCESS_HEADER = () => "全部完成";
+export const DISCARD_SNAPSHOT_TEXT = () =>
+  "点击保存，将保存当前修改为最新快照，并且丢弃此快照：";
+export const CONVERSION_SUCCESS_TEXT = () =>
+  "检查您的所有页面并开始使用新布局";
+export const CONVERSION_WARNING_HEADER = () =>
+  "全部完成，需要进行一些调整";
+export const CONVERSION_WARNING_TEXT = () =>
+  "您可能需要手动调整布局中的某些小部件的位置";
+export const CONVERSION_ERROR_HEADER = () => "转换失败";
+export const CONVERSION_ERROR = () =>
+  "Pageplug 在尝试转换为自动布局时遇到了关键错误";
+export const SEND_REPORT = () => "发送报告给我们";
+export const CONVERSION_ERROR_TEXT = () => "您的应用没有进行任何更改";
+export const DROPDOWN_LABEL_TEXT = () => "目标画布大小";
+export const CONVERSION_WARNING = () => "转换将更改您的布局";
+export const SNAPSHOT_LABEL = () =>
+  "要返回到原始状态，请点击返回快照";
+export const USE_SNAPSHOT_TEXT = () =>
+  "您的应用将回到转换之前的状态，转换后所进行的操作（例如添加组件、数据源、查询、JS等等）都将被抹掉";
+export const SNAPSHOT_WARNING_MESSAGE = () =>
+  "在转换后进行的任何更改都将不再存在。";
+export const CONVERT_TO_FIXED_TITLE = () => "转换为固定布局";
+export const CONVERT_TO_FIXED_BUTTON = () => "转换为固定布局（测试版）";
+export const CONVERT_TO_AUTO_TITLE = () => "转换为响应式布局";
+export const CONVERT_TO_AUTO_BUTTON = () => "转换为响应式布局（测试版）";
+export const SNAPSHOT_BANNER_MESSAGE = () =>
+  "是否还原到快照版本布局？";
+export const USE_SNAPSHOT_CTA = () => "是";
+export const DISCARD_SNAPSHOT_CTA = () => "否";
+export const MORE_DETAILS = () => "更多详情";
+export const CONVERSION_ERROR_MESSAGE_HEADER = () =>
+  "要解决此错误，请执行以下操作：";
+export const CONVERSION_ERROR_MESSAGE_TEXT_ONE = () =>
+  "检查您的互联网连接。";
+export const CONVERSION_ERROR_MESSAGE_TEXT_TWO = () =>
+  "向我们发送报告。发送报告将仅通知我们失败发生，并提供您的电子邮件地址以供联系。";
+export const SNAPSHOT_TIME_FROM_MESSAGE = (
+  timeSince: string,
+  readableDate: string,
+) => `${timeSince} 之前的快照 (${readableDate})`;
+export const SNAPSHOT_TIME_TILL_EXPIRATION_MESSAGE = (
+  timeTillExpiration: string,
+) => `你之前的快照布局将在${timeTillExpiration}内过期`;
+export const DISCARD = () => "保存";
 // Alert options and labels for showMessage types
 export const ALERT_STYLE_OPTIONS = [
   { label: "信息", value: "'info'", id: "info" },
@@ -1275,25 +1708,61 @@ export const ALERT_STYLE_OPTIONS = [
   { label: "警告", value: "'warning'", id: "warning" },
 ];
 
-export const USAGE_AND_BILLING = {
-  usage: () => "Usage",
-  billing: () => "Billing",
-  usageAndBilling: () => "Usage & Billing",
-  usageOverNDays: (days: number) => `Usage over the past ${days} days!`,
-  usageDetails: () =>
-    "This is how much you have used Appsmith to build and run apps.",
-  unit: () => "minutes/day",
-  averaged: () => "*averaged",
-  approximated: () => "*approximated",
-  sell: () => "Figure out your usage before purchasing Appsmith",
-  upgradeToBusiness: () => "UPGRADE TO BUSINESS EDITION",
-  rbacHeading: () => "Role Based Access Control",
-  rbacDetails: () =>
-    "RBAC is here to allow you to control access to appsmith as easy as you maintain your organization.",
-  ssoHeading: () => "SSO and Custom Authentication",
-  ssoDetails: () => "SSO and custom auth allow you to onboard users faster.",
-  gitHeading: () => "Unlimited private git repositories",
-  gitDetails: () => "Expand your single source of truth capability to infinite",
-  exclusive: () =>
-    "These features are exclusively available on business edition.",
+export const customJSLibraryMessages = {
+  ADD_JS_LIBRARY: () => "添加 JS 工具库",
+  REC_LIBRARY: () => "推荐 JS 工具库",
+  INSTALLATION_SUCCESSFUL: (accessor: string) =>
+    `安装成功！你现在可以在全局使用 ${accessor} 了`,
+  INSTALLATION_FAILED: () => "安装失败",
+  INSTALLED_ALREADY: (accessor: string) =>
+    `已经安装过这个库了，你可以通过 ${accessor} 来使用它`,
+  UNINSTALL_FAILED: (name: string) => `不能卸载 ${name}，请稍后重试`,
+  UNINSTALL_SUCCESS: (accessor: string) => `${accessor} 卸载成功`,
+  LEARN_MORE_DESC: () => "如何使用这个功能？",
+  UNSUPPORTED_LIB: () => `不支持这个库`,
+  UNSUPPORTED_LIB_DESC: () =>
+    `非常抱歉，因为平台限制不能支持这个库，请试试其他的库。`,
+  LEARN_MORE: () => `了解更多`,
+  REPORT_ISSUE: () => `报告错误`,
+  AUTOCOMPLETE_FAILED: (name: string) => `${name} 不支持代码补全`,
+  CLIENT_LOAD_FAILED: (url: string) => `脚本拉取失败 ${url}`,
+  LIB_OVERRIDE_ERROR: (name: string) =>
+    `${name} 已安装，如果想安装另外的版本，请卸载后重新安装。`,
+  DEFS_FAILED_ERROR: (name: string) => `${name} 代码补全提示生成失败`,
+  IMPORT_URL_ERROR: (url: string) => `${url} 脚本安装失败`,
+  NAME_COLLISION_ERROR: (accessors: string) => `发现重名：${accessors}`,
 };
+
+// Business Edition upgrade page
+export const MOVE_TO_BUSINESS_EDITION = (trailingChar: string) =>
+  `升级到企业版本${trailingChar ? trailingChar : ""}`;
+
+//Datasource environment
+export const START_SWITCH_ENVIRONMENT = (environment: string) =>
+  `正在切换您的环境到 ${environment}，并运行所有关联的页面加载操作`;
+export const SWITCH_ENVIRONMENT_SUCCESS = (environment: string) =>
+  `环境成功切换到 ${environment}`;
+export const SWITCH_ENV_DISABLED_TOOLTIP_TEXT = () =>
+  "要访问数据源的环境，请尝试我们的 ";
+
+export const TEST_DATASOURCE_SUCCESS = (
+  datasourceName: string,
+  environmentName: string,
+) => {
+  return environmentName
+    ? `测试成功，${datasourceName} ${environmentName} 环境配置正确。`
+    : `测试成功，${datasourceName} 配置正确。`;
+};
+
+export const TEST_DATASOURCE_ERROR = () =>
+  "测试失败，无法建立连接";
+
+// 相机小部件
+export const DEFAULT_CAMERA_LABEL = () => "默认移动相机";
+export const DEFAULT_CAMERA_LABEL_DESCRIPTION = () =>
+  "移动用户的默认选择。不适用于其他设备";
+export const FRONT_CAMERA_LABEL = () => "前置摄像头 (自拍)";
+export const BACK_CAMERA_LABEL = () => "后置摄像头 (主摄)";
+
+// 颜色选择器
+export const FULL_COLOR_PICKER_LABEL = () => "完整颜色选择器";

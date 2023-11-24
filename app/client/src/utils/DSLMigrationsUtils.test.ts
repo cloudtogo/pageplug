@@ -1,9 +1,10 @@
 import { transformDSL } from "./DSLMigrations";
 import { LATEST_PAGE_VERSION, RenderModes } from "constants/WidgetConstants";
-import { ContainerWidgetProps } from "widgets/ContainerWidget/widget";
-import { WidgetProps } from "widgets/BaseWidget";
+import type { ContainerWidgetProps } from "widgets/ContainerWidget/widget";
+import type { WidgetProps } from "widgets/BaseWidget";
 import { OverflowTypes } from "widgets/TextWidget/constants";
 import { migrateRadioGroupAlignmentProperty } from "./migrations/RadioGroupWidget";
+import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
 
 describe("correctly migrate dsl", () => {
   it("transformDSL for private widget", () => {
@@ -125,7 +126,7 @@ describe("correctly migrate dsl", () => {
           template: {
             Image1: {
               isVisible: true,
-              defaultImage: "https://assets.appsmith.com/widgets/default.png",
+              defaultImage: `${ASSETS_CDN_URL}/widgets/default.png`,
               imageShape: "RECTANGLE",
               maxZoomLevel: 1,
               enableRotation: false,
@@ -231,17 +232,17 @@ describe("correctly migrate dsl", () => {
             {
               id: "001",
               name: "Blue",
-              img: "https://assets.appsmith.com/widgets/default.png",
+              img: `${ASSETS_CDN_URL}/widgets/default.png`,
             },
             {
               id: "002",
               name: "Green",
-              img: "https://assets.appsmith.com/widgets/default.png",
+              img: `${ASSETS_CDN_URL}/widgets/default.png`,
             },
             {
               id: "003",
               name: "Red",
-              img: "https://assets.appsmith.com/widgets/default.png",
+              img: `${ASSETS_CDN_URL}/widgets/default.png`,
             },
           ],
           isCanvas: true,
@@ -340,8 +341,7 @@ describe("correctly migrate dsl", () => {
                             },
                           ],
                           leftColumn: 0,
-                          defaultImage:
-                            "https://assets.appsmith.com/widgets/default.png",
+                          defaultImage: `${ASSETS_CDN_URL}/widgets/default.png`,
                           key: "9cn4ooadxj",
                           image: "{{currentItem.img}}",
                           rightColumn: 16,
@@ -728,7 +728,7 @@ describe("correctly migrate dsl", () => {
           template: {
             Image1: {
               isVisible: true,
-              defaultImage: "https://assets.appsmith.com/widgets/default.png",
+              defaultImage: `${ASSETS_CDN_URL}/widgets/default.png`,
               imageShape: "RECTANGLE",
               maxZoomLevel: 1,
               enableRotation: false,
@@ -833,17 +833,17 @@ describe("correctly migrate dsl", () => {
             {
               id: "001",
               name: "Blue",
-              img: "https://assets.appsmith.com/widgets/default.png",
+              img: `${ASSETS_CDN_URL}/widgets/default.png`,
             },
             {
               id: "002",
               name: "Green",
-              img: "https://assets.appsmith.com/widgets/default.png",
+              img: `${ASSETS_CDN_URL}/widgets/default.png`,
             },
             {
               id: "003",
               name: "Red",
-              img: "https://assets.appsmith.com/widgets/default.png",
+              img: `${ASSETS_CDN_URL}/widgets/default.png`,
             },
           ],
           isCanvas: true,
@@ -953,8 +953,7 @@ describe("correctly migrate dsl", () => {
                             },
                           ],
                           leftColumn: 0,
-                          defaultImage:
-                            "https://assets.appsmith.com/widgets/default.png",
+                          defaultImage: `${ASSETS_CDN_URL}/widgets/default.png`,
                           key: "9cn4ooadxj",
                           labelTextSize: "0.875rem",
                           image: "{{currentItem.img}}",
@@ -1003,6 +1002,7 @@ describe("correctly migrate dsl", () => {
                           enableRotation: false,
                           borderRadius: "0px",
                           boxShadow: "none",
+                          dynamicHeight: "FIXED",
                         },
                         {
                           widgetName: "Text1",
@@ -1354,7 +1354,7 @@ describe("correctly migrate dsl", () => {
           template: {
             Image1: {
               isVisible: true,
-              defaultImage: "https://assets.appsmith.com/widgets/default.png",
+              defaultImage: `${ASSETS_CDN_URL}/widgets/default.png`,
               imageShape: "RECTANGLE",
               maxZoomLevel: 1,
               enableRotation: false,
@@ -1460,17 +1460,17 @@ describe("correctly migrate dsl", () => {
             {
               id: "001",
               name: "Blue",
-              img: "https://assets.appsmith.com/widgets/default.png",
+              img: `${ASSETS_CDN_URL}/widgets/default.png`,
             },
             {
               id: "002",
               name: "Green",
-              img: "https://assets.appsmith.com/widgets/default.png",
+              img: `${ASSETS_CDN_URL}/widgets/default.png`,
             },
             {
               id: "003",
               name: "Red",
-              img: "https://assets.appsmith.com/widgets/default.png",
+              img: `${ASSETS_CDN_URL}/widgets/default.png`,
             },
           ],
           isCanvas: true,
@@ -1569,8 +1569,7 @@ describe("correctly migrate dsl", () => {
                             },
                           ],
                           leftColumn: 0,
-                          defaultImage:
-                            "https://assets.appsmith.com/widgets/default.png",
+                          defaultImage: `${ASSETS_CDN_URL}/widgets/default.png`,
                           key: "9cn4ooadxj",
                           image: "{{currentItem.img}}",
                           rightColumn: 16,
@@ -1616,6 +1615,7 @@ describe("correctly migrate dsl", () => {
                           maxZoomLevel: 1,
                           enableDownload: false,
                           enableRotation: false,
+                          dynamicHeight: "FIXED",
                         },
                         {
                           widgetName: "Text1",
@@ -1685,6 +1685,7 @@ describe("correctly migrate dsl", () => {
                           isLoading: false,
                           fontSize: "PARAGRAPH",
                           textStyle: "HEADING",
+                          dynamicHeight: "FIXED",
                         },
                         {
                           widgetName: "Text2",
@@ -1754,6 +1755,7 @@ describe("correctly migrate dsl", () => {
                           isLoading: false,
                           fontSize: "PARAGRAPH",
                           textStyle: "BODY",
+                          dynamicHeight: "FIXED",
                         },
                       ],
                       key: "omhgz5cakp",
@@ -1954,7 +1956,7 @@ describe("correctly migrate dsl", () => {
           template: {
             Image1: {
               isVisible: true,
-              defaultImage: "https://assets.appsmith.com/widgets/default.png",
+              defaultImage: `${ASSETS_CDN_URL}/widgets/default.png`,
               imageShape: "RECTANGLE",
               maxZoomLevel: 1,
               enableRotation: false,
@@ -2059,17 +2061,17 @@ describe("correctly migrate dsl", () => {
             {
               id: "001",
               name: "Blue",
-              img: "https://assets.appsmith.com/widgets/default.png",
+              img: `${ASSETS_CDN_URL}/widgets/default.png`,
             },
             {
               id: "002",
               name: "Green",
-              img: "https://assets.appsmith.com/widgets/default.png",
+              img: `${ASSETS_CDN_URL}/widgets/default.png`,
             },
             {
               id: "003",
               name: "Red",
-              img: "https://assets.appsmith.com/widgets/default.png",
+              img: `${ASSETS_CDN_URL}/widgets/default.png`,
             },
           ],
           isCanvas: true,
@@ -2179,8 +2181,7 @@ describe("correctly migrate dsl", () => {
                             },
                           ],
                           leftColumn: 0,
-                          defaultImage:
-                            "https://assets.appsmith.com/widgets/default.png",
+                          defaultImage: `${ASSETS_CDN_URL}/widgets/default.png`,
                           key: "9cn4ooadxj",
                           labelTextSize: "0.875rem",
                           image: "{{currentItem.img}}",
@@ -2229,6 +2230,7 @@ describe("correctly migrate dsl", () => {
                           enableRotation: false,
                           borderRadius: "0px",
                           boxShadow: "none",
+                          dynamicHeight: "FIXED",
                         },
                         {
                           widgetName: "Text1",

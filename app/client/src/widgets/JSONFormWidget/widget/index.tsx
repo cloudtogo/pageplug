@@ -3,32 +3,34 @@ import equal from "fast-deep-equal/es6";
 import { debounce, difference, isEmpty, noop, merge } from "lodash";
 import { klona } from "klona";
 
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import JSONFormComponent from "../component";
 import { contentConfig, styleConfig } from "./propertyConfig";
-import { DerivedPropertiesMap } from "utils/WidgetFactory";
-import {
-  EventType,
-  ExecuteTriggerPayload,
-} from "constants/AppsmithActionConstants/ActionConstants";
-import {
-  ActionUpdateDependency,
-  FieldState,
-  FieldThemeStylesheet,
-  ROOT_SCHEMA_KEY,
-  Schema,
-} from "../constants";
+import type { DerivedPropertiesMap } from "utils/WidgetFactory";
+import type { ExecuteTriggerPayload } from "constants/AppsmithActionConstants/ActionConstants";
+import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import type { FieldState, FieldThemeStylesheet, Schema } from "../constants";
+import { ActionUpdateDependency, ROOT_SCHEMA_KEY } from "../constants";
 import {
   ComputedSchemaStatus,
   computeSchema,
   dynamicPropertyPathListFromSchema,
   generateFieldState,
 } from "./helper";
-import { ButtonStyleProps } from "widgets/ButtonWidget/component";
-import { BoxShadow } from "components/designSystems/appsmith/WidgetStyleContainer";
+import type { ButtonStyleProps } from "widgets/ButtonWidget/component";
+import type { BoxShadow } from "components/designSystems/appsmith/WidgetStyleContainer";
 import { convertSchemaItemToFormData } from "../helper";
-import { ButtonStyles, ChildStylesheet, Stylesheet } from "entities/AppTheming";
-import { BatchPropertyUpdatePayload } from "actions/controlActions";
+import type {
+  ButtonStyles,
+  ChildStylesheet,
+  SetterConfig,
+  Stylesheet,
+} from "entities/AppTheming";
+import type { BatchPropertyUpdatePayload } from "actions/controlActions";
+import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
+import { generateTypeDef } from "utils/autocomplete/dataTreeTypeDefCreator";
+import type { AutocompletionDefinitions } from "widgets/constants";
 
 export interface JSONFormWidgetProps extends WidgetProps {
   autoGenerateForm?: boolean;
@@ -50,6 +52,7 @@ export interface JSONFormWidgetProps extends WidgetProps {
   scrollContents: boolean;
   showReset: boolean;
   sourceData?: Record<string, unknown>;
+  useSourceData?: boolean;
   submitButtonLabel: string;
   submitButtonStyles: ButtonStyleProps;
   title: string;
@@ -220,11 +223,42 @@ class JSONFormWidget extends BaseWidget<
     };
   }
 
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return (widget: JSONFormWidgetProps) => {
+      const definitions: AutocompletionDefinitions = {
+        "!doc":
+          "JSON Form widget can be used to auto-generate forms by providing a JSON source data.",
+        // TODO: Update the url
+        "!url": "https://docs.appsmith.com/widget-reference",
+        formData: generateTypeDef(widget.formData),
+        sourceData: generateTypeDef(widget.sourceData),
+        fieldState: generateTypeDef(widget.fieldState),
+        isValid: "bool",
+      };
+
+      return definitions;
+    };
+  }
+
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {
+        setVisibility: {
+          path: "isVisible",
+          type: "boolean",
+        },
+        setSourceData: {
+          path: "sourceData",
+          type: "object",
+        },
+      },
+    };
+  }
+
   static defaultProps = {};
 
   componentDidMount() {
     this.constructAndSaveSchemaIfRequired();
-    this.isWidgetMounting = false;
   }
 
   componentDidUpdate(prevProps: JSONFormWidgetProps) {
@@ -237,11 +271,20 @@ class JSONFormWidget extends BaseWidget<
       this.state.resetObserverCallback(this.props.schema);
     }
 
+    if (prevProps.useSourceData !== this.props.useSourceData) {
+      const { formData } = this.props;
+      this.updateFormData(formData);
+    }
+
     const { schema } = this.constructAndSaveSchemaIfRequired(prevProps);
     this.debouncedParseAndSaveFieldState(
       this.state.metaInternalFieldState,
       schema,
     );
+  }
+
+  deferredComponentDidRender() {
+    this.isWidgetMounting = false;
   }
 
   computeDynamicPropertyPathList = (schema: Schema) => {
@@ -341,12 +384,15 @@ class JSONFormWidget extends BaseWidget<
 
   updateFormData = (values: any, skipConversion = false) => {
     const rootSchemaItem = this.props.schema[ROOT_SCHEMA_KEY];
+    const { sourceData, useSourceData } = this.props;
     let formData = values;
 
     if (!skipConversion) {
       formData = convertSchemaItemToFormData(rootSchemaItem, values, {
         fromId: "identifier",
         toId: "accessor",
+        useSourceData,
+        sourceData,
       });
     }
 
@@ -493,6 +539,7 @@ class JSONFormWidget extends BaseWidget<
   };
 
   getPageView() {
+    const isAutoHeightEnabled = isAutoHeightEnabledForWidget(this.props);
     return (
       // Warning!!! Do not ever introduce formData as a prop directly,
       // it would lead to severe performance degradation due to frequent
@@ -507,6 +554,7 @@ class JSONFormWidget extends BaseWidget<
         disabledWhenInvalid={this.props.disabledWhenInvalid}
         executeAction={this.onExecuteAction}
         fieldLimitExceeded={this.props.fieldLimitExceeded}
+        fixMessageHeight={isAutoHeightEnabled}
         fixedFooter={this.props.fixedFooter}
         getFormData={this.getFormData}
         isSubmitting={this.state.isSubmitting}

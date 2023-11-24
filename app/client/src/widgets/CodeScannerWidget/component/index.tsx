@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ComponentProps } from "widgets/BaseComponent";
+import type { ComponentProps } from "widgets/BaseComponent";
 import { BaseButton } from "widgets/ButtonWidget/component";
 import Modal from "react-modal";
 import BarcodeScannerComponent from "react-qr-barcode-scanner";
@@ -7,26 +7,36 @@ import styled, { createGlobalStyle, css } from "styled-components";
 import CloseIcon from "assets/icons/ads/cross.svg";
 import { getBrowserInfo, getPlatformOS, PLATFORM_OS } from "utils/helpers";
 import { Button, Icon, Menu, MenuItem, Position } from "@blueprintjs/core";
-import { SupportedLayouts } from "reducers/entityReducers/pageListReducer";
-import { ReactComponent as CameraOfflineIcon } from "assets/icons/widget/camera/camera-offline.svg";
+import type { SupportedLayouts } from "reducers/entityReducers/pageListReducer";
 import { getCurrentApplicationLayout } from "selectors/editorSelectors";
 import { useSelector } from "react-redux";
 import log from "loglevel";
 import { Popover2 } from "@blueprintjs/popover2";
 import Interweave from "interweave";
-import { Alignment } from "@blueprintjs/core";
-import { IconName } from "@blueprintjs/icons";
-import {
+import type { Alignment } from "@blueprintjs/core";
+import type { IconName } from "@blueprintjs/icons";
+import type {
   ButtonBorderRadius,
-  ButtonBorderRadiusTypes,
   ButtonPlacement,
   ButtonVariant,
+} from "components/constants";
+import {
+  ButtonBorderRadiusTypes,
   ButtonVariantTypes,
 } from "components/constants";
 import { ScannerLayout } from "../constants";
-import { ThemeProp } from "widgets/constants";
-import { ReactComponent as FlipImageIcon } from "assets/icons/widget/codeScanner/flip.svg";
+import type { ThemeProp } from "widgets/constants";
 import { usePageVisibility } from "react-page-visibility";
+import { importSvg } from "design-system-old";
+import { getVideoConstraints } from "widgets/utils";
+import { isMobile } from "react-device-detect";
+
+const CameraOfflineIcon = importSvg(
+  () => import("assets/icons/widget/camera/camera-offline.svg"),
+);
+const FlipImageIcon = importSvg(
+  () => import("assets/icons/widget/codeScanner/flip.svg"),
+);
 
 const CodeScannerGlobalStyles = createGlobalStyle<{
   borderRadius?: string;
@@ -143,6 +153,10 @@ const overlayerMixin = css`
 export interface DisabledOverlayerProps {
   disabled: boolean;
 }
+
+const CodeScannerContainer = styled.div`
+  height: 100%;
+`;
 
 const DisabledOverlayer = styled.div<DisabledOverlayerProps>`
   ${overlayerMixin};
@@ -333,9 +347,8 @@ export interface ControlPanelProps {
 
 function ControlPanel(props: ControlPanelProps) {
   const { appLayoutType, onMediaInputChange, videoInputs } = props;
-  const [isOpenVideoDeviceMenu, setIsOpenVideoDeviceMenu] = useState<boolean>(
-    false,
-  );
+  const [isOpenVideoDeviceMenu, setIsOpenVideoDeviceMenu] =
+    useState<boolean>(false);
 
   // Close the device menu by user click anywhere on the screen
   useEffect(() => {
@@ -403,11 +416,14 @@ function CodeScannerComponent(props: CodeScannerComponentProps) {
   const [videoInputs, setVideoInputs] = useState<MediaDeviceInfo[]>([]);
   const [error, setError] = useState<string>("");
   const [isImageMirrored, setIsImageMirrored] = useState(false);
-  const [videoConstraints, setVideoConstraints] = useState<
-    MediaTrackConstraints
-  >({
-    facingMode: "environment",
-  });
+  const [videoConstraints, setVideoConstraints] =
+    useState<MediaTrackConstraints>(
+      isMobile
+        ? {
+            facingMode: { ideal: props.defaultCamera },
+          }
+        : {},
+    );
 
   /**
    * Check if the tab is active.
@@ -448,10 +464,13 @@ function CodeScannerComponent(props: CodeScannerComponentProps) {
   const handleMediaDeviceChange = useCallback(
     (mediaDeviceInfo: MediaDeviceInfo) => {
       if (mediaDeviceInfo.kind === "videoinput") {
-        setVideoConstraints({
-          ...videoConstraints,
-          deviceId: mediaDeviceInfo.deviceId,
-        });
+        const constraints = getVideoConstraints(
+          videoConstraints,
+          isMobile,
+          "",
+          mediaDeviceInfo.deviceId,
+        );
+        setVideoConstraints(constraints);
       }
     },
     [],
@@ -576,12 +595,13 @@ function CodeScannerComponent(props: CodeScannerComponentProps) {
       iconName={props.iconName}
       onClick={openModal}
       placement={props.placement}
+      shouldFitContent={props.shouldButtonFitContent}
       text={props.label}
     />
   );
 
   return (
-    <>
+    <CodeScannerContainer onClick={(e) => e.stopPropagation()}>
       {props.scannerLayout !== ScannerLayout.ALWAYS_ON &&
         (!props.tooltip ? (
           baseButtonWrapper
@@ -602,7 +622,7 @@ function CodeScannerComponent(props: CodeScannerComponentProps) {
         ))}
 
       {renderComponent()}
-    </>
+    </CodeScannerContainer>
   );
 }
 export interface CodeScannerComponentProps extends ComponentProps {
@@ -617,6 +637,8 @@ export interface CodeScannerComponentProps extends ComponentProps {
   placement?: ButtonPlacement;
   onCodeDetected: (value: string) => void;
   scannerLayout: ScannerLayout;
+  shouldButtonFitContent: boolean;
+  defaultCamera: string;
 }
 
 export default CodeScannerComponent;

@@ -1,40 +1,59 @@
-import { ActionDataState } from "reducers/entityReducers/actionsReducer";
-import { WidgetProps } from "widgets/BaseWidget";
-import { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
-import { MetaState } from "reducers/entityReducers/metaReducer";
-import { Page } from "@appsmith/constants/ReduxActionConstants";
-import { AppDataState } from "reducers/entityReducers/appReducer";
-import { DependencyMap } from "utils/DynamicBindingUtils";
+/* eslint-disable prettier/prettier */
+import type { ActionDataState } from "reducers/entityReducers/actionsReducer";
+import type { WidgetProps } from "widgets/BaseWidget";
+import type { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
+import type { MetaState } from "reducers/entityReducers/metaReducer";
+import type { Page } from "@appsmith/constants/ReduxActionConstants";
+import type { AppDataState } from "reducers/entityReducers/appReducer";
+import type { DependencyMap } from "utils/DynamicBindingUtils";
 import { generateDataTreeAction } from "entities/DataTree/dataTreeAction";
 import { generateDataTreeJSAction } from "entities/DataTree/dataTreeJSAction";
 import { generateDataTreeWidget } from "entities/DataTree/dataTreeWidget";
-import { JSCollectionDataState } from "reducers/entityReducers/jsActionsReducer";
-import { AppTheme } from "entities/AppTheming";
+import type { JSCollectionDataState } from "reducers/entityReducers/jsActionsReducer";
+import type { AppTheme } from "entities/AppTheming";
 import log from "loglevel";
-import { WidgetConfigProps } from "reducers/entityReducers/widgetConfigReducer";
-import {
+import type { MetaWidgetsReduxState } from "reducers/entityReducers/metaWidgetsReducer";
+import type { WidgetConfigProps } from "reducers/entityReducers/widgetConfigReducer";
+import type {
   ActionDispatcher,
   ActionEntityConfig,
-  ActionEntityEvalTree,
-  ENTITY_TYPE,
+  ActionEntity,
   JSActionEntityConfig,
-  JSActionEvalTree,
+  JSActionEntity,
   WidgetConfig,
-  EvaluationSubstitutionType,
 } from "./types";
+import { ENTITY_TYPE, EvaluationSubstitutionType } from "./types";
+import { MAIN_CONTAINER_WIDGET_ID } from "constants/WidgetConstants";
+import { AppPositioningTypes } from "reducers/entityReducers/pageListReducer";
+import { Positioning } from "utils/autoLayout/constants";
 
-export interface UnEvalTreeAction extends ActionEntityEvalTree {
-  __config__: ActionEntityConfig;
+export type UnEvalTreeEntityObject =
+  | ActionEntity
+  | JSActionEntity
+  | WidgetEntity;
+
+export type UnEvalTreeEntity = UnEvalTreeEntityObject | AppsmithEntity | Page[];
+
+export type UnEvalTree = {
+  [entityName: string]: UnEvalTreeEntity;
+};
+
+export interface WidgetEntity extends WidgetProps {
+  meta: Record<string, unknown>;
+  ENTITY_TYPE: ENTITY_TYPE.WIDGET;
 }
-export interface DataTreeAction
-  extends ActionEntityEvalTree,
-    ActionEntityConfig {}
 
-export interface UnEvalTreeJSAction extends JSActionEvalTree {
-  __config__: JSActionEntityConfig;
-}
+export type DataTreeEntityObject =
+  | ActionEntity
+  | JSActionEntity
+  | WidgetEntity
+  | AppsmithEntity;
 
-export type DataTreeJSAction = JSActionEvalTree & JSActionEntityConfig;
+export type DataTreeEntity = DataTreeEntityObject | Page[] | ActionDispatcher;
+
+export type DataTree = {
+  [entityName: string]: DataTreeEntity;
+};
 
 export interface WidgetEntityConfig
   extends Partial<WidgetProps>,
@@ -42,49 +61,14 @@ export interface WidgetEntityConfig
     WidgetConfig {
   defaultMetaProps: Array<string>;
   type: string;
+  __setters?: Record<string, any>;
 }
 
-export interface WidgetEvalTree extends WidgetProps {
-  meta: Record<string, unknown>;
-  ENTITY_TYPE: ENTITY_TYPE.WIDGET;
-}
-
-export interface UnEvalTreeWidget extends WidgetEvalTree {
-  __config__: WidgetEntityConfig;
-}
-
-export interface DataTreeWidget extends WidgetEvalTree, WidgetConfig {}
-
-export interface DataTreeAppsmith extends Omit<AppDataState, "store"> {
+export interface AppsmithEntity extends Omit<AppDataState, "store"> {
   ENTITY_TYPE: ENTITY_TYPE.APPSMITH;
   store: Record<string, unknown>;
   theme: AppTheme["properties"];
 }
-export type DataTreeObjectEntity =
-  | DataTreeAction
-  | DataTreeJSAction
-  | DataTreeWidget
-  | DataTreeAppsmith;
-
-export type DataTreeEntity = DataTreeObjectEntity | Page[] | ActionDispatcher;
-
-export type DataTree = {
-  [entityName: string]: DataTreeEntity;
-};
-
-export type UnEvalTreeEntityObject =
-  | UnEvalTreeAction
-  | UnEvalTreeJSAction
-  | UnEvalTreeWidget;
-
-export type UnEvalTreeEntity =
-  | UnEvalTreeEntityObject
-  | DataTreeAppsmith
-  | Page[];
-
-export type UnEvalTree = {
-  [entityName: string]: UnEvalTreeEntity;
-};
 
 type DataTreeSeed = {
   actions: ActionDataState;
@@ -96,56 +80,84 @@ type DataTreeSeed = {
   appData: AppDataState;
   jsActions: JSCollectionDataState;
   theme: AppTheme["properties"];
+  metaWidgets: MetaWidgetsReduxState;
+  isMobile: boolean;
 };
 
 export type DataTreeEntityConfig =
   | WidgetEntityConfig
   | ActionEntityConfig
-  | JSActionEntityConfig
-  | DataTreeAppsmith;
+  | JSActionEntityConfig;
+
+export type ConfigTree = {
+  [entityName: string]: DataTreeEntityConfig;
+};
+
+export type unEvalAndConfigTree = {
+  unEvalTree: UnEvalTree;
+  configTree: ConfigTree;
+};
 
 export class DataTreeFactory {
   static create({
     actions,
     appData,
     editorConfigs,
+    isMobile,
     jsActions,
+    metaWidgets,
     pageList,
     pluginDependencyConfig,
     theme,
     widgets,
     widgetsMeta,
-  }: DataTreeSeed): UnEvalTree {
-    const dataTree: UnEvalTree = {};
+  }: DataTreeSeed): unEvalAndConfigTree {
+    const dataTree: any = {};
+    const configTree: ConfigTree = {};
     const start = performance.now();
     const startActions = performance.now();
 
     actions.forEach((action) => {
       const editorConfig = editorConfigs[action.config.pluginId];
       const dependencyConfig = pluginDependencyConfig[action.config.pluginId];
-      dataTree[action.config.name] = generateDataTreeAction(
+      const { configEntity, unEvalEntity } = generateDataTreeAction(
         action,
         editorConfig,
         dependencyConfig,
       );
+      dataTree[action.config.name] = unEvalEntity;
+      configTree[action.config.name] = configEntity;
     });
     const endActions = performance.now();
 
     const startJsActions = performance.now();
 
     jsActions.forEach((js) => {
-      dataTree[js.config.name] = generateDataTreeJSAction(js);
+      const { configEntity, unEvalEntity } = generateDataTreeJSAction(js);
+      dataTree[js.config.name] = unEvalEntity;
+      configTree[js.config.name] = configEntity;
     });
     const endJsActions = performance.now();
 
     const startWidgets = performance.now();
 
     Object.values(widgets).forEach((widget) => {
-      dataTree[widget.widgetName] = generateDataTreeWidget(
+      const { configEntity, unEvalEntity } = generateDataTreeWidget(
         widget,
-        widgetsMeta[widget.widgetId],
+        widgetsMeta[widget.metaWidgetId || widget.widgetId],
       );
+
+      dataTree[widget.widgetName] = unEvalEntity;
+      if (
+        widgets[MAIN_CONTAINER_WIDGET_ID].positioning === Positioning.Vertical
+      ) {
+        dataTree[widget.widgetName].appPositioningType =
+          AppPositioningTypes.AUTO;
+      }
+      dataTree[widget.widgetName].isMobile = isMobile;
+      configTree[widget.widgetName] = configEntity;
     });
+
     const endWidgets = performance.now();
 
     dataTree.pageList = pageList;
@@ -154,10 +166,23 @@ export class DataTreeFactory {
       ...appData,
       // combine both persistent and transient state with the transient state
       // taking precedence in case the key is the same
-      store: { ...appData.store.persistent, ...appData.store.transient },
+      store: appData.store,
       theme,
-    } as DataTreeAppsmith;
-    (dataTree.global as DataTreeAppsmith).ENTITY_TYPE = ENTITY_TYPE.APPSMITH;
+    } as AppsmithEntity;
+    (dataTree.global as AppsmithEntity).ENTITY_TYPE = ENTITY_TYPE.APPSMITH;
+
+    const startMetaWidgets = performance.now();
+
+    Object.values(metaWidgets).forEach((widget) => {
+      const { configEntity, unEvalEntity } = generateDataTreeWidget(
+        widget,
+        widgetsMeta[widget.metaWidgetId || widget.widgetId],
+      );
+      dataTree[widget.widgetName] = unEvalEntity;
+      configTree[widget.widgetName] = configEntity;
+    });
+    const endMetaWidgets = performance.now();
+
     const end = performance.now();
 
     const out = {
@@ -165,11 +190,11 @@ export class DataTreeFactory {
       widgets: endWidgets - startWidgets,
       actions: endActions - startActions,
       jsActions: endJsActions - startJsActions,
+      metaWidgets: endMetaWidgets - startMetaWidgets,
     };
 
     log.debug("### Create unevalTree timing", out);
-
-    return dataTree;
+    return { unEvalTree: dataTree, configTree };
   }
 }
 

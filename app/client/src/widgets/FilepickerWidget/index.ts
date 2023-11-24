@@ -1,3 +1,4 @@
+import type { SnipingModeProperty, PropertyUpdates } from "widgets/constants";
 import IconSVG from "./icon.svg";
 import Widget from "./widget";
 import FileDataTypes from "./widget/FileDataTypes";
@@ -26,13 +27,28 @@ export const CONFIG = {
     version: 1,
     isRequired: false,
     isDisabled: false,
-    animateLoading: true,
+    animateLoading: false,
   },
   properties: {
     derived: Widget.getDerivedPropertiesMap(),
     default: Widget.getDefaultPropertiesMap(),
     meta: Widget.getMetaPropertiesMap(),
     config: Widget.getPropertyPaneConfig(),
+    setterConfig: Widget.getSetterConfig(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
+  },
+  methods: {
+    getSnipingModeUpdates: (
+      propValueMap: SnipingModeProperty,
+    ): PropertyUpdates[] => {
+      return [
+        {
+          propertyPath: "onFilesSelected",
+          propertyValue: propValueMap.run,
+          isDynamicPropertyPath: true,
+        },
+      ];
+    },
   },
 };
 

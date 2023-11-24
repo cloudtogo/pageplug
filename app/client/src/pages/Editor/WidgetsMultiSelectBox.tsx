@@ -11,20 +11,19 @@ import {
 } from "actions/widgetActions";
 import { modText } from "utils/helpers";
 import { Layers } from "constants/Layers";
-import { FormIcons } from "icons/FormIcons";
-import { TooltipComponent as Tooltip } from "design-system";
-import { ControlIcons } from "icons/ControlIcons";
+import { TooltipComponent as Tooltip } from "design-system-old";
 import { getSelectedWidgets } from "selectors/ui";
 
 import { stopEventPropagation } from "utils/AppsmithUtils";
 import { getCanvasWidgets } from "selectors/entitiesSelector";
-import { IPopoverSharedProps } from "@blueprintjs/core";
+import type { IPopoverSharedProps } from "@blueprintjs/core";
 import { useWidgetSelection } from "utils/hooks/useWidgetSelection";
 import WidgetFactory from "utils/WidgetFactory";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import { useWidgetDragResize } from "utils/hooks/dragResizeHooks";
 import { getBoundariesFromSelectedWidgets } from "sagas/WidgetOperationUtils";
 import { CONTAINER_GRID_PADDING } from "constants/WidgetConstants";
+import { Icon } from "design-system";
 
 const WidgetTypes = WidgetFactory.widgetTypes;
 const StyledSelectionBox = styled.div`
@@ -82,7 +81,7 @@ const StyledSelectBoxHandleTop = styled.div`
   border-top: 1px dashed
     ${(props) => props.theme.colors.widgetGroupingContextMenu.border};
   top: 0px;
-  left: -1px;
+  left: 0px;
 `;
 
 const StyledSelectBoxHandleLeft = styled.div`
@@ -93,7 +92,7 @@ const StyledSelectBoxHandleLeft = styled.div`
   border-left: 1px dashed
     ${(props) => props.theme.colors.widgetGroupingContextMenu.border};
   top: 0px;
-  left: -1px;
+  left: 0px;
 `;
 
 const StyledSelectBoxHandleRight = styled.div`
@@ -115,7 +114,7 @@ const StyledSelectBoxHandleBottom = styled.div`
   border-bottom: 1px dashed
     ${(props) => props.theme.colors.widgetGroupingContextMenu.border};
   top: 100%;
-  left: -1px;
+  left: 0px;
 `;
 
 export const PopoverModifiers: IPopoverSharedProps["modifiers"] = {
@@ -126,11 +125,6 @@ export const PopoverModifiers: IPopoverSharedProps["modifiers"] = {
     enabled: false,
   },
 };
-
-const CopyIcon = ControlIcons.COPY2_CONTROL;
-const DeleteIcon = FormIcons.DELETE_ICON;
-const CutIcon = ControlIcons.CUT_CONTROL;
-const GroupIcon = ControlIcons.GROUP_CONTROL;
 
 /**
  * helper text that comes in popover on hover of actions in context menu
@@ -212,8 +206,10 @@ function WidgetsMultiSelectBox(props: {
         left: (e.clientX - bounds.left) / props.snapColumnSpace,
       };
       const top = minBy(selectedWidgets, (rect) => rect.topRow)?.topRow;
-      const left = minBy(selectedWidgets, (rect) => rect.leftColumn)
-        ?.leftColumn;
+      const left = minBy(
+        selectedWidgets,
+        (rect) => rect.leftColumn,
+      )?.leftColumn;
       setDraggingState({
         isDragging: true,
         dragGroupActualParent: parentId || "",
@@ -231,12 +227,8 @@ function WidgetsMultiSelectBox(props: {
    */
   const { height, left, top, width } = useMemo(() => {
     if (shouldRender) {
-      const {
-        leftMostColumn,
-        topMostRow,
-        totalHeight,
-        totalWidth,
-      } = getBoundariesFromSelectedWidgets(selectedWidgets);
+      const { leftMostColumn, topMostRow, totalHeight, totalWidth } =
+        getBoundariesFromSelectedWidgets(selectedWidgets);
 
       return {
         top:
@@ -352,7 +344,7 @@ function WidgetsMultiSelectBox(props: {
               onClick={stopEventPropagation}
               onClickCapture={onCopySelectedWidgets}
             >
-              <CopyIcon color="black" height={16} width={16} />
+              <Icon name="duplicate" size="md" />
             </StyledAction>
           </Tooltip>
           {/* cut widgets */}
@@ -367,7 +359,7 @@ function WidgetsMultiSelectBox(props: {
               onClick={stopEventPropagation}
               onClickCapture={onCutSelectedWidgets}
             >
-              <CutIcon color="black" height={16} width={16} />
+              <Icon name="cut-control" size="md" />
             </StyledAction>
           </Tooltip>
           {/* delete widgets */}
@@ -382,7 +374,7 @@ function WidgetsMultiSelectBox(props: {
               onClick={stopEventPropagation}
               onClickCapture={onDeleteSelectedWidgets}
             >
-              <DeleteIcon color="black" height={16} width={16} />
+              <Icon name="delete-bin-line" size="md" />
             </StyledAction>
           </Tooltip>
           {/* group widgets */}
@@ -397,7 +389,7 @@ function WidgetsMultiSelectBox(props: {
               onClick={stopEventPropagation}
               onClickCapture={onGroupWidgets}
             >
-              <GroupIcon color="black" height={16} width={16} />
+              <Icon name="group-control" size="sm" />
             </StyledAction>
           </Tooltip>
         </StyledActions>

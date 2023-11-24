@@ -1,24 +1,23 @@
 import { render, screen } from "test/testUtils";
 import React from "react";
-import { CopyUrlReduxForm } from "./CopyUrlForm";
-import { REDIRECT_URL_FORM } from "@appsmith/constants/forms";
+import CopyUrlForm from "./CopyUrlForm";
+import copy from "copy-to-clipboard";
 
 let container: any = null;
 
-const useSelector = jest.fn();
+jest.mock("copy-to-clipboard");
+
 const values = {
-  fieldName: "redirect-url-form",
   helpText: "some helper text",
   title: "Redirect URL",
   value: "/link-to-be-copied",
+  fieldName: "redirectUrl",
 };
-useSelector.mockReturnValue(values);
 
 function renderComponent() {
   render(
-    <CopyUrlReduxForm
+    <CopyUrlForm
       fieldName={values.fieldName}
-      form={REDIRECT_URL_FORM}
       helpText={values.helpText}
       title={values.title}
       value={values.value}
@@ -37,14 +36,18 @@ describe("Redirect URL Form", () => {
     window.prompt = jest.fn();
     const fieldTitle = screen.getAllByText(/Redirect URL/);
     expect(fieldTitle).toBeDefined();
-    const inputEl = document.querySelector("input");
+    const inputEl = screen.getByTestId(
+      `${values.fieldName}-input`,
+    ) as HTMLInputElement;
     const value = `${window.location.origin}/link-to-be-copied`;
     expect(inputEl?.value).toBeDefined();
     expect(inputEl?.value).toEqual(value);
     expect(inputEl?.hasAttribute("disabled"));
-    expect(inputEl?.hasAttribute("iscopy")).toEqual(true);
-    const copyIcon = document.querySelector(".copy-icon") as HTMLElement;
+    const copyIcon = screen.getByTestId("redirectUrl-copy-icon");
     expect(copyIcon).toBeDefined();
     copyIcon?.click();
+    expect(copy).toHaveBeenCalledWith(value);
+    inputEl?.click();
+    expect(copy).toHaveBeenCalledWith(value);
   });
 });

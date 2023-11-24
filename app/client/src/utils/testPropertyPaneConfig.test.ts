@@ -1,4 +1,4 @@
-import {
+import type {
   PropertyPaneConfig,
   PropertyPaneControlConfig,
   PropertyPaneSectionConfig,
@@ -8,6 +8,7 @@ import { ValidationTypes } from "constants/WidgetValidation";
 import { isFunction } from "lodash";
 import WidgetFactory from "utils/WidgetFactory";
 import { ALL_WIDGETS_AND_CONFIG, registerWidgets } from "./WidgetRegistry";
+import type { SetterConfig } from "entities/AppTheming";
 
 function validatePropertyPaneConfig(
   config: PropertyPaneConfig[],
@@ -48,9 +49,9 @@ function validatePropertyControl(
     !isWidgetHidden &&
     _config.label &&
     !_config.invisible &&
-    !_config.helpText
+    !(_config.helpText || _config.helperText)
   ) {
-    return `${_config.propertyName} (${_config.label}): Help text is mandatory for property controls`;
+    return `${_config.propertyName} (${_config.label}): Help text or Helper textis mandatory for property controls`;
   }
 
   if (
@@ -163,9 +164,13 @@ describe("Tests all widget's propertyPane config", () => {
       expect(isNotFloat(config.defaults.rows)).toBe(true);
       expect(isNotFloat(config.defaults.columns)).toBe(true);
     });
-    if (config.isDeprecated && config.replacement !== undefined) {
+
+    if (config.isDeprecated) {
       it(`Check if ${widget.getWidgetType()}'s deprecation config has a proper replacement Widget`, () => {
         const widgetType = widget.getWidgetType();
+        if (config.replacement === undefined) {
+          fail(`${widgetType}'s replacement widget is not defined`);
+        }
         const replacementWidgetType = config.replacement;
         const replacementWidgetConfig = WidgetFactory.widgetConfigMap.get(
           replacementWidgetType,
@@ -187,5 +192,22 @@ describe("Tests all widget's propertyPane config", () => {
         }
       });
     }
+
+    it(`Check if ${widget.getWidgetType()}'s setter method are configured correctly`, () => {
+      const setterConfig = config.properties.setterConfig as SetterConfig;
+      if (setterConfig) {
+        expect(setterConfig).toHaveProperty("__setters");
+        const setters = setterConfig.__setters;
+        for (const [setterName, config] of Object.entries(setters)) {
+          expect(config).toHaveProperty("type");
+          expect(config).toHaveProperty("path");
+          expect(setterName).toContain("set");
+          const type = config.type;
+          const path = config.path;
+          expect(typeof type).toBe("string");
+          expect(typeof path).toBe("string");
+        }
+      }
+    });
   });
 });

@@ -1,10 +1,6 @@
 import React, { useState } from "react";
-import {
-  MenuItem,
-  Classes,
-  Button as BButton,
-  Alignment,
-} from "@blueprintjs/core";
+import type { Alignment } from "@blueprintjs/core";
+import { MenuItem, Classes, Button as BButton } from "@blueprintjs/core";
 import {
   CellWrapper,
   CellCheckboxWrapper,
@@ -13,34 +9,35 @@ import {
   DraggableHeaderWrapper,
   IconButtonWrapper,
 } from "./TableStyledWrappers";
-import { ColumnAction } from "components/propertyControls/ColumnActionSelectorControl";
+import type { ColumnAction } from "components/propertyControls/ColumnActionSelectorControl";
 
-import {
-  ColumnTypes,
-  CellAlignmentTypes,
-  VerticalAlignmentTypes,
+import type {
   ColumnProperties,
   CellLayoutProperties,
   TableStyles,
   MenuItems,
 } from "./Constants";
+import {
+  ColumnTypes,
+  CellAlignmentTypes,
+  VerticalAlignmentTypes,
+} from "./Constants";
 import { isString, isEmpty, findIndex, isNil, isNaN, get, set } from "lodash";
 import PopoverVideo from "widgets/VideoWidget/component/PopoverVideo";
 import AutoToolTipComponent from "widgets/TableWidget/component/AutoToolTipComponent";
 import { ControlIcons } from "icons/ControlIcons";
-import { AnyStyledComponent } from "styled-components";
-import styled from "constants/DefaultTheme";
+
+import styled from "styled-components";
 import { Colors } from "constants/Colors";
-import { DropdownOption } from "widgets/DropdownWidget/constants";
-import { IconName, IconNames } from "@blueprintjs/icons";
-import { Select, IItemRendererProps } from "@blueprintjs/select";
+import type { DropdownOption } from "widgets/DropdownWidget/constants";
+import type { IconName } from "@blueprintjs/icons";
+import { IconNames } from "@blueprintjs/icons";
+import type { IItemRendererProps } from "@blueprintjs/select";
+import { Select } from "@blueprintjs/select";
 import { FontStyleTypes } from "constants/WidgetConstants";
 import { noop } from "utils/AppsmithUtils";
 
-import { ReactComponent as CheckBoxLineIcon } from "assets/icons/widget/table/checkbox-line.svg";
-import { ReactComponent as CheckBoxCheckIcon } from "assets/icons/widget/table/checkbox-check.svg";
-
-import { ButtonVariant } from "components/constants";
+import type { ButtonVariant } from "components/constants";
 
 //TODO(abstraction leak)
 import { StyledButton } from "widgets/IconButtonWidget/component";
@@ -48,6 +45,14 @@ import MenuButtonTableComponent from "./components/menuButtonTableComponent";
 import { stopClickEventPropagation } from "utils/helpers";
 import tinycolor from "tinycolor2";
 import { generateTableColumnId } from "./TableHelpers";
+import { importSvg } from "design-system-old";
+
+const CheckBoxLineIcon = importSvg(
+  () => import("assets/icons/widget/table/checkbox-line.svg"),
+);
+const CheckBoxCheckIcon = importSvg(
+  () => import("assets/icons/widget/table/checkbox-check.svg"),
+);
 
 export const renderCell = (
   value: any,
@@ -84,7 +89,8 @@ export const renderCell = (
       }
       // better regex: /(?<!base64),/g ; can't use due to safari incompatibility
       const imageSplitRegex = /[^(base64)],/g;
-      const imageUrlRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpeg|jpg|gif|png)??(?:&?[^=&]*=[^=&]*)*/;
+      const imageUrlRegex =
+        /(http(s?):)([/|.|\w|\s|-])*\.(?:jpeg|jpg|gif|png)??(?:&?[^=&]*=[^=&]*)*/;
       const base64ImageRegex = /^data:image\/.*;base64/;
       return (
         <CellWrapper
@@ -126,7 +132,8 @@ export const renderCell = (
         </CellWrapper>
       );
     case ColumnTypes.VIDEO:
-      const youtubeRegex = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\?v=)([^#&?]*).*/;
+      const youtubeRegex =
+        /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\?v=)([^#&?]*).*/;
       if (!value) {
         return (
           <CellWrapper
@@ -541,7 +548,7 @@ export const renderEmptyRows = (
               <div
                 {...cellProps}
                 className="td"
-                data-cy={`empty-row-${index}-cell-${cellIndex}`}
+                data-testid={`empty-row-${index}-cell-${cellIndex}`}
                 key={cellIndex}
               />
             );
@@ -592,7 +599,7 @@ export const renderEmptyRows = (
   }
 };
 
-const AscendingIcon = styled(ControlIcons.SORT_CONTROL as AnyStyledComponent)`
+const AscendingIcon = styled(ControlIcons.SORT_CONTROL)`
   padding: 0;
   position: relative;
   top: 3px;
@@ -605,7 +612,7 @@ const AscendingIcon = styled(ControlIcons.SORT_CONTROL as AnyStyledComponent)`
   }
 `;
 
-const DescendingIcon = styled(ControlIcons.SORT_CONTROL as AnyStyledComponent)`
+const DescendingIcon = styled(ControlIcons.SORT_CONTROL)`
   padding: 0;
   position: relative;
   top: 3px;
@@ -726,7 +733,9 @@ export function getTableStyles(props: TableStyles) {
 
 const SingleDropDown = Select.ofType<DropdownOption>();
 
-const StyledSingleDropDown = styled(SingleDropDown)`
+const StyledSingleDropDown = styled(SingleDropDown)<{
+  children?: React.ReactNode;
+}>`
   div {
     padding: 0 10px;
     display: flex;
@@ -838,9 +847,7 @@ export const renderDropdown = (props: {
  */
 export const getSelectedRowBgColor = (accentColor: string) => {
   const tinyAccentColor = tinycolor(accentColor);
-  const brightness = tinycolor(accentColor)
-    .greyscale()
-    .getBrightness();
+  const brightness = tinycolor(accentColor).greyscale().getBrightness();
 
   const percentageBrightness = (brightness / 255) * 100;
   let nextBrightness = 0;

@@ -1,49 +1,56 @@
+import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
 import {
-  ReduxAction,
   ReduxActionTypes,
   WidgetReduxActionTypes,
 } from "@appsmith/constants/ReduxActionConstants";
 import {
   all,
+  call,
+  delay,
   put,
   select,
-  takeLatest,
-  delay,
-  call,
   take,
+  takeLatest,
 } from "redux-saga/effects";
 import {
-  setEnableFirstTimeUserOnboarding as storeEnableFirstTimeUserOnboarding,
+  getFirstTimeUserOnboardingApplicationIds,
+  getFirstTimeUserOnboardingTelemetryCalloutIsAlreadyShown,
+  removeAllFirstTimeUserOnboardingApplicationIds,
+  removeFirstTimeUserOnboardingApplicationId,
+  setEnableStartSignposting,
   setFirstTimeUserOnboardingApplicationId as storeFirstTimeUserOnboardingApplicationId,
   setFirstTimeUserOnboardingIntroModalVisibility as storeFirstTimeUserOnboardingIntroModalVisibility,
 } from "utils/storage";
 
 import { getCurrentUser } from "selectors/usersSelectors";
 import history from "utils/history";
-import TourApp from "pages/Editor/GuidedTour/app.json";
 
 import {
   getFirstTimeUserOnboardingApplicationId,
   getHadReachedStep,
   getOnboardingWorkspaces,
   getQueryAction,
+  getSignpostingStepStateByStep,
   getTableWidget,
 } from "selectors/onboardingSelectors";
-import { Toaster, Variant } from "design-system";
-import { Workspaces } from "@appsmith/constants/workspaceConstants";
+import type { Workspaces } from "@appsmith/constants/workspaceConstants";
 import {
+  disableStartSignpostingAction,
   enableGuidedTour,
   focusWidgetProperty,
   loadGuidedTour,
+  removeFirstTimeUserOnboardingApplicationId as removeFirstTimeUserOnboardingApplicationIdAction,
   setCurrentStep,
+  setSignpostingOverlay,
+  showSignpostingTooltip,
+  signpostingStepUpdate,
   toggleLoader,
 } from "actions/onboardingActions";
 import {
   getCurrentApplicationId,
-  getCurrentPageId,
   getIsEditorInitialized,
 } from "selectors/editorSelectors";
-import { WidgetProps } from "widgets/BaseWidget";
+import type { WidgetProps } from "widgets/BaseWidget";
 import { getNextWidgetName } from "./WidgetOperationUtils";
 import WidgetFactory from "utils/WidgetFactory";
 import { generateReactKey } from "utils/generators";
@@ -55,10 +62,10 @@ import { clearActionResponse } from "actions/pluginActionActions";
 import {
   importApplication,
   updateApplicationLayout,
-} from "actions/applicationActions";
+} from "@appsmith/actions/applicationActions";
 import { setPreviewModeAction } from "actions/editorActions";
-import { FlattenedWidgetProps } from "widgets/constants";
-import { ActionData } from "reducers/entityReducers/actionsReducer";
+import type { FlattenedWidgetProps } from "widgets/constants";
+import type { ActionData } from "reducers/entityReducers/actionsReducer";
 import { batchUpdateMultipleWidgetProperties } from "actions/controlActions";
 import {
   setExplorerActiveAction,
@@ -68,20 +75,21 @@ import { selectWidgetInitAction } from "actions/widgetSelectionActions";
 import { hideIndicator } from "pages/Editor/GuidedTour/utils";
 import { updateWidgetName } from "actions/propertyPaneActions";
 import AnalyticsUtil from "utils/AnalyticsUtil";
-import { DataTree } from "entities/DataTree/dataTreeFactory";
-import { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
-import { User } from "constants/userConstants";
+import type { DataTree } from "entities/DataTree/dataTreeFactory";
+import type { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
+import type { User } from "constants/userConstants";
 import { builderURL, queryEditorIdURL } from "RouteBuilder";
 import { GuidedTourEntityNames } from "pages/Editor/GuidedTour/constants";
-import { navigateToCanvas } from "pages/Editor/Explorer/Widgets/utils";
-import { shouldBeDefined } from "utils/helpers";
-import { GuidedTourState } from "reducers/uiReducers/guidedTourReducer";
+import type { GuidedTourState } from "reducers/uiReducers/guidedTourReducer";
 import { sessionStorage } from "utils/localStorage";
-import store from "store";
-import {
-  createMessage,
-  ONBOARDING_SKIPPED_FIRST_TIME_USER,
-} from "@appsmith/constants/messages";
+import { SelectionRequestType } from "sagas/WidgetSelectUtils";
+import type { SIGNPOSTING_STEP } from "pages/Editor/FirstTimeUserOnboarding/Utils";
+import type { StepState } from "reducers/uiReducers/onBoardingReducer";
+import { isUndefined } from "lodash";
+import { isAirgapped } from "@appsmith/utils/airgapHelpers";
+import { SIGNPOSTING_ANALYTICS_STEP_NAME } from "pages/Editor/FirstTimeUserOnboarding/constants";
+import { selectFeatureFlagCheck } from "@appsmith/selectors/featureFlagsSelectors";
+import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
 
 const GUIDED_TOUR_STORAGE_KEY = "GUIDED_TOUR_STORAGE_KEY";
 
@@ -114,6 +122,9 @@ function* createApplication() {
   }
 
   if (workspace) {
+    const TourAppPromise = import("pages/Editor/GuidedTour/app.json");
+    const TourApp: Awaited<typeof TourAppPromise> = yield TourAppPromise;
+
     const appFileObject = new File([JSON.stringify(TourApp)], "app.json", {
       type: "application/json",
     });
@@ -358,18 +369,14 @@ function* selectWidgetSaga(
   const widgets: { [widgetId: string]: FlattenedWidgetProps } = yield select(
     getWidgets,
   );
-  const pageId = shouldBeDefined<string>(
-    yield select(getCurrentPageId),
-    "Page not found in state.entities.pageList.currentPageId",
-  );
   const widget = Object.values(widgets).find((widget) => {
     return widget.widgetName === action.payload.widgetName;
   });
 
   if (widget) {
-    // Navigate to the widget as well, usefull especially when we are not on the canvas
-    navigateToCanvas(pageId, widget.widgetId);
-    yield put(selectWidgetInitAction(widget.widgetId));
+    yield put(
+      selectWidgetInitAction(SelectionRequestType.One, [widget.widgetId]),
+    );
     // Delay to wait for the fields to render
     yield delay(1000);
     // If the propertyName exist then we focus the respective input field as well
@@ -379,12 +386,28 @@ function* selectWidgetSaga(
 }
 
 // Signposting sagas
-function* setEnableFirstTimeUserOnboarding(action: ReduxAction<boolean>) {
-  yield storeEnableFirstTimeUserOnboarding(action.payload);
-}
-
 function* setFirstTimeUserOnboardingApplicationId(action: ReduxAction<string>) {
   yield storeFirstTimeUserOnboardingApplicationId(action.payload);
+
+  const applicationIds: string[] =
+    yield getFirstTimeUserOnboardingApplicationIds();
+  yield put({
+    type: ReduxActionTypes.SET_FIRST_TIME_USER_ONBOARDING_APPLICATION_IDS,
+    payload: [...applicationIds, ...action.payload],
+  });
+}
+
+function* removeFirstTimeUserOnboardingApplicationIdSaga(
+  action: ReduxAction<string>,
+) {
+  yield call(removeFirstTimeUserOnboardingApplicationId, action.payload);
+
+  const applicationIds: string[] =
+    yield getFirstTimeUserOnboardingApplicationIds();
+  yield put({
+    type: ReduxActionTypes.SET_FIRST_TIME_USER_ONBOARDING_APPLICATION_IDS,
+    payload: applicationIds.filter((id) => id !== action.payload),
+  });
 }
 
 function* setFirstTimeUserOnboardingIntroModalVisibility(
@@ -395,37 +418,13 @@ function* setFirstTimeUserOnboardingIntroModalVisibility(
 
 function* endFirstTimeUserOnboardingSaga() {
   const firstTimeUserExperienceAppId: string = yield select(
-    getFirstTimeUserOnboardingApplicationId,
+    getCurrentApplicationId,
   );
-  yield put({
-    type: ReduxActionTypes.SET_ENABLE_FIRST_TIME_USER_ONBOARDING,
-    payload: false,
-  });
-  yield put({
-    type: ReduxActionTypes.SET_FIRST_TIME_USER_ONBOARDING_APPLICATION_ID,
-    payload: "",
-  });
-  Toaster.show({
-    text: createMessage(ONBOARDING_SKIPPED_FIRST_TIME_USER),
-    hideProgressBar: false,
-    variant: Variant.success,
-    dispatchableAction: {
-      dispatch: store.dispatch,
-      type: ReduxActionTypes.UNDO_END_FIRST_TIME_USER_ONBOARDING,
-      payload: firstTimeUserExperienceAppId,
-    },
-  });
-}
-
-function* undoEndFirstTimeUserOnboardingSaga(action: ReduxAction<string>) {
-  yield put({
-    type: ReduxActionTypes.SET_ENABLE_FIRST_TIME_USER_ONBOARDING,
-    payload: true,
-  });
-  yield put({
-    type: ReduxActionTypes.SET_FIRST_TIME_USER_ONBOARDING_APPLICATION_ID,
-    payload: action.payload,
-  });
+  yield put(
+    removeFirstTimeUserOnboardingApplicationIdAction(
+      firstTimeUserExperienceAppId,
+    ),
+  );
 }
 
 function* firstTimeUserOnboardingInitSaga(
@@ -439,15 +438,106 @@ function* firstTimeUserOnboardingInitSaga(
     type: ReduxActionTypes.SET_FIRST_TIME_USER_ONBOARDING_APPLICATION_ID,
     payload: action.payload.applicationId,
   });
-  yield put({
-    type: ReduxActionTypes.SET_SHOW_FIRST_TIME_USER_ONBOARDING_MODAL,
-    payload: true,
-  });
   history.replace(
     builderURL({
       pageId: action.payload.pageId,
     }),
   );
+
+  const isEditorInitialised: boolean = yield select(getIsEditorInitialized);
+  if (!isEditorInitialised) {
+    yield take(ReduxActionTypes.INITIALIZE_EDITOR_SUCCESS);
+  }
+
+  let showOverlay = true;
+
+  // We don't want to show the signposting overlay when we intend to show the
+  // telemetry callout
+  const currentUser: User | undefined = yield select(getCurrentUser);
+  if (currentUser?.isSuperUser && !isAirgapped()) {
+    const isAnonymousDataPopupAlreadyOpen: unknown = yield call(
+      getFirstTimeUserOnboardingTelemetryCalloutIsAlreadyShown,
+    );
+    if (!isAnonymousDataPopupAlreadyOpen) {
+      showOverlay = false;
+    }
+  }
+
+  yield put(setSignpostingOverlay(showOverlay));
+  const tableWidgetExperimentEnabled: boolean = yield select(
+    selectFeatureFlagCheck,
+    FEATURE_FLAG.ab_table_widget_activation_enabled,
+  );
+  if (tableWidgetExperimentEnabled) {
+    yield take(ReduxActionTypes.FETCH_WORKSPACE_SUCCESS);
+    yield put({
+      type: ReduxActionTypes.WIDGET_ADD_CHILD,
+      payload: {
+        widgetId: "0",
+        type: "TABLE_WIDGET_V2",
+        leftColumn: 15,
+        topRow: 6,
+        columns: 34,
+        rows: 28,
+        parentRowSpace: 10,
+        parentColumnSpace: 13.390625,
+        newWidgetId: generateReactKey(),
+      },
+    });
+  }
+  // Show the modal once the editor is loaded. The delay is to grab user attention back once the editor
+  yield delay(1000);
+  yield put({
+    type: ReduxActionTypes.SET_SHOW_FIRST_TIME_USER_ONBOARDING_MODAL,
+    payload: true,
+  });
+  AnalyticsUtil.logEvent("SIGNPOSTING_MODAL_FIRST_TIME_OPEN");
+}
+
+function* setFirstTimeUserOnboardingCompleteSaga(action: ReduxAction<boolean>) {
+  if (action.payload) {
+    yield put(disableStartSignpostingAction());
+  }
+}
+
+function* disableStartFirstTimeUserOnboardingSaga() {
+  yield call(removeAllFirstTimeUserOnboardingApplicationIds);
+  yield call(setEnableStartSignposting, false);
+}
+
+function* setSignpostingStepStateSaga(
+  action: ReduxAction<{ step: SIGNPOSTING_STEP; completed: boolean }>,
+) {
+  const { completed, step } = action.payload;
+  const stepState: StepState | undefined = yield select(
+    getSignpostingStepStateByStep,
+    step,
+  );
+
+  // No changes to update so we ignore
+  if (stepState && stepState.completed === completed) return;
+
+  const readProps = completed
+    ? {
+        read: false,
+      }
+    : {};
+  yield put(
+    signpostingStepUpdate({
+      ...action.payload,
+      ...readProps,
+    }),
+  );
+
+  // Show tooltip when a step is completed
+  if (!isUndefined(readProps.read) && !readProps.read) {
+    // Show tooltip after a small delay to not be abrupt
+    yield delay(1000);
+    AnalyticsUtil.logEvent("SIGNPOSTING_STEP_COMPLETE", {
+      step_name: SIGNPOSTING_ANALYTICS_STEP_NAME[step],
+    });
+    yield put(showSignpostingTooltip(true));
+  }
 }
 
 export default function* onboardingActionSagas() {
@@ -468,12 +558,12 @@ export default function* onboardingActionSagas() {
     takeLatest(ReduxActionTypes.FOCUS_WIDGET_PROPERTY, focusWidgetPropertySaga),
     takeLatest(ReduxActionTypes.LOAD_GUIDED_TOUR_INIT, loadGuidedTourInitSaga),
     takeLatest(
-      ReduxActionTypes.SET_ENABLE_FIRST_TIME_USER_ONBOARDING,
-      setEnableFirstTimeUserOnboarding,
-    ),
-    takeLatest(
       ReduxActionTypes.SET_FIRST_TIME_USER_ONBOARDING_APPLICATION_ID,
       setFirstTimeUserOnboardingApplicationId,
+    ),
+    takeLatest(
+      ReduxActionTypes.REMOVE_FIRST_TIME_USER_ONBOARDING_APPLICATION_ID,
+      removeFirstTimeUserOnboardingApplicationIdSaga,
     ),
     takeLatest(
       ReduxActionTypes.SET_SHOW_FIRST_TIME_USER_ONBOARDING_MODAL,
@@ -484,12 +574,20 @@ export default function* onboardingActionSagas() {
       endFirstTimeUserOnboardingSaga,
     ),
     takeLatest(
-      ReduxActionTypes.UNDO_END_FIRST_TIME_USER_ONBOARDING,
-      undoEndFirstTimeUserOnboardingSaga,
-    ),
-    takeLatest(
       ReduxActionTypes.FIRST_TIME_USER_ONBOARDING_INIT,
       firstTimeUserOnboardingInitSaga,
+    ),
+    takeLatest(
+      ReduxActionTypes.SET_FIRST_TIME_USER_ONBOARDING_COMPLETE,
+      setFirstTimeUserOnboardingCompleteSaga,
+    ),
+    takeLatest(
+      ReduxActionTypes.DISABLE_START_SIGNPOSTING,
+      disableStartFirstTimeUserOnboardingSaga,
+    ),
+    takeLatest(
+      ReduxActionTypes.SIGNPOSTING_STEP_UPDATE_INIT,
+      setSignpostingStepStateSaga,
     ),
   ]);
 }

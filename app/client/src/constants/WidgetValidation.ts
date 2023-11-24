@@ -1,5 +1,5 @@
 import { EXECUTION_PARAM_KEY } from "constants/AppsmithActionConstants/ActionConstants";
-import { ValidationConfig } from "./PropertyControlConstants";
+import type { ValidationConfig } from "./PropertyControlConstants";
 
 // Always add a validator function in ./worker/validation for these types
 export enum ValidationTypes {
@@ -16,13 +16,15 @@ export enum ValidationTypes {
   FUNCTION = "FUNCTION",
   SAFE_URL = "SAFE_URL",
   ARRAY_OF_TYPE_OR_TYPE = "ARRAY_OF_TYPE_OR_TYPE",
+  UNION = "UNION",
 }
 
 export type ValidationResponse = {
   isValid: boolean;
   parsed: any;
-  messages?: string[];
+  messages?: Array<Error>;
   transformed?: any;
+  isParsedValueTheSame?: boolean;
 };
 
 export type Validator = (
@@ -34,12 +36,16 @@ export type Validator = (
 
 export const ISO_DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss.sssZ";
 
-export const DATA_TREE_KEYWORDS = {
+export const DATATREE_INTERNAL_KEYWORDS = {
   actionPaths: "actionPaths",
-  appsmith: "appsmith",
   global: "global",
   pageList: "pageList",
   [EXECUTION_PARAM_KEY]: EXECUTION_PARAM_KEY,
+};
+
+export const DATA_TREE_KEYWORDS = {
+  appsmith: "appsmith",
+  ...DATATREE_INTERNAL_KEYWORDS,
 };
 
 export const JAVASCRIPT_KEYWORDS = {
@@ -201,6 +207,7 @@ export const DEDICATED_WORKER_GLOBAL_SCOPE_IDENTIFIERS = {
   FinalizationRegistry: "FinalizationRegistry",
   Float32Array: "Float32Array",
   Float64Array: "Float64Array",
+  fonts: "fonts",
   FontFace: "FontFace",
   FormData: "FormData",
   Function: "Function",
@@ -254,8 +261,12 @@ export const DEDICATED_WORKER_GLOBAL_SCOPE_IDENTIFIERS = {
   NetworkInformation: "NetworkInformation",
   Notification: "Notification",
   Number: "Number",
+  onerror: "onerror",
   onmessage: "onmessage",
   onmessageerror: "onmessageerror",
+  onlanguagechange: "onlanguagechange",
+  onrejectionhandled: "onrejectionhandled",
+  onunhandledrejection: "onunhandledrejection",
   origin: "origin",
   Object: "Object",
   OffscreenCanvas: "OffscreenCanvas",
@@ -264,6 +275,7 @@ export const DEDICATED_WORKER_GLOBAL_SCOPE_IDENTIFIERS = {
   parseInt: "parseInt",
   Path2D: "Path2D",
   PaymentInstruments: "PaymentInstruments",
+  performance: "performance",
   Performance: "Performance",
   PerformanceEntry: "PerformanceEntry",
   PerformanceMark: "PerformanceMark",
@@ -301,6 +313,7 @@ export const DEDICATED_WORKER_GLOBAL_SCOPE_IDENTIFIERS = {
   Request: "Request",
   requestAnimationFrame: "requestAnimationFrame",
   Response: "Response",
+  scheduler: "scheduler",
   Scheduler: "Scheduler",
   SecurityPolicyViolationEvent: "SecurityPolicyViolationEvent",
   Serial: "Serial",
@@ -404,7 +417,6 @@ export const DEDICATED_WORKER_GLOBAL_SCOPE_IDENTIFIERS = {
 
   // Identifiers added to worker scope by Appsmith
   evaluationVersion: "evaluationVersion",
-  ALLOW_ASYNC: "ALLOW_ASYNC",
-  IS_ASYNC: "IS_ASYNC",
-  TRIGGER_COLLECTOR: "TRIGGER_COLLECTOR",
+  $isDataField: "$isDataField",
+  $isAsync: "$isAsync",
 };

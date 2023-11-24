@@ -1,18 +1,20 @@
 import { set } from "lodash";
 import { createReducer } from "utils/ReducerUtils";
-import {
+import type {
   UpdateWidgetMetaPropertyPayload,
   ResetWidgetMetaPayload,
+  BatchUpdateWidgetMetaPropertyPayload,
 } from "actions/metaActions";
 
+import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
 import {
   ReduxActionTypes,
-  ReduxAction,
   WidgetReduxActionTypes,
 } from "@appsmith/constants/ReduxActionConstants";
 import produce from "immer";
-import { EvalMetaUpdates } from "workers/common/DataTreeEvaluator/types";
-import { klona } from "klona";
+import type { EvalMetaUpdates } from "@appsmith/workers/common/DataTreeEvaluator/types";
+import { getMetaWidgetResetObj } from "./metaReducerUtils";
+import type { WidgetEntityConfig } from "entities/DataTree/dataTreeFactory";
 
 export type WidgetMetaState = Record<string, unknown>;
 export type MetaState = Record<string, WidgetMetaState>;
@@ -27,6 +29,8 @@ export const metaReducer = createReducer(initialState, {
     }>,
   ) => {
     const { evalMetaUpdates } = action.payload;
+
+    if (!evalMetaUpdates.length) return state;
 
     // if metaObject is updated in dataTree we also update meta values, to keep meta state in sync.
     const newMetaState = produce(state, (draftMetaState) => {
@@ -47,6 +51,20 @@ export const metaReducer = createReducer(initialState, {
         `${action.payload.widgetId}.${action.payload.propertyName}`,
         action.payload.propertyValue,
       );
+      return draftMetaState;
+    });
+
+    return nextState;
+  },
+  [ReduxActionTypes.BATCH_UPDATE_META_PROPS]: (
+    state: MetaState,
+    action: ReduxAction<BatchUpdateWidgetMetaPropertyPayload>,
+  ) => {
+    const nextState = produce(state, (draftMetaState) => {
+      const { batchMetaUpdates } = action.payload;
+      batchMetaUpdates.forEach(({ propertyName, propertyValue, widgetId }) => {
+        set(draftMetaState, `${widgetId}.${propertyName}`, propertyValue);
+      });
       return draftMetaState;
     });
 
@@ -100,31 +118,31 @@ export const metaReducer = createReducer(initialState, {
     state: MetaState,
     action: ReduxAction<ResetWidgetMetaPayload>,
   ) => {
-    const { evaluatedWidget, widgetId } = action.payload;
+    const { evaluatedWidget, evaluatedWidgetConfig, widgetId } = action.payload;
 
     if (widgetId in state) {
       // only reset widgets whose meta properties were changed.
-      // reset widget: sets the meta values to current default values of widget
-      const resetMetaObj: WidgetMetaState = {};
-
-      // evaluatedWidget is widget data inside dataTree, this will have latest default values of widget
-      if (evaluatedWidget) {
-        const { propertyOverrideDependency } = evaluatedWidget;
-        // propertyOverrideDependency has defaultProperty name for each meta property of widget
-        Object.entries(propertyOverrideDependency).map(
-          ([propertyName, dependency]) => {
-            const defaultPropertyValue =
-              dependency.DEFAULT && evaluatedWidget[dependency.DEFAULT];
-            if (defaultPropertyValue !== undefined) {
-              // cloning data to avoid mutation
-              resetMetaObj[propertyName] = klona(defaultPropertyValue);
-            }
-          },
-        );
-      }
-      return { ...state, [widgetId]: resetMetaObj };
+      state = {
+        ...state,
+        [widgetId]: getMetaWidgetResetObj(
+          evaluatedWidget,
+          evaluatedWidgetConfig as WidgetEntityConfig,
+        ),
+      };
     }
     return state;
+  },
+  [ReduxActionTypes.RESET_WIDGETS_META_STATE]: (
+    state: MetaState,
+    action: ReduxAction<{ widgetIdsToClear: string[] }>,
+  ) => {
+    const next = { ...state };
+    for (const metaWidgetId of action.payload.widgetIdsToClear) {
+      if (metaWidgetId && next[metaWidgetId]) {
+        delete next[metaWidgetId];
+      }
+    }
+    return next;
   },
   [ReduxActionTypes.FETCH_PAGE_SUCCESS]: () => {
     return initialState;

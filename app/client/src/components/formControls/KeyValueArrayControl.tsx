@@ -1,19 +1,19 @@
 import React, { useEffect, useCallback } from "react";
-import {
-  Field,
-  FieldArray,
+import type {
   WrappedFieldArrayProps,
   WrappedFieldMetaProps,
   WrappedFieldInputProps,
 } from "redux-form";
+import { Field, FieldArray } from "redux-form";
 import styled from "styled-components";
-import { Icon } from "@blueprintjs/core";
-import { FormIcons } from "icons/FormIcons";
-import BaseControl, { ControlProps, ControlData } from "./BaseControl";
-import { ControlType } from "constants/PropertyControlConstants";
+import type { ControlProps, ControlData } from "./BaseControl";
+import BaseControl from "./BaseControl";
+import type { ControlType } from "constants/PropertyControlConstants";
 import DynamicTextField from "components/editorComponents/form/fields/DynamicTextField";
-import { Colors } from "constants/Colors";
-import { TextInput, TextInputProps } from "design-system";
+import type { InputProps } from "design-system";
+import { setDefaultKeyValPairFlag } from "actions/datasourceActions";
+import { useDispatch } from "react-redux";
+import { Button, Icon, Input, Text, Tooltip } from "design-system";
 export interface KeyValueArrayControlProps extends ControlProps {
   name: string;
   label: string;
@@ -22,25 +22,64 @@ export interface KeyValueArrayControlProps extends ControlProps {
   actionConfig?: any;
   extraData?: ControlData[];
   isRequired?: boolean;
+  showHeader?: boolean;
+  headerTooltips?: {
+    key?: string;
+    value?: string;
+  };
 }
 
 const FormRowWithLabel = styled.div`
   display: flex;
   flex: 1;
   flex-direction: row;
+  align-items: start;
+  margin-bottom: 5px;
   & svg {
     cursor: pointer;
   }
+  .form-input-field {
+    width: 270px;
+    + .form-input-field {
+      margin-left: 5px;
+    }
+  }
 `;
 
-const StyledTextInput = styled(TextInput)`
-  min-width: 66px;
+const StyledInput = styled(Input)`
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
     margin: 0px;
   }
 `;
+
+const StyledButton = styled(Button)`
+  margin-left: 5px;
+`;
+
+const FlexContainer = styled.div`
+  display: flex;
+  align-items: center;
+  width: calc(100% - 30px);
+  margin-bottom: 8px;
+
+  .key-value {
+    line-height: 1;
+    flex: 1;
+    display: flex;
+    align-items: center;
+
+    .ads-v2-icon {
+      cursor: pointer;
+      margin-left: 8px;
+    }
+
+    label:first-child {
+      font-weight: normal;
+    }
+  }
+`;
+const AddMoreButton = styled(Button)``;
 
 function KeyValueRow(
   props: KeyValueArrayControlProps & WrappedFieldArrayProps,
@@ -49,16 +88,24 @@ function KeyValueRow(
   const keyName = getFieldName(extraData[0]?.configProperty);
   const valueName = getFieldName(extraData[1]?.configProperty);
   const keyFieldProps = extraData[0];
+  const dispatch = useDispatch();
+
+  const addRow = useCallback(() => {
+    if (keyName && valueName) {
+      props.fields.push({ [keyName[1]]: "", [valueName[1]]: "" });
+    } else {
+      props.fields.push({ key: "", value: "" });
+    }
+  }, [keyName, valueName]);
 
   useEffect(() => {
     // Always maintain 1 row
     if (props.fields.length < 1) {
       for (let i = props.fields.length; i < 1; i += 1) {
-        if (keyName && valueName) {
-          props.fields.push({ [keyName[1]]: "", [valueName[1]]: "" });
-        } else {
-          props.fields.push({ key: "", value: "" });
-        }
+        addRow();
+        // Since we are initializing one default key value pair, it needs to stored in redux store
+        // so that it can be used to initilize datasource config form as well
+        dispatch(setDefaultKeyValPairFlag(props.configProperty));
       }
     }
   }, [props.fields, keyName, valueName]);
@@ -73,7 +120,7 @@ function KeyValueRow(
     }
   }, [props.fields]);
 
-  const keyFieldValidate = useCallback(
+  const isKeyFieldValid = useCallback(
     (value: string) => {
       if (value && keyFieldProps?.validationRegex) {
         const regex = new RegExp(keyFieldProps?.validationRegex);
@@ -82,20 +129,55 @@ function KeyValueRow(
           ? { isValid: true }
           : { isValid: false, message: keyFieldProps.validationMessage };
       }
-
-      return undefined;
+      return { isValid: true };
     },
     [keyFieldProps?.validationRegex, keyFieldProps?.validationMessage],
   );
-  const maxLen = props.maxLen;
-  //if maxLen exists apply a check on the length
-  const showAddIcon = (index: number): boolean =>
-    maxLen
-      ? index === props.fields.length - 1 && props.fields.length < maxLen
-      : index === props.fields.length - 1;
 
   return typeof props.fields.getAll() === "object" ? (
     <>
+      {props.showHeader && (
+        <FlexContainer>
+          <div className="key-value">
+            <Text kind="body-m" renderAs="label">
+              Key
+            </Text>
+            {props.headerTooltips && (
+              <Tooltip
+                content={props.headerTooltips.key}
+                placement="right"
+                trigger="hover"
+              >
+                <Icon
+                  className={"help-icon"}
+                  color="var(--ads-v2-color-fg)"
+                  name="question-line"
+                  size="md"
+                />
+              </Tooltip>
+            )}
+          </div>
+          <div className="key-value">
+            <Text kind="body-m" renderAs="label">
+              Value
+            </Text>
+            {props.headerTooltips && (
+              <Tooltip
+                content={props.headerTooltips.value}
+                placement="right"
+                trigger="hover"
+              >
+                <Icon
+                  className={"help-icon"}
+                  color="var(--ads-v2-color-fg)"
+                  name="question-line"
+                  size="md"
+                />
+              </Tooltip>
+            )}
+          </div>
+        </FlexContainer>
+      )}
       {props.fields.map((field: any, index: number) => {
         let keyTextFieldName = `${field}.key`;
         let valueTextFieldName = `${field}.value`;
@@ -107,71 +189,57 @@ function KeyValueRow(
           valueTextFieldName = `${field}.${valueName[1]}`;
 
         return (
-          <FormRowWithLabel
-            key={index}
-            style={{ marginTop: index > 0 ? "16px" : "0px" }}
-          >
+          <FormRowWithLabel key={index}>
             <div
-              data-replay-id={btoa(keyTextFieldName)}
-              style={{ width: "20vw" }}
+              className="form-input-field"
+              data-location-id={btoa(keyTextFieldName)}
             >
               <Field
-                component={renderTextInput}
+                component={renderInput}
                 name={keyTextFieldName}
                 props={{
                   dataType: getType(extraData[0]?.dataType),
                   defaultValue: extraData[0]?.initialValue,
-                  keyFieldValidate,
+                  isKeyFieldValid: isKeyFieldValid,
                   placeholder: props.extraData
-                    ? props.extraData[1]?.placeholderText
-                    : "",
+                    ? props.extraData[0]?.placeholderText
+                    : `Key ${index + 1}`,
                   isRequired: extraData[0]?.isRequired,
                   name: keyTextFieldName,
                 }}
               />
             </div>
             {!props.actionConfig && (
-              <div style={{ marginLeft: "16px", width: "20vw" }}>
+              <div className="form-input-field">
                 <div
-                  data-replay-id={btoa(valueTextFieldName)}
+                  data-location-id={btoa(valueTextFieldName)}
                   style={{ display: "flex", flexDirection: "row" }}
                 >
                   <Field
-                    component={renderTextInput}
+                    component={renderInput}
                     name={valueTextFieldName}
                     props={{
                       dataType: getType(extraData[1]?.dataType),
                       defaultValue: extraData[1]?.initialValue,
                       placeholder: props.extraData
                         ? props.extraData[1]?.placeholderText
-                        : "",
+                        : `Value ${index + 1}`,
                       name: valueTextFieldName,
                       isRequired: extraData[1]?.isRequired,
                     }}
                   />
-                  {showAddIcon(index) ? (
-                    <Icon
-                      className="t--add-field"
-                      color={Colors["CADET_BLUE"]}
-                      icon="plus"
-                      iconSize={20}
-                      onClick={() => {
-                        props.fields.push({ key: "", value: "" });
-                      }}
-                      style={{ marginLeft: "16px", alignSelf: "center" }}
-                    />
-                  ) : (
-                    <FormIcons.DELETE_ICON
-                      className="t--delete-field"
-                      color={Colors["CADET_BLUE"]}
-                      height={20}
-                      onClick={() => props.fields.remove(index)}
-                      style={{ marginLeft: "16px", alignSelf: "center" }}
-                      width={20}
-                    />
-                  )}
                 </div>
               </div>
+            )}
+            {!props.actionConfig && (
+              <StyledButton
+                className="t--delete-field"
+                isIconButton
+                kind="tertiary"
+                onClick={() => props.fields.remove(index)}
+                size="md"
+                startIcon="delete"
+              />
             )}
 
             {props.actionConfig && (
@@ -188,6 +256,15 @@ function KeyValueRow(
           </FormRowWithLabel>
         );
       })}
+      <AddMoreButton
+        className="t--add-field t--addApiHeader btn-add-more"
+        kind="tertiary"
+        onClick={addRow}
+        size="md"
+        startIcon="add-more"
+      >
+        增加
+      </AddMoreButton>
     </>
   ) : null;
 }
@@ -226,14 +303,13 @@ const getType = (dataType: string | undefined) => {
   }
 };
 
-function renderTextInput(
-  props: TextInputProps & {
+function renderInput(
+  props: InputProps & {
     dataType?: "text" | "number" | "password";
     placeholder?: string;
     defaultValue: string | number;
     isRequired: boolean;
-    keyFieldValidate?: (value: string) => { isValid: boolean; message: string };
-    errorMsg?: string;
+    isKeyFieldValid?: (value: string) => { isValid: boolean; message: string };
     helperText?: string;
   } & {
     meta: Partial<WrappedFieldMetaProps>;
@@ -241,17 +317,20 @@ function renderTextInput(
   },
 ): JSX.Element {
   return (
-    <StyledTextInput
-      dataType={props.dataType}
+    <StyledInput
+      aria-label={
+        props.helperText || props.defaultValue || props.placeholder || "label"
+      }
       defaultValue={props.defaultValue}
-      errorMsg={props.errorMsg}
-      helperText={props.helperText}
+      description={props.helperText}
+      errorMessage={props.isKeyFieldValid?.(props.input.value).message}
+      isValid={props.isKeyFieldValid?.(props.input.value).isValid}
       name={props.input?.name}
       onChange={props.input.onChange}
       placeholder={props.placeholder}
-      validator={props.keyFieldValidate}
+      size="md"
+      type={props.dataType}
       value={props.input.value}
-      width="100%"
     />
   );
 }

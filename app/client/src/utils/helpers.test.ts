@@ -1,7 +1,8 @@
 import { RenderModes } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import { AutocompleteDataType } from "./autocomplete/CodemirrorTernService";
+import type { CanvasWidgetsReduxState } from "../reducers/entityReducers/canvasWidgetsReducer";
+import { AutocompleteDataType } from "./autocomplete/AutocompleteDataType";
 import {
   flattenObject,
   getLocale,
@@ -260,8 +261,7 @@ describe("#captureInvalidDynamicBindingPath", () => {
               type: ValidationTypes.FUNCTION,
               params: {
                 expected: {
-                  type:
-                    'Array<{ "label": "string", "value": "string" | number}>',
+                  type: 'Array<{ "label": "string", "value": "string" | number}>',
                   example: '[{"label": "abc", "value": "abc" | 1}]',
                   autocompleteDataType: AutocompleteDataType.STRING,
                 },
@@ -276,7 +276,7 @@ describe("#captureInvalidDynamicBindingPath", () => {
           {
             helpText: "Sets a default selected option",
             propertyName: "defaultOptionValue",
-            label: "Default Selected Value",
+            label: "Default selected value",
             // placeholderText: "Y",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
@@ -336,7 +336,7 @@ describe("#captureInvalidDynamicBindingPath", () => {
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "Animate loading",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             // defaultValue: true,
@@ -355,8 +355,7 @@ describe("#captureInvalidDynamicBindingPath", () => {
         sectionName: "Events",
         children: [
           {
-            helpText:
-              "Triggers an action when a user changes the selected option",
+            helpText: "when a user changes the selected option",
             propertyName: "onSelectionChange",
             label: "onSelectionChange",
             controlType: "ACTION_SELECTOR",
@@ -431,8 +430,7 @@ describe("#captureInvalidDynamicBindingPath", () => {
               type: ValidationTypes.FUNCTION,
               params: {
                 expected: {
-                  type:
-                    'Array<{ "label": "string", "value": "string" | number}>',
+                  type: 'Array<{ "label": "string", "value": "string" | number}>',
                   example: '[{"label": "abc", "value": "abc" | 1}]',
                   autocompleteDataType: AutocompleteDataType.STRING,
                 },
@@ -447,7 +445,7 @@ describe("#captureInvalidDynamicBindingPath", () => {
           {
             helpText: "Sets a default selected option",
             propertyName: "defaultOptionValue",
-            label: "Default Selected Value",
+            label: "Default selected value",
             // placeholderText: "Y",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
@@ -507,7 +505,7 @@ describe("#captureInvalidDynamicBindingPath", () => {
           },
           {
             propertyName: "animateLoading",
-            label: "Animate Loading",
+            label: "Animate loading",
             controlType: "SWITCH",
             helpText: "Controls the loading of the widget",
             // defaultValue: true,
@@ -526,8 +524,7 @@ describe("#captureInvalidDynamicBindingPath", () => {
         sectionName: "Events",
         children: [
           {
-            helpText:
-              "Triggers an action when a user changes the selected option",
+            helpText: "when a user changes the selected option",
             propertyName: "onSelectionChange",
             label: "onSelectionChange",
             controlType: "ACTION_SELECTOR",
@@ -554,20 +551,30 @@ describe("#captureInvalidDynamicBindingPath", () => {
 
 describe("#extractColorsFromString", () => {
   it("Check if the extractColorsFromString returns rgb, rgb, hex color strings", () => {
-    const borderWithHex = `2px solid ${Colors.GREEN}`;
-    const borderWithRgb = "2px solid rgb(0,0,0)";
-    const borderWithRgba = `2px solid ${Colors.BOX_SHADOW_DEFAULT_VARIANT1}`;
+    const widgets = {
+      0: { color: `${Colors.GREEN}` },
+      1: { color: "rgb(0,0,0)" },
+      2: { color: `${Colors.BOX_SHADOW_DEFAULT_VARIANT1}` },
+      3: { color: `LightGoldenrodYellow` },
+      4: { color: `lch(54.292% 106.839 40.853)` },
+    } as unknown as CanvasWidgetsReduxState;
 
     //Check Hex value
-    expect(extractColorsFromString(borderWithHex)[0]).toEqual("#03b365");
-
-    //Check rgba value
-    expect(extractColorsFromString(borderWithRgba)[0]).toEqual(
-      "rgba(0, 0, 0, 0.25)",
-    );
+    expect(extractColorsFromString(widgets)[0]).toEqual("#03B365");
 
     //Check rgb
-    expect(extractColorsFromString(borderWithRgb)[0]).toEqual("rgb(0,0,0)");
+    expect(extractColorsFromString(widgets)[1]).toEqual("rgb(0,0,0)");
+
+    //Check rgba value
+    expect(extractColorsFromString(widgets)[2]).toEqual("rgba(0, 0, 0, 0.25)");
+
+    //Check name value
+    expect(extractColorsFromString(widgets)[3]).toEqual("LightGoldenrodYellow");
+
+    //Check lch value
+    expect(extractColorsFromString(widgets)[4]).toEqual(
+      "lch(54.292% 106.839 40.853)",
+    );
   });
 });
 
@@ -575,18 +582,16 @@ describe("isNameValid()", () => {
   it("works properly", () => {
     const invalidEntityNames = [
       "console",
-      "moment",
       "Promise",
       "appsmith",
       "Math",
-      "_",
-      "forge",
       "yield",
       "Boolean",
       "ReferenceError",
       "clearTimeout",
       "parseInt",
       "eval",
+      "performance",
     ];
     // Some window object methods and properties names should be valid entity names since evaluation is done
     // in the worker thread, and some of the window methods and properties are not available there.

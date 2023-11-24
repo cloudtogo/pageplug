@@ -1,25 +1,30 @@
-import React from "react";
-import { compact, xor } from "lodash";
-import { TextSize, WidgetType } from "constants/WidgetConstants";
-import { DerivedPropertiesMap } from "utils/WidgetFactory";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
-import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import { Alignment } from "@blueprintjs/core";
-import { GRID_DENSITY_MIGRATION_V1 } from "widgets/constants";
-import CheckboxGroupComponent from "../component";
-import { OptionProps, SelectAllState, SelectAllStates } from "../constants";
-import { Stylesheet } from "entities/AppTheming";
-import {
-  ValidationResponse,
-  ValidationTypes,
-} from "constants/WidgetValidation";
 import {
   CheckboxGroupAlignmentTypes,
   LabelPosition,
 } from "components/constants";
-import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
+import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import type { TextSize, WidgetType } from "constants/WidgetConstants";
+import type { ValidationResponse } from "constants/WidgetValidation";
+import { ValidationTypes } from "constants/WidgetValidation";
+import type { SetterConfig, Stylesheet } from "entities/AppTheming";
+import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
+import { compact, xor } from "lodash";
+import { default as React } from "react";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
+import type { DerivedPropertiesMap } from "utils/WidgetFactory";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
+import { GRID_DENSITY_MIGRATION_V1 } from "widgets/constants";
+import {
+  isAutoHeightEnabledForWidget,
+  DefaultAutocompleteDefinitions,
+} from "widgets/WidgetUtils";
+import CheckboxGroupComponent from "../component";
+import type { OptionProps, SelectAllState } from "../constants";
+import { SelectAllStates } from "../constants";
+import type { AutocompletionDefinitions } from "widgets/constants";
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
 
 export function defaultSelectedValuesValidation(
   value: unknown,
@@ -54,6 +59,19 @@ class CheckboxGroupWidget extends BaseWidget<
   CheckboxGroupWidgetProps,
   WidgetState
 > {
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "Checkbox group widget allows users to easily configure multiple checkboxes together.",
+      "!url": "https://docs.appsmith.com/widget-reference/checkbox-group",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      isDisabled: "bool",
+      isValid: "bool",
+      options: "[$__dropdownOption__$]",
+      selectedValues: "[string]",
+    };
+  }
+
   static getPropertyPaneContentConfig() {
     return [
       {
@@ -141,6 +159,7 @@ class CheckboxGroupWidget extends BaseWidget<
             label: "位置",
             controlType: "ICON_TABS",
             fullWidth: true,
+            hidden: isAutoLayout,
             options: [
               { label: "自动", value: LabelPosition.Auto },
               { label: "左", value: LabelPosition.Left },
@@ -156,13 +175,14 @@ class CheckboxGroupWidget extends BaseWidget<
             propertyName: "labelAlignment",
             label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
+            fullWidth: false,
             options: [
               {
-                icon: "LEFT_ALIGN",
+                startIcon: "align-left",
                 value: Alignment.LEFT,
               },
               {
-                icon: "RIGHT_ALIGN",
+                startIcon: "align-right",
                 value: Alignment.RIGHT,
               },
             ],
@@ -364,14 +384,14 @@ class CheckboxGroupWidget extends BaseWidget<
             propertyName: "labelStyle",
             label: "强调",
             helpText: "设置标签字体是否加粗或斜体",
-            controlType: "BUTTON_TABS",
+            controlType: "BUTTON_GROUP",
             options: [
               {
-                icon: "BOLD_FONT",
+                icon: "text-bold",
                 value: "BOLD",
               },
               {
-                icon: "ITALICS_FONT",
+                icon: "text-italic",
                 value: "ITALIC",
               },
             ],
@@ -497,48 +517,6 @@ class CheckboxGroupWidget extends BaseWidget<
   }
 
   componentDidUpdate(prevProps: CheckboxGroupWidgetProps) {
-    if (
-      Array.isArray(prevProps.options) &&
-      Array.isArray(this.props.options) &&
-      this.props.options.length !== prevProps.options.length
-    ) {
-      const prevOptions = compact(prevProps.options).map(
-        (prevOption) => prevOption.value,
-      );
-      const options = compact(this.props.options).map((option) => option.value);
-
-      // Get an array containing all the options of prevOptions that are not in options and vice-versa
-      const diffOptions = prevOptions
-        .filter((option) => !options.includes(option))
-        .concat(options.filter((option) => !prevOptions.includes(option)));
-
-      // TODO(abhinav): Not sure why we have to do this.
-      // Stuff breaks after release merge, fixing it here.
-      let _selectedValues = this.props.selectedValues;
-      if (!Array.isArray(_selectedValues)) {
-        if (
-          this.props.defaultSelectedValues &&
-          this.props.defaultSelectedValues.length &&
-          !Array.isArray(this.props.defaultSelectedValues)
-        ) {
-          _selectedValues = [this.props.defaultSelectedValues];
-        } else {
-          _selectedValues = [];
-        }
-      }
-
-      const selectedValues = _selectedValues.filter(
-        (selectedValue: string) => !diffOptions.includes(selectedValue),
-      );
-
-      this.props.updateWidgetMetaProperty("selectedValues", selectedValues, {
-        triggerPropertyName: "onSelectionChange",
-        dynamicString: this.props.onSelectionChange,
-        event: {
-          type: EventType.ON_CHECK_CHANGE,
-        },
-      });
-    }
     // Reset isDirty to false whenever defaultSelectedValues changes
     if (
       xor(this.props.defaultSelectedValues, prevProps.defaultSelectedValues)
@@ -547,6 +525,30 @@ class CheckboxGroupWidget extends BaseWidget<
     ) {
       this.props.updateWidgetMetaProperty("isDirty", false);
     }
+  }
+
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {
+        setVisibility: {
+          path: "isVisible",
+          type: "boolean",
+        },
+        setDisabled: {
+          path: "isDisabled",
+          type: "boolean",
+        },
+        setRequired: {
+          path: "isRequired",
+          type: "boolean",
+        },
+        setSelectedOptions: {
+          path: "defaultSelectedValues",
+          type: "array",
+          accessor: "selectedValues",
+        },
+      },
+    };
   }
 
   getPageView() {
@@ -576,6 +578,7 @@ class CheckboxGroupWidget extends BaseWidget<
         labelTextSize={this.props.labelTextSize}
         labelTooltip={this.props.labelTooltip}
         labelWidth={this.getLabelWidth()}
+        minWidth={this.props.minWidth}
         onChange={this.handleCheckboxChange}
         onSelectAllChange={this.handleSelectAllChange}
         optionAlignment={this.props.optionAlignment}

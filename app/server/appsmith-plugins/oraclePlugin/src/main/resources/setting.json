@@ -1,0 +1,36 @@
+{
+  "setting": [
+    {
+      "sectionName": "",
+      "id": 1,
+      "children": [
+        {
+          "label": "Run query on page load",
+          "configProperty": "executeOnLoad",
+          "controlType": "SWITCH",
+          "subtitle": "Will refresh data each time the page is loaded"
+        },
+        {
+          "label": "Request confirmation before running query",
+          "configProperty": "confirmBeforeExecute",
+          "controlType": "SWITCH",
+          "subtitle": "Ask confirmation from the user each time before refreshing data"
+        },
+        {
+          "label": "使用预处理",
+          "subtitle": "打开预处理可以使您的查询对 SQL 注入之类的问题具有弹性。但是，如果您的动态绑定包含任何 SQL 关键字，如‘ SELECT’、‘ WHERE’、‘ AND’等，则不能使用它。",
+          "configProperty": "actionConfiguration.formData.preparedStatement.data",
+          "controlType": "SWITCH",
+          "initialValue": true
+        },
+        {
+          "label": "Query timeout (in milliseconds)",
+          "subtitle": "Maximum time after which the query will return",
+          "configProperty": "actionConfiguration.timeoutInMillisecond",
+          "controlType": "INPUT_TEXT",
+          "dataType": "NUMBER"
+        }
+      ]
+    }
+  ]
+}

@@ -1,10 +1,13 @@
-import {
-  ReduxActionTypes,
-  ReduxAction,
-} from "@appsmith/constants/ReduxActionConstants";
-import { BatchAction, batchAction } from "actions/batchActions";
-import { EvalMetaUpdates } from "workers/common/DataTreeEvaluator/types";
-import { DataTreeWidget } from "../entities/DataTree/dataTreeFactory";
+import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import type { BatchAction } from "actions/batchActions";
+import { batchAction } from "actions/batchActions";
+import type { EvalMetaUpdates } from "@appsmith/workers/common/DataTreeEvaluator/types";
+import type {
+  WidgetEntity,
+  DataTreeEntityConfig,
+  WidgetEntityConfig,
+} from "../entities/DataTree/dataTreeFactory";
 
 export interface UpdateWidgetMetaPropertyPayload {
   widgetId: string;
@@ -12,6 +15,9 @@ export interface UpdateWidgetMetaPropertyPayload {
   propertyValue: unknown;
 }
 
+export interface BatchUpdateWidgetMetaPropertyPayload {
+  batchMetaUpdates: UpdateWidgetMetaPropertyPayload[];
+}
 export const updateWidgetMetaPropAndEval = (
   widgetId: string,
   propertyName: string,
@@ -29,18 +35,21 @@ export const updateWidgetMetaPropAndEval = (
 
 export type ResetWidgetMetaPayload = {
   widgetId: string;
-  evaluatedWidget: DataTreeWidget;
+  evaluatedWidget: WidgetEntity | undefined;
+  evaluatedWidgetConfig: DataTreeEntityConfig | undefined;
 };
 
 export const resetWidgetMetaProperty = (
   widgetId: string,
-  evaluatedWidget: DataTreeWidget,
+  evaluatedWidget: WidgetEntity | undefined,
+  evaluatedWidgetConfig: WidgetEntityConfig | undefined,
 ): BatchAction<ResetWidgetMetaPayload> => {
   return batchAction({
     type: ReduxActionTypes.RESET_WIDGET_META,
     payload: {
       widgetId,
       evaluatedWidget,
+      evaluatedWidgetConfig,
     },
     postEvalActions: [{ type: ReduxActionTypes.RESET_WIDGET_META_EVALUATED }],
   });
@@ -73,6 +82,15 @@ export const triggerEvalOnMetaUpdate = () => {
   });
 };
 
+export const syncBatchUpdateWidgetMetaProperties = (
+  batchMetaUpdates: UpdateWidgetMetaPropertyPayload[],
+): ReduxAction<BatchUpdateWidgetMetaPropertyPayload> => {
+  return {
+    type: ReduxActionTypes.BATCH_UPDATE_META_PROPS,
+    payload: { batchMetaUpdates },
+  };
+};
+
 export const syncUpdateWidgetMetaProperty = (
   widgetId: string,
   propertyName: string,
@@ -84,6 +102,17 @@ export const syncUpdateWidgetMetaProperty = (
       widgetId,
       propertyName,
       propertyValue,
+    },
+  };
+};
+
+export const resetWidgetsMetaState = (
+  widgetIdsToClear: string[],
+): ReduxAction<{ widgetIdsToClear: string[] }> => {
+  return {
+    type: ReduxActionTypes.RESET_WIDGETS_META_STATE,
+    payload: {
+      widgetIdsToClear,
     },
   };
 };

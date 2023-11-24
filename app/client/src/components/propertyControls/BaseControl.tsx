@@ -3,27 +3,35 @@
  * Controls are higher order components that update a widgets property
  */
 import { Component } from "react";
-import _ from "lodash";
-import { EditorTheme } from "components/editorComponents/CodeEditor/EditorConfig";
-import { PropertyPaneControlConfig } from "constants/PropertyControlConstants";
-import { CodeEditorExpected } from "components/editorComponents/CodeEditor";
+import type { EditorTheme } from "components/editorComponents/CodeEditor/EditorConfig";
+import type { PropertyPaneControlConfig } from "constants/PropertyControlConstants";
+import type { CodeEditorExpected } from "components/editorComponents/CodeEditor";
+import type { AdditionalDynamicDataTree } from "utils/autocomplete/customTreeTypeDefCreator";
+
+export type ControlMethods = Record<
+  "canDisplayValueInUI" | "shouldValidateValueOnDynamicPropertyOff",
+  | typeof BaseControl.canDisplayValueInUI
+  | typeof BaseControl.shouldValidateValueOnDynamicPropertyOff
+>;
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 class BaseControl<P extends ControlProps, S = {}> extends Component<P, S> {
+  shoudUpdateProperty(propertyValue: unknown) {
+    return !(
+      (this.props.propertyValue === undefined &&
+        propertyValue === this.props.defaultValue) ||
+      !(this.props.propertyValue !== propertyValue)
+    );
+  }
+
   updateProperty(
     propertyName: string,
     propertyValue: any,
     isUpdatedViaKeyboard?: boolean,
   ) {
     if (
-      this.props.propertyValue === undefined &&
-      propertyValue === this.props.defaultValue
-    ) {
-      return;
-    }
-    if (
-      !_.isNil(this.props.onPropertyChange) &&
-      this.props.propertyValue !== propertyValue
+      this.shoudUpdateProperty(propertyValue) &&
+      this.props.onPropertyChange
     ) {
       this.props.onPropertyChange(
         propertyName,
@@ -32,11 +40,25 @@ class BaseControl<P extends ControlProps, S = {}> extends Component<P, S> {
       );
     }
   }
+
   deleteProperties(propertyPaths: string[]) {
     if (this.props.deleteProperties) {
       this.props.deleteProperties(propertyPaths);
     }
   }
+
+  batchUpdatePropertiesWithAssociatedUpdates = (
+    updates: { propertyName: string; propertyValue: any }[],
+  ) => {
+    if (this.props.onBatchUpdateWithAssociatedUpdates) {
+      this.props.onBatchUpdateWithAssociatedUpdates(
+        updates.filter(({ propertyValue }) =>
+          this.shoudUpdateProperty(propertyValue),
+        ),
+      );
+    }
+  };
+
   batchUpdateProperties = (updates: Record<string, unknown>) => {
     if (this.props.onBatchUpdateProperties) {
       this.props.onBatchUpdateProperties(updates);
@@ -52,6 +74,16 @@ class BaseControl<P extends ControlProps, S = {}> extends Component<P, S> {
     return false;
   }
 
+  //checks whether we need to validate the value when swtiching from js mode to non js mode
+  static shouldValidateValueOnDynamicPropertyOff(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    config?: ControlData,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    value?: any,
+  ): boolean {
+    return true;
+  }
+
   // Only applicable for JSONFormComputeControl & ComputeTablePropertyControl
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static getInputComputedValue(value: string, widgetName: string): string {
@@ -65,7 +97,7 @@ export interface ControlBuilder<T extends ControlProps> {
 
 export interface ControlProps extends ControlData, ControlFunctions {
   key?: string;
-  additionalAutoComplete?: Record<string, Record<string, unknown>>;
+  additionalAutoComplete?: AdditionalDynamicDataTree;
 }
 export interface ControlData
   extends Omit<PropertyPaneControlConfig, "additionalAutoComplete" | "label"> {
@@ -78,13 +110,23 @@ export interface ControlData
   useValidationMessage?: boolean;
   parentPropertyName: string;
   parentPropertyValue: unknown;
-  additionalDynamicData: Record<string, Record<string, unknown>>;
+  additionalDynamicData: AdditionalDynamicDataTree;
   label: string;
+  additionalControlData?: Record<string, unknown>;
 }
 export interface ControlFunctions {
   onPropertyChange?: (
     propertyName: string,
     propertyValue: string,
+    isUpdatedViaKeyboard?: boolean,
+    isDynamicPropertyPath?: boolean,
+  ) => void;
+
+  onBatchUpdateWithAssociatedUpdates?: (
+    updates: {
+      propertyName: string;
+      propertyValue: string;
+    }[],
     isUpdatedViaKeyboard?: boolean,
   ) => void;
   onBatchUpdateProperties?: (updates: Record<string, unknown>) => void;

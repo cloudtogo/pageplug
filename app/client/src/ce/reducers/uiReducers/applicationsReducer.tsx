@@ -1,11 +1,13 @@
 import { createReducer } from "utils/ReducerUtils";
-import {
+import type {
   ReduxAction,
-  ReduxActionTypes,
-  ReduxActionErrorTypes,
   ApplicationPayload,
 } from "@appsmith/constants/ReduxActionConstants";
 import {
+  ReduxActionTypes,
+  ReduxActionErrorTypes,
+} from "@appsmith/constants/ReduxActionConstants";
+import type {
   Workspaces,
   WorkspaceUser,
 } from "@appsmith/constants/workspaceConstants";
@@ -13,11 +15,18 @@ import {
   createMessage,
   ERROR_MESSAGE_CREATE_APPLICATION,
 } from "@appsmith/constants/messages";
-import { PageDefaultMeta, UpdateApplicationRequest } from "api/ApplicationApi";
-import { CreateApplicationFormValues } from "pages/Applications/helpers";
-import { AppLayoutConfig } from "reducers/entityReducers/pageListReducer";
-import { ConnectToGitResponse } from "actions/gitSyncActions";
-import { AppIconName } from "design-system";
+import type {
+  AppEmbedSetting,
+  PageDefaultMeta,
+  UpdateApplicationRequest,
+} from "@appsmith/api/ApplicationApi";
+import type { CreateApplicationFormValues } from "pages/Applications/helpers";
+import type { AppLayoutConfig } from "reducers/entityReducers/pageListReducer";
+import type { ConnectToGitResponse } from "actions/gitSyncActions";
+import type { IconNames } from "design-system";
+import type { NavigationSetting } from "constants/AppConstants";
+import { defaultNavigationSetting } from "constants/AppConstants";
+import produce from "immer";
 
 export const initialState: ApplicationsReduxState = {
   isFetchingApplications: false,
@@ -29,7 +38,6 @@ export const initialState: ApplicationsReduxState = {
   creatingApplication: {},
   deletingApplication: false,
   forkingApplication: false,
-  duplicatingApplication: false,
   userWorkspaces: [],
   isSavingWorkspaceInfo: false,
   importingApplication: false,
@@ -41,6 +49,11 @@ export const initialState: ApplicationsReduxState = {
   isImportAppModalOpen: false,
   workspaceIdForImport: null,
   pageIdForImport: "",
+  isAppSidebarPinned: true,
+  isSavingNavigationSetting: false,
+  isErrorSavingNavigationSetting: false,
+  isUploadingNavigationLogo: false,
+  isDeletingNavigationLogo: false,
 };
 
 export const handlers = {
@@ -129,11 +142,25 @@ export const handlers = {
   [ReduxActionTypes.FETCH_APPLICATION_SUCCESS]: (
     state: ApplicationsReduxState,
     action: ReduxAction<{ applicationList: ApplicationPayload[] }>,
-  ) => ({
-    ...state,
-    currentApplication: action.payload,
-    isFetchingApplication: false,
-  }),
+  ) => {
+    const newState = {
+      ...state,
+      currentApplication: {
+        applicationDetail: {
+          navigationSetting: defaultNavigationSetting,
+        },
+        ...action.payload,
+      },
+      isFetchingApplication: false,
+    };
+
+    if (!newState.currentApplication.applicationDetail.navigationSetting) {
+      newState.currentApplication.applicationDetail.navigationSetting =
+        defaultNavigationSetting;
+    }
+
+    return newState;
+  },
   [ReduxActionTypes.CURRENT_APPLICATION_CHART_THEME_UPDATE]: (
     state: ApplicationsReduxState,
     action: ReduxAction<{ chartTheme: string }>,
@@ -157,7 +184,7 @@ export const handlers = {
   }),
   [ReduxActionTypes.CURRENT_APPLICATION_ICON_UPDATE]: (
     state: ApplicationsReduxState,
-    action: ReduxAction<AppIconName>,
+    action: ReduxAction<IconNames>,
   ) => ({
     ...state,
     currentApplication: {
@@ -370,38 +397,35 @@ export const handlers = {
       searchKeyword: action.payload.keyword,
     };
   },
-  [ReduxActionTypes.DUPLICATE_APPLICATION_INIT]: (
-    state: ApplicationsReduxState,
-  ) => {
-    return { ...state, duplicatingApplication: true };
-  },
-  [ReduxActionTypes.DUPLICATE_APPLICATION_SUCCESS]: (
-    state: ApplicationsReduxState,
-    action: ReduxAction<ApplicationPayload>,
-  ) => {
-    return {
-      ...state,
-      duplicatingApplication: false,
-      applicationList: [...state.applicationList, action.payload],
-    };
-  },
-  [ReduxActionErrorTypes.DUPLICATE_APPLICATION_ERROR]: (
-    state: ApplicationsReduxState,
-  ) => {
-    return { ...state, duplicatingApplication: false };
-  },
   [ReduxActionTypes.UPDATE_APPLICATION]: (
     state: ApplicationsReduxState,
     action: ReduxAction<UpdateApplicationRequest>,
   ) => {
     let isSavingAppName = false;
+    let isSavingNavigationSetting = false;
+
     if (action.payload.name) {
       isSavingAppName = true;
     }
+
+    if (action.payload.applicationDetail?.navigationSetting) {
+      isSavingNavigationSetting = true;
+    }
+
     return {
       ...state,
-      isSavingAppName: isSavingAppName,
+      isSavingAppName,
       isErrorSavingAppName: false,
+      isSavingNavigationSetting,
+      isErrorSavingNavigationSetting: false,
+      ...(action.payload.applicationDetail
+        ? {
+            applicationDetail: {
+              ...state.currentApplication?.applicationDetail,
+              ...action.payload.applicationDetail,
+            },
+          }
+        : {}),
     };
   },
   [ReduxActionTypes.UPDATE_APPLICATION_SUCCESS]: (
@@ -428,16 +452,27 @@ export const handlers = {
       userWorkspaces: _workspaces,
       isSavingAppName: false,
       isErrorSavingAppName: false,
+      isSavingNavigationSetting: false,
+      isErrorSavingNavigationSetting: false,
     };
   },
   [ReduxActionErrorTypes.UPDATE_APPLICATION_ERROR]: (
     state: ApplicationsReduxState,
   ) => {
-    return { ...state, isSavingAppName: false, isErrorSavingAppName: true };
+    return {
+      ...state,
+      isSavingAppName: false,
+      isErrorSavingAppName: true,
+      isSavingNavigationSetting: false,
+      isErrorSavingNavigationSetting: true,
+    };
   },
   [ReduxActionTypes.RESET_CURRENT_APPLICATION]: (
     state: ApplicationsReduxState,
-  ) => ({ ...state, currentApplication: null }),
+  ) => ({
+    ...state,
+    currentApplication: null,
+  }),
   [ReduxActionTypes.SET_SHOW_APP_INVITE_USERS_MODAL]: (
     state: ApplicationsReduxState,
     action: ReduxAction<boolean>,
@@ -550,6 +585,130 @@ export const handlers = {
       applicationList: [...state.applicationList, action.payload],
     };
   },
+  [ReduxActionTypes.CURRENT_APPLICATION_EMBED_SETTING_UPDATE]: (
+    state: ApplicationsReduxState,
+    action: ReduxAction<AppEmbedSetting>,
+  ) => {
+    return {
+      ...state,
+      currentApplication: {
+        ...state.currentApplication,
+        embedSetting: action.payload,
+      },
+    };
+  },
+  [ReduxActionTypes.CURRENT_APPLICATION_FORKING_ENABLED_UPDATE]: (
+    state: ApplicationsReduxState,
+    action: ReduxAction<boolean>,
+  ) => {
+    return {
+      ...state,
+      currentApplication: {
+        ...state.currentApplication,
+        forkingEnabled: action.payload,
+      },
+    };
+  },
+  [ReduxActionTypes.UPDATE_NAVIGATION_SETTING]: (
+    state: ApplicationsReduxState,
+    action: ReduxAction<NavigationSetting>,
+  ) => {
+    return {
+      ...state,
+      currentApplication: {
+        ...state.currentApplication,
+        applicationDetail: {
+          ...state.currentApplication?.applicationDetail,
+          navigationSetting: {
+            ...defaultNavigationSetting,
+            ...action.payload,
+          },
+        },
+      },
+    };
+  },
+  [ReduxActionTypes.SET_APP_SIDEBAR_PINNED]: (
+    state: ApplicationsReduxState,
+    action: ReduxAction<boolean>,
+  ) => ({
+    ...state,
+    isAppSidebarPinned: action.payload,
+  }),
+  [ReduxActionTypes.UPLOAD_NAVIGATION_LOGO_INIT]: (
+    state: ApplicationsReduxState,
+  ) => ({
+    ...state,
+    isUploadingNavigationLogo: true,
+  }),
+  [ReduxActionTypes.UPLOAD_NAVIGATION_LOGO_SUCCESS]: (
+    state: ApplicationsReduxState,
+    action: ReduxAction<NavigationSetting["logoAssetId"]>,
+  ) => {
+    return produce(state, (draftState: ApplicationsReduxState) => {
+      draftState.isUploadingNavigationLogo = false;
+
+      if (
+        draftState?.currentApplication?.applicationDetail?.navigationSetting
+      ) {
+        draftState.currentApplication.applicationDetail.navigationSetting.logoAssetId =
+          action.payload;
+      }
+    });
+  },
+  [ReduxActionErrorTypes.UPLOAD_NAVIGATION_LOGO_ERROR]: (
+    state: ApplicationsReduxState,
+  ) => {
+    return {
+      ...state,
+      isUploadingNavigationLogo: false,
+    };
+  },
+  [ReduxActionTypes.DELETE_NAVIGATION_LOGO_INIT]: (
+    state: ApplicationsReduxState,
+  ) => ({
+    ...state,
+    isDeletingNavigationLogo: true,
+  }),
+  [ReduxActionTypes.DELETE_NAVIGATION_LOGO_SUCCESS]: (
+    state: ApplicationsReduxState,
+  ) => {
+    const updatedNavigationSetting = Object.assign(
+      {},
+      state.currentApplication?.applicationDetail?.navigationSetting,
+      {
+        logoAssetId: "",
+      },
+    );
+
+    const updatedApplicationDetail = Object.assign(
+      {},
+      state.currentApplication?.applicationDetail,
+      {
+        navigationSetting: updatedNavigationSetting,
+      },
+    );
+
+    const updatedCurrentApplication = Object.assign(
+      {},
+      state.currentApplication,
+      {
+        applicationDetail: updatedApplicationDetail,
+      },
+    );
+
+    return Object.assign({}, state, {
+      isDeletingNavigationLogo: false,
+      currentApplication: updatedCurrentApplication,
+    });
+  },
+  [ReduxActionErrorTypes.DELETE_NAVIGATION_LOGO_ERROR]: (
+    state: ApplicationsReduxState,
+  ) => {
+    return {
+      ...state,
+      isDeletingNavigationLogo: false,
+    };
+  },
 };
 
 const applicationsReducer = createReducer(initialState, handlers);
@@ -568,7 +727,6 @@ export interface ApplicationsReduxState {
   createApplicationError?: string;
   deletingApplication: boolean;
   forkingApplication: boolean;
-  duplicatingApplication: boolean;
   currentApplication?: ApplicationPayload;
   userWorkspaces: Workspaces[];
   isSavingWorkspaceInfo: boolean;
@@ -582,6 +740,11 @@ export interface ApplicationsReduxState {
   workspaceIdForImport: any;
   pageIdForImport: string;
   isDatasourceConfigForImportFetched?: boolean;
+  isAppSidebarPinned: boolean;
+  isSavingNavigationSetting: boolean;
+  isErrorSavingNavigationSetting: boolean;
+  isUploadingNavigationLogo: boolean;
+  isDeletingNavigationLogo: boolean;
 }
 
 export interface Application {

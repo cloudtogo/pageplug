@@ -21,7 +21,7 @@ public abstract class BaseException extends RuntimeException {
 
     public abstract Integer getHttpStatus();
 
-    public abstract Integer getAppErrorCode();
+    public abstract String getAppErrorCode();
 
     public abstract AppsmithErrorAction getErrorAction();
 
@@ -31,4 +31,9 @@ public abstract class BaseException extends RuntimeException {
         return super.getMessage();
     }
 
+    public abstract String getDownstreamErrorMessage();
+
+    public abstract String getDownstreamErrorCode();
+
+    public abstract String getErrorType();
 }

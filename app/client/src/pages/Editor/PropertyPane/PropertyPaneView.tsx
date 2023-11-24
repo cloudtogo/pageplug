@@ -1,14 +1,10 @@
-import React, {
-  ReactElement,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from "react";
+import type { ReactElement } from "react";
+import { useContext } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import equal from "fast-deep-equal/es6";
 import { useDispatch, useSelector } from "react-redux";
 import { getWidgetPropsForPropertyPaneView } from "selectors/propertyPaneSelectors";
-import { IPanelProps, Position } from "@blueprintjs/core";
+import type { IPanelProps } from "@blueprintjs/core";
 
 import PropertyPaneTitle from "./PropertyPaneTitle";
 import PropertyControlsGenerator from "./PropertyControlsGenerator";
@@ -16,24 +12,30 @@ import { EditorTheme } from "components/editorComponents/CodeEditor/EditorConfig
 import { deleteSelectedWidget, copyWidget } from "actions/widgetActions";
 import ConnectDataCTA, { actionsExist } from "./ConnectDataCTA";
 import PropertyPaneConnections from "./PropertyPaneConnections";
-import CopyIcon from "remixicon-react/FileCopyLineIcon";
-import DeleteIcon from "remixicon-react/DeleteBinLineIcon";
-import { WidgetType } from "constants/WidgetConstants";
-import {
-  InteractionAnalyticsEventDetail,
-  INTERACTION_ANALYTICS_EVENT,
-} from "utils/AppsmithUtils";
-import { emitInteractionAnalyticsEvent } from "utils/AppsmithUtils";
+import type { WidgetType } from "constants/WidgetConstants";
+import { WIDGET_ID_SHOW_WALKTHROUGH } from "constants/WidgetConstants";
+import type { InteractionAnalyticsEventDetail } from "utils/AppsmithUtils";
+import { INTERACTION_ANALYTICS_EVENT } from "utils/AppsmithUtils";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { buildDeprecationWidgetMessage, isWidgetDeprecated } from "../utils";
-import { Colors } from "constants/Colors";
-import { BannerMessage, IconSize } from "design-system";
+import { Button, Callout } from "design-system";
 import WidgetFactory from "utils/WidgetFactory";
 import { PropertyPaneTab } from "./PropertyPaneTab";
 import { useSearchText } from "./helpers";
 import { PropertyPaneSearchInput } from "./PropertyPaneSearchInput";
-import { disableWidgetFeatures } from "utils/WidgetFeatures";
 import { sendPropertyPaneSearchAnalytics } from "./propertyPaneSearch";
+import WalkthroughContext from "components/featureWalkthrough/walkthroughContext";
+import { AB_TESTING_EVENT_KEYS } from "@appsmith/entities/FeatureFlag";
+import localStorage from "utils/localStorage";
+import { FEATURE_WALKTHROUGH_KEYS } from "constants/WalkthroughConstants";
+import { PROPERTY_PANE_ID } from "components/editorComponents/PropertyPaneSidebar";
+import { setFeatureWalkthroughShown } from "utils/storage";
+import {
+  BINDING_WIDGET_WALKTHROUGH_DESC,
+  BINDING_WIDGET_WALKTHROUGH_TITLE,
+  createMessage,
+} from "@appsmith/constants/messages";
+import { getWidgets } from "sagas/selectors";
 
 // TODO(abhinav): The widget should add a flag in their configuration if they donot subscribe to data
 // Widgets where we do not want to show the CTA
@@ -50,6 +52,8 @@ export const excludeList: WidgetType[] = [
   "IFRAME_WIDGET",
   "FILE_PICKER_WIDGET",
   "FILE_PICKER_WIDGET_V2",
+  "TABLE_WIDGET_V2",
+  "BUTTON_WIDGET_V2",
 ];
 
 function PropertyPaneView(
@@ -58,7 +62,7 @@ function PropertyPaneView(
   } & IPanelProps,
 ) {
   const dispatch = useDispatch();
-  const { ...panel } = props;
+  const panel = props;
   const widgetProperties = useSelector(
     getWidgetPropsForPropertyPaneView,
     equal,
@@ -72,8 +76,54 @@ function PropertyPaneView(
     }
 
     return true;
-  }, [widgetProperties?.type, excludeList]);
+  }, [widgetProperties]);
   const { searchText, setSearchText } = useSearchText("");
+  const { pushFeature } = useContext(WalkthroughContext) || {};
+  const widgets = useSelector(getWidgets);
+
+  const showWalkthroughIfWidgetIdSet = async () => {
+    const widgetId: string | null = await localStorage.getItem(
+      WIDGET_ID_SHOW_WALKTHROUGH,
+    );
+
+    // Adding table condition as connecting to select, chart widgets is currently not working as expected
+    // When we fix those, we can remove this table condtion
+    const isTableWidget = !!widgetId
+      ? widgets[widgetId]?.type === "TABLE_WIDGET_V2"
+      : false;
+
+    if (widgetId && pushFeature && isTableWidget) {
+      pushFeature({
+        targetId: PROPERTY_PANE_ID,
+        onDismiss: async () => {
+          await localStorage.removeItem(WIDGET_ID_SHOW_WALKTHROUGH);
+          await setFeatureWalkthroughShown(
+            FEATURE_WALKTHROUGH_KEYS.binding_widget,
+            true,
+          );
+        },
+        details: {
+          title: createMessage(BINDING_WIDGET_WALKTHROUGH_TITLE),
+          description: createMessage(BINDING_WIDGET_WALKTHROUGH_DESC),
+        },
+        offset: {
+          position: "left",
+          left: -40,
+          top: 250,
+          highlightPad: 2,
+          indicatorLeft: -3,
+          indicatorTop: 230,
+        },
+        eventParams: {
+          [AB_TESTING_EVENT_KEYS.abTestingFlagLabel]:
+            FEATURE_WALKTHROUGH_KEYS.binding_widget,
+          [AB_TESTING_EVENT_KEYS.abTestingFlagValue]: true,
+        },
+        multipleHighlights: [widgetId, PROPERTY_PANE_ID],
+        delay: 5000,
+      });
+    }
+  };
 
   const handleKbdEvent = (e: Event) => {
     const event = e as CustomEvent<InteractionAnalyticsEventDetail>;
@@ -90,6 +140,7 @@ function PropertyPaneView(
       INTERACTION_ANALYTICS_EVENT,
       handleKbdEvent,
     );
+    showWalkthroughIfWidgetIdSet();
     return () => {
       containerRef.current?.removeEventListener(
         INTERACTION_ANALYTICS_EVENT,
@@ -122,56 +173,40 @@ function PropertyPaneView(
    */
   const onCopy = useCallback(() => dispatch(copyWidget(false)), [dispatch]);
 
-  const handleTabKeyDownForButton = useCallback(
-    (propertyName: string) => (e: React.KeyboardEvent) => {
-      if (e.key === "Tab")
-        emitInteractionAnalyticsEvent(containerRef?.current, {
-          key: e.key,
-          propertyName,
-          propertyType: "BUTTON",
-          widgetType: widgetProperties?.type,
-        });
-    },
-    [],
-  );
-
   /**
    * actions shown on the right of title
    */
   const actions = useMemo((): Array<{
     tooltipContent: any;
-    tooltipPosition: Position;
     icon: ReactElement;
   }> => {
     return [
       {
         tooltipContent: "复制组件",
-        tooltipPosition: "bottom-right",
         icon: (
-          <button
-            className="p-1 hover:bg-warmGray-100 focus:bg-warmGray-100 group t--copy-widget"
+          <Button
+            data-testid="t--copy-widget"
+            isIconButton
+            kind="tertiary"
             onClick={onCopy}
-            onKeyDown={handleTabKeyDownForButton("widgetCopy")}
-          >
-            <CopyIcon className="w-4 h-4 text-gray-500" />
-          </button>
+            startIcon="duplicate"
+          />
         ),
       },
       {
         tooltipContent: "删除组件",
-        tooltipPosition: "bottom-right",
         icon: (
-          <button
-            className="p-1 hover:bg-warmGray-100 focus:bg-warmGray-100 group t--delete-widget"
+          <Button
+            data-testid="t--delete-widget"
+            isIconButton
+            kind="tertiary"
             onClick={onDelete}
-            onKeyDown={handleTabKeyDownForButton("widgetDelete")}
-          >
-            <DeleteIcon className="w-4 h-4 text-gray-500" />
-          </button>
+            startIcon="delete-bin-line"
+          />
         ),
       },
     ];
-  }, [onCopy, onDelete, handleTabKeyDownForButton]);
+  }, [onCopy, onDelete]);
 
   useEffect(() => {
     setSearchText("");
@@ -180,20 +215,16 @@ function PropertyPaneView(
   if (!widgetProperties) return null;
 
   // Building Deprecation Messages
-  const {
-    currentWidgetName,
-    isDeprecated,
-    widgetReplacedWith,
-  } = isWidgetDeprecated(widgetProperties.type);
-  // generate messages
-  const deprecationMessage = buildDeprecationWidgetMessage(
-    currentWidgetName,
-    widgetReplacedWith,
-  );
-
-  const isContentConfigAvailable = WidgetFactory.getWidgetPropertyPaneContentConfig(
+  const { isDeprecated, widgetReplacedWith } = isWidgetDeprecated(
     widgetProperties.type,
-  ).length;
+  );
+  // generate messages
+  const deprecationMessage = buildDeprecationWidgetMessage(widgetReplacedWith);
+
+  const isContentConfigAvailable =
+    WidgetFactory.getWidgetPropertyPaneContentConfig(
+      widgetProperties.type,
+    ).length;
 
   const isStyleConfigAvailable = WidgetFactory.getWidgetPropertyPaneStyleConfig(
     widgetProperties.type,
@@ -201,7 +232,7 @@ function PropertyPaneView(
 
   return (
     <div
-      className="w-full overflow-y-scroll h-full"
+      className="w-full h-full overflow-y-scroll"
       key={`property-pane-${widgetProperties.widgetId}`}
       ref={containerRef}
     >
@@ -226,15 +257,9 @@ function PropertyPaneView(
           />
         )}
         {isDeprecated && (
-          <BannerMessage
-            backgroundColor={Colors.WARNING_ORANGE}
-            className="t--deprecation-warning"
-            icon="warning-line"
-            iconColor={Colors.WARNING_SOLID}
-            iconSize={IconSize.XXXXL}
-            message={deprecationMessage}
-            textColor={Colors.BROWN}
-          />
+          <Callout data-testid="t--deprecation-warning" kind="warning">
+            {deprecationMessage}
+          </Callout>
         )}
       </div>
 
@@ -247,11 +272,8 @@ function PropertyPaneView(
             <PropertyPaneSearchInput onTextChange={setSearchText} />
             {searchText.length > 0 ? (
               <PropertyControlsGenerator
-                config={disableWidgetFeatures(
-                  WidgetFactory.getWidgetPropertyPaneSearchConfig(
-                    widgetProperties.type,
-                  ),
-                  widgetProperties.disabledWidgetFeatures,
+                config={WidgetFactory.getWidgetPropertyPaneSearchConfig(
+                  widgetProperties.type,
                 )}
                 id={widgetProperties.widgetId}
                 panel={panel}
@@ -264,11 +286,8 @@ function PropertyPaneView(
                 contentComponent={
                   isContentConfigAvailable ? (
                     <PropertyControlsGenerator
-                      config={disableWidgetFeatures(
-                        WidgetFactory.getWidgetPropertyPaneContentConfig(
-                          widgetProperties.type,
-                        ),
-                        widgetProperties.disabledWidgetFeatures,
+                      config={WidgetFactory.getWidgetPropertyPaneContentConfig(
+                        widgetProperties.type,
                       )}
                       id={widgetProperties.widgetId}
                       panel={panel}

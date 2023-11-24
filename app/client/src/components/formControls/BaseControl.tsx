@@ -1,9 +1,10 @@
 import { Component } from "react";
-import { ControlType } from "constants/PropertyControlConstants";
-import { InputType } from "components/constants";
-import { ConditonalObject } from "reducers/evaluationReducers/formEvaluationReducer";
-import { DropdownOption } from "design-system";
-import { ViewTypes } from "./utils";
+import type { ControlType } from "constants/PropertyControlConstants";
+import type { InputType } from "components/constants";
+import type { ConditonalObject } from "reducers/evaluationReducers/formEvaluationReducer";
+import type { DropdownOption } from "design-system-old";
+import type { ViewTypes } from "./utils";
+import type { FeatureFlag } from "@appsmith/entities/FeatureFlag";
 // eslint-disable-next-line @typescript-eslint/ban-types
 abstract class BaseControl<P extends ControlProps, S = {}> extends Component<
   P,
@@ -18,7 +19,13 @@ export type ComparisonOperations =
   | "LESSER"
   | "GREATER"
   | "IN"
-  | "NOT_IN";
+  | "NOT_IN"
+  | "FEATURE_FLAG"
+  | "VIEW_MODE";
+
+export enum ComparisonOperationsEnum {
+  VIEW_MODE = "VIEW_MODE",
+}
 
 export type HiddenType = boolean | Condition | ConditionObject;
 
@@ -28,6 +35,7 @@ export type Condition = {
   path: string;
   comparison: ComparisonOperations;
   value: any;
+  flagValue: FeatureFlag;
 };
 
 export type Conditions = Array<Condition> | ConditionObject;
@@ -83,6 +91,7 @@ export interface ControlData {
   disabled?: boolean;
   staticDependencyPathList?: string[];
   validator?: (value: string) => { isValid: boolean; message: string };
+  isSecretExistsPath?: string;
 }
 export type FormConfigType = Omit<ControlData, "configProperty"> & {
   configProperty?: string;

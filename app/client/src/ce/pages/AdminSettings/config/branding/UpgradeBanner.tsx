@@ -1,9 +1,9 @@
 import React from "react";
 import { Button } from "design-system";
-
+import { ContentBox } from "pages/Settings/components";
 import {
-  ADMIN_BRANDING_SETTINGS_SUBTITLE,
-  ADMIN_BRANDING_SETTINGS_TITLE,
+  ADMIN_BRANDING_SETTINGS_SUBTITLE_UPGRADE,
+  ADMIN_BRANDING_SETTINGS_TITLE_UPGRADE,
   createMessage,
 } from "@appsmith/constants/messages";
 import useOnUpgrade from "utils/hooks/useOnUpgrade";
@@ -11,39 +11,51 @@ import {
   SettingsHeader,
   SettingsSubHeader,
 } from "@appsmith/pages/AdminSettings/config/authentication/AuthPage";
+import styled from "styled-components";
+import BusinessTag from "components/BusinessTag";
+
+const StyledSettingsSubHeader = styled(SettingsSubHeader)`
+  margin: 0;
+`;
 
 const UpgradeBanner = () => {
   const { onUpgrade } = useOnUpgrade({
     logEventName: "BRANDING_UPGRADE_CLICK",
-    intercomMessage:
-      "Hello, I would like to upgrade my appsmith instance to use the custom branding feature",
   });
 
   return (
     <div className="pb-4 pr-7">
-      <div className="flex items-center justify-between p-6 border">
+      <ContentBox className="flex items-center justify-between p-6 border upgrade-banner">
         <main>
-          <div className="inline-block px-1 text-xs text-blue-900 uppercase bg-blue-100">
-            商业版
-          </div>
-          <SettingsHeader className="mt-1">
-            {createMessage(ADMIN_BRANDING_SETTINGS_TITLE)}
+          <BusinessTag />
+          <SettingsHeader
+            className="mt-1"
+            color="var(--ads-v2-color-fg-emphasis-plus)"
+            kind="heading-l"
+            renderAs="h1"
+          >
+            {createMessage(ADMIN_BRANDING_SETTINGS_TITLE_UPGRADE)}
           </SettingsHeader>
-          <SettingsSubHeader className="w-7/12 mt-1">
-            {createMessage(ADMIN_BRANDING_SETTINGS_SUBTITLE)}
-          </SettingsSubHeader>
+          <StyledSettingsSubHeader
+            className="w-7/12 mt-1"
+            color="var(--ads-v2-color-fg-emphasis)"
+            kind="body-m"
+            renderAs="h2"
+          >
+            {createMessage(ADMIN_BRANDING_SETTINGS_SUBTITLE_UPGRADE)}
+          </StyledSettingsSubHeader>
         </main>
         <aside>
           <Button
-            className="w-max min-w-48"
-            icon="star-line"
-            iconPosition="left"
+            data-testid="t--branding-upgrade-button"
             onClick={onUpgrade}
-            size="large"
-            text="升级"
-          />
+            size="md"
+            startIcon="star-line"
+          >
+            升级
+          </Button>
         </aside>
-      </div>
+      </ContentBox>
     </div>
   );
 };

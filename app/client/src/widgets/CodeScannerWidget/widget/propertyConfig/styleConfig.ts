@@ -1,10 +1,8 @@
-import { ValidationTypes } from "constants/WidgetValidation";
 import { ButtonPlacementTypes } from "components/constants";
+import { ValidationTypes } from "constants/WidgetValidation";
+import type { CodeScannerWidgetProps } from "widgets/CodeScannerWidget/constants";
+import { ScannerLayout } from "widgets/CodeScannerWidget/constants";
 import { updateStyles } from "../propertyUtils";
-import {
-  CodeScannerWidgetProps,
-  ScannerLayout,
-} from "widgets/CodeScannerWidget/constants";
 
 export default [
   {
@@ -30,14 +28,15 @@ export default [
         label: "位置",
         helpText: "设置按钮图标位置",
         controlType: "ICON_TABS",
-        fullWidth: true,
+        defaultValue: "left",
+        fullWidth: false,
         options: [
           {
-            icon: "VERTICAL_LEFT",
+            startIcon: "skip-left-line",
             value: "left",
           },
           {
-            icon: "VERTICAL_RIGHT",
+            startIcon: "skip-right-line",
             value: "right",
           },
         ],

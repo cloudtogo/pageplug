@@ -1,6 +1,6 @@
 import React from "react";
-import { ReactNode } from "react";
-import { Dispatch } from "redux";
+import type { ReactNode } from "react";
+import type { Dispatch } from "redux";
 import TableData from "assets/gifs/table_data.gif";
 import DefaultText from "assets/gifs/default_text.gif";
 import {
@@ -9,7 +9,6 @@ import {
   forceShowContent,
   focusWidget,
 } from "actions/onboardingActions";
-import { IconName } from "design-system";
 import { highlightSection, showIndicator } from "./utils";
 import { setExplorerPinnedAction } from "actions/explorerActions";
 import { forceOpenWidgetPanel } from "actions/widgetSidebarActions";
@@ -38,6 +37,8 @@ import {
   STEP_THREE_TITLE,
   STEP_TWO_TITLE,
 } from "@appsmith/constants/messages";
+import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
+import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
 
 export const Classes = {
   GUIDED_TOUR_BORDER: "guided-tour-border",
@@ -111,7 +112,9 @@ export const onboardingContainerBlueprint = {
               },
               props: {
                 imageShape: "RECTANGLE",
-                defaultImage: "https://assets.appsmith.com/widgets/default.png",
+                defaultImage: getAssetUrl(
+                  `${ASSETS_CDN_URL}/widgets/default.png`,
+                ),
                 objectFit: "contain",
                 image: "{{CustomersTable.selectedRow.image}}",
                 dynamicBindingPathList: [{ key: "image" }],
@@ -246,7 +249,7 @@ type Step = {
     buttonText?: string;
   };
   info?: {
-    icon: IconName;
+    icon: string;
     text: ReactNode;
     onClick: (dispatch: Dispatch<any>) => void;
     buttonText?: string;

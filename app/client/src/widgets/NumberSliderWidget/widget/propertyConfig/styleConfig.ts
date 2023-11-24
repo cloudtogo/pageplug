@@ -1,4 +1,5 @@
 import { ValidationTypes } from "constants/WidgetValidation";
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
 
 export default [
   {
@@ -53,6 +54,7 @@ export default [
         helpText: "设置标签字体大小",
         controlType: "DROP_DOWN",
         defaultValue: "0.875rem",
+        hidden: isAutoLayout,
         options: [
           {
             label: "S",
@@ -94,14 +96,14 @@ export default [
         propertyName: "labelStyle",
         label: "强调",
         helpText: "设置标签字体是否加粗或斜体",
-        controlType: "BUTTON_TABS",
+        controlType: "BUTTON_GROUP",
         options: [
           {
-            icon: "BOLD_FONT",
+            icon: "text-bold",
             value: "BOLD",
           },
           {
-            icon: "ITALICS_FONT",
+            icon: "text-italic",
             value: "ITALIC",
           },
         ],

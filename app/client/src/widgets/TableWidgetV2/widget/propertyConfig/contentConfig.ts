@@ -1,25 +1,24 @@
-import { ValidationTypes } from "constants/WidgetValidation";
-import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
-import {
-  InlineEditingSaveOptions,
-  TableWidgetProps,
-} from "widgets/TableWidgetV2/constants";
-import {
-  totalRecordsCountValidation,
-  uniqueColumnNameValidation,
-  updateColumnOrderHook,
-  updateInlineEditingSaveOptionHook,
-  updateInlineEditingOptionDropdownVisibilityHook,
-  updateCustomColumnAliasOnLabelChange,
-} from "../propertyUtils";
 import {
   createMessage,
   TABLE_WIDGET_TOTAL_RECORD_TOOLTIP,
 } from "@appsmith/constants/messages";
-import panelConfig from "./PanelConfig";
+import type { PropertyPaneConfig } from "constants/PropertyControlConstants";
+import { ValidationTypes } from "constants/WidgetValidation";
+import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
+import type { TableWidgetProps } from "widgets/TableWidgetV2/constants";
+import { InlineEditingSaveOptions } from "widgets/TableWidgetV2/constants";
 import { composePropertyUpdateHook } from "widgets/WidgetUtils";
-import { PropertyPaneConfig } from "constants/PropertyControlConstants";
+import {
+  tableDataValidation,
+  totalRecordsCountValidation,
+  uniqueColumnNameValidation,
+  updateColumnOrderHook,
+  updateCustomColumnAliasOnLabelChange,
+  updateInlineEditingOptionDropdownVisibilityHook,
+  updateInlineEditingSaveOptionHook,
+} from "../propertyUtils";
+import panelConfig from "./PanelConfig";
 
 export default [
   {
@@ -29,18 +28,32 @@ export default [
         helpText: "表格数组数据",
         propertyName: "tableData",
         label: "数据",
-        controlType: "INPUT_TEXT",
+        controlType: "ONE_CLICK_BINDING_CONTROL",
+        controlConfig: {
+          searchableColumn: true,
+        },
         placeholderText: '[{ "name": "John" }]',
         inputType: "ARRAY",
         isBindProperty: true,
         isTriggerProperty: false,
+        isJSConvertible: true,
         validation: {
-          type: ValidationTypes.OBJECT_ARRAY,
+          type: ValidationTypes.FUNCTION,
           params: {
-            default: [],
+            fn: tableDataValidation,
+            expected: {
+              type: "Array",
+              example: `[{ "name": "John" }]`,
+              autocompleteDataType: AutocompleteDataType.ARRAY,
+            },
           },
         },
         evaluationSubstitutionType: EvaluationSubstitutionType.SMART_SUBSTITUTE,
+        shouldSwitchToNormalMode: (
+          isDynamic: boolean,
+          isToggleDisabled: boolean,
+          triggerFlag?: boolean,
+        ) => triggerFlag && isDynamic && !isToggleDisabled,
       },
       {
         helpText: "表格数据列定义",
@@ -53,6 +66,7 @@ export default [
           updateCustomColumnAliasOnLabelChange,
         ]),
         dependencies: [
+          "primaryColumns",
           "columnOrder",
           "childStylesheet",
           "inlineEditingSaveOption",
@@ -83,6 +97,7 @@ export default [
         helpText: "选择如何保存编辑的单元格数据",
         label: "更新模式",
         controlType: "ICON_TABS",
+        defaultValue: InlineEditingSaveOptions.ROW_LEVEL,
         fullWidth: true,
         isBindProperty: true,
         isTriggerProperty: false,
@@ -208,7 +223,7 @@ export default [
       {
         propertyName: "enableClientSideSearch",
         label: "前端搜索",
-        helpText: "Searches all results only on the data which is loaded",
+        helpText: "仅在加载的数据上搜索所有结果",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -218,7 +233,7 @@ export default [
       {
         propertyName: "defaultSearchText",
         label: "默认搜索内容",
-        helpText: "Adds a search text by default",
+        helpText: "添加一个默认搜索关键字",
         controlType: "INPUT_TEXT",
         placeholderText: "{{global.user.name}}",
         isBindProperty: true,
@@ -230,7 +245,7 @@ export default [
       {
         propertyName: "onSearchTextChanged",
         label: "onSearchTextChanged",
-        helpText: "Triggers an action when search text is modified by the user",
+        helpText: "修改搜索关键字时触发",
         controlType: "ACTION_SELECTOR",
         isJSConvertible: true,
         isBindProperty: true,
@@ -301,7 +316,7 @@ export default [
       {
         propertyName: "multiRowSelection",
         label: "支持多选",
-        helpText: "Allows users to select multiple rows",
+        helpText: "允许用户多选",
         controlType: "SWITCH",
         isBindProperty: false,
         isTriggerProperty: false,
@@ -455,6 +470,17 @@ export default [
         helpText: "是否显示下载按钮",
         label: "支持下载",
         controlType: "SWITCH",
+        isJSConvertible: true,
+        isBindProperty: true,
+        isTriggerProperty: false,
+        validation: { type: ValidationTypes.BOOLEAN },
+      },
+      {
+        propertyName: "canFreezeColumn",
+        helpText: "是否允许用户将表格列固定在表格的一侧",
+        label: "允许固定列",
+        controlType: "SWITCH",
+        defaultValue: true,
         isJSConvertible: true,
         isBindProperty: true,
         isTriggerProperty: false,

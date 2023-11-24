@@ -1,11 +1,10 @@
-import React, { ReactNode } from "react";
+import type { ReactNode } from "react";
+import React from "react";
 import styled from "styled-components";
-import { Colors } from "constants/Colors";
 const Wrapper = styled.div<{ step: number }>`
   margin-left: ${(props) => props.step * props.theme.spaces[2]}px;
   width: calc(100% - ${(props) => props.step * props.theme.spaces[2]}px);
   font-size: ${(props) => props.theme.fontSizes[2]}px;
-  color: ${Colors.DOVE_GRAY2};
   padding: 5px 20px;
   border-radius: ${(props) => props.theme.borderRadius};
   text-align: left;
@@ -16,6 +15,8 @@ const Wrapper = styled.div<{ step: number }>`
   & p {
     margin-bottom: 0;
   }
+  word-wrap: break-word;
+  width: 100%;
 `;
 
 export function EntityPlaceholder(props: {

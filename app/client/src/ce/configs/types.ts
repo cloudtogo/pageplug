@@ -1,8 +1,14 @@
-import { LogLevelDesc } from "loglevel";
+import type { LogLevelDesc } from "loglevel";
 
 export type SentryConfig = {
   dsn: string;
   environment: string;
+};
+
+export type AppVersionData = {
+  id: string;
+  releaseDate: string;
+  edition: string;
 };
 
 export interface AppsmithUIConfigs {
@@ -36,28 +42,15 @@ export interface AppsmithUIConfigs {
     snippetIndex: string;
   };
 
-  google: {
-    enabled: boolean;
-    apiKey: string;
-  };
-
   enableRapidAPI: boolean;
-  enableGoogleOAuth: boolean;
-  enableGithubOAuth: boolean;
-  disableLoginForm: boolean;
-  disableSignup: boolean;
-  disableTelemetry: boolean;
   enableMixpanel: boolean;
   enableTNCPP: boolean;
+  enableWeChatOAuth: boolean;
 
   cloudHosting: boolean;
 
   logLevel: LogLevelDesc;
-  appVersion: {
-    id: string;
-    releaseDate: string;
-    edition: string;
-  };
+  appVersion: AppVersionData;
   intercomAppID: string;
   mailEnabled: boolean;
 
@@ -70,4 +63,6 @@ export interface AppsmithUIConfigs {
   appsmithSupportEmail: string;
   hideWatermark: boolean;
   disableIframeWidgetSandbox: boolean;
+  pricingUrl: string;
+  customerPortalUrl: string;
 }

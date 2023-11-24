@@ -1,4 +1,5 @@
-import { MenuButtonWidgetProps, MenuItemsSource } from "../../constants";
+import type { MenuButtonWidgetProps } from "../../constants";
+import { MenuItemsSource } from "../../constants";
 
 export const updateMenuItemsSource = (
   props: MenuButtonWidgetProps,
@@ -17,10 +18,6 @@ export const updateMenuItemsSource = (
     if (!props.sourceData) {
       propertiesToUpdate.push({
         propertyPath: "sourceData",
-        propertyValue: [],
-      });
-      propertiesToUpdate.push({
-        propertyPath: "sourceDataKeys",
         propertyValue: [],
       });
     }

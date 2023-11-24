@@ -1,6 +1,6 @@
 import { getAppsmithConfigs } from "@appsmith/configs";
 import FormControlRegistry from "./formControl/FormControlRegistry";
-import { LogLevelDesc } from "loglevel";
+import type { LogLevelDesc } from "loglevel";
 import localStorage from "utils/localStorage";
 import * as log from "loglevel";
 import Modal from "react-modal";
@@ -46,4 +46,54 @@ export async function readBlob(blobUrl: string): Promise<any> {
       reject(reader.error);
     };
   });
+}
+export type PanelStatus = { left: boolean; bottom: boolean; right: boolean };
+
+export type PanelStyle = {
+  bottom: {
+    h: number;
+  };
+  codeEditor: {
+    w: number;
+    h: number;
+  };
+};
+
+export const DefaultPanelStatus: PanelStatus = {
+  left: true,
+  bottom: true,
+  right: true,
+};
+const DefaultPanelStyle: PanelStyle = {
+  bottom: {
+    h: 285,
+  },
+  codeEditor: {
+    w: 744,
+    h: 468,
+  },
+};
+
+export function savePanelStatus(panelStatus: PanelStatus) {
+  localStorage.setItem("editor_panel_status", JSON.stringify(panelStatus));
+}
+
+export function getPanelStatus(): PanelStatus {
+  const str = localStorage.getItem("editor_panel_status");
+  if (!str) {
+    return DefaultPanelStatus;
+  }
+  return { ...DefaultPanelStatus, ...JSON.parse(str) };
+}
+
+export function savePanelStyle(panelStyle: PanelStyle) {
+  localStorage.setItem("editor_panel_style", JSON.stringify(panelStyle));
+}
+
+export function getPanelStyle(): PanelStyle {
+  const str = localStorage.getItem("editor_panel_style");
+  if (!str) {
+    return DefaultPanelStyle;
+  }
+  return { ...DefaultPanelStyle, ...JSON.parse(str) };
 }

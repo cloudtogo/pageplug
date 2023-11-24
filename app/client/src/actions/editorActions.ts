@@ -1,4 +1,17 @@
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import type { EntityInfo } from "pages/Editor/EntityNavigation/types";
+
+/**
+ * init action that sets preview mode. navigates to canvas when payload is true
+ * navigates back when the payload is false i.e when switched to edit mode
+ *
+ * @param payload
+ * @returns
+ */
+export const setPreviewModeInitAction = (payload: boolean) => ({
+  type: ReduxActionTypes.SET_PREVIEW_MODE_INIT,
+  payload,
+});
 
 /**
  * action that sets preview mode
@@ -55,3 +68,10 @@ export const updateCanvasLayoutAction = (width: number) => {
 export const startingEntityUpdate = () => ({
   type: ReduxActionTypes.ENTITY_UPDATE_STARTED,
 });
+
+export const navigateToEntity = (payload: EntityInfo) => {
+  return {
+    type: ReduxActionTypes.NAVIGATE_TO_ENTITY,
+    payload,
+  };
+};

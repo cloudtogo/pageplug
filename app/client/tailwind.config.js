@@ -23,18 +23,17 @@ module.exports = {
         gray: colors.zinc,
         trueGray: colors.neutral,
         warmGray: colors.stone,
-
         primary: {
-          "50": "#FFFFFF",
-          "100": "#ebfaf5",
-          "200": "#d1ede5",
-          "300": "#a2e0d1",
-          "400": "#77d4bf",
-          "500": "var(--ads-color-brand)",
-          "600": "#1c9486",
-          "700": "#0f6e66",
-          "800": "#064744",
-          "900": "#032121",
+          50: "#FFFFFF",
+          100: "#F5FAFA",
+          200: "#D0EAF0",
+          300: "#A2D4D9",
+          400: "#74BFD4",
+          500: "#27B7B7",
+          600: "#219E8E",
+          700: "#197B6D",
+          800: "#0F4C3A",
+          900: "#00271F",
         },
       },
       spacing: {
@@ -63,6 +62,7 @@ module.exports = {
         28: "7rem",
         32: "8rem",
         36: "9rem",
+        39: "9.75rem",
         40: "10rem",
         44: "11rem",
         48: "12rem",
@@ -152,13 +152,13 @@ module.exports = {
       },
       borderColor: (theme) => ({
         ...theme("colors"),
-        DEFAULT: theme("colors.gray.200", "currentColor"),
+        DEFAULT: "#CDD5DF",
       }),
       borderOpacity: (theme) => theme("opacity"),
       borderRadius: {
         none: "0px",
         sm: "0.125rem",
-        DEFAULT: "0.25rem",
+        DEFAULT: "4px",
         md: "0.375rem",
         lg: "0.5rem",
         xl: "0.75rem",
@@ -177,12 +177,9 @@ module.exports = {
         sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
         DEFAULT:
           "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-        md:
-          "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-        lg:
-          "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-        xl:
-          "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+        md: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+        lg: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+        xl: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
         "2xl": "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
         inner: "inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)",
         none: "none",
@@ -856,6 +853,7 @@ module.exports = {
         "2/6": "33.333333%",
         "3/6": "50%",
         "4/6": "66.666667%",
+        "7/10": "70%",
         "5/6": "83.333333%",
         "1/12": "8.333333%",
         "2/12": "16.666667%",
@@ -886,4 +884,7 @@ module.exports = {
     },
   },
   plugins: [],
+  corePlugins: {
+    preflight: false,
+  },
 };

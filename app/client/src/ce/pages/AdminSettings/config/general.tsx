@@ -2,21 +2,23 @@ import React from "react";
 import { isEmail } from "utils/formhelpers";
 import { apiRequestConfig } from "api/Api";
 import UserApi from "@appsmith/api/UserApi";
-import {
+import type {
   AdminConfigType,
+  Setting,
+} from "@appsmith/pages/AdminSettings/config/types";
+import {
+  CategoryType,
   SettingCategories,
   SettingSubtype,
   SettingTypes,
-  Setting,
 } from "@appsmith/pages/AdminSettings/config/types";
 import BrandingBadge from "pages/AppViewer/BrandingBadge";
-import { TagInput } from "design-system";
-import QuestionFillIcon from "remixicon-react/QuestionFillIcon";
+import { TagInput } from "design-system-old";
 import localStorage from "utils/localStorage";
 import isUndefined from "lodash/isUndefined";
 
 export const APPSMITH_INSTANCE_NAME_SETTING_SETTING: Setting = {
-  id: "APPSMITH_INSTANCE_NAME",
+  id: "instanceName",
   category: SettingCategories.GENERAL,
   controlType: SettingTypes.TEXTINPUT,
   controlSubType: SettingSubtype.TEXT,
@@ -61,12 +63,11 @@ export const APPSMITH_DOWNLOAD_DOCKER_COMPOSE_FILE_SETTING: Setting = {
 
 export const APPSMITH_DISABLE_TELEMETRY_SETTING: Setting = {
   id: "APPSMITH_DISABLE_TELEMETRY",
+  name: "APPSMITH_DISABLE_TELEMETRY",
   category: SettingCategories.GENERAL,
-  controlType: SettingTypes.TOGGLE,
+  controlType: SettingTypes.CHECKBOX,
   label: "匿名共享使用数据",
-  subText: "共享匿名数据帮助我们提高用户体验",
-  toggleText: (value: boolean) =>
-    value ? "不分享任何数据" : "共享匿名遥感数据",
+  text: "共享匿名数据帮助我们提高用户体验",
 };
 
 export const APPSMITH_HIDE_WATERMARK_SETTING: Setting = {
@@ -74,16 +75,18 @@ export const APPSMITH_HIDE_WATERMARK_SETTING: Setting = {
   name: "APPSMITH_HIDE_WATERMARK",
   category: SettingCategories.GENERAL,
   controlType: SettingTypes.CHECKBOX,
-  label: "Appsmith Watermark",
-  text: "Show Appsmith Watermark",
+  label: "Appsmith watermark",
+  text: "Show Appsmith watermark",
   needsUpgrade: true,
   isDisabled: () => true,
   textSuffix: <BrandingBadge />,
-  upgradeLogEventName: "ADMIN_SETTINGS_UPGRADE_WATERMARK",
-  upgradeIntercomMessage:
-    "Hello, I would like to upgrade and remove the watermark.",
 };
 
+export enum AppsmithFrameAncestorsSetting {
+  ALLOW_EMBEDDING_EVERYWHERE = "ALLOW_EMBEDDING_EVERYWHERE",
+  LIMIT_EMBEDDING = "LIMIT_EMBEDDING",
+  DISABLE_EMBEDDING_EVERYWHERE = "DISABLE_EMBEDDING_EVERYWHERE",
+}
 export const APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING: Setting = {
   id: "APPSMITH_ALLOWED_FRAME_ANCESTORS",
   name: "APPSMITH_ALLOWED_FRAME_ANCESTORS",
@@ -95,18 +98,17 @@ export const APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING: Setting = {
       {
         badge: "不推荐",
         tooltip: {
-          icon: <QuestionFillIcon />,
-          text: "允许所有网站（包括那些恶意网站）随意嵌入你的 PagePlug 应用",
-          linkText: "为什么这是非常危险的？",
-          link:
-            "https://docs.appsmith.com/getting-started/setup/instance-configuration/frame-ancestors#why-should-i-control-this",
+          icon: "question-line",
+          text: "Lets all domains, including malicious ones, embed your Appsmith apps. ",
+          linkText: "Find out why it's risky",
+          link: "https://docs.appsmith.com/getting-started/setup/instance-configuration/frame-ancestors#why-should-i-control-this",
         },
         label: "允许嵌入到任何地方",
-        value: "ALLOW_EMBEDDING_EVERYWHERE",
+        value: AppsmithFrameAncestorsSetting.ALLOW_EMBEDDING_EVERYWHERE,
       },
       {
         label: "限制嵌入到指定的 URL",
-        value: "LIMIT_EMBEDDING",
+        value: AppsmithFrameAncestorsSetting.LIMIT_EMBEDDING,
         nodeLabel: "可以添加多个 URL",
         node: <TagInput input={{}} placeholder={""} type={"text"} />,
         nodeInputPath: "input",
@@ -114,22 +116,22 @@ export const APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING: Setting = {
       },
       {
         label: "不允许嵌入到任何地方",
-        value: "DISABLE_EMBEDDING_EVERYWHERE",
+        value: AppsmithFrameAncestorsSetting.DISABLE_EMBEDDING_EVERYWHERE,
       },
     ],
   },
   format: (value: string) => {
     if (value === "*") {
       return {
-        value: "ALLOW_EMBEDDING_EVERYWHERE",
+        value: AppsmithFrameAncestorsSetting.ALLOW_EMBEDDING_EVERYWHERE,
       };
     } else if (value === "'none'") {
       return {
-        value: "DISABLE_EMBEDDING_EVERYWHERE",
+        value: AppsmithFrameAncestorsSetting.DISABLE_EMBEDDING_EVERYWHERE,
       };
     } else {
       return {
-        value: "LIMIT_EMBEDDING",
+        value: AppsmithFrameAncestorsSetting.LIMIT_EMBEDDING,
         additionalData: value ? value.replaceAll(" ", ",") : "",
       };
     }
@@ -145,9 +147,13 @@ export const APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING: Setting = {
       localStorage.setItem("ALLOWED_FRAME_ANCESTORS", sources);
     }
 
-    if (value.value === "ALLOW_EMBEDDING_EVERYWHERE") {
+    if (
+      value.value === AppsmithFrameAncestorsSetting.ALLOW_EMBEDDING_EVERYWHERE
+    ) {
       return "*";
-    } else if (value.value === "DISABLE_EMBEDDING_EVERYWHERE") {
+    } else if (
+      value.value === AppsmithFrameAncestorsSetting.DISABLE_EMBEDDING_EVERYWHERE
+    ) {
       return "'none'";
     } else {
       return sources;
@@ -163,6 +169,7 @@ export const APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING: Setting = {
 export const config: AdminConfigType = {
   icon: "settings-2-line",
   type: SettingCategories.GENERAL,
+  categoryType: CategoryType.GENERAL,
   controlType: SettingTypes.GROUP,
   title: "通用",
   canSave: true,

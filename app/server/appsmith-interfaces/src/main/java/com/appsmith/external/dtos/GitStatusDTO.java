@@ -11,41 +11,47 @@ import java.util.Set;
 @Data
 public class GitStatusDTO {
 
-        // Name of modified, added and deleted resources in local git repo
-        Set<String> modified;
+    // Name of modified, added and deleted resources in local git repo
+    Set<String> modified;
 
-        // Name of added resources to local git repo
-        Set<String> added;
+    // Name of added resources to local git repo
+    Set<String> added;
 
-        // Name of deleted resources from local git repo
-        Set<String> removed;
+    // Name of deleted resources from local git repo
+    Set<String> removed;
 
-        // Name of conflicting resources
-        Set<String> conflicting;
+    // Name of conflicting resources
+    Set<String> conflicting;
 
-        Boolean isClean;
+    Boolean isClean;
 
-        // # of modified pages
-        Long modifiedPages;
+    // number of modified custom JS libs
+    int modifiedJSLibs;
 
-        // # of modified actions
-        Long modifiedQueries;
+    // number of modified pages
+    int modifiedPages;
 
-        // # of modified JSObjects
-        Long modifiedJSObjects;
+    // number of modified actions
+    int modifiedQueries;
 
-        // # of modified JSObjects
-        Long modifiedDatasources;
+    // number of modified JSObjects
+    int modifiedJSObjects;
 
-        // # of local commits which are not present in remote repo
-        Integer aheadCount;
+    // number of modified JSObjects
+    int modifiedDatasources;
 
-        // # of remote commits which are not present in local repo
-        Integer behindCount;
+    // number of local commits which are not present in remote repo
+    Integer aheadCount;
 
-        // Remote tracking branch name
-        String remoteBranch;
+    // number of remote commits which are not present in local repo
+    Integer behindCount;
 
-        // Documentation url for discard and pull functionality
-        String discardDocUrl = Assets.GIT_DISCARD_DOC_URL;
+    // Remote tracking branch name
+    String remoteBranch;
+
+    // Documentation url for discard and pull functionality
+    String discardDocUrl = Assets.GIT_DISCARD_DOC_URL;
+
+    // File Format migration
+    String migrationMessage = "";
 }

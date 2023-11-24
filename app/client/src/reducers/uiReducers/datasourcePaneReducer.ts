@@ -1,10 +1,9 @@
 import { createReducer } from "utils/ReducerUtils";
-import {
-  ReduxActionTypes,
-  ReduxAction,
-} from "@appsmith/constants/ReduxActionConstants";
-import { Datasource } from "entities/Datasource";
+import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import type { Datasource } from "entities/Datasource";
 import _ from "lodash";
+import { ActionExecutionResizerHeight } from "pages/Editor/APIEditor/constants";
 
 const initialState: DatasourcePaneReduxState = {
   drafts: {},
@@ -13,6 +12,8 @@ const initialState: DatasourcePaneReduxState = {
   newDatasource: "",
   viewMode: true,
   collapsibleState: {},
+  defaultKeyValueArrayConfig: [],
+  responseTabHeight: ActionExecutionResizerHeight,
 };
 
 export interface DatasourcePaneReduxState {
@@ -27,6 +28,8 @@ export interface DatasourcePaneReduxState {
   newDatasource: string;
   viewMode: boolean;
   collapsibleState: Record<string, boolean>;
+  defaultKeyValueArrayConfig: Array<string>;
+  responseTabHeight: number;
 }
 
 const datasourcePaneReducer = createReducer(initialState, {
@@ -98,7 +101,7 @@ const datasourcePaneReducer = createReducer(initialState, {
       expandDatasourceId: action.payload.id,
     };
   },
-  [ReduxActionTypes.SET_DATASOURCE_EDITOR_MODE]: (
+  [ReduxActionTypes.SET_DATASOURCE_EDITOR_MODE_FLAG]: (
     state: DatasourcePaneReduxState,
     action: ReduxAction<boolean>,
   ) => {
@@ -135,6 +138,25 @@ const datasourcePaneReducer = createReducer(initialState, {
     return {
       ...state,
       expandDatasourceId: action.payload,
+    };
+  },
+  [ReduxActionTypes.SET_DATASOURCE_DEFAULT_KEY_VALUE_PAIR_SET]: (
+    state: DatasourcePaneReduxState,
+    action: ReduxAction<string>,
+  ) => {
+    return {
+      ...state,
+      defaultKeyValueArrayConfig: state.defaultKeyValueArrayConfig.concat(
+        action.payload,
+      ),
+    };
+  },
+  [ReduxActionTypes.RESET_DATASOURCE_DEFAULT_KEY_VALUE_PAIR_SET]: (
+    state: DatasourcePaneReduxState,
+  ) => {
+    return {
+      ...state,
+      defaultKeyValueArrayConfig: [],
     };
   },
 });

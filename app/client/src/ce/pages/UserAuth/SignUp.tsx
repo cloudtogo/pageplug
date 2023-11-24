@@ -1,20 +1,15 @@
-import React, { useEffect } from "react";
-import { reduxForm, InjectedFormProps, formValueSelector } from "redux-form";
+import React, { useEffect, useState } from "react";
+import type { InjectedFormProps } from "redux-form";
+import { reduxForm, formValueSelector } from "redux-form";
 import { AUTH_LOGIN_URL } from "constants/routes";
+import Helmet from "react-helmet";
 import { SIGNUP_FORM_NAME } from "@appsmith/constants/forms";
-import {
-  RouteComponentProps,
-  useHistory,
-  useLocation,
-  withRouter,
-  Link,
-} from "react-router-dom";
+import type { RouteComponentProps } from "react-router-dom";
+import { useHistory, useLocation, withRouter } from "react-router-dom";
 import { SpacedSubmitForm, FormActions } from "pages/UserAuth/StyledComponents";
 import {
   SIGNUP_PAGE_TITLE,
-  SIGNUP_PAGE_EMAIL_INPUT_LABEL,
   SIGNUP_PAGE_EMAIL_INPUT_PLACEHOLDER,
-  SIGNUP_PAGE_PASSWORD_INPUT_LABEL,
   SIGNUP_PAGE_PASSWORD_INPUT_PLACEHOLDER,
   SIGNUP_PAGE_LOGIN_LINK_TEXT,
   FORM_VALIDATION_EMPTY_PASSWORD,
@@ -26,18 +21,16 @@ import {
   SIGNUP_PAGE_SUBTITLE,
 } from "@appsmith/constants/messages";
 import FormTextField from "components/utils/ReduxFormTextField";
-import ThirdPartyAuth from "@appsmith/pages/UserAuth/ThirdPartyAuth";
-import { ThirdPartyLoginRegistry } from "pages/UserAuth/ThirdPartyLoginRegistry";
-import { Button, FormGroup, FormMessage, Size } from "design-system";
-
+import { FormGroup } from "design-system-old";
+import { Button, Link, Callout } from "design-system";
 import { isEmail, isStrongPassword, isEmptyString } from "utils/formhelpers";
 
-import { SignupFormValues } from "pages/UserAuth/helpers";
+import type { SignupFormValues } from "pages/UserAuth/helpers";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 
 import { SIGNUP_SUBMIT_PATH } from "@appsmith/constants/ApiConstants";
-import { connect } from "react-redux";
-import { AppState } from "@appsmith/reducers";
+import { connect, useSelector } from "react-redux";
+import type { AppState } from "@appsmith/reducers";
 import PerformanceTracker, {
   PerformanceTransactionName,
 } from "utils/PerformanceTracker";
@@ -46,17 +39,20 @@ import { SIGNUP_FORM_EMAIL_FIELD_NAME } from "@appsmith/constants/forms";
 import { getAppsmithConfigs } from "@appsmith/configs";
 import { useScript, ScriptStatus, AddScriptTo } from "utils/hooks/useScript";
 
-import { withTheme } from "styled-components";
-import { Theme } from "constants/DefaultTheme";
 import { getIsSafeRedirectURL } from "utils/helpers";
 import Container from "pages/UserAuth/Container";
+import { getIsFormLoginEnabled } from "@appsmith/selectors/tenantSelectors";
+import { useHtmlPageTitle } from "@appsmith/utils";
+import PasswordSVGIcon from "ce/components/svg/Password";
+import EmailSVGIcon from "ce/components/svg/Email";
+import { message } from "antd";
 
 declare global {
   interface Window {
     grecaptcha: any;
   }
 }
-const { disableLoginForm, googleRecaptchaSiteKey } = getAppsmithConfigs();
+const { googleRecaptchaSiteKey } = getAppsmithConfigs();
 
 const validate = (values: SignupFormValues) => {
   const errors: SignupFormValues = {};
@@ -77,24 +73,29 @@ type SignUpFormProps = InjectedFormProps<
   SignupFormValues,
   { emailValue: string }
 > &
-  RouteComponentProps<{ email: string }> & { theme: Theme; emailValue: string };
+  RouteComponentProps<{ email: string }> & { emailValue: string };
 
 export function SignUp(props: SignUpFormProps) {
   const history = useHistory();
+  const isFormLoginEnabled = useSelector(getIsFormLoginEnabled);
   useEffect(() => {
-    if (disableLoginForm) {
+    if (!isFormLoginEnabled) {
       const search = new URL(window.location.href)?.searchParams?.toString();
       history.replace({
         pathname: AUTH_LOGIN_URL,
         search,
       });
     }
+
+    AnalyticsUtil.logEvent("SIGNUP_REACHED", {
+      referrer: document.referrer,
+    });
   }, []);
   const { emailValue: email, error, pristine, submitting, valid } = props;
   const isFormValid = valid && email && !isEmptyString(email);
-  const socialLoginList = ThirdPartyLoginRegistry.get();
   const shouldDisableSignupButton = pristine || !isFormValid;
   const location = useLocation();
+  const htmlPageTitle = useHtmlPageTitle();
 
   const recaptchaStatus = useScript(
     `https://www.google.com/recaptcha/api.js?render=${googleRecaptchaSiteKey.apiKey}`,
@@ -136,7 +137,7 @@ export function SignUp(props: SignUpFormProps) {
         .execute(googleRecaptchaSiteKey.apiKey, {
           action: "submit",
         })
-        .then(function(token: any) {
+        .then(function (token: any) {
           if (formElement) {
             signupURL.searchParams.append("recaptchaToken", token);
             formElement.setAttribute("action", signupURL.toString());
@@ -148,63 +149,71 @@ export function SignUp(props: SignUpFormProps) {
     }
   };
 
-  const footerSection = (
-    <div className="px-2 py-4 text-base text-center border-b">
-      {createMessage(ALREADY_HAVE_AN_ACCOUNT)}
-      <Link
-        className="t--sign-up ml-2 text-[color:var(--ads-color-brand)] hover:text-[color:var(--ads-color-brand)]"
-        to={AUTH_LOGIN_URL}
-      >
-        {createMessage(SIGNUP_PAGE_LOGIN_LINK_TEXT)}
-      </Link>
-    </div>
-  );
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  const showPassword = () => {
+    setIsShowPassword(!isShowPassword);
+  };
+
+  useEffect(() => {
+    if (showError) {
+      message.open({
+        type: "error",
+        duration: 5,
+        content: errorMessage,
+        className: "my-msg",
+      });
+    }
+  }, []);
 
   return (
     <Container
-      footer={footerSection}
+      footer={null}
       subtitle={createMessage(SIGNUP_PAGE_SUBTITLE)}
       title={createMessage(SIGNUP_PAGE_TITLE)}
     >
-      {showError && <FormMessage intent="danger" message={errorMessage} />}
-      {socialLoginList.length > 0 && (
-        <ThirdPartyAuth logins={socialLoginList} type={"SIGNUP"} />
-      )}
-      {!disableLoginForm && (
+      <Helmet>
+        <title>{htmlPageTitle}</title>
+      </Helmet>
+
+      {isFormLoginEnabled && (
         <SpacedSubmitForm
           action={signupURL.toString()}
           id="signup-form"
           method="POST"
-          onSubmit={(e) => handleSubmit(e)}
+          onSubmit={(e: any) => handleSubmit(e)}
         >
-          <FormGroup
-            intent={error ? "danger" : "none"}
-            label={createMessage(SIGNUP_PAGE_EMAIL_INPUT_LABEL)}
-          >
+          <FormGroup intent={error ? "danger" : "none"}>
             <FormTextField
               autoFocus
               name="email"
               placeholder={createMessage(SIGNUP_PAGE_EMAIL_INPUT_PLACEHOLDER)}
               type="email"
+              startIcon="null"
+              className="pp-height"
             />
+            <EmailSVGIcon className="icon-position w-4" />
           </FormGroup>
-          <FormGroup
-            intent={error ? "danger" : "none"}
-            label={createMessage(SIGNUP_PAGE_PASSWORD_INPUT_LABEL)}
-          >
+          <FormGroup intent={error ? "danger" : "none"}>
             <FormTextField
               name="password"
               placeholder={createMessage(
                 SIGNUP_PAGE_PASSWORD_INPUT_PLACEHOLDER,
               )}
-              type="password"
+              type={isShowPassword ? "text" : "password"}
+              startIcon={isShowPassword ? "eye-on" : "null"}
+              className="pp-height"
+            />
+            <PasswordSVGIcon
+              className="icon-position w-4"
+              showPassword={showPassword}
+              isShowPassword={isShowPassword}
             />
           </FormGroup>
           <FormActions>
             <Button
-              disabled={shouldDisableSignupButton}
-              fill
+              isDisabled={shouldDisableSignupButton}
               isLoading={submitting}
+              kind="primary"
               onClick={() => {
                 AnalyticsUtil.logEvent("SIGNUP_CLICK", {
                   signupMethod: "EMAIL",
@@ -213,14 +222,27 @@ export function SignUp(props: SignUpFormProps) {
                   PerformanceTransactionName.SIGN_UP,
                 );
               }}
-              size={Size.large}
-              tag="button"
-              text={createMessage(SIGNUP_PAGE_SUBMIT_BUTTON_TEXT)}
+              size="md"
               type="submit"
-            />
+              className="pp-height pp-font"
+            >
+              {createMessage(SIGNUP_PAGE_SUBMIT_BUTTON_TEXT)}
+            </Button>
           </FormActions>
         </SpacedSubmitForm>
       )}
+      {/* 底部提示 */}
+      <div className="flex-middle myfont">
+        {createMessage(ALREADY_HAVE_AN_ACCOUNT)}
+        <Link
+          className="t--sign-up t--signup-link pl-[var(--ads-v2\-spaces-3)] fs-16 a_link"
+          kind="primary"
+          target="_self"
+          to={AUTH_LOGIN_URL}
+        >
+          {createMessage(SIGNUP_PAGE_LOGIN_LINK_TEXT)}
+        </Link>
+      </div>
     </Container>
   );
 }
@@ -239,5 +261,5 @@ export default connect((state: AppState, props: SignUpFormProps) => {
     validate,
     form: SIGNUP_FORM_NAME,
     touchOnBlur: true,
-  })(withRouter(withTheme(SignUp))),
+  })(withRouter(SignUp)),
 );

@@ -1,0 +1,42 @@
+{
+  "name": "@design-system/storybook",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "author": "Valera Melnikov <valera@appsmith.com>, Pawan Kumar <pawan@appsmith.com>",
+  "license": "MIT",
+  "scripts": {
+    "storybook": "storybook dev -p 6006",
+    "build": "storybook build",
+    "chromatic": "CHROMATIC=1 storybook dev -p 6006"
+  },
+  "devDependencies": {
+    "@storybook/addon-a11y": "^7.3.1",
+    "@storybook/addon-actions": "^7.3.1",
+    "@storybook/addon-controls": "^7.3.1",
+    "@storybook/addon-docs": "^7.3.1",
+    "@storybook/addon-measure": "^7.3.1",
+    "@storybook/addon-outline": "^7.3.1",
+    "@storybook/addon-toolbars": "^7.3.1",
+    "@storybook/addon-viewport": "^7.3.1",
+    "@storybook/blocks": "^7.3.1",
+    "@storybook/builder-vite": "^7.3.1",
+    "@storybook/components": "^7.3.1",
+    "@storybook/manager-api": "^7.3.1",
+    "@storybook/preset-create-react-app": "^7.3.1",
+    "@storybook/react-vite": "^7.3.1",
+    "@storybook/theming": "^7.3.1",
+    "babel-loader": "9.1.2",
+    "chromatic": "^6.20.0",
+    "react-docgen-typescript": "^2.2.2",
+    "storybook": "^7.3.1",
+    "vite": "^4.4.9",
+    "vite-plugin-svgr": "^3.2.0"
+  },
+  "dependencies": {
+    "@design-system/headless": "workspace:^",
+    "@design-system/theming": "workspace:^",
+    "@design-system/widgets": "workspace:^",
+    "@design-system/widgets-old": "workspace:^",
+    "colorjs.io": "^0.4.3"
+  }
+}

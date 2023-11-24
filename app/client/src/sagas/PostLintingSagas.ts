@@ -1,24 +1,20 @@
-import {
-  createMessage,
-  JS_OBJECT_BODY_INVALID,
-} from "@appsmith/constants/messages";
 import { ENTITY_TYPE, Severity } from "entities/AppsmithConsole";
 import LOG_TYPE from "entities/AppsmithConsole/logtype";
-import { DataTree } from "entities/DataTree/dataTreeFactory";
+import type { DataTree } from "entities/DataTree/dataTreeFactory";
 import { isEmpty } from "lodash";
-import { LintErrors } from "reducers/lintingReducers/lintErrorsReducers";
 import AppsmithConsole from "utils/AppsmithConsole";
 import {
   getEntityNameAndPropertyPath,
   isJSAction,
-} from "workers/Evaluation/evaluationUtils";
+} from "@appsmith/workers/Evaluation/evaluationUtils";
+import type { LintErrorsStore } from "reducers/lintingReducers/lintErrorsReducers";
 
 // We currently only log lint errors in JSObjects
 export function* logLatestLintPropertyErrors({
   dataTree,
   errors,
 }: {
-  errors: LintErrors;
+  errors: LintErrorsStore;
   dataTree: DataTree;
 }) {
   const errorsToAdd = [];
@@ -36,6 +32,8 @@ export function* logLatestLintPropertyErrors({
     const lintErrorMessagesInPath = lintErrorsInPath.map((error) => ({
       type: error.errorType,
       message: error.errorMessage,
+      lineNumber: error.line,
+      character: error.ch,
     }));
     const debuggerKey = entity.actionId + propertyPath + "-lint";
 
@@ -43,14 +41,15 @@ export function* logLatestLintPropertyErrors({
       errorsToRemove.push({ id: debuggerKey });
       continue;
     }
+
     errorsToAdd.push({
       payload: {
         id: debuggerKey,
         logType: LOG_TYPE.LINT_ERROR,
-        text: createMessage(JS_OBJECT_BODY_INVALID),
+        text: "LINT ERROR",
         messages: lintErrorMessagesInPath,
         source: {
-          id: path,
+          id: entity.actionId,
           name: entityName,
           type: ENTITY_TYPE.JSACTION,
           propertyPath,
@@ -58,6 +57,7 @@ export function* logLatestLintPropertyErrors({
       },
     });
   }
+
   AppsmithConsole.addErrors(errorsToAdd);
   AppsmithConsole.deleteErrors(errorsToRemove);
 }

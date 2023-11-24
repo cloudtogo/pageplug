@@ -1,11 +1,13 @@
 import * as React from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import { Alignment, Button, Classes, Menu, MenuItem } from "@blueprintjs/core";
-import { ItemListRenderer, ItemRenderer, Select } from "@blueprintjs/select";
+import type { ItemListRenderer, ItemRenderer } from "@blueprintjs/select";
+import { Select } from "@blueprintjs/select";
 import { createVanIconComponent } from "@taroify/icons/van";
 import VantIcons from "./IconNames";
-import BaseControl, { ControlProps } from "../BaseControl";
-import { TooltipComponent } from "design-system";
+import type { ControlProps } from "../BaseControl";
+import BaseControl from "../BaseControl";
+import { TooltipComponent } from "design-system-old";
 
 const IconSelectContainerStyles = createGlobalStyle<{
   targetWidth: number | undefined;
@@ -116,6 +118,7 @@ class IconSelectControl extends BaseControl<
   }
 
   componentDidMount() {
+    // @ts-expect-error: setTimeout return type mismatch
     this.timer = setTimeout(() => {
       const iconSelectTargetElement = this.iconSelectTargetRef.current;
       // console.log(
@@ -125,8 +128,8 @@ class IconSelectControl extends BaseControl<
       this.setState((prevState: IconSelectControlState) => {
         return {
           ...prevState,
-          popoverTargetWidth: iconSelectTargetElement?.getBoundingClientRect()
-            .width,
+          popoverTargetWidth:
+            iconSelectTargetElement?.getBoundingClientRect().width,
         };
       });
     }, 0);
@@ -146,6 +149,7 @@ class IconSelectControl extends BaseControl<
         <IconSelectContainerStyles targetWidth={popoverTargetWidth} />
         <TypedSelect
           className="icon-select-container"
+          inputProps={{ placeholder: "过滤..." }}
           itemListRenderer={this.renderMenu}
           itemPredicate={this.filterIconName}
           itemRenderer={this.renderIconItem}
@@ -153,7 +157,6 @@ class IconSelectControl extends BaseControl<
           noResults={<MenuItem disabled text="未找到相关内容" />}
           onItemSelect={this.handleIconChange}
           popoverProps={{ minimal: true }}
-          inputProps={{ placeholder: "过滤..." }}
         >
           <StyledButton
             alignText={Alignment.LEFT}

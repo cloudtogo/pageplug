@@ -1,9 +1,13 @@
-import React, { ReactNode, RefObject, useRef, useEffect } from "react";
+import type { ReactNode, RefObject } from "react";
+import React, { useRef, useEffect } from "react";
 import { Overlay, Classes } from "@blueprintjs/core";
 import styled from "styled-components";
 import { getCanvasClassName } from "utils/generators";
 import { Layers } from "constants/Layers";
-import { MODAL_PORTAL_CLASSNAME } from "constants/WidgetConstants";
+import {
+  MODAL_PORTAL_CLASSNAME,
+  MODAL_PORTAL_OVERLAY_CLASSNAME,
+} from "constants/WidgetConstants";
 
 const Container = styled.div<{
   width?: number;
@@ -77,9 +81,8 @@ export type ModalComponentProps = {
 
 /* eslint-disable react/display-name */
 export function ModalComponent(props: ModalComponentProps) {
-  const modalContentRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(
-    null,
-  );
+  const modalContentRef: RefObject<HTMLDivElement> =
+    useRef<HTMLDivElement>(null);
   useEffect(() => {
     return () => {
       // handle modal close events when this component unmounts
@@ -101,7 +104,7 @@ export function ModalComponent(props: ModalComponentProps) {
       hasBackdrop={false}
       isOpen={props.isOpen}
       onClose={props.onClose}
-      portalClassName={`${MODAL_PORTAL_CLASSNAME} ${props.portalClassName}`}
+      portalClassName={`${MODAL_PORTAL_CLASSNAME} ${props.portalClassName} ${MODAL_PORTAL_OVERLAY_CLASSNAME}`}
       usePortal
     >
       <Container

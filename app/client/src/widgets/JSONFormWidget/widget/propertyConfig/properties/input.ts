@@ -1,18 +1,13 @@
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
 import { CurrencyDropdownOptions } from "widgets/CurrencyInputWidget/component/CurrencyCodeDropdown";
 import { FieldType, INPUT_TYPES } from "widgets/JSONFormWidget/constants";
-import {
-  getAutocompleteProperties,
-  getSchemaItem,
-  HiddenFnParams,
-} from "../helper";
-import { InputFieldProps } from "widgets/JSONFormWidget/fields/InputField";
+import type { HiddenFnParams } from "../helper";
+import { getAutocompleteProperties, getSchemaItem } from "../helper";
+import type { InputFieldProps } from "widgets/JSONFormWidget/fields/InputField";
 import { ISDCodeDropdownOptions } from "widgets/PhoneInputWidget/component/ISDCodeDropdown";
-import { JSONFormWidgetProps } from "../..";
-import {
-  ValidationResponse,
-  ValidationTypes,
-} from "constants/WidgetValidation";
+import type { JSONFormWidgetProps } from "../..";
+import type { ValidationResponse } from "constants/WidgetValidation";
+import { ValidationTypes } from "constants/WidgetValidation";
 import { ICON_NAMES } from "widgets/constants";
 
 function defaultValueValidation(
@@ -31,7 +26,7 @@ function defaultValueValidation(
     return {
       isValid: true,
       parsed: value,
-      messages: [""],
+      messages: [{ name: "", message: "" }],
     };
   }
 
@@ -46,7 +41,7 @@ function defaultValueValidation(
         return {
           isValid: true,
           parsed: undefined,
-          messages: [""],
+          messages: [{ name: "", message: "" }],
         };
       }
 
@@ -54,7 +49,12 @@ function defaultValueValidation(
         return {
           isValid: false,
           parsed: undefined,
-          messages: ["This value must be a number"],
+          messages: [
+            {
+              name: "TypeError",
+              message: "This value must be a number",
+            },
+          ],
         };
       }
     }
@@ -62,7 +62,7 @@ function defaultValueValidation(
     return {
       isValid: true,
       parsed,
-      messages: [""],
+      messages: [{ name: "", message: "" }],
     };
   }
 
@@ -70,20 +70,31 @@ function defaultValueValidation(
     return {
       isValid: false,
       parsed: JSON.stringify(value, null, 2),
-      messages: ["This value must be string"],
+      messages: [
+        {
+          name: "TypeError",
+          message: "This value must be string",
+        },
+      ],
     };
   }
 
   let parsed = value;
-  const isValid = lodash.isString(parsed);
+  let isValid = lodash.isString(parsed);
   if (!isValid) {
     try {
       parsed = lodash.toString(parsed);
+      isValid = true;
     } catch (e) {
       return {
         isValid: false,
         parsed: "",
-        messages: ["This value must be string"],
+        messages: [
+          {
+            name: "TypeError",
+            message: "This value must be string",
+          },
+        ],
       };
     }
   }
@@ -91,7 +102,7 @@ function defaultValueValidation(
   return {
     isValid,
     parsed: parsed,
-    messages: [""],
+    messages: [{ name: "", message: "" }],
   };
 }
 
@@ -113,25 +124,35 @@ export function minValueValidation(
     return {
       isValid: true,
       parsed: undefined,
-      messages: [""],
+      messages: [{ name: "", message: "" }],
     };
   } else if (!Number.isFinite(min)) {
     return {
       isValid: false,
       parsed: undefined,
-      messages: ["This value must be number"],
+      messages: [
+        {
+          name: "TypeError",
+          message: "This value must be number",
+        },
+      ],
     };
   } else if (max !== undefined && min >= max) {
     return {
       isValid: false,
       parsed: undefined,
-      messages: ["This value must be lesser than max value"],
+      messages: [
+        {
+          name: "RangeError",
+          message: "This value must be lesser than max value",
+        },
+      ],
     };
   } else {
     return {
       isValid: true,
       parsed: min,
-      messages: [""],
+      messages: [{ name: "", message: "" }],
     };
   }
 }
@@ -154,19 +175,29 @@ export function maxValueValidation(
     return {
       isValid: true,
       parsed: undefined,
-      messages: [""],
+      messages: [{ name: "", message: "" }],
     };
   } else if (!Number.isFinite(max)) {
     return {
       isValid: false,
       parsed: undefined,
-      messages: ["This value must be number"],
+      messages: [
+        {
+          name: "TypeError",
+          message: "This value must be number",
+        },
+      ],
     };
   } else if (min !== undefined && max <= min) {
     return {
       isValid: false,
       parsed: undefined,
-      messages: ["This value must be greater than min value"],
+      messages: [
+        {
+          name: "RangeError",
+          message: "This value must be greater than min value",
+        },
+      ],
     };
   } else {
     return {
@@ -200,7 +231,34 @@ const PROPERTIES = {
           },
         },
         hidden: (...args: HiddenFnParams) =>
-          getSchemaItem(...args).fieldTypeNotIncludes(INPUT_TYPES),
+          getSchemaItem(...args).fieldTypeNotIncludes(INPUT_TYPES) ||
+          getSchemaItem(...args).fieldTypeMatches(FieldType.PHONE_NUMBER_INPUT),
+        dependencies: ["schema"],
+      },
+      {
+        helpText:
+          "Sets the default text of the widget. The text is updated if the default text changes",
+        propertyName: "defaultValue",
+        label: "Default value",
+        controlType: "JSON_FORM_COMPUTE_VALUE",
+        placeholderText: "(000) 000-0000",
+        isBindProperty: true,
+        isTriggerProperty: false,
+        validation: {
+          type: ValidationTypes.FUNCTION,
+          params: {
+            fn: defaultValueValidation,
+            expected: {
+              type: "string",
+              example: `(000) 000-0000`,
+              autocompleteDataType: AutocompleteDataType.STRING,
+            },
+          },
+        },
+        hidden: (...args: HiddenFnParams) =>
+          getSchemaItem(...args).fieldTypeNotMatches(
+            FieldType.PHONE_NUMBER_INPUT,
+          ),
         dependencies: ["schema"],
       },
       {
@@ -227,6 +285,7 @@ const PROPERTIES = {
         enableSearch: true,
         dropdownHeight: "195px",
         controlType: "DROP_DOWN",
+        virtual: true,
         searchPlaceholderText: "通过名称或者编号搜索",
         options: CurrencyDropdownOptions,
         hidden: (...args: HiddenFnParams) =>
@@ -265,7 +324,7 @@ const PROPERTIES = {
       {
         propertyName: "decimalsInCurrency",
         helpText: "货币精确到小数点后几位",
-        label: "Decimals Allowed",
+        label: "允许小数",
         controlType: "DROP_DOWN",
         options: [
           {
@@ -499,14 +558,15 @@ const PROPERTIES = {
         label: "图标对齐",
         helpText: "设置图标对齐方式",
         controlType: "ICON_TABS",
-        fullWidth: true,
+        defaultValue: "left",
+        fullWidth: false,
         options: [
           {
-            icon: "VERTICAL_LEFT",
+            startIcon: "skip-left-line",
             value: "left",
           },
           {
-            icon: "VERTICAL_RIGHT",
+            startIcon: "skip-right-line",
             value: "right",
           },
         ],

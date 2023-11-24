@@ -1,18 +1,13 @@
-import { ActionResponse } from "api/ActionAPI";
-import { PluginId } from "api/PluginApi";
-import { ValidationConfig } from "constants/PropertyControlConstants";
-import { ActionConfig, PluginType } from "entities/Action";
-import {
-  ActionDescription,
-  ClearPluginActionDescription,
-  RunPluginActionDescription,
-} from "entities/DataTree/actionTriggers";
-import { Variable } from "entities/JSCollection";
-import { DependencyMap, DynamicPath } from "utils/DynamicBindingUtils";
+import type { ActionResponse } from "api/ActionAPI";
+import type { PluginId } from "api/PluginApi";
+import type { ValidationConfig } from "constants/PropertyControlConstants";
+import type { ActionConfig, PluginType } from "entities/Action";
+import type { ActionDescription } from "@appsmith/workers/Evaluation/fns";
+import type { Variable } from "entities/JSCollection";
+import type { DependencyMap, DynamicPath } from "utils/DynamicBindingUtils";
+import type { Page } from "@appsmith/constants/ReduxActionConstants";
 
-export type ActionDispatcher = (
-  ...args: any[]
-) => Promise<unknown> | ActionDescription;
+export type ActionDispatcher = (...args: any[]) => ActionDescription;
 
 export enum ENTITY_TYPE {
   ACTION = "ACTION",
@@ -28,15 +23,12 @@ export enum EvaluationSubstitutionType {
 }
 
 // Action entity types
-export interface ActionEntityEvalTree {
+export interface ActionEntity {
   actionId: string;
   isLoading: boolean;
   data: ActionResponse["body"];
-  run: ActionDispatcher | RunPluginActionDescription | Record<string, unknown>;
-  clear:
-    | ActionDispatcher
-    | ClearPluginActionDescription
-    | Record<string, unknown>;
+  run: ActionDispatcher | Record<string, unknown>;
+  clear: ActionDispatcher | Record<string, unknown>;
   responseMeta: {
     statusCode?: string;
     isExecutionSuccess: boolean;
@@ -47,7 +39,7 @@ export interface ActionEntityEvalTree {
   datasourceUrl: string;
 }
 
-export interface ActionEntityConfig {
+export interface ActionEntityConfig extends EntityConfig {
   dynamicBindingPathList: DynamicPath[];
   bindingPaths: Record<string, EvaluationSubstitutionType>;
   reactivePaths: Record<string, EvaluationSubstitutionType>;
@@ -64,11 +56,10 @@ export interface ActionEntityConfig {
 
 export interface MetaArgs {
   arguments: Variable[];
-  isAsync: boolean;
   confirmBeforeExecute: boolean;
 }
 
-export interface JSActionEntityConfig {
+export interface JSActionEntityConfig extends EntityConfig {
   meta: Record<string, MetaArgs>;
   dynamicBindingPathList: DynamicPath[];
   bindingPaths: Record<string, EvaluationSubstitutionType>;
@@ -81,10 +72,13 @@ export interface JSActionEntityConfig {
   actionId: string;
 }
 
-export interface JSActionEvalTree {
+export interface JSActionEntity {
   [propName: string]: any;
   body: string;
+  ENTITY_TYPE: ENTITY_TYPE.JSACTION;
+  actionId: string;
 }
+export type PagelistEntity = Page[];
 
 // Widget entity Types
 
@@ -102,18 +96,19 @@ export enum OverridingPropertyType {
   META = "META",
   DEFAULT = "DEFAULT",
 }
+export interface overrideDependency {
+  DEFAULT: string;
+  META: string;
+}
 /**
  *  Map of property name as key and value as object with defaultPropertyName and metaPropertyName which it depends on.
  */
 export type PropertyOverrideDependency = Record<
   string,
-  {
-    DEFAULT: string | undefined;
-    META: string | undefined;
-  }
+  Partial<overrideDependency>
 >;
 
-export type WidgetConfig = {
+export interface WidgetConfig extends EntityConfig {
   bindingPaths: Record<string, EvaluationSubstitutionType>;
   reactivePaths: Record<string, EvaluationSubstitutionType>;
   triggerPaths: Record<string, boolean>;
@@ -123,4 +118,12 @@ export type WidgetConfig = {
   propertyOverrideDependency: PropertyOverrideDependency;
   overridingPropertyPaths: OverridingPropertyPaths;
   privateWidgets: PrivateWidgets;
-};
+}
+
+export interface EntityConfig {
+  __setters?: Record<string, unknown>;
+  bindingPaths?: Record<string, EvaluationSubstitutionType>;
+  reactivePaths?: Record<string, EvaluationSubstitutionType>;
+  validationPaths?: Record<string, ValidationConfig>;
+  dynamicBindingPathList?: DynamicPath[];
+}

@@ -1,11 +1,15 @@
-import { DSLWidget } from "widgets/constants";
-import { MigrateSelectTypeWidgetDefaultValue } from "./SelectWidget";
+import type { DSLWidget } from "widgets/constants";
+import {
+  MigrateSelectTypeWidgetDefaultValue,
+  migrateSelectWidgetAddSourceDataPropertyPathList,
+  migrateSelectWidgetSourceDataBindingPathList,
+} from "./SelectWidget";
 
 describe("MigrateSelectTypeWidgetDefaultValue", () => {
   describe("Select widget", () => {
     it("should check that defaultOptionValue is migrated when its in old format", () => {
       expect(
-        MigrateSelectTypeWidgetDefaultValue(({
+        MigrateSelectTypeWidgetDefaultValue({
           children: [
             {
               type: "SELECT_WIDGET",
@@ -13,7 +17,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
               defaultOptionValue: "{{moment()}}",
             },
           ],
-        } as any) as DSLWidget),
+        } as any as DSLWidget),
       ).toEqual({
         children: [
           {
@@ -26,7 +30,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
       });
 
       expect(
-        MigrateSelectTypeWidgetDefaultValue(({
+        MigrateSelectTypeWidgetDefaultValue({
           children: [
             {
               type: "SELECT_WIDGET",
@@ -34,7 +38,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
               defaultOptionValue: "{{moment()}}{{moment()}}",
             },
           ],
-        } as any) as DSLWidget),
+        } as any as DSLWidget),
       ).toEqual({
         children: [
           {
@@ -49,7 +53,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
 
     it("should check that defaultOptionValue is not migrated when its in new format", () => {
       expect(
-        MigrateSelectTypeWidgetDefaultValue(({
+        MigrateSelectTypeWidgetDefaultValue({
           children: [
             {
               type: "SELECT_WIDGET",
@@ -58,7 +62,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
                 "{{ ((options, serverSideFiltering) => ( moment()))(select.options, select.serverSideFiltering) }}",
             },
           ],
-        } as any) as DSLWidget),
+        } as any as DSLWidget),
       ).toEqual({
         children: [
           {
@@ -71,7 +75,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
       });
 
       expect(
-        MigrateSelectTypeWidgetDefaultValue(({
+        MigrateSelectTypeWidgetDefaultValue({
           children: [
             {
               type: "SELECT_WIDGET",
@@ -80,7 +84,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
                 "{{ ((options, serverSideFiltering) => ( moment() + moment()))(select.options, select.serverSideFiltering) }}",
             },
           ],
-        } as any) as DSLWidget),
+        } as any as DSLWidget),
       ).toEqual({
         children: [
           {
@@ -95,7 +99,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
 
     it("should check that defaultOptionValue is not migrated when its a static value", () => {
       expect(
-        MigrateSelectTypeWidgetDefaultValue(({
+        MigrateSelectTypeWidgetDefaultValue({
           children: [
             {
               type: "SELECT_WIDGET",
@@ -103,7 +107,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
               defaultOptionValue: "Green",
             },
           ],
-        } as any) as DSLWidget),
+        } as any as DSLWidget),
       ).toEqual({
         children: [
           {
@@ -119,7 +123,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
   describe("Multi Select widget", () => {
     it("should check that defaultOptionValue is migrated when its in old format", () => {
       expect(
-        MigrateSelectTypeWidgetDefaultValue(({
+        MigrateSelectTypeWidgetDefaultValue({
           children: [
             {
               type: "MULTI_SELECT_WIDGET_V2",
@@ -127,7 +131,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
               defaultOptionValue: "{{[moment()]}}",
             },
           ],
-        } as any) as DSLWidget),
+        } as any as DSLWidget),
       ).toEqual({
         children: [
           {
@@ -140,7 +144,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
       });
 
       expect(
-        MigrateSelectTypeWidgetDefaultValue(({
+        MigrateSelectTypeWidgetDefaultValue({
           children: [
             {
               type: "MULTI_SELECT_WIDGET_V2",
@@ -148,7 +152,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
               defaultOptionValue: "{{moment()}}{{moment()}}",
             },
           ],
-        } as any) as DSLWidget),
+        } as any as DSLWidget),
       ).toEqual({
         children: [
           {
@@ -163,7 +167,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
 
     it("should check that defaultOptionValue is not migrated when its in new format", () => {
       expect(
-        MigrateSelectTypeWidgetDefaultValue(({
+        MigrateSelectTypeWidgetDefaultValue({
           children: [
             {
               type: "MULTI_SELECT_WIDGET_V2",
@@ -172,7 +176,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
                 "{{ ((options, serverSideFiltering) => ( [moment()]))(select.options, select.serverSideFiltering) }}",
             },
           ],
-        } as any) as DSLWidget),
+        } as any as DSLWidget),
       ).toEqual({
         children: [
           {
@@ -185,7 +189,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
       });
 
       expect(
-        MigrateSelectTypeWidgetDefaultValue(({
+        MigrateSelectTypeWidgetDefaultValue({
           children: [
             {
               type: "MULTI_SELECT_WIDGET_V2",
@@ -194,7 +198,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
                 "{{ ((options, serverSideFiltering) => ( moment() + moment()))(select.options, select.serverSideFiltering) }}",
             },
           ],
-        } as any) as DSLWidget),
+        } as any as DSLWidget),
       ).toEqual({
         children: [
           {
@@ -209,7 +213,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
 
     it("should check that defaultOptionValue is not migrated when its a static value", () => {
       expect(
-        MigrateSelectTypeWidgetDefaultValue(({
+        MigrateSelectTypeWidgetDefaultValue({
           children: [
             {
               type: "MULTI_SELECT_WIDGET_V2",
@@ -217,7 +221,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
               defaultOptionValue: "[Green]",
             },
           ],
-        } as any) as DSLWidget),
+        } as any as DSLWidget),
       ).toEqual({
         children: [
           {
@@ -230,7 +234,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
     });
 
     expect(
-      MigrateSelectTypeWidgetDefaultValue(({
+      MigrateSelectTypeWidgetDefaultValue({
         children: [
           {
             type: "MULTI_SELECT_WIDGET_V2",
@@ -238,7 +242,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
             defaultOptionValue: ["Green"],
           },
         ],
-      } as any) as DSLWidget),
+      } as any as DSLWidget),
     ).toEqual({
       children: [
         {
@@ -253,7 +257,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
   describe("other widget", () => {
     it("should left untouched", () => {
       expect(
-        MigrateSelectTypeWidgetDefaultValue(({
+        MigrateSelectTypeWidgetDefaultValue({
           children: [
             {
               type: "TABLE_WIDGET",
@@ -261,7 +265,7 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
               defaultOptionValue: "{{[moment()]}}",
             },
           ],
-        } as any) as DSLWidget),
+        } as any as DSLWidget),
       ).toEqual({
         children: [
           {
@@ -1830,7 +1834,338 @@ describe("MigrateSelectTypeWidgetDefaultValue", () => {
     };
 
     expect(
-      MigrateSelectTypeWidgetDefaultValue((input as any) as DSLWidget),
+      MigrateSelectTypeWidgetDefaultValue(input as any as DSLWidget),
     ).toEqual(output);
+  });
+});
+
+describe("migrateSelectWidgetSourceDataBindingPathList", () => {
+  test("should test that options in dynamicBindingPathList is getting replaced with sourceData", () => {
+    const result = migrateSelectWidgetSourceDataBindingPathList({
+      children: [
+        {
+          type: "TABLE_WIDGET_V2",
+          options: [],
+          dynamicBindingPathList: [
+            {
+              key: "optionValue",
+            },
+            {
+              key: "options",
+            },
+            {
+              key: "optionLabel",
+            },
+          ],
+        },
+        {
+          type: "SELECT_WIDGET",
+          options: [],
+          dynamicBindingPathList: [
+            {
+              key: "optionValue",
+            },
+            {
+              key: "options",
+            },
+            {
+              key: "optionLabel",
+            },
+          ],
+        },
+        {
+          type: "MULTI_SELECT_WIDGET_V2",
+          options: [],
+          dynamicBindingPathList: [
+            {
+              key: "optionLabel",
+            },
+            {
+              key: "optionValue",
+            },
+            {
+              key: "options",
+            },
+          ],
+        },
+        {
+          type: "MULTI_SELECT_WIDGET_V2",
+          options: [],
+          dynamicBindingPathList: [
+            {
+              key: "optionLabel",
+            },
+            {
+              key: "optionValue",
+            },
+          ],
+        },
+      ],
+    } as any as DSLWidget);
+
+    expect(result).toEqual({
+      children: [
+        {
+          type: "TABLE_WIDGET_V2",
+          options: [],
+          dynamicBindingPathList: [
+            {
+              key: "optionValue",
+            },
+            {
+              key: "options",
+            },
+            {
+              key: "optionLabel",
+            },
+          ],
+        },
+        {
+          type: "SELECT_WIDGET",
+          options: [],
+          dynamicBindingPathList: [
+            {
+              key: "optionValue",
+            },
+            {
+              key: "sourceData",
+            },
+            {
+              key: "optionLabel",
+            },
+          ],
+        },
+        {
+          type: "MULTI_SELECT_WIDGET_V2",
+          options: [],
+          dynamicBindingPathList: [
+            {
+              key: "optionLabel",
+            },
+            {
+              key: "optionValue",
+            },
+            {
+              key: "sourceData",
+            },
+          ],
+        },
+        {
+          type: "MULTI_SELECT_WIDGET_V2",
+          options: [],
+          dynamicBindingPathList: [
+            {
+              key: "optionLabel",
+            },
+            {
+              key: "optionValue",
+            },
+          ],
+        },
+      ],
+    });
+  });
+});
+
+describe("migrateSelectWidgetAddSourceDataPropertyPathList", () => {
+  test("should test that sourceData is added to the dynamicPropertyPathList", () => {
+    const result = migrateSelectWidgetAddSourceDataPropertyPathList({
+      children: [
+        {
+          type: "TABLE_WIDGET_V2",
+          options: [],
+          dynamicPropertyPathList: [
+            {
+              key: "optionValue",
+            },
+            {
+              key: "sourceData",
+            },
+            {
+              key: "optionLabel",
+            },
+          ],
+        },
+        {
+          type: "TABLE_WIDGET_V2",
+          options: [],
+          dynamicPropertyPathList: [
+            {
+              key: "optionValue",
+            },
+            {
+              key: "optionLabel",
+            },
+          ],
+        },
+        {
+          type: "TABLE_WIDGET_V2",
+          options: [],
+        },
+        {
+          type: "SELECT_WIDGET",
+          options: [],
+          dynamicPropertyPathList: [
+            {
+              key: "optionValue",
+            },
+            {
+              key: "sourceData",
+            },
+            {
+              key: "optionLabel",
+            },
+          ],
+        },
+        {
+          type: "SELECT_WIDGET",
+          options: [],
+          dynamicPropertyPathList: [
+            {
+              key: "optionValue",
+            },
+            {
+              key: "optionLabel",
+            },
+          ],
+        },
+        {
+          type: "MULTI_SELECT_WIDGET_V2",
+          options: [],
+          dynamicPropertyPathList: [
+            {
+              key: "optionLabel",
+            },
+            {
+              key: "sourceData",
+            },
+            {
+              key: "optionValue",
+            },
+          ],
+        },
+        {
+          type: "MULTI_SELECT_WIDGET_V2",
+          options: [],
+          dynamicPropertyPathList: [
+            {
+              key: "optionLabel",
+            },
+            {
+              key: "optionValue",
+            },
+          ],
+        },
+        {
+          type: "MULTI_SELECT_WIDGET_V2",
+          options: [],
+        },
+      ],
+    } as any as DSLWidget);
+
+    expect(result).toEqual({
+      children: [
+        {
+          type: "TABLE_WIDGET_V2",
+          options: [],
+          dynamicPropertyPathList: [
+            {
+              key: "optionValue",
+            },
+            {
+              key: "sourceData",
+            },
+            {
+              key: "optionLabel",
+            },
+          ],
+        },
+        {
+          type: "TABLE_WIDGET_V2",
+          options: [],
+          dynamicPropertyPathList: [
+            {
+              key: "optionValue",
+            },
+            {
+              key: "optionLabel",
+            },
+          ],
+        },
+        {
+          type: "TABLE_WIDGET_V2",
+          options: [],
+        },
+        {
+          type: "SELECT_WIDGET",
+          options: [],
+          dynamicPropertyPathList: [
+            {
+              key: "optionValue",
+            },
+            {
+              key: "sourceData",
+            },
+            {
+              key: "optionLabel",
+            },
+          ],
+        },
+        {
+          type: "SELECT_WIDGET",
+          options: [],
+          dynamicPropertyPathList: [
+            {
+              key: "optionValue",
+            },
+            {
+              key: "optionLabel",
+            },
+            {
+              key: "sourceData",
+            },
+          ],
+        },
+        {
+          type: "MULTI_SELECT_WIDGET_V2",
+          options: [],
+          dynamicPropertyPathList: [
+            {
+              key: "optionLabel",
+            },
+            {
+              key: "sourceData",
+            },
+            {
+              key: "optionValue",
+            },
+          ],
+        },
+        {
+          type: "MULTI_SELECT_WIDGET_V2",
+          options: [],
+          dynamicPropertyPathList: [
+            {
+              key: "optionLabel",
+            },
+            {
+              key: "optionValue",
+            },
+            {
+              key: "sourceData",
+            },
+          ],
+        },
+        {
+          type: "MULTI_SELECT_WIDGET_V2",
+          options: [],
+          dynamicPropertyPathList: [
+            {
+              key: "sourceData",
+            },
+          ],
+        },
+      ],
+    });
   });
 });

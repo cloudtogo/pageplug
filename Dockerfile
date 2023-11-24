@@ -1,48 +1,4 @@
-FROM ubuntu:20.04
-
-LABEL maintainer="tech@appsmith.com"
-
-# Set workdir to /opt/appsmith
-WORKDIR /opt/appsmith
-
-# The env variables are needed for Appsmith server to correctly handle non-roman scripts like Arabic.
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
-
-# replace source
-RUN sed -i s@/archive.ubuntu.com/@/mirrors.ustc.edu.cn/@g /etc/apt/sources.list
-RUN sed -i s@/security.ubuntu.com/@/mirrors.ustc.edu.cn/@g /etc/apt/sources.list
-RUN sed -i s@/ports.ubuntu.com/@/mirrors.ustc.edu.cn/@g /etc/apt/sources.list
-
-# Update APT packages - Base Layer
-RUN apt-get update \
-  && apt-get upgrade --yes \
-  && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
-    supervisor curl cron certbot nginx gnupg wget netcat openssh-client \
-    software-properties-common gettext openjdk-11-jdk \
-    python3-pip python-setuptools git ca-certificates-java \
-  && pip install --no-cache-dir git+https://github.com/coderanger/supervisor-stdout@973ba19967cdaf46d9c1634d1675fc65b9574f6e \
-  && apt-get remove -y git python3-pip
-
-# Install MongoDB v4.4, Redis, NodeJS - Service Layer
-RUN wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -
-RUN echo "deb [ arch=amd64,arm64 ]http://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list \
-  && apt-get remove wget -y
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \
-  && apt-get install --no-install-recommends -y mongodb-org=4.4.6 nodejs redis build-essential \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
-
-# Clean up cache file - Service layer
-RUN rm -rf \
-  /root/.cache \
-  /root/.npm \
-  /root/.pip \
-  /usr/local/share/doc \
-  /usr/share/doc \
-  /usr/share/man \
-  /var/lib/apt/lists/* \
-  /tmp/*
+FROM harbor.cloud2go.cn/pageplug/ubuntu-20.04:base
 
 # Define volumes - Service Layer
 VOLUME [ "/appsmith-stacks" ]
@@ -51,6 +7,10 @@ VOLUME [ "/appsmith-stacks" ]
 # Add backend server - Application Layer
 ARG JAR_FILE=./app/server/dist/server-*.jar
 ARG PLUGIN_JARS=./app/server/dist/plugins/*.jar
+
+ARG APPSMITH_CLOUD_SERVICES_BASE_URL
+ENV APPSMITH_CLOUD_SERVICES_BASE_URL=${APPSMITH_CLOUD_SERVICES_BASE_URL}
+
 ARG APPSMITH_SEGMENT_CE_KEY
 ENV APPSMITH_SEGMENT_CE_KEY=${APPSMITH_SEGMENT_CE_KEY}
 #Create the plugins directory
@@ -64,20 +24,23 @@ COPY ${PLUGIN_JARS} backend/plugins/
 COPY ./app/client/build editor/
 
 # Add RTS - Application Layer
-COPY ./app/rts/package.json ./app/rts/dist rts/
+COPY ./app/client/packages/rts/package.json ./app/client/packages/rts/dist rts/
 
-# Nginx & MongoDB config template - Configuration layer
+# Nginx, MongoDB and PostgreSQL data config template - Configuration layer
 COPY ./deploy/docker/templates/nginx/* \
-  ./deploy/docker/templates/mongo-init.js.sh\
   ./deploy/docker/templates/docker.env.sh \
+  ./deploy/docker/templates/mockdb_postgres.sql \
+  ./deploy/docker/templates/users_postgres.sql \
+  ./deploy/docker/templates/appsmith_starting.html \
+  ./deploy/docker/templates/appsmith_initializing.html \
   templates/
 
 # Add bootstrapfile
-COPY ./deploy/docker/entrypoint.sh ./deploy/docker/scripts/* ./
+COPY ./deploy/docker/entrypoint.sh ./deploy/docker/scripts/* info.*json ./
 
-# Add uitl tools
+# Add util tools
 COPY ./deploy/docker/utils ./utils
-RUN cd ./utils && npm install && npm install -g .
+RUN cd ./utils && npm install --only=prod && npm install --only=prod -g .
 
 # Add process config to be run by supervisord
 COPY ./deploy/docker/templates/supervisord.conf /etc/supervisor/supervisord.conf

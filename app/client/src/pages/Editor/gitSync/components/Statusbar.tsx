@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Statusbar } from "design-system";
+import { Statusbar } from "design-system-old";
 import styled from "styled-components";
 
 type StatusbarProps = {
@@ -11,7 +11,7 @@ type StatusbarProps = {
 
 export const StatusbarWrapper = styled.div`
   width: 252px;
-  height: 38px;
+  height: 44px;
 `;
 
 export default function GitSyncStatusbar(props: StatusbarProps) {

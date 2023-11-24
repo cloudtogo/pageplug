@@ -5,6 +5,7 @@ import com.appsmith.git.configurations.GitServiceConfig;
 import com.appsmith.git.service.GitExecutorImpl;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,9 +31,13 @@ import static com.appsmith.git.constants.GitDirectories.PAGE_DIRECTORY;
 @ExtendWith(SpringExtension.class)
 public class FileUtilsImplTest {
     private FileUtilsImpl fileUtils;
+
     @MockBean
     private GitExecutorImpl gitExecutor;
+
     private GitServiceConfig gitServiceConfig;
+    private static final String localTestDirectory = "localTestDirectory";
+    private static final Path localTestDirectoryPath = Path.of(localTestDirectory);
 
     @BeforeEach
     public void setUp() {
@@ -41,11 +46,14 @@ public class FileUtilsImplTest {
         fileUtils = new FileUtilsImpl(gitServiceConfig, gitExecutor);
     }
 
-    private static final String localTestDirectory = "localTestDirectory";
-    private static final Path localTestDirectoryPath = Path.of(localTestDirectory);
+    @AfterEach
+    public void tearDown() {
+        this.deleteLocalTestDirectoryPath();
+    }
 
     @Test
-    public void saveApplicationRef_removeActionAndActionCollectionDirectoryCreatedInV1FileFormat_success() throws GitAPIException, IOException {
+    public void saveApplicationRef_removeActionAndActionCollectionDirectoryCreatedInV1FileFormat_success()
+            throws GitAPIException, IOException {
         Path actionDirectoryPath = localTestDirectoryPath.resolve(ACTION_DIRECTORY);
         Path actionCollectionDirectoryPath = localTestDirectoryPath.resolve(ACTION_COLLECTION_DIRECTORY);
         Files.createDirectories(actionDirectoryPath);
@@ -61,7 +69,10 @@ public class FileUtilsImplTest {
         applicationGitReference.setActions(new HashMap<>());
         applicationGitReference.setActionCollections(new HashMap<>());
         applicationGitReference.setDatasources(new HashMap<>());
-        fileUtils.saveApplicationToGitRepo(Path.of(""), applicationGitReference, "branch").block();
+        applicationGitReference.setJsLibraries(new HashMap<>());
+        fileUtils
+                .saveApplicationToGitRepo(Path.of(""), applicationGitReference, "branch")
+                .block();
 
         Assertions.assertFalse(actionDirectoryPath.toFile().exists());
         Assertions.assertFalse(actionCollectionDirectoryPath.toFile().exists());
@@ -100,8 +111,8 @@ public class FileUtilsImplTest {
 
         this.fileUtils.scanAndDeleteDirectoryForDeletedResources(validDirectorySet, pageDirectoryPath);
         try (Stream<Path> paths = Files.walk(pageDirectoryPath, 1)) {
-            Set<String> validFSDirectorySet = paths
-                    .filter(path -> Files.isDirectory(path) && !path.equals(pageDirectoryPath))
+            Set<String> validFSDirectorySet = paths.filter(
+                            path -> Files.isDirectory(path) && !path.equals(pageDirectoryPath))
                     .map(Path::getFileName)
                     .map(Path::toString)
                     .collect(Collectors.toSet());
@@ -109,8 +120,6 @@ public class FileUtilsImplTest {
         } catch (IOException e) {
             Assertions.fail("Error while scanning directory");
         }
-
-        this.deleteLocalTestDirectoryPath();
     }
 
     @Test
@@ -154,8 +163,7 @@ public class FileUtilsImplTest {
 
         this.fileUtils.scanAndDeleteFileForDeletedResources(validActionsSet, actionDirectoryPath);
         try (Stream<Path> paths = Files.walk(actionDirectoryPath)) {
-            Set<String> validFSFilesSet = paths
-                    .filter(path -> Files.isRegularFile(path))
+            Set<String> validFSFilesSet = paths.filter(path -> Files.isRegularFile(path))
                     .map(Path::getFileName)
                     .map(Path::toString)
                     .collect(Collectors.toSet());
@@ -163,8 +171,6 @@ public class FileUtilsImplTest {
         } catch (IOException e) {
             Assertions.fail("Error while scanning directory");
         }
-
-        this.deleteLocalTestDirectoryPath();
     }
 
     /**

@@ -1,19 +1,17 @@
 import { ValidationTypes } from "constants/WidgetValidation";
-import {
-  ColumnTypes,
-  DateInputFormat,
-  TableWidgetProps,
-} from "widgets/TableWidgetV2/constants";
+import type { TableWidgetProps } from "widgets/TableWidgetV2/constants";
+import { ColumnTypes, DateInputFormat } from "widgets/TableWidgetV2/constants";
 import { get } from "lodash";
 import {
   getBasePropertyPath,
   hideByColumnType,
   showByColumnType,
   uniqueColumnAliasValidation,
+  updateMenuItemsSource,
   updateNumberColumnTypeTextAlignment,
   updateThemeStylesheetsInColumns,
 } from "../../propertyUtils";
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
 import { composePropertyUpdateHook } from "widgets/WidgetUtils";
 
 export default {
@@ -78,6 +76,7 @@ export default {
       updateHook: composePropertyUpdateHook([
         updateNumberColumnTypeTextAlignment,
         updateThemeStylesheetsInColumns,
+        updateMenuItemsSource,
       ]),
       dependencies: ["primaryColumns", "columnOrder", "childStylesheet"],
       isBindProperty: false,
@@ -150,6 +149,9 @@ export default {
       propertyName: "computedValue",
       label: "计算值",
       controlType: "TABLE_COMPUTE_VALUE",
+      additionalControlData: {
+        isArrayValue: true,
+      },
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(props, propertyPath, [
           ColumnTypes.DATE,
@@ -260,7 +262,7 @@ export default {
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         const baseProperty = getBasePropertyPath(propertyPath);
         const columnType = get(props, `${baseProperty}.columnType`, "");
-        return columnType !== "date";
+        return columnType !== ColumnTypes.DATE;
       },
       dependencies: ["primaryColumns", "columnOrder"],
       isBindProperty: true,
@@ -270,6 +272,7 @@ export default {
           type: ValidationTypes.TEXT,
           params: {
             allowedValues: [
+              "YYYY-MM-DDTHH:mm:ss.SSSZ",
               DateInputFormat.EPOCH,
               DateInputFormat.MILLISECONDS,
               "YYYY-MM-DD",
@@ -389,7 +392,7 @@ export default {
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         const baseProperty = getBasePropertyPath(propertyPath);
         const columnType = get(props, `${baseProperty}.columnType`, "");
-        return columnType !== "date";
+        return columnType !== ColumnTypes.DATE;
       },
       dependencies: ["primaryColumns", "columnType"],
       isBindProperty: true,
@@ -399,6 +402,7 @@ export default {
           type: ValidationTypes.TEXT,
           params: {
             allowedValues: [
+              "YYYY-MM-DDTHH:mm:ss.SSSZ",
               "Epoch",
               "Milliseconds",
               "YYYY-MM-DD",

@@ -1,33 +1,29 @@
-import { AppState } from "@appsmith/reducers";
-import { setSelectedPropertyPanel } from "actions/propertyPaneActions";
-import {
+import type { AppState } from "@appsmith/reducers";
+import type {
   BaseItemProps,
-  DroppableComponent,
   DroppableComponentProps,
 } from "components/propertyControls/DraggableListComponent";
+import { DroppableComponent } from "components/propertyControls/DraggableListComponent";
 import debounce from "lodash/debounce";
 import React, { useCallback } from "react";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { getSelectedPropertyPanelIndex } from "selectors/propertyPaneSelectors";
-import { selectFeatureFlags } from "selectors/usersSelectors";
 
-export type DraggableListControlProps<
-  TItem extends BaseItemProps
-> = DroppableComponentProps<TItem> & {
-  defaultPanelIndex?: number;
-  propertyPath: string | undefined;
-};
+export type DraggableListControlProps<TItem extends BaseItemProps> =
+  DroppableComponentProps<TItem> & {
+    defaultPanelIndex?: number;
+    propertyPath: string | undefined;
+    keyAccessor?: string;
+  };
 export const DraggableListControl = <TItem extends BaseItemProps>(
   props: DraggableListControlProps<TItem>,
 ) => {
-  const dispatch = useDispatch();
-  const featureFlags = useSelector(selectFeatureFlags);
   const defaultPanelIndex = useSelector((state: AppState) =>
     getSelectedPropertyPanelIndex(state, props.propertyPath),
   );
 
-  const { onEdit, propertyPath } = props;
+  const { onEdit } = props;
 
   //leading debounce to stop opening multiple panels
   const debouncedEditLeading = useCallback(
@@ -45,8 +41,7 @@ export const DraggableListControl = <TItem extends BaseItemProps>(
   );
 
   useEffect(() => {
-    featureFlags.CONTEXT_SWITCHING &&
-      onEdit &&
+    onEdit &&
       defaultPanelIndex !== undefined &&
       debouncedEditLeading(defaultPanelIndex);
   }, [defaultPanelIndex]);
@@ -54,7 +49,6 @@ export const DraggableListControl = <TItem extends BaseItemProps>(
   const onPanelEdit = (index: number) => {
     if (onEdit) {
       debouncedEditLeading(index);
-      dispatch(setSelectedPropertyPanel(propertyPath, index));
     }
   };
 

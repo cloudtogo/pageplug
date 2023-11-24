@@ -1,10 +1,17 @@
-import React, { Ref, useCallback } from "react";
+/* eslint-disable react/display-name */
+import type { Ref } from "react";
+import React, { useCallback } from "react";
 import { Tooltip } from "@blueprintjs/core";
 import styled from "styled-components";
-import { ReactComponent as EditIcon } from "assets/icons/control/edit-variant1.svg";
-import { BaseCellComponentProps, TABLE_SIZES } from "../Constants";
+import type { BaseCellComponentProps } from "../Constants";
+import { TABLE_SIZES } from "../Constants";
 import { TooltipContentWrapper } from "../TableStyledWrappers";
 import AutoToolTipComponent from "./AutoToolTipComponent";
+import { importSvg } from "design-system-old";
+
+const EditIcon = importSvg(
+  () => import("assets/icons/control/edit-variant1.svg"),
+);
 
 const Wrapper = styled.div<{
   allowWrapping?: boolean;
@@ -44,6 +51,7 @@ const UnsavedChangesMarker = styled.div<{ accentColor: string }>`
 const Content = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
+  user-select: text;
 `;
 
 const StyledEditIcon = styled.div<{

@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import * as Sentry from "@sentry/react";
-import { useDispatch, useSelector } from "react-redux";
-import React, { memo, useEffect, useRef, useMemo } from "react";
+import { useSelector } from "react-redux";
+import React, { memo, useContext, useEffect, useMemo, useRef } from "react";
 
 import PerformanceTracker, {
   PerformanceTransactionName,
@@ -9,22 +9,35 @@ import PerformanceTracker, {
 import { getSelectedWidgets } from "selectors/ui";
 import { tailwindLayers } from "constants/Layers";
 import WidgetPropertyPane from "pages/Editor/PropertyPane";
-import {
-  previewModeSelector,
-  snipingModeSelector,
-} from "selectors/editorSelectors";
+import { previewModeSelector } from "selectors/editorSelectors";
 import CanvasPropertyPane from "pages/Editor/CanvasPropertyPane";
 import useHorizontalResize from "utils/hooks/useHorizontalResize";
 import { getIsDraggingForSelection } from "selectors/canvasSelectors";
 import MultiSelectPropertyPane from "pages/Editor/MultiSelectPropertyPane";
 import { getIsDraggingOrResizing } from "selectors/widgetSelectors";
-import equal from "fast-deep-equal";
 import { selectedWidgetsPresentInCanvas } from "selectors/propertyPaneSelectors";
 import { getIsAppSettingsPaneOpen } from "selectors/appSettingsPaneSelectors";
 import AppSettingsPane from "pages/Editor/AppSettingsPane";
 import { APP_SETTINGS_PANE_WIDTH } from "constants/AppConstants";
-import { appendSelectedWidgetToUrl } from "actions/widgetSelectionActions";
-import { quickScrollToWidget } from "utils/helpers";
+import styled from "styled-components";
+import WalkthroughContext from "components/featureWalkthrough/walkthroughContext";
+
+export const PROPERTY_PANE_ID = "t--property-pane-sidebar";
+
+const StyledResizer = styled.div<{ resizing: boolean }>`
+  ${(props) =>
+    props.resizing &&
+    `
+  & > div {
+    background-color: var(--ads-v2-color-outline);
+  }
+  `}
+  :hover {
+    & > div {
+      background-color: var(--ads-v2-color-bg-emphasis);
+    }
+  }
+`;
 
 type Props = {
   width: number;
@@ -33,31 +46,21 @@ type Props = {
 };
 
 export const PropertyPaneSidebar = memo((props: Props) => {
-  const dispatch = useDispatch();
-
   const sidebarRef = useRef<HTMLDivElement>(null);
   const prevSelectedWidgetId = useRef<string | undefined>();
 
-  const {
-    onMouseDown,
-    onMouseUp,
-    onTouchStart,
-    resizing,
-  } = useHorizontalResize(
-    sidebarRef,
-    props.onWidthChange,
-    props.onDragEnd,
-    true,
-  );
+  const { onMouseDown, onMouseUp, onTouchStart, resizing } =
+    useHorizontalResize(sidebarRef, props.onWidthChange, props.onDragEnd, true);
 
   const isPreviewMode = useSelector(previewModeSelector);
   const selectedWidgetIds = useSelector(getSelectedWidgets);
   const isDraggingOrResizing = useSelector(getIsDraggingOrResizing);
   const isAppSettingsPaneOpen = useSelector(getIsAppSettingsPaneOpen);
-  const isSnipingMode = useSelector(snipingModeSelector);
+  const { isOpened: isWalkthroughOpened, popFeature } =
+    useContext(WalkthroughContext) || {};
 
   //while dragging or resizing and
-  //the current selected WidgetId is not equal to previous widget Id,
+  //the current selected WidgetId is not equal to previous widget id,
   //then don't render PropertyPane
   const shouldNotRenderPane =
     isDraggingOrResizing &&
@@ -68,7 +71,9 @@ export const PropertyPaneSidebar = memo((props: Props) => {
   const keepThemeWhileDragging =
     prevSelectedWidgetId.current === undefined && shouldNotRenderPane;
 
-  const selectedWidgets = useSelector(selectedWidgetsPresentInCanvas, equal);
+  const selectedWidgetsLength = useSelector(
+    (state) => selectedWidgetsPresentInCanvas(state).length,
+  );
 
   const isDraggingForSelection = useSelector(getIsDraggingForSelection);
 
@@ -79,16 +84,6 @@ export const PropertyPaneSidebar = memo((props: Props) => {
   useEffect(() => {
     PerformanceTracker.stopTracking();
   });
-
-  useEffect(() => {
-    if (!isSnipingMode) {
-      //update url hash with the selectedWidget
-      dispatch(appendSelectedWidgetToUrl(selectedWidgetIds));
-      if (selectedWidgetIds.length === 1) {
-        quickScrollToWidget(selectedWidgetIds[0]);
-      }
-    }
-  }, [selectedWidgetIds]);
 
   /**
    * renders the property pane:
@@ -102,50 +97,68 @@ export const PropertyPaneSidebar = memo((props: Props) => {
     switch (true) {
       case isAppSettingsPaneOpen:
         return <AppSettingsPane />;
-      case selectedWidgets.length > 1:
+      case selectedWidgetsLength > 1:
         return <MultiSelectPropertyPane />;
-      case selectedWidgets.length === 1:
+      case selectedWidgetsLength === 1:
         if (shouldNotRenderPane) return <CanvasPropertyPane />;
         else return <WidgetPropertyPane />;
-      case selectedWidgets.length === 0:
+      case selectedWidgetsLength === 0:
         return <CanvasPropertyPane />;
       default:
         return <CanvasPropertyPane />;
     }
   }, [
     isAppSettingsPaneOpen,
-    selectedWidgets.length,
+    selectedWidgetsLength,
     isDraggingForSelection,
     shouldNotRenderPane,
     keepThemeWhileDragging,
   ]);
+
+  const closeWalkthrough = () => {
+    if (popFeature) {
+      popFeature("PROPERTY_PANE");
+      sidebarRef.current?.removeEventListener("click", closeWalkthrough);
+    }
+  };
+
+  useEffect(() => {
+    if (isWalkthroughOpened)
+      sidebarRef.current?.addEventListener("click", closeWalkthrough);
+    return () => {
+      sidebarRef.current?.removeEventListener("click", closeWalkthrough);
+    };
+  }, [isWalkthroughOpened]);
 
   return (
     <div className="relative">
       {/* PROPERTY PANE */}
       <div
         className={classNames({
-          [`js-property-pane-sidebar t--property-pane-sidebar bg-white flex h-full  border-l border-gray-200 transform transition duration-300 ${tailwindLayers.propertyPane}`]: true,
+          [`js-property-pane-sidebar t--property-pane-sidebar flex h-full border-l bg-white transition-transform transform duration-400 ${tailwindLayers.propertyPane}`]:
+            true,
           "relative ": !isPreviewMode,
           "fixed translate-x-full right-0": isPreviewMode,
         })}
+        id={PROPERTY_PANE_ID}
         ref={sidebarRef}
       >
-        {/* RESIZOR */}
+        {/* RESIZER */}
         {!isAppSettingsPaneOpen && (
-          <div
-            className={`absolute top-0 left-0 w-2 h-full -ml-1 group  cursor-ew-resize ${tailwindLayers.resizer}`}
+          <StyledResizer
+            className={`absolute top-0 left-0 w-2 h-full -ml-1 group cursor-ew-resize ${tailwindLayers.resizer}`}
             onMouseDown={onMouseDown}
             onTouchEnd={onMouseUp}
             onTouchStart={onTouchStart}
+            resizing={resizing}
           >
             <div
               className={classNames({
-                "w-1 h-full ml-1 bg-transparent group-hover:bg-gray-300 transform transition": true,
-                "bg-gray-300": resizing,
+                "w-1 h-full bg-transparent transform transition flex items-center":
+                  true,
               })}
             />
-          </div>
+          </StyledResizer>
         )}
         <div
           className={classNames({

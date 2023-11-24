@@ -1,34 +1,24 @@
 import React from "react";
-import styled from "styled-components";
 import { Alignment } from "@blueprintjs/core";
-
-import BaseControl, { ControlProps } from "./BaseControl";
-import { ButtonTab, ButtonTabOption } from "design-system";
+import type { SegmentedControlOption } from "design-system";
+import { SegmentedControl } from "design-system";
+import type { ControlProps } from "./BaseControl";
+import BaseControl from "./BaseControl";
+import type { DSEventDetail } from "utils/AppsmithUtils";
 import {
-  DSEventDetail,
   DSEventTypes,
   DS_EVENT,
   emitInteractionAnalyticsEvent,
 } from "utils/AppsmithUtils";
 
-const ControlContainer = styled.div`
-  & > div:last-child {
-    display: flex;
-    & > div {
-      flex: 1;
-    }
-  }
-`;
-
 export interface LabelAlignmentOptionsControlProps extends ControlProps {
   propertyValue?: Alignment;
-  options: ButtonTabOption[];
+  options: SegmentedControlOption[];
   defaultValue: Alignment;
+  fullWidth?: boolean;
 }
 
-class LabelAlignmentOptionsControl extends BaseControl<
-  LabelAlignmentOptionsControlProps
-> {
+class LabelAlignmentOptionsControl extends BaseControl<LabelAlignmentOptionsControlProps> {
   componentRef = React.createRef<HTMLDivElement>();
 
   constructor(props: LabelAlignmentOptionsControlProps) {
@@ -52,7 +42,7 @@ class LabelAlignmentOptionsControl extends BaseControl<
 
   handleAdsEvent = (e: CustomEvent<DSEventDetail>) => {
     if (
-      e.detail.component === "ButtonTab" &&
+      e.detail.component === "ButtonGroup" &&
       e.detail.event === DSEventTypes.KEYPRESS
     ) {
       emitInteractionAnalyticsEvent(this.componentRef.current, {
@@ -69,14 +59,13 @@ class LabelAlignmentOptionsControl extends BaseControl<
   public render() {
     const { options, propertyValue } = this.props;
     return (
-      <ControlContainer>
-        <ButtonTab
-          options={options}
-          ref={this.componentRef}
-          selectButton={this.handleAlign}
-          values={[propertyValue || Alignment.LEFT]}
-        />
-      </ControlContainer>
+      <SegmentedControl
+        isFullWidth={this.props.fullWidth}
+        onChange={this.handleAlign}
+        options={options}
+        ref={this.componentRef}
+        value={propertyValue || Alignment.LEFT}
+      />
     );
   }
 

@@ -3,19 +3,31 @@ import { JSEditor } from "../Pages/JSEditor";
 import { EntityExplorer } from "../Pages/EntityExplorer";
 import { CommonLocators } from "./CommonLocators";
 import { ApiPage } from "../Pages/ApiPage";
+import { AdminSettings } from "../Pages/AdminSettings";
 import { HomePage } from "../Pages/HomePage";
 import { DataSources } from "../Pages/DataSources";
 import { Table } from "../Pages/Table";
-import { TableV2 } from "../Pages/TableV2";
 import { PropertyPane } from "../Pages/PropertyPane";
 import { DeployMode } from "../Pages/DeployModeHelper";
 import { GitSync } from "../Pages/GitSync";
 import { FakerHelper } from "../Pages/FakerHelper";
 import { DebuggerHelper } from "../Pages/DebuggerHelper";
+import { LibraryInstaller } from "../Pages/LibraryInstaller";
+import { PeekOverlay } from "../Pages/PeekOverlay";
+import { InviteModal } from "../Pages/InviteModal";
 import { AppSettings } from "../Pages/AppSettings/AppSettings";
 import { GeneralSettings } from "../Pages/AppSettings/GeneralSettings";
 import { PageSettings } from "../Pages/AppSettings/PageSettings";
 import { ThemeSettings } from "../Pages/AppSettings/ThemeSettings";
+import { EmbedSettings } from "../Pages/AppSettings/EmbedSettings";
+import { Templates } from "../Pages/Templates";
+import { Onboarding } from "../Pages/Onboarding";
+import { AutoLayout } from "../Pages/AutoLayout";
+import { DataManager } from "./DataManager";
+import { AssertHelper } from "../Pages/AssertHelper";
+import { ReusableHelper } from "./ReusableHelper";
+import { Tabs } from "../Pages/Tabs";
+import { GsheetHelper } from "../Pages/GSheetHelper";
 
 export class ObjectsRegistry {
   private static aggregateHelper__: AggregateHelper;
@@ -24,6 +36,22 @@ export class ObjectsRegistry {
       ObjectsRegistry.aggregateHelper__ = new AggregateHelper();
     }
     return ObjectsRegistry.aggregateHelper__;
+  }
+
+  private static assertHelper__: AssertHelper;
+  static get AssertHelper(): AssertHelper {
+    if (ObjectsRegistry.assertHelper__ === undefined) {
+      ObjectsRegistry.assertHelper__ = new AssertHelper();
+    }
+    return ObjectsRegistry.assertHelper__;
+  }
+
+  private static reusableHelper__: ReusableHelper;
+  static get ReusableHelper(): ReusableHelper {
+    if (ObjectsRegistry.reusableHelper__ === undefined) {
+      ObjectsRegistry.reusableHelper__ = new ReusableHelper();
+    }
+    return ObjectsRegistry.reusableHelper__;
   }
 
   private static jsEditor__: JSEditor;
@@ -58,6 +86,14 @@ export class ObjectsRegistry {
     return ObjectsRegistry.apiPage__;
   }
 
+  private static adminSettings__: AdminSettings;
+  static get AdminSettings(): AdminSettings {
+    if (ObjectsRegistry.adminSettings__ === undefined) {
+      ObjectsRegistry.adminSettings__ = new AdminSettings();
+    }
+    return ObjectsRegistry.adminSettings__;
+  }
+
   private static homePage__: HomePage;
   static get HomePage(): HomePage {
     if (ObjectsRegistry.homePage__ === undefined) {
@@ -82,12 +118,12 @@ export class ObjectsRegistry {
     return ObjectsRegistry.table__;
   }
 
-  private static tableV2__: TableV2;
-  static get TableV2(): TableV2 {
-    if (ObjectsRegistry.tableV2__ === undefined) {
-      ObjectsRegistry.tableV2__ = new TableV2();
+  private static tabs__: Tabs;
+  static get Tabs(): Tabs {
+    if (ObjectsRegistry.tabs__ === undefined) {
+      ObjectsRegistry.tabs__ = new Tabs();
     }
-    return ObjectsRegistry.tableV2__;
+    return ObjectsRegistry.tabs__;
   }
 
   private static propertyPane__: PropertyPane;
@@ -160,6 +196,78 @@ export class ObjectsRegistry {
       ObjectsRegistry.themeSettings__ = new ThemeSettings();
     }
     return ObjectsRegistry.themeSettings__;
+  }
+
+  private static embedSettings__: EmbedSettings;
+  static get EmbedSettings(): EmbedSettings {
+    if (ObjectsRegistry.embedSettings__ === undefined) {
+      ObjectsRegistry.embedSettings__ = new EmbedSettings();
+    }
+    return ObjectsRegistry.embedSettings__;
+  }
+
+  private static LibraryInstaller__: LibraryInstaller;
+  static get LibraryInstaller(): LibraryInstaller {
+    if (ObjectsRegistry.LibraryInstaller__ === undefined) {
+      ObjectsRegistry.LibraryInstaller__ = new LibraryInstaller();
+    }
+    return ObjectsRegistry.LibraryInstaller__;
+  }
+
+  private static peekOverlay__: PeekOverlay;
+  static get PeekOverlay(): PeekOverlay {
+    if (ObjectsRegistry.peekOverlay__ === undefined) {
+      ObjectsRegistry.peekOverlay__ = new PeekOverlay();
+    }
+    return ObjectsRegistry.peekOverlay__;
+  }
+
+  private static inviteModal__: InviteModal;
+  static get InviteModal(): InviteModal {
+    if (ObjectsRegistry.inviteModal__ === undefined) {
+      ObjectsRegistry.inviteModal__ = new InviteModal();
+    }
+    return ObjectsRegistry.inviteModal__;
+  }
+
+  private static templates__: Templates;
+  static get Templates(): Templates {
+    if (ObjectsRegistry.templates__ === undefined) {
+      ObjectsRegistry.templates__ = new Templates();
+    }
+    return ObjectsRegistry.templates__;
+  }
+
+  private static onboarding__: Onboarding;
+  static get Onboarding(): Onboarding {
+    if (ObjectsRegistry.onboarding__ === undefined) {
+      ObjectsRegistry.onboarding__ = new Onboarding();
+    }
+    return ObjectsRegistry.onboarding__;
+  }
+
+  private static autoLayout__: AutoLayout;
+  static get AutoLayout(): AutoLayout {
+    if (ObjectsRegistry.autoLayout__ === undefined) {
+      ObjectsRegistry.autoLayout__ = new AutoLayout();
+    }
+    return ObjectsRegistry.autoLayout__;
+  }
+
+  private static dataManager__: DataManager;
+  static get DataManager(): DataManager {
+    if (ObjectsRegistry.dataManager__ === undefined) {
+      ObjectsRegistry.dataManager__ = new DataManager();
+    }
+    return ObjectsRegistry.dataManager__;
+  }
+
+  private static gsheetHelper__: GsheetHelper;
+  static get GSheetHelper(): GsheetHelper {
+    if (ObjectsRegistry.gsheetHelper__ === undefined) {
+      ObjectsRegistry.gsheetHelper__ = new GsheetHelper();
+    }
+    return ObjectsRegistry.gsheetHelper__;
   }
 }
 

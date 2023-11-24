@@ -1,15 +1,15 @@
 import React, { memo, useCallback } from "react";
 import Entity, { EntityClassNames } from "../Entity";
-import history from "utils/history";
+import history, { NavigationMethod } from "utils/history";
 import JSCollectionEntityContextMenu from "./JSActionContextMenu";
 import { saveJSObjectName } from "actions/jsActionActions";
 import { useSelector } from "react-redux";
 import { getCurrentPageId } from "selectors/editorSelectors";
 import { getJSCollection } from "selectors/entitiesSelector";
-import { AppState } from "@appsmith/reducers";
-import { JSCollection } from "entities/JSCollection";
+import type { AppState } from "@appsmith/reducers";
+import type { JSCollection } from "entities/JSCollection";
 import { JsFileIconV2 } from "../ExplorerIcons";
-import { PluginType } from "entities/Action";
+import type { PluginType } from "entities/Action";
 import { jsCollectionIdURL } from "RouteBuilder";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { useLocation } from "react-router";
@@ -50,7 +50,9 @@ export const ExplorerJSCollectionEntity = memo(
           toUrl: navigateToUrl,
           name: jsAction.name,
         });
-        history.push(navigateToUrl);
+        history.push(navigateToUrl, {
+          invokedBy: NavigationMethod.EntityExplorer,
+        });
       }
     }, [pageId, jsAction.id, jsAction.name, location.pathname]);
 
@@ -78,7 +80,7 @@ export const ExplorerJSCollectionEntity = memo(
         className="t--jsaction"
         contextMenu={contextMenu}
         entityId={jsAction.id}
-        icon={JsFileIconV2}
+        icon={JsFileIconV2(16, 16)}
         key={jsAction.id}
         name={jsAction.name}
         searchKeyword={props.searchKeyword}

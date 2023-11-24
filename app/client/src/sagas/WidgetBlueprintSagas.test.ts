@@ -1,10 +1,8 @@
 import WidgetFactory from "utils/WidgetFactory";
 import { BlueprintOperationTypes } from "widgets/constants";
 
-import {
-  BlueprintOperation,
-  executeWidgetBlueprintChildOperations,
-} from "./WidgetBlueprintSagas";
+import type { BlueprintOperation } from "./WidgetBlueprintSagas";
+import { executeWidgetBlueprintChildOperations } from "./WidgetBlueprintSagas";
 
 describe("WidgetBlueprintSagas", () => {
   it("should returns widgets after executing the child operation", async () => {
@@ -42,10 +40,11 @@ describe("WidgetBlueprintSagas", () => {
           disablePropertyPane: false,
         },
       },
-      "widgetId",
+      ["widgetId"],
       "parentId",
     );
 
+    generator.next();
     expect(generator.next().value).toStrictEqual({});
   });
 });

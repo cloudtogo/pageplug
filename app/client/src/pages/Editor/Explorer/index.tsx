@@ -1,12 +1,11 @@
+import React, { useEffect } from "react";
 import { toggleInOnboardingWidgetSelection } from "actions/onboardingActions";
 import { forceOpenWidgetPanel } from "actions/widgetSidebarActions";
-import { Switcher } from "design-system";
-import { Colors } from "constants/Colors";
+import { SegmentedControl } from "design-system";
 import { tailwindLayers } from "constants/Layers";
-import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import { builderURL } from "RouteBuilder";
 import { getCurrentPageId } from "selectors/editorSelectors";
 import { getIsFirstTimeUserOnboardingEnabled } from "selectors/onboardingSelectors";
@@ -17,9 +16,22 @@ import WidgetSidebar from "../WidgetSidebar";
 import EntityExplorer from "./EntityExplorer";
 import { getExplorerSwitchIndex } from "selectors/editorContextSelectors";
 import { setExplorerSwitchIndex } from "actions/editorContextActions";
+import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
+import WidgetSidebarWithTags from "../WidgetSidebarWithTags";
 
 const selectForceOpenWidgetPanel = (state: AppState) =>
   state.ui.onBoarding.forceOpenWidgetPanel;
+
+const options = [
+  {
+    value: "explorer",
+    label: "资源管理器",
+  },
+  {
+    value: "widgets",
+    label: "组件",
+  },
+];
 
 function ExplorerContent() {
   const dispatch = useDispatch();
@@ -28,45 +40,8 @@ function ExplorerContent() {
   );
   const pageId = useSelector(getCurrentPageId);
   const location = useLocation();
-  const switches = useMemo(
-    () => [
-      {
-        id: "explorer",
-        text: "资源管理",
-        action: () => dispatch(forceOpenWidgetPanel(false)),
-      },
-      {
-        id: "widgets",
-        text: "添加组件",
-        action: () => {
-          if (
-            !(trimQueryString(builderURL({ pageId })) === location.pathname)
-          ) {
-            history.push(builderURL({ pageId }));
-            AnalyticsUtil.logEvent("WIDGET_TAB_CLICK", {
-              type: "WIDGET_TAB",
-              fromUrl: location.pathname,
-              toUrl: builderURL({ pageId }),
-            });
-          }
-          dispatch(forceOpenWidgetPanel(true));
-          dispatch(setExplorerSwitchIndex(1));
-          if (isFirstTimeUserOnboardingEnabled) {
-            dispatch(toggleInOnboardingWidgetSelection(true));
-          }
-        },
-      },
-    ],
-    [
-      dispatch,
-      forceOpenWidgetPanel,
-      isFirstTimeUserOnboardingEnabled,
-      toggleInOnboardingWidgetSelection,
-      location.pathname,
-      pageId,
-    ],
-  );
   const activeSwitchIndex = useSelector(getExplorerSwitchIndex);
+  const featureFlags = useSelector(selectFeatureFlags);
 
   const setActiveSwitchIndex = (index: number) => {
     dispatch(setExplorerSwitchIndex(index));
@@ -80,19 +55,58 @@ function ExplorerContent() {
     }
   }, [openWidgetPanel]);
 
+  const onChange = (value: string) => {
+    if (value === options[0].value) {
+      dispatch(forceOpenWidgetPanel(false));
+    } else if (value === options[1].value) {
+      if (!(trimQueryString(builderURL({ pageId })) === location.pathname)) {
+        history.push(builderURL({ pageId }));
+        AnalyticsUtil.logEvent("WIDGET_TAB_CLICK", {
+          type: "WIDGET_TAB",
+          fromUrl: location.pathname,
+          toUrl: builderURL({ pageId }),
+        });
+      }
+
+      AnalyticsUtil.logEvent("EXPLORER_WIDGET_CLICK");
+      dispatch(forceOpenWidgetPanel(true));
+      dispatch(setExplorerSwitchIndex(1));
+      if (isFirstTimeUserOnboardingEnabled) {
+        dispatch(toggleInOnboardingWidgetSelection(true));
+      }
+    }
+  };
+  const { value: activeOption } = options[activeSwitchIndex];
+
+  const isMobile = useSelector((state) => state.ui.mainCanvas.isMobile);
   return (
     <div
       className={`flex-1 flex flex-col overflow-hidden ${tailwindLayers.entityExplorer}`}
     >
       <div
-        className={`flex-shrink-0 px-3 mt-1 py-2 border-t border-b border-[${Colors.Gallery}]`}
+        className="flex-shrink-0 p-3 pb-2 mt-1 border-t"
+        data-testid="explorer-tab-options"
       >
-        <Switcher activeObj={switches[activeSwitchIndex]} switches={switches} />
+        <SegmentedControl
+          onChange={onChange}
+          options={options}
+          value={activeOption}
+        />
       </div>
-      <WidgetSidebar isActive={switches[activeSwitchIndex].id === "widgets"} />
-      <EntityExplorer
-        isActive={switches[activeSwitchIndex].id === "explorer"}
-      />
+
+      {/* {!featureFlags.release_widgetdiscovery_enabled ? (
+        <WidgetSidebarWithTags isActive={activeOption === "widgets"} />
+      ) : (
+        <WidgetSidebar isActive={activeOption === "widgets"} />
+      )} */}
+      {/* 换种方案 */}
+      {!isMobile ? (
+        <WidgetSidebarWithTags isActive={activeOption === "widgets"} />
+      ) : (
+        <WidgetSidebar isActive={activeOption === "widgets"} />
+      )}
+
+      <EntityExplorer isActive={activeOption === "explorer"} />
     </div>
   );
 }

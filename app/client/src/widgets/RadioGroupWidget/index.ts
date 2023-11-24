@@ -1,12 +1,15 @@
-import IconSVG from "./icon.svg";
 import { Alignment } from "@blueprintjs/core";
-import Widget from "./widget";
 import { LabelPosition } from "components/constants";
+import IconSVG from "./icon.svg";
+import Widget from "./widget";
+import type { SnipingModeProperty, PropertyUpdates } from "widgets/constants";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "单选组",
   iconSVG: IconSVG,
+  tags: [WIDGET_TAGS.SELECT],
   needsMeta: true,
   features: {
     dynamicHeight: {
@@ -18,7 +21,7 @@ export const CONFIG = {
   defaults: {
     rows: 6,
     columns: 20,
-    animateLoading: true,
+    animateLoading: false,
     label: "标签",
     labelPosition: LabelPosition.Top,
     labelAlignment: Alignment.LEFT,
@@ -44,6 +47,47 @@ export const CONFIG = {
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
     stylesheetConfig: Widget.getStylesheetConfig(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
+    setterConfig: Widget.getSetterConfig(),
+  },
+  methods: {
+    getSnipingModeUpdates: (
+      propValueMap: SnipingModeProperty,
+    ): PropertyUpdates[] => {
+      return [
+        {
+          propertyPath: "options",
+          propertyValue: propValueMap.data,
+          isDynamicPropertyPath: true,
+        },
+      ];
+    },
+  },
+  autoLayout: {
+    defaults: {
+      columns: 14,
+      rows: 7,
+    },
+    disabledPropsDefaults: {
+      labelPosition: LabelPosition.Top,
+    },
+    autoDimension: {
+      height: true,
+    },
+    widgetSize: [
+      {
+        viewportMinWidth: 0,
+        configuration: () => {
+          return {
+            minWidth: "240px",
+            minHeight: "70px",
+          };
+        },
+      },
+    ],
+    disableResizeHandles: {
+      vertical: true,
+    },
   },
 };
 

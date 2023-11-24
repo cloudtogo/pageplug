@@ -1,31 +1,25 @@
-import { get, union } from "lodash";
-import toPath from "lodash/toPath";
-import {
-  EvalErrorTypes,
-  EvalError,
-  DependencyMap,
-  getDynamicBindings,
-  extraLibrariesNames,
-  getEntityDynamicBindingPathList,
-} from "utils/DynamicBindingUtils";
+import { find, toPath, union } from "lodash";
+import type { EvalError, DependencyMap } from "utils/DynamicBindingUtils";
+import { EvalErrorTypes } from "utils/DynamicBindingUtils";
 import { extractIdentifierInfoFromCode } from "@shared/ast";
 import {
-  addWidgetPropertyDependencies,
   convertPathToString,
-  isAction,
-  isJSAction,
+  getEntityNameAndPropertyPath,
+  isJSActionConfig,
   isWidget,
-} from "../../Evaluation/evaluationUtils";
-import {
-  DataTreeAction,
-  DataTreeJSAction,
-  DataTreeWidget,
+} from "@appsmith/workers/Evaluation/evaluationUtils";
+
+import type {
+  ConfigTree,
+  DataTreeEntity,
+  WidgetEntity,
+  WidgetEntityConfig,
 } from "entities/DataTree/dataTreeFactory";
 import {
   DEDICATED_WORKER_GLOBAL_SCOPE_IDENTIFIERS,
   JAVASCRIPT_KEYWORDS,
 } from "constants/WidgetValidation";
-import { APPSMITH_GLOBAL_FUNCTIONS } from "components/editorComponents/ActionCreator/constants";
+import { libraryReservedIdentifiers } from "workers/common/JSLibrary";
 
 /** This function extracts validReferences and invalidReferences from a binding {{}}
  * @param script
@@ -40,40 +34,26 @@ import { APPSMITH_GLOBAL_FUNCTIONS } from "components/editorComponents/ActionCre
  */
 export const extractInfoFromBinding = (
   script: string,
-  allPaths: Record<string, true>,
-): { validReferences: string[]; invalidReferences: string[] } => {
+  allKeys: Record<string, true>,
+) => {
   const { references } = extractIdentifierInfoFromCode(
     script,
     self.evaluationVersion,
     invalidEntityIdentifiers,
   );
-  return extractInfoFromReferences(references, allPaths);
+  return getPrunedReferences(references, allKeys);
 };
 
-/** This function extracts validReferences and invalidReferences from an Array of Identifiers
- * @param references
- * @param allPaths
- * @returns validReferences - Valid references from bindings
- * invalidReferences- References which are currently invalid
- *  @example - For identifiers [unknownEntity.name , Api1.name], it returns
- * {
- * validReferences:[Api1.name],
- * invalidReferences: [unknownEntity.name]
- * }
- */
-export const extractInfoFromReferences = (
+export const getPrunedReferences = (
   references: string[],
-  allPaths: Record<string, true>,
-): {
-  validReferences: string[];
-  invalidReferences: string[];
-} => {
-  const validReferences: Set<string> = new Set<string>();
-  const invalidReferences: string[] = [];
+  allKeys: Record<string, true>,
+) => {
+  const prunedReferences: Set<string> = new Set<string>();
+
   references.forEach((reference: string) => {
     // If the identifier exists directly, add it and return
-    if (allPaths.hasOwnProperty(reference)) {
-      validReferences.add(reference);
+    if (allKeys.hasOwnProperty(reference)) {
+      prunedReferences.add(reference);
       return;
     }
     const subpaths = toPath(reference);
@@ -85,41 +65,33 @@ export const extractInfoFromReferences = (
     while (subpaths.length > 1) {
       current = convertPathToString(subpaths);
       // We've found the dep, add it and return
-      if (allPaths.hasOwnProperty(current)) {
-        validReferences.add(current);
+      if (allKeys.hasOwnProperty(current)) {
+        prunedReferences.add(current);
         return;
       }
       subpaths.pop();
     }
-    // If no valid reference is derived, add it to the list of invalidReferences
-    invalidReferences.push(reference);
+    // If no valid reference is derived, add reference as is
+    prunedReferences.add(reference);
   });
-  return { validReferences: Array.from(validReferences), invalidReferences };
+  return Array.from(prunedReferences);
 };
 
 interface BindingsInfo {
-  validReferences: string[];
-  invalidReferences: string[];
+  references: string[];
   errors: EvalError[];
 }
 export const extractInfoFromBindings = (
   bindings: string[],
-  allPaths: Record<string, true>,
+  allKeys: Record<string, true>,
 ) => {
   return bindings.reduce(
     (bindingsInfo: BindingsInfo, binding) => {
       try {
-        const { invalidReferences, validReferences } = extractInfoFromBinding(
-          binding,
-          allPaths,
-        );
+        const references = extractInfoFromBinding(binding, allKeys);
         return {
           ...bindingsInfo,
-          validReferences: union(bindingsInfo.validReferences, validReferences),
-          invalidReferences: union(
-            bindingsInfo.invalidReferences,
-            invalidReferences,
-          ),
+          references: union(bindingsInfo.references, references),
         };
       } catch (error) {
         const newEvalError: EvalError = {
@@ -135,40 +107,18 @@ export const extractInfoFromBindings = (
         };
       }
     },
-    { validReferences: [], invalidReferences: [], errors: [] },
+    { references: [], errors: [] },
   );
 };
 
-export function listTriggerFieldDependencies(
-  entity: DataTreeWidget,
-  entityName: string,
-): DependencyMap {
-  const triggerFieldDependency: DependencyMap = {};
-  if (isWidget(entity)) {
-    const dynamicTriggerPathlist = entity.dynamicTriggerPathList;
-    if (dynamicTriggerPathlist && dynamicTriggerPathlist.length) {
-      dynamicTriggerPathlist.forEach((dynamicPath) => {
-        const propertyPath = dynamicPath.key;
-        const unevalPropValue = get(entity, propertyPath);
-        const { jsSnippets } = getDynamicBindings(unevalPropValue);
-        const existingDeps =
-          triggerFieldDependency[`${entityName}.${propertyPath}`] || [];
-        triggerFieldDependency[
-          `${entityName}.${propertyPath}`
-        ] = existingDeps.concat(jsSnippets.filter((jsSnippet) => !!jsSnippet));
-      });
-    }
-  }
-  return triggerFieldDependency;
-}
-
 export function listValidationDependencies(
-  entity: DataTreeWidget,
+  entity: WidgetEntity,
   entityName: string,
+  entityConfig: WidgetEntityConfig,
 ): DependencyMap {
   const validationDependency: DependencyMap = {};
   if (isWidget(entity)) {
-    const { validationPaths } = entity;
+    const { validationPaths } = entityConfig;
 
     Object.entries(validationPaths).forEach(
       ([propertyPath, validationConfig]) => {
@@ -176,9 +126,8 @@ export function listValidationDependencies(
           const dependencyArray = validationConfig.dependentPaths.map(
             (path) => `${entityName}.${path}`,
           );
-          validationDependency[
-            `${entityName}.${propertyPath}`
-          ] = dependencyArray;
+          validationDependency[`${entityName}.${propertyPath}`] =
+            dependencyArray;
         }
       },
     );
@@ -203,98 +152,38 @@ export const mergeArrays = <T>(currentArr: T[], updateArr: T[]): T[] => {
  * they can refer to potentially dynamic entities.
  * Eg. "appsmith"
  */
-const invalidEntityIdentifiers: Record<string, unknown> = {
+export const invalidEntityIdentifiers: Record<string, unknown> = {
   ...JAVASCRIPT_KEYWORDS,
-  ...APPSMITH_GLOBAL_FUNCTIONS,
   ...DEDICATED_WORKER_GLOBAL_SCOPE_IDENTIFIERS,
-  ...extraLibrariesNames,
+  ...libraryReservedIdentifiers,
 };
 
-export function listEntityDependencies(
-  entity: DataTreeWidget | DataTreeAction | DataTreeJSAction,
-  entityName: string,
-  allPaths: Record<string, true>,
-): DependencyMap {
-  let dependencies: DependencyMap = {};
-
+export function isADynamicTriggerPath(
+  entity: DataTreeEntity,
+  propertyPath: string,
+  entityConfig: WidgetEntityConfig,
+) {
   if (isWidget(entity)) {
-    // Adding the dynamic triggers in the dependency list as they need linting whenever updated
-    // we don't make it dependent on anything else
-    if (entity.dynamicTriggerPathList) {
-      Object.values(entity.dynamicTriggerPathList).forEach(({ key }) => {
-        dependencies[`${entityName}.${key}`] = [];
-      });
+    const dynamicTriggerPathlist = entityConfig?.dynamicTriggerPathList;
+    const isTriggerPath = find(dynamicTriggerPathlist, { key: propertyPath });
+    if (isTriggerPath) {
+      return true;
     }
-    const widgetDependencies = addWidgetPropertyDependencies({
-      entity,
-      entityName,
-    });
+    return false;
+  }
+}
 
-    dependencies = {
-      ...dependencies,
-      ...widgetDependencies,
-    };
-  }
-
-  if (isAction(entity) || isJSAction(entity)) {
-    Object.entries(entity.dependencyMap).forEach(
-      ([path, entityDependencies]) => {
-        const actionDependentPaths: Array<string> = [];
-        const mainPath = `${entityName}.${path}`;
-        // Only add dependencies for paths which exist at the moment in appsmith world
-        if (allPaths.hasOwnProperty(mainPath)) {
-          // Only add dependent paths which exist in the data tree. Skip all the other paths to avoid creating
-          // a cyclical dependency.
-          entityDependencies.forEach((dependentPath) => {
-            const completePath = `${entityName}.${dependentPath}`;
-            if (allPaths.hasOwnProperty(completePath)) {
-              actionDependentPaths.push(completePath);
-            }
-          });
-          dependencies[mainPath] = actionDependentPaths;
-        }
-      },
-    );
-  }
-  if (isJSAction(entity)) {
-    // making functions dependent on their function body entities
-    if (entity.reactivePaths) {
-      Object.keys(entity.reactivePaths).forEach((propertyPath) => {
-        const existingDeps =
-          dependencies[`${entityName}.${propertyPath}`] || [];
-        const unevalPropValue = get(entity, propertyPath);
-        const unevalPropValueString =
-          !!unevalPropValue && unevalPropValue.toString();
-        const { jsSnippets } = getDynamicBindings(
-          unevalPropValueString,
-          entity,
-        );
-        dependencies[`${entityName}.${propertyPath}`] = existingDeps.concat(
-          jsSnippets.filter((jsSnippet) => !!jsSnippet),
-        );
-      });
-    }
-  }
-
-  if (isAction(entity) || isWidget(entity)) {
-    // add the dynamic binding paths to the dependency map
-    const dynamicBindingPathList = getEntityDynamicBindingPathList(entity);
-    if (dynamicBindingPathList.length) {
-      dynamicBindingPathList.forEach((dynamicPath) => {
-        const propertyPath = dynamicPath.key;
-        // [[ formily quincy hack ]] skip all "schema" path binding
-        if (propertyPath === "schema") {
-          return;
-        }
-        const unevalPropValue = get(entity, propertyPath);
-        const { jsSnippets } = getDynamicBindings(unevalPropValue);
-        const existingDeps =
-          dependencies[`${entityName}.${propertyPath}`] || [];
-        dependencies[`${entityName}.${propertyPath}`] = existingDeps.concat(
-          jsSnippets.filter((jsSnippet) => !!jsSnippet),
-        );
-      });
-    }
-  }
-  return dependencies;
+export function isJSFunction(configTree: ConfigTree, fullPath: string) {
+  const { entityName, propertyPath } = getEntityNameAndPropertyPath(fullPath);
+  const entityConfig = configTree[entityName];
+  return (
+    isJSActionConfig(entityConfig) &&
+    propertyPath &&
+    propertyPath in entityConfig.meta
+  );
+}
+export function convertArrayToObject(arr: string[]) {
+  return arr.reduce((acc, item) => {
+    return { ...acc, [item]: true } as const;
+  }, {} as Record<string, true>);
 }

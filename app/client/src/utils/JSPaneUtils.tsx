@@ -1,16 +1,14 @@
 //check difference for after body change and parsing
-import { JSCollection, JSAction, Variable } from "entities/JSCollection";
+import type { JSCollection, JSAction, Variable } from "entities/JSCollection";
 import { ENTITY_TYPE } from "entities/AppsmithConsole";
 import LOG_TYPE from "entities/AppsmithConsole/logtype";
 import AppsmithConsole from "utils/AppsmithConsole";
+import { isEmpty, isEqual, xorWith } from "lodash";
 
 export type ParsedJSSubAction = {
   name: string;
   body: string;
   arguments: Array<Variable>;
-  isAsync: boolean;
-  // parsedFunction - used only to determine if function is async
-  parsedFunction?: () => unknown;
 };
 
 export type ParsedBody = {
@@ -22,6 +20,9 @@ export type JSUpdate = {
   id: string;
   parsedBody: ParsedBody | undefined;
 };
+
+export const getDifferenceInJSArgumentArrays = (x: any, y: any) =>
+  isEmpty(xorWith(x, y, isEqual));
 
 export const getDifferenceInJSCollection = (
   parsedBody: ParsedBody,
@@ -41,7 +42,10 @@ export const getDifferenceInJSCollection = (
       if (preExisted) {
         if (
           preExisted.actionConfiguration.body !== action.body ||
-          preExisted.actionConfiguration.isAsync !== action.isAsync
+          !getDifferenceInJSArgumentArrays(
+            preExisted.actionConfiguration.jsArguments,
+            action.arguments,
+          )
         ) {
           toBeUpdatedActions.push({
             ...preExisted,
@@ -49,7 +53,6 @@ export const getDifferenceInJSCollection = (
               ...preExisted.actionConfiguration,
               body: action.body,
               jsArguments: action.arguments,
-              isAsync: action.isAsync,
             },
           });
         }
@@ -114,9 +117,8 @@ export const getDifferenceInJSCollection = (
         workspaceId: jsAction.workspaceId,
         actionConfiguration: {
           body: action.body,
-          isAsync: action.isAsync,
           timeoutInMillisecond: 0,
-          jsArguments: [],
+          jsArguments: action.arguments || [],
         },
       };
       toBeAddedActions.push(obj);
@@ -202,7 +204,7 @@ export const createDummyJSCollectionActions = (
   workspaceId: string,
 ) => {
   const body =
-    "export default {\n\tmyVar1: [],\n\tmyVar2: {},\n\tmyFun1: () => {\n\t\t//write code here\n\t},\n\tmyFun2: async () => {\n\t\t//use async-await or promises\n\t}\n}";
+    "export default {\n\tmyVar1: [],\n\tmyVar2: {},\n\tmyFun1 () {\n\t\t//\twrite code here\n\t\t//\tthis.myVar1 = [1,2,3]\n\t},\n\tasync myFun2 () {\n\t\t//\tuse async-await or promises\n\t\t//\tawait storeValue('varName', 'hello world')\n\t}\n}";
 
   const actions = [
     {
@@ -211,8 +213,7 @@ export const createDummyJSCollectionActions = (
       workspaceId,
       executeOnLoad: false,
       actionConfiguration: {
-        body: "() => {\n\t\t//write code here\n\t}",
-        isAsync: false,
+        body: "function (){\n\t\t//\twrite code here\n\t\t//\tthis.myVar1 = [1,2,3]\n\t}",
         timeoutInMillisecond: 0,
         jsArguments: [],
       },
@@ -224,8 +225,7 @@ export const createDummyJSCollectionActions = (
       workspaceId,
       executeOnLoad: false,
       actionConfiguration: {
-        body: "async () => {\n\t\t//use async-await or promises\n\t}",
-        isAsync: true,
+        body: "async function () {\n\t\t//\tuse async-await or promises\n\t\t//\tawait storeValue('varName', 'hello world')\n\t}",
         timeoutInMillisecond: 0,
         jsArguments: [],
       },

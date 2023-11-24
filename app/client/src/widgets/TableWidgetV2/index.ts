@@ -1,26 +1,34 @@
 import { Colors } from "constants/Colors";
-import { cloneDeep, set } from "lodash";
-import {
-  combineDynamicBindings,
-  getDynamicBindings,
-} from "utils/DynamicBindingUtils";
-import { WidgetProps } from "widgets/BaseWidget";
-import { BlueprintOperationTypes } from "widgets/constants";
+import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
+import { ResponsiveBehavior } from "utils/autoLayout/constants";
+import type { WidgetProps } from "widgets/BaseWidget";
 import { InlineEditingSaveOptions } from "./constants";
+import type { TableWidgetProps } from "./constants";
 import IconSVG from "./icon.svg";
 import Widget from "./widget";
-import { escapeString } from "./widget/utilities";
+import type {
+  WidgetQueryConfig,
+  WidgetQueryGenerationFormConfig,
+} from "WidgetQueryGenerators/types";
+import type { PropertyUpdates, SnipingModeProperty } from "widgets/constants";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "表格",
   searchTags: ["datagrid", "table"],
   iconSVG: IconSVG,
+  tags: [WIDGET_TAGS.DISPLAY],
   needsMeta: true,
+  needsHeightForContent: true,
   defaults: {
+    responsiveBehavior: ResponsiveBehavior.Fill,
+    minWidth: FILL_WIDGET_MIN_WIDTH,
     rows: 28,
+    canFreezeColumn: true,
+    columnUpdatedAt: Date.now(),
     columns: 34,
-    animateLoading: true,
+    animateLoading: false,
     defaultSelectedRowIndex: 0,
     defaultSelectedRowIndices: [0],
     label: "数据",
@@ -34,191 +42,11 @@ export const CONFIG = {
     dynamicPropertyPathList: [],
     borderColor: Colors.GREY_5,
     borderWidth: "1",
-    dynamicBindingPathList: [
-      {
-        key: "primaryColumns.step.computedValue",
-      },
-      {
-        key: "primaryColumns.task.computedValue",
-      },
-      {
-        key: "primaryColumns.status.computedValue",
-      },
-      {
-        key: "primaryColumns.action.computedValue",
-      },
-      {
-        key: "primaryColumns.action.buttonColor",
-      },
-      {
-        key: "primaryColumns.action.borderRadius",
-      },
-      {
-        key: "primaryColumns.action.boxShadow",
-      },
-    ],
-    primaryColumns: {
-      step: {
-        index: 0,
-        width: 150,
-        id: "step",
-        originalId: "step",
-        alias: "step",
-        horizontalAlignment: "LEFT",
-        verticalAlignment: "CENTER",
-        columnType: "text",
-        textSize: "0.875rem",
-        enableFilter: true,
-        enableSort: true,
-        isVisible: true,
-        isCellVisible: true,
-        isCellEditable: false,
-        isDerived: false,
-        label: "步骤",
-        computedValue: `{{Table1.processedTableData.map((currentRow, currentIndex) => ( currentRow["step"]))}}`,
-        validation: {},
-      },
-      task: {
-        index: 1,
-        width: 150,
-        id: "task",
-        originalId: "task",
-        alias: "task",
-        horizontalAlignment: "LEFT",
-        verticalAlignment: "CENTER",
-        columnType: "text",
-        textSize: "0.875rem",
-        enableFilter: true,
-        enableSort: true,
-        isVisible: true,
-        isCellVisible: true,
-        isCellEditable: false,
-        isDerived: false,
-        label: "任务",
-        computedValue: `{{Table1.processedTableData.map((currentRow, currentIndex) => ( currentRow["task"]))}}`,
-        validation: {},
-      },
-      status: {
-        index: 2,
-        width: 150,
-        id: "status",
-        originalId: "status",
-        alias: "status",
-        horizontalAlignment: "LEFT",
-        verticalAlignment: "CENTER",
-        columnType: "text",
-        textSize: "0.875rem",
-        enableFilter: true,
-        enableSort: true,
-        isVisible: true,
-        isCellVisible: true,
-        isCellEditable: false,
-        isDerived: false,
-        label: "状态",
-        computedValue: `{{Table1.processedTableData.map((currentRow, currentIndex) => ( currentRow["status"]))}}`,
-        validation: {},
-      },
-      action: {
-        index: 3,
-        width: 150,
-        id: "action",
-        originalId: "action",
-        alias: "action",
-        horizontalAlignment: "LEFT",
-        verticalAlignment: "CENTER",
-        columnType: "button",
-        textSize: "0.875rem",
-        enableFilter: true,
-        enableSort: true,
-        isVisible: true,
-        isCellVisible: true,
-        isCellEditable: false,
-        isDisabled: false,
-        isDerived: false,
-        label: "操作",
-        onClick:
-          "{{currentRow.step === '#1' ? showAlert('Done', 'success') : currentRow.step === '#2' ? navigateTo('https://docs.appsmith.com/core-concepts/connecting-to-data-sources/querying-a-database',undefined,'NEW_WINDOW') : navigateTo('https://docs.appsmith.com/core-concepts/displaying-data-read/display-data-tables',undefined,'NEW_WINDOW')}}",
-        computedValue: `{{Table1.processedTableData.map((currentRow, currentIndex) => ( currentRow["action"]))}}`,
-        validation: {},
-      },
-    },
-    tableData: [
-      {
-        step: "#1",
-        task: "拖拽一个表格组件到画布",
-        status: "✅",
-        action: "",
-      },
-      {
-        step: "#2",
-        task: "使用样例数据库创建查询 fetch_users",
-        status: "--",
-        action: "",
-      },
-      {
-        step: "#3",
-        task: "通过 fetch_users.data 绑定查询数据",
-        status: "--",
-        action: "",
-      },
-    ],
-    columnWidthMap: {
-      task: 245,
-      step: 62,
-      status: 75,
-    },
-    columnOrder: ["step", "task", "status", "action"],
-    blueprint: {
-      operations: [
-        {
-          type: BlueprintOperationTypes.MODIFY_PROPS,
-          fn: (widget: WidgetProps & { children?: WidgetProps[] }) => {
-            const primaryColumns = cloneDeep(widget.primaryColumns);
-            const columnIds = Object.keys(primaryColumns);
-            columnIds.forEach((columnId) => {
-              set(
-                primaryColumns,
-                `${columnId}.computedValue`,
-                `{{${
-                  widget.widgetName
-                }.processedTableData.map((currentRow, currentIndex) => ( currentRow["${escapeString(
-                  primaryColumns[columnId].alias,
-                )}"]))}}`,
-              );
-              set(primaryColumns, `${columnId}.labelColor`, Colors.WHITE);
-
-              Object.keys(
-                widget.childStylesheet[primaryColumns[columnId].columnType] ||
-                  [],
-              ).map((propertyKey) => {
-                const { jsSnippets, stringSegments } = getDynamicBindings(
-                  widget.childStylesheet[primaryColumns[columnId].columnType][
-                    propertyKey
-                  ],
-                );
-
-                const js = combineDynamicBindings(jsSnippets, stringSegments);
-
-                set(
-                  primaryColumns,
-                  `${columnId}.${propertyKey}`,
-                  `{{${widget.widgetName}.processedTableData.map((currentRow, currentIndex) => ( ${js}))}}`,
-                );
-              });
-            });
-
-            const updatePropertyMap = [
-              {
-                widgetId: widget.widgetId,
-                propertyName: "primaryColumns",
-                propertyValue: primaryColumns,
-              },
-            ];
-            return updatePropertyMap;
-          },
-        },
-      ],
-    },
+    dynamicBindingPathList: [],
+    primaryColumns: {},
+    tableData: "",
+    columnWidthMap: {},
+    columnOrder: [],
     enableClientSideSearch: true,
     isVisibleSearch: true,
     isVisibleFilters: true,
@@ -226,7 +54,7 @@ export const CONFIG = {
     isVisiblePagination: true,
     isSortable: true,
     delimiter: ",",
-    version: 1,
+    version: 2,
     inlineEditingSaveOption: InlineEditingSaveOptions.ROW_LEVEL,
   },
   properties: {
@@ -237,6 +65,48 @@ export const CONFIG = {
     styleConfig: Widget.getPropertyPaneStyleConfig(),
     stylesheetConfig: Widget.getStylesheetConfig(),
     loadingProperties: Widget.getLoadingProperties(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
+    setterConfig: Widget.getSetterConfig(),
+  },
+  methods: {
+    getQueryGenerationConfig: (widgetProps: WidgetProps) => {
+      return Widget.getQueryGenerationConfig(widgetProps);
+    },
+    getPropertyUpdatesForQueryBinding: (
+      queryConfig: WidgetQueryConfig,
+      widget: WidgetProps,
+      formConfig: WidgetQueryGenerationFormConfig,
+    ) => {
+      return Widget.getPropertyUpdatesForQueryBinding(
+        queryConfig,
+        widget as TableWidgetProps,
+        formConfig,
+      );
+    },
+    getSnipingModeUpdates: (
+      propValueMap: SnipingModeProperty,
+    ): PropertyUpdates[] => {
+      return [
+        {
+          propertyPath: "tableData",
+          propertyValue: propValueMap.data,
+          isDynamicPropertyPath: false,
+        },
+      ];
+    },
+  },
+  autoLayout: {
+    widgetSize: [
+      {
+        viewportMinWidth: 0,
+        configuration: () => {
+          return {
+            minWidth: "280px",
+            minHeight: "300px",
+          };
+        },
+      },
+    ],
   },
 };
 

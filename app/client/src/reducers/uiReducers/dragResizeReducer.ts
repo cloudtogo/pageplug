@@ -1,20 +1,21 @@
-import { areArraysEqual } from "utils/AppsmithUtils";
-import { createImmerReducer } from "utils/ReducerUtils";
-import {
-  ReduxAction,
-  ReduxActionTypes,
-} from "@appsmith/constants/ReduxActionConstants";
+import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { MAIN_CONTAINER_WIDGET_ID } from "constants/WidgetConstants";
+import { createImmerReducer } from "utils/ReducerUtils";
+import type { SetSelectedWidgetsPayload } from "../../actions/widgetSelectionActions";
 
 const initialState: WidgetDragResizeState = {
   isDraggingDisabled: false,
   isDragging: false,
   dragDetails: {},
+  autoLayoutDragDetails: {},
   isResizing: false,
   lastSelectedWidget: undefined,
   selectedWidgets: [],
   focusedWidget: undefined,
   selectedWidgetAncestry: [],
+  entityExplorerAncestry: [],
+  isAutoCanvasResizing: false,
 };
 
 export const widgetDraggingReducer = createImmerReducer(initialState, {
@@ -39,6 +40,7 @@ export const widgetDraggingReducer = createImmerReducer(initialState, {
       dragGroupActualParent: string;
       draggingGroupCenter: DraggingGroupCenter;
       startPoints: any;
+      draggedOn?: string;
     }>,
   ) => {
     state.isDragging = action.payload.isDragging;
@@ -47,6 +49,9 @@ export const widgetDraggingReducer = createImmerReducer(initialState, {
       draggingGroupCenter: action.payload.draggingGroupCenter,
       dragOffset: action.payload.startPoints,
     };
+    if (action.payload.draggedOn) {
+      state.dragDetails.draggedOn = action.payload.draggedOn;
+    }
   },
   [ReduxActionTypes.SET_NEW_WIDGET_DRAGGING]: (
     state: WidgetDragResizeState,
@@ -67,68 +72,23 @@ export const widgetDraggingReducer = createImmerReducer(initialState, {
   ) => {
     state.isResizing = action.payload.isResizing;
   },
-  [ReduxActionTypes.SELECT_WIDGET]: (
+  [ReduxActionTypes.SET_AUTO_CANVAS_RESIZING]: (
     state: WidgetDragResizeState,
-    action: ReduxAction<{ widgetId?: string; isMultiSelect?: boolean }>,
+    action: ReduxAction<boolean>,
   ) => {
-    if (action.payload.widgetId === MAIN_CONTAINER_WIDGET_ID) return;
-    if (action.payload.isMultiSelect) {
-      const widgetId = action.payload.widgetId || "";
-      const removeSelection = state.selectedWidgets.includes(widgetId);
-      if (removeSelection) {
-        state.selectedWidgets = state.selectedWidgets.filter(
-          (each) => each !== widgetId,
-        );
-      } else if (!!widgetId) {
-        state.selectedWidgets = [...state.selectedWidgets, widgetId];
-      }
-      if (state.selectedWidgets.length > 0) {
-        state.lastSelectedWidget = removeSelection ? "" : widgetId;
-      }
-    } else {
-      state.lastSelectedWidget = action.payload.widgetId;
-      if (!action.payload.widgetId) {
-        state.selectedWidgets = [];
-      } else if (
-        !areArraysEqual(state.selectedWidgets, [action.payload.widgetId])
-      ) {
-        state.selectedWidgets = [action.payload.widgetId];
-      }
-    }
+    state.isAutoCanvasResizing = action.payload;
   },
-  [ReduxActionTypes.DESELECT_WIDGETS]: (
+  [ReduxActionTypes.SET_SELECTED_WIDGETS]: (
     state: WidgetDragResizeState,
-    action: ReduxAction<{ widgetIds?: string[] }>,
+    action: ReduxAction<SetSelectedWidgetsPayload>,
   ) => {
-    const { widgetIds } = action.payload;
-    if (widgetIds) {
-      state.selectedWidgets = state.selectedWidgets.filter(
-        (each) => !widgetIds.includes(each),
-      );
-    }
+    state.selectedWidgets = action.payload.widgetIds;
   },
-  [ReduxActionTypes.SELECT_MULTIPLE_WIDGETS]: (
+  [ReduxActionTypes.SET_LAST_SELECTED_WIDGET]: (
     state: WidgetDragResizeState,
-    action: ReduxAction<{ widgetIds?: string[] }>,
+    action: ReduxAction<{ lastSelectedWidget: string }>,
   ) => {
-    const { widgetIds } = action.payload;
-    if (widgetIds && !areArraysEqual(widgetIds, state.selectedWidgets)) {
-      state.selectedWidgets = widgetIds || [];
-      if (widgetIds.length > 1) {
-        state.lastSelectedWidget = "";
-      } else {
-        state.lastSelectedWidget = widgetIds[0];
-      }
-    }
-  },
-  [ReduxActionTypes.SELECT_WIDGETS]: (
-    state: WidgetDragResizeState,
-    action: ReduxAction<{ widgetIds?: string[] }>,
-  ) => {
-    const { widgetIds } = action.payload;
-    if (widgetIds && !areArraysEqual(widgetIds, state.selectedWidgets)) {
-      state.selectedWidgets = [...state.selectedWidgets, ...widgetIds];
-    }
+    state.lastSelectedWidget = action.payload.lastSelectedWidget;
   },
   [ReduxActionTypes.FOCUS_WIDGET]: (
     state: WidgetDragResizeState,
@@ -136,11 +96,17 @@ export const widgetDraggingReducer = createImmerReducer(initialState, {
   ) => {
     state.focusedWidget = action.payload.widgetId;
   },
-  [ReduxActionTypes.SET_SELECTED_WIDGET_ANCESTORY]: (
+  [ReduxActionTypes.SET_SELECTED_WIDGET_ANCESTRY]: (
     state: WidgetDragResizeState,
     action: ReduxAction<string[]>,
   ) => {
     state.selectedWidgetAncestry = action.payload;
+  },
+  [ReduxActionTypes.SET_ENTITY_EXPLORER_WIDGET_ANCESTRY]: (
+    state: WidgetDragResizeState,
+    action: ReduxAction<string[]>,
+  ) => {
+    state.entityExplorerAncestry = action.payload;
   },
 });
 
@@ -161,11 +127,14 @@ export type WidgetDragResizeState = {
   isDraggingDisabled: boolean;
   isDragging: boolean;
   dragDetails: DragDetails;
+  autoLayoutDragDetails: any;
   isResizing: boolean;
   lastSelectedWidget?: string;
   focusedWidget?: string;
   selectedWidgetAncestry: string[];
+  entityExplorerAncestry: string[];
   selectedWidgets: string[];
+  isAutoCanvasResizing: boolean;
 };
 
 export default widgetDraggingReducer;

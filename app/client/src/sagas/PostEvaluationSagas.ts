@@ -1,58 +1,70 @@
+import type { Log } from "entities/AppsmithConsole";
 import {
   ENTITY_TYPE,
-  Log,
   PLATFORM_ERROR,
   Severity,
 } from "entities/AppsmithConsole";
-import { DataTree, UnEvalTree } from "entities/DataTree/dataTreeFactory";
+import type {
+  ConfigTree,
+  DataTree,
+  UnEvalTree,
+  WidgetEntityConfig,
+} from "entities/DataTree/dataTreeFactory";
+import type { DataTreeDiff } from "@appsmith/workers/Evaluation/evaluationUtils";
 import {
-  DataTreeDiff,
   DataTreeDiffEvent,
-  getDataTreeWithoutPrivateWidgets,
+  getDataTreeForAutocomplete,
   getEntityNameAndPropertyPath,
   isAction,
   isJSAction,
   isWidget,
-} from "workers/Evaluation/evaluationUtils";
-import {
-  EvalError,
-  EvalErrorTypes,
-  EvaluationError,
-  getEvalErrorPath,
-  getEvalValuePath,
-} from "utils/DynamicBindingUtils";
+} from "@appsmith/workers/Evaluation/evaluationUtils";
+import type { EvalError, EvaluationError } from "utils/DynamicBindingUtils";
+import { EvalErrorTypes, getEvalErrorPath } from "utils/DynamicBindingUtils";
 import { find, get, some } from "lodash";
 import LOG_TYPE from "entities/AppsmithConsole/logtype";
-import { put, select } from "redux-saga/effects";
-import { AnyReduxAction } from "@appsmith/constants/ReduxActionConstants";
-import { Toaster, Variant } from "design-system";
+import { call, put, select } from "redux-saga/effects";
+import type { AnyReduxAction } from "@appsmith/constants/ReduxActionConstants";
 import AppsmithConsole from "utils/AppsmithConsole";
 import * as Sentry from "@sentry/react";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import {
   createMessage,
   ERROR_EVAL_ERROR_GENERIC,
+  JS_EXECUTION_FAILURE,
   JS_OBJECT_BODY_INVALID,
   VALUE_IS_INVALID,
-  JS_EXECUTION_FAILURE,
 } from "@appsmith/constants/messages";
 import log from "loglevel";
-import { AppState } from "@appsmith/reducers";
-import { getAppMode } from "selectors/applicationSelectors";
+import type { AppState } from "@appsmith/reducers";
+import { getAppMode } from "@appsmith/selectors/applicationSelectors";
 import { APP_MODE } from "entities/App";
 import { dataTreeTypeDefCreator } from "utils/autocomplete/dataTreeTypeDefCreator";
 import CodemirrorTernService from "utils/autocomplete/CodemirrorTernService";
-import { selectFeatureFlags } from "selectors/usersSelectors";
-import FeatureFlags from "entities/FeatureFlags";
-import { JSAction } from "entities/JSCollection";
+import type { JSAction } from "entities/JSCollection";
 import { isWidgetPropertyNamePath } from "utils/widgetEvalUtils";
+import { toast } from "design-system";
+import type { ActionEntityConfig } from "entities/DataTree/types";
+import type { SuccessfulBindings } from "utils/SuccessfulBindingsMap";
+import SuccessfulBindingMap from "utils/SuccessfulBindingsMap";
+import { logActionExecutionError } from "./ActionExecution/errorUtils";
+import { getCurrentWorkspaceId } from "@appsmith/selectors/workspaceSelectors";
+import { getInstanceId } from "@appsmith/selectors/tenantSelectors";
+import type {
+  EvalTreeResponseData,
+  JSVarMutatedEvents,
+} from "workers/Evaluation/types";
+
+let successfulBindingsMap: SuccessfulBindingMap | undefined;
 
 const getDebuggerErrors = (state: AppState) => state.ui.debugger.errors;
 
 function logLatestEvalPropertyErrors(
   currentDebuggerErrors: Record<string, Log>,
   dataTree: DataTree,
-  evaluationOrder: Array<string>,
+  evalAndValidationOrder: Array<string>,
+  configTree: ConfigTree,
+  removedPaths?: Array<{ entityId: string; fullpath: string }>,
 ) {
   const errorsToAdd = [];
   const errorsToDelete = [];
@@ -60,13 +72,17 @@ function logLatestEvalPropertyErrors(
     ...currentDebuggerErrors,
   };
 
-  for (const evaluatedPath of evaluationOrder) {
-    const { entityName, propertyPath } = getEntityNameAndPropertyPath(
-      evaluatedPath,
-    );
+  for (const evaluatedPath of evalAndValidationOrder) {
+    const { entityName, propertyPath } =
+      getEntityNameAndPropertyPath(evaluatedPath);
     const entity = dataTree[entityName];
+    const entityConfig = configTree[entityName] as any;
+
     if (isWidget(entity) || isAction(entity) || isJSAction(entity)) {
-      if (entity.logBlackList && propertyPath in entity.logBlackList) {
+      if (
+        entityConfig?.logBlackList &&
+        propertyPath in entityConfig?.logBlackList
+      ) {
         continue;
       }
       const allEvalErrors: EvaluationError[] = get(
@@ -76,14 +92,6 @@ function logLatestEvalPropertyErrors(
           isPopulated: false,
         }),
         [],
-      );
-
-      const evaluatedValue = get(
-        entity,
-        getEvalValuePath(evaluatedPath, {
-          isPopulated: false,
-          fullPath: false,
-        }),
       );
       const evalErrors: EvaluationError[] = [];
       const evalWarnings: EvaluationError[] = [];
@@ -98,12 +106,20 @@ function logLatestEvalPropertyErrors(
       }
 
       const idField = isWidget(entity) ? entity.widgetId : entity.actionId;
-      const nameField = isWidget(entity) ? entity.widgetName : entity.name;
+      const nameField = isWidget(entity) ? entity.widgetName : entityName;
       const entityType = isWidget(entity)
         ? ENTITY_TYPE.WIDGET
         : isAction(entity)
         ? ENTITY_TYPE.ACTION
         : ENTITY_TYPE.JSACTION;
+      const pluginTypeField = isAction(entity)
+        ? entityConfig.pluginType
+        : entity.type;
+      const iconId = isWidget(entity)
+        ? entity.widgetId
+        : isJSAction(entity)
+        ? entity.actionId
+        : entityConfig.pluginId;
       const debuggerKeys = [
         {
           key: `${idField}-${propertyPath}`,
@@ -116,6 +132,8 @@ function logLatestEvalPropertyErrors(
         },
       ];
 
+      const httpMethod = get(entity.config, "httpMethod") || undefined;
+
       for (const { errors, isWarning, key: debuggerKey } of debuggerKeys) {
         // if dataTree has error but debugger does not -> add
         // if debugger has error and data tree has error -> update error
@@ -127,10 +145,7 @@ function logLatestEvalPropertyErrors(
           // Reformatting eval errors here to a format usable by the debugger
           const errorMessages = errors.map((e) => {
             // Error format required for the debugger
-            return {
-              message: e.errorMessage,
-              type: e.errorType,
-            };
+            return { message: e.errorMessage, type: e.errorType };
           });
 
           const analyticsData = isWidget(entity)
@@ -149,6 +164,7 @@ function logLatestEvalPropertyErrors(
             errorsToAdd.push({
               payload: {
                 id: debuggerKey,
+                iconId: iconId,
                 logType: isWarning
                   ? LOG_TYPE.EVAL_WARNING
                   : LOG_TYPE.EVAL_ERROR,
@@ -163,9 +179,8 @@ function logLatestEvalPropertyErrors(
                   name: nameField,
                   type: entityType,
                   propertyPath: logPropertyPath,
-                },
-                state: {
-                  [logPropertyPath]: evaluatedValue,
+                  pluginType: pluginTypeField,
+                  httpMethod,
                 },
                 analytics: analyticsData,
               },
@@ -178,6 +193,21 @@ function logLatestEvalPropertyErrors(
       }
     }
   }
+
+  /* Clear errors for paths that are no longer in the data tree. Since the evaluation order is updated
+  without the paths that are no longer in the data tree, we need to keep track of the paths that
+   were removed during evaluations and use them to clear any errors that were previously added
+  for those paths.
+  */
+
+  if (removedPaths?.length) {
+    for (const removedPath of removedPaths) {
+      const { entityId, fullpath } = removedPath;
+      const { propertyPath } = getEntityNameAndPropertyPath(fullpath);
+      errorsToDelete.push({ id: `${entityId}-${propertyPath}` });
+    }
+  }
+
   // Add and delete errors from debugger
   AppsmithConsole.addErrors(errorsToAdd);
   AppsmithConsole.deleteErrors(errorsToDelete);
@@ -187,16 +217,26 @@ export function* evalErrorHandler(
   errors: EvalError[],
   dataTree?: DataTree,
   evaluationOrder?: Array<string>,
-): any {
-  if (dataTree && evaluationOrder) {
+  reValidatedPaths?: Array<string>,
+  configTree?: ConfigTree,
+  removedPaths?: Array<{ entityId: string; fullpath: string }>,
+) {
+  if (dataTree && evaluationOrder && configTree && reValidatedPaths) {
     const currentDebuggerErrors: Record<string, Log> = yield select(
       getDebuggerErrors,
     );
+
+    const evalAndValidationOrder = new Set([
+      ...reValidatedPaths,
+      ...evaluationOrder,
+    ]);
     // Update latest errors to the debugger
     logLatestEvalPropertyErrors(
       currentDebuggerErrors,
       dataTree,
-      evaluationOrder,
+      [...evalAndValidationOrder],
+      configTree,
+      removedPaths,
     );
   }
 
@@ -206,9 +246,8 @@ export function* evalErrorHandler(
         if (error.context) {
           // Add more info about node for the toast
           const { dependencyMap, diffs, entityType, node } = error.context;
-          Toaster.show({
-            text: `${error.message} Node was: ${node}`,
-            variant: Variant.danger,
+          toast.show(`${error.message} Node was: ${node}`, {
+            kind: "error",
           });
           AppsmithConsole.error({
             text: `${error.message} Node was: ${node}`,
@@ -238,9 +277,8 @@ export function* evalErrorHandler(
         break;
       }
       case EvalErrorTypes.EVAL_TREE_ERROR: {
-        Toaster.show({
-          text: createMessage(ERROR_EVAL_ERROR_GENERIC),
-          variant: Variant.danger,
+        toast.show(createMessage(ERROR_EVAL_ERROR_GENERIC), {
+          kind: "error",
         });
         break;
       }
@@ -253,17 +291,23 @@ export function* evalErrorHandler(
         break;
       }
       case EvalErrorTypes.CLONE_ERROR: {
-        Sentry.captureException(new Error(error.message), {
-          extra: {
-            request: error.context,
-          },
-        });
+        /*
+         * https://github.com/appsmithorg/appsmith/issues/2654
+         * This code is being commented out to prevent these errors from going to Sentry
+         * till we come up with a more definitive solution to prevent this error
+         * Proposed solution - adding lint errors to editor to prevent these from happening
+         * */
+
+        // Sentry.captureException(new Error(error.message), {
+        //   extra: {
+        //     request: error.context,
+        //   },
+        // });
         break;
       }
       case EvalErrorTypes.PARSE_JS_ERROR: {
-        Toaster.show({
-          text: `${error.message} at: ${error.context?.entity.name}`,
-          variant: Variant.danger,
+        toast.show(`${error.message} at: ${error.context?.entity.name}`, {
+          kind: "error",
         });
         AppsmithConsole.error({
           text: `${error.message} at: ${error.context?.propertyPath}`,
@@ -277,11 +321,44 @@ export function* evalErrorHandler(
         break;
       }
       default: {
-        Sentry.captureException(error);
         log.debug(error);
       }
     }
   });
+}
+
+export function* logJSVarCreatedEvent(
+  jsVarsCreatedEvent: EvalTreeResponseData["jsVarsCreatedEvent"],
+) {
+  if (!jsVarsCreatedEvent) return;
+
+  jsVarsCreatedEvent.forEach(({ path, type }) => {
+    AnalyticsUtil.logEvent("JS_VARIABLE_CREATED", {
+      path,
+      type,
+    });
+  });
+}
+
+export function* logJSVarMutationEvent(
+  jsVarsMutationEvent: JSVarMutatedEvents,
+) {
+  Object.values(jsVarsMutationEvent).forEach(({ path, type }) => {
+    AnalyticsUtil.logEvent("JS_VARIABLE_MUTATED", {
+      path,
+      type,
+    });
+  });
+}
+
+export function* dynamicTriggerErrorHandler(errors: any[]) {
+  if (errors.length > 0) {
+    for (const error of errors) {
+      const errorMessage =
+        error.errorMessage.message.message || error.errorMessage.message;
+      yield call(logActionExecutionError, errorMessage, true);
+    }
+  }
 }
 
 export function* logSuccessfulBindings(
@@ -289,29 +366,59 @@ export function* logSuccessfulBindings(
   dataTree: DataTree,
   evaluationOrder: string[],
   isCreateFirstTree: boolean,
+  isNewWidgetAdded: boolean,
+  configTree: ConfigTree,
+  undefinedEvalValuesMap: Record<string, boolean>,
 ) {
   const appMode: APP_MODE | undefined = yield select(getAppMode);
   if (appMode === APP_MODE.PUBLISHED) return;
   if (!evaluationOrder) return;
 
-  if (isCreateFirstTree) {
-    // we only aim to log binding success which were added by user
-    // for first evaluation, bindings are not added by user hence skipping it.
-    return;
-  }
+  const successfulBindingPaths: SuccessfulBindings = !successfulBindingsMap
+    ? {}
+    : { ...successfulBindingsMap.get() };
+
+  const workspaceId: string = yield select(getCurrentWorkspaceId);
+  const instanceId: string = yield select(getInstanceId);
+
   evaluationOrder.forEach((evaluatedPath) => {
-    const { entityName, propertyPath } = getEntityNameAndPropertyPath(
-      evaluatedPath,
-    );
+    const { entityName, propertyPath } =
+      getEntityNameAndPropertyPath(evaluatedPath);
     const entity = dataTree[entityName];
+    const entityConfig = configTree[entityName] as
+      | WidgetEntityConfig
+      | ActionEntityConfig;
     if (isAction(entity) || isWidget(entity)) {
       const unevalValue = get(unEvalTree, evaluatedPath);
-      const entityType = isAction(entity) ? entity.pluginType : entity.type;
-      const isABinding = find(entity.dynamicBindingPathList, {
+      let isUndefined = false;
+
+      isUndefined = get(undefinedEvalValuesMap, evaluatedPath) || false;
+
+      const entityType = isAction(entity)
+        ? entityConfig.pluginType
+        : entity.type;
+      const isABinding = find(entityConfig.dynamicBindingPathList, {
         key: propertyPath,
       });
 
-      const logBlackList = entity.logBlackList;
+      const logBlackList = entityConfig.logBlackList;
+
+      if (!isABinding || propertyPath in logBlackList) {
+        /**Remove the binding from the map so that in case it is added again, we log it*/
+        if (successfulBindingPaths[evaluatedPath]) {
+          delete successfulBindingPaths[evaluatedPath];
+        }
+        return;
+      }
+
+      /** All the paths that are added when a new widget is added needs to be added to the map so that
+       * we don't log them again unless they are changed by the user.
+       */
+      if (isNewWidgetAdded) {
+        successfulBindingPaths[evaluatedPath] = unevalValue;
+        return;
+      }
+
       const errors: EvaluationError[] = get(
         dataTree,
         getEvalErrorPath(evaluatedPath),
@@ -319,16 +426,48 @@ export function* logSuccessfulBindings(
       ) as EvaluationError[];
 
       const hasErrors = errors.length > 0;
+      if (!hasErrors) {
+        if (!isCreateFirstTree) {
+          // we only aim to log binding success which were added by user
+          // for first evaluation, bindings are not added by user hence skipping it.
+          AnalyticsUtil.logEvent("BINDING_SUCCESS", {
+            unevalValue,
+            entityType,
+            propertyPath,
+          });
 
-      if (isABinding && !hasErrors && !(propertyPath in logBlackList)) {
-        AnalyticsUtil.logEvent("BINDING_SUCCESS", {
-          unevalValue,
-          entityType,
-          propertyPath,
-        });
+          /**Log the binding only if it doesn't already exist */
+          if (
+            !successfulBindingPaths[evaluatedPath] ||
+            (successfulBindingPaths[evaluatedPath] &&
+              successfulBindingPaths[evaluatedPath] !== unevalValue)
+          ) {
+            AnalyticsUtil.logEvent("ENTITY_BINDING_SUCCESS", {
+              unevalValue,
+              entityType,
+              propertyPath,
+              isUndefined,
+              orgId: workspaceId,
+              instanceId,
+            });
+          }
+        }
+
+        successfulBindingPaths[evaluatedPath] = unevalValue;
+      } else {
+        /**Remove the binding from the map so that in case it is added again, we log it*/
+        if (successfulBindingPaths[evaluatedPath]) {
+          delete successfulBindingPaths[evaluatedPath];
+        }
       }
     }
   });
+
+  if (!successfulBindingsMap) {
+    successfulBindingsMap = new SuccessfulBindingMap(successfulBindingPaths);
+  } else {
+    successfulBindingsMap.set(successfulBindingPaths);
+  }
 }
 
 export function* postEvalActionDispatcher(actions: Array<AnyReduxAction>) {
@@ -341,8 +480,10 @@ export function* postEvalActionDispatcher(actions: Array<AnyReduxAction>) {
 // is accurate
 export function* updateTernDefinitions(
   dataTree: DataTree,
+  configTree: ConfigTree,
   updates: DataTreeDiff[],
   isCreateFirstTree: boolean,
+  jsData: Record<string, unknown> = {},
 ) {
   const shouldUpdate: boolean =
     isCreateFirstTree ||
@@ -360,12 +501,16 @@ export function* updateTernDefinitions(
 
   if (!shouldUpdate) return;
   const start = performance.now();
-  // remove private widgets from dataTree used for autocompletion
-  const treeWithoutPrivateWidgets = getDataTreeWithoutPrivateWidgets(dataTree);
-  const featureFlags: FeatureFlags = yield select(selectFeatureFlags);
+
+  // remove private and suppressAutoComplete widgets from dataTree used for autocompletion
+  const dataTreeForAutocomplete = getDataTreeForAutocomplete(
+    dataTree,
+    configTree,
+  );
   const { def, entityInfo } = dataTreeTypeDefCreator(
-    treeWithoutPrivateWidgets,
-    !!featureFlags.JS_EDITOR,
+    dataTreeForAutocomplete,
+    jsData,
+    configTree,
   );
   CodemirrorTernService.updateDef("DATA_TREE", def, entityInfo);
   const end = performance.now();
@@ -388,16 +533,32 @@ export function* handleJSFunctionExecutionErrorLog(
             text: `${createMessage(JS_EXECUTION_FAILURE)}: ${collectionName}.${
               action.name
             }`,
-            messages: errors.map((error) => ({
-              message: error.errorMessage || error.message,
-              type: PLATFORM_ERROR.JS_FUNCTION_EXECUTION,
-              subType: error.errorType,
-            })),
+            messages: errors.map((error) => {
+              // TODO: Remove this check once we address uncaught promise errors
+              let errorMessage = error.errorMessage;
+              if (!errorMessage) {
+                const errMsgArr = error.message.split(":");
+                errorMessage = errMsgArr.length
+                  ? {
+                      name: errMsgArr[0],
+                      message: errMsgArr.slice(1).join(":"),
+                    }
+                  : {
+                      name: "ValidationError",
+                      message: error.message,
+                    };
+              }
+              return {
+                message: errorMessage,
+                type: PLATFORM_ERROR.JS_FUNCTION_EXECUTION,
+                subType: error.errorType,
+              };
+            }),
             source: {
-              id: action.id,
+              id: action.collectionId ? action.collectionId : action.id,
               name: `${collectionName}.${action.name}`,
               type: ENTITY_TYPE.JSACTION,
-              propertyPath: `${collectionName}.${action.name}`,
+              propertyPath: `${action.name}`,
             },
           },
         },

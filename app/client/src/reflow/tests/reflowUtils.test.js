@@ -26,8 +26,16 @@ import {
   initializeMovementLimitMap,
   checkProcessNodeForTree,
   getRelativeCollidingValue,
+  getContainerExitEdge,
+  getCollisionDirectionOfDropTarget,
+  modifyResizePosition,
+  willItCauseUndroppableState,
+  verifyMovementLimits,
 } from "../reflowUtils";
-import { HORIZONTAL_RESIZE_LIMIT, VERTICAL_RESIZE_LIMIT } from "../reflowTypes";
+import {
+  HORIZONTAL_RESIZE_MIN_LIMIT,
+  VERTICAL_RESIZE_MIN_LIMIT,
+} from "../reflowTypes";
 
 const gridProps = {
   parentColumnSpace: 20,
@@ -163,7 +171,7 @@ describe("Test reflow util methods", () => {
 
   describe("Test getShouldReflow method", () => {
     const spaceMovementMap = {
-      "1234": [
+      1234: [
         {
           maxMovement: 30,
           directionalIndicator: 1,
@@ -269,7 +277,7 @@ describe("Test reflow util methods", () => {
 
   describe("Test getDelta method", () => {
     const OGPositions = {
-        "1234": {
+        1234: {
           id: "1234",
           left: 50,
           top: 50,
@@ -278,7 +286,7 @@ describe("Test reflow util methods", () => {
         },
       },
       newPositions = {
-        "1234": { id: "1234", left: 40, top: 30, right: 80, bottom: 70 },
+        1234: { id: "1234", left: 40, top: 30, right: 80, bottom: 70 },
       };
 
     it("should check X and Y Coordinates for constant direction", () => {
@@ -332,6 +340,21 @@ describe("Test reflow util methods", () => {
         Y: 40,
       });
     });
+
+    it("should return 0 0, when empty object is passed", () => {
+      expect(getDelta({}, newPositions, ReflowDirection.TOPLEFT)).toEqual({
+        X: 0,
+        Y: 0,
+      });
+      expect(getDelta(OGPositions, {}, ReflowDirection.TOPRIGHT)).toEqual({
+        X: 0,
+        Y: 0,
+      });
+      expect(getDelta({}, {}, ReflowDirection.TOPRIGHT)).toEqual({
+        X: 0,
+        Y: 0,
+      });
+    });
   });
 
   describe("Test getCollidingSpaces and getCollidingSpacesInDirection method", () => {
@@ -370,7 +393,7 @@ describe("Test reflow util methods", () => {
 
     it("should return collidingSpaces with direction", () => {
       const collidingSpaces = {
-        "1236": {
+        1236: {
           id: "1236",
           left: 30,
           top: 20,
@@ -382,7 +405,7 @@ describe("Test reflow util methods", () => {
           isHorizontal: false,
           order: 1,
         },
-        "1237": {
+        1237: {
           id: "1237",
           left: 10,
           top: 10,
@@ -408,7 +431,7 @@ describe("Test reflow util methods", () => {
 
     it("should return collidingSpaces with predicted direction based on Previous positions", () => {
       const collidingSpaces = {
-          "1237": {
+          1237: {
             id: "1237",
             left: 10,
             top: 10,
@@ -422,7 +445,7 @@ describe("Test reflow util methods", () => {
           },
         },
         prevPositions = {
-          "1234": {
+          1234: {
             id: "1234",
             left: 50,
             top: 30,
@@ -532,7 +555,7 @@ describe("Test reflow util methods", () => {
           collisionTree,
           gridProps,
           ReflowDirection.LEFT,
-          depth * HORIZONTAL_RESIZE_LIMIT,
+          depth * HORIZONTAL_RESIZE_MIN_LIMIT,
           30,
           false,
         ),
@@ -545,13 +568,13 @@ describe("Test reflow util methods", () => {
           collisionTree,
           gridProps,
           ReflowDirection.LEFT,
-          depth * HORIZONTAL_RESIZE_LIMIT,
+          depth * HORIZONTAL_RESIZE_MIN_LIMIT,
           30,
           true,
         ),
       ).toBe(
         -1 *
-          (collisionTree.left - depth * HORIZONTAL_RESIZE_LIMIT) *
+          (collisionTree.left - depth * HORIZONTAL_RESIZE_MIN_LIMIT) *
           gridProps.parentColumnSpace,
       );
     });
@@ -562,7 +585,7 @@ describe("Test reflow util methods", () => {
           collisionTree,
           gridProps,
           ReflowDirection.RIGHT,
-          depth * HORIZONTAL_RESIZE_LIMIT,
+          depth * HORIZONTAL_RESIZE_MIN_LIMIT,
           30,
           false,
         ),
@@ -578,14 +601,14 @@ describe("Test reflow util methods", () => {
           collisionTree,
           gridProps,
           ReflowDirection.RIGHT,
-          depth * HORIZONTAL_RESIZE_LIMIT,
+          depth * HORIZONTAL_RESIZE_MIN_LIMIT,
           30,
           true,
         ),
       ).toBe(
         (gridProps.maxGridColumns -
           collisionTree.right -
-          depth * HORIZONTAL_RESIZE_LIMIT) *
+          depth * HORIZONTAL_RESIZE_MIN_LIMIT) *
           gridProps.parentColumnSpace,
       );
     });
@@ -608,7 +631,7 @@ describe("Test reflow util methods", () => {
           collisionTree,
           gridProps,
           ReflowDirection.TOP,
-          depth * VERTICAL_RESIZE_LIMIT,
+          depth * VERTICAL_RESIZE_MIN_LIMIT,
           20,
           false,
         ),
@@ -621,13 +644,13 @@ describe("Test reflow util methods", () => {
           collisionTree,
           gridProps,
           ReflowDirection.TOP,
-          depth * VERTICAL_RESIZE_LIMIT,
+          depth * VERTICAL_RESIZE_MIN_LIMIT,
           20,
           true,
         ),
       ).toBe(
         -1 *
-          (collisionTree.top - depth * VERTICAL_RESIZE_LIMIT) *
+          (collisionTree.top - depth * VERTICAL_RESIZE_MIN_LIMIT) *
           gridProps.parentRowSpace,
       );
     });
@@ -638,7 +661,7 @@ describe("Test reflow util methods", () => {
           collisionTree,
           gridProps,
           ReflowDirection.BOTTOM,
-          depth * VERTICAL_RESIZE_LIMIT,
+          depth * VERTICAL_RESIZE_MIN_LIMIT,
           230,
           false,
         ),
@@ -801,7 +824,7 @@ describe("Test reflow util methods", () => {
             dimensionBeforeCollision,
             gridProps.parentRowSpace,
             emptySpaces,
-            VERTICAL_RESIZE_LIMIT,
+            VERTICAL_RESIZE_MIN_LIMIT,
           ),
         ).toBe(height);
       });
@@ -816,7 +839,7 @@ describe("Test reflow util methods", () => {
             dimensionBeforeCollision,
             gridProps.parentRowSpace,
             emptySpaces,
-            VERTICAL_RESIZE_LIMIT,
+            VERTICAL_RESIZE_MIN_LIMIT,
             true,
           ),
         ).toBe(height);
@@ -835,7 +858,7 @@ describe("Test reflow util methods", () => {
             dimensionBeforeCollision,
             gridProps.parentRowSpace,
             emptySpaces,
-            VERTICAL_RESIZE_LIMIT,
+            VERTICAL_RESIZE_MIN_LIMIT,
             true,
           ),
         ).toBe(resizedHeight);
@@ -851,10 +874,10 @@ describe("Test reflow util methods", () => {
             dimensionBeforeCollision,
             gridProps.parentRowSpace,
             emptySpaces,
-            VERTICAL_RESIZE_LIMIT,
+            VERTICAL_RESIZE_MIN_LIMIT,
             true,
           ),
-        ).toBe(VERTICAL_RESIZE_LIMIT * gridProps.parentRowSpace);
+        ).toBe(VERTICAL_RESIZE_MIN_LIMIT * gridProps.parentRowSpace);
       });
     });
 
@@ -874,7 +897,7 @@ describe("Test reflow util methods", () => {
             dimensionBeforeCollision,
             gridProps.parentColumnSpace,
             emptySpaces,
-            HORIZONTAL_RESIZE_LIMIT,
+            HORIZONTAL_RESIZE_MIN_LIMIT,
           ),
         ).toBe(width);
       });
@@ -889,7 +912,7 @@ describe("Test reflow util methods", () => {
             dimensionBeforeCollision,
             gridProps.parentColumnSpace,
             emptySpaces,
-            HORIZONTAL_RESIZE_LIMIT,
+            HORIZONTAL_RESIZE_MIN_LIMIT,
             true,
           ),
         ).toBe(width);
@@ -910,7 +933,7 @@ describe("Test reflow util methods", () => {
             dimensionBeforeCollision,
             gridProps.parentColumnSpace,
             emptySpaces,
-            HORIZONTAL_RESIZE_LIMIT,
+            HORIZONTAL_RESIZE_MIN_LIMIT,
             true,
           ),
         ).toBe(resizedWidth);
@@ -926,10 +949,10 @@ describe("Test reflow util methods", () => {
             dimensionBeforeCollision,
             gridProps.parentColumnSpace,
             emptySpaces,
-            HORIZONTAL_RESIZE_LIMIT,
+            HORIZONTAL_RESIZE_MIN_LIMIT,
             true,
           ),
-        ).toBe(HORIZONTAL_RESIZE_LIMIT * gridProps.parentColumnSpace);
+        ).toBe(HORIZONTAL_RESIZE_MIN_LIMIT * gridProps.parentColumnSpace);
       });
     });
 
@@ -949,7 +972,7 @@ describe("Test reflow util methods", () => {
             dimensionBeforeCollision,
             gridProps.parentColumnSpace,
             emptySpaces,
-            HORIZONTAL_RESIZE_LIMIT,
+            HORIZONTAL_RESIZE_MIN_LIMIT,
           ),
         ).toBe(width);
       });
@@ -964,7 +987,7 @@ describe("Test reflow util methods", () => {
             dimensionBeforeCollision,
             gridProps.parentColumnSpace,
             emptySpaces,
-            HORIZONTAL_RESIZE_LIMIT,
+            HORIZONTAL_RESIZE_MIN_LIMIT,
             true,
           ),
         ).toBe(width);
@@ -986,7 +1009,7 @@ describe("Test reflow util methods", () => {
             dimensionBeforeCollision,
             gridProps.parentColumnSpace,
             emptySpaces,
-            HORIZONTAL_RESIZE_LIMIT,
+            HORIZONTAL_RESIZE_MIN_LIMIT,
             true,
           ),
         ).toBe(resizedWidth);
@@ -1002,10 +1025,10 @@ describe("Test reflow util methods", () => {
             dimensionBeforeCollision,
             gridProps.parentColumnSpace,
             emptySpaces,
-            HORIZONTAL_RESIZE_LIMIT,
+            HORIZONTAL_RESIZE_MIN_LIMIT,
             true,
           ),
-        ).toBe(HORIZONTAL_RESIZE_LIMIT * gridProps.parentColumnSpace);
+        ).toBe(HORIZONTAL_RESIZE_MIN_LIMIT * gridProps.parentColumnSpace);
       });
     });
   });
@@ -1060,7 +1083,7 @@ describe("Test reflow util methods", () => {
     });
     it("should return true while intersecting after confirming with previous movement map", () => {
       const prevMovementMap = {
-        "1235": {
+        1235: {
           directionY: ReflowDirection.BOTTOM,
         },
       };
@@ -1080,7 +1103,7 @@ describe("Test reflow util methods", () => {
     });
     it("should return false while intersecting after failing confirmation with previous movement map", () => {
       const prevMovementMap = {
-        "1235": {
+        1235: {
           directionY: ReflowDirection.TOP,
         },
       };
@@ -1147,28 +1170,28 @@ describe("Test reflow util methods", () => {
   });
   describe("Test filterSpaceByDirection and filterCommonSpaces method", () => {
     const occupiedSpaceMap = {
-      "1235": {
+      1235: {
         id: "1235",
         left: 10,
         top: 10,
         right: 35,
         bottom: 25,
       },
-      "1236": {
+      1236: {
         id: "1236",
         left: 30,
         top: 20,
         right: 50,
         bottom: 35,
       },
-      "1237": {
+      1237: {
         id: "1237",
         left: 40,
         top: 10,
         right: 40,
         bottom: 55,
       },
-      "1238": {
+      1238: {
         id: "1238",
         left: 90,
         top: 60,
@@ -1177,14 +1200,14 @@ describe("Test reflow util methods", () => {
       },
     };
     const filteredSpaceMap = {
-      "1237": {
+      1237: {
         id: "1237",
         left: 40,
         top: 10,
         right: 40,
         bottom: 55,
       },
-      "1238": {
+      1238: {
         id: "1238",
         left: 90,
         top: 60,
@@ -1212,8 +1235,8 @@ describe("Test reflow util methods", () => {
 
     it("filters out common spaces", () => {
       const spacesToFilter = {
-        "1236": {},
-        "1235": {},
+        1236: {},
+        1235: {},
       };
       filterCommonSpaces(spacesToFilter, occupiedSpaceMap);
       expect(occupiedSpaceMap).toEqual(filteredSpaceMap);
@@ -1221,28 +1244,28 @@ describe("Test reflow util methods", () => {
   });
   describe("Test getSpacesMapFromArray method", () => {
     const occupiedSpaceMap = {
-      "1235": {
+      1235: {
         id: "1235",
         left: 10,
         top: 10,
         right: 35,
         bottom: 25,
       },
-      "1236": {
+      1236: {
         id: "1236",
         left: 30,
         top: 20,
         right: 50,
         bottom: 35,
       },
-      "1237": {
+      1237: {
         id: "1237",
         left: 40,
         top: 10,
         right: 40,
         bottom: 55,
       },
-      "1238": {
+      1238: {
         id: "1238",
         left: 90,
         top: 60,
@@ -1315,7 +1338,7 @@ describe("Test reflow util methods", () => {
     ];
     it("should return an map from array", () => {
       const collidingSpaceMap = {
-        "1236": {
+        1236: {
           id: "1236",
           left: 30,
           top: 20,
@@ -1325,7 +1348,7 @@ describe("Test reflow util methods", () => {
           direction: ReflowDirection.LEFT,
           order: 2,
         },
-        "1237": {
+        1237: {
           id: "1237",
           left: 40,
           top: 10,
@@ -1335,7 +1358,7 @@ describe("Test reflow util methods", () => {
           direction: ReflowDirection.TOP,
           order: 3,
         },
-        "1235": {
+        1235: {
           id: "1235",
           left: 10,
           top: 10,
@@ -1345,7 +1368,7 @@ describe("Test reflow util methods", () => {
           direction: ReflowDirection.BOTTOM,
           order: 4,
         },
-        "1238": {
+        1238: {
           id: "1238",
           left: 90,
           top: 60,
@@ -1363,28 +1386,28 @@ describe("Test reflow util methods", () => {
   });
   describe("Test getModifiedOccupiedSpacesMap method", () => {
     const occupiedSpaceMap = {
-      "1236": {
+      1236: {
         id: "1236",
         left: 30,
         top: 20,
         right: 50,
         bottom: 35,
       },
-      "1237": {
+      1237: {
         id: "1237",
         left: 40,
         top: 10,
         right: 40,
         bottom: 55,
       },
-      "1235": {
+      1235: {
         id: "1235",
         left: 10,
         top: 10,
         right: 35,
         bottom: 25,
       },
-      "1238": {
+      1238: {
         id: "1238",
         left: 90,
         top: 60,
@@ -1397,15 +1420,15 @@ describe("Test reflow util methods", () => {
       parentRowSpace: 10,
     };
     const prevMovementMap = {
-      "1236": {
+      1236: {
         Y: 10,
         height: 150,
       },
-      "1237": {
+      1237: {
         X: 20,
         width: 180,
       },
-      "1238": {
+      1238: {
         X: -100,
         Y: -80,
         width: 400,
@@ -1414,28 +1437,28 @@ describe("Test reflow util methods", () => {
     };
     it("should return horizontally modified occupied spaces map", () => {
       const modifiedOccupiedSpacesMap = {
-        "1235": {
+        1235: {
           id: "1235",
           left: 10,
           top: 10,
           right: 35,
           bottom: 25,
         },
-        "1236": {
+        1236: {
           id: "1236",
           left: 30,
           top: 20,
           right: 50,
           bottom: 35,
         },
-        "1237": {
+        1237: {
           id: "1237",
           left: 42,
           top: 10,
           right: 60,
           bottom: 55,
         },
-        "1238": {
+        1238: {
           id: "1238",
           left: 80,
           top: 60,
@@ -1456,28 +1479,28 @@ describe("Test reflow util methods", () => {
     });
     it("should return vertically modified occupied spaces map", () => {
       const modifiedOccupiedSpacesMap = {
-        "1235": {
+        1235: {
           id: "1235",
           left: 10,
           top: 10,
           right: 35,
           bottom: 25,
         },
-        "1236": {
+        1236: {
           id: "1236",
           left: 30,
           top: 21,
           right: 50,
           bottom: 36,
         },
-        "1237": {
+        1237: {
           id: "1237",
           left: 40,
           top: 10,
           right: 40,
           bottom: 55,
         },
-        "1238": {
+        1238: {
           id: "1238",
           left: 90,
           top: 52,
@@ -1506,7 +1529,7 @@ describe("Test reflow util methods", () => {
       bottom: 90,
     };
     const occupiedSpaceMap = {
-      "1238": {
+      1238: {
         id: "1238",
         left: 90,
         top: 60,
@@ -1519,7 +1542,7 @@ describe("Test reflow util methods", () => {
       parentRowSpace: 10,
     };
     const prevMovementMap = {
-      "1238": {
+      1238: {
         X: -100,
         Y: -80,
         width: 400,
@@ -1736,13 +1759,13 @@ describe("Test reflow util methods", () => {
     });
     it("should return Top direction if moved only in top direction, regardless of passed direction", () => {
       const newSpacePositions = {
-        "1234": {
+        1234: {
           top: 50,
           left: 70,
         },
       };
       const prevSpacePositions = {
-        "1234": {
+        1234: {
           top: 55,
           left: 70,
         },
@@ -1757,13 +1780,13 @@ describe("Test reflow util methods", () => {
     });
     it("should return right direction if moved only in right direction, regardless of passed direction", () => {
       const newSpacePositions = {
-        "1234": {
+        1234: {
           top: 50,
           left: 70,
         },
       };
       const prevSpacePositions = {
-        "1234": {
+        1234: {
           top: 50,
           left: 65,
         },
@@ -1778,13 +1801,13 @@ describe("Test reflow util methods", () => {
     });
     it("should return bottom and left direction if moved in both bottom and left direction, regardless of passed direction", () => {
       const newSpacePositions = {
-        "1234": {
+        1234: {
           top: 50,
           left: 70,
         },
       };
       const prevSpacePositions = {
-        "1234": {
+        1234: {
           top: 45,
           left: 75,
         },
@@ -1823,23 +1846,23 @@ describe("Test reflow util methods", () => {
       { id: "16" },
     ];
     const initialMovementLimitMap = {
-      "12": {
+      12: {
         canHorizontalMove: true,
         canVerticalMove: true,
       },
-      "13": {
+      13: {
         canHorizontalMove: true,
         canVerticalMove: true,
       },
-      "14": {
+      14: {
         canHorizontalMove: true,
         canVerticalMove: true,
       },
-      "15": {
+      15: {
         canHorizontalMove: true,
         canVerticalMove: true,
       },
-      "16": {
+      16: {
         canHorizontalMove: true,
         canVerticalMove: true,
       },
@@ -1864,7 +1887,7 @@ describe("Test reflow util methods", () => {
     });
     it("should be false if the current node has a value in the opposite direction", () => {
       const processedNodes = {
-        "1234": {
+        1234: {
           TOP: {
             value: 15,
           },
@@ -1876,7 +1899,7 @@ describe("Test reflow util methods", () => {
     });
     it("should be true if the current node is not processed in the current direction", () => {
       const processedNodes = {
-        "1234": {
+        1234: {
           LEFT: {
             value: 15,
           },
@@ -1888,7 +1911,7 @@ describe("Test reflow util methods", () => {
     });
     it("should be false if the current node is processed in the current direction if the current node's colliding value is lesser", () => {
       const processedNodes = {
-        "1234": {
+        1234: {
           BOTTOM: {
             value: 15,
           },
@@ -1900,7 +1923,7 @@ describe("Test reflow util methods", () => {
     });
     it("should be true if the current node is processed in the current direction if the current node's colliding value is greater", () => {
       const processedNodes = {
-        "1234": {
+        1234: {
           BOTTOM: { value: 5 },
         },
       };
@@ -1910,10 +1933,10 @@ describe("Test reflow util methods", () => {
     });
     it("should be false and return cached values if colliding values equal each other", () => {
       const processedNodes = {
-        "1234": {
+        1234: {
           BOTTOM: {
             value: 10,
-            occupiedLength: 5 * VERTICAL_RESIZE_LIMIT,
+            occupiedLength: 5 * VERTICAL_RESIZE_MIN_LIMIT,
             occupiedSpace: 10,
             currentEmptySpaces: 10,
           },
@@ -1921,7 +1944,7 @@ describe("Test reflow util methods", () => {
       };
       expect(checkProcessNodeForTree(collidingSpace, processedNodes)).toEqual({
         shouldProcessNode: false,
-        occupiedLength: 5 * VERTICAL_RESIZE_LIMIT,
+        occupiedLength: 5 * VERTICAL_RESIZE_MIN_LIMIT,
         occupiedSpace: 10,
         currentEmptySpaces: 10,
       });
@@ -1943,7 +1966,7 @@ describe("Test reflow util methods", () => {
           collidingValue,
           direction,
           gridProps,
-          depth * VERTICAL_RESIZE_LIMIT,
+          depth * VERTICAL_RESIZE_MIN_LIMIT,
         ),
       ).toBe(collidingValue);
     });
@@ -1958,7 +1981,7 @@ describe("Test reflow util methods", () => {
           collidingValue,
           direction,
           gridProps,
-          depth * VERTICAL_RESIZE_LIMIT,
+          depth * VERTICAL_RESIZE_MIN_LIMIT,
         ),
       ).toBe(collidingValue);
     });
@@ -1973,9 +1996,9 @@ describe("Test reflow util methods", () => {
           collidingValue,
           direction,
           gridProps,
-          depth * VERTICAL_RESIZE_LIMIT,
+          depth * VERTICAL_RESIZE_MIN_LIMIT,
         ),
-      ).toBe(depth * VERTICAL_RESIZE_LIMIT);
+      ).toBe(depth * VERTICAL_RESIZE_MIN_LIMIT);
     });
     it("should return calculated colliding value if depth is high compared to colliding value in LEFT direction", () => {
       const direction = ReflowDirection.LEFT;
@@ -1988,9 +2011,9 @@ describe("Test reflow util methods", () => {
           collidingValue,
           direction,
           gridProps,
-          depth * HORIZONTAL_RESIZE_LIMIT,
+          depth * HORIZONTAL_RESIZE_MIN_LIMIT,
         ),
-      ).toBe(depth * HORIZONTAL_RESIZE_LIMIT);
+      ).toBe(depth * HORIZONTAL_RESIZE_MIN_LIMIT);
     });
     it("should return calculated colliding value if depth is high compared to colliding value in RIGHT direction", () => {
       const direction = ReflowDirection.RIGHT;
@@ -2003,9 +2026,376 @@ describe("Test reflow util methods", () => {
           collidingValue,
           direction,
           gridProps,
-          depth * HORIZONTAL_RESIZE_LIMIT,
+          depth * HORIZONTAL_RESIZE_MIN_LIMIT,
         ),
-      ).toBe(gridProps.maxGridColumns - depth * HORIZONTAL_RESIZE_LIMIT);
+      ).toBe(gridProps.maxGridColumns - depth * HORIZONTAL_RESIZE_MIN_LIMIT);
     });
+  });
+
+  describe("while testing getContainerExitEdge, it should return edge direction that is closest to mouse", () => {
+    const exitContainer = {
+      id: "exit",
+      left: 20,
+      right: 60,
+      top: 20,
+      bottom: 70,
+    };
+    it("should return RIGHT if closer to right container edge", () => {
+      const mousePointer = {
+        left: 62,
+        top: 40,
+      };
+      expect(getContainerExitEdge(exitContainer, mousePointer)).toEqual(
+        ReflowDirection.RIGHT,
+      );
+    });
+
+    it("should return LEFT if closer to right container edge", () => {
+      const mousePointer = {
+        left: 19,
+        top: 40,
+      };
+      expect(getContainerExitEdge(exitContainer, mousePointer)).toEqual(
+        ReflowDirection.LEFT,
+      );
+    });
+
+    it("should return TOP if closer to top container edge", () => {
+      const mousePointer = {
+        left: 40,
+        top: 19,
+      };
+      expect(getContainerExitEdge(exitContainer, mousePointer)).toEqual(
+        ReflowDirection.TOP,
+      );
+    });
+
+    it("should return BOTTOM if closer to bottom container edge", () => {
+      const mousePointer = {
+        left: 40,
+        top: 72,
+      };
+      expect(getContainerExitEdge(exitContainer, mousePointer)).toEqual(
+        ReflowDirection.BOTTOM,
+      );
+    });
+  });
+
+  describe("test getCollisionDirectionOfDropTarget method", () => {
+    const containerSpace = {
+      id: "container",
+      left: 20,
+      right: 60,
+      top: 20,
+      bottom: 70,
+    };
+
+    it("should return current direction if it is possible push direction", () => {
+      const mousePosition = {
+        left: 63,
+        top: 75,
+      };
+      expect(
+        getCollisionDirectionOfDropTarget(
+          containerSpace,
+          ReflowDirection.LEFT,
+          mousePosition,
+        ),
+      ).toBe(ReflowDirection.LEFT);
+
+      expect(
+        getCollisionDirectionOfDropTarget(
+          containerSpace,
+          ReflowDirection.TOP,
+          mousePosition,
+        ),
+      ).toBe(ReflowDirection.TOP);
+    });
+
+    it("should return push direction if mouse is only on one edge even if direction sent is not the same", () => {
+      let mousePosition = {
+        left: 40,
+        top: 14,
+      };
+      expect(
+        getCollisionDirectionOfDropTarget(
+          containerSpace,
+          ReflowDirection.UNSET,
+          mousePosition,
+        ),
+      ).toBe(ReflowDirection.BOTTOM);
+
+      mousePosition = {
+        left: 67,
+        top: 40,
+      };
+      expect(
+        getCollisionDirectionOfDropTarget(
+          containerSpace,
+          ReflowDirection.UNSET,
+          mousePosition,
+        ),
+      ).toBe(ReflowDirection.LEFT);
+    });
+
+    it("should return push direction which is farthest from edge, if it has 2 possible directions and the direction sent is not one of them", () => {
+      let mousePosition = {
+        left: 18,
+        top: 14,
+      };
+      expect(
+        getCollisionDirectionOfDropTarget(
+          containerSpace,
+          ReflowDirection.UNSET,
+          mousePosition,
+        ),
+      ).toBe(ReflowDirection.BOTTOM);
+    });
+  });
+
+  describe("test modifyResizePosition method", () => {
+    const containerSpace = {
+      id: "container",
+      left: 20,
+      right: 60,
+      top: 20,
+      bottom: 70,
+    };
+    it("should return resized position based on direction of collision with Container's left side", () => {
+      const spacePosition = {
+        id: "id",
+        left: 10,
+        right: 30,
+        top: 15,
+        bottom: 40,
+      };
+      const resizedPosition = {
+        id: "id",
+        left: 10,
+        right: 20,
+        top: 15,
+        bottom: 40,
+      };
+
+      expect(
+        modifyResizePosition(
+          spacePosition,
+          containerSpace,
+          ReflowDirection.RIGHT,
+        ),
+      ).toEqual(resizedPosition);
+    });
+
+    it("should return resized position based on direction of collision with Container's right side", () => {
+      const spacePosition = {
+        id: "id",
+        left: 50,
+        right: 90,
+        top: 15,
+        bottom: 40,
+      };
+      const resizedPosition = {
+        id: "id",
+        left: 60,
+        right: 90,
+        top: 15,
+        bottom: 40,
+      };
+
+      expect(
+        modifyResizePosition(
+          spacePosition,
+          containerSpace,
+          ReflowDirection.LEFT,
+        ),
+      ).toEqual(resizedPosition);
+    });
+
+    it("should return resized position based on direction of collision with Container's top side", () => {
+      const spacePosition = {
+        id: "id",
+        left: 15,
+        right: 40,
+        top: 5,
+        bottom: 40,
+      };
+      const resizedPosition = {
+        id: "id",
+        left: 15,
+        right: 40,
+        top: 5,
+        bottom: 20,
+      };
+
+      expect(
+        modifyResizePosition(
+          spacePosition,
+          containerSpace,
+          ReflowDirection.BOTTOM,
+        ),
+      ).toEqual(resizedPosition);
+    });
+
+    it("should return resized position based on direction of collision with Container's bottom side", () => {
+      const spacePosition = {
+        id: "id",
+        left: 15,
+        right: 40,
+        top: 60,
+        bottom: 95,
+      };
+      const resizedPosition = {
+        id: "id",
+        left: 15,
+        right: 40,
+        top: 70,
+        bottom: 95,
+      };
+
+      expect(
+        modifyResizePosition(
+          spacePosition,
+          containerSpace,
+          ReflowDirection.TOP,
+        ),
+      ).toEqual(resizedPosition);
+    });
+
+    it("should return resized position based on direction of collision but with min heights and widths", () => {
+      let spacePosition = {
+        id: "id",
+        left: 19,
+        right: 40,
+        top: 19,
+        bottom: 95,
+      };
+      let resizedPosition = {
+        id: "id",
+        left: 19,
+        right: 40,
+        top: 19,
+        bottom: 19 + VERTICAL_RESIZE_MIN_LIMIT,
+      };
+
+      expect(
+        modifyResizePosition(
+          spacePosition,
+          containerSpace,
+          ReflowDirection.BOTTOM,
+        ),
+      ).toEqual(resizedPosition);
+
+      resizedPosition = {
+        id: "id",
+        left: 19,
+        right: 19 + HORIZONTAL_RESIZE_MIN_LIMIT,
+        top: 19,
+        bottom: 95,
+      };
+
+      expect(
+        modifyResizePosition(
+          spacePosition,
+          containerSpace,
+          ReflowDirection.RIGHT,
+        ),
+      ).toEqual(resizedPosition);
+
+      spacePosition.fixedHeight = 95 - 19;
+      expect(
+        modifyResizePosition(
+          spacePosition,
+          containerSpace,
+          ReflowDirection.BOTTOM,
+        ),
+      ).toEqual(spacePosition);
+    });
+  });
+
+  it("should test willItCauseUndroppableState method, it should return true if any value is false", () => {
+    const movementLimitMap = {
+      1: {
+        canVerticalMove: true,
+        canHorizontalMove: true,
+      },
+      2: {
+        canVerticalMove: true,
+        canHorizontalMove: true,
+      },
+    };
+
+    expect(willItCauseUndroppableState(movementLimitMap)).toEqual(false);
+
+    movementLimitMap["3"] = {
+      canVerticalMove: true,
+      canHorizontalMove: false,
+    };
+    expect(willItCauseUndroppableState(movementLimitMap)).toEqual(true);
+  });
+
+  it("verifyMovementLimits should check if space is colliding with any container and return movementLimits based on that", () => {
+    const movementLimits = {
+      1: {
+        canVerticalMove: true,
+        canHorizontalMove: true,
+      },
+      2: {
+        canVerticalMove: true,
+        canHorizontalMove: true,
+      },
+      3: {
+        canVerticalMove: false,
+        canHorizontalMove: true,
+      },
+    };
+
+    const occupiedSpacesMap = {
+      4: {
+        left: 50,
+        right: 70,
+        top: 60,
+        bottom: 90,
+        isDropTarget: true,
+      },
+    };
+    const spacePositionMap = {
+      1: {
+        left: 10,
+        right: 40,
+        top: 20,
+        bottom: 50,
+      },
+      2: {
+        left: 20,
+        right: 65,
+        top: 20,
+        bottom: 50,
+      },
+      3: {
+        left: 90,
+        right: 110,
+        top: 20,
+        bottom: 50,
+      },
+    };
+
+    const verifiedMovementLimits = {
+      1: {
+        canVerticalMove: true,
+        canHorizontalMove: true,
+      },
+      2: {
+        canVerticalMove: true,
+        canHorizontalMove: true,
+      },
+      3: {
+        canVerticalMove: false,
+        canHorizontalMove: true,
+      },
+    };
+
+    expect(
+      verifyMovementLimits(movementLimits, spacePositionMap, occupiedSpacesMap),
+    ).toEqual(verifiedMovementLimits);
   });
 });

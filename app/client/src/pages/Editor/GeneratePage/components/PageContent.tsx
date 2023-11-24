@@ -1,12 +1,11 @@
 import React from "react";
-import styled from "constants/DefaultTheme";
+import styled from "styled-components";
+
 import GeneratePageForm from "./GeneratePageForm/GeneratePageForm";
 
 const Container = styled.div`
   display: flex;
-  justify-content: center;
-  padding: 20px;
-  margin-top: 40px;
+  padding: var(--ads-v2-spaces-7) 0;
 `;
 
 function PageContent() {

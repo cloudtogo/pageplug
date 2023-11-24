@@ -1,18 +1,19 @@
 import React, { useEffect, useRef } from "react";
 import { connect } from "react-redux";
-import { reduxForm, InjectedFormProps } from "redux-form";
+import type { InjectedFormProps } from "redux-form";
+import { reduxForm } from "redux-form";
 import styled from "styled-components";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import { API_HOME_SCREEN_FORM } from "@appsmith/constants/forms";
-import { Colors } from "constants/Colors";
 import NewApiScreen from "./NewApi";
 import NewQueryScreen from "./NewQuery";
 import ActiveDataSources from "./ActiveDataSources";
 import MockDataSources from "./MockDataSources";
 import AddDatasourceSecurely from "./AddDatasourceSecurely";
 import { getDatasources, getMockDatasources } from "selectors/entitiesSelector";
-import { Datasource, MockDatasource } from "entities/Datasource";
-import { IconSize, TabComponent, TabProp, Text, TextType } from "design-system";
+import type { Datasource, MockDatasource } from "entities/Datasource";
+import type { TabProp } from "design-system-old";
+import { IconSize, Text, TextType } from "design-system-old";
 import scrollIntoView from "scroll-into-view-if-needed";
 import { INTEGRATION_TABS, INTEGRATION_EDITOR_MODES } from "constants/routes";
 import { thinScrollbar } from "constants/DefaultTheme";
@@ -25,18 +26,28 @@ import { integrationEditorURL } from "RouteBuilder";
 import { getCurrentAppWorkspace } from "@appsmith/selectors/workspaceSelectors";
 
 import { hasCreateDatasourcePermission } from "@appsmith/utils/permissionHelpers";
+import { Tab, TabPanel, Tabs, TabsList } from "design-system";
+import Debugger, {
+  ResizerContentContainer,
+  ResizerMainContainer,
+} from "../DataSourceEditor/Debugger";
+import { showDebuggerFlag } from "selectors/debuggerSelectors";
+import AnalyticsUtil from "utils/AnalyticsUtil";
+import { DatasourceCreateEntryPoints } from "constants/Datasource";
 
 const HeaderFlex = styled.div`
+  font-size: 20px;
   display: flex;
   align-items: center;
+  color: var(--ads-v2-color-fg-emphasis-plus);
+  padding: 0 var(--ads-v2-spaces-7);
 `;
 
 const ApiHomePage = styled.div`
   display: flex;
   flex-direction: column;
 
-  font-size: 20px;
-  padding: 20px 20px 0 20px;
+  padding-top: 20px;
   /* margin-left: 10px; */
   flex: 1;
   overflow: hidden !important;
@@ -44,42 +55,76 @@ const ApiHomePage = styled.div`
     position: absolute;
     left: 70%;
   }
-  .bp3-collapse-body {
-    position: absolute;
-    z-index: 99999;
-    background-color: ${Colors.WHITE};
-    border: 1px solid ${Colors.ALTO};
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-    width: 100%;
-    padding: 20px;
-  }
   .fontSize16 {
     font-size: 16px;
+  }
+  .integrations-content-container {
+    padding: 0 var(--ads-v2-spaces-7);
+  }
+  .t--vertical-menu {
+    overflow: auto;
   }
 `;
 
 const MainTabsContainer = styled.div`
   width: 100%;
   height: 100%;
+  padding: 0 var(--ads-v2-spaces-7);
+  /* .react-tabs__tab-list {
+    margin: 2px;
+  } */
 `;
 
 const SectionGrid = styled.div<{ isActiveTab?: boolean }>`
   margin-top: 16px;
   display: grid;
-  grid-template-columns: 1fr ${({ isActiveTab }) => isActiveTab && "180px"};
+  grid-template-columns: 1fr;
   grid-template-rows: auto minmax(0, 1fr);
   gap: 10px 16px;
   flex: 1;
-  min-height: 0;
+  min-height: 100%;
 `;
 const NewIntegrationsContainer = styled.div`
   ${thinScrollbar};
-  scrollbar-width: thin;
   overflow: auto;
   flex: 1;
   & > div {
     margin-bottom: 20px;
+  }
+`;
+
+// This replaces a previous instance of tab. It's a menu, but it's styled to look like a tab from ads.
+// This is because this is the only such instance of vertical menu on our platform. When we refactor the view
+// on this screen to have a smaller grid size, we should consider removing this entirely.
+const VerticalMenu = styled.nav`
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 8px;
+
+  color: var(--ads-v2-color-fg-muted);
+  // &&&& to override blueprint styles
+  &&&&&& :hover {
+    color: var(--ads-v2-color-fg) !important;
+    text-decoration: none !important;
+  }
+`;
+
+const VerticalMenuItem = styled.a`
+  display: flex;
+  align-items: center;
+
+  height: 30px;
+  font-size: 14px;
+  padding-left: 8px;
+  border-left: solid 2px transparent;
+
+  :hover {
+    border-left: solid 2px var(--ads-v2-color-border-emphasis);
+  }
+
+  &[aria-selected="true"] {
+    border-left: solid 2px var(--ads-v2-color-border-brand);
   }
 `;
 
@@ -99,11 +144,12 @@ type IntegrationsHomeScreenProps = {
   mockDatasources: MockDatasource[];
   applicationId: string;
   canCreateDatasource?: boolean;
+  showDebugger: boolean;
 };
 
 type IntegrationsHomeScreenState = {
   page: number;
-  activePrimaryMenuId: number;
+  activePrimaryMenuId: string;
   activeSecondaryMenuId: number;
   unsupportedPluginDialogVisible: boolean;
 };
@@ -112,32 +158,8 @@ type Props = IntegrationsHomeScreenProps &
   InjectedFormProps<{ category: string }, IntegrationsHomeScreenProps>;
 
 const PRIMARY_MENU_IDS = {
-  ACTIVE: 0,
-  CREATE_NEW: 1,
-};
-
-const SECONDARY_MENU: TabProp[] = [
-  {
-    key: "API",
-    title: "API接口",
-    panelComponent: <div />,
-  },
-  {
-    key: "DATABASE",
-    title: "数据库",
-    panelComponent: <div />,
-  },
-];
-
-const getSecondaryMenu = (hasActiveSources: boolean) => {
-  const mockDbMenu = {
-    key: "MOCK_DATABASE",
-    title: "样例数据库",
-    panelComponent: <div />,
-  };
-  return hasActiveSources
-    ? [...SECONDARY_MENU, mockDbMenu]
-    : [mockDbMenu, ...SECONDARY_MENU];
+  ACTIVE: "ACTIVE",
+  CREATE_NEW: "CREATE_NEW",
 };
 
 const getSecondaryMenuIds = (hasActiveSources = false) => {
@@ -147,19 +169,6 @@ const getSecondaryMenuIds = (hasActiveSources = false) => {
     MOCK_DATABASE: 2 - (hasActiveSources ? 0 : 2),
   };
 };
-
-// const TERTIARY_MENU: TabProp[] = [
-//   {
-//     key: "ACTIVE_CONNECTIONS",
-//     title: "Active Connections",
-//     panelComponent: <div />,
-//   },
-//   {
-//     key: "MOCK_DATABASE",
-//     title: "Mock Databases",
-//     panelComponent: <div />,
-//   },
-// ];
 
 const TERTIARY_MENU_IDS = {
   ACTIVE_CONNECTIONS: 0,
@@ -226,6 +235,45 @@ function CreateNewAPI({
         isCreating={isCreating}
         location={location}
         pageId={pageId}
+        showSaasAPIs={false}
+        showUnsupportedPluginDialog={showUnsupportedPluginDialog}
+      />
+    </div>
+  );
+}
+
+function CreateNewSaasIntegration({
+  active,
+  history,
+  isCreating,
+  pageId,
+  showUnsupportedPluginDialog,
+}: any) {
+  const newSaasAPIRef = useRef<HTMLDivElement>(null);
+  const isMounted = useRef(false);
+
+  useEffect(() => {
+    if (active && newSaasAPIRef.current) {
+      isMounted.current &&
+        scrollIntoView(newSaasAPIRef.current, {
+          behavior: "smooth",
+          scrollMode: "always",
+          block: "start",
+          boundary: document.getElementById("new-integrations-wrapper"),
+        });
+    } else {
+      isMounted.current = true;
+    }
+  }, [active]);
+  return (
+    <div id="new-saas-api" ref={newSaasAPIRef}>
+      <Text type={TextType.H2}>Saas 集成</Text>
+      <NewApiScreen
+        history={history}
+        isCreating={isCreating}
+        location={location}
+        pageId={pageId}
+        showSaasAPIs
         showUnsupportedPluginDialog={showUnsupportedPluginDialog}
       />
     </div>
@@ -362,7 +410,7 @@ class IntegrationsHomeScreen extends React.Component<
     }
   }
 
-  onSelectPrimaryMenu = (activePrimaryMenuId: number) => {
+  onSelectPrimaryMenu = (activePrimaryMenuId: string) => {
     const { dataSources, history, pageId } = this.props;
     if (activePrimaryMenuId === this.state.activePrimaryMenuId) {
       return;
@@ -403,6 +451,7 @@ class IntegrationsHomeScreen extends React.Component<
       isCreating,
       location,
       pageId,
+      showDebugger,
     } = this.props;
     const { unsupportedPluginDialogVisible } = this.state;
     let currentScreen;
@@ -470,6 +519,17 @@ class IntegrationsHomeScreen extends React.Component<
             pageId={pageId}
             showUnsupportedPluginDialog={this.showUnsupportedPluginDialog}
           />
+          <CreateNewSaasIntegration
+            active={
+              activeSecondaryMenuId ===
+              getSecondaryMenuIds(dataSources.length > 0).API
+            }
+            history={history}
+            isCreating={isCreating}
+            location={location}
+            pageId={pageId}
+            showUnsupportedPluginDialog={this.showUnsupportedPluginDialog}
+          />
           {dataSources.length > 0 &&
             this.props.mockDatasources.length > 0 &&
             mockDataSection}
@@ -481,9 +541,14 @@ class IntegrationsHomeScreen extends React.Component<
           dataSources={dataSources}
           history={this.props.history}
           location={location}
-          onCreateNew={() =>
-            this.onSelectPrimaryMenu(PRIMARY_MENU_IDS.CREATE_NEW)
-          }
+          onCreateNew={() => {
+            this.onSelectPrimaryMenu(PRIMARY_MENU_IDS.CREATE_NEW);
+            // Event for datasource creation click
+            const entryPoint = DatasourceCreateEntryPoints.ACTIVE_DATASOURCE;
+            AnalyticsUtil.logEvent("NAVIGATE_TO_CREATE_NEW_DATASOURCE_PAGE", {
+              entryPoint,
+            });
+          }}
           pageId={pageId}
         />
       );
@@ -512,32 +577,36 @@ class IntegrationsHomeScreen extends React.Component<
           >
             <MainTabsContainer>
               {showTabs && (
-                <TabComponent
-                  cypressSelector="t--datasource-tab"
-                  onSelect={this.onSelectPrimaryMenu}
-                  selectedIndex={this.state.activePrimaryMenuId}
-                  tabs={PRIMARY_MENU}
-                />
+                <Tabs
+                  data-testid="t--datasource-tab"
+                  onValueChange={this.onSelectPrimaryMenu}
+                  value={this.state.activePrimaryMenuId}
+                >
+                  <TabsList>
+                    {PRIMARY_MENU.map((tab: TabProp) => (
+                      <Tab
+                        data-testid={`t--tab-${tab.key}`}
+                        key={tab.key}
+                        value={tab.key}
+                      >
+                        {tab.title}
+                      </Tab>
+                    ))}
+                  </TabsList>
+                  {PRIMARY_MENU.map((tab: TabProp) => (
+                    <TabPanel key={tab.key} value={tab.key}>
+                      {tab.panelComponent}
+                    </TabPanel>
+                  ))}
+                </Tabs>
               )}
             </MainTabsContainer>
-            {this.state.activePrimaryMenuId !== PRIMARY_MENU_IDS.ACTIVE && (
-              <div />
-            )}
-
-            {currentScreen}
-            {activePrimaryMenuId === PRIMARY_MENU_IDS.CREATE_NEW && (
-              <TabComponent
-                className="t--vertical-menu"
-                onSelect={this.onSelectSecondaryMenu}
-                selectedIndex={this.state.activeSecondaryMenuId}
-                tabs={
-                  this.props.mockDatasources.length > 0
-                    ? getSecondaryMenu(dataSources.length > 0)
-                    : SECONDARY_MENU
-                }
-                vertical
-              />
-            )}
+            <ResizerMainContainer>
+              <ResizerContentContainer className="integrations-content-container">
+                {currentScreen}
+              </ResizerContentContainer>
+              {showDebugger && <Debugger />}
+            </ResizerMainContainer>
           </SectionGrid>
         </ApiHomePage>
       </>
@@ -546,6 +615,9 @@ class IntegrationsHomeScreen extends React.Component<
 }
 
 const mapStateToProps = (state: AppState) => {
+  // Debugger render flag
+  const showDebugger = showDebuggerFlag(state);
+
   const userWorkspacePermissions =
     getCurrentAppWorkspace(state).userPermissions ?? [];
 
@@ -558,6 +630,7 @@ const mapStateToProps = (state: AppState) => {
     isCreating: state.ui.apiPane.isCreating,
     applicationId: getCurrentApplicationId(state),
     canCreateDatasource,
+    showDebugger,
   };
 };
 

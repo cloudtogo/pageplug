@@ -1,18 +1,21 @@
 import { createReducer } from "utils/ReducerUtils";
-import {
+import type {
   ReduxAction,
   UpdateCanvasPayload,
+} from "@appsmith/constants/ReduxActionConstants";
+import {
   ReduxActionTypes,
   ReduxActionErrorTypes,
 } from "@appsmith/constants/ReduxActionConstants";
 import moment from "moment";
-import {
+import type {
   LayoutOnLoadActionErrors,
   PageAction,
 } from "constants/AppsmithActionConstants/ActionConstants";
-import { UpdatePageResponse } from "api/PageApi";
+import type { UpdatePageResponse } from "api/PageApi";
 
 const initialState: EditorReduxState = {
+  widgetConfigBuilt: false,
   initialized: false,
   loadingStates: {
     publishing: false,
@@ -217,9 +220,16 @@ const editorReducer = createReducer(initialState, {
       savingEntity: false,
     },
   }),
+  [ReduxActionTypes.WIDGET_INIT_SUCCESS]: (
+    state: EditorReduxState,
+  ): EditorReduxState => ({
+    ...state,
+    widgetConfigBuilt: true,
+  }),
 });
 
 export interface EditorReduxState {
+  widgetConfigBuilt: boolean;
   initialized: boolean;
   pageWidgetId?: string;
   currentLayoutId?: string;

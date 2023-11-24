@@ -1,12 +1,14 @@
-import { call, put, select, take } from "redux-saga/effects";
-import {
+import { call, put, race, select, take } from "redux-saga/effects";
+import type {
   ReduxAction,
   ReduxActionWithPromise,
+} from "@appsmith/constants/ReduxActionConstants";
+import {
   ReduxActionTypes,
   ReduxActionErrorTypes,
 } from "@appsmith/constants/ReduxActionConstants";
 import { reset } from "redux-form";
-import UserApi, {
+import type {
   CreateUserRequest,
   CreateUserResponse,
   ForgotPasswordRequest,
@@ -16,13 +18,15 @@ import UserApi, {
   LeaveWorkspaceRequest,
 } from "@appsmith/api/UserApi";
 import { AUTH_LOGIN_URL, matchBuilderPath, SETUP } from "constants/routes";
+import UserApi from "@appsmith/api/UserApi";
 import history from "utils/history";
-import { ApiResponse } from "api/ApiResponses";
+import type { ApiResponse } from "api/ApiResponses";
 import {
   validateResponse,
   getResponseErrorMessage,
   callAPI,
 } from "sagas/ErrorSagas";
+import _get from "lodash/get";
 import {
   logoutUserSuccess,
   logoutUserError,
@@ -32,17 +36,21 @@ import {
   invitedUserSignupSuccess,
   fetchFeatureFlagsSuccess,
   fetchFeatureFlagsError,
+  fetchProductAlertSuccess,
+  fetchProductAlertFailure,
 } from "actions/userActions";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { INVITE_USERS_TO_WORKSPACE_FORM } from "@appsmith/constants/forms";
 import PerformanceTracker, {
   PerformanceTransactionName,
 } from "utils/PerformanceTracker";
-import { ERROR_CODES } from "@appsmith/constants/ApiConstants";
-import { ANONYMOUS_USERNAME, User } from "constants/userConstants";
-import { flushErrorsAndRedirect } from "actions/errorActions";
+import type { User } from "constants/userConstants";
+import { ANONYMOUS_USERNAME } from "constants/userConstants";
+import {
+  flushErrorsAndRedirect,
+  safeCrashAppRequest,
+} from "actions/errorActions";
 import localStorage from "utils/localStorage";
-import { Toaster, Variant } from "design-system";
 import log from "loglevel";
 
 import { getCurrentUser } from "selectors/usersSelectors";
@@ -52,10 +60,31 @@ import {
 } from "actions/websocketActions";
 import {
   getEnableFirstTimeUserOnboarding,
-  getFirstTimeUserOnboardingApplicationId,
+  getFirstTimeUserOnboardingApplicationIds,
   getFirstTimeUserOnboardingIntroModalVisibility,
 } from "utils/storage";
 import { initializeAnalyticsAndTrackers } from "utils/AppsmithUtils";
+import { getAppsmithConfigs } from "@appsmith/configs";
+import { getSegmentState } from "selectors/analyticsSelectors";
+import {
+  segmentInitUncertain,
+  segmentInitSuccess,
+} from "actions/analyticsActions";
+import type { SegmentState } from "reducers/uiReducers/analyticsReducer";
+import type { FeatureFlags } from "@appsmith/entities/FeatureFlag";
+import { DEFAULT_FEATURE_FLAG_VALUE } from "@appsmith/entities/FeatureFlag";
+import UsagePulse from "usagePulse";
+import { toast } from "design-system";
+import { isAirgapped } from "@appsmith/utils/airgapHelpers";
+import {
+  USER_PROFILE_PICTURE_UPLOAD_FAILED,
+  UPDATE_USER_DETAILS_FAILED,
+} from "@appsmith/constants/messages";
+import { createMessage } from "design-system-old/build/constants/messages";
+import type {
+  ProductAlert,
+  ProductAlertConfig,
+} from "reducers/uiReducers/usersReducer";
 
 export function* createUserSaga(
   action: ReduxActionWithPromise<CreateUserRequest>,
@@ -96,6 +125,25 @@ export function* createUserSaga(
   }
 }
 
+export function* waitForSegmentInit(skipWithAnonymousId: boolean) {
+  return;
+  if (skipWithAnonymousId && AnalyticsUtil.getAnonymousId()) return;
+  const currentUser: User | undefined = yield select(getCurrentUser);
+  const segmentState: SegmentState | undefined = yield select(getSegmentState);
+  const appsmithConfig = getAppsmithConfigs();
+
+  if (
+    currentUser?.enableTelemetry &&
+    appsmithConfig.segment.enabled &&
+    !segmentState
+  ) {
+    yield race([
+      take(ReduxActionTypes.SEGMENT_INITIALIZED),
+      take(ReduxActionTypes.SEGMENT_INIT_UNCERTAIN),
+    ]);
+  }
+}
+
 export function* getCurrentUserSaga() {
   try {
     PerformanceTracker.startAsyncTracking(
@@ -104,34 +152,12 @@ export function* getCurrentUserSaga() {
     const response: ApiResponse = yield call(UserApi.getCurrentUser);
 
     const isValidResponse: boolean = yield validateResponse(response);
+
     if (isValidResponse) {
-      //@ts-expect-error: response is of type unknown
-      const { enableTelemetry } = response.data;
-      if (enableTelemetry) {
-        initializeAnalyticsAndTrackers();
-      }
-      yield put(initAppLevelSocketConnection());
-      yield put(initPageLevelSocketConnection());
-      if (
-        //@ts-expect-error: response is of type unknown
-        !response.data.isAnonymous &&
-        //@ts-expect-error: response is of type unknown
-        response.data.username !== ANONYMOUS_USERNAME
-      ) {
-        //@ts-expect-error: response is of type unknown
-        enableTelemetry && AnalyticsUtil.identifyUser(response.data);
-      }
       yield put({
         type: ReduxActionTypes.FETCH_USER_DETAILS_SUCCESS,
         payload: response.data,
       });
-      //@ts-expect-error: response is of type unknown
-      if (response.data.emptyInstance) {
-        history.replace(SETUP);
-      }
-      PerformanceTracker.stopAsyncTracking(
-        PerformanceTransactionName.USER_ME_API,
-      );
     }
   } catch (error) {
     PerformanceTracker.stopAsyncTracking(
@@ -145,13 +171,50 @@ export function* getCurrentUserSaga() {
       },
     });
 
-    yield put({
-      type: ReduxActionTypes.SAFE_CRASH_APPSMITH_REQUEST,
-      payload: {
-        code: ERROR_CODES.SERVER_ERROR,
-      },
-    });
+    yield put(safeCrashAppRequest());
   }
+}
+
+export function* runUserSideEffectsSaga() {
+  return;
+  const currentUser: User = yield select(getCurrentUser);
+  const { enableTelemetry } = currentUser;
+  const isAirgappedInstance = isAirgapped();
+  if (enableTelemetry) {
+    const promise = initializeAnalyticsAndTrackers();
+
+    if (promise instanceof Promise) {
+      const result: boolean = yield promise;
+
+      if (result) {
+        yield put(segmentInitSuccess());
+      } else {
+        yield put(segmentInitUncertain());
+      }
+    }
+  }
+
+  if (!currentUser.isAnonymous && currentUser.username !== ANONYMOUS_USERNAME) {
+    enableTelemetry && AnalyticsUtil.identifyUser(currentUser);
+  }
+
+  if (!isAirgappedInstance) {
+    // We need to stop and start tracking activity to ensure that the tracking from previous session is not carried forward
+    UsagePulse.stopTrackingActivity();
+    UsagePulse.startTrackingActivity(
+      enableTelemetry && getAppsmithConfigs().segment.enabled,
+      currentUser?.isAnonymous ?? false,
+    );
+  }
+
+  yield put(initAppLevelSocketConnection());
+  yield put(initPageLevelSocketConnection());
+
+  if (currentUser.emptyInstance) {
+    history.replace(SETUP);
+  }
+
+  PerformanceTracker.stopAsyncTracking(PerformanceTransactionName.USER_ME_API);
 }
 
 export function* forgotPasswordSaga(
@@ -279,7 +342,7 @@ export function* inviteUsers(
       usernames: data.usernames,
       permissionGroupId: data.permissionGroupId,
     });
-    const isValidResponse: boolean = yield validateResponse(response);
+    const isValidResponse: boolean = yield validateResponse(response, false);
     if (!isValidResponse) {
       let errorMessage = `${data.usernames}:  `;
       errorMessage += getResponseErrorMessage(response);
@@ -305,12 +368,6 @@ export function* inviteUsers(
     yield put(reset(INVITE_USERS_TO_WORKSPACE_FORM));
   } catch (error) {
     yield call(reject, { _error: (error as Error).message });
-    yield put({
-      type: ReduxActionErrorTypes.INVITE_USERS_TO_WORKSPACE_ERROR,
-      payload: {
-        error,
-      },
-    });
   }
 }
 
@@ -386,6 +443,7 @@ export function* logoutSaga(action: ReduxAction<{ redirectURL: string }>) {
     const response: ApiResponse = yield call(UserApi.logoutUser);
     const isValidResponse: boolean = yield validateResponse(response);
     if (isValidResponse) {
+      UsagePulse.stopTrackingActivity();
       AnalyticsUtil.reset();
       const currentUser: User | undefined = yield select(getCurrentUser);
       yield put(logoutUserSuccess(!!currentUser?.emptyInstance));
@@ -435,11 +493,17 @@ export function* updatePhoto(
 
 export function* fetchFeatureFlags() {
   try {
-    const response: ApiResponse = yield call(UserApi.fetchFeatureFlags);
+    const response: ApiResponse<FeatureFlags> = yield call(
+      UserApi.fetchFeatureFlags,
+    );
     const isValidResponse: boolean = yield validateResponse(response);
     if (isValidResponse) {
-      // @ts-expect-error: response.data is of type unknown
-      yield put(fetchFeatureFlagsSuccess(response.data));
+      yield put(
+        fetchFeatureFlagsSuccess({
+          ...DEFAULT_FEATURE_FLAG_VALUE,
+          ...response.data,
+        }),
+      );
     }
   } catch (error) {
     log.error(error);
@@ -451,11 +515,10 @@ export function* updateFirstTimeUserOnboardingSage() {
   const enable: string | null = yield getEnableFirstTimeUserOnboarding();
 
   if (enable) {
-    const applicationId: string = yield getFirstTimeUserOnboardingApplicationId() ||
-      "";
-    const introModalVisibility:
-      | string
-      | null = yield getFirstTimeUserOnboardingIntroModalVisibility();
+    const applicationId: string =
+      yield getFirstTimeUserOnboardingApplicationIds() || "";
+    const introModalVisibility: string | null =
+      yield getFirstTimeUserOnboardingIntroModalVisibility();
     yield put({
       type: ReduxActionTypes.SET_ENABLE_FIRST_TIME_USER_ONBOARDING,
       payload: true,
@@ -482,12 +545,63 @@ export function* leaveWorkspaceSaga(
       yield put({
         type: ReduxActionTypes.GET_ALL_APPLICATION_INIT,
       });
-      Toaster.show({
-        text: `成功退出应用组`,
-        variant: Variant.success,
+      toast.show(`成功退出应用组`, {
+        kind: "success",
       });
     }
   } catch (error) {
     // do nothing as it's already handled globally
   }
 }
+
+export function* fetchProductAlertSaga() {
+  try {
+    const response: ApiResponse<ProductAlert> = yield call(
+      UserApi.getProductAlert,
+    );
+    const isValidResponse: boolean = yield validateResponse(response);
+    if (isValidResponse) {
+      const message = response.data;
+      if (message.messageId) {
+        const config = getMessageConfig(message.messageId);
+        yield put(fetchProductAlertSuccess({ message, config }));
+      }
+    } else {
+      yield put(fetchProductAlertFailure(response.data));
+    }
+  } catch (e) {
+    yield put(fetchProductAlertFailure(e));
+  }
+}
+
+export const PRODUCT_ALERT_CONFIG_STORAGE_KEY = "PRODUCT_ALERT_CONFIG";
+export const getMessageConfig = (id: string): ProductAlertConfig => {
+  const storedConfig =
+    localStorage.getItem(PRODUCT_ALERT_CONFIG_STORAGE_KEY) || "{}";
+  const alertConfig: Record<string, ProductAlertConfig> =
+    JSON.parse(storedConfig);
+  if (id in alertConfig) {
+    return alertConfig[id];
+  }
+  return {
+    snoozeTill: new Date(),
+    dismissed: false,
+  };
+};
+
+export const setMessageConfig = (id: string, config: ProductAlertConfig) => {
+  const storedConfig =
+    localStorage.getItem(PRODUCT_ALERT_CONFIG_STORAGE_KEY) || "{}";
+  const alertConfig: Record<string, ProductAlertConfig> =
+    JSON.parse(storedConfig);
+
+  const updatedConfig: Record<string, ProductAlertConfig> = {
+    ...alertConfig,
+    [id]: config,
+  };
+
+  localStorage.setItem(
+    PRODUCT_ALERT_CONFIG_STORAGE_KEY,
+    JSON.stringify(updatedConfig),
+  );
+};

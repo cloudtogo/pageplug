@@ -1,20 +1,21 @@
 import React from "react";
 import { get, isString } from "lodash";
-import BaseControl, { ControlProps } from "./BaseControl";
+import type { ControlProps } from "./BaseControl";
+import BaseControl from "./BaseControl";
 import { ControlWrapper, StyledPropertyPaneButton } from "./StyledControls";
-import styled from "constants/DefaultTheme";
 import { FormIcons } from "icons/FormIcons";
-import { AnyStyledComponent } from "styled-components";
-import { CodeEditorExpected } from "components/editorComponents/CodeEditor";
+import type { AnyStyledComponent } from "styled-components";
+import styled from "styled-components";
+import type { CodeEditorExpected } from "components/editorComponents/CodeEditor";
 import { InputText } from "components/propertyControls/InputTextControl";
+import type { EditorTheme } from "components/editorComponents/CodeEditor/EditorConfig";
 import {
   EditorModes,
   EditorSize,
-  EditorTheme,
   TabBehaviour,
 } from "components/editorComponents/CodeEditor/EditorConfig";
-import { Size, Category } from "design-system";
-import { AllChartData, ChartData } from "widgets/ChartWidget/constants";
+import { Size, Category } from "design-system-old";
+import type { AllChartData, ChartData } from "widgets/ChartWidget/constants";
 import { generateReactKey } from "utils/generators";
 import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
 import CodeEditor from "components/editorComponents/LazyCodeEditorWrapper";
@@ -145,8 +146,8 @@ const expectedListenerName: CodeEditorExpected = {
 const expectedListenerSeriesData: CodeEditorExpected = {
   type: "Function",
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  example: `{{(params) => { 
-    // add code here 
+  example: `{{(params) => {
+    // add code here
    }}}`,
   autocompleteDataType: AutocompleteDataType.FUNCTION,
 };
@@ -234,10 +235,10 @@ function DataControlComponent(props: RenderComponentProps) {
     evaluated,
     index,
     item,
-    length,
-    updateOption,
-    noTitle,
     label,
+    length,
+    noTitle,
+    updateOption,
   } = props;
   return (
     <StyledOptionControlWrapper orientation={"VERTICAL"}>
@@ -321,7 +322,7 @@ const ControlLabel = (propertyName: string) => {
       titleLabel: "名称",
       areaLabel: "函数",
       hasAddBtn: true,
-      btnLabel: "ADD LISTENER",
+      btnLabel: "添加监听器",
     };
   }
   if (Name_Data_Array.includes(propertyName)) {
@@ -329,14 +330,14 @@ const ControlLabel = (propertyName: string) => {
       titleLabel: "标签",
       areaLabel: "数据",
       hasAddBtn: false,
-      btnLabel: "ADD AXIS",
+      btnLabel: "添加数据轴",
     };
   }
   return {
-    titleLabel: "Series Title",
-    areaLabel: "Series Data",
+    titleLabel: "数据列标题",
+    areaLabel: "数据序列",
     hasAddBtn: true,
-    btnLabel: "ADD SERIES",
+    btnLabel: "添加数据序列",
   };
 };
 
@@ -364,11 +365,11 @@ class EchartDataControl extends BaseControl<ControlProps> {
                   index={key}
                   item={data}
                   key={key}
+                  label={ControlLabel(this.props.propertyName)}
                   length={dataLength}
+                  // panel={this.props?.panel}
                   theme={this.props.theme}
                   updateOption={this.updateOption}
-                  label={ControlLabel(this.props.propertyName)}
-                  panel={this.props.panel}
                 />
               );
             })}
@@ -398,16 +399,16 @@ class EchartDataControl extends BaseControl<ControlProps> {
           };
       return (
         <DataControlComponent
-          noTitle={isDataSet}
           dataTreePath={`${this.props.dataTreePath}.${firstKey}`}
           deleteOption={this.deleteOption}
           evaluated={get(evaluatedValue, `${firstKey}`)}
           index={firstKey}
           item={data}
+          label={ControlLabel(this.props.propertyName)}
           length={1}
+          noTitle={isDataSet}
           theme={this.props.theme}
           updateOption={this.updateOption}
-          label={ControlLabel(this.props.propertyName)}
         />
       );
     }
@@ -419,17 +420,17 @@ class EchartDataControl extends BaseControl<ControlProps> {
             const data = get(chartData, `${key}`);
             return (
               <DataControlComponent
-                noTitle={isDataSet}
                 dataTreePath={`${this.props.dataTreePath}.${key}`}
                 deleteOption={this.deleteOption}
                 evaluated={get(evaluatedValue, `${key}`)}
                 index={key}
                 item={data}
                 key={key}
+                label={ControlLabel(this.props.propertyName)}
                 length={dataLength}
+                noTitle={isDataSet}
                 theme={this.props.theme}
                 updateOption={this.updateOption}
-                label={ControlLabel(this.props.propertyName)}
               />
             );
           })}

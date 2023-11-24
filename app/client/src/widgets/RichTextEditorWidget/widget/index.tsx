@@ -1,27 +1,30 @@
-import React, { lazy, Suspense } from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "../../BaseWidget";
-import { TextSize, WidgetType } from "constants/WidgetConstants";
-import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import { ValidationTypes } from "constants/WidgetValidation";
-import { DerivedPropertiesMap } from "utils/WidgetFactory";
-import Skeleton from "components/utils/Skeleton";
-import { retryPromise } from "utils/AppsmithUtils";
-import { LabelPosition } from "components/constants";
 import { Alignment } from "@blueprintjs/core";
-import { GRID_DENSITY_MIGRATION_V1 } from "widgets/constants";
-import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
-
+import { LabelPosition } from "components/constants";
+import Skeleton from "components/utils/Skeleton";
+import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import type { TextSize, WidgetType } from "constants/WidgetConstants";
+import { ValidationTypes } from "constants/WidgetValidation";
+import React, { lazy, Suspense } from "react";
 import showdown from "showdown";
-import { Stylesheet } from "entities/AppTheming";
+import { retryPromise } from "utils/AppsmithUtils";
+import type { DerivedPropertiesMap } from "utils/WidgetFactory";
+import { GRID_DENSITY_MIGRATION_V1 } from "widgets/constants";
+import {
+  isAutoHeightEnabledForWidget,
+  DefaultAutocompleteDefinitions,
+} from "widgets/WidgetUtils";
+import type { WidgetProps, WidgetState } from "../../BaseWidget";
+import BaseWidget from "../../BaseWidget";
+
+import type { SetterConfig, Stylesheet } from "entities/AppTheming";
+import type { AutocompletionDefinitions } from "widgets/constants";
 
 export enum RTEFormats {
   MARKDOWN = "markdown",
   HTML = "html",
 }
 const RichTextEditorComponent = lazy(() =>
-  retryPromise(() =>
-    import(/* webpackChunkName: "rte",webpackPrefetch: 2 */ "../component"),
-  ),
+  retryPromise(() => import(/* webpackChunkName: "rte" */ "../component")),
 );
 
 const converter = new showdown.Converter();
@@ -29,6 +32,14 @@ class RichTextEditorWidget extends BaseWidget<
   RichTextEditorWidgetProps,
   WidgetState
 > {
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      text: "string",
+      isDisabled: "string",
+    };
+  }
+
   static getPropertyPaneContentConfig() {
     return [
       {
@@ -39,6 +50,7 @@ class RichTextEditorWidget extends BaseWidget<
             helpText: "内容输入方式，支持HTML和Markdown",
             label: "输入格式",
             controlType: "ICON_TABS",
+            defaultValue: "html",
             fullWidth: true,
             options: [
               {
@@ -83,7 +95,7 @@ class RichTextEditorWidget extends BaseWidget<
             propertyName: "labelPosition",
             label: "位置",
             controlType: "ICON_TABS",
-            fullWidth: true,
+            fullWidth: false,
             options: [
               { label: "自动", value: LabelPosition.Auto },
               { label: "左", value: LabelPosition.Left },
@@ -99,13 +111,14 @@ class RichTextEditorWidget extends BaseWidget<
             propertyName: "labelAlignment",
             label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
+            fullWidth: false,
             options: [
               {
-                icon: "LEFT_ALIGN",
+                startIcon: "align-left",
                 value: Alignment.LEFT,
               },
               {
-                icon: "RIGHT_ALIGN",
+                startIcon: "align-right",
                 value: Alignment.RIGHT,
               },
             ],
@@ -208,6 +221,7 @@ class RichTextEditorWidget extends BaseWidget<
           },
         ],
       },
+
       {
         sectionName: "事件",
         children: [
@@ -285,14 +299,14 @@ class RichTextEditorWidget extends BaseWidget<
             propertyName: "labelStyle",
             label: "强调",
             helpText: "设置标签字体是否加粗或斜体",
-            controlType: "BUTTON_TABS",
+            controlType: "BUTTON_GROUP",
             options: [
               {
-                icon: "BOLD_FONT",
+                icon: "text-bold",
                 value: "BOLD",
               },
               {
-                icon: "ITALICS_FONT",
+                icon: "text-italic",
                 value: "ITALIC",
               },
             ],
@@ -380,6 +394,25 @@ class RichTextEditorWidget extends BaseWidget<
       },
     });
   };
+
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {
+        setVisibility: {
+          path: "isVisible",
+          type: "boolean",
+        },
+        setDisabled: {
+          path: "isDisabled",
+          type: "boolean",
+        },
+        setRequired: {
+          path: "isRequired",
+          type: "boolean",
+        },
+      },
+    };
+  }
 
   getPageView() {
     let value = this.props.text ?? "";

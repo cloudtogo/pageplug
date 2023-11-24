@@ -4,7 +4,7 @@ import { keyBy } from "lodash";
 import equal from "fast-deep-equal/es6";
 import { getPluginIcon, jsIcon } from "pages/Editor/Explorer/ExplorerIcons";
 import { useMemo, useCallback } from "react";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import { getFilteredErrors } from "selectors/debuggerSelectors";
 import { getAction, getDatasource } from "selectors/entitiesSelector";
 import { useSelector } from "react-redux";
@@ -12,7 +12,7 @@ import {
   isAction,
   isJSAction,
   isWidget,
-} from "workers/Evaluation/evaluationUtils";
+} from "@appsmith/workers/Evaluation/evaluationUtils";
 import { doesEntityHaveErrors } from "../helpers";
 import React from "react";
 import WidgetIcon from "pages/Editor/Explorer/Widgets/WidgetIcon";

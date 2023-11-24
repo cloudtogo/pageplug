@@ -1,8 +1,8 @@
-import classNames from "classnames";
 import React, { useCallback } from "react";
 
-import { AppTheme } from "entities/AppTheming";
-import { TooltipComponent } from "design-system";
+import type { AppTheme } from "entities/AppTheming";
+import { invertedBorderRadiusOptions } from "constants/ThemeConstants";
+import { SegmentedControl, Tooltip } from "design-system";
 
 interface ThemeBorderRadiusControlProps {
   options: {
@@ -21,13 +21,13 @@ function ThemeBorderRadiusControl(props: ThemeBorderRadiusControlProps) {
    * changes the border in theme
    */
   const onChangeBorder = useCallback(
-    (optionKey: string) => {
+    (value: string) => {
       updateTheme({
         ...theme,
         properties: {
           ...theme.properties,
           borderRadius: {
-            [sectionName]: options[optionKey],
+            [sectionName]: options[value],
           },
         },
       });
@@ -35,33 +35,32 @@ function ThemeBorderRadiusControl(props: ThemeBorderRadiusControlProps) {
     [updateTheme, theme],
   );
 
+  const selectedOptionKey = selectedOption
+    ? invertedBorderRadiusOptions[selectedOption]
+    : "";
+
+  const buttonGroupOptions = Object.keys(options).map((optionKey) => ({
+    label: (
+      <Tooltip content={optionKey} key={optionKey}>
+        <div
+          className="w-5 h-5 t--theme-appBorderRadius border-t-2 border-l-2"
+          style={{
+            borderTopLeftRadius: options[optionKey],
+            borderColor: "var(--ads-v2-color-fg)",
+          }}
+        />
+      </Tooltip>
+    ),
+    value: optionKey,
+  }));
+
   return (
-    <div className="grid grid-cols-6 gap-2 auto-cols-max">
-      {Object.keys(options).map((optionKey) => (
-        <TooltipComponent content={optionKey} key={optionKey}>
-          <button
-            className={classNames({
-              "flex items-center justify-center w-8 h-8 bg-white ring-1 cursor-pointer hover:bg-trueGray-50": true,
-              "ring-gray-800": selectedOption === options[optionKey],
-              "ring-gray-300": selectedOption !== options[optionKey],
-              [`t--theme-${sectionName}`]: true,
-            })}
-            onClick={() => onChangeBorder(optionKey)}
-          >
-            <div
-              className={classNames({
-                "w-5 h-5 border-t-2 border-l-2": true,
-                "border-gray-800": selectedOption === options[optionKey],
-                "border-gray-500": selectedOption !== options[optionKey],
-              })}
-              style={{
-                borderTopLeftRadius: options[optionKey],
-              }}
-            />
-          </button>
-        </TooltipComponent>
-      ))}
-    </div>
+    <SegmentedControl
+      isFullWidth={false}
+      onChange={onChangeBorder}
+      options={buttonGroupOptions}
+      value={selectedOptionKey}
+    />
   );
 }
 

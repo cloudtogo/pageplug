@@ -15,6 +15,10 @@ export type User = {
   useCase?: string;
   isConfigurable: boolean;
   enableTelemetry: boolean;
+  adminSettingsVisible?: boolean;
+  isAnonymous?: boolean;
+  isIntercomConsentGiven?: boolean;
+  authorizations: any[];
 };
 
 export interface UserApplication {
@@ -35,6 +39,9 @@ export const DefaultCurrentUserDetails: User = {
   isSuperUser: false,
   isConfigurable: false,
   enableTelemetry: false,
+  adminSettingsVisible: false,
+  isIntercomConsentGiven: false,
+  authorizations: [],
 };
 
 // TODO keeping it here instead of the USER_API since it leads to cyclic deps errors during tests

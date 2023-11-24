@@ -1,6 +1,6 @@
-import { BaseAction } from "../Action";
-import { PluginType } from "entities/Action";
-import { LayoutOnLoadActionErrors } from "constants/AppsmithActionConstants/ActionConstants";
+import type { BaseAction } from "../Action";
+import type { PluginType } from "entities/Action";
+import type { LayoutOnLoadActionErrors } from "constants/AppsmithActionConstants/ActionConstants";
 
 export type Variable = {
   name: string;
@@ -23,11 +23,11 @@ export interface JSCollection {
 
 export interface JSActionConfig {
   body: string;
-  isAsync: boolean;
   timeoutInMillisecond: number;
   jsArguments: Array<Variable>;
 }
 export interface JSAction extends BaseAction {
   actionConfiguration: JSActionConfig;
   clientSideExecution: boolean;
+  fullyQualifiedName?: string;
 }

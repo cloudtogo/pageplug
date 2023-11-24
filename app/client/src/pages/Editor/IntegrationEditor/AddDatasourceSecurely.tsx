@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import Secure from "assets/images/secure.svg";
-import Datasource from "assets/images/undraw_data_source.svg";
-import { Colors } from "constants/Colors";
+import AppsmithDatasource from "assets/images/appsmith-datasource.png";
 
 const Wrapper = styled.div`
-  border: 2px solid #d6d6d6;
-  padding: 23px;
+  border: 2px solid var(--ads-v2-color-border);
+  border-radius: var(--ads-v2-border-radius);
+  padding: 16px 23px;
   flex-direction: row;
   display: flex;
   justify-content: space-between;
@@ -14,7 +14,7 @@ const Wrapper = styled.div`
   border-radius: ${(props) => props.theme.borderRadius};
 
   .datasource-img {
-    height: 108px;
+    height: 128px;
   }
 `;
 
@@ -30,12 +30,12 @@ const Header = styled.div`
   font-weight: 600;
   font-size: 24px;
   line-height: 32px;
-  color: ${Colors.OXFORD_BLUE};
+  color: var(--ads-v2-color-fg);
 `;
 
 const Content = styled.p`
-  margin: 12px 32px 0;
-  color: ${Colors.OXFORD_BLUE};
+  margin-top: 8px;
+  color: var(--ads-v2-color-fg);
   max-width: 360px;
   font-size: 14px;
   line-height: 20px;
@@ -53,7 +53,7 @@ function AddDatasourceSecurely() {
           立即连接数据源来构建您的业务，您的全部数据都是加密传输，我们永远不会存储您的任何数据。
         </Content>
       </div>
-      <img className="datasource-img" src={Datasource} />
+      <img className="datasource-img" src={AppsmithDatasource} />
     </Wrapper>
   );
 }

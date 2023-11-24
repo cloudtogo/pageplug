@@ -36,4 +36,16 @@ public class ResponseDTO<T> implements Serializable {
         this.responseMeta = new ResponseMetaDTO(status, errorDTO);
     }
 
+    public String getErrorDisplay() {
+        if (responseMeta == null) {
+            return "";
+        }
+
+        final ErrorDTO error = responseMeta.getError();
+        if (error == null || error.getMessage() == null) {
+            return "";
+        }
+
+        return error.getCode() + ": " + error.getMessage();
+    }
 }

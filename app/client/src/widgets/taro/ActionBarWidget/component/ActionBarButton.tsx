@@ -1,12 +1,12 @@
 import React, { useContext, useMemo } from "react";
 import clsx from "clsx";
-import { ActionBarButtonProps } from "./PropsType";
+import type { ActionBarButtonProps } from "./PropsType";
 import { Button } from "@taroify/core";
 import ActionBarContext from "./ActionBarContext";
 import { createBEM } from "../../rvStyle/bem";
 
 const ActionBarButton: React.FC<ActionBarButtonProps> = (props) => {
-  const { type, icon, text, color, loading, disabled, index } = props;
+  const { color, disabled, icon, index, loading, text, type } = props;
   const bem = createBEM("rv-action-bar-button");
   const { parent } = useContext(ActionBarContext);
 
@@ -43,13 +43,13 @@ const ActionBarButton: React.FC<ActionBarButtonProps> = (props) => {
           },
         ]),
       )}
-      style={style}
-      size="large"
-      icon={icon}
       color={type}
-      loading={loading}
       disabled={disabled}
+      icon={icon}
+      loading={loading}
       onClick={props.onClick}
+      size="large"
+      style={style}
     >
       {props.children ? props.children : text}
     </Button>

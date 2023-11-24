@@ -1,7 +1,7 @@
 import { ValidationTypes } from "constants/WidgetValidation";
 import { ButtonPlacementTypes, ButtonVariantTypes } from "components/constants";
 import { Alignment } from "@blueprintjs/core";
-import { MenuButtonWidgetProps } from "../../constants";
+import type { MenuButtonWidgetProps } from "../../constants";
 
 export default [
   {
@@ -78,13 +78,15 @@ export default [
         label: "位置",
         helpText: "设置菜单按钮图标对齐方式",
         controlType: "ICON_TABS",
+        defaultValue: "left",
+        fullWidth: false,
         options: [
           {
-            icon: "VERTICAL_LEFT",
+            startIcon: "skip-left-line",
             value: "left",
           },
           {
-            icon: "VERTICAL_RIGHT",
+            startIcon: "skip-right-line",
             value: "right",
           },
         ],

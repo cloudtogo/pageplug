@@ -1,57 +1,38 @@
 import * as React from "react";
 
-import { TooltipComponent } from "design-system";
-import BaseControl, { ControlData, ControlProps } from "./BaseControl";
+import type { ControlData, ControlProps } from "./BaseControl";
+import BaseControl from "./BaseControl";
 import { borderRadiusOptions } from "constants/ThemeConstants";
-import { ButtonTab } from "design-system";
+import type { DSEventDetail } from "utils/AppsmithUtils";
+import { SegmentedControl, Tooltip } from "design-system";
 import {
-  DSEventDetail,
   DSEventTypes,
   DS_EVENT,
   emitInteractionAnalyticsEvent,
 } from "utils/AppsmithUtils";
 
-/**
- * ----------------------------------------------------------------------------
- * TYPES
- *-----------------------------------------------------------------------------
- */
 export interface BorderRadiusOptionsControlProps extends ControlProps {
   propertyValue: string | undefined;
 }
 
 const options = Object.keys(borderRadiusOptions).map((optionKey) => ({
-  icon: (
-    <TooltipComponent
-      content={
-        <div>
-          <div>{optionKey}</div>
-        </div>
-      }
-      key={optionKey}
-      openOnTargetFocus={false}
-    >
-      <button tabIndex={-1}>
-        <div
-          className="w-5 h-5 border-t-2 border-l-2 border-gray-500"
-          style={{ borderTopLeftRadius: borderRadiusOptions[optionKey] }}
-        />
-      </button>
-    </TooltipComponent>
+  label: (
+    <Tooltip content={optionKey} key={optionKey}>
+      <div
+        className="w-5 h-5 border-t-2 border-l-2"
+        style={{
+          borderColor: "var(--ads-v2-color-fg)",
+          borderTopLeftRadius: borderRadiusOptions[optionKey],
+        }}
+      />
+    </Tooltip>
   ),
   value: borderRadiusOptions[optionKey],
 }));
 
 const optionsValues = new Set(Object.values(borderRadiusOptions));
 
-/**
- * ----------------------------------------------------------------------------
- * COMPONENT
- *-----------------------------------------------------------------------------
- */
-class BorderRadiusOptionsControl extends BaseControl<
-  BorderRadiusOptionsControlProps
-> {
+class BorderRadiusOptionsControl extends BaseControl<BorderRadiusOptionsControlProps> {
   componentRef = React.createRef<HTMLDivElement>();
 
   componentDidMount() {
@@ -70,7 +51,7 @@ class BorderRadiusOptionsControl extends BaseControl<
 
   handleAdsEvent = (e: CustomEvent<DSEventDetail>) => {
     if (
-      e.detail.component === "ButtonTab" &&
+      e.detail.component === "ButtonGroup" &&
       e.detail.event === DSEventTypes.KEYPRESS
     ) {
       emitInteractionAnalyticsEvent(this.componentRef.current, {
@@ -86,17 +67,18 @@ class BorderRadiusOptionsControl extends BaseControl<
 
   public render() {
     return (
-      <ButtonTab
-        options={options}
-        ref={this.componentRef}
-        selectButton={(value, isUpdatedViaKeyboard = false) => {
+      <SegmentedControl
+        isFullWidth={false}
+        onChange={(value, isUpdatedViaKeyboard = false) => {
           this.updateProperty(
             this.props.propertyName,
             value,
             isUpdatedViaKeyboard,
           );
         }}
-        values={this.props.evaluatedValue ? [this.props.evaluatedValue] : []}
+        options={options}
+        ref={this.componentRef}
+        value={this.props.evaluatedValue || ""}
       />
     );
   }

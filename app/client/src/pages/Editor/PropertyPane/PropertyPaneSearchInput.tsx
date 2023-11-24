@@ -1,33 +1,41 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import styled from "styled-components";
-import { SearchVariant } from "design-system";
-import { InputWrapper, SearchInput } from "design-system";
-import { Colors } from "constants/Colors";
-// import { useSelector } from "react-redux";
-// import {
-//   getShouldFocusPanelPropertySearch,
-//   getShouldFocusPropertySearch,
-// } from "selectors/propertyPaneSelectors";
-// import { isCurrentFocusOnInput } from "utils/editorContextUtils";
-import { PROPERTY_SEARCH_INPUT_PLACEHOLDER } from "ce/constants/messages";
+import { SearchInput } from "design-system";
+import { useSelector } from "react-redux";
+import {
+  getShouldFocusPanelPropertySearch,
+  getShouldFocusPropertySearch,
+} from "selectors/propertyPaneSelectors";
+import { isCurrentFocusOnInput } from "utils/editorContextUtils";
+import { PROPERTY_SEARCH_INPUT_PLACEHOLDER } from "@appsmith/constants/messages";
+
+const Container = styled.div`
+  position: sticky;
+  top: 44px;
+  z-index: 3;
+  margin-bottom: 2px;
+  background: var(--ads-v2-color-white);
+  height: 35px;
+`;
 
 const SearchInputWrapper = styled.div`
-  position: sticky;
-  top: 42px;
-  z-index: 3;
-  border: 1px solid ${Colors.GRAY_50};
+  margin: 0 1rem;
+  border-radius: var(--ads-v2-border-radius);
+  border: 1px solid var(--ads-v2-color-border);
   :focus-within {
-    border-color: var(--appsmith-input-focus-border-color);
+    /* outline: var(--ads-v2-border-width-outline) solid
+      var(--ads-v2-color-outline);
+    outline-offset: var(--ads-v2-offset-outline); */
+    border-color: var(--ads-v2-color-border-emphasis-plus);
   }
 `;
 
-const StyledSearchInput = React.memo(styled(SearchInput)`
-  ${InputWrapper} {
-    background: ${Colors.GRAY_50};
-    padding: 0 8px;
-    height: 34px;
+const StyledSearchInput = styled(SearchInput)`
+  input {
+    border: none;
+    outline: none;
   }
-`);
+`;
 
 type PropertyPaneSearchInputProps = {
   onTextChange: (text: string) => void;
@@ -35,30 +43,34 @@ type PropertyPaneSearchInputProps = {
 };
 
 export function PropertyPaneSearchInput(props: PropertyPaneSearchInputProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLDivElement>(null);
+  const shouldFocusSearch = useSelector(getShouldFocusPropertySearch);
+  const shouldFocusPanelSearch = useSelector(getShouldFocusPanelPropertySearch);
+  const isPanel = !!props.isPanel;
 
-  // TODO(aswathkk): Fix /ClientSideTests/IDE/Canvas_Context_Property_Pane_spec.js and uncomment this
-  // const shouldFocusSearch = useSelector(getShouldFocusPropertySearch);
-  // const shouldFocusPanelSearch = useSelector(getShouldFocusPanelPropertySearch);
-
-  // useEffect(() => {
-  //   // Checks if the property pane opened not because of focusing an input inside a widget
-  //   // The same functionality is being used for context preservation. Need to check if we can piggy back on that.
-  //   const isActiveFocusNotFromWidgetInput = !isCurrentFocusOnInput();
-  //   if (shouldFocusSearch && isActiveFocusNotFromWidgetInput) {
-  //     if (!props.isPanel && !shouldFocusPanelSearch) {
-  //       setTimeout(() => {
-  //         wrapperRef.current?.focus();
-  //       });
-  //     } else if (props.isPanel && shouldFocusPanelSearch) {
-  //       // Layered panels like Column Panel's transition takes 300ms
-  //       setTimeout(() => {
-  //         wrapperRef.current?.focus();
-  //       }, 300);
-  //     }
-  //   }
-  // }, [shouldFocusSearch, shouldFocusPanelSearch, props.isPanel]);
+  useEffect(() => {
+    // Checks if the property pane opened not because of focusing an input inside a widget
+    if (
+      shouldFocusSearch &&
+      // while the panel transition happens, focus will be happening twice. Once on the main pane and then on the panel
+      // The following check will make sure that the focus is only done once and prevents the UI jittering
+      isPanel === shouldFocusPanelSearch
+    ) {
+      setTimeout(
+        () => {
+          //checking for active element
+          //inside timeout to have updated active element
+          if (!isCurrentFocusOnInput()) {
+            wrapperRef.current?.focus();
+          }
+        },
+        // Layered panels like Column Panel's transition takes 300ms.
+        // To avoid UI jittering, we are delaying the focus by 300ms.
+        isPanel ? 300 : 0,
+      );
+    }
+  }, [shouldFocusSearch, shouldFocusPanelSearch, isPanel]);
 
   const handleInputKeydown = useCallback((e: KeyboardEvent) => {
     switch (e.key) {
@@ -85,21 +97,21 @@ export function PropertyPaneSearchInput(props: PropertyPaneSearchInputProps) {
   }, []);
 
   return (
-    <SearchInputWrapper
-      className="t--property-pane-search-input-wrapper"
-      onKeyDown={handleWrapperKeydown}
-      ref={wrapperRef}
-      tabIndex={0}
-    >
-      <StyledSearchInput
-        className="propertyPaneSearch"
-        fill
-        onChange={props.onTextChange}
-        placeholder={PROPERTY_SEARCH_INPUT_PLACEHOLDER}
-        ref={inputRef}
-        tabIndex={-1}
-        variant={SearchVariant.BACKGROUND}
-      />
-    </SearchInputWrapper>
+    <Container tabIndex={-1}>
+      <SearchInputWrapper
+        className="t--property-pane-search-input-wrapper"
+        onKeyDown={handleWrapperKeydown}
+        ref={wrapperRef}
+        tabIndex={0}
+      >
+        <StyledSearchInput
+          className="propertyPaneSearch t--property-pane-search-input-wrapper"
+          onChange={props.onTextChange}
+          placeholder={PROPERTY_SEARCH_INPUT_PLACEHOLDER}
+          ref={inputRef}
+          tabIndex={-1}
+        />
+      </SearchInputWrapper>
+    </Container>
   );
 }

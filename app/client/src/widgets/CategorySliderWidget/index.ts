@@ -1,8 +1,9 @@
-import { LabelPosition } from "components/constants";
 import { Alignment } from "@blueprintjs/core";
-
+import { LabelPosition } from "components/constants";
+import { ResponsiveBehavior } from "utils/autoLayout/constants";
 import IconSVG from "./icon.svg";
 import Widget from "./widget";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
@@ -10,6 +11,7 @@ export const CONFIG = {
   needsMeta: true,
   searchTags: ["range", "category slider"],
   iconSVG: IconSVG,
+  tags: [WIDGET_TAGS.DISPLAY],
   defaults: {
     options: [
       { label: "特别小", value: "xs" },
@@ -28,13 +30,14 @@ export const CONFIG = {
     shouldScroll: false,
     shouldTruncate: false,
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
     labelText: "尺寸",
     labelPosition: LabelPosition.Left,
     labelAlignment: Alignment.LEFT,
     labelWidth: 5,
     labelTextSize: "0.875rem",
     sliderSize: "m",
+    responsiveBehavior: ResponsiveBehavior.Fill,
   },
   properties: {
     derived: Widget.getDerivedPropertiesMap(),
@@ -43,6 +46,32 @@ export const CONFIG = {
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
     stylesheetConfig: Widget.getStylesheetConfig(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
+    setterConfig: Widget.getSetterConfig(),
+  },
+  autoLayout: {
+    disabledPropsDefaults: {
+      labelPosition: LabelPosition.Top,
+      labelTextSize: "0.875rem",
+    },
+    defaults: {
+      rows: 7,
+      columns: 40,
+    },
+    widgetSize: [
+      {
+        viewportMinWidth: 0,
+        configuration: () => {
+          return {
+            minWidth: "180px",
+            minHeight: "70px",
+          };
+        },
+      },
+    ],
+    disableResizeHandles: {
+      vertical: true,
+    },
   },
 };
 

@@ -1,25 +1,33 @@
-import React from "react";
-import { get } from "lodash";
-import { Alignment } from "@blueprintjs/core";
-import { IconName } from "@blueprintjs/icons";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { ValidationTypes } from "constants/WidgetValidation";
+import type { Alignment } from "@blueprintjs/core";
+import type { IconName } from "@blueprintjs/icons";
+import type { ButtonPlacement, ButtonVariant } from "components/constants";
+import { ButtonPlacementTypes, ButtonVariantTypes } from "components/constants";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import {
-  ButtonVariant,
-  ButtonPlacementTypes,
-  ButtonPlacement,
-  ButtonVariantTypes,
-} from "components/constants";
-import ButtonGroupComponent from "../component";
+import { ValidationTypes } from "constants/WidgetValidation";
+import type { SetterConfig, Stylesheet } from "entities/AppTheming";
+import { get } from "lodash";
+import React from "react";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import { MinimumPopupRows } from "widgets/constants";
+import ButtonGroupComponent from "../component";
 import { getStylesheetValue } from "./helpers";
-import { Stylesheet } from "entities/AppTheming";
+import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
 
 class ButtonGroupWidget extends BaseWidget<
   ButtonGroupWidgetProps,
   WidgetState
 > {
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "The Button group widget represents a set of buttons in a group. Group can have simple buttons or menu buttons with drop-down items.",
+      "!url": "https://docs.appsmith.com/widget-reference/button-group",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+    };
+  }
+
   static getPropertyPaneContentConfig() {
     return [
       {
@@ -69,6 +77,7 @@ class ButtonGroupWidget extends BaseWidget<
                           value: "MENU",
                         },
                       ],
+                      defaultValue: "SIMPLE",
                       isJSConvertible: true,
                       isBindProperty: true,
                       isTriggerProperty: false,
@@ -193,17 +202,18 @@ class ButtonGroupWidget extends BaseWidget<
                                 label: "位置",
                                 helpText: "设置菜单项图标对齐方向",
                                 controlType: "ICON_TABS",
-                                fullWidth: true,
+                                fullWidth: false,
                                 options: [
                                   {
-                                    icon: "VERTICAL_LEFT",
+                                    startIcon: "skip-left-line",
                                     value: "left",
                                   },
                                   {
-                                    icon: "VERTICAL_RIGHT",
+                                    startIcon: "skip-right-line",
                                     value: "right",
                                   },
                                 ],
+                                defaultValue: "left",
                                 isBindProperty: false,
                                 isTriggerProperty: false,
                                 validation: { type: ValidationTypes.TEXT },
@@ -331,17 +341,18 @@ class ButtonGroupWidget extends BaseWidget<
                       label: "位置",
                       helpText: "设置按钮图标的对齐位置",
                       controlType: "ICON_TABS",
-                      fullWidth: true,
+                      fullWidth: false,
                       options: [
                         {
-                          icon: "VERTICAL_LEFT",
+                          startIcon: "skip-left-line",
                           value: "left",
                         },
                         {
-                          icon: "VERTICAL_RIGHT",
+                          startIcon: "skip-right-line",
                           value: "right",
                         },
                       ],
+                      defaultValue: "left",
                       isBindProperty: false,
                       isTriggerProperty: false,
                       validation: { type: ValidationTypes.TEXT },
@@ -468,6 +479,7 @@ class ButtonGroupWidget extends BaseWidget<
                 value: ButtonVariantTypes.TERTIARY,
               },
             ],
+            defaultValue: ButtonVariantTypes.PRIMARY,
             isJSConvertible: true,
             isBindProperty: true,
             isTriggerProperty: false,
@@ -499,6 +511,7 @@ class ButtonGroupWidget extends BaseWidget<
                 value: "vertical",
               },
             ],
+            defaultValue: "horizontal",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -558,6 +571,21 @@ class ButtonGroupWidget extends BaseWidget<
     }
   };
 
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {
+        setVisibility: {
+          path: "isVisible",
+          type: "boolean",
+        },
+        setDisabled: {
+          path: "isDisabled",
+          type: "boolean",
+        },
+      },
+    };
+  }
+
   getPageView() {
     const { componentWidth } = this.getComponentDimensions();
     const minPopoverWidth = MinimumPopupRows * this.props.parentColumnSpace;
@@ -567,9 +595,11 @@ class ButtonGroupWidget extends BaseWidget<
         borderRadius={this.props.borderRadius}
         boxShadow={this.props.boxShadow}
         buttonClickHandler={this.handleClick}
+        buttonMinWidth={this.isAutoLayoutMode ? 120 : undefined}
         buttonVariant={this.props.buttonVariant}
         groupButtons={this.props.groupButtons}
         isDisabled={this.props.isDisabled}
+        minHeight={this.isAutoLayoutMode ? this.props.minHeight : undefined}
         minPopoverWidth={minPopoverWidth}
         orientation={this.props.orientation}
         renderMode={this.props.renderMode}

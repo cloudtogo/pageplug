@@ -1,8 +1,16 @@
-import Widget from "./widget";
-import IconSVG from "./icon.svg";
-import { LabelPosition } from "components/constants";
 import { Alignment } from "@blueprintjs/core";
+import { LabelPosition } from "components/constants";
+import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
+import { ResponsiveBehavior } from "utils/autoLayout/constants";
 import { DynamicHeight } from "utils/WidgetFeatures";
+import IconSVG from "./icon.svg";
+import Widget from "./widget";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
+import type { WidgetProps } from "widgets/BaseWidget";
+import type {
+  WidgetQueryConfig,
+  WidgetQueryGenerationFormConfig,
+} from "WidgetQueryGenerators/types";
 
 export const CONFIG = {
   features: {
@@ -15,22 +23,25 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "下拉多选",
   iconSVG: IconSVG,
+  tags: [WIDGET_TAGS.SELECT],
   needsMeta: true,
-  searchTags: ["dropdown", "tags", "multi select"],
+  searchTags: ["dropdown", "tags", "MultiSelect"],
   defaults: {
     rows: 7,
     columns: 20,
-    animateLoading: true,
+    animateLoading: false,
     labelText: "标签",
     labelPosition: LabelPosition.Top,
     labelAlignment: Alignment.LEFT,
     labelWidth: 5,
     labelTextSize: "0.875rem",
-    options: [
-      { label: "蓝", value: "BLUE" },
-      { label: "绿", value: "GREEN" },
-      { label: "红", value: "RED" },
+    sourceData: [
+      { label: "蓝", code: "BLUE" },
+      { label: "绿", code: "GREEN" },
+      { label: "红", code: "RED" },
     ],
+    optionLabel: "name",
+    optionValue: "code",
     widgetName: "MultiSelect",
     isFilterable: true,
     serverSideFiltering: false,
@@ -39,7 +50,10 @@ export const CONFIG = {
     isRequired: false,
     isDisabled: false,
     placeholderText: "请选择",
+    responsiveBehavior: ResponsiveBehavior.Fill,
+    minWidth: FILL_WIDGET_MIN_WIDTH,
   },
+
   properties: {
     derived: Widget.getDerivedPropertiesMap(),
     default: Widget.getDefaultPropertiesMap(),
@@ -48,6 +62,49 @@ export const CONFIG = {
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
     stylesheetConfig: Widget.getStylesheetConfig(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
+    setterConfig: Widget.getSetterConfig(),
+  },
+  methods: {
+    getQueryGenerationConfig: (widgetProps: WidgetProps) => {
+      return Widget.getQueryGenerationConfig(widgetProps);
+    },
+    getPropertyUpdatesForQueryBinding: (
+      queryConfig: WidgetQueryConfig,
+      widget: WidgetProps,
+      formConfig: WidgetQueryGenerationFormConfig,
+    ) => {
+      return Widget.getPropertyUpdatesForQueryBinding(
+        queryConfig,
+        widget,
+        formConfig,
+      );
+    },
+  },
+  autoLayout: {
+    disabledPropsDefaults: {
+      labelPosition: LabelPosition.Top,
+      labelTextSize: "0.875rem",
+    },
+    defaults: {
+      rows: 6.6,
+    },
+    autoDimension: {
+      height: true,
+    },
+    widgetSize: [
+      {
+        viewportMinWidth: 0,
+        configuration: () => {
+          return {
+            minWidth: "160px",
+          };
+        },
+      },
+    ],
+    disableResizeHandles: {
+      vertical: true,
+    },
   },
 };
 

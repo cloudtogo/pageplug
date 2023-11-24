@@ -1,21 +1,61 @@
 import { IconNames } from "@blueprintjs/icons";
-import { PropertyPaneConfig } from "constants/PropertyControlConstants";
+import type { Theme } from "constants/DefaultTheme";
+import type { PropertyPaneConfig } from "constants/PropertyControlConstants";
+import type { WidgetTags } from "constants/WidgetConstants";
 import { WIDGET_STATIC_PROPS } from "constants/WidgetConstants";
-import { Theme } from "constants/DefaultTheme";
+import type { Stylesheet } from "entities/AppTheming";
 import { omit } from "lodash";
-import { WidgetConfigProps } from "reducers/entityReducers/widgetConfigReducer";
-import { DerivedPropertiesMap } from "utils/WidgetFactory";
-import { WidgetFeatures } from "utils/WidgetFeatures";
-import { WidgetProps } from "./BaseWidget";
 import moment from "moment";
-import { Stylesheet } from "entities/AppTheming";
+import type { WidgetConfigProps } from "reducers/entityReducers/widgetConfigReducer";
+import type {
+  LayoutDirection,
+  Positioning,
+  ResponsiveBehavior,
+} from "utils/autoLayout/constants";
+import type { DerivedPropertiesMap } from "utils/WidgetFactory";
+import type { WidgetFeatures } from "utils/WidgetFeatures";
+import type { WidgetProps } from "./BaseWidget";
+import type { ExtraDef } from "utils/autocomplete/dataTreeTypeDefCreator";
+import type { WidgetEntityConfig } from "entities/DataTree/dataTreeFactory";
+import type {
+  WidgetQueryConfig,
+  WidgetQueryGenerationConfig,
+  WidgetQueryGenerationFormConfig,
+} from "WidgetQueryGenerators/types";
+
+export type WidgetSizeConfig = {
+  viewportMinWidth: number;
+  configuration: (props: any) => Record<string, string | number>;
+};
+
+type ResizableValues = { vertical?: boolean; horizontal?: boolean };
+type ResizableOptions = ResizableValues | ((props: any) => ResizableValues);
+type AutoDimensionValues = { width?: boolean; height?: boolean };
+type AutoDimensionOptions =
+  | AutoDimensionValues
+  | ((props: any) => AutoDimensionValues);
+
+export type AutoLayoutConfig = {
+  // Indicates if a widgets dimensions should be auto adjusted according to content inside it
+  autoDimension?: AutoDimensionOptions;
+  // min/max sizes for the widget
+  widgetSize?: Array<WidgetSizeConfig>;
+  // Indicates if the widgets resize handles should be disabled
+  disableResizeHandles?: ResizableOptions;
+  // default values for the widget specifi to auto-layout
+  defaults?: Partial<WidgetConfigProps>;
+  // default values for the properties that are hidden/disabled in auto-layout
+  disabledPropsDefaults?: Partial<WidgetProps>;
+};
 
 export interface WidgetConfiguration {
+  autoLayout?: AutoLayoutConfig;
   type: string;
   name: string;
   iconSVG?: string;
   defaults: Partial<WidgetProps> & WidgetConfigProps;
   hideCard?: boolean;
+  eagerRender?: boolean;
   isDeprecated?: boolean;
   replacement?: string;
   isCanvas?: boolean;
@@ -23,6 +63,8 @@ export interface WidgetConfiguration {
   features?: WidgetFeatures;
   canvasHeightOffset?: (props: WidgetProps) => number;
   searchTags?: string[];
+  tags?: WidgetTags[];
+  needsHeightForContent?: boolean;
   properties: {
     config?: PropertyPaneConfig[];
     contentConfig?: PropertyPaneConfig[];
@@ -32,9 +74,38 @@ export interface WidgetConfiguration {
     derived: DerivedPropertiesMap;
     loadingProperties?: Array<RegExp>;
     stylesheetConfig?: Stylesheet;
+    autocompleteDefinitions?: AutocompletionDefinitions;
+    setterConfig?: Record<string, any>;
   };
   isMobile?: boolean;
+  methods?: Record<string, WidgetMethods>;
 }
+
+export type PropertyUpdates = {
+  propertyPath: string;
+  propertyValue?: unknown;
+  isDynamicPropertyPath?: boolean; // Toggles the property mode to JS
+  shouldDeleteProperty?: boolean; // Deletes the property, propertyValue is ignored
+};
+
+export type WidgetMethods =
+  | GetQueryGenerationConfig
+  | GetPropertyUpdatesForQueryBinding
+  | getSnipingModeUpdates;
+
+type GetQueryGenerationConfig = (
+  widgetProps: WidgetProps,
+) => WidgetQueryGenerationConfig;
+
+type GetPropertyUpdatesForQueryBinding = (
+  queryConfig: WidgetQueryConfig,
+  widget: WidgetProps,
+  formConfig: WidgetQueryGenerationFormConfig,
+) => Record<string, unknown>;
+
+type getSnipingModeUpdates = (
+  propValueMap: Record<"data" | "run", string>,
+) => Array<PropertyUpdates>;
 
 export const GRID_DENSITY_MIGRATION_V1 = 4;
 
@@ -42,6 +113,10 @@ export enum BlueprintOperationTypes {
   MODIFY_PROPS = "MODIFY_PROPS",
   ADD_ACTION = "ADD_ACTION",
   CHILD_OPERATIONS = "CHILD_OPERATIONS",
+  BEFORE_DROP = "BEFORE_DROP",
+  BEFORE_PASTE = "BEFORE_PASTE",
+  BEFORE_ADD = "BEFORE_ADD",
+  UPDATE_CREATE_PARAMS_BEFORE_ADD = "UPDATE_CREATE_PARAMS_BEFORE_ADD",
 }
 
 export type FlattenedWidgetProps = WidgetProps & {
@@ -52,13 +127,40 @@ export interface DSLWidget extends WidgetProps {
   children?: DSLWidget[];
 }
 
-const staticProps = omit(WIDGET_STATIC_PROPS, "children");
+interface LayoutProps {
+  positioning?: Positioning;
+  useAutoLayout?: boolean;
+  direction?: LayoutDirection;
+  isFlexChild?: boolean;
+  responsiveBehavior?: ResponsiveBehavior;
+}
+
+export type AutocompleteDefinitionFunction = (
+  widgetProps: WidgetProps,
+  extraDefsToDefine?: ExtraDef,
+  configTree?: WidgetEntityConfig,
+) => Record<string, any>;
+
+export type AutocompletionDefinitions =
+  | Record<string, any>
+  | AutocompleteDefinitionFunction;
+
+const staticProps = omit(
+  WIDGET_STATIC_PROPS,
+  "children",
+  "topRowBeforeCollapse",
+  "bottomRowBeforeCollapse",
+);
 export type CanvasWidgetStructure = Pick<
   WidgetProps,
   keyof typeof staticProps
-> & {
-  children?: CanvasWidgetStructure[];
-};
+> &
+  LayoutProps & {
+    children?: CanvasWidgetStructure[];
+    selected?: boolean;
+    onClickCapture?: (event: React.MouseEvent<HTMLElement>) => void;
+    isListWidgetCanvas?: boolean;
+  };
 
 export enum FileDataTypes {
   Base64 = "Base64",
@@ -181,7 +283,8 @@ export const JSON_FORM_WIDGET_CHILD_STYLESHEET = {
   },
 };
 
-export const YOUTUBE_URL_REGEX = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\?v=)([^#&?]*).*/;
+export const YOUTUBE_URL_REGEX =
+  /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\?v=)([^#&?]*).*/;
 
 export const ICON_NAMES = Object.keys(IconNames).map(
   (name: string) => IconNames[name as keyof typeof IconNames],
@@ -273,3 +376,10 @@ export const dateFormatOptions = [
 export type ThemeProp = {
   theme: Theme;
 };
+
+export type SnipingModeProperty = Record<"data" | "run", string>;
+
+export enum DefaultMobileCameraTypes {
+  FRONT = "user",
+  BACK = "environment",
+}

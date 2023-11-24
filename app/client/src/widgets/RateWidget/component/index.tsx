@@ -5,9 +5,10 @@ import styled from "styled-components";
 import Rating from "react-rating";
 import _ from "lodash";
 
-import { RateSize, RATE_SIZES } from "../constants";
-import { TooltipComponent } from "design-system";
-import { ComponentProps } from "widgets/BaseComponent";
+import type { RateSize } from "../constants";
+import { RATE_SIZES } from "../constants";
+import { TooltipComponent } from "@design-system/widgets-old";
+import type { ComponentProps } from "widgets/BaseComponent";
 
 /*
   Note:
@@ -20,6 +21,7 @@ import { ComponentProps } from "widgets/BaseComponent";
 interface RateContainerProps {
   isDisabled: boolean;
   readonly?: boolean;
+  minHeight?: number;
 }
 
 export const RateContainer = styled.div<RateContainerProps>`
@@ -29,6 +31,10 @@ export const RateContainer = styled.div<RateContainerProps>`
   justify-content: center;
   align-content: flex-start;
   overflow: auto;
+
+  ${({ minHeight }) => `
+    ${minHeight ? `min-height: ${minHeight}px;` : ""}
+  `};
 
   > span {
     display: flex !important;
@@ -79,6 +85,7 @@ export interface RateComponentProps extends ComponentProps {
   rightColumn?: number;
   topRow?: number;
   bottomRow?: number;
+  minHeight?: number;
 }
 
 const getIconColor = (props: RateComponentProps, isActive?: boolean) => {
@@ -143,6 +150,7 @@ function RateComponent(props: RateComponentProps) {
     isAllowHalf,
     isDisabled,
     maxCount,
+    minHeight,
     onValueChanged,
     readonly,
     value,
@@ -151,6 +159,7 @@ function RateComponent(props: RateComponentProps) {
   return (
     <RateContainer
       isDisabled={Boolean(isDisabled)}
+      minHeight={minHeight}
       readonly={readonly}
       ref={rateContainerRef}
     >

@@ -33,8 +33,8 @@ public interface UserServiceCE extends CrudService<User, String> {
 
     Mono<User> userCreate(User user, boolean isAdminUser);
 
-    Mono<? extends User> createNewUserAndSendInviteEmail(String email, String originHeader,
-                                                         Workspace workspace, User inviter, String role);
+    Mono<? extends User> createNewUserAndSendInviteEmail(
+            String email, String originHeader, Workspace workspace, User inviter, String role);
 
     Mono<User> updateCurrentUser(UserUpdateDTO updates, ServerWebExchange exchange);
 
@@ -46,5 +46,7 @@ public interface UserServiceCE extends CrudService<User, String> {
 
     Flux<User> getAllByEmails(Set<String> emails, AclPermission permission);
 
-    Mono<Map<String, String>> updateTenantLogoInParams(Map<String, String> params);
+    Mono<Map<String, String>> updateTenantLogoInParams(Map<String, String> params, String origin);
+
+    Mono<User> updateWithoutPermission(String id, User update);
 }

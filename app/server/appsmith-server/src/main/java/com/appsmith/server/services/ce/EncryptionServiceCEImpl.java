@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 
-
 public class EncryptionServiceCEImpl implements EncryptionServiceCE {
 
     private final EncryptionConfig encryptionConfig;
@@ -18,8 +17,7 @@ public class EncryptionServiceCEImpl implements EncryptionServiceCE {
     public EncryptionServiceCEImpl(EncryptionConfig encryptionConfig) {
         this.encryptionConfig = encryptionConfig;
         String saltInHex = Hex.encodeHexString(encryptionConfig.getSalt().getBytes());
-        this.textEncryptor = Encryptors.queryableText(encryptionConfig.getPassword(),
-                saltInHex);
+        this.textEncryptor = Encryptors.delux(encryptionConfig.getPassword(), saltInHex);
     }
 
     @Override

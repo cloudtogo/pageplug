@@ -1,15 +1,17 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
-import { ComponentProps } from "widgets/BaseComponent";
-import { RadioGroup, Radio, Alignment, Classes } from "@blueprintjs/core";
-import { TextSize } from "constants/WidgetConstants";
+import type { ComponentProps } from "widgets/BaseComponent";
+import type { Alignment } from "@blueprintjs/core";
+import { RadioGroup, Radio, Classes } from "@blueprintjs/core";
+import type { TextSize } from "constants/WidgetConstants";
 import { BlueprintRadioSwitchGroupTransform } from "constants/DefaultTheme";
 import { LabelPosition } from "components/constants";
-import { RadioOption } from "../constants";
+import type { RadioOption } from "../constants";
 import LabelWithTooltip, {
   labelLayoutStyles,
   LABEL_CONTAINER_CLASS,
 } from "widgets/components/LabelWithTooltip";
+import { darkenColor } from "widgets/WidgetUtils";
 
 export interface RadioGroupContainerProps {
   compactMode: boolean;
@@ -35,6 +37,7 @@ export interface StyledRadioGroupProps {
   optionCount: number;
   accentColor: string;
   isDynamicHeightEnabled?: boolean;
+  children?: React.ReactNode;
 }
 
 const StyledRadioGroup = styled(RadioGroup)<StyledRadioGroupProps>`
@@ -44,6 +47,11 @@ const StyledRadioGroup = styled(RadioGroup)<StyledRadioGroupProps>`
     & input:checked ~ .${Classes.CONTROL_INDICATOR} {
       background: ${({ accentColor }) => `${accentColor}`} !important;
       border: 1px solid ${({ accentColor }) => `${accentColor}`} !important;
+    }
+
+    & input:not(:disabled):checked:focus ~ .${Classes.CONTROL_INDICATOR} {
+      background: ${({ accentColor }) =>
+        `${darkenColor(accentColor)}`} !important;
     }
 
     & input:disabled:checked ~ .${Classes.CONTROL_INDICATOR} {
@@ -56,6 +64,8 @@ const StyledRadioGroup = styled(RadioGroup)<StyledRadioGroupProps>`
         );
       }
     }
+
+    margin-bottom: 0;
   }
 
   .${Classes.SWITCH} {

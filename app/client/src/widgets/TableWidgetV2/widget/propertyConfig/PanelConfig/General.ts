@@ -1,15 +1,18 @@
 import { ValidationTypes } from "constants/WidgetValidation";
-import { ColumnTypes, TableWidgetProps } from "widgets/TableWidgetV2/constants";
+import type { TableWidgetProps } from "widgets/TableWidgetV2/constants";
+import { ColumnTypes } from "widgets/TableWidgetV2/constants";
 import { get } from "lodash";
 import {
   getBasePropertyPath,
   hideByColumnType,
   updateColumnLevelEditability,
+  updateColumnOrderWhenFrozen,
   updateInlineEditingOptionDropdownVisibilityHook,
 } from "../../propertyUtils";
 import { isColumnTypeEditable } from "../../utilities";
 import { composePropertyUpdateHook } from "widgets/WidgetUtils";
 import { ButtonVariantTypes } from "components/constants";
+import { StickyType } from "widgets/TableWidgetV2/component/Constants";
 
 export default {
   sectionName: "属性",
@@ -99,7 +102,6 @@ export default {
           ColumnTypes.TEXT,
           ColumnTypes.NUMBER,
           ColumnTypes.URL,
-          ColumnTypes.DATE,
         ]);
       },
     },
@@ -136,6 +138,32 @@ export default {
         const isDerived = get(props, `${baseProperty}.isDerived`, false);
         return !isColumnTypeEditable(columnType) || isDerived;
       },
+    },
+    {
+      propertyName: "sticky",
+      helpText: "你可以选择将数据列固定在表格左边或者右边",
+      controlType: "ICON_TABS",
+      defaultValue: StickyType.NONE,
+      label: "固定列",
+      fullWidth: true,
+      isBindProperty: true,
+      isTriggerProperty: false,
+      dependencies: ["primaryColumns", "columnOrder"],
+      options: [
+        {
+          startIcon: "contract-left-line",
+          value: StickyType.LEFT,
+        },
+        {
+          startIcon: "column-freeze",
+          value: StickyType.NONE,
+        },
+        {
+          startIcon: "contract-right-line",
+          value: StickyType.RIGHT,
+        },
+      ],
+      updateHook: updateColumnOrderWhenFrozen,
     },
   ],
 };
@@ -234,7 +262,6 @@ export const GeneralStyle = {
         },
       },
     },
-
     {
       propertyName: "imageSize",
       dependencies: ["primaryColumns", "columnType"],

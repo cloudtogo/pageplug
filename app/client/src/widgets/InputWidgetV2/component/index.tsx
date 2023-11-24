@@ -1,8 +1,7 @@
 import React from "react";
-import BaseInputComponent, {
-  BaseInputComponentProps,
-} from "widgets/BaseInputWidget/component";
-import { InputTypes } from "widgets/BaseInputWidget/constants";
+import type { BaseInputComponentProps } from "widgets/BaseInputWidget/component";
+import BaseInputComponent from "widgets/BaseInputWidget/component";
+import type { InputTypes } from "widgets/BaseInputWidget/constants";
 
 const getInputHTMLType = (inputType: InputTypes) => {
   switch (inputType) {
@@ -45,6 +44,7 @@ class InputComponent extends React.Component<InputComponentProps> {
         autoFocus={this.props.autoFocus}
         borderRadius={this.props.borderRadius}
         boxShadow={this.props.boxShadow}
+        buttonPosition={this.props.buttonPosition}
         compactMode={this.props.compactMode}
         defaultValue={this.props.defaultValue}
         disableNewLineOnPressEnterKey={this.props.disableNewLineOnPressEnterKey}

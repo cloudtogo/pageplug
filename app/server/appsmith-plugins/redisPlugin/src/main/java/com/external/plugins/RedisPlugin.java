@@ -12,6 +12,8 @@ import com.appsmith.external.models.Endpoint;
 import com.appsmith.external.models.RequestParamDTO;
 import com.appsmith.external.plugins.BasePlugin;
 import com.appsmith.external.plugins.PluginExecutor;
+import com.external.plugins.exceptions.RedisErrorMessages;
+import com.external.plugins.exceptions.RedisPluginError;
 import com.external.utils.RedisURIUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.pf4j.Extension;
@@ -56,33 +58,39 @@ public class RedisPlugin extends BasePlugin {
     @Extension
     public static class RedisPluginExecutor implements PluginExecutor<JedisPool> {
 
-        private final Scheduler scheduler = Schedulers.elastic();
+        private final Scheduler scheduler = Schedulers.boundedElastic();
 
         @Override
-        public Mono<ActionExecutionResult> execute(JedisPool jedisPool,
-                                                   DatasourceConfiguration datasourceConfiguration,
-                                                   ActionConfiguration actionConfiguration) {
+        public Mono<ActionExecutionResult> execute(
+                JedisPool jedisPool,
+                DatasourceConfiguration datasourceConfiguration,
+                ActionConfiguration actionConfiguration) {
 
             String query = actionConfiguration.getBody();
-            List<RequestParamDTO> requestParams = List.of(new RequestParamDTO(ACTION_CONFIGURATION_BODY, query, null
-                    , null, null));
+            List<RequestParamDTO> requestParams =
+                    List.of(new RequestParamDTO(ACTION_CONFIGURATION_BODY, query, null, null, null));
 
-            Jedis jedis = jedisPool.getResource();
+            Jedis jedis;
+            try {
+                jedis = jedisPool.getResource();
+            } catch (Exception e) {
+                return Mono.error(new AppsmithPluginException(
+                        RedisPluginError.QUERY_EXECUTION_FAILED,
+                        RedisErrorMessages.QUERY_EXECUTION_FAILED_ERROR_MSG,
+                        e.getMessage()));
+            }
             return Mono.fromCallable(() -> {
                         if (StringUtils.isNullOrEmpty(query)) {
-                            return Mono.error(new AppsmithPluginException(AppsmithPluginError.PLUGIN_EXECUTE_ARGUMENT_ERROR,
-                                    String.format("Body is null or empty [%s]", query)));
+                            return Mono.error(new AppsmithPluginException(
+                                    AppsmithPluginError.PLUGIN_EXECUTE_ARGUMENT_ERROR,
+                                    String.format(RedisErrorMessages.BODY_IS_NULL_OR_EMPTY_ERROR_MSG, query)));
                         }
 
                         Map cmdAndArgs = getCommandAndArgs(query.trim());
                         if (!cmdAndArgs.containsKey(CMD_KEY)) {
-                            return Mono.error(
-                                    new AppsmithPluginException(
-                                            AppsmithPluginError.PLUGIN_EXECUTE_ARGUMENT_ERROR,
-                                            "Appsmith server has failed to parse your Redis query. Are you sure it's" +
-                                                    " been formatted correctly."
-                                    )
-                            );
+                            return Mono.error(new AppsmithPluginException(
+                                    AppsmithPluginError.PLUGIN_EXECUTE_ARGUMENT_ERROR,
+                                    RedisErrorMessages.QUERY_PARSING_FAILED_ERROR_MSG));
                         }
 
                         Protocol.Command command;
@@ -90,8 +98,11 @@ public class RedisPlugin extends BasePlugin {
                             // Commands are in upper case
                             command = Protocol.Command.valueOf((String) cmdAndArgs.get(CMD_KEY));
                         } catch (IllegalArgumentException exc) {
-                            return Mono.error(new AppsmithPluginException(AppsmithPluginError.PLUGIN_EXECUTE_ARGUMENT_ERROR,
-                                    String.format("Not a valid Redis command: %s", cmdAndArgs.get(CMD_KEY))));
+                            return Mono.error(new AppsmithPluginException(
+                                    AppsmithPluginError.PLUGIN_EXECUTE_ARGUMENT_ERROR,
+                                    String.format(
+                                            RedisErrorMessages.INVALID_REDIS_COMMAND_ERROR_MSG,
+                                            cmdAndArgs.get(CMD_KEY))));
                         }
 
                         Object commandOutput;
@@ -102,7 +113,8 @@ public class RedisPlugin extends BasePlugin {
                         }
 
                         ActionExecutionResult actionExecutionResult = new ActionExecutionResult();
-                        actionExecutionResult.setBody(objectMapper.valueToTree(removeQuotes(processCommandOutput(commandOutput))));
+                        actionExecutionResult.setBody(
+                                objectMapper.valueToTree(removeQuotes(processCommandOutput(commandOutput))));
                         actionExecutionResult.setIsExecutionSuccess(true);
 
                         log.debug("In the RedisPlugin, got action execution result");
@@ -114,10 +126,16 @@ public class RedisPlugin extends BasePlugin {
                         error.printStackTrace();
                         ActionExecutionResult result = new ActionExecutionResult();
                         result.setIsExecutionSuccess(false);
+                        if (!(error instanceof AppsmithPluginException)) {
+                            error = new AppsmithPluginException(
+                                    RedisPluginError.QUERY_EXECUTION_FAILED,
+                                    RedisErrorMessages.QUERY_EXECUTION_FAILED_ERROR_MSG,
+                                    error.getMessage());
+                        }
                         result.setErrorInfo(error);
                         return Mono.just(result);
                     })
-                    // Now set the request in the result to be returned back to the server
+                    // Now set the request in the result to be returned to the server
                     .map(actionExecutionResult -> {
                         ActionExecutionRequest request = new ActionExecutionRequest();
                         request.setQuery(query);
@@ -151,13 +169,12 @@ public class RedisPlugin extends BasePlugin {
             if (result instanceof String) {
                 return ((String) result).replaceAll("^\\\"|^'|\\\"$|'$", "");
             } else if (result instanceof Collection) {
-                return ((Collection) result).stream()
-                        .map(this::removeQuotes)
-                        .collect(Collectors.toList());
+                return ((Collection) result).stream().map(this::removeQuotes).collect(Collectors.toList());
             } else if (result instanceof Map) {
-                return ((Map<String, Object>) result).entrySet().stream()
-                        .map(item -> Map.entry(item.getKey(), removeQuotes(item.getValue())))
-                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                return ((Map<String, Object>) result)
+                        .entrySet().stream()
+                                .map(item -> Map.entry(item.getKey(), removeQuotes(item.getValue())))
+                                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             }
 
             return result;
@@ -235,7 +252,8 @@ public class RedisPlugin extends BasePlugin {
         public Mono<JedisPool> datasourceCreate(DatasourceConfiguration datasourceConfiguration) {
             return Mono.fromCallable(() -> {
                         final JedisPoolConfig poolConfig = buildPoolConfig();
-                        int timeout = (int) Duration.ofSeconds(CONNECTION_TIMEOUT).toMillis();
+                        int timeout =
+                                (int) Duration.ofSeconds(CONNECTION_TIMEOUT).toMillis();
                         URI uri = RedisURIUtils.getURI(datasourceConfiguration);
                         JedisPool jedisPool = new JedisPool(poolConfig, uri, timeout);
                         return jedisPool;
@@ -266,17 +284,12 @@ public class RedisPlugin extends BasePlugin {
             Set<String> invalids = new HashSet<>();
 
             if (isEndpointMissing(datasourceConfiguration.getEndpoints())) {
-                invalids.add(
-                        "Could not find host address. Please edit the 'Host Address' field to provide the desired " +
-                                "endpoint."
-                );
+                invalids.add(RedisErrorMessages.DS_MISSING_HOST_ADDRESS_ERROR_MSG);
             }
 
             DBAuth auth = (DBAuth) datasourceConfiguration.getAuthentication();
             if (isAuthenticationMissing(auth)) {
-                invalids.add(
-                        "Could not find password. Please edit the 'Password' field to provide the password."
-                );
+                invalids.add(RedisErrorMessages.DS_MISSING_PASSWORD_ERROR_MSG);
             }
 
             return invalids;
@@ -313,9 +326,10 @@ public class RedisPlugin extends BasePlugin {
             return false;
         }
 
-        private Mono<Void> verifyPing(Jedis jedis) {
+        private Mono<Void> verifyPing(JedisPool connectionPool) {
             String pingResponse;
             try {
+                Jedis jedis = connectionPool.getResource();
                 pingResponse = jedis.ping();
             } catch (Exception exc) {
                 return Mono.error(exc);
@@ -323,20 +337,20 @@ public class RedisPlugin extends BasePlugin {
 
             if (!"PONG".equals(pingResponse)) {
                 return Mono.error(new RuntimeException(
-                        String.format("Expected PONG in response of PING but got %s", pingResponse)));
+                        String.format(RedisErrorMessages.NO_PONG_RESPONSE_ERROR_MSG, pingResponse)));
             }
 
             return Mono.empty();
         }
 
         @Override
-        public Mono<DatasourceTestResult> testDatasource(JedisPool connection) {
-            return Mono.fromCallable(() -> {
-                        Jedis jedis = connection.getResource();
-                        return verifyPing(jedis);
-                    })
-                    .thenReturn(new DatasourceTestResult());
-        }
+        public Mono<DatasourceTestResult> testDatasource(JedisPool connectionPool) {
 
+            return Mono.just(connectionPool)
+                    .flatMap(c -> verifyPing(connectionPool))
+                    .then(Mono.just(new DatasourceTestResult()))
+                    .onErrorResume(error ->
+                            Mono.just(new DatasourceTestResult(error.getCause().getMessage())));
+        }
     }
 }

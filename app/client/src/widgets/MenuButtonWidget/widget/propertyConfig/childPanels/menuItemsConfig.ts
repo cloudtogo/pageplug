@@ -81,13 +81,15 @@ export default {
           label: "位置",
           helpText: "设置菜单项图标对齐方向",
           controlType: "ICON_TABS",
+          defaultValue: "left",
+          fullWidth: false,
           options: [
             {
-              icon: "VERTICAL_LEFT",
+              startIcon: "skip-left-line",
               value: "left",
             },
             {
-              icon: "VERTICAL_RIGHT",
+              startIcon: "skip-right-line",
               value: "right",
             },
           ],

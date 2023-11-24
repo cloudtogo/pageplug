@@ -1,13 +1,17 @@
+import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
 import IconSVG from "./icon.svg";
 import Widget from "./widget";
+import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "图片",
   searchTags: ["picture", "image"],
   iconSVG: IconSVG,
+  tags: [WIDGET_TAGS.DISPLAY],
   defaults: {
-    defaultImage: "https://assets.appsmith.com/widgets/default.png",
+    defaultImage: getAssetUrl(`${ASSETS_CDN_URL}/widgets/default.png`),
     imageShape: "RECTANGLE",
     maxZoomLevel: 1,
     enableRotation: false,
@@ -18,7 +22,7 @@ export const CONFIG = {
     columns: 12,
     widgetName: "Image",
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
   },
   properties: {
     derived: Widget.getDerivedPropertiesMap(),
@@ -28,6 +32,21 @@ export const CONFIG = {
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
     stylesheetConfig: Widget.getStylesheetConfig(),
+    setterConfig: Widget.getSetterConfig(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
+  },
+  autoLayout: {
+    widgetSize: [
+      {
+        viewportMinWidth: 0,
+        configuration: () => {
+          return {
+            minWidth: "280px",
+            minHeight: "40px",
+          };
+        },
+      },
+    ],
   },
 };
 

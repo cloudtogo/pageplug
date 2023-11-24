@@ -25,6 +25,7 @@ import pageCanvasStructureReducer from "reducers/uiReducers/pageCanvasStructureR
 import pageWidgetsReducer from "./pageWidgetsReducer";
 import onBoardingReducer from "./onBoardingReducer";
 import globalSearchReducer from "./globalSearchReducer";
+import actionSelectorReducer from "./actionSelectorReducer";
 import releasesReducer from "./releasesReducer";
 import websocketReducer from "./websocketReducer";
 import debuggerReducer from "./debuggerReducer";
@@ -42,10 +43,15 @@ import mainCanvasReducer from "./mainCanvasReducer";
 import focusHistoryReducer from "./focusHistoryReducer";
 import { editorContextReducer } from "./editorContextReducer";
 import guidedTourReducer from "./guidedTourReducer";
+import libraryReducer from "./libraryReducer";
 import appSettingsPaneReducer from "./appSettingsPaneReducer";
 import autoHeightUIReducer from "./autoHeightReducer";
+import analyticsReducer from "./analyticsReducer";
+import layoutConversionReducer from "./layoutConversionReducer";
+import oneClickBindingReducer from "./oneClickBindingReducer";
 
 const uiReducer = combineReducers({
+  analytics: analyticsReducer,
   editor: editorReducer,
   errors: errorReducer,
   propertyPane: propertyPaneReducer,
@@ -90,7 +96,11 @@ const uiReducer = combineReducers({
   appSettingsPane: appSettingsPaneReducer,
   focusHistory: focusHistoryReducer,
   editorContext: editorContextReducer,
+  libraries: libraryReducer,
   autoHeightUI: autoHeightUIReducer,
+  layoutConversion: layoutConversionReducer,
+  actionSelector: actionSelectorReducer,
+  oneClickBinding: oneClickBindingReducer,
 });
 
 export default uiReducer;

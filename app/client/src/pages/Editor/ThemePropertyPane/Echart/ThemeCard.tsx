@@ -44,7 +44,7 @@ const HeaderContainer = styled.main<{ primaryColor: string }>`
   color: ${({ primaryColor }) => getComplementaryGrayscaleColor(primaryColor)};
 `;
 
-const MainText = styled.main<{ backgroundColor: string }>`
+const MainText = styled.main<{ backgroundColor?: string }>`
   color: ${({ backgroundColor }) =>
     getComplementaryGrayscaleColor(backgroundColor)};
 `;
@@ -128,6 +128,7 @@ export function ThemeCard(props: ThemeCard) {
           "border relative group transition-all t--theme-card": true,
           "overflow-hidden": !selectable,
           "hover:shadow-xl cursor-pointer": selectable,
+          "temp-class": true,
         })}
         onClick={changeSelectedTheme}
       >

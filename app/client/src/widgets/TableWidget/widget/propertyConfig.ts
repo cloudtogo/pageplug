@@ -1,9 +1,9 @@
 import { get } from "lodash";
-import { TableWidgetProps } from "../constants";
+import type { TableWidgetProps } from "../constants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
-import { PropertyPaneConfig } from "constants/PropertyControlConstants";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
+import type { PropertyPaneConfig } from "constants/PropertyControlConstants";
 import { ButtonVariantTypes } from "components/constants";
 import {
   updateDerivedColumnsHook,
@@ -371,6 +371,7 @@ export default [
                       type: ValidationTypes.TEXT,
                       params: {
                         allowedValues: [
+                          "YYYY-MM-DDTHH:mm:ss.SSSZ",
                           "Epoch",
                           "Milliseconds",
                           "YYYY-MM-DD",
@@ -508,6 +509,7 @@ export default [
                       type: ValidationTypes.TEXT,
                       params: {
                         allowedValues: [
+                          "YYYY-MM-DDTHH:mm:ss.SSSZ",
                           "Epoch",
                           "Milliseconds",
                           "YYYY-MM-DD",
@@ -582,15 +584,15 @@ export default [
                   controlType: "ICON_TABS",
                   options: [
                     {
-                      icon: "LEFT_ALIGN",
+                      startIcon: "align-left",
                       value: "LEFT",
                     },
                     {
-                      icon: "CENTER_ALIGN",
+                      startIcon: "align-center",
                       value: "CENTER",
                     },
                     {
-                      icon: "RIGHT_ALIGN",
+                      startIcon: "align-right",
                       value: "RIGHT",
                     },
                   ],
@@ -661,18 +663,18 @@ export default [
                 {
                   propertyName: "fontStyle",
                   label: "字体样式",
-                  controlType: "BUTTON_TABS",
+                  controlType: "BUTTON_GROUP",
                   options: [
                     {
-                      icon: "BOLD_FONT",
+                      icon: "text-bold",
                       value: "BOLD",
                     },
                     {
-                      icon: "ITALICS_FONT",
+                      icon: "text-italic",
                       value: "ITALIC",
                     },
                     {
-                      icon: "UNDERLINE",
+                      icon: "text-underline",
                       value: "UNDERLINE",
                     },
                   ],
@@ -699,15 +701,15 @@ export default [
                   controlType: "ICON_TABS",
                   options: [
                     {
-                      icon: "VERTICAL_TOP",
+                      startIcon: "vertical-align-top",
                       value: "TOP",
                     },
                     {
-                      icon: "VERTICAL_CENTER",
+                      startIcon: "vertical-align-middle",
                       value: "CENTER",
                     },
                     {
-                      icon: "VERTICAL_BOTTOM",
+                      startIcon: "vertical-align-bottom",
                       value: "BOTTOM",
                     },
                   ],
@@ -833,13 +835,14 @@ export default [
                   label: "图标对齐",
                   helpText: "设置菜单按钮图标对齐方式",
                   controlType: "ICON_TABS",
+                  defaultValue: "left",
                   options: [
                     {
-                      icon: "VERTICAL_LEFT",
+                      startIcon: "align-left",
                       value: "left",
                     },
                     {
-                      icon: "VERTICAL_RIGHT",
+                      startIcon: "align-right",
                       value: "right",
                     },
                   ],
@@ -1306,13 +1309,14 @@ export default [
                             label: "图标对齐",
                             helpText: "设置菜单项图标对齐方向",
                             controlType: "ICON_TABS",
+                            defaultValue: "left",
                             options: [
                               {
-                                icon: "VERTICAL_LEFT",
+                                startIcon: "align-left",
                                 value: "left",
                               },
                               {
-                                icon: "VERTICAL_RIGHT",
+                                startIcon: "align-right",
                                 value: "right",
                               },
                             ],
@@ -1685,16 +1689,16 @@ export default [
       {
         propertyName: "fontStyle",
         label: "字体样式",
-        controlType: "BUTTON_TABS",
+        controlType: "BUTTON_GROUP",
         updateHook: updateColumnStyles,
         dependencies: ["primaryColumns", "derivedColumns"],
         options: [
           {
-            icon: "BOLD_FONT",
+            icon: "text-bold",
             value: "BOLD",
           },
           {
-            icon: "ITALICS_FONT",
+            icon: "text-italic",
             value: "ITALIC",
           },
         ],
@@ -1709,15 +1713,15 @@ export default [
         dependencies: ["primaryColumns", "derivedColumns"],
         options: [
           {
-            icon: "LEFT_ALIGN",
+            startIcon: "align-left",
             value: "LEFT",
           },
           {
-            icon: "CENTER_ALIGN",
+            startIcon: "align-center",
             value: "CENTER",
           },
           {
-            icon: "RIGHT_ALIGN",
+            startIcon: "align-right",
             value: "RIGHT",
           },
         ],
@@ -1733,15 +1737,15 @@ export default [
         dependencies: ["primaryColumns", "derivedColumns"],
         options: [
           {
-            icon: "VERTICAL_TOP",
+            startIcon: "vertical-align-top",
             value: "TOP",
           },
           {
-            icon: "VERTICAL_CENTER",
+            startIcon: "vertical-align-middle",
             value: "CENTER",
           },
           {
-            icon: "VERTICAL_BOTTOM",
+            startIcon: "vertical-align-bottom",
             value: "BOTTOM",
           },
         ],

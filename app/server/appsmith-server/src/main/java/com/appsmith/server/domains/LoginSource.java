@@ -7,9 +7,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public enum LoginSource {
-    GOOGLE, FORM, GITHUB, KEYCLOAK, OIDC;
+    GOOGLE,
+    FORM,
+    GITHUB,
+    KEYCLOAK,
+    OIDC,
+    WECHAT;
 
-    public static final Set<LoginSource> oauthSources = Set.of(GOOGLE, GITHUB, KEYCLOAK, OIDC);
+    public static final Set<LoginSource> oauthSources = Set.of(GOOGLE, GITHUB, KEYCLOAK, OIDC, WECHAT);
 
     public static LoginSource fromString(String name) {
         return EnumUtils.getEnumFromString(LoginSource.class, name);

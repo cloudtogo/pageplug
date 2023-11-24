@@ -1,6 +1,11 @@
 import styled, { css } from "styled-components";
-import { TableSizes, CellLayoutProperties, CellAlignment } from "./Constants";
-import { Colors, Color } from "constants/Colors";
+import type {
+  TableSizes,
+  CellLayoutProperties,
+  CellAlignment,
+} from "./Constants";
+import type { Color } from "constants/Colors";
+import { Colors } from "constants/Colors";
 import { hideScrollbar } from "constants/DefaultTheme";
 import {
   fontSizeUtility,
@@ -508,6 +513,7 @@ export const TableHeaderWrapper = styled.div<{
 }>`
   position: relative;
   display: flex;
+  border-bottom: 1px solid ${Colors.GEYSER_LIGHT};
   width: ${(props) => props.width - 8}px;
   .show-page-items {
     display: ${(props) => (props.width < 700 ? "none" : "flex")};

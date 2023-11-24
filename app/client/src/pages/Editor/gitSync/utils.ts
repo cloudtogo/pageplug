@@ -1,4 +1,4 @@
-import { ApplicationPayload } from "@appsmith/constants/ReduxActionConstants";
+import type { ApplicationPayload } from "@appsmith/constants/ReduxActionConstants";
 import {
   CHANGES_SINCE_LAST_DEPLOYMENT,
   createMessage,
@@ -18,7 +18,8 @@ export const getIsStartingWithRemoteBranches = (
   );
 };
 
-const GIT_REMOTE_URL_PATTERN = /^((git|ssh)|(git@[\w\-\.]+))(:(\/\/)?)([\w\.@\:\/\-~\(\)]+)[^\/]$/im;
+const GIT_REMOTE_URL_PATTERN =
+  /^((git|ssh)|(git@[\w\-\.]+))(:(\/\/)?)([\w\.@\:\/\-~\(\)]+)[^\/]$/im;
 
 const gitRemoteUrlRegExp = new RegExp(GIT_REMOTE_URL_PATTERN);
 
@@ -78,9 +79,9 @@ export function changeInfoSinceLastCommit(
 }
 
 export const GIT_DOC_URLs = {
-  base: "https://docs.appsmith.com/advanced-concepts/version-control-with-git",
+  base: "https://docs.pageplug.cn/%E5%AD%A6%E4%B9%A0%E6%96%87%E6%A1%A3/%E5%85%B6%E4%BB%96%E8%B5%84%E6%BA%90/%E4%BD%BF%E7%94%A8Git%E8%BF%9B%E8%A1%8C%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/%E4%BD%BF%E7%94%A8Git%E8%BF%9B%E8%A1%8C%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6",
   import:
-    "https://docs.appsmith.com/advanced-concepts/version-control-with-git/import-from-repository",
+    "https://docs.pageplug.cn/%E5%AD%A6%E4%B9%A0%E6%96%87%E6%A1%A3/%E5%85%B6%E4%BB%96%E8%B5%84%E6%BA%90/%E4%BD%BF%E7%94%A8Git%E8%BF%9B%E8%A1%8C%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/%E4%BD%BF%E7%94%A8Git%E8%BF%9B%E8%A1%8C%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6",
   connect:
-    "https://docs.appsmith.com/advanced-concepts/version-control-with-git/connecting-to-git-repository",
+    "https://docs.pageplug.cn/%E5%AD%A6%E4%B9%A0%E6%96%87%E6%A1%A3/%E5%85%B6%E4%BB%96%E8%B5%84%E6%BA%90/%E4%BD%BF%E7%94%A8Git%E8%BF%9B%E8%A1%8C%E7%89%88%E6%9C%AC%E6%8E%A7%E5%88%B6/%E8%BF%9E%E6%8E%A5%E5%88%B0Git%E5%AD%98%E5%82%A8%E5%BA%93",
 };

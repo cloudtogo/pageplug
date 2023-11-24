@@ -1,4 +1,4 @@
-import { Property } from "entities/Action";
+import type { Property } from "entities/Action";
 
 export enum AuthType {
   NONE = "dbAuth",
@@ -36,6 +36,7 @@ export interface Connection {
 
 export interface SSL {
   authType: SSLType;
+  authTypeControl: boolean;
   certificateFile: Certificate;
 }
 
@@ -57,6 +58,8 @@ export interface ApiDatasourceForm {
   authType: AuthType;
   authentication?: Authentication;
   connection?: Connection;
+  userPermissions?: string[];
+  name?: string;
 }
 
 export interface Oauth2Common {
@@ -70,7 +73,7 @@ export interface Oauth2Common {
   isAuthorizationHeader: boolean;
   audience: string;
   resource: string;
-  sendScopeWithRefreshToken: string;
+  sendScopeWithRefreshToken: boolean;
   refreshTokenClientCredentialsLocation: string;
   useSelfSignedCert?: boolean;
 }
@@ -91,6 +94,7 @@ export interface Basic {
   authenticationType: AuthType.basic;
   username: string;
   password: string;
+  secretExists?: Record<string, boolean>;
 }
 
 export interface ApiKey {

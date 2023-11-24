@@ -1,8 +1,15 @@
 import React from "react";
-import Actions, { ActionsPropsType } from "./actions";
-import { Banner, BannerPropType } from "./banner";
+// import Actions from "./actions";
+import type { topActionsPropsType } from "./top_actions";
+import TopActions from "./top_actions";
+import type { bottomActionsPropsType } from "./bottom_actions";
+import BottomActions from "./bottom_actions";
+import { Banner } from "./banner";
+import type { ActionsPropsType } from "./actions";
+import Actions from "./actions";
+import type { BannerPropType } from "./banner";
 
-function TableHeader(props: ActionsPropsType & BannerPropType) {
+export function TableHeader_Top(props: topActionsPropsType & BannerPropType) {
   const {
     accentColor,
     borderRadius,
@@ -23,7 +30,7 @@ function TableHeader(props: ActionsPropsType & BannerPropType) {
       onAddNewRowAction={onAddNewRowAction}
     />
   ) : (
-    <Actions
+    <TopActions
       accentColor={accentColor}
       borderRadius={borderRadius}
       boxShadow={boxShadow}
@@ -32,4 +39,26 @@ function TableHeader(props: ActionsPropsType & BannerPropType) {
   );
 }
 
-export default TableHeader;
+export function TableHeader_Bottom(
+  props: bottomActionsPropsType & BannerPropType,
+) {
+  const {
+    accentColor,
+    borderRadius,
+    boxShadow,
+    disabledAddNewRowSave,
+    isAddRowInProgress,
+    onAddNewRowAction,
+    ...ActionProps
+  } = props;
+
+  return (
+    <BottomActions
+      accentColor={accentColor}
+      borderRadius={borderRadius}
+      boxShadow={boxShadow}
+      {...ActionProps}
+    />
+  );
+}
+// export default TableHeader;

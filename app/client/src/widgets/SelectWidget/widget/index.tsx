@@ -1,124 +1,107 @@
-import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "../../BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
-import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import SelectComponent from "../component";
-import { DropdownOption } from "../constants";
-import {
-  ValidationResponse,
-  ValidationTypes,
-} from "constants/WidgetValidation";
-import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import { MinimumPopupRows, GRID_DENSITY_MIGRATION_V1 } from "widgets/constants";
-import { LabelPosition } from "components/constants";
 import { Alignment } from "@blueprintjs/core";
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
-import {
-  findIndex,
-  isArray,
-  isNil,
-  isNumber,
-  isString,
-  LoDashStatic,
-} from "lodash";
-import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
+import { LabelPosition } from "components/constants";
+import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import type { WidgetType } from "constants/WidgetConstants";
+import { ValidationTypes } from "constants/WidgetValidation";
+import type { SetterConfig, Stylesheet } from "entities/AppTheming";
+import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import equal from "fast-deep-equal/es6";
+import { findIndex, isArray, isNil, isNumber, isString } from "lodash";
+import React from "react";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
+import { GRID_DENSITY_MIGRATION_V1, MinimumPopupRows } from "widgets/constants";
+import {
+  isAutoHeightEnabledForWidget,
+  DefaultAutocompleteDefinitions,
+} from "widgets/WidgetUtils";
+import type { WidgetProps, WidgetState } from "../../BaseWidget";
+import BaseWidget from "../../BaseWidget";
+import SelectComponent from "../component";
+import type { DropdownOption } from "../constants";
+import {
+  getOptionLabelValueExpressionPrefix,
+  optionLabelValueExpressionSuffix,
+} from "../constants";
+import {
+  defaultValueExpressionPrefix,
+  getDefaultValueExpressionSuffix,
+} from "../constants";
 import derivedProperties from "./parseDerivedProperties";
-import { Stylesheet } from "entities/AppTheming";
-
-export function defaultOptionValueValidation(
-  value: unknown,
-  props: SelectWidgetProps,
-  _: LoDashStatic,
-): ValidationResponse {
-  let isValid;
-  let parsed;
-  let message = "";
-  const isServerSideFiltered = props.serverSideFiltering;
-  // TODO: validation of defaultOption is dependent on serverSideFiltering and options, this property should reValidated once the dependencies change
-  //this issue is been tracked here https://github.com/appsmithorg/appsmith/issues/15303
-  let options = props.options;
-  /*
-   * Function to check if the object has `label` and `value`
-   */
-  const hasLabelValue = (obj: any) => {
-    return (
-      _.isPlainObject(value) &&
-      obj.hasOwnProperty("label") &&
-      obj.hasOwnProperty("value") &&
-      _.isString(obj.label) &&
-      (_.isString(obj.value) || _.isFinite(obj.value))
-    );
-  };
-
-  /*
-   * When value is "{label: 'green', value: 'green'}"
-   */
-  if (typeof value === "string") {
-    try {
-      const parsedValue = JSON.parse(value);
-      if (_.isObject(parsedValue)) {
-        value = parsedValue;
-      }
-    } catch (e) {}
-  }
-
-  if (_.isString(value) || _.isFinite(value) || hasLabelValue(value)) {
-    /*
-     * When value is "", "green", 444, {label: "green", value: "green"}
-     */
-    isValid = true;
-    parsed = value;
-  } else {
-    isValid = false;
-    parsed = undefined;
-    message =
-      'value does not evaluate to type: string | number | { "label": "label1", "value": "value1" }';
-  }
-
-  if (isValid && !_.isNil(parsed) && parsed !== "") {
-    if (!Array.isArray(options) && typeof options === "string") {
-      try {
-        const parsedOptions = JSON.parse(options);
-        if (Array.isArray(parsedOptions)) {
-          options = parsedOptions;
-        } else {
-          options = [];
-        }
-      } catch (e) {
-        options = [];
-      }
-    }
-    const parsedValue = (parsed as any).hasOwnProperty("value")
-      ? (parsed as any).value
-      : parsed;
-    const valueIndex = _.findIndex(
-      options,
-      (option) => option.value === parsedValue,
-    );
-
-    if (valueIndex === -1) {
-      if (!isServerSideFiltered) {
-        isValid = false;
-        message = `Default value is missing in options. Please update the value.`;
-      } else {
-        if (!hasLabelValue(parsed)) {
-          isValid = false;
-          message = `Default value is missing in options. Please use {label : <string | num>, value : < string | num>} format to show default for server side data.`;
-        }
-      }
-    }
-  }
-  return {
-    isValid,
-    parsed,
-    messages: [message],
-  };
-}
+import type { AutocompletionDefinitions } from "widgets/constants";
+import {
+  defaultOptionValueValidation,
+  labelKeyValidation,
+  getLabelValueAdditionalAutocompleteData,
+  getLabelValueKeyOptions,
+  valueKeyValidation,
+} from "./propertyUtils";
+import type {
+  WidgetQueryConfig,
+  WidgetQueryGenerationFormConfig,
+} from "WidgetQueryGenerators/types";
 
 class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
   constructor(props: SelectWidgetProps) {
     super(props);
+  }
+
+  static getQueryGenerationConfig(widget: WidgetProps) {
+    return {
+      select: {
+        where: `${widget.widgetName}.filterText`,
+      },
+    };
+  }
+
+  static getPropertyUpdatesForQueryBinding(
+    queryConfig: WidgetQueryConfig,
+    widget: WidgetProps,
+    formConfig: WidgetQueryGenerationFormConfig,
+  ) {
+    let modify;
+
+    if (queryConfig.select) {
+      modify = {
+        sourceData: queryConfig.select.data,
+        optionLabel: formConfig.aliases.find((d) => d.name === "label")?.alias,
+        optionValue: formConfig.aliases.find((d) => d.name === "value")?.alias,
+        defaultOptionValue: "",
+        serverSideFiltering: true,
+        onFilterUpdate: queryConfig.select.run,
+      };
+    }
+
+    return {
+      modify,
+    };
+  }
+
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "Select is used to capture user input/s from a specified list of permitted inputs. A Select can capture a single choice",
+      "!url": "https://docs.appsmith.com/widget-reference/dropdown",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      filterText: {
+        "!type": "string",
+        "!doc": "The filter text for Server side filtering",
+      },
+      selectedOptionValue: {
+        "!type": "string",
+        "!doc": "The value selected in a single select dropdown",
+        "!url": "https://docs.appsmith.com/widget-reference/dropdown",
+      },
+      selectedOptionLabel: {
+        "!type": "string",
+        "!doc": "The selected option label in a single select dropdown",
+        "!url": "https://docs.appsmith.com/widget-reference/dropdown",
+      },
+      isDisabled: "bool",
+      isValid: "bool",
+      isDirty: "bool",
+      options: "[$__dropdownOption__$]",
+    };
   }
 
   static getPropertyPaneContentConfig() {
@@ -127,39 +110,43 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
         sectionName: "数据",
         children: [
           {
-            helpText: "让用户选择一项，选项值必须唯一",
-            propertyName: "options",
-            label: "选项",
-            controlType: "INPUT_TEXT",
+            helpText: "接受一个对象数组以显示选项。使用 {{}} 绑定来自 API 的数据。",
+            propertyName: "sourceData",
+            label: "源数据",
+            controlType: "ONE_CLICK_BINDING_CONTROL",
+            controlConfig: {
+              aliases: [
+                {
+                  name: "label",
+                  isSearcheable: true,
+                  isRequired: true,
+                },
+                {
+                  name: "value",
+                  isRequired: true,
+                },
+              ],
+              sampleData: JSON.stringify(
+                [
+                  { name: "蓝", code: "BLUE" },
+                  { name: "绿", code: "GREEN" },
+                  { name: "红", code: "RED" },
+                ],
+                null,
+                2,
+              ),
+            },
+            isJSConvertible: true,
             placeholderText: '[{ "label": "label1", "value": "value1" }]',
             isBindProperty: true,
             isTriggerProperty: false,
             validation: {
               type: ValidationTypes.ARRAY,
               params: {
-                unique: ["value"],
                 children: {
                   type: ValidationTypes.OBJECT,
                   params: {
                     required: true,
-                    allowedKeys: [
-                      {
-                        name: "label",
-                        type: ValidationTypes.TEXT,
-                        params: {
-                          default: "",
-                          requiredKey: true,
-                        },
-                      },
-                      {
-                        name: "value",
-                        type: ValidationTypes.TEXT,
-                        params: {
-                          default: "",
-                          requiredKey: true,
-                        },
-                      },
-                    ],
                   },
                 },
               },
@@ -168,10 +155,83 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText: "默认选中这个值",
+            helpText:
+              "选择或设置来自源数据的字段作为显示标签",
+            propertyName: "optionLabel",
+            label: "Label key",
+            controlType: "DROP_DOWN",
+            customJSControl: "WRAPPED_CODE_EDITOR",
+            controlConfig: {
+              wrapperCode: {
+                prefix: getOptionLabelValueExpressionPrefix,
+                suffix: optionLabelValueExpressionSuffix,
+              },
+            },
+            placeholderText: "",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            isJSConvertible: true,
+            evaluatedDependencies: ["sourceData"],
+            options: getLabelValueKeyOptions,
+            alwaysShowSelected: true,
+            validation: {
+              type: ValidationTypes.FUNCTION,
+              params: {
+                fn: labelKeyValidation,
+                expected: {
+                  type: "String or Array<string>",
+                  example: `color | ["blue", "green"]`,
+                  autocompleteDataType: AutocompleteDataType.STRING,
+                },
+              },
+              dependentPaths: ["sourceData"],
+            },
+            additionalAutoComplete: getLabelValueAdditionalAutocompleteData,
+          },
+          {
+            helpText: "选择或设置来自源数据的字段作为数值",
+            propertyName: "optionValue",
+            label: "Value key",
+            controlType: "DROP_DOWN",
+            customJSControl: "WRAPPED_CODE_EDITOR",
+            controlConfig: {
+              wrapperCode: {
+                prefix: getOptionLabelValueExpressionPrefix,
+                suffix: optionLabelValueExpressionSuffix,
+              },
+            },
+            placeholderText: "",
+            isBindProperty: true,
+            isTriggerProperty: false,
+            isJSConvertible: true,
+            evaluatedDependencies: ["sourceData"],
+            options: getLabelValueKeyOptions,
+            alwaysShowSelected: true,
+            validation: {
+              type: ValidationTypes.FUNCTION,
+              params: {
+                fn: valueKeyValidation,
+                expected: {
+                  type: "String or Array<string | number | boolean>",
+                  example: `color | [1, "orange"]`,
+                  autocompleteDataType: AutocompleteDataType.STRING,
+                },
+              },
+              dependentPaths: ["sourceData"],
+            },
+            additionalAutoComplete: getLabelValueAdditionalAutocompleteData,
+          },
+          {
+            helpText: "默认情况下选择具有特定值的选项",
             propertyName: "defaultOptionValue",
             label: "默认选中值",
-            controlType: "SELECT_DEFAULT_VALUE_CONTROL",
+            controlType: "WRAPPED_CODE_EDITOR",
+            controlConfig: {
+              wrapperCode: {
+                prefix: defaultValueExpressionPrefix,
+                suffix: getDefaultValueExpressionSuffix,
+              },
+            },
             placeholderText: '{ "label": "label1", "value": "value1" }',
             isBindProperty: true,
             isTriggerProperty: false,
@@ -185,6 +245,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
                   autocompleteDataType: AutocompleteDataType.STRING,
                 },
               },
+              dependentPaths: ["serverSideFiltering", "options"],
             },
             dependencies: ["serverSideFiltering", "options"],
           },
@@ -208,12 +269,13 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
             propertyName: "labelPosition",
             label: "位置",
             controlType: "ICON_TABS",
-            fullWidth: true,
+            fullWidth: false,
             options: [
               { label: "左", value: LabelPosition.Left },
               { label: "上", value: LabelPosition.Top },
               { label: "自动", value: LabelPosition.Auto },
             ],
+            hidden: isAutoLayout,
             defaultValue: LabelPosition.Top,
             isBindProperty: false,
             isTriggerProperty: false,
@@ -224,13 +286,14 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
             propertyName: "labelAlignment",
             label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
+            fullWidth: false,
             options: [
               {
-                icon: "LEFT_ALIGN",
+                startIcon: "align-left",
                 value: Alignment.LEFT,
               },
               {
-                icon: "RIGHT_ALIGN",
+                startIcon: "align-right",
                 value: Alignment.RIGHT,
               },
             ],
@@ -321,7 +384,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
             propertyName: "labelTooltip",
             label: "提示",
             controlType: "INPUT_TEXT",
-            placeholderText: "请至少输入 6 个字符",
+            placeholderText: "添加提示信息",
             isBindProperty: true,
             isTriggerProperty: false,
             validation: { type: ValidationTypes.TEXT },
@@ -382,7 +445,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the dropdown opens",
+            helpText: "when the dropdown opens",
             propertyName: "onDropdownOpen",
             label: "onDropdownOpen",
             controlType: "ACTION_SELECTOR",
@@ -391,7 +454,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
             isTriggerProperty: true,
           },
           {
-            helpText: "Triggers an action when the dropdown closes",
+            helpText: "when the dropdown closes",
             propertyName: "onDropdownClose",
             label: "onDropdownClose",
             controlType: "ACTION_SELECTOR",
@@ -425,6 +488,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
             helpText: "设置标签字体大小",
             controlType: "DROP_DOWN",
             defaultValue: "0.875rem",
+            hidden: isAutoLayout,
             options: [
               {
                 label: "S",
@@ -466,14 +530,14 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
             propertyName: "labelStyle",
             label: "强调",
             helpText: "设置标签字体是否加粗或斜体",
-            controlType: "BUTTON_TABS",
+            controlType: "BUTTON_GROUP",
             options: [
               {
-                icon: "BOLD_FONT",
+                icon: "text-bold",
                 value: "BOLD",
               },
               {
-                icon: "ITALICS_FONT",
+                icon: "text-italic",
                 value: "ITALIC",
               },
             ],
@@ -484,21 +548,21 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
           },
         ],
       },
-      {
-        sectionName: "颜色",
-        children: [
-          {
-            propertyName: "accentColor",
-            label: "强调色",
-            controlType: "COLOR_PICKER",
-            isJSConvertible: true,
-            isBindProperty: true,
-            isTriggerProperty: false,
-            validation: { type: ValidationTypes.TEXT },
-            invisible: true,
-          },
-        ],
-      },
+      // {
+      //   sectionName: "颜色",
+      //   children: [
+      //     {
+      //       propertyName: "accentColor",
+      //       label: "强调色",
+      //       controlType: "COLOR_PICKER",
+      //       isJSConvertible: true,
+      //       isBindProperty: true,
+      //       isTriggerProperty: false,
+      //       validation: { type: ValidationTypes.TEXT },
+      //       invisible: true,
+      //     },
+      //   ],
+      // },
       {
         sectionName: "轮廓样式",
         children: [
@@ -555,6 +619,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
   // https://github.com/appsmithorg/appsmith/issues/13664#issuecomment-1120814337
   static getDerivedPropertiesMap() {
     return {
+      options: `{{(()=>{${derivedProperties.getOptions}})()}}`,
       isValid: `{{(()=>{${derivedProperties.getIsValid}})()}}`,
       selectedOptionValue: `{{(()=>{${derivedProperties.getSelectedOptionValue}})()}}`,
 
@@ -574,6 +639,34 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
     ) {
       this.props.updateWidgetMetaProperty("isDirty", false);
     }
+  }
+
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {
+        setVisibility: {
+          path: "isVisible",
+          type: "boolean",
+        },
+        setDisabled: {
+          path: "isDisabled",
+          type: "boolean",
+        },
+        setRequired: {
+          path: "isRequired",
+          type: "boolean",
+        },
+        setOptions: {
+          path: "options",
+          type: "array",
+        },
+        setSelectedOption: {
+          path: "defaultOptionValue",
+          type: "string",
+          accessor: "selectedOptionValue",
+        },
+      },
+    };
   }
 
   isStringOrNumber = (value: any): value is string | number =>
@@ -657,9 +750,6 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
           type: EventType.ON_OPTION_CHANGE,
         },
       });
-      if (!this.props.isDirty) {
-        this.props.updateWidgetMetaProperty("isDirty", true);
-      }
     }
 
     // When Label changes but value doesnt change, Applies to serverside Filtering

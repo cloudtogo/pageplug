@@ -1,6 +1,12 @@
 import { ValidationTypes } from "constants/WidgetValidation";
-import { ColumnTypes, TableWidgetProps } from "widgets/TableWidgetV2/constants";
-import { hideByColumnType } from "../../propertyUtils";
+import { get } from "lodash";
+import type { TableWidgetProps } from "widgets/TableWidgetV2/constants";
+import { ColumnTypes } from "widgets/TableWidgetV2/constants";
+import {
+  getBasePropertyPath,
+  hideByColumnType,
+  selectColumnOptionsValidation,
+} from "../../propertyUtils";
 
 export default {
   sectionName: "选择器配置",
@@ -12,43 +18,79 @@ export default {
       propertyName: "selectOptions",
       helpText: "可供选择的选项列表",
       label: "选项",
-      controlType: "INPUT_TEXT",
+      controlType: "TABLE_COMPUTE_VALUE",
       isJSConvertible: false,
       isBindProperty: true,
       validation: {
-        type: ValidationTypes.ARRAY,
+        type: ValidationTypes.FUNCTION,
         params: {
-          unique: ["value"],
-          children: {
-            type: ValidationTypes.OBJECT,
-            params: {
-              required: true,
-              allowedKeys: [
-                {
-                  name: "label",
-                  type: ValidationTypes.TEXT,
-                  params: {
-                    default: "",
-                    requiredKey: true,
-                  },
-                },
-                {
-                  name: "value",
-                  type: ValidationTypes.TEXT,
-                  params: {
-                    default: "",
-                    requiredKey: true,
-                  },
-                },
-              ],
-            },
+          expected: {
+            type: 'Array<{ "label": string | number, "value": string | number}>',
+            example: '[{"label": "abc", "value": "abc"}]',
           },
+          fnString: selectColumnOptionsValidation.toString(),
         },
       },
       isTriggerProperty: false,
       dependencies: ["primaryColumns"],
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(props, propertyPath, [ColumnTypes.SELECT]);
+      },
+    },
+    {
+      propertyName: "allowSameOptionsInNewRow",
+      defaultValue: true,
+      helpText: "切换以显示新行和编辑列中现有行的相同选项",
+      label: "新增行使用相同可选项",
+      controlType: "SWITCH",
+      isBindProperty: true,
+      isJSConvertible: true,
+      isTriggerProperty: false,
+      hidden: (props: TableWidgetProps) => {
+        return !props.allowAddNewRow;
+      },
+      dependencies: ["primaryColumns", "allowAddNewRow"],
+      validation: { type: ValidationTypes.BOOLEAN },
+    },
+    {
+      propertyName: "newRowSelectOptions",
+      helpText: "新增一行的方式显示在列中用于添加新行的选项",
+      label: "新增行的可选项",
+      controlType: "INPUT_TEXT",
+      isJSConvertible: false,
+      isBindProperty: true,
+      validation: {
+        type: ValidationTypes.FUNCTION,
+        params: {
+          expected: {
+            type: 'Array<{ "label": string | number, "value": string | number}>',
+            example: '[{"label": "abc", "value": "abc"}]',
+          },
+          fnString: selectColumnOptionsValidation.toString(),
+        },
+      },
+      isTriggerProperty: false,
+      dependencies: ["primaryColumns", "allowAddNewRow"],
+      hidden: (props: TableWidgetProps, propertyPath: string) => {
+        const baseProperty = getBasePropertyPath(propertyPath);
+
+        if (baseProperty) {
+          const columnType = get(props, `${baseProperty}.columnType`, "");
+          const allowSameOptionsInNewRow = get(
+            props,
+            `${baseProperty}.allowSameOptionsInNewRow`,
+          );
+
+          if (
+            columnType === ColumnTypes.SELECT &&
+            props.allowAddNewRow &&
+            !allowSameOptionsInNewRow
+          ) {
+            return false;
+          } else {
+            return true;
+          }
+        }
       },
     },
     {

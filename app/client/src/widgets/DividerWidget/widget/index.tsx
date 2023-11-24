@@ -1,11 +1,41 @@
+import type { WidgetType } from "constants/WidgetConstants";
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import DividerComponent from "../component";
 
 import { ValidationTypes } from "constants/WidgetValidation";
+import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
+import type { SetterConfig } from "entities/AppTheming";
 
 class DividerWidget extends BaseWidget<DividerWidgetProps, WidgetState> {
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc": "Divider is a simple UI widget used as a separator",
+      "!url": "https://docs.appsmith.com/widget-reference/divider",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      orientation: "string",
+      capType: "string",
+      capSide: "number",
+      strokeStyle: "string",
+      dividerColor: "string",
+      thickness: "number",
+    };
+  }
+
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {
+        setVisibility: {
+          path: "isVisible",
+          type: "boolean",
+        },
+      },
+    };
+  }
+
   static getPropertyPaneContentConfig() {
     return [
       {
@@ -47,6 +77,7 @@ class DividerWidget extends BaseWidget<DividerWidgetProps, WidgetState> {
             propertyName: "orientation",
             label: "方向",
             controlType: "ICON_TABS",
+            defaultValue: "horizontal",
             fullWidth: true,
             options: [
               {
@@ -58,6 +89,7 @@ class DividerWidget extends BaseWidget<DividerWidgetProps, WidgetState> {
                 value: "vertical",
               },
             ],
+            hidden: isAutoLayout,
             isJSConvertible: true,
             isBindProperty: true,
             isTriggerProperty: false,
@@ -93,19 +125,16 @@ class DividerWidget extends BaseWidget<DividerWidgetProps, WidgetState> {
                 label: "实线",
                 value: "solid",
                 icon: "cap-solid",
-                iconSize: "large",
               },
               {
                 label: "虚线",
                 value: "dashed",
                 icon: "line-dashed",
-                iconSize: "large",
               },
               {
                 label: "点线",
                 value: "dotted",
                 icon: "line-dotted",
-                iconSize: "large",
               },
             ],
             isJSConvertible: true,
@@ -142,19 +171,16 @@ class DividerWidget extends BaseWidget<DividerWidgetProps, WidgetState> {
                 label: "无",
                 value: "nc",
                 icon: "cap-solid",
-                iconSize: "large",
               },
               {
                 label: "箭头",
                 value: "arrow",
                 icon: "arrow-forward",
-                iconSize: "large",
               },
               {
                 label: "点",
                 value: "dot",
                 icon: "cap-dot",
-                iconSize: "large",
               },
             ],
             isBindProperty: true,
@@ -176,20 +202,20 @@ class DividerWidget extends BaseWidget<DividerWidgetProps, WidgetState> {
             fullWidth: true,
             options: [
               {
-                icon: "DIVIDER_CAP_LEFT",
+                startIcon: "contract-left-line",
                 value: -1,
               },
               {
-                icon: "DIVIDER_CAP_ALL",
+                startIcon: "column-freeze",
                 value: 0,
                 width: 48,
               },
               {
-                icon: "DIVIDER_CAP_RIGHT",
+                startIcon: "contract-right-line",
                 value: 1,
               },
             ],
-            defaultValue: "0",
+            defaultValue: 0,
             isBindProperty: false,
             isTriggerProperty: false,
           },

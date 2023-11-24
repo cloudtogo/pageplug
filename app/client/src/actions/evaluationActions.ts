@@ -1,13 +1,13 @@
+import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
 import {
-  ReduxAction,
   ReduxActionErrorTypes,
   ReduxActionTypes,
 } from "@appsmith/constants/ReduxActionConstants";
-import _ from "lodash";
-import { DataTree } from "entities/DataTree/dataTreeFactory";
-import { DependencyMap } from "utils/DynamicBindingUtils";
-import { Diff } from "deep-diff";
-import { QueryActionConfig } from "entities/Action";
+import { intersection, union } from "lodash";
+import type { DependencyMap } from "utils/DynamicBindingUtils";
+import type { QueryActionConfig } from "entities/Action";
+import type { DatasourceConfiguration } from "entities/Datasource";
+import type { DiffWithReferenceState } from "workers/Evaluation/helpers";
 
 export const FIRST_EVAL_REDUX_ACTIONS = [
   // Pages
@@ -29,7 +29,22 @@ export const LINT_REDUX_ACTIONS = {
   [ReduxActionTypes.UPDATE_LAYOUT]: true,
   [ReduxActionTypes.UPDATE_WIDGET_PROPERTY]: true,
   [ReduxActionTypes.UPDATE_WIDGET_NAME_SUCCESS]: true,
-  [ReduxActionTypes.UPDATE_JS_ACTION_BODY_SUCCESS]: true,
+  [ReduxActionTypes.UPDATE_JS_ACTION_BODY_INIT]: true, // "lint only" action
+  [ReduxActionTypes.META_UPDATE_DEBOUNCED_EVAL]: true,
+  [ReduxActionTypes.FETCH_JS_ACTIONS_FOR_PAGE_SUCCESS]: true,
+  [ReduxActionTypes.FETCH_ACTIONS_FOR_PAGE_SUCCESS]: true,
+  [ReduxActionTypes.INSTALL_LIBRARY_SUCCESS]: true,
+  [ReduxActionTypes.UNINSTALL_LIBRARY_SUCCESS]: true,
+  [ReduxActionTypes.BUFFERED_ACTION]: true,
+  [ReduxActionTypes.BATCH_UPDATES_SUCCESS]: true,
+};
+
+export const LOG_REDUX_ACTIONS = {
+  [ReduxActionTypes.UPDATE_LAYOUT]: true,
+  [ReduxActionTypes.UPDATE_WIDGET_PROPERTY]: true,
+  [ReduxActionTypes.UPDATE_WIDGET_NAME_SUCCESS]: true,
+  [ReduxActionTypes.CREATE_ACTION_SUCCESS]: true,
+  [ReduxActionTypes.UPDATE_ACTION_PROPERTY]: true,
 };
 
 export const EVALUATE_REDUX_ACTIONS = [
@@ -61,17 +76,19 @@ export const EVALUATE_REDUX_ACTIONS = [
   ReduxActionTypes.FETCH_JS_ACTIONS_VIEW_MODE_SUCCESS,
   ReduxActionErrorTypes.FETCH_JS_ACTIONS_VIEW_MODE_ERROR,
   ReduxActionTypes.UPDATE_JS_ACTION_BODY_SUCCESS,
-  ReduxActionTypes.EXECUTE_JS_FUNCTION_SUCCESS,
+  ReduxActionTypes.SET_JS_FUNCTION_EXECUTION_DATA,
   // App Data
   ReduxActionTypes.SET_APP_MODE,
   ReduxActionTypes.FETCH_USER_DETAILS_SUCCESS,
-  ReduxActionTypes.UPDATE_APP_PERSISTENT_STORE,
-  ReduxActionTypes.UPDATE_APP_TRANSIENT_STORE,
+  ReduxActionTypes.UPDATE_APP_STORE,
   ReduxActionTypes.SET_USER_CURRENT_GEO_LOCATION,
   // Widgets
   ReduxActionTypes.UPDATE_LAYOUT,
   ReduxActionTypes.UPDATE_WIDGET_PROPERTY,
   ReduxActionTypes.UPDATE_WIDGET_NAME_SUCCESS,
+  // Meta Widgets
+  ReduxActionTypes.MODIFY_META_WIDGETS,
+  ReduxActionTypes.DELETE_META_WIDGETS,
   // Widget Meta
   ReduxActionTypes.SET_META_PROP_AND_EVAL,
   ReduxActionTypes.META_UPDATE_DEBOUNCED_EVAL,
@@ -82,28 +99,48 @@ export const EVALUATE_REDUX_ACTIONS = [
   ReduxActionTypes.UPDATE_SELECTED_APP_THEME_SUCCESS,
   ReduxActionTypes.CHANGE_SELECTED_APP_THEME_SUCCESS,
   ReduxActionTypes.SET_PREVIEW_APP_THEME,
+
+  // Custom Library
+  ReduxActionTypes.INSTALL_LIBRARY_SUCCESS,
+  ReduxActionTypes.UNINSTALL_LIBRARY_SUCCESS,
+  // Buffer
+  ReduxActionTypes.BUFFERED_ACTION,
 ];
 // Topics used for datasource and query form evaluations
 export const FORM_EVALUATION_REDUX_ACTIONS = [
   ReduxActionTypes.INIT_FORM_EVALUATION,
   ReduxActionTypes.RUN_FORM_EVALUATION,
 ];
-export const shouldProcessBatchedAction = (action: ReduxAction<unknown>) => {
+
+export const shouldTriggerEvaluation = (action: ReduxAction<unknown>) => {
+  return (
+    shouldProcessAction(action) && EVALUATE_REDUX_ACTIONS.includes(action.type)
+  );
+};
+export const shouldTriggerLinting = (action: ReduxAction<unknown>) => {
+  return shouldProcessAction(action) && !!LINT_REDUX_ACTIONS[action.type];
+};
+
+export const getAllActionTypes = (action: ReduxAction<unknown>) => {
   if (
     action.type === ReduxActionTypes.BATCH_UPDATES_SUCCESS &&
     Array.isArray(action.payload)
   ) {
     const batchedActionTypes = action.payload.map(
-      (batchedAction) => batchedAction.type,
+      (batchedAction) => batchedAction.type as string,
     );
-    return (
-      _.intersection(EVALUATE_REDUX_ACTIONS, batchedActionTypes).length > 0
-    );
+    return batchedActionTypes;
   }
-  return true;
+  return [action.type];
 };
 
-export function shouldLint(action: ReduxAction<unknown>) {
+export const shouldProcessAction = (action: ReduxAction<unknown>) => {
+  const actionTypes = getAllActionTypes(action);
+
+  return intersection(EVAL_AND_LINT_REDUX_ACTIONS, actionTypes).length > 0;
+};
+
+export function shouldLog(action: ReduxAction<unknown>) {
   if (
     action.type === ReduxActionTypes.BATCH_UPDATES_SUCCESS &&
     Array.isArray(action.payload)
@@ -112,15 +149,16 @@ export function shouldLint(action: ReduxAction<unknown>) {
       (batchedAction) => batchedAction.type,
     );
     return batchedActionTypes.some(
-      (actionType) => LINT_REDUX_ACTIONS[actionType],
+      (actionType) => LOG_REDUX_ACTIONS[actionType],
     );
   }
-  return LINT_REDUX_ACTIONS[action.type];
+
+  return LOG_REDUX_ACTIONS[action.type];
 }
 
 export const setEvaluatedTree = (
-  updates: Diff<DataTree, DataTree>[],
-): ReduxAction<{ updates: Diff<DataTree, DataTree>[] }> => {
+  updates: DiffWithReferenceState[],
+): ReduxAction<{ updates: DiffWithReferenceState[] }> => {
   return {
     type: ReduxActionTypes.SET_EVALUATED_TREE,
     payload: { updates },
@@ -156,6 +194,7 @@ export const startFormEvaluations = (
   pluginId: string,
   actionDiffPath?: string,
   hasRouteChanged?: boolean,
+  datasourceConfiguration?: DatasourceConfiguration,
 ) => {
   return {
     type: ReduxActionTypes.RUN_FORM_EVALUATION,
@@ -166,6 +205,22 @@ export const startFormEvaluations = (
       pluginId,
       actionDiffPath,
       hasRouteChanged,
+      datasourceConfiguration,
     },
   };
 };
+
+// These actions require the entire tree to be re-evaluated
+const FORCE_EVAL_ACTIONS = {
+  [ReduxActionTypes.INSTALL_LIBRARY_SUCCESS]: true,
+  [ReduxActionTypes.UNINSTALL_LIBRARY_SUCCESS]: true,
+};
+
+export const shouldForceEval = (action: ReduxAction<unknown>) => {
+  return !!FORCE_EVAL_ACTIONS[action.type];
+};
+
+export const EVAL_AND_LINT_REDUX_ACTIONS = union(
+  EVALUATE_REDUX_ACTIONS,
+  Object.keys(LINT_REDUX_ACTIONS),
+);

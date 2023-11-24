@@ -1,6 +1,5 @@
 package com.appsmith.server.services.ce;
 
-import com.appsmith.external.exceptions.BaseException;
 import com.appsmith.server.acl.AclPermission;
 import com.appsmith.server.domains.User;
 import com.appsmith.server.domains.Workspace;
@@ -11,19 +10,20 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public interface WorkspaceServiceCE extends CrudService<Workspace, String> {
-
-    String getDefaultNameForGroupInWorkspace(String prefix, String workspaceName);
 
     Mono<Workspace> create(Workspace workspace);
 
     Mono<Workspace> createDefault(Workspace workspace, User user);
 
-    Mono<Workspace> create(Workspace workspace, User user);
+    Mono<Workspace> create(Workspace workspace, User user, Boolean isDefault);
 
     Mono<Workspace> findById(String id, AclPermission permission);
+
+    Mono<Workspace> findById(String id, Optional<AclPermission> permission);
 
     Mono<Workspace> save(Workspace workspace);
 
@@ -42,4 +42,8 @@ public interface WorkspaceServiceCE extends CrudService<Workspace, String> {
     Flux<Workspace> getAll();
 
     Mono<Workspace> archiveById(String s);
+
+    Mono<Boolean> isCreateWorkspaceAllowed(Boolean isDefaultWorkspace);
+
+    Mono<String> getDefaultEnvironmentId(String workspaceId, AclPermission aclPermission);
 }

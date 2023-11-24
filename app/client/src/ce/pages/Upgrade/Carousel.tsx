@@ -1,14 +1,14 @@
 import styled from "styled-components";
 import React, { useEffect, useState } from "react";
-import { Icon, IconSize, Text, TextType } from "design-system";
-import { CarouselProps } from "./types";
+import { Icon, Text } from "design-system";
+import type { CarouselProps } from "./types";
 
 const CarouselContainer = styled.div`
   display: flex;
   flex: 1 1;
   gap: 64px;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   padding: 16px 52px;
 
   & .carousel-triggers {
@@ -18,24 +18,18 @@ const CarouselContainer = styled.div`
     justify-content: center;
     align-items: center;
     width: 50%;
-    max-width: 520px;
+    max-width: 420px;
 
     & .carousel-trigger {
       padding: 16px;
       width: 100%;
-      height: 56px;
+      height: max-content;
       cursor: pointer;
 
-      &.active {
-        height: max-content;
-        min-height: 156px;
-        box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.06),
-          0 4px 8px -2px rgba(0, 0, 0, 0.1);
-
-        background-color: var(--ads-color-black-0);
-
-        & .icon-container .cs-icon svg {
-          fill: var(--ads-color-orange-500);
+      .icon-container {
+        margin-top: 4px;
+        svg path {
+          fill: var(--ads-v2-color-fg-emphasis);
         }
       }
 
@@ -51,10 +45,43 @@ const CarouselContainer = styled.div`
           align-content: flex-start;
 
           & .trigger-heading {
-            /* This is a hack to bring text up,
-             * and thus meet the design expectations.
-             */
-            margin-top: -2px;
+            span {
+              color: var(--ads-v2-color-fg-muted);
+            }
+          }
+
+          & .trigger-details-container {
+            .detail-content {
+              color: var(--ads-v2-color-fg);
+
+              span {
+                color: var(--ads-v2-color-fg-brand);
+                font-weight: 500;
+              }
+            }
+          }
+        }
+      }
+
+      &.active {
+        height: max-content;
+        box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.06),
+          0 4px 8px -2px rgba(0, 0, 0, 0.1);
+
+        background-color: var(--ads-v2-color-bg);
+        border-radius: var(--ads-v2-border-radius);
+
+        & .icon-container svg path {
+          fill: var(--ads-v2-color-fg-brand);
+        }
+
+        & .trigger {
+          & .trigger-content {
+            & .trigger-heading {
+              span {
+                color: var(--ads-v2-color-fg-emphasis);
+              }
+            }
           }
         }
       }
@@ -67,7 +94,7 @@ const CarouselContainer = styled.div`
   }
 
   & .carousel-targets {
-    width: 680px;
+    width: 600px;
     min-height: 400px;
     display: flex;
     justify-content: center;
@@ -114,11 +141,17 @@ export function CarouselComponent(props: CarouselProps) {
           >
             <div className={"trigger"}>
               <div className="icon-container">
-                <Icon name={d.icon} size={IconSize.XXXXL} />
+                <Icon name={d.icon} size="lg" />
               </div>
               <div className="trigger-content">
                 <div className="trigger-heading">
-                  <Text type={TextType.H1}>{d.heading}</Text>
+                  <Text
+                    color="var(--ads-v2-color-fg-emphasis)"
+                    kind="heading-m"
+                    renderAs="h1"
+                  >
+                    {d.heading}
+                  </Text>
                 </div>
                 {isActive(i) && (
                   <>
@@ -129,7 +162,10 @@ export function CarouselComponent(props: CarouselProps) {
                             className={"expanded"}
                             key={`trigger-detail-${di}`}
                           >
-                            <Text type={TextType.P1}>{detail}</Text>
+                            <span
+                              className="detail-content"
+                              dangerouslySetInnerHTML={{ __html: detail }}
+                            />
                           </div>
                         );
                       })}

@@ -6,6 +6,7 @@ import com.appsmith.external.helpers.SSLHelper;
 import com.appsmith.external.models.DatasourceConfiguration;
 import com.appsmith.external.models.SSLDetails;
 import com.arangodb.ArangoDB.Builder;
+import com.external.plugins.exceptions.ArangoDBErrorMessages;
 import org.pf4j.util.StringUtils;
 
 import java.io.IOException;
@@ -20,8 +21,11 @@ public class SSLUtils {
         if (datasourceConfiguration.getConnection() != null
                 && datasourceConfiguration.getConnection().getSsl() != null
                 && datasourceConfiguration.getConnection().getSsl().getCaCertificateFile() != null
-                && StringUtils.isNotNullOrEmpty(datasourceConfiguration.getConnection().getSsl()
-                .getCaCertificateFile().getBase64Content())) {
+                && StringUtils.isNotNullOrEmpty(datasourceConfiguration
+                        .getConnection()
+                        .getSsl()
+                        .getCaCertificateFile()
+                        .getBase64Content())) {
             return true;
         }
 
@@ -44,17 +48,15 @@ public class SSLUtils {
                 break;
             default:
                 throw new AppsmithPluginException(
-                        AppsmithPluginError.PLUGIN_ERROR,
-                        "Appsmith server has found an unexpected SSL option: " + authType + ". Please reach " +
-                                "out to Appsmith customer support to resolve this."
-                );
+                        AppsmithPluginError.PLUGIN_DATASOURCE_ARGUMENT_ERROR,
+                        String.format(ArangoDBErrorMessages.UNEXPECTED_SSL_OPTION_ERROR_MSG, authType));
         }
     }
 
     public static void setSSLContext(Builder builder, DatasourceConfiguration datasourceConfiguration) {
 
-        SSLDetails.CACertificateType caCertificateType = datasourceConfiguration.getConnection().getSsl()
-                .getCaCertificateType();
+        SSLDetails.CACertificateType caCertificateType =
+                datasourceConfiguration.getConnection().getSsl().getCaCertificateType();
 
         switch (caCertificateType) {
             case NONE:
@@ -64,23 +66,24 @@ public class SSLUtils {
             case FILE:
             case BASE64_STRING:
                 try {
-                    builder.sslContext(SSLHelper.getSslContext(datasourceConfiguration.getConnection().getSsl().getCaCertificateFile()));
-                } catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException
+                    builder.sslContext(SSLHelper.getSslContext(
+                            datasourceConfiguration.getConnection().getSsl().getCaCertificateFile()));
+                } catch (CertificateException
+                        | KeyStoreException
+                        | IOException
+                        | NoSuchAlgorithmException
                         | KeyManagementException e) {
                     throw new AppsmithPluginException(
                             AppsmithPluginError.PLUGIN_DATASOURCE_ARGUMENT_ERROR,
-                            "Appsmith server encountered an error when getting ssl context. Please contact Appsmith " +
-                                    "customer support to resolve this."
-                    );
+                            ArangoDBErrorMessages.SSL_CONTEXT_FETCHING_ERROR_MSG,
+                            e.getMessage());
                 }
 
                 break;
             default:
                 throw new AppsmithPluginException(
-                        AppsmithPluginError.PLUGIN_ERROR,
-                        "Appsmith server has found an unexpected CA certificate option: " + caCertificateType + ". " +
-                        "Please reach out to Appsmith customer support to resolve this."
-                );
+                        AppsmithPluginError.PLUGIN_DATASOURCE_ARGUMENT_ERROR,
+                        String.format(ArangoDBErrorMessages.UNEXPECTED_CA_CERT_OPTION_ERROR_MSG, caCertificateType));
         }
     }
 }

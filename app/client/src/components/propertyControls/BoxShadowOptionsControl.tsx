@@ -1,12 +1,11 @@
 import * as React from "react";
 
-import BaseControl, { ControlData, ControlProps } from "./BaseControl";
-import { TooltipComponent } from "design-system";
-import { boxShadowOptions } from "constants/ThemeConstants";
-import CloseLineIcon from "remixicon-react/CloseLineIcon";
-import { ButtonTab } from "design-system";
+import type { ControlData, ControlProps } from "./BaseControl";
+import BaseControl from "./BaseControl";
+import { Icon, SegmentedControl } from "design-system";
+import { boxShadowOptions, sizeMappings } from "constants/ThemeConstants";
+import type { DSEventDetail } from "utils/AppsmithUtils";
 import {
-  DSEventDetail,
   DSEventTypes,
   DS_EVENT,
   emitInteractionAnalyticsEvent,
@@ -14,38 +13,19 @@ import {
 export interface BoxShadowOptionsControlProps extends ControlProps {
   propertyValue: string | undefined;
 }
-
 const options = Object.keys(boxShadowOptions).map((optionKey) => ({
-  icon: (
-    <TooltipComponent
-      content={
-        <div>
-          <div>{optionKey}</div>
-        </div>
-      }
-      key={optionKey}
-      openOnTargetFocus={false}
-    >
-      <button tabIndex={-1}>
-        <div
-          className="flex items-center justify-center w-5 h-5 bg-white"
-          style={{ boxShadow: boxShadowOptions[optionKey] }}
-        >
-          {boxShadowOptions[optionKey] === "none" && (
-            <CloseLineIcon className="text-gray-700" />
-          )}
-        </div>
-      </button>
-    </TooltipComponent>
-  ),
+  label:
+    optionKey === "none" ? (
+      <Icon name="close-line" size="md" />
+    ) : (
+      sizeMappings[optionKey]
+    ),
   value: boxShadowOptions[optionKey],
 }));
 
 const optionsValues = new Set(Object.values(boxShadowOptions));
 
-class BoxShadowOptionsControl extends BaseControl<
-  BoxShadowOptionsControlProps
-> {
+class BoxShadowOptionsControl extends BaseControl<BoxShadowOptionsControlProps> {
   componentRef = React.createRef<HTMLDivElement>();
 
   componentDidMount() {
@@ -64,7 +44,7 @@ class BoxShadowOptionsControl extends BaseControl<
 
   handleAdsEvent = (e: CustomEvent<DSEventDetail>) => {
     if (
-      e.detail.component === "ButtonTab" &&
+      e.detail.component === "ButtonGroup" &&
       e.detail.event === DSEventTypes.KEYPRESS
     ) {
       emitInteractionAnalyticsEvent(this.componentRef.current, {
@@ -80,17 +60,18 @@ class BoxShadowOptionsControl extends BaseControl<
 
   public render() {
     return (
-      <ButtonTab
-        options={options}
-        ref={this.componentRef}
-        selectButton={(value, isUpdatedViaKeyboard = false) => {
+      <SegmentedControl
+        isFullWidth={false}
+        onChange={(value, isUpdatedViaKeyboard = false) => {
           this.updateProperty(
             this.props.propertyName,
             value,
             isUpdatedViaKeyboard,
           );
         }}
-        values={this.props.evaluatedValue ? [this.props.evaluatedValue] : []}
+        options={options}
+        ref={this.componentRef}
+        value={this.props.evaluatedValue || ""}
       />
     );
   }

@@ -1,7 +1,12 @@
-import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
-import { GridDefaults, WIDGET_PADDING } from "constants/WidgetConstants";
+import type { PropsWithChildren } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  GridDefaults,
+  WidgetHeightLimits,
+  WIDGET_PADDING,
+} from "constants/WidgetConstants";
 import styled from "styled-components";
-import { WidgetProps } from "widgets/BaseWidget";
+import type { WidgetProps } from "widgets/BaseWidget";
 
 const StyledAutoHeightContainer = styled.div<{ isOverflow?: boolean }>`
   overflow-y: ${(props) => (props.isOverflow ? "auto" : "unset")};
@@ -10,17 +15,25 @@ const StyledAutoHeightContainer = styled.div<{ isOverflow?: boolean }>`
   height: 100%;
 `;
 
+const CenterContainer = styled.div<{ shouldBeCentered: boolean }>`
+  display: flex;
+  height: 100%;
+  width: 100%;
+  align-items: ${(props) => (props.shouldBeCentered ? "center" : "flex-start")};
+`;
+
 interface AutoHeightContainerProps {
   maxDynamicHeight: number;
   minDynamicHeight: number;
   isAutoHeightWithLimits: boolean;
   onHeightUpdate: (height: number) => void;
   widgetHeightInPixels: number;
-  widgetProps?: WidgetProps;
+  widgetProps: WidgetProps;
 }
 
 const SimpleContainer = styled.div`
   height: auto !important;
+  width: 100%;
 `;
 
 export default function AutoHeightContainer({
@@ -34,13 +47,22 @@ export default function AutoHeightContainer({
 }: PropsWithChildren<AutoHeightContainerProps>) {
   const [expectedHeight, setExpectedHeight] = useState(0);
 
+  const unmountingTimeout = useRef<ReturnType<typeof setTimeout>>();
   const ref = useRef<HTMLDivElement>(null);
 
   const observer = React.useRef(
     new ResizeObserver((entries) => {
       const height = entries[0].contentRect.height;
-      setExpectedHeight(height);
-      onHeightUpdate(height);
+      if (height) {
+        setExpectedHeight(height);
+        onHeightUpdate(height);
+      } else {
+        //setting timeout if height is 0
+        unmountingTimeout.current = setTimeout(() => {
+          setExpectedHeight(height);
+          onHeightUpdate(height);
+        }, 0);
+      }
     }),
   );
 
@@ -50,9 +72,9 @@ export default function AutoHeightContainer({
     }
 
     return () => {
-      if (ref.current) {
-        observer.current.unobserve(ref.current);
-      }
+      // clearing out timeout if the component is unMounting
+      unmountingTimeout.current && clearTimeout(unmountingTimeout.current);
+      observer.current.disconnect();
     };
   }, []);
 
@@ -73,6 +95,11 @@ export default function AutoHeightContainer({
     }
   }, [widgetHeightInPixels]);
 
+  const shouldBeCentered =
+    widgetHeightInPixels / GridDefaults.DEFAULT_GRID_ROW_HEIGHT ===
+      minDynamicHeight &&
+    minDynamicHeight === WidgetHeightLimits.MIN_HEIGHT_IN_ROWS;
+
   if (isAutoHeightWithLimits) {
     const expectedHeightInRows = Math.ceil(
       expectedHeight / GridDefaults.DEFAULT_GRID_ROW_HEIGHT,
@@ -89,16 +116,26 @@ export default function AutoHeightContainer({
         isOverflow={maxDynamicHeight < expectedHeightInRows}
         style={{ backgroundColor }}
       >
-        <SimpleContainer className="auto-height-container" ref={ref}>
-          {children}
-        </SimpleContainer>
+        <CenterContainer
+          data-testid={`t--centered-${widgetProps.widgetName}-${widgetProps.widgetId}`}
+          shouldBeCentered={shouldBeCentered}
+        >
+          <SimpleContainer className="auto-height-container" ref={ref}>
+            {children}
+          </SimpleContainer>
+        </CenterContainer>
       </StyledAutoHeightContainer>
     );
   }
 
   return (
-    <SimpleContainer className="auto-height-container" ref={ref}>
-      {children}
-    </SimpleContainer>
+    <CenterContainer
+      data-testid={`t--centered-${widgetProps.widgetName}-${widgetProps.widgetId}`}
+      shouldBeCentered={shouldBeCentered}
+    >
+      <SimpleContainer className="auto-height-container" ref={ref}>
+        {children}
+      </SimpleContainer>
+    </CenterContainer>
   );
 }

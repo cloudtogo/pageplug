@@ -1,14 +1,19 @@
+import type { WidgetType } from "constants/WidgetConstants";
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
-import { RateSize } from "../constants";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import RateComponent from "../component";
+import type { RateSize } from "../constants";
 
-import { ValidationTypes } from "constants/WidgetValidation";
-import { DerivedPropertiesMap } from "utils/WidgetFactory";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import { Stylesheet } from "entities/AppTheming";
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
+import { ValidationTypes } from "constants/WidgetValidation";
+
+import type { SetterConfig, Stylesheet } from "entities/AppTheming";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
+import type { DerivedPropertiesMap } from "utils/WidgetFactory";
+import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
+import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
 
 function validateDefaultRate(value: unknown, props: any, _: any) {
   try {
@@ -30,7 +35,12 @@ function validateDefaultRate(value: unknown, props: any, _: any) {
         return {
           isValid: false,
           parsed: 0,
-          messages: [`Value must be a number`],
+          messages: [
+            {
+              name: "TypeError",
+              message: `Value must be a number`,
+            },
+          ],
         };
       }
     }
@@ -44,7 +54,12 @@ function validateDefaultRate(value: unknown, props: any, _: any) {
       return {
         isValid: false,
         parsed,
-        messages: [`This value must be less than or equal to max count`],
+        messages: [
+          {
+            name: "RangeError",
+            message: `This value must be less than or equal to max count`,
+          },
+        ],
       };
     }
 
@@ -53,7 +68,12 @@ function validateDefaultRate(value: unknown, props: any, _: any) {
       return {
         isValid: false,
         parsed,
-        messages: [`This value can be a decimal only if 'Allow half' is true`],
+        messages: [
+          {
+            name: "ValidationError",
+            message: `This value can be a decimal only if 'Allow half' is true`,
+          },
+        ],
       };
     }
 
@@ -62,12 +82,27 @@ function validateDefaultRate(value: unknown, props: any, _: any) {
     return {
       isValid: false,
       parsed: value,
-      messages: [`Could not validate `],
+      messages: [
+        {
+          name: "ValidationError",
+          message: `Could not validate `,
+        },
+      ],
     };
   }
 }
 
 class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc": "Rating widget is used to display ratings in your app.",
+      "!url": "https://docs.appsmith.com/widget-reference/rate",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      value: "number",
+      maxCount: "number",
+    };
+  }
+
   static getPropertyPaneContentConfig() {
     return [
       {
@@ -205,7 +240,9 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
             label: "尺寸",
             helpText: "Controls the size of the stars in the widget",
             controlType: "ICON_TABS",
+            defaultValue: "LARGE",
             fullWidth: true,
+            hidden: isAutoLayout,
             options: [
               {
                 label: "小",
@@ -287,6 +324,26 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
     });
   };
 
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {
+        setVisibility: {
+          path: "isVisible",
+          type: "boolean",
+        },
+        setDisabled: {
+          path: "isDisabled",
+          type: "boolean",
+        },
+        setValue: {
+          path: "defaultRate",
+          type: "number",
+          accessor: "value",
+        },
+      },
+    };
+  }
+
   getPageView() {
     return (
       (this.props.rate || this.props.rate === 0) && (
@@ -300,6 +357,7 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
           key={this.props.widgetId}
           leftColumn={this.props.leftColumn}
           maxCount={this.props.maxCount}
+          minHeight={this.props.minHeight}
           onValueChanged={this.valueChangedHandler}
           readonly={this.props.isReadOnly}
           rightColumn={this.props.rightColumn}

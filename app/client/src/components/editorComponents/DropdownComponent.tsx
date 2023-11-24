@@ -1,21 +1,18 @@
-import React, { Component, ReactNode } from "react";
+import type { ReactNode } from "react";
+import React, { Component } from "react";
 import styled from "styled-components";
-import {
-  MenuItem,
-  Menu,
-  ControlGroup,
-  InputGroup,
-  IMenuProps,
-} from "@blueprintjs/core";
+import type { IMenuProps } from "@blueprintjs/core";
+import { MenuItem, Menu, ControlGroup, InputGroup } from "@blueprintjs/core";
 import { BaseButton } from "components/designSystems/appsmith/BaseButton";
-import {
+import type {
   ItemRenderer,
-  Select,
   ItemListRenderer,
   IItemListRendererProps,
 } from "@blueprintjs/select";
-import { ButtonVariantTypes, DropdownOption } from "components/constants";
-import { WrappedFieldInputProps } from "redux-form";
+import { Select } from "@blueprintjs/select";
+import type { DropdownOption } from "components/constants";
+import { ButtonVariantTypes } from "components/constants";
+import type { WrappedFieldInputProps } from "redux-form";
 
 interface ButtonWrapperProps {
   height?: string;
@@ -28,7 +25,6 @@ interface MenuProps {
 type MenuComponentProps = IMenuProps & MenuProps;
 
 const Dropdown = Select.ofType<DropdownOption>();
-const StyledDropdown = styled(Dropdown)``;
 
 const StyledButtonWrapper = styled.div<ButtonWrapperProps>`
   width: ${(props) => props.width || "100%"};
@@ -191,7 +187,7 @@ class DropdownComponent extends Component<
     const { autocomplete, height, options, width } = this.props;
 
     return (
-      <StyledDropdown
+      <Dropdown
         activeItem={this.getActiveOption()}
         filterable={!!autocomplete}
         itemListRenderer={this.renderItemList}
@@ -215,7 +211,7 @@ class DropdownComponent extends Component<
             />
           </StyledButtonWrapper>
         )}
-      </StyledDropdown>
+      </Dropdown>
     );
   }
 }

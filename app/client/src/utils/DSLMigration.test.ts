@@ -1,5 +1,5 @@
-import { WidgetProps } from "widgets/BaseWidget";
-import { ContainerWidgetProps } from "widgets/ContainerWidget/widget";
+import type { WidgetProps } from "widgets/BaseWidget";
+import type { ContainerWidgetProps } from "widgets/ContainerWidget/widget";
 import * as DSLMigrations from "./DSLMigrations";
 import * as chartWidgetReskinningMigrations from "./migrations/ChartWidgetReskinningMigrations";
 import * as tableMigrations from "./migrations/TableWidget";
@@ -23,6 +23,7 @@ import * as rateWidgetMigrations from "./migrations/RateWidgetMigrations";
 import * as codeScannerWidgetMigrations from "./migrations/CodeScannerWidgetMigrations";
 import * as migrateLabelPosition from "./migrations/MigrateLabelPosition";
 import * as migrateAutoHeight from "./migrations/autoHeightMigrations";
+import * as chartMigrations from "./migrations/ChartWidget";
 
 type Migration = {
   functionLookup: {
@@ -691,10 +692,136 @@ const migrations: Migration[] = [
     ],
     version: 70,
   },
+  {
+    functionLookup: [
+      {
+        moduleObj: tableMigrations,
+        functionName: "migrateTableWidgetV2SelectOption",
+      },
+    ],
+    version: 71,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: migrateAutoHeight,
+        functionName: "migrateListWidgetChildrenForAutoHeight",
+      },
+    ],
+    version: 72,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: inputCurrencyMigration,
+        functionName: "migrateInputWidgetShowStepArrows",
+      },
+    ],
+    version: 73,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: tableMigrations,
+        functionName: "migrateMenuButtonDynamicItemsInsideTableWidget",
+      },
+    ],
+    version: 74,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: migrateAutoHeight,
+        functionName: "migrateInputWidgetsMultiLineInputType",
+      },
+    ],
+    version: 75,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: tableMigrations,
+        functionName: "migrateColumnFreezeAttributes",
+      },
+    ],
+    version: 76,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: tableMigrations,
+        functionName: "migrateTableSelectOptionAttributesForNewRow",
+      },
+    ],
+    version: 77,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: tableMigrations,
+        functionName:
+          "migrateBindingPrefixSuffixForInlineEditValidationControl",
+      },
+    ],
+    version: 78,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: tableMigrations,
+        functionName: "migrateTableWidgetTableDataJsMode",
+      },
+    ],
+    version: 79,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: selectWidgetMigration,
+        functionName: "migrateSelectWidgetOptionToSourceData",
+      },
+    ],
+    version: 80,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: selectWidgetMigration,
+        functionName: "migrateSelectWidgetSourceDataBindingPathList",
+      },
+    ],
+    version: 81,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: chartMigrations,
+        functionName: "migrateChartWidgetLabelOrientationStaggerOption",
+      },
+    ],
+    version: 82,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: chartMigrations,
+        functionName: "migrateAddShowHideDataPointLabels",
+      },
+    ],
+    version: 83,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: selectWidgetMigration,
+        functionName: "migrateSelectWidgetAddSourceDataPropertyPathList",
+      },
+    ],
+    version: 84,
+  },
 ];
 
 const mockFnObj: Record<number, any> = {};
-let migratedDSL: ContainerWidgetProps<WidgetProps>;
 
 describe("Test all the migrations are running", () => {
   afterAll(() => {
@@ -731,10 +858,8 @@ describe("Test all the migrations are running", () => {
   });
 
   // Runs all the migrations
-  migratedDSL = DSLMigrations.transformDSL(
-    (originalDSLForDSLMigrations as unknown) as ContainerWidgetProps<
-      WidgetProps
-    >,
+  DSLMigrations.transformDSL(
+    originalDSLForDSLMigrations as unknown as ContainerWidgetProps<WidgetProps>,
   );
 
   migrations.forEach((item: any, testIdx: number) => {

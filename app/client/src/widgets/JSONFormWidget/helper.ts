@@ -1,24 +1,24 @@
 import { isNil, isPlainObject, merge } from "lodash";
-import { LabelInValueType } from "rc-select/lib/Select";
+import type { LabelInValueType } from "rc-select/lib/Select";
 
 import {
   isDynamicValue,
   getDynamicBindings,
   combineDynamicBindings,
 } from "utils/DynamicBindingUtils";
+import type { FieldThemeStylesheet, Schema, SchemaItem } from "./constants";
 import {
   ARRAY_ITEM_KEY,
-  FieldThemeStylesheet,
   FieldType,
   inverseFieldType,
-  Schema,
-  SchemaItem,
   getBindingTemplate,
 } from "./constants";
 
 type ConvertFormDataOptions = {
   fromId: keyof SchemaItem | (keyof SchemaItem)[];
   toId: keyof SchemaItem;
+  useSourceData?: boolean;
+  sourceData?: unknown;
 };
 
 /**
@@ -66,9 +66,8 @@ export const getFieldStylesheet = (
           fieldStylesheet[fieldPropertyKey],
         );
         const js = combineDynamicBindings(jsSnippets, stringSegments);
-        const { prefixTemplate, suffixTemplate } = getBindingTemplate(
-          widgetName,
-        );
+        const { prefixTemplate, suffixTemplate } =
+          getBindingTemplate(widgetName);
         const computedValue = `${prefixTemplate}${js}${suffixTemplate}`;
 
         computedFieldStylesheet[fieldPropertyKey] = computedValue;
@@ -90,19 +89,33 @@ const convertObjectTypeToFormData = (
     const formData: Record<string, unknown> = {};
 
     Object.values(schema).forEach((schemaItem) => {
-      if (schemaItem.isVisible) {
-        const value = valueLookup(
+      if (!schemaItem.isVisible && !options.useSourceData) return;
+      let sourceData;
+      if (options.sourceData) {
+        sourceData = valueLookup(
+          options.sourceData as Record<string, unknown>,
+          schemaItem,
+          // sourceData lookup can only be done using originalIdentifier
+          // if sourceData lookup done using other id e.g. accessor or identify, the return
+          // value could be undefined.
+          "originalIdentifier",
+        );
+      }
+      const toKey = schemaItem[options.toId];
+      let value;
+      if (!schemaItem.isVisible) {
+        value = sourceData;
+      } else {
+        value = valueLookup(
           formValue as Record<string, unknown>,
           schemaItem,
           options.fromId,
         );
-        const toKey = schemaItem[options.toId];
-        formData[toKey] = convertSchemaItemToFormData(
-          schemaItem,
-          value,
-          options,
-        );
       }
+      formData[toKey] = convertSchemaItemToFormData(schemaItem, value, {
+        ...options,
+        sourceData,
+      });
     });
 
     return formData;
@@ -121,10 +134,12 @@ const convertArrayTypeToFormData = (
     const arraySchemaItem = schema[ARRAY_ITEM_KEY];
 
     formValues.forEach((formValue, index) => {
+      const sourceData = (options?.sourceData as unknown[])?.[index];
+
       formData[index] = convertSchemaItemToFormData(
         arraySchemaItem,
         formValue,
-        options,
+        { ...options, sourceData },
       );
     });
 

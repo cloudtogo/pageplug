@@ -1,13 +1,13 @@
+import type { PropertyPaneConfig } from "constants/PropertyControlConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
-import { PropertyPaneConfig } from "constants/PropertyControlConstants";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import { MenuItemsSource, MenuButtonWidgetProps } from "../../constants";
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
 import { sourceDataArrayValidation } from "widgets/MenuButtonWidget/validations";
+import type { MenuButtonWidgetProps } from "../../constants";
+import { MenuItemsSource } from "../../constants";
 import configureMenuItemsConfig from "./childPanels/configureMenuItemsConfig";
 import menuItemsConfig from "./childPanels/menuItemsConfig";
 import { updateMenuItemsSource } from "./propertyUtils";
-
 export default [
   {
     sectionName: "属性",
@@ -27,6 +27,7 @@ export default [
         helpText: "设置菜单项数据源",
         label: "菜单项数据源",
         controlType: "ICON_TABS",
+        defaultValue: MenuItemsSource.STATIC,
         fullWidth: true,
         options: [
           {

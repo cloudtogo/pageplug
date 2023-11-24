@@ -46,12 +46,20 @@ spec:
       initContainers:
       {{- if .Values.redis.enabled }}
       - name: redis-init-container
-        image: alpine
-        command: ['sh', '-c', "apk add redis; until redis-cli -h {{ include "appsmith.fullname" . }}-redis-master.{{.Release.Namespace}}.svc.cluster.local ping; do echo waiting for redis; sleep 2; done"]
+      {{- if ((.Values.initContainer.redis).image) }}
+        image: {{ .Values.initContainer.redis.image }}
+      {{- else }}
+        image: "docker.io/library/redis:6.2-alpine"
+      {{- end }}
+        command: ['sh', '-c', "until redis-cli -h {{.Release.Name}}-redis-master.{{.Release.Namespace}}.svc.cluster.local ping ; do echo waiting for redis; sleep 2; done"]
       {{- end }}
       {{- if .Values.mongodb.enabled }}
       - name: mongo-init-container
-        image: docker.io/bitnami/mongodb:4.4.11-debian-10-r12
+      {{- if ((.Values.initContainer.mongodb).image) }}
+        image: {{ .Values.initContainer.mongodb.image }}
+      {{- else }}
+        image:  "docker.io/bitnami/mongodb:5.0.17-debian-11-r5"
+      {{- end }}
         command: ['sh', '-c', "until mongo --host appsmith-mongodb.{{.Release.Namespace}}.svc.cluster.local --eval 'db.runCommand({ping:1})' ; do echo waiting for mongo; sleep 2; done"]
       {{- end }}
       containers:
@@ -70,19 +78,26 @@ spec:
             - name: supervisord
               containerPort: 9001
               protocol: TCP
+          {{- $probes := .Values.probes | default dict }}
           startupProbe:
             # The `livenessProbe` and `readinessProbe` will be disabled until the `startupProbe` is successful.
             httpGet:
-              path: /
               port: http
+              path: {{ dig "startupProbe" "api" "/api/v1/health" $probes }}
+            failureThreshold: {{ dig "startupProbe" "failureThreshold" 3 $probes }}
+            periodSeconds: {{ dig "startupProbe" "periodSeconds" 60 $probes }}
           livenessProbe:
             httpGet:
-              path: /
               port: http
+              path: {{ dig "livenessProbe" "api" "/api/v1/health" $probes }}
+            failureThreshold: {{ dig "livenessProbe" "failureThreshold" 3 $probes }}
+            periodSeconds: {{ dig "livenessProbe" "periodSeconds" 60 $probes }}
           readinessProbe:
             httpGet:
-              path: /api/v1/users/me
               port: http
+              path: {{ dig "readinessProbe" "api" "/api/v1/health" $probes }}
+            failureThreshold: {{ dig "readinessProbe" "failureThreshold" 3 $probes }}
+            periodSeconds: {{ dig "readinessProbe" "periodSeconds" 60 $probes }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
@@ -95,6 +110,10 @@ spec:
             - secretRef:
                 name: {{ .Values.secretName }}
             {{- end }}
+      {{- if .Values.image.pullSecrets}}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecrets }}
+      {{- end }}
       volumes:
   {{- if not .Values.persistence.enabled }}
       - name: data

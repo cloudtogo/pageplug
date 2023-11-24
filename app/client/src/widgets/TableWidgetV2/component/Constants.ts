@@ -1,20 +1,29 @@
 import { isString } from "lodash";
 import moment from "moment";
-import { IconName } from "@blueprintjs/icons";
-import { Alignment } from "@blueprintjs/core";
-import {
+import type { IconName } from "@blueprintjs/icons";
+import type { Alignment } from "@blueprintjs/core";
+import type {
   ButtonBorderRadius,
   ButtonStyleType,
   ButtonVariant,
 } from "components/constants";
-import { DropdownOption } from "widgets/SelectWidget/constants";
-import { ColumnTypes } from "../constants";
+import type { DropdownOption } from "widgets/SelectWidget/constants";
+import type {
+  ConfigureMenuItems,
+  MenuItem,
+  MenuItems,
+  MenuItemsSource,
+} from "widgets/MenuButtonWidget/constants";
+import type { ColumnTypes } from "../constants";
+import type { TimePrecision } from "widgets/DatePickerWidget2/constants";
+import { generateReactKey } from "widgets/WidgetUtils";
 
 export type TableSizes = {
   COLUMN_HEADER_HEIGHT: number;
   TABLE_HEADER_HEIGHT: number;
   ROW_HEIGHT: number;
   ROW_FONT_SIZE: number;
+  TABLE_FOOTER_HEIGHT: number;
   VERTICAL_PADDING: number;
   EDIT_ICON_TOP: number;
   ROW_VIRTUAL_OFFSET: number;
@@ -48,7 +57,8 @@ export enum ImageSizes {
 export const TABLE_SIZES: { [key: string]: TableSizes } = {
   [CompactModeTypes.DEFAULT]: {
     COLUMN_HEADER_HEIGHT: 32,
-    TABLE_HEADER_HEIGHT: 38,
+    TABLE_HEADER_HEIGHT: 40,
+    TABLE_FOOTER_HEIGHT: 40,
     ROW_HEIGHT: 40,
     ROW_FONT_SIZE: 14,
     VERTICAL_PADDING: 6,
@@ -58,7 +68,8 @@ export const TABLE_SIZES: { [key: string]: TableSizes } = {
   },
   [CompactModeTypes.SHORT]: {
     COLUMN_HEADER_HEIGHT: 32,
-    TABLE_HEADER_HEIGHT: 38,
+    TABLE_HEADER_HEIGHT: 40,
+    TABLE_FOOTER_HEIGHT: 40,
     ROW_HEIGHT: 30,
     ROW_FONT_SIZE: 12,
     VERTICAL_PADDING: 0,
@@ -68,7 +79,8 @@ export const TABLE_SIZES: { [key: string]: TableSizes } = {
   },
   [CompactModeTypes.TALL]: {
     COLUMN_HEADER_HEIGHT: 32,
-    TABLE_HEADER_HEIGHT: 38,
+    TABLE_HEADER_HEIGHT: 40,
+    TABLE_FOOTER_HEIGHT: 40,
     ROW_HEIGHT: 60,
     ROW_FONT_SIZE: 18,
     VERTICAL_PADDING: 16,
@@ -105,6 +117,7 @@ export type VerticalAlignment = keyof typeof VerticalAlignmentTypes;
 export type ImageSize = keyof typeof ImageSizes;
 
 export interface ReactTableFilter {
+  id: string;
   column: string;
   operator: Operator;
   condition: Condition;
@@ -155,6 +168,9 @@ export interface MenuButtonCellProperties {
   menuColor?: string;
   menuButtoniconName?: IconName;
   onItemClicked?: (onClick: string | undefined) => void;
+  menuItemsSource: MenuItemsSource;
+  configureMenuItems: ConfigureMenuItems;
+  sourceData?: Array<Record<string, unknown>>;
 }
 
 export interface URLCellProperties {
@@ -166,10 +182,18 @@ export interface SelectCellProperties {
   serverSideFiltering?: boolean;
   placeholderText?: string;
   resetFilterTextOnClose?: boolean;
+  selectOptions?: DropdownOption[];
 }
 
 export interface ImageCellProperties {
   imageSize?: ImageSize;
+}
+
+export interface DateCellProperties {
+  inputFormat: string;
+  outputFormat: string;
+  shortcuts: boolean;
+  timePrecision?: TimePrecision;
 }
 
 export interface BaseCellProperties {
@@ -196,25 +220,8 @@ export interface CellLayoutProperties
     MenuButtonCellProperties,
     SelectCellProperties,
     ImageCellProperties,
+    DateCellProperties,
     BaseCellProperties {}
-
-export type MenuItems = Record<
-  string,
-  {
-    widgetId: string;
-    id: string;
-    index: number;
-    isVisible?: boolean;
-    isDisabled?: boolean;
-    label?: string;
-    backgroundColor?: string;
-    textColor?: string;
-    iconName?: IconName;
-    iconColor?: string;
-    iconAlign?: Alignment;
-    onClick?: string;
-  }
->;
 
 export interface TableColumnMetaProps {
   isHidden: boolean;
@@ -222,6 +229,18 @@ export interface TableColumnMetaProps {
   inputFormat?: string;
   type: ColumnTypes;
 }
+
+export enum StickyType {
+  LEFT = "left",
+  RIGHT = "right",
+  NONE = "",
+}
+
+export const SORT_ORDER = {
+  left: -1,
+  right: 1,
+  none: 0,
+};
 
 export interface TableColumnProps {
   id: string;
@@ -236,6 +255,7 @@ export interface TableColumnProps {
   metaProperties?: TableColumnMetaProps;
   isDerived?: boolean;
   columnProperties: ColumnProperties;
+  sticky?: StickyType;
 }
 export interface ReactTableColumnProps extends TableColumnProps {
   Cell: (props: any) => JSX.Element;
@@ -272,6 +292,8 @@ export interface ColumnStyleProperties {
 export interface DateColumnProperties {
   outputFormat?: string;
   inputFormat?: string;
+  shortcuts?: boolean;
+  timePrecision?: TimePrecision;
 }
 
 export interface ColumnEditabilityProperties {
@@ -284,6 +306,8 @@ export interface ColumnEditabilityProperties {
     isEditableCellRequired?: boolean;
     min?: number;
     max?: number;
+    minDate?: string;
+    maxDate?: string;
   };
 }
 
@@ -308,7 +332,7 @@ export interface EditActionColumnProperties {
   serverSideFiltering?: boolean;
   placeholderText?: string;
   resetFilterTextOnClose?: boolean;
-  selectOptions?: DropdownOption[];
+  selectOptions?: DropdownOption[] | DropdownOption[][];
 }
 
 export interface ColumnProperties
@@ -317,6 +341,8 @@ export interface ColumnProperties
     DateColumnProperties,
     ColumnEditabilityProperties,
     EditActionColumnProperties {
+  allowSameOptionsInNewRow?: boolean;
+  newRowSelectOptions?: DropdownOption[];
   buttonLabel?: string;
   menuButtonLabel?: string;
   buttonColor?: string;
@@ -338,6 +364,11 @@ export interface ColumnProperties
   onItemClicked?: (onClick: string | undefined) => void;
   iconButtonStyle?: ButtonStyleType;
   imageSize?: ImageSize;
+  sticky?: StickyType;
+  getVisibleItems?: () => Array<MenuItem>;
+  menuItemsSource?: MenuItemsSource;
+  configureMenuItems?: ConfigureMenuItems;
+  sourceData?: Array<Record<string, unknown>>;
 }
 
 export const ConditionFunctions: {
@@ -497,3 +528,23 @@ export enum AddNewRowActions {
 }
 
 export const EDITABLE_CELL_PADDING_OFFSET = 8;
+
+export const TABLE_SCROLLBAR_WIDTH = 10;
+export const TABLE_SCROLLBAR_HEIGHT = 8;
+
+export const POPOVER_ITEMS_TEXT_MAP = {
+  SORT_ASC: "升序排序",
+  SORT_DSC: "降序排序",
+  FREEZE_LEFT: "固定列在左边",
+  FREEZE_RIGHT: "固定列在右边",
+};
+
+export const HEADER_MENU_PORTAL_CLASS = ".header-menu-portal";
+export const MENU_CONTENT_CLASS = ".menu-content";
+export const DEFAULT_FILTER = {
+  id: generateReactKey(),
+  column: "",
+  operator: OperatorTypes.OR,
+  value: "",
+  condition: "",
+};

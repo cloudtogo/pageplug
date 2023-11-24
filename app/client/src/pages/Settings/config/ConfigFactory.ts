@@ -1,9 +1,9 @@
-import {
+import type {
   AdminConfigType,
   Category,
   Setting,
-  SettingTypes,
 } from "@appsmith/pages/AdminSettings/config/types";
+import { SettingTypes } from "@appsmith/pages/AdminSettings/config/types";
 export class ConfigFactory {
   static settingsMap: Record<string, Setting> = {};
   static settings: Setting[] = [];
@@ -43,6 +43,11 @@ export class ConfigFactory {
       title: config.title,
       slug: config.type,
       subText: config.subText,
+      categoryType: config.categoryType,
+      needsUpgrade: config.needsUpgrade,
+      isEnterprise: config.isEnterprise,
+      needsRefresh: config.needsRefresh,
+      isFeatureEnabled: config.isFeatureEnabled,
       children: config?.children?.map((child) =>
         ConfigFactory.getCategory(child),
       ),

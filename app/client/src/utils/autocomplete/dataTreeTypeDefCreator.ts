@@ -1,20 +1,29 @@
-import { DataTree, ENTITY_TYPE } from "entities/DataTree/dataTreeFactory";
-import { uniqueId, get, isFunction, isObject } from "lodash";
-import { entityDefinitions } from "utils/autocomplete/EntityDefinitions";
+import type {
+  ConfigTree,
+  DataTree,
+  DataTreeEntity,
+  WidgetEntityConfig,
+} from "entities/DataTree/dataTreeFactory";
+import { ENTITY_TYPE } from "entities/DataTree/dataTreeFactory";
+import { uniqueId, isFunction, isObject } from "lodash";
+import { entityDefinitions } from "@appsmith/utils/autocomplete/EntityDefinitions";
 import { getType, Types } from "utils/TypeHelpers";
-import { Def } from "tern";
+import type { Def } from "tern";
 import {
   isAction,
   isAppsmithEntity,
   isJSAction,
   isTrueObject,
   isWidget,
-} from "workers/Evaluation/evaluationUtils";
-import { DataTreeDefEntityInformation } from "utils/autocomplete/CodemirrorTernService";
+} from "@appsmith/workers/Evaluation/evaluationUtils";
+import type { DataTreeDefEntityInformation } from "utils/autocomplete/CodemirrorTernService";
 
 export type ExtraDef = Record<string, Def | string>;
 
-import { Variable } from "entities/JSCollection";
+import type { JSActionEntityConfig } from "entities/DataTree/types";
+import type { Variable } from "entities/JSCollection";
+import WidgetFactory from "utils/WidgetFactory";
+import { shouldAddSetter } from "workers/Evaluation/evaluate";
 
 // Def names are encoded with information about the entity
 // This so that we have more info about them
@@ -24,7 +33,8 @@ import { Variable } from "entities/JSCollection";
 // or DATA_TREE.ACTION.ACTION.Api1
 export const dataTreeTypeDefCreator = (
   dataTree: DataTree,
-  isJSEditorEnabled: boolean,
+  jsData: Record<string, unknown> = {},
+  configTree: ConfigTree,
 ): { def: Def; entityInfo: Map<string, DataTreeDefEntityInformation> } => {
   // When there is a complex data type, we store it in extra def and refer to it in the def
   const extraDefsToDefine: Def = {};
@@ -37,14 +47,26 @@ export const dataTreeTypeDefCreator = (
   Object.entries(dataTree).forEach(([entityName, entity]) => {
     if (isWidget(entity)) {
       const widgetType = entity.type;
-      if (widgetType in entityDefinitions) {
-        const definition = get(entityDefinitions, widgetType);
-        if (isFunction(definition)) {
-          def[entityName] = definition(entity, extraDefsToDefine);
+      const autocompleteDefinitions =
+        WidgetFactory.getAutocompleteDefinitions(widgetType);
+
+      if (autocompleteDefinitions) {
+        const entityConfig = configTree[entityName] as WidgetEntityConfig;
+
+        if (isFunction(autocompleteDefinitions)) {
+          def[entityName] = autocompleteDefinitions(
+            entity,
+            extraDefsToDefine,
+            entityConfig,
+          );
         } else {
-          def[entityName] = definition;
+          def[entityName] = autocompleteDefinitions;
         }
+
+        addSettersToDefinitions(def[entityName] as Def, entity, entityConfig);
+
         flattenDef(def, entityName);
+
         entityMap.set(entityName, {
           type: ENTITY_TYPE.WIDGET,
           subType: widgetType,
@@ -70,29 +92,29 @@ export const dataTreeTypeDefCreator = (
         type: ENTITY_TYPE.APPSMITH,
         subType: ENTITY_TYPE.APPSMITH,
       });
-    } else if (isJSAction(entity) && isJSEditorEnabled) {
-      const metaObj = entity.meta;
+    } else if (isJSAction(entity)) {
+      const entityConfig = configTree[entityName] as JSActionEntityConfig;
+      const metaObj = entityConfig.meta;
       const jsPropertiesDef: Def = {};
 
-      for (const key in metaObj) {
-        // const jsFunctionObj = metaObj[key];
-        // const { arguments: args } = jsFunctionObj;
-        // const argsTypeString = getFunctionsArgsType(args);
-        // As we don't show args we avoid to get args def of function
-        // we will also need to check performance implications here
-
-        const argsTypeString = getFunctionsArgsType([]);
-        jsPropertiesDef[key] = argsTypeString;
+      for (const funcName in metaObj) {
+        const funcTypeDef = generateJSFunctionTypeDef(
+          jsData,
+          `${entityName}.${funcName}`,
+          extraDefsToDefine,
+        );
+        jsPropertiesDef[funcName] = funcTypeDef;
+        // To also show funcName.data in autocompletion hint, we explictly add it here
+        jsPropertiesDef[`${funcName}.data`] = funcTypeDef.data;
       }
 
-      for (let i = 0; i < entity.variables.length; i++) {
-        const varKey = entity.variables[i];
+      for (let i = 0; i < entityConfig?.variables?.length; i++) {
+        const varKey = entityConfig?.variables[i];
         const varValue = entity[varKey];
         jsPropertiesDef[varKey] = generateTypeDef(varValue, extraDefsToDefine);
       }
 
       def[entityName] = jsPropertiesDef;
-      flattenDef(def, entityName);
       entityMap.set(entityName, {
         type: ENTITY_TYPE.JSACTION,
         subType: "JSACTION",
@@ -159,26 +181,30 @@ export function generateTypeDef(
 
 export const flattenDef = (def: Def, entityName: string): Def => {
   const flattenedDef = def;
-  if (isTrueObject(def[entityName])) {
-    Object.entries(def[entityName]).forEach(([key, value]) => {
-      if (!key.startsWith("!")) {
-        flattenedDef[`${entityName}.${key}`] = value;
-        if (isTrueObject(value)) {
-          Object.entries(value).forEach(([subKey, subValue]) => {
-            if (!subKey.startsWith("!")) {
-              flattenedDef[`${entityName}.${key}.${subKey}`] = subValue;
-            }
-          });
-        }
-      }
+  if (!isTrueObject(def[entityName])) return flattenedDef;
+  Object.entries(def[entityName]).forEach(([key, value]) => {
+    if (key.startsWith("!")) return;
+    const keyIsValid = isValidVariableName(key);
+    const parentCompletion = !keyIsValid
+      ? `${entityName}["${key}"]`
+      : `${entityName}.${key}`;
+    flattenedDef[parentCompletion] = value;
+    if (!isTrueObject(value)) return;
+    Object.entries(value).forEach(([subKey, subValue]) => {
+      if (subKey.startsWith("!")) return;
+      const childKeyIsValid = isValidVariableName(subKey);
+      const childCompletion = !childKeyIsValid
+        ? `${parentCompletion}["${subKey}"]`
+        : `${parentCompletion}.${subKey}`;
+      flattenedDef[childCompletion] = subValue;
     });
-  }
+  });
   return flattenedDef;
 };
 
 const VALID_VARIABLE_NAME_REGEX = /^([a-zA-Z_$][a-zA-Z\d_$]*)$/;
 
-const isValidVariableName = (variableName: string) =>
+export const isValidVariableName = (variableName: string) =>
   VALID_VARIABLE_NAME_REGEX.test(variableName);
 
 export const getFunctionsArgsType = (args: Variable[]): string => {
@@ -204,3 +230,35 @@ export const getFunctionsArgsType = (args: Variable[]): string => {
   );
   return argsTypeString ? `fn(${argsTypeString})` : `fn()`;
 };
+
+export function generateJSFunctionTypeDef(
+  jsData: Record<string, unknown> = {},
+  fullFunctionName: string,
+  extraDefs: ExtraDef,
+) {
+  return {
+    "!type": getFunctionsArgsType([]),
+    data: generateTypeDef(jsData[fullFunctionName], extraDefs),
+  };
+}
+
+export function addSettersToDefinitions(
+  definitions: Def,
+  entity: DataTreeEntity,
+  entityConfig?: WidgetEntityConfig,
+) {
+  if (entityConfig && entityConfig.__setters) {
+    const setters = Object.keys(entityConfig.__setters);
+
+    setters.forEach((setterName: string) => {
+      const setter = entityConfig.__setters?.[setterName];
+      const setterType = entityConfig.__setters?.[setterName].type;
+
+      if (shouldAddSetter(setter, entity)) {
+        definitions[
+          setterName
+        ] = `fn(value:${setterType}) -> +Promise[:t=[!0.<i>.:t]]`;
+      }
+    });
+  }
+}

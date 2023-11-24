@@ -1,25 +1,29 @@
+import type { AppState } from "@appsmith/reducers";
 import { find, get, pick, set } from "lodash";
-import { AppState } from "@appsmith/reducers";
 import { createSelector } from "reselect";
-
-import { WidgetProps } from "widgets/BaseWidget";
-import { getCanvasWidgets } from "./entitiesSelector";
-import { getDataTree } from "selectors/dataTreeSelectors";
-import {
+import type {
   DataTree,
   DataTreeEntity,
-  DataTreeWidget,
+  WidgetEntity,
 } from "entities/DataTree/dataTreeFactory";
-import {
+import type { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
+import type {
   PropertyPaneReduxState,
   SelectedPropertyPanel,
 } from "reducers/uiReducers/propertyPaneReducer";
-import { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
-import { getLastSelectedWidget, getSelectedWidgets } from "./ui";
-import { EVALUATION_PATH } from "utils/DynamicBindingUtils";
-import { generateClassName } from "utils/generators";
 import { getWidgets } from "sagas/selectors";
-import { RegisteredWidgetFeatures } from "utils/WidgetFeatures";
+import { getDataTree } from "selectors/dataTreeSelectors";
+import {
+  EVALUATION_PATH,
+  isPathDynamicProperty,
+  isPathDynamicTrigger,
+} from "utils/DynamicBindingUtils";
+import { generateClassName } from "utils/generators";
+import { getGoogleMapsApiKey } from "@appsmith/selectors/tenantSelectors";
+import type { WidgetProps } from "widgets/BaseWidget";
+import { getCanvasWidgets } from "./entitiesSelector";
+import { getLastSelectedWidget, getSelectedWidgets } from "./ui";
+import { getCurrentAppPositioningType } from "./editorSelectors";
 
 export type WidgetProperties = WidgetProps & {
   [EVALUATION_PATH]?: DataTreeEntity;
@@ -67,26 +71,35 @@ const getCurrentWidgetName = createSelector(
 
 export const getWidgetPropsForPropertyPane = createSelector(
   getCurrentWidgetProperties,
-  getDataTree,
+  getCurrentAppPositioningType,
+  (state) => {
+    const currentWidget = getCurrentWidgetProperties(state);
+    if (!currentWidget) return;
+    const evaluatedWidget = find(getDataTree(state), {
+      widgetId: currentWidget.widgetId,
+    }) as WidgetEntity;
+    if (!evaluatedWidget) return;
+    return evaluatedWidget[EVALUATION_PATH];
+  },
   (
     widget: WidgetProps | undefined,
-    evaluatedTree: DataTree,
+    appPositioningType,
+    evaluatedValue: any,
   ): WidgetProps | undefined => {
     if (!widget) return undefined;
-    const evaluatedWidget = find(evaluatedTree, {
-      widgetId: widget.widgetId,
-    }) as DataTreeWidget;
-    const widgetProperties = { ...widget };
 
-    if (evaluatedWidget) {
-      widgetProperties[EVALUATION_PATH] = evaluatedWidget[EVALUATION_PATH];
+    const widgetProperties = {
+      ...widget,
+      appPositioningType,
+    };
+    if (evaluatedValue) {
+      widgetProperties[EVALUATION_PATH] = evaluatedValue;
     }
     return widgetProperties;
   },
 );
 
 type WidgetPropertiesForPropertyPaneView = {
-  disabledWidgetFeatures?: RegisteredWidgetFeatures[];
   type: string;
   widgetId: string;
   widgetName: string;
@@ -101,7 +114,6 @@ export const getWidgetPropsForPropertyPaneView = createSelector(
       "widgetId",
       "widgetName",
       "displayName",
-      "disabledWidgetFeatures",
     ]) as WidgetPropertiesForPropertyPaneView,
 );
 
@@ -129,8 +141,14 @@ const populateWidgetProperties = (
   widgetProperties.type = widget.type;
   widgetProperties.widgetName = widget.widgetName;
   widgetProperties.widgetId = widget.widgetId;
-  widgetProperties.dynamicTriggerPathList = widget.dynamicTriggerPathList;
-  widgetProperties.dynamicPropertyPathList = widget.dynamicPropertyPathList;
+  widgetProperties.isPropertyDynamicTrigger = isPathDynamicTrigger(
+    widget,
+    propertyPath,
+  );
+  widgetProperties.isPropertyDynamicPath = isPathDynamicProperty(
+    widget,
+    propertyPath,
+  );
 
   getAndSetPath(widget, widgetProperties, propertyPath);
 
@@ -154,7 +172,7 @@ const getAndSetPath = (from: any, to: any, path: string) => {
 };
 
 const populateEvaluatedWidgetProperties = (
-  evaluatedWidget: DataTreeWidget,
+  evaluatedWidget: WidgetEntity,
   propertyPath: string,
   evaluatedDependencies: string[] = [],
 ) => {
@@ -186,13 +204,10 @@ const populateEvaluatedWidgetProperties = (
 const getCurrentEvaluatedWidget = createSelector(
   getCurrentWidgetProperties,
   getDataTree,
-  (
-    widget: WidgetProps | undefined,
-    evaluatedTree: DataTree,
-  ): DataTreeWidget => {
-    return (widget?.widgetName
-      ? evaluatedTree[widget.widgetName]
-      : {}) as DataTreeWidget;
+  (widget: WidgetProps | undefined, evaluatedTree: DataTree): WidgetEntity => {
+    return (
+      widget?.widgetName ? evaluatedTree[widget.widgetName] : {}
+    ) as WidgetEntity;
   },
 );
 
@@ -204,15 +219,22 @@ export const getWidgetPropsForPropertyName = (
   return createSelector(
     getCurrentWidgetProperties,
     getCurrentEvaluatedWidget,
+    getGoogleMapsApiKey,
     (
       widget: WidgetProps | undefined,
-      evaluatedWidget: DataTreeWidget,
+      evaluatedWidget: WidgetEntity,
+      googleMapsApiKey?: string,
     ): WidgetProperties => {
       const widgetProperties = populateWidgetProperties(
         widget,
         propertyName,
         dependencies,
       );
+
+      // if the widget has a googleMapsApiKey dependency, add it to the widget properties
+      if (dependencies.includes("googleMapsApiKey")) {
+        widgetProperties.googleMapsApiKey = googleMapsApiKey;
+      }
 
       widgetProperties[EVALUATION_PATH] = populateEvaluatedWidgetProperties(
         evaluatedWidget,
@@ -242,7 +264,7 @@ export const getIsPropertyPaneVisible = createSelector(
     const el = document.getElementsByClassName(
       generateClassName(pane.widgetId),
     )[0];
-    const isWidgetSelected = pane.widgetId
+    const isWidgetSelected: boolean = pane.widgetId
       ? lastSelectedWidget === pane.widgetId || widgets.includes(pane.widgetId)
       : false;
     const multipleWidgetsSelected = !!(widgets && widgets.length >= 2);
@@ -266,6 +288,7 @@ export const getIsPropertyPaneVisible = createSelector(
 export const getPropertyPaneWidth = (state: AppState) => {
   return state.ui.propertyPane.width;
 };
+
 export const getFocusablePropertyPaneField = (state: AppState) =>
   state.ui.propertyPane.focusedProperty;
 

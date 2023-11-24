@@ -1,21 +1,22 @@
 import React from "react";
-import { GridDefaults } from "constants/WidgetConstants";
-import lottie from "lottie-web";
-import confetti from "assets/lottie/binding.json";
-import welcomeConfetti from "assets/lottie/welcome-confetti.json";
-import successAnimation from "assets/lottie/success-animation.json";
+import {
+  GridDefaults,
+  MAIN_CONTAINER_WIDGET_ID,
+} from "constants/WidgetConstants";
+import lazyLottie from "./lazyLottie";
+import welcomeConfettiAnimationURL from "assets/lottie/welcome-confetti.json.txt";
 import {
   DATA_TREE_KEYWORDS,
   DEDICATED_WORKER_GLOBAL_SCOPE_IDENTIFIERS,
   JAVASCRIPT_KEYWORDS,
 } from "constants/WidgetValidation";
 import { get, set, isNil, has, uniq } from "lodash";
-import { Workspace } from "@appsmith/constants/workspaceConstants";
+import type { Workspace } from "@appsmith/constants/workspaceConstants";
 import { hasCreateNewAppPermission } from "@appsmith/utils/permissionHelpers";
 import moment from "moment";
-import { extraLibrariesNames, isDynamicValue } from "./DynamicBindingUtils";
-import { ApiResponse } from "api/ApiResponses";
-import { DSLWidget } from "widgets/constants";
+import { isDynamicValue } from "./DynamicBindingUtils";
+import type { ApiResponse } from "api/ApiResponses";
+import type { DSLWidget } from "widgets/constants";
 import * as Sentry from "@sentry/react";
 import { matchPath } from "react-router";
 import {
@@ -28,6 +29,13 @@ import {
 } from "constants/routes";
 import history from "./history";
 import { APPSMITH_GLOBAL_FUNCTIONS } from "components/editorComponents/ActionCreator/constants";
+import type { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
+import { checkContainerScrollable } from "widgets/WidgetUtils";
+import type { ContainerWidgetProps } from "widgets/ContainerWidget/widget";
+import type { WidgetProps } from "widgets/BaseWidget";
+import { getContainerIdForCanvas } from "sagas/WidgetOperationUtils";
+import scrollIntoView from "scroll-into-view-if-needed";
+import validateColor from "validate-color";
 
 export const snapToGrid = (
   columnWidth: number,
@@ -65,10 +73,10 @@ export const Directions: { [id: string]: string } = {
   RIGHT_BOTTOM: "RIGHT_BOTTOM",
 };
 
-export type Direction = typeof Directions[keyof typeof Directions];
+export type Direction = (typeof Directions)[keyof typeof Directions];
 const SCROLL_THRESHOLD = 20;
 
-export const getScrollByPixels = function(
+export const getScrollByPixels = function (
   elem: {
     top: number;
     height: number;
@@ -215,22 +223,28 @@ export const flashElementsById = (
 /**
  * Scrolls to the widget of WidgetId without any animantion.
  * @param widgetId
- * @returns
+ * @param canvasWidgets
  */
-export const quickScrollToWidget = (widgetId?: string) => {
-  if (!widgetId) return;
-
-  setTimeout(() => {
+export const quickScrollToWidget = (
+  widgetId: string,
+  canvasWidgets: CanvasWidgetsReduxState,
+) => {
+  if (!widgetId || widgetId === "") return;
+  window.requestIdleCallback(() => {
     const el = document.getElementById(widgetId);
     const canvas = document.getElementById("canvas-viewport");
 
-    if (el && canvas && !isElementVisibleInContainer(el, canvas)) {
-      el.scrollIntoView({
-        block: "nearest",
-        behavior: "smooth",
-      });
+    if (el && canvas && !isElementVisibleInContainer(el, canvas, 5)) {
+      const scrollElement = getWidgetElementToScroll(widgetId, canvasWidgets);
+      if (scrollElement) {
+        scrollElement.scrollIntoView({
+          block: "center",
+          inline: "nearest",
+          behavior: "smooth",
+        });
+      }
     }
-  }, 200);
+  });
 };
 
 // Checks if the element in a container is visible or not.
@@ -253,10 +267,33 @@ function isElementVisibleInContainer(
   );
 }
 
+function getWidgetElementToScroll(
+  widgetId: string,
+  canvasWidgets: CanvasWidgetsReduxState,
+) {
+  const widget = canvasWidgets[widgetId];
+  const parentId = widget.parentId || "";
+  const containerId = getContainerIdForCanvas(parentId);
+  if (containerId === MAIN_CONTAINER_WIDGET_ID) {
+    if (widget.type !== "MODAL_WIDGET") {
+      return document.getElementById(widgetId);
+    }
+  }
+  const containerWidget = canvasWidgets[
+    containerId
+  ] as ContainerWidgetProps<WidgetProps>;
+  if (checkContainerScrollable(containerWidget)) {
+    return document.getElementById(widgetId);
+  } else {
+    return document.getElementById(containerId);
+  }
+}
+
 export const resolveAsSpaceChar = (value: string, limit?: number) => {
   // ensures that all special characters are disallowed
   // while allowing all utf-8 characters
-  const removeSpecialCharsRegex = /`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\<|\,|\.|\>|\?|\/|\""|\;|\:|\s/;
+  const removeSpecialCharsRegex =
+    /`|\~|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\+|\=|\[|\{|\]|\}|\||\\|\'|\<|\,|\.|\>|\?|\/|\""|\;|\:|\s/;
   const duplicateSpaceRegex = /\s+/;
   return value
     .split(removeSpecialCharsRegex)
@@ -412,7 +449,6 @@ export const isNameValid = (
     has(DATA_TREE_KEYWORDS, name) ||
     has(DEDICATED_WORKER_GLOBAL_SCOPE_IDENTIFIERS, name) ||
     has(APPSMITH_GLOBAL_FUNCTIONS, name) ||
-    has(extraLibrariesNames, name) ||
     has(invalidNames, name)
   );
 };
@@ -457,24 +493,13 @@ export const getSubstringBetweenTwoWords = (
   return str.substring(startIndexOfEndWord, endIndexOfStartWord);
 };
 
-export const playOnboardingAnimation = () => {
-  playLottieAnimation("#root", confetti);
-};
-
 export const playWelcomeAnimation = (container: string) => {
-  playLottieAnimation(container, welcomeConfetti);
-};
-
-export const playOnboardingStepCompletionAnimation = () => {
-  playLottieAnimation(".onboarding-step-indicator", successAnimation, {
-    "background-color": "white",
-    padding: "60px",
-  });
+  playLottieAnimation(container, welcomeConfettiAnimationURL);
 };
 
 const playLottieAnimation = (
   selector: string,
-  animation: any,
+  animationURL: string,
   styles?: any,
 ) => {
   const container: Element = document.querySelector(selector) as Element;
@@ -495,18 +520,16 @@ const playLottieAnimation = (
 
   container.appendChild(el);
 
-  const animObj = lottie.loadAnimation({
+  const animObj = lazyLottie.loadAnimation({
     container: el,
-    animationData: animation,
+    path: animationURL,
     loop: false,
   });
 
-  const duration = (animObj.totalFrames / animObj.frameRate) * 1000;
-
   animObj.play();
-  setTimeout(() => {
+  animObj.addEventListener("complete", () => {
     container.removeChild(el);
-  }, duration);
+  });
 };
 
 export const getSelectedText = () => {
@@ -585,7 +608,10 @@ export const getCanCreateApplications = (currentWorkspace: Workspace) => {
 
 export const getIsSafeRedirectURL = (redirectURL: string) => {
   try {
-    return new URL(redirectURL).origin === window.location.origin;
+    return (
+      new URL(redirectURL, window.location.origin).origin ===
+      window.location.origin
+    );
   } catch (e) {
     return false;
   }
@@ -654,10 +680,9 @@ export const truncateString = (
  *
  * @returns
  */
-export const modText = () => (isMacOrIOS() ? <span>&#8984;</span> : "Ctrl +");
-export const altText = () => (isMacOrIOS() ? <span>&#8997;</span> : "Alt +");
-export const shiftText = () =>
-  isMacOrIOS() ? <span>&#8682;</span> : "Shift +";
+export const modText = () => (isMacOrIOS() ? "\u2318" : "Ctrl +");
+export const altText = () => (isMacOrIOS() ? "\u2325" : "Alt +");
+export const shiftText = () => (isMacOrIOS() ? "\u21EA" : "Shift +");
 
 export const undoShortCut = () => <span>{modText()} Z</span>;
 
@@ -708,26 +733,34 @@ export function getLogToSentryFromResponse(response?: ApiResponse) {
   return response && response?.responseMeta?.status >= 500;
 }
 
-const BLACKLIST_COLORS = ["#ffffff"];
-const HEX_REGEX = /#[0-9a-fA-F]{6}/gi;
-const RGB_REGEX = /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)/gi;
-
 /**
  * extract colors from string
  *
- * @param text
  * @returns
+ * @param widgets
  */
-export function extractColorsFromString(text: string) {
+export function extractColorsFromString(widgets: CanvasWidgetsReduxState) {
   const colors = new Set();
 
-  [...(text.match(RGB_REGEX) || []), ...(text.match(HEX_REGEX) || [])]
-    .filter((d) => BLACKLIST_COLORS.indexOf(d.toLowerCase()) === -1)
-    .forEach((color) => {
-      colors.add(color.toLowerCase());
+  Object.values(widgets).forEach((widget) => {
+    Object.values(widget).forEach((widgetProp) => {
+      if (isString(widgetProp) && validateColor(widgetProp)) {
+        colors.add(widgetProp);
+      }
     });
+  });
 
   return Array.from(colors) as Array<string>;
+}
+
+/**
+ * validate color string
+ *
+ * @returns {boolean} true if string is valid color or includes url
+ * @param color
+ */
+export function isValidColor(color: string) {
+  return color?.includes("url") || validateColor(color);
 }
 
 /*
@@ -805,6 +838,7 @@ export function shouldBeDefined<T>(
 
   return result;
 }
+
 /*
  * Check if a value is null / undefined / empty string
  *
@@ -825,51 +859,117 @@ export const isURLDeprecated = (url: string) => {
   });
 };
 
+export const matchPath_BuilderSlug = (path: string) =>
+  matchPath<{ applicationSlug: string; pageSlug: string; pageId: string }>(
+    path,
+    {
+      path: trimQueryString(BUILDER_PATH),
+      strict: false,
+      exact: false,
+    },
+  );
+
+export const matchPath_ViewerSlug = (path: string) =>
+  matchPath<{ applicationSlug: string; pageSlug: string; pageId: string }>(
+    path,
+    {
+      path: trimQueryString(VIEWER_PATH),
+      strict: false,
+      exact: false,
+    },
+  );
+
+export const matchPath_BuilderCustomSlug = (path: string) =>
+  matchPath<{ customSlug: string }>(path, {
+    path: trimQueryString(BUILDER_CUSTOM_PATH),
+  });
+
+export const matchPath_ViewerCustomSlug = (path: string) =>
+  matchPath<{ customSlug: string }>(path, {
+    path: trimQueryString(VIEWER_CUSTOM_PATH),
+  });
+
 export const getUpdatedRoute = (
   path: string,
   params: Record<string, string>,
 ) => {
+  const updatedPath = path;
+
+  const matchBuilderSlugPath = matchPath_BuilderSlug(path);
+  const matchBuilderCustomPath = matchPath_BuilderCustomSlug(path);
+  const matchViewerSlugPath = matchPath_ViewerSlug(path);
+  const matchViewerCustomPath = matchPath_ViewerCustomSlug(path);
+
+  /*
+   * Note: When making changes to the order of these conditions
+   * Be sure to check if it is sync with the order of paths AppRouter.ts
+   * Context: https://github.com/appsmithorg/appsmith/pull/19833
+   */
+  if (matchBuilderSlugPath?.params) {
+    return getUpdateRouteForSlugPath(
+      path,
+      matchBuilderSlugPath.params.applicationSlug,
+      matchBuilderSlugPath.params.pageSlug,
+      params,
+    );
+  } else if (matchBuilderCustomPath?.params) {
+    return getUpdatedRouteForCustomSlugPath(
+      path,
+      matchBuilderCustomPath.params.customSlug,
+      params,
+    );
+  } else if (matchViewerSlugPath) {
+    return getUpdateRouteForSlugPath(
+      path,
+      matchViewerSlugPath.params.applicationSlug,
+      matchViewerSlugPath.params.pageSlug,
+      params,
+    );
+  } else if (matchViewerCustomPath) {
+    return getUpdatedRouteForCustomSlugPath(
+      path,
+      matchViewerCustomPath.params.customSlug,
+      params,
+    );
+  }
+  return updatedPath;
+};
+
+const getUpdatedRouteForCustomSlugPath = (
+  path: string,
+  customSlug: string,
+  params: Record<string, string>,
+) => {
   let updatedPath = path;
-  const match = matchPath<{ applicationSlug: string; pageSlug: string }>(path, {
-    path: [trimQueryString(BUILDER_PATH), trimQueryString(VIEWER_PATH)],
-    strict: false,
-    exact: false,
-  });
-  if (match?.params) {
-    const { applicationSlug, pageSlug } = match?.params;
-    if (params.customSlug) {
-      updatedPath = updatedPath.replace(
-        `${applicationSlug}/${pageSlug}`,
-        `${params.customSlug}-`,
-      );
-      return updatedPath;
-    }
-    if (params.applicationSlug)
-      updatedPath = updatedPath.replace(
-        applicationSlug,
-        params.applicationSlug,
-      );
-    if (params.pageSlug)
-      updatedPath = updatedPath.replace(pageSlug, `${params.pageSlug}-`);
+  if (params.customSlug) {
+    updatedPath = updatedPath.replace(`${customSlug}`, `${params.customSlug}-`);
+  } else if (params.applicationSlug && params.pageSlug) {
+    updatedPath = updatedPath.replace(
+      `${customSlug}`,
+      `${params.applicationSlug}/${params.pageSlug}-`,
+    );
+  }
+  return updatedPath;
+};
+
+const getUpdateRouteForSlugPath = (
+  path: string,
+  applicationSlug: string,
+  pageSlug: string,
+  params: Record<string, string>,
+) => {
+  let updatedPath = path;
+  if (params.customSlug) {
+    updatedPath = updatedPath.replace(
+      `${applicationSlug}/${pageSlug}`,
+      `${params.customSlug}-`,
+    );
     return updatedPath;
   }
-  const matchCustomPath = matchPath<{ customSlug: string }>(path, {
-    path: [BUILDER_CUSTOM_PATH, VIEWER_CUSTOM_PATH],
-  });
-  if (matchCustomPath?.params) {
-    const { customSlug } = matchCustomPath.params;
-    if (params.customSlug) {
-      updatedPath = updatedPath.replace(
-        `${customSlug}`,
-        `${params.customSlug}-`,
-      );
-    } else if (params.applicationSlug && params.pageSlug) {
-      updatedPath = updatedPath.replace(
-        `${customSlug}`,
-        `${params.applicationSlug}/${params.pageSlug}-`,
-      );
-    }
-  }
+  if (params.applicationSlug)
+    updatedPath = updatedPath.replace(applicationSlug, params.applicationSlug);
+  if (params.pageSlug)
+    updatedPath = updatedPath.replace(pageSlug, `${params.pageSlug}-`);
   return updatedPath;
 };
 
@@ -1013,3 +1113,20 @@ export function concatWithArray(
   if (makeUnique) return uniq(finalArr);
   return finalArr;
 }
+
+export const capitalizeFirstLetter = (str: string) => {
+  // Find the index of the first letter of the first sentence
+  const firstLetterIndex = str.search(/[a-z]/i);
+
+  // If there are no letters in the string, return the original string
+  if (firstLetterIndex === -1) {
+    return str;
+  }
+
+  // Capitalize the first letter of the first sentence and return the modified string
+  return (
+    str.slice(0, firstLetterIndex) +
+    str.charAt(firstLetterIndex).toUpperCase() +
+    str.slice(firstLetterIndex + 1).toLocaleLowerCase()
+  );
+};

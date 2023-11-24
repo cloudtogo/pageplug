@@ -1,8 +1,10 @@
+/* eslint-disable react/display-name */
 import React, { useState, forwardRef } from "react";
 import styled from "styled-components";
 
 import { getRgbaColor } from "widgets/WidgetUtils";
-import { SliderSizes, thumbSizeMap } from "../utils";
+import type { SliderSizes } from "../utils";
+import { thumbSizeMap } from "../utils";
 
 interface ThumbProps {
   thumbBgColor: string;
@@ -98,7 +100,7 @@ export const Thumb = forwardRef<HTMLDivElement, ThumbProps>(
         aria-valuemin={min}
         aria-valuenow={parseInt(tooltipValue)}
         color={color}
-        data-cy="slider-thumb"
+        data-testid="slider-thumb"
         disabled={disabled}
         onBlur={() => {
           setFocused(false);

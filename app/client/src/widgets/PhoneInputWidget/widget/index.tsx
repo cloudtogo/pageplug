@@ -1,45 +1,48 @@
 import React from "react";
-import { WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
-import PhoneInputComponent, { PhoneInputComponentProps } from "../component";
+import type { WidgetState } from "widgets/BaseWidget";
+import type { WidgetType } from "constants/WidgetConstants";
+import type { PhoneInputComponentProps } from "../component";
+import PhoneInputComponent from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import {
-  ValidationTypes,
-  ValidationResponse,
-} from "constants/WidgetValidation";
+import type { ValidationResponse } from "constants/WidgetValidation";
+import { ValidationTypes } from "constants/WidgetValidation";
 import {
   createMessage,
   FIELD_REQUIRED_ERROR,
 } from "@appsmith/constants/messages";
-import { DerivedPropertiesMap } from "utils/WidgetFactory";
+import type { DerivedPropertiesMap } from "utils/WidgetFactory";
 import {
   getCountryCode,
   ISDCodeDropdownOptions,
 } from "../component/ISDCodeDropdown";
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
 import _ from "lodash";
 import BaseInputWidget from "widgets/BaseInputWidget";
 import derivedProperties from "./parsedDerivedProperties";
-import { BaseInputWidgetProps } from "widgets/BaseInputWidget/widget";
+import type { BaseInputWidgetProps } from "widgets/BaseInputWidget/widget";
 import { mergeWidgetConfig } from "utils/helpers";
-import {
-  AsYouType,
-  CountryCode,
-  parseIncompletePhoneNumber,
-} from "libphonenumber-js";
+import type { CountryCode } from "libphonenumber-js";
+import { AsYouType, parseIncompletePhoneNumber } from "libphonenumber-js";
 import * as Sentry from "@sentry/react";
 import log from "loglevel";
 import { GRID_DENSITY_MIGRATION_V1 } from "widgets/constants";
-import { Stylesheet } from "entities/AppTheming";
-import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
+import type { SetterConfig, Stylesheet } from "entities/AppTheming";
+import {
+  isAutoHeightEnabledForWidget,
+  DefaultAutocompleteDefinitions,
+} from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
 
 export function defaultValueValidation(
   value: any,
   props: PhoneInputWidgetProps,
   _?: any,
 ): ValidationResponse {
-  const STRING_ERROR_MESSAGE = "This value must be string";
-  const EMPTY_ERROR_MESSAGE = "";
+  const STRING_ERROR_MESSAGE = {
+    name: "TypeError",
+    message: "This value must be string",
+  };
+  const EMPTY_ERROR_MESSAGE = { name: "", message: "" };
   if (_.isObject(value)) {
     return {
       isValid: false,
@@ -105,6 +108,7 @@ class PhoneInputWidget extends BaseInputWidget<
               controlType: "DROP_DOWN",
               searchPlaceholderText: "通过国家名称或编号搜索",
               options: ISDCodeDropdownOptions,
+              virtual: true,
               isJSConvertible: true,
               isBindProperty: true,
               isTriggerProperty: false,
@@ -161,6 +165,35 @@ class PhoneInputWidget extends BaseInputWidget<
       ],
       super.getPropertyPaneContentConfig(),
     );
+  }
+
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      "!doc":
+        "An input text field is used to capture a phone number. Inputs are used in forms and can have custom validations.",
+      "!url": "https://docs.appsmith.com/widget-reference/phone-input",
+      text: {
+        "!type": "string",
+        "!doc": "The text value of the input",
+        "!url": "https://docs.appsmith.com/widget-reference/phone-input",
+      },
+      value: {
+        "!type": "string",
+        "!doc": "The unformatted text value of the input",
+        "!url": "https://docs.appsmith.com/widget-reference/phone-input",
+      },
+      isValid: "bool",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      isDisabled: "bool",
+      countryCode: {
+        "!type": "string",
+        "!doc": "Selected country code for Phone Number",
+      },
+      dialCode: {
+        "!type": "string",
+        "!doc": "Selected dialing code for Phone Number",
+      },
+    };
   }
 
   static getPropertyPaneStyleConfig() {
@@ -274,7 +307,7 @@ class PhoneInputWidget extends BaseInputWidget<
     let formattedValue;
 
     // Don't format, as value is typed, when user is deleting
-    if (value && value.length > this.props.text.length) {
+    if (value && value.length > this.props.text?.length) {
       formattedValue = this.getFormattedPhoneNumber(value);
     } else {
       formattedValue = value;
@@ -330,6 +363,21 @@ class PhoneInputWidget extends BaseInputWidget<
     super.resetWidgetText();
     this.props.updateWidgetMetaProperty("value", undefined);
   };
+
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {
+        setVisibility: {
+          path: "isVisible",
+          type: "boolean",
+        },
+        setDisabled: {
+          path: "isDisabled",
+          type: "boolean",
+        },
+      },
+    };
+  }
 
   getPageView() {
     const value = this.props.text ?? "";

@@ -1,18 +1,18 @@
-import { AppState } from "@appsmith/reducers";
-import {
+import type { AppState } from "@appsmith/reducers";
+import type { FeatureFlags } from "@appsmith/entities/FeatureFlag";
+import type {
   CodeEditorHistory,
   CursorPosition,
   EvaluatedPopupState,
-  isSubEntities,
   PropertyPanelContext,
   PropertyPanelState,
 } from "reducers/uiReducers/editorContextReducer";
+import { isSubEntities } from "reducers/uiReducers/editorContextReducer";
 import { createSelector } from "reselect";
-import { selectFeatureFlags } from "selectors/usersSelectors";
-import FeatureFlags from "entities/FeatureFlags";
+import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
 
-export const getFocusableCodeEditorField = (state: AppState) =>
-  state.ui.editorContext.focusableCodeEditor;
+export const getFocusableInputField = (state: AppState) =>
+  state.ui.editorContext.focusedInputField;
 
 export const getCodeEditorHistory = (state: AppState) =>
   state.ui.editorContext.codeEditorHistory;
@@ -22,9 +22,6 @@ export const getPropertyPanelState = (state: AppState) =>
 
 export const getAllPropertySectionState = (state: AppState) =>
   state.ui.editorContext.propertySectionState;
-
-export const getSelectedCanvasDebuggerTab = (state: AppState) =>
-  state.ui.editorContext.selectedDebuggerTab;
 
 export const getWidgetSelectedPropertyTabIndex = (state: AppState) =>
   state.ui.editorContext.selectedPropertyTabIndex;
@@ -67,24 +64,6 @@ export const getSelectedPropertyTabIndex = createSelector(
   },
 );
 
-export const getIsCodeEditorFocused = createSelector(
-  [
-    getFocusableCodeEditorField,
-    selectFeatureFlags,
-    (_state: AppState, key: string | undefined) => key,
-  ],
-  (
-    focusableField: string | undefined,
-    featureFlags: FeatureFlags,
-    key: string | undefined,
-  ): boolean => {
-    if (featureFlags.CONTEXT_SWITCHING) {
-      return !!(key && focusableField === key);
-    }
-    return false;
-  },
-);
-
 export const getCodeEditorLastCursorPosition = createSelector(
   [getCodeEditorHistory, (state: AppState, key: string | undefined) => key],
   (
@@ -103,6 +82,21 @@ export const getEvaluatedPopupState = createSelector(
     key: string | undefined,
   ): EvaluatedPopupState | undefined => {
     return key ? codeEditorHistory?.[key]?.evalPopupState : undefined;
+  },
+);
+
+export const getIsInputFieldFocused = createSelector(
+  [
+    getFocusableInputField,
+    selectFeatureFlags,
+    (_state: AppState, key: string | undefined) => key,
+  ],
+  (
+    focusableField: string | undefined,
+    featureFlags: FeatureFlags,
+    key: string | undefined,
+  ): boolean => {
+    return !!(key && focusableField === key);
   },
 );
 

@@ -2,7 +2,16 @@
   "extends": "./tsconfig.path.json",
   "compilerOptions": {
     "target": "ES6",
-    "lib": ["DOM", "ES6", "DOM.Iterable", "ScriptHost", "ES2016.Array.Include", "es2020.string", "esnext"],
+    "lib": [
+      "DOM",
+      "ES6",
+      "DOM.Iterable",
+      "ScriptHost",
+      "ES2016.Array.Include",
+      "es2020.string",
+      "esnext",
+      "WebWorker"
+    ],
     "strict": true,
     "outDir": "./out/js/src",
     "allowJs": true,
@@ -25,9 +34,17 @@
     ],
     "sourceMap": true,
     "baseUrl": "./src",
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "importsNotUsedAsValues": "remove",
+    "declaration": false,
   },
   "include": [
-    "./src/**/*"
+    "./src/**/*",
+    "decs.d.ts",
+    "decs1.d.ts",
+    "./packages",
+  ],
+  "exclude": [
+    "./packages/rts"
   ]
 }

@@ -1,15 +1,16 @@
 import { getAppsmithConfigs } from "@appsmith/configs";
-import * as Sentry from "@sentry/react";
-import AnalyticsUtil from "./AnalyticsUtil";
-import { Property } from "api/ActionAPI";
-import _ from "lodash";
-import { ActionDataState } from "reducers/entityReducers/actionsReducer";
-import * as log from "loglevel";
-import { AppIconCollection, AppIconName } from "design-system";
 import { ERROR_CODES } from "@appsmith/constants/ApiConstants";
 import { createMessage, ERROR_500 } from "@appsmith/constants/messages";
-import { JSCollectionData } from "reducers/entityReducers/jsActionsReducer";
+import * as Sentry from "@sentry/react";
+import type { Property } from "api/ActionAPI";
+import type { AppIconName } from "design-system-old";
+import { AppIconCollection } from "design-system-old";
+import _, { isPlainObject } from "lodash";
+import * as log from "loglevel";
 import { osName } from "react-device-detect";
+import type { ActionDataState } from "reducers/entityReducers/actionsReducer";
+import type { JSCollectionData } from "reducers/entityReducers/jsActionsReducer";
+import AnalyticsUtil from "./AnalyticsUtil";
 
 export const initializeAnalyticsAndTrackers = () => {
   const appsmithConfigs = getAppsmithConfigs();
@@ -72,10 +73,10 @@ export const initializeAnalyticsAndTrackers = () => {
     if (appsmithConfigs.segment.enabled && !(window as any).analytics) {
       if (appsmithConfigs.segment.apiKey) {
         // This value is only enabled for Appsmith's cloud hosted version. It is not set in self-hosted environments
-        AnalyticsUtil.initializeSegment(appsmithConfigs.segment.apiKey);
+        return AnalyticsUtil.initializeSegment(appsmithConfigs.segment.apiKey);
       } else if (appsmithConfigs.segment.ceKey) {
         // This value is set in self-hosted environments. But if the analytics are disabled, it's never used.
-        AnalyticsUtil.initializeSegment(appsmithConfigs.segment.ceKey);
+        return AnalyticsUtil.initializeSegment(appsmithConfigs.segment.ceKey);
       }
     }
   } catch (e) {
@@ -217,12 +218,13 @@ export const stopEventPropagation = (e: any) => {
 export const createNewQueryName = (
   queries: ActionDataState,
   pageId: string,
+  prefix = "Query",
 ) => {
   const pageApiNames = queries
     .filter((a) => a.config.pageId === pageId)
     .map((a) => a.config.name);
-  const newName = getNextEntityName("Query", pageApiNames);
-  return newName;
+
+  return getNextEntityName(prefix, pageApiNames);
 };
 
 export const convertToString = (value: any): string => {
@@ -236,10 +238,43 @@ export const convertToString = (value: any): string => {
   return value.toString();
 };
 
+export const getInitialsFromName = (fullName: string) => {
+  let inits = "";
+  // if name contains space. eg: "Full Name"
+  if (fullName && fullName.includes(" ")) {
+    const namesArr = fullName.split(" ");
+    let initials = namesArr
+      .map((name: string) => name.charAt(0))
+      .join("")
+      .toUpperCase();
+    initials = initials;
+    inits = initials.slice(0, 2);
+  } else {
+    // handle for camelCase
+    const str = fullName ? fullName.replace(/([a-z])([A-Z])/g, "$1 $2") : "";
+    const namesArr = str.split(" ");
+    const initials = namesArr
+      .map((name: string) => name.charAt(0))
+      .join("")
+      .toUpperCase();
+    inits = initials.slice(0, 2);
+  }
+
+  return inits;
+};
+
 export const getInitialsAndColorCode = (
-  fullName: any,
+  fullName = "",
   colorPalette: string[],
 ): string[] => {
+  const initials = getInitialsFromName(fullName);
+  const colorCode = getColorCode(initials, colorPalette);
+  return [initials, colorCode];
+};
+export const getInitials = (
+  fullName: any,
+  // colorPalette: string[],
+): string => {
   let inits = "";
   // if name contains space. eg: "Full Name"
   if (fullName && fullName.includes(" ")) {
@@ -255,10 +290,9 @@ export const getInitialsAndColorCode = (
     initials = initials.join("").toUpperCase();
     inits = initials.slice(0, 2);
   }
-  const colorCode = getColorCode(inits, colorPalette);
-  return [inits, colorCode];
+  // const colorCode = getColorCode(inits, colorPalette);
+  return inits;
 };
-
 export const getColorCode = (
   initials: string,
   colorPalette: string[],
@@ -278,9 +312,7 @@ export const getApplicationIcon = (initials: string): AppIconName => {
   return AppIconCollection[asciiSum % AppIconCollection.length];
 };
 
-export function hexToRgb(
-  hex: string,
-): {
+export function hexToRgb(hex: string): {
   r: number;
   g: number;
   b: number;
@@ -307,7 +339,8 @@ export const retryPromise = (
   return new Promise((resolve, reject) => {
     fn()
       .then(resolve)
-      .catch(() => {
+      .catch((err) => {
+        console.log(err);
         setTimeout(() => {
           if (retriesLeft === 1) {
             return Promise.reject({
@@ -340,10 +373,7 @@ export const isBlobUrl = (url: string) => {
  */
 export const createBlobUrl = (data: Blob | MediaSource, type: string) => {
   let url = URL.createObjectURL(data);
-  url = url.replace(
-    `${window.location.protocol}//${window.location.hostname}/`,
-    "",
-  );
+  url = url.replace(`${window.location.origin}/`, "");
 
   return `${url}?type=${type}`;
 };
@@ -354,9 +384,7 @@ export const createBlobUrl = (data: Blob | MediaSource, type: string) => {
  * @returns [string,string] [blobUrl, type]
  */
 export const parseBlobUrl = (blobId: string) => {
-  const url = `blob:${window.location.protocol}//${
-    window.location.hostname
-  }/${blobId.substring(5)}`;
+  const url = `blob:${window.location.origin}/${blobId.substring(5)}`;
   return url.split("?type=");
 };
 
@@ -368,10 +396,11 @@ export const parseBlobUrl = (blobId: string) => {
 export const getCamelCaseString = (sourceString: string) => {
   let out = "";
   // Split the input string to separate words using RegEx
-  const regEx = /[A-Z\xC0-\xD6\xD8-\xDE]?[a-z\xDF-\xF6\xF8-\xFF]+|[A-Z\xC0-\xD6\xD8-\xDE]+(?![a-z\xDF-\xF6\xF8-\xFF])|\d+/g;
+  const regEx =
+    /[A-Z\xC0-\xD6\xD8-\xDE]?[a-z\xDF-\xF6\xF8-\xFF]+|[A-Z\xC0-\xD6\xD8-\xDE]+(?![a-z\xDF-\xF6\xF8-\xFF])|\d+/g;
   const words = sourceString.match(regEx);
   if (words) {
-    words.forEach(function(el, idx) {
+    words.forEach(function (el, idx) {
       const add = el.toLowerCase();
       out += idx === 0 ? add : add[0].toUpperCase() + add.slice(1);
     });
@@ -431,8 +460,36 @@ export const isMacOs = () => {
  */
 export function areArraysEqual(arr1: string[], arr2: string[]) {
   if (arr1.length !== arr2.length) return false;
-
-  if (arr1.sort().join(",") === arr2.sort().join(",")) return true;
+  // Because the array is frozen in strict mode, you'll need to copy the array before sorting it
+  if ([...arr1].sort().join(",") === [...arr2].sort().join(",")) return true;
 
   return false;
+}
+
+export enum DataType {
+  OBJECT = "OBJECT",
+  NUMBER = "NUMBER",
+  ARRAY = "ARRAY",
+  BOOLEAN = "BOOLEAN",
+  STRING = "STRING",
+  NULL = "NULL",
+  UNDEFINED = "UNDEFINED",
+}
+
+export function getDatatype(value: unknown) {
+  if (typeof value === "string") {
+    return DataType.STRING;
+  } else if (typeof value === "number") {
+    return DataType.NUMBER;
+  } else if (typeof value === "boolean") {
+    return DataType.BOOLEAN;
+  } else if (isPlainObject(value)) {
+    return DataType.OBJECT;
+  } else if (Array.isArray(value)) {
+    return DataType.ARRAY;
+  } else if (value === null) {
+    return DataType.NULL;
+  } else if (value === undefined) {
+    return DataType.UNDEFINED;
+  }
 }

@@ -1,15 +1,17 @@
 import React from "react";
 
 import styled from "styled-components";
-import { noop } from "lodash";
+import type { noop } from "lodash";
 
-import {
+import type {
   CommonComponentProps,
-  EditableTextSubComponent,
   EditInteractionKind,
+} from "design-system-old";
+import {
+  EditableTextSubComponent,
   SavingState,
   UNFILLED_WIDTH,
-} from "design-system";
+} from "design-system-old";
 
 export type EditableAppNameProps = CommonComponentProps & {
   defaultValue: string;

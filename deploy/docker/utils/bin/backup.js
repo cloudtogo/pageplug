@@ -21,8 +21,6 @@ async function run() {
       }
     });
 
-    utils.stop(['backend', 'rts']);
-
     console.log('Available free space at /appsmith-stacks');
     const availSpaceInBytes = getAvailableBackupSpaceInBytes();
     console.log('\n');
@@ -46,7 +44,6 @@ async function run() {
     await fsPromises.rm(backupRootPath, { recursive: true, force: true });
 
     logger.backup_info('Finished taking a backup at' + archivePath);
-    await postBackupCleanup();
 
   } catch (err) {
     errorCode = 1;
@@ -61,7 +58,7 @@ async function run() {
       }
     }
   } finally {
-    utils.start(['backend', 'rts']);
+    await postBackupCleanup();
     process.exit(errorCode);
   }
 }
@@ -83,7 +80,7 @@ async function createGitStorageArchive(destFolder) {
 }
 
 async function createManifestFile(path) {
-  const version = await getCurrentVersion()
+  const version = await utils.getCurrentAppsmithVersion()
   const manifest_data = { "appsmithVersion": version }
   await fsPromises.writeFile(path + '/manifest.json', JSON.stringify(manifest_data));
 }
@@ -91,7 +88,7 @@ async function createManifestFile(path) {
 async function exportDockerEnvFile(destFolder) {
   console.log('Exporting docker environment file');
   const content = await fsPromises.readFile('/appsmith-stacks/configuration/docker.env', { encoding: 'utf8' });
-  const cleaned_content = removeEncryptionEnvData(content)
+  const cleaned_content = removeSensitiveEnvData(content)
   await fsPromises.writeFile(destFolder + '/docker.env', cleaned_content);
   console.log('Exporting docker environment file done.');
   console.log('!!!!!!!!!!!!!!!!!!!!!!!!!! Important !!!!!!!!!!!!!!!!!!!!!!!!!!');
@@ -145,11 +142,12 @@ function getBackupContentsPath(backupRootPath, timestamp) {
   return backupRootPath + '/appsmith-backup-' + timestamp;
 }
 
-function removeEncryptionEnvData(content) {
+function removeSensitiveEnvData(content) {
+  // Remove encryption and Mongodb data from docker.env
   const output_lines = []
   content.split(/\r?\n/).forEach(line => {
-    if (!line.startsWith("APPSMITH_ENCRYPTION")) {
-      output_lines.push(line)
+    if (!line.startsWith("APPSMITH_ENCRYPTION") && !line.startsWith("APPSMITH_MONGODB")) {
+      output_lines.push(line);
     }
   });
   return output_lines.join('\n')
@@ -157,7 +155,7 @@ function removeEncryptionEnvData(content) {
 
 function getBackupArchiveLimit(backupArchivesLimit) {
   if (!backupArchivesLimit)
-    backupArchivesLimit = 4;
+    backupArchivesLimit = Constants.APPSMITH_DEFAULT_BACKUP_ARCHIVE_LIMIT;
   return backupArchivesLimit
 }
 
@@ -179,14 +177,11 @@ function getAvailableBackupSpaceInBytes() {
 
 function checkAvailableBackupSpace(availSpaceInBytes) {
   if (availSpaceInBytes < Constants.MIN_REQUIRED_DISK_SPACE_IN_BYTES) {
-    throw new Error('Not enough space avaliable at /appsmith-stacks. Please ensure availability of atleast 5GB to backup successfully.');
+    throw new Error('Not enough space avaliable at /appsmith-stacks. Please ensure availability of atleast 2GB to backup successfully.');
   }
 }
 
-async function getCurrentVersion() {
-  const content = await fsPromises.readFile('/opt/appsmith/rts/version.js', { encoding: 'utf8' });
-  return content.match(/\bexports\.VERSION\s*=\s*["']([^"]+)["']/)[1];
-}
+
 
 module.exports = {
   run,
@@ -198,8 +193,7 @@ module.exports = {
   executeMongoDumpCMD,
   getGitRoot,
   executeCopyCMD,
-  getCurrentVersion,
-  removeEncryptionEnvData,
+  removeSensitiveEnvData,
   getBackupArchiveLimit,
   removeOldBackups
 };

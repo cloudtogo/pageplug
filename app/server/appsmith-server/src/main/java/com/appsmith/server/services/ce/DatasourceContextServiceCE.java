@@ -1,7 +1,8 @@
 package com.appsmith.server.services.ce;
 
-import com.appsmith.external.models.Datasource;
+import com.appsmith.external.models.DatasourceStorage;
 import com.appsmith.server.domains.DatasourceContext;
+import com.appsmith.server.domains.DatasourceContextIdentifier;
 import com.appsmith.server.domains.Plugin;
 import reactor.core.publisher.Mono;
 
@@ -11,17 +12,23 @@ public interface DatasourceContextServiceCE {
 
     /**
      * This function is responsible for returning the datasource context stored
-     * against the datasource id. In case the datasourceId is not found in the
+     * against the DatasourceContextIdentifier object,
+     * which stores datasourceId in CE and environmentId as well in EE.
+     * In case the datasourceId is not found in the
      * map, create a new datasource context and return that.
-     *
-     * @param datasource
+     * The environmentMap parameter is not being Used in the CE version. it's specific to EE version
+     * @param datasourceStorage
      * @return DatasourceContext
      */
-    Mono<DatasourceContext<?>> getDatasourceContext(Datasource datasource);
+    Mono<DatasourceContext<?>> getDatasourceContext(DatasourceStorage datasourceStorage);
 
-    Mono<DatasourceContext<?>> getRemoteDatasourceContext(Plugin plugin, Datasource datasource);
+    Mono<DatasourceContext<?>> getDatasourceContext(DatasourceStorage datasourceStorage, Plugin plugin);
 
-    <T> Mono<T> retryOnce(Datasource datasource, Function<DatasourceContext<?>, Mono<T>> task);
+    Mono<DatasourceContext<?>> getRemoteDatasourceContext(Plugin plugin, DatasourceStorage datasourceStorage);
 
-    Mono<DatasourceContext<?>> deleteDatasourceContext(String datasourceId);
+    <T> Mono<T> retryOnce(DatasourceStorage datasourceStorage, Function<DatasourceContext<?>, Mono<T>> task);
+
+    Mono<DatasourceContext<?>> deleteDatasourceContext(DatasourceStorage datasourceStorage);
+
+    DatasourceContextIdentifier initializeDatasourceContextIdentifier(DatasourceStorage datasourceStorage);
 }

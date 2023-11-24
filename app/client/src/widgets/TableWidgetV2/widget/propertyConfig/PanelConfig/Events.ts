@@ -1,9 +1,11 @@
-import { ColumnTypes, TableWidgetProps } from "widgets/TableWidgetV2/constants";
+import type { TableWidgetProps } from "widgets/TableWidgetV2/constants";
+import { ColumnTypes } from "widgets/TableWidgetV2/constants";
 import { get } from "lodash";
 import {
   getBasePropertyPath,
   showByColumnType,
   hideByColumnType,
+  getColumnPath,
 } from "../../propertyUtils";
 
 export default {
@@ -20,7 +22,8 @@ export default {
           columnType === ColumnTypes.NUMBER ||
           columnType === ColumnTypes.CHECKBOX ||
           columnType === ColumnTypes.SWITCH ||
-          columnType === ColumnTypes.SELECT
+          columnType === ColumnTypes.SELECT ||
+          columnType === ColumnTypes.DATE
         ) || !isEditable
       );
     }
@@ -30,7 +33,7 @@ export default {
     {
       propertyName: "onClick",
       label: "onClick",
-      helpText: "Triggers an action when user clicks on an image",
+      helpText: "when user clicks on an image",
       controlType: "ACTION_SELECTOR",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         const baseProperty = getBasePropertyPath(propertyPath);
@@ -45,8 +48,7 @@ export default {
     {
       propertyName: "onSubmit",
       label: "onSubmit",
-      helpText:
-        "Triggers an action when the user presses enter or clicks outside the input box",
+      helpText: "when the user presses enter or clicks outside the input box",
       controlType: "ACTION_SELECTOR",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         const baseProperty = getBasePropertyPath(propertyPath);
@@ -66,7 +68,7 @@ export default {
     {
       propertyName: "onOptionChange",
       label: "onOptionChange",
-      helpText: "Triggers an action when user changes an option",
+      helpText: "when user changes an option",
       controlType: "ACTION_SELECTOR",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         const baseProperty = getBasePropertyPath(propertyPath);
@@ -82,7 +84,7 @@ export default {
     {
       propertyName: "onCheckChange",
       label: "onChange",
-      helpText: "Triggers an action when the check state is changed",
+      helpText: "when the check state is changed",
       controlType: "ACTION_SELECTOR",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(props, propertyPath, [ColumnTypes.SWITCH]);
@@ -95,7 +97,7 @@ export default {
     {
       propertyName: "onCheckChange",
       label: "onCheckChange",
-      helpText: "Triggers an action when the check state is changed",
+      helpText: "when the check state is changed",
       controlType: "ACTION_SELECTOR",
       hidden: (props: TableWidgetProps, propertyPath: string) => {
         return hideByColumnType(props, propertyPath, [ColumnTypes.CHECKBOX]);
@@ -132,6 +134,20 @@ export default {
       additionalAutoComplete: () => ({
         filterText: "",
       }),
+    },
+    {
+      propertyName: "onDateSelected",
+      label: "onDateSelected",
+      helpText: "when a date is selected in the calendar",
+      controlType: "ACTION_SELECTOR",
+      isJSConvertible: true,
+      isBindProperty: true,
+      isTriggerProperty: true,
+      dependencies: ["primaryColumns"],
+      hidden: (props: TableWidgetProps, propertyPath: string) => {
+        const path = getColumnPath(propertyPath);
+        return hideByColumnType(props, path, [ColumnTypes.DATE], true);
+      },
     },
   ],
 };

@@ -1,35 +1,38 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import { Alignment } from "@blueprintjs/core";
-import { IconName } from "@blueprintjs/icons";
-import { WidgetType, RenderModes, TextSize } from "constants/WidgetConstants";
-import InputComponent, { InputComponentProps } from "../component";
-import {
-  EventType,
-  ExecutionResult,
-} from "constants/AppsmithActionConstants/ActionConstants";
-import {
-  ValidationTypes,
-  ValidationResponse,
-} from "constants/WidgetValidation";
+import type { IconName } from "@blueprintjs/icons";
+import type { WidgetType, TextSize } from "constants/WidgetConstants";
+import { RenderModes } from "constants/WidgetConstants";
+import type { InputComponentProps } from "../component";
+import InputComponent from "../component";
+import type { ExecutionResult } from "constants/AppsmithActionConstants/ActionConstants";
+import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import type { ValidationResponse } from "constants/WidgetValidation";
+import { ValidationTypes } from "constants/WidgetValidation";
 import {
   createMessage,
   FIELD_REQUIRED_ERROR,
   INPUT_DEFAULT_TEXT_MAX_CHAR_ERROR,
 } from "@appsmith/constants/messages";
-import { DerivedPropertiesMap } from "utils/WidgetFactory";
-import { InputType, InputTypes } from "../constants";
+import type { DerivedPropertiesMap } from "utils/WidgetFactory";
+import type { InputType } from "../constants";
+import { InputTypes } from "../constants";
 import { GRID_DENSITY_MIGRATION_V1 } from "widgets/constants";
 import { ISDCodeDropdownOptions } from "../component/ISDCodeDropdown";
 import { CurrencyDropdownOptions } from "../component/CurrencyCodeDropdown";
-import { AutocompleteDataType } from "utils/autocomplete/CodemirrorTernService";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
 import {
   formatCurrencyNumber,
   getDecimalSeparator,
   getLocale,
 } from "../component/utilities";
 import { LabelPosition } from "components/constants";
-import { Stylesheet } from "entities/AppTheming";
+import type { SetterConfig, Stylesheet } from "entities/AppTheming";
+import { checkInputTypeTextByProps } from "widgets/BaseInputWidget/utils";
+import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
 
 export function defaultValueValidation(
   value: any,
@@ -50,7 +53,7 @@ export function defaultValueValidation(
         return {
           isValid: true,
           parsed: undefined,
-          messages: [""],
+          messages: [{ name: "", message: "" }],
         };
       }
 
@@ -58,7 +61,12 @@ export function defaultValueValidation(
         return {
           isValid: false,
           parsed: undefined,
-          messages: ["This value must be a number"],
+          messages: [
+            {
+              name: "TypeError",
+              message: "This value must be a number",
+            },
+          ],
         };
       }
     }
@@ -70,14 +78,19 @@ export function defaultValueValidation(
     return {
       isValid: true,
       parsed,
-      messages: [""],
+      messages: [{ name: "", message: "" }],
     };
   }
   if (_.isObject(value)) {
     return {
       isValid: false,
       parsed: JSON.stringify(value, null, 2),
-      messages: ["This value must be string"],
+      messages: [
+        {
+          name: "TypeError",
+          message: "This value must be string",
+        },
+      ],
     };
   }
   let parsed = value;
@@ -89,14 +102,19 @@ export function defaultValueValidation(
       return {
         isValid: false,
         parsed: "",
-        messages: ["This value must be string"],
+        messages: [
+          {
+            name: "TypeError",
+            message: "This value must be string",
+          },
+        ],
       };
     }
   }
   return {
     isValid,
     parsed: parsed,
-    messages: [""],
+    messages: [{ name: "", message: "" }],
   };
 }
 
@@ -107,6 +125,33 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
       text: props.text,
     };
   }
+
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    const definitions = {
+      "!doc":
+        "An input text field is used to capture a users textual input such as their names, numbers, emails etc. Inputs are used in forms and can have custom validations.",
+      "!url": "https://docs.appsmith.com/widget-reference/input",
+      text: {
+        "!type": "string",
+        "!doc": "The text value of the input",
+        "!url": "https://docs.appsmith.com/widget-reference/input",
+      },
+      isValid: "bool",
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      isDisabled: "bool",
+      countryCode: {
+        "!type": "string",
+        "!doc": "Selected country code for Phone Number type input",
+      },
+      currencyCountryCode: {
+        "!type": "string",
+        "!doc": "Selected country code for Currency type input",
+      },
+    };
+
+    return definitions;
+  }
+
   static getPropertyPaneConfig() {
     return [
       {
@@ -224,7 +269,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             isTriggerProperty: false,
             validation: { type: ValidationTypes.NUMBER },
             hidden: (props: InputWidgetProps) => {
-              return props.inputType !== InputTypes.TEXT;
+              return !checkInputTypeTextByProps(props);
             },
             dependencies: ["inputType"],
           },
@@ -373,7 +418,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             isTriggerProperty: false,
             validation: { type: ValidationTypes.BOOLEAN },
             hidden: (props: InputWidgetProps) => {
-              return props.inputType !== InputTypes.TEXT;
+              return !checkInputTypeTextByProps(props);
             },
             dependencies: ["inputType"],
           },
@@ -412,13 +457,14 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             propertyName: "labelAlignment",
             label: "对齐",
             controlType: "LABEL_ALIGNMENT_OPTIONS",
+            fullWidth: false,
             options: [
               {
-                icon: "LEFT_ALIGN",
+                startIcon: "align-left",
                 value: Alignment.LEFT,
               },
               {
-                icon: "RIGHT_ALIGN",
+                startIcon: "align-right",
                 value: Alignment.RIGHT,
               },
             ],
@@ -535,14 +581,14 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
           {
             propertyName: "labelStyle",
             label: "字体样式",
-            controlType: "BUTTON_TABS",
+            controlType: "BUTTON_GROUP",
             options: [
               {
-                icon: "BOLD_FONT",
+                startIcon: "text-bold",
                 value: "BOLD",
               },
               {
-                icon: "ITALICS_FONT",
+                startIcon: "text-italic",
                 value: "ITALIC",
               },
             ],
@@ -575,13 +621,14 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
             label: "图标对齐",
             helpText: "设置输入框图标的对齐方式",
             controlType: "ICON_TABS",
+            defaultValue: "left",
             options: [
               {
-                icon: "VERTICAL_LEFT",
+                startIcon: "align-left",
                 value: "left",
               },
               {
-                icon: "VERTICAL_RIGHT",
+                startIcon: "align-right",
                 value: "right",
               },
             ],
@@ -710,6 +757,30 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
       accentColor: "{{appsmith.theme.colors.primaryColor}}",
       borderRadius: "{{appsmith.theme.borderRadius.appBorderRadius}}",
       boxShadow: "none",
+    };
+  }
+
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {
+        setVisibility: {
+          path: "isVisible",
+          type: "boolean",
+        },
+        setDisabled: {
+          path: "isDisabled",
+          type: "boolean",
+        },
+        setRequired: {
+          path: "isRequired",
+          type: "boolean",
+        },
+        setValue: {
+          path: "defaultText",
+          type: "string",
+          accessor: "text",
+        },
+      },
     };
   }
 

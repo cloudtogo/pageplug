@@ -1,17 +1,12 @@
-import { ReduxActionTypes } from "ce/constants/ReduxActionConstants";
-import {
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import type {
   PropertyPaneConfig,
   PropertyPaneControlConfig,
-  PropertyPaneSectionConfig,
 } from "constants/PropertyControlConstants";
-import {
-  GridDefaults,
-  WidgetHeightLimits,
-  WidgetType,
-} from "constants/WidgetConstants";
-import { klona } from "klona/lite";
-import { WidgetProps } from "widgets/BaseWidget";
-import { WidgetConfiguration } from "widgets/constants";
+import type { WidgetType } from "constants/WidgetConstants";
+import { GridDefaults, WidgetHeightLimits } from "constants/WidgetConstants";
+import type { WidgetProps } from "widgets/BaseWidget";
+import type { WidgetConfiguration } from "widgets/constants";
 
 export enum RegisteredWidgetFeatures {
   DYNAMIC_HEIGHT = "dynamicHeight",
@@ -66,7 +61,17 @@ export const WidgetFeaturePropertyEnhancements: Record<
       newProperties.minDynamicHeight =
         config.defaults.minDynamicHeight ||
         WidgetHeightLimits.MIN_CANVAS_HEIGHT_IN_ROWS;
+      newProperties.maxDynamicHeight =
+        config.defaults.maxDynamicHeight ||
+        WidgetHeightLimits.MAX_HEIGHT_IN_ROWS;
       newProperties.shouldScrollContents = true;
+    } else {
+      newProperties.minDynamicHeight =
+        config.defaults.minDynamicHeight ||
+        WidgetHeightLimits.MIN_HEIGHT_IN_ROWS;
+      newProperties.maxDynamicHeight =
+        config.defaults.maxDynamicHeight ||
+        WidgetHeightLimits.MAX_HEIGHT_IN_ROWS;
     }
     if (config.defaults.overflow) newProperties.overflow = "NONE";
     return newProperties;
@@ -83,13 +88,12 @@ function findAndUpdatePropertyPaneControlConfig(
       sectionConfig.children.length > 0
     ) {
       Object.keys(propertyPaneUpdates).forEach((propertyName: string) => {
-        const controlConfigIndex:
-          | number
-          | undefined = sectionConfig.children?.findIndex(
-          (controlConfig: PropertyPaneConfig) =>
-            (controlConfig as PropertyPaneControlConfig).propertyName ===
-            propertyName,
-        );
+        const controlConfigIndex: number | undefined =
+          sectionConfig.children?.findIndex(
+            (controlConfig: PropertyPaneConfig) =>
+              (controlConfig as PropertyPaneControlConfig).propertyName ===
+              propertyName,
+          );
 
         if (
           controlConfigIndex !== undefined &&
@@ -339,32 +343,3 @@ export const PropertyPaneConfigTemplates: Record<
     },
   ],
 };
-
-//TODO make this logic a lot cleaner
-export function disableWidgetFeatures(
-  widgetConfig: readonly PropertyPaneConfig[],
-  disabledWidgetFeatures?: string[],
-) {
-  if (!disabledWidgetFeatures || disabledWidgetFeatures.length <= 0)
-    return widgetConfig;
-
-  const clonedConfig = klona(widgetConfig);
-  const GeneralConfig = clonedConfig.find(
-    (sectionConfig) =>
-      (sectionConfig as PropertyPaneSectionConfig)?.sectionName === "属性",
-  );
-
-  for (let i = 0; i < (GeneralConfig?.children?.length || -1); i++) {
-    const config = GeneralConfig?.children?.[i];
-    if (
-      disabledWidgetFeatures.indexOf(
-        (config as PropertyPaneControlConfig)?.propertyName || "",
-      ) > -1
-    ) {
-      GeneralConfig?.children?.splice(i, 1);
-      i--;
-    }
-  }
-
-  return clonedConfig;
-}

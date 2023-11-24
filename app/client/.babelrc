@@ -14,8 +14,8 @@
         "api": "./src/api/",
         "assets": "./src/assets/",
         "sagas": "./src/sagas/",
-        "@appsmith": "./src/ee",
+        "@appsmith": "./src/ee"
       }
-    }]
+    }, "babel-plugin-styled-components"]
   ]
 }

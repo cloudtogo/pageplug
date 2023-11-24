@@ -1,11 +1,11 @@
 import { GoogleOAuthURL, GithubOAuthURL } from "./ApiConstants";
 
-import GithubLogo from "assets/images/Github.png";
+import GithubLogo from "assets/images/Github.svg";
 import GoogleLogo from "assets/images/Google.png";
 export type SocialLoginButtonProps = {
-  url: string;
+  url?: string;
   name: string;
-  logo: string;
+  logo?: string;
   label?: string;
 };
 
@@ -21,12 +21,17 @@ export const GithubSocialLoginButtonProps: SocialLoginButtonProps = {
   logo: GithubLogo,
 };
 
+export const WxchatSocialLoginButtonProps = {
+  name: "Wechat",
+};
+
 export const SocialLoginButtonPropsList: Record<
   string,
   SocialLoginButtonProps
 > = {
   google: GoogleSocialLoginButtonProps,
   github: GithubSocialLoginButtonProps,
+  wechat: WxchatSocialLoginButtonProps,
 };
 
 export type SocialLoginType = keyof typeof SocialLoginButtonPropsList;

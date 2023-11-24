@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { Icon, InputGroup } from "@blueprintjs/core";
 import { debounce } from "lodash";
-import { AnyStyledComponent } from "styled-components";
 
 import CustomizedDropdown from "pages/common/CustomizedDropdown";
 import { Directions } from "utils/helpers";
@@ -10,23 +9,16 @@ import { Colors } from "constants/Colors";
 import { ControlIcons } from "icons/ControlIcons";
 import { Skin } from "constants/DefaultTheme";
 import AutoToolTipComponent from "widgets/TableWidget/component/AutoToolTipComponent";
-import {
-  OperatorTypes,
-  Condition,
-  ColumnTypes,
-  Operator,
-  ReactTableFilter,
-} from "./Constants";
-import { DropdownOption } from "./TableFilters";
+import type { Condition, Operator, ReactTableFilter } from "./Constants";
+import { OperatorTypes, ColumnTypes } from "./Constants";
+import type { DropdownOption } from "./TableFilters";
 import { RenderOptionWrapper } from "./TableStyledWrappers";
 
 //TODO(abhinav): Fix this cross import between widgets
 import DatePickerComponent from "widgets/DatePickerWidget2/component";
 import { TimePrecision } from "widgets/DatePickerWidget2/constants";
 
-const StyledRemoveIcon = styled(
-  ControlIcons.CLOSE_CIRCLE_CONTROL as AnyStyledComponent,
-)`
+const StyledRemoveIcon = styled(ControlIcons.CLOSE_CIRCLE_CONTROL)`
   padding: 0;
   position: relative;
   cursor: pointer;
@@ -104,56 +96,56 @@ const AutoToolTipComponentWrapper = styled(AutoToolTipComponent)`
 
 const typeOperatorsMap: Record<ColumnTypes, DropdownOption[]> = {
   [ColumnTypes.TEXT]: [
-    { label: "contains", value: "contains", type: "input" },
-    { label: "does not contain", value: "doesNotContain", type: "input" },
-    { label: "starts with", value: "startsWith", type: "input" },
-    { label: "ends with", value: "endsWith", type: "input" },
-    { label: "is exactly", value: "isExactly", type: "input" },
-    { label: "empty", value: "empty", type: "" },
-    { label: "not empty", value: "notEmpty", type: "" },
+    { label: "包含", value: "contains", type: "input" },
+    { label: "不包含", value: "doesNotContain", type: "input" },
+    { label: "以...开始", value: "startsWith", type: "input" },
+    { label: "以...结束", value: "endsWith", type: "input" },
+    { label: "正好是", value: "isExactly", type: "input" },
+    { label: "为空", value: "empty", type: "" },
+    { label: "非空", value: "notEmpty", type: "" },
   ],
   [ColumnTypes.URL]: [
-    { label: "contains", value: "contains", type: "input" },
-    { label: "does not contain", value: "doesNotContain", type: "input" },
-    { label: "starts with", value: "startsWith", type: "input" },
-    { label: "ends with", value: "endsWith", type: "input" },
-    { label: "is exactly", value: "isExactly", type: "input" },
-    { label: "empty", value: "empty", type: "" },
-    { label: "not empty", value: "notEmpty", type: "" },
+    { label: "包含", value: "contains", type: "input" },
+    { label: "不包含", value: "doesNotContain", type: "input" },
+    { label: "以...开始", value: "startsWith", type: "input" },
+    { label: "以...结束", value: "endsWith", type: "input" },
+    { label: "正好是", value: "isExactly", type: "input" },
+    { label: "为空", value: "empty", type: "" },
+    { label: "非空", value: "notEmpty", type: "" },
   ],
   [ColumnTypes.DATE]: [
-    { label: "is", value: "is", type: "date" },
-    { label: "is before", value: "isBefore", type: "date" },
-    { label: "is after", value: "isAfter", type: "date" },
-    { label: "is not", value: "isNot", type: "date" },
-    { label: "empty", value: "empty", type: "" },
-    { label: "not empty", value: "notEmpty", type: "" },
+    { label: "是", value: "is", type: "date" },
+    { label: "早于", value: "isBefore", type: "date" },
+    { label: "晚于", value: "isAfter", type: "date" },
+    { label: "不是", value: "isNot", type: "date" },
+    { label: "为空", value: "empty", type: "" },
+    { label: "非空", value: "notEmpty", type: "" },
   ],
   [ColumnTypes.IMAGE]: [
-    { label: "empty", value: "empty", type: "" },
-    { label: "not empty", value: "notEmpty", type: "" },
+    { label: "为空", value: "empty", type: "" },
+    { label: "非空", value: "notEmpty", type: "" },
   ],
   [ColumnTypes.VIDEO]: [
-    { label: "empty", value: "empty", type: "" },
-    { label: "not empty", value: "notEmpty", type: "" },
+    { label: "为空", value: "empty", type: "" },
+    { label: "非空", value: "notEmpty", type: "" },
   ],
   [ColumnTypes.NUMBER]: [
-    { label: "is equal to", value: "isEqualTo", type: "input" },
-    { label: "not equal to", value: "notEqualTo", type: "input" },
-    { label: "greater than", value: "greaterThan", type: "input" },
+    { label: "等于", value: "isEqualTo", type: "input" },
+    { label: "不等于", value: "notEqualTo", type: "input" },
+    { label: "大于", value: "greaterThan", type: "input" },
     {
-      label: "greater than or equal to",
+      label: "大于或等于",
       value: "greaterThanEqualTo",
       type: "input",
     },
-    { label: "less than", value: "lessThan", type: "input" },
+    { label: "小于", value: "lessThan", type: "input" },
     {
-      label: "less than or equal to",
+      label: "小于或等于",
       value: "lessThanEqualTo",
       type: "input",
     },
-    { label: "empty", value: "empty", type: "" },
-    { label: "not empty", value: "notEmpty", type: "" },
+    { label: "为空", value: "empty", type: "" },
+    { label: "非空", value: "notEmpty", type: "" },
   ],
 };
 
@@ -430,9 +422,10 @@ function CaseCaseFieldReducer(
 }
 
 function CascadeField(props: CascadeFieldProps) {
-  const memoizedState = React.useMemo(() => calculateInitialState(props), [
-    props,
-  ]);
+  const memoizedState = React.useMemo(
+    () => calculateInitialState(props),
+    [props],
+  );
   return <Fields state={memoizedState} {...props} />;
 }
 

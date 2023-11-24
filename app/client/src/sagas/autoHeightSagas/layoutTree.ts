@@ -1,7 +1,5 @@
-import {
-  ReduxAction,
-  ReduxActionTypes,
-} from "@appsmith/constants/ReduxActionConstants";
+import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import {
   checkContainersForAutoHeightAction,
   setAutoHeightLayoutTreeAction,
@@ -10,7 +8,7 @@ import log from "loglevel";
 import { put, select } from "redux-saga/effects";
 import { getAutoHeightLayoutTree } from "selectors/autoHeightSelectors";
 import { getOccupiedSpacesGroupedByParentCanvas } from "selectors/editorSelectors";
-import { TreeNode } from "utils/autoHeight/constants";
+import type { TreeNode } from "utils/autoHeight/constants";
 import { generateTree } from "utils/autoHeight/generateTree";
 import { shouldWidgetsCollapse } from "./helpers";
 
@@ -29,7 +27,7 @@ export function* getLayoutTree(layoutUpdated: boolean) {
     getAutoHeightLayoutTree,
   );
   for (const canvasWidgetId in occupiedSpaces) {
-    if (occupiedSpaces[canvasWidgetId].length > 0) {
+    if (Object.keys(occupiedSpaces[canvasWidgetId]).length > 0) {
       const treeForThisCanvas = generateTree(
         occupiedSpaces[canvasWidgetId],
         !shouldCollapse && layoutUpdated,
@@ -39,7 +37,7 @@ export function* getLayoutTree(layoutUpdated: boolean) {
     }
   }
   log.debug(
-    "Dynamic Height: Tree generation time taken:",
+    "Auto Height: Tree generation time taken:",
     performance.now() - start,
     "ms",
   );
@@ -50,6 +48,7 @@ export function* generateTreeForAutoHeightComputations(
   action: ReduxAction<{
     shouldCheckContainersForAutoHeightUpdates: boolean;
     layoutUpdated: boolean;
+    resettingTabs: boolean;
   }>,
 ) {
   const { canvasLevelMap, tree } = yield getLayoutTree(
@@ -62,7 +61,7 @@ export function* generateTreeForAutoHeightComputations(
     yield put({
       type: ReduxActionTypes.PROCESS_AUTO_HEIGHT_UPDATES,
     });
-    yield put(checkContainersForAutoHeightAction());
+    yield put(checkContainersForAutoHeightAction(action.payload.resettingTabs));
   }
 
   return tree;

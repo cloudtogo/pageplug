@@ -1,20 +1,20 @@
 import React, { useMemo } from "react";
-import { Link, RouteComponentProps, withRouter } from "react-router-dom";
+import type { RouteComponentProps } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getIsFetchingPage } from "selectors/appViewSelectors";
 import styled from "styled-components";
-import { AppViewerRouteParams } from "constants/routes";
+import type { AppViewerRouteParams } from "constants/routes";
 import { theme } from "constants/DefaultTheme";
 import { Icon, NonIdealState, Spinner } from "@blueprintjs/core";
 import Centered from "components/designSystems/appsmith/CenteredWrapper";
 import AppPage from "./AppPage";
-import {
-  getCanvasWidth,
-  getCurrentPageName,
-  isMobileLayout,
-} from "selectors/editorSelectors";
+import { getCanvasWidth, getCurrentPageName } from "selectors/editorSelectors";
 import RequestConfirmationModal from "pages/Editor/RequestConfirmationModal";
-import { getCurrentApplication } from "selectors/applicationSelectors";
+import {
+  getCurrentApplication,
+  isMobileLayout,
+} from "selectors/applicationSelectors";
 import {
   isPermitted,
   PERMISSION_TYPE,
@@ -27,19 +27,22 @@ import {
 import equal from "fast-deep-equal/es6";
 
 const Section = styled.section<{
-  height: number;
+  theight: number;
   isMobile: boolean;
 }>`
   background: ${({ isMobile }) => (isMobile ? "#fff" : "transparent")};
   width: ${({ isMobile }) => (isMobile ? "450px" : "100%")};
   height: 100%;
-  min-height: ${({ height, isMobile }) => (isMobile ? `${height}px` : "unset")};
+  min-height: ${({ theight, isMobile }) =>
+    isMobile ? `${theight}px` : "unset"};
   margin: 0 auto;
   position: relative;
   overflow: auto;
 `;
 
 type AppViewerPageContainerProps = RouteComponentProps<AppViewerRouteParams>;
+
+const AUTO_HEIGHT_PADDING = 50;
 
 function AppViewerPageContainer(props: AppViewerPageContainerProps) {
   const currentPageName = useSelector(getCurrentPageName);
@@ -54,7 +57,9 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
   );
   let fixedHeight = 0;
   if (hasFixedWidget) {
-    fixedHeight = parseInt(widgetsConfig[hasFixedWidget?.widgetId]?.height);
+    fixedHeight = parseInt(
+      widgetsConfig[hasFixedWidget?.widgetId]?.height + "",
+    );
   }
   const isMobile = useSelector(isMobileLayout);
 
@@ -111,7 +116,7 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
 
   return (
     <Section
-      height={widgetsStructure.bottomRow + fixedHeight}
+      theight={widgetsStructure.bottomRow + fixedHeight + AUTO_HEIGHT_PADDING}
       isMobile={isMobile}
       id="art-board"
     >

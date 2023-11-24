@@ -2,79 +2,89 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import AdminConfig from "@appsmith/pages/AdminSettings/config";
-import { Category } from "@appsmith/pages/AdminSettings/config/types";
+import {
+  CategoryType,
+  type Category,
+} from "@appsmith/pages/AdminSettings/config/types";
 import { adminSettingsCategoryUrl } from "RouteBuilder";
 import { useParams } from "react-router";
-import { Icon, IconSize } from "design-system";
-import { createMessage } from "design-system/build/constants/messages";
-import { USAGE_AND_BILLING } from "@appsmith/constants/messages";
-import { useSelector } from "react-redux";
-import { selectFeatureFlags } from "selectors/usersSelectors";
 import AnalyticsUtil from "utils/AnalyticsUtil";
+import { Icon, Text } from "design-system";
+import { useDispatch, useSelector } from "react-redux";
+import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { getCurrentUser } from "selectors/usersSelectors";
+import BusinessTag from "components/BusinessTag";
+import EnterpriseTag from "components/EnterpriseTag";
 
 export const Wrapper = styled.div`
-  flex-basis: ${(props) =>
-    props.theme.homePage.leftPane.width +
-    props.theme.homePage.leftPane.leftPadding}px;
-  padding: 0 0 0 ${(props) => props.theme.homePage.leftPane.leftPadding}px;
+  flex-basis: ${(props) => props.theme.sidebarWidth};
   overflow-y: auto;
+  border-right: 1px solid var(--ads-v2-color-border);
+  flex-shrink: 0;
+  padding: 12px 0;
 
   &::-webkit-scrollbar {
     display: none;
   }
+
+  > div:not(:first-child) {
+    border-top: 1px solid var(--ads-v2-color-border);
+  }
 `;
 
-export const HeaderContainer = styled.div``;
+export const HeaderContainer = styled.div`
+  margin: 12px;
+`;
 
-export const StyledHeader = styled.div`
-  font-size: 16px;
+export const StyledHeader = styled(Text)`
   height: 20px;
-  line-height: 1.5;
-  letter-spacing: -0.24px;
-  margin: 40px 16px 8px;
-  color: var(--appsmith-color-black-900);
-  font-weight: 500;
+  margin: 16px;
+  color: var(--ads-v2-color-fg-emphasis);
 `;
 
 export const CategoryList = styled.ul`
   margin: 0;
-  padding: 0 0 0 16px;
   list-style-type: none;
 `;
 
 export const CategoryItem = styled.li`
-  width: 80%;
+  /* width: 90%; */
 `;
 
 export const StyledLink = styled(Link)<{ $active: boolean }>`
-  height: 38px;
   padding: 8px 16px;
+  border-radius: var(--ads-v2-border-radius);
   background-color: ${(props) =>
-    props.$active ? props.theme.colors.menuItem.hoverBg : ""};
-  font-weight: ${(props) => (props.$active ? 500 : 400)};
-  text-transform: capitalize;
+    props.$active ? `var(--ads-v2-color-bg-muted)` : ""};
   display: flex;
   gap: 12px;
+  align-items: center;
 
   && {
-    color: ${(props) =>
-      props.$active
-        ? props.theme.colors.menuItem.hoverText
-        : props.theme.colors.menuItem.normalText};
-  }
-  &:hover {
-    text-decoration: none;
-    background-color: ${(props) => props.theme.colors.menuItem.hoverBg};
-    color: ${(props) => props.theme.colors.menuItem.hoverText};
+    color: var(--ads-v2-color-fg);
   }
 
-  & div {
-    align-self: center;
+  &:hover {
+    text-decoration: none;
+  }
+
+  &:hover:not(.active) {
+    background-color: var(--ads-v2-color-bg-subtle);
   }
 `;
 
-export function getSettingsCategory() {
-  return Array.from(AdminConfig.categories);
+export const SettingName = styled(Text)<{ active?: boolean }>`
+  color: ${(props) =>
+    props.active
+      ? "var(--ads-v2-color-fg-emphasis-plus)"
+      : "var(--ads-v2-color-fg)"};
+  font-weight: 400;
+`;
+
+export function getSettingsCategory(type: string) {
+  return Array.from(
+    AdminConfig.categories.filter((cat: any) => cat.categoryType === type),
+  );
 }
 
 export function Categories({
@@ -90,117 +100,133 @@ export function Categories({
   currentSubCategory?: string;
   showSubCategory?: boolean;
 }) {
+  const dispatch = useDispatch();
+
+  const triggerAnalytics = (page: string) => {
+    const source: any = {
+      "audit-logs": "AuditLogs",
+      "access-control": "AccessControl",
+      provisioning: "Provisioning",
+    };
+    AnalyticsUtil.logEvent("ADMIN_SETTINGS_CLICK", {
+      source: source[page],
+    });
+  };
+
+  const onClickHandler = (category: string, needsUpgrade: boolean) => {
+    if (category === "general") {
+      dispatch({
+        type: ReduxActionTypes.FETCH_ADMIN_SETTINGS,
+      });
+    }
+    if (needsUpgrade) {
+      triggerAnalytics(category);
+    }
+  };
+
   return (
     <CategoryList className="t--settings-category-list">
-      {categories?.map((config) => (
-        <CategoryItem key={config.slug}>
-          <StyledLink
-            $active={
-              !!currentSubCategory && showSubCategory
-                ? currentSubCategory == config.slug
-                : currentCategory == config.slug
-            }
-            className={`t--settings-category-${config.slug}`}
-            to={
-              !parentCategory
-                ? adminSettingsCategoryUrl({ category: config.slug })
-                : adminSettingsCategoryUrl({
-                    category: parentCategory.slug,
-                    selected: config.slug,
-                  })
-            }
-          >
-            <div>
-              {config?.icon && <Icon name={config?.icon} size={IconSize.XL} />}
-            </div>
-            <div>{config.title}</div>
-          </StyledLink>
-          {showSubCategory && (
-            <Categories
-              categories={config.children}
-              currentCategory={currentCategory}
-              currentSubCategory={currentSubCategory}
-              parentCategory={config}
-            />
-          )}
-        </CategoryItem>
-      ))}
+      {categories?.map((config) => {
+        const active =
+          !!currentSubCategory && showSubCategory
+            ? currentSubCategory == config.slug
+            : currentCategory == config.slug;
+        return (
+          <CategoryItem key={config.slug}>
+            <StyledLink
+              $active={active}
+              className={`t--settings-category-${config.slug} ${
+                active ? "active" : ""
+              }`}
+              onClick={() =>
+                onClickHandler(config.slug, config?.needsUpgrade || false)
+              }
+              to={
+                !parentCategory
+                  ? adminSettingsCategoryUrl({ category: config.slug })
+                  : adminSettingsCategoryUrl({
+                      category: parentCategory.slug,
+                      selected: config.slug,
+                    })
+              }
+            >
+              {config?.needsUpgrade ? (
+                <Icon name="lock-2-line" />
+              ) : (
+                config?.icon && <Icon name={config?.icon} size="md" />
+              )}
+              <SettingName active={active}>{config.title}</SettingName>
+              {config?.needsUpgrade &&
+                (config?.isEnterprise ? <EnterpriseTag /> : <BusinessTag />)}
+            </StyledLink>
+            {showSubCategory && (
+              <Categories
+                categories={config.children}
+                currentCategory={currentCategory}
+                currentSubCategory={currentSubCategory}
+                parentCategory={config}
+              />
+            )}
+          </CategoryItem>
+        );
+      })}
     </CategoryList>
   );
 }
 
 export default function LeftPane() {
-  const features = useSelector(selectFeatureFlags);
-  const categories = getSettingsCategory();
+  const categories = getSettingsCategory(CategoryType.GENERAL);
+  const aclCategories = getSettingsCategory(CategoryType.ACL);
+  const othersCategories = getSettingsCategory(CategoryType.OTHER);
   const { category, selected: subCategory } = useParams() as any;
+  const user = useSelector(getCurrentUser);
+  const isSuperUser = user?.isSuperUser;
 
-  function triggerAnalytics(source: string) {
-    AnalyticsUtil.logEvent("ADMIN_SETTINGS_CLICK", {
-      source,
-    });
-  }
+  const filteredAclCategories = aclCategories
+    ?.map((category) => {
+      return category;
+    })
+    .filter(Boolean) as Category[];
+  // handle data
+  const filteredAclCategories_temp = filteredAclCategories.filter(
+    (item) => item.title !== "Provisioning",
+  );
+  filteredAclCategories_temp[0].title = "部门 角色权限";
 
   return (
     <Wrapper>
-      <>
+      {isSuperUser && (
         <HeaderContainer>
-          <StyledHeader>管理员设置</StyledHeader>
+          <StyledHeader kind="heading-s" renderAs="p">
+            管理员设置
+          </StyledHeader>
+          <Categories
+            categories={categories}
+            currentCategory={category}
+            currentSubCategory={subCategory}
+          />
         </HeaderContainer>
+      )}
+      <HeaderContainer>
+        <StyledHeader kind="heading-s" renderAs="p">
+          权限管理
+        </StyledHeader>
         <Categories
-          categories={categories}
+          categories={filteredAclCategories_temp}
           currentCategory={category}
           currentSubCategory={subCategory}
         />
-      </>
-      {/* <>
-        <HeaderContainer>
-          <StyledHeader>Business</StyledHeader>
-        </HeaderContainer>
-        <CategoryList data-testid="t--enterprise-settings-category-list">
-          {features.RBAC && (
-            <CategoryItem>
-              <StyledLink
-                $active={category === "access-control"}
-                data-testid="t--enterprise-settings-category-item-access-control"
-                to="/settings/access-control"
-              >
-                <div>
-                  <Icon name="lock-2-line" size={IconSize.XL} />
-                </div>
-                <div>Access Control</div>
-              </StyledLink>
-            </CategoryItem>
-          )}
-          <CategoryItem>
-            <StyledLink
-              $active={category === "audit-logs"}
-              data-testid="t--enterprise-settings-category-item-audit-logs"
-              onClick={() => triggerAnalytics("AuditLogs")}
-              to="/settings/audit-logs"
-            >
-              <div>
-                <Icon name="lock-2-line" size={IconSize.XL} />
-              </div>
-              <div>Audit logs</div>
-            </StyledLink>
-          </CategoryItem>
-          {features.USAGE && (
-            <CategoryItem>
-              <StyledLink
-                $active={category === "usage"}
-                data-testid="t--enterprise-settings-category-item-usage"
-                onClick={() => triggerAnalytics("Usage")}
-                to="/settings/usage"
-              >
-                <div>
-                  <Icon name="lock-2-line" size={IconSize.XL} />
-                </div>
-                <div>{createMessage(USAGE_AND_BILLING.usage)}</div>
-              </StyledLink>
-            </CategoryItem>
-          )}
-        </CategoryList>
-      </> */}
+      </HeaderContainer>
+      <HeaderContainer>
+        <StyledHeader kind="heading-s" renderAs="p">
+          其他
+        </StyledHeader>
+        <Categories
+          categories={othersCategories}
+          currentCategory={category}
+          currentSubCategory={subCategory}
+        />
+      </HeaderContainer>
     </Wrapper>
   );
 }

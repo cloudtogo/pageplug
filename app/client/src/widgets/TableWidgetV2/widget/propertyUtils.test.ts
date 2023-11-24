@@ -7,9 +7,12 @@ import {
   hideByColumnType,
   uniqueColumnAliasValidation,
   updateCustomColumnAliasOnLabelChange,
+  selectColumnOptionsValidation,
+  allowedFirstDayOfWeekRange,
 } from "./propertyUtils";
 import _ from "lodash";
-import { ColumnTypes, TableWidgetProps } from "../constants";
+import type { ColumnTypes, TableWidgetProps } from "../constants";
+import { StickyType } from "../component/Constants";
 
 describe("PropertyUtils - ", () => {
   it("totalRecordsCountValidation - should test with all possible values", () => {
@@ -151,7 +154,7 @@ describe("PropertyUtils - ", () => {
 
     expect(
       updateColumnStyles(
-        (props as any) as TableWidgetProps,
+        props as any as TableWidgetProps,
         "style",
         "someOtherRandomStyleValue",
       ),
@@ -194,7 +197,7 @@ describe("PropertyUtils - ", () => {
 
     expect(
       updateColumnStyles(
-        (props as any) as TableWidgetProps,
+        props as any as TableWidgetProps,
         "style",
         "someOtherRandomStyleValue",
       ),
@@ -211,7 +214,7 @@ describe("PropertyUtils - ", () => {
 
     expect(
       updateColumnStyles(
-        (props as any) as TableWidgetProps,
+        props as any as TableWidgetProps,
         "",
         "someOtherRandomStyleValue",
       ),
@@ -219,7 +222,7 @@ describe("PropertyUtils - ", () => {
 
     expect(
       updateColumnStyles(
-        ({} as any) as TableWidgetProps,
+        {} as any as TableWidgetProps,
         "style",
         "someOtherRandomStyleValue",
       ),
@@ -227,7 +230,7 @@ describe("PropertyUtils - ", () => {
 
     expect(
       updateColumnStyles(
-        ({} as any) as TableWidgetProps,
+        {} as any as TableWidgetProps,
         "",
         "someOtherRandomStyleValue",
       ),
@@ -235,11 +238,23 @@ describe("PropertyUtils - ", () => {
   });
 
   it("updateColumnOrderHook - should test with all possible values", () => {
+    const defaultStickyValuesForPrimaryCols = {
+      column1: {
+        sticky: StickyType.NONE,
+      },
+      column2: {
+        sticky: StickyType.NONE,
+      },
+      column3: {
+        sticky: StickyType.NONE,
+      },
+    };
     expect(
       updateColumnOrderHook(
-        ({
-          columnOrder: ["column1", "columns2"],
-        } as any) as TableWidgetProps,
+        {
+          columnOrder: ["column1", "column2"],
+          primaryColumns: defaultStickyValuesForPrimaryCols,
+        } as any as TableWidgetProps,
         "primaryColumns.column3",
         {
           id: "column3",
@@ -248,7 +263,7 @@ describe("PropertyUtils - ", () => {
     ).toEqual([
       {
         propertyPath: "columnOrder",
-        propertyValue: ["column1", "columns2", "column3"],
+        propertyValue: ["column1", "column2", "column3"],
       },
       {
         propertyPath: "primaryColumns.column3",
@@ -261,9 +276,9 @@ describe("PropertyUtils - ", () => {
 
     expect(
       updateColumnOrderHook(
-        ({
-          columnOrder: ["column1", "columns2"],
-        } as any) as TableWidgetProps,
+        {
+          columnOrder: ["column1", "column2"],
+        } as any as TableWidgetProps,
         "",
         {
           id: "column3",
@@ -272,16 +287,16 @@ describe("PropertyUtils - ", () => {
     ).toEqual(undefined);
 
     expect(
-      updateColumnOrderHook(({} as any) as TableWidgetProps, "", {
+      updateColumnOrderHook({} as any as TableWidgetProps, "", {
         id: "column3",
       }),
     ).toEqual(undefined);
 
     expect(
       updateColumnOrderHook(
-        ({
-          columnOrder: ["column1", "columns2"],
-        } as any) as TableWidgetProps,
+        {
+          columnOrder: ["column1", "column2"],
+        } as any as TableWidgetProps,
         "primaryColumns.column3.iconAlignment",
         {
           id: "column3",
@@ -311,7 +326,7 @@ describe("PropertyUtils - ", () => {
 
       expect(
         hideByColumnType(
-          (prop as any) as TableWidgetProps,
+          prop as any as TableWidgetProps,
           "primaryColumns.column",
           ["text"] as ColumnTypes[],
           true,
@@ -330,7 +345,7 @@ describe("PropertyUtils - ", () => {
 
       expect(
         hideByColumnType(
-          (prop as any) as TableWidgetProps,
+          prop as any as TableWidgetProps,
           "primaryColumns.column",
           ["text"] as ColumnTypes[],
           true,
@@ -349,9 +364,9 @@ describe("PropertyUtils - ", () => {
 
       expect(
         hideByColumnType(
-          (prop as any) as TableWidgetProps,
+          prop as any as TableWidgetProps,
           "primaryColumns.column.buttonColor",
-          (["Button"] as any) as ColumnTypes[],
+          ["Button"] as any as ColumnTypes[],
         ),
       ).toBe(true);
     });
@@ -367,9 +382,9 @@ describe("PropertyUtils - ", () => {
 
       expect(
         hideByColumnType(
-          (prop as any) as TableWidgetProps,
+          prop as any as TableWidgetProps,
           "primaryColumns.column.buttonColor",
-          (["Button"] as any) as ColumnTypes[],
+          ["Button"] as any as ColumnTypes[],
         ),
       ).toBe(false);
     });
@@ -381,7 +396,7 @@ describe("uniqueColumnAliasValidation", () => {
     expect(
       uniqueColumnAliasValidation(
         "column",
-        ({
+        {
           primaryColumns: {
             column: {
               alias: "column",
@@ -393,7 +408,7 @@ describe("uniqueColumnAliasValidation", () => {
               alias: "column2",
             },
           },
-        } as unknown) as TableWidgetProps,
+        } as unknown as TableWidgetProps,
         _,
       ),
     ).toEqual({
@@ -407,7 +422,7 @@ describe("uniqueColumnAliasValidation", () => {
     expect(
       uniqueColumnAliasValidation(
         "",
-        ({
+        {
           primaryColumns: {
             column: {
               alias: "column",
@@ -419,7 +434,7 @@ describe("uniqueColumnAliasValidation", () => {
               alias: "column2",
             },
           },
-        } as unknown) as TableWidgetProps,
+        } as unknown as TableWidgetProps,
         _,
       ),
     ).toEqual({
@@ -433,7 +448,7 @@ describe("uniqueColumnAliasValidation", () => {
     expect(
       uniqueColumnAliasValidation(
         "column1",
-        ({
+        {
           primaryColumns: {
             column: {
               alias: "column",
@@ -445,13 +460,471 @@ describe("uniqueColumnAliasValidation", () => {
               alias: "column2",
             },
           },
-        } as unknown) as TableWidgetProps,
+        } as unknown as TableWidgetProps,
         _,
       ),
     ).toEqual({
       isValid: true,
       parsed: "column1",
       messages: [""],
+    });
+  });
+});
+
+describe("selectColumnOptionsValidation", () => {
+  describe("- Array of label, values", () => {
+    it("should check that for empty values are allowed", () => {
+      ["", undefined, null].forEach((value) => {
+        expect(
+          selectColumnOptionsValidation(value, {} as TableWidgetProps, _),
+        ).toEqual({
+          isValid: true,
+          parsed: [],
+          messages: [""],
+        });
+      });
+    });
+
+    it("should check that value should be an array", () => {
+      expect(
+        selectColumnOptionsValidation("test", {} as TableWidgetProps, _),
+      ).toEqual({
+        isValid: false,
+        parsed: [],
+        messages: [
+          `This value does not evaluate to type Array<{ "label": string | number, "value": string | number | boolean }>`,
+        ],
+      });
+
+      expect(
+        selectColumnOptionsValidation(1, {} as TableWidgetProps, _),
+      ).toEqual({
+        isValid: false,
+        parsed: [],
+        messages: [
+          `This value does not evaluate to type Array<{ "label": string | number, "value": string | number | boolean }>`,
+        ],
+      });
+
+      expect(
+        selectColumnOptionsValidation([], {} as TableWidgetProps, _),
+      ).toEqual({
+        isValid: true,
+        parsed: [],
+        messages: [""],
+      });
+    });
+
+    it("should check that there are no null or undefined values", () => {
+      expect(
+        selectColumnOptionsValidation(
+          [null, { label: "2", value: "1" }],
+          {} as TableWidgetProps,
+          _,
+        ),
+      ).toEqual({
+        isValid: false,
+        parsed: [],
+        messages: [
+          `Invalid entry at index: 0. This value does not evaluate to type: { "label": string | number, "value": string | number | boolean }`,
+        ],
+      });
+    });
+
+    it("should check that value should be an array of objects", () => {
+      expect(
+        selectColumnOptionsValidation([1, 2], {} as TableWidgetProps, _),
+      ).toEqual({
+        isValid: false,
+        parsed: [1, 2],
+        messages: [
+          `Invalid entry at index: 0. This value does not evaluate to type: { "label": string | number, "value": string | number | boolean }`,
+        ],
+      });
+    });
+
+    it("should check that each value should have label key", () => {
+      expect(
+        selectColumnOptionsValidation(
+          [{ value: "1" }, { value: "2" }],
+          {} as TableWidgetProps,
+          _,
+        ),
+      ).toEqual({
+        isValid: false,
+        parsed: [{ value: "1" }, { value: "2" }],
+        messages: [`Invalid entry at index: 0. Missing required key: label`],
+      });
+    });
+
+    it("should check that each value should have value key", () => {
+      expect(
+        selectColumnOptionsValidation(
+          [{ label: "1" }, { label: "2" }],
+          {} as TableWidgetProps,
+          _,
+        ),
+      ).toEqual({
+        isValid: false,
+        parsed: [{ label: "1" }, { label: "2" }],
+        messages: [`Invalid entry at index: 0. Missing required key: value`],
+      });
+    });
+
+    it("should check that each value should have unique value", () => {
+      expect(
+        selectColumnOptionsValidation(
+          [
+            { label: "1", value: "1" },
+            { label: "2", value: "1" },
+          ],
+          {} as TableWidgetProps,
+          _,
+        ),
+      ).toEqual({
+        isValid: false,
+        parsed: [
+          { label: "1", value: "1" },
+          { label: "2", value: "1" },
+        ],
+        messages: [
+          "Duplicate values found for the following properties, in the array entries, that must be unique -- value.",
+        ],
+      });
+    });
+
+    it("should check that array of label, value witn invalid values", () => {
+      expect(
+        selectColumnOptionsValidation(
+          [{ label: "1", value: [] }],
+          {} as TableWidgetProps,
+          _,
+        ),
+      ).toEqual({
+        isValid: false,
+        parsed: [{ label: "1", value: [] }],
+        messages: [
+          "Invalid entry at index: 0. value does not evaluate to type string | number | boolean",
+        ],
+      });
+
+      expect(
+        selectColumnOptionsValidation(
+          [{ label: true, value: "1" }],
+          {} as TableWidgetProps,
+          _,
+        ),
+      ).toEqual({
+        isValid: false,
+        parsed: [{ label: true, value: "1" }],
+        messages: [
+          "Invalid entry at index: 0. label does not evaluate to type string | number",
+        ],
+      });
+    });
+
+    it("should check that array of label, value is valid", () => {
+      expect(
+        selectColumnOptionsValidation(
+          [
+            { label: "1", value: "1" },
+            { label: "2", value: "2" },
+          ],
+          {} as TableWidgetProps,
+          _,
+        ),
+      ).toEqual({
+        isValid: true,
+        parsed: [
+          { label: "1", value: "1" },
+          { label: "2", value: "2" },
+        ],
+        messages: [""],
+      });
+
+      expect(
+        selectColumnOptionsValidation(
+          [
+            { label: "1", value: 1 },
+            { label: "2", value: "2" },
+          ],
+          {} as TableWidgetProps,
+          _,
+        ),
+      ).toEqual({
+        isValid: true,
+        parsed: [
+          { label: "1", value: 1 },
+          { label: "2", value: "2" },
+        ],
+        messages: [""],
+      });
+
+      expect(
+        selectColumnOptionsValidation(
+          [
+            { label: "1", value: true },
+            { label: "2", value: "2" },
+          ],
+          {} as TableWidgetProps,
+          _,
+        ),
+      ).toEqual({
+        isValid: true,
+        parsed: [
+          { label: "1", value: true },
+          { label: "2", value: "2" },
+        ],
+        messages: [""],
+      });
+
+      expect(
+        selectColumnOptionsValidation(
+          [
+            { label: 1, value: true },
+            { label: "2", value: "2" },
+          ],
+          {} as TableWidgetProps,
+          _,
+        ),
+      ).toEqual({
+        isValid: true,
+        parsed: [
+          { label: 1, value: true },
+          { label: "2", value: "2" },
+        ],
+        messages: [""],
+      });
+    });
+  });
+
+  describe("- Array of Array of label, values", () => {
+    it("should check that value should be an array of arrays", () => {
+      expect(
+        selectColumnOptionsValidation([[1, 2], 1], {} as TableWidgetProps, _),
+      ).toEqual({
+        isValid: false,
+        parsed: [],
+        messages: [
+          `This value does not evaluate to type Array<{ "label": string | number, "value": string | number | boolean }>`,
+        ],
+      });
+    });
+
+    it("should check that value should be an array of arrays of object", () => {
+      expect(
+        selectColumnOptionsValidation([[1, 2]], {} as TableWidgetProps, _),
+      ).toEqual({
+        isValid: false,
+        parsed: [[1, 2]],
+        messages: [
+          `Invalid entry at Row: 0 index: 0. This value does not evaluate to type: { "label": string | number, "value": string | number | boolean }`,
+        ],
+      });
+    });
+
+    it("should check that each value should have label key", () => {
+      expect(
+        selectColumnOptionsValidation(
+          [[{ value: "1" }, { value: "2" }]],
+          {} as TableWidgetProps,
+          _,
+        ),
+      ).toEqual({
+        isValid: false,
+        parsed: [[{ value: "1" }, { value: "2" }]],
+        messages: [
+          `Invalid entry at Row: 0 index: 0. Missing required key: label`,
+        ],
+      });
+
+      expect(
+        selectColumnOptionsValidation(
+          [
+            [
+              { label: "1", value: "1" },
+              { label: "2", value: "2" },
+            ],
+            [{ value: "1" }, { value: "2" }],
+          ],
+          {} as TableWidgetProps,
+          _,
+        ),
+      ).toEqual({
+        isValid: false,
+        parsed: [
+          [
+            { label: "1", value: "1" },
+            { label: "2", value: "2" },
+          ],
+          [{ value: "1" }, { value: "2" }],
+        ],
+        messages: [
+          `Invalid entry at Row: 1 index: 0. Missing required key: label`,
+        ],
+      });
+    });
+
+    it("should check that each value should have value key", () => {
+      expect(
+        selectColumnOptionsValidation(
+          [[{ label: "1" }, { label: "2" }]],
+          {} as TableWidgetProps,
+          _,
+        ),
+      ).toEqual({
+        isValid: false,
+        parsed: [[{ label: "1" }, { label: "2" }]],
+        messages: [
+          `Invalid entry at Row: 0 index: 0. Missing required key: value`,
+        ],
+      });
+
+      expect(
+        selectColumnOptionsValidation(
+          [
+            [
+              { label: "1", value: "1" },
+              { label: "2", value: "2" },
+            ],
+            [{ label: "1" }, { label: "2" }],
+          ],
+          {} as TableWidgetProps,
+          _,
+        ),
+      ).toEqual({
+        isValid: false,
+        parsed: [
+          [
+            { label: "1", value: "1" },
+            { label: "2", value: "2" },
+          ],
+          [{ label: "1" }, { label: "2" }],
+        ],
+        messages: [
+          `Invalid entry at Row: 1 index: 0. Missing required key: value`,
+        ],
+      });
+    });
+
+    it("should check that each value should have unique value", () => {
+      expect(
+        selectColumnOptionsValidation(
+          [
+            [
+              { label: "1", value: "1" },
+              { label: "2", value: "1" },
+            ],
+          ],
+          {} as TableWidgetProps,
+          _,
+        ),
+      ).toEqual({
+        isValid: false,
+        parsed: [
+          [
+            { label: "1", value: "1" },
+            { label: "2", value: "1" },
+          ],
+        ],
+        messages: [
+          "Duplicate values found for the following properties, in the array entries, that must be unique -- value.",
+        ],
+      });
+
+      expect(
+        selectColumnOptionsValidation(
+          [
+            [
+              { label: "1", value: "1" },
+              { label: "2", value: "2" },
+            ],
+            [
+              { label: "1", value: "1" },
+              { label: "2", value: "2" },
+            ],
+          ],
+          {} as TableWidgetProps,
+          _,
+        ),
+      ).toEqual({
+        isValid: true,
+        parsed: [
+          [
+            { label: "1", value: "1" },
+            { label: "2", value: "2" },
+          ],
+          [
+            { label: "1", value: "1" },
+            { label: "2", value: "2" },
+          ],
+        ],
+        messages: [""],
+      });
+    });
+
+    it("should check that array of arrays of label, value is valid", () => {
+      expect(
+        selectColumnOptionsValidation(
+          [
+            [
+              { label: "1", value: "1" },
+              { label: "2", value: "2" },
+            ],
+            [
+              { label: "1", value: "1" },
+              { label: "2", value: "2" },
+            ],
+          ],
+          {} as TableWidgetProps,
+          _,
+        ),
+      ).toEqual({
+        isValid: true,
+        parsed: [
+          [
+            { label: "1", value: "1" },
+            { label: "2", value: "2" },
+          ],
+          [
+            { label: "1", value: "1" },
+            { label: "2", value: "2" },
+          ],
+        ],
+        messages: [""],
+      });
+    });
+
+    it("should check that array of JSON is valid", () => {
+      expect(
+        selectColumnOptionsValidation(
+          [
+            JSON.stringify([
+              { label: "1", value: "1" },
+              { label: "2", value: "2" },
+            ]),
+            JSON.stringify([
+              { label: "1", value: "1" },
+              { label: "2", value: "2" },
+            ]),
+          ],
+          {} as TableWidgetProps,
+          _,
+        ),
+      ).toEqual({
+        isValid: true,
+        parsed: [
+          [
+            { label: "1", value: "1" },
+            { label: "2", value: "2" },
+          ],
+          [
+            { label: "1", value: "1" },
+            { label: "2", value: "2" },
+          ],
+        ],
+        messages: [""],
+      });
     });
   });
 });
@@ -505,5 +978,39 @@ describe("updateCustomColumnAliasOnLabelChange", () => {
         propertyValue: "customColumn12",
       },
     ]);
+  });
+});
+
+describe("allowedFirstDayOfWeekRange", () => {
+  it("should return valid object value is within 0 to 6", () => {
+    expect(allowedFirstDayOfWeekRange(4)).toEqual({
+      isValid: true,
+      parsed: 4,
+      messages: [],
+    });
+  });
+
+  it("should return valid object value is within 0 to 6", () => {
+    expect(allowedFirstDayOfWeekRange(0)).toEqual({
+      isValid: true,
+      parsed: 0,
+      messages: [],
+    });
+  });
+
+  it("should return invalid object when value is not within 0 to 6", () => {
+    expect(allowedFirstDayOfWeekRange(8)).toEqual({
+      isValid: false,
+      parsed: 0,
+      messages: ["Number should be between 0-6."],
+    });
+  });
+
+  it("should return invalid object when value is not within 0 to 6", () => {
+    expect(allowedFirstDayOfWeekRange(-2)).toEqual({
+      isValid: false,
+      parsed: 0,
+      messages: ["Number should be between 0-6."],
+    });
   });
 });

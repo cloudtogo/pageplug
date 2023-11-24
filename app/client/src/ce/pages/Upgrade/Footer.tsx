@@ -1,24 +1,26 @@
 import styled from "styled-components";
 import React from "react";
-import { Button, Size, Text, TextType } from "design-system";
-import { Variant } from "design-system/build/constants/variants";
-import { FooterProps } from "./types";
-import { createMessage } from "design-system/build/constants/messages";
-import { AVAILABLE_ON_BUSINESS, UPGRADE } from "../../constants/messages";
+import { Button, Text } from "design-system";
+import type { FooterProps } from "./types";
+import {
+  AVAILABLE_ON_BUSINESS,
+  AVAILABLE_ON_ENTERPRISE,
+  createMessage,
+  UPGRADE,
+} from "@appsmith/constants/messages";
 
 const FooterContainer = styled.div`
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
-  width: calc(100% - 264px - 16px);
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 112px;
-  margin-left: calc(264px + 16px);
   gap: 20px;
   padding: 16px 20px;
-  background-color: var(--ads-color-black-0);
+  background-color: var(--ads-v2-color-bg);
 
   & .left {
     min-width: 362px;
@@ -30,32 +32,41 @@ const FooterContainer = styled.div`
 
   & .right {
     flex-grow: 1;
+    text-align: end;
   }
 `;
 
 export function FooterComponent(props: FooterProps) {
-  const { message, onClick } = props;
+  const { isEnterprise = false, message, onClick, showHeading = true } = props;
   return (
     <FooterContainer
       className="upgrade-page-footer-container"
       data-testid="t--upgrade-page-footer-container"
     >
       <div className="left">
-        <div className="heading-container">
-          <Text type={TextType.H1}>{createMessage(AVAILABLE_ON_BUSINESS)}</Text>
-        </div>
+        {showHeading && (
+          <div className="heading-container">
+            <Text
+              color="var(ads-v2-color-fg-emphasis-plus)"
+              kind="heading-m"
+              renderAs="h1"
+            >
+              {createMessage(
+                isEnterprise ? AVAILABLE_ON_ENTERPRISE : AVAILABLE_ON_BUSINESS,
+              )}
+            </Text>
+          </div>
+        )}
         <div className="text-container">
-          <Text type={TextType.P1}>{message}</Text>
+          <Text color="var(--ads-v2-color-fg)" renderAs="p">
+            {message}
+          </Text>
         </div>
       </div>
       <div className="right">
-        <Button
-          onClick={onClick}
-          size={Size.large}
-          text={createMessage(UPGRADE)}
-          type="button"
-          variant={Variant.info}
-        />
+        <Button data-testid="t--button-upgrade" onClick={onClick} size="md">
+          {createMessage(UPGRADE)}
+        </Button>
       </div>
     </FooterContainer>
   );

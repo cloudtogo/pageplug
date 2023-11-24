@@ -1,4 +1,5 @@
-import { RefObject, useEffect, useRef } from "react";
+import type { RefObject } from "react";
+import { useEffect, useRef } from "react";
 import { getNearestParentCanvas } from "utils/generators";
 import { getScrollByPixels } from "utils/helpers";
 
@@ -51,9 +52,8 @@ export const useCanvasDragToScroll = (
       };
       const checkIfNeedsScroll = (e: any) => {
         if (isDragging && isCurrentDraggedCanvas) {
-          const scrollParent: Element | null = getNearestParentCanvas(
-            canvasElm,
-          );
+          const scrollParent: Element | null =
+            getNearestParentCanvas(canvasElm);
           if (canvasElm && scrollParent) {
             const scrollObj = getScrollByPixels(
               {

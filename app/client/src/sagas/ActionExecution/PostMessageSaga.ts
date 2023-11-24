@@ -1,22 +1,18 @@
-import { spawn } from "redux-saga/effects";
-import { PostMessageDescription } from "../../entities/DataTree/actionTriggers";
+import { call, spawn } from "redux-saga/effects";
 import {
   logActionExecutionError,
   TriggerFailureError,
 } from "sagas/ActionExecution/errorUtils";
-import { TriggerMeta } from "./ActionExecutionSagas";
 import { isEmpty } from "lodash";
+import type { TPostWindowMessageDescription } from "workers/Evaluation/fns/postWindowMessage";
 
-export function* postMessageSaga(
-  payload: PostMessageDescription["payload"],
-  triggerMeta: TriggerMeta,
-) {
-  yield spawn(executePostMessage, payload, triggerMeta);
+export function* postMessageSaga(action: TPostWindowMessageDescription) {
+  const { payload } = action;
+  yield spawn(executePostMessage, payload);
 }
 
 export function* executePostMessage(
-  payload: PostMessageDescription["payload"],
-  triggerMeta: TriggerMeta,
+  payload: TPostWindowMessageDescription["payload"],
 ) {
   const { message, source, targetOrigin } = payload;
   try {
@@ -39,10 +35,6 @@ export function* executePostMessage(
       }
     }
   } catch (error) {
-    logActionExecutionError(
-      (error as Error).message,
-      triggerMeta.source,
-      triggerMeta.triggerPropertyName,
-    );
+    yield call(logActionExecutionError, (error as Error).message, true);
   }
 }

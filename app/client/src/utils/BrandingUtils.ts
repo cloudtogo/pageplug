@@ -1,6 +1,5 @@
 import tinycolor from "tinycolor2";
 import { darkenColor } from "widgets/WidgetUtils";
-import { Toaster, Variant } from "design-system";
 import {
   createMessage,
   ADMIN_BRANDING_LOGO_SIZE_ERROR,
@@ -9,16 +8,22 @@ import {
   ADMIN_BRANDING_FAVICON_FORMAT_ERROR,
   ADMIN_BRANDING_FAVICON_DIMENSION_ERROR,
 } from "@appsmith/constants/messages";
+import { toast } from "design-system";
+import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
+import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
 
 const FAVICON_MAX_WIDTH = 32;
 const FAVICON_MAX_HEIGHT = 32;
 const DEFAULT_BRANDING_PRIMARY_COLOR = "#D7D7D7";
-export const APPSMITH_BRAND_PRIMARY_COLOR = "#2CBBA6";
+export const APPSMITH_BRAND_PRIMARY_COLOR = "#27b7b7";
+export const APPSMITH_BRAND_FAVICON_URL = "/static/img/favicon-pageplug.ico";
+export const APPSMITH_BRAND_LOGO_URL = "/static/img/pageplug_logo_primary.png";
+export const APPSMITH_BRAND_BG_COLOR = "#F1F5F9";
 
 /**
  * create brand colors from primary color
  *
- * @param color
+ * @param brand
  */
 export function createBrandColorsFromPrimaryColor(
   brand: string = DEFAULT_BRANDING_PRIMARY_COLOR,
@@ -42,13 +47,18 @@ export function createBrandColorsFromPrimaryColor(
 
   // if the primary color is appsmith orange, use gray shade for the bg color
   if (brand === APPSMITH_BRAND_PRIMARY_COLOR) {
-    bgColor = "#F8F9FA";
+    bgColor = APPSMITH_BRAND_BG_COLOR;
   }
 
   const disabledColor = `#${tinycolor(
     `hsl ${hue} ${saturation} ${92}}`,
   ).toHex()}`;
-  const hoverColor = darkenColor(brand);
+  const hoverColor =
+    brand === APPSMITH_BRAND_PRIMARY_COLOR
+      ? getComputedStyle(document.documentElement).getPropertyValue(
+          "--ads-v2-color-bg-brand-emphasis",
+        )
+      : darkenColor(brand);
 
   return {
     primary: brand,
@@ -64,7 +74,7 @@ export function createBrandColorsFromPrimaryColor(
  *
  *  checks:
  *  1. file size max 2MB
- *  2. file type - jpg, svg or png
+ *  2. file type - jpg, or png
  *
  * @param e
  * @param callback
@@ -81,27 +91,25 @@ export const logoImageValidator = (
 
   // case 2: file size > 2mb
   if (file.size > 2 * 1024 * 1024) {
-    Toaster.show({
-      text: createMessage(ADMIN_BRANDING_LOGO_SIZE_ERROR),
-      variant: Variant.danger,
+    toast.show(createMessage(ADMIN_BRANDING_LOGO_SIZE_ERROR), {
+      kind: "error",
     });
 
     return false;
   }
 
-  // case 3: image selected
-  const validTypes = ["image/jpeg", "image/png", "image/svg+xml"];
+  // case 3: check image type
+  const validTypes = ["image/jpeg", "image/png"];
 
   if (!validTypes.includes(file.type)) {
-    Toaster.show({
-      text: createMessage(ADMIN_BRANDING_LOGO_FORMAT_ERROR),
-      variant: Variant.danger,
+    toast.show(createMessage(ADMIN_BRANDING_LOGO_FORMAT_ERROR), {
+      kind: "error",
     });
 
     return false;
   }
 
-  // case 4: check size
+  // case 4: check image dimension
   const image = new Image();
   image.src = window.URL.createObjectURL(file);
 
@@ -129,17 +137,16 @@ export const faivconImageValidator = (
   // case 1: no file selected
   if (!file) return false;
 
-  // case 2: file size > 2mb
-  if (file.size > 2 * 1024 * 1024) {
-    Toaster.show({
-      text: createMessage(ADMIN_BRANDING_FAVICON_SIZE_ERROR),
-      variant: Variant.danger,
+  // case 2: file size > 1mb
+  if (file.size > 1 * 1024 * 1024) {
+    toast.show(createMessage(ADMIN_BRANDING_FAVICON_SIZE_ERROR), {
+      kind: "error",
     });
 
     return false;
   }
 
-  // case 3: image selected
+  // case 3: check image type
   const validTypes = [
     "image/jpeg",
     "image/png",
@@ -149,28 +156,26 @@ export const faivconImageValidator = (
   ];
 
   if (!validTypes.includes(file.type)) {
-    Toaster.show({
-      text: createMessage(ADMIN_BRANDING_FAVICON_FORMAT_ERROR),
-      variant: Variant.danger,
+    toast.show(createMessage(ADMIN_BRANDING_FAVICON_FORMAT_ERROR), {
+      kind: "error",
     });
 
     return false;
   }
 
-  // case 4: check size
+  // case 4: check image dimension
   const image = new Image();
   image.src = window.URL.createObjectURL(file);
 
-  image.onload = function() {
+  image.onload = function () {
     const height = image.naturalHeight;
     const width = image.naturalWidth;
 
     window.URL.revokeObjectURL(image.src);
 
     if (height > FAVICON_MAX_HEIGHT || width > FAVICON_MAX_WIDTH) {
-      Toaster.show({
-        text: createMessage(ADMIN_BRANDING_FAVICON_DIMENSION_ERROR),
-        variant: Variant.danger,
+      toast.show(createMessage(ADMIN_BRANDING_FAVICON_DIMENSION_ERROR), {
+        kind: "error",
       });
 
       return false;

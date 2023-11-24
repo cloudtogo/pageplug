@@ -1,10 +1,14 @@
 import { ButtonVariantTypes } from "components/constants";
-import { get } from "lodash";
-import { WidgetProps } from "widgets/BaseWidget";
-import { BlueprintOperationTypes } from "widgets/constants";
+import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
 import { klona as clone } from "klona/full";
+import { get } from "lodash";
+import type { WidgetProps } from "widgets/BaseWidget";
+import { ResponsiveBehavior } from "utils/autoLayout/constants";
+import { BlueprintOperationTypes } from "widgets/constants";
 import IconSVG from "./icon.svg";
 import Widget from "./widget";
+import type { ButtonGroupWidgetProps } from "./widget";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
@@ -12,7 +16,8 @@ export const CONFIG = {
   iconSVG: IconSVG,
   needsMeta: false, // Defines if this widget adds any meta properties
   isCanvas: false, // Defines if this widget has a canvas within in which we can drop other widgets
-  searchTags: ["click", "submit", "button group"],
+  searchTags: ["click", "submit", "ButtonGroup"],
+  tags: [WIDGET_TAGS.BUTTONS],
   defaults: {
     rows: 4,
     columns: 24,
@@ -21,7 +26,9 @@ export const CONFIG = {
     buttonVariant: ButtonVariantTypes.PRIMARY,
     isVisible: true,
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
+    responsiveBehavior: ResponsiveBehavior.Fill,
+    minWidth: FILL_WIDGET_MIN_WIDTH,
     groupButtons: {
       groupButton1: {
         label: "喜欢",
@@ -138,6 +145,31 @@ export const CONFIG = {
       ],
     },
   },
+  autoLayout: {
+    autoDimension: {
+      height: true,
+    },
+    widgetSize: [
+      {
+        viewportMinWidth: 0,
+        configuration: (props: ButtonGroupWidgetProps) => {
+          let minWidth = 120;
+          const buttonLength = Object.keys(props.groupButtons).length;
+          if (props.orientation === "horizontal") {
+            // 120 is the width of the button, 8 is widget padding, 1 is the gap between buttons
+            minWidth = 120 * buttonLength + 8 + (buttonLength - 1) * 1;
+          }
+          return {
+            minWidth: `${minWidth}px`,
+            minHeight: "40px",
+          };
+        },
+      },
+    ],
+    disableResizeHandles: {
+      vertical: true,
+    },
+  },
   properties: {
     derived: Widget.getDerivedPropertiesMap(),
     default: Widget.getDefaultPropertiesMap(),
@@ -146,6 +178,8 @@ export const CONFIG = {
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
     stylesheetConfig: Widget.getStylesheetConfig(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
+    setterConfig: Widget.getSetterConfig(),
   },
 };
 

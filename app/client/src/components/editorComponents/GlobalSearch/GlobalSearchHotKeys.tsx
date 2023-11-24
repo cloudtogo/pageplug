@@ -1,6 +1,7 @@
+/* eslint-disable prettier/prettier */
 import React from "react";
 import { Hotkey, Hotkeys, HotkeysTarget } from "@blueprintjs/core";
-import { SearchItem, SelectEvent } from "./utils";
+import type { SearchItem, SelectEvent } from "./utils";
 
 type Props = {
   modalOpen: boolean;

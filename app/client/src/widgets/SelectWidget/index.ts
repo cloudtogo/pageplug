@@ -1,8 +1,17 @@
-import Widget from "./widget";
-import IconSVG from "./icon.svg";
-import { LabelPosition } from "components/constants";
 import { Alignment } from "@blueprintjs/core";
+import { LabelPosition } from "components/constants";
+import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
+import { ResponsiveBehavior } from "utils/autoLayout/constants";
 import { DynamicHeight } from "utils/WidgetFeatures";
+import IconSVG from "./icon.svg";
+import Widget from "./widget";
+import type { SnipingModeProperty, PropertyUpdates } from "widgets/constants";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
+import type { WidgetProps } from "widgets/BaseWidget";
+import type {
+  WidgetQueryConfig,
+  WidgetQueryGenerationFormConfig,
+} from "WidgetQueryGenerators/types";
 
 export const CONFIG = {
   features: {
@@ -15,6 +24,7 @@ export const CONFIG = {
   type: Widget.getWidgetType(),
   name: "下拉单选",
   iconSVG: IconSVG,
+  tags: [WIDGET_TAGS.SELECT],
   needsMeta: true,
   searchTags: ["dropdown", "select"],
   defaults: {
@@ -25,11 +35,13 @@ export const CONFIG = {
     labelPosition: LabelPosition.Top,
     labelAlignment: Alignment.LEFT,
     labelWidth: 5,
-    options: [
-      { label: "蓝", value: "BLUE" },
-      { label: "绿", value: "GREEN" },
-      { label: "红", value: "RED" },
+    sourceData: [
+      { label: "蓝", code: "BLUE" },
+      { label: "绿", code: "GREEN" },
+      { label: "红", code: "RED" },
     ],
+    optionLabel: "name",
+    optionValue: "code",
     serverSideFiltering: false,
     widgetName: "Select",
     defaultOptionValue: "GREEN",
@@ -37,8 +49,10 @@ export const CONFIG = {
     isFilterable: true,
     isRequired: false,
     isDisabled: false,
-    animateLoading: true,
+    animateLoading: false,
     labelTextSize: "0.875rem",
+    responsiveBehavior: ResponsiveBehavior.Fill,
+    minWidth: FILL_WIDGET_MIN_WIDTH,
   },
   properties: {
     derived: Widget.getDerivedPropertiesMap(),
@@ -48,6 +62,60 @@ export const CONFIG = {
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
     stylesheetConfig: Widget.getStylesheetConfig(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
+    setterConfig: Widget.getSetterConfig(),
+  },
+  methods: {
+    getQueryGenerationConfig: (widgetProps: WidgetProps) => {
+      return Widget.getQueryGenerationConfig(widgetProps);
+    },
+    getPropertyUpdatesForQueryBinding: (
+      queryConfig: WidgetQueryConfig,
+      widget: WidgetProps,
+      formConfig: WidgetQueryGenerationFormConfig,
+    ) => {
+      return Widget.getPropertyUpdatesForQueryBinding(
+        queryConfig,
+        widget,
+        formConfig,
+      );
+    },
+    getSnipingModeUpdates: (
+      propValueMap: SnipingModeProperty,
+    ): PropertyUpdates[] => {
+      return [
+        {
+          propertyPath: "sourceData",
+          propertyValue: propValueMap.data,
+          isDynamicPropertyPath: true,
+        },
+      ];
+    },
+  },
+  autoLayout: {
+    disabledPropsDefaults: {
+      labelPosition: LabelPosition.Top,
+      labelTextSize: "0.875rem",
+    },
+    defaults: {
+      rows: 6.6,
+    },
+    autoDimension: {
+      height: true,
+    },
+    widgetSize: [
+      {
+        viewportMinWidth: 0,
+        configuration: () => {
+          return {
+            minWidth: "120px",
+          };
+        },
+      },
+    ],
+    disableResizeHandles: {
+      vertical: true,
+    },
   },
 };
 

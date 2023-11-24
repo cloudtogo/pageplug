@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json.schemastore.org/eslintrc",
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "react",
+    "@typescript-eslint",
+    "prettier",
+    "react-hooks",
+    "sort-destructure-keys",
+    "cypress",
+    "jest"
+  ],
+  "extends": [
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:cypress/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "rules": {
+      "@typescript-eslint/no-explicit-any": "error",
+      "@typescript-eslint/no-unused-vars": "error",
+      "jest/no-focused-tests": "error",
+      "jest/no-disabled-tests": "error",
+      "@typescript-eslint/consistent-type-imports": "error",
+      "react-hooks/rules-of-hooks": "error",
+      "react/jsx-boolean-value": "error",
+      "react/self-closing-comp": "error",
+      "react/jsx-sort-props": "error",
+      "react/jsx-fragments": "error",
+      "react/jsx-no-useless-fragment": "error",
+      "sort-destructure-keys/sort-destructure-keys": [
+        "error",
+        {
+          "caseSensitive": false
+        }
+      ],
+      "no-console": "error",
+      "no-debugger": "error",
+      "@typescript-eslint/no-restricted-imports": [
+        "error",
+        {
+          "patterns": [
+            {
+              "group": [
+                "@blueprintjs/core/lib/esnext/*"
+              ],
+              "message": "Reason: @blueprintjs/core has both lib/esnext and lib/esm directories which export the same components. To avoid duplicating components in the bundle, please import only from the lib/esm directory."
+            },
+            {
+              "group": [
+                "*.svg"
+              ],
+              "importNames": [
+                "ReactComponent"
+              ],
+              "message": "Reason: Please don’t import SVG icons statically. (They won’t always be needed, but they *will* always be present in the bundle and will increase the bundle size.) Instead, please either import them as SVG paths (e.g. import starIconUrl from './star.svg'), or use the importSvg wrapper from design-system-old (e.g. const StarIcon = importSvg(() => import('./star.svg')))."
+            },
+            {
+              "group": [
+                "remixicon-react/*"
+              ],
+              "message": "Reason: Please don’t import Remix icons statically. (They won’t always be needed, but they *will* always be present in the bundle and will increase the bundle size.) Instead, please use the importRemixIcon wrapper from design-system-old (e.g. const StarIcon = importRemixIcon(() => import('remixicon-react/Star')))."
+            }
+          ]
+        }
+      ]
+    },
+    "settings": {
+      "import/resolver": {
+        "babel-module": {}
+      },
+      "react": {
+        "pragma": "React",
+        "version": "detect"
+      }
+    },
+    "env": {
+      "browser": true,
+      "node": true,
+      "cypress/globals": true,
+      "worker": true
+    }
+  }
+}

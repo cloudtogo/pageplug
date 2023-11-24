@@ -1,4 +1,6 @@
-// MINT_GREEN #2CBBA6
+import { darkenColor, lightenColor } from "widgets/WidgetUtils";
+
+// MINT_GREEN #27b7b7
 const primaryColor = "var(--ads-color-brand)";
 
 export const Colors = {
@@ -48,6 +50,9 @@ export const Colors = {
   MAKO: "#464D53",
   ALTO: "#DFDFDF",
 
+  PRIMARY: primaryColor,
+  PRIMARY_DARK: "#3ababc",
+  PRIMARY_LIGHT: "#4fb2b4",
   GREEN: primaryColor,
   FOAM: "#D9FDED",
   LIGHT_GREEN_CYAN: "#e5f6ec",
@@ -77,7 +82,7 @@ export const Colors = {
   SOLID_MERCURY: "#E5E5E5",
   TROUT_DARK: "#535B62",
   ALABASTER: "#F9F8F8",
-  WATUSI: "#FFE0D2",
+  WATUSI: "#FF9B4E",
   GRAY: "#858282",
   GRAY2: "#939090",
   DOVE_GRAY2: "#716e6e",
@@ -183,6 +188,7 @@ export const Colors = {
   GREY_900: "#191919",
 
   PRIMARY_ORANGE: primaryColor,
+  PRIMARY_ORANGE_OPAQUE: "#F86A2B1A",
 
   GREEN_SOLID: "#50AF6C",
   MIRAGE: "#182026",
@@ -212,6 +218,8 @@ export const Colors = {
   GRAY_800: "#393939",
   GRAY_900: "#101828",
   SCORPION: "#575757",
+
+  GRAY_600_OPAQUE: "#6B6B6B1A",
 
   COD_GRAY: "#191919",
 
@@ -245,6 +253,13 @@ export const Colors = {
   ENTERPRISE_LIGHT: "#E8F5FA",
 
   NOTIFICATION_BANNER_ERROR_TEXT: "#C91818",
+
+  CTA_PURPLE: "#5E5DC1",
+
+  APPSMITH_BEIGE: "#faf5ed",
+
+  HIGHLIGHT_FILL: "#C273EF",
+  HIGHLIGHT_OUTLINE: "rgba(255, 255, 255, 0.5)",
 };
 
-export type Color = typeof Colors[keyof typeof Colors];
+export type Color = (typeof Colors)[keyof typeof Colors];

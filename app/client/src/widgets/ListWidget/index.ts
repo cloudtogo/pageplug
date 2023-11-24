@@ -1,16 +1,21 @@
+import { Positioning, ResponsiveBehavior } from "utils/autoLayout/constants";
+import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
 import { cloneDeep, get, indexOf, isString } from "lodash";
 import {
   combineDynamicBindings,
   getDynamicBindings,
 } from "utils/DynamicBindingUtils";
-import { RegisteredWidgetFeatures } from "utils/WidgetFeatures";
-import { WidgetProps } from "widgets/BaseWidget";
-import {
-  BlueprintOperationTypes,
+import type { WidgetProps } from "widgets/BaseWidget";
+import type {
   FlattenedWidgetProps,
+  SnipingModeProperty,
+  PropertyUpdates,
 } from "widgets/constants";
+import { BlueprintOperationTypes } from "widgets/constants";
 import IconSVG from "./icon.svg";
 import Widget from "./widget";
+import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
+import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
 
 export const CONFIG = {
   type: Widget.getWidgetType(),
@@ -19,14 +24,21 @@ export const CONFIG = {
   searchTags: ["list"],
   needsMeta: true,
   isCanvas: true,
+  isDeprecated: true,
+  hideCard: true,
+  replacement: "LIST_WIDGET_V2",
+  needsHeightForContent: true,
   defaults: {
     backgroundColor: "transparent",
     itemBackgroundColor: "#FFFFFF",
     rows: 40,
     columns: 24,
-    animateLoading: true,
+    animateLoading: false,
     gridType: "vertical",
     template: {},
+    responsiveBehavior: ResponsiveBehavior.Fill,
+    minWidth: FILL_WIDGET_MIN_WIDTH,
+    positioning: Positioning.Fixed,
     enhancements: {
       child: {
         autocomplete: (parentProps: any) => {
@@ -34,6 +46,11 @@ export const CONFIG = {
         },
         updateDataTreePath: (parentProps: any, dataTreePath: string) => {
           return `${parentProps.widgetName}.template.${dataTreePath}`;
+        },
+        shouldHideProperty: (parentProps: any, propertyName: string) => {
+          if (propertyName === "dynamicHeight") return true;
+
+          return false;
         },
         propertyUpdateHook: (
           parentProps: any,
@@ -46,9 +63,8 @@ export const CONFIG = {
 
           if (!parentProps.widgetId) return [];
 
-          const { jsSnippets, stringSegments } = getDynamicBindings(
-            propertyValue,
-          );
+          const { jsSnippets, stringSegments } =
+            getDynamicBindings(propertyValue);
 
           const js = combineDynamicBindings(jsSnippets, stringSegments);
 
@@ -124,11 +140,9 @@ export const CONFIG = {
                     isDeletable: false,
                     disallowCopy: true,
                     disablePropertyPane: true,
-                    disabledWidgetFeatures: [
-                      RegisteredWidgetFeatures.DYNAMIC_HEIGHT,
-                    ],
                     openParentPropertyPane: true,
                     children: [],
+                    positioning: Positioning.Fixed,
                     blueprint: {
                       view: [
                         {
@@ -150,8 +164,9 @@ export const CONFIG = {
                                   },
                                   position: { top: 0, left: 0 },
                                   props: {
-                                    defaultImage:
-                                      "https://assets.appsmith.com/widgets/default.png",
+                                    defaultImage: getAssetUrl(
+                                      `${ASSETS_CDN_URL}/widgets/default.png`,
+                                    ),
                                     imageShape: "RECTANGLE",
                                     maxZoomLevel: 1,
                                     image: "{{currentItem.img}}",
@@ -180,6 +195,7 @@ export const CONFIG = {
                                     textStyle: "HEADING",
                                     textAlign: "LEFT",
                                     boxShadow: "none",
+                                    dynamicHeight: "FIXED",
                                     dynamicBindingPathList: [
                                       {
                                         key: "text",
@@ -203,6 +219,7 @@ export const CONFIG = {
                                     textStyle: "BODY",
                                     textAlign: "LEFT",
                                     boxShadow: "none",
+                                    dynamicHeight: "FIXED",
                                     dynamicBindingPathList: [
                                       {
                                         key: "text",
@@ -256,9 +273,8 @@ export const CONFIG = {
                   let value = childWidget[key];
 
                   if (isString(value) && value.indexOf("currentItem") > -1) {
-                    const { jsSnippets, stringSegments } = getDynamicBindings(
-                      value,
-                    );
+                    const { jsSnippets, stringSegments } =
+                      getDynamicBindings(value);
 
                     const js = combineDynamicBindings(
                       jsSnippets,
@@ -331,6 +347,8 @@ export const CONFIG = {
             const parent = { ...widgets[parentId] };
             const logBlackList: { [key: string]: boolean } = {};
 
+            widget.dynamicHeight = "FIXED";
+
             /*
              * Only widgets that don't have derived or meta properties
              * work well inside the current version of List widget.
@@ -377,18 +395,11 @@ export const CONFIG = {
                 widgets[widget.parentId] = _parent;
               }
               delete widgets[widgetId];
-
               return {
                 widgets,
                 message: `This widget cannot be used inside the list widget.`,
               };
             }
-
-            const template = {
-              ...get(parent, "template", {}),
-              [widget.widgetName]: widget,
-            };
-            parent.template = template;
 
             // add logBlackList for the children being added
             Object.keys(widget).map((key) => {
@@ -399,7 +410,6 @@ export const CONFIG = {
 
             widgets[parentId] = parent;
             widgets[widgetId] = widget;
-
             return { widgets };
           },
         },
@@ -414,6 +424,34 @@ export const CONFIG = {
     contentConfig: Widget.getPropertyPaneContentConfig(),
     styleConfig: Widget.getPropertyPaneStyleConfig(),
     stylesheetConfig: Widget.getStylesheetConfig(),
+    setterConfig: Widget.getSetterConfig(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
+  },
+  methods: {
+    getSnipingModeUpdates: (
+      propValueMap: SnipingModeProperty,
+    ): PropertyUpdates[] => {
+      return [
+        {
+          propertyPath: "listData",
+          propertyValue: propValueMap.data,
+          isDynamicPropertyPath: true,
+        },
+      ];
+    },
+  },
+  autoLayout: {
+    widgetSize: [
+      {
+        viewportMinWidth: 0,
+        configuration: () => {
+          return {
+            minWidth: "280px",
+            minHeight: "300px",
+          };
+        },
+      },
+    ],
   },
 };
 

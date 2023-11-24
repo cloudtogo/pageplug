@@ -1,20 +1,20 @@
+import type { WidgetType } from "constants/WidgetConstants";
+import { DEFAULT_CENTER } from "constants/WidgetConstants";
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import MapComponent from "../component";
 
-import { ValidationTypes } from "constants/WidgetValidation";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import { getAppsmithConfigs } from "@appsmith/configs";
-import styled from "styled-components";
-import { DEFAULT_CENTER } from "constants/WidgetConstants";
-import { getBorderCSSShorthand } from "constants/DefaultTheme";
-import { MarkerProps } from "../constants";
-import { DerivedPropertiesMap } from "utils/WidgetFactory";
+import { ValidationTypes } from "constants/WidgetValidation";
+import type { SetterConfig, Stylesheet } from "entities/AppTheming";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import { Stylesheet } from "entities/AppTheming";
-
-const { google } = getAppsmithConfigs();
+import styled from "styled-components";
+import type { DerivedPropertiesMap } from "utils/WidgetFactory";
+import type { MarkerProps } from "../constants";
+import { getBorderCSSShorthand } from "constants/DefaultTheme";
+import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
+import type { AutocompletionDefinitions } from "widgets/constants";
 
 const DisabledContainer = styled.div<{
   borderRadius: string;
@@ -45,7 +45,39 @@ type Center = {
   long: number;
   [x: string]: any;
 };
+
 class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
+  static defaultProps = {};
+
+  static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {
+      isVisible: DefaultAutocompleteDefinitions.isVisible,
+      center: {
+        lat: "number",
+        long: "number",
+        title: "string",
+      },
+      markers: "[$__mapMarker__$]",
+      selectedMarker: {
+        lat: "number",
+        long: "number",
+        title: "string",
+        description: "string",
+      },
+    };
+  }
+
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {
+        setVisibility: {
+          path: "isVisible",
+          type: "boolean",
+        },
+      },
+    };
+  }
+
   static getPropertyPaneContentConfig() {
     return [
       {
@@ -56,6 +88,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
             label: "初始位置",
             isJSConvertible: true,
             controlType: "LOCATION_SEARCH",
+            dependencies: ["googleMapsApiKey"],
             isBindProperty: true,
             isTriggerProperty: false,
             validation: {
@@ -191,6 +224,17 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
             isTriggerProperty: false,
           },
           {
+            propertyName: "allowClustering",
+            label: "Enable clustering",
+            controlType: "SWITCH",
+            helpText: "Allows markers to be clustered",
+            defaultValue: false,
+            isJSConvertible: true,
+            isBindProperty: true,
+            isTriggerProperty: false,
+            validation: { type: ValidationTypes.BOOLEAN },
+          },
+          {
             propertyName: "enableSearch",
             label: "允许搜索位置",
             helpText: "允许用户搜索位置",
@@ -201,7 +245,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Create Marker",
+        sectionName: "Create marker",
         children: [
           {
             propertyName: "enableCreateMarker",
@@ -233,7 +277,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
           {
             propertyName: "onMarkerClick",
             label: "onMarkerClick",
-            helpText: "Triggers an action when the user clicks on the marker",
+            helpText: "when the user clicks on the marker",
             controlType: "ACTION_SELECTOR",
             isJSConvertible: true,
             isBindProperty: true,
@@ -299,7 +343,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
     };
   }
 
-  updateCenter = (lat: number, long: number, title?: string) => {
+  updateCenter = (lat?: number, long?: number, title?: string) => {
     this.props.updateWidgetMetaProperty("center", { lat, long, title });
   };
 
@@ -316,7 +360,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
     this.props.updateWidgetMetaProperty("markers", markers);
   };
 
-  onCreateMarker = (lat: number, long: number) => {
+  onCreateMarker = (lat?: number, long?: number) => {
     this.disableDrag(true);
     const marker = { lat, long, title: "" };
 
@@ -339,7 +383,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
     this.props.updateWidgetMetaProperty("selectedMarker", undefined);
   };
 
-  onMarkerClick = (lat: number, long: number, title: string) => {
+  onMarkerClick = (lat?: number, long?: number, title?: string) => {
     this.disableDrag(true);
     const selectedMarker = {
       lat: lat,
@@ -397,13 +441,14 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
   getPageView() {
     return (
       <>
-        {!google.enabled && (
+        {!this.props.googleMapsApiKey && (
           <DisabledContainer
             borderRadius={this.props.borderRadius}
             boxShadow={this.props.boxShadow}
           >
             <h1>{"Map Widget disabled"}</h1>
-            <p>{"Map widget requires a Google Maps API Key"}</p>
+            <mark>Key: x{this.props.googleMapsApiKey}x</mark>
+            <p>{"Map widget requires a Google Maps API key"}</p>
             <p>
               {"See our"}
               <a
@@ -413,14 +458,15 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
               >
                 {" documentation "}
               </a>
-              {"to configure API Keys"}
+              {"to configure API keys"}
             </p>
           </DisabledContainer>
         )}
-        {google.enabled && (
+        {this.props.googleMapsApiKey && (
           <MapComponent
+            allowClustering={this.props.allowClustering}
             allowZoom={this.props.allowZoom}
-            apiKey={google.apiKey}
+            apiKey={this.props.googleMapsApiKey}
             borderRadius={this.props.borderRadius}
             boxShadow={this.props.boxShadow}
             center={this.getCenter()}
@@ -452,6 +498,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
 }
 
 export interface MapWidgetProps extends WidgetProps {
+  googleMapsApiKey?: string;
   isDisabled?: boolean;
   isVisible?: boolean;
   enableSearch: boolean;
@@ -479,6 +526,7 @@ export interface MapWidgetProps extends WidgetProps {
   onCreateMarker?: string;
   borderRadius: string;
   boxShadow?: string;
+  allowClustering?: boolean;
 }
 
 export default MapWidget;

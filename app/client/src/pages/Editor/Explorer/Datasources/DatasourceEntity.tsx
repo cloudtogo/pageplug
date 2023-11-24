@@ -1,21 +1,28 @@
 import React, { useCallback } from "react";
-import { Datasource } from "entities/Datasource";
-import { Plugin } from "api/PluginApi";
+import type { Datasource } from "entities/Datasource";
+import type { Plugin } from "api/PluginApi";
 import DataSourceContextMenu from "./DataSourceContextMenu";
 import { getPluginIcon } from "../ExplorerIcons";
-import { getQueryIdFromURL } from "../helpers";
+import { getQueryIdFromURL } from "@appsmith/pages/Editor/Explorer/helpers";
 import Entity, { EntityClassNames } from "../Entity";
-import history from "utils/history";
+import history, { NavigationMethod } from "utils/history";
 import {
-  fetchDatasourceStructure,
   expandDatasourceEntity,
+  fetchDatasourceStructure,
   updateDatasourceName,
 } from "actions/datasourceActions";
 import { useDispatch, useSelector } from "react-redux";
-import { AppState } from "@appsmith/reducers";
-import { DatasourceStructureContainer } from "./DatasourceStructureContainer";
+import type { AppState } from "@appsmith/reducers";
+import {
+  DatasourceStructureContainer,
+  DatasourceStructureContext,
+} from "./DatasourceStructureContainer";
 import { isStoredDatasource, PluginType } from "entities/Action";
-import { getAction } from "selectors/entitiesSelector";
+import {
+  getAction,
+  getDatasourceStructureById,
+  getIsFetchingDatasourceStructure,
+} from "selectors/entitiesSelector";
 import {
   datasourcesEditorIdURL,
   saasEditorDatasourceIdURL,
@@ -26,6 +33,7 @@ import AnalyticsUtil from "utils/AnalyticsUtil";
 import { useLocation } from "react-router";
 import omit from "lodash/omit";
 import { getQueryParams } from "utils/URLUtils";
+import { debounce } from "lodash";
 
 type ExplorerDatasourceEntityProps = {
   plugin: Plugin;
@@ -66,8 +74,8 @@ const ExplorerDatasourceEntity = React.memo(
         toUrl: url,
         name: props.datasource.name,
       });
-      history.push(url);
-    }, [props.datasource.id, props.datasource.name, location.pathname]);
+      history.push(url, { invokedBy: NavigationMethod.EntityExplorer });
+    }, [props.datasource.id, props.datasource.name, location.pathname, pageId]);
 
     const queryId = getQueryIdFromURL();
     const queryAction = useSelector((state: AppState) =>
@@ -77,23 +85,43 @@ const ExplorerDatasourceEntity = React.memo(
     const updateDatasourceNameCall = (id: string, name: string) =>
       updateDatasourceName({ id: props.datasource.id, name });
 
-    const datasourceStructure = useSelector((state: AppState) => {
-      return state.entities.datasources.structure[props.datasource.id];
-    });
+    const datasourceStructure = useSelector((state: AppState) =>
+      getDatasourceStructureById(state, props.datasource.id),
+    );
+
+    const isFetchingDatasourceStructure = useSelector((state: AppState) =>
+      getIsFetchingDatasourceStructure(state, props.datasource.id),
+    );
 
     const expandDatasourceId = useSelector((state: AppState) => {
       return state.ui.datasourcePane.expandDatasourceId;
     });
 
+    //Debounce fetchDatasourceStructure request.
+    const debounceFetchDatasourceRequest = debounce(async () => {
+      dispatch(
+        fetchDatasourceStructure(
+          props.datasource.id,
+          true,
+          DatasourceStructureContext.EXPLORER,
+        ),
+      );
+    }, 300);
+
     const getDatasourceStructure = useCallback(
       (isOpen: boolean) => {
-        if (!datasourceStructure && isOpen) {
-          dispatch(fetchDatasourceStructure(props.datasource.id, true));
+        if (!datasourceStructure && !isFetchingDatasourceStructure && isOpen) {
+          debounceFetchDatasourceRequest();
         }
 
         dispatch(expandDatasourceEntity(isOpen ? props.datasource.id : ""));
       },
-      [datasourceStructure, props.datasource.id, dispatch],
+      [
+        datasourceStructure,
+        props.datasource.id,
+        dispatch,
+        isFetchingDatasourceStructure,
+      ],
     );
 
     const nameTransformFn = useCallback(
@@ -137,6 +165,7 @@ const ExplorerDatasourceEntity = React.memo(
         updateEntityName={updateDatasourceNameCall}
       >
         <DatasourceStructureContainer
+          context={DatasourceStructureContext.EXPLORER}
           datasourceId={props.datasource.id}
           datasourceStructure={datasourceStructure}
           step={props.step}

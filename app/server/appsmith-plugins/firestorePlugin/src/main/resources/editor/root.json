@@ -9,35 +9,35 @@
           "description": "Choose method you would like to use",
           "configProperty": "actionConfiguration.formData.command.data",
           "controlType": "DROP_DOWN",
-          "initialValue": "GET_DOCUMENT",
+          "initialValue": "GET_COLLECTION",
           "options": [
             {
-              "label": "Get Single Document",
-              "value": "GET_DOCUMENT"
-            },
-            {
-              "label": "Get Documents in Collection",
+              "label": "List Documents",
               "value": "GET_COLLECTION"
             },
             {
-              "label": "Set Document",
-              "value": "SET_DOCUMENT"
-            },
-            {
-              "label": "Create Document",
+              "label": "Create document",
               "value": "CREATE_DOCUMENT"
             },
             {
-              "label": "Add Document to Collection",
-              "value": "ADD_TO_COLLECTION"
-            },
-            {
-              "label": "Update Document",
+              "label": "Update document",
               "value": "UPDATE_DOCUMENT"
             },
             {
-              "label": "Delete Document",
+              "label": "Delete document",
               "value": "DELETE_DOCUMENT"
+            },
+            {
+              "label": "Get Document",
+              "value": "GET_DOCUMENT"
+            },
+            {
+              "label": "Upsert Document",
+              "value": "SET_DOCUMENT"
+            },
+            {
+              "label": "Add document to collection",
+              "value": "ADD_TO_COLLECTION"
             }
           ]
         }

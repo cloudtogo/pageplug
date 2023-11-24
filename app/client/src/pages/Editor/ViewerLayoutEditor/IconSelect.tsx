@@ -1,13 +1,14 @@
 import * as React from "react";
 import styled from "styled-components";
 import { Button, Menu, MenuItem } from "@blueprintjs/core";
-import { ItemListRenderer, ItemRenderer, Select } from "@blueprintjs/select";
+import type { ItemListRenderer, ItemRenderer } from "@blueprintjs/select";
+import { Select } from "@blueprintjs/select";
 import { createVanIconComponent } from "@taroify/icons/van";
 import {
   NONE,
   SAFE_ICON_NAMES,
 } from "components/propertyControls/taro/IconNames";
-import { TooltipComponent } from "design-system";
+import { TooltipComponent } from "design-system-old";
 
 const StyledButton = styled(Button)`
   box-shadow: none !important;
@@ -87,7 +88,7 @@ const renderVantIcon = (icon: string) => {
   return vantIcon;
 };
 
-const IconSelect = ({ onIconSelected, iconName }: IconSelectProps) => {
+const IconSelect = ({ iconName, onIconSelected }: IconSelectProps) => {
   const renderMenu: ItemListRenderer<IconType> = ({
     items,
     itemsParentRef,

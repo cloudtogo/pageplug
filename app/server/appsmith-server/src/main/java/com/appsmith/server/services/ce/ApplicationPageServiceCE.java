@@ -1,6 +1,7 @@
 package com.appsmith.server.services.ce;
 
 import com.appsmith.server.domains.Application;
+import com.appsmith.server.domains.NewPage;
 import com.appsmith.server.domains.User;
 import com.appsmith.server.dtos.ApplicationPagesDTO;
 import com.appsmith.server.dtos.PageDTO;
@@ -14,6 +15,8 @@ public interface ApplicationPageServiceCE {
     Mono<PageDTO> createPageWithBranchName(PageDTO page, String branchName);
 
     Mono<UpdateResult> addPageToApplication(Application application, PageDTO page, Boolean isDefault);
+
+    Mono<PageDTO> getPage(NewPage newPage, boolean viewMode);
 
     Mono<PageDTO> getPage(String pageId, boolean viewMode);
 
@@ -44,6 +47,8 @@ public interface ApplicationPageServiceCE {
     Mono<PageDTO> deleteUnpublishedPageByBranchAndDefaultPageId(String defaultPageId, String branchName);
 
     Mono<PageDTO> deleteUnpublishedPage(String id);
+
+    Mono<PageDTO> deleteWithoutPermissionUnpublishedPage(String id);
 
     Mono<Application> publish(String applicationId, boolean isPublishedManually);
 

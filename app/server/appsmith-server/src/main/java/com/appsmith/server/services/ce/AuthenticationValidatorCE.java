@@ -1,11 +1,9 @@
 package com.appsmith.server.services.ce;
 
-import com.appsmith.external.models.Datasource;
+import com.appsmith.external.models.DatasourceStorage;
 import reactor.core.publisher.Mono;
-
 
 public interface AuthenticationValidatorCE {
 
-    Mono<Datasource> validateAuthentication(Datasource datasource);
-
+    Mono<DatasourceStorage> validateAuthentication(DatasourceStorage datasourceStorage);
 }

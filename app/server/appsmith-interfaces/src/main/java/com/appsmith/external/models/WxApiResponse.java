@@ -15,5 +15,4 @@ public class WxApiResponse implements AppsmithDomain {
 
     // access token
     String access_token;
-
 }

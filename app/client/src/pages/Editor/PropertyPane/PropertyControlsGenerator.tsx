@@ -1,14 +1,14 @@
-import { IPanelProps } from "@blueprintjs/core";
-import {
+import type { IPanelProps } from "@blueprintjs/core";
+import type {
   PropertyPaneConfig,
   PropertyPaneControlConfig,
   PropertyPaneSectionConfig,
 } from "constants/PropertyControlConstants";
-import { WidgetType } from "constants/WidgetConstants";
+import type { WidgetType } from "constants/WidgetConstants";
 import React from "react";
 import PropertyControl from "./PropertyControl";
 import PropertySection from "./PropertySection";
-import { EditorTheme } from "components/editorComponents/CodeEditor/EditorConfig";
+import type { EditorTheme } from "components/editorComponents/CodeEditor/EditorConfig";
 import Boxed from "../GuidedTour/Boxed";
 import { GUIDED_TOUR_STEPS } from "../GuidedTour/constants";
 import { EmptySearchResult } from "./EmptySearchResult";
@@ -16,6 +16,9 @@ import { useSelector } from "react-redux";
 import { getWidgetPropsForPropertyPane } from "selectors/propertyPaneSelectors";
 import { searchPropertyPaneConfig } from "./propertyPaneSearch";
 import { evaluateHiddenProperty } from "./helpers";
+import type { EnhancementFns } from "selectors/widgetEnhancementSelectors";
+import { getWidgetEnhancementSelector } from "selectors/widgetEnhancementSelectors";
+import equal from "fast-deep-equal/es6";
 
 export type PropertyControlsGeneratorProps = {
   id: string;
@@ -32,11 +35,13 @@ const generatePropertyControl = (
   propertyPaneConfig: readonly PropertyPaneConfig[],
   props: PropertyControlsGeneratorProps,
   isSearchResult: boolean,
+  enhancements: EnhancementFns,
 ) => {
   if (!propertyPaneConfig) return null;
   return propertyPaneConfig.map((config: PropertyPaneConfig) => {
     if ((config as PropertyPaneSectionConfig).sectionName) {
-      const sectionConfig: PropertyPaneSectionConfig = config as PropertyPaneSectionConfig;
+      const sectionConfig: PropertyPaneSectionConfig =
+        config as PropertyPaneSectionConfig;
       return (
         <Boxed
           key={config.id + props.id}
@@ -58,7 +63,12 @@ const generatePropertyControl = (
             tag={sectionConfig.tag}
           >
             {config.children &&
-              generatePropertyControl(config.children, props, isSearchResult)}
+              generatePropertyControl(
+                config.children,
+                props,
+                isSearchResult,
+                enhancements,
+              )}
           </PropertySection>
         </Boxed>
       );
@@ -76,6 +86,7 @@ const generatePropertyControl = (
             isPanelProperty={!!props.isPanelProperty}
             key={config.id + props.id}
             {...(config as PropertyPaneControlConfig)}
+            enhancements={enhancements}
             isSearchResult={isSearchResult}
             panel={props.panel}
             theme={props.theme}
@@ -89,8 +100,20 @@ const generatePropertyControl = (
 
 function PropertyControlsGenerator(props: PropertyControlsGeneratorProps) {
   const widgetProps: any = useSelector(getWidgetPropsForPropertyPane);
+
+  const enhancementSelector = getWidgetEnhancementSelector(
+    widgetProps?.widgetId,
+  );
+  const enhancements = useSelector(enhancementSelector, equal);
+
   if (!widgetProps) return null;
-  const finalProps = evaluateHiddenProperty(props.config, widgetProps);
+
+  const finalProps = evaluateHiddenProperty(
+    props.config,
+    widgetProps,
+    enhancements?.enhancementFns?.shouldHidePropertyFn,
+  );
+
   const searchResults = searchPropertyPaneConfig(
     finalProps as PropertyPaneSectionConfig[],
     props.searchQuery,
@@ -107,6 +130,7 @@ function PropertyControlsGenerator(props: PropertyControlsGeneratorProps) {
         searchResults as readonly PropertyPaneConfig[],
         props,
         isSearchResult,
+        enhancements,
       )}
     </>
   );

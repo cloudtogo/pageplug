@@ -1,6 +1,7 @@
 import { get } from "lodash";
 import { ValidationTypes } from "constants/WidgetValidation";
-import { ColumnTypes, TableWidgetProps } from "widgets/TableWidgetV2/constants";
+import type { TableWidgetProps } from "widgets/TableWidgetV2/constants";
+import { ColumnTypes } from "widgets/TableWidgetV2/constants";
 import { hideByColumnType, getBasePropertyPath } from "../../propertyUtils";
 import { ButtonVariantTypes } from "components/constants";
 import { ICON_NAMES } from "widgets/constants";
@@ -38,7 +39,7 @@ export default {
         {
           propertyName: "onDiscard",
           label: "onDiscard",
-          helpText: "Triggers an action when the discard button is clicked",
+          helpText: "when the discard button is clicked",
           controlType: "ACTION_SELECTOR",
           hidden: (props: TableWidgetProps, propertyPath: string) => {
             const baseProperty = getBasePropertyPath(propertyPath);
@@ -215,15 +216,15 @@ export const discardButtonStyleConfig = {
           label: "图标位置",
           helpText: "设置图标位置",
           controlType: "ICON_TABS",
-          fullWidth: true,
+          fullWidth: false,
           defaultValue: "left",
           options: [
             {
-              icon: "VERTICAL_LEFT",
+              startIcon: "skip-left-line",
               value: "left",
             },
             {
-              icon: "VERTICAL_RIGHT",
+              startIcon: "skip-right-line",
               value: "right",
             },
           ],

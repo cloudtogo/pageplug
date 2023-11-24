@@ -1,48 +1,39 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import { useDispatch } from "react-redux";
-import { withRouter, RouteComponentProps } from "react-router";
-import { AppState } from "@appsmith/reducers";
-import {
+import type { RouteComponentProps } from "react-router";
+import { withRouter } from "react-router";
+import type { AppState } from "@appsmith/reducers";
+import type {
   AppViewerRouteParams,
   BuilderRouteParams,
-  GIT_BRANCH_QUERY_KEY,
 } from "constants/routes";
+import { GIT_BRANCH_QUERY_KEY } from "constants/routes";
 import {
   getIsInitialized,
   getAppViewHeaderHeight,
 } from "selectors/appViewSelectors";
-import { executeTrigger } from "actions/widgetActions";
-import { ExecuteTriggerPayload } from "constants/AppsmithActionConstants/ActionConstants";
-import { EditorContext } from "components/editorComponents/EditorContextProvider";
+import EditorContextProvider from "components/editorComponents/EditorContextProvider";
 import AppViewerPageContainer from "./AppViewerPageContainer";
-import {
-  resetChildrenMetaProperty,
-  syncUpdateWidgetMetaProperty,
-  triggerEvalOnMetaUpdate,
-} from "actions/metaActions";
 import { editorInitializer } from "utils/editor/EditorUtils";
 import * as Sentry from "@sentry/react";
 import {
-  getViewModePageList,
+  getCurrentPageDescription,
   getShowTabBar,
-  isMobileLayout,
   getCurrentPage,
+  getViewModePageList,
 } from "selectors/editorSelectors";
+import { isMobileLayout } from "selectors/applicationSelectors";
 import { getThemeDetails, ThemeMode } from "selectors/themeSelectors";
 import TabBar from "components/designSystems/taro/TabBar";
 import PreviewQRCode from "./PreviewQRCode";
 import AppViewerLayout from "./AppViewerLayout";
 
-import webfontloader from "webfontloader";
+// import webfontloader from "webfontloader";
 import { getSearchQuery } from "utils/helpers";
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
 import { useSelector } from "react-redux";
 import BrandingBadge from "./BrandingBadge";
-import {
-  BatchPropertyUpdatePayload,
-  batchUpdateWidgetProperty,
-} from "actions/controlActions";
 import { setAppViewHeaderHeight } from "actions/appViewActions";
 import { showPostCompletionMessage } from "selectors/onboardingSelectors";
 import { CANVAS_SELECTOR } from "constants/WidgetConstants";
@@ -53,11 +44,22 @@ import { APP_MODE } from "entities/App";
 import { initAppViewer } from "actions/initActions";
 import { WidgetGlobaStyles } from "globalStyles/WidgetGlobalStyles";
 import { getAppsmithConfigs } from "@appsmith/configs";
-
+import useWidgetFocus from "utils/hooks/useWidgetFocus/useWidgetFocus";
+import HtmlTitle from "./AppViewerHtmlTitle";
+import BottomBar from "components/BottomBar";
+import type { ApplicationPayload } from "@appsmith/constants/ReduxActionConstants";
+import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
+import { widgetInitialisationSuccess } from "../../actions/widgetActions";
+import { areEnvironmentsFetched } from "@appsmith/selectors/environmentSelectors";
+import { datasourceEnvEnabled } from "@appsmith/selectors/featureFlagsSelectors";
 import {
-  checkContainersForAutoHeightAction,
-  updateWidgetAutoHeightAction,
-} from "actions/autoHeightActions";
+  ThemeProvider as WDSThemeProvider,
+  useTheme,
+} from "@design-system/theming";
+import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
+import { RAMP_NAME } from "utils/ProductRamps/RampsControlList";
+import { showProductRamps } from "selectors/rampSelectors";
+import { isCEMode } from "@appsmith/utils";
 
 const AppViewerBody = styled.section<{
   showTabBar: boolean;
@@ -71,7 +73,7 @@ const AppViewerBody = styled.section<{
   align-items: stretch;
   justify-content: flex-start;
   height: calc(
-    100vh - ${(props) => (props.isMobile ? "0px" : "168px")} -
+    100vh - ${(props) => (props.isMobile ? "0px" : "0px")} -
       ${(props) => (props.showTabBar ? "60px" : "0px")} -
       ${({ headerHeight }) => headerHeight}px
   );
@@ -91,6 +93,7 @@ const AppViewerBodyContainer = styled.div<{
 const StableContainer = styled.div`
   position: relative;
   overflow: hidden;
+  // height: 100vh;
 `;
 
 const ContainerForBottom = styled.div<{
@@ -112,7 +115,6 @@ function AppViewer(props: Props) {
   const dispatch = useDispatch();
   const { pathname, search } = props.location;
   const { applicationId, pageId } = props.match.params;
-  const [registered, setRegistered] = useState(false);
   const isInitialized = useSelector(getIsInitialized);
   const pages = useSelector(getViewModePageList);
   const selectedTheme = useSelector(getSelectedAppTheme);
@@ -128,15 +130,35 @@ function AppViewer(props: Props) {
   const currentPage = useSelector(getCurrentPage);
   const isEmbed = !!getSearchQuery(search, "embed") || !!currentPage?.isHidden;
   const { hideWatermark } = getAppsmithConfigs();
+  const pageDescription = useSelector(getCurrentPageDescription);
+  const currentApplicationDetails: ApplicationPayload | undefined = useSelector(
+    getCurrentApplication,
+  );
+  const { theme } = useTheme({
+    borderRadius: selectedTheme.properties.borderRadius.appBorderRadius,
+    seedColor: selectedTheme.properties.colors.primaryColor,
+  });
+  const focusRef = useWidgetFocus();
+
+  const showRampSelector = showProductRamps(RAMP_NAME.MULTIPLE_ENV);
+  const canShowRamp = useSelector(showRampSelector);
+
+  const workspaceId = currentApplicationDetails?.workspaceId || "";
+  const showBottomBar = useSelector((state: AppState) => {
+    return (
+      areEnvironmentsFetched(state, workspaceId) &&
+      datasourceEnvEnabled(state) &&
+      (isCEMode() ? canShowRamp : true)
+    );
+  });
 
   /**
    * initializes the widgets factory and registers all widgets
    */
   useEffect(() => {
     editorInitializer().then(() => {
-      setRegistered(true);
+      dispatch(widgetInitialisationSuccess());
     });
-
     // onMount initPage
     if (applicationId || pageId) {
       dispatch(
@@ -149,6 +171,7 @@ function AppViewer(props: Props) {
       );
     }
   }, []);
+
 
   /**
    * initialize the app if branch, pageId or application is changed
@@ -187,7 +210,9 @@ function AppViewer(props: Props) {
 
   useEffect(() => {
     const header = document.querySelector(".js-appviewer-header");
-
+    if (document) {
+      document.title = currentApplicationDetails?.name || "pageplug";
+    }
     dispatch(setAppViewHeaderHeight(header?.clientHeight || 0));
   }, [pages.length, isInitialized]);
 
@@ -203,134 +228,59 @@ function AppViewer(props: Props) {
    * loads font for canvas based on theme
    */
   useEffect(() => {
-    if (selectedTheme.properties.fontFamily.appFont !== DEFAULT_FONT_NAME) {
-      webfontloader.load({
-        google: {
-          families: [
-            `${selectedTheme.properties.fontFamily.appFont}:300,400,500,700`,
-          ],
-        },
-      });
-    }
-
-    document.body.style.fontFamily = appFontFamily;
+    document.body.style.fontFamily = `${appFontFamily}, sans-serif`;
 
     return function reset() {
       document.body.style.fontFamily = "inherit";
     };
   }, [selectedTheme.properties.fontFamily.appFont]);
 
-  /**
-   * callback for executing an action
-   */
-  const executeActionCallback = useCallback(
-    (actionPayload: ExecuteTriggerPayload) =>
-      dispatch(executeTrigger(actionPayload)),
-    [executeTrigger, dispatch],
-  );
-
-  /**
-   * callback for initializing app
-   */
-  const resetChildrenMetaPropertyCallback = useCallback(
-    (widgetId: string) => dispatch(resetChildrenMetaProperty(widgetId)),
-    [resetChildrenMetaProperty, dispatch],
-  );
-
-  /**
-   * callback for updating widget meta property in batch
-   */
-  const batchUpdateWidgetPropertyCallback = useCallback(
-    (widgetId: string, updates: BatchPropertyUpdatePayload) =>
-      dispatch(batchUpdateWidgetProperty(widgetId, updates)),
-    [batchUpdateWidgetProperty, dispatch],
-  );
-
-  /**
-   * callback for updating widget meta property
-   */
-  const syncUpdateWidgetMetaPropertyCallback = useCallback(
-    (widgetId: string, propertyName: string, propertyValue: unknown) =>
-      dispatch(
-        syncUpdateWidgetMetaProperty(widgetId, propertyName, propertyValue),
-      ),
-    [syncUpdateWidgetMetaProperty, dispatch],
-  );
-
-  /**
-   * callback for triggering evaluation
-   */
-  const triggerEvalOnMetaUpdateCallback = useCallback(
-    () => dispatch(triggerEvalOnMetaUpdate()),
-    [triggerEvalOnMetaUpdate, dispatch],
-  );
-
-  const updateWidgetAutoHeightCallback = useCallback(
-    (widgetId: string, height: number) => {
-      dispatch(updateWidgetAutoHeightAction(widgetId, height));
-    },
-    [updateWidgetAutoHeightAction, dispatch],
-  );
-
-  const checkContainersForAutoHeightCallback = useCallback(
-    () => dispatch(checkContainersForAutoHeightAction()),
-    [checkContainersForAutoHeightAction],
-  );
+  const isWDSV2Enabled = useFeatureFlag("ab_wds_enabled");
+  const backgroundForBody = isWDSV2Enabled
+    ? "var(--color-bg)"
+    : selectedTheme.properties.colors.backgroundColor;
+  
+  let appViewerBodyContainerBg =
+  backgroundForBody;
+  if (isMobile) {
+    appViewerBodyContainerBg = "radial-gradient(#2cbba633, #ffec8f36)";
+  }
+  if (selectedTheme.properties.colors.backgroundUrl) {
+    appViewerBodyContainerBg = `url(${selectedTheme.properties.colors.backgroundUrl}) no-repeat fixed center ${backgroundForBody}`;
+  }
 
   return (
     <ThemeProvider theme={lightTheme}>
-      <EditorContext.Provider
-        value={{
-          executeAction: executeActionCallback,
-          resetChildrenMetaProperty: resetChildrenMetaPropertyCallback,
-          batchUpdateWidgetProperty: batchUpdateWidgetPropertyCallback,
-          syncUpdateWidgetMetaProperty: syncUpdateWidgetMetaPropertyCallback,
-          triggerEvalOnMetaUpdate: triggerEvalOnMetaUpdateCallback,
-          updateWidgetAutoHeight: updateWidgetAutoHeightCallback,
-          checkContainersForAutoHeight: checkContainersForAutoHeightCallback,
-        }}
-      >
+      <EditorContextProvider renderMode="PAGE">
         <WidgetGlobaStyles
           fontFamily={selectedTheme.properties.fontFamily.appFont}
           primaryColor={selectedTheme.properties.colors.primaryColor}
         />
-        <AppViewerLayout>
-          <StableContainer>
-            <ContainerForBottom isMobile={isMobile}>
-              <AppViewerBodyContainer
-                backgroundColor={
-                  isMobile
-                    ? "radial-gradient(#2cbba633, #ffec8f36)"
-                    : selectedTheme.properties.colors.backgroundColor
-                }
-              >
-                <AppViewerBody
-                  className={CANVAS_SELECTOR}
-                  showTabBar={showTabBar}
-                  isMobile={isMobile || isEmbed}
-                  hasPages={pages.length > 1}
-                  headerHeight={headerHeight}
-                  showGuidedTourMessage={showGuidedTourMessage}
-                >
-                  {isInitialized && registered && <AppViewerPageContainer />}
-                </AppViewerBody>
-                {!hideWatermark && (
-                  <a
-                    className="fixed hidden right-8 bottom-4 z-2 hover:no-underline md:flex"
-                    href="https://appsmith.com"
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    <BrandingBadge />
-                  </a>
-                )}
-              </AppViewerBodyContainer>
-            </ContainerForBottom>
-            <TabBar />
-            <PreviewQRCode />
-          </StableContainer>
-        </AppViewerLayout>
-      </EditorContext.Provider>
+        <HtmlTitle
+          description={pageDescription}
+          name={currentApplicationDetails?.name}
+        />
+        {/* <AppViewerLayout> */}
+        <ContainerForBottom isMobile={isMobile}>
+          <AppViewerBodyContainer backgroundColor={appViewerBodyContainerBg}>
+            <AppViewerBody
+              className={CANVAS_SELECTOR}
+              showTabBar={showTabBar}
+              showBottomBar={showBottomBar}
+              isMobile={isMobile || isEmbed}
+              hasPages={pages.length > 1}
+              headerHeight={headerHeight}
+              ref={focusRef}
+              showGuidedTourMessage={showGuidedTourMessage}
+            >
+              {isInitialized && <AppViewerPageContainer />}
+            </AppViewerBody>
+          </AppViewerBodyContainer>
+        </ContainerForBottom>
+        <TabBar />
+        <PreviewQRCode />
+        {/* </AppViewerLayout> */}
+      </EditorContextProvider>
     </ThemeProvider>
   );
 }

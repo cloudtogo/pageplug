@@ -8,11 +8,14 @@
       "makePublic:applications"
     ],
     "name": "valid_application",
+    "slug": "valid_application_slug",
     "isPublic": false,
     "appIsExample": false,
     "color": "#EA6179",
     "icon": "medical",
-    "new": true
+    "new": true,
+    "unpublishedCustomJSLibs": [{"uidString": "accessor1_url"}],
+    "publishedCustomJSLibs": [{"uidString": "accessor1_url"}]
   },
   "datasourceList": [
     {
@@ -40,7 +43,7 @@
         "sshProxyEnabled": false,
         "properties": [
           {
-            "key": "Use Mongo Connection String URI",
+            "key": "Use mongo connection string URI",
             "value": "No"
           }
         ]
@@ -586,8 +589,7 @@
           "paginationType": "NONE",
           "encodeParamsToggle": true,
           "body": "() => {\n\t\t//write code here\n\t\treturn \"Hi\"\n\t}",
-          "jsArguments": [],
-          "isAsync": false
+          "jsArguments": []
         },
         "executeOnLoad": false,
         "isValid": true,
@@ -710,5 +712,16 @@
     "name": "Classic",
     "new": true,
     "isSystemTheme": true
-  }
+  },
+  "customJSLibList": [
+    {
+      "name": "TestLib",
+      "accessor": ["accessor1"],
+      "url": "url",
+      "docsUrl": "docsUrl",
+      "version": "1.0",
+      "defs": "defs_string",
+      "uidString": "accessor1_url"
+    }
+  ]
 }

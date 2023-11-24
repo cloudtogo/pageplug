@@ -278,6 +278,7 @@ describe("getAllPathsFromPropertyConfig", () => {
             type: ValidationTypes.TEXT,
             params: {
               allowedValues: [
+                "YYYY-MM-DDTHH:mm:ss.SSSZ",
                 "Epoch",
                 "Milliseconds",
                 "YYYY-MM-DD",
@@ -308,6 +309,7 @@ describe("getAllPathsFromPropertyConfig", () => {
             type: ValidationTypes.TEXT,
             params: {
               allowedValues: [
+                "YYYY-MM-DDTHH:mm:ss.SSSZ",
                 "Epoch",
                 "Milliseconds",
                 "YYYY-MM-DD",
@@ -535,6 +537,7 @@ describe("getAllPathsFromPropertyConfig", () => {
       validationPaths: {
         "chartData.random-id.data": {
           params: {
+            default: [],
             children: {
               params: {
                 required: true,

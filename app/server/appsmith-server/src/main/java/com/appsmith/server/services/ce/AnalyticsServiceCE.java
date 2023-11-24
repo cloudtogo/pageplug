@@ -14,13 +14,16 @@ public interface AnalyticsServiceCE {
 
     Mono<User> identifyUser(User user, UserData userData);
 
-    void identifyInstance(String instanceId, String role, String useCase);
+    Mono<User> identifyUser(User user, UserData userData, String recentlyUsedWorkspaceId);
 
-    void sendEvent(String event, String userId, Map<String, ?> properties);
+    void identifyInstance(
+            String instanceId, String role, String useCase, String adminEmail, String adminFullName, String ip);
 
-    void sendEvent(String event, String userId, Map<String, ?> properties, boolean hashUserId);
+    Mono<Void> sendEvent(String event, String userId, Map<String, ?> properties);
 
-    <T extends BaseDomain> Mono<T> sendObjectEvent(AnalyticsEvents event, T object, Map<String, Object> extraProperties);
+    Mono<Void> sendEvent(String event, String userId, Map<String, ?> properties, boolean hashUserId);
+
+    <T> Mono<T> sendObjectEvent(AnalyticsEvents event, T object, Map<String, Object> extraProperties);
 
     <T extends BaseDomain> Mono<T> sendObjectEvent(AnalyticsEvents event, T object);
 

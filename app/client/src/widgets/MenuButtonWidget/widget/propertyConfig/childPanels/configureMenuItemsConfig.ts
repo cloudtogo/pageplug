@@ -1,19 +1,12 @@
 import { ValidationTypes } from "constants/WidgetValidation";
+import type { MenuButtonWidgetProps } from "../../../constants";
 import { ICON_NAMES } from "../../../constants";
-import { getSourceDataKeysForEventAutocomplete } from "../../helper";
+import { getKeysFromSourceDataForEventAutocomplete } from "../../helper";
 
 export default {
   editableTitle: false,
   titlePropertyName: "label",
   panelIdPropertyName: "id",
-  updateHook: (props: any, propertyPath: string, propertyValue: string) => {
-    return [
-      {
-        propertyPath,
-        propertyValue,
-      },
-    ];
-  },
   contentChildren: [
     {
       sectionName: "属性",
@@ -32,7 +25,7 @@ export default {
               type: ValidationTypes.TEXT,
             },
           },
-          dependencies: ["sourceDataKeys"],
+          evaluatedDependencies: ["sourceData"],
         },
         {
           propertyName: "isVisible",
@@ -50,7 +43,7 @@ export default {
             },
           },
           customJSControl: "MENU_BUTTON_DYNAMIC_ITEMS",
-          dependencies: ["sourceDataKeys"],
+          evaluatedDependencies: ["sourceData"],
         },
         {
           propertyName: "isDisabled",
@@ -67,7 +60,7 @@ export default {
             },
           },
           customJSControl: "MENU_BUTTON_DYNAMIC_ITEMS",
-          dependencies: ["sourceDataKeys"],
+          evaluatedDependencies: ["sourceData"],
         },
       ],
     },
@@ -82,8 +75,12 @@ export default {
           isJSConvertible: true,
           isBindProperty: true,
           isTriggerProperty: true,
-          additionalAutoComplete: getSourceDataKeysForEventAutocomplete,
-          dependencies: ["sourceDataKeys"],
+          additionalAutoComplete: (props: MenuButtonWidgetProps) => {
+            return getKeysFromSourceDataForEventAutocomplete(
+              props?.__evaluation__?.evaluatedValues?.sourceData,
+            );
+          },
+          evaluatedDependencies: ["sourceData"],
         },
       ],
     },
@@ -110,7 +107,7 @@ export default {
             },
           },
           customJSControl: "MENU_BUTTON_DYNAMIC_ITEMS",
-          dependencies: ["sourceDataKeys"],
+          evaluatedDependencies: ["sourceData"],
         },
         {
           propertyName: "iconAlign",
@@ -118,13 +115,15 @@ export default {
           helpText:
             "设置菜单项图标对齐方向，通过 {{currentItem}} 绑定当前菜单项数据",
           controlType: "ICON_TABS",
+          defaultValue: "left",
+          fullWidth: false,
           options: [
             {
-              icon: "VERTICAL_LEFT",
+              startIcon: "skip-left-line",
               value: "left",
             },
             {
-              icon: "VERTICAL_RIGHT",
+              startIcon: "skip-right-line",
               value: "right",
             },
           ],
@@ -141,7 +140,7 @@ export default {
             },
           },
           customJSControl: "MENU_BUTTON_DYNAMIC_ITEMS",
-          dependencies: ["sourceDataKeys"],
+          evaluatedDependencies: ["sourceData"],
         },
       ],
     },
@@ -158,7 +157,7 @@ export default {
           isTriggerProperty: false,
           isJSConvertible: true,
           customJSControl: "MENU_BUTTON_DYNAMIC_ITEMS",
-          dependencies: ["sourceDataKeys"],
+          evaluatedDependencies: ["sourceData"],
           validation: {
             type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
             params: {
@@ -177,7 +176,7 @@ export default {
           isTriggerProperty: false,
           isJSConvertible: true,
           customJSControl: "MENU_BUTTON_DYNAMIC_ITEMS",
-          dependencies: ["sourceDataKeys"],
+          evaluatedDependencies: ["sourceData"],
           validation: {
             type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
             params: {
@@ -196,7 +195,7 @@ export default {
           isTriggerProperty: false,
           isJSConvertible: true,
           customJSControl: "MENU_BUTTON_DYNAMIC_ITEMS",
-          dependencies: ["sourceDataKeys"],
+          evaluatedDependencies: ["sourceData"],
           validation: {
             type: ValidationTypes.ARRAY_OF_TYPE_OR_TYPE,
             params: {

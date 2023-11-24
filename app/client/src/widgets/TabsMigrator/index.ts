@@ -11,13 +11,14 @@ export const CONFIG = {
     columns: 1,
     widgetName: "Skeleton",
     version: 1,
-    animateLoading: true,
+    animateLoading: false,
   },
   properties: {
     derived: Widget.getDerivedPropertiesMap(),
     default: Widget.getDefaultPropertiesMap(),
     meta: Widget.getMetaPropertiesMap(),
     config: Widget.getPropertyPaneConfig(),
+    autocompleteDefinitions: Widget.getAutocompleteDefinitions(),
   },
 };
 

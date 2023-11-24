@@ -1,17 +1,31 @@
 // Leaving this require here. The path-to-regexp module has a commonJS version and an ESM one.
 // We are loading the correct one with the typings with our compilerOptions property "moduleResolution" set to "node". Ref: https://stackoverflow.com/questions/59013618/unable-to-find-module-path-to-regexp
 // All solutions from closed issues on their repo have been tried. Ref: https://github.com/pillarjs/path-to-regexp/issues/193
-const { match } = require("path-to-regexp");
+import { match } from "path-to-regexp";
 
+export const BUILDER_VIEWER_PATH_PREFIX = "/app/";
+export const BUILDER_PATH = `${BUILDER_VIEWER_PATH_PREFIX}:applicationSlug/:pageSlug(.*\-):pageId/edit`;
+export const BUILDER_CUSTOM_PATH = `${BUILDER_VIEWER_PATH_PREFIX}:customSlug(.*\-):pageId/edit`;
+export const VIEWER_PATH = `${BUILDER_VIEWER_PATH_PREFIX}:applicationSlug/:pageSlug(.*\-):pageId`;
+export const VIEWER_CUSTOM_PATH = `${BUILDER_VIEWER_PATH_PREFIX}:customSlug(.*\-):pageId`;
+export const getViewerPath = (
+  applicationSlug: string,
+  pageSlug: string,
+  pageId: string,
+) => `${BUILDER_VIEWER_PATH_PREFIX}${applicationSlug}/${pageSlug}-${pageId}`;
+export const getViewerCustomPath = (customSlug: string, pageId: string) =>
+  `${BUILDER_VIEWER_PATH_PREFIX}${customSlug}-${pageId}`;
 export const BUILDER_PATH_DEPRECATED = `/applications/:applicationId/pages/:pageId/edit`;
-export const BUILDER_PATH = `/app/:applicationSlug/:pageSlug(.*\-):pageId/edit`;
-export const VIEWER_PATH = `/app/:applicationSlug/:pageSlug(.*\-):pageId`;
-export const BUILDER_CUSTOM_PATH = `/app/:customSlug(.*\-):pageId/edit`;
-export const VIEWER_CUSTOM_PATH = `/app/:customSlug(.*\-):pageId`;
 export const VIEWER_PATH_DEPRECATED = `/applications/:applicationId/pages/:pageId`;
+export const VIEWER_PATH_DEPRECATED_REGEX =
+  /\/applications\/[^/]+\/pages\/[^/]+/;
+
 export const VIEWER_LAYOUT_CONFIG_PATH = `/viewerlayout`;
 export const VIEWER_FORK_PATH = `/fork`;
 export const INTEGRATION_EDITOR_PATH = `/datasources/:selectedTab`;
+
+export const WIDGETS_EDITOR_BASE_PATH = `/widgets`;
+export const WIDGETS_EDITOR_ID_PATH = `${WIDGETS_EDITOR_BASE_PATH}/:widgetIds`;
 export const API_EDITOR_BASE_PATH = `/api`;
 export const API_EDITOR_ID_PATH = `${API_EDITOR_BASE_PATH}/:apiId`;
 export const API_EDITOR_PATH_WITH_SELECTED_PAGE_ID = `${API_EDITOR_BASE_PATH}?importTo=:importTo`;
@@ -21,6 +35,7 @@ export const JS_COLLECTION_EDITOR_PATH = `/jsObjects`;
 export const JS_COLLECTION_ID_PATH = `${JS_COLLECTION_EDITOR_PATH}/:collectionId`;
 export const CURL_IMPORT_PAGE_PATH = `/api/curl/curl-import`;
 export const DATA_SOURCES_EDITOR_ID_PATH = `/datasource/:datasourceId`;
+export const SAAS_GSHEET_EDITOR_ID_PATH = `/saas/google-sheets-plugin/datasources/:datasourceId`;
 export const PROVIDER_TEMPLATE_PATH = `/provider/:providerId`;
 export const GEN_TEMPLATE_URL = "generate-page";
 export const GENERATE_TEMPLATE_PATH = `/${GEN_TEMPLATE_URL}`;
@@ -37,13 +52,28 @@ export const VIEWER_PATCH_PATH = `/:applicationSlug/:pageSlug(.*\-):pageId`;
 
 export const matchApiBasePath = match(API_EDITOR_BASE_PATH);
 export const matchApiPath = match(API_EDITOR_ID_PATH);
-export const matchDatasourcePath = match(DATA_SOURCES_EDITOR_ID_PATH);
+export const matchDatasourcePath = match(
+  `${BUILDER_PATH}${DATA_SOURCES_EDITOR_ID_PATH}`,
+);
+export const matchSAASGsheetsPath = match(
+  `${BUILDER_PATH}${SAAS_GSHEET_EDITOR_ID_PATH}`,
+);
 export const matchQueryBasePath = match(QUERIES_EDITOR_BASE_PATH);
 export const matchQueryPath = match(QUERIES_EDITOR_ID_PATH);
-export const matchBuilderPath = (pathName: string) =>
-  match(BUILDER_PATH)(pathName) ||
-  match(BUILDER_PATH_DEPRECATED)(pathName) ||
-  match(BUILDER_CUSTOM_PATH)(pathName);
+export const matchQueryBuilderPath = match(
+  BUILDER_PATH + QUERIES_EDITOR_ID_PATH,
+);
+export const matchBuilderPath = (
+  pathName: string,
+  options?: { end?: boolean },
+) =>
+  match(BUILDER_PATH, options)(pathName) ||
+  match(BUILDER_PATH_DEPRECATED, options)(pathName) ||
+  match(BUILDER_CUSTOM_PATH, options)(pathName) ||
+  match(BUILDER_PATH + WIDGETS_EDITOR_ID_PATH, options)(pathName) ||
+  match(BUILDER_CUSTOM_PATH + WIDGETS_EDITOR_ID_PATH, options)(pathName) ||
+  match(BUILDER_PATH_DEPRECATED + WIDGETS_EDITOR_ID_PATH, options)(pathName);
+
 export const matchJSObjectPath = match(JS_COLLECTION_ID_PATH);
 export const matchViewerPath = (pathName: string) =>
   match(VIEWER_PATH)(pathName) ||
@@ -110,3 +140,6 @@ export const INTEGRATION_EDITOR_MODES = {
 export const PLACEHOLDER_APP_SLUG = "application";
 export const PLACEHOLDER_PAGE_ID = "pageId";
 export const PLACEHOLDER_PAGE_SLUG = "page";
+
+export const SHOW_FILE_PICKER_KEY = "showPicker";
+export const RESPONSE_STATUS = "response_status";

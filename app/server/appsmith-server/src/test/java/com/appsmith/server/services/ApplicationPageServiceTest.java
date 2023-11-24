@@ -35,9 +35,6 @@ public class ApplicationPageServiceTest {
     WorkspaceService workspaceService;
 
     @Autowired
-    CommentService commentService;
-
-    @Autowired
     ApplicationRepository applicationRepository;
 
     @Autowired
@@ -52,7 +49,8 @@ public class ApplicationPageServiceTest {
     private Mono<PageDTO> createPageMono(String uniquePrefix) {
         Workspace unsavedWorkspace = new Workspace();
         unsavedWorkspace.setName(uniquePrefix + "_org");
-        return workspaceService.create(unsavedWorkspace)
+        return workspaceService
+                .create(unsavedWorkspace)
                 .flatMap(workspace -> {
                     Application application = new Application();
                     application.setName(uniquePrefix + "_app");
@@ -73,15 +71,32 @@ public class ApplicationPageServiceTest {
                 .flatMap(pageDTO -> {
                     Application application = new Application();
                     application.setLastEditedAt(Instant.now().minus(10, ChronoUnit.DAYS));
-                    return applicationRepository.updateById(pageDTO.getApplicationId(), application, AclPermission.MANAGE_APPLICATIONS)
+                    return applicationRepository
+                            .updateById(pageDTO.getApplicationId(), application, AclPermission.MANAGE_APPLICATIONS)
                             .then(applicationPageService.deleteUnpublishedPage(pageDTO.getId()))
                             .then(applicationRepository.findById(pageDTO.getApplicationId()));
                 });
 
-        StepVerifier.create(applicationMono).assertNext(application -> {
-            assertThat(application.getLastEditedAt()).isNotNull();
-            Instant yesterday = Instant.now().minus(1, ChronoUnit.DAYS);
-            assertThat(application.getLastEditedAt()).isAfter(yesterday);
-        }).verifyComplete();
+        StepVerifier.create(applicationMono)
+                .assertNext(application -> {
+                    assertThat(application.getLastEditedAt()).isNotNull();
+                    Instant yesterday = Instant.now().minus(1, ChronoUnit.DAYS);
+                    assertThat(application.getLastEditedAt()).isAfter(yesterday);
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    @WithUserDetails("api_user")
+    public void cloneApplication_WhenClonedSuccessfully_ApplicationIsPublished() {
+        Mono<Application> applicationMono = createPageMono(UUID.randomUUID().toString())
+                .flatMap(pageDTO -> applicationPageService.cloneApplication(pageDTO.getApplicationId(), null));
+
+        StepVerifier.create(applicationMono)
+                .assertNext(application -> {
+                    assertThat(application.getPages().size())
+                            .isEqualTo(application.getPublishedPages().size());
+                })
+                .verifyComplete();
     }
 }

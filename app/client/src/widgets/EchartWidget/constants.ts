@@ -125,19 +125,13 @@ export const ECHART_TYPE_MAP: any = {
 
 export const NO_AXIS: any = {
   PIE_CHART: 1,
-  CUSTOM_CHART: 1,
+  // CUSTOM_CHART: 1,
 };
 
 export const isLabelOrientationApplicableFor = (chartType: string) =>
   LABEL_ORIENTATION_COMPATIBLE_CHARTS.includes(chartType);
 
 export const ECHART_BASIC_OPTION = {
-  xAxis: {
-    type: "category",
-  },
   animation: true,
-  yAxis: {
-    type: "value",
-  },
   series: [],
 };

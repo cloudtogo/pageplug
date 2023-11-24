@@ -1,0 +1,300 @@
+name: Appsmith Github Release Workflow
+
+# This workflow builds Docker images for server and client, and then pushes them to Docker Hub.
+# The docker-tag with which this push happens is the release tag (e.g., v1.2.3 etc.).
+# In addition to the above tag, unless the git-tag matches `*beta*`, we also push to the `latest` docker-tag.
+# This workflow does NOT run tests.
+# This workflow is automatically triggered when a release is created on GitHub.
+
+on:
+  # Ref: <https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#release>.
+  release:
+    types:
+      # Unlike the `released` event, the `published` event triggers for pre-releases as well.
+      - released
+
+jobs:
+  prelude:
+    runs-on: ubuntu-latest
+
+    outputs:
+      tag: ${{ steps.get_version.outputs.tag }}
+      is_beta: ${{ steps.get_version.outputs.is_beta }}
+
+    steps:
+      - name: Environment details
+        run: |
+          echo "PWD: $PWD"
+          echo "GITHUB_REF: $GITHUB_REF"
+          echo "GITHUB_SHA: $GITHUB_SHA"
+          echo "GITHUB_EVENT_NAME: $GITHUB_EVENT_NAME"
+
+      - name: Get the version
+        id: get_version
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          echo "tag=$tag" >> $GITHUB_OUTPUT
+          if [[ $tag == *"beta"* ]]; then
+            echo "is_beta=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_beta=false" >> $GITHUB_OUTPUT
+          fi
+
+  client-build:
+    needs:
+      - prelude
+
+    runs-on: ubuntu-latest-4-cores
+
+    defaults:
+      run:
+        working-directory: app/client
+        shell: bash
+
+    steps:
+      # Checkout the code
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: app/client/package.json
+
+      # Retrieve npm dependencies from cache. After a successful run, these dependencies are cached again
+      - name: Cache npm dependencies
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-yarn-dependencies
+        with:
+          # npm dependencies are stored in `~/.m2` on Linux/macOS
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Create the bundle
+        env:
+          REACT_APP_ENVIRONMENT: "PRODUCTION"
+          REACT_APP_FUSIONCHARTS_LICENSE_KEY: "${{ secrets.APPSMITH_FUSIONCHARTS_LICENSE_KEY }}"
+          REACT_APP_SEGMENT_CE_KEY: "${{ secrets.APPSMITH_SEGMENT_CE_KEY }}"
+          REACT_APP_VERSION_ID: "${{ needs.prelude.outputs.tag }}"
+          REACT_APP_INTERCOM_APP_ID: "${{ secrets.APPSMITH_INTERCOM_ID }}"
+          REACT_APP_VERSION_EDITION: "Community"
+        run: |
+          REACT_APP_VERSION_RELEASE_DATE="$(date -u '+%Y-%m-%dT%H:%M:%SZ')" \
+            yarn build
+          ls -l build
+
+      - name: Pack the client build directory
+        run: |
+          tar -cvf ./build.tar -C build .
+
+      # Upload the build artifact so that it can be used by the test & deploy job in the workflow
+      - name: Upload react build bundle
+        uses: actions/upload-artifact@v3
+        with:
+          name: client-build
+          path: app/client/build.tar
+
+  server-build:
+    needs:
+      - prelude
+
+    defaults:
+      run:
+        working-directory: app/server
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      # Retrieve maven dependencies from cache. After a successful run, these dependencies are cached again
+      - name: Cache maven dependencies
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-maven-dependencies
+        with:
+          # maven dependencies are stored in `~/.m2` on Linux/macOS
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Test and Build package
+        working-directory: app/server
+        run: |
+          mvn --batch-mode versions:set \
+            -DnewVersion=${{ needs.prelude.outputs.tag }} \
+            -DgenerateBackupPoms=false \
+            -DprocessAllModules=true
+          ./build.sh -DskipTests
+          ls -l dist
+
+      - name: Upload server build bundle
+        uses: actions/upload-artifact@v3
+        with:
+          name: server-build
+          path: app/server/dist/
+
+  rts-build:
+    needs:
+      - prelude
+
+    defaults:
+      run:
+        working-directory: app/client/packages/rts
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: app/client/package.json
+
+      # actions/setup-node@v3 doesn’t work properly with Yarn 3
+      # when the project lives in a subdirectory: https://github.com/actions/setup-node/issues/488
+      # Restoring the cache manually instead
+      - name: Restore Yarn cache
+        if: steps.run_result.outputs.run_result != 'success'
+        uses: actions/cache@v3
+        with:
+          path: app/.yarn/cache
+          key: v1-yarn3-${{ hashFiles('app/yarn.lock') }}
+          restore-keys: |
+            v1-yarn3-
+
+      # Install all the dependencies
+      - name: Install dependencies
+        if: steps.run_result.outputs.run_result != 'success'
+        run: yarn install --immutable
+
+      # actions/setup-node@v3 doesn’t work properly with Yarn 3
+      # when the project lives in a subdirectory: https://github.com/actions/setup-node/issues/488
+      # Restoring the cache manually instead
+      - name: Restore Yarn cache
+        if: steps.run_result.outputs.run_result != 'success'
+        uses: actions/cache@v3
+        with:
+          path: app/.yarn/cache
+          key: v1-yarn3-${{ hashFiles('app/yarn.lock') }}
+          restore-keys: |
+            v1-yarn3-
+
+      # Install all the dependencies
+      - name: Install dependencies
+        if: steps.run_result.outputs.run_result != 'success'
+        run: yarn install --immutable
+
+      - name: Build
+        run: |
+          echo 'export const VERSION = "${{ needs.prelude.outputs.tag }}"' > src/version.js
+          yarn build
+
+      # Tar the bundles to speed up the upload & download process
+      - name: Tar the rts bundles
+        run: |
+          tar -cvf rts-dist.tar dist
+
+      # Upload the build artifacts and dependencies so that it can be used by the test & deploy job in other workflows
+      - name: Upload rts build bundle
+        uses: actions/upload-artifact@v3
+        with:
+          name: rts-dist
+          path: app/client/packages/rts/rts-dist.tar
+
+  package:
+    needs: [prelude, client-build, server-build, rts-build]
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout the merged commit from PR and base branch
+        uses: actions/checkout@v3
+
+      - name: Set up Depot CLI
+        uses: depot/setup-action@v1
+
+      - name: Download the client build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: client-build
+          path: app/client
+
+      - name: Untar the client folder
+        run: |
+          mkdir -p app/client/build
+          tar -xvf app/client/build.tar -C app/client/build
+          echo "Cleaning up the client build"
+          rm app/client/build.tar
+
+      - name: Download the server build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: server-build
+          path: app/server/dist
+
+      - name: Download the rts build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: rts-dist
+          path: app/client/packages/rts/dist
+
+      - name: Untar the rts folder
+        run: |
+          tar -xvf app/client/packages/rts/dist/rts-dist.tar -C app/client/packages/rts/
+          echo "Cleaning up the tar files"
+          rm app/client/packages/rts/dist/rts-dist.tar
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Build and push fat image
+        uses: depot/build-push-action@v1
+        with:
+          context: .
+          push: true
+          platforms: linux/arm64,linux/amd64
+          build-args: |
+            APPSMITH_SEGMENT_CE_KEY=${{ secrets.APPSMITH_SEGMENT_CE_KEY }}
+          tags: |
+            ${{ vars.DOCKER_HUB_ORGANIZATION }}/appsmith-${{ vars.EDITION }}:${{needs.prelude.outputs.tag}}
+
+      # Only build & tag with latest if the tag doesn't contain beta
+      - name: Build and push fat image latest
+        if: needs.prelude.outputs.is_beta == 'false'
+        uses: depot/build-push-action@v1
+        with:
+          context: .
+          push: true
+          platforms: linux/arm64,linux/amd64
+          build-args: |
+            APPSMITH_SEGMENT_CE_KEY=${{ secrets.APPSMITH_SEGMENT_CE_KEY }}
+          tags: |
+            ${{ vars.DOCKER_HUB_ORGANIZATION }}/appsmith-${{ vars.EDITION }}:latest

@@ -1,16 +1,16 @@
 import { createSelector } from "reselect";
-import { AppState } from "@appsmith/reducers";
-import {
+import type { AppState } from "@appsmith/reducers";
+import type {
   ApplicationsReduxState,
   creatingApplicationMap,
 } from "@appsmith/reducers/uiReducers/applicationsReducer";
-import {
+import type {
   ApplicationPayload,
   WorkspaceDetails,
 } from "@appsmith/constants/ReduxActionConstants";
 import Fuse from "fuse.js";
-import { Workspaces } from "@appsmith/constants/workspaceConstants";
-import { GitApplicationMetadata } from "api/ApplicationApi";
+import type { Workspaces } from "@appsmith/constants/workspaceConstants";
+import type { GitApplicationMetadata } from "@appsmith/api/ApplicationApi";
 import { hasCreateNewAppPermission } from "@appsmith/utils/permissionHelpers";
 
 const fuzzySearchOptions = {
@@ -29,6 +29,8 @@ export const getCurrentApplication = (
 ): ApplicationPayload | undefined => {
   return state.ui.applications.currentApplication;
 };
+export const isMobileLayout = (state: AppState) =>
+  state.ui.applications.currentApplication?.appLayout?.type === "MOBILE_FLUID";
 export const getApplicationSearchKeyword = (state: AppState) =>
   state.ui.applications.searchKeyword;
 export const getAppMode = (state: AppState) => state.entities.app.mode;
@@ -123,6 +125,12 @@ export const getIsFetchingApplications = createSelector(
   getApplicationsState,
   (applications: ApplicationsReduxState): boolean =>
     applications.isFetchingApplications,
+);
+
+export const getIsChangingViewAccess = createSelector(
+  getApplicationsState,
+  (applications: ApplicationsReduxState): boolean =>
+    applications.isChangingViewAccess,
 );
 
 export const getIsCreatingApplication = createSelector(

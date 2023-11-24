@@ -1,30 +1,23 @@
 import React, { useMemo } from "react";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { Button, Position } from "@blueprintjs/core";
-import { IconName } from "@blueprintjs/icons";
+import type { IconName } from "@blueprintjs/icons";
 
-import { ComponentProps } from "widgets/BaseComponent";
-import {
-  RenderMode,
-  RenderModes,
-  WIDGET_PADDING,
-} from "constants/WidgetConstants";
+import type { ComponentProps } from "widgets/BaseComponent";
+import type { RenderMode } from "constants/WidgetConstants";
+import { RenderModes, WIDGET_PADDING } from "constants/WidgetConstants";
 import _ from "lodash";
-import {
-  ButtonBorderRadius,
-  ButtonVariant,
-  ButtonVariantTypes,
-} from "components/constants";
+import type { ButtonBorderRadius, ButtonVariant } from "components/constants";
+import { ButtonVariantTypes } from "components/constants";
 import {
   getCustomBackgroundColor,
   getCustomBorderColor,
   getCustomHoverColor,
   getComplementaryGrayscaleColor,
 } from "widgets/WidgetUtils";
-import { createGlobalStyle } from "constants/DefaultTheme";
 import Interweave from "interweave";
 import { Popover2 } from "@blueprintjs/popover2";
-import { ThemeProp } from "widgets/constants";
+import type { ThemeProp } from "widgets/constants";
 
 const ToolTipWrapper = styled.div`
   height: 100%;
@@ -109,6 +102,8 @@ export interface ButtonStyleProps {
   dimension?: number;
   hasOnClickAction?: boolean;
   compactMode?: string;
+  minWidth?: number;
+  minHeight?: number;
 }
 
 export const StyledButton = styled((props) => (
@@ -136,7 +131,12 @@ export const StyledButton = styled((props) => (
   line-height: ${({ compactMode }) =>
     compactMode === "SHORT" ? "24px" : "28px"};
 
-
+  ${({ minHeight, minWidth }) =>
+    `&& {
+      ${minWidth ? `min-width: ${minWidth}px;` : ""}
+      ${minHeight ? `min-height: ${minHeight}px;` : ""}
+    }
+  `}
 
   ${({ buttonColor, buttonVariant, compactMode, hasOnClickAction, theme }) => `
     &:enabled {
@@ -151,7 +151,7 @@ export const StyledButton = styled((props) => (
 
     ${
       hasOnClickAction
-        ? `&:hover:enabled, &:active:enabled {
+        ? `&:hover:enabled, &:active:enabled, &:focus:enabled {
         background: ${
           getCustomHoverColor(theme, buttonVariant, buttonColor) !== "none"
             ? getCustomHoverColor(theme, buttonVariant, buttonColor)
@@ -232,7 +232,6 @@ export const StyledButton = styled((props) => (
 
   border-radius: ${({ borderRadius }) => borderRadius};
   box-shadow: ${({ boxShadow }) => boxShadow || "none"} !important;
-
 `;
 
 export interface IconButtonComponentProps extends ComponentProps {
@@ -249,6 +248,8 @@ export interface IconButtonComponentProps extends ComponentProps {
   height: number;
   tooltip?: string;
   width: number;
+  minHeight?: number;
+  minWidth?: number;
 }
 
 function IconButtonComponent(props: IconButtonComponentProps) {
@@ -260,6 +261,8 @@ function IconButtonComponent(props: IconButtonComponentProps) {
     hasOnClickAction,
     height,
     isDisabled,
+    minHeight,
+    minWidth,
     onClick,
     renderMode,
     tooltip,
@@ -279,16 +282,15 @@ function IconButtonComponent(props: IconButtonComponentProps) {
     return width - WIDGET_PADDING * 2;
   }, [width, height]);
 
+  const hasOnClick = !isDisabled && hasOnClickAction;
+
   const iconBtnWrapper = (
     <IconButtonContainer
       buttonColor={buttonColor}
       buttonVariant={buttonVariant}
       disabled={isDisabled}
       hasOnClickAction={hasOnClickAction}
-      onClick={() => {
-        if (isDisabled) return;
-        onClick();
-      }}
+      onClick={hasOnClick ? onClick : undefined}
       renderMode={renderMode}
     >
       <StyledButton
@@ -301,6 +303,8 @@ function IconButtonComponent(props: IconButtonComponentProps) {
         hasOnClickAction={hasOnClickAction}
         icon={props.iconName}
         large
+        minHeight={minHeight}
+        minWidth={minWidth}
       />
     </IconButtonContainer>
   );
