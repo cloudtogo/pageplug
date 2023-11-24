@@ -86,8 +86,10 @@ PagePlug 无需侵入客户架构，直接连接数据源（API、DB），任何
   > **注意**：体验环境数据没有做持久化，只作功能演示使用
 
 - 🌱 [私有部署【Docker】](https://lowcode.methodot.com/app/pageplug/page1-63160074cb370d532de7f2af?embed=1)（推荐）
+
   > 最低服务器配置：4G 内存 + 2 核 CPU
 
+- 35 版本源码要求 JDK 17, nodejs 18.17.0
 <div id="dev" />
 
 ### 🎈 本地开发
