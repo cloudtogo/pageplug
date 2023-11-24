@@ -109,7 +109,8 @@ class MultiSelectWidget extends BaseWidget<
         sectionName: "数据",
         children: [
           {
-            helpText: "接受一个对象数组以显示选项。使用 {{}} 绑定来自 API 的数据。",
+            helpText:
+              "接受一个对象数组以显示选项。使用 {{}} 绑定来自 API 的数据。",
             propertyName: "sourceData",
             label: "源数据",
             controlType: "ONE_CLICK_BINDING_CONTROL",
@@ -154,8 +155,7 @@ class MultiSelectWidget extends BaseWidget<
               EvaluationSubstitutionType.SMART_SUBSTITUTE,
           },
           {
-            helpText:
-              "选择或设置源数据中的字段作为显示标签",
+            helpText: "选择或设置源数据中的字段作为显示标签",
             propertyName: "optionLabel",
             label: "Label key",
             controlType: "DROP_DOWN",
