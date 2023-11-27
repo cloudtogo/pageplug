@@ -17,6 +17,7 @@ import {
   useTheme,
 } from "@design-system/theming";
 import { getIsAppSettingsPaneWithNavigationTabOpen } from "selectors/appSettingsPaneSelectors";
+import TabBarIconPicker from "components/designSystems/taro/TabBarIconPicker";
 
 interface CanvasProps {
   widgetsStructure: CanvasWidgetStructure;
@@ -89,6 +90,7 @@ const Canvas = (props: CanvasProps) => {
               props.widgetsStructure,
               RenderModes.CANVAS,
             )}
+          {isPreviewMode ? null : <TabBarIconPicker />}
         </Container>
       </WDSThemeProvider>
     );

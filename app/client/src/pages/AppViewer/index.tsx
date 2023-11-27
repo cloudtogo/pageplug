@@ -172,7 +172,6 @@ function AppViewer(props: Props) {
     }
   }, []);
 
-
   /**
    * initialize the app if branch, pageId or application is changed
    */
@@ -239,9 +238,8 @@ function AppViewer(props: Props) {
   const backgroundForBody = isWDSV2Enabled
     ? "var(--color-bg)"
     : selectedTheme.properties.colors.backgroundColor;
-  
-  let appViewerBodyContainerBg =
-  backgroundForBody;
+
+  let appViewerBodyContainerBg = backgroundForBody;
   if (isMobile) {
     appViewerBodyContainerBg = "radial-gradient(#2cbba633, #ffec8f36)";
   }
@@ -260,26 +258,30 @@ function AppViewer(props: Props) {
           description={pageDescription}
           name={currentApplicationDetails?.name}
         />
-        {/* <AppViewerLayout> */}
-        <ContainerForBottom isMobile={isMobile}>
-          <AppViewerBodyContainer backgroundColor={appViewerBodyContainerBg}>
-            <AppViewerBody
-              className={CANVAS_SELECTOR}
-              showTabBar={showTabBar}
-              showBottomBar={showBottomBar}
-              isMobile={isMobile || isEmbed}
-              hasPages={pages.length > 1}
-              headerHeight={headerHeight}
-              ref={focusRef}
-              showGuidedTourMessage={showGuidedTourMessage}
-            >
-              {isInitialized && <AppViewerPageContainer />}
-            </AppViewerBody>
-          </AppViewerBodyContainer>
-        </ContainerForBottom>
-        <TabBar />
-        <PreviewQRCode />
-        {/* </AppViewerLayout> */}
+        <AppViewerLayout>
+          <StableContainer>
+            <ContainerForBottom isMobile={isMobile}>
+              <AppViewerBodyContainer
+                backgroundColor={appViewerBodyContainerBg}
+              >
+                <AppViewerBody
+                  className={CANVAS_SELECTOR}
+                  hasPages={pages.length > 1}
+                  headerHeight={headerHeight}
+                  isMobile={isMobile || isEmbed}
+                  ref={focusRef}
+                  // showBottomBar={showBottomBar}
+                  showGuidedTourMessage={showGuidedTourMessage}
+                  showTabBar={showTabBar}
+                >
+                  {isInitialized && <AppViewerPageContainer />}
+                </AppViewerBody>
+              </AppViewerBodyContainer>
+            </ContainerForBottom>
+            <TabBar />
+            <PreviewQRCode />
+          </StableContainer>
+        </AppViewerLayout>
       </EditorContextProvider>
     </ThemeProvider>
   );
