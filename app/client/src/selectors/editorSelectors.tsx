@@ -315,7 +315,7 @@ export const getCanvasWidth = (state: AppState) => state.ui.mainCanvas.width;
 export const getMainCanvasProps = (state: AppState) => state.ui.mainCanvas;
 
 export const isMobileLayout = (state: AppState) =>
-  state.ui.applications.currentApplication?.appLayout?.type === "MOBILE_FLUID";
+  state.ui.mainCanvas?.isMobile;
 
 export const getShowTabBar = createSelector(
   getCurrentPage,
@@ -406,7 +406,7 @@ export const getWidgetCards = createSelector(
       return !config.hideCard;
     });
 
-    const _cards: WidgetCardProps[] = cards.map((config) => {
+    const _cards: any = cards.map((config) => {
       const {
         detachFromLayout = false,
         floatLayout = false,
