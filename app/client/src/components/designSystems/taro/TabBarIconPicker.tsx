@@ -5,11 +5,11 @@ import type { AppState } from "@appsmith/reducers";
 import { updatePage } from "actions/pageActions";
 import type { UpdatePageRequest } from "api/PageApi";
 import { getViewModePageList, getCurrentPage } from "selectors/editorSelectors";
-import { isMobileLayout } from "selectors/applicationSelectors";
+// import { isMobileLayout } from "selectors/applicationSelectors";
 import type { Page } from "@appsmith/constants/ReduxActionConstants";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import EditablePageName from "pages/Editor/Explorer/Entity/Name";
-import Loader from "pages/Editor/Explorer/Entity/Loader";
+// import Loader from "pages/Editor/Explorer/Entity/Loader";
 import { resolveAsSpaceChar } from "utils/helpers";
 import {
   useEntityUpdateState,
@@ -70,7 +70,7 @@ const TabBar = ({ currentPage, isFull }: TabbarProps) => {
   const isUpdating = useEntityUpdateState(entityId);
   const isEditing = useEntityEditState(entityId);
   const switchDisabled = isFull && !pageIcon;
-  const isMobile = useSelector(isMobileLayout);
+  const isMobile = useSelector((state) => state.ui.mainCanvas?.isMobile);
 
   const onToggle = () => {
     onIconSelected(pageIcon ? CLOSE_TABBAR : "smile-o");
@@ -156,7 +156,7 @@ const TabBar = ({ currentPage, isFull }: TabbarProps) => {
         </>
       ) : null}
 
-      <Loader isVisible={isUpdating} />
+      {/* <Loader isVisible={isUpdating} /> */}
     </TabBarContainer>
   );
 };
