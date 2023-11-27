@@ -46,6 +46,7 @@ import classNames from "classnames";
 import { getSnapshotUpdatedTime } from "selectors/autoLayoutSelectors";
 import { getReadableSnapShotDetails } from "utils/autoLayout/AutoLayoutUtils";
 import AnonymousDataPopup from "../FirstTimeUserOnboarding/AnonymousDataPopup";
+import TabBar from "components/designSystems/taro/TabBar";
 
 function WidgetsEditor() {
   const { deselectAll, focusWidget } = useWidgetSelection();
@@ -222,6 +223,7 @@ function WidgetsEditor() {
 
             <CrudInfoModal />
           </div>
+          <TabBar />
           <Debugger />
         </div>
         <PropertyPaneContainer />
