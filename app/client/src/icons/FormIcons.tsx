@@ -13,6 +13,9 @@ const LockIcon = importSvg(() => import("assets/icons/form/lock.svg"));
 const DeleteIcon = importRemixIcon(
   () => import("remixicon-react/DeleteBinLineIcon"),
 );
+const EyeOnIcon = importSvg(() => import("assets/icons/form/eye-on.svg"));
+const EyeOffIcon = importSvg(() => import("assets/icons/form/eye-off.svg"));
+const EmailIcon = importSvg(() => import("assets/icons/form/email.svg"));
 
 /* eslint-disable react/display-name */
 
@@ -66,6 +69,21 @@ export const FormIcons: {
   LOCK_ICON: (props: IconProps) => (
     <IconWrapper {...props}>
       <LockIcon />
+    </IconWrapper>
+  ),
+  EYE_ON_ICON: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <EyeOnIcon />
+    </IconWrapper>
+  ),
+  EYE_OFF_ICON: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <EyeOffIcon />
+    </IconWrapper>
+  ),
+  EMAIL_ICON: (props: IconProps) => (
+    <IconWrapper {...props}>
+      <EmailIcon />
     </IconWrapper>
   ),
 };
