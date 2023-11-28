@@ -52,8 +52,49 @@ import {
 import Helmet from "react-helmet";
 import { useHtmlPageTitle } from "@appsmith/utils";
 import FooterLinks from "pages/UserAuth/FooterLinks";
-import EmailSVGIcon from "ce/components/svg/Email";
-import PasswordSVGIcon from "ce/components/svg/Password";
+import { FormIcons } from "icons/FormIcons";
+import styled, { css } from "styled-components";
+
+const LoginForm = styled.div`
+  input {
+    padding-left: 30px;
+  }
+`;
+
+const CommonIconStyles = css`
+  position: absolute;
+  top: 18px;
+  left: 8px;
+`;
+
+const StyledEmailIcon = styled(FormIcons.EMAIL_ICON)`
+  ${CommonIconStyles}
+  &&& svg {
+    path {
+      fill: none;
+    }
+  }
+`;
+
+const StyledEyeOnIcon = styled(FormIcons.EYE_ON_ICON)`
+  ${CommonIconStyles}
+  &&& svg {
+    cursor: pointer;
+    path {
+      fill: #8a9997;
+    }
+  }
+`;
+
+const StyledEyeOffIcon = styled(FormIcons.EYE_OFF_ICON)`
+  ${CommonIconStyles}
+  &&& svg {
+    cursor: pointer;
+    path {
+      fill: #8a9997;
+    }
+  }
+`;
 
 const validate = (values: LoginFormValues, props: ValidateProps) => {
   const errors: LoginFormValues = {};
@@ -102,6 +143,19 @@ export function Login(props: LoginFormProps) {
   let showError = false;
   let errorMessage = "";
   const currentUser = useSelector(getCurrentUser);
+  const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (showError) {
+      message.open({
+        type: "error",
+        duration: 5,
+        content: "密码校验失败，请重试，或者点击下面的按钮重置密码",
+        className: "my-msg",
+      });
+    }
+  }, []);
+
   if (currentUser?.emptyInstance) {
     return <Redirect to={SETUP} />;
   }
@@ -130,21 +184,6 @@ export function Login(props: LoginFormProps) {
     </div>
   );
 
-  const [isShowPassword, setIsShowPassword] = useState(false);
-  const showPassword = () => {
-    setIsShowPassword(!isShowPassword);
-  };
-
-  useEffect(() => {
-    if (showError) {
-      message.open({
-        type: "error",
-        duration: 5,
-        content: "密码校验失败，请重试，或者点击下面的按钮重置密码",
-        className: "my-msg",
-      });
-    }
-  }, []);
   return (
     <Container
       footer={footerSection}
@@ -179,35 +218,48 @@ export function Login(props: LoginFormProps) {
         <>
           <SpacedSubmitForm action={loginURL} method="POST">
             <FormGroup intent={error ? "danger" : "none"}>
-              <FormTextField
-                autoFocus
-                name={LOGIN_FORM_EMAIL_FIELD_NAME}
-                placeholder={createMessage(LOGIN_PAGE_EMAIL_INPUT_PLACEHOLDER)}
-                type="email"
-                startIcon="null"
-                className="pp-height"
-              />
-              <EmailSVGIcon className="icon-position w-4" />
+              <LoginForm>
+                <FormTextField
+                  autoFocus
+                  className="pp-height login-form"
+                  name={LOGIN_FORM_EMAIL_FIELD_NAME}
+                  placeholder={createMessage(
+                    LOGIN_PAGE_EMAIL_INPUT_PLACEHOLDER,
+                  )}
+                  type="email"
+                />
+              </LoginForm>
+              <StyledEmailIcon height={15} width={15} />
             </FormGroup>
             <FormGroup intent={error ? "danger" : "none"}>
-              <FormTextField
-                name={LOGIN_FORM_PASSWORD_FIELD_NAME}
-                placeholder={createMessage(
-                  LOGIN_PAGE_PASSWORD_INPUT_PLACEHOLDER,
-                )}
-                type={isShowPassword ? "text" : "password"}
-                startIcon={isShowPassword ? "eye-on" : "null"}
-                className="pp-height"
-              />
-              <PasswordSVGIcon
-                className="icon-position w-4"
-                showPassword={showPassword}
-                isShowPassword={isShowPassword}
-              />
+              <LoginForm>
+                <FormTextField
+                  className="pp-height"
+                  name={LOGIN_FORM_PASSWORD_FIELD_NAME}
+                  placeholder={createMessage(
+                    LOGIN_PAGE_PASSWORD_INPUT_PLACEHOLDER,
+                  )}
+                  type={isShowPassword ? "text" : "password"}
+                />
+              </LoginForm>
+              {isShowPassword ? (
+                <StyledEyeOnIcon
+                  height={15}
+                  onClick={() => setIsShowPassword(false)}
+                  width={15}
+                />
+              ) : (
+                <StyledEyeOffIcon
+                  height={15}
+                  onClick={() => setIsShowPassword(true)}
+                  width={15}
+                />
+              )}
             </FormGroup>
 
             <FormActions>
               <Button
+                className="pp-height pp-font"
                 isDisabled={!isFormValid}
                 kind="primary"
                 onClick={() => {
@@ -220,7 +272,6 @@ export function Login(props: LoginFormProps) {
                 }}
                 size="md"
                 type="submit"
-                className="pp-height pp-font"
               >
                 {createMessage(LOGIN_PAGE_LOGIN_BUTTON_TEXT)}
               </Button>
@@ -241,7 +292,7 @@ export function Login(props: LoginFormProps) {
                 </Link>
               </div>
             ) : (
-              <div></div>
+              <div />
             )}
             <div>
               <Link
