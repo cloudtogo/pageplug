@@ -45,7 +45,7 @@ const VerticalResizeIndicators = css<{
     border-radius: 50%/16%;
     background: ${Colors.GREY_1};
     top: calc(50% - 8px);
-    left: calc(50% + 3.5px);
+    left: calc(50% - 2.5px);
     border: ${(props) => {
       return `1px solid ${
         props.isHovered ? Colors.PRIMARY_LIGHT : Colors.PRIMARY
@@ -142,25 +142,25 @@ export const HorizontalHandleStyles = css<{
   &::after {
     width: ${EDGE_RESIZE_BAR_LONG}px;
     height: ${EDGE_RESIZE_BAR_SHORT}px;
-    top: calc(50% + 2.5px);
+    top: calc(50% - 2px);
     left: calc(50% - ${EDGE_RESIZE_BAR_LONG / 2}px);
   }
 `;
 
 export const LeftHandleStyles = styled.div`
   ${VerticalHandleStyles}
-  left: ${-EDGE_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING - 8.5}px;
+  left: ${-EDGE_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING + 1.5}px;
 `;
 
 export const RightHandleStyles = styled.div`
   ${VerticalHandleStyles};
-  right: ${-EDGE_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING + 5.5}px;
+  right: ${-EDGE_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING + 3.5}px;
   height: calc(100% + ${2 * WIDGET_PADDING}px);
 `;
 
 export const TopHandleStyles = styled.div`
   ${HorizontalHandleStyles};
-  top: ${-EDGE_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING - 6.5}px;
+  top: ${-EDGE_RESIZE_HANDLE_WIDTH / 2 - WIDGET_PADDING + 1.5}px;
 `;
 
 export const BottomHandleStyles = styled.div`
