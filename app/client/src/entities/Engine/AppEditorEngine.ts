@@ -211,7 +211,7 @@ export default class AppEditorEngine extends AppEngine {
 
     const [isAnotherEditorTabOpen, currentTabs] = yield call(
       trackOpenEditorTabs,
-      currentApplication.id,
+      currentApplication?.id,
     );
 
     if (currentApplication) {
