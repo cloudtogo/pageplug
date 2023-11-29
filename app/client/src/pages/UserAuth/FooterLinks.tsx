@@ -1,19 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-
-import githubIcon from "assets/icons/help/github-icon.svg";
-import Wechat from "assets/images/WeChat.svg";
 import { getThirdPartyAuths } from "@appsmith/selectors/tenantSelectors";
 import ThirdPartyAuth from "@appsmith/pages/UserAuth/ThirdPartyAuth";
-
-
 
 const LineDiv = styled.div`
   box-sizing: border-box;
   margin: 0;
   border-top: 1px solid;
-  border-color: #E1E5E5;
+  border-color: #e1e5e5;
   width: 120px;
 `;
 
@@ -29,16 +24,17 @@ const TextDiv = styled.div`
   white-space: nowrap;
 `;
 
-
-
 function FooterLinks() {
   const socialLoginList = useSelector(getThirdPartyAuths);
   return (
     <>
-      <div className="flex-middle gap-4 py-2" style={{width: "350px", marginLeft: "25px"}}>
-        <LineDiv></LineDiv>
+      <div
+        className="flex-middle gap-4 py-2"
+        style={{ width: "350px", marginLeft: "25px" }}
+      >
+        <LineDiv />
         <TextDiv>其他登录方式</TextDiv>
-        <LineDiv></LineDiv>
+        <LineDiv />
       </div>
       {/* 第三方登录 */}
       {socialLoginList.length > 0 && (
