@@ -24,6 +24,7 @@ import type { CanvasWidgetStructure, DSLWidget } from "./constants";
 import ContainerComponent from "./ContainerWidget/component";
 import { AppPositioningTypes } from "reducers/entityReducers/pageListReducer";
 import type { AutocompletionDefinitions } from "widgets/constants";
+import type { Stylesheet } from "entities/AppTheming";
 
 class CanvasWidget extends ContainerWidget {
   static getPropertyPaneConfig() {
@@ -34,6 +35,10 @@ class CanvasWidget extends ContainerWidget {
   }
 
   static getAutocompleteDefinitions(): AutocompletionDefinitions {
+    return {};
+  }
+
+  static getStylesheetConfig(): Stylesheet {
     return {};
   }
 
@@ -235,6 +240,7 @@ export const CONFIG = {
     default: CanvasWidget.getDefaultPropertiesMap(),
     meta: CanvasWidget.getMetaPropertiesMap(),
     config: CanvasWidget.getPropertyPaneConfig(),
+    stylesheetConfig: CanvasWidget.getStylesheetConfig(),
     autocompleteDefinitions: CanvasWidget.getAutocompleteDefinitions(),
   },
 };

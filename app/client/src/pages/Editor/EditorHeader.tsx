@@ -1,4 +1,12 @@
-import React, { useCallback, useEffect, useState, lazy, Suspense, useMemo } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  lazy,
+  Suspense,
+  useMemo,
+  RefAttributes,
+} from "react";
 import styled, { ThemeProvider } from "styled-components";
 import classNames from "classnames";
 import type { ApplicationPayload } from "@appsmith/constants/ReduxActionConstants";
@@ -178,11 +186,15 @@ const PagePlugLogoImg = styled.img`
   height: 28px;
 `;
 
-const AppsmithLink = styled((props) => {
-  // we are removing non input related props before passing them in the components
-  // eslint-disable @typescript-eslint/no-unused-vars
-  return <Link {...props} />;
-})`
+type LinkProps = any;
+
+const AppsmithLink = styled(
+  React.forwardRef(
+    (props: LinkProps & RefAttributes<HTMLAnchorElement>, ref) => {
+      return <Link ref={ref} {...props} />;
+    },
+  ),
+)`
   height: 24px;
   min-width: 24px;
   width: 24px;

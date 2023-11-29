@@ -230,8 +230,8 @@ export const FILE_SIZE_LIMIT_FOR_BLOBS = 5000 * 1024; // 5MB
 
 export const WIDGET_TAGS = {
   GERNERAL: "通用类",
-  SELECT: "数据输入-选择器组件",
-  INPUTS: "数据录入-输入器组件",
+  SELECT: "选择器组件",
+  INPUTS: "输入器组件",
   DISPLAY: "数据展示类",
   BUTTONS: "按钮类",
   FEATRUE: "功能类",
