@@ -760,7 +760,7 @@ export function extractColorsFromString(widgets: CanvasWidgetsReduxState) {
  * @param color
  */
 export function isValidColor(color: string) {
-  return color?.includes("url") || validateColor(color);
+  return color?.includes("url") || validateColor(color) || isEmptyOrNill(color);
 }
 
 /*
