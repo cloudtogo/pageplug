@@ -258,30 +258,24 @@ function AppViewer(props: Props) {
           description={pageDescription}
           name={currentApplicationDetails?.name}
         />
-        <AppViewerLayout>
-          <StableContainer>
-            <ContainerForBottom isMobile={isMobile}>
-              <AppViewerBodyContainer
-                backgroundColor={appViewerBodyContainerBg}
-              >
-                <AppViewerBody
-                  className={CANVAS_SELECTOR}
-                  hasPages={pages.length > 1}
-                  headerHeight={headerHeight}
-                  isMobile={isMobile || isEmbed}
-                  ref={focusRef}
-                  // showBottomBar={showBottomBar}
-                  showGuidedTourMessage={showGuidedTourMessage}
-                  showTabBar={showTabBar}
-                >
-                  {isInitialized && <AppViewerPageContainer />}
-                </AppViewerBody>
-              </AppViewerBodyContainer>
-            </ContainerForBottom>
-            <TabBar />
-            <PreviewQRCode />
-          </StableContainer>
-        </AppViewerLayout>
+        <ContainerForBottom isMobile={isMobile}>
+          <AppViewerBodyContainer backgroundColor={appViewerBodyContainerBg}>
+            <AppViewerBody
+              className={CANVAS_SELECTOR}
+              hasPages={pages.length > 1}
+              headerHeight={headerHeight}
+              isMobile={isMobile || isEmbed}
+              ref={focusRef}
+              // showBottomBar={showBottomBar}
+              showGuidedTourMessage={showGuidedTourMessage}
+              showTabBar={showTabBar}
+            >
+              {isInitialized && <AppViewerPageContainer />}
+            </AppViewerBody>
+          </AppViewerBodyContainer>
+        </ContainerForBottom>
+        <TabBar />
+        <PreviewQRCode />
       </EditorContextProvider>
     </ThemeProvider>
   );
