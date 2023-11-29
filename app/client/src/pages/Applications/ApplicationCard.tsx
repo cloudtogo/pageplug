@@ -160,7 +160,17 @@ const Wrapper = styled(
   width: ${(props) => props.theme.card.minWidth}px;
   height: ${(props) => props.theme.card.minHeight}px;
   position: relative;
-  background-color: ${(props) => props.backgroundColor};
+  background-color: #ffffff;
+  border: 2px solid ${(props) => props.backgroundColor};
+  background-image: repeating-radial-gradient(
+      circle at 0 0,
+      rgba(0, 0, 0, 0) 0,
+      #ffffff 12px
+    ),
+    repeating-linear-gradient(
+      ${(props) => props.backgroundColor}11,
+      ${(props) => props.backgroundColor}66
+    );
   border-radius: var(--ads-v2-border-radius);
   .overlay {
     display: block;
