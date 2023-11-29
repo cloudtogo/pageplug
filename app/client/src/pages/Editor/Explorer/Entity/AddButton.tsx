@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Button } from "design-system";
+import { Button, Icon } from "design-system";
 
 const Wrapper = styled.div`
   height: 36px;
@@ -12,10 +12,21 @@ const Wrapper = styled.div`
   }
 `;
 
-const StyledButton = styled(Button)`
+// const StyledButton = styled(Button)`
+//   && {
+//     height: 100%;
+//     width: 100%;
+//   }
+// `;
+
+const StyledIcon = styled(Icon)`
   && {
     height: 100%;
     width: 100%;
+  }
+
+  &:hover {
+    background-color: #e3e6ea;
   }
 `;
 
@@ -31,12 +42,13 @@ export const EntityAddButton = (props: {
   else {
     return (
       <Wrapper className={props.className}>
-        <StyledButton
+        {/* <StyledButton
           isIconButton
           kind="tertiary"
           onClick={handleClick}
           startIcon="plus"
-        />
+        /> */}
+        <StyledIcon name="plus" onClick={handleClick} size={"md"} />
       </Wrapper>
     );
   }
