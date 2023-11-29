@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import type { AppState } from "@appsmith/reducers";
@@ -72,7 +73,7 @@ import {
 } from "components/editorComponents/CodeEditor/hintHelpers";
 
 import { showBindingPrompt } from "./BindingPromptHelper";
-import { Button } from "design-system";
+// import { Button } from "design-system";
 import "codemirror/addon/fold/brace-fold";
 import "codemirror/addon/fold/foldgutter";
 import "codemirror/addon/fold/foldgutter.css";
@@ -144,7 +145,6 @@ import {
 import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
 import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
 import { AIWindow } from "@appsmith/components/editorComponents/GPT";
-import classNames from "classnames";
 import {
   APPSMITH_AI,
   isAIEnabled,
@@ -1300,7 +1300,7 @@ class CodeEditor extends Component<Props, State> {
     ) {
       return;
     }
-    
+
     const entityInformation = this.getEntityInformation();
     const { blockCompletions } = this.props;
     let hinterOpen = false;
@@ -1555,7 +1555,7 @@ class CodeEditor extends Component<Props, State> {
         isNotHover={this.state.isFocused || this.state.isOpened}
         skin={this.props.theme === EditorTheme.DARK ? Skin.DARK : Skin.LIGHT}
       >
-        {/* jh说注释掉 */}
+        {/* hide */}
         {/* <div className="flex absolute gap-1 top-[6px] right-[6px] z-4 justify-center">
           <Button
             className={classNames(

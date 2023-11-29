@@ -144,7 +144,6 @@ export const getSignInButtonStyles = (
 
 const getIconType = (icon: any) => (icon ? `icon-${icon}` : undefined);
 
-
 export const makeRouteNode =
   (pagesMap: any, newTree: any[], hideRow: any[]) => (node: any) => {
     let item: any;

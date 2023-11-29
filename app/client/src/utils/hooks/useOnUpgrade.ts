@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-restricted-imports */
 import { useSelector } from "react-redux";
 import { getInstanceId } from "@appsmith/selectors/tenantSelectors";
 import { PRICING_PAGE_URL } from "constants/ThirdPartyConstants";
@@ -22,10 +24,7 @@ const useOnUpgrade = (props: Props) => {
       logEventName || "ADMIN_SETTINGS_UPGRADE",
       logEventData,
     );
-    window.open(
-      BUSINESS_PRICE_URL,
-      "_blank",
-    );
+    window.open(BUSINESS_PRICE_URL, "_blank");
   };
 
   return { onUpgrade };

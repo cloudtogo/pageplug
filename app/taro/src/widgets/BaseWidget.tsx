@@ -3,7 +3,7 @@
  * spawing components based on those props
  * Widgets are also responsible for dispatching actions and updating the state tree
  */
- import {
+import {
   CONTAINER_GRID_PADDING,
   CSSUnit,
   CSSUnits,
@@ -111,7 +111,7 @@ abstract class BaseWidget<
   updateWidget(
     operationName: string,
     widgetId: string,
-    widgetProperties: any,
+    widgetProperties: any
   ): void {
     const { updateWidget } = this.context;
     updateWidget && updateWidget(operationName, widgetId, widgetProperties);
@@ -127,7 +127,7 @@ abstract class BaseWidget<
 
   batchUpdateWidgetProperty(
     updates: BatchPropertyUpdatePayload,
-    shouldReplay = true,
+    shouldReplay = true
   ): void {
     const { batchUpdateWidgetProperty } = this.context;
     const { widgetId } = this.props;
@@ -161,7 +161,7 @@ abstract class BaseWidget<
       this.props.topRow,
       this.props.bottomRow,
       this.props.parentColumnSpace,
-      this.props.parentRowSpace,
+      this.props.parentRowSpace
     );
   };
 
@@ -171,7 +171,7 @@ abstract class BaseWidget<
     topRow: number,
     bottomRow: number,
     parentColumnSpace: number,
-    parentRowSpace: number,
+    parentRowSpace: number
   ): {
     componentWidth: number;
     componentHeight: number;
@@ -186,9 +186,9 @@ abstract class BaseWidget<
     return Object.values(evalErrors).reduce(
       (prev, curr) =>
         curr.filter(
-          (error) => error.errorType !== PropertyEvaluationErrorType.LINT,
+          (error) => error.errorType !== PropertyEvaluationErrorType.LINT
         ).length + prev,
-      0,
+      0
     );
   }, JSON.stringify);
 
@@ -417,6 +417,7 @@ export const WidgetOperations = {
   ADD_CHILDREN: "ADD_CHILDREN",
 };
 
-export type WidgetOperation = typeof WidgetOperations[keyof typeof WidgetOperations];
+export type WidgetOperation =
+  (typeof WidgetOperations)[keyof typeof WidgetOperations];
 
 export default BaseWidget;

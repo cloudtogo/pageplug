@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import styled from "styled-components";
 import { connect, useDispatch, useSelector } from "react-redux";
@@ -24,7 +25,7 @@ import { Colors } from "constants/Colors";
 
 const TabBarContainer = styled.div`
   position: fixed;
-  bottom: 8px;
+  bottom: 48px;
   transform: translate(-208px, 0px);
   width: 200px;
   border-radius: 4px;

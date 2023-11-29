@@ -227,7 +227,7 @@ function withWidgetProps(WrappedWidget: typeof BaseWidget) {
     if (
       widgetProps.detachFromLayout &&
       !widgetProps.isVisible &&
-      // widgetProps.type !== "TARO_BOTTOM_BAR_WIDGET"
+      widgetProps.type !== "TARO_BOTTOM_BAR_WIDGET" &&
       !selectedWidgetAncestry.includes(widgetProps.widgetId)
     ) {
       return null;

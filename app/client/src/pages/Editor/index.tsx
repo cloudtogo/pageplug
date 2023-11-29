@@ -157,9 +157,7 @@ class Editor extends Component<Props> {
         <div>
           <Helmet>
             <meta charSet="utf-8" />
-            <title>
-              {`${this.props.currentApplicationName} - PagePlug`}
-            </title>
+            <title>{`${this.props.currentApplicationName} - PagePlug`}</title>
           </Helmet>
           <GlobalHotKeys>
             <MainContainer />

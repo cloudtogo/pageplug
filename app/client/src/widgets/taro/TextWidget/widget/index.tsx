@@ -119,7 +119,7 @@ class TextWidget extends BaseWidget<MTextWidgetProps, WidgetState> {
                 value: "ITALIC",
               },
               {
-                icon: <ControlIcons.LINETHROUGH_FONT />,
+                icon: "LINE_THROUGH_FONT",
                 value: "LINETHROUGH",
               },
             ],
