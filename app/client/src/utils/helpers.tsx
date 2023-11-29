@@ -34,7 +34,7 @@ import { checkContainerScrollable } from "widgets/WidgetUtils";
 import type { ContainerWidgetProps } from "widgets/ContainerWidget/widget";
 import type { WidgetProps } from "widgets/BaseWidget";
 import { getContainerIdForCanvas } from "sagas/WidgetOperationUtils";
-import scrollIntoView from "scroll-into-view-if-needed";
+// import scrollIntoView from "scroll-into-view-if-needed";
 import validateColor from "validate-color";
 
 export const snapToGrid = (
