@@ -57,6 +57,9 @@ const BoldFontIcon = importSvg(() => import("assets/icons/control/bold.svg"));
 const UnderlineIcon = importSvg(
   () => import("assets/icons/control/underline.svg"),
 );
+const LineThroughFontIcon = importSvg(
+  () => import("assets/icons/control/line-through.svg"),
+);
 const ItalicsFontIcon = importSvg(
   () => import("assets/icons/control/italics.svg"),
 );
@@ -340,6 +343,13 @@ export const ControlIcons: {
   BOLD_FONT: (props: IconProps & React.HTMLAttributes<HTMLDivElement>) => (
     <IconWrapper {...props}>
       <BoldFontIcon />
+    </IconWrapper>
+  ),
+  LINE_THROUGH_FONT: (
+    props: IconProps & React.HTMLAttributes<HTMLDivElement>,
+  ) => (
+    <IconWrapper {...props}>
+      <LineThroughFontIcon />
     </IconWrapper>
   ),
   UNDERLINE: (props: IconProps & React.HTMLAttributes<HTMLDivElement>) => (
