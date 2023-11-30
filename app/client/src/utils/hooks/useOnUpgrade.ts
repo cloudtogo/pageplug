@@ -22,10 +22,7 @@ const useOnUpgrade = (props: Props) => {
       logEventName || "ADMIN_SETTINGS_UPGRADE",
       logEventData,
     );
-    window.open(
-      BUSINESS_PRICE_URL,
-      "_blank",
-    );
+    window.open(BUSINESS_PRICE_URL, "_blank");
   };
 
   return { onUpgrade };
