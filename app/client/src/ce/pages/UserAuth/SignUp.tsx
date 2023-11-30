@@ -43,8 +43,13 @@ import { getIsSafeRedirectURL } from "utils/helpers";
 import Container from "pages/UserAuth/Container";
 import { getIsFormLoginEnabled } from "@appsmith/selectors/tenantSelectors";
 import { useHtmlPageTitle } from "@appsmith/utils";
-import PasswordSVGIcon from "ce/components/svg/Password";
-import EmailSVGIcon from "ce/components/svg/Email";
+import { FormIcons } from "icons/FormIcons";
+import {
+  LoginForm,
+  StyledEmailIcon,
+  StyledEyeOffIcon,
+  StyledEyeOnIcon,
+} from "./Login";
 import { message } from "antd";
 
 declare global {
@@ -183,34 +188,45 @@ export function SignUp(props: SignUpFormProps) {
           onSubmit={(e: any) => handleSubmit(e)}
         >
           <FormGroup intent={error ? "danger" : "none"}>
-            <FormTextField
-              autoFocus
-              name="email"
-              placeholder={createMessage(SIGNUP_PAGE_EMAIL_INPUT_PLACEHOLDER)}
-              type="email"
-              startIcon="null"
-              className="pp-height"
-            />
-            <EmailSVGIcon className="icon-position w-4" />
+            <LoginForm>
+              <FormTextField
+                autoFocus
+                className="pp-height login-form"
+                name="email"
+                placeholder={createMessage(SIGNUP_PAGE_EMAIL_INPUT_PLACEHOLDER)}
+                type="email"
+              />
+            </LoginForm>
+            <StyledEmailIcon height={15} width={15} />
           </FormGroup>
           <FormGroup intent={error ? "danger" : "none"}>
-            <FormTextField
-              name="password"
-              placeholder={createMessage(
-                SIGNUP_PAGE_PASSWORD_INPUT_PLACEHOLDER,
-              )}
-              type={isShowPassword ? "text" : "password"}
-              startIcon={isShowPassword ? "eye-on" : "null"}
-              className="pp-height"
-            />
-            <PasswordSVGIcon
-              className="icon-position w-4"
-              showPassword={showPassword}
-              isShowPassword={isShowPassword}
-            />
+            <LoginForm>
+              <FormTextField
+                className="pp-height"
+                name="password"
+                placeholder={createMessage(
+                  SIGNUP_PAGE_PASSWORD_INPUT_PLACEHOLDER,
+                )}
+                type={isShowPassword ? "text" : "password"}
+              />
+            </LoginForm>
+            {isShowPassword ? (
+              <StyledEyeOnIcon
+                height={15}
+                onClick={() => setIsShowPassword(false)}
+                width={15}
+              />
+            ) : (
+              <StyledEyeOffIcon
+                height={15}
+                onClick={() => setIsShowPassword(true)}
+                width={15}
+              />
+            )}
           </FormGroup>
           <FormActions>
             <Button
+              className="pp-height pp-font"
               isDisabled={shouldDisableSignupButton}
               isLoading={submitting}
               kind="primary"
@@ -224,7 +240,6 @@ export function SignUp(props: SignUpFormProps) {
               }}
               size="md"
               type="submit"
-              className="pp-height pp-font"
             >
               {createMessage(SIGNUP_PAGE_SUBMIT_BUTTON_TEXT)}
             </Button>
