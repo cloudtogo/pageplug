@@ -146,7 +146,8 @@ export const INVITE_USER_RAMP_TEXT2 = () =>
 export const CUSTOM_ROLES_RAMP_TEXT = () =>
   "要构建和分配自定义角色，请尝试我们的";
 export const CUSTOM_ROLE_TEXT = () => "自定义权限";
-export const BUSINESS_PRICE_URL = "https://docs.pageplug.cn/%E5%95%86%E4%B8%9A%E7%89%88&%E4%BC%81%E4%B8%9A%E7%89%88/%E4%BB%B7%E6%A0%BC%E8%A1%A8";
+export const BUSINESS_PRICE_URL =
+  "https://docs.pageplug.cn/%E5%95%86%E4%B8%9A%E7%89%88&%E4%BC%81%E4%B8%9A%E7%89%88/%E4%BB%B7%E6%A0%BC%E8%A1%A8";
 export const CUSTOM_ROLE_DISABLED_OPTION_TEXT = () =>
   "可以访问特定应用程序或仅访问应用程序中的某些页面和查询";
 export const USERS_HAVE_ACCESS_TO_ALL_APPS = () =>
@@ -644,16 +645,20 @@ export const CONNECT_EXISTING_WIDGET_LABEL = () => "选择一个小部件";
 export const CONNECT_EXISTING_WIDGET_SUB_HEADING = () => "替换现有小部件的数据";
 export const NO_EXISTING_WIDGETS = () => "在新小部件中显示数据";
 export const BINDING_WALKTHROUGH_TITLE = () => "显示您的数据";
-export const BINDING_WALKTHROUGH_DESC = () => "您可以替换页面上现有小部件的数据，或者选择一个新的小部件。";
-export const BINDINGS_DISABLED_TOOLTIP = () => "只有在成功获得查询响应时才能显示数据。";
+export const BINDING_WALKTHROUGH_DESC = () =>
+  "您可以替换页面上现有小部件的数据，或者选择一个新的小部件。";
+export const BINDINGS_DISABLED_TOOLTIP = () =>
+  "只有在成功获得查询响应时才能显示数据。";
 export const TABLE_OR_COLUMN_NOT_FOUND = () => "未找到表格或列。";
-export const DATASOURCE_STRUCTURE_INPUT_PLACEHOLDER_TEXT = () => "搜索表格或属性";
+export const DATASOURCE_STRUCTURE_INPUT_PLACEHOLDER_TEXT = () =>
+  "搜索表格或属性";
 export const SCHEMA_LABEL = () => "模式";
 export const STRUCTURE_NOT_FETCHED = () => "我们无法获取数据库的模式。";
 export const TEST_DATASOURCE_AND_FIX_ERRORS = () => "测试数据源并修复错误。";
 export const LOADING_SCHEMA = () => "加载模式...";
 export const SCHEMA_WALKTHROUGH_TITLE = () => "快速查询数据";
-export const SCHEMA_WALKTHROUGH_DESC = () => "从数据库表格中选择一个模板，以快速创建您的第一个查询。";
+export const SCHEMA_WALKTHROUGH_DESC = () =>
+  "从数据库表格中选择一个模板，以快速创建您的第一个查询。";
 
 // Git sync
 export const CONNECTED_TO_GIT = () => "已连接到 Git";
@@ -962,14 +967,12 @@ export const SIGNPOSTING_TOOLTIP = {
       "太简单了。将您在第2步中编写的查询与此小部件中的数据相连接。",
   },
   DEPLOY_APPLICATION: {
-    content: () =>
-      "部署您的应用程序，以查看它实时运行并与用户共享。",
+    content: () => "部署您的应用程序，以查看它实时运行并与用户共享。",
   },
   DOCUMENTATION: {
     content: () => "打开文档",
   },
 };
-
 
 export const ONBOARDING_CHECKLIST_FOOTER = () =>
   "不知道从何下手？请跟随我们的指引进行操作吧";
@@ -1131,12 +1134,10 @@ export const SAML_AUTH_DESC = () =>
   "允许使用 SAML2 协议的单点登录服务登录你的平台";
 export const OIDC_AUTH_DESC = () =>
   "允许使用 OIDC 协议的单点登录服务登录你的平台";
-export const WECHAT_AUTH_DESC = () =>
-  "允许使用 微信账号登录你的平台";
+export const WECHAT_AUTH_DESC = () => "允许使用 微信账号登录你的平台";
 export const BUSINESS_WECHAT_AUTH_DESC = () =>
   "允许使用 企业微信账号登录你的平台";
-export const DINGDING_AUTH_DESC = () =>
-  "允许使用 钉钉账号登录你的平台";
+export const DINGDING_AUTH_DESC = () => "允许使用 钉钉账号登录你的平台";
 export const SAVE_BUTTON = () => "保存";
 export const SAVE_AND_RESTART_BUTTON = () => "保存并重新启动";
 export const SAVE_AND_REFRESH_BUTTON = () => "保存并刷新";
@@ -1156,8 +1157,7 @@ export const AUDIT_LOGS = () => "审计日志";
 export const TRY_AGAIN_WITH_YOUR_FILTER = () => "Try again with your filter";
 
 // Audit logs Upgrade page begin
-export const INTRODUCING = (featureName: string) =>
-  `介绍 ${featureName}`;
+export const INTRODUCING = (featureName: string) => `介绍 ${featureName}`;
 export const AUDIT_LOGS_UPGRADE_PAGE_SUB_HEADING = () =>
   "查看工作区事件的时间戳记录。按事件类型、用户、资源ID和时间进行筛选。深入研究每个事件以进行进一步的调查。";
 export const SECURITY_AND_COMPLIANCE = () => "安全性与合规性";
@@ -1176,20 +1176,16 @@ export const INCIDENT_MANAGEMENT_DETAIL1 = () =>
 // Audit logs end
 
 // 访问控制升级页面开始
-export const GRANULAR_ACCESS_CONTROL_FOR_TEAMS = () =>
-  "团队的细粒度访问控制";
+export const GRANULAR_ACCESS_CONTROL_FOR_TEAMS = () => "团队的细粒度访问控制";
 export const ACCESS_CONTROL_UPGRADE_PAGE_SUB_HEADING = () =>
   "在工作区中控制应用程序中所有资源的所有权限。通过属性细粒度管理权限。使用权限和用户组轻松定义访问级别。";
-export const SECURITY_APPS_LEAST_PRIVILEGE = () =>
-  "按需最小化应用程序的权限";
+export const SECURITY_APPS_LEAST_PRIVILEGE = () => "按需最小化应用程序的权限";
 export const SECURITY_APPS_LEAST_PRIVILEGE_DETAIL1 = () =>
   `创建默认情况下所需的最低权限角色，例如：仅查看，将它们分配给用户组中的用户，例如：营销，并根据特殊访问情况进行修改，例如：内容创建者_执行查询。`;
-export const PREVENT_ACCIDENTAL_DAMAGE = () =>
-  "防止意外损害数据";
+export const PREVENT_ACCIDENTAL_DAMAGE = () => "防止意外损害数据";
 export const PREVENT_ACCIDENTAL_DAMAGE_DETAIL1 = () =>
   `将编辑和删除权限分配给整个用户组，然后进行细粒度修改，以便数据的非原生用户在您可以说“检索”之前不会删除表或批量删除流数据记录。`;
-export const RESTRICT_PUBLIC_EXPOSURE = () =>
-  "限制敏感数据的公开访问";
+export const RESTRICT_PUBLIC_EXPOSURE = () => "限制敏感数据的公开访问";
 export const RESTRICT_PUBLIC_EXPOSURE_DETAIL1 = () =>
   "积极禁止非管理员或非超级管理员用户组从您的环境、域和安全边界公开分享您的应用程序或导出应用程序数据。";
 export const ACCESS_CONTROL_UPGRADE_PAGE_FOOTER = () =>
@@ -1211,7 +1207,6 @@ export const AUTO_GROUP_SYNC_DETAIL1 = () =>
 export const PROVISIONING_UPGRADE_PAGE_FOOTER = () =>
   "通过 Pageplug 企业版，加强您的 Pageplug 应用程序的安全性，包括细粒度访问控制、审计日志、自定义单点登录等功能。";
 // 配置升级页面结束
-
 
 //
 export const WELCOME_FORM_NON_SUPER_USER_ROLE_DROPDOWN = () =>
@@ -1569,9 +1564,9 @@ export const IN_APP_EMBED_SETTING = {
     "通过访问共享设置，将您的应用程序公开，并轻松将您的 Pageplug 应用嵌入传统应用程序中",
   privateAppsText: () => "私有应用",
   rampSubtextModal: () =>
-      "在我们的企业版中，嵌入私有 Pageplug 应用程序并通过SSO无缝进行用户身份验证，可以联系Pageplug静静申请",
+    "在我们的企业版中，嵌入私有 Pageplug 应用程序并通过SSO无缝进行用户身份验证，可以联系Pageplug静静申请",
   rampSubtextSidebar: () =>
-      "要嵌入私有的 Pageplug 应用程序并通过SSO无缝进行用户身份验证，请尝试我们的 ",
+    "要嵌入私有的 Pageplug 应用程序并通过SSO无缝进行用户身份验证，请尝试我们的 ",
   rampLinktext: () => "体验企业版",
   rampLinktextvariant2: () => "企业版",
   upgradeContent: () => "想将嵌入企业内的系统",
@@ -1642,8 +1637,7 @@ export const BUILD_FIXED_LAYOUT_TEXT = () =>
 export const USE_SNAPSHOT = () => "返回快照";
 export const USE_SNAPSHOT_HEADER = () => "返回快照";
 export const DISCARD_SNAPSHOT_HEADER = () => "保存最新";
-export const SAVE_SNAPSHOT = () =>
-  "保存您当前布局的快照，有效期为5天";
+export const SAVE_SNAPSHOT = () => "保存您当前布局的快照，有效期为5天";
 export const SAVE_SNAPSHOT_TEXT = () =>
   "我们保存您当前布局的快照，以便在此测试版中如果自动布局不适合您，您可以返回。";
 export const CREATE_SNAPSHOT = () => "创建快照";
@@ -1654,10 +1648,8 @@ export const CONVERT_ANYWAYS = () => "仍然转换";
 export const CONVERSION_SUCCESS_HEADER = () => "全部完成";
 export const DISCARD_SNAPSHOT_TEXT = () =>
   "点击保存，将保存当前修改为最新快照，并且丢弃此快照：";
-export const CONVERSION_SUCCESS_TEXT = () =>
-  "检查您的所有页面并开始使用新布局";
-export const CONVERSION_WARNING_HEADER = () =>
-  "全部完成，需要进行一些调整";
+export const CONVERSION_SUCCESS_TEXT = () => "检查您的所有页面并开始使用新布局";
+export const CONVERSION_WARNING_HEADER = () => "全部完成，需要进行一些调整";
 export const CONVERSION_WARNING_TEXT = () =>
   "您可能需要手动调整布局中的某些小部件的位置";
 export const CONVERSION_ERROR_HEADER = () => "转换失败";
@@ -1667,8 +1659,7 @@ export const SEND_REPORT = () => "发送报告给我们";
 export const CONVERSION_ERROR_TEXT = () => "您的应用没有进行任何更改";
 export const DROPDOWN_LABEL_TEXT = () => "目标画布大小";
 export const CONVERSION_WARNING = () => "转换将更改您的布局";
-export const SNAPSHOT_LABEL = () =>
-  "要返回到原始状态，请点击返回快照";
+export const SNAPSHOT_LABEL = () => "要返回到原始状态，请点击返回快照";
 export const USE_SNAPSHOT_TEXT = () =>
   "您的应用将回到转换之前的状态，转换后所进行的操作（例如添加组件、数据源、查询、JS等等）都将被抹掉";
 export const SNAPSHOT_WARNING_MESSAGE = () =>
@@ -1677,15 +1668,13 @@ export const CONVERT_TO_FIXED_TITLE = () => "转换为固定布局";
 export const CONVERT_TO_FIXED_BUTTON = () => "转换为固定布局（测试版）";
 export const CONVERT_TO_AUTO_TITLE = () => "转换为响应式布局";
 export const CONVERT_TO_AUTO_BUTTON = () => "转换为响应式布局（测试版）";
-export const SNAPSHOT_BANNER_MESSAGE = () =>
-  "是否还原到快照版本布局？";
+export const SNAPSHOT_BANNER_MESSAGE = () => "是否还原到快照版本布局？";
 export const USE_SNAPSHOT_CTA = () => "是";
 export const DISCARD_SNAPSHOT_CTA = () => "否";
 export const MORE_DETAILS = () => "更多详情";
 export const CONVERSION_ERROR_MESSAGE_HEADER = () =>
   "要解决此错误，请执行以下操作：";
-export const CONVERSION_ERROR_MESSAGE_TEXT_ONE = () =>
-  "检查您的互联网连接。";
+export const CONVERSION_ERROR_MESSAGE_TEXT_ONE = () => "检查您的互联网连接。";
 export const CONVERSION_ERROR_MESSAGE_TEXT_TWO = () =>
   "向我们发送报告。发送报告将仅通知我们失败发生，并提供您的电子邮件地址以供联系。";
 export const SNAPSHOT_TIME_FROM_MESSAGE = (
@@ -1754,8 +1743,7 @@ export const TEST_DATASOURCE_SUCCESS = (
     : `测试成功，${datasourceName} 配置正确。`;
 };
 
-export const TEST_DATASOURCE_ERROR = () =>
-  "测试失败，无法建立连接";
+export const TEST_DATASOURCE_ERROR = () => "测试失败，无法建立连接";
 
 // 相机小部件
 export const DEFAULT_CAMERA_LABEL = () => "默认移动相机";
