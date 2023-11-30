@@ -55,7 +55,7 @@ import FooterLinks from "pages/UserAuth/FooterLinks";
 import { FormIcons } from "icons/FormIcons";
 import styled, { css } from "styled-components";
 
-const LoginForm = styled.div`
+export const LoginForm = styled.div`
   input {
     padding-left: 30px;
   }
@@ -67,7 +67,7 @@ const CommonIconStyles = css`
   left: 8px;
 `;
 
-const StyledEmailIcon = styled(FormIcons.EMAIL_ICON)`
+export const StyledEmailIcon = styled(FormIcons.EMAIL_ICON)`
   ${CommonIconStyles}
   &&& svg {
     path {
@@ -76,7 +76,7 @@ const StyledEmailIcon = styled(FormIcons.EMAIL_ICON)`
   }
 `;
 
-const StyledEyeOnIcon = styled(FormIcons.EYE_ON_ICON)`
+export const StyledEyeOnIcon = styled(FormIcons.EYE_ON_ICON)`
   ${CommonIconStyles}
   &&& svg {
     cursor: pointer;
@@ -86,7 +86,7 @@ const StyledEyeOnIcon = styled(FormIcons.EYE_ON_ICON)`
   }
 `;
 
-const StyledEyeOffIcon = styled(FormIcons.EYE_OFF_ICON)`
+export const StyledEyeOffIcon = styled(FormIcons.EYE_OFF_ICON)`
   ${CommonIconStyles}
   &&& svg {
     cursor: pointer;

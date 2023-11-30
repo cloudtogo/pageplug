@@ -105,10 +105,7 @@ import {
   parseJSActions,
   updateEvalTreeWithJSCollectionState,
 } from "workers/Evaluation/JSObject";
-import {
-  getFixedTimeDifference,
-  isWidgetActionOrJsObject,
-} from "./utils";
+import { getFixedTimeDifference, isWidgetActionOrJsObject } from "./utils";
 import { isJSObjectFunction } from "workers/Evaluation/JSObject/utils";
 import {
   getValidatedTree,
@@ -645,15 +642,15 @@ export default class DataTreeEvaluator {
     },
   ) {
     const {
+      configTree,
       dependenciesOfRemovedPaths = [],
+      findDifferenceTime = "0",
+      isNewWidgetAdded,
+      pathsToSkipFromEval = [],
       removedPaths = [],
       totalUpdateTreeSetupStartTime = performance.now(),
       translatedDiffs = [],
-      pathsToSkipFromEval = [],
-      findDifferenceTime = "0",
       updateDependencyMapTime = "0",
-      configTree,
-      isNewWidgetAdded,
     } = extraParams;
 
     updateEvalTreeWithJSCollectionState(this.evalTree, this.oldUnEvalTree);
@@ -955,7 +952,7 @@ export default class DataTreeEvaluator {
             getEntityNameAndPropertyPath(fullPropertyPath);
           const entity = currentTree[entityName];
           if (!isWidgetActionOrJsObject(entity)) return currentTree;
-          let unEvalPropertyValue = get(currentTree as any, fullPropertyPath);
+          const unEvalPropertyValue = get(currentTree as any, fullPropertyPath);
           const entityConfig = oldConfigTree[entityName];
 
           const isADynamicBindingPath =
