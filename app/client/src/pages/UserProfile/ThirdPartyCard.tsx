@@ -62,6 +62,7 @@ const ButtonWrapper = style.button<{
 `;
 
 export interface ThirdPartyCardProps {
+  type: string;
   logo: any;
   handleClick: () => void;
   title: string;
@@ -69,7 +70,7 @@ export interface ThirdPartyCardProps {
   isConneted: boolean | undefined;
 }
 
-export const ThirdPartyCard = (props: ThirdPartyCardProps) => {
+export const ThirdPartyCard = (props: Omit<ThirdPartyCardProps, "type">) => {
   const { handleClick, isConneted, logo, text, title } = props;
   return (
     <ContainerWrapper>

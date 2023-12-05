@@ -18,7 +18,10 @@ import { ANONYMOUS_USERNAME } from "constants/userConstants";
 import { ALL_LANGUAGE_CHARACTERS_REGEX } from "constants/Regex";
 import { createMessage } from "design-system-old/build/constants/messages";
 import { notEmptyValidator } from "design-system-old";
-import { getIsFormLoginEnabled } from "@appsmith/selectors/tenantSelectors";
+import {
+  getIsFormLoginEnabled,
+  getThirdPartyAuths,
+} from "@appsmith/selectors/tenantSelectors";
 import { ThirdPartyLogin } from "@appsmith/utils";
 import type { ThirdPartyCardProps } from "./ThirdPartyCard";
 import { ThirdPartyCard, TitleWrapper } from "./ThirdPartyCard";
@@ -57,6 +60,8 @@ function General() {
   const isFormLoginEnabled = useSelector(getIsFormLoginEnabled);
   const [name, setName] = useState(user?.name);
   const dispatch = useDispatch();
+  const thirdPartyAuths = useSelector(getThirdPartyAuths);
+
   const forgotPassword = async () => {
     try {
       await forgotPasswordSubmitHandler({ email: user?.email }, dispatch);
@@ -84,6 +89,7 @@ function General() {
 
   const ThirdPartyConfig: ThirdPartyCardProps[] = [
     {
+      type: "wechat",
       logo: WeChat,
       handleClick: () => ThirdPartyLogin(WechatOAuthURL),
       title: "微信",
@@ -92,6 +98,7 @@ function General() {
         user?.authorizations?.some((item) => item.source === "WECHAT") ?? false,
     },
     {
+      type: "wecom",
       logo: BusinessWeChat,
       handleClick: () => ThirdPartyLogin(BussinessWechatOAuthURL),
       title: "企业微信",
@@ -168,7 +175,9 @@ function General() {
       </FieldWrapper>
       <FieldWrapper>
         <TitleWrapper>第三方登录</TitleWrapper>
-        {ThirdPartyConfig?.map((item) => {
+        {ThirdPartyConfig.filter((item) =>
+          thirdPartyAuths?.includes(item.type),
+        )?.map((item) => {
           const { handleClick, isConneted, logo, text, title } = item;
           return (
             <ThirdPartyCard
