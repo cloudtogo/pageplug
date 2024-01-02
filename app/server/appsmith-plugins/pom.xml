@@ -31,6 +31,7 @@
         <module>jsPlugin</module>
         <module>saasPlugin</module>
         <module>smtpPlugin</module>
+        <module>openAiPlugin</module>
         <module>dmPlugin</module>
         <module>tidbPlugin</module>
     </modules>
@@ -51,6 +52,11 @@
                     <artifactId>slf4j-reload4j</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.pf4j</groupId>
+            <artifactId>pf4j</artifactId>
+            <version>${org.pf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>com.appsmith</groupId>

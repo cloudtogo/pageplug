@@ -3,11 +3,15 @@ package com.appsmith.server.configurations;
 import com.appsmith.server.authentication.handlers.AccessDeniedHandler;
 import com.appsmith.server.authentication.handlers.CustomServerOAuth2AuthorizationRequestResolver;
 import com.appsmith.server.authentication.handlers.LogoutSuccessHandler;
+import com.appsmith.server.authentication.oauth2clientrepositories.CustomOauth2ClientRepositoryManager;
 import com.appsmith.server.constants.FieldName;
 import com.appsmith.server.constants.Url;
 import com.appsmith.server.domains.User;
 import com.appsmith.server.filters.CSRFFilter;
+import com.appsmith.server.filters.ConditionalFilter;
+import com.appsmith.server.filters.PreAuth;
 import com.appsmith.server.helpers.RedirectHelper;
+import com.appsmith.server.ratelimiting.RateLimitService;
 import com.appsmith.server.services.AnalyticsService;
 import com.appsmith.server.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -95,6 +99,12 @@ public class SecurityConfig {
 
     @Autowired
     private RedirectHelper redirectHelper;
+
+    @Autowired
+    private RateLimitService rateLimitService;
+
+    @Autowired
+    private CustomOauth2ClientRepositoryManager oauth2ClientManager;
 
     @Autowired
     private CloudOSConfig cloudOSConfig;
@@ -206,6 +216,9 @@ public class SecurityConfig {
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, TENANT_URL + "/current"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USAGE_PULSE_URL),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, CUSTOM_JS_LIB_URL + "/*/view"),
+                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL + "/resendEmailVerification"),
+                        ServerWebExchangeMatchers.pathMatchers(
+                                HttpMethod.POST, USER_URL + "/verifyEmailVerificationToken"),
                         ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, PRODUCT_ALERT + "/alert"))
                 .permitAll()
                 .pathMatchers("/public/**", "/oauth2/**")
@@ -213,6 +226,10 @@ public class SecurityConfig {
                 .anyExchange()
                 .authenticated()
                 .and()
+                // Add Pre Auth rate limit filter before authentication filter
+                .addFilterBefore(
+                        new ConditionalFilter(new PreAuth(rateLimitService), Url.LOGIN_URL),
+                        SecurityWebFiltersOrder.FORM_LOGIN)
                 .httpBasic(httpBasicSpec -> httpBasicSpec.authenticationFailureHandler(failureHandler))
                 .formLogin(formLoginSpec -> formLoginSpec
                         .authenticationFailureHandler(failureHandler)
@@ -222,13 +239,15 @@ public class SecurityConfig {
                                 ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, Url.LOGIN_URL))
                         .authenticationSuccessHandler(authenticationSuccessHandler)
                         .authenticationFailureHandler(authenticationFailureHandler))
-
                 // For Github SSO Login, check transformation class: CustomOAuth2UserServiceImpl
                 // For Google SSO Login, check transformation class: CustomOAuth2UserServiceImpl
                 .oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec
                         .authenticationFailureHandler(failureHandler)
                         .authorizationRequestResolver(new CustomServerOAuth2AuthorizationRequestResolver(
-                                reactiveClientRegistrationRepository, commonConfig, redirectHelper))
+                                reactiveClientRegistrationRepository,
+                                commonConfig,
+                                redirectHelper,
+                                oauth2ClientManager))
                         .authenticationSuccessHandler(authenticationSuccessHandler)
                         .authenticationFailureHandler(authenticationFailureHandler)
                         .authorizedClientRepository(new ClientUserRepository(userService, commonConfig)))

@@ -47,9 +47,7 @@ public class Application extends BaseDomain {
     @JsonView(Views.Public.class)
     String workspaceId;
 
-    /*
-     * TODO: remove default values from application.
-     */
+    // TODO: remove default values from application
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Deprecated(forRemoval = true)
     @JsonView(Views.Public.class)
@@ -117,11 +115,9 @@ public class Application extends BaseDomain {
     Integer evaluationVersion;
 
     /**
-     * applicationVersion will be used when we've a breaking change in application,
-     * and it's not possible to write a
+     * applicationVersion will be used when we've a breaking change in application, and it's not possible to write a
      * migration. User need to update the application manually.
-     * In such cases, we can use this field to determine whether we need to notify
-     * user about that breaking change
+     * In such cases, we can use this field to determine whether we need to notify user about that breaking change
      * so that they can update their application.
      * Once updated, we should set applicationVersion to latest version as well.
      */
@@ -129,11 +125,9 @@ public class Application extends BaseDomain {
     Integer applicationVersion;
 
     /**
-     * Changing name, change in pages, widgets and datasources will set
-     * lastEditedAt.
+     * Changing name, change in pages, widgets and datasources will set lastEditedAt.
      * Other activities e.g. changing policy will not change this property.
-     * We're adding JsonIgnore here because it'll be exposed as modifiedAt to keep
-     * it backward compatible
+     * We're adding JsonIgnore here because it'll be exposed as modifiedAt to keep it backward compatible
      */
     @JsonView(Views.Internal.class)
     Instant lastEditedAt;
@@ -144,12 +138,9 @@ public class Application extends BaseDomain {
     Boolean collapseInvisibleWidgets;
 
     /**
-     * Earlier this was returning value of the updatedAt property in the base
-     * domain.
-     * As this property is modified by the framework when there is any change in
-     * domain,
-     * a new property lastEditedAt has been added to track the edit actions from
-     * users.
+     * Earlier this was returning value of the updatedAt property in the base domain.
+     * As this property is modified by the framework when there is any change in domain,
+     * a new property lastEditedAt has been added to track the edit actions from users.
      * This method exposes that property.
      *
      * @return updated time as a string
@@ -183,8 +174,7 @@ public class Application extends BaseDomain {
     @JsonView(Views.Public.class)
     Boolean isAutoUpdate;
 
-    // To convey current schema version for client and server. This will be used to
-    // check if we run the migration
+    // To convey current schema version for client and server. This will be used to check if we run the migration
     // between 2 commits if the application is connected to git
     @JsonView(Views.Internal.class)
     Integer clientSchemaVersion;
@@ -209,12 +199,15 @@ public class Application extends BaseDomain {
     @JsonView(Views.Public.class)
     Boolean forkWithConfiguration;
 
+    // isCommunityTemplate represents whether this application has been published as a community template
+    @JsonView(Views.Public.class)
+    Boolean isCommunityTemplate;
+
     @JsonView(Views.Internal.class)
     @Deprecated
     String defaultPermissionGroup;
 
-    // This constructor is used during clone application. It only deeply copies
-    // selected fields. The rest are either
+    // This constructor is used during clone application. It only deeply copies selected fields. The rest are either
     // initialized newly or is left up to the calling function to set.
     public Application(Application application) {
         super();
@@ -335,10 +328,8 @@ public class Application extends BaseDomain {
         Type type;
 
         /**
-         * @deprecated The following field is deprecated and now removed, because it's
-         *             needed in a migration. After the
-         *             migration has been run, it may be removed (along with the
-         *             migration or there'll be compile errors there).
+         * @deprecated The following field is deprecated and now removed, because it's needed in a migration. After the
+         * migration has been run, it may be removed (along with the migration or there'll be compile errors there).
          */
         @JsonView(Views.Internal.class)
         @Deprecated(forRemoval = true)
@@ -422,7 +413,8 @@ public class Application extends BaseDomain {
 
         public enum Type {
             FIXED,
-            AUTO
+            AUTO,
+            ANVIL
         }
     }
 }
