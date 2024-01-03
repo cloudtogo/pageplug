@@ -22,7 +22,11 @@ import {
   getThemePropertyBinding,
 } from "constants/ThemeConstants";
 import { getWidgets } from "sagas/selectors";
-import { extractColorsFromString, isValidColor } from "utils/helpers";
+import {
+  extractColorsFromString,
+  isEmptyOrNill,
+  isValidColor,
+} from "utils/helpers";
 import { TAILWIND_COLORS } from "constants/ThemeConstants";
 import useDSEvent from "utils/hooks/useDSEvent";
 import { DSEventTypes } from "utils/AppsmithUtils";
@@ -51,6 +55,8 @@ interface ColorPickerProps {
   placeholderText?: string;
   portalContainer?: HTMLElement;
   onPopupClosed?: () => void;
+  isFullColorPicker?: boolean;
+  setFullColorPicker?: (value: boolean) => void;
 }
 
 /**
@@ -332,7 +338,7 @@ interface LeftIconProps {
 }
 
 function LeftIcon(props: LeftIconProps) {
-  return isValidColor(props.color) ? (
+  return isValidColor(props.color) && !isEmptyOrNill(props.color) ? (
     <ColorIcon
       className="rounded-full cursor-pointer"
       color={props.color}
@@ -357,7 +363,12 @@ const POPOVER_MODFIER = {
 
 const ColorPickerComponent = React.forwardRef(
   (props: ColorPickerProps, containerRef: any) => {
-    const { isOpen: isOpenProp = false, placeholderText } = props;
+    const {
+      isFullColorPicker: defaultFullColorPickerValue = false,
+      isOpen: isOpenProp = false,
+      placeholderText,
+      setFullColorPicker: setDefaultFullColorPickerValue,
+    } = props;
     const popupRef = useRef<HTMLDivElement>(null);
     const inputGroupRef = useRef<HTMLInputElement>(null);
     // isClick is used to track whether the input field is in focus by mouse click or by keyboard
@@ -368,7 +379,9 @@ const ColorPickerComponent = React.forwardRef(
       props.evaluatedColorValue || props.color,
     );
 
-    const [isFullColorPicker, setFullColorPicker] = React.useState(false);
+    const [isFullColorPicker, setFullColorPicker] = React.useState(
+      defaultFullColorPickerValue,
+    );
 
     const debouncedOnChange = React.useCallback(
       debounce((color: string, isUpdatedViaKeyboard: boolean) => {
@@ -399,6 +412,8 @@ const ColorPickerComponent = React.forwardRef(
     );
 
     const handleKeydown = (e: KeyboardEvent) => {
+      if (isFullColorPicker) return;
+
       if (isOpen) {
         switch (e.key) {
           case "Escape":
@@ -549,15 +564,16 @@ const ColorPickerComponent = React.forwardRef(
     }, [props.color]);
 
     const handleInputClick = () => {
-      isClick.current = true;
-
       if (isFullColorPicker && isOpen) {
         setIsOpen(false);
+      } else {
+        isClick.current = true;
       }
     };
 
     const handleFullColorPickerClick = (value: boolean) => {
       setFullColorPicker(value);
+      setDefaultFullColorPickerValue && setDefaultFullColorPickerValue(value);
       setIsOpen(false);
     };
 

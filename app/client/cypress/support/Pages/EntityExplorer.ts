@@ -2,12 +2,8 @@ import { ObjectsRegistry } from "../Objects/Registry";
 import { EntityItems } from "./AssertHelper";
 
 type templateActions =
-  | "SELECT"
-  | "INSERT"
-  | "UPDATE"
-  | "DELETE"
   | "Find"
-  | "Find by ID"
+  | "Find by id"
   | "Insert"
   | "Update"
   | "Delete"
@@ -32,6 +28,7 @@ interface EntityActionParams {
     | "Refresh"
     | "Set as home page";
   subAction?: string;
+  //@ts-expect-error: type mismatch
   entityType?: EntityItems;
   toAssertAction?: boolean;
   toastToValidate?: string;
@@ -48,7 +45,7 @@ export class EntityExplorer {
     entityNameinLeftSidebar +
     "']/ancestor::div[1]/following-sibling::div//button[contains(@class, 'entity-context-menu')]";
   _entityNameInExplorer = (entityNameinLeftSidebar: string) =>
-    "//div[contains(@class, 't--entity-name')][text()='" +
+    "//div[contains(@class, 't--entity-explorer')]//div[contains(@class, 't--entity-name')][text()='" +
     entityNameinLeftSidebar +
     "']";
   private _expandCollapseArrow = (entityNameinLeftSidebar: string) =>
@@ -151,11 +148,17 @@ export class EntityExplorer {
     index = 0,
     force = false,
   ) {
-    this.agHelper.GetNClick(
-      this._openNavigationTab(navigationTab),
-      index,
-      force,
-    );
+    this.agHelper
+      .GetAttribute(this._openNavigationTab(navigationTab), "data-selected")
+      .then(($value) => {
+        if ($value === "true") return;
+        else
+          this.agHelper.GetNClick(
+            this._openNavigationTab(navigationTab),
+            index,
+            force,
+          );
+      });
   }
 
   public AssertEntityPresenceInExplorer(entityNameinLeftSidebar: string) {
@@ -236,10 +239,10 @@ export class EntityExplorer {
   }
 
   public ActionContextMenuByEntityName({
-    entityNameinLeftSidebar,
     action = "Delete",
-    subAction = "",
+    entityNameinLeftSidebar,
     entityType = EntityItems.Query,
+    subAction = "",
     toAssertAction,
     toastToValidate = "",
   }: EntityActionParams) {
@@ -309,14 +312,8 @@ export class EntityExplorer {
     this.agHelper.Sleep(500);
   }
 
-  public DragNDropWidget(
-    widgetType: string,
-    x = 300,
-    y = 100,
-    parentWidgetType = "",
-    dropTargetId = "",
-  ) {
-    this.NavigateToSwitcher("Widgets");
+  public SearchWidgetPane(widgetType: string) {
+    this.NavigateToSwitcher("Widgets", 0, true);
     this.agHelper.Sleep();
     this.agHelper.ClearTextField(this.locator._entityExplorersearch);
     this.agHelper.TypeText(
@@ -324,6 +321,20 @@ export class EntityExplorer {
       widgetType.split("widget")[0].trim(),
     );
     this.agHelper.Sleep(500);
+  }
+
+  public DragNDropWidget(
+    widgetType: string,
+    x = 300,
+    y = 100,
+    parentWidgetType = "",
+    dropTargetId = "",
+    skipWidgetSearch = false,
+  ) {
+    if (!skipWidgetSearch) {
+      this.SearchWidgetPane(widgetType);
+    }
+
     cy.get(this.locator._widgetPageIcon(widgetType))
       .first()
       .trigger("dragstart", { force: true })
@@ -358,8 +369,16 @@ export class EntityExplorer {
     y = 100,
     parentWidgetType = "",
     dropTargetId = "",
+    skipWidgetSearch = false,
   ) {
-    this.DragNDropWidget(widgetType, x, y, parentWidgetType, dropTargetId);
+    this.DragNDropWidget(
+      widgetType,
+      x,
+      y,
+      parentWidgetType,
+      dropTargetId,
+      skipWidgetSearch,
+    );
     this.agHelper.AssertAutoSave(); //settling time for widget on canvas!
     if (widgetType === "modalwidget") {
       cy.get(".t--modal-widget").should("exist");
@@ -436,9 +455,11 @@ export class EntityExplorer {
         action: "Edit name",
       });
     else cy.xpath(this._entityNameInExplorer(entityName)).dblclick();
-    cy.xpath(this.locator._entityNameEditing(entityName)).type(
-      renameVal + "{enter}",
-    );
+    cy.xpath(this.locator._entityNameEditing(entityName))
+      .type(renameVal)
+      .wait(500)
+      .type("{enter}")
+      .wait(300);
     this.AssertEntityPresenceInExplorer(renameVal);
     this.agHelper.Sleep(); //allowing time for name change to reflect in EntityExplorer
   }

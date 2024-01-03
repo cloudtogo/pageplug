@@ -5,6 +5,9 @@ redis:
     enabled: false
   replica:
     replicaCount: 1
+    nodeSelector: {}
+  image:
+    tag: 7.0.13-debian-11-r10
 
 mongodb:
   enabled: true
@@ -16,6 +19,13 @@ mongodb:
   replicaCount: 2
   architecture: "replicaset"
   replicaSetName: rs0
+  nodeSelector: {}
+  image:
+    tag: 5.0.21-debian-11-r5
+  arbiter:
+    nodeSelector: {}
+  hidden:
+    nodeSelector: {}
 
 ## @section Global parameters
 ## Global Docker image parameters
@@ -52,11 +62,12 @@ strategyType: RollingUpdate
 ##
 ## Init containers for redis & mongodb
 ##
-initContainer: {}
+initContainer:
+  {}
   # redis:
-  #   image: alpine
+  #   image: docker.io/bitnami/redis-cluster:7.0.13-debian-11-r10
   # mongodb:
-  #   image:  docker.io/bitnami/mongodb:4.4.11-debian-10-r12
+  #   image:  docker.io/bitnami/mongodb:5.0.21-debian-11-r5
 ## Image
 ##
 image:
@@ -86,13 +97,15 @@ podAnnotations: {}
 podLabels: {}
 
 podSecurityContext: {}
-  # fsGroup: 2000
+# For non-root user
+#  fsGroup: 1001
+#  sysctls:
+#  - name: net.ipv4.ip_unprivileged_port_start
+#    value: "80"
 
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
+securityContext:
+  {}
+  # For non-root user
   # runAsNonRoot: true
   # runAsUser: 1000
 
@@ -133,12 +146,14 @@ ingress:
   ## @param ingress.annotations Additional custom annotations for the ingress record
   ## NOTE: If `ingress.certManager=true`, annotation `kubernetes.io/tls-acme: "true"` will automatically be added
   ##
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # cert-manager.io/cluster-issuer: "letsencrypt-prod"
     # nginx.ingress.kubernetes.io/ssl-redirect: "true"
     # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-  hosts: []
+  hosts:
+    []
     # - host: appsmith-domain.me
   ## @param ingress.tls Enable TLS configuration for the host defined at `ingress.hosts` parameter
   ## You can:
@@ -298,4 +313,3 @@ applicationConfig:
   APPSMITH_ENCRYPTION_SALT: ""
   APPSMITH_CUSTOM_DOMAIN: ""
   APPSMITH_DISABLE_IFRAME_WIDGET_SANDBOX: "false"
-  APPSMITH_ENABLE_EMBEDDED_DB: 0

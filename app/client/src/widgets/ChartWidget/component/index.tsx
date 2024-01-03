@@ -1,7 +1,7 @@
-import { get } from "lodash";
 import React from "react";
 import styled from "styled-components";
 import * as echarts from "echarts";
+import "echarts-gl";
 import { invisible } from "constants/DefaultTheme";
 import { getAppsmithConfigs } from "@appsmith/configs";
 import type {
@@ -18,6 +18,17 @@ import type { WidgetPositionProps } from "widgets/BaseWidget";
 import { ChartErrorComponent } from "./ChartErrorComponent";
 import { EChartsConfigurationBuilder } from "./EChartsConfigurationBuilder";
 import { EChartsDatasetBuilder } from "./EChartsDatasetBuilder";
+import {
+  generateEChartInstanceDisposalParams,
+  is3DChart,
+  isBasicEChart,
+  shouldDisposeEChartsInstance,
+} from "./helpers";
+import {
+  parseOnDataPointClickParams,
+  isCustomEChart,
+  isCustomFusionChart,
+} from "./helpers";
 // Leaving this require here. Ref: https://stackoverflow.com/questions/41292559/could-not-find-a-declaration-file-for-module-module-name-path-to-module-nam/42505940#42505940
 // FusionCharts comes with its own typings so there is no need to separately import them. But an import from fusioncharts/core still requires a declaration file.
 import FusionCharts from "fusioncharts";
@@ -53,11 +64,13 @@ export interface ChartComponentState {
   eChartsError: Error | undefined;
   chartType: ChartType;
 }
+
 export interface ChartComponentProps extends WidgetPositionProps {
   allowScroll: boolean;
   chartData: AllChartData;
   chartName: string;
   chartType: ChartType;
+  customEChartConfig: Record<string, unknown>;
   customFusionChartConfig: CustomFusionChartConfig;
   hasOnDataPointClick: boolean;
   isVisible?: boolean;
@@ -112,14 +125,16 @@ class ChartComponent extends React.Component<
   eChartsContainerId = this.props.widgetId + "echart-container";
   eChartsHTMLContainer: HTMLElement | null = null;
 
-  eChartsData: AllChartData = {};
   echartsConfigurationBuilder: EChartsConfigurationBuilder;
 
   echartConfiguration: Record<string, any> = {};
+  is3DChart = false;
+  prevProps: ChartComponentProps;
 
   constructor(props: ChartComponentProps) {
     super(props);
     this.echartsConfigurationBuilder = new EChartsConfigurationBuilder();
+    this.prevProps = {} as ChartComponentProps;
 
     this.state = {
       eChartsError: undefined,
@@ -127,56 +142,55 @@ class ChartComponent extends React.Component<
     };
   }
 
-  parseOnDataPointClickParams = (evt: any, chartType: ChartType) => {
-    if (chartType === "CUSTOM_FUSION_CHART") {
-      const data = evt.data;
-      const seriesTitle = get(data, "datasetName", "");
+  getBasicEChartOptions = () => {
+    const datasetBuilder = new EChartsDatasetBuilder(
+      this.props.chartType,
+      this.props.chartData,
+    );
+    const dataset = datasetBuilder.datasetFromData();
 
-      return {
-        x: data.categoryLabel ?? -1,
-        y: data.dataValue ?? -1,
-        seriesTitle,
-        rawEventData: data,
-      } as ChartSelectedDataPoint;
-    } else {
-      const data: unknown[] = evt.data as unknown[];
-      const x: unknown = data[0];
-
-      const index = (evt.seriesIndex ?? 0) + 1;
-      const y: unknown = data[index];
-
-      const seriesName =
-        evt.seriesName && evt.seriesName?.length > 0 ? evt.seriesName : "null";
-
-      return {
-        x: x ?? -1,
-        y: y ?? -1,
-        seriesTitle: seriesName,
-      } as ChartSelectedDataPoint;
-    }
-  };
-
-  getEChartsOptions = () => {
     const options = {
       ...this.echartsConfigurationBuilder.prepareEChartConfig(
         this.props,
-        this.eChartsData,
+        datasetBuilder.filteredChartData,
+        datasetBuilder.longestDataLabels(),
       ),
       dataset: {
-        ...EChartsDatasetBuilder.datasetFromData(this.eChartsData),
+        ...dataset,
       },
     };
     return options;
   };
 
   dataClickCallback = (params: echarts.ECElementEvent) => {
-    const dataPointClickParams = this.parseOnDataPointClickParams(
+    const dataPointClickParams = parseOnDataPointClickParams(
       params,
       this.state.chartType,
     );
 
     this.props.onDataPointClick(dataPointClickParams);
   };
+
+  disposeEChartsIfNeeded() {
+    if (this.echartsInstance?.isDisposed()) {
+      return;
+    }
+
+    let shouldDisposeEcharts = true;
+    if (Object.keys(this.prevProps).length == 0) {
+      shouldDisposeEcharts = true;
+    } else {
+      const config = generateEChartInstanceDisposalParams(
+        this.prevProps,
+        this.props,
+      );
+      shouldDisposeEcharts = shouldDisposeEChartsInstance(config);
+    }
+    this.prevProps = this.props;
+    if (shouldDisposeEcharts) {
+      this.echartsInstance?.dispose();
+    }
+  }
 
   initializeEchartsInstance = () => {
     this.eChartsHTMLContainer = document.getElementById(
@@ -186,12 +200,17 @@ class ChartComponent extends React.Component<
       return;
     }
 
+    this.disposeEChartsIfNeeded();
+    this.is3DChart = is3DChart(this.props.customEChartConfig);
+
     if (!this.echartsInstance || this.echartsInstance.isDisposed()) {
       this.echartsInstance = echarts.init(
         this.eChartsHTMLContainer,
         undefined,
         {
-          renderer: "svg",
+          renderer: this.is3DChart ? "canvas" : "svg",
+          width: this.props.dimensions.componentWidth,
+          height: this.props.dimensions.componentHeight,
         },
       );
     }
@@ -205,6 +224,25 @@ class ChartComponent extends React.Component<
     );
   };
 
+  getCustomEChartOptions = () => {
+    return this.props.customEChartConfig;
+  };
+
+  shouldSetOptions(eChartOptions: any) {
+    if (equal(this.echartConfiguration, eChartOptions)) {
+      if (this.is3DChart) {
+        return (
+          this.state.eChartsError == undefined ||
+          this.state.eChartsError == null
+        );
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
+  }
+
   renderECharts = () => {
     this.initializeEchartsInstance();
 
@@ -212,41 +250,45 @@ class ChartComponent extends React.Component<
       return;
     }
 
-    const newConfiguration = this.getEChartsOptions();
-    const needsNewConfig = !equal(newConfiguration, this.echartConfiguration);
-    const resizedNeeded = this.shouldResizeECharts();
+    let eChartOptions: Record<string, unknown> = {};
+    if (isCustomEChart(this.state.chartType)) {
+      eChartOptions = this.getCustomEChartOptions();
+    } else if (isBasicEChart(this.state.chartType)) {
+      eChartOptions = this.getBasicEChartOptions();
+    }
 
-    if (needsNewConfig) {
-      this.echartConfiguration = newConfiguration;
-      this.echartsInstance.off("click");
-      this.echartsInstance.on("click", this.dataClickCallback);
-
-      try {
+    try {
+      if (this.shouldSetOptions(eChartOptions)) {
+        this.echartConfiguration = eChartOptions;
         this.echartsInstance.setOption(this.echartConfiguration, true);
 
         if (this.state.eChartsError) {
           this.setState({ eChartsError: undefined });
         }
-      } catch (error) {
-        this.disposeECharts();
-        this.setState({ eChartsError: error as Error });
       }
-    }
 
-    if (resizedNeeded) {
-      this.echartsInstance.resize({
-        width: this.props.dimensions.componentWidth,
-        height: this.props.dimensions.componentHeight,
-      });
+      if (this.shouldResizeECharts()) {
+        this.echartsInstance.resize({
+          width: this.props.dimensions.componentWidth,
+          height: this.props.dimensions.componentHeight,
+        });
+      }
+
+      this.echartsInstance.off("click");
+      this.echartsInstance.on("click", this.dataClickCallback);
+    } catch (error) {
+      this.disposeECharts();
+      this.setState({ eChartsError: error as Error });
     }
   };
 
   disposeECharts = () => {
-    this.echartsInstance?.dispose();
+    if (!this.echartsInstance?.isDisposed()) {
+      this.echartsInstance?.dispose();
+    }
   };
 
   componentDidMount() {
-    this.eChartsData = EChartsDatasetBuilder.chartData(this.props);
     this.renderChartingLibrary();
   }
 
@@ -261,29 +303,36 @@ class ChartComponent extends React.Component<
       this.renderFusionCharts();
     } else {
       this.disposeFusionCharts();
-      this.initializeEchartsInstance();
       this.renderECharts();
     }
   }
 
   componentDidUpdate() {
     if (
-      this.props.chartType == "CUSTOM_FUSION_CHART" &&
-      this.state.chartType != "CUSTOM_FUSION_CHART"
+      isCustomFusionChart(this.props.chartType) &&
+      !isCustomFusionChart(this.state.chartType)
     ) {
-      this.echartConfiguration = {};
       this.setState({
         eChartsError: undefined,
         chartType: "CUSTOM_FUSION_CHART",
       });
     } else if (
-      this.props.chartType != "CUSTOM_FUSION_CHART" &&
-      this.state.chartType === "CUSTOM_FUSION_CHART"
+      isCustomEChart(this.props.chartType) &&
+      !isCustomEChart(this.state.chartType)
+    ) {
+      this.echartConfiguration = {};
+      this.setState({ eChartsError: undefined, chartType: "CUSTOM_ECHART" });
+    } else if (
+      isBasicEChart(this.props.chartType) &&
+      !isBasicEChart(this.state.chartType)
     ) {
       // User has selected one of the ECharts option
-      this.setState({ chartType: "AREA_CHART" });
+      this.echartConfiguration = {};
+      this.setState({
+        eChartsError: undefined,
+        chartType: this.props.chartType,
+      });
     } else {
-      this.eChartsData = EChartsDatasetBuilder.chartData(this.props);
       this.renderChartingLibrary();
     }
   }
@@ -322,7 +371,7 @@ class ChartComponent extends React.Component<
       height: "100%",
       events: {
         dataPlotClick: (evt: any) => {
-          const dataPointClickParams = this.parseOnDataPointClickParams(
+          const dataPointClickParams = parseOnDataPointClickParams(
             evt,
             this.state.chartType,
           );

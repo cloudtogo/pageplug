@@ -10,18 +10,8 @@ import {
   getCurrentPageId,
 } from "selectors/editorSelectors";
 import { getFilteredErrors } from "selectors/debuggerSelectors";
-
-import {
-  getAction,
-  getPlugins,
-  getDatasource,
-} from "selectors/entitiesSelector";
-import {
-  onApiEditor,
-  onCanvas,
-  onQueryEditor,
-  doesEntityHaveErrors,
-} from "../helpers";
+import { getAction, getPlugins, getDatasource } from "@appsmith/selectors/entitiesSelector";
+import { onApiEditor, onCanvas, onQueryEditor, doesEntityHaveErrors } from "../helpers";
 import { getLastSelectedWidget } from "selectors/ui";
 import { getConfigTree, getDataTree } from "selectors/dataTreeSelectors";
 import { useNavigateToWidget } from "pages/Editor/Explorer/Widgets/useNavigateToWidget";
@@ -36,10 +26,10 @@ import {
   isWidget,
 } from "@appsmith/workers/Evaluation/evaluationUtils";
 import history, { NavigationMethod } from "utils/history";
-import { jsCollectionIdURL } from "RouteBuilder";
+import { jsCollectionIdURL } from "@appsmith/RouteBuilder";
 import store from "store";
 import { PluginType } from "entities/Action";
-// import WidgetIcon from "pages/Editor/Explorer/Widgets/WidgetIcon";
+import type { WidgetEntity } from "@appsmith/entities/DataTree/types";
 
 export const useFilteredLogs = (query: string, filter?: any) => {
   let logs = useSelector((state: AppState) => state.ui.debugger.logs);
@@ -157,8 +147,9 @@ export const useEntityLink = () => {
       const entityConfig = configTree[name];
       if (!pageId) return;
       if (isWidget(entity)) {
+        const widgetEntity = entity as WidgetEntity;
         navigateToWidget(
-          entity.widgetId,
+          widgetEntity.widgetId,
           entity.type,
           pageId || "",
           NavigationMethod.Debugger,

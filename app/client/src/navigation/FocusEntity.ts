@@ -18,6 +18,7 @@ export enum FocusEntity {
   PAGE = "PAGE",
   API = "API",
   CANVAS = "CANVAS",
+  DATASOURCE_LIST = "DATASOURCE_LIST",
   DATASOURCE = "DATASOURCE",
   DEBUGGER = "DEBUGGER",
   QUERY = "QUERY",
@@ -28,13 +29,14 @@ export enum FocusEntity {
 
 export const FocusStoreHierarchy: Partial<Record<FocusEntity, FocusEntity>> = {
   [FocusEntity.PROPERTY_PANE]: FocusEntity.CANVAS,
+  [FocusEntity.DATASOURCE]: FocusEntity.DATASOURCE_LIST,
 };
 
-export type FocusEntityInfo = {
+export interface FocusEntityInfo {
   entity: FocusEntity;
   id: string;
   pageId?: string;
-};
+}
 
 /**
  * Method to indicate if the URL is of type API, Query etc.,
@@ -94,6 +96,7 @@ export function identifyEntityFromPath(path: string): FocusEntityInfo {
     collectionId?: string;
     widgetIds?: string;
     selectedTab?: string; // Datasource creation/list screen
+    entity?: string;
   }>(path, {
     path: [
       BUILDER_PATH_DEPRECATED + API_EDITOR_ID_PATH,
@@ -119,6 +122,9 @@ export function identifyEntityFromPath(path: string): FocusEntityInfo {
       BUILDER_PATH + WIDGETS_EDITOR_ID_PATH,
       BUILDER_CUSTOM_PATH + WIDGETS_EDITOR_ID_PATH,
       BUILDER_PATH_DEPRECATED + WIDGETS_EDITOR_ID_PATH,
+      BUILDER_PATH + "/:entity",
+      BUILDER_CUSTOM_PATH + "/:entity",
+      BUILDER_PATH_DEPRECATED + "/:entity",
       BUILDER_PATH_DEPRECATED,
       BUILDER_PATH,
       BUILDER_CUSTOM_PATH,
@@ -153,6 +159,13 @@ export function identifyEntityFromPath(path: string): FocusEntityInfo {
     return {
       entity: FocusEntity.DATASOURCE,
       id: match.params.selectedTab,
+      pageId: match.params.pageId,
+    };
+  }
+  if (match.params.entity === "datasource") {
+    return {
+      entity: FocusEntity.DATASOURCE_LIST,
+      id: "",
       pageId: match.params.pageId,
     };
   }

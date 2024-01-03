@@ -158,15 +158,7 @@ describe("Validate MySQL Generate CRUD with JSON Form", () => {
       entityType: entityItems.Query,
     });
 
-    entityExplorer.ExpandCollapseEntity("Datasources");
-    entityExplorer.ExpandCollapseEntity(dsName);
-    entityExplorer.ActionContextMenuByEntityName({
-      entityNameinLeftSidebar: dsName,
-      action: "Refresh",
-    });
-    agHelper.AssertElementVisibility(
-      entityExplorer._entityNameInExplorer("productlines"),
-    );
+    dataSources.AssertTableInVirtuosoList(dsName, "productlines");
   });
 
   it("5. Verify Generate CRUD for the new table & Verify Deploy mode for table - Productlines", () => {
@@ -178,7 +170,7 @@ describe("Validate MySQL Generate CRUD with JSON Form", () => {
     assertHelper.AssertNetworkStatus("@replaceLayoutWithCRUDPage", 201);
     assertHelper.AssertNetworkStatus("@getActions", 200);
     assertHelper.AssertNetworkStatus("@postExecute", 200);
-    agHelper.GetNClick(dataSources._visibleTextSpan("Got it"));
+    agHelper.ClickButton("Got it");
     assertHelper.AssertNetworkStatus("@updateLayout", 200);
     deployMode.DeployApp(locators._widgetInDeployed("tablewidget"));
 
@@ -218,42 +210,43 @@ describe("Validate MySQL Generate CRUD with JSON Form", () => {
     _.dataSources.AssertJSONFormHeader(0, 0, "productLine");
   });
 
-  it.skip("6. Verify Update/Delete row/Delete field data from Deploy page - on Productlines - existing record + Bug 14063", () => {
-    entityExplorer.SelectEntityByName("update_form", "Widgets");
-    propPane.ChangeJsonFormFieldType(
-      "Text Description",
-      "Multiline Text Input",
-    );
-    _.propPane.NavigateBackToPropertyPane();
-    _.propPane.ChangeJsonFormFieldType(
-      "Html Description",
-      "Multiline Text Input",
-    );
-    propPane.NavigateBackToPropertyPane();
-    deployMode.DeployApp();
-    table.SelectTableRow(0, 0, false); //to make JSON form hidden
-    agHelper.AssertElementAbsence(locators._jsonFormWidget);
-    table.SelectTableRow(3);
-    agHelper.AssertElementVisibility(locators._jsonFormWidget);
+  //Open Bug 14063 - hence skipping
+  // it.skip("6. Verify Update/Delete row/Delete field data from Deploy page - on Productlines - existing record + Bug 14063", () => {
+  //   entityExplorer.SelectEntityByName("update_form", "Widgets");
+  //   propPane.ChangeJsonFormFieldType(
+  //     "Text Description",
+  //     "Multiline Text Input",
+  //   );
+  //   propPane.NavigateBackToPropertyPane();
+  //   propPane.ChangeJsonFormFieldType(
+  //     "Html Description",
+  //     "Multiline Text Input",
+  //   );
+  //   propPane.NavigateBackToPropertyPane();
+  //   deployMode.DeployApp();
+  //   table.SelectTableRow(0, 0, false); //to make JSON form hidden
+  //   agHelper.AssertElementAbsence(locators._jsonFormWidget);
+  //   table.SelectTableRow(3);
+  //   agHelper.AssertElementVisibility(locators._jsonFormWidget);
 
-    _.dataSources.AssertJSONFormHeader(3, 0, "productLine");
+  //   dataSources.AssertJSONFormHeader(3, 0, "productLine");
 
-    _.deployMode.EnterJSONTextAreaValue(
-      "Html Description",
-      "The largest cruise ship is twice the length of the Washington Monument. Some cruise ships have virtual balconies.",
-    );
-    agHelper.ClickButton("Update"); //Update does not work, Bug 14063
-    agHelper.AssertElementAbsence(locators._toastMsg); //Validating fix for Bug 14063
-    assertHelper.AssertNetworkStatus("@postExecute", 200);
-    table.AssertSelectedRow(3);
+  //   deployMode.EnterJSONTextAreaValue(
+  //     "Html Description",
+  //     "The largest cruise ship is twice the length of the Washington Monument. Some cruise ships have virtual balconies.",
+  //   );
+  //   agHelper.ClickButton("Update"); //Update does not work, Bug 14063
+  //   agHelper.AssertElementAbsence(locators._toastMsg); //Validating fix for Bug 14063
+  //   assertHelper.AssertNetworkStatus("@postExecute", 200);
+  //   table.AssertSelectedRow(3);
 
-    //validating update happened fine!
-    _.table.ReadTableRowColumnData(3, 2, "v1", 200).then(($cellData) => {
-      expect($cellData).to.eq(
-        "The largest cruise ship is twice the length of the Washington Monument. Some cruise ships have virtual balconies.",
-      );
-    });
-  });
+  //   //validating update happened fine!
+  //   table.ReadTableRowColumnData(3, 2, "v1", 200).then(($cellData) => {
+  //     expect($cellData).to.eq(
+  //       "The largest cruise ship is twice the length of the Washington Monument. Some cruise ships have virtual balconies.",
+  //     );
+  //   });
+  // });
 
   // it.skip("7. Verify Add/Update/Delete from Deploy page - on Productlines - new record + Bug 14063", () => {
   //   //To script aft bug fix!
@@ -308,7 +301,7 @@ describe("Validate MySQL Generate CRUD with JSON Form", () => {
   after(
     "Verify Deletion of the datasource when Pages/Actions associated are not removed yet",
     () => {
-      dataSources.DeleteDatasouceFromWinthinDS(dsName, 409); //Customers page & queries still active
+      dataSources.DeleteDatasourceFromWithinDS(dsName, 409); //Customers page & queries still active
     },
   );
 
@@ -323,7 +316,7 @@ describe("Validate MySQL Generate CRUD with JSON Form", () => {
     agHelper.AssertContains("Successfully generated a page");
     //assertHelper.AssertNetworkStatus("@getActions", 200);//Since failing sometimes
     assertHelper.AssertNetworkStatus("@postExecute", 200);
-    agHelper.GetNClick(dataSources._visibleTextSpan("Got it"));
+    agHelper.ClickButton("Got it");
     assertHelper.AssertNetworkStatus("@updateLayout", 200);
     deployMode.DeployApp(locators._widgetInDeployed("tablewidget"));
     table.WaitUntilTableLoad();

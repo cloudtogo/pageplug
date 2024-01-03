@@ -11,10 +11,11 @@ import {
 import { toast } from "design-system";
 import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
 import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+import { LightModeTheme } from "@design-system/theming";
 
 const FAVICON_MAX_WIDTH = 32;
 const FAVICON_MAX_HEIGHT = 32;
-const DEFAULT_BRANDING_PRIMARY_COLOR = "#D7D7D7";
+const DEFAULT_BRANDING_PRIMARY_COLOR = "#E15615";
 export const APPSMITH_BRAND_PRIMARY_COLOR = "#27b7b7";
 export const APPSMITH_BRAND_FAVICON_URL = "/static/img/favicon-pageplug.ico";
 export const APPSMITH_BRAND_LOGO_URL = "/static/img/pageplug_logo_primary.png";
@@ -31,6 +32,8 @@ export function createBrandColorsFromPrimaryColor(
   const hsl = tinycolor(brand).toHsl();
   const hue = hsl.h;
   const saturation = hsl.s;
+  // initialize light theme
+  const lightTheme = new LightModeTheme(brand);
 
   let textColor = "#000";
   const isReadable = tinycolor.isReadable(brand, "#000", {
@@ -60,10 +63,18 @@ export function createBrandColorsFromPrimaryColor(
         )
       : darkenColor(brand);
 
+  // get active color from color algorithm
+  const activeColor =
+    brand === APPSMITH_BRAND_PRIMARY_COLOR
+      ? getComputedStyle(document.documentElement).getPropertyValue(
+          "--ads-v2-color-bg-brand-emphasis-plus",
+        )
+      : lightTheme.bgAccentActive.toString({ format: "hex" });
   return {
     primary: brand,
     background: bgColor,
     hover: hoverColor,
+    active: activeColor,
     font: textColor,
     disabled: disabledColor,
   };

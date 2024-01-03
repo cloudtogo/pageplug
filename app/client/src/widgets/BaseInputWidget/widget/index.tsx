@@ -3,16 +3,24 @@ import type { IconName } from "@blueprintjs/icons";
 import { LabelPosition } from "components/constants";
 import type { ExecutionResult } from "constants/AppsmithActionConstants/ActionConstants";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import type { WidgetType } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import React from "react";
-import { isAutoLayout } from "utils/autoLayout/flexWidgetUtils";
-import type { DerivedPropertiesMap } from "utils/WidgetFactory";
+import { isAutoLayout } from "layoutSystems/autolayout/utils/flexWidgetUtils";
+import type { DerivedPropertiesMap } from "WidgetProvider/factory";
 import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import BaseWidget from "widgets/BaseWidget";
 import BaseInputComponent from "../component";
 import { InputTypes } from "../constants";
 import { checkInputTypeTextByProps } from "../utils";
+import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
+import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
+
+import IconSVG from "../icon.svg";
+import type {
+  WidgetBaseConfiguration,
+  WidgetDefaultProps,
+} from "WidgetProvider/constants";
+import type { PropertyPaneConfig } from "constants/PropertyControlConstants";
 
 class BaseInputWidget<
   T extends BaseInputWidgetProps,
@@ -22,7 +30,44 @@ class BaseInputWidget<
     super(props);
   }
 
-  static getPropertyPaneContentConfig() {
+  static type = "BASE_INPUT_WIDGET";
+
+  static getConfig(): WidgetBaseConfiguration {
+    return {
+      name: "输入框",
+      hideCard: true,
+      iconSVG: IconSVG,
+      needsMeta: true,
+    };
+  }
+
+  static getDefaults(): WidgetDefaultProps {
+    return {
+      rows: 4,
+      label: "Label",
+      labelPosition: LabelPosition.Left,
+      labelAlignment: Alignment.LEFT,
+      labelTextSize: "0.875rem",
+      labelWidth: 5,
+      columns: 20,
+      widgetName: "Input",
+      version: 1,
+      defaultText: "",
+      iconAlign: "left",
+      autoFocus: false,
+      labelStyle: "",
+      resetOnSubmit: true,
+      isRequired: false,
+      isDisabled: false,
+      animateLoading: true,
+      responsiveBehavior: ResponsiveBehavior.Fill,
+      minWidth: FILL_WIDGET_MIN_WIDTH,
+    };
+  }
+
+  static getPropertyPaneContentConfig(
+    generalProperties: PropertyPaneConfig[] = [],
+  ) {
     return [
       {
         sectionName: "标签",
@@ -251,6 +296,7 @@ class BaseInputWidget<
               return props.type !== "PHONE_INPUT_WIDGET";
             },
           },
+          ...generalProperties,
         ],
       },
       {
@@ -528,7 +574,7 @@ class BaseInputWidget<
     }
   }
 
-  getPageView() {
+  getWidgetView() {
     return (
       <BaseInputComponent
         allowNumericCharactersOnly={this.props.allowNumericCharactersOnly}
@@ -552,7 +598,7 @@ class BaseInputWidget<
         labelStyle={this.props.labelStyle}
         labelTextColor={this.props.labelTextColor}
         labelTextSize={this.props.labelTextSize}
-        labelWidth={this.getLabelWidth()}
+        labelWidth={this.props.labelComponentWidth}
         maxChars={this.props.maxChars}
         multiline={this.props.multiline}
         onFocusChange={this.props.onFocusChange}
@@ -566,10 +612,6 @@ class BaseInputWidget<
         widgetId={this.props.widgetId}
       />
     );
-  }
-
-  static getWidgetType(): WidgetType {
-    return "BASE_INPUT_WIDGET";
   }
 }
 
@@ -604,6 +646,7 @@ export interface BaseInputWidgetProps extends WidgetProps {
   iconName?: IconName;
   iconAlign?: Omit<Alignment, "center">;
   onSubmit?: string;
+  labelComponentWidth?: number;
 }
 
 export default BaseInputWidget;

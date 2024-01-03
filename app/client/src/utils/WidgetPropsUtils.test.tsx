@@ -12,13 +12,13 @@ import {
   buildDslWithChildren,
 } from "test/factories/WidgetFactoryUtils";
 import { cloneDeep } from "lodash";
-import { GRID_DENSITY_MIGRATION_V1 } from "widgets/constants";
+import { GRID_DENSITY_MIGRATION_V1 } from "WidgetProvider/constants";
 import {
   extractCurrentDSL,
   getDraggingSpacesFromBlocks,
   getMousePositionsOnCanvas,
 } from "./WidgetPropsUtils";
-import type { WidgetDraggingBlock } from "pages/common/CanvasArenas/hooks/useBlocksToBeDraggedOnCanvas";
+import type { WidgetDraggingBlock } from "layoutSystems/common/canvasArenas/ArenaTypes";
 import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
 
 describe("WidgetProps tests", () => {
@@ -915,9 +915,13 @@ describe("Initial value migration test", () => {
         },
       };
     };
-    const migratedDslV2: any = extractCurrentDSL(tabsWidgetDSL()).dsl;
+    const migratedDslV2: any = extractCurrentDSL({
+      response: tabsWidgetDSL(),
+    }).dsl;
     expect(migratedDslV2.children[0].children[0].leftColumn).toBeNaN();
-    const migratedDslV3: any = extractCurrentDSL(tabsWidgetDSL(2)).dsl;
+    const migratedDslV3: any = extractCurrentDSL({
+      response: tabsWidgetDSL(2),
+    }).dsl;
     expect(migratedDslV3.children[0].version).toBe(3);
     expect(migratedDslV3.children[0].children[0].leftColumn).not.toBeNaN();
     expect(migratedDslV3.children[0].children[0].leftColumn).toBe(0);

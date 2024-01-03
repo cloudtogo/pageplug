@@ -11,7 +11,7 @@ import LogoImage from "assets/images/pageplug_logo_primary.png";
 import { importSvg } from "design-system-old";
 
 const AppsmithLogo = importSvg(
-  () => import("assets/svg/appsmith_logo_primary.svg"),
+  async () => import("assets/svg/appsmith_logo_primary.svg"),
 );
 
 const StyledPageHeader = styled(StyledHeader)`

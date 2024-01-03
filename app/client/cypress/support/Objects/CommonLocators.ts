@@ -81,7 +81,8 @@ export class CommonLocators {
     item +
     "']/ancestor::div[@role='menuitem']";
   _visibleTextDiv = (divText: string) => "//div[text()='" + divText + "']";
-  _visibleTextSpan = (spanText: string) => `//span[text()="` + spanText + `"]`;
+  _visibleTextSpan = (spanText: string, isCss = false) =>
+    isCss ? `span:contains("${spanText}")` : `//span[text()="${spanText}"]`;
   _openWidget = ".widgets .t--entity-add-btn";
   _dropHere = ".t--drop-target";
   _editPage = "[data-testid=onboarding-tasks-datasource-text], .t--drop-target";
@@ -245,17 +246,16 @@ export class CommonLocators {
     `//button[contains(@class, 't--open-dropdown-${value}')]`;
   _fixedLayout = "#t--layout-conversion-cta:contains('fixed')";
   _forkAppToWorkspaceBtn = ".t--fork-app-to-workspace-button";
-  _popoverToolTip = ".bp3-popover-content";
+  _popoverToolTip = ".bp3-popover-content, .bp3-popover2-content";
   _selectedWidget = "div[data-testid='t--selected']";
   _appsmithWidget = (widgetId: string) => `.appsmith_widget_${widgetId}`;
   _selectionCanvas = (canvasId: string) => `#div-selection-${canvasId}`;
   _sqlKeyword = ".cm-m-sql.cm-keyword";
   _appLeveltooltip = (toolTip: string) => `span:contains('${toolTip}')`;
-  _appEditMenu = "[data-testid='t--application-edit-menu']";
-  _appEditMenuBtn = "[data-testid='t--application-edit-menu-cta']";
-  _appEditMenuSettings = "[data-testid='t--application-edit-menu-settings']";
-  _appEditExportSettings =
-    "[data-testid='t--application-edit-menu-export-application']";
+  _appEditMenu = "[data-testid='t--editor-menu']";
+  _appEditMenuBtn = "[data-testid='t--editor-menu-cta']";
+  _appEditMenuSettings = "[data-testid='t--editor-menu-settings']";
+  _appEditExportSettings = "[data-testid='t--editor-menu-export-application']";
   _appThemeSettings = "#t--theme-settings-header";
   _appChangeThemeBtn = ".t--change-theme-btn";
   _appThemeCard = ".t--theme-card";
@@ -273,10 +273,57 @@ export class CommonLocators {
   _svg = "svg";
   _imgWidgetInsideList = `//div[@data-testid='styledImage']//img`;
   _containerWidget = "[type='CONTAINER_WIDGET']";
+  _statboxWidget = "[type='STATBOX_WIDGET']";
   _evaluatedValue = ".t-property-evaluated-value";
   public ds_editor_env_filter = (envName: string) =>
     `[data-testid="t--ds-data-filter-${envName}"]`;
   _textWidgetContaioner = ".t--text-widget-container span";
+  _label = ".bp3-label";
+  _input = ".bp3-input";
+  _tooltipIcon = ".bp3-popover-target svg";
+  _checkboxHelpIcon = ".bp3-popover-target svg";
+  _checkboxWidgetLabel = ".t--checkbox-widget-label";
   _buttonWidgetInForm =
     "//*[contains(@class,'t--widget-buttonwidget')]//button[contains(@class,'bp3-button')]";
+  _walkthrough_overlay = `.t--walkthrough-overlay`;
+  _autoHeightHandles = "[data-testid='t-auto-height-overlay-handles']";
+  _autoHeightMin = "[data-testid='t--auto-height-overlay-handles-min']";
+  _autoHeightMax = "[data-testid='t--auto-height-overlay-handles-max']";
+  _position = (value: string) => `//*[@data-value='${value}']`;
+  _alignment = (value: string) => `//*[@data-value='${value}']`;
+  _borderRadius = (value: string) => `//*[@data-value='${value}']`;
+  _textInside = ".bp3-ui-text span";
+  _listActivePage = ".t--widget-listwidgetv2 .rc-pagination-item-active";
+  _hintsList = "ul.CodeMirror-hints";
+  _buttonInDeployedMode = ".bp3-button";
+  _treeSelectPlaceholder = ".rc-tree-select-selection-placeholder";
+  _treeSelectTitle = ".rc-tree-select-tree-title";
+  _newDataSourceBtn = ".datasources .t--entity-add-btn";
+  _callbackAddBtn = ".action-callback-add .ads-v2-button";
+  _checkboxInDeployedMode = "//label[contains(@class, 'bp3-checkbox')]//input";
+  _listText = "//span[text()='Blue']/../..";
+  _jsonFormSubmitBtn = ".t--jsonform-submit-btn";
+  _jsonFormResetBtn = ".t--jsonform-reset-btn";
+  _draggableFieldConfig = (fieldName: string) =>
+    `[data-rbd-draggable-id=${fieldName}]`;
+  _fileUploadDashboardClose = ".uppy-Dashboard-close";
+  _fileUploadErrorContains = (msg: string) =>
+    `.uppy-Informer p:contains('${msg}')`;
+  _fileUploadAddMore = ".uppy-DashboardContent-addMore";
+  _buttonText = ".bp3-button-text";
+  _richText_TitleBlock = "[title='Blocks']";
+  _richText_Heading = "[title='Heading 1']";
+  _richText_Label_Text = ".tox-tbtn__select-label";
+  _richText_Text_Color = '[title="Text color"] .tox-split-button__chevron';
+  _richText_color = (value: string) => `[title='${value}']`;
+  _richText_line = "#tinymce p span";
+  _treeSelectedContent = ".rc-tree-select-selection-item-content";
+  _switcherIcon = ".switcher-icon";
+  _root = "#root";
+  _pageHeaderToggle = ".mobile-ui-page-header-toggle-icon";
+  _pageHeaderMenuList = ".mobile-ui-page-header-menu-list";
+  _enterFullScreen = ".application-demo-new-dashboard-control-enter-fullscreen";
+  _dashboardContainer = ".application-demo-new-dashboard-container";
+  _exitFullScreen = ".application-demo-new-dashboard-control-exit-fullscreen";
+  _menuItem = ".bp3-menu-item";
 }

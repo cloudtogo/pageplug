@@ -8,24 +8,24 @@ export type Stylesheet<T = void> = T extends void
   ? DefaultStylesheet
   : T & DefaultStylesheet;
 
-export type AppThemeStylesheet = {
+export interface AppThemeStylesheet {
   [key: string]: Stylesheet;
-};
+}
 
-export type ButtonStyles = {
+export interface ButtonStyles {
   resetButtonStyles: {
     [key: string]: string;
   };
   submitButtonStyles: {
     [key: string]: string;
   };
-};
+}
 
-export type ChildStylesheet = {
+export interface ChildStylesheet {
   childStylesheet: AppThemeStylesheet;
-};
+}
 
-export type AppTheme = {
+export interface AppTheme {
   id: string;
   name: string;
   displayName: string;
@@ -36,6 +36,8 @@ export type AppTheme = {
   // NOTE: config represents options available and
   // properties represents the selected option
   config: {
+    order: number;
+    isDeprecated?: boolean;
     colors: {
       primaryColor: string;
       backgroundColor: string;
@@ -74,7 +76,7 @@ export type AppTheme = {
       [key: string]: string;
     };
   };
-};
+}
 
 export type EchartTheme = {
   themeKey: string;
@@ -83,7 +85,7 @@ export type EchartTheme = {
   [key: string]: any;
 }
 
-export type SetterConfig = {
+export interface SetterConfig {
   __setters: {
     [key: string]: {
       path: string;
@@ -92,4 +94,4 @@ export type SetterConfig = {
       accessor?: string;
     };
   };
-};
+}

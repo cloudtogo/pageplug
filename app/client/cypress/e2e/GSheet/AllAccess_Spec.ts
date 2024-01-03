@@ -6,6 +6,9 @@ import {
   dataSources,
   agHelper,
   entityExplorer,
+  table,
+  assertHelper,
+  appSettings,
 } from "../../support/Objects/ObjectsCore";
 
 const workspaceName = "gsheet apps";
@@ -22,8 +25,7 @@ describe("GSheet-Functional Tests With All Access", function () {
 
     //Adding query to insert a new spreadsheet
     homePage.NavigateToHome();
-    homePage.CreateAppInWorkspace(workspaceName);
-    homePage.RenameApplication(appName);
+    homePage.CreateAppInWorkspace(workspaceName, appName);
     gsheetHelper.AddNewSpreadsheetQuery(
       dataSourceName,
       spreadSheetName,
@@ -173,21 +175,20 @@ describe("GSheet-Functional Tests With All Access", function () {
     dataSources.RunQueryNVerifyResponseViews(8);
     dataSources.AssertQueryTableResponse(0, "87bbb472ef9d90dcef140a551665c929");
 
-    // Currently commenting this until https://github.com/appsmithorg/appsmith/issues/25447 is fixed.
     // Filter by cell range and verify
-    // dataSources.ValidateNSelectDropdown(
-    //   "Filter Format",
-    //   "Where Clause",
-    //   "Cell range",
-    // );
-    // agHelper.EnterValue("A2:A5", {
-    //   propFieldName: "",
-    //   directInput: false,
-    //   inputFieldName: "Cell range",
-    // });
-    // dataSources.RunQuery();
-    // dataSources.RunQueryNVerifyResponseViews(8);
-    // dataSources.AssertQueryTableResponse(0, "eac7efa5dbd3d667f26eb3d3ab504464");
+    dataSources.ValidateNSelectDropdown(
+      "Filter Format",
+      "Where Clause",
+      "Cell range",
+    );
+    agHelper.EnterValue("A2:A5", {
+      propFieldName: "",
+      directInput: false,
+      inputFieldName: "Cell range",
+    });
+    dataSources.RunQuery();
+    dataSources.RunQueryNVerifyResponseViews(4);
+    dataSources.AssertQueryTableResponse(0, "eac7efa5dbd3d667f26eb3d3ab504464");
   });
 
   it("5. Update a record which is not present and verify the error", () => {
@@ -286,8 +287,44 @@ describe("GSheet-Functional Tests With All Access", function () {
     });
   });
 
+  it("8. Import an app with all access sheet", function () {
+    homePage.NavigateToHome();
+    homePage.ImportApp("ImportAppAllAccess.json", workspaceName);
+    assertHelper.WaitForNetworkCall("importNewApplication").then(() => {
+      agHelper.Sleep();
+      //Validate table is not empty!
+      table.WaitUntilTableLoad(0, 0, "v2");
+    });
+    // Assert table data
+    table.ReadTableRowColumnData(0, 0, "v2").then((cellData) => {
+      expect(cellData).to.eq("eac7efa5dbd3d667f26eb3d3ab504464");
+    });
+    homePage.NavigateToHome();
+    homePage.DeleteApplication("ImportAppAllAccess");
+  });
+
+  it("9. App level import of app with all access gsheet", function () {
+    homePage.CreateAppInWorkspace(workspaceName, "AppLevelImport");
+    appSettings.OpenAppSettings();
+    appSettings.GoToImport();
+    agHelper.ClickButton("Import");
+    homePage.ImportApp("ImportAppAllAccess.json", "", true);
+    cy.wait("@importNewApplication").then(() => {
+      agHelper.Sleep();
+      agHelper.RefreshPage();
+      table.WaitUntilTableLoad(0, 0, "v2");
+    });
+    // Assert table data
+    table.ReadTableRowColumnData(0, 0, "v2").then((cellData) => {
+      expect(cellData).to.eq("eac7efa5dbd3d667f26eb3d3ab504464");
+    });
+    homePage.NavigateToHome();
+    homePage.DeleteApplication("AppLevelImport");
+  });
+
   after("Delete spreadsheet and app", function () {
     // Delete spreadsheet and app
+    homePage.SearchAndOpenApp(appName);
     gsheetHelper.DeleteSpreadsheetQuery(dataSourceName, spreadSheetName);
     cy.get("@postExecute").then((interception: any) => {
       expect(interception.response.body.data.body.message).to.deep.equal(

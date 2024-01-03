@@ -27,6 +27,7 @@ import MomentLocaleUtils from "react-day-picker/moment";
 
 const DATEPICKER_POPUP_CLASSNAME = "datepickerwidget-popup";
 import { required } from "utils/validation/common";
+import { CANVAS_ART_BOARD } from "constants/componentClassNameConstants";
 
 function hasFulfilledRequiredCondition(
   isRequired: boolean | undefined,
@@ -409,7 +410,7 @@ class DatePickerComponent extends React.Component<
               placeholder={"选择日期"}
               popoverProps={{
                 portalContainer:
-                  document.getElementById("art-board") || undefined,
+                  document.getElementById(CANVAS_ART_BOARD) || undefined,
                 usePortal: !this.props.withoutPortal,
                 canEscapeKeyClose: true,
                 portalClassName: `${DATEPICKER_POPUP_CLASSNAME}-${this.props.widgetId}`,

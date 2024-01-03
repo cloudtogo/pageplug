@@ -38,10 +38,10 @@ export enum PerformanceTransactionName {
   SYNC_CLOUDOS_API = "SYNC_CLOUDOS_API",
 }
 
-export type PerfTag = {
+export interface PerfTag {
   name: string;
   value: string;
-};
+}
 export interface PerfLog {
   sentrySpan: Span;
   skipLog?: boolean;

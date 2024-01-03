@@ -40,11 +40,14 @@ export type FieldTypeKey = keyof typeof FieldType;
 
 export const inverseFieldType = Object.entries(FieldType).reduce<
   Record<FieldType, FieldTypeKey>
->((previousValue, currentValue) => {
-  const [key, value] = currentValue;
-  previousValue[value] = key as FieldTypeKey;
-  return previousValue;
-}, {} as Record<FieldType, FieldTypeKey>);
+>(
+  (previousValue, currentValue) => {
+    const [key, value] = currentValue;
+    previousValue[value] = key as FieldTypeKey;
+    return previousValue;
+  },
+  {} as Record<FieldType, FieldTypeKey>,
+);
 
 export enum DataType {
   STRING = "string",
@@ -62,7 +65,7 @@ export enum DataType {
 export type Obj = Record<string, any>;
 export type JSON = Obj | Obj[];
 
-export type FieldComponentBaseProps = {
+export interface FieldComponentBaseProps {
   defaultValue?: string | number;
   isDisabled: boolean;
   isRequired?: boolean;
@@ -72,14 +75,14 @@ export type FieldComponentBaseProps = {
   labelTextColor?: string;
   labelTextSize?: string;
   tooltip?: string;
-};
+}
 
-export type FieldEventProps = {
+export interface FieldEventProps {
   onFocus?: string;
   onBlur?: string;
-};
+}
 
-export type BaseFieldComponentProps<TProps = any> = {
+export interface BaseFieldComponentProps<TProps = any> {
   hideLabel?: boolean;
   isRootField?: boolean;
   fieldClassName: string;
@@ -87,7 +90,7 @@ export type BaseFieldComponentProps<TProps = any> = {
   propertyPath: string;
   passedDefaultValue?: unknown;
   schemaItem: SchemaItem & TProps;
-};
+}
 
 export type Schema = Record<string, SchemaItem>;
 
@@ -120,7 +123,7 @@ export type SchemaItem = FieldComponentBaseProps & {
   sourceData: any;
 };
 
-export type ComponentDefaultValuesFnProps<TSourceData = any> = {
+export interface ComponentDefaultValuesFnProps<TSourceData = any> {
   sourceDataPath?: string;
   fieldType: FieldType;
   bindingTemplate: {
@@ -130,16 +133,16 @@ export type ComponentDefaultValuesFnProps<TSourceData = any> = {
   isCustomField: boolean;
   sourceData: TSourceData;
   skipDefaultValueProcessing: boolean;
-};
+}
 
 // This defines a react component with componentDefaultValues property attached to it.
-export type FieldComponent = {
+export interface FieldComponent {
   (props: BaseFieldComponentProps): JSX.Element | null;
   componentDefaultValues?:
     | FieldComponentBaseProps
     | ((props: ComponentDefaultValuesFnProps) => FieldComponentBaseProps);
   isValidType?: (value: any, options?: any) => boolean;
-};
+}
 
 export type FieldState<TObj> =
   | {

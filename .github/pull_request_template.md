@@ -11,12 +11,12 @@
 > Add a TL;DR when description is extra long (helps content team)
 
 Fixes # (issue)
+
 > if no issue exists, please create an issue and ask the maintainers about this first
 
-
 Media
-> A video or a GIF is preferred. when using Loom, don’t embed because it looks like it’s a GIF. instead, just link to the video
 
+> A video or a GIF is preferred. when using Loom, don’t embed because it looks like it’s a GIF. instead, just link to the video
 
 ## Type of change
 
@@ -27,26 +27,35 @@ Media
 - Breaking change (fix or feature that would cause existing functionality to not work as expected)
 - Chore (housekeeping or task changes that don't impact user perception)
 - This change requires a documentation update
+  >
 
+## Testing
 
-## How Has This Been Tested?
-> Please describe the tests that you ran to verify your changes. Provide instructions, so we can reproduce.
-> Please also list any relevant details for your test configuration.
-> Delete anything that is not important
+>
 
-- Manual
-- Jest
-- Cypress
+#### How Has This Been Tested?
 
-### Test Plan
+> Please describe the tests that you ran to verify your changes. Also list any relevant details for your test configuration.
+> Delete anything that is not relevant
+
+- [ ] Manual
+- [ ] JUnit
+- [ ] Jest
+- [ ] Cypress
+  >
+
+#### Test Plan
+
 > Add Testsmith test cases links that relate to this PR
 
 ### Issues raised during DP testing
+
 > Link issues raised during DP testing for better visiblity and tracking (copy link from comments dropped on this PR)
 
-
 ## Checklist:
+
 ### Dev activity
+
 - [ ] My code follows the style guidelines of this project
 - [ ] I have performed a self-review of my own code
 - [ ] I have commented my code, particularly in hard-to-understand areas
@@ -56,8 +65,8 @@ Media
 - [ ] New and existing unit tests pass locally with my changes
 - [ ] PR is being merged under a feature flag
 
-
 #### QA activity:
+
 - [ ] [Speedbreak features](https://github.com/appsmithorg/TestSmith/wiki/Guidelines-for-test-plans#speedbreakers-) have been covered
 - [ ] Test plan covers all impacted features and [areas of interest](https://github.com/appsmithorg/TestSmith/wiki/Guidelines-for-test-plans#areas-of-interest-)
 - [ ] Test plan has been peer reviewed by project stakeholders and other QA members

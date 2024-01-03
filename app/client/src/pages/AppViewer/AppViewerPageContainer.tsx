@@ -19,11 +19,8 @@ import {
   isPermitted,
   PERMISSION_TYPE,
 } from "@appsmith/utils/permissionHelpers";
-import { builderURL } from "RouteBuilder";
-import {
-  getCanvasWidgetsStructure,
-  getCanvasWidgets,
-} from "selectors/entitiesSelector";
+import { builderURL } from "@appsmith/RouteBuilder";
+import { getCanvasWidgetsStructure, getCanvasWidgets } from "@appsmith/selectors/entitiesSelector";
 import equal from "fast-deep-equal/es6";
 
 const Section = styled.section<{

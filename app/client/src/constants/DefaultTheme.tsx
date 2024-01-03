@@ -376,25 +376,25 @@ const iconSizes = {
 
 type IconSizeType = typeof iconSizes;
 
-export type ThemeBorder = {
+export interface ThemeBorder {
   thickness: number;
   style: "dashed" | "solid";
   color: Color;
-};
+}
 
-type PropertyPaneTheme = {
+interface PropertyPaneTheme {
   width: number;
   height: number;
   dividerColor: Color;
   titleHeight: number;
   connectionsHeight: number;
-};
+}
 
 export type NestedObjectOrArray<T> =
   | Record<string, T | T[] | Record<string, T | T[]>>
   | T
   | T[];
-export type Theme = {
+export interface Theme {
   workEnv: string;
   inCloudOS: boolean;
   radii: Array<number>;
@@ -525,7 +525,7 @@ export type Theme = {
     footerShadow: string;
     linkBg: string;
   };
-};
+}
 
 export const getColorWithOpacity = (color: Color, opacity: number) => {
   color = color.slice(1);
@@ -677,15 +677,15 @@ const lightShades = [
 
 type ShadeColor = (typeof darkShades)[number] | (typeof lightShades)[number];
 
-type buttonVariant = {
+interface buttonVariant {
   main: string;
   light: string;
   dark: string;
   darker: string;
   darkest: string;
-};
+}
 
-type ButtonVariantColor = {
+interface ButtonVariantColor {
   primary: {
     bgColor?: Color;
     borderColor?: Color;
@@ -704,9 +704,9 @@ type ButtonVariantColor = {
     hoverColor: Color;
     textColor?: Color;
   };
-};
+}
 
-type ColorType = {
+interface ColorType {
   overlayColor: string;
   button: {
     disabledText: ShadeColor;
@@ -1342,7 +1342,7 @@ type ColorType = {
   settings: {
     link: string;
   };
-};
+}
 
 const editorBottomBar = {
   background: Colors.WHITE,

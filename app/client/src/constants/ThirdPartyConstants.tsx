@@ -26,8 +26,27 @@ export const EMBED_PRIVATE_APPS_DOC =
 export const WX_SIGNUP_SETUP_DOC =
   "https://docs.pageplug.cn/%E5%AD%A6%E4%B9%A0%E6%96%87%E6%A1%A3/%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/%E5%BE%AE%E4%BF%A1%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95";
 export const PROVISIONING_SETUP_DOC = "https://docs.pageplug.cn";
+export const DISCORD_URL = "https://discord.gg/rBTTVJp";
+export const ENTERPRISE_PRICING_PAGE = "https://www.appsmith.com/enterprise";
+
 export const PRICING_PAGE_URL = (
   URL: string,
   source: string,
   instanceId: string,
-) => `${URL}?source=${source}${instanceId ? `&instance=${instanceId}` : ``}`;
+  feature?: string,
+  section?: string,
+) =>
+  `${URL}?source=${source}${instanceId ? `&instance=${instanceId}` : ``}${
+    feature ? `&feature=${feature}` : ""
+  }${section ? `&section=${section}` : ""}`;
+
+export const CUSTOMER_PORTAL_URL_WITH_PARAMS = (
+  URL: string,
+  source: string,
+  instanceId: string,
+  feature?: string,
+  section?: string,
+) =>
+  `${URL}?source=${source}${instanceId ? `&instance=${instanceId}` : ``}${
+    feature ? `&feature=${feature}` : ""
+  }${section ? `&section=${section}` : ""}`;

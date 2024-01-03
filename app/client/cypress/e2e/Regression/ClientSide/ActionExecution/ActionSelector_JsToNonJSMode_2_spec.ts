@@ -1,19 +1,16 @@
 import {
   agHelper,
+  draggableWidgets,
   entityExplorer,
-  locators,
   propPane,
 } from "../../../../support/Objects/ObjectsCore";
 
 describe("JS to non-JS mode in Action Selector", () => {
   before(() => {
-    agHelper.AddDsl("promisesBtnDsl", locators._buttonByText("Submit"));
+    entityExplorer.DragDropWidgetNVerify(draggableWidgets.BUTTON);
   });
 
   it("1. shows fields for navigate to from js to non-js mode", () => {
-    entityExplorer.SelectEntityByName("Page1", "Pages");
-    entityExplorer.SelectEntityByName("Button1", "Widgets");
-
     propPane.EnterJSContext("onClick", "{{navigateTo()}}", true, false);
     propPane.ToggleJSMode("onClick", false);
 
@@ -508,7 +505,7 @@ describe("JS to non-JS mode in Action Selector", () => {
     propPane.ToggleJSMode("onClick");
     propPane.ValidatePropertyFieldValue(
       "onClick",
-      `{{copyToClipboard('line1\\nline2\\nline3a');}}`,
+      `{{copyToClipboard('aline1\\nline2\\nline3');}}`,
     );
   });
 

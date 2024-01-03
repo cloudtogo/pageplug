@@ -5,8 +5,7 @@ import type { RouteComponentProps } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 import type { BuilderRouteParams } from "constants/routes";
 import type { AppState } from "@appsmith/reducers";
-import MainContainer from "./MainContainer";
-// import { TouchBackend } from "react-dnd-touch-backend";
+import IDE from "./IDE";
 import {
   getCurrentApplicationId,
   getIsEditorInitialized,
@@ -43,8 +42,9 @@ import { Spinner } from "design-system";
 import SignpostingOverlay from "pages/Editor/FirstTimeUserOnboarding/Overlay";
 import { editorInitializer } from "../../utils/editor/EditorUtils";
 import { widgetInitialisationSuccess } from "../../actions/widgetActions";
+import urlBuilder from "@appsmith/entities/URLRedirect/URLAssembly";
 
-type EditorProps = {
+interface EditorProps {
   currentApplicationId?: string;
   currentApplicationName?: string;
   initEditor: (payload: InitializeEditorPayload) => void;
@@ -66,12 +66,15 @@ type EditorProps = {
   pageLevelSocketRoomId: string;
   isMultiPane: boolean;
   widgetConfigBuildSuccess: () => void;
-};
+}
 
 type Props = EditorProps & RouteComponentProps<BuilderRouteParams>;
 
 class Editor extends Component<Props> {
   componentDidMount() {
+    const { pageId } = this.props.match.params || {};
+    urlBuilder.setCurrentPageId(pageId);
+
     editorInitializer().then(() => {
       this.props.widgetConfigBuildSuccess();
     });
@@ -137,12 +140,14 @@ class Editor extends Component<Props> {
       if (prevPageId && pageId && isPageIdUpdated) {
         this.props.updateCurrentPage(pageId);
         this.props.fetchPage(pageId);
+        urlBuilder.setCurrentPageId(pageId);
       }
     }
   }
 
   componentWillUnmount() {
     this.props.resetEditorRequest();
+    urlBuilder.setCurrentPageId(null);
   }
 
   public render() {
@@ -171,7 +176,7 @@ class Editor extends Component<Props> {
             </title>
           </Helmet>
           <GlobalHotKeys>
-            <MainContainer />
+            <IDE />
             <GitSyncModal />
             <DisconnectGitModal />
             <GuidedTourModal />

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import { InputGroup } from "@blueprintjs/core";
-import { debounce } from "lodash";
+import { debounce, isNaN } from "lodash";
 
 import CustomizedDropdown from "pages/common/CustomizedDropdown";
 import { Directions } from "utils/helpers";
@@ -20,10 +20,10 @@ import { ColumnTypes, ReadOnlyColumnTypes } from "../../../../constants";
 import { importRemixIcon } from "design-system-old";
 
 const CloseIcon = importRemixIcon(
-  () => import("remixicon-react/CloseCircleFillIcon"),
+  async () => import("remixicon-react/CloseCircleFillIcon"),
 );
 const ArrowDownIcon = importRemixIcon(
-  () => import("remixicon-react/ArrowDownSLineIcon"),
+  async () => import("remixicon-react/ArrowDownSLineIcon"),
 );
 
 const LabelWrapper = styled.div`
@@ -300,7 +300,7 @@ function RenderInput(props: {
   );
 }
 
-type CascadeFieldProps = {
+interface CascadeFieldProps {
   columns: DropdownOption[];
   column: string;
   condition: Condition;
@@ -317,9 +317,9 @@ type CascadeFieldProps = {
   removeFilter: (index: number) => void;
   accentColor: string;
   borderRadius: string;
-};
+}
 
-type CascadeFieldState = {
+interface CascadeFieldState {
   column: string;
   condition: Condition;
   value: any;
@@ -331,7 +331,7 @@ type CascadeFieldState = {
   isDeleted: boolean;
   isUpdate: boolean;
   isOperatorChange: boolean;
-};
+}
 
 const getConditions = (props: CascadeFieldProps) => {
   const columnValue = props.column || "";
@@ -495,9 +495,10 @@ function Fields(props: CascadeFieldProps & { state: CascadeFieldState }) {
     });
   };
   const onValueChange = (value: string) => {
+    const parsedValue = value && !isNaN(Number(value)) ? Number(value) : value;
     dispatch({
       type: CascadeFieldActionTypes.CHANGE_VALUE,
-      payload: value,
+      payload: parsedValue,
     });
   };
   const onDateSelected = (date: string) => {

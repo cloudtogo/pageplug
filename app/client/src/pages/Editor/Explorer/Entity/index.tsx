@@ -220,7 +220,7 @@ const SubItemWrapper = styled.div`
   margin-right: 4px;
 `;
 
-export type EntityProps = {
+export interface EntityProps {
   entityId: string;
   showAddButton?: boolean;
   className?: string;
@@ -252,7 +252,7 @@ export type EntityProps = {
   collapseRef?: RefObject<HTMLDivElement> | null;
   customAddButton?: ReactNode;
   forceExpand?: boolean;
-};
+}
 
 export const Entity = forwardRef(
   (props: EntityProps, ref: React.Ref<HTMLDivElement>) => {
@@ -338,7 +338,7 @@ export const Entity = forwardRef(
         isDisabled={!props.addButtonHelptext}
         placement="right"
       >
-        <AddButtonWrapper>
+        <AddButtonWrapper id={`add_${props.entityId}`}>
           <AddButton
             className={`${EntityClassNames.ADD_BUTTON} ${props.className}`}
             onClick={props.onCreate}

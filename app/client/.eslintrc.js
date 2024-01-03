@@ -13,6 +13,8 @@ const baseNoRestrictedImports =
 const eslintConfig = {
   extends: [".eslintrc.base.json"],
   rules: {
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "react/display-name": "off",
     "react/prop-types": "off",
@@ -85,6 +87,9 @@ const eslintConfig = {
           "Please don’t import Uppy directly. End users rarely use Uppy (e.g. only when they need to upload a file) – but Uppy bundles ~200 kB of JS. Please import it lazily instead.",
       },
     ],
+  },
+  parserOptions: {
+    tsconfigRootDir: __dirname,
   },
 };
 

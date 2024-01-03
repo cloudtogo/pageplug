@@ -2,22 +2,21 @@ import React, { useEffect } from "react";
 import { toggleInOnboardingWidgetSelection } from "actions/onboardingActions";
 import { forceOpenWidgetPanel } from "actions/widgetSidebarActions";
 import { SegmentedControl } from "design-system";
-import { tailwindLayers } from "constants/Layers";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import type { AppState } from "@appsmith/reducers";
-import { builderURL } from "RouteBuilder";
+import { builderURL } from "@appsmith/RouteBuilder";
 import { getCurrentPageId } from "selectors/editorSelectors";
 import { getIsFirstTimeUserOnboardingEnabled } from "selectors/onboardingSelectors";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { trimQueryString } from "utils/helpers";
 import history from "utils/history";
-import WidgetSidebar from "../WidgetSidebar";
 import EntityExplorer from "./EntityExplorer";
 import { getExplorerSwitchIndex } from "selectors/editorContextSelectors";
 import { setExplorerSwitchIndex } from "actions/editorContextActions";
-import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
 import WidgetSidebarWithTags from "../WidgetSidebarWithTags";
+import { ExplorerWrapper } from "./Common/ExplorerWrapper";
+import WidgetSidebar from "../WidgetSidebar";
 
 const selectForceOpenWidgetPanel = (state: AppState) =>
   state.ui.onBoarding.forceOpenWidgetPanel;
@@ -41,7 +40,6 @@ function ExplorerContent() {
   const pageId = useSelector(getCurrentPageId);
   const location = useLocation();
   const activeSwitchIndex = useSelector(getExplorerSwitchIndex);
-  const featureFlags = useSelector(selectFeatureFlags);
 
   const setActiveSwitchIndex = (index: number) => {
     dispatch(setExplorerSwitchIndex(index));
@@ -80,12 +78,11 @@ function ExplorerContent() {
 
   const isMobile = useSelector((state) => state.ui.mainCanvas.isMobile);
   return (
-    <div
-      className={`flex-1 flex flex-col overflow-hidden ${tailwindLayers.entityExplorer}`}
-    >
+    <ExplorerWrapper>
       <div
-        className="flex-shrink-0 p-3 pb-2 mt-1 border-t"
+        className="flex-shrink-0 p-3 pb-2"
         data-testid="explorer-tab-options"
+        id="explorer-tab-options"
       >
         <SegmentedControl
           onChange={onChange}
@@ -94,11 +91,6 @@ function ExplorerContent() {
         />
       </div>
 
-      {/* {!featureFlags.release_widgetdiscovery_enabled ? (
-        <WidgetSidebarWithTags isActive={activeOption === "widgets"} />
-      ) : (
-        <WidgetSidebar isActive={activeOption === "widgets"} />
-      )} */}
       {/* 换种方案 */}
       {!isMobile ? (
         <WidgetSidebarWithTags isActive={activeOption === "widgets"} />
@@ -107,7 +99,7 @@ function ExplorerContent() {
       )}
 
       <EntityExplorer isActive={activeOption === "explorer"} />
-    </div>
+    </ExplorerWrapper>
   );
 }
 

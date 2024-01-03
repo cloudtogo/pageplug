@@ -93,3 +93,31 @@ export const TABLE_DATA = `{{[
       "orderAmount": 7.99
     }
   ]}}`;
+
+export const TABLE_DATA_STATIC = `
+[
+  {
+    "id": "#1",
+    "task": "Drop a table",
+    "status": "✅",
+    "action": ""
+  },
+  {
+    "id": "#2",
+    "task": "Create a query fetch_users with the Mock DB",
+    "status": "--",
+    "action": ""
+  },
+  {
+    "id": "#3",
+    "task": "Bind the query using => fetch_users.data",
+    "status": "--",
+    "action": ""
+  }
+]
+`;
+
+export const WALKTHROUGH_TEST_PAGE = "WALKTHROUGH_TEST_PAGE";
+export const DEFAULT_COLUMN_NAME = "Table Column";
+export const FEATURE_WALKTHROUGH_INDEX_KEY = "FEATURE_WALKTHROUGH";
+export const USER_SIGN_UP_INDEX_KEY = "USER_SIGN_UP";

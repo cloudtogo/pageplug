@@ -3,9 +3,6 @@ const testdata = require("../../../../fixtures/testdata.json");
 const datasource = require("../../../../locators/DatasourcesEditor.json");
 const datasourceEditor = require("../../../../locators/DatasourcesEditor.json");
 const datasourceFormData = require("../../../../fixtures/datasources.json");
-const queryLocators = require("../../../../locators/QueryEditor.json");
-import * as _ from "../../../../support/Objects/ObjectsCore";
-
 import {
   agHelper,
   jsEditor,
@@ -47,7 +44,7 @@ describe("Undo/Redo functionality", function () {
       });
       cy.get(datasourceEditor.password).should("be.empty").wait(1000);
       cy.get(datasourceEditor.saveBtn).click({ force: true });
-      dataSources.AssertDSActive(postgresDatasourceName);
+      dataSources.AssertDSInActiveList(postgresDatasourceName);
     });
   });
 
@@ -60,8 +57,7 @@ describe("Undo/Redo functionality", function () {
       "https://mock-api.appsmith.com/users", //testing placeholder!
     );
     cy.enterDatasourceAndPath(testdata.baseUrl, testdata.methods);
-    agHelper.RemoveTooltip("Add a new query/JS Object");
-
+    agHelper.RemoveUIElement("Tooltip", "Add a new query/JS Object");
     cy.get(`${apiwidget.headerKey}`).type("Authorization");
     cy.get("body").click(0, 0);
     cy.get(apiwidget.settings).click({ force: true });
@@ -101,20 +97,8 @@ describe("Undo/Redo functionality", function () {
       parseSpecialCharSequences: false,
     });
     cy.get("body").click(0, 0);
-    // verifying Relationships is visible on dynamic binding
-    cy.get(".icon-text")
-      .eq(1)
-      .within(() => {
-        cy.get(".connection-type").should("have.text", "Incoming entities");
-      });
 
-    cy.get(".connection span").should("have.text", "FirstAPI");
-
-    cy.get(".icon-text")
-      .last()
-      .within(() => {
-        cy.get(".connection-type").should("have.text", "Outgoing entities");
-      });
+    // Removed the verification of relationships as we have removed the `Relationships` element from the new bindings UI
 
     cy.get("body").type(`{${modifierKey}}z`);
     cy.get(".CodeEditorTarget textarea").should(
@@ -159,25 +143,22 @@ describe("Undo/Redo functionality", function () {
     // cy.get(".function-name").should("not.contain.text", "test");
   });
 
-  //Skipping this since its failing in CI
-  it.skip("5. Checks undo/redo for Authenticated APIs", () => {
+  it("5. Checks undo/redo for Authenticated APIs", () => {
     cy.NavigateToAPI_Panel();
     cy.get(apiwidget.createAuthApiDatasource).click({ force: true });
     cy.wait(2000);
-    cy.get("input[name='url']").type(testdata.baseUrl);
-    cy.get("input[name='headers[0].key']").type(testdata.headerKey);
+    agHelper.TypeText(dataSources._headerKey, testdata.headerKey);
+    agHelper.TypeText(dataSources._urlInputControl, testdata.baseUrl);
+    agHelper.Sleep(1000);
     cy.get("body").click(0, 0);
     cy.get("body").type(`{${modifierKey}}z`);
-    cy.get("body").type(`{${modifierKey}}z`);
-    cy.wait(2000);
     cy.get("input[name='url']").should("have.value", "");
+    cy.get("body").type(`{${modifierKey}}z`);
     cy.get("input[name='headers[0].key']").should("have.value", "");
+    cy.get("body").click(0, 0);
     cy.get("body").type(`{${modifierKey}}{shift}z`);
     cy.get("body").type(`{${modifierKey}}{shift}z`);
-    cy.get("input[name='url']").should(
-      "have.value",
-      "https://mock-api.appsmith.com/",
-    );
+    cy.get("input[name='url']").should("have.value", testdata.baseUrl);
     cy.get("input[name='headers[0].key']").should("have.value", "Content-Type");
   });
 });

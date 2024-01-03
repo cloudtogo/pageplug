@@ -39,10 +39,10 @@ import { makeRouteNode } from "../utils";
 // TODO - @Dhruvik - ImprovedAppNav
 // Replace with NavigationProps if nothing changes
 // appsmith/app/client/src/pages/AppViewer/Navigation/constants.ts
-type TopStackedProps = {
+interface TopStackedProps {
   currentApplicationDetails?: ApplicationPayload;
   pages: Page[];
-};
+}
 
 export function TopStacked(props: TopStackedProps) {
   const { currentApplicationDetails, pages } = props;

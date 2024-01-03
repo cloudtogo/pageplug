@@ -4,7 +4,7 @@ import { useApisQueriesAndJsActionOptions } from "../../helpers";
 import type { TActionBlock } from "../../types";
 import { actionToCode, codeToAction } from "../../utils";
 
-type TRootActionProps = {
+interface TRootActionProps {
   code: string;
   id: string;
   onChange: (code: string) => void;
@@ -12,7 +12,8 @@ type TRootActionProps = {
   propertyName: string;
   widgetName: string;
   widgetType: string;
-};
+  dataTreePath: string | undefined;
+}
 
 export default function Action(props: TRootActionProps) {
   const { code, id, onChange } = props;
@@ -41,6 +42,7 @@ export default function Action(props: TRootActionProps) {
     <ActionTree
       actionBlock={action}
       className={`${props.index === 0 ? "mt-1" : "mt-2"}`}
+      dataTreePath={props.dataTreePath}
       id={id}
       level={0}
       onChange={handleChange}

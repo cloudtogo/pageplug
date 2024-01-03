@@ -48,8 +48,10 @@ import { SelectionRequestType } from "sagas/WidgetSelectUtils";
 import { toast } from "design-system";
 import { showDebuggerFlag } from "selectors/debuggerSelectors";
 import { getIsFirstTimeUserOnboardingEnabled } from "selectors/onboardingSelectors";
+import WalkthroughContext from "components/featureWalkthrough/walkthroughContext";
+import { protectedModeSelector } from "selectors/gitSyncSelectors";
 
-type Props = {
+interface Props {
   copySelectedWidget: () => void;
   pasteCopiedWidget: (mouseLocation: { x: number; y: number }) => void;
   deleteSelectedWidget: () => void;
@@ -71,6 +73,7 @@ type Props = {
   redo: () => void;
   appMode?: APP_MODE;
   isPreviewMode: boolean;
+  isProtectedMode: boolean;
   setPreviewModeAction: (shouldSet: boolean) => void;
   isExplorerPinned: boolean;
   isSignpostingEnabled: boolean;
@@ -78,7 +81,7 @@ type Props = {
   showCommitModal: () => void;
   getMousePosition: () => { x: number; y: number };
   hideInstaller: () => void;
-};
+}
 
 @HotkeysTarget
 class GlobalHotKeys extends React.Component<Props> {
@@ -118,6 +121,11 @@ class GlobalHotKeys extends React.Component<Props> {
   }
 
   public renderHotkeys() {
+    const { isOpened: isWalkthroughOpened } = this.context ?? {};
+    const { isProtectedMode } = this.props;
+    // If walkthrough is open disable shortcuts
+    if (isWalkthroughOpened || isProtectedMode) return <Hotkeys />;
+
     return (
       <Hotkeys>
         <Hotkey
@@ -365,6 +373,7 @@ const mapStateToProps = (state: AppState) => ({
   isDebuggerOpen: showDebuggerFlag(state),
   appMode: getAppMode(state),
   isPreviewMode: previewModeSelector(state),
+  isProtectedMode: protectedModeSelector(state),
   isExplorerPinned: getExplorerPinned(state),
   isSignpostingEnabled: getIsFirstTimeUserOnboardingEnabled(state),
 });
@@ -396,10 +405,15 @@ const mapDispatchToProps = (dispatch: any) => {
       dispatch(setExplorerPinnedAction(shouldSet)),
     showCommitModal: () =>
       dispatch(
-        setIsGitSyncModalOpen({ isOpen: true, tab: GitSyncModalTab.DEPLOY }),
+        setIsGitSyncModalOpen({
+          isOpen: true,
+          tab: GitSyncModalTab.DEPLOY,
+        }),
       ),
     hideInstaller: () => dispatch(toggleInstaller(false)),
   };
 };
+
+GlobalHotKeys.contextType = WalkthroughContext;
 
 export default connect(mapStateToProps, mapDispatchToProps)(GlobalHotKeys);

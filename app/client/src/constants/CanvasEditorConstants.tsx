@@ -1,4 +1,4 @@
-export type OccupiedSpace = {
+export interface OccupiedSpace {
   left: number;
   right: number;
   top: number;
@@ -7,9 +7,9 @@ export type OccupiedSpace = {
   type?: string;
   parentId?: string;
   floatLayout?: boolean;
-};
+}
 
-export type WidgetSpace = {
+export interface WidgetSpace {
   left: number;
   right: number;
   top: number;
@@ -20,7 +20,7 @@ export type WidgetSpace = {
   isDropTarget?: boolean;
   fixedHeight?: number;
   floatLayout?: boolean;
-};
+}
 
 export const zIndexLayers = {
   PROPERTY_PANE: "z-[3]",

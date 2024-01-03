@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 import set from "lodash/set";
+import type { DataTreeEntityConfig } from "@appsmith/entities/DataTree/types";
 import type {
   ConfigTree,
   DataTree,
   DataTreeEntity,
-  DataTreeEntityConfig,
-} from "entities/DataTree/dataTreeFactory";
+} from "entities/DataTree/dataTreeTypes";
 import type { EvalContext } from "workers/Evaluation/evaluate";
 import type { EvaluationVersion } from "@appsmith/api/ApplicationApi";
 import { addFn } from "workers/Evaluation/fns/utils/fnGuard";
@@ -117,7 +117,7 @@ export const addDataTreeToContext = (args: {
 };
 
 export const addPlatformFunctionsToEvalContext = (context: any) => {
-  for (const fnDef of getPlatformFunctions(self.$cloudHosting)) {
+  for (const fnDef of getPlatformFunctions()) {
     addFn(context, fnDef.name, fnDef.fn.bind(context));
   }
 };
@@ -181,7 +181,7 @@ export const getAllAsyncFunctions = (
   }
   const setterMethods = getAllSetterFunctions(dataTree, configTree);
   allAsyncFunctions = { ...allAsyncFunctions, ...setterMethods };
-  for (const platformFn of getPlatformFunctions(self.$cloudHosting)) {
+  for (const platformFn of getPlatformFunctions()) {
     allAsyncFunctions[platformFn.name] = true;
   }
   return allAsyncFunctions;

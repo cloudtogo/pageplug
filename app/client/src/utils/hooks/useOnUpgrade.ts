@@ -1,19 +1,25 @@
 import { useSelector } from "react-redux";
 import { getInstanceId } from "@appsmith/selectors/tenantSelectors";
-import { PRICING_PAGE_URL } from "constants/ThirdPartyConstants";
+import { CUSTOMER_PORTAL_URL_WITH_PARAMS } from "constants/ThirdPartyConstants";
 import type { EventName } from "@appsmith/utils/analyticsUtilTypes";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { getAppsmithConfigs } from "@appsmith/configs";
 import { pricingPageUrlSource } from "@appsmith/utils/licenseHelpers";
 import { BUSINESS_PRICE_URL } from "ce/constants/messages";
+import type {
+  RampFeature,
+  RampSection,
+} from "utils/ProductRamps/RampsControlList";
 
-type Props = {
+interface Props {
   logEventName?: EventName;
   logEventData?: any;
-};
+  featureName?: RampFeature;
+  sectionName?: RampSection;
+}
 
 const useOnUpgrade = (props: Props) => {
-  const { logEventData, logEventName } = props;
+  const { featureName, logEventData, logEventName, sectionName } = props;
   const instanceId = useSelector(getInstanceId);
   const appsmithConfigs = getAppsmithConfigs();
 

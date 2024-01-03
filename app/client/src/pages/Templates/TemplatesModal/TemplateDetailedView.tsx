@@ -62,11 +62,11 @@ const TemplateDescriptionWrapper = styled.div`
   padding-bottom: 52px;
 `;
 
-type TemplateDetailedViewProps = {
+interface TemplateDetailedViewProps {
   templateId: string;
   onBackPress: () => void;
   onClose: () => void;
-};
+}
 
 function TemplateDetailedView(props: TemplateDetailedViewProps) {
   const [currentTemplateId, setCurrentTemplateId] = useState(props.templateId);
@@ -141,7 +141,6 @@ function TemplateDetailedView(props: TemplateDetailedViewProps) {
               kind="secondary"
               onClick={props.onBackPress}
               startIcon="back-control"
-              to="#"
             >
               {createMessage(TEMPLATES_BACK_BUTTON)}
             </Link>

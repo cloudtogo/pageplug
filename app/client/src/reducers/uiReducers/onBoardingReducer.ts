@@ -17,11 +17,11 @@ const initialState: OnboardingState = {
   showAnonymousDataPopup: false,
 };
 
-export type StepState = {
+export interface StepState {
   step: SIGNPOSTING_STEP;
   completed: boolean;
   read?: boolean;
-};
+}
 
 export interface OnboardingState {
   inOnboardingWidgetSelection: boolean;

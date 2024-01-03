@@ -11,10 +11,10 @@ import { ControlIcons } from "icons/ControlIcons";
 import { FormIcons } from "icons/FormIcons";
 import useInteractionAnalyticsEvent from "utils/hooks/useInteractionAnalyticsEvent";
 
-type ControlWrapperProps = {
+interface ControlWrapperProps {
   orientation?: ContainerOrientation;
   isAction?: boolean;
-};
+}
 
 export const ControlWrapper = styled.div<ControlWrapperProps>`
   display: ${(props) =>

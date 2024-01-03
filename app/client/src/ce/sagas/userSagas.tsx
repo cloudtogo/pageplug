@@ -38,6 +38,7 @@ import {
   fetchFeatureFlagsError,
   fetchProductAlertSuccess,
   fetchProductAlertFailure,
+  fetchFeatureFlagsInit,
 } from "actions/userActions";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { INVITE_USERS_TO_WORKSPACE_FORM } from "@appsmith/constants/forms";
@@ -53,7 +54,10 @@ import {
 import localStorage from "utils/localStorage";
 import log from "loglevel";
 
-import { getCurrentUser } from "selectors/usersSelectors";
+import {
+  getCurrentUser,
+  getFeatureFlagsFetched,
+} from "selectors/usersSelectors";
 import {
   initAppLevelSocketConnection,
   initPageLevelSocketConnection,
@@ -77,15 +81,11 @@ import UsagePulse from "usagePulse";
 import { toast } from "design-system";
 import { isAirgapped } from "@appsmith/utils/airgapHelpers";
 const { inCloudOS } = getAppsmithConfigs();
-import {
-  USER_PROFILE_PICTURE_UPLOAD_FAILED,
-  UPDATE_USER_DETAILS_FAILED,
-} from "@appsmith/constants/messages";
-import { createMessage } from "design-system-old/build/constants/messages";
 import type {
   ProductAlert,
   ProductAlertConfig,
 } from "reducers/uiReducers/usersReducer";
+import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
 
 export function* createUserSaga(
   action: ReduxActionWithPromise<CreateUserRequest>,
@@ -207,12 +207,25 @@ export function* runUserSideEffectsSaga() {
     enableTelemetry && AnalyticsUtil.identifyUser(currentUser);
   }
 
+  const isFFFetched: boolean = yield select(getFeatureFlagsFetched);
+  if (!isFFFetched) {
+    yield call(fetchFeatureFlagsInit);
+    yield take(ReduxActionTypes.FETCH_FEATURE_FLAGS_SUCCESS);
+  }
+
+  const featureFlags: FeatureFlags = yield select(selectFeatureFlags);
+
+  const isGACEnabled = featureFlags?.license_gac_enabled;
+
+  const isFreeLicense = !isGACEnabled;
+
   if (!isAirgappedInstance) {
     // We need to stop and start tracking activity to ensure that the tracking from previous session is not carried forward
     UsagePulse.stopTrackingActivity();
     UsagePulse.startTrackingActivity(
       enableTelemetry && getAppsmithConfigs().segment.enabled,
       currentUser?.isAnonymous ?? false,
+      isFreeLicense,
     );
   }
 
@@ -320,10 +333,10 @@ export function* invitedUserSignupSaga(
   }
 }
 
-type InviteUserPayload = {
+interface InviteUserPayload {
   email: string;
   permissionGroupId: string;
-};
+}
 
 export function* inviteUser(payload: InviteUserPayload, reject: any) {
   const response: ApiResponse = yield callAPI(UserApi.inviteUser, payload);
@@ -347,10 +360,11 @@ export function* inviteUsers(
 ) {
   const { data, reject, resolve } = action.payload;
   try {
-    const response: ApiResponse = yield callAPI(UserApi.inviteUser, {
-      usernames: data.usernames,
-      permissionGroupId: data.permissionGroupId,
-    });
+    const response: ApiResponse<{ id: string; username: string }[]> =
+      yield callAPI(UserApi.inviteUser, {
+        usernames: data.usernames,
+        permissionGroupId: data.permissionGroupId,
+      });
     const isValidResponse: boolean = yield validateResponse(response, false);
     if (!isValidResponse) {
       let errorMessage = `${data.usernames}:  `;
@@ -363,12 +377,14 @@ export function* inviteUsers(
         workspaceId: data.workspaceId,
       },
     });
+    const { data: responseData } = response;
     yield put({
       type: ReduxActionTypes.INVITED_USERS_TO_WORKSPACE,
       payload: {
         workspaceId: data.workspaceId,
-        users: data.usernames.map((name: string) => ({
-          username: name,
+        users: responseData.map((user: { id: string; username: string }) => ({
+          userId: user.id,
+          username: user.username,
           permissionGroupId: data.permissionGroupId,
         })),
       },
@@ -382,12 +398,16 @@ export function* inviteUsers(
 
 export function* updateUserDetailsSaga(action: ReduxAction<UpdateUserRequest>) {
   try {
-    const { email, name, role, useCase } = action.payload;
+    const { email, intercomConsentGiven, name, proficiency, role, useCase } =
+      action.payload;
+
     const response: ApiResponse = yield callAPI(UserApi.updateUser, {
       email,
       name,
+      proficiency,
       role,
       useCase,
+      intercomConsentGiven,
     });
     const isValidResponse: boolean = yield validateResponse(response);
 
@@ -548,11 +568,13 @@ export function* leaveWorkspaceSaga(
 ) {
   try {
     const request: LeaveWorkspaceRequest = action.payload;
+    const { workspaceId } = action.payload;
     const response: ApiResponse = yield call(UserApi.leaveWorkspace, request);
     const isValidResponse: boolean = yield validateResponse(response);
     if (isValidResponse) {
       yield put({
-        type: ReduxActionTypes.GET_ALL_APPLICATION_INIT,
+        type: ReduxActionTypes.DELETE_WORKSPACE_SUCCESS,
+        payload: workspaceId,
       });
       toast.show(`成功退出应用组`, {
         kind: "success",
