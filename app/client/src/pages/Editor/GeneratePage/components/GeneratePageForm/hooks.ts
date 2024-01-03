@@ -6,9 +6,9 @@ import { CONNECT_NEW_DATASOURCE_OPTION_ID } from "../DataSourceOption";
 import type { executeDatasourceQuerySuccessPayload } from "actions/datasourceActions";
 import { executeDatasourceQuery } from "actions/datasourceActions";
 import type { DropdownOption } from "design-system-old";
-import { useDispatch } from "react-redux";
-import { getCurrentEnvironment } from "@appsmith/utils/Environments";
+import { useDispatch, useSelector } from "react-redux";
 import { PluginPackageName } from "entities/Action";
+import { getCurrentEnvironmentId } from "@appsmith/selectors/environmentSelectors";
 
 export const FAKE_DATASOURCE_OPTION = {
   CONNECT_NEW_DATASOURCE_OPTION: {
@@ -24,16 +24,18 @@ export const FAKE_DATASOURCE_OPTION = {
 export const useDatasourceOptions = ({
   canCreateDatasource,
   datasources,
+  fetchingDatasourceConfigs,
   generateCRUDSupportedPlugin,
 }: {
   canCreateDatasource: boolean;
   datasources: Datasource[];
+  fetchingDatasourceConfigs: boolean;
   generateCRUDSupportedPlugin: GenerateCRUDEnabledPluginMap;
 }) => {
   const [dataSourceOptions, setDataSourceOptions] = useState<DropdownOptions>(
     [],
   );
-  const currentEnvironment = getCurrentEnvironment();
+  const currentEnvironment = useSelector(getCurrentEnvironmentId);
 
   useEffect(() => {
     // On mount of component and on change of datasources, Update the list.
@@ -76,7 +78,12 @@ export const useDatasourceOptions = ({
       unSupportedDatasourceOptions,
     );
     setDataSourceOptions(newDataSourceOptions);
-  }, [datasources, setDataSourceOptions, generateCRUDSupportedPlugin]);
+  }, [
+    datasources,
+    setDataSourceOptions,
+    generateCRUDSupportedPlugin,
+    fetchingDatasourceConfigs,
+  ]);
   return dataSourceOptions;
 };
 
@@ -102,20 +109,20 @@ export const useDatasourceOptions = ({
 //   deleteFormat: "SHEET",
 // };
 
-type FetchAllSpreadSheets = {
+interface FetchAllSpreadSheets {
   selectedDatasourceId: string;
   pluginId: string;
   requestObject?: Record<any, string>;
-};
+}
 
-export type UseSpreadSheetsReturn = {
+export interface UseSpreadSheetsReturn {
   fetchAllSpreadsheets: ({
     requestObject,
     selectedDatasourceId,
   }: FetchAllSpreadSheets) => void;
   isFetchingSpreadsheets: boolean;
   failedFetchingSpreadsheets: boolean;
-};
+}
 
 export const useSpreadSheets = ({
   setSelectedDatasourceIsInvalid,
@@ -184,6 +191,7 @@ export const useSpreadSheets = ({
           payload: {
             datasourceId: selectedDatasourceId,
             data: formattedRequestData,
+            isGeneratePage: true,
           },
           onSuccessCallback: onFetchAllSpreadsheetSuccess,
           onErrorCallback: onFetchAllSpreadsheetFailure,
@@ -226,22 +234,22 @@ export type Sheets = Sheet[];
 export const getSheetUrl = (sheetId: string): string =>
   `https://docs.google.com/spreadsheets/d/${sheetId}/edit#gid=0`;
 
-export type FetchSheetsList = {
+export interface FetchSheetsList {
   selectedDatasourceId: string;
   selectedSpreadsheetUrl: string;
   pluginId: string;
   requestObject?: Record<any, string>;
-};
+}
 
-export type FetchSheetData = {
+export interface FetchSheetData {
   selectedDatasourceId: string;
   selectedSpreadsheetUrl: string;
   selectedSheetName: string;
   pluginId: string;
   requestObject?: Record<any, string>;
-};
+}
 
-export type UseSheetListReturn = {
+export interface UseSheetListReturn {
   sheetsList: DropdownOption[];
   isFetchingSheetsList: boolean;
   failedFetchingSheetsList: boolean;
@@ -250,9 +258,9 @@ export type UseSheetListReturn = {
     selectedDatasourceId,
     selectedSpreadsheetUrl,
   }: FetchSheetsList) => void;
-};
+}
 
-export type UseSheetDataReturn = {
+export interface UseSheetDataReturn {
   sheetData: Array<any>;
   isFetchingSheetData: boolean;
   failedFetchingSheetData: boolean;
@@ -262,9 +270,19 @@ export type UseSheetDataReturn = {
     selectedSheetName,
     selectedSpreadsheetUrl,
   }: FetchSheetData) => void;
-};
+}
 
-export const useSheetsList = (): UseSheetListReturn => {
+export interface UseSheetListProps {
+  setSheetOptions?: (tableOptions: DropdownOptions) => void;
+}
+
+export interface UseSheetDataProps {
+  setSheetData?: (tableOptions: DropdownOptions) => void;
+}
+
+export const useSheetsList = (
+  props: UseSheetListProps = {},
+): UseSheetListReturn => {
   const dispatch = useDispatch();
 
   const [sheetsList, setSheetsList] = useState<DropdownOption[]>([]);
@@ -290,12 +308,13 @@ export const useSheetsList = (): UseSheetListReturn => {
         const responseBody = payload.data.trigger;
         if (Array.isArray(responseBody)) {
           setSheetsList(responseBody);
+          props.setSheetOptions && props.setSheetOptions(responseBody);
         } else {
           // to handle error like "401 Unauthorized"
         }
       }
     },
-    [setSheetsList, setIsFetchingSheetsList],
+    [setSheetsList, setIsFetchingSheetsList, props.setSheetOptions],
   );
 
   const fetchSheetsList = useCallback(
@@ -306,6 +325,7 @@ export const useSheetsList = (): UseSheetListReturn => {
       selectedSpreadsheetUrl,
     }: FetchSheetsList) => {
       setSheetsList([]);
+      props.setSheetOptions && props.setSheetOptions([]);
       setIsFetchingSheetsList(true);
       setFailedFetchingSheetsList(false);
       const formattedRequestData = {
@@ -322,6 +342,7 @@ export const useSheetsList = (): UseSheetListReturn => {
           payload: {
             datasourceId: selectedDatasourceId,
             data: formattedRequestData,
+            isGeneratePage: true,
           },
           onSuccessCallback: onFetchAllSheetSuccess,
           onErrorCallback: onFetchAllSheetFailure,
@@ -334,6 +355,7 @@ export const useSheetsList = (): UseSheetListReturn => {
       onFetchAllSheetFailure,
       setIsFetchingSheetsList,
       setFailedFetchingSheetsList,
+      props.setSheetOptions,
     ],
   );
 
@@ -345,7 +367,9 @@ export const useSheetsList = (): UseSheetListReturn => {
   };
 };
 
-export const useSheetData = (): UseSheetDataReturn => {
+export const useSheetData = (
+  props: UseSheetDataProps = {},
+): UseSheetDataReturn => {
   const dispatch = useDispatch();
 
   const [sheetData, setSheetData] = useState<any>([]);
@@ -371,12 +395,13 @@ export const useSheetData = (): UseSheetDataReturn => {
         const responseBody = payload.data.trigger;
         if (Array.isArray(responseBody)) {
           setSheetData(responseBody);
+          props.setSheetData && props.setSheetData(responseBody);
         } else {
           // to handle error like "401 Unauthorized"
         }
       }
     },
-    [setSheetData, setIsFetchingSheetData],
+    [setSheetData, setIsFetchingSheetData, props.setSheetData],
   );
 
   const fetchSheetData = useCallback(
@@ -387,6 +412,7 @@ export const useSheetData = (): UseSheetDataReturn => {
       selectedSpreadsheetUrl,
     }: FetchSheetData) => {
       setSheetData([]);
+      props.setSheetData && props.setSheetData([]);
       setIsFetchingSheetData(true);
       setFailedFetchingSheetData(false);
       const formattedRequestData = {
@@ -406,6 +432,7 @@ export const useSheetData = (): UseSheetDataReturn => {
           payload: {
             datasourceId: selectedDatasourceId,
             data: formattedRequestData,
+            isGeneratePage: true,
           },
           onSuccessCallback: onFetchAllSheetSuccess,
           onErrorCallback: onFetchAllSheetFailure,
@@ -418,6 +445,7 @@ export const useSheetData = (): UseSheetDataReturn => {
       onFetchAllSheetFailure,
       setIsFetchingSheetData,
       setFailedFetchingSheetData,
+      props.setSheetData,
     ],
   );
 
@@ -429,16 +457,16 @@ export const useSheetData = (): UseSheetDataReturn => {
   };
 };
 
-export type FetchColumnHeaderListParams = {
+export interface FetchColumnHeaderListParams {
   selectedDatasourceId: string;
   selectedSpreadsheetUrl: string;
   sheetName: string;
   pluginId: string;
   tableHeaderIndex: string;
   requestObject?: Record<any, string>; //possily unneccesary
-};
+}
 
-export type UseSheetColumnHeadersReturn = {
+export interface UseSheetColumnHeadersReturn {
   columnHeaderList: DropdownOption[];
   isFetchingColumnHeaderList: boolean;
   errorFetchingColumnHeaderList: string;
@@ -448,7 +476,7 @@ export type UseSheetColumnHeadersReturn = {
     sheetName,
     tableHeaderIndex,
   }: FetchColumnHeaderListParams) => void;
-};
+}
 
 export const useSheetColumnHeaders = () => {
   const dispatch = useDispatch();
@@ -519,6 +547,7 @@ export const useSheetColumnHeaders = () => {
           payload: {
             datasourceId: params.selectedDatasourceId,
             data: formattedRequestData,
+            isGeneratePage: true,
           },
           onSuccessCallback: onFetchColumnHeadersSuccess,
           onErrorCallback: onFetchColumnHeadersFailure,
@@ -588,6 +617,7 @@ export const useS3BucketList = () => {
             payload: {
               datasourceId: selectedDatasource.id,
               data: payload,
+              isGeneratePage: true,
             },
             onSuccessCallback: onFetchBucketSuccess,
             onErrorCallback: onFetchBucketFailure,

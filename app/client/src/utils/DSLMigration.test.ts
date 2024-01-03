@@ -25,13 +25,13 @@ import * as migrateLabelPosition from "./migrations/MigrateLabelPosition";
 import * as migrateAutoHeight from "./migrations/autoHeightMigrations";
 import * as chartMigrations from "./migrations/ChartWidget";
 
-type Migration = {
+interface Migration {
   functionLookup: {
     moduleObj: any;
     functionName: string;
   }[];
   version: number | undefined;
-};
+}
 
 /**
  * Migrations is an array of objects, were each object has
@@ -818,6 +818,24 @@ const migrations: Migration[] = [
       },
     ],
     version: 84,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: chartMigrations,
+        functionName: "migrateDefaultValuesForCustomEChart",
+      },
+    ],
+    version: 85,
+  },
+  {
+    functionLookup: [
+      {
+        moduleObj: tableMigrations,
+        functionName: "migrateTableServerSideFiltering",
+      },
+    ],
+    version: 86,
   },
 ];
 

@@ -3,7 +3,7 @@ import React from "react";
 import { Hotkey, Hotkeys, HotkeysTarget } from "@blueprintjs/core";
 import type { SearchItem, SelectEvent } from "./utils";
 
-type Props = {
+interface Props {
   modalOpen: boolean;
   toggleShow: () => void;
   handleUpKey: () => void;
@@ -14,7 +14,7 @@ type Props = {
     source?: string,
   ) => void;
   children: React.ReactNode;
-};
+}
 @HotkeysTarget
 class GlobalSearchHotKeys extends React.Component<Props> {
   get hotKeysConfig() {

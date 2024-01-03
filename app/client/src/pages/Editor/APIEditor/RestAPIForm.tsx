@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { connect } from "react-redux";
 import type { InjectedFormProps } from "redux-form";
 import { change, formValueSelector, reduxForm } from "redux-form";
@@ -18,12 +18,13 @@ import {
   getAction,
   getActionData,
   getActionResponses,
-} from "../../../selectors/entitiesSelector";
+} from "@appsmith/selectors/entitiesSelector";
 import { isEmpty } from "lodash";
 import type { CommonFormProps } from "./CommonEditorForm";
 import CommonEditorForm from "./CommonEditorForm";
 import Pagination from "./Pagination";
-import { getCurrentEnvironment } from "@appsmith/utils/Environments";
+import { getCurrentEnvironmentId } from "@appsmith/selectors/environmentSelectors";
+import { ApiEditorContext } from "./ApiEditorContext";
 
 const NoBodyMessage = styled.div`
   margin-top: 20px;
@@ -42,6 +43,7 @@ type APIFormProps = {
 type Props = APIFormProps & InjectedFormProps<Action, APIFormProps>;
 
 function ApiEditorForm(props: Props) {
+  const { closeEditorLink } = useContext(ApiEditorContext);
   const { actionName, httpMethodFromForm } = props;
   const allowPostBody = httpMethodFromForm;
   const theme = EditorTheme.LIGHT;
@@ -58,6 +60,7 @@ function ApiEditorForm(props: Props) {
           </NoBodyMessage>
         )
       }
+      closeEditorLink={closeEditorLink}
       formName={API_EDITOR_FORM_NAME}
       paginationUIComponent={
         <Pagination
@@ -73,9 +76,9 @@ function ApiEditorForm(props: Props) {
 
 const selector = formValueSelector(API_EDITOR_FORM_NAME);
 
-type ReduxDispatchProps = {
+interface ReduxDispatchProps {
   updateDatasource: (datasource: Datasource) => void;
-};
+}
 
 const mapDispatchToProps = (dispatch: any): ReduxDispatchProps => ({
   updateDatasource: (datasource) => {
@@ -101,7 +104,7 @@ export default connect((state: AppState, props: { pluginId: string }) => {
   // get messages from action itself
   const actionId = selector(state, "id");
   const action = getAction(state, actionId);
-  const currentEnvironment = getCurrentEnvironment();
+  const currentEnvironment = getCurrentEnvironmentId(state);
   const hintMessages = action?.messages;
 
   const datasourceHeaders =

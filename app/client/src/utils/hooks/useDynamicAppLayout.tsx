@@ -4,24 +4,27 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { updateLayoutForMobileBreakpointAction } from "actions/autoLayoutActions";
 import { updateCanvasLayoutAction } from "actions/editorActions";
-import { APP_SETTINGS_PANE_WIDTH } from "constants/AppConstants";
+import {
+  APP_SETTINGS_PANE_WIDTH,
+  APP_SIDEBAR_WIDTH,
+} from "constants/AppConstants";
 import {
   DefaultLayoutType,
   layoutConfigurations,
   MAIN_CONTAINER_WIDGET_ID,
 } from "constants/WidgetConstants";
 import { APP_MODE } from "entities/App";
-import { AppPositioningTypes } from "reducers/entityReducers/pageListReducer";
+import { LayoutSystemTypes } from "layoutSystems/types";
 import {
+  combinedPreviewModeSelector,
   getCurrentApplicationLayout,
-  getCurrentAppPositioningType,
   getCurrentPageId,
   getMainCanvasProps,
   previewModeSelector,
   isHiddenPage,
 } from "selectors/editorSelectors";
 import { usePageContainerSizeHooks } from "./dragResizeHooks";
-import { getAppMode } from "selectors/entitiesSelector";
+import { getAppMode } from "@appsmith/selectors/entitiesSelector";
 import {
   getExplorerPinned,
   getExplorerWidth,
@@ -43,6 +46,9 @@ import { useWindowSizeHooks } from "./dragResizeHooks";
 import type { AppState } from "@appsmith/reducers";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { useLocation } from "react-router";
+import { CANVAS_VIEWPORT } from "constants/componentClassNameConstants";
+import { getLayoutSystemType } from "selectors/layoutSystemSelectors";
+import { getIsAppSidebarEnabled } from "../../selectors/ideSelectors";
 
 const BORDERS_WIDTH = 2;
 const GUTTER_WIDTH = 72;
@@ -61,13 +67,13 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
     screenWidth = containerWidth;
   }
   const mainCanvasProps = useSelector(getMainCanvasProps);
-  const isPreviewMode = useSelector(previewModeSelector);
   const isHidden = useSelector(isHiddenPage);
+  const isPreviewMode = useSelector(combinedPreviewModeSelector);
   const currentPageId = useSelector(getCurrentPageId);
   const isCanvasInitialized = useSelector(getIsCanvasInitialized);
   const appLayout = useSelector(getCurrentApplicationLayout);
   const isAppSettingsPaneOpen = useSelector(getIsAppSettingsPaneOpen);
-  const appPositioningType = useSelector(getCurrentAppPositioningType);
+  const layoutSystemType = useSelector(getLayoutSystemType);
   const isAppSidebarPinned = useSelector(getAppSidebarPinned);
   const sidebarWidth = useSelector(getSidebarWidth);
   const isAppSettingsPaneWithNavigationTabOpen = useSelector(
@@ -83,6 +89,9 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
   const queryParams = new URLSearchParams(search);
   const isEmbed = queryParams.get("embed");
   const isNavbarVisibleInEmbeddedApp = queryParams.get("navbar");
+  const isAppSidebarEnabled = useSelector(getIsAppSidebarEnabled);
+
+  const isPreviewing = isPreviewMode;
 
   // /**
   //  * calculates min height
@@ -132,11 +141,11 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
     let calculatedWidth = screenWidth - scrollbarWidth();
 
     const gutterWidth =
-      appPositioningType === AppPositioningTypes.AUTO ? 0 : GUTTER_WIDTH;
+      layoutSystemType === LayoutSystemTypes.AUTO ? 0 : GUTTER_WIDTH;
 
     // if preview mode is not on and the app setting pane is not opened, we need to subtract the width of the property pane
     if (
-      isPreviewMode === false &&
+      isPreviewing === false &&
       !isAppSettingsPaneOpen &&
       appMode === APP_MODE.EDIT
     ) {
@@ -144,17 +153,25 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
     }
 
     // if app setting pane is open, we need to subtract the width of app setting page width
-    if (isAppSettingsPaneOpen === true && appMode === APP_MODE.EDIT) {
+    if (
+      isAppSettingsPaneOpen === true &&
+      appMode === APP_MODE.EDIT &&
+      !isAppSidebarEnabled
+    ) {
       calculatedWidth -= APP_SETTINGS_PANE_WIDTH;
     }
 
     // if explorer is closed or its preview mode, we don't need to subtract the EE width
     if (
       isExplorerPinned === true &&
-      !isPreviewMode &&
+      !isPreviewing &&
       appMode === APP_MODE.EDIT
     ) {
       calculatedWidth -= explorerWidth;
+    }
+
+    if (appMode === APP_MODE.EDIT && isAppSidebarEnabled) {
+      calculatedWidth -= APP_SIDEBAR_WIDTH;
     }
 
     /**
@@ -171,7 +188,7 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
     const isEmbeddedAppWithNavVisible = isEmbed && isNavbarVisibleInEmbeddedApp;
     if (
       (appMode === APP_MODE.PUBLISHED ||
-        isPreviewMode ||
+        isPreviewing ||
         isAppSettingsPaneWithNavigationTabOpen) &&
       !isMobile &&
       !isHidden &&
@@ -182,7 +199,7 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
     if (isMobile) {
       maxWidth += sidebarWidth;
     }
-    const ele: any = document.getElementById("canvas-viewport");
+    const ele: any = document.getElementById(CANVAS_VIEWPORT);
     if (
       appMode === APP_MODE.EDIT &&
       appLayout?.type === "FLUID" &&
@@ -201,7 +218,7 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
         return (
           calculatedWidth -
           (appMode === APP_MODE.EDIT &&
-          !isPreviewMode &&
+          !isPreviewing &&
           !isAppSettingsPaneWithNavigationTabOpen
             ? totalWidthToSubtract
             : 0)
@@ -241,12 +258,12 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
     currentPageId,
     appMode,
     appLayout,
-    isPreviewMode,
+    isPreviewing,
   ]);
 
   const resizeObserver = new ResizeObserver(immediateDebouncedResize);
   useEffect(() => {
-    const ele: any = document.getElementById("canvas-viewport");
+    const ele: any = document.getElementById(CANVAS_VIEWPORT);
     if (ele) {
       if (appLayout?.type === "FLUID") {
         resizeObserver.observe(ele);
@@ -257,7 +274,7 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
     return () => {
       ele && resizeObserver.unobserve(ele);
     };
-  }, [appLayout, currentPageId, isPreviewMode]);
+  }, [appLayout, currentPageId, isPreviewing]);
 
   /**
    * when screen height is changed, update canvas layout
@@ -293,7 +310,7 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
   }, [
     appLayout,
     mainCanvasProps?.width,
-    isPreviewMode,
+    isPreviewing,
     isAppSettingsPaneWithNavigationTabOpen,
     explorerWidth,
     sidebarWidth,
@@ -313,7 +330,7 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
     dispatch(
       updateLayoutForMobileBreakpointAction(
         MAIN_CONTAINER_WIDGET_ID,
-        appPositioningType === AppPositioningTypes.AUTO
+        layoutSystemType === LayoutSystemTypes.AUTO
           ? mainCanvasProps?.isMobile
           : false,
         calculateCanvasWidth(),
@@ -329,7 +346,7 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
       dispatch(
         updateLayoutForMobileBreakpointAction(
           MAIN_CONTAINER_WIDGET_ID,
-          appPositioningType === AppPositioningTypes.AUTO
+          layoutSystemType === LayoutSystemTypes.AUTO
             ? mainCanvasProps?.isMobile
             : false,
           canvasWidth,

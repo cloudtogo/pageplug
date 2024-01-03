@@ -1,6 +1,6 @@
 import * as _ from "../../../../support/Objects/ObjectsCore";
 
-describe.skip("JS Editor Save and Auto-indent: Visual tests", () => {
+describe("JS Editor Save and Auto-indent: Visual tests", () => {
   it("1. Auto indents and saves the code when Ctrl/Cmd+s is pressed", () => {
     _.jsEditor.CreateJSObject(
       `export default {
@@ -49,6 +49,7 @@ myFun2: async () => {
     _.agHelper.AssertAutoSave();
 
     // taking a snap after clicking inside the editor to make sure prettify has not reverted
+    _.agHelper.Sleep(110);
     _.agHelper.GetNClick(_.jsEditor._lineinJsEditor(25));
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterSaveAndPrettify");
   });

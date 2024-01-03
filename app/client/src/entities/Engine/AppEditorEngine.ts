@@ -7,6 +7,9 @@ import {
   fetchMockDatasources,
 } from "actions/datasourceActions";
 import {
+  fetchGitRemoteStatusInit,
+  fetchBranchesInit,
+  fetchGitProtectedBranchesInit,
   fetchGitStatusInit,
   remoteUrlInputValue,
   resetPullMergeStatus,
@@ -35,14 +38,17 @@ import {
 } from "@appsmith/constants/ReduxActionConstants";
 import { addBranchParam } from "constants/routes";
 import type { APP_MODE } from "entities/App";
-import { call, put, select, spawn } from "redux-saga/effects";
+import { call, put, select, spawn, take } from "redux-saga/effects";
 import {
   failFastApiCalls,
   reportSWStatus,
   waitForWidgetConfigBuild,
 } from "sagas/InitSagas";
 import { getCurrentApplication } from "selectors/editorSelectors";
-import { getCurrentGitBranch } from "selectors/gitSyncSelectors";
+import {
+  getCurrentGitBranch,
+  getIsGitStatusLiteEnabled,
+} from "selectors/gitSyncSelectors";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import history from "utils/history";
 import PerformanceTracker, {
@@ -64,6 +70,8 @@ import { getFirstTimeUserOnboardingComplete } from "selectors/onboardingSelector
 import { isAirgapped } from "@appsmith/utils/airgapHelpers";
 import { getAIPromptTriggered } from "utils/storage";
 import { trackOpenEditorTabs } from "../../utils/editor/browserTabsTracking";
+import { EditorModes } from "components/editorComponents/CodeEditor/EditorConfig";
+import { waitForFetchEnvironments } from "@appsmith/sagas/EnvironmentSagas";
 
 export default class AppEditorEngine extends AppEngine {
   constructor(mode: APP_MODE) {
@@ -148,6 +156,7 @@ export default class AppEditorEngine extends AppEngine {
 
     yield call(waitForFetchUserSuccess);
     yield call(waitForSegmentInit, true);
+    yield call(waitForFetchEnvironments);
     yield put(fetchAllPageEntityCompletion([executePageLoadActions()]));
   }
 
@@ -230,12 +239,26 @@ export default class AppEditorEngine extends AppEngine {
       });
     }
 
-    const noOfTimesAIPromptTriggered: number = yield getAIPromptTriggered();
+    const noOfTimesAIPromptTriggered: number = yield getAIPromptTriggered(
+      EditorModes.TEXT_WITH_BINDING,
+    );
 
     yield put({
       type: ReduxActionTypes.UPDATE_AI_TRIGGERED,
       payload: {
         value: noOfTimesAIPromptTriggered,
+        mode: EditorModes.TEXT_WITH_BINDING,
+      },
+    });
+
+    const noOfTimesAIPromptTriggeredForQuery: number =
+      yield getAIPromptTriggered(EditorModes.POSTGRESQL_WITH_BINDING);
+
+    yield put({
+      type: ReduxActionTypes.UPDATE_AI_TRIGGERED,
+      payload: {
+        value: noOfTimesAIPromptTriggeredForQuery,
+        mode: EditorModes.POSTGRESQL_WITH_BINDING,
       },
     });
 
@@ -249,6 +272,9 @@ export default class AppEditorEngine extends AppEngine {
 
   public *loadGit(applicationId: string) {
     const branchInStore: string = yield select(getCurrentGitBranch);
+    const isGitStatusLiteEnabled: boolean = yield select(
+      getIsGitStatusLiteEnabled,
+    );
     yield put(
       restoreRecentEntitiesRequest({
         applicationId,
@@ -260,7 +286,17 @@ export default class AppEditorEngine extends AppEngine {
     // add branch query to path and fetch status
     if (branchInStore) {
       history.replace(addBranchParam(branchInStore));
-      yield put(fetchGitStatusInit());
+
+      if (isGitStatusLiteEnabled) {
+        yield put(fetchGitRemoteStatusInit());
+        yield put(fetchGitStatusInit({ compareRemote: false }));
+      } else {
+        yield put(fetchGitStatusInit({ compareRemote: true }));
+      }
+
+      yield put(fetchBranchesInit());
+      yield take(ReduxActionTypes.FETCH_BRANCHES_SUCCESS);
+      yield put(fetchGitProtectedBranchesInit());
     }
     yield put(resetPullMergeStatus());
   }

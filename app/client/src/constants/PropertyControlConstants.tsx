@@ -10,12 +10,12 @@ import type { UpdateWidgetPropertyPayload } from "actions/controlActions";
 import type { AdditionalDynamicDataTree } from "utils/autocomplete/customTreeTypeDefCreator";
 import type { Stylesheet } from "entities/AppTheming";
 import type { ReduxActionType } from "@appsmith/constants/ReduxActionConstants";
-import type { PropertyUpdates } from "widgets/constants";
+import type { PropertyUpdates } from "WidgetProvider/constants";
 
 const ControlTypes = getPropertyControlTypes();
 export type ControlType = (typeof ControlTypes)[keyof typeof ControlTypes];
 
-export type PropertyPaneSectionConfig = {
+export interface PropertyPaneSectionConfig {
   sectionName: string;
   id?: string;
   children: PropertyPaneConfig[];
@@ -25,9 +25,9 @@ export type PropertyPaneSectionConfig = {
   isDefaultOpen?: boolean;
   propertySectionPath?: string;
   tag?: string; // Used to show a tag right after the section name (only in the search results)
-};
+}
 
-export type PanelConfig = {
+export interface PanelConfig {
   editableTitle: boolean;
   titlePropertyName: string;
   panelIdPropertyName: string;
@@ -40,9 +40,9 @@ export type PanelConfig = {
     propertyPath: string,
     propertyValue: any,
   ) => Array<PropertyUpdates> | undefined;
-};
+}
 
-export type PropertyPaneControlConfig = {
+export interface PropertyPaneControlConfig {
   id?: string;
   label: string;
   propertyName: string;
@@ -100,9 +100,9 @@ export type PropertyPaneControlConfig = {
     isToggleDisabled: boolean,
     triggerFlag?: boolean,
   ) => boolean;
-};
+}
 
-type ValidationConfigParams = {
+interface ValidationConfigParams {
   min?: number; // min allowed for a number
   max?: number; // max allowed for a number
   natural?: boolean; // is a positive integer
@@ -137,13 +137,12 @@ type ValidationConfigParams = {
   limitLineBreaks?: boolean; // Used for ValidationType.TEXT to limit line breaks in a large json object.
   defaultValue?: unknown; // used for ValidationType.UNION when none the union type validation is success
   defaultErrorMessage?: string; // used for ValidationType.UNION when none the union type validation is success
-};
+}
 
-export type ValidationConfig = {
+export interface ValidationConfig {
   type: ValidationTypes;
   params?: ValidationConfigParams;
-  dependentPaths?: string[];
-};
+}
 
 export type PropertyPaneConfig =
   | PropertyPaneSectionConfig

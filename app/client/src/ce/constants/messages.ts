@@ -108,6 +108,23 @@ export const FORGOT_PASSWORD_SUCCESS_TEXT = (email: string) =>
 
 export const PRIVACY_POLICY_LINK = () => `隐私条款`;
 export const TERMS_AND_CONDITIONS_LINK = () => `条款协议`;
+export const VERIFICATION_PENDING_TITLE = () => `检查您的收件箱`;
+export const VERIFICATION_PENDING_BODY = () =>
+  `要完成您的帐户设置，请点击我们发送到电子邮件中的验证链接 `;
+
+export const VERIFICATION_PENDING_NOT_YOU = () => `(不是您吗？)`;
+
+export const VERIFICATION_PENDING_NO_EMAIL = () =>
+  `收件箱或垃圾邮件文件夹中没有电子邮件？`;
+
+export const VERIFICATION_PENDING_RESEND_LINK = () => `重新发送链接`;
+
+export const VERIFY_ERROR_ALREADY_VERIFIED_TITLE = () => `电子邮件已经验证过了`;
+
+export const VERIFY_ERROR_EXPIRED_TITLE = () => "糟糕，此链接已过期";
+
+export const VERIFY_ERROR_MISMATCH_TITLE = () =>
+  "此链接似乎损坏。请请求一个新链接";
 
 export const ERROR_500 = () => `抱歉，服务端出错了，我们正在拼命修复`;
 export const ERROR_0 = () => `无法连接到服务端，请检查你的网络连接`;
@@ -126,7 +143,7 @@ export const MAKE_APPLICATION_PUBLIC_TOOLTIP = () =>
 export const INVITE_TAB = () => "邀请";
 export const INVITE_USERS_VALIDATION_EMAIL_LIST = () => `包含无效邮箱地址`;
 export const INVITE_USERS_VALIDATION_ROLE_EMPTY = () => `请选择角色`;
-
+export const APPLICATION_INVITE = (name: string) => `邀请成员到 ${name}`;
 export const INVITE_USERS_EMAIL_LIST_PLACEHOLDER = () => `邮箱之间用逗号分隔`;
 export const INVITE_USERS_ROLE_SELECT_PLACEHOLDER = () => `请选择角色`;
 export const INVITE_USERS_ROLE_SELECT_LABEL = () => `角色`;
@@ -156,13 +173,12 @@ export const USERS_HAVE_ACCESS_TO_ONLY_THIS_APP = () =>
   "用户只能访问此应用程序";
 export const NO_USERS_INVITED = () => "未开通邮件服务";
 export const BUSINESS_EDITION_TEXT = () => "企业版";
-export const CREATE_PASSWORD_RESET_SUCCESS = () => `密码重置成功`;
-export const CREATE_PASSWORD_RESET_SUCCESS_LOGIN_LINK = () => `登录`;
+export const PARTNER_PROGRAM_CALLOUT = (email: string) =>
+  `${email} 不属于您的组织。如果您为他人构建此应用程序，您应该了解一下我们的合作伙伴计划。`;
+export const PARTNER_PROGRAM_CALLOUT_LINK = () => `了解 pageplug 合作伙伴计划`;
 
-export const DELETING_APPLICATION = () => `正在删除应用...`;
 export const DUPLICATING_APPLICATION = () => `正在拷贝应用...`;
 
-export const FORGOT_PASSWORD_PAGE_LOGIN_LINK = () => `返回登录`;
 export const USER_PROFILE_PICTURE_UPLOAD_FAILED = () =>
   "Unable to upload display picture.";
 export const UPDATE_USER_DETAILS_FAILED = () =>
@@ -175,6 +191,19 @@ export const USER_DISPLAY_NAME_PLACEHOLDER = () => "用户名";
 export const USER_DISPLAY_PICTURE_PLACEHOLDER = () => "头像";
 export const USER_EMAIL_PLACEHOLDER = () => "Email";
 export const USER_RESET_PASSWORD = () => "重置密码";
+export const CREATE_PASSWORD_RESET_SUCCESS = () => `您的密码已设置成功`;
+export const CREATE_PASSWORD_RESET_SUCCESS_LOGIN_LINK = () => `登录`;
+
+export const DELETING_APPLICATION = () => `正在删除应用程序...`;
+export const DELETING_MULTIPLE_APPLICATION = () => `正在删除多个应用程序...`;
+export const NO_PERMISSION_TO_SELECT_FOR_DELETE = () =>
+  `您没有权限删除此应用程序`;
+
+export const DELETING_MULTIPLE_APPLICATION_MODAL_TITLE = () => `确认删除`;
+export const DELETING_MULTIPLE_APPLICATION_MODAL_DESC = () =>
+  `您确定要删除选定的应用程序吗？`;
+
+export const FORGOT_PASSWORD_PAGE_LOGIN_LINK = () => `返回登录页面`;
 export const ADD_API_TO_PAGE_SUCCESS_MESSAGE = (actionName: string) =>
   `${actionName} API 添加成功`;
 export const INPUT_WIDGET_DEFAULT_VALIDATION_ERROR = () => `无效输入`;
@@ -211,6 +240,7 @@ export const GETTING_STARTED = () => `马上开始`;
 export const WORKSPACES_HEADING = () => `应用组`;
 export const WELCOME_TOUR = () => `新手引导`;
 export const NO_APPS_FOUND = () => `没有发现相关应用`;
+export const APPLICATION_CARD_LIST_ZERO_STATE = () => `工作区无应用`;
 
 // Lightning menu
 export const LIGHTNING_MENU_DATA_API = () => `使用 API 数据`;
@@ -283,6 +313,10 @@ export const SAVE_DATASOURCE = () => "保存数据源";
 export const SAVE_DATASOURCE_MESSAGE = () => "将 API 保存为数据源来启动鉴权";
 export const EDIT_DATASOURCE_MESSAGE = () => "编辑数据源鉴权配置";
 export const OAUTH_ERROR = () => "OAuth 错误";
+export const ACTION_ID_NOT_FOUND_IN_URL =
+  "在 URL 中未找到正确的 API ID 或查询 ID。";
+export const JSOBJECT_ID_NOT_FOUND_IN_URL =
+  "在 URL 中未找到正确的 JS 对象 ID。";
 export const OAUTH_2_0 = () => "OAuth 2.0";
 export const ENABLE = () => "启用";
 export const UPGRADE = () => "升级";
@@ -417,6 +451,7 @@ export const PAGE_SERVER_UNAVAILABLE_ERROR_MESSAGES = (
 export const POST = () => "提交";
 export const CANCEL = () => "取消";
 export const REMOVE = () => "删除";
+export const CREATE = () => "创建";
 
 // Showcase Carousel
 export const NEXT = () => "下一步";
@@ -650,6 +685,7 @@ export const BINDING_WALKTHROUGH_DESC = () =>
 export const BINDINGS_DISABLED_TOOLTIP = () =>
   "只有在成功获得查询响应时才能显示数据。";
 export const TABLE_OR_COLUMN_NOT_FOUND = () => "未找到表格或列。";
+export const TABLE_NOT_FOUND = () => "找不到表格";
 export const DATASOURCE_STRUCTURE_INPUT_PLACEHOLDER_TEXT = () =>
   "搜索表格或属性";
 export const SCHEMA_LABEL = () => "模式";
@@ -659,6 +695,13 @@ export const LOADING_SCHEMA = () => "加载模式...";
 export const SCHEMA_WALKTHROUGH_TITLE = () => "快速查询数据";
 export const SCHEMA_WALKTHROUGH_DESC = () =>
   "从数据库表格中选择一个模板，以快速创建您的第一个查询。";
+export const SUGGESTED_TAG = () => "建议";
+
+// structure - View Mode
+
+export const DATASOURCE_VIEW_DATA_TAB = () => "查看数据";
+export const DATASOURCE_CONFIGURATIONS_TAB = () => "配置";
+export const DATASOURCE_NO_RECORDS_TO_SHOW = () => "没有要显示的数据记录";
 
 // Git sync
 export const CONNECTED_TO_GIT = () => "已连接到 Git";
@@ -688,6 +731,11 @@ export const USE_DEFAULT_CONFIGURATION = () => "使用默认配置";
 export const AUTHOR_NAME = () => "作者名称";
 export const AUTHOR_NAME_CANNOT_BE_EMPTY = () => "作者名称不能未空";
 export const AUTHOR_EMAIL = () => "作者邮箱地址";
+export const GIT_USER_SETTINGS_TITLE = () => "Git 作者";
+
+export const AUTHOR_NAME_ONLY = () => "姓名";
+export const AUTHOR_EMAIL_ONLY = () => "Email";
+export const AUTHOR_EMAIL_CANNOT_BE_EMPTY = () => "作者邮箱不能为空";
 
 export const NAME_YOUR_NEW_BRANCH = () => "新分支名称";
 export const SWITCH_BRANCHES = () => "切换分支";
@@ -734,7 +782,6 @@ export const GIT_USER_UPDATED_SUCCESSFULLY = () => "Git 用户更新成功";
 export const REMOTE_URL_INPUT_PLACEHOLDER = () =>
   "git@example.com:user/repo.git";
 export const GIT_COMMIT_MESSAGE_PLACEHOLDER = () => "你的提交信息";
-export const COPIED_SSH_KEY = () => "复制的 SSH Key";
 export const INVALID_USER_DETAILS_MSG = () => "请输入有效用户信息";
 export const PASTE_SSH_URL_INFO = () => "请输入代码仓库的 SSH 地址";
 export const GENERATE_KEY = () => "生成 Key";
@@ -869,9 +916,88 @@ export const ERROR_GIT_INVALID_REMOTE = () => "远程仓库不存在或者无法
 export const SNIPPET_DESCRIPTION = () =>
   `搜索、插入代码片段来快速完成复杂业务动作`;
 export const DOC_DESCRIPTION = () => `通过文档找到答案`;
+// Git Connect V2
+export const CHOOSE_A_GIT_PROVIDER_STEP = () => "选择一个 Git 提供商";
+export const GENERATE_SSH_KEY_STEP = () => "生成 SSH 密钥";
+export const ADD_DEPLOY_KEY_STEP = () => "添加部署密钥";
+export const CHOOSE_GIT_PROVIDER_QUESTION = () =>
+  "首先，选择您的 Git 服务提供商";
+export const IS_EMPTY_REPO_QUESTION = () =>
+  "您是否有一个现有的空仓库连接到 Git？";
+export const HOW_TO_CREATE_EMPTY_REPO = () => "如何创建一个新的仓库？";
+export const IMPORT_APP_IF_NOT_EMPTY = () =>
+  "如果您已经有一个连接到 Git 的应用程序，您可以将其导入到工作区。";
+export const I_HAVE_EXISTING_REPO = () =>
+  "我有一个现有的连接到 Git 的 Pageplug 应用";
+export const ERROR_REPO_NOT_EMPTY_TITLE = () => "您添加的仓库不为空";
+export const ERROR_REPO_NOT_EMPTY_MESSAGE = () =>
+  "请创建一个新的仓库，并在此处提供其远程 SSH URL。我们需要一个空仓库来继续。";
+export const READ_DOCS = () => "阅读文档";
+export const COPY_SSH_URL_MESSAGE = () =>
+  "在您的仓库中，复制远程 SSH URL，并将其粘贴到下面的输入字段中。";
+export const REMOTE_URL_INPUT_LABEL = () => "远程 SSH URL";
+export const HOW_TO_COPY_REMOTE_URL = () => "如何复制并粘贴 SSH 远程 URL";
+export const ERROR_SSH_KEY_MISCONF_TITLE = () => "SSH 密钥配置错误";
+export const ERROR_SSH_KEY_MISCONF_MESSAGE = () =>
+  "似乎您的 SSH 密钥尚未添加到您的仓库。要继续，请重新查看以下步骤，并正确配置您的 SSH 密钥。";
+export const ADD_DEPLOY_KEY_STEP_TITLE = () => "添加部署密钥并赋予写入权限";
+export const HOW_TO_ADD_DEPLOY_KEY = () =>
+  "如何粘贴 SSH 密钥到仓库并赋予写入权限？";
+export const CONSENT_ADDED_DEPLOY_KEY = () => "我已添加部署密钥并赋予写入权限";
+export const PREVIOUS_STEP = () => "上一步";
+export const GIT_CONNECT_SUCCESS_TITLE = () => "成功连接到您的 Git 远程仓库";
+export const GIT_CONNECT_SUCCESS_MESSAGE = () =>
+  "现在您可以通过提交、合并和部署应用程序与团队成员进行协作。";
+export const START_USING_GIT = () => "开始使用 Git";
+export const OPEN_GIT_SETTINGS = () => "打开 Git 设置";
+export const GIT_AUTHOR = () => "Git 作者";
+export const DISCONNECT_GIT = () => "断开 Git 连接";
+export const DISCONNECT_GIT_MESSAGE = () =>
+  "这是不可逆的。如果您希望重新连接，您将需要连接一个新的空仓库。";
+export const NEED_EMPTY_REPO_MESSAGE = () =>
+  "您需要一个空仓库来连接到 Pageplug 的 Git，请在 Git 服务提供商上创建一个仓库以继续。";
+export const GIT_IMPORT_WAITING = () => "请稍候，我们正在导入应用程序...";
+export const GIT_CONNECT_WAITING = () => "请稍候，我们正在连接到 Git...";
+export const CONNECT_GIT_TEXT = () => "连接 Git";
+export const ERROR_SSH_RECONNECT_MESSAGE = () =>
+  "由于缺少部署密钥，我们无法连接到仓库。您可以通过以下两种方式修复此问题：";
+export const ERROR_SSH_RECONNECT_OPTION1 = () =>
+  "复制下面的 SSH 密钥并将其添加到您的仓库。";
+export const ERROR_SSH_RECONNECT_OPTION2 = () =>
+  "如果您想连接一个新的仓库，您可以断开连接并进行操作。";
+export const COPIED_SSH_KEY = () => "已复制 SSH 密钥";
+export const NO_COPIED_SSH_KEY = () => "无法复制 SSH 密钥";
+// Git Connect V2 end
+
+// Git Branch Protection
+export const UPDATE = () => "更新";
+export const DEFAULT_BRANCH = () => "默认分支";
+export const DEFAULT_BRANCH_DESC = () =>
+  "这是应用程序的基础分支。从仪表板启动应用程序的用户将看到此分支的部署版本。";
+export const BRANCH_PROTECTION = () => "分支保护";
+export const BRANCH_PROTECTION_DESC = () =>
+  "保护分支可以强制执行 Git 工作流程。在受保护的分支上不允许对应用程序进行更改。";
+export const BRANCH_PROTECTION_RULES_AS_FOLLOWS = () => "分支保护规则如下：";
+export const BRANCH_PROTECTION_RULE_1 = () => "不允许提交和合并操作。";
+export const BRANCH_PROTECTION_RULE_2 = () =>
+  "用户无法创建或编辑查询、小部件和 JsObject。";
+export const BRANCH_PROTECTION_RULE_3 = () =>
+  "您仍然可以拉取最新的更改并创建新的分支来编辑应用程序。";
+export const BRANCH_PROTECTION_CHANGE_RULE = () =>
+  "您可以在 Git 设置中取消对默认分支的保护。";
+export const BRANCH_TOOLTIP_TITLE = () => "🚫 这是一个受保护的分支";
+export const BRANCH_TOOLTIP_MESSAGE = () =>
+  "您可以在 Git 设置中取消对默认分支的保护。";
+export const GO_TO_SETTINGS = () => "前往设置";
+export const NOW_PROTECT_BRANCH = () => "您现在可以保护您的默认分支。";
+export const APPSMITH_ENTERPRISE = () => "Pageplug 企业版";
+export const PROTECT_BRANCH_SUCCESS = () => "已更改受保护的分支";
+export const UPDATE_DEFAULT_BRANCH_SUCCESS = () => "已更新默认分支";
+// Git Branch Protection end
+
 export const NAV_DESCRIPTION = () => `导航到任意页面、组件或者文件`;
 export const ACTION_OPERATION_DESCRIPTION = () => `新建查询、API 或者 JS 对象`;
-export const TABLE_WIDGET_VALIDATION_ASSIST_PROMPT = () => `访问当前单元格 `;
+export const TABLE_WIDGET_VALIDATION_ASSIST_PROMPT = () => `访问当前单元格`;
 
 export const TRIGGER_ACTION_VALIDATION_ERROR = (
   functionName: string,
@@ -1125,6 +1251,8 @@ export const TEST_EMAIL_SUCCESS = (email: string) => () =>
   `测试邮件已发送完毕，请前往 ${email} 查收`;
 export const TEST_EMAIL_SUCCESS_TROUBLESHOOT = () => "疑难杂症";
 export const TEST_EMAIL_FAILURE = () => "测试邮件发送失败";
+export const ADMIN_SETTINGS_EMAIL_WARNING = () =>
+  "请确保 SMTP 服务器配置正确。这将用于发送关于忘记密码和电子邮件验证的邮件。";
 export const DISCONNECT_AUTH_ERROR = () => "不能断开唯一已连接的鉴权方式";
 export const MANDATORY_FIELDS_ERROR = () => "必填字段不能为空";
 export const FORM_LOGIN_DESC = () => "允许用户使用账号密码登录你的平台";
@@ -1214,6 +1342,26 @@ export const WELCOME_FORM_NON_SUPER_USER_ROLE_DROPDOWN = () =>
 export const WELCOME_FORM_NON_SUPER_USER_ROLE = () => "角色";
 export const WELCOME_FORM_NON_SUPER_USER_USE_CASE = () =>
   "请问你打算用 PagePlug 来做什么应用呢？";
+export const WELCOME_FORM_NON_SUPER_USER_PROFICIENCY_LEVEL = () =>
+  "请为您的开发熟练程度评分";
+
+export const WELCOME_FORM_ROLE_ERROR_MESSAGE = () => "请输入角色";
+export const WELCOME_FORM_PROFICIENCY_ERROR_MESSAGE = () => "请选择熟练程度";
+export const WELCOME_FORM_USE_CASE_ERROR_MESSAGE = () => "请选择用例";
+
+export const WELCOME_FORM_CUSTOM_USE_CASE_ERROR_MESSAGE = () => "请输入用例";
+
+export const WELCOME_FORM_EMAIL_ERROR_MESSAGE = () =>
+  "请输入有效的电子邮件地址。";
+
+export const WELCOME_FORM_STRONG_PASSWORD_ERROR_MESSAGE = () =>
+  "请输入强密码。";
+
+export const WELCOME_FORM_GENERIC_ERROR_MESSAGE = () => "此字段为必填项。";
+
+export const WELCOME_FORM_PASSWORDS_NOT_MATCHING_ERROR_MESSAGE = () =>
+  "密码不匹配。";
+
 export const QUERY_CONFIRMATION_MODAL_MESSAGE = () => `确定运行吗？`;
 export const ENTITY_EXPLORER_TITLE = () => "导航";
 export const MULTI_SELECT_PROPERTY_PANE_MESSAGE = () =>
@@ -1398,6 +1546,7 @@ export const EMPTY_QUERY_JS_MAIN_TEXT = () => "暂无查询 / JS 对象";
 export const EMPTY_QUERY_JS_BUTTON_TEXT = () => "添加查询 / JS 对象";
 export const EMPTY_DATASOURCE_MAIN_TEXT = () => "暂无数据源";
 export const EMPTY_DATASOURCE_BUTTON_TEXT = () => "添加数据源";
+export const SEARCH_DATASOURCES = () => "搜索数据源";
 
 // Templates
 export const MORE = () => "更多";
@@ -1463,8 +1612,12 @@ export const CLEAN_URL_UPDATE = {
 export const MEMBERS_TAB_TITLE = (
   length: number,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  cloudHosting?: boolean,
+  isFreeInstance?: boolean,
 ) => `成员 (${length})`;
+export const SEARCH_USERS = (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  isFreeInstance?: boolean,
+) => `搜索成员`;
 
 export const CREATE_PAGE = () => "新建空白页面";
 export const CANVAS_NEW_PAGE_CARD = () => "新建页面";
@@ -1625,6 +1778,16 @@ export const GSHEETS_ERR_FETCHING_PREVIEW_DATA = () =>
 export const GSHEETS_FETCHING_PREVIEW_DATA = () => "正在加载数据";
 export const GSHEETS_SCHEMA_NO_DATA = () =>
   "没有要显示的数据记录，或者表头从索引 1 以外的索引开始";
+export const DATASOURCE_GENERATE_PAGE_BUTTON = () => "生成新页面";
+export const ERR_FETCHING_DATASOURCE_PREVIEW_DATA = () => "获取数据时出现问题";
+export const FETCHING_DATASOURCE_PREVIEW_DATA = () => "正在加载数据";
+export const SCHEMA_PREVIEW_NO_DATA = () =>
+  "没有要显示的数据记录，或者表头以除 1 之外的索引开头";
+export const GSHEET_SPREADSHEET_LABEL = () => "电子表格";
+export const GSHEET_SPREADSHEET_LOADING = () => "正在加载电子表格";
+export const GSHEET_SHEET_LOADING = () => "正在加载工作表";
+export const GSHEET_DATA_LOADING = () => "正在加载属性";
+export const GSHEET_SEARCH_PLACEHOLDER = () => "搜索电子表格";
 
 //Layout Conversion flow
 export const CONVERT = () => "转换布局";
@@ -1754,3 +1917,151 @@ export const BACK_CAMERA_LABEL = () => "后置摄像头 (主摄)";
 
 // 颜色选择器
 export const FULL_COLOR_PICKER_LABEL = () => "完整颜色选择器";
+// Column selector modal
+export const EDIT_FIELDS = () => "编辑字段";
+export const FIELDS_CONFIGURATION = () => "字段配置";
+export const SAVE_CHANGES = () => "保存更改";
+export const COLUMN_TYPE = () => "列类型";
+export const COLUMN_NAME = () => "列名称";
+export const EDIT_FIELDS_DISABLED_TOOLTIP_TEXT = () => "选择一个表格以编辑字段";
+
+export const SAVE_CHANGES_DISABLED_TOOLTIP_TEXT = () =>
+  "您必须选择至少一个字段才能保存";
+
+export const NO_CONNECTABLE_WIDGET_FOUND = () =>
+  "添加一个带有数据的表格或列表小部件以获取值";
+
+export const CONNECT_BUTTON_TEXT = () => "连接数据";
+
+export const NO_FIELDS_ADDED = () => "未添加字段";
+
+// One click binding control
+export const DATASOURCE_DROPDOWN_OPTIONS = {
+  CONNECT_TO_QUERY: () => "连接到查询",
+  CONNECT_TO: () => "连接到",
+  CHOOSE_DATASOURCE_TO_CONNECT: () => "选择要连接的数据源",
+  CREATE_OR_EDIT_RECORDS: () => "创建或编辑记录",
+  WRITE_JSON_SCHEMA: () => "编写 JSON 模式",
+  SELECT_A_DATASOURCE: () => "选择一个数据源",
+  CONNECT_DATA: () => "连接数据",
+  OTHER_ACTIONS: () => "其他操作",
+};
+
+export const COMMUNITY_TEMPLATES = {
+  tabTitle: () => "展示",
+  cancel: () => "取消",
+  publishSuccessPage: {
+    title: () => "发布到 Pageplug 社区",
+    description: () =>
+      "此应用程序作为模板在社区上发布，供用户进行分叉和重新组合。",
+    viewTemplateButton: () => "查看模板",
+  },
+  publishFormPage: {
+    title: () => "发布到社区",
+    footer: {
+      publishButton: () => "发布到社区",
+      tnCText: () =>
+        "我了解发布此应用程序将允许工作区外的用户将其分叉到他们的工作区。",
+    },
+    preview: {
+      thumbnail: () => "缩略图将自动生成",
+    },
+    templateForm: {
+      titleInputLabel: () => "标题",
+      titleInputPlaceholder: () => "模板标题",
+      titleRequiredError: () => "请提供标题",
+
+      excerptInputLabel: () => "标题",
+      excerptInputPlaceholder: () => "一行摘要",
+
+      descriptionInputLabel: () => "描述",
+      descriptionInputPlaceholder: () => "模板描述",
+
+      useCasesInputLabel: () => "用例",
+      useCasesInputPlaceholder: () => "选择用例",
+    },
+    authorDetails: {
+      title: () => "作者详情",
+      displayNameLabel: () => "显示名称",
+      displayNamePlaceholder: () => "显示名称",
+      nameRequiredError: () => "请提供姓名",
+
+      emailLabel: () => "电子邮件",
+      emailPlaceholder: () => "电子邮件",
+    },
+    applicationSettings: {
+      title: () => "应用程序设置",
+      publicSetting: () => "使应用程序公开",
+      forkableSetting: () => "使应用程序可分叉",
+    },
+    publishedInfo: {
+      title: () => "发布内容是什么？",
+      correct: [
+        () => "小部件及其属性",
+        () => "查询和 JS 对象",
+        () => "数据源类型",
+      ],
+      incorrect: [
+        () => "数据源凭据",
+        () => "API 认证详细信息",
+        () => "环境变量",
+        () => "Git 凭据",
+      ],
+    },
+    publishedFailedError: () => "无法发布",
+  },
+  modals: {
+    unpublishedInfo: {
+      title: () => "发布到 Pageplug 社区",
+      description: () =>
+        "将此应用程序发布到 Pageplug 社区，供公众查看、分叉和重新组合。",
+      publishBtn: () => "开始发布",
+    },
+    publishedInfo: {
+      title: () => "已发布到 Pageplug 社区！",
+      description: () =>
+        "此应用程序作为模板在社区上发布，供用户进行分叉和重新组合。",
+      viewTemplate: () => "查看模板",
+    },
+  },
+};
+
+export const EMPTY_TABLE_TITLE_TEXT = () => "空表";
+export const EMPTY_TABLE_MESSAGE_TEXT = () => "没有要显示的数据记录";
+export const LOADING_RECORDS_TITLE_TEXT = () => "正在加载记录";
+export const LOADING_RECORDS_MESSAGE_TEXT = () => "这可能需要几秒钟";
+export const EMPTY_TABLE_SVG_ALT_TEXT = () => "空表图像";
+
+export const DATA_PANE_TITLE = () => "工作区中的数据源";
+export const DATASOURCE_LIST_BLANK_TITLE = () => "工作区中不存在数据源。";
+export const DATASOURCE_BLANK_STATE_MESSAGE = () =>
+  "您需要一个数据源连接来编写第一个查询";
+
+export const STARTER_TEMPLATE_PAGE_LAYOUTS = {
+  header: () => "选择一个模板",
+  layouts: {
+    dashboard: {
+      name: () => "可视化您的数据",
+      description: () => "用于以图表形式查看您的数据",
+    },
+    form: {
+      name: () => "表单",
+      description: () => "使用表单向数据库添加记录",
+    },
+    recordEdit: {
+      name: () => "更改您的数据",
+      description: () => "使用表单添加或编辑记录",
+    },
+    recordDetails: {
+      name: () => "查看您的数据",
+      description: () => "用于查看记录的字段",
+    },
+  },
+  datasourceConnectPrompt: {
+    header: () => "将您的数据带入！",
+    buttonText: () => "连接您的数据源",
+  },
+  or: () => "或",
+  dragAndDrop: () => "拖放小部件",
+  importLoadingText: () => "正在导入模板",
+};

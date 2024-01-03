@@ -175,11 +175,6 @@ export const resetCurrentApplication = () => {
   };
 };
 
-export const setShowAppInviteUsersDialog = (payload: boolean) => ({
-  type: ReduxActionTypes.SET_SHOW_APP_INVITE_USERS_MODAL,
-  payload,
-});
-
 export const fetchApplicationPreviewWxaCode = (applicationId: string) => {
   return {
     type: ReduxActionTypes.FETCH_APPLICATION_PREVIEW_INIT,

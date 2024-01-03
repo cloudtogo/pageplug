@@ -10,9 +10,9 @@ import { Colors } from "constants/Colors";
 import { Text } from "design-system";
 import WalkthroughContext from "components/featureWalkthrough/walkthroughContext";
 
-type CardProps = {
+interface CardProps {
   details: WidgetCardProps;
-};
+}
 
 export const Wrapper = styled.div`
   border-radius: var(--ads-v2-border-radius);
@@ -24,6 +24,8 @@ export const Wrapper = styled.div`
   justify-content: center;
   border-radius: ${(props) => props.theme.borderRadius};
   cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
   img {
     cursor: grab;
   }
@@ -95,6 +97,7 @@ function WidgetCard(props: CardProps) {
       className={className}
       data-guided-tour-id={`widget-card-${type}`}
       draggable
+      id={`widget-card-draggable-${type}`}
       onDragStart={onDragStart}
     >
       <div className="gap-2 mt-2">

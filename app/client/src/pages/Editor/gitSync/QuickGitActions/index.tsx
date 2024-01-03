@@ -23,9 +23,9 @@ import {
 import { Colors } from "constants/Colors";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  discardChanges,
   gitPullInit,
   setIsGitSyncModalOpen,
-  showConnectGitModal,
 } from "actions/gitSyncActions";
 import { GitSyncModalTab } from "entities/GitSync";
 import {
@@ -35,14 +35,17 @@ import {
   getIsGitConnected,
   getPullFailed,
   getPullInProgress,
+  protectedModeSelector,
 } from "selectors/gitSyncSelectors";
 import SpinnerLoader from "pages/common/SpinnerLoader";
 import { inGuidedTour } from "selectors/onboardingSelectors";
 import { getTypographyByKey } from "design-system-old";
 import { Button, Icon, Tooltip } from "design-system";
 import AnalyticsUtil from "utils/AnalyticsUtil";
+import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
+import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
 
-type QuickActionButtonProps = {
+interface QuickActionButtonProps {
   className?: string;
   count?: number;
   disabled?: boolean;
@@ -50,17 +53,19 @@ type QuickActionButtonProps = {
   loading?: boolean;
   onClick: () => void;
   tooltipText: string;
-};
+}
 
 const SpinnerContainer = styled.div`
   padding: 0 10px;
 `;
 
-const QuickActionButtonContainer = styled.div<{ disabled?: boolean }>`
+const QuickActionButtonContainer = styled.button<{ disabled?: boolean }>`
   margin: 0 ${(props) => props.theme.spaces[1]}px;
-
+  display: block;
   position: relative;
   overflow: visible;
+  cursor: ${(p) => (p.disabled ? "not-allowed" : "pointer")};
+  opacity: ${(p) => (p.disabled ? 0.6 : 1)};
 
   .count {
     position: absolute;
@@ -94,7 +99,6 @@ function QuickActionButton({
   tooltipText,
 }: QuickActionButtonProps) {
   const content = capitalizeFirstLetter(tooltipText);
-
   return (
     <QuickActionButtonContainer
       className={className}
@@ -108,7 +112,13 @@ function QuickActionButton({
       ) : (
         <Tooltip content={content}>
           <div>
-            <Button isIconButton kind="tertiary" size="md" startIcon={icon} />
+            <Button
+              isDisabled={disabled}
+              isIconButton
+              kind="tertiary"
+              size="md"
+              startIcon={icon}
+            />
             {count > 0 && <span className="count">{count}</span>}
           </div>
         </Tooltip>
@@ -117,10 +127,14 @@ function QuickActionButton({
   );
 }
 
-const getPullBtnStatus = (gitStatus: any, pullFailed: boolean) => {
+const getPullBtnStatus = (
+  gitStatus: any,
+  pullFailed: boolean,
+  isProtected: boolean,
+) => {
   const { behindCount, isClean } = gitStatus || {};
   let message = createMessage(NO_COMMITS_TO_PULL);
-  let disabled = behindCount === 0;
+  let disabled = isProtected ? false : behindCount === 0;
   if (!isClean) {
     disabled = true;
     message = createMessage(CANNOT_PULL_WITH_LOCAL_UNCOMMITTED_CHANGES);
@@ -139,18 +153,19 @@ const getPullBtnStatus = (gitStatus: any, pullFailed: boolean) => {
 const getQuickActionButtons = ({
   changesToCommit,
   commit,
-  connect,
   gitStatus,
   isFetchingGitStatus,
+  isProtectedMode,
   merge,
   pull,
   pullDisabled,
   pullTooltipMessage,
+  settings,
   showPullLoadingState,
 }: {
   changesToCommit: number;
   commit: () => void;
-  connect: () => void;
+  settings: () => void;
   pull: () => void;
   merge: () => void;
   gitStatus: any;
@@ -158,11 +173,13 @@ const getQuickActionButtons = ({
   pullDisabled: boolean;
   pullTooltipMessage: string;
   showPullLoadingState: boolean;
+  isProtectedMode: boolean;
 }) => {
   return [
     {
       className: "t--bottom-bar-commit",
-      count: changesToCommit,
+      disabled: isProtectedMode,
+      count: isProtectedMode ? undefined : changesToCommit,
       icon: "plus",
       loading: isFetchingGitStatus,
       onClick: commit,
@@ -170,7 +187,7 @@ const getQuickActionButtons = ({
     },
     {
       className: "t--bottom-bar-pull",
-      count: gitStatus?.behindCount,
+      count: isProtectedMode ? undefined : gitStatus?.behindCount,
       icon: "down-arrow-2",
       onClick: () => !pullDisabled && pull(),
       tooltipText: pullTooltipMessage,
@@ -179,6 +196,7 @@ const getQuickActionButtons = ({
     },
     {
       className: "t--bottom-bar-merge",
+      disabled: isProtectedMode,
       icon: "fork",
       onClick: merge,
       tooltipText: createMessage(MERGE),
@@ -186,7 +204,7 @@ const getQuickActionButtons = ({
     {
       className: "t--bottom-git-settings",
       icon: "settings-2-line",
-      onClick: connect,
+      onClick: settings,
       tooltipText: createMessage(GIT_SETTINGS),
     },
   ];
@@ -253,7 +271,12 @@ function ConnectGitPlaceholder() {
                   source: "BOTTOM_BAR_GIT_CONNECT_BUTTON",
                 });
 
-                dispatch(showConnectGitModal());
+                dispatch(
+                  setIsGitSyncModalOpen({
+                    isOpen: true,
+                    tab: GitSyncModalTab.GIT_CONNECTION,
+                  }),
+                );
               }}
               size="sm"
             >
@@ -275,14 +298,19 @@ export default function QuickGitActions() {
   const dispatch = useDispatch();
   const gitStatus = useSelector(getGitStatus);
   const pullFailed = useSelector(getPullFailed);
+  const isProtectedMode = useSelector(protectedModeSelector);
 
   const { disabled: pullDisabled, message: pullTooltipMessage } =
-    getPullBtnStatus(gitStatus, !!pullFailed);
+    getPullBtnStatus(gitStatus, !!pullFailed, isProtectedMode);
 
   const isPullInProgress = useSelector(getPullInProgress);
   const isFetchingGitStatus = useSelector(getIsFetchingGitStatus);
   const showPullLoadingState = isPullInProgress || isFetchingGitStatus;
   const changesToCommit = useSelector(getCountOfChangesToCommit);
+
+  const isGitConnectV2Enabled = useFeatureFlag(
+    FEATURE_FLAG.release_git_connect_v2_enabled,
+  );
 
   const quickActionButtons = getQuickActionButtons({
     commit: () => {
@@ -296,11 +324,14 @@ export default function QuickGitActions() {
         source: "BOTTOM_BAR_GIT_COMMIT_BUTTON",
       });
     },
-    connect: () => {
+    settings: () => {
       dispatch(
         setIsGitSyncModalOpen({
           isOpen: true,
-          tab: GitSyncModalTab.GIT_CONNECTION,
+          tab: isGitConnectV2Enabled
+            ? GitSyncModalTab.SETTINGS
+            : GitSyncModalTab.GIT_CONNECTION,
+          isDeploying: true,
         }),
       );
       AnalyticsUtil.logEvent("GS_SETTING_CLICK", {
@@ -311,7 +342,11 @@ export default function QuickGitActions() {
       AnalyticsUtil.logEvent("GS_PULL_GIT_CLICK", {
         source: "BOTTOM_BAR_GIT_PULL_BUTTON",
       });
-      dispatch(gitPullInit({ triggeredFromBottomBar: true }));
+      if (isProtectedMode) {
+        dispatch(discardChanges());
+      } else {
+        dispatch(gitPullInit({ triggeredFromBottomBar: true }));
+      }
     },
     merge: () => {
       AnalyticsUtil.logEvent("GS_MERGE_GIT_MODAL_TRIGGERED", {
@@ -321,6 +356,7 @@ export default function QuickGitActions() {
         setIsGitSyncModalOpen({
           isOpen: true,
           tab: GitSyncModalTab.MERGE,
+          isDeploying: true,
         }),
       );
     },
@@ -330,6 +366,7 @@ export default function QuickGitActions() {
     pullTooltipMessage,
     showPullLoadingState,
     changesToCommit,
+    isProtectedMode,
   });
   return isGitConnected ? (
     <Container>

@@ -366,13 +366,13 @@ describe("JS Function Execution", function () {
             : i === functionsLength - 1
             ? `
             ${functionName}: ${
-                isMarkedAsync ? "async" : ""
-              } ()=>"${functionName}",
+              isMarkedAsync ? "async" : ""
+            } ()=>"${functionName}",
           }`
             : `
             ${functionName}: ${
-                isMarkedAsync ? "async" : ""
-              } ()=> "${functionName}",`;
+              isMarkedAsync ? "async" : ""
+            } ()=> "${functionName}",`;
       }
       return JS_OBJECT_BODY;
     };
@@ -406,7 +406,8 @@ describe("JS Function Execution", function () {
     //After JSObj is created - check methods are in alphabetical order
     assertAsyncFunctionsOrder(FUNCTIONS_SETTINGS_DEFAULT_DATA);
 
-    _.agHelper.RefreshPage();
+    agHelper.RefreshPage();
+    agHelper.Sleep(2000); //for confirmatiom modal to appear before clicking on "Yes" button for CI runs
     // click "Yes" button for all onPageload && ConfirmExecute functions
     for (let i = 0; i <= onPageLoadAndConfirmExecuteFunctionsLength - 1; i++) {
       //agHelper.AssertElementPresence(jsEditor._dialog("Confirmation Dialog")); // Not working in edit mode
@@ -549,22 +550,16 @@ return "yes";`;
     // Assert that response tab is not empty
     _.agHelper.AssertContains("No signs of trouble here!", "not.exist");
     // Assert presence of typeError in response tab
-    _.agHelper.AssertContains(
-      "Cannot read properties of undefined (reading 'id')",
-      "exist",
-    );
-    _.agHelper.AssertContains("TypeError", "exist");
+    agHelper.AssertContains('"Table1.unknown" is undefined', "exist");
+    agHelper.AssertContains("TypeError", "exist");
 
     // click the error tab
     agHelper.GetNClick(locators._errorTab);
     // Assert that errors tab is not empty
     _.agHelper.AssertContains("No signs of trouble here!", "not.exist");
     // Assert presence of typeError in error tab
-    _.agHelper.AssertContains(
-      "Cannot read properties of undefined (reading 'id')",
-      "exist",
-    );
-    _.agHelper.AssertContains("TypeError", "exist");
+    agHelper.AssertContains('"Table1.unknown" is undefined', "exist");
+    agHelper.AssertContains("TypeError", "exist");
 
     // Fix parse error and assert that debugger error is removed
     jsEditor.EditJSObj(JS_OBJECT_WITHOUT_PARSE_ERROR, true, false);
@@ -573,10 +568,7 @@ return "yes";`;
     //agHelper.AssertContains("ran successfully"); //commenting since 'Resource not found' comes sometimes due to fast parsing
     agHelper.AssertElementAbsence(locators._btnSpinner, 10000);
     agHelper.GetNClick(locators._errorTab);
-    agHelper.AssertContains(
-      "Cannot read properties of undefined (reading 'id')",
-      "not.exist",
-    );
+    agHelper.AssertContains('"Table1.unknown" is undefined', "not.exist");
 
     // Switch back to response tab
     agHelper.GetNClick(locators._responseTab);
@@ -590,10 +582,7 @@ return "yes";`;
     _.jsEditor.EditJSObj(JS_OBJECT_WITH_DELETED_FUNCTION, true, false);
     // Assert that parse error is removed from debugger when function is deleted
     agHelper.GetNClick(locators._errorTab);
-    agHelper.AssertContains(
-      "Cannot read properties of undefined (reading 'id')",
-      "not.exist",
-    );
+    agHelper.AssertContains('"Table1.unknown" is undefined.', "not.exist");
     agHelper.ActionContextMenuWithInPane({
       action: "Delete",
       entityType: entityItems.JSObject,

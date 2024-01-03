@@ -1,4 +1,7 @@
-import type { ReduxActionWithCallbacks } from "@appsmith/constants/ReduxActionConstants";
+import type {
+  ReduxAction,
+  ReduxActionWithCallbacks,
+} from "@appsmith/constants/ReduxActionConstants";
 import {
   ReduxActionErrorTypes,
   ReduxActionTypes,
@@ -6,12 +9,21 @@ import {
 import type { ConnectToGitPayload } from "api/GitSyncAPI";
 import type { GitConfig, GitSyncModalTab, MergeStatus } from "entities/GitSync";
 import type { GitApplicationMetadata } from "@appsmith/api/ApplicationApi";
-import type { GitStatusData } from "reducers/uiReducers/gitSyncReducer";
+import type {
+  GitStatusData,
+  GitRemoteStatusData,
+} from "reducers/uiReducers/gitSyncReducer";
 import type { ResponseMeta } from "api/ApiResponses";
+import { noop } from "lodash";
+
+export interface GitStatusParams {
+  compareRemote?: boolean;
+}
 
 export const setIsGitSyncModalOpen = (payload: {
   isOpen: boolean;
   tab?: GitSyncModalTab;
+  isDeploying?: boolean;
 }) => {
   return {
     type: ReduxActionTypes.SET_IS_GIT_SYNC_MODAL_OPEN,
@@ -50,21 +62,21 @@ export const clearDiscardErrorState = () => ({
   type: ReduxActionTypes.CLEAR_DISCARD_ERROR_STATE,
 });
 
-export type ConnectToGitResponse = {
+export interface ConnectToGitResponse {
   gitApplicationMetadata: GitApplicationMetadata;
-};
+}
 
-type ConnectToGitRequestParams = {
+interface ConnectToGitRequestParams {
   payload: ConnectToGitPayload;
   onSuccessCallback?: (payload: ConnectToGitResponse) => void;
-  onErrorCallback?: (error: string) => void;
-};
+  onErrorCallback?: (error: any, response?: any) => void;
+}
 
-export type ConnectToGitReduxAction = ReduxActionWithCallbacks<
-  ConnectToGitPayload,
-  ConnectToGitResponse,
-  string
->;
+export interface ConnectToGitReduxAction
+  extends ReduxAction<ConnectToGitPayload> {
+  onSuccessCallback?: (response: ConnectToGitResponse) => void;
+  onErrorCallback?: (error: Error, response?: any) => void;
+}
 
 export const connectToGitInit = ({
   onErrorCallback,
@@ -160,13 +172,27 @@ export const fetchLocalGitConfigSuccess = (payload: GitConfig) => ({
   payload,
 });
 
-export const fetchGitStatusInit = () => ({
+export const fetchGitStatusInit = (payload?: GitStatusParams) => ({
   type: ReduxActionTypes.FETCH_GIT_STATUS_INIT,
-  payload: null,
+  payload,
 });
 
 export const fetchGitStatusSuccess = (payload: GitStatusData) => ({
   type: ReduxActionTypes.FETCH_GIT_STATUS_SUCCESS,
+  payload,
+});
+
+export const fetchGitRemoteStatusInit = ({
+  onErrorCallback = noop,
+  onSuccessCallback = noop,
+} = {}) => ({
+  type: ReduxActionTypes.FETCH_GIT_REMOTE_STATUS_INIT,
+  onSuccessCallback,
+  onErrorCallback,
+});
+
+export const fetchGitRemoteStatusSuccess = (payload: GitRemoteStatusData) => ({
+  type: ReduxActionTypes.FETCH_GIT_REMOTE_STATUS_SUCCESS,
   payload,
 });
 
@@ -189,7 +215,10 @@ export const updateBranchLocally = (payload: string) => ({
   payload,
 });
 
-type MergeBranchPayload = { sourceBranch: string; destinationBranch: string };
+interface MergeBranchPayload {
+  sourceBranch: string;
+  destinationBranch: string;
+}
 
 export const mergeBranchInit = (params: {
   payload: { sourceBranch: string; destinationBranch: string };
@@ -284,22 +313,22 @@ export const importAppFromGit = ({
 
 type ErrorPayload = string;
 
-export type SSHKeyType = {
+export interface SSHKeyType {
   keySize: number;
   platFormSupported: string;
   protocolName: string;
-};
+}
 
-export type GetSSHKeyResponseData = {
+export interface GetSSHKeyResponseData {
   gitSupportedSSHKeyType: SSHKeyType[];
   docUrl: string;
   publicKey?: string;
-};
+}
 
-export type GenerateSSHKeyPairResponsePayload<T> = {
+export interface GenerateSSHKeyPairResponsePayload<T> {
   responseMeta: ResponseMeta;
   data: T;
-};
+}
 
 export type GenerateSSHKeyPairReduxAction = ReduxActionWithCallbacks<
   { keyType?: string } | undefined,
@@ -307,13 +336,13 @@ export type GenerateSSHKeyPairReduxAction = ReduxActionWithCallbacks<
   ErrorPayload
 >;
 
-export type GenerateKeyParams = {
+export interface GenerateKeyParams {
   onErrorCallback?: (payload: ErrorPayload) => void;
   onSuccessCallback?: (
     payload: GenerateSSHKeyPairResponsePayload<GetSSHKeyResponseData>,
   ) => void;
   payload?: { keyType?: string };
-};
+}
 
 export const generateSSHKeyPair = ({
   onErrorCallback,
@@ -335,10 +364,10 @@ export const generateSSHKeyPairSuccess = (
   };
 };
 
-export type GetSSHKeyPairResponsePayload<T> = {
+export interface GetSSHKeyPairResponsePayload<T> {
   responseMeta: ResponseMeta;
   data: T;
-};
+}
 
 export type GetSSHKeyPairReduxAction = ReduxActionWithCallbacks<
   undefined,
@@ -346,13 +375,13 @@ export type GetSSHKeyPairReduxAction = ReduxActionWithCallbacks<
   ErrorPayload
 >;
 
-export type GetKeyParams = {
+export interface GetKeyParams {
   onErrorCallback?: (payload: ErrorPayload) => void;
   onSuccessCallback?: (
     payload: GetSSHKeyPairResponsePayload<GetSSHKeyResponseData>,
   ) => void;
   payload?: undefined;
-};
+}
 
 export const getSSHKeyPair = ({
   onErrorCallback,
@@ -431,3 +460,25 @@ export const deletingBranch = (payload: any) => ({
   type: ReduxActionTypes.DELETING_BRANCH,
   payload,
 });
+
+export const updateGitDefaultBranch = (payload: { branchName: string }) => {
+  return {
+    type: ReduxActionTypes.GIT_UPDATE_DEFAULT_BRANCH_INIT,
+    payload,
+  };
+};
+
+export const fetchGitProtectedBranchesInit = () => {
+  return {
+    type: ReduxActionTypes.GIT_FETCH_PROTECTED_BRANCHES_INIT,
+  };
+};
+
+export const updateGitProtectedBranchesInit = (payload: {
+  protectedBranches: string[];
+}) => {
+  return {
+    type: ReduxActionTypes.GIT_UPDATE_PROTECTED_BRANCHES_INIT,
+    payload,
+  };
+};

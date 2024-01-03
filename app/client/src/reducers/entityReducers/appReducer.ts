@@ -6,13 +6,13 @@ import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import type { User } from "constants/userConstants";
 import type { APP_MODE } from "entities/App";
 
-export type AuthUserState = {
+export interface AuthUserState {
   username: string;
   email: string;
   id: string;
-};
+}
 
-export type UrlDataState = {
+export interface UrlDataState {
   queryParams: Record<string, string>;
   protocol: string;
   host: string;
@@ -21,11 +21,11 @@ export type UrlDataState = {
   pathname: string;
   hash: string;
   fullPath: string;
-};
+}
 
 export type AppStoreState = Record<string, unknown>;
 
-export type AppDataState = {
+export interface AppDataState {
   inCloudOS?: boolean;
   mode?: APP_MODE;
   user: AuthUserState;

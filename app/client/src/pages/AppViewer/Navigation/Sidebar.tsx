@@ -13,10 +13,10 @@ import MenuItem from "./components/MenuItem";
 import ShareButton from "./components/ShareButton";
 import PrimaryCTA from "../PrimaryCTA";
 import { useHref } from "pages/Editor/utils";
-import { builderURL, viewerURL } from "RouteBuilder";
+import { builderURL, viewerURL } from "@appsmith/RouteBuilder";
 import {
+  combinedPreviewModeSelector,
   getCurrentPageId,
-  previewModeSelector,
 } from "selectors/editorSelectors";
 import type { User } from "constants/userConstants";
 import { ANONYMOUS_USERNAME } from "constants/userConstants";
@@ -53,13 +53,13 @@ import { NavLink } from "react-router-dom";
 import { makeRouteNode } from "../utils";
 import NavigationLogo from "@appsmith/pages/AppViewer/NavigationLogo";
 
-type SidebarProps = {
+interface SidebarProps {
   currentApplicationDetails?: ApplicationPayload;
   pages: Page[];
   currentWorkspaceId: string;
   currentUser: User | undefined;
   showUserSettings: boolean;
-};
+}
 
 export function Sidebar(props: SidebarProps) {
   const selectedTheme = useSelector(getSelectedAppTheme);
@@ -99,7 +99,7 @@ export function Sidebar(props: SidebarProps) {
   const [isOpen, setIsOpen] = useState(true);
   const { x } = useMouse();
   const theme = useSelector(getCurrentThemeDetails);
-  const isPreviewMode = useSelector(previewModeSelector);
+  const isPreviewMode = useSelector(combinedPreviewModeSelector);
   const isAppSettingsPaneWithNavigationTabOpen = useSelector(
     getIsAppSettingsPaneWithNavigationTabOpen,
   );

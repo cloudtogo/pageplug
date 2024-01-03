@@ -1,10 +1,8 @@
 /* eslint-disable prettier/prettier */
 import React, { useEffect } from "react";
-import WidgetFactory from "utils/WidgetFactory";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { useDynamicAppLayout } from "utils/hooks/useDynamicAppLayout";
-import type { CanvasWidgetStructure } from "widgets/constants";
-import { RenderModes } from "constants/WidgetConstants";
+import type { CanvasWidgetStructure } from "WidgetProvider/constants";
 import { useSelector } from "react-redux";
 import {
   getCurrentApplication,
@@ -13,18 +11,22 @@ import {
   getAppMode,
 } from "@appsmith/selectors/applicationSelectors";
 import { NAVIGATION_SETTINGS } from "constants/AppConstants";
-import { PageView, PageViewContainer } from "./AppPage.styled";
+import { PageView, PageViewWrapper } from "./AppPage.styled";
 import { useIsMobileDevice } from "utils/hooks/useDeviceDetect";
 import { APP_MODE } from "entities/App";
 import { useLocation } from "react-router";
+import { renderAppsmithCanvas } from "layoutSystems/CanvasFactory";
+import type { WidgetProps } from "widgets/BaseWidget";
+import { LayoutSystemTypes } from "layoutSystems/types";
+import { getLayoutSystemType } from "selectors/layoutSystemSelectors";
 
-type AppPageProps = {
+interface AppPageProps {
   appName?: string;
   canvasWidth: number;
   pageId?: string;
   pageName?: string;
   widgetsStructure: CanvasWidgetStructure;
-};
+}
 
 export function AppPage(props: AppPageProps) {
 
@@ -39,6 +41,7 @@ export function AppPage(props: AppPageProps) {
   const isEmbed = queryParams.get("embed");
   const isNavbarVisibleInEmbeddedApp = queryParams.get("navbar");
   const isEmbeddedAppWithNavVisible = isEmbed && isNavbarVisibleInEmbeddedApp;
+  const layoutSystemType: LayoutSystemTypes = useSelector(getLayoutSystemType);
 
   useDynamicAppLayout();
 
@@ -52,7 +55,7 @@ export function AppPage(props: AppPageProps) {
   }, [props.pageId, props.pageName]);
 
   return (
-    <PageViewContainer
+    <PageViewWrapper
       hasPinnedSidebar={
         currentApplicationDetails?.applicationDetail?.navigationSetting
           ?.orientation === NAVIGATION_SETTINGS.ORIENTATION.SIDE &&
@@ -65,9 +68,15 @@ export function AppPage(props: AppPageProps) {
     >
       <PageView className="t--app-viewer-page" width={props.canvasWidth}>
         {props.widgetsStructure.widgetId &&
-          WidgetFactory.createWidget(props.widgetsStructure, RenderModes.PAGE)}
+          renderAppsmithCanvas({
+            ...props.widgetsStructure,
+            classList:
+              layoutSystemType === LayoutSystemTypes.ANVIL
+                ? ["main-anvil-canvas"]
+                : [],
+          } as WidgetProps)}
       </PageView>
-    </PageViewContainer>
+    </PageViewWrapper>
   );
 }
 

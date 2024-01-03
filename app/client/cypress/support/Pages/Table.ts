@@ -89,7 +89,7 @@ export class Table {
   _liCurrentSelectedPage =
     "//div[@type='LIST_WIDGET']//ul[contains(@class, 'rc-pagination')]/li[contains(@class, 'rc-pagination-item-active')]/a";
   private _tr = ".tbody .tr";
-  private _searchText = "input[type='search']";
+  private _searchTableInput = "input[type='search'][placeholder='Search...']";
   _searchBoxCross =
     "//div[contains(@class, 't--search-input')]/following-sibling::div";
   _addIcon = "button .bp3-icon-add";
@@ -188,13 +188,17 @@ export class Table {
   _divFirstChild = "div:first-child abbr";
   _listPreviousPage = ".rc-pagination-prev";
   _listNavigation = (move: string) =>
-    "//button[@area-label='" + move + " page']";
+    "//button[@aria-label='" + move + " page']";
   _listNextPage = ".rc-pagination-next";
   _listActivePage = (version: "v1" | "v2") =>
     `.t--widget-listwidget${
       version == "v1" ? "" : version
     } .rc-pagination-item-active`;
   _paginationItem = (value: number) => `.rc-pagination-item-${value}`;
+  _cellWrapOff = "//div[@class='tableWrap virtual']";
+  _cellWrapOn = "//div[@class='tableWrap']";
+  _multirowselect = ".t--table-multiselect";
+  _selectedrow = ".selected-row";
 
   public GetNumberOfRows() {
     return this.agHelper.GetElement(this._tr).its("length");
@@ -247,15 +251,12 @@ export class Table {
   }
 
   public WaitForTableEmpty(tableVersion: "v1" | "v2" = "v1") {
-    cy.waitUntil(() => cy.get(this._tableEmptyColumnData(tableVersion)), {
-      errorMsg: "Table is populated when not expected",
-      timeout: 10000,
-      interval: 2000,
-    }).then(($children) => {
-      cy.wrap($children).children().should("have.length", 0); //or below
-      //expect($children).to.have.lengthOf(0)
-      this.agHelper.Sleep(500);
-    });
+    this.agHelper
+      .GetElement(this._tableEmptyColumnData(tableVersion))
+      .children()
+      .should("have.length", 0); //or below
+    //expect($children).to.have.lengthOf(0)
+    this.agHelper.Sleep(500);
   }
 
   public AssertTableHeaderOrder(expectedOrder: string) {
@@ -445,11 +446,11 @@ export class Table {
   }
 
   public AssertSearchText(searchTxt: string, index = 0) {
-    cy.get(this._searchText).eq(index).should("have.value", searchTxt);
+    cy.get(this._searchTableInput).eq(index).should("have.value", searchTxt);
   }
 
   public SearchTable(searchTxt: string, index = 0) {
-    cy.get(this._searchText).eq(index).type(searchTxt);
+    this.agHelper.TypeText(this._searchTableInput, searchTxt, index);
   }
 
   public ResetSearch() {
@@ -552,7 +553,7 @@ export class Table {
     tableVersion: "v1" | "v2" = "v1",
   ) {
     this.EditColumn(columnName, tableVersion);
-    this.agHelper.SelectDropdownList("Column type", newDataType);
+    this.propPane.SelectPropertiesDropDown("Column type", newDataType);
     this.assertHelper.AssertNetworkStatus("@updateLayout");
     if (tableVersion == "v2") this.propPane.NavigateBackToPropertyPane();
   }

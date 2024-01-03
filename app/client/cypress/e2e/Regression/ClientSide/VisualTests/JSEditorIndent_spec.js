@@ -8,10 +8,12 @@ import {
   dataSources,
 } from "../../../../support/Objects/ObjectsCore";
 
-describe.skip("JSEditor Indendation - Visual tests", () => {
+describe("JSEditor Indendation - Visual tests", () => {
   it("6. TC 1933 - jSEditor prettify verification on cloned application", () => {
-    const appname = localStorage.getItem("AppName");
-    _.jsEditor.CreateJSObject(
+    const appName = localStorage.getItem("appName");
+    const workspaceName = localStorage.getItem("workspaceName");
+
+    jsEditor.CreateJSObject(
       `export default {
 myFun1: () => {
 console.log("hi");
@@ -56,11 +58,13 @@ myFun2: async () => {
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify6");
 
     // taking a snap after clicking inside the editor to make sure prettify has not reverted
-    _.agHelper.GetNClick(_.jsEditor._lineinJsEditor(26));
+    agHelper.Sleep(110);
+    agHelper.GetNClick(jsEditor._lineinJsEditor(26));
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify6");
 
     homePage.NavigateToHome();
-    homePage.ForkApplication(appname);
+    homePage.FilterApplication(workspaceName);
+    homePage.ForkApplication(appName);
     entityExplorer.ExpandCollapseEntity("Queries/JS");
     entityExplorer.SelectEntityByName("JSObject1", "Queries/JS");
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify6");
@@ -113,7 +117,8 @@ myFun2: async () => {
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify7");
 
     // taking a snap after clicking inside the editor to make sure prettify has not reverted
-    _.agHelper.GetNClick(_.jsEditor._lineinJsEditor(26));
+    agHelper.Sleep(110);
+    agHelper.GetNClick(jsEditor._lineinJsEditor(26));
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify7");
 
     entityExplorer.ClonePage("Page1");
@@ -206,7 +211,8 @@ myFun2: async () => {
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify2");
 
     // taking a snap after clicking inside the editor to make sure prettify has not reverted
-    _.agHelper.GetNClick(_.jsEditor._lineinJsEditor(26));
+    agHelper.Sleep(110);
+    agHelper.GetNClick(jsEditor._lineinJsEditor(26));
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify2");
 
     // click run button and take a snap to make sure prettify did not revert
@@ -311,7 +317,8 @@ myFun2: async () => {
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify4");
 
     // taking a snap after clicking inside the editor to make sure prettify has not reverted
-    _.agHelper.GetNClick(_.jsEditor._lineinJsEditor(26));
+    agHelper.Sleep(110);
+    agHelper.GetNClick(jsEditor._lineinJsEditor(26));
     cy.get("div.CodeMirror").matchImageSnapshot("jsObjAfterPrettify4_1");
 
     // click run button and take a snap to make sure prettify did not revert

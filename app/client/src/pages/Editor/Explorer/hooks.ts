@@ -8,8 +8,11 @@ import type { WidgetProps } from "widgets/BaseWidget";
 import log from "loglevel";
 import produce from "immer";
 import type { CanvasStructure } from "reducers/uiReducers/pageCanvasStructureReducer";
-import { getActions, getDatasources } from "selectors/entitiesSelector";
-import type { ActionData } from "reducers/entityReducers/actionsReducer";
+import {
+  getActions,
+  getDatasources,
+} from "@appsmith/selectors/entitiesSelector";
+import type { ActionData } from "@appsmith/reducers/entityReducers/actionsReducer";
 import { matchPath, useLocation } from "react-router";
 import {
   API_EDITOR_ID_PATH,
@@ -104,11 +107,13 @@ export const useOtherDatasourcesInWorkspace = () => {
       },
       new Set(),
     );
-    return allDatasources.filter(
-      (ds) =>
-        !datasourceIdsUsedInCurrentApplication.has(ds.id) &&
-        ds.id !== TEMP_DATASOURCE_ID,
-    );
+    return allDatasources
+      .filter(
+        (ds) =>
+          !datasourceIdsUsedInCurrentApplication.has(ds.id) &&
+          ds.id !== TEMP_DATASOURCE_ID,
+      )
+      .sort((a, b) => a.name.localeCompare(b.name));
   }, [actions, allDatasources]);
   return otherDatasourcesInWorkspace;
 };
@@ -118,15 +123,17 @@ export const useAppWideAndOtherDatasource = () => {
   const otherDatasourceInWorkspace = useOtherDatasourcesInWorkspace();
   const appWideDS = useMemo(
     () =>
-      [...datasourcesUsedInApplication].sort((ds1, ds2) =>
-        ds1.name?.toLowerCase()?.localeCompare(ds2.name?.toLowerCase()),
+      [...datasourcesUsedInApplication].sort(
+        (ds1, ds2) =>
+          ds1.name?.toLowerCase()?.localeCompare(ds2.name?.toLowerCase()),
       ),
     [datasourcesUsedInApplication],
   );
   const otherDS = useMemo(
     () =>
-      [...otherDatasourceInWorkspace].sort((ds1, ds2) =>
-        ds1.name?.toLowerCase()?.localeCompare(ds2.name?.toLowerCase()),
+      [...otherDatasourceInWorkspace].sort(
+        (ds1, ds2) =>
+          ds1.name?.toLowerCase()?.localeCompare(ds2.name?.toLowerCase()),
       ),
     [otherDatasourceInWorkspace],
   );
@@ -143,7 +150,6 @@ export const useDatasourceSuggestions = () => {
   const otherDatasourceInWorkspace = useOtherDatasourcesInWorkspace();
   if (datasourcesUsedInApplication.length >= MAX_DATASOURCE_SUGGESTIONS)
     return [];
-  otherDatasourceInWorkspace.reverse();
   return otherDatasourceInWorkspace.slice(
     0,
     MAX_DATASOURCE_SUGGESTIONS - datasourcesUsedInApplication.length,
@@ -245,8 +251,9 @@ export const usePageIds = (searchKeyword?: string) => {
 };
 
 export const useEntityUpdateState = (entityId: string) => {
-  return useSelector((state: AppState) =>
-    get(state, "ui.explorer.entity.updatingEntity")?.includes(entityId),
+  return useSelector(
+    (state: AppState) =>
+      get(state, "ui.explorer.entity.updatingEntity")?.includes(entityId),
   );
 };
 

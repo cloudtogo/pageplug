@@ -31,11 +31,13 @@ import {
 } from "@appsmith/selectors/applicationSelectors";
 import { getAllApplications } from "@appsmith/actions/applicationActions";
 import { createMessage, SEARCH_TEMPLATES } from "@appsmith/constants/messages";
-import LeftPaneBottomSection from "@appsmith/pages/Home/LeftPaneBottomSection";
+import LeftPaneBottomSection from "pages/Home/LeftPaneBottomSection";
 import type { Template } from "api/TemplatesApi";
 import LoadingScreen from "./TemplatesModal/LoadingScreen";
 import ReconnectDatasourceModal from "pages/Editor/gitSync/ReconnectDatasourceModal";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { debounce } from "lodash";
+import AnalyticsUtil from "utils/AnalyticsUtil";
 
 const SentryRoute = Sentry.withSentryRouting(Route);
 
@@ -145,23 +147,24 @@ function TemplateRoutes() {
   );
 }
 
-type TemplatesContentProps = {
+interface TemplatesContentProps {
   onTemplateClick?: (id: string) => void;
   onForkTemplateClick?: (template: Template) => void;
   stickySearchBar?: boolean;
   isForkingEnabled: boolean;
   filterWithAllowPageImport?: boolean;
-};
-
+}
+const INPUT_DEBOUNCE_TIMER = 500;
 export function TemplatesContent(props: TemplatesContentProps) {
   const templateSearchQuery = useSelector(getTemplateSearchQuery);
   const isFetchingApplications = useSelector(getIsFetchingApplications);
   const isFetchingTemplates = useSelector(isFetchingTemplatesSelector);
   const isLoading = isFetchingApplications || isFetchingTemplates;
   const dispatch = useDispatch();
-  const onChange = (query: string) => {
+  const onChange = debounce((query: string) => {
     dispatch(setTemplateSearchQuery(query));
-  };
+    AnalyticsUtil.logEvent("TEMPLATES_SEARCH_INPUT_EVENT", { query });
+  }, INPUT_DEBOUNCE_TIMER);
   const filterWithAllowPageImport = props.filterWithAllowPageImport || false;
   const templates = useSelector(getSearchedTemplateList).filter((template) =>
     filterWithAllowPageImport ? !!template.allowPageImport : true,

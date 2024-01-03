@@ -43,23 +43,28 @@ import { getIsBranchUpdated } from "../utils";
 import { APP_MODE } from "entities/App";
 import { initAppViewer } from "actions/initActions";
 import { WidgetGlobaStyles } from "globalStyles/WidgetGlobalStyles";
-import { getAppsmithConfigs } from "@appsmith/configs";
 import useWidgetFocus from "utils/hooks/useWidgetFocus/useWidgetFocus";
 import HtmlTitle from "./AppViewerHtmlTitle";
 import BottomBar from "components/BottomBar";
 import type { ApplicationPayload } from "@appsmith/constants/ReduxActionConstants";
 import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
 import { widgetInitialisationSuccess } from "../../actions/widgetActions";
-import { areEnvironmentsFetched } from "@appsmith/selectors/environmentSelectors";
-import { datasourceEnvEnabled } from "@appsmith/selectors/featureFlagsSelectors";
+import {
+  areEnvironmentsFetched,
+  getEnvironmentsWithPermission,
+} from "@appsmith/selectors/environmentSelectors";
+import type { FontFamily } from "@design-system/theming";
 import {
   ThemeProvider as WDSThemeProvider,
   useTheme,
 } from "@design-system/theming";
 import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
 import { RAMP_NAME } from "utils/ProductRamps/RampsControlList";
-import { showProductRamps } from "selectors/rampSelectors";
-import { isCEMode } from "@appsmith/utils";
+import { showProductRamps } from "@appsmith/selectors/rampSelectors";
+import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
+import { KBViewerFloatingButton } from "@appsmith/pages/AppViewer/KnowledgeBase/KBViewerFloatingButton";
+import urlBuilder from "@appsmith/entities/URLRedirect/URLAssembly";
+import { getHideWatermark } from "@appsmith/selectors/tenantSelectors";
 
 const AppViewerBody = styled.section<{
   showTabBar: boolean;
@@ -129,7 +134,7 @@ function AppViewer(props: Props) {
   const isMobile = useSelector(isMobileLayout);
   const currentPage = useSelector(getCurrentPage);
   const isEmbed = !!getSearchQuery(search, "embed") || !!currentPage?.isHidden;
-  const { hideWatermark } = getAppsmithConfigs();
+  const hideWatermark = useSelector(getHideWatermark);
   const pageDescription = useSelector(getCurrentPageDescription);
   const currentApplicationDetails: ApplicationPayload | undefined = useSelector(
     getCurrentApplication,
@@ -137,18 +142,27 @@ function AppViewer(props: Props) {
   const { theme } = useTheme({
     borderRadius: selectedTheme.properties.borderRadius.appBorderRadius,
     seedColor: selectedTheme.properties.colors.primaryColor,
+    fontFamily: selectedTheme.properties.fontFamily.appFont as FontFamily,
   });
   const focusRef = useWidgetFocus();
 
-  const showRampSelector = showProductRamps(RAMP_NAME.MULTIPLE_ENV);
+  const showRampSelector = showProductRamps(RAMP_NAME.MULTIPLE_ENV, true);
   const canShowRamp = useSelector(showRampSelector);
 
   const workspaceId = currentApplicationDetails?.workspaceId || "";
+  const isMultipleEnvEnabled = useFeatureFlag(
+    FEATURE_FLAG.release_datasource_environments_enabled,
+  );
+  const environmentList = useSelector(getEnvironmentsWithPermission);
+  // If there is only one environment and it is default, don't show the bottom bar
+  const isOnlyDefaultShown =
+    environmentList.length === 1 && environmentList[0]?.isDefault;
   const showBottomBar = useSelector((state: AppState) => {
     return (
       areEnvironmentsFetched(state, workspaceId) &&
-      datasourceEnvEnabled(state) &&
-      (isCEMode() ? canShowRamp : true)
+      (isMultipleEnvEnabled || canShowRamp) &&
+      environmentList.length > 0 &&
+      !isOnlyDefaultShown
     );
   });
 
@@ -206,6 +220,14 @@ function AppViewer(props: Props) {
       }
     }
   }, [branch, pageId, applicationId, pathname]);
+
+  useEffect(() => {
+    urlBuilder.setCurrentPageId(pageId);
+
+    return () => {
+      urlBuilder.setCurrentPageId(null);
+    };
+  }, [pageId]);
 
   useEffect(() => {
     const header = document.querySelector(".js-appviewer-header");
@@ -272,6 +294,24 @@ function AppViewer(props: Props) {
             >
               {isInitialized && <AppViewerPageContainer />}
             </AppViewerBody>
+            {showBottomBar && <BottomBar viewMode />}
+            <div
+              className={`fixed hidden right-8 z-3 md:flex ${
+                showBottomBar ? "bottom-12" : "bottom-4"
+              }`}
+            >
+              {!hideWatermark && (
+                <a
+                  className="hover:no-underline"
+                  href="https://appsmith.com"
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  <BrandingBadge />
+                </a>
+              )}
+              <KBViewerFloatingButton />
+            </div>
           </AppViewerBodyContainer>
         </ContainerForBottom>
         <TabBar />

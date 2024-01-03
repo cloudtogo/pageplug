@@ -41,7 +41,7 @@ describe("Container Widget Functionality", function () {
       .first()
       .click({ force: true })
       .clear()
-      .type(widgetsPage.yellowColorHex);
+      .type(widgetsPage.yellowColorHex, { delay: 0 });
     cy.get(
       `div[data-testid='container-wrapper-${dsl.dsl.children[0].widgetId}']`,
     )
@@ -54,7 +54,7 @@ describe("Container Widget Functionality", function () {
       .first()
       .click({ force: true })
       .clear()
-      .type(widgetsPage.greenColorHex);
+      .type(widgetsPage.greenColorHex, { delay: 0 });
     cy.get(widgetsPage.containerD)
       .should("have.css", "background")
       .and(

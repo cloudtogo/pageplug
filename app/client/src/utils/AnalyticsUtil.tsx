@@ -39,7 +39,7 @@ class AnalyticsUtil {
     smartlookClient.init(id);
   }
 
-  static initializeSegment(key: string) {
+  static async initializeSegment(key: string) {
     const initPromise = new Promise<boolean>((resolve) => {
       (function init(window: any) {
         const analytics = (window.analytics = window.analytics || []);
@@ -177,6 +177,7 @@ class AnalyticsUtil {
           name: userData.name,
           userId: userId,
           source: "cloud",
+          emailVerified: userData.emailVerified,
         };
         AnalyticsUtil.user = userData;
         log.debug("Identify User " + userId);

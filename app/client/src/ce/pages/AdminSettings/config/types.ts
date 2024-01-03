@@ -1,7 +1,7 @@
 import type React from "react";
 import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
 import type { Dispatch } from "react";
-import type { RadioOptionProps } from "pages/Settings/FormGroup/Radio";
+import type { RadioOptionProps } from "pages/AdminSettings/FormGroup/Radio";
 import type { CalloutKind, SelectOptionProps } from "design-system";
 
 type ControlType = {
@@ -11,11 +11,12 @@ type ControlType = {
   };
 }[keyof ControlPropsType];
 
-type ControlPropsType = {
+interface ControlPropsType {
   [SettingTypes.RADIO]: RadioOptionProps;
   [SettingTypes.TEXTINPUT]: unknown;
   [SettingTypes.TOGGLE]: unknown;
   [SettingTypes.LINK]: unknown;
+  [SettingTypes.CALLOUT]: unknown;
   [SettingTypes.BUTTON]: unknown;
   [SettingTypes.GROUP]: unknown;
   [SettingTypes.TEXT]: unknown;
@@ -24,13 +25,14 @@ type ControlPropsType = {
   [SettingTypes.TAGINPUT]: unknown;
   [SettingTypes.DROPDOWN]: unknown;
   [SettingTypes.CHECKBOX]: unknown;
-};
+}
 
 export enum SettingTypes {
   RADIO = "RADIO",
   TEXTINPUT = "TEXTINPUT",
   TOGGLE = "TOGGLE",
   LINK = "LINK",
+  CALLOUT = "CALLOUT",
   BUTTON = "BUTTON",
   GROUP = "GROUP",
   TEXT = "TEXT",
@@ -80,9 +82,9 @@ export type Setting = ControlType & {
   sortOrder?: number;
   subText?: string;
   toggleText?: (value: boolean) => string;
-  isVisible?: (values: Record<string, any>) => boolean;
+  isVisible?: (values?: Record<string, any>) => boolean;
   isHidden?: boolean;
-  isDisabled?: (values: Record<string, any>) => boolean;
+  isDisabled?: (values?: Record<string, any>) => boolean;
   calloutType?: CalloutKind;
   advanced?: Setting[];
   isRequired?: boolean;
@@ -90,8 +92,9 @@ export type Setting = ControlType & {
   formName?: string;
   fieldName?: string;
   dropdownOptions?: Partial<SelectOptionProps>[];
-  needsUpgrade?: boolean;
+  isFeatureEnabled?: boolean;
   tooltip?: string;
+  isEnterprise?: boolean;
 };
 
 export interface Category {
@@ -103,7 +106,6 @@ export interface Category {
   children?: Category[];
   icon?: string;
   categoryType: string;
-  needsUpgrade?: boolean;
   isEnterprise?: boolean;
   isFeatureEnabled?: boolean;
 }
@@ -112,7 +114,6 @@ export const SettingCategories = {
   GENERAL: "general",
   MINI: "mini",
   EMAIL: "email",
-  GOOGLE_MAPS: "google-maps",
   BAIDU_MAPS: "baidu-maps",
   VERSION: "version",
   ADVANCED: "advanced",
@@ -129,6 +130,7 @@ export const SettingCategories = {
   DINGDING_AUTH: "dingding-auth",
   SAML_AUTH: "saml-auth",
   OIDC_AUTH: "oidc-auth",
+  DEVELOPER_SETTINGS: "developer-settings",
 };
 
 export enum CategoryType {
@@ -137,7 +139,7 @@ export enum CategoryType {
   OTHER = "other",
 }
 
-export type AdminConfigType = {
+export interface AdminConfigType {
   type: string;
   controlType: SettingTypes;
   title: string;
@@ -149,8 +151,7 @@ export type AdminConfigType = {
   isConnected?: boolean;
   needsRefresh?: boolean;
   icon?: string;
-  needsUpgrade?: boolean;
   categoryType: CategoryType;
   isEnterprise?: boolean;
   isFeatureEnabled?: boolean;
-};
+}

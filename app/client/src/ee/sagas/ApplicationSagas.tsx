@@ -16,6 +16,9 @@ import {
   showReconnectDatasourcesModalSaga,
   fetchUnconfiguredDatasourceList,
   fetchApplicationPreviewWxaCodeSaga,
+  uploadNavigationLogoSaga,
+  // deleteNavigationLogoSaga,
+  deleteMultipleApplicationSaga,
 } from "ce/sagas/ApplicationSagas";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { all, takeLatest } from "redux-saga/effects";
@@ -48,6 +51,10 @@ export default function* applicationSagas() {
       setDefaultApplicationPageSaga,
     ),
     takeLatest(ReduxActionTypes.DELETE_APPLICATION_INIT, deleteApplicationSaga),
+    takeLatest(
+      ReduxActionTypes.DELETE_MULTIPLE_APPS_INIT,
+      deleteMultipleApplicationSaga,
+    ),
     takeLatest(ReduxActionTypes.IMPORT_APPLICATION_INIT, importApplicationSaga),
     takeLatest(ReduxActionTypes.FETCH_RELEASES, fetchReleases),
     takeLatest(

@@ -23,10 +23,10 @@ import { useState } from "react";
 import { CONVERSION_STATES } from "reducers/uiReducers/layoutConversionReducer";
 import { setLayoutConversionStateAction } from "actions/autoLayoutActions";
 import { useSelector } from "react-redux";
-import { getReadableSnapShotDetails } from "selectors/autoLayoutSelectors";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { snapShotFlow } from "./useSnapShotForm";
 import { commonConversionFlows } from "./CommonConversionFlows";
+import { getReadableSnapShotDetails } from "layoutSystems/autolayout/utils/AutoLayoutUtils";
 
 //returns props for Auto to fixed layout conversion flows based on which the Conversion Form can be rendered
 export const useAutoToFixedLayoutFlow = (

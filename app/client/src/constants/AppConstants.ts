@@ -79,7 +79,7 @@ export const NAVIGATION_SETTINGS = {
   },
 };
 
-export type NavigationSetting = {
+export interface NavigationSetting {
   showNavbar: boolean;
   showSignIn: boolean;
   orientation: (typeof NAVIGATION_SETTINGS.ORIENTATION)[keyof typeof NAVIGATION_SETTINGS.ORIENTATION];
@@ -89,7 +89,7 @@ export type NavigationSetting = {
   colorStyle: (typeof NAVIGATION_SETTINGS.COLOR_STYLE)[keyof typeof NAVIGATION_SETTINGS.COLOR_STYLE];
   logoAssetId: string;
   logoConfiguration: (typeof NAVIGATION_SETTINGS.LOGO_CONFIGURATION)[keyof typeof NAVIGATION_SETTINGS.LOGO_CONFIGURATION];
-};
+}
 
 export type StringsFromNavigationSetting = Omit<
   NavigationSetting,
@@ -126,7 +126,9 @@ export const SIDEBAR_WIDTH = {
   MINIMAL: 64,
 };
 
-export const APPLICATION_TITLE_MAX_WIDTH = 224;
+export const APP_SIDEBAR_WIDTH = 50;
+
+export const APPLICATION_TITLE_MAX_WIDTH = 192;
 export const APPLICATION_TITLE_MAX_WIDTH_MOBILE = 150;
 //all values are in milliseconds
 export const REQUEST_IDLE_CALLBACK_TIMEOUT = {

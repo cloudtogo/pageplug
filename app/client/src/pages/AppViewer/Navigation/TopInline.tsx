@@ -22,7 +22,10 @@ import MenuItem from "./components/MenuItem";
 import { Container } from "./TopInline.styled";
 import MenuItemContainer from "./components/MenuItemContainer";
 import MoreDropdownButton from "./components/MoreDropdownButton";
-import { getCanvasWidth, previewModeSelector } from "selectors/editorSelectors";
+import {
+  combinedPreviewModeSelector,
+  getCanvasWidth,
+} from "selectors/editorSelectors";
 import { useSelector } from "react-redux";
 import { getIsAppSettingsPaneWithNavigationTabOpen } from "selectors/appSettingsPaneSelectors";
 import { throttle, get as _get, size as _size, head as _head } from "lodash";
@@ -33,10 +36,10 @@ import { filterHiddenTreeData, mapClearTree } from "utils/treeUtils";
 // TODO - @Dhruvik - ImprovedAppNav
 // Replace with NavigationProps if nothing changes
 // appsmith/app/client/src/pages/AppViewer/Navigation/constants.ts
-type TopInlineProps = {
+interface TopInlineProps {
   currentApplicationDetails?: ApplicationPayload;
   pages: Page[];
-};
+}
 
 export function TopInline(props: TopInlineProps) {
   const { currentApplicationDetails, pages } = props;
@@ -56,7 +59,7 @@ export function TopInline(props: TopInlineProps) {
   const maxMenuItemWidth = 220;
   const [maxMenuItemsThatCanFit, setMaxMenuItemsThatCanFit] = useState(0);
   const { width: screenWidth } = useWindowSizeHooks();
-  const isPreviewMode = useSelector(previewModeSelector);
+  const isPreviewMode = useSelector(combinedPreviewModeSelector);
   const isAppSettingsPaneWithNavigationTabOpen = useSelector(
     getIsAppSettingsPaneWithNavigationTabOpen,
   );

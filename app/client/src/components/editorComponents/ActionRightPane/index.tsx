@@ -1,22 +1,16 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { Collapse, Classes as BPClasses } from "@blueprintjs/core";
 import { Classes, getTypographyByKey } from "design-system-old";
-import { Button, Divider, Icon, Link, Text } from "design-system";
-import { useState } from "react";
-import Connections from "./Connections";
+import { Divider, Icon, Text } from "design-system";
 import SuggestedWidgets from "./SuggestedWidgets";
-import type { ReactNode } from "react";
-import { useEffect } from "react";
-import { bindDataOnCanvas } from "actions/pluginActionActions";
+import type { ReactNode, MutableRefObject } from "react";
 import { useParams } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { getWidgets } from "sagas/selectors";
-import AnalyticsUtil from "utils/AnalyticsUtil";
 import type { AppState } from "@appsmith/reducers";
 import { getDependenciesFromInverseDependencies } from "../Debugger/helpers";
 import {
-  BACK_TO_CANVAS,
   BINDINGS_DISABLED_TOOLTIP,
   BINDING_SECTION_LABEL,
   createMessage,
@@ -28,29 +22,18 @@ import type {
   SuggestedWidget,
   SuggestedWidget as SuggestedWidgetsType,
 } from "api/ActionAPI";
-import {
-  getCurrentApplicationId,
-  getCurrentPageId,
-  getPagePermissions,
-} from "selectors/editorSelectors";
-import { builderURL } from "RouteBuilder";
-import { hasManagePagePermission } from "@appsmith/utils/permissionHelpers";
-import DatasourceStructureHeader from "pages/Editor/Explorer/Datasources/DatasourceStructureHeader";
+import { getPagePermissions } from "selectors/editorSelectors";
+import DatasourceStructureHeader from "pages/Editor/DatasourceInfo/DatasourceStructureHeader";
 import {
   DatasourceStructureContainer as DataStructureList,
   SCHEMALESS_PLUGINS,
-} from "pages/Editor/Explorer/Datasources/DatasourceStructureContainer";
-import { DatasourceStructureContext } from "pages/Editor/Explorer/Datasources/DatasourceStructureContainer";
-import { selectFeatureFlagCheck } from "@appsmith/selectors/featureFlagsSelectors";
-import {
-  AB_TESTING_EVENT_KEYS,
-  FEATURE_FLAG,
-} from "@appsmith/entities/FeatureFlag";
+} from "pages/Editor/DatasourceInfo/DatasourceStructureContainer";
 import {
   getDatasourceStructureById,
+  getIsFetchingDatasourceStructure,
   getPluginDatasourceComponentFromId,
   getPluginNameFromId,
-} from "selectors/entitiesSelector";
+} from "@appsmith/selectors/entitiesSelector";
 import { DatasourceComponentTypes } from "api/PluginApi";
 import { fetchDatasourceStructure } from "actions/datasourceActions";
 import WalkthroughContext from "components/featureWalkthrough/walkthroughContext";
@@ -64,6 +47,12 @@ import { getCurrentUser } from "selectors/usersSelectors";
 import { Tooltip } from "design-system";
 import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
 import { FEATURE_WALKTHROUGH_KEYS } from "constants/WalkthroughConstants";
+import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
+import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
+import { getHasManagePagePermission } from "@appsmith/utils/BusinessFeatures/permissionPageHelpers";
+import type { Datasource } from "entities/Datasource";
+import { DatasourceStructureContext } from "entities/Datasource";
 
 const SCHEMA_GUIDE_GIF = `${ASSETS_CDN_URL}/schema.gif`;
 
@@ -121,12 +110,6 @@ const SideBar = styled.div`
   }
 `;
 
-const BackToCanvasLink = styled(Link)`
-  margin-left: ${(props) => props.theme.spaces[1] + 1}px;
-  margin-top: ${(props) => props.theme.spaces[11]}px;
-  margin-bottom: ${(props) => props.theme.spaces[11]}px;
-`;
-
 const Label = styled.span`
   cursor: pointer;
 `;
@@ -164,23 +147,6 @@ const CollapsibleWrapper = styled.div<{
   }
 `;
 
-const SnipingWrapper = styled.div`
-  ${getTypographyByKey("p1")}
-  margin-left: ${(props) => props.theme.spaces[2] + 1}px;
-
-  img {
-    max-width: 100%;
-  }
-
-  .image-wrapper {
-    position: relative;
-    margin-top: ${(props) => props.theme.spaces[1]}px;
-  }
-
-  .widget:hover {
-    cursor: pointer;
-  }
-`;
 const Placeholder = styled.div`
   display: flex;
   justify-content: center;
@@ -192,49 +158,67 @@ const Placeholder = styled.div`
 `;
 
 const DataStructureListWrapper = styled.div`
-  overflow-y: scroll;
+  overflow-y: hidden;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
-const SchemaSideBarSection = styled.div<{ height: number; marginTop?: number }>`
+const CollapsibleSection = styled.div<{ height: string; marginTop?: number }>`
   margin-top: ${(props) => props?.marginTop && `${props.marginTop}px`};
   height: auto;
   display: flex;
   width: 100%;
   flex-direction: column;
-  ${(props) => props.height && `max-height: ${props.height}%;`}
+  ${(props) => props.height && `height: ${props.height};`}
+  & > div {
+    height: 100%;
+  }
 `;
 
-type CollapsibleProps = {
+interface CollapsibleProps {
   expand?: boolean;
   children: ReactNode;
   label: string;
   CustomLabelComponent?: (props: any) => JSX.Element;
   isDisabled?: boolean;
-  datasourceId?: string;
-};
+  datasource?: Partial<Datasource>;
+  containerRef?: MutableRefObject<HTMLDivElement | null>;
+}
 
-type DisabledCollapsibleProps = {
+interface DisabledCollapsibleProps {
   label: string;
   tooltipLabel?: string;
-};
+}
 
 export function Collapsible({
   children,
+  containerRef,
   CustomLabelComponent,
-  datasourceId,
+  datasource,
   expand = true,
   label,
 }: CollapsibleProps) {
   const [isOpen, setIsOpen] = useState(!!expand);
 
+  const handleCollapse = (openStatus: boolean) => {
+    if (containerRef?.current) {
+      if (openStatus) {
+        containerRef.current.style.height = "";
+      } else {
+        containerRef.current.style.height = "auto";
+      }
+    }
+    setIsOpen(openStatus);
+  };
+
   useEffect(() => {
-    setIsOpen(expand);
+    handleCollapse(expand);
   }, [expand]);
 
   return (
     <CollapsibleWrapper isOpen={isOpen}>
-      <Label className="icon-text" onClick={() => setIsOpen(!isOpen)}>
+      <Label className="icon-text" onClick={() => handleCollapse(!isOpen)}>
         <Icon
           className="collapsible-icon"
           name={isOpen ? "down-arrow" : "arrow-right-s-line"}
@@ -242,8 +226,8 @@ export function Collapsible({
         />
         {!!CustomLabelComponent ? (
           <CustomLabelComponent
-            datasourceId={datasourceId}
-            onRefreshCallback={() => setIsOpen(true)}
+            datasource={datasource}
+            onRefreshCallback={() => handleCollapse(true)}
           />
         ) : (
           <Text className="label" kind="heading-xs">
@@ -298,9 +282,9 @@ export function useEntityDependencies(actionName: string) {
 
 function ActionSidebar({
   actionName,
+  actionRightPaneBackLink,
   context,
   datasourceId,
-  entityDependencies,
   hasConnections,
   hasResponse,
   pluginId,
@@ -310,39 +294,21 @@ function ActionSidebar({
   hasResponse: boolean;
   hasConnections: boolean | null;
   suggestedWidgets?: SuggestedWidgetsType[];
-  entityDependencies: {
-    directDependencies: string[];
-    inverseDependencies: string[];
-  } | null;
   datasourceId: string;
   pluginId: string;
   context: DatasourceStructureContext;
+  actionRightPaneBackLink: React.ReactNode;
 }) {
   const dispatch = useDispatch();
   const widgets = useSelector(getWidgets);
-  const applicationId = useSelector(getCurrentApplicationId);
-  const pageId = useSelector(getCurrentPageId);
   const user = useSelector(getCurrentUser);
   const { pushFeature } = useContext(WalkthroughContext) || {};
+  const schemaRef = useRef(null);
   const params = useParams<{
     pageId: string;
     apiId?: string;
     queryId?: string;
   }>();
-  const handleBindData = () => {
-    AnalyticsUtil.logEvent("SELECT_IN_CANVAS_CLICK", {
-      actionName: actionName,
-      apiId: params.apiId || params.queryId,
-      appId: applicationId,
-    });
-    dispatch(
-      bindDataOnCanvas({
-        queryId: (params.apiId || params.queryId) as string,
-        applicationId: applicationId as string,
-        pageId: params.pageId,
-      }),
-    );
-  };
 
   const pluginName = useSelector((state) =>
     getPluginNameFromId(state, pluginId || ""),
@@ -352,19 +318,15 @@ function ActionSidebar({
     getPluginDatasourceComponentFromId(state, pluginId || ""),
   );
 
-  // A/B feature flag for datasource structure.
-  const isEnabledForDSSchema = useSelector((state) =>
-    selectFeatureFlagCheck(state, FEATURE_FLAG.ab_ds_schema_enabled),
-  );
-
-  // A/B feature flag for query binding.
-  const isEnabledForQueryBinding = useSelector((state) =>
-    selectFeatureFlagCheck(state, FEATURE_FLAG.ab_ds_binding_enabled),
+  const isLoadingSchema = useSelector((state: AppState) =>
+    getIsFetchingDatasourceStructure(state, datasourceId),
   );
 
   const datasourceStructure = useSelector((state) =>
     getDatasourceStructureById(state, datasourceId),
   );
+
+  const hasWidgets = Object.keys(widgets).length > 1;
 
   useEffect(() => {
     if (
@@ -384,7 +346,7 @@ function ActionSidebar({
 
   const checkAndShowWalkthrough = async () => {
     const isFeatureWalkthroughShown = await getFeatureWalkthroughShown(
-      FEATURE_WALKTHROUGH_KEYS.ab_ds_schema_enabled,
+      FEATURE_WALKTHROUGH_KEYS.ds_schema,
     );
 
     const isNewUser = user && (await isUserSignedUpFlagSet(user.email));
@@ -393,17 +355,17 @@ function ActionSidebar({
       !isFeatureWalkthroughShown &&
       pushFeature &&
       pushFeature({
-        targetId: SCHEMA_SECTION_ID,
+        targetId: `#${SCHEMA_SECTION_ID}`,
         onDismiss: async () => {
           await setFeatureWalkthroughShown(
-            FEATURE_WALKTHROUGH_KEYS.ab_ds_schema_enabled,
+            FEATURE_WALKTHROUGH_KEYS.ds_schema,
             true,
           );
         },
         details: {
           title: createMessage(SCHEMA_WALKTHROUGH_TITLE),
           description: createMessage(SCHEMA_WALKTHROUGH_DESC),
-          imageURL: SCHEMA_GUIDE_GIF,
+          imageURL: getAssetUrl(SCHEMA_GUIDE_GIF),
         },
         offset: {
           position: "left",
@@ -415,16 +377,13 @@ function ActionSidebar({
           },
         },
         eventParams: {
-          [AB_TESTING_EVENT_KEYS.abTestingFlagLabel]:
-            FEATURE_WALKTHROUGH_KEYS.ab_ds_schema_enabled,
-          [AB_TESTING_EVENT_KEYS.abTestingFlagValue]: isEnabledForDSSchema,
+          [FEATURE_WALKTHROUGH_KEYS.ds_schema]: true,
         },
-        delay: 5000,
+        delay: 2500,
       });
   };
 
   const showSchema =
-    isEnabledForDSSchema &&
     pluginDatasourceForm !== DatasourceComponentTypes.RestAPIDatasourceForm &&
     !SCHEMALESS_PLUGINS.includes(pluginName);
 
@@ -434,11 +393,14 @@ function ActionSidebar({
     }
   }, [showSchema]);
 
-  const hasWidgets = Object.keys(widgets).length > 1;
-
   const pagePermissions = useSelector(getPagePermissions);
 
-  const canEditPage = hasManagePagePermission(pagePermissions);
+  const isFeatureEnabled = useFeatureFlag(FEATURE_FLAG.license_gac_enabled);
+
+  const canEditPage = getHasManagePagePermission(
+    isFeatureEnabled,
+    pagePermissions,
+  );
 
   const showSuggestedWidgets =
     canEditPage && hasResponse && suggestedWidgets && !!suggestedWidgets.length;
@@ -456,20 +418,22 @@ function ActionSidebar({
 
   return (
     <SideBar>
-      <BackToCanvasLink
-        kind="secondary"
-        startIcon="arrow-left-line"
-        target="_self"
-        to={builderURL({ pageId })}
-      >
-        {createMessage(BACK_TO_CANVAS)}
-      </BackToCanvasLink>
+      {actionRightPaneBackLink}
 
       {showSchema && (
-        <SchemaSideBarSection height={50} id={SCHEMA_SECTION_ID}>
+        <CollapsibleSection
+          height={
+            datasourceStructure?.tables?.length && !isLoadingSchema
+              ? "50%"
+              : "auto"
+          }
+          id={SCHEMA_SECTION_ID}
+          ref={schemaRef}
+        >
           <Collapsible
             CustomLabelComponent={DatasourceStructureHeader}
-            datasourceId={datasourceId}
+            containerRef={schemaRef}
+            datasource={{ id: datasourceId }}
             expand={!showSuggestedWidgets}
             label="Schema"
           >
@@ -484,49 +448,23 @@ function ActionSidebar({
               />
             </DataStructureListWrapper>
           </Collapsible>
-        </SchemaSideBarSection>
+        </CollapsibleSection>
       )}
 
-      {showSchema && isEnabledForQueryBinding && <Divider />}
-
-      {hasConnections && !isEnabledForQueryBinding && (
-        <Connections
-          actionName={actionName}
-          entityDependencies={entityDependencies}
-        />
-      )}
-      {!isEnabledForQueryBinding &&
-        canEditPage &&
-        hasResponse &&
-        Object.keys(widgets).length > 1 && (
-          <Collapsible label="Connect widget">
-            <SnipingWrapper>
-              <Button
-                className={"t--select-in-canvas"}
-                kind="secondary"
-                onClick={handleBindData}
-                size="md"
-              >
-                选择组件
-              </Button>
-            </SnipingWrapper>
-          </Collapsible>
-        )}
+      {showSchema && <Divider />}
       {showSuggestedWidgets ? (
-        <SchemaSideBarSection height={40} marginTop={12}>
+        <CollapsibleSection height={"40%"} marginTop={12}>
           <SuggestedWidgets
             actionName={actionName}
             hasWidgets={hasWidgets}
             suggestedWidgets={suggestedWidgets as SuggestedWidget[]}
           />
-        </SchemaSideBarSection>
+        </CollapsibleSection>
       ) : (
-        isEnabledForQueryBinding && (
-          <DisabledCollapsible
-            label={createMessage(BINDING_SECTION_LABEL)}
-            tooltipLabel={createMessage(BINDINGS_DISABLED_TOOLTIP)}
-          />
-        )
+        <DisabledCollapsible
+          label={createMessage(BINDING_SECTION_LABEL)}
+          tooltipLabel={createMessage(BINDINGS_DISABLED_TOOLTIP)}
+        />
       )}
     </SideBar>
   );

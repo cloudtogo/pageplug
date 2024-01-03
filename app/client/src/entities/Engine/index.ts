@@ -25,7 +25,7 @@ import URLGeneratorFactory from "entities/URLRedirect/factory";
 import { updateBranchLocally } from "actions/gitSyncActions";
 import { getCurrentGitBranch } from "selectors/gitSyncSelectors";
 
-export type AppEnginePayload = {
+export interface AppEnginePayload {
   applicationId?: string;
   pageId?: string;
   branch?: string;

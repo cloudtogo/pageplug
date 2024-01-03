@@ -55,13 +55,27 @@ const inst = createReactApp(Empty, React, ReactDOM, {});
 // add touch emulator
 // import "@vant/touch-emulator";
 import "react-sortable-tree-patch-react-17/style.css";
+import log from "loglevel";
+import { getAppsmithConfigs } from "@appsmith/configs";
 
 const shouldAutoFreeze = process.env.NODE_ENV === "development";
+const { newRelic } = getAppsmithConfigs();
 
 setAutoFreeze(shouldAutoFreeze);
 runSagaMiddleware();
 
 appInitializer();
+const { enableNewRelic } = newRelic;
+enableNewRelic &&
+  (async () => {
+    try {
+      await import(
+        /* webpackChunkName: "otlpTelemetry" */ "./auto-otel-web.js"
+      );
+    } catch (e) {
+      log.error("Error loading telemetry script", e);
+    }
+  })();
 
 function App() {
   return (

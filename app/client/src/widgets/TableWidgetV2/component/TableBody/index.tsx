@@ -70,7 +70,7 @@ const rowRenderer = React.memo((rowProps: ListChildComponentProps) => {
   }
 }, areEqual);
 
-type BodyPropsType = {
+interface BodyPropsType {
   getTableBodyProps(
     propGetter?: TableBodyPropGetter<Record<string, unknown>> | undefined,
   ): TableBodyProps;
@@ -81,7 +81,7 @@ type BodyPropsType = {
   tableSizes: TableSizes;
   innerElementType?: ReactElementType;
   isVisiblePagination?: boolean;
-};
+}
 
 const TableVirtualBodyComponent = React.forwardRef(
   (props: BodyPropsType, ref: Ref<SimpleBar>) => {

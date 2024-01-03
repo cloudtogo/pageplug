@@ -46,6 +46,7 @@ describe("Git Bugs", function () {
       });
     });
   });
+
   it("3. Bug 18376:  navigateTo fails to set queryParams if the app is connected to Git", () => {
     _.entityExplorer.AddNewPage();
     _.entityExplorer.DragDropWidgetNVerify(_.draggableWidgets.TEXT);
@@ -143,6 +144,7 @@ describe("Git Bugs", function () {
   });
 
   it("7. Bug 24920: Not able to discard app settings changes for the first time in git connected app ", function () {
+    _.gitSync.SwitchGitBranch("master", false, true);
     // add navigation settings changes
     _.agHelper.GetNClick(_.appSettings.locators._appSettings);
     _.agHelper.GetNClick(_.appSettings.locators._navigationSettingsTab);
@@ -173,6 +175,7 @@ describe("Git Bugs", function () {
     _.agHelper.GetNClick(_.gitSync._dropdownmenu, 5);
     _.gitSync.CloseGitSyncModal();
   });
+
   it("9. Bug 24206 : Open repository button is not functional in git sync modal", function () {
     _.gitSync.SwitchGitBranch("master");
     _.appSettings.OpenPaneAndChangeTheme("Moon");

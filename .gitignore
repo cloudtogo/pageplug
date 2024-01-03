@@ -5,7 +5,7 @@
 app/client/cypress.env.json
 dist
 stacks
-/info.json
+/deploy/docker/fs/opt/appsmith/info.json
 
 # to ignore the node_modeules folder
 node_modules

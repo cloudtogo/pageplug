@@ -116,7 +116,7 @@ describe("Postgres Generate CRUD with JSON Form", () => {
   it("4. Verify Deletion of the datasource when Pages/Actions associated are not removed yet", () => {
     deployMode.DeployApp();
     deployMode.NavigateBacktoEditor();
-    dataSources.DeleteDatasouceFromWinthinDS(dsName, 409); //Suppliers Page - 1 still using this ds
+    dataSources.DeleteDatasourceFromWithinDS(dsName, 409); //Suppliers Page - 1 still using this ds
   });
 
   function GenerateCRUDNValidateDeployPage(
@@ -130,7 +130,7 @@ describe("Postgres Generate CRUD with JSON Form", () => {
     agHelper.AssertContains("Successfully generated a page");
     //assertHelper.AssertNetworkStatus("@getActions", 200);//Since failing sometimes
     assertHelper.AssertNetworkStatus("@postExecute", 200);
-    agHelper.GetNClick(dataSources._visibleTextSpan("Got it"));
+    agHelper.ClickButton("Got it");
     assertHelper.AssertNetworkStatus("@updateLayout", 200);
     deployMode.DeployApp(locators._widgetInDeployed("tablewidget"));
 
