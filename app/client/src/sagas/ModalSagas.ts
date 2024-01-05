@@ -42,7 +42,7 @@ import { flatten } from "lodash";
 import AppsmithConsole from "utils/AppsmithConsole";
 import { isMobileLayout } from "selectors/applicationSelectors";
 
-import WidgetFactory from "utils/WidgetFactory";
+import WidgetFactory from "WidgetProvider/factory";
 import type { WidgetProps } from "widgets/BaseWidget";
 import { selectWidgetInitAction } from "actions/widgetSelectionActions";
 import { SelectionRequestType } from "./WidgetSelectUtils";

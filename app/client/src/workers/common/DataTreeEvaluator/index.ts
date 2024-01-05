@@ -365,8 +365,8 @@ export default class DataTreeEvaluator {
         const evaluatedValue = isValid
           ? parsed
           : isUndefined(transformed)
-          ? value
-          : transformed;
+            ? value
+            : transformed;
 
         const isParsedValueTheSame = parsed === evaluatedValue;
 

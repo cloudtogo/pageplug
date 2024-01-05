@@ -15,7 +15,7 @@ import type { Page } from "@appsmith/constants/ReduxActionConstants";
 import { Tabbar } from "@taroify/core";
 import { createVanIconComponent } from "@taroify/icons/van";
 import history from "utils/history";
-import { builderURL, viewerURL } from "RouteBuilder";
+import { builderURL, viewerURL } from "@appsmith/RouteBuilder";
 
 const TabBarContainer = styled.div<{
   mode?: APP_MODE;
@@ -36,21 +36,21 @@ const Center = styled.div`
   margin: 0 auto;
 `;
 
-export type TabbarProps = {
+export interface TabbarProps {
   pages: Page[];
   currentPageId?: string;
   mode?: APP_MODE;
   showTabBar: boolean;
   isPreviewMode: boolean;
   themeBackground: string;
-};
+}
 
 const TabBar = ({
-  pages,
   currentPageId,
-  mode,
-  showTabBar,
   isPreviewMode,
+  mode,
+  pages,
+  showTabBar,
   themeBackground,
 }: TabbarProps) => {
   const editorModeColor = isPreviewMode ? themeBackground : "transparent";
@@ -68,11 +68,11 @@ const TabBar = ({
   }
 
   return (
-    <TabBarContainer mode={mode} editorModeColor={editorModeColor}>
+    <TabBarContainer editorModeColor={editorModeColor} mode={mode}>
       <Center>
-        <Tabbar value={currentPageId} onChange={jumpTo}>
+        <Tabbar onChange={jumpTo} value={currentPageId}>
           {pages.map((page) => {
-            const { pageName, pageId, icon } = page;
+            const { icon, pageId, pageName } = page;
             const Icon = createVanIconComponent(icon as any);
             return (
               <Tabbar.TabItem icon={<Icon />} key={pageId} value={pageId}>

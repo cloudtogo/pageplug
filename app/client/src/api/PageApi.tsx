@@ -1,6 +1,6 @@
 import Api from "api/Api";
 import type { ApiResponse } from "./ApiResponses";
-import type { AxiosPromise, CancelTokenSource } from "axios";
+import type { AxiosPromise, AxiosResponse, CancelTokenSource } from "axios";
 import axios from "axios";
 import type {
   LayoutOnLoadActionErrors,
@@ -325,13 +325,15 @@ class PageApi extends Api {
     return Api.get(PageApi.url, params);
   }
 
-  static syncCloudOSApi(
+  static async syncCloudOSApi(
     request: SyncCloudOSApiRequest,
-  ): AxiosPromise<ApiResponse> {
+  ): Promise<AxiosResponse<ApiResponse<unknown>, any>> {
     return Api.post("v1/cloudos/bindDependedActions", request);
   }
 
-  static getPreviewWxaCode(request: WxaCodeRequest): AxiosPromise<ApiResponse> {
+  static async getPreviewWxaCode(
+    request: WxaCodeRequest,
+  ): Promise<AxiosResponse<ApiResponse<unknown>, any>> {
     return Api.post("v1/cloudos/getMiniPreview", request);
   }
 }

@@ -151,8 +151,8 @@ export function ActionButton({ method }: { method: AuthMethodType }) {
           method.isConnected
             ? EDIT
             : !method?.isFeatureEnabled
-            ? UPGRADE
-            : ENABLE,
+              ? UPGRADE
+              : ENABLE,
         )}
       </Button>
     </ButtonWrapper>

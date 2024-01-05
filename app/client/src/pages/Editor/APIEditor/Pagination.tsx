@@ -136,9 +136,7 @@ export default function Pagination(props: PaginationProps) {
               </div>
               <GifContainer>
                 <GifPlayer gif={configPagination} thumbnail={thumbnail} />
-                <Text type={TextType.P3}>
-                  1. 如何配置表格分页
-                </Text>
+                <Text type={TextType.P3}>1. 如何配置表格分页</Text>
               </GifContainer>
             </PaginationTypeView>,
             <PaginationTypeView key={PaginationType.URL}>
@@ -205,9 +203,7 @@ export default function Pagination(props: PaginationProps) {
               </div>
               <GifContainer>
                 <GifPlayer gif={configPagination} thumbnail={thumbnail} />
-                <Text type={TextType.P3}>
-                  1. 如何配置表格分页
-                </Text>
+                <Text type={TextType.P3}>1. 如何配置表格分页</Text>
               </GifContainer>
             </PaginationTypeView>,
           ]}

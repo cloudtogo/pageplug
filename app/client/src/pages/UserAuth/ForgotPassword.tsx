@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-restricted-imports */
 import React, { useEffect } from "react";
 import { connect, useDispatch } from "react-redux";
 import type { RouteComponentProps } from "react-router-dom";

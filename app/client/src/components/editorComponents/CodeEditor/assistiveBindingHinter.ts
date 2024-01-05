@@ -147,10 +147,10 @@ export const assistiveBindingHinter: HintHelper = (
               type !== "JSACTION"
                 ? entitiesForNavigation?.[name]?.actionType
                 : jsLexicalName !== undefined &&
-                  entitiesForNavigation?.[name]?.children?.[jsLexicalName]
-                    .isfunction === true
-                ? "JSFunction"
-                : "JSVariable";
+                    entitiesForNavigation?.[name]?.children?.[jsLexicalName]
+                      .isfunction === true
+                  ? "JSFunction"
+                  : "JSVariable";
             AnalyticsUtil.logEvent("ASSISTIVE_JS_BINDING_OPTION_SELECTED", {
               query: value,
               suggestedOptionCount: list.filter(

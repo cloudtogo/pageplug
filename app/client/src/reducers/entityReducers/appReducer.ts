@@ -36,7 +36,7 @@ export interface AppDataState {
     currentPosition?: Partial<GeolocationPosition>;
   };
   echartInstance: any;
-};
+}
 
 const initialState: AppDataState = {
   inCloudOS,

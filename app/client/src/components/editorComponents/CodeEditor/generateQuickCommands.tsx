@@ -163,8 +163,8 @@ export const generateQuickCommands = (
         suggestion.type === ENTITY_TYPE_VALUE.ACTION
           ? `{{${name}.data}}`
           : suggestion.type === ENTITY_TYPE_VALUE.JSACTION
-          ? `{{${name}.}}`
-          : `{{${name}}}`,
+            ? `{{${name}.}}`
+            : `{{${name}}}`,
       displayText: `${name}`,
       className: "CodeMirror-commands",
       data: suggestion,

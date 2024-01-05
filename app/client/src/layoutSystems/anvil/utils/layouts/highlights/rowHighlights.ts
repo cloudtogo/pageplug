@@ -504,8 +504,8 @@ export function generateHighlights(
           INFINITE_DROP_ZONE,
         )
       : nextDimension
-      ? (nextDimension.left + nextDimension.width - posX) * multiplier
-      : HIGHLIGHT_SIZE,
+        ? (nextDimension.left + nextDimension.width - posX) * multiplier
+        : HIGHLIGHT_SIZE,
   };
 
   return {

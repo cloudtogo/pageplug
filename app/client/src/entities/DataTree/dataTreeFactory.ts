@@ -88,7 +88,6 @@ export class DataTreeFactory {
 
     const endWidgets = performance.now();
 
-
     dataTree.global = dataTree.appsmith = {
       ...appData,
       // combine both persistent and transient state with the transient state
@@ -96,7 +95,8 @@ export class DataTreeFactory {
       store: appData.store,
       theme,
     } as AppsmithEntity;
-    (dataTree.global as AppsmithEntity).ENTITY_TYPE = ENTITY_TYPE_VALUE.APPSMITH;
+    (dataTree.global as AppsmithEntity).ENTITY_TYPE =
+      ENTITY_TYPE_VALUE.APPSMITH;
 
     const startMetaWidgets = performance.now();
 

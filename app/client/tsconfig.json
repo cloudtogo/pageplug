@@ -28,23 +28,19 @@
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "typeRoots": [
-      "./typings",
-      "./node_modules/@types"
-    ],
+    "typeRoots": ["./typings", "./node_modules/@types"],
     "sourceMap": true,
     "baseUrl": "./src",
     "noFallthroughCasesInSwitch": true,
     "importsNotUsedAsValues": "remove",
-    "declaration": false,
+    "declaration": false
   },
   "include": [
     "./src/**/*",
+    "postcss.config.js",
     "decs.d.ts",
     "decs1.d.ts",
-    "./packages",
+    "./packages"
   ],
-  "exclude": [
-    "./packages/rts"
-  ]
+  "exclude": ["./packages/rts"]
 }

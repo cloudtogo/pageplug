@@ -10,8 +10,17 @@ import {
   getCurrentPageId,
 } from "selectors/editorSelectors";
 import { getFilteredErrors } from "selectors/debuggerSelectors";
-import { getAction, getPlugins, getDatasource } from "@appsmith/selectors/entitiesSelector";
-import { onApiEditor, onCanvas, onQueryEditor, doesEntityHaveErrors } from "../helpers";
+import {
+  getAction,
+  getPlugins,
+  getDatasource,
+} from "@appsmith/selectors/entitiesSelector";
+import {
+  onApiEditor,
+  onCanvas,
+  onQueryEditor,
+  doesEntityHaveErrors,
+} from "../helpers";
 import { getLastSelectedWidget } from "selectors/ui";
 import { getConfigTree, getDataTree } from "selectors/dataTreeSelectors";
 import { useNavigateToWidget } from "pages/Editor/Explorer/Widgets/useNavigateToWidget";

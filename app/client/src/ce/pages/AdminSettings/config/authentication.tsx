@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-restricted-imports */
 import React from "react";
 import {
   EMAIL_SETUP_DOC,

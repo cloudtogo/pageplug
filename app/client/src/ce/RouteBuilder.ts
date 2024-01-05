@@ -29,7 +29,6 @@ export const fillPathname = (
   );
 };
 
-
 export const viewerLayoutEditorURL = (props: URLBuilderParams): string => {
   return urlBuilder.build({
     ...props,

@@ -94,8 +94,8 @@ function DataSourceOption({
   const optionCypressSelector = isConnectNewDataSourceBtn
     ? ".t--connectNewDatasource-option"
     : isSelectedNode
-    ? ""
-    : dataTestid;
+      ? ""
+      : dataTestid;
   return (
     <Tooltip
       content="该数据源不支持自动生成"

@@ -83,7 +83,7 @@ export type EchartTheme = {
   backgroundColor?: string;
   color?: string[];
   [key: string]: any;
-}
+};
 
 export interface SetterConfig {
   __setters: {
