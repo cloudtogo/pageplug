@@ -34,6 +34,7 @@ export const INPUT_DEFAULT_TEXT_MAX_CHAR_ERROR = (max: number) =>
 export const INPUT_TEXT_MAX_CHAR_ERROR = (max: number) =>
   `文本长度必须小于 ${max}`;
 export const INPUT_DEFAULT_TEXT_MAX_NUM_ERROR = () => `默认文本长度超出最大值`;
+export const INPUT_INVALID_TYPE_ERROR = () => `类型不匹配，请输入一个合法的值`;
 export const INPUT_DEFAULT_TEXT_MIN_NUM_ERROR = () => `默认文本长度超出最小值`;
 export const VALID_FUNCTION_NAME_ERROR = () => `函数名不符合规范（驼峰式）`;
 export const UNIQUE_NAME_ERROR = () => `名字必须唯一`;
@@ -712,6 +713,10 @@ export const GIT_DISCONNECT_POPUP_TITLE = () =>
 export const GIT_DISCONNECT_POPUP_SUBTITLE = () =>
   `Git 相关功能不会在应用中展示`;
 export const GIT_DISCONNECT_POPUP_MAIN_HEADING = () => `确认`;
+
+export const CONFIGURE_GIT = () => "配置Git";
+export const IMPORT_APP = () => "通过Git导入应用";
+export const SETTINGS_GIT = () => "设置";
 
 export const GIT_CONNECTION = () => "Git 连接";
 export const GIT_IMPORT = () => "Git 导入";
@@ -1759,6 +1764,7 @@ export const RECONNECT_BUTTON_TEXT = () => "重连";
 export const SAVE_BUTTON_TEXT = () => "保存";
 export const TEST_BUTTON_TEXT = () => "测试";
 export const SAVE_AND_AUTHORIZE_BUTTON_TEXT = () => "保存并鉴权";
+export const SAVE_AND_RE_AUTHORIZE_BUTTON_TEXT = () => "保存并重新鉴权";
 export const DISCARD_POPUP_DONT_SAVE_BUTTON_TEXT = () => "不保存";
 export const GSHEET_AUTHORISED_FILE_IDS_KEY = () =>
   "Google sheets authorised file ids key";
