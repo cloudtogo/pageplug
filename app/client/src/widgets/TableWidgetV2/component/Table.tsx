@@ -417,8 +417,8 @@ export function Table(props: TableProps) {
             props.isLoading
               ? Classes.SKELETON
               : shouldUseVirtual
-              ? "tableWrap virtual"
-              : "tableWrap"
+                ? "tableWrap virtual"
+                : "tableWrap"
           }
           ref={tableWrapperRef}
         >
@@ -441,6 +441,7 @@ export function Table(props: TableProps) {
                 isAddRowInProgress={props.isAddRowInProgress}
                 isResizingColumn={isResizingColumn}
                 isSortable={props.isSortable}
+                isVisiblePagination={props.isVisiblePagination}
                 multiRowSelection={props?.multiRowSelection}
                 pageSize={props.pageSize}
                 prepareRow={prepareRow}
@@ -458,7 +459,6 @@ export function Table(props: TableProps) {
                 useVirtual={shouldUseVirtual}
                 widgetId={props.widgetId}
                 width={props.width}
-                isVisiblePagination={props.isVisiblePagination}
               />
             )}
 
@@ -480,6 +480,7 @@ export function Table(props: TableProps) {
                 isAddRowInProgress={props.isAddRowInProgress}
                 isResizingColumn={isResizingColumn}
                 isSortable={props.isSortable}
+                isVisiblePagination={props.isVisiblePagination}
                 multiRowSelection={props?.multiRowSelection}
                 pageSize={props.pageSize}
                 prepareRow={prepareRow}
@@ -497,7 +498,6 @@ export function Table(props: TableProps) {
                 useVirtual={shouldUseVirtual}
                 widgetId={props.widgetId}
                 width={props.width}
-                isVisiblePagination={props.isVisiblePagination}
               />
             )}
           </div>
@@ -509,8 +509,8 @@ export function Table(props: TableProps) {
             ref={tableHeaderWrapperRef}
             serverSidePaginationEnabled={props.serverSidePaginationEnabled}
             tableSizes={tableSizes}
-            width={props.width}
             topBoxShadow
+            width={props.width}
           >
             <TableHeaderInnerWrapper
               backgroundColor={Colors.WHITE}

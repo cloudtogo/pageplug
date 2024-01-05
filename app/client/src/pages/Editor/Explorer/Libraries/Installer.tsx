@@ -383,7 +383,7 @@ export function Installer() {
         </div>
         <div className="search-CTA mb-3 text-xs">
           <span>
-             查找库：
+            查找库：
             <Link kind="primary" target="_blank" to={EXT_LINK.jsDelivr}>
               jsDelivr
             </Link>

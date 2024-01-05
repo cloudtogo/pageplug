@@ -6,7 +6,8 @@ zh_CN.strings = {
   addMore: "添加更多文件",
   addMoreFiles: "添加更多文件",
   addingMoreFiles: "添加更多文件",
-  allowAccessDescription: "为了通过您的相机进行拍照或录像，请给网站相机的访问权限",
+  allowAccessDescription:
+    "为了通过您的相机进行拍照或录像，请给网站相机的访问权限",
   allowAccessTitle: "请允许对相机的访问权限",
   authenticateWith: "连接到 %{pluginName}",
   authenticateWithTitle: "请使用 %{pluginName} 进行认证以选择文件",
@@ -111,9 +112,9 @@ zh_CN.strings = {
 };
 
 // There is just one form.
-zh_CN.pluralize = function pluralize () {
+zh_CN.pluralize = function pluralize() {
   return 0;
-}
+};
 
 if (typeof window !== "undefined" && typeof window.Uppy !== "undefined") {
   window.Uppy.locales.zh_CN = zh_CN;

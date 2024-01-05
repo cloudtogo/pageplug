@@ -22,9 +22,9 @@ import { notEmptyValidator, TextType } from "design-system-old";
 import { getIsFormLoginEnabled } from "@appsmith/selectors/tenantSelectors";
 import Api from "api/Api";
 
-type ButtonProps = {
+interface ButtonProps {
   wechatEnable?: boolean;
-};
+}
 
 const BindButton = styled.button<ButtonProps>`
   width: ${(props) => (props.wechatEnable ? "135px" : "96px")};
@@ -171,9 +171,9 @@ function General() {
         <div style={{ flexDirection: "column", display: "flex" }}>
           {
             <BindButton
-              wechatEnable={isWXBind}
-              onClick={onBindwechatClick}
               disabled={isWXBind}
+              onClick={onBindwechatClick}
+              wechatEnable={isWXBind}
             >
               {isWXBind ? "微信已绑定邮箱" : "绑定微信"}
             </BindButton>

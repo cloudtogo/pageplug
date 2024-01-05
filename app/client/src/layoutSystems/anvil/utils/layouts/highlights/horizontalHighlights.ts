@@ -383,11 +383,11 @@ export function generateHighlights(
     bottom: isLastHighlight
       ? Math.max(layoutDimension.height - posY, HIGHLIGHT_SIZE)
       : nextDimension
-      ? Math.max(
-          nextDimension.top + nextDimension.height - posY,
-          HIGHLIGHT_SIZE,
-        )
-      : HIGHLIGHT_SIZE,
+        ? Math.max(
+            nextDimension.top + nextDimension.height - posY,
+            HIGHLIGHT_SIZE,
+          )
+        : HIGHLIGHT_SIZE,
   };
 
   return arr.map((alignment: FlexLayerAlignment, index: number) => ({

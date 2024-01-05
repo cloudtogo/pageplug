@@ -31,7 +31,7 @@ export interface AppEnginePayload {
   branch?: string;
   mode: APP_MODE;
   queryParams?: any;
-};
+}
 
 export interface IAppEngine {
   setupEngine(payload: AppEnginePayload): any;

@@ -22,11 +22,11 @@ dayjs.extend(duration);
 dayjs.extend(relativeTime);
 dayjs.extend(advancedFormat);
 
-export type ReadableSnapShotDetails = {
+export interface ReadableSnapShotDetails {
   timeSince: string;
   timeTillExpiration: string;
   readableDate: string;
-};
+}
 
 export const getIsCurrentlyConvertingLayout = (state: AppState) =>
   state.ui.layoutConversion.isConverting;

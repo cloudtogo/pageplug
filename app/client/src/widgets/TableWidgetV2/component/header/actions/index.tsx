@@ -202,29 +202,29 @@ function Actions(props: ActionsPropsType) {
             />
             {props.isVisibleDownload && (
               <TableDataDownload
-              borderRadius={props.borderRadius}
-              columns={props.tableColumns}
-              data={props.tableData}
-              delimiter={props.delimiter}
-              widgetName={props.widgetName}
+                borderRadius={props.borderRadius}
+                columns={props.tableColumns}
+                data={props.tableData}
+                delimiter={props.delimiter}
+                widgetName={props.widgetName}
               />
             )}
 
             {props.allowAddNewRow && (
               <ActionItem
-              borderRadius={props.borderRadius}
-              className="t--add-new-row"
-              disabled={props.disableAddNewRow}
-              disabledMessage="新增行之前请保存或丢弃未保存的行"
-              icon="add"
-              selectMenu={props.onAddNewRow}
-              selected={false}
-              title="新增一行"
-              width={12}
+                borderRadius={props.borderRadius}
+                className="t--add-new-row"
+                disabled={props.disableAddNewRow}
+                disabledMessage="新增行之前请保存或丢弃未保存的行"
+                icon="add"
+                selectMenu={props.onAddNewRow}
+                selected={false}
+                title="新增一行"
+                width={12}
               />
             )}
-        </PaginationWrapper>
-      )}
+          </PaginationWrapper>
+        )}
 
       {props.isVisiblePagination && props.serverSidePaginationEnabled && (
         <PaginationWrapper>

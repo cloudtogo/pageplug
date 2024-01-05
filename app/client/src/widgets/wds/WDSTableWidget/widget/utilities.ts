@@ -262,8 +262,8 @@ export const getPropertyValue = (
     return isSourceData
       ? getValueForSourceData(value, index)
       : preserveCase
-      ? value[index].toString()
-      : value[index].toString().toUpperCase();
+        ? value[index].toString()
+        : value[index].toString().toUpperCase();
   } else if (value) {
     return preserveCase ? value.toString() : value.toString().toUpperCase();
   } else {
@@ -666,9 +666,8 @@ export const createEditActionColumn = (props: TableWidgetProps) => {
 
         const js = combineDynamicBindings(jsSnippets, stringSegments);
 
-        themeProps[
-          key
-        ] = `{{${props.widgetName}.processedTableData.map((currentRow, currentIndex) => ( ${js}))}}`;
+        themeProps[key] =
+          `{{${props.widgetName}.processedTableData.map((currentRow, currentIndex) => ( ${js}))}}`;
       },
     );
   }

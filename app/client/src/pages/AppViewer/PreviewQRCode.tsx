@@ -63,14 +63,14 @@ const LoadFail = styled.div`
   }
 `;
 
-export type PreviewQRCodeProps = {
+export interface PreviewQRCodeProps {
   appId?: string;
   imageData: string;
   isLoading: boolean;
   loadFailed: boolean;
   isMobile: boolean;
   fetchWxaCode: (appId: string) => void;
-};
+}
 
 const PreviewQRCode = ({
   appId,

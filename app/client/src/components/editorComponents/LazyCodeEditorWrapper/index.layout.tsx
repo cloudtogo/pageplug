@@ -37,8 +37,8 @@ export const HighlighedCodeContainer = styled("div")<{
       containsCode && !containsObject
         ? "#063289"
         : isPlaceholder
-        ? "#858282"
-        : "inherit"} !important;
+          ? "#858282"
+          : "inherit"} !important;
   }
 `;
 

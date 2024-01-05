@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-restricted-imports */
-import React, { useEffect , useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import AppsIcon from "remixicon-react/AppsLineIcon";
@@ -18,13 +18,13 @@ import styled from "styled-components";
 import { TooltipComponent } from "design-system-old";
 import classNames from "classnames";
 
-type BackToHomeButtonProps = {
+interface BackToHomeButtonProps {
   primaryColor: string;
   navColorStyle: NavigationSetting["colorStyle"];
   forSidebar?: boolean;
   isLogoVisible?: boolean;
   setIsLogoVisible?: (isLogoVisible: boolean) => void;
-};
+}
 
 const StyledAppIcon = styled(AppsIcon)<
   BackToHomeButtonProps & {
@@ -93,7 +93,7 @@ function BackToHomeButton(props: BackToHomeButtonProps) {
     return init;
   }, [viewerLayout]);
   const appLogo =
-  initState.logoUrl || "https://img.icons8.com/doodle/2x/koala.png";
+    initState.logoUrl || "https://img.icons8.com/doodle/2x/koala.png";
   useEffect(() => {
     if (setIsLogoVisible) {
       setIsLogoVisible(false);
@@ -113,8 +113,8 @@ function BackToHomeButton(props: BackToHomeButtonProps) {
         primaryColor={primaryColor}
         to="/applications"
       >
-         {appLogo ? (
-          <img src={appLogo} alt="app logo" className="p-0.5 w-8 h-8" />
+        {appLogo ? (
+          <img alt="app logo" className="p-0.5 w-8 h-8" src={appLogo} />
         ) : (
           <StyledAppIcon
             borderRadius={selectedTheme.properties.borderRadius.appBorderRadius}

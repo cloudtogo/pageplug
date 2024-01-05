@@ -40,8 +40,8 @@ const StyledContainerComponent = styled.div<
       return props.onClickCapture && props.backgroundColor
         ? tinycolor(props.backgroundColor).darken(5).toString()
         : props.backgroundImage
-        ? `url('${props.backgroundImage}') no-repeat center top / 100% 100%`
-        : props.backgroundColor;
+          ? `url('${props.backgroundImage}') no-repeat center top / 100% 100%`
+          : props.backgroundColor;
     }};
     z-index: ${(props) => (props.onClickCapture ? "2" : "1")};
     cursor: ${(props) => (props.onClickCapture ? "pointer" : "inherit")};

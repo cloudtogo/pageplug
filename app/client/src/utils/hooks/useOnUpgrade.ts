@@ -5,7 +5,7 @@ import type { EventName } from "@appsmith/utils/analyticsUtilTypes";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { getAppsmithConfigs } from "@appsmith/configs";
 import { pricingPageUrlSource } from "@appsmith/utils/licenseHelpers";
-import { BUSINESS_PRICE_URL } from "ce/constants/messages";
+import { BUSINESS_PRICE_URL } from "@appsmith/constants/messages";
 import type {
   RampFeature,
   RampSection,

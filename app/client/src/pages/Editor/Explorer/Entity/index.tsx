@@ -100,8 +100,8 @@ export const EntityItem = styled.div<{
     props.active
       ? Colors.MINT_GREEN_LIGHT
       : props.isSticky
-      ? Colors.WHITE
-      : "none"};
+        ? Colors.WHITE
+        : "none"};
   height: 36px;
   width: 100%;
   display: inline-grid;

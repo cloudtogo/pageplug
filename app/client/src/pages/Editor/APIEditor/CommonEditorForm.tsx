@@ -660,8 +660,8 @@ function CommonEditorForm(props: CommonFormPropsWithExtraParams) {
                           tab == "HEADERS"
                             ? headersCount
                             : tab == "PARAMS"
-                            ? paramsCount
-                            : undefined
+                              ? paramsCount
+                              : undefined
                         }
                         value={tab}
                       >

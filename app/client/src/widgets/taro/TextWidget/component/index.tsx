@@ -30,8 +30,8 @@ export const StyledText = styled(Text)<{
     props.textAlign === "LEFT"
       ? "flex-start"
       : props.textAlign === "RIGHT"
-      ? "flex-end"
-      : "center"};
+        ? "flex-end"
+        : "center"};
   align-items: ${(props) => (props.scroll ? "flex-start" : "center")};
   background: ${(props) => props?.backgroundColor};
   color: ${(props) => props?.textColor};

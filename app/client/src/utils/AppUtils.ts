@@ -35,7 +35,7 @@ const getEnvLogLevel = (configLevel: LogLevelDesc): LogLevelDesc => {
 export async function readBlob(blobUrl: string): Promise<any> {
   const file = await fetch(blobUrl, {
     referrer: "",
-  }).then((r) => r.blob());
+  }).then(async (r) => r.blob());
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsText(file);
@@ -47,9 +47,13 @@ export async function readBlob(blobUrl: string): Promise<any> {
     };
   });
 }
-export type PanelStatus = { left: boolean; bottom: boolean; right: boolean };
+export interface PanelStatus {
+  left: boolean;
+  bottom: boolean;
+  right: boolean;
+}
 
-export type PanelStyle = {
+export interface PanelStyle {
   bottom: {
     h: number;
   };
@@ -57,7 +61,7 @@ export type PanelStyle = {
     w: number;
     h: number;
   };
-};
+}
 
 export const DefaultPanelStatus: PanelStatus = {
   left: true,

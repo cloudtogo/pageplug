@@ -17,7 +17,7 @@ import { useWindowSizeHooks } from "utils/hooks/dragResizeHooks";
 import { NavLink } from "react-router-dom";
 import { getAppMode } from "@appsmith/selectors/applicationSelectors";
 import { APP_MODE } from "entities/App";
-import { builderURL, viewerURL } from "RouteBuilder";
+import { builderURL, viewerURL } from "@appsmith/RouteBuilder";
 import MenuItem from "./components/MenuItem";
 import { Container } from "./TopInline.styled";
 import MenuItemContainer from "./components/MenuItemContainer";

@@ -180,16 +180,16 @@ export function TemplatesContent(props: TemplatesContentProps) {
     templates.length > 1
       ? `找到 ${templates.length} 个模板`
       : templates.length === 1
-      ? "找到 1 个模板"
-      : "没有找到模板";
+        ? "找到 1 个模板"
+        : "没有找到模板";
 
   if (templates.length) {
     resultsText +=
       filterCount > 1
         ? `，匹配 ${filterCount} 个过滤条件`
         : filterCount === 1
-        ? "，匹配 1 个过滤条件"
-        : "";
+          ? "，匹配 1 个过滤条件"
+          : "";
   }
 
   if (isLoading) {

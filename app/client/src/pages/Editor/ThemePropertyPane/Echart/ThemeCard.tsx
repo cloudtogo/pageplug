@@ -16,7 +16,8 @@ import {
   // getAppThemes,
   // getSelectedEchartTheme,
 } from "selectors/appThemingSelectors";
-import { AppTheme, EchartTheme } from "entities/AppTheming";
+import type { EchartTheme } from "entities/AppTheming";
+import { AppTheme } from "entities/AppTheming";
 // import AnalyticsUtil from "utils/AnalyticsUtil";
 // import DeleteThemeModal from "../DeleteThemeModal";
 import { getComplementaryGrayscaleColor } from "widgets/WidgetUtils";
@@ -65,7 +66,9 @@ const MainTextTransparentBg = styled.main<{ backgroundColor: string }>`
       transparent 75%,
       #e7e7e7 0
     );
-  background-position: 0 0, 15px 15px;
+  background-position:
+    0 0,
+    15px 15px;
   background-size: 30px 30px;
 `;
 

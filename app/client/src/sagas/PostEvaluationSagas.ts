@@ -118,16 +118,16 @@ function logLatestEvalPropertyErrors(
       const entityType = isWidget(entity)
         ? ENTITY_TYPE.WIDGET
         : isAction(entity)
-        ? ENTITY_TYPE.ACTION
-        : ENTITY_TYPE.JSACTION;
+          ? ENTITY_TYPE.ACTION
+          : ENTITY_TYPE.JSACTION;
       const pluginTypeField = isAction(entity)
         ? entityConfig.pluginType
         : entity.type;
       const iconId = isWidget(entity)
         ? entity.widgetId
         : isJSAction(entity)
-        ? entity.actionId
-        : entityConfig.pluginId;
+          ? entity.actionId
+          : entityConfig.pluginId;
       const debuggerKeys = [
         {
           key: `${idField}-${propertyPath}`,

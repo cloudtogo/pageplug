@@ -12,7 +12,7 @@ import { NavLink } from "react-router-dom";
 import { getAppMode } from "@appsmith/selectors/applicationSelectors";
 import { APP_MODE } from "entities/App";
 import history from "utils/history";
-import { builderURL, viewerURL } from "RouteBuilder";
+import { builderURL, viewerURL } from "@appsmith/RouteBuilder";
 // import MenuItemContainer from "./components/MenuItemContainer";
 // import MenuItem from "./components/MenuItem";
 import type {

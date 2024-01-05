@@ -74,8 +74,8 @@ function SocialLoginButton(props: {
       }}
     >
       <LogoImg
-        src={_map.find((item) => item.name === props.name)?.src}
         alt="还没找到图片"
+        src={_map.find((item) => item.name === props.name)?.src}
       />
     </a>
   );
@@ -93,7 +93,7 @@ export function ThirdPartyAuth(props: {
   return (
     <ThirdPartyAuthWrapper>
       {props?.logins?.includes("wechat") && (
-        <LogoImg src={Wechat} onClick={onWechatLoginClick} />
+        <LogoImg onClick={onWechatLoginClick} src={Wechat} />
       )}
       {socialLoginButtons}
     </ThirdPartyAuthWrapper>

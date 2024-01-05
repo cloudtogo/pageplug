@@ -53,10 +53,10 @@ const Warning = styled.div`
   color: ${Colors.MINT_ORANGE};
 `;
 
-export type TabbarProps = {
+export interface TabbarProps {
   currentPage?: Page | null;
   isFull: boolean;
-};
+}
 
 const CLOSE_TABBAR = "CLOSE_TABBAR";
 

@@ -29,7 +29,6 @@ interface AppPageProps {
 }
 
 export function AppPage(props: AppPageProps) {
-
   const currentApplicationDetails = useSelector(getCurrentApplication);
   const isAppSidebarPinned = useSelector(getAppSidebarPinned);
   const sidebarWidth = useSelector(getSidebarWidth);

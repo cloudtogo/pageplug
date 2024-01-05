@@ -7,7 +7,7 @@ import {
   getComplementaryGrayscaleColor,
   isLightColor,
 } from "widgets/WidgetUtils";
-import { viewerURL } from "RouteBuilder";
+import { viewerURL } from "@appsmith/RouteBuilder";
 
 // Menu Item Background Color - Active
 export const getMenuItemBackgroundColorWhenActive = (
@@ -143,7 +143,6 @@ export const getSignInButtonStyles = (
 };
 
 const getIconType = (icon: any) => (icon ? `icon-${icon}` : undefined);
-
 
 export const makeRouteNode =
   (pagesMap: any, newTree: any[], hideRow: any[]) => (node: any) => {

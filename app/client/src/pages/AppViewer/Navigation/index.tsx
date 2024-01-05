@@ -86,7 +86,7 @@ export function Navigation() {
         </>
       );
     }
-    
+
     if (isMobileApp || hideHeader) {
       return null;
     }
@@ -126,7 +126,7 @@ export function Navigation() {
           url={editorURL}
         />
 
-        <TourCompletionMessage /> 
+        <TourCompletionMessage />
       </div>
     </ThemeProvider>
   );
