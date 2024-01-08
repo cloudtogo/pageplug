@@ -54,7 +54,7 @@ const StyledOptionControlInputGroup = styled(StyledInputGroup)`
   }
 `;
 
-type RenderComponentProps = {
+interface RenderComponentProps {
   index: number;
   item: {
     label: string;
@@ -64,7 +64,7 @@ type RenderComponentProps = {
   updateOption: (index: number, value: string) => void;
   toggleVisibility?: (index: number) => void;
   onEdit?: (props: any) => void;
-};
+}
 
 function FieldControlComponent(props: RenderComponentProps) {
   const { deleteOption, index, item, updateOption } = props;

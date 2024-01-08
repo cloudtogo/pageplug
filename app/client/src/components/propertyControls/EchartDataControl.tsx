@@ -81,13 +81,13 @@ const Box = styled.div`
   height: 16px;
 `;
 
-type labelType = {
+interface labelType {
   titleLabel: string;
   areaLabel: string;
   btnLabel: string;
-};
+}
 
-type RenderComponentProps = {
+interface RenderComponentProps {
   index: string;
   item: ChartData;
   length: number;
@@ -101,9 +101,9 @@ type RenderComponentProps = {
   theme: EditorTheme;
   noTitle?: boolean;
   label?: labelType;
-};
+}
 
-type RenderChildrenComponentProps = {
+interface RenderChildrenComponentProps {
   index: string;
   item: ChartData;
   length: number;
@@ -119,7 +119,7 @@ type RenderChildrenComponentProps = {
   label?: labelType;
   children?: any[];
   panel?: any;
-};
+}
 
 const expectedSeriesName: CodeEditorExpected = {
   type: "string",

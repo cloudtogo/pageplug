@@ -38,6 +38,10 @@
   "include": [
     "./src/**/*",
     "postcss.config.js",
+    "tailwind.config.js",
+    "craco.build.config.js",
+    "craco.common.config.js",
+    "craco.dev.config.js",
     "decs.d.ts",
     "decs1.d.ts",
     "./packages"

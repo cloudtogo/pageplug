@@ -1,13 +1,13 @@
-import { EchartTheme } from "entities/AppTheming";
+import type { EchartTheme } from "entities/AppTheming";
 
 import macarons from "theme/echart/macarons.json";
 import chalk from "theme/echart/chalk.json";
 import walden from "theme/echart/walden.json";
 import westeros from "theme/echart/westeros.json";
 
-type echartsMap = {
+interface echartsMap {
   [key: string]: EchartTheme;
-};
+}
 
 export const echartThemes: any = {
   macarons: {
