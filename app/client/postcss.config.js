@@ -1,13 +1,11 @@
 module.exports = {
-  plugins: [
-    "postcss-nested",
-    "tailwindcss",
-    "autoprefixer",
-    [
-      "postcss-pageplug-pxtorem",
-      {
-        h5Width: 450,
-      },
-    ],
-  ],
+  plugins: {
+    "postcss-import": {},
+    "tailwindcss/nesting": {},
+    tailwindcss: {},
+    autoprefixer: {},
+    "postcss-pageplug-pxtorem": {
+      h5Width: 450,
+    },
+  },
 };
