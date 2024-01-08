@@ -11606,6 +11606,8 @@ __metadata:
     xlsx: "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz"
     yjs: ^13.5.12
     zipcelx: ^1.6.2
+  peerDependencies:
+    postcss: ^8.4.31
   languageName: unknown
   linkType: soft
 

@@ -5,9 +5,9 @@ import chalk from "theme/echart/chalk.json";
 import walden from "theme/echart/walden.json";
 import westeros from "theme/echart/westeros.json";
 
-type echartsMap = {
+interface echartsMap {
   [key: string]: EchartTheme;
-};
+}
 
 export const echartThemes: any = {
   macarons: {

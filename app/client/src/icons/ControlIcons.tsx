@@ -68,7 +68,7 @@ const UnderlineIcon = importSvg(
   async () => import("assets/icons/control/underline.svg"),
 );
 const LineThroughFontIcon = importSvg(
-  () => import("assets/icons/control/line-through.svg"),
+  async () => import("assets/icons/control/line-through.svg"),
 );
 const ItalicsFontIcon = importSvg(
   async () => import("assets/icons/control/italics.svg"),

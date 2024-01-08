@@ -19,9 +19,11 @@ const LockIcon = importSvg(async () => import("assets/icons/form/lock.svg"));
 const DeleteIcon = importRemixIcon(
   async () => import("remixicon-react/DeleteBinLineIcon"),
 );
-const EyeOnIcon = importSvg(() => import("assets/icons/form/eye-on.svg"));
-const EyeOffIcon = importSvg(() => import("assets/icons/form/eye-off.svg"));
-const EmailIcon = importSvg(() => import("assets/icons/form/email.svg"));
+const EyeOnIcon = importSvg(async () => import("assets/icons/form/eye-on.svg"));
+const EyeOffIcon = importSvg(
+  async () => import("assets/icons/form/eye-off.svg"),
+);
+const EmailIcon = importSvg(async () => import("assets/icons/form/email.svg"));
 
 /* eslint-disable react/display-name */
 

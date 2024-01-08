@@ -1,8 +1,9 @@
+import React from "react";
 import styled, { css } from "styled-components";
 // util
-export type ReactRef<T extends HTMLElement> = {
+export interface ReactRef<T extends HTMLElement> {
   readonly current: T | null;
-};
+}
 // Defines which resize handles should be rendered (default: 'se')
 // Allows for any combination of:
 // 's' - South handle (bottom-center)
@@ -105,11 +106,7 @@ const ResizeHandle = styled.div<{ axis: string }>`
 
 const Handle = (axis: ResizeHandleAxis, ref: ReactRef<HTMLDivElement>) => {
   return (
-    <ResizeHandle
-      ref={ref}
-      axis={axis}
-      className={`react-resizable-handle`}
-    ></ResizeHandle>
+    <ResizeHandle axis={axis} className={`react-resizable-handle`} ref={ref} />
   );
 };
 

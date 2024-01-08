@@ -45,10 +45,10 @@ const BodyWrapper = styled.div`
   height: calc(100% - 40px);
 `;
 
-type Position = {
+interface Position {
   xRate: number;
   yRate: number;
-};
+}
 const CodeEditorPanel = (props: any) => {
   const [visible, setVisible] = useState<boolean>(false);
   const [currentPosition, setCurrentPosition] = useState<Position>({
@@ -72,11 +72,11 @@ const CodeEditorPanel = (props: any) => {
 
   return (
     <Trigger
-      popupVisible={visible}
       action={["click"]}
-      zIndex={50}
-      popupStyle={{ opacity: 1, display: visible ? "block" : "none" }}
       maskClosable={true}
+      popupStyle={{ opacity: 1, display: visible ? "block" : "none" }}
+      popupVisible={visible}
+      zIndex={50}
       onPopupVisibleChange={(visible) => onHandleVisible(visible)}
       // afterPopupVisibleChange={(visible) => props.onVisibleChange(visible)}
       popup={() => (
@@ -144,9 +144,9 @@ const CodeEditorPanel = (props: any) => {
       >
         <Button
           className="border-l border-t border-slate-500"
+          onClick={() => onHandleVisible(true)}
           size="small"
           type="text"
-          onClick={() => onHandleVisible(true)}
         >
           <span className="text-gray-500 rotate-90">
             <Icon icon="expand-all" />
