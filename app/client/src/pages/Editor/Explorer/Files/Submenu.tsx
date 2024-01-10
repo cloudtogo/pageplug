@@ -6,7 +6,7 @@ import {
   SEARCH_CATEGORY_ID,
   SEARCH_ITEM_TYPES,
 } from "components/editorComponents/GlobalSearch/utils";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import EntityAddButton from "../Entity/AddButton";
 import keyBy from "lodash/keyBy";
 import type { AppState } from "@appsmith/reducers";
@@ -27,6 +27,7 @@ import {
   SearchInput,
   Text,
 } from "design-system";
+import { getCurrentPageId } from "@appsmith/selectors/entitiesSelector";
 
 const SubMenuContainer = styled.div`
   width: 250px;

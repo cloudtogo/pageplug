@@ -83,7 +83,7 @@ interface Props {
   hideInstaller: () => void;
 }
 
-@HotkeysTarget
+// @HotkeysTarget
 class GlobalHotKeys extends React.Component<Props> {
   public stopPropagationIfWidgetSelected(e: KeyboardEvent): boolean {
     const multipleWidgetsSelected =
@@ -370,7 +370,7 @@ class GlobalHotKeys extends React.Component<Props> {
 const mapStateToProps = (state: AppState) => ({
   selectedWidget: getLastSelectedWidget(state),
   selectedWidgets: getSelectedWidgets(state),
-  isDebuggerOpen: showDebuggerFlag(state),
+  isDebuggerOpen: showDebuggerFlag(state) as boolean,
   appMode: getAppMode(state),
   isPreviewMode: previewModeSelector(state),
   isProtectedMode: protectedModeSelector(state),
