@@ -86,7 +86,7 @@ export const parseJSObject = (code: string) => {
         !isObjectExpression(node.declaration)
       )
         return;
-      JSObjectProperties = node.declaration
+      JSObjectProperties = (node.declaration as any)
         .properties as NodeWithLocation<PropertyNode>[];
     },
   });
