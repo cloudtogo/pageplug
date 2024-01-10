@@ -15,7 +15,7 @@ interface Props {
   ) => void;
   children: React.ReactNode;
 }
-@HotkeysTarget
+// @HotkeysTarget
 class GlobalSearchHotKeys extends React.Component<Props> {
   get hotKeysConfig() {
     return [

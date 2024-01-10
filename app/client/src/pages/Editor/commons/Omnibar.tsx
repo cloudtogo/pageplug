@@ -39,9 +39,7 @@ export const Omnibar = () => {
   const isSnipingMode = useSelector(snipingModeSelector);
   return (
     <>
-      <Suspense fallback={<span />}>
-        <GlobalSearch />
-      </Suspense>
+      <Suspense fallback={<span />}>{<GlobalSearch />}</Suspense>
       {isSnipingMode && (
         <BindingBanner className="t--sniping-mode-banner">
           选择一个组件绑定
