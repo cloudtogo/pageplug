@@ -4,6 +4,8 @@ FROM harbor.cloud2go.cn/pageplug/ubuntu-20.04:base
 VOLUME [ "/appsmith-stacks" ]
 
 # ------------------------------------------------------------------------
+ENV TMP="/tmp/appsmith"
+ENV NGINX_WWW_PATH="$TMP/www"
 # Add backend server - Application Layer
 ARG JAR_FILE=./app/server/dist/server-*.jar
 ARG PLUGIN_JARS=./app/server/dist/plugins/*.jar
