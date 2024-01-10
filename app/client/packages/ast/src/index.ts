@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import type { Node, SourceLocation, Options, Comment } from "acorn";
 import { parse } from "acorn";
 import { ancestor, simple } from "acorn-walk";
@@ -674,7 +675,7 @@ export const extractExpressionsFromCode = (
         } as MemberExpressionData);
       }
     },
-    VariableDeclarator(node: Node) {
+    VariableDeclaration(node: Node) {
       if (isVariableDeclarator(node)) {
         variableDeclarations.add(node.id.name);
       }
@@ -802,7 +803,7 @@ const ancestorWalk = (ast: Node): NodeList => {
         references.add(memberExpIdentifier);
       }
     },
-    VariableDeclarator(node: Node) {
+    VariableDeclaration(node: Node) {
       // keep a track of declared variables so they can be
       // removed from the final list of references
       if (isVariableDeclarator(node)) {
