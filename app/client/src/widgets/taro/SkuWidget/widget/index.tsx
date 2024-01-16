@@ -9,31 +9,153 @@ import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import _ from "lodash";
 import Taro from "@tarojs/taro";
+import IconSVG from "../icon.svg";
 
-export type CategoryValueItem = {
+export interface CategoryValueItem {
   id: string;
   name: string;
   pic?: string;
-};
+}
 
-export type Category = {
+export interface Category {
   name: string;
   key: string;
   values: CategoryValueItem[];
-};
+}
 
-export type GoodsItem = {
+export interface GoodsItem {
   id: string;
   price: number;
   stock: number;
   category: Record<string, string>;
-};
+}
 
 class MSkuWidget extends BaseWidget<MSkuWidgetProps, MSkuWidgetState> {
   state = {
     addCartLoading: false,
     buyLoading: false,
   };
+
+  static type = "TARO_SKU_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "商品规格",
+      searchTags: ["sku", "表单", "form"],
+      iconSVG: IconSVG,
+      needsMeta: true,
+      isCanvas: false,
+      isMobile: true,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "sku",
+      rows: 32,
+      columns: 56,
+      version: 1,
+      goodsId: "10010",
+      price: 399,
+      pic: "https://b.yzcdn.cn/vant/sku/shoes-1.png",
+      stockNum: 999,
+      categories: [
+        {
+          name: "颜色",
+          key: "color",
+          values: [
+            {
+              id: "1",
+              name: "粉色",
+              pic: "https://b.yzcdn.cn/vant/sku/shoes-1.png",
+            },
+            {
+              id: "2",
+              name: "黄色",
+              pic: "https://b.yzcdn.cn/vant/sku/shoes-2.png",
+            },
+            {
+              id: "3",
+              name: "蓝色",
+              pic: "https://b.yzcdn.cn/vant/sku/shoes-3.png",
+            },
+          ],
+        },
+        {
+          name: "尺寸",
+          key: "size",
+          values: [
+            {
+              id: "1",
+              name: "大",
+            },
+            {
+              id: "2",
+              name: "小",
+            },
+          ],
+        },
+      ],
+      products: [
+        {
+          id: "2259",
+          category: {
+            color: "2",
+            size: "1",
+          },
+          price: 100,
+          stock: 110,
+        },
+        {
+          id: "2260",
+          category: {
+            color: "3",
+            size: "1",
+          },
+          price: 100,
+          stock: 99,
+        },
+        {
+          id: "2257",
+          category: {
+            color: "1",
+            size: "1",
+          },
+          price: 100,
+          stock: 111,
+        },
+        {
+          id: "2258",
+          category: {
+            color: "1",
+            size: "2",
+          },
+          price: 100,
+          stock: 6,
+        },
+      ],
+      color: "#f44336",
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "70px",
+            };
+          },
+        },
+      ],
+      disableResizeHandles: {
+        vertical: true,
+      },
+    };
+  }
 
   static getPropertyPaneConfig() {
     return [
@@ -294,7 +416,7 @@ class MSkuWidget extends BaseWidget<MSkuWidgetProps, MSkuWidgetState> {
     }
   };
 
-  getPageView() {
+  getWidgetView() {
     const { categories, color, goodsId, pic, price, products, stockNum } =
       this.props;
     const { addCartLoading, buyLoading } = this.state;
@@ -354,10 +476,6 @@ class MSkuWidget extends BaseWidget<MSkuWidgetProps, MSkuWidgetState> {
         sku={skuData.sku}
       />
     );
-  }
-
-  static getWidgetType(): WidgetType {
-    return "TARO_SKU_WIDGET";
   }
 }
 

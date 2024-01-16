@@ -30,7 +30,8 @@ interface ApplicationCardListProps {
   hasManageWorkspacePermissions: boolean;
   isMobile?: boolean;
   workspaceId: string;
-  onClickAddNewButton: (workspaceId: string) => void;
+  onClickAddNewButton: (workspaceId: string, isMobile: boolean) => void;
+  onClickAddMobileNewButton: (workspaceId: string, isMobile: boolean) => void;
   deleteApplication: (applicationId: string) => void;
   updateApplicationDispatch: (
     id: string,
@@ -46,6 +47,7 @@ function ApplicationCardList({
   hasCreateNewApplicationPermission,
   hasManageWorkspacePermissions,
   isMobile,
+  onClickAddMobileNewButton,
   onClickAddNewButton,
   updateApplicationDispatch,
   workspaceId,
@@ -88,15 +90,26 @@ function ApplicationCardList({
           <span>{createMessage(APPLICATION_CARD_LIST_ZERO_STATE)}</span>
           {/* below component is duplicate. This is because of cypress test were failing */}
           {hasCreateNewApplicationPermission && (
-            <Button
-              className="t--new-button createnew"
-              isLoading={isCreatingApplication}
-              onClick={() => onClickAddNewButton(workspaceId)}
-              size="md"
-              startIcon={"plus"}
-            >
-              New
-            </Button>
+            <div className="flex justify-between" style={{ width: 272 }}>
+              <Button
+                className="t--new-button createnew"
+                isLoading={isCreatingApplication}
+                onClick={() => onClickAddNewButton(workspaceId, false)}
+                size="md"
+                startIcon={"plus"}
+              >
+                创建桌面应用
+              </Button>
+              <Button
+                className="t--new-button createnew"
+                isLoading={isCreatingApplication}
+                onClick={() => onClickAddMobileNewButton(workspaceId, true)}
+                size="md"
+                startIcon={"plus"}
+              >
+                创建移动应用
+              </Button>
+            </div>
           )}
         </NoAppsFound>
       )}

@@ -2,13 +2,13 @@ import React, { useMemo } from "react";
 import cls from "clsx";
 import { createBEM } from "../../rvStyle/bem";
 
-type SkuRowPropItemProps = {
+interface SkuRowPropItemProps {
   multiple?: boolean;
   skuValue: Record<any, any>;
   selectedProp: Record<any, any>;
   skuKeyStr: string;
   onSkuPropSelected: (params: any) => void;
-};
+}
 
 const SkuRowPropItem: React.FC<SkuRowPropItemProps> = (props) => {
   const bem = createBEM("rv-sku-row");

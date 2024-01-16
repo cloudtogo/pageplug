@@ -141,34 +141,34 @@ const Center = styled(View)`
 const ListComponent = (props: ListComponentProps) => {
   const [moved, setMoved] = useState(false);
   const {
-    enableCheckbox,
-    enableSwipe,
-    list,
-    contentType,
-    urlKey,
-    titleKey,
-    descriptionKey,
-    priceKey,
-    checkedKey,
-    buttonText,
-    controlType,
-    controlTextKey,
-    defaultNumKey,
-    inset,
-    width,
-    height,
-    titleColor,
-    descriptionColor,
-    priceColor,
     buttonColor,
-    textColor,
-    onItemClicked,
-    runAction,
+    buttonText,
+    checkedKey,
+    contentType,
+    controlTextKey,
+    controlType,
+    defaultNumKey,
+    descriptionColor,
+    descriptionKey,
+    emptyButtonAction,
+    emptyButtonText,
     emptyPic,
     emptyText,
+    enableCheckbox,
     enableEmptyButton,
-    emptyButtonText,
-    emptyButtonAction,
+    enableSwipe,
+    height,
+    inset,
+    list,
+    onItemClicked,
+    priceColor,
+    priceKey,
+    runAction,
+    textColor,
+    titleColor,
+    titleKey,
+    urlKey,
+    width,
   } = props;
   const items = _.isArray(list) ? list : [];
   const noPrice = contentType === "I_N_D";
@@ -222,11 +222,11 @@ const ListComponent = (props: ListComponentProps) => {
     const url = item?.[urlKey];
     const image = url ? (
       <FreeImage
-        src={url}
-        height={height}
-        width={width}
-        mode="aspectFit"
         fallback={<PhotoFail />}
+        height={height}
+        mode="aspectFit"
+        src={url}
+        width={width}
       />
     ) : (
       <PhotoOutlined
@@ -245,8 +245,8 @@ const ListComponent = (props: ListComponentProps) => {
     const checked = item?.[checkedKey || ""] || false;
     const checkbox = enableCheckbox ? (
       <Checkbox
-        name={index}
         checked={checked}
+        name={index}
         onChange={onCheckChanged(item)}
         {...notMe}
       />
@@ -260,9 +260,9 @@ const ListComponent = (props: ListComponentProps) => {
         control = (
           <BuyButton
             bgColor={buttonColor}
-            size="mini"
-            shape="round"
             onClick={onClickButton(item)}
+            shape="round"
+            size="mini"
           >
             {buttonText || <ShoppingCartOutlined />}
           </BuyButton>
@@ -271,19 +271,19 @@ const ListComponent = (props: ListComponentProps) => {
       case "STEPPER":
         control = (
           <Stepper
-            value={defaultNum}
-            size={28}
+            longPress={false}
             onChange={onStepperChanged(item)}
             onClick={stopPropagation}
-            longPress={false}
+            size={28}
+            value={defaultNum}
           />
         );
         break;
     }
     return (
       <ColCell
-        onClick={enableSwipe ? undefined : onClickItem(item)}
         key={index}
+        onClick={enableSwipe ? undefined : onClickItem(item)}
       >
         <Center onClick={stopPropagation}>{checkbox}</Center>
         {image}
@@ -325,8 +325,8 @@ const ListComponent = (props: ListComponentProps) => {
     return (
       <SwipeCellContainer
         key={index + `${item?.id}`}
-        onTouchMove={stopPropagation}
         onMouseMove={stopPropagation}
+        onTouchMove={stopPropagation}
       >
         <SwipeCell
           onTouchEnd={swipeTouchEnd(item)}
@@ -335,10 +335,10 @@ const ListComponent = (props: ListComponentProps) => {
           {content}
           <SwipeCell.Actions side="right" {...notMe}>
             <Button
-              variant="contained"
-              shape="square"
               color="danger"
               onClick={onClickDelete(item)}
+              shape="square"
+              variant="contained"
             >
               删除
             </Button>
@@ -370,17 +370,17 @@ const ListComponent = (props: ListComponentProps) => {
   if (!items.length) {
     return (
       <Empty
-        text={emptyText}
-        pic={emptyPic}
-        enableButton={enableEmptyButton}
         buttonText={emptyButtonText}
+        enableButton={enableEmptyButton}
         onClick={() => runAction(emptyButtonAction || "")}
+        pic={emptyPic}
+        text={emptyText}
       />
     );
   }
 
   return (
-    <ScrollView style={{ height: "100%" }} scrollY>
+    <ScrollView scrollY style={{ height: "100%" }}>
       {makeCheckboxGroup(cellGroup)}
     </ScrollView>
   );

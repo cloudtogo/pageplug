@@ -1,14 +1,59 @@
 import React from "react";
 import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import BaseWidget from "widgets/BaseWidget";
-import type { WidgetType, TextSize } from "constants/WidgetConstants";
+import type { TextSize } from "constants/WidgetConstants";
 import TextComponent from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
-import type { DerivedPropertiesMap } from "utils/WidgetFactory";
+import type { DerivedPropertiesMap } from "WidgetProvider/factory";
 import LoadingWrapper from "../../LoadingWrapper";
-import { ControlIcons } from "icons/ControlIcons";
+import IconSVG from "../icon.svg";
+import { DEFAULT_FONT_SIZE } from "constants/WidgetConstants";
 
 class TextWidget extends BaseWidget<MTextWidgetProps, WidgetState> {
+  static type = "TARO_TEXT_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "文本",
+      searchTags: ["text", "label", "文字", "标题"],
+      iconSVG: IconSVG,
+      needsMeta: false,
+      isCanvas: false,
+      isMobile: true,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "text",
+      text: "文本",
+      fontSize: DEFAULT_FONT_SIZE,
+      textAlign: "LEFT",
+      textColor: "#333",
+      rows: 4,
+      columns: 16,
+      version: 1,
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "70px",
+            };
+          },
+        },
+      ],
+      disableResizeHandles: {
+        vertical: true,
+      },
+    };
+  }
   static getPropertyPaneConfig() {
     return [
       {
@@ -157,7 +202,7 @@ class TextWidget extends BaseWidget<MTextWidgetProps, WidgetState> {
     ];
   }
 
-  getPageView() {
+  getWidgetView() {
     return (
       <LoadingWrapper isLoading={this.props.isLoading}>
         <TextComponent
@@ -180,10 +225,6 @@ class TextWidget extends BaseWidget<MTextWidgetProps, WidgetState> {
     return {
       value: `{{ this.text }}`,
     };
-  }
-
-  static getWidgetType(): WidgetType {
-    return "TARO_TEXT_WIDGET";
   }
 }
 

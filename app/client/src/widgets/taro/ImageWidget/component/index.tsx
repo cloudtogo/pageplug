@@ -24,11 +24,11 @@ const ImageComponent = ({
   };
   return (
     <Image
-      src={imageUrl}
-      style={style}
+      fallback={<PhotoFail />}
       mode={mode}
       onClick={onClick}
-      fallback={<PhotoFail />}
+      src={imageUrl}
+      style={style}
     />
   );
 };

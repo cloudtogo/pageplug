@@ -1,6 +1,6 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import KVComponent from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
@@ -10,8 +10,66 @@ import {
   textAlignOptions,
   demoLayoutProps,
 } from "../constants";
+import IconSVG from "../icon.svg";
 
 class MKVWidget extends BaseWidget<MKVWidgetProps, WidgetState> {
+  static type = "TARO_KV_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "键值对",
+      searchTags: ["kv", "text", "文本", "field"],
+      iconSVG: IconSVG,
+      needsMeta: false,
+      isCanvas: false,
+      isMobile: true,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "kv",
+      rows: 24,
+      columns: 48,
+      version: 1,
+      list: [
+        { key: "绿蚁新醅酒", value: "红泥小火炉" },
+        { key: "晚来天欲雪", value: "能饮一杯无" },
+      ],
+      kKey: "key",
+      vKey: "value",
+      layout: "h",
+      inset: false,
+      kColor: "#666",
+      kSize: "PARAGRAPH",
+      kBold: false,
+      kAlign: "LEFT",
+      vColor: "#333",
+      vSize: "PARAGRAPH",
+      vBold: true,
+      vAlign: "LEFT",
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "70px",
+            };
+          },
+        },
+      ],
+      disableResizeHandles: {
+        vertical: true,
+      },
+    };
+  }
+
   static getPropertyPaneConfig() {
     return [
       {
@@ -176,23 +234,23 @@ class MKVWidget extends BaseWidget<MKVWidgetProps, WidgetState> {
     ];
   }
 
-  getPageView() {
+  getWidgetView() {
     const {
-      list,
-      kKey,
-      vKey,
       inset,
-      layout,
-      kColor,
-      kSize,
-      kBold,
-      kAlign,
-      vColor,
-      vSize,
-      vBold,
-      vAlign,
       isLoading,
+      kAlign,
+      kBold,
+      kColor,
+      kKey,
+      kSize,
+      layout,
+      list,
       showLoading,
+      vAlign,
+      vBold,
+      vColor,
+      vKey,
+      vSize,
     } = this.props;
     return (
       <LoadingWrapper isLoading={isLoading && showLoading}>
@@ -215,10 +273,6 @@ class MKVWidget extends BaseWidget<MKVWidgetProps, WidgetState> {
         />
       </LoadingWrapper>
     );
-  }
-
-  static getWidgetType(): WidgetType {
-    return "TARO_KV_WIDGET";
   }
 }
 

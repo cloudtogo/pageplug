@@ -4,10 +4,55 @@ import BaseWidget from "widgets/BaseWidget";
 import { View } from "@tarojs/components";
 import { Search } from "@taroify/core";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import type { WidgetType } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
+import IconSVG from "../icon.svg";
 
 class MSearchWidget extends BaseWidget<MSearchWidgetProps, WidgetState> {
+  static type = "TARO_SEARCH_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "搜索框",
+      searchTags: ["search input"],
+      iconSVG: IconSVG,
+      needsMeta: true,
+      isCanvas: false,
+      isMobile: true,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "search",
+      rows: 8,
+      columns: 56,
+      version: 1,
+      rounded: true,
+      readonly: false,
+      showButton: false,
+      inputAlign: "left",
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "70px",
+            };
+          },
+        },
+      ],
+      disableResizeHandles: {
+        vertical: true,
+      },
+    };
+  }
+
   static getPropertyPaneConfig() {
     return [
       {
@@ -146,7 +191,7 @@ class MSearchWidget extends BaseWidget<MSearchWidgetProps, WidgetState> {
     }
   };
 
-  getPageView() {
+  getWidgetView() {
     const { inputAlign, placeholder, readonly, rounded, showButton, text } =
       this.props;
     const actionButton = showButton ? (
@@ -169,10 +214,6 @@ class MSearchWidget extends BaseWidget<MSearchWidgetProps, WidgetState> {
         />
       </View>
     );
-  }
-
-  static getWidgetType(): WidgetType {
-    return "TARO_SEARCH_WIDGET";
   }
 }
 

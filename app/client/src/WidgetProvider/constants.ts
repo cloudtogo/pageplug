@@ -68,6 +68,7 @@ export interface AnvilConfig {
 }
 
 export interface WidgetBaseConfiguration {
+  isMobile?: boolean;
   name: string;
   iconSVG?: string;
   hideCard?: boolean;

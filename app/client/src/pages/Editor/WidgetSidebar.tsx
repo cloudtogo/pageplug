@@ -62,7 +62,6 @@ function WidgetSidebar({ isActive }: { isActive: boolean }) {
     filterCards(value.toLowerCase());
   }, 300);
 
-  const isMobile = useSelector((state) => state.ui.mainCanvas.isMobile);
   return (
     <div
       className={`flex flex-col  overflow-hidden ${isActive ? "" : "hidden"}`}

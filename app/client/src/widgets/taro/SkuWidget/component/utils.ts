@@ -1,11 +1,11 @@
 import { UNSELECTED_SKU_VALUE_ID } from "./constants";
-import { SelectedSkuData, SkuData } from "./PropsType";
+import type { SelectedSkuData, SkuData } from "./PropsType";
 
-export type SelectedValueType = {
+export interface SelectedValueType {
   ks: string;
   imgUrl: string;
   position: number;
-};
+}
 
 export function getSkuImgValue(
   sku: SkuData,

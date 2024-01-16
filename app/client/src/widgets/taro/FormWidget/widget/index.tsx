@@ -1,11 +1,13 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
-import FormComponent, { FormComponentProps } from "../component";
+import type { FormComponentProps } from "../component";
+import FormComponent from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { get, isArray } from "lodash";
+import IconSVG from "../icon.svg";
 
 const noMeSubField = (
   props: MFormWidgetProps,
@@ -25,6 +27,69 @@ class MFormWidget extends BaseWidget<MFormWidgetProps, WidgetState> {
   state = {
     isLoading: false,
   };
+
+  static type = "TARO_FORM_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "表单",
+      searchTags: ["form"],
+      iconSVG: IconSVG,
+      needsMeta: true,
+      isCanvas: false,
+      isMobile: true,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "form",
+      rows: 24,
+      columns: 56,
+      version: 1,
+      fieldsObj: {
+        user: {
+          label: "用户名",
+          id: "user",
+          name: "user",
+          widgetId: "",
+          fieldType: "input",
+          required: true,
+          inputType: "text",
+          index: 0,
+        },
+        password: {
+          label: "密码",
+          id: "password",
+          name: "password",
+          widgetId: "",
+          fieldType: "input",
+          required: true,
+          inputType: "password",
+          index: 1,
+        },
+      },
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "70px",
+            };
+          },
+        },
+      ],
+      disableResizeHandles: {
+        vertical: true,
+      },
+    };
+  }
 
   static getPropertyPaneConfig() {
     return [
@@ -354,19 +419,15 @@ class MFormWidget extends BaseWidget<MFormWidgetProps, WidgetState> {
     return [];
   };
 
-  getPageView() {
+  getWidgetView() {
     return (
       <FormComponent
         {...this.props}
         fields={this.getFields()}
-        onFormSubmit={this.onFormSubmit}
         isLoading={this.state.isLoading}
+        onFormSubmit={this.onFormSubmit}
       />
     );
-  }
-
-  static getWidgetType(): WidgetType {
-    return "TARO_FORM_WIDGET";
   }
 }
 

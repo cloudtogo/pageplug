@@ -4,18 +4,82 @@ import { connect } from "react-redux";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import BaseWidget from "widgets/BaseWidget";
-import WidgetFactory from "utils/WidgetFactory";
+import WidgetFactory from "WidgetProvider/factory/index";
 import { ValidationTypes } from "constants/WidgetValidation";
 import BottomBarComponent from "../component";
 import type { RenderMode } from "constants/WidgetConstants";
 import { generateClassName } from "utils/generators";
 import { getCanvasWidth } from "selectors/editorSelectors";
 import type { AppState } from "@appsmith/reducers";
+import IconSVG from "../icon.svg";
 
 export class MBottomBarWidget extends BaseWidget<
   MBottomBarWidgetProps,
   WidgetState
 > {
+  static type = "TARO_BOTTOM_BAR_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "底部面板",
+      searchTags: ["bottom bar"],
+      iconSVG: IconSVG,
+      needsMeta: false,
+      isCanvas: true,
+      isMobile: true,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "bottom_bar",
+      rows: 12,
+      columns: 64,
+      // detachFromLayout is set true for widgets that are not bound to the widgets within the layout.
+      // setting it to true will only render the widgets(from sidebar) on the main container without any collision check.
+      detachFromLayout: true,
+      height: 100,
+      children: [],
+      version: 1,
+      blueprint: {
+        view: [
+          {
+            type: "CANVAS_WIDGET",
+            position: { left: 0, top: 0 },
+            props: {
+              detachFromLayout: true,
+              canExtend: false,
+              isVisible: true,
+              isDisabled: false,
+              shouldScrollContents: false,
+              children: [],
+              version: 1,
+            },
+          },
+        ],
+      },
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "70px",
+            };
+          },
+        },
+      ],
+      disableResizeHandles: {
+        vertical: true,
+      },
+    };
+  }
+
   static getPropertyPaneConfig() {
     return [
       {
@@ -77,19 +141,9 @@ export class MBottomBarWidget extends BaseWidget<
     );
   }
 
-  getCanvasView() {
-    let children = this.getChildren();
-    children = this.showWidgetName(children, true);
-    return this.makeComponent(children);
-  }
-
-  getPageView() {
+  getWidgetView() {
     const children = this.getChildren();
     return this.makeComponent(children);
-  }
-
-  static getWidgetType() {
-    return "TARO_BOTTOM_BAR_WIDGET";
   }
 }
 

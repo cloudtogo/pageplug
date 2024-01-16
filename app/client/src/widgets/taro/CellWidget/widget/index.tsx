@@ -1,10 +1,11 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import CellComponent from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { get } from "lodash";
+import IconSVG from "../icon.svg";
 
 const noMeSubField = (
   props: MCellWidgetProps,
@@ -18,6 +19,69 @@ const noMeSubField = (
 };
 
 class MCellWidget extends BaseWidget<MCellWidgetProps, WidgetState> {
+  static type = "TARO_CELL_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "单元格",
+      searchTags: ["cell"],
+      iconSVG: IconSVG,
+      needsMeta: false,
+      isCanvas: false,
+      isMobile: true,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "cell",
+      rows: 12,
+      columns: 56,
+      version: 1,
+      inset: false,
+      bordered: false,
+      cellsObj: {
+        cell1: {
+          label: "单元格 1",
+          id: "cell1",
+          widgetId: "",
+          isVisible: true,
+          picType: "none",
+          showArrow: true,
+          index: 0,
+        },
+        cell2: {
+          label: "单元格 2",
+          id: "cell2",
+          widgetId: "",
+          isVisible: true,
+          picType: "none",
+          showArrow: true,
+          index: 1,
+        },
+      },
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "70px",
+            };
+          },
+        },
+      ],
+      disableResizeHandles: {
+        vertical: true,
+      },
+    };
+  }
+
   static getPropertyPaneConfig() {
     return [
       {
@@ -247,20 +311,16 @@ class MCellWidget extends BaseWidget<MCellWidgetProps, WidgetState> {
     }
   };
 
-  getPageView() {
+  getWidgetView() {
     return (
       <CellComponent
-        title={this.props.title}
-        inset={this.props.inset}
         bordered={this.props.bordered}
         cells={this.getCells()}
+        inset={this.props.inset}
         runAction={this.runAction}
+        title={this.props.title}
       />
     );
-  }
-
-  static getWidgetType(): WidgetType {
-    return "TARO_CELL_WIDGET";
   }
 }
 

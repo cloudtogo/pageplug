@@ -67,7 +67,27 @@ import { WDSTableWidget } from "./wds/WDSTableWidget";
 import { WDSButtonGroupWidget } from "./wds/WDSButtonGroupWidget";
 import { WDSCheckboxGroupWidget } from "./wds/WDSCheckboxGroupWidget";
 
+import MActionBarWidget from "./taro/ActionBarWidget";
+// import MBottomBarWidget from "./taro/BottomBarWidget";
+import MButtonWidget from "./taro/ButtonWidget";
+import MCellWidget from "./taro/CellWidget";
+import MCheckboxWidget from "./taro/CheckboxWidget";
+import MFormWidget from "./taro/FormWidget";
+import GridWidget from "./taro/GridWidget";
+import MHtmlWidget from "./taro/HtmlWidget";
+import MImageWidget from "./taro/ImageWidget";
+import MKVWidget from "./taro/KVWidget";
+import MListWidget from "./taro/ListWidget";
+// import MPopupWidget from "./taro/PopupWidget";
+import MSearchWidget from "./taro/SearchWidget";
+import MSkuWidget from "./taro/SkuWidget";
+import SwiperWidget from "./taro/SwiperWidget";
+import MTabsWidget from "./taro/TabsWidget";
+import MTextWidget from "./taro/TextWidget";
+// import MLoadingWidget from "./taro/LoadingWidget/widget/index";
+
 const Widgets = [
+  // appsmith
   CanvasWidget,
   SkeletonWidget,
   ContainerWidget,
@@ -125,6 +145,27 @@ const Widgets = [
   WDSTableWidget,
   WDSButtonGroupWidget,
   WDSCheckboxGroupWidget,
+
+  //pageplug
+  //taro
+  MActionBarWidget,
+  // MBottomBarWidget,
+  MButtonWidget,
+  MCellWidget,
+  MCheckboxWidget,
+  MFormWidget,
+  GridWidget,
+  MHtmlWidget,
+  MImageWidget,
+  MKVWidget,
+  MListWidget,
+  // MLoadingWidget,
+  // MPopupWidget,
+  MSearchWidget,
+  MSkuWidget,
+  SwiperWidget,
+  MTabsWidget,
+  MTextWidget,
 
   //Deprecated Widgets
   InputWidget,

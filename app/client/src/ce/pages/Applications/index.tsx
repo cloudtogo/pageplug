@@ -549,6 +549,7 @@ export function ApplicationsSection(props: any) {
   const createNewApplication = (
     applicationName: string,
     workspaceId: string,
+    isMobile?: boolean,
   ) => {
     const color = getRandomPaletteColor(theme.colors.appCardColors);
     const icon =
@@ -561,6 +562,7 @@ export function ApplicationsSection(props: any) {
         workspaceId,
         icon,
         color,
+        isMobile,
       },
     });
   };
@@ -615,7 +617,10 @@ export function ApplicationsSection(props: any) {
           isManageEnvironmentEnabled &&
           hasManageWorkspaceEnvironmentPermission(workspace.userPermissions);
 
-        const onClickAddNewAppButton = (workspaceId: string) => {
+        const onClickAddNewAppButton = (
+          workspaceId: string,
+          isMobile: boolean,
+        ) => {
           if (
             Object.entries(creatingApplicationMap).length === 0 ||
             (creatingApplicationMap && !creatingApplicationMap[workspaceId])
@@ -626,6 +631,7 @@ export function ApplicationsSection(props: any) {
                 applications.map((el: any) => el.name),
               ),
               workspaceId,
+              isMobile,
             );
           }
         };
@@ -687,13 +693,16 @@ export function ApplicationsSection(props: any) {
                       />
                     )}
                     <WorkspaceAction
-                      isMobile={isMobile}
-                      onCreateNewApplication={onClickAddNewAppButton}
+                      onCreateNewApplication={() =>
+                        onClickAddNewAppButton(workspace.id, isMobile)
+                      }
                       workspaceId={workspace.id}
                     />
                     <WorkspaceAction
-                      isMobile={!isMobile}
-                      onCreateNewApplication={onClickAddNewAppButton}
+                      isMobile
+                      onCreateNewApplication={() =>
+                        onClickAddNewAppButton(workspace.id, !isMobile)
+                      }
                       workspaceId={workspace.id}
                     />
                     {(currentUser || isLoadingResources) &&
@@ -752,7 +761,12 @@ export function ApplicationsSection(props: any) {
                   }
                   hasManageWorkspacePermissions={hasManageWorkspacePermissions}
                   isMobile={isMobile}
-                  onClickAddNewButton={onClickAddNewAppButton}
+                  onClickAddMobileNewButton={() =>
+                    onClickAddNewAppButton(workspace.id, true)
+                  }
+                  onClickAddNewButton={() =>
+                    onClickAddNewAppButton(workspace.id, false)
+                  }
                   updateApplicationDispatch={updateApplicationDispatch}
                   workspaceId={workspace.id}
                 />

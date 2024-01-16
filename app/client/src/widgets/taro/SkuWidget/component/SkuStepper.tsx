@@ -4,7 +4,7 @@ import { createBEM } from "../../rvStyle/bem";
 import { LIMIT_TYPE } from "./constants";
 import { Stepper } from "@taroify/core";
 
-type SkuStepperProps = {
+interface SkuStepperProps {
   currentNum: number;
   onChange: (v: number) => void;
   onSkuStepperState: (v: any) => void;
@@ -17,7 +17,7 @@ type SkuStepperProps = {
   quotaUsed: number | string;
   startSaleNum: number | string;
   customStepperConfig?: any;
-};
+}
 
 const { QUOTA_LIMIT, STOCK_LIMIT } = LIMIT_TYPE;
 
@@ -50,7 +50,7 @@ const SkuStepper: React.FC<SkuStepperProps> = (props) => {
   }, [props.startSaleNum]);
 
   const quotaContent = useMemo(() => {
-    const { quotaText, hideQuotaText } = props.customStepperConfig;
+    const { hideQuotaText, quotaText } = props.customStepperConfig;
     if (hideQuotaText) return "";
 
     let text = "";
@@ -110,11 +110,11 @@ const SkuStepper: React.FC<SkuStepperProps> = (props) => {
     <div className={cls(bem("stepper-stock"))}>
       <div className={cls(bem("stepper-title"))}>{props.stepperTitle}</div>
       <Stepper
-        min={stepperMinLimit}
-        max={stepperLimit}
         className={cls(bem("stepper"))}
-        value={props.currentNum}
+        max={stepperLimit}
+        min={stepperMinLimit}
         onChange={onChange}
+        value={props.currentNum}
       >
         <Stepper.Button />
         <Stepper.Input disabled />

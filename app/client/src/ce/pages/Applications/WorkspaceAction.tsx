@@ -11,7 +11,7 @@ import { hasCreateNewAppPermission } from "@appsmith/utils/permissionHelpers";
 
 export interface WorkspaceActionProps {
   workspaceId: string;
-  isMobile: boolean;
+  isMobile?: boolean;
   onCreateNewApplication: (workspaceId: string) => void;
 }
 
@@ -28,13 +28,13 @@ function WorkspaceAction({
   const workspaceObject = workspaceList.find(
     ({ workspace }) => workspace.id === workspaceId,
   );
-
   if (!workspaceObject) return null;
 
   const { applications, workspace } = workspaceObject;
 
-  const hasCreateNewApplicationPermission =
-    hasCreateNewAppPermission(workspace.userPermissions) && !isMobile;
+  const hasCreateNewApplicationPermission = hasCreateNewAppPermission(
+    workspace.userPermissions,
+  );
 
   if (
     !hasCreateNewApplicationPermission ||

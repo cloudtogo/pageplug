@@ -1,9 +1,10 @@
-import React, { ReactNode, useEffect } from "react";
+import type { ReactNode } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { getCanvasClassName } from "utils/generators";
 import { Popup } from "@taroify/core";
 import { Cross } from "@taroify/icons";
-import { PopupProps } from "@taroify/core/popup/popup";
+import type { PopupProps } from "@taroify/core/popup/popup";
 
 const PopupContainer = styled(Popup)<
   {
@@ -22,7 +23,7 @@ const Content = styled.div`
   height: 100%;
 `;
 
-export type ModalComponentProps = {
+export interface ModalComponentProps {
   isOpen: boolean;
   onClose: (e: any) => void;
   onModalClose?: () => void;
@@ -31,7 +32,7 @@ export type ModalComponentProps = {
   canOutsideClickClose: boolean;
   rounded?: boolean;
   height?: number;
-};
+}
 
 /* eslint-disable react/display-name */
 export function ModalComponent(props: ModalComponentProps) {
@@ -42,10 +43,10 @@ export function ModalComponent(props: ModalComponentProps) {
   }, []);
   return (
     <PopupContainer
-      open={props.isOpen}
-      onClose={props.onClose}
-      placement="bottom"
       height={props.height}
+      onClose={props.onClose}
+      open={props.isOpen}
+      placement="bottom"
       rounded={props.rounded}
     >
       <Popup.Backdrop
