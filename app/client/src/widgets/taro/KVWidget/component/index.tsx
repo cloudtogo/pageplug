@@ -1,8 +1,10 @@
-import React, { CSSProperties } from "react";
+import type { CSSProperties } from "react";
+import React from "react";
 import { Text, View, ScrollView } from "@tarojs/components";
 import _ from "lodash";
 import styled from "styled-components";
-import { TextSize, TEXT_SIZES } from "constants/WidgetConstants";
+import type { TextSize } from "constants/WidgetConstants";
+import { TEXT_SIZES } from "constants/WidgetConstants";
 
 export interface ListComponentProps {
   list: any[];
@@ -79,20 +81,20 @@ const StyledText = styled(Text)<{
 
 const ListComponent = (props: ListComponentProps) => {
   const {
-    list,
-    kKey,
-    vKey,
-    layout,
     inset,
-    kColor,
-    kSize,
-    kBold,
     kAlign,
-    vColor,
-    vSize,
-    vBold,
-    vAlign,
+    kBold,
+    kColor,
+    kKey,
+    kSize,
+    layout,
+    list,
     style,
+    vAlign,
+    vBold,
+    vColor,
+    vKey,
+    vSize,
   } = props;
   const items = _.isArray(list) ? list : [];
   let Item = HItem;
@@ -103,7 +105,7 @@ const ListComponent = (props: ListComponentProps) => {
   }
 
   return (
-    <ScrollView style={{ height: "100%" }} scrollY>
+    <ScrollView scrollY style={{ height: "100%" }}>
       <Container inset={inset} style={style}>
         {items.map((item, index) => {
           const k = item?.[kKey];
@@ -111,18 +113,18 @@ const ListComponent = (props: ListComponentProps) => {
           return (
             <Item key={index}>
               <StyledText
+                align={kAlign}
+                bold={kBold}
                 color={kColor}
                 size={kSize}
-                bold={kBold}
-                align={kAlign}
               >
                 {k + ""}
               </StyledText>
               <StyledText
+                align={vAlign}
+                bold={vBold}
                 color={vColor}
                 size={vSize}
-                bold={vBold}
-                align={vAlign}
               >
                 {v + ""}
               </StyledText>

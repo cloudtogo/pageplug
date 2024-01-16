@@ -1,23 +1,16 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import { Backdrop, Loading } from "@taroify/core";
 import { View } from "@tarojs/components";
-import { WidgetType } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
-import { generateClassName } from "utils/generators";
 import { selectWidgetInitAction } from "actions/widgetSelectionActions";
 import { previewModeSelector } from "selectors/editorSelectors";
-import { AppState } from "@appsmith/reducers";
-
-const Container = styled(View)`
-  position: fixed;
-  top: 60px;
-  width: 0;
-  height: 0;
-`;
+import type { AppState } from "@appsmith/reducers";
+import IconSVG from "../icon.svg";
 
 const BackdropBox = styled(Backdrop)`
   left: unset;
@@ -44,30 +37,50 @@ const LoadingContainer = styled(View)`
   --loading-text-color: #fff;
 `;
 
-const Indicator = styled(View)`
-  position: absolute;
-  left: -64px;
-  width: 60px;
-  height: 60px;
-  border-radius: 4px;
-  top: 4px;
-  background: #bdbdbd66;
-  border: 2px dashed #333;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-
-  & .taroify-loading {
-    color: #7e7e7e;
-
-    & .taroify-loading__spinner {
-      animation: none;
-    }
-  }
-`;
-
 class MLoadingWidget extends BaseWidget<MLoadingWidgetProps, WidgetState> {
+  static type = "TARO_LOADING_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "加载遮罩",
+      searchTags: ["loading"],
+      iconSVG: IconSVG,
+      needsMeta: false,
+      isCanvas: false,
+      isMobile: true,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "loading",
+      rows: 8,
+      columns: 16,
+      version: 1,
+      detachFromLayout: true,
+      showLoading: false,
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "70px",
+            };
+          },
+        },
+      ],
+      disableResizeHandles: {
+        vertical: true,
+      },
+    };
+  }
+
   static getPropertyPaneConfig() {
     return [
       {
@@ -98,7 +111,7 @@ class MLoadingWidget extends BaseWidget<MLoadingWidgetProps, WidgetState> {
   }
 
   getBackdrop = () => {
-    const { showLoading, loadingText, isLoading } = this.props;
+    const { isLoading, loadingText, showLoading } = this.props;
     return (
       <BackdropBox open={showLoading || isLoading}>
         <LoadingContainer>
@@ -114,28 +127,8 @@ class MLoadingWidget extends BaseWidget<MLoadingWidgetProps, WidgetState> {
     e.stopPropagation();
   };
 
-  getCanvasView() {
-    const widgetName = this.showWidgetName(null, true);
-    const backdrop = this.getBackdrop();
-    return (
-      <Container className={generateClassName(this.props.widgetId)}>
-        {backdrop}
-        {this.props.isPreviewMode ? null : (
-          <Indicator onClick={this.openPropertyPane}>
-            <Loading type="spinner" />
-          </Indicator>
-        )}
-        {widgetName}
-      </Container>
-    );
-  }
-
-  getPageView() {
+  getWidgetView() {
     return this.getBackdrop();
-  }
-
-  static getWidgetType(): WidgetType {
-    return "TARO_LOADING_WIDGET";
   }
 }
 
@@ -151,7 +144,7 @@ const mapDispatchToProps = (dispatch: any) => ({
       type: ReduxActionTypes.SHOW_PROPERTY_PANE,
       payload: { widgetId, force: true },
     });
-    dispatch(selectWidgetInitAction(widgetId, false));
+    dispatch(selectWidgetInitAction(widgetId as any, ["false"]));
   },
 });
 

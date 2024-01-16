@@ -27,7 +27,7 @@ export interface CellComponentProps {
 }
 
 const CellComponent = (props: CellComponentProps) => {
-  const { cells, title, inset, bordered, runAction } = props;
+  const { bordered, cells, inset, runAction, title } = props;
 
   const onClickCellItem = (action: string) => (e: any) => {
     if (action) {
@@ -36,14 +36,16 @@ const CellComponent = (props: CellComponentProps) => {
   };
 
   return (
-    <ScrollView style={{ height: "100%" }} scrollY>
-      <Cell.Group title={title} inset={inset} bordered={bordered}>
+    <ScrollView scrollY style={{ height: "100%" }}>
+      <Cell.Group bordered={bordered} inset={inset} title={title}>
         {cells.map((cell, index) => {
           let icon = null;
           if (cell.picType === "image") {
             icon = (
               <Image
+                fallback={<PhotoFail />}
                 key={cell.picSrc}
+                mode="aspectFit"
                 src={cell.picSrc}
                 style={{
                   width: "32px",
@@ -51,8 +53,6 @@ const CellComponent = (props: CellComponentProps) => {
                   borderRadius: "4px",
                   marginRight: "20px",
                 }}
-                mode="aspectFit"
-                fallback={<PhotoFail />}
               />
             );
           } else if (cell.picType === "icon" && cell.icon) {
@@ -69,14 +69,14 @@ const CellComponent = (props: CellComponentProps) => {
           }
           return (
             <Cell
-              key={index}
-              clickable
               bordered
-              title={cell.label}
               brief={cell.brief}
+              clickable
               icon={icon}
-              rightIcon={cell.showArrow ? <Arrow /> : null}
+              key={index}
               onClick={onClickCellItem(cell.onClick || "")}
+              rightIcon={cell.showArrow ? <Arrow /> : null}
+              title={cell.label}
             >
               {cell.content}
             </Cell>

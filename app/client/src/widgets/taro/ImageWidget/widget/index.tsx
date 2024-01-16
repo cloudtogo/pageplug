@@ -1,12 +1,56 @@
 import * as React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import ImageComponent from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import LoadingWrapper from "../../LoadingWrapper";
+import IconSVG from "../icon.svg";
 
 class MImageWidget extends BaseWidget<MImageWidgetProps, WidgetState> {
+  static type = "TARO_IMAGE_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "图片",
+      searchTags: ["image", "picture"],
+      iconSVG: IconSVG,
+      needsMeta: false,
+      isCanvas: false,
+      isMobile: true,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "image",
+      rows: 24,
+      columns: 32,
+      src: "https://img.yzcdn.cn/vant/cat.jpeg",
+      mode: "aspectFit",
+      version: 1,
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "70px",
+            };
+          },
+        },
+      ],
+      disableResizeHandles: {
+        vertical: true,
+      },
+    };
+  }
+
   static getPropertyPaneConfig() {
     return [
       {
@@ -81,14 +125,14 @@ class MImageWidget extends BaseWidget<MImageWidgetProps, WidgetState> {
     ];
   }
 
-  getPageView() {
-    const { src, onClick, mode, radius, isLoading } = this.props;
+  getWidgetView() {
+    const { isLoading, mode, onClick, radius, src } = this.props;
     return (
       <LoadingWrapper isLoading={isLoading}>
         <ImageComponent
           imageUrl={src}
-          onClick={onClick ? this.onImageClick : undefined}
           mode={mode}
+          onClick={onClick ? this.onImageClick : undefined}
           radius={radius}
         />
       </LoadingWrapper>
@@ -106,10 +150,6 @@ class MImageWidget extends BaseWidget<MImageWidgetProps, WidgetState> {
       });
     }
   };
-
-  static getWidgetType(): WidgetType {
-    return "TARO_IMAGE_WIDGET";
-  }
 }
 
 export type ImageFillMode = "aspectFill" | "scaleToFill" | "aspectFit";

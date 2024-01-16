@@ -1,9 +1,10 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import { ScrollView, RichText } from "@tarojs/components";
-import { WidgetType } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import styled from "styled-components";
+import IconSVG from "../icon.svg";
 
 const Container = styled(ScrollView)`
   width: 100%;
@@ -17,6 +18,49 @@ const Container = styled(ScrollView)`
 `;
 
 class MHtmlWidget extends BaseWidget<MHtmlWidgetProps, WidgetState> {
+  static type = "TARO_HTML_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "HTML",
+      searchTags: ["html"],
+      iconSVG: IconSVG,
+      needsMeta: false,
+      isCanvas: false,
+      isMobile: true,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "html",
+      rows: 24,
+      columns: 56,
+      content:
+        "<p style='font-size: 36px; font-weight: bold; font-family: fangsong; background:red; color:black; text-align: center;'>恭喜发财 大吉大利</p>",
+      version: 1,
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "70px",
+            };
+          },
+        },
+      ],
+      disableResizeHandles: {
+        vertical: true,
+      },
+    };
+  }
+
   static getPropertyPaneConfig() {
     return [
       {
@@ -36,17 +80,13 @@ class MHtmlWidget extends BaseWidget<MHtmlWidgetProps, WidgetState> {
     ];
   }
 
-  getPageView() {
+  getWidgetView() {
     const { content } = this.props;
     return (
       <Container scrollY>
         <RichText nodes={content} />
       </Container>
     );
-  }
-
-  static getWidgetType(): WidgetType {
-    return "TARO_HTML_WIDGET";
   }
 }
 

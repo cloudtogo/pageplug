@@ -1,14 +1,61 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
+import type { WidgetType } from "constants/WidgetConstants";
 import ButtonComponent from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
+import IconSVG from "../icon.svg";
 
 class MButtonWidget extends BaseWidget<MButtonWidgetProps, ButtonWidgetState> {
   state = {
     isLoading: false,
   };
+
+  static type = "TARO_BUTTON_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "按钮",
+      searchTags: ["button"],
+      iconSVG: IconSVG,
+      needsMeta: false,
+      isCanvas: false,
+      isMobile: true,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "button",
+      rows: 4,
+      columns: 24,
+      version: 1,
+      rounded: true,
+      text: "好的",
+      fontSize: "16px",
+      showLoading: true,
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "70px",
+            };
+          },
+        },
+      ],
+      disableResizeHandles: {
+        vertical: true,
+      },
+    };
+  }
 
   static getPropertyPaneConfig() {
     return [
@@ -150,8 +197,8 @@ class MButtonWidget extends BaseWidget<MButtonWidgetProps, ButtonWidgetState> {
     });
   };
 
-  getPageView() {
-    const { isLoading, showLoading, isDisabled, ...others } = this.props;
+  getWidgetView() {
+    const { isDisabled, isLoading, showLoading, ...others } = this.props;
     const loading = showLoading && (isLoading || this.state.isLoading);
     return (
       <ButtonComponent

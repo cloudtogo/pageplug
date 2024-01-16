@@ -5,7 +5,7 @@ import { PhotoFail } from "@taroify/icons";
 import { createBEM } from "../../rvStyle/bem";
 import { isSkuChoosable } from "./utils";
 
-type SkuRowItemProps = {
+interface SkuRowItemProps {
   lazyload?: boolean;
   skuValue: Record<any, any>;
   skuKeyStr: string;
@@ -16,7 +16,7 @@ type SkuRowItemProps = {
   previewIcon?: React.ReactNode;
   onSkuSelected?: (params: any) => void;
   onSkuPreviewImage?: (params: any) => void;
-};
+}
 
 const SkuRowItem: React.FC<SkuRowItemProps> = (props) => {
   const bem = createBEM("rv-sku-row");
@@ -48,11 +48,11 @@ const SkuRowItem: React.FC<SkuRowItemProps> = (props) => {
     if (imgUrl) {
       return (
         <Image
-          mode="aspectFit"
-          src={imgUrl}
-          lazyLoad={props.lazyload}
           className={cls(bem(`${classPrefix}-img`))}
           fallback={<PhotoFail />}
+          lazyLoad={props.lazyload}
+          mode="aspectFit"
+          src={imgUrl}
         />
       );
     }

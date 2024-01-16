@@ -45,7 +45,7 @@ const Sku = forwardRef<SkuInstance, SkuProps>((props, ref) => {
     selectedNum: props.startSaleNum,
   });
 
-  const { sku, properties = [] } = props;
+  const { properties = [], sku } = props;
   const { tree = [] } = sku;
 
   const hasSku = useMemo(() => !sku.none_sku, [sku.none_sku]);
@@ -497,7 +497,7 @@ const Sku = forwardRef<SkuInstance, SkuProps>((props, ref) => {
               <ActionBar.Button
                 color={props.color}
                 loading={props.addCartLoading}
-                onClick={() => onBuyOrAddCart("add-cart")}
+                onClick={async () => onBuyOrAddCart("add-cart")}
                 text={props.addCartText || "加入购物车"}
                 type="warning"
               />
@@ -505,7 +505,7 @@ const Sku = forwardRef<SkuInstance, SkuProps>((props, ref) => {
             <ActionBar.Button
               color={props.color}
               loading={props.buyLoading}
-              onClick={() => onBuyOrAddCart("buy-clicked")}
+              onClick={async () => onBuyOrAddCart("buy-clicked")}
               text={props.buyText || "立即购买"}
               type="danger"
             />

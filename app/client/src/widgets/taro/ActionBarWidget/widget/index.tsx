@@ -1,11 +1,11 @@
 import React from "react";
 import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import BaseWidget from "widgets/BaseWidget";
-import type { WidgetType } from "constants/WidgetConstants";
 import ActionBar from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { get } from "lodash";
+import IconSVG from "../icon.svg";
 
 const noMeSubField = (
   props: MActionBarWidgetProps,
@@ -19,6 +19,74 @@ const noMeSubField = (
 };
 
 class MActionBarWidget extends BaseWidget<MActionBarWidgetProps, WidgetState> {
+  static type = "TARO_ACTION_BAR_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "动作栏",
+      searchTags: ["action bar"],
+      iconSVG: IconSVG,
+      needsMeta: false,
+      isCanvas: false,
+      isMobile: true,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "action_bar",
+      rows: 8,
+      columns: 56,
+      version: 1,
+      actionsObj: {
+        action1: {
+          label: "购物车",
+          id: "action1",
+          widgetId: "",
+          index: 0,
+          type: "icon",
+          badge: "6",
+          icon: "cart-o",
+        },
+        action2: {
+          label: "加入购物车",
+          id: "action2",
+          widgetId: "",
+          index: 1,
+          type: "button",
+          buttonType: "warning",
+        },
+        action3: {
+          label: "立即购买",
+          id: "action3",
+          widgetId: "",
+          index: 2,
+          type: "button",
+          buttonType: "danger",
+        },
+      },
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "70px",
+            };
+          },
+        },
+      ],
+      disableResizeHandles: {
+        vertical: true,
+      },
+    };
+  }
+
   static getPropertyPaneConfig() {
     return [
       {
@@ -182,7 +250,7 @@ class MActionBarWidget extends BaseWidget<MActionBarWidgetProps, WidgetState> {
     this.runAction(script);
   };
 
-  getPageView() {
+  getWidgetView() {
     const actions = this.getActions();
     return (
       <ActionBar>
@@ -213,10 +281,6 @@ class MActionBarWidget extends BaseWidget<MActionBarWidgetProps, WidgetState> {
         })}
       </ActionBar>
     );
-  }
-
-  static getWidgetType(): WidgetType {
-    return "TARO_ACTION_BAR_WIDGET";
   }
 }
 

@@ -3,9 +3,9 @@ import cls from "clsx";
 import { createBEM } from "../../rvStyle/bem";
 import { BORDER_BOTTOM } from "./constants";
 
-type SkuRowProps = {
+interface SkuRowProps {
   skuRow: Record<any, any>;
-};
+}
 
 const SkuRow: React.FC<SkuRowProps> = (props) => {
   const bem = createBEM("rv-sku-row");

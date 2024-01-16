@@ -1,13 +1,15 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
-import GridComponent, { GridComponentProps } from "../component";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
+import type { GridComponentProps } from "../component";
+import GridComponent from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import { View } from "@tarojs/components";
 import { Skeleton } from "@taroify/core";
 import styled from "styled-components";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import IconSVG from "../icon.svg";
 
 const LoadingContainer = styled(View)<{
   cols?: number;
@@ -23,8 +25,66 @@ const LoadingContainer = styled(View)<{
     border-radius: 4px;
   }
 `;
-
+// todo: type error
 class GridWidget extends BaseWidget<GridWidgetProps, WidgetState> {
+  static type = "TARO_GRID_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "网格",
+      searchTags: ["grid"],
+      iconSVG: IconSVG,
+      needsMeta: true,
+      isCanvas: false,
+      isMobile: true,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "grid",
+      rows: 24,
+      columns: 56,
+      list: [
+        { url: "", name: "文本" },
+        { url: "", name: "文本" },
+        { url: "", name: "文本" },
+        { url: "", name: "文本" },
+        { url: "", name: "文本" },
+        { url: "", name: "文本" },
+      ],
+      urlKey: "url",
+      titleKey: "name",
+      cols: 4,
+      gutter: "0",
+      bordered: true,
+      gridType: "I_N",
+      titleColor: "#646566",
+      descriptionColor: "#DD4B34",
+      buttonColor: "#03b365",
+      priceUnit: "￥",
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "70px",
+            };
+          },
+        },
+      ],
+      disableResizeHandles: {
+        vertical: true,
+      },
+    };
+  }
+
   static getPropertyPaneConfig() {
     return [
       {
@@ -336,7 +396,7 @@ class GridWidget extends BaseWidget<GridWidgetProps, WidgetState> {
     }
   };
 
-  getPageView() {
+  getWidgetView() {
     const { cols, isLoading } = this.props;
 
     if (isLoading) {
@@ -357,12 +417,10 @@ class GridWidget extends BaseWidget<GridWidgetProps, WidgetState> {
       />
     );
   }
-
-  static getWidgetType(): WidgetType {
-    return "TARO_GRID_WIDGET";
-  }
 }
 
-export interface GridWidgetProps extends WidgetProps, GridComponentProps {}
+export interface GridWidgetProps
+  extends Omit<WidgetProps, "height" | "width">,
+    GridComponentProps {}
 
 export default GridWidget;

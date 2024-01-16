@@ -116,6 +116,7 @@ class WidgetFactory {
       iconSVG: config.iconSVG,
       isCanvas: config.isCanvas,
       needsHeightForContent: config.needsHeightForContent,
+      isMobile: config.isMobile,
     };
 
     WidgetFactory.widgetConfigMap.set(widget.type, Object.freeze(_config));

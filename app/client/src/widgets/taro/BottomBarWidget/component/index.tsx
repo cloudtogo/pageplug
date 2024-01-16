@@ -25,11 +25,11 @@ const Content = styled.div`
   height: 100%;
 `;
 
-export type BottomBarComponentProps = {
+export interface BottomBarComponentProps {
   children: ReactNode;
   className?: string;
   height?: number;
-};
+}
 
 /* eslint-disable react/display-name */
 export function BottomBarComponent(props: BottomBarComponentProps) {

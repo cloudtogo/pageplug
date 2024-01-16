@@ -1,17 +1,85 @@
-import React, { ReactNode } from "react";
+import type { ReactNode } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import WidgetFactory from "utils/WidgetFactory";
+import WidgetFactory from "WidgetProvider/factory";
 import { ValidationTypes } from "constants/WidgetValidation";
 import ModalComponent from "../component";
-import { RenderMode } from "constants/WidgetConstants";
+import type { RenderMode } from "constants/WidgetConstants";
 import { generateClassName } from "utils/generators";
-import { AppState } from "@appsmith/reducers";
+import type { AppState } from "@appsmith/reducers";
 import { getCanvasWidth } from "selectors/editorSelectors";
+import IconSVG from "../icon.svg";
 
 export class MPopupWidget extends BaseWidget<MPopupWidgetProps, WidgetState> {
+  static type = "TARO_POPUP_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "底部弹窗",
+      searchTags: ["popup", "dialog", "modal"],
+      iconSVG: IconSVG,
+      needsMeta: true,
+      isCanvas: false,
+      isMobile: true,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "popup",
+      rows: 40,
+      columns: 64,
+      // detachFromLayout is set true for widgets that are not bound to the widgets within the layout.
+      // setting it to true will only render the widgets(from sidebar) on the main container without any collision check.
+      detachFromLayout: true,
+      canOutsideClickClose: true,
+      rounded: true,
+      height: 400,
+      children: [],
+      version: 1,
+      blueprint: {
+        view: [
+          {
+            type: "CANVAS_WIDGET",
+            position: { left: 0, top: 0 },
+            props: {
+              detachFromLayout: true,
+              canExtend: false,
+              isVisible: true,
+              isDisabled: false,
+              shouldScrollContents: false,
+              children: [],
+              version: 1,
+            },
+          },
+        ],
+      },
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "70px",
+            };
+          },
+        },
+      ],
+      disableResizeHandles: {
+        vertical: true,
+      },
+    };
+  }
+
   static getPropertyPaneConfig() {
     return [
       {
@@ -103,29 +171,19 @@ export class MPopupWidget extends BaseWidget<MPopupWidgetProps, WidgetState> {
         canOutsideClickClose={!!this.props.canOutsideClickClose}
         className={`${generateClassName(this.props.widgetId)}`}
         height={this.props.height}
-        rounded={this.props.rounded}
         isOpen={!!this.props.isVisible}
         onClose={this.closeModal}
         onModalClose={this.onModalClose}
+        rounded={this.props.rounded}
       >
         {content}
       </ModalComponent>
     );
   }
 
-  getCanvasView() {
-    let children = this.getChildren();
-    children = this.showWidgetName(children, true);
-    return this.makeModalComponent(children);
-  }
-
-  getPageView() {
+  getWidgetView() {
     const children = this.getChildren();
     return this.makeModalComponent(children);
-  }
-
-  static getWidgetType() {
-    return "TARO_POPUP_WIDGET";
   }
 }
 

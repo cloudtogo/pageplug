@@ -1,7 +1,6 @@
 import React from "react";
 import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import BaseWidget from "widgets/BaseWidget";
-import type { WidgetType } from "constants/WidgetConstants";
 import NavTabComponent from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import type { ValidationResponse } from "constants/WidgetValidation";
@@ -12,6 +11,7 @@ import _ from "lodash";
 import { View } from "@tarojs/components";
 import { Skeleton } from "@taroify/core";
 import styled from "styled-components";
+import IconSVG from "../icon.svg";
 
 const LoadingContainer = styled(View)<{
   direction: string;
@@ -49,7 +49,7 @@ export function selectedTabValidation(
         return {
           isValid: false,
           parsed: 0,
-          messages: ["索引值必须是非负整数"],
+          messages: ["索引值必须是非负整数" as any],
         };
       }
     }
@@ -62,7 +62,7 @@ export function selectedTabValidation(
       return {
         isValid: false,
         parsed,
-        messages: [`索引值超出数组范围`],
+        messages: [`索引值超出数组范围` as any],
       };
     }
 
@@ -71,12 +71,61 @@ export function selectedTabValidation(
     return {
       isValid: false,
       parsed: value,
-      messages: [`校验失败`],
+      messages: [`校验失败` as any],
     };
   }
 }
 
 class MTabsWidget extends BaseWidget<MTabsWidgetProps, WidgetState> {
+  static type = "TARO_TABS_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "标签导航",
+      searchTags: ["tabs"],
+      iconSVG: IconSVG,
+      needsMeta: true,
+      isCanvas: false,
+      isMobile: true,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "tabs",
+      rows: 40,
+      columns: 16,
+      version: 1,
+      list: [
+        { name: "标签1", id: 1 },
+        { name: "标签2", id: 2 },
+        { name: "标签3", id: 3 },
+      ],
+      nameKey: "name",
+      defaultNum: "0",
+      showLoading: false,
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "70px",
+            };
+          },
+        },
+      ],
+      disableResizeHandles: {
+        vertical: true,
+      },
+    };
+  }
+
   static getPropertyPaneConfig() {
     return [
       {
@@ -229,7 +278,7 @@ class MTabsWidget extends BaseWidget<MTabsWidgetProps, WidgetState> {
     };
   };
 
-  getPageView() {
+  getWidgetView() {
     const {
       bottomRow,
       isLoading,
@@ -260,10 +309,6 @@ class MTabsWidget extends BaseWidget<MTabsWidgetProps, WidgetState> {
         selectedIndex={selectedTabIndex}
       />
     );
-  }
-
-  static getWidgetType(): WidgetType {
-    return "TARO_TABS_WIDGET";
   }
 }
 

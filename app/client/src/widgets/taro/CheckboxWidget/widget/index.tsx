@@ -1,13 +1,14 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import { View } from "@tarojs/components";
 import { Checkbox } from "@taroify/core";
-import { WidgetType } from "constants/WidgetConstants";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import { DerivedPropertiesMap } from "utils/WidgetFactory";
+import type { DerivedPropertiesMap } from "WidgetProvider/factory";
 import { ValidationTypes } from "constants/WidgetValidation";
 import styled from "styled-components";
 import LoadingWrapper from "../../LoadingWrapper";
+import IconSVG from "../icon.svg";
 
 const Container = styled(View)`
   width: 100%;
@@ -18,6 +19,51 @@ const Container = styled(View)`
 `;
 
 class MCheckboxWidget extends BaseWidget<MCheckboxWidgetProps, WidgetState> {
+  static type = "TARO_CHECKBOX_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "复选框",
+      searchTags: ["checkbox"],
+      iconSVG: IconSVG,
+      needsMeta: true,
+      isCanvas: false,
+      isMobile: true,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "checkbox",
+      rows: 4,
+      columns: 16,
+      version: 1,
+      label: "勾选",
+      defaultCheckedState: true,
+      isDisabled: false,
+      showLoading: false,
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "70px",
+            };
+          },
+        },
+      ],
+      disableResizeHandles: {
+        vertical: true,
+      },
+    };
+  }
+
   static getPropertyPaneConfig() {
     return [
       {
@@ -117,14 +163,14 @@ class MCheckboxWidget extends BaseWidget<MCheckboxWidgetProps, WidgetState> {
     });
   };
 
-  getPageView() {
-    const { isChecked, label, isDisabled, isLoading, showLoading } = this.props;
+  getWidgetView() {
+    const { isChecked, isDisabled, isLoading, label, showLoading } = this.props;
     return (
       <LoadingWrapper isLoading={isLoading && showLoading}>
         <Container>
           <Checkbox
-            disabled={!!isDisabled}
             checked={!!isChecked}
+            disabled={!!isDisabled}
             onChange={this.onCheckChange}
           >
             {label}
@@ -132,10 +178,6 @@ class MCheckboxWidget extends BaseWidget<MCheckboxWidgetProps, WidgetState> {
         </Container>
       </LoadingWrapper>
     );
-  }
-
-  static getWidgetType(): WidgetType {
-    return "TARO_CHECKBOX_WIDGET";
   }
 }
 

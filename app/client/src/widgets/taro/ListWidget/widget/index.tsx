@@ -1,14 +1,16 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
-import ListComponent, { ListComponentProps } from "../component";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
+import type { ListComponentProps } from "../component";
+import ListComponent from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
-import { DerivedPropertiesMap } from "utils/WidgetFactory";
+import type { DerivedPropertiesMap } from "WidgetProvider/factory";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import { View } from "@tarojs/components";
 import { Skeleton } from "@taroify/core";
 import styled from "styled-components";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import IconSVG from "../icon.svg";
 
 const LoadingContainer = styled(View)`
   height: 100%;
@@ -21,8 +23,66 @@ const LoadingContainer = styled(View)`
     margin: 20px 0;
   }
 `;
-
+// todo: type error
 class ListWidget extends BaseWidget<MListWidgetProps, WidgetState> {
+  static type = "TARO_LIST_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "列表",
+      searchTags: ["list"],
+      iconSVG: IconSVG,
+      needsMeta: true,
+      isCanvas: false,
+      isMobile: true,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "list",
+      rows: 24,
+      columns: 56,
+      list: [
+        { url: "", name: "标题", description: "描述" },
+        { url: "", name: "标题", description: "描述" },
+        { url: "", name: "标题", description: "描述" },
+        { url: "", name: "标题", description: "描述" },
+      ],
+      urlKey: "url",
+      titleKey: "name",
+      descriptionKey: "description",
+      contentType: "I_N_D",
+      controlType: "BUTTON",
+      width: 100,
+      height: 80,
+      inset: false,
+      titleColor: "#646566",
+      descriptionColor: "#999",
+      priceColor: "#DD4B34",
+      buttonColor: "#03b365",
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "70px",
+            };
+          },
+        },
+      ],
+      disableResizeHandles: {
+        vertical: true,
+      },
+    };
+  }
+
   static getPropertyPaneConfig() {
     return [
       {
@@ -474,7 +534,7 @@ class ListWidget extends BaseWidget<MListWidgetProps, WidgetState> {
     }
   };
 
-  getPageView() {
+  getWidgetView() {
     const { isLoading, showLoading } = this.props;
 
     if (isLoading && showLoading) {
@@ -495,12 +555,10 @@ class ListWidget extends BaseWidget<MListWidgetProps, WidgetState> {
       />
     );
   }
-
-  static getWidgetType(): WidgetType {
-    return "TARO_LIST_WIDGET";
-  }
 }
 
-export interface MListWidgetProps extends WidgetProps, ListComponentProps {}
+export interface MListWidgetProps
+  extends Omit<WidgetProps, "height" | "width">,
+    ListComponentProps {}
 
 export default ListWidget;

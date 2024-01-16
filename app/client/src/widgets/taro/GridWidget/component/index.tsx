@@ -83,30 +83,30 @@ const ColorGrid = styled(Grid)<{
 
 const GridComponent = (props: GridComponentProps) => {
   const {
-    list,
-    gridType,
-    urlKey,
-    titleKey,
-    descriptionKey,
-    badgeKey,
     asPrice,
-    priceUnit,
-    buttonText,
-    width,
-    height,
-    cols,
-    gutter,
+    badgeKey,
     bordered,
-    titleColor,
-    descriptionColor,
     buttonColor,
-    onItemClicked,
-    runAction,
+    buttonText,
+    cols,
+    descriptionColor,
+    descriptionKey,
+    emptyButtonAction,
+    emptyButtonText,
     emptyPic,
     emptyText,
     enableEmptyButton,
-    emptyButtonText,
-    emptyButtonAction,
+    gridType,
+    gutter,
+    height,
+    list,
+    onItemClicked,
+    priceUnit,
+    runAction,
+    titleColor,
+    titleKey,
+    urlKey,
+    width,
   } = props;
   const items = _.isArray(list) ? list : [];
   const key = urlKey + titleKey + items.length;
@@ -125,24 +125,24 @@ const GridComponent = (props: GridComponentProps) => {
   if (!items.length) {
     return (
       <Empty
-        text={emptyText}
-        pic={emptyPic}
-        enableButton={enableEmptyButton}
         buttonText={emptyButtonText}
+        enableButton={enableEmptyButton}
         onClick={() => runAction(emptyButtonAction || "")}
+        pic={emptyPic}
+        text={emptyText}
       />
     );
   }
 
   return (
-    <ScrollView style={{ height: "100%" }} scrollY>
+    <ScrollView scrollY style={{ height: "100%" }}>
       <ColorGrid
-        key={key}
+        bordered={bordered}
+        clickable
         columns={cols}
         gutter={gutter}
-        bordered={bordered}
+        key={key}
         textColor={titleColor}
-        clickable
       >
         {items.map((item, index) => {
           const url = item?.[urlKey];
@@ -151,11 +151,11 @@ const GridComponent = (props: GridComponentProps) => {
 
           const image = url ? (
             <SameHeightImage
-              src={url}
-              height={height}
-              width={width}
-              mode="aspectFit"
               fallback={<PhotoFail />}
+              height={height}
+              mode="aspectFit"
+              src={url}
+              width={width}
             />
           ) : (
             <PhotoOutlined size={height} />
@@ -164,11 +164,11 @@ const GridComponent = (props: GridComponentProps) => {
           if (isSimple) {
             return (
               <Grid.Item
-                icon={image}
-                text={title}
-                key={index}
                 badge={badge}
+                icon={image}
+                key={index}
                 onClick={onClickGridItem(item)}
+                text={title}
               />
             );
           }
@@ -178,9 +178,9 @@ const GridComponent = (props: GridComponentProps) => {
           const priceView = <Price color={descriptionColor}>{price}</Price>;
           return (
             <Grid.Item
+              badge={badge}
               key={index}
               onClick={onClickGridItem(item)}
-              badge={badge}
             >
               {image}
               <View style={{ marginTop: "8px" }}>
@@ -190,9 +190,9 @@ const GridComponent = (props: GridComponentProps) => {
                   {gridType === "I_N_D_B" ? (
                     <BuyButton
                       bgColor={buttonColor}
-                      size="mini"
-                      shape="round"
                       onClick={onClickButton(item)}
+                      shape="round"
+                      size="mini"
                     >
                       {buttonText || <ShoppingCartOutlined />}
                     </BuyButton>

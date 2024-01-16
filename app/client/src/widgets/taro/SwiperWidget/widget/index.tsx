@@ -1,11 +1,59 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
 import SwiperComponent from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
+import IconSVG from "../icon.svg";
 
 class SwiperWidget extends BaseWidget<SwiperWidgetProps, WidgetState> {
+  static type = "TARO_SWIPER_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "轮播",
+      searchTags: ["swipper", "image", "picture"],
+      iconSVG: IconSVG,
+      needsMeta: false,
+      isCanvas: false,
+      isMobile: true,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "swiper",
+      rows: 24,
+      columns: 56,
+      list: [
+        { url: "https://img01.yzcdn.cn/vant/apple-1.jpg" },
+        { url: "https://img01.yzcdn.cn/vant/apple-2.jpg" },
+        { url: "https://img01.yzcdn.cn/vant/apple-3.jpg" },
+        { url: "https://img01.yzcdn.cn/vant/apple-4.jpg" },
+      ],
+      urlKey: "url",
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "70px",
+            };
+          },
+        },
+      ],
+      disableResizeHandles: {
+        vertical: true,
+      },
+    };
+  }
+
   static getPropertyPaneConfig() {
     return [
       {
@@ -42,7 +90,7 @@ class SwiperWidget extends BaseWidget<SwiperWidgetProps, WidgetState> {
     ];
   }
 
-  getPageView() {
+  getWidgetView() {
     const { list, urlKey } = this.props;
     return (
       <SwiperComponent
@@ -52,10 +100,6 @@ class SwiperWidget extends BaseWidget<SwiperWidgetProps, WidgetState> {
         }}
       />
     );
-  }
-
-  static getWidgetType(): WidgetType {
-    return "TARO_SWIPER_WIDGET";
   }
 }
 
