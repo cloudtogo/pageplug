@@ -24,6 +24,7 @@ import {
   CUSTOM_ROLES_RAMP_TEXT,
   CUSTOM_ROLE_DISABLED_OPTION_TEXT,
   CUSTOM_ROLE_TEXT,
+  BUSINESS_PRICE_URL,
 } from "@appsmith/constants/messages";
 import { isEmail } from "utils/formhelpers";
 import AnalyticsUtil from "utils/AnalyticsUtil";
@@ -193,11 +194,11 @@ export function InviteUserText({
 }: {
   isApplicationPage: boolean;
 }) {
-  const rampLinkSelector = getRampLink({
-    section: RampSection.AppShare,
-    feature: RampFeature.Gac,
-  });
-  const rampLink = useSelector(rampLinkSelector);
+  // const rampLinkSelector = getRampLink({
+  //   section: RampSection.AppShare,
+  //   feature: RampFeature.Gac,
+  // });
+  // const rampLink = useSelector(rampLinkSelector);
   const showRampSelector = showProductRamps(RAMP_NAME.INVITE_USER_TO_APP);
   const canShowRamp = useSelector(showRampSelector);
   return (
@@ -209,7 +210,7 @@ export function InviteUserText({
       {canShowRamp && isApplicationPage ? (
         <>
           {createMessage(INVITE_USER_RAMP_TEXT)}
-          <Link kind="primary" target="_blank" to={rampLink}>
+          <Link kind="primary" target="_blank" to={BUSINESS_PRICE_URL}>
             {createMessage(BUSINESS_EDITION_TEXT)}
           </Link>
         </>
@@ -441,7 +442,7 @@ function InviteUsersForm(props: any) {
             onDeselect={onRemoveOptions}
             onSelect={onSelect}
             optionLabelProp="label"
-            placeholder="Select a role"
+            placeholder="选择角色"
             value={selectedOption}
           >
             {styledRoles.map((role: DefaultOptionType) => (
@@ -481,7 +482,7 @@ function InviteUsersForm(props: any) {
             size="md"
             type="submit"
           >
-            Invite
+            邀请
           </Button>
         </div>
       </StyledInviteFieldGroup>

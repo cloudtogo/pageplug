@@ -300,7 +300,7 @@ function AppViewer(props: Props) {
                 showBottomBar ? "bottom-12" : "bottom-4"
               }`}
             >
-              {!hideWatermark && (
+              {/* {!hideWatermark && (
                 <a
                   className="hover:no-underline"
                   href="https://appsmith.com"
@@ -309,7 +309,7 @@ function AppViewer(props: Props) {
                 >
                   <BrandingBadge />
                 </a>
-              )}
+              )} */}
               <KBViewerFloatingButton />
             </div>
           </AppViewerBodyContainer>

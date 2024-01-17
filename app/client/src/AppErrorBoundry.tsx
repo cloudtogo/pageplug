@@ -45,14 +45,14 @@ class AppErrorBoundary extends Component {
         <Wrapper>
           <img alt="App crashed" src={AppCrashImage} />
           <div>
-            <p className="bold-text">Oops! Something went wrong</p>
+            <p className="bold-text">糟了! 发生错误了</p>
             <p>
-              Please try again using the button below. <br />
-              If the issue persists, please contact us
+              请点击下面的按钮重试 <br />
+              如果问题依然存在，请联系我们
             </p>
             <br />
             <Button onClick={() => window.location.reload()} size="md">
-              Retry
+              重试
             </Button>
           </div>
         </Wrapper>
