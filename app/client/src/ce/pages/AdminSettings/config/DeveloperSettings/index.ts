@@ -11,7 +11,7 @@ export const config: AdminConfigType = {
   type: SettingCategories.DEVELOPER_SETTINGS,
   categoryType: CategoryType.GENERAL,
   controlType: SettingTypes.GROUP,
-  title: "Developer settings",
+  title: "谷歌地图",
   canSave: true,
   settings: [...googleMapsConfig],
 };

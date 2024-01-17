@@ -62,6 +62,8 @@ import {
   watchGeoLocation,
 } from "./geolocationFns";
 import { getFnWithGuards, isAsyncGuard } from "./utils/fnGuard";
+import type { TCallFuncActionType, TCallFuncDescription } from "./echartFns";
+import { echartCallFunc } from "./echartFns";
 
 export const getPlatformFunctions = () => {
   return platformFns;

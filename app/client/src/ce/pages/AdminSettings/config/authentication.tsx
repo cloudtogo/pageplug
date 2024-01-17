@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-restricted-imports */
 import React from "react";
 import {
+  DOCS_BASE_URL,
   EMAIL_SETUP_DOC,
-  GITHUB_SIGNUP_SETUP_DOC,
   GOOGLE_SIGNUP_SETUP_DOC,
   WX_SIGNUP_SETUP_DOC,
 } from "constants/ThirdPartyConstants";
@@ -41,7 +41,7 @@ import {
   WECHAT_AUTH_DESC,
   DINGDING_AUTH_DESC,
 } from "@appsmith/constants/messages";
-import { isSAMLEnabled, isOIDCEnabled } from "@appsmith/utils/planHelpers";
+import { isSAMLEnabled } from "@appsmith/utils/planHelpers";
 import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
 import store from "store";
 import { getWXLoginClientId } from "ce/selectors/settingsSelectors";
@@ -220,7 +220,7 @@ const GithubAuth: AdminConfigType = {
       category: SettingCategories.GITHUB_AUTH,
       controlType: SettingTypes.CALLOUT,
       label: "如何配置？",
-      url: GITHUB_SIGNUP_SETUP_DOC,
+      url: DOCS_BASE_URL,
     },
     {
       id: "APPSMITH_OAUTH2_GITHUB_HOMEPAGE_URL",
@@ -282,10 +282,10 @@ const WeChatAuth: AdminConfigType = {
   categoryType: CategoryType.OTHER,
   settings: [
     {
-      id: "APPSMITH_OAUTH2_OIDC_READ_MORE",
+      id: "APPSMITH_OAUTH2_WECHAT_READ_MORE",
       category: SettingCategories.WECHAT_AUTH,
       subCategory: SettingSubCategories.WECHAT,
-      controlType: SettingTypes.LINK,
+      controlType: SettingTypes.CALLOUT,
       label: "如何配置？",
       url: WX_SIGNUP_SETUP_DOC,
     },

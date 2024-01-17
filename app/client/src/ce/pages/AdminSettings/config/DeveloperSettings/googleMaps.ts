@@ -11,7 +11,7 @@ export const googleMapsConfig: Setting[] = [
     id: "APPSMITH_GOOGLE_MAPS_READ_MORE",
     category: SettingCategories.DEVELOPER_SETTINGS,
     controlType: SettingTypes.CALLOUT,
-    label: "How to configure google maps?",
+    label: "如何配置谷歌地图?",
     url: GOOGLE_MAPS_SETUP_DOC,
   },
   {
@@ -19,6 +19,6 @@ export const googleMapsConfig: Setting[] = [
     category: SettingCategories.DEVELOPER_SETTINGS,
     controlType: SettingTypes.TEXTINPUT,
     controlSubType: SettingSubtype.TEXT,
-    label: "Google Maps API key",
+    label: "谷歌地图API key",
   },
 ];

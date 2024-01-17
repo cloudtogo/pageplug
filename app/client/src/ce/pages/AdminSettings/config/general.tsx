@@ -115,11 +115,11 @@ export const APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING: Setting = {
   controlTypeProps: {
     options: [
       {
-        badge: "不推荐",
+        // badge: "不推荐",
         tooltip: {
           icon: "question-line",
-          text: "Lets all domains, including malicious ones, embed your Appsmith apps. ",
-          linkText: "Find out why it's risky",
+          text: "允许所有域（包括恶意的）嵌入你的Pageplug应用。",
+          linkText: "了解为什么这样做有风险",
           link: "https://docs.appsmith.com/getting-started/setup/instance-configuration/frame-ancestors#why-should-i-control-this",
         },
         label: "允许嵌入到任何地方",
@@ -182,9 +182,9 @@ export const config: AdminConfigType = {
     APPSMITH__ADMIN_EMAILS_SETTING,
     APPSMITH_DOWNLOAD_DOCKER_COMPOSE_FILE_SETTING,
     APPSMITH_DISABLE_TELEMETRY_SETTING,
-    APPSMITH_HIDE_WATERMARK_SETTING,
-    APPSMITH_SINGLE_USER_PER_SESSION_SETTING,
-    APPSMITH_SHOW_ROLES_AND_GROUPS_SETTING,
+    // APPSMITH_HIDE_WATERMARK_SETTING,
+    // APPSMITH_SINGLE_USER_PER_SESSION_SETTING,
+    // APPSMITH_SHOW_ROLES_AND_GROUPS_SETTING,
     APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING,
   ],
 } as AdminConfigType;
