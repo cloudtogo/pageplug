@@ -200,26 +200,6 @@ export function Login(props: LoginFormProps) {
       <Helmet>
         <title>{htmlPageTitle}</title>
       </Helmet>
-      {/* 错误信息 改用弹窗 */}
-      {/* {showError && (
-        <Callout
-          kind="error"
-          links={
-            !!errorMessage
-              ? undefined
-              : [
-                  {
-                    children: invalidCredsForgotPasswordLinkText,
-                    to: FORGOT_PASSWORD_URL,
-                  },
-                ]
-          }
-        >
-          {!!errorMessage && errorMessage !== "true"
-            ? errorMessage
-            : createMessage(LOGIN_PAGE_INVALID_CREDS_ERROR)}
-        </Callout>
-      )} */}
       {/* 账号密码 */}
       {isFormLoginEnabled && (
         <>
