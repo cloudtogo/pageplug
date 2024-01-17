@@ -44,7 +44,8 @@ import {
 import { isSAMLEnabled } from "@appsmith/utils/planHelpers";
 import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
 import store from "store";
-import { getWXLoginClientId } from "ce/selectors/settingsSelectors";
+import { getWXLoginClientId } from "@appsmith/selectors/settingSelectors";
+import { BUSSINESS_WX_SINGUP_DOC } from "constants/ThirdPartyConstants";
 
 const { enableWeChatOAuth } = getAppsmithConfigs();
 const featureFlags = selectFeatureFlags(store.getState());
@@ -276,7 +277,7 @@ const WeChatAuth: AdminConfigType = {
   type: SettingCategories.WECHAT_AUTH,
   controlType: SettingTypes.GROUP,
   title: "微信登录",
-  subText: "让你可以用微信账号进行登录",
+  subText: "让你可以使用微信账号进行登录",
   canSave: true,
   isConnected: enableWeChatOAuth,
   categoryType: CategoryType.OTHER,
@@ -322,15 +323,63 @@ const WeChatAuth: AdminConfigType = {
   ],
 };
 
-const BusinessWeChatAuth: AdminConfigType = {
-  type: SettingCategories.WECHAT_AUTH,
+const BussinessWeChatAuth: AdminConfigType = {
+  type: SettingCategories.BUSINESS_WECHAT_AUTH,
   controlType: SettingTypes.GROUP,
   title: "企业微信登录",
-  subText: "让你可以用企业微信账号进行登录",
+  subText: "让你可以使用企业微信账号进行登录",
   canSave: true,
   isConnected: false,
   categoryType: CategoryType.OTHER,
-  settings: [],
+  settings: [
+    {
+      id: "APPSMITH_OAUTH2_OIDC_READ_MORE",
+      category: SettingCategories.BUSINESS_WECHAT_AUTH,
+      subCategory: SettingSubCategories.BUSSINESS_WECHAT,
+      controlType: SettingTypes.LINK,
+      label: "如何配置？",
+      url: BUSSINESS_WX_SINGUP_DOC,
+    },
+    {
+      id: "APPSMITH_WECOM_REDIRET_URI",
+      category: SettingCategories.BUSINESS_WECHAT_AUTH,
+      subCategory: SettingSubCategories.BUSSINESS_WECHAT,
+      controlType: SettingTypes.UNEDITABLEFIELD,
+      label: "Redirect URL",
+      fieldName: "oidc-redirect-url",
+      formName: "OidcRedirectUrl",
+      value: "/api/v1/wecomLogin/callback",
+      helpText: "拷贝到你的认证服务器配置中",
+      forceHidden: true,
+    },
+    {
+      id: "APPSMITH_WECOM_CORP_ID",
+      category: SettingCategories.BUSINESS_WECHAT_AUTH,
+      subCategory: SettingSubCategories.BUSSINESS_WECHAT,
+      controlType: SettingTypes.TEXTINPUT,
+      controlSubType: SettingSubtype.TEXT,
+      label: "CORP ID",
+      isRequired: true,
+    },
+    {
+      id: "APPSMITH_WECOM_AGENT_ID",
+      category: SettingCategories.BUSINESS_WECHAT_AUTH,
+      subCategory: SettingSubCategories.BUSSINESS_WECHAT,
+      controlType: SettingTypes.TEXTINPUT,
+      controlSubType: SettingSubtype.TEXT,
+      label: "AGENT ID",
+      isRequired: true,
+    },
+    {
+      id: "APPSMITH_WECOM_SECRET",
+      category: SettingCategories.BUSINESS_WECHAT_AUTH,
+      subCategory: SettingSubCategories.BUSSINESS_WECHAT,
+      controlType: SettingTypes.TEXTINPUT,
+      controlSubType: SettingSubtype.TEXT,
+      label: "Secret",
+      isRequired: true,
+    },
+  ],
 };
 
 const DingdingAuth: AdminConfigType = {
@@ -422,7 +471,6 @@ const DingdingCallout: AuthMethodType = {
 
 const AuthMethods = [
   OidcAuthCallout,
-  // SamlAuthCallout,
   GoogleAuthCallout,
   GithubAuthCallout,
   FormAuthCallout,
@@ -457,7 +505,7 @@ export const config: AdminConfigType = {
     GithubAuth,
     OIDCAuth,
     WeChatAuth,
-    BusinessWeChatAuth,
+    BussinessWeChatAuth,
     DingdingAuth,
   ],
   component: AuthMain,

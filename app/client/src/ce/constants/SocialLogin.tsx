@@ -1,10 +1,16 @@
 import {
   GoogleOAuthURL,
   GithubOAuthURL,
-} from "@appsmith/constants/ApiConstants";
+  OidcOAuthURL,
+  WechatOAuthURL,
+  BussinessWechatOAuthURL,
+} from "./ApiConstants";
 
 import GithubLogo from "assets/images/Github.svg";
 import GoogleLogo from "assets/images/Google.png";
+import SSOLogo from "assets/images/sso-key.png";
+import Wechat from "assets/images/WeChat.svg";
+import BusinessWeChat from "assets/images/BusinessWeChat.svg";
 export interface SocialLoginButtonProps {
   url?: string;
   name: string;
@@ -24,8 +30,21 @@ export const GithubSocialLoginButtonProps: SocialLoginButtonProps = {
   logo: GithubLogo,
 };
 
-export const WxchatSocialLoginButtonProps = {
-  name: "Wechat",
+export const OidcLoginButtonProps: SocialLoginButtonProps = {
+  url: OidcOAuthURL,
+  name: "OIDC SSO",
+  logo: SSOLogo,
+};
+export const WechatSocialLoginButtonProps: SocialLoginButtonProps = {
+  url: WechatOAuthURL,
+  name: "wechat",
+  logo: Wechat,
+};
+
+export const BussinessWechatSocialLoginButtonProps: SocialLoginButtonProps = {
+  url: BussinessWechatOAuthURL,
+  name: "wecom",
+  logo: BusinessWeChat,
 };
 
 export const SocialLoginButtonPropsList: Record<
@@ -34,7 +53,9 @@ export const SocialLoginButtonPropsList: Record<
 > = {
   google: GoogleSocialLoginButtonProps,
   github: GithubSocialLoginButtonProps,
-  wechat: WxchatSocialLoginButtonProps,
+  oidc: OidcLoginButtonProps,
+  wechat: WechatSocialLoginButtonProps,
+  wecom: BussinessWechatSocialLoginButtonProps,
 };
 
 export type SocialLoginType = keyof typeof SocialLoginButtonPropsList;

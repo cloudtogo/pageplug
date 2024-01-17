@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import { Button, Input, toast, Text } from "design-system";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUser } from "selectors/usersSelectors";
@@ -18,22 +17,18 @@ import { Wrapper, FieldWrapper, LabelWrapper } from "./StyledComponents";
 import { ANONYMOUS_USERNAME } from "constants/userConstants";
 import { ALL_LANGUAGE_CHARACTERS_REGEX } from "constants/Regex";
 import { createMessage } from "design-system-old/build/constants/messages";
-import { notEmptyValidator, TextType } from "design-system-old";
+import { notEmptyValidator } from "design-system-old";
 import { getIsFormLoginEnabled } from "@appsmith/selectors/tenantSelectors";
-import Api from "api/Api";
+import { ThirdPartyLogin } from "@appsmith/utils";
+import type { ThirdPartyCardProps } from "./ThirdPartyCard";
+import { ThirdPartyCard, TitleWrapper } from "./ThirdPartyCard";
 
-interface ButtonProps {
-  wechatEnable?: boolean;
-}
-
-const BindButton = styled.button<ButtonProps>`
-  width: ${(props) => (props.wechatEnable ? "135px" : "96px")};
-  height: 32px;
-  border: 1px solid ${(props) => (props.wechatEnable ? "#D4DAD9" : "#13c2c2")};
-  border-radius: 4px;
-  padding: 5px 15px;
-  color: ${(props) => (props.wechatEnable ? "#D4DAD9" : "#13c2c2")};
-`;
+import WeChat from "assets/images/WeChat.svg";
+import BusinessWeChat from "assets/images/BusinessWeChat.svg";
+import {
+  WechatOAuthURL,
+  BussinessWechatOAuthURL,
+} from "@appsmith/constants/ApiConstants";
 
 const nameValidator = (
   value: string,
@@ -87,17 +82,25 @@ function General() {
 
   if (user?.email === ANONYMOUS_USERNAME) return null;
 
-  const onBindwechatClick = () => {
-    const requestUrl = "v1/wxLogin/code";
-    Api.get(requestUrl).then(({ data }) => {
-      const url = data.redirectUrl;
-      const newWindow: any = window.open(url, "_self");
-      newWindow.focus();
-    });
-  };
-  const isWXBind = user?.authorizations?.some(
-    (item) => item.source === "WECHAT",
-  );
+  const ThirdPartyConfig: ThirdPartyCardProps[] = [
+    {
+      logo: WeChat,
+      handleClick: () => ThirdPartyLogin(WechatOAuthURL),
+      title: "微信",
+      text: "可以微信登录Pageplug",
+      isConneted:
+        user?.authorizations?.some((item) => item.source === "WECHAT") ?? false,
+    },
+    {
+      logo: BusinessWeChat,
+      handleClick: () => ThirdPartyLogin(BussinessWechatOAuthURL),
+      title: "企业微信",
+      text: "可以企业微信登录Pageplug",
+      isConneted:
+        user?.authorizations?.some((item) => item.source === "WECOM") ?? false,
+    },
+  ];
+
   return (
     <Wrapper>
       <FieldWrapper>
@@ -114,7 +117,6 @@ function General() {
         <Input
           data-testid="t--display-name"
           defaultValue={name}
-          isRequired
           label={createMessage(USER_DISPLAY_NAME_PLACEHOLDER)}
           labelPosition="top"
           onBlur={saveName}
@@ -165,20 +167,20 @@ function General() {
         </div>
       </FieldWrapper>
       <FieldWrapper>
-        <LabelWrapper>
-          <Text>微信</Text>
-        </LabelWrapper>
-        <div style={{ flexDirection: "column", display: "flex" }}>
-          {
-            <BindButton
-              disabled={isWXBind}
-              onClick={onBindwechatClick}
-              wechatEnable={isWXBind}
-            >
-              {isWXBind ? "微信已绑定邮箱" : "绑定微信"}
-            </BindButton>
-          }
-        </div>
+        <TitleWrapper>第三方登录</TitleWrapper>
+        {ThirdPartyConfig?.map((item) => {
+          const { handleClick, isConneted, logo, text, title } = item;
+          return (
+            <ThirdPartyCard
+              handleClick={handleClick}
+              isConneted={isConneted}
+              key={item.title}
+              logo={logo}
+              text={text}
+              title={title}
+            />
+          );
+        })}
       </FieldWrapper>
     </Wrapper>
   );

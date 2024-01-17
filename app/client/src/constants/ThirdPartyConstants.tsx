@@ -25,6 +25,8 @@ export const EMBED_PRIVATE_APPS_DOC =
   "https://docs.appsmith.com/advanced-concepts/embed-appsmith-into-existing-application#embedding-private-apps";
 export const WX_SIGNUP_SETUP_DOC =
   "https://docs.pageplug.cn/%E5%AD%A6%E4%B9%A0%E6%96%87%E6%A1%A3/%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81/%E5%BE%AE%E4%BF%A1%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95";
+export const BUSSINESS_WX_SINGUP_DOC =
+  "https://developer.work.weixin.qq.com/document/path/90665";
 export const PROVISIONING_SETUP_DOC = "https://docs.pageplug.cn";
 export const DISCORD_URL = "https://discord.gg/rBTTVJp";
 export const ENTERPRISE_PRICING_PAGE = "https://www.appsmith.com/enterprise";
