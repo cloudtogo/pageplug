@@ -15,8 +15,14 @@ const BusinessTag = ({
       className={`business-tag ${classes}`}
       data-testid="t--business-tag"
       isClosable={false}
-      kind="premium"
+      kind="neutral"
       {...(size && { size })}
+      style={{
+        backgroundColor: "transparent",
+        borderColor: "#27b7b7",
+        color: "#27b7b7",
+        fontWeight: 700,
+      }}
     >
       {createMessage(BUSINESS_TAG)}
     </Tag>
