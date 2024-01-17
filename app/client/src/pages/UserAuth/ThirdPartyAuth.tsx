@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { useLocation } from "react-router-dom";
-import { Button } from "design-system";
 
 import type { SocialLoginType } from "@appsmith/constants/SocialLogin";
 import { getSocialLoginButtonProps } from "@appsmith/constants/SocialLogin";
@@ -10,9 +9,7 @@ import AnalyticsUtil from "utils/AnalyticsUtil";
 import PerformanceTracker, {
   PerformanceTransactionName,
 } from "utils/PerformanceTracker";
-import Api from "api/Api";
-import Github from "assets/images/Github.svg";
-import Wechat from "assets/images/WeChat.svg";
+import { ThirdPartyLogin } from "@appsmith/utils";
 
 const ThirdPartyAuthWrapper = styled.div`
   display: flex;
@@ -27,13 +24,14 @@ const LogoImg = styled.img`
   margin-right: 10px;
 `;
 
-const onWechatLoginClick = () => {
-  const requestUrl = "v1/wxLogin/code";
-  Api.get(requestUrl).then(({ data }) => {
-    const url = data.redirectUrl;
-    const newTab: any = window.open(url, "_self");
-    newTab.focus();
-  });
+export const SocialLoginTypes = {
+  GOOGLE: "google",
+  GITHUB: "github",
+  OIDC: "oidc",
+};
+
+const handleClick = (url: any) => {
+  ThirdPartyLogin(url);
 };
 
 type SignInType = "SIGNIN" | "SIGNUP";
@@ -52,11 +50,11 @@ function SocialLoginButton(props: {
   if (redirectUrl != null) {
     url += `?redirectUrl=${encodeURIComponent(redirectUrl)}`;
   }
-  // 后续添加
-  const _map = [{ name: "Github", src: Github }];
+  const { logo, name, url: requestUrl } = props;
+  const needRequest = ["wechat", "wecom"].includes(name);
   return (
     <a
-      href={url}
+      href={!needRequest ? url : "#"}
       onClick={() => {
         let eventName: EventName = "LOGIN_CLICK";
         if (props.type === "SIGNUP") {
@@ -75,7 +73,8 @@ function SocialLoginButton(props: {
     >
       <LogoImg
         alt="还没找到图片"
-        src={_map.find((item) => item.name === props.name)?.src}
+        onClick={needRequest ? () => handleClick(requestUrl) : () => null}
+        src={logo}
       />
     </a>
   );
@@ -85,19 +84,12 @@ export function ThirdPartyAuth(props: {
   logins: SocialLoginType[];
   type: SignInType;
 }) {
-  const socialLoginButtons = getSocialLoginButtonProps(props.logins)
-    .filter((item) => item?.name !== "Wechat") // 滤除微信
-    .map((item) => {
+  const socialLoginButtons = getSocialLoginButtonProps(props.logins).map(
+    (item) => {
       return <SocialLoginButton key={item.name} {...item} type={props.type} />;
-    });
-  return (
-    <ThirdPartyAuthWrapper>
-      {props?.logins?.includes("wechat") && (
-        <LogoImg onClick={onWechatLoginClick} src={Wechat} />
-      )}
-      {socialLoginButtons}
-    </ThirdPartyAuthWrapper>
+    },
   );
+  return <ThirdPartyAuthWrapper>{socialLoginButtons}</ThirdPartyAuthWrapper>;
 }
 
 export default ThirdPartyAuth;

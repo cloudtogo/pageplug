@@ -1,5 +1,6 @@
 import type { MenuItemProps } from "design-system-old";
 import _ from "lodash";
+import Api from "api/Api";
 
 export const addItemsInContextMenu = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -51,3 +52,10 @@ export function getSnippetUrl(
 ) {
   return url;
 }
+export const ThirdPartyLogin = (requestUrl: any): void => {
+  Api.get(requestUrl).then(({ data }) => {
+    const url = data.redirectUrl;
+    const newWindow: any = window.open(url, "_self");
+    newWindow.focus();
+  });
+};
