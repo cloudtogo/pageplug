@@ -390,6 +390,7 @@ export const WorkspaceNameElement = styled(Text)<{ isMobile?: boolean }>`
   ${truncateTextUsingEllipsis};
   color: var(--ads-v2-color-fg);
   font-weight: var(--ads-font-weight-bold-xl);
+  font-size: 20px;
 `;
 
 export const WorkspaceNameHolder = styled(Text)`
