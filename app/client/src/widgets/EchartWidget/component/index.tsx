@@ -5,14 +5,15 @@ import chalk from "theme/echart/chalk.json";
 import walden from "theme/echart/walden.json";
 import westeros from "theme/echart/westeros.json";
 import { useSelector } from "react-redux";
-import { EchartTheme } from "entities/AppTheming";
+import type { EchartTheme } from "entities/AppTheming";
 import { getSelectedEchartTheme } from "selectors/appThemingSelectors";
-import { LabelOrientation, AllChartData } from "../constants";
+import type { LabelOrientation, AllChartData } from "../constants";
 import { NO_AXIS, ECHART_BASIC_OPTION, ECHART_TYPE_MAP } from "../constants";
 import { convertStringFunciton } from "../widget/helper";
 import { readBlob } from "utils/AppUtils";
 import useResizeObserver from "utils/hooks/useResizeObserver";
 import { message } from "antd";
+import * as echarts from "echarts";
 
 declare global {
   interface Window {
@@ -25,10 +26,10 @@ interface pointType {
   value: number;
 }
 
-type registerType = {
+interface registerType {
   name: string;
   url: string;
-};
+}
 
 function customizer(objValue: any, srcValue: any) {
   if (_.isArray(objValue)) {
@@ -50,18 +51,18 @@ function EchartComponent(props: EchartComponentProps) {
   const chartContainerId = props.widgetId + "-echart-container";
 
   const {
-    onDataPointClick,
-    chartType,
-    chartName,
-    xAxisName,
-    yAxisName,
-    chartData,
-    customEchartConfig,
+    backgroundColor,
     borderRadius,
     boxShadow,
-    backgroundColor,
+    chartData,
+    chartName,
+    chartType,
+    customEchartConfig,
+    onDataPointClick,
     registerMapJsonUrl,
     registerMapName,
+    xAxisName,
+    yAxisName,
   } = props;
   const hasBMap =
     chartType === "CUSTOM_CHART" &&
@@ -340,15 +341,15 @@ function EchartComponent(props: EchartComponentProps) {
       }`}
       style={style}
     >
-      <div id={chartContainerId} ref={echartRef} className="h-full w-full" />
+      <div className="h-full w-full" id={chartContainerId} ref={echartRef} />
       {showBMapKeyConfigTips ? (
         <div className="text-red-600 w-full h-full absolute top-0 left-0">
           请在环境变量中配置百度地图 ak 密钥
           <a
-            href="https://lbsyun.baidu.com/index.php?title=jspopularGL/guide/getkey"
-            target="_blank"
-            rel="noreferrer"
             className="pl-4"
+            href="https://lbsyun.baidu.com/index.php?title=jspopularGL/guide/getkey"
+            rel="noreferrer"
+            target="_blank"
           >
             申请百度地图密钥
           </a>

@@ -33,7 +33,7 @@ import {
   FormDialog,
 } from "@formily/antd-v5";
 import { Card, Slider, Rate, Button } from "antd";
-import { FormType } from "widgets/FormilyWidget/widget";
+import type { FormType } from "widgets/FormilyWidget/widget";
 import styled from "styled-components";
 import _ from "lodash";
 
@@ -41,7 +41,7 @@ export const Text: React.FC<{
   value?: string;
   content?: string;
   mode?: "normal" | "h1" | "h2" | "h3" | "p";
-}> = ({ value, mode, content, ...props }) => {
+}> = ({ content, mode, value, ...props }) => {
   const tagName = mode === "normal" || !mode ? "div" : mode;
   return React.createElement(tagName, props, value || content);
 };
@@ -134,17 +134,17 @@ const SchemaField = createSchemaField({
 
 const FormilyComponent = (props: FormilyComponentProps) => {
   const {
-    title,
-    formType,
-    triggerLabel,
-    submitLabel,
-    showReset,
-    resetLabel,
-    initValue,
-    onFormSubmit,
-    widgetId,
-    modalWidth,
     drawerWidth,
+    formType,
+    initValue,
+    modalWidth,
+    onFormSubmit,
+    resetLabel,
+    showReset,
+    submitLabel,
+    title,
+    triggerLabel,
+    widgetId,
   } = props;
   const schema: {
     form?: any;
@@ -190,7 +190,7 @@ const FormilyComponent = (props: FormilyComponentProps) => {
           <FormDrawer.Footer>
             <FormButtonGroup align="left">
               <Submit
-                onSubmit={() => {
+                onSubmit={async () => {
                   return Promise.resolve();
                 }}
               >
@@ -232,7 +232,7 @@ const FormilyComponent = (props: FormilyComponentProps) => {
   if (formType === "MODAL") {
     return (
       <FormDialog.Portal id={widgetId}>
-        <Button type="primary" block onClick={showModal}>
+        <Button block onClick={showModal} type="primary">
           {triggerText}
         </Button>
       </FormDialog.Portal>
@@ -242,7 +242,7 @@ const FormilyComponent = (props: FormilyComponentProps) => {
   if (formType === "DRAWER") {
     return (
       <FormDrawer.Portal id={widgetId}>
-        <Button type="primary" block onClick={showDrawer}>
+        <Button block onClick={showDrawer} type="primary">
           {triggerText}
         </Button>
       </FormDrawer.Portal>
@@ -251,18 +251,18 @@ const FormilyComponent = (props: FormilyComponentProps) => {
 
   return (
     <Card
-      title={title}
-      style={{ height: "100%" }}
       bodyStyle={{ height: title ? "calc(100% - 54px)" : "100%" }}
+      style={{ height: "100%" }}
+      title={title}
     >
       <Form
         form={form}
         {...formProps}
+        className="full-height-form"
         onAutoSubmit={(value) => {
           onFormSubmit(value);
           resetForm();
         }}
-        className="full-height-form"
       >
         <ScrollContainer>
           <ScrollContent>{formContent}</ScrollContent>
