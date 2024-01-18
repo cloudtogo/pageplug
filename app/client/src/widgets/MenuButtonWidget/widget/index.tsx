@@ -28,6 +28,7 @@ class MenuButtonWidget extends BaseWidget<MenuButtonWidgetProps, WidgetState> {
       name: "菜单按钮",
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.BUTTONS],
+      searchTags: ["button", "menu"],
     };
   }
 

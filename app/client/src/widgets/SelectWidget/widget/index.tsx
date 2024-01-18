@@ -67,7 +67,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
-      searchTags: ["dropdown"],
+      searchTags: ["dropdown", "select", "options"],
     };
   }
 

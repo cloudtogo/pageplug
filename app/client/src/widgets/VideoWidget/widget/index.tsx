@@ -46,7 +46,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.FEATRUE],
       needsMeta: true,
-      searchTags: ["youtube"],
+      searchTags: ["video", "player", "play"],
     };
   }
 

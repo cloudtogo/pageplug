@@ -73,6 +73,7 @@ class CheckboxGroupWidget extends BaseWidget<
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
+      searchTags: ["checkbox", "group"],
     };
   }
 

@@ -39,7 +39,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: true,
-      searchTags: ["embed"],
+      searchTags: ["embed", "iframe", "html"],
     };
   }
 

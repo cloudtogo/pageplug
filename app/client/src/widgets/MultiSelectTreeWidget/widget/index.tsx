@@ -71,7 +71,7 @@ class MultiSelectTreeWidget extends BaseWidget<
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
-      searchTags: ["dropdown", "multiselecttree"],
+      searchTags: ["dropdown", "select", "tree", "multi"],
     };
   }
 

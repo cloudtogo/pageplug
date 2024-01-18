@@ -19,7 +19,7 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
   static getConfig() {
     return {
       name: "Formily表单",
-      searchTags: ["form", "submit"],
+      searchTags: ["form", "submit", "formily"],
       tags: [WIDGET_TAGS.INPUTS],
       iconSVG: IconSVG,
       needsMeta: true,

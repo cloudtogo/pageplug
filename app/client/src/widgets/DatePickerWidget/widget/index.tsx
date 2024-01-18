@@ -189,6 +189,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidgetProps, WidgetState> {
       isDeprecated: true,
       replacement: "DATE_PICKER_WIDGET2",
       needsMeta: true,
+      searchTags: ["date", "time", "calendar"],
     };
   }
 

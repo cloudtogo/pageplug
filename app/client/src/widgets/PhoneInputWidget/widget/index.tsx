@@ -90,7 +90,7 @@ class PhoneInputWidget extends BaseInputWidget<
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.INPUTS],
       needsMeta: true,
-      searchTags: ["call"],
+      searchTags: ["call", "phone", "number", "dial", "telephone"],
     };
   }
 

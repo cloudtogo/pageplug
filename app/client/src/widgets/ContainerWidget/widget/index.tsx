@@ -60,7 +60,7 @@ export class ContainerWidget extends BaseWidget<
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.GERNERAL],
       isCanvas: true,
-      searchTags: ["div", "parent", "group"],
+      searchTags: ["div", "parent", "group", "container"],
     };
   }
 

@@ -50,7 +50,7 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
       tags: [WIDGET_TAGS.FEATRUE],
       needsMeta: true,
       isCanvas: true,
-      searchTags: ["dialog", "popup", "notification"],
+      searchTags: ["dialog", "popup", "notification", "modal"],
     };
   }
 

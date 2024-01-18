@@ -30,6 +30,7 @@ class ProgressBarWidget extends BaseWidget<
       iconSVG: IconSVG,
       needsMeta: false, // Defines if this widget adds any meta properties
       isCanvas: false, // Defines if this widget has a canvas within in which we can drop other widgets
+      searchTags: ["progress", "bar"], // Search tags used in the search bar of the UI
     };
   }
 

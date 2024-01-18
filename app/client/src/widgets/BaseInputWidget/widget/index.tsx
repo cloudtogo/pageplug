@@ -38,6 +38,7 @@ class BaseInputWidget<
       hideCard: true,
       iconSVG: IconSVG,
       needsMeta: true,
+      searchTags: ["input"],
     };
   }
 

@@ -160,7 +160,7 @@ class CurrencyInputWidget extends BaseInputWidget<
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.INPUTS],
       needsMeta: true,
-      searchTags: ["amount", "total"],
+      searchTags: ["amount", "total", "currency"],
     };
   }
 

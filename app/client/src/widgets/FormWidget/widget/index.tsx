@@ -45,7 +45,7 @@ class FormWidget extends ContainerWidget {
       tags: [WIDGET_TAGS.INPUTS],
       needsMeta: true,
       isCanvas: true,
-      searchTags: ["group"],
+      searchTags: ["form"],
     };
   }
 

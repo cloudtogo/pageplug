@@ -58,7 +58,7 @@ class SingleSelectTreeWidget extends BaseWidget<
   static getConfig() {
     return {
       name: "树形单选",
-      searchTags: ["dropdown", "singleselecttree"],
+      searchTags: ["dropdown", "select", "tree", "single select"],
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,

@@ -52,6 +52,7 @@ class DropdownWidget extends BaseWidget<DropdownWidgetProps, WidgetState> {
       hideCard: true,
       isDeprecated: true,
       replacement: "SELECT_WIDGET",
+      searchTags: ["select", "dropdown", "options"],
     };
   }
 

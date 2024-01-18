@@ -36,7 +36,7 @@ class ButtonGroupWidget extends BaseWidget<
       iconSVG: IconSVG,
       needsMeta: false, // Defines if this widget adds any meta properties
       isCanvas: false, // Defines if this widget has a canvas within in which we can drop other widgets
-      searchTags: ["click", "submit"],
+      searchTags: ["click", "submit", "button", "group"], // Search tags used in the search bar of the widgets pane
       tags: [WIDGET_TAGS.BUTTONS],
     };
   }

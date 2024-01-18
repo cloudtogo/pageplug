@@ -64,6 +64,7 @@ class MultiSelectWidget extends BaseWidget<
       hideCard: true,
       isDeprecated: true,
       replacement: "MULTI_SELECT_WIDGET_V2",
+      searchTags: ["dropdown", "select", "multi select"],
     };
   }
 

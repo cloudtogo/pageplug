@@ -34,7 +34,7 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
-      searchTags: ["boolean"],
+      searchTags: ["toggle", "switch"],
     };
   }
 

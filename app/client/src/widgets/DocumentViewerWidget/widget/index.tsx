@@ -100,7 +100,7 @@ class DocumentViewerWidget extends BaseWidget<
       tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: false, // Defines if this widget adds any meta properties
       isCanvas: false, // Defines if this widget has a canvas within in which we can drop other widgets
-      searchTags: ["pdf"],
+      searchTags: ["pdf", "document", "viewer"],
     };
   }
 
