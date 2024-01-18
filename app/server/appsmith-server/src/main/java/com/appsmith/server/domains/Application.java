@@ -47,7 +47,9 @@ public class Application extends BaseDomain {
     @JsonView(Views.Public.class)
     String workspaceId;
 
-    // TODO: remove default values from application
+    /*
+    TODO: remove default values from application.
+     */
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Deprecated(forRemoval = true)
     @JsonView(Views.Public.class)
@@ -190,8 +192,7 @@ public class Application extends BaseDomain {
 
     String viewerLayout;
 
-    // TODO Temporary provision for exporting the application with datasource
-    // configuration for the sample/template apps
+    // TODO Temporary provision for exporting the application with datasource configuration for the sample/template apps
     @JsonView(Views.Public.class)
     Boolean exportWithConfiguration;
 

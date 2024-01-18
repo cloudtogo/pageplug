@@ -42,6 +42,7 @@ import reactor.test.StepVerifier;
 
 import java.util.List;
 import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 
@@ -153,7 +154,7 @@ public class NewActionServiceUnitTest {
 
     @Test
     public void testMissingPluginIdAndTypeFixForNonJSPluginType() {
-        /* Mock `findById` method of pluginService to return `testPlugin` */
+        // * Mock `findById` method of pluginService to return `testPlugin` *//*
         Plugin testPlugin = new Plugin();
         testPlugin.setId("testId");
         testPlugin.setType(PluginType.DB);
@@ -164,7 +165,7 @@ public class NewActionServiceUnitTest {
         action.setPluginType(null);
         ActionDTO actionDTO = new ActionDTO();
         Datasource datasource = new Datasource();
-        /* Datasource has correct plugin id */
+        // * Datasource has correct plugin id *//*
         datasource.setPluginId(testPlugin.getId());
         actionDTO.setDatasource(datasource);
         action.setUnpublishedAction(actionDTO);
@@ -180,7 +181,7 @@ public class NewActionServiceUnitTest {
 
     @Test
     public void testMissingPluginIdAndTypeFixForJSPluginType() {
-        /* Mock `findByPackageName` method of pluginService to return `testPlugin` */
+        // * Mock `findByPackageName` method of pluginService to return `testPlugin` *//*
         Plugin testPlugin = new Plugin();
         testPlugin.setId("testId");
         testPlugin.setType(PluginType.JS);
@@ -190,7 +191,7 @@ public class NewActionServiceUnitTest {
         action.setPluginId(null);
         action.setPluginType(null);
         ActionDTO actionDTO = new ActionDTO();
-        /* Non-null collection id to indicate a JS action */
+        // * Non-null collection id to indicate a JS action *//*
         actionDTO.setCollectionId("testId");
         action.setUnpublishedAction(actionDTO);
 

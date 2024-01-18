@@ -4,8 +4,8 @@ import com.appsmith.server.domains.OAuth2Authorization;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.util.List;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,13 +49,13 @@ public class UserProfileCE_DTO {
 
     boolean enableTelemetry = false;
 
-    Map<String, Object> idToken = new HashMap<>();
-
-    boolean cloudOSLogged;
-
     List<String> roles;
 
     List<String> groups;
+
+    Map<String, Object> idToken = new HashMap<>();
+
+    boolean cloudOSLogged;
 
     public boolean isAccountNonExpired() {
         return this.isEnabled;
