@@ -1,15 +1,77 @@
 import React from "react";
-import BaseWidget, { WidgetProps, WidgetState } from "widgets/BaseWidget";
-import { WidgetType } from "constants/WidgetConstants";
+import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
+import BaseWidget from "widgets/BaseWidget";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 import FormilyComponent from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
-import { Stylesheet } from "entities/AppTheming";
+import type { Stylesheet } from "entities/AppTheming";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ConfigProvider } from "antd";
 import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
-import type { AutocompletionDefinitions } from "widgets/constants";
 import type { SetterConfig } from "entities/AppTheming";
+import IconSVG from "../icon.svg";
+import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
+import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
+import type { AutocompletionDefinitions } from "WidgetProvider/constants";
 class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
+  static type = "FORMILY_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "Formily表单",
+      searchTags: ["form", "submit"],
+      tags: [WIDGET_TAGS.INPUTS],
+      iconSVG: IconSVG,
+      needsMeta: true,
+      isCanvas: false,
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "formily",
+      rows: 48,
+      columns: 32,
+      version: 1,
+      formType: "PLAIN",
+      triggerLabel: "打开表单",
+      title: "表单标题",
+      submitLabel: "提交",
+      showReset: true,
+      resetLabel: "重置",
+      componentSize: "middle",
+      modalWidth: "520px",
+      drawerWidth: "520px",
+      responsiveBehavior: ResponsiveBehavior.Fill,
+      minWidth: FILL_WIDGET_MIN_WIDTH,
+    };
+  }
+
+  static getFeatures() {
+    return {
+      dynamicHeight: {
+        sectionIndex: 0,
+        active: true,
+      },
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "300px",
+            };
+          },
+        },
+      ],
+    };
+  }
+
   static getPropertyPaneContentConfig() {
     return [
       {
@@ -242,21 +304,21 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
     };
   }
 
-  getPageView() {
+  getWidgetView() {
     const {
-      title,
+      componentSize,
+      drawerWidth,
       formType,
-      triggerLabel,
-      submitLabel,
-      showReset,
+      initValue,
+      modalWidth,
       resetLabel,
       schema,
-      initValue,
-      componentSize,
+      showReset,
+      submitLabel,
       themeColor,
+      title,
+      triggerLabel,
       widgetId,
-      modalWidth,
-      drawerWidth,
     } = this.props;
     return (
       <ConfigProvider
@@ -285,10 +347,6 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
         />
       </ConfigProvider>
     );
-  }
-
-  static getWidgetType(): WidgetType {
-    return "FORMILY_WIDGET";
   }
 }
 

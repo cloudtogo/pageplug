@@ -8,23 +8,154 @@ import { retryPromise } from "utils/AppsmithUtils";
 
 import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import BaseWidget from "widgets/BaseWidget";
-import type { DerivedPropertiesMap } from "utils/WidgetFactory";
 import { Colors } from "constants/Colors";
 import type { AllChartData, ChartType } from "../constants";
 import type { Stylesheet } from "entities/AppTheming";
 import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
-import type { AutocompletionDefinitions } from "widgets/constants";
 import type { SetterConfig } from "entities/AppTheming";
 
-const EchartComponent = lazy(() =>
+import IconSVG from "../icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
+import type { AutocompletionDefinitions } from "WidgetProvider/constants";
+import type { DerivedPropertiesMap } from "WidgetProvider/factory";
+import { generateReactKey } from "widgets/WidgetUtils";
+import { ECHART_TYPE_MAP } from "../constants";
+import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
+import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
+
+const DEFAUTL_CHART = {
+  name: "",
+  chartName: "秋季系列",
+  chartType: "LINE_CHART",
+  type: ECHART_TYPE_MAP["LINE_CHART"],
+  data: [
+    {
+      value: 335,
+      name: "衬衫",
+    },
+    {
+      value: 234,
+      name: "羊毛衫",
+    },
+    {
+      value: 1548,
+      name: "雪纺衫",
+    },
+    {
+      value: 758,
+      name: "裤子",
+    },
+    {
+      value: 358,
+      name: "高跟鞋",
+    },
+    {
+      value: 658,
+      name: "袜子",
+    },
+  ],
+  xAxisName: "品类",
+  yAxisName: "销量",
+};
+const defaultKey = generateReactKey();
+
+const EchartComponent = lazy(async () =>
   retryPromise(
-    () =>
+    async () =>
       import(
         /* webpackPrefetch: true, webpackChunkName: "charts" */ "../component"
       ),
   ),
 );
 class EchartWidget extends BaseWidget<EchartWidgetProps, WidgetState> {
+  static type = "ECHART_WIDGET";
+
+  static getConfig() {
+    return {
+      name: "Echarts", // The display name which will be made in uppercase and show in the widgets panel ( can have spaces )
+      iconSVG: IconSVG,
+      needsMeta: true, // Defines if this widget adds any meta properties
+      tags: [WIDGET_TAGS.DISPLAY],
+      searchTags: ["graph", "echart", "chart", "visualisations"],
+    };
+  }
+
+  static getDefaults() {
+    return {
+      widgetName: "Echarts",
+      mycustom: 2,
+      rows: 32,
+      columns: 24,
+      version: 1,
+      chartData: {
+        [defaultKey]: {
+          type: DEFAUTL_CHART.type,
+          seriesName: DEFAUTL_CHART.chartName,
+          data: DEFAUTL_CHART.data,
+        },
+      },
+      chartType: DEFAUTL_CHART.chartType,
+      chartName: DEFAUTL_CHART.name,
+      xAxisName: DEFAUTL_CHART.xAxisName,
+      yAxisName: DEFAUTL_CHART.yAxisName,
+      allowScroll: false,
+      animateLoading: false,
+      customEchartConfig: {
+        title: {
+          text: "Referer of a Website",
+          subtext: "Fake Data",
+          left: "center",
+        },
+        tooltip: {
+          trigger: "item",
+        },
+        legend: {
+          orient: "vertical",
+          left: "left",
+        },
+        series: [
+          {
+            name: "Access From",
+            type: "pie",
+            radius: "50%",
+            data: [
+              { value: 1048, name: "Search Engine" },
+              { value: 735, name: "Direct" },
+              { value: 580, name: "Email" },
+              { value: 484, name: "Union Ads" },
+              { value: 300, name: "Video Ads" },
+            ],
+            emphasis: {
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: "rgba(0, 0, 0, 0.5)",
+              },
+            },
+          },
+        ],
+      },
+      responsiveBehavior: ResponsiveBehavior.Fill,
+      minWidth: FILL_WIDGET_MIN_WIDTH,
+    };
+  }
+
+  static getAutoLayoutConfig() {
+    return {
+      widgetSize: [
+        {
+          viewportMinWidth: 0,
+          configuration: () => {
+            return {
+              minWidth: "280px",
+              minHeight: "300px",
+            };
+          },
+        },
+      ],
+    };
+  }
+
   static getAutocompleteDefinitions(): AutocompletionDefinitions {
     return {
       "!doc":
@@ -124,7 +255,7 @@ class EchartWidget extends BaseWidget<EchartWidgetProps, WidgetState> {
     this.props.updateWidgetMetaProperty("instance", params);
   };
 
-  getPageView() {
+  getWidgetView() {
     return (
       <Suspense fallback={<Skeleton />}>
         <EchartComponent
@@ -155,10 +286,6 @@ class EchartWidget extends BaseWidget<EchartWidgetProps, WidgetState> {
         />
       </Suspense>
     );
-  }
-
-  static getWidgetType(): string {
-    return "ECHART_WIDGET";
   }
 }
 

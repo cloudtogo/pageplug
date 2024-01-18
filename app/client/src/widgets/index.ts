@@ -67,6 +67,9 @@ import { WDSTableWidget } from "./wds/WDSTableWidget";
 import { WDSButtonGroupWidget } from "./wds/WDSButtonGroupWidget";
 import { WDSCheckboxGroupWidget } from "./wds/WDSCheckboxGroupWidget";
 
+import FormilyWidget from "./FormilyWidget";
+import EchartWidget from "./EchartWidget";
+
 import MActionBarWidget from "./taro/ActionBarWidget";
 // import MBottomBarWidget from "./taro/BottomBarWidget";
 import MButtonWidget from "./taro/ButtonWidget";
@@ -147,6 +150,8 @@ const Widgets = [
   WDSCheckboxGroupWidget,
 
   //pageplug
+  FormilyWidget,
+  EchartWidget,
   //taro
   MActionBarWidget,
   // MBottomBarWidget,

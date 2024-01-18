@@ -69,9 +69,9 @@ class CheckboxGroupWidget extends BaseWidget<
 
   static getConfig() {
     return {
-      name: "Checkbox Group",
+      name: "勾选组",
       iconSVG: IconSVG,
-      tags: [WIDGET_TAGS.TOGGLES],
+      tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
     };
   }

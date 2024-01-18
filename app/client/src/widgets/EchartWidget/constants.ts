@@ -76,10 +76,10 @@ export const CUSTOM_CHART_TYPES = [
   "custom",
 ];
 
-type Feature = {
+interface Feature {
   type: string;
   properties: any;
-};
+}
 
 export interface RegisterMapData {
   type: string;
