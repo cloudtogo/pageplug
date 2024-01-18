@@ -32,6 +32,7 @@ class ImageWidget extends BaseWidget<ImageWidgetProps, WidgetState> {
       name: "图片",
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.DISPLAY],
+      searchTags: ["image", "picture", "photo"],
     };
   }
 

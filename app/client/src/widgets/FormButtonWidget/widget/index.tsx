@@ -43,6 +43,7 @@ class FormButtonWidget extends ButtonWidget {
       isDeprecated: true,
       replacement: "BUTTON_WIDGET",
       needsMeta: true,
+      searchTags: ["button", "submit", "form"],
     } as any; // TODO (Sangeeth): Type error
   }
 

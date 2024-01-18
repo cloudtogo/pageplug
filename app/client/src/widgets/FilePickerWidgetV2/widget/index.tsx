@@ -60,7 +60,7 @@ class FilePickerWidget extends BaseWidget<
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.INPUTS],
       needsMeta: true,
-      searchTags: ["upload"],
+      searchTags: ["upload", "file", "picker", "filepicker"],
     };
   }
 

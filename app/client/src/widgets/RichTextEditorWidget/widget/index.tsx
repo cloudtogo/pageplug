@@ -58,7 +58,7 @@ class RichTextEditorWidget extends BaseWidget<
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.FEATRUE],
       needsMeta: true,
-      searchTags: ["input", "rte"],
+      searchTags: ["text", "editor", "richtext", "html", "markdown"],
     };
   }
 

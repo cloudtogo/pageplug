@@ -33,6 +33,7 @@ class CircularProgressWidget extends BaseWidget<
       replacement: "PROGRESS_WIDGET",
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.DISPLAY],
+      searchTags: ["circular", "progress"],
     };
   }
 

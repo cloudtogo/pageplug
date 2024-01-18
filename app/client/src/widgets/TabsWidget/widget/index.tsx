@@ -74,6 +74,7 @@ class TabsWidget extends BaseWidget<
       tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: true,
       isCanvas: true,
+      searchTags: ["tab", "tabs"],
     };
   }
 

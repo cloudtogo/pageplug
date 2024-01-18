@@ -8,7 +8,7 @@ export const CONFIG = {
   name: "二维码生成器",
   tags: [WIDGET_TAGS.FEATRUE],
   iconSVG: IconSVG,
-  searchTags: ["typography", "paragraph", "label", "qrgenerator"],
+  searchTags: ["二维码", "QR", "QRCode", "QR Code", "生成器", "Generator"],
   defaults: {
     text: "Label",
     fontSize: DEFAULT_FONT_SIZE,

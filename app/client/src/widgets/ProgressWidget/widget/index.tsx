@@ -28,7 +28,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
       tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: false, // Defines if this widget adds any meta properties
       isCanvas: false, // Defines if this widget has a canvas within in which we can drop other widgets
-      searchTags: ["percent"],
+      searchTags: ["progress", "bar"], // Search tags used in the search bar of the UI
     };
   }
 

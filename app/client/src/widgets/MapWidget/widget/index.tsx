@@ -72,6 +72,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: true,
+      searchTags: ["map", "location", "google"],
     };
   }
 

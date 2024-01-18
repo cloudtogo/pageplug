@@ -39,6 +39,7 @@ class SwitchGroupWidget extends BaseWidget<
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true, // Defines if this widget adds any meta properties
       isCanvas: false, // Defines if this widget has a canvas within in which we can drop other widgets
+      searchTags: ["switch", "group", "toggle", "checkbox"],
     };
   }
 

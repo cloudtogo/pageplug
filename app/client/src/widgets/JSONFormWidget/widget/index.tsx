@@ -154,6 +154,7 @@ class JSONFormWidget extends BaseWidget<
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.INPUTS],
       needsMeta: true,
+      searchTags: ["form", "submit", "json"],
     };
   }
 

@@ -23,6 +23,7 @@ class IconWidget extends BaseWidget<IconWidgetProps, WidgetState> {
       hideCard: true,
       isDeprecated: true,
       replacement: "ICON_BUTTON_WIDGET",
+      searchTags: ["icon"],
     };
   }
 

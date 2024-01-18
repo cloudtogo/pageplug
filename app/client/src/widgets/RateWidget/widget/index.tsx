@@ -110,7 +110,7 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
-      searchTags: ["stars", "rate"],
+      searchTags: ["rating", "rate", "star", "stars"],
     };
   }
 

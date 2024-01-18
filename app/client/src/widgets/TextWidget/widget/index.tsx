@@ -40,10 +40,10 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
 
   static getConfig() {
     return {
-      name: "Text",
+      name: "文本",
       iconSVG: IconSVG,
-      tags: [WIDGET_TAGS.SUGGESTED_WIDGETS, WIDGET_TAGS.CONTENT],
-      searchTags: ["typography", "paragraph", "label"],
+      tags: [WIDGET_TAGS.GERNERAL],
+      searchTags: ["text", "label"],
     };
   }
 

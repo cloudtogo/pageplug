@@ -176,6 +176,7 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
       tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: true,
       needsHeightForContent: true,
+      searchTags: ["table"],
     };
   }
 

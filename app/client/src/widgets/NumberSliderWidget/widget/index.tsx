@@ -49,7 +49,7 @@ class NumberSliderWidget extends BaseWidget<
     return {
       name: "数字滑动条",
       needsMeta: true,
-      searchTags: ["range"],
+      searchTags: ["range", "slider", "number", "percentage"],
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.DISPLAY],
     };

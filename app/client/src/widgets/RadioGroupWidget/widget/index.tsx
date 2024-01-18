@@ -199,7 +199,7 @@ class RadioGroupWidget extends BaseWidget<RadioGroupWidgetProps, WidgetState> {
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
-      searchTags: ["choice"],
+      searchTags: ["radio", "group"],
     };
   }
 
