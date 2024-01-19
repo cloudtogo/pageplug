@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   HTTP_METHOD_OPTIONS,
@@ -405,7 +405,7 @@ function renderImportedDatasButton(
     <Button
       className="t--show-imported-datas"
       kind="tertiary"
-      onClick={(e) => {
+      onClick={(e: any) => {
         e.preventDefault();
         onClick(!showInheritedAttributes);
       }}
@@ -490,12 +490,21 @@ function ImportedDatas(props: {
 function CommonEditorForm(props: CommonFormPropsWithExtraParams) {
   // the redux form has been configured with indexes, but the new ads components need strings to work.
   // these functions convert them back and forth as needed.
-  const selectedIndex = useSelector(getApiPaneConfigSelectedTabIndex);
-  const selectedValue = Object.values(API_EDITOR_TABS)[selectedIndex];
-  const setSelectedIndex = (value: API_EDITOR_TABS) => {
-    const index = Object.values(API_EDITOR_TABS).indexOf(value);
+  // debugger;
+  const oldIndex: any = useSelector(getApiPaneConfigSelectedTabIndex);
+  const options = Object.values(API_EDITOR_TABS);
+  const [selectedIndex, setSelectedIndex] = useState(oldIndex);
+  const selectedValue = options[selectedIndex];
+  const updateSelectedIndex = (value: API_EDITOR_TABS) => {
+    const index = options.indexOf(value);
+    setSelectedIndex(index);
     dispatch(setApiPaneConfigSelectedTabIndex(index));
   };
+
+  useEffect(() => {
+    setSelectedIndex(oldIndex);
+  }, [oldIndex]);
+
   const { actionRightPaneBackLink, moreActionsMenu, saveActionName } =
     useContext(ApiEditorContext);
 
@@ -647,7 +656,7 @@ function CommonEditorForm(props: CommonFormPropsWithExtraParams) {
                 }
                 // eslint-disable-next-line
                 //@ts-ignore
-                onValueChange={setSelectedIndex}
+                onValueChange={updateSelectedIndex}
                 value={selectedValue}
               >
                 <TabsListWrapper>
