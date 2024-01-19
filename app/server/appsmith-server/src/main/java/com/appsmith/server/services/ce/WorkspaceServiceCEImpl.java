@@ -539,10 +539,13 @@ public class WorkspaceServiceCEImpl extends BaseService<WorkspaceRepository, Wor
                     // populate array with admin at index 0, developer at index 1 and viewer at index 2
                     list.forEach(item -> {
                         if (item.getName().startsWith(FieldName.ADMINISTRATOR)) {
+                            item.setDescription(FieldName.WORKSPACE_ADMINISTRATOR_DESCRIPTION);
                             permissionGroupInfoDTOArray[0] = item;
                         } else if (item.getName().startsWith(FieldName.DEVELOPER)) {
+                            item.setDescription(FieldName.WORKSPACE_DEVELOPER_DESCRIPTION);
                             permissionGroupInfoDTOArray[1] = item;
                         } else if (item.getName().startsWith(FieldName.VIEWER)) {
+                            item.setDescription(FieldName.WORKSPACE_VIEWER_DESCRIPTION);
                             permissionGroupInfoDTOArray[2] = item;
                         }
                     });
