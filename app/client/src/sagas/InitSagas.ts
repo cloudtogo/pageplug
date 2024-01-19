@@ -223,10 +223,11 @@ function* appEngineSaga(action: ReduxAction<AppEnginePayload>) {
 function* eagerPageInitSaga() {
   const url = window.location.pathname;
   const search = window.location.search;
-  if (isEditorPath(url)) {
+  const matchedUrl = matchBuilderPath(url);
+  if (isEditorPath(url) && matchedUrl) {
     const {
       params: { applicationId, pageId },
-    } = matchBuilderPath(url);
+    } = matchedUrl;
     const branch = getSearchQuery(search, GIT_BRANCH_QUERY_KEY);
     if (pageId) {
       yield put(
@@ -266,7 +267,7 @@ export default function* watchInitSagas() {
       appEngineSaga,
     ),
     takeLatest(ReduxActionTypes.RESET_EDITOR_REQUEST, resetEditorSaga),
-    takeEvery(URL_CHANGE_ACTIONS, updateURLSaga),
+    takeEvery(URL_CHANGE_ACTIONS as any, updateURLSaga),
     takeEvery(ReduxActionTypes.INITIALIZE_CURRENT_PAGE, eagerPageInitSaga),
   ]);
 }

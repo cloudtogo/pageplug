@@ -6,21 +6,15 @@ type DropdownFieldWrapperProps = SelectOptionProps & { placeholder?: string };
 
 function DropdownFieldWrapper(props: DropdownFieldWrapperProps) {
   const selectedValueHandler = () => {
-    if (
-      props.input &&
-      props.input.value &&
-      Object.keys(props.input.value).length > 0
-    ) {
-      return props.input.value.value;
-    } else if (props.input && typeof props.input.value === "string") {
-      return props.input.value;
-    }
+    return props.input?.value?.value ?? props.input?.value;
   };
-  const [selectedOption, setSelectedOption] = useState<any>({
+  const [selectedOption, setSelectedOption] = useState<{
+    value: string;
+  }>({
     value: selectedValueHandler(),
   });
   const onSelectHandler = (value?: string) => {
-    props.input.onChange({ value: value });
+    setSelectedOption(value ? { value } : { value: "GET" });
   };
 
   useEffect(() => {
@@ -30,7 +24,6 @@ function DropdownFieldWrapper(props: DropdownFieldWrapperProps) {
   return (
     <Select
       className={props.className}
-      defaultValue={selectedOption.value}
       isDisabled={props.disabled}
       onSelect={onSelectHandler}
       placeholder={props.placeholder}
@@ -38,7 +31,7 @@ function DropdownFieldWrapper(props: DropdownFieldWrapperProps) {
     >
       {props.options.map((option: SelectOptionProps) => {
         return (
-          <Option key={option.id} value={option.value}>
+          <Option key={option.value} value={option.value}>
             {option.value}
           </Option>
         );
