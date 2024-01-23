@@ -1182,7 +1182,7 @@ export const API_EDITOR_TAB_TITLES = {
 };
 export const ACTION_EXECUTION_MESSAGE = (actionType: string) =>
   `正在请求 ${actionType}`;
-export const ACTION_EXECUTION_CANCEL = () => "Cancel request";
+export const ACTION_EXECUTION_CANCEL = () => "取消请求";
 
 export const WELCOME_FORM_HEADER = () => "让我们更好的了解你！";
 export const WELCOME_FORM_FULL_NAME = () => "姓名";
