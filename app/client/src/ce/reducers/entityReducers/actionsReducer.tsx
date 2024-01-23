@@ -186,15 +186,15 @@ export const handlers = {
     }
   },
   [ReduxActionTypes.SET_ACTION_RESPONSE_DISPLAY_FORMAT]: (
-    state: ActionDataState,
+    draftMetaState: ActionDataState,
     action: ReduxAction<UpdateActionPropertyActionPayload>,
-  ) =>
-    state.map((a) => {
+  ) => {
+    draftMetaState.forEach((a) => {
       if (a.config.id === action.payload.id) {
         return _.set(a, `data.${action.payload.field}`, action.payload.value);
       }
-      return a;
-    }),
+    });
+  },
   [ReduxActionTypes.CLEAR_ACTION_RESPONSE]: (
     state: ActionDataState,
     action: ReduxAction<{ actionId: string }>,
@@ -234,15 +234,16 @@ export const handlers = {
       return a;
     }),
   [ReduxActionTypes.RUN_ACTION_SUCCESS]: (
-    state: ActionDataState,
+    draftMetaState: ActionDataState,
     action: ReduxAction<{ [id: string]: ActionResponse }>,
-  ): ActionDataState => {
+  ) => {
     const actionId = Object.keys(action.payload)[0];
-    return state.map((a) => {
+    draftMetaState.forEach((a) => {
       if (a.config.id === actionId) {
-        return { ...a, isLoading: false, data: action.payload[actionId] };
+        a.isLoading = false;
+        if (a.data) _.assign(a.data, action.payload[actionId]);
+        else a.data = action.payload[actionId];
       }
-      return a;
     });
   },
   [ReduxActionErrorTypes.RUN_ACTION_ERROR]: (
