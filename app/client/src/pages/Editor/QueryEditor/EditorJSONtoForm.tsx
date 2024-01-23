@@ -57,14 +57,14 @@ import {
   ACTION_EDITOR_REFRESH,
   CREATE_NEW_DATASOURCE,
   createMessage,
+  DEBUGGER_ERRORS,
   DEBUGGER_LOGS,
   DOCUMENTATION,
   DOCUMENTATION_TOOLTIP,
   INSPECT_ENTITY,
-  UNEXPECTED_ERROR,
-  NO_DATASOURCE_FOR_QUERY,
   INVALID_FORM_CONFIGURATION,
-  DEBUGGER_ERRORS,
+  NO_DATASOURCE_FOR_QUERY,
+  UNEXPECTED_ERROR,
 } from "@appsmith/constants/messages";
 import { useParams } from "react-router";
 import type { AppState } from "@appsmith/reducers";
@@ -654,7 +654,8 @@ export function EditorJSONtoForm(props: Props) {
     (section: any): any => {
       return section.children.map(
         (formControlOrSection: ControlProps, idx: number) => {
-          if (isHidden(props.formData, section.hidden)) return null;
+          if (isHidden(props.formData, section.hidden, undefined, false))
+            return null;
           if (formControlOrSection.hasOwnProperty("children")) {
             return renderEachConfig(formName)(formControlOrSection);
           } else {
