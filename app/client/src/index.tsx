@@ -5,6 +5,7 @@ import React from "react";
 import "./wdyr";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
+import "./index.css";
 import { ThemeProvider } from "styled-components";
 import { taroifyTheme } from "constants/DefaultTheme";
 import { appInitializer } from "utils/AppUtils";

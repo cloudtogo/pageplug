@@ -178,7 +178,7 @@ function WorkspaceMenu({
             }}
             startIcon="logout"
           >
-            {!warnLeavingWorkspace ? "离开应用组" : DISCONNECT_CONFIRMATION}
+            {!warnLeavingWorkspace ? "离开应用组" : DISCONNECT_CONFIRMATION()}
           </MenuItem>
         )}
         {canDeleteWorkspace && (
@@ -191,7 +191,7 @@ function WorkspaceMenu({
             }}
             startIcon="delete-bin-line"
           >
-            {!warnDeleteWorkspace ? "删除应用组" : DISCONNECT_CONFIRMATION}
+            {!warnDeleteWorkspace ? "删除应用组" : DISCONNECT_CONFIRMATION()}
           </MenuItem>
         )}
       </MenuContent>

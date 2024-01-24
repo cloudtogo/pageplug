@@ -157,7 +157,7 @@ class ListWidget extends BaseWidget<
     return {
       name: "List",
       iconSVG: IconSVG,
-      tags: [WIDGET_TAGS.SUGGESTED_WIDGETS, WIDGET_TAGS.DISPLAY],
+      tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: true,
       isCanvas: true,
     };
@@ -183,7 +183,7 @@ class ListWidget extends BaseWidget<
       getOneClickBindingConnectableWidgetConfig: (widget: WidgetProps) => {
         return {
           widgetBindPath: `${widget.widgetName}.selectedItem`,
-          message: `Make sure ${widget.widgetName} data matches the column names in the connected datasource and has a default selected item`,
+          message: `确保 ${widget.widgetName} 数据和已连接的数据源中的列名匹配，并有一个默认的选项`,
         };
       },
     };

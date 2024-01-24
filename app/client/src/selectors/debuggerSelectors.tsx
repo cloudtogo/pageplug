@@ -64,7 +64,7 @@ export const getFilteredErrors = createSelector(
             return widgetEntity.isVisible
               ? isParentWidgetVisible
               : isParentWidgetVisible &&
-              alwaysShowEntities[widgetEntity.widgetId];
+                  alwaysShowEntities[widgetEntity.widgetId];
           }
         }
         return true;
