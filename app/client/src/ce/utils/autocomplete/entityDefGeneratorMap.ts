@@ -55,10 +55,14 @@ export const entityDefGeneratorMap: EntityDefGeneratorMap = {
   },
   [ENTITY_TYPE_VALUE.APPSMITH]: (props) => {
     const { def, entity, entityMap, extraDefsToDefine } = props;
-    def.appsmith = entityDefinitions.APPSMITH(
+    def.global = def.appsmith = entityDefinitions.APPSMITH(
       entity as AppsmithEntity,
       extraDefsToDefine,
     );
+    entityMap.set("global", {
+      type: ENTITY_TYPE_VALUE.APPSMITH,
+      subType: ENTITY_TYPE_VALUE.APPSMITH,
+    });
     entityMap.set("appsmith", {
       type: ENTITY_TYPE_VALUE.APPSMITH,
       subType: ENTITY_TYPE_VALUE.APPSMITH,
