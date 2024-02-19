@@ -17,6 +17,7 @@ import { setExplorerSwitchIndex } from "actions/editorContextActions";
 import WidgetSidebarWithTags from "../WidgetSidebarWithTags";
 import { ExplorerWrapper } from "./Common/ExplorerWrapper";
 import WidgetSidebar from "../WidgetSidebar";
+import { isMobileLayout } from "@appsmith/selectors/applicationSelectors";
 
 const selectForceOpenWidgetPanel = (state: AppState) =>
   state.ui.onBoarding.forceOpenWidgetPanel;
@@ -76,7 +77,7 @@ function ExplorerContent() {
   };
   const { value: activeOption } = options[activeSwitchIndex];
 
-  const isMobile = useSelector((state) => state.ui.mainCanvas.isMobile);
+  const isMobile = useSelector(isMobileLayout);
   return (
     <ExplorerWrapper>
       <div

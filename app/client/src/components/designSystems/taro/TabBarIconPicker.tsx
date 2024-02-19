@@ -4,7 +4,11 @@ import { connect, useDispatch, useSelector } from "react-redux";
 import type { AppState } from "@appsmith/reducers";
 import { updatePage } from "actions/pageActions";
 import type { UpdatePageRequest } from "api/PageApi";
-import { getViewModePageList, getCurrentPage } from "selectors/editorSelectors";
+import {
+  getViewModePageList,
+  getCurrentPage,
+  isMobileLayout,
+} from "selectors/editorSelectors";
 // import { isMobileLayout } from "selectors/applicationSelectors";
 import type { Page } from "@appsmith/constants/ReduxActionConstants";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
@@ -70,7 +74,7 @@ const TabBar = ({ currentPage, isFull }: TabbarProps) => {
   const isUpdating = useEntityUpdateState(entityId);
   const isEditing = useEntityEditState(entityId);
   const switchDisabled = isFull && !pageIcon;
-  const isMobile = useSelector((state) => state.ui.mainCanvas?.isMobile);
+  const isMobile = useSelector(isMobileLayout);
 
   const onToggle = () => {
     onIconSelected(pageIcon ? CLOSE_TABBAR : "smile-o");

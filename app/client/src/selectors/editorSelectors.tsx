@@ -302,7 +302,7 @@ export const getCanvasWidth = (state: AppState) => state.ui.mainCanvas.width;
 export const getMainCanvasProps = (state: AppState) => state.ui.mainCanvas;
 
 export const isMobileLayout = (state: AppState) =>
-  state.ui.mainCanvas?.isMobile;
+  state.ui.applications.currentApplication?.appLayout?.type === "MOBILE_FLUID";
 
 export const getShowTabBar = createSelector(
   getCurrentPage,
@@ -381,12 +381,9 @@ export const getWidgetCards = createSelector(
         return Object.values(WDS_V2_WIDGET_MAP).includes(config.type);
       }
 
-      // 筛选小程序
-      if (isMobile) {
-        return config.isMobile;
-      }
-
-      return !config.hideCard;
+      return (
+        !config.hideCard && (isMobile ? config.isMobile : !config.isMobile)
+      );
     });
 
     const _cards: any = cards.map((config) => {
