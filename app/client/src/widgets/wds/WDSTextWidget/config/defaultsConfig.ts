@@ -7,7 +7,7 @@ import { BlueprintOperationTypes } from "WidgetProvider/constants";
 import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
 
 export const defaultsConfig = {
-  text: "Hello {{appsmith.user.name || appsmith.user.email}}",
+  text: "Hello {{global.user.name || global.user.email}}",
   fontSize: "body",
   textAlign: "left",
   textColor: "neutral",
