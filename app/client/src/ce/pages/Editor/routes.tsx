@@ -17,6 +17,7 @@ import {
   JS_COLLECTION_ID_PATH,
   PROVIDER_TEMPLATE_PATH,
   QUERIES_EDITOR_ID_PATH,
+  VIEWER_LAYOUT_CONFIG_PATH,
 } from "constants/routes";
 import PerformanceTracker, {
   PerformanceTransactionName,
@@ -29,6 +30,7 @@ import CurlImportEditor from "pages/Editor/APIEditor/CurlImportEditor";
 import { useFeatureFlag } from "../../../utils/hooks/useFeatureFlag";
 import { FEATURE_FLAG } from "../../entities/FeatureFlag";
 import CreateNewDatasourceTab from "../../../pages/Editor/IntegrationEditor/CreateNewDatasourceTab";
+import ViewerLayoutEditor from "pages/Editor/ViewerLayoutEditor";
 
 const SentryRoute = Sentry.withSentryRouting(Route);
 
@@ -113,6 +115,11 @@ function EditorRoutes() {
         component={GeneratePage}
         exact
         path={`${path}${GENERATE_TEMPLATE_FORM_PATH}`}
+      />
+      <SentryRoute
+        component={ViewerLayoutEditor}
+        exact
+        path={`${path}${VIEWER_LAYOUT_CONFIG_PATH}`}
       />
     </Switch>
   );
