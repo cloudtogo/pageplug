@@ -11,7 +11,11 @@
 
 :root {
   /* TODO: This needs to be fixed! This override is to maintain branding changes. */
+  --brand-color: #27b7b7;
   --ads-color-background-secondary: var(--ads-v2-color-bg-subtle);
+  --ads-v2-color-bg-brand-emphasis: var(--brand-color);
+  --ads-v2-color-bg-brand-emphasis-plus: var(--brand-color);
+  --ads-v2-color-border-brand-emphasis-plus: var(--brand-color);
 }
 
 body {
