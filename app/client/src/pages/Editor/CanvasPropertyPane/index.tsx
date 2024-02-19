@@ -51,7 +51,7 @@ export function CanvasPropertyPane() {
 
       <div className="mt-3 space-y-6">
         <div className="px-4 space-y-2">
-          {enableLayoutControl && (
+          {enableLayoutControl && !isMobile && (
             <>
               <Title className="text-sm">画布尺寸</Title>
               <MainContainerWidthToggles />
