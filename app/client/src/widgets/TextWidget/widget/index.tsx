@@ -58,7 +58,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
 
   static getDefaults() {
     return {
-      text: "Hello {{appsmith.user.name || appsmith.user.email}}",
+      text: "Hello {{global.user.name || global.user.email}}",
       fontSize: DEFAULT_FONT_SIZE,
       fontStyle: "BOLD",
       textAlign: "LEFT",
@@ -218,7 +218,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
             label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "组件依赖的数据加载时显示加载动画",
-            defaultValue: true,
+            defaultValue: false,
             isJSConvertible: true,
             isBindProperty: true,
             isTriggerProperty: false,
