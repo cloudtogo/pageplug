@@ -366,7 +366,7 @@ class TabsWidget extends BaseWidget<
             label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "组件依赖的数据加载时显示加载动画",
-            defaultValue: true,
+            defaultValue: false,
             isJSConvertible: true,
             isBindProperty: true,
             isTriggerProperty: false,
@@ -613,8 +613,8 @@ class TabsWidget extends BaseWidget<
     let selectedTabWidgetId = this.props.selectedTabWidgetId;
     if (this.props.children) {
       selectedTabWidgetId =
-        this.props.children.find((tab) =>
-          this.props.selectedWidgetAncestry?.includes(tab.widgetId),
+        this.props.children.find(
+          (tab) => this.props.selectedWidgetAncestry?.includes(tab.widgetId),
         )?.widgetId ?? this.props.selectedTabWidgetId;
     }
     return selectedTabWidgetId;

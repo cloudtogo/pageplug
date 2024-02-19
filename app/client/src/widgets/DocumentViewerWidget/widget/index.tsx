@@ -192,7 +192,7 @@ class DocumentViewerWidget extends BaseWidget<
             label: "加载时显示动画",
             controlType: "SWITCH",
             helpText: "组件依赖的数据加载时显示加载动画",
-            defaultValue: true,
+            defaultValue: false,
             isJSConvertible: true,
             isBindProperty: true,
             isTriggerProperty: false,
