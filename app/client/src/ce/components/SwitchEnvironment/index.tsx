@@ -5,6 +5,7 @@ import { Icon, Link, Option, Select, Text, Tooltip } from "design-system";
 import { capitalizeFirstLetter } from "utils/helpers";
 import {
   BUSINESS_EDITION_TEXT,
+  BUSINESS_PRICE_URL,
   SWITCH_ENV_DISABLED_TOOLTIP_TEXT,
   createMessage,
 } from "@appsmith/constants/messages";
@@ -78,11 +79,11 @@ export default function SwitchEnvironment({}: Props) {
   // Fetching feature flags from the store and checking if the feature is enabled
   const showRampSelector = showProductRamps(RAMP_NAME.MULTIPLE_ENV, true);
   const canShowRamp = useSelector(showRampSelector);
-  const rampLinkSelector = getRampLink({
-    section: RampSection.BottomBarEnvSwitcher,
-    feature: RampFeature.MultipleEnv,
-  });
-  const rampLink = useSelector(rampLinkSelector);
+  // const rampLinkSelector = getRampLink({
+  //   section: RampSection.BottomBarEnvSwitcher,
+  //   feature: RampFeature.MultipleEnv,
+  // });
+  const rampLink = BUSINESS_PRICE_URL;
   const location = useLocation();
   //listen to url change and disable switch environment if datasource page is open
   useEffect(() => {
