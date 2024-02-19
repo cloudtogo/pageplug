@@ -16,6 +16,7 @@ import {
   JS_COLLECTION_ID_PATH,
   PROVIDER_TEMPLATE_PATH,
   QUERIES_EDITOR_ID_PATH,
+  VIEWER_LAYOUT_CONFIG_PATH,
   WIDGETS_EDITOR_BASE_PATH,
   WIDGETS_EDITOR_ID_PATH,
 } from "constants/routes";
@@ -37,6 +38,7 @@ import DataSourceEditor from "pages/Editor/DataSourceEditor";
 import DatasourceBlankState from "pages/Editor/DataSourceEditor/DatasourceBlankState";
 import ProviderTemplates from "pages/Editor/APIEditor/ProviderTemplates";
 import GeneratePage from "pages/Editor/GeneratePage";
+import ViewerLayoutEditor from "pages/Editor/ViewerLayoutEditor";
 
 export default (path: string, isAppSidebarEnabled: boolean) => [
   {
@@ -136,5 +138,11 @@ export default (path: string, isAppSidebarEnabled: boolean) => [
     component: GeneratePage,
     exact: true,
     path: `${path}${GENERATE_TEMPLATE_FORM_PATH}`,
+  },
+  {
+    key: "ViewerLayoutEditor",
+    component: ViewerLayoutEditor,
+    exact: true,
+    path: `${path}${VIEWER_LAYOUT_CONFIG_PATH}`,
   },
 ];

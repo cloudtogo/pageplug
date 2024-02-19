@@ -8,7 +8,7 @@ import React, {
 import styled, { useTheme } from "styled-components";
 import { useHistory } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { get, size, map, flatMapDeep, cloneDeep } from "lodash";
+import { get, size, map, uniq, cloneDeep } from "lodash";
 import { ControlIcons } from "icons/ControlIcons";
 import { getCurrentApplication } from "selectors/applicationSelectors";
 import {
@@ -17,17 +17,9 @@ import {
   getVisiblePageList,
 } from "selectors/editorSelectors";
 import { getSelectedAppThemeProperties } from "selectors/appThemingSelectors";
-import { builderURL } from "RouteBuilder";
-// import {
-//   SortableTreeWithoutDndContext as SortableTree,
-//   addNodeUnderParent,
-//   removeNodeAtPath,
-//   changeNodeAtPath,
-//   getNodeAtPath,
-//   walk,
-// } from "react-sortable-tree-patch-react-17/dist/index.cjs.js";
-// import FileExplorerTheme from "react-sortable-tree-theme-full-node-drag";
-import IconSelect from "./IconSelect";
+import { builderURL } from "@appsmith/RouteBuilder";
+// import IconSelect from "./IconSelect";
+import IconSelector from "./IconSelector";
 import { Button, Input, Form, message, Tree, Divider, Typography } from "antd";
 import ColorPickerComponent from "components/propertyControls/ColorPickerComponentV2";
 import { updateApplication } from "actions/applicationActions";
@@ -107,7 +99,7 @@ const ConfigContainer = styled.div`
   display: flex;
 
   & > .ant-form {
-    width: 600px;
+    width: 100%;
   }
 `;
 const NavPreview = styled.div<{
@@ -117,15 +109,20 @@ const NavPreview = styled.div<{
   background: ${(props) => props.color || Colors.MINT_GREEN};
   height: 48px;
   border-radius: 4px;
-  padding: 8px 16px;
-
+  border: 1px solid rgb(224, 222, 222);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
   img {
     display: inline-block;
     width: 32px;
     height: 32px;
   }
-
   h2 {
+    font-size: 1rem;
+  }
+
+  .title {
     color: #fff;
     font-size: 16px;
     display: inline-block;
@@ -204,9 +201,6 @@ function PagesEditor() {
   const pageId = useSelector(getCurrentPageId);
   const appName = useSelector(getCurrentApplication)?.name;
   const currentLayout = useSelector(getCurrentApplication)?.viewerLayout;
-  const currentApplicationPages = useSelector(
-    (state) => state.entities.pageList.pages,
-  );
   const pages = useSelector(getVisiblePageList);
   const appPrimaryColor = useSelector(getSelectedAppThemeProperties)?.colors
     .primaryColor;
@@ -216,7 +210,7 @@ function PagesEditor() {
       logoUrl: "",
       name: "",
       color: appPrimaryColor,
-      treeData: currentApplicationPages.map((p) => ({
+      treeData: pages.map((p) => ({
         title: p.pageName,
         pageId: p.pageId,
         isPage: true,
@@ -225,7 +219,7 @@ function PagesEditor() {
     };
     if (currentLayout) {
       try {
-        const pagesMap = currentApplicationPages.reduce((a: any, p: any) => {
+        const pagesMap = pages.reduce((a: any, p: any) => {
           a[p.pageName] = p.pageId;
           return a;
         }, {});
@@ -247,13 +241,13 @@ function PagesEditor() {
   const [name, setName] = useState(initState.name || appName);
   const [color, setColor] = useState(initState.color);
   const [treeData, setTreeData] = useState<any>(initState.treeData);
-  const [outsiderTree, setOutsiderTree] = useState<any>(initState.outsiderTree);
+  const [outsiderTree, setOutsiderTree] = useState<any>(initState.outsiderTree); // 隐藏目录
   const [gData, setGData] = useState(defaultData);
   const [hideNodes, setHideNodes] = useState<any>([]);
   const [, setSymbol] = useState<any>();
 
   useEffect(() => {
-    const pagesMap = currentApplicationPages.reduce((a: any, c: any) => {
+    const pagesMap = pages.reduce((a: any, c: any) => {
       a[c.pageId] = { ...c };
       return a;
     }, {});
@@ -274,10 +268,34 @@ function PagesEditor() {
     setOutsiderTree(newOuterTree);
     setHideNodes(newOuterTree.map((o: any) => o.pageId));
     initNewTree(_tree);
-  }, [currentApplicationPages]);
+  }, [pages]);
 
   const initNewTree = (tree: any) => {
-    const _formatTree = processTreeData(tree);
+    const _hidePage: string[] = [];
+    let _formatTree = processTreeData(tree);
+    _formatTree.forEach((gItem: any) => {
+      mapTree(gItem, (tn: any) => {
+        if (tn.isHidden) {
+          _hidePage.push(tn?.key);
+        }
+        return gItem;
+      });
+    });
+    const _oldVersionHidePages = outsiderTree
+      .filter((p: any) => !_hidePage.find((n: any) => n.key === p.key))
+      .map((hp: any) => {
+        return {
+          ...hp,
+          isHidden: true,
+          key: hp.pageId,
+          index: hp.pageId,
+        };
+      });
+    _formatTree = _formatTree.concat(_oldVersionHidePages);
+    const _newHidepages = uniq(
+      hideNodes.concat(_oldVersionHidePages.map((o: any) => o.pageId)),
+    );
+    setHideNodes(_newHidepages);
     setGData(_formatTree);
   };
 
@@ -359,13 +377,14 @@ function PagesEditor() {
     const _outsiderTree: any = [];
     gData.forEach((gItem: any) => {
       mapTree(gItem, (tn: any) => {
-        if (hideNodes.includes(tn.key)) {
+        if (tn?.isHidden) {
           _outsiderTree.push({
             title: tn.title,
             pageId: tn.pageId,
             isPage: true,
           });
         }
+        return gItem;
       });
     });
     setOutsiderTree(_outsiderTree);
@@ -394,6 +413,15 @@ function PagesEditor() {
     );
   };
 
+  const pickColor = (colorParam: string) => {
+    if (colorParam.includes("{{appsmith.theme.colors.primaryColor}}")) {
+      const pickedColor = Colors.PRIMARY_ORANGE;
+      setColor(pickedColor);
+    } else if (!colorParam.includes("{{appsmith.theme")) {
+      setColor(colorParam);
+    }
+  };
+
   // deleteMenu
   const onDeleteMenu = (node: any) => {
     if (size(node.children) > 0) {
@@ -408,20 +436,15 @@ function PagesEditor() {
   };
 
   const toggleHidePage = (node: any) => {
-    // if (hideNodes.includes(node.key)) {
-    //   // 打开
-    //   setHideNodes(hideNodes.filter((p: any) => p !== node.key));
-    // } else {
-    //   setHideNodes([...hideNodes, node.key]); // 隐藏
-    // }
-    gData.map((gnode: any) => {
+    const updatedGData: any = gData.map((gnode: any) => {
       return mapTree(gnode, (gn: any) => {
         if (gn.key === node.key) {
-          gn.isHidden = !gn.isHidden;
+          return { ...gn, isHidden: !node.isHidden };
         }
+        return gn;
       });
     });
-    setGData(gData);
+    setGData(updatedGData);
   };
 
   const nodeNameChange = (name: string, node: any) => {
@@ -435,15 +458,19 @@ function PagesEditor() {
     });
     setGData(updatedGData);
   };
-  interface SelectedIcons {
-    [key: string]: string | undefined;
-  }
-  const [, setSelectedIcons] = useState<SelectedIcons>({});
-  const handleIconSelected = (key: string, icon: any) => {
-    setSelectedIcons((prevSelectedIcons) => ({
-      ...prevSelectedIcons,
-      [key]: icon,
-    }));
+
+  const handleIconSelected = (node: any) => {
+    setGData((prevGData: any) => {
+      const newGData = prevGData.map((gnode: any) => {
+        return mapTree(gnode, (gn: any) => {
+          if (gn.key === node.key) {
+            return { ...gn, icon: node.icon };
+          }
+          return gn;
+        });
+      });
+      return newGData;
+    });
   };
 
   return (
@@ -452,101 +479,84 @@ function PagesEditor() {
         <div>
           <CloseIcon
             color={get(theme, "colors.text.heading")}
-            width={20}
             height={20}
             onClick={onClose}
+            width={20}
           />
           <h1>应用菜单编辑</h1>
         </div>
       </Header>
       <div className="px-[10%] mt-2 ">
         <div>
-          <div className="text-xl mb-4 bold">顶部导航</div>
-          <NavPreview color={color}>
-            <img src={logoUrl.trim() || DEFAULT_VIEWER_LOGO} />
+          <div className="text-xl mb-4 bold">应用导航</div>
+          {/* <NavPreview color={color}>
+            <img
+              src={logoUrl.trim() || DEFAULT_VIEWER_LOGO}
+              className="p-1 w-7 h-7"
+            />
             <h2>{name}</h2>
-          </NavPreview>
+          </NavPreview> */}
           <ConfigContainer>
-            <Form labelCol={{ span: 4 }} wrapperCol={{ span: 12 }}>
-              <Form.Item label="应用名称">
-                <Input value={name} onChange={(e) => setName(e.target.value)} />
-              </Form.Item>
-              <Form.Item label="Logo地址">
+            <Form wrapperCol={{ span: 14 }}>
+              <Form.Item label="应用Logo">
                 <Input
-                  value={logoUrl}
                   onChange={(e) => setLogoUrl(e.target.value)}
+                  placeholder="自定义logo的图片url"
+                  value={logoUrl}
                 />
               </Form.Item>
-              <Form.Item label="导航栏颜色">
+              <Form.Item label="应用名称">
+                <Input onChange={(e) => setName(e.target.value)} value={name} />
+              </Form.Item>
+              {/* <Form.Item label="导航栏颜色">
                 <ColorPicker
                   changeColor={(c: string) => setColor(c)}
                   color={color}
                   showApplicationColors
                   showThemeColors
                 />
-              </Form.Item>
+              </Form.Item> */}
             </Form>
           </ConfigContainer>
         </div>
-        <Divider type="horizontal"></Divider>
+        <Divider type="horizontal" />
         <div data-no-touch-simulate>
           <div className="text-xl mb-4 bold flex justify-between">
-            菜单导航
+            页面重排
             <Button onClick={addRootNode} type="default">
               + 新增目录
             </Button>
           </div>
           <TreeContainer>
             <Tree
-              defaultExpandAll
-              className="draggable-tree"
-              // defaultExpandedKeys={expandedKeys}
-              draggable={{
-                icon: false,
-              }}
-              allowDrop={({ dropNode }) => !dropNode.isPage}
+              allowDrop={({ dropNode }) => !(dropNode as any).isPage}
               blockNode
+              defaultExpandAll
+              expandAction="click"
               onDragEnter={onDragEnter}
               onDrop={onDrop}
-              treeData={gData}
-              showLine={true}
               showIcon={false}
+              showLine
               titleRender={(node: any) => {
                 return (
                   <div
-                    className={`px-4 py-2 border border-teal-500 ${
-                      !hideNodes.includes(node.key)
-                        ? "bg-neutral-50"
-                        : "bg-gray-200"
-                    } rounded flex gap-2 justify-between items-center`}
+                    className={`px-4 py-2 ${
+                      node.isPage ? "border-solid" : "border-dashed"
+                    } border border-teal-500 ${
+                      !node.isHidden ? "bg-neutral-50" : "bg-gray-200"
+                    }  rounded flex gap-2 justify-between items-center`}
                   >
                     <div className="flex">
-                      <div className="flex items-center mr-4">
-                        {node.isPage ? (
-                          <Icon
-                            className="icon"
-                            color="#4B4848"
-                            data-testid="pages-collapse-icon"
-                            icon="document"
-                            size={14}
-                          />
-                        ) : (
-                          // <Icon
-                          //   className="icon"
-                          //   color="#4B4848"
-                          //   data-testid="fold-collapse-icon"
-                          //   icon="folder-close"
-                          //   size={12}
-                          // />
-                          <IconSelect
-                            iconName={node.icon}
-                            onIconSelected={(icon) => {
-                              node.icon = icon;
-                              handleIconSelected(node.key, icon);
-                            }}
-                          />
-                        )}
-                      </div>
+                      {node.isPage ? null : (
+                        <IconSelector
+                          className="flex items-center mr-2"
+                          iconName={node.icon}
+                          onIconSelected={(icon: any) => {
+                            node.icon = icon;
+                            handleIconSelected(node);
+                          }}
+                        />
+                      )}
 
                       <div className="flex justify-center items-center">
                         {node.isPage ? (
@@ -588,12 +598,18 @@ function PagesEditor() {
                   </div>
                 );
               }}
+              treeData={gData}
+              className="draggable-tree"
+              // defaultExpandedKeys={expandedKeys}
+              draggable={{
+                icon: false,
+              }}
             />
           </TreeContainer>
         </div>
-        <Divider type="horizontal"></Divider>
+        <Divider type="horizontal" />
         <div className="flex flex-row-reverse p-1">
-          <Button type="primary" size="large" onClick={saveConfig}>
+          <Button onClick={saveConfig} size="large" type="primary">
             保存配置
           </Button>
         </div>
