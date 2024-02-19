@@ -60,7 +60,7 @@ function UseMockDatasources({ active, mockDatasources }: MockDataSourcesProps) {
   }, [active]);
   return (
     <div id="mock-database" ref={useMockRef}>
-      <Text type={TextType.H2}>Get started with our sample datasources</Text>
+      <Text type={TextType.H2}>开始使用我们的样例数据源</Text>
       <MockDataSources mockDatasources={mockDatasources} />
     </div>
   );
@@ -162,7 +162,7 @@ function CreateNewSaasIntegration({
   }, [active]);
   return !isAirgappedInstance ? (
     <div id="new-saas-api" ref={newSaasAPIRef}>
-      <Text type={TextType.H2}>Saas Integrations</Text>
+      <Text type={TextType.H2}>Saas 集成</Text>
       <NewApiScreen
         history={history}
         isCreating={isCreating}

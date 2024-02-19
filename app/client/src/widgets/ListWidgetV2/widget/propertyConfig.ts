@@ -123,7 +123,7 @@ export function defaultSelectedItemValidation(
 ): ValidationResponse {
   const TYPE_ERROR_MESSAGE = {
     name: "TypeError",
-    message: "This value must be string or number",
+    message: "这个值必须是number或string类型",
   };
 
   const EMPTY_ERROR_MESSAGE = { name: "", message: "" };
@@ -318,12 +318,12 @@ export const PropertyPaneContentConfig = [
     ],
   },
   {
-    sectionName: "Item selection",
+    sectionName: "选项",
     children: [
       {
         propertyName: "defaultSelectedItem",
-        helpText: "Selects Item by default by using a valid data identifier",
-        label: "Default selected item",
+        helpText: "通过使用有效的数据标识符默认选项",
+        label: "默认选项",
         controlType: "INPUT_TEXT",
         placeholderText: "001",
         isBindProperty: true,
@@ -343,39 +343,10 @@ export const PropertyPaneContentConfig = [
           },
         },
       },
-      {
-        propertyName: "onItemClick",
-        helpText: "Triggers an action when an item in this List is clicked",
-        label: "onItemClick",
-        controlType: "ACTION_SELECTOR",
-        isJSConvertible: true,
-        isBindProperty: true,
-        isTriggerProperty: true,
-        additionalAutoComplete: (props: ListWidgetProps<WidgetProps>) => {
-          let items = get(props, `${EVAL_VALUE_PATH}.listData`, []);
-
-          if (Array.isArray(items)) {
-            items = items.filter(Boolean);
-          } else {
-            items = [];
-          }
-
-          return {
-            currentItem: Object.assign(
-              {},
-              ...Object.keys(get(items, "0", {})).map((key) => ({
-                [key]: "",
-              })),
-            ),
-            currentIndex: 0,
-          };
-        },
-        dependencies: ["listData"],
-      },
     ],
   },
   {
-    sectionName: "General",
+    sectionName: "通用",
     children: [
       {
         propertyName: "isVisible",

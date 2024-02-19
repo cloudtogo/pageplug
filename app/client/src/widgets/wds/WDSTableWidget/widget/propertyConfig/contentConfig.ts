@@ -263,7 +263,7 @@ export default [
         label: "Default search text",
         helpText: "Adds a search text by default",
         controlType: "INPUT_TEXT",
-        placeholderText: "{{appsmith.user.name}}",
+        placeholderText: "{{global.user.name}}",
         isBindProperty: true,
         isTriggerProperty: false,
         validation: { type: ValidationTypes.TEXT },
