@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Link, Tag, Text, Tooltip } from "design-system";
 import {
   BUSINESS_EDITION_TEXT,
+  BUSINESS_PRICE_URL,
   BUSINESS_TAG,
   SWITCH_ENV_DISABLED_TOOLTIP_TEXT,
   createMessage,
@@ -92,11 +93,11 @@ function DSDataFilter({ isInsideReconnectModal, viewMode }: DSDataFilterProps) {
   const showRampSelector = showProductRamps(RAMP_NAME.MULTIPLE_ENV, true);
   const canShowRamp = useSelector(showRampSelector);
 
-  const rampLinkSelector = getRampLink({
-    section: RampSection.DSEditor,
-    feature: RampFeature.MultipleEnv,
-  });
-  const rampLink = useSelector(rampLinkSelector);
+  // const rampLinkSelector = getRampLink({
+  //   section: RampSection.DSEditor,
+  //   feature: RampFeature.MultipleEnv,
+  // });
+  const rampLink = BUSINESS_PRICE_URL;
 
   // update the selected environment if the list of environments changes
   useEffect(() => {
