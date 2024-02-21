@@ -394,6 +394,9 @@ function ApiResponseView(props: Props) {
     }
   }
 
+  // get the height of the response pane.
+  const responsePaneHeight = useSelector(getResponsePaneHeight);
+
   const responseTabs =
     filteredResponseDataTypes &&
     filteredResponseDataTypes.map((dataType, index) => {
@@ -436,8 +439,6 @@ function ApiResponseView(props: Props) {
     }
     dispatch(setDebuggerSelectedTab(tabKey));
   }, []);
-  // get the height of the response pane.
-  const responsePaneHeight = useSelector(getResponsePaneHeight);
   // update the height of the response pane on resize.
   const updateResponsePaneHeight = useCallback((height: number) => {
     dispatch(setResponsePaneHeight(height));
