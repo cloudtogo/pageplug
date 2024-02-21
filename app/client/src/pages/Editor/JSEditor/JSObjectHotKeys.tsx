@@ -23,7 +23,12 @@ class JSObjectHotKeys extends React.Component<Props> {
     return (
       <HotkeysTarget2 hotkeys={this.hotkeys}>
         {({ handleKeyDown, handleKeyUp }) => (
-          <div onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} tabIndex={0}>
+          <div
+            onKeyDown={handleKeyDown}
+            onKeyUp={handleKeyUp}
+            style={{ height: "100%" }}
+            tabIndex={0}
+          >
             <div className={JS_OBJECT_HOTKEYS_CLASSNAME}>
               {this.props.children}
             </div>
