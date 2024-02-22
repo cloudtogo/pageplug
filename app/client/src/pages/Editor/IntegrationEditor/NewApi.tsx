@@ -362,12 +362,14 @@ function NewApiScreen(props: Props) {
 }
 
 const mapStateToProps = (state: AppState) => ({
-  plugins: state.entities.plugins.list.map((p: any) => {
-    return {
-      ...p,
-      iconLocation: replacePluginIcon(p.iconLocation),
-    };
-  }),
+  plugins: state.entities.plugins.list
+    .filter((p: any) => p.pluginName !== "google-sheets-plugin")
+    .map((p: any) => {
+      return {
+        ...p,
+        iconLocation: replacePluginIcon(p.iconLocation),
+      };
+    }),
 });
 
 const mapDispatchToProps = {
