@@ -76,22 +76,22 @@ const FormAuth: AdminConfigType = {
       toggleText: (value: boolean) =>
         value ? "只允许邀请用户注册" : "允许任何用户注册",
     },
-    {
-      id: "emailVerificationEnabled",
-      category: SettingCategories.FORM_AUTH,
-      controlType: SettingTypes.TOGGLE,
-      label: "email verification",
-      isDisabled: (settings) => {
-        // Disabled when mail is not enabled, unless setting already enabled then enabled
-        if (!settings) {
-          return true;
-        }
-        if (settings.emailVerificationEnabled) {
-          return false;
-        }
-        return !mailEnabled;
-      },
-    },
+    // {
+    //   id: "emailVerificationEnabled",
+    //   category: SettingCategories.FORM_AUTH,
+    //   controlType: SettingTypes.TOGGLE,
+    //   label: "email verification",
+    //   isDisabled: (settings) => {
+    //     // Disabled when mail is not enabled, unless setting already enabled then enabled
+    //     if (!settings) {
+    //       return true;
+    //     }
+    //     if (settings.emailVerificationEnabled) {
+    //       return false;
+    //     }
+    //     return !mailEnabled;
+    //   },
+    // },
     {
       id: "APPSMITH_FORM_DISABLED_BANNER",
       category: SettingCategories.FORM_AUTH,

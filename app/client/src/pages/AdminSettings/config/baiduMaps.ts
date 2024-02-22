@@ -18,7 +18,7 @@ export const config: AdminConfigType = {
     {
       id: "APPSMITH_BAIDU_MAPS_READ_MORE",
       category: SettingCategories.BAIDU_MAPS,
-      controlType: SettingTypes.LINK,
+      controlType: SettingTypes.CALLOUT,
       label: "如何配置？",
       url: BAIDU_MAPS_SETUP_DOC,
     },

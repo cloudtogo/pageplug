@@ -227,7 +227,7 @@ export function CustomRolesRamp() {
     section: RampSection.WorkspaceShare,
     feature: RampFeature.Gac,
   });
-  const rampLink = useSelector(rampLinkSelector);
+  const rampLink = BUSINESS_PRICE_URL;
   const rampText = (
     <Text color="var(--ads-v2-color-white)" kind="action-m">
       {createMessage(CUSTOM_ROLES_RAMP_TEXT)}{" "}
