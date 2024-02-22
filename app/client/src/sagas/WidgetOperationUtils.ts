@@ -6,6 +6,7 @@ import {
 } from "./selectors";
 import _, { find, isString, reduce, remove } from "lodash";
 import type { WidgetType } from "constants/WidgetConstants";
+import { AUTO_LAYOUT_CONTAINER_PADDING } from "constants/WidgetConstants";
 import {
   CONTAINER_GRID_PADDING,
   FLEXBOX_PADDING,
