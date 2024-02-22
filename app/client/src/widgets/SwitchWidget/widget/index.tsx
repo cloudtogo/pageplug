@@ -58,7 +58,7 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
       labelPosition: LabelPosition.Left,
       version: 1,
       isDisabled: false,
-      animateLoading: true,
+      animateLoading: false,
       responsiveBehavior: ResponsiveBehavior.Fill,
     };
   }

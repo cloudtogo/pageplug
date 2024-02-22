@@ -174,7 +174,7 @@ class JSONFormWidget extends BaseWidget<
       responsiveBehavior: ResponsiveBehavior.Fill,
       minWidth: FILL_WIDGET_MIN_WIDTH,
       useSourceData: false,
-      animateLoading: true,
+      animateLoading: false,
       backgroundColor: "#fff",
       columns: 25,
       disabledWhenInvalid: true,
@@ -272,9 +272,10 @@ class JSONFormWidget extends BaseWidget<
             (column) => `${column.name}`,
           );
           modify = {
-            sourceData: `{{_.pick(${
-              formConfig?.otherFields?.defaultValues
-            },${selectedColumnNames.map((name) => `'${name}'`).join(",")})}}`,
+            sourceData: `{{_.pick(${formConfig?.otherFields
+              ?.defaultValues},${selectedColumnNames
+              .map((name) => `'${name}'`)
+              .join(",")})}}`,
             title: `Update Row ${primaryKey} {{${formConfig?.otherFields?.defaultValues}.${primaryKey}}}`,
             onSubmit: queryConfig?.update.run,
           };

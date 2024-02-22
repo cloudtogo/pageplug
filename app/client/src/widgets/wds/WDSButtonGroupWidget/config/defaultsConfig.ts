@@ -20,7 +20,7 @@ export const defaultsConfig = {
   isDisabled: false,
   isVisible: true,
   version: 1,
-  animateLoading: true,
+  animateLoading: false,
   responsiveBehavior: ResponsiveBehavior.Fill,
   minWidth: FILL_WIDGET_MIN_WIDTH,
   buttonsList: {

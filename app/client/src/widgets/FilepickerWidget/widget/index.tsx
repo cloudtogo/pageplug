@@ -63,7 +63,7 @@ class FilePickerWidget extends BaseWidget<
       version: 1,
       isRequired: false,
       isDisabled: false,
-      animateLoading: true,
+      animateLoading: false,
     };
   }
 

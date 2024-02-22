@@ -101,7 +101,7 @@ class ListWidget extends BaseWidget<ListWidgetProps<WidgetProps>, WidgetState> {
       itemBackgroundColor: "#FFFFFF",
       rows: 40,
       columns: 24,
-      animateLoading: true,
+      animateLoading: false,
       gridType: "vertical",
       template: {},
       responsiveBehavior: ResponsiveBehavior.Fill,

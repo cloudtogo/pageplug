@@ -166,7 +166,7 @@ class InputWidget extends BaseWidget<InputWidgetProps, WidgetState> {
       isRequired: false,
       isDisabled: false,
       allowCurrencyChange: false,
-      animateLoading: true,
+      animateLoading: false,
     };
   }
 

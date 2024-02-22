@@ -32,7 +32,7 @@ class TabsMigratorWidget extends BaseWidget<
       columns: 1,
       widgetName: "Skeleton",
       version: 1,
-      animateLoading: true,
+      animateLoading: false,
     };
   }
 

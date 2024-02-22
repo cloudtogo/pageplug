@@ -11,7 +11,7 @@ export const defaultsConfig = {
   labelPosition: "left",
   isDisabled: false,
   isRequired: false,
-  animateLoading: true,
+  animateLoading: false,
   responsiveBehavior: ResponsiveBehavior.Fill,
   minWidth: FILL_WIDGET_MIN_WIDTH,
 };

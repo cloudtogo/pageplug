@@ -104,7 +104,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
       isFilterable: true,
       isRequired: false,
       isDisabled: false,
-      animateLoading: true,
+      animateLoading: false,
       labelTextSize: "0.875rem",
       responsiveBehavior: ResponsiveBehavior.Fill,
       minWidth: FILL_WIDGET_MIN_WIDTH,

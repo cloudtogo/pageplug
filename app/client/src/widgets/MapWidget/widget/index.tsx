@@ -91,7 +91,7 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
       defaultMarkers: [{ lat: 25.122, long: 50.132, title: "位置1" }],
       isClickedMarkerCentered: true,
       version: 1,
-      animateLoading: true,
+      animateLoading: false,
       responsiveBehavior: ResponsiveBehavior.Fill,
       minWidth: FILL_WIDGET_MIN_WIDTH,
       flexVerticalAlignment: FlexVerticalAlignment.Top,

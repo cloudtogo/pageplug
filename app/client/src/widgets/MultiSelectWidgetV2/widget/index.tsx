@@ -79,7 +79,7 @@ class MultiSelectWidget extends BaseWidget<
     return {
       rows: 7,
       columns: 20,
-      animateLoading: true,
+      animateLoading: false,
       labelText: "标签",
       labelPosition: LabelPosition.Top,
       labelAlignment: Alignment.LEFT,

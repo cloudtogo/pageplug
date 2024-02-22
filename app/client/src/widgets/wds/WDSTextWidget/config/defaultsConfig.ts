@@ -16,7 +16,7 @@ export const defaultsConfig = {
   widgetName: "Text",
   shouldTruncate: false,
   version: 1,
-  animateLoading: true,
+  animateLoading: false,
   responsiveBehavior: ResponsiveBehavior.Fill,
   minWidth: FILL_WIDGET_MIN_WIDTH,
   blueprint: {

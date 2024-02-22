@@ -69,7 +69,7 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
       shouldTruncate: false,
       overflow: OverflowTypes.NONE,
       version: 1,
-      animateLoading: true,
+      animateLoading: false,
       responsiveBehavior: ResponsiveBehavior.Fill,
       minWidth: FILL_WIDGET_MIN_WIDTH,
       blueprint: {

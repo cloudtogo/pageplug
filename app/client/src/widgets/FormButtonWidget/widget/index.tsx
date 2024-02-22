@@ -56,7 +56,7 @@ class FormButtonWidget extends ButtonWidget {
       isDefaultClickDisabled: true,
       recaptchaType: RecaptchaTypes.V3,
       version: 1,
-      animateLoading: true,
+      animateLoading: false,
     } as any; // TODO (Sangeeth): Type error
   }
 

@@ -103,7 +103,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
       shortcuts: false,
       firstDayOfWeek: 0,
       timePrecision: TimePrecision.MINUTE,
-      animateLoading: true,
+      animateLoading: false,
       responsiveBehavior: ResponsiveBehavior.Fill,
       minWidth: FILL_WIDGET_MIN_WIDTH,
     };
