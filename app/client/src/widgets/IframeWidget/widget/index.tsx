@@ -52,7 +52,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
       columns: 24,
       widgetName: "Iframe",
       version: 1,
-      animateLoading: true,
+      animateLoading: false,
       isVisible: true,
       responsiveBehavior: ResponsiveBehavior.Fill,
       flexVerticalAlignment: FlexVerticalAlignment.Top,

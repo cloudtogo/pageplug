@@ -49,7 +49,7 @@ class WDSButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
 
   static getDefaults() {
     return {
-      animateLoading: true,
+      animateLoading: false,
       text: "Submit",
       buttonVariant: BUTTON_VARIANTS.filled,
       buttonColor: COLORS.accent,

@@ -83,7 +83,7 @@ class ChartWidget extends BaseWidget<ChartWidgetProps, WidgetState> {
       chartName: "Sales Report",
       allowScroll: false,
       version: 1,
-      animateLoading: true,
+      animateLoading: false,
       responsiveBehavior: ResponsiveBehavior.Fill,
       flexVerticalAlignment: FlexVerticalAlignment.Top,
       minWidth: FILL_WIDGET_MIN_WIDTH,

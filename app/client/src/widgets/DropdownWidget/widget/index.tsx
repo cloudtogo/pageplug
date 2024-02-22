@@ -78,7 +78,7 @@ class DropdownWidget extends BaseWidget<DropdownWidgetProps, WidgetState> {
       isFilterable: false,
       isRequired: false,
       isDisabled: false,
-      animateLoading: true,
+      animateLoading: false,
     };
   }
 

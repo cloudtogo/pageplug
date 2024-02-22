@@ -67,7 +67,7 @@ class SwitchGroupWidget extends BaseWidget<
       isRequired: false,
       isInline: true,
       isVisible: true,
-      animateLoading: true,
+      animateLoading: false,
       alignment: Alignment.LEFT,
       labelText: "标签",
       labelPosition: LabelPosition.Top,

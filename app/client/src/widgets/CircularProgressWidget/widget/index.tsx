@@ -51,7 +51,7 @@ class CircularProgressWidget extends BaseWidget<
       shouldScroll: false,
       shouldTruncate: false,
       version: 1,
-      animateLoading: true,
+      animateLoading: false,
     };
   }
 

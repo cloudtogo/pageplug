@@ -61,7 +61,7 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
 
   static getDefaults() {
     return {
-      animateLoading: true,
+      animateLoading: false,
       text: "提交",
       buttonVariant: ButtonVariantTypes.PRIMARY,
       placement: ButtonPlacementTypes.CENTER,

@@ -96,7 +96,7 @@ class TabsWidget extends BaseWidget<
       columns: 24,
       shouldScrollContents: false,
       widgetName: "Tabs",
-      animateLoading: true,
+      animateLoading: false,
       borderWidth: 1,
       borderColor: Colors.GREY_5,
       backgroundColor: Colors.WHITE,

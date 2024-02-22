@@ -189,7 +189,7 @@ export class WDSTableWidget extends BaseWidget<TableWidgetProps, WidgetState> {
       canFreezeColumn: true,
       columnUpdatedAt: Date.now(),
       columns: 34,
-      animateLoading: true,
+      animateLoading: false,
       defaultSelectedRowIndex: 0,
       defaultSelectedRowIndices: [0],
       label: "Data",

@@ -204,7 +204,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidgetProps, WidgetState> {
       widgetName: "DatePicker",
       defaultDate: moment().format("YYYY-MM-DD HH:mm"),
       version: 1,
-      animateLoading: true,
+      animateLoading: false,
     };
   }
 

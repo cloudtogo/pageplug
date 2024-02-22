@@ -82,7 +82,7 @@ class CategorySliderWidget extends BaseWidget<
       shouldScroll: false,
       shouldTruncate: false,
       version: 1,
-      animateLoading: true,
+      animateLoading: false,
       labelText: "尺寸",
       labelPosition: LabelPosition.Top,
       labelAlignment: Alignment.LEFT,

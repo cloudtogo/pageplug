@@ -1,7 +1,7 @@
 export const defaultsConfig = {
   rows: 10,
   columns: 20,
-  animateLoading: true,
+  animateLoading: false,
   options: [
     { label: "Blue", value: "BLUE" },
     { label: "Green", value: "GREEN" },

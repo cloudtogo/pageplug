@@ -49,7 +49,7 @@ class ImageWidget extends BaseWidget<ImageWidgetProps, WidgetState> {
       columns: 12,
       widgetName: "Image",
       version: 1,
-      animateLoading: true,
+      animateLoading: false,
       flexVerticalAlignment: FlexVerticalAlignment.Top,
     };
   }

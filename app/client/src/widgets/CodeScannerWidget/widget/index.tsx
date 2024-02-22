@@ -55,7 +55,7 @@ class CodeScannerWidget extends BaseWidget<
       version: 1,
       isRequired: false,
       isDisabled: false,
-      animateLoading: true,
+      animateLoading: false,
       placement: ButtonPlacementTypes.CENTER,
       responsiveBehavior: ResponsiveBehavior.Fill,
       flexVerticalAlignment: FlexVerticalAlignment.Top,

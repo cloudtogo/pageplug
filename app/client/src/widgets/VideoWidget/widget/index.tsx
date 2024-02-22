@@ -58,7 +58,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
       url: getAssetUrl(`${ASSETS_CDN_URL}/widgets/bird.mp4`),
       autoPlay: false,
       version: 1,
-      animateLoading: true,
+      animateLoading: false,
       backgroundColor: "#000",
       responsiveBehavior: ResponsiveBehavior.Fill,
       flexVerticalAlignment: FlexVerticalAlignment.Top,

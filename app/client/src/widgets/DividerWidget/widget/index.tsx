@@ -42,7 +42,7 @@ class DividerWidget extends BaseWidget<DividerWidgetProps, WidgetState> {
       thickness: 2,
       isVisible: true,
       version: 1,
-      animateLoading: true,
+      animateLoading: false,
       responsiveBehavior: ResponsiveBehavior.Fill,
       minWidth: FILL_WIDGET_MIN_WIDTH,
     };

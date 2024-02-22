@@ -77,7 +77,7 @@ class RichTextEditorWidget extends BaseWidget<
       defaultText: "编辑器初始<b>内容</b>",
       rows: 20,
       columns: 24,
-      animateLoading: true,
+      animateLoading: false,
       isDisabled: false,
       isVisible: true,
       isRequired: false,
