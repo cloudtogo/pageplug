@@ -10,6 +10,8 @@ import { FixedLayoutWidgetComponent } from "../common/widgetComponent/FixedLayou
 import { FixedResizableLayer } from "../common/resizer/FixedResizableLayer";
 import { PositionedComponentLayer } from "../common/PositionedComponentLayer";
 import { generateDragStateForFixedLayout } from "../common/utils";
+import ErrorBoundary from "components/editorComponents/ErrorBoundry";
+import WidgetComponentBoundary from "layoutSystems/common/widgetComponent/WidgetComponentBoundary";
 
 /**
  * FixedLayoutEditorWidgetOnion
@@ -55,8 +57,34 @@ export const FixedLayoutEditorWidgetOnion = (props: BaseWidgetProps) => {
       widgetId,
     ],
   );
-  return (
-    <AutoHeightOverlayLayer {...props}>
+  /**
+   * TODO: widgetName, MBottomBarWidget, MPopupWidget
+   */
+  let content = null;
+  if (props.type === "TARO_LOADING_WIDGET") {
+    content = (
+      <div style={{ zIndex: 10000, position: "relative" }}>
+        <ErrorBoundary>
+          <WidgetComponentBoundary widgetType={props.type}>
+            <WidgetNameLayer
+              componentWidth={props.componentWidth}
+              detachFromLayout={props.detachFromLayout}
+              disablePropertyPane={props.disablePropertyPane}
+              evalErrorsObj={get(props, EVAL_ERROR_PATH, {})}
+              parentId={props.parentId}
+              topRow={props.topRow}
+              type={props.type}
+              widgetId={props.widgetId}
+              widgetName={props.widgetName}
+            >
+              {props.children}
+            </WidgetNameLayer>
+          </WidgetComponentBoundary>
+        </ErrorBoundary>
+      </div>
+    );
+  } else {
+    content = (
       <PositionedComponentLayer {...props}>
         <SnipeableComponent type={props.type} widgetId={props.widgetId}>
           <DraggableComponent
@@ -87,6 +115,7 @@ export const FixedLayoutEditorWidgetOnion = (props: BaseWidgetProps) => {
           </DraggableComponent>
         </SnipeableComponent>
       </PositionedComponentLayer>
-    </AutoHeightOverlayLayer>
-  );
+    );
+  }
+  return <AutoHeightOverlayLayer {...props}>{content}</AutoHeightOverlayLayer>;
 };
