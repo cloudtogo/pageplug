@@ -71,7 +71,7 @@ import FormilyWidget from "./FormilyWidget";
 import EchartWidget from "./EchartWidget";
 
 import MActionBarWidget from "./taro/ActionBarWidget";
-// import MBottomBarWidget from "./taro/BottomBarWidget";
+import MBottomBarWidget from "./taro/BottomBarWidget";
 import MButtonWidget from "./taro/ButtonWidget";
 import MCellWidget from "./taro/CellWidget";
 import MCheckboxWidget from "./taro/CheckboxWidget";
@@ -81,13 +81,13 @@ import MHtmlWidget from "./taro/HtmlWidget";
 import MImageWidget from "./taro/ImageWidget";
 import MKVWidget from "./taro/KVWidget";
 import MListWidget from "./taro/ListWidget";
-// import MPopupWidget from "./taro/PopupWidget";
+import MPopupWidget from "./taro/PopupWidget";
 import MSearchWidget from "./taro/SearchWidget";
 import MSkuWidget from "./taro/SkuWidget";
 import SwiperWidget from "./taro/SwiperWidget";
 import MTabsWidget from "./taro/TabsWidget";
 import MTextWidget from "./taro/TextWidget";
-// import MLoadingWidget from "./taro/LoadingWidget/widget/index";
+import MLoadingWidget from "./taro/LoadingWidget";
 
 const Widgets = [
   // appsmith
@@ -164,8 +164,8 @@ const Widgets = [
   MImageWidget,
   MKVWidget,
   MListWidget,
-  // MLoadingWidget,
-  // MPopupWidget,
+  MLoadingWidget.WrappedComponent,
+  // MPopupWidget.WrappedComponent,
   MSearchWidget,
   MSkuWidget,
   SwiperWidget,

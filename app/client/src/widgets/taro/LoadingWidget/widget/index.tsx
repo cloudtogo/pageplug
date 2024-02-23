@@ -7,10 +7,18 @@ import { ValidationTypes } from "constants/WidgetValidation";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { generateClassName } from "utils/generators";
 import { selectWidgetInitAction } from "actions/widgetSelectionActions";
 import { previewModeSelector } from "selectors/editorSelectors";
 import type { AppState } from "@appsmith/reducers";
 import IconSVG from "../icon.svg";
+
+const Container = styled(View)`
+  position: fixed;
+  top: 60px;
+  width: 0;
+  height: 0;
+`;
 
 const BackdropBox = styled(Backdrop)`
   left: unset;
@@ -37,6 +45,29 @@ const LoadingContainer = styled(View)`
   --loading-text-color: #fff;
 `;
 
+const Indicator = styled(View)`
+  position: absolute;
+  left: -64px;
+  width: 60px;
+  height: 60px;
+  border-radius: 4px;
+  top: 4px;
+  background: #bdbdbd66;
+  border: 2px dashed #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  & .taroify-loading {
+    color: #7e7e7e;
+
+    & .taroify-loading__spinner {
+      animation: none;
+    }
+  }
+`;
+
 class MLoadingWidget extends BaseWidget<MLoadingWidgetProps, WidgetState> {
   static type = "TARO_LOADING_WIDGET";
 
@@ -59,25 +90,6 @@ class MLoadingWidget extends BaseWidget<MLoadingWidgetProps, WidgetState> {
       version: 1,
       detachFromLayout: true,
       showLoading: false,
-    };
-  }
-
-  static getAutoLayoutConfig() {
-    return {
-      widgetSize: [
-        {
-          viewportMinWidth: 0,
-          configuration: () => {
-            return {
-              minWidth: "280px",
-              minHeight: "70px",
-            };
-          },
-        },
-      ],
-      disableResizeHandles: {
-        vertical: true,
-      },
     };
   }
 
@@ -128,7 +140,17 @@ class MLoadingWidget extends BaseWidget<MLoadingWidgetProps, WidgetState> {
   };
 
   getWidgetView() {
-    return this.getBackdrop();
+    const backdrop = this.getBackdrop();
+    return (
+      <Container className={generateClassName(this.props.widgetId)}>
+        {backdrop}
+        {this.props.isPreviewMode ? null : (
+          <Indicator onClick={this.openPropertyPane}>
+            <Loading type="spinner" />
+          </Indicator>
+        )}
+      </Container>
+    );
   }
 }
 
