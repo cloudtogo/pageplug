@@ -95,8 +95,6 @@ const defaultFilter = [
 class TableWidget extends BaseWidget<TableWidgetProps, WidgetState> {
   static type = "TABLE_WIDGET";
 
-  static preloadConfig = true;
-
   static getConfig() {
     return {
       name: "表格",
@@ -321,6 +319,7 @@ class TableWidget extends BaseWidget<TableWidgetProps, WidgetState> {
 
   static getAnvilConfig(): AnvilConfig | null {
     return {
+      isLargeWidget: false,
       widgetSize: {
         maxHeight: {},
         maxWidth: {},
@@ -461,7 +460,7 @@ class TableWidget extends BaseWidget<TableWidgetProps, WidgetState> {
         },
         setData: {
           path: "tableData",
-          type: "object",
+          type: "array",
         },
       },
     };

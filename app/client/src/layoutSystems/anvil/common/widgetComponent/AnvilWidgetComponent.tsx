@@ -19,10 +19,11 @@ export const AnvilWidgetComponent = (props: BaseWidgetProps) => {
     return <Skeleton />;
   }
 
-  if (!detachFromLayout) return <div>{props.children}</div>;
+  if (!detachFromLayout) return props.children;
 
   return (
-    <ErrorBoundary>
+    // delete style as soon as we switch to Anvil layout completely
+    <ErrorBoundary style={{ height: "auto", width: "auto" }}>
       <WidgetComponentBoundary widgetType={type}>
         {props.children}
       </WidgetComponentBoundary>

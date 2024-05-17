@@ -1,12 +1,11 @@
-/* eslint-disable prettier/prettier */
-import { Classes, Tooltip } from "@blueprintjs/core";
 import { Colors } from "constants/Colors";
 import type { CSSProperties } from "react";
 import React from "react";
 import { useSelector } from "react-redux";
 import { snipingModeSelector } from "selectors/editorSelectors";
 import styled from "styled-components";
-import { Icon } from "design-system";
+import { Icon, Text, Tooltip } from "design-system";
+
 // I honestly can't think of a better name for this enum
 export enum Activities {
   HOVERING,
@@ -14,13 +13,7 @@ export enum Activities {
   ACTIVE,
   NONE,
 }
-const StyledTooltip = styled(Tooltip)<{
-  children?: React.ReactNode;
-}>`
-  .${Classes.POPOVER_TARGET} {
-    height: 100%;
-  }
-`;
+
 const WidgetNameBoundary = 1;
 const BORDER_RADIUS = 4;
 const SettingsWrapper = styled.div<{ widgetWidth: number; inverted: boolean }>`
@@ -59,10 +52,6 @@ const WidgetName = styled.span`
   overflow-x: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-`;
-
-const StyledErrorIcon = styled(Icon)`
-  margin-right: ${(props) => props.theme.spaces[1]}px;
 `;
 
 interface SettingsControlProps {
@@ -117,13 +106,17 @@ const getStyles = (
 
 export function SettingsControl(props: SettingsControlProps) {
   const isSnipingMode = useSelector(snipingModeSelector);
-  const errorIcon = <StyledErrorIcon name="warning" size="sm" />;
+  const errorIcon = <Icon name="warning" size="sm" />;
 
   return (
-    <StyledTooltip
-      content={isSnipingMode ? `绑定到组件 ${props.name}` : "编辑组件属性"}
-      hoverOpenDelay={500}
-      position="top-right"
+    <Tooltip
+      content={
+        <Text color="var(--ads-v2-color-white)">
+          {isSnipingMode ? `绑定到组件 ${props.name}` : `编辑组件`}
+        </Text>
+      }
+      mouseEnterDelay={0}
+      placement="topRight"
     >
       <SettingsWrapper
         className="t--widget-propertypane-toggle"
@@ -145,7 +138,7 @@ export function SettingsControl(props: SettingsControlProps) {
           {isSnipingMode ? `绑定到 ${props.name}` : props.name}
         </WidgetName>
       </SettingsWrapper>
-    </StyledTooltip>
+    </Tooltip>
   );
 }
 

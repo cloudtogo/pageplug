@@ -27,7 +27,24 @@ export interface FeatureDetails {
   description: string;
   // Gif or Image to give a walkthrough
   imageURL?: string;
+  // footer details
+  footerDetails?: FeatureFooterDetails;
 }
+
+export interface FeatureFooterDetails {
+  // footer text
+  footerText: string;
+  // footer button text
+  footerButtonText: string;
+  // footer button onClick handler
+  onClickHandler: () => void;
+}
+
+export const isFeatureFooterDetails = (
+  obj: FeatureFooterDetails,
+): obj is FeatureFooterDetails => {
+  return !!obj;
+};
 
 export interface FeatureParams {
   // To execute a function on dismissing the tutorial walkthrough.
@@ -50,6 +67,9 @@ export interface FeatureParams {
   dismissOnOverlayClick?: boolean;
   // execute function just before showing walkthrough highlight
   runBeforeWalkthrough?: () => void;
+  // If we want to force the display of walkthrough, set this prop to true
+  // If set to true, will override the feature flag as well
+  forceExecution?: boolean;
 }
 
 interface WalkthroughContextType {

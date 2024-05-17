@@ -11,18 +11,21 @@ export type TextAreaRef = Ref<HTMLDivElement>;
 
 function TextArea(props: TextAreaProps, ref: TextAreaRef) {
   const {
-    className,
+    defaultValue,
     isDisabled = false,
     isReadOnly = false,
     isRequired = false,
     onChange,
+    value,
     ...otherProps
   } = props;
+
+  const isEmpty = isReadOnly && !Boolean(value) && !Boolean(defaultValue);
 
   // not in stately because this is so we know when to re-measure, which is a spectrum design
   const [inputValue, setInputValue] = useControlledState(
     props.value,
-    props.defaultValue,
+    props.defaultValue ?? "",
     () => {
       //
     },
@@ -71,6 +74,8 @@ function TextArea(props: TextAreaProps, ref: TextAreaRef) {
     useTextField(
       {
         ...props,
+        value: isEmpty ? "—" : value,
+        defaultValue,
         onChange: chain(onChange, setInputValue),
         inputElementType: "textarea",
       },
@@ -80,7 +85,6 @@ function TextArea(props: TextAreaProps, ref: TextAreaRef) {
   return (
     <TextInputBase
       {...otherProps}
-      className={className}
       descriptionProps={descriptionProps}
       errorMessageProps={errorMessageProps}
       inputProps={inputProps}

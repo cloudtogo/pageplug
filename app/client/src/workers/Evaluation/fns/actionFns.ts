@@ -39,6 +39,15 @@ export default async function run(
   const executor = promisify(runFnDescriptor.bind(this));
   try {
     const response = await executor(onSuccessOrParams, onError, params);
+    // response is an array of [data, params, responseMeta]
+    // @ts-expect-error: self type is not defined
+    const action = self[this.name] as ActionEntity;
+    if (action) {
+      action.data = response[0];
+      action.responseMeta = response[2];
+      action.isLoading = false;
+    }
+
     if (typeof onSuccessOrParams === "function") {
       onSuccessOrParams.apply(this, response);
       return;

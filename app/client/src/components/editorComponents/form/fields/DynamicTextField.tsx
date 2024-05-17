@@ -17,18 +17,18 @@ import { editorSQLModes } from "components/editorComponents/CodeEditor/sql/confi
 
 class DynamicTextField extends React.Component<
   BaseFieldProps &
-    EditorStyleProps & {
-      size?: EditorSize;
-      tabBehaviour?: TabBehaviour;
-      mode?: TEditorModes;
-      theme?: EditorTheme;
-      hoverInteraction?: boolean;
-      border?: CodeEditorBorder;
-      showLightningMenu?: boolean;
-      height?: string;
-      disabled?: boolean;
-      evaluatedPopUpLabel?: string;
-    }
+  EditorStyleProps & {
+    size?: EditorSize;
+    tabBehaviour?: TabBehaviour;
+    mode?: TEditorModes;
+    theme?: EditorTheme;
+    hoverInteraction?: boolean;
+    border?: CodeEditorBorder;
+    showLightningMenu?: boolean;
+    height?: string;
+    disabled?: boolean;
+    evaluatedPopUpLabel?: string;
+  }
 > {
   render() {
     const editorProps = {

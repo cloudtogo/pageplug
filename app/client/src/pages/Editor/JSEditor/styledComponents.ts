@@ -61,6 +61,9 @@ export const NameWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 50%;
+  overflow: hidden;
+
   input {
     margin: 0;
     box-sizing: border-box;
@@ -86,7 +89,6 @@ export const TabbedViewContainer = styled.div<{ isExecuting: boolean }>`
   flex: 1;
   overflow: auto;
   position: relative;
-  border-bottom: 1px solid var(--ads-v2-color-border);
   padding: 0px ${(props) => props.theme.spaces[11]}px;
 
   ${thinScrollbar}

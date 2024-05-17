@@ -13,6 +13,7 @@ import { generateClassName } from "utils/generators";
 import type { AppState } from "@appsmith/reducers";
 import { getCanvasWidth } from "selectors/editorSelectors";
 import IconSVG from "../icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 export class MPopupWidget extends BaseWidget<MPopupWidgetProps, WidgetState> {
   static type = "TARO_POPUP_WIDGET";
@@ -20,6 +21,7 @@ export class MPopupWidget extends BaseWidget<MPopupWidgetProps, WidgetState> {
   static getConfig() {
     return {
       name: "底部弹窗",
+      tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["popup", "dialog", "modal"],
       iconSVG: IconSVG,
       needsMeta: true,

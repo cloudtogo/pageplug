@@ -113,7 +113,7 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
 
   if (!(widgetsStructure.children && widgetsStructure.children.length > 0))
     return pageNotFound;
-
+  console.log(isMobile, "isMobile")
   return (
     <Section
       theight={widgetsStructure.bottomRow + fixedHeight + AUTO_HEIGHT_PADDING}

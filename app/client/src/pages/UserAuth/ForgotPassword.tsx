@@ -32,6 +32,17 @@ import { getAppsmithConfigs } from "@appsmith/configs";
 import Container from "./Container";
 import EmailSVGIcon from "ce/components/svg/Email";
 import { message } from "antd";
+import styled, { css } from "styled-components";
+import {LoginForm, StyledEmailIcon} from "./Login"
+export const FormBottom = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  a > span {
+    font-size: 16px;
+  }
+`;
 
 const { mailEnabled } = getAppsmithConfigs();
 
@@ -104,34 +115,22 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
       title={createMessage(FORGOT_PASSWORD_PAGE_TITLE)}
     >
       <FormMessagesContainer>
-        {/* {!mailEnabled && (
-          <Callout
-            kind="warning"
-            links={[
-              {
-                to: "https://docs.pageplug.cn/%E5%AD%A6%E4%B9%A0%E6%96%87%E6%A1%A3/%E9%85%8D%E7%BD%AE%E9%82%AE%E7%AE%B1%E6%9C%8D%E5%8A%A1",
-                target: "_blank",
-                children: "如何配置？",
-              },
-            ]}
-          >
-            系统未开通邮件服务，不能正常发送重置邮件
-          </Callout>
-        )} */}
         {submitFailed && error && <Callout kind="warning">{error}</Callout>}
       </FormMessagesContainer>
       <StyledForm onSubmit={handleSubmit(forgotPasswordSubmitHandler)}>
-        <FormGroup intent={error ? "danger" : "none"}>
-          <FormTextField
-            disabled={submitting}
-            name="email"
-            placeholder={createMessage(
-              FORGOT_PASSWORD_PAGE_EMAIL_INPUT_PLACEHOLDER,
-            )}
-            startIcon="null"
-            className="pp-height"
-          />
-          <EmailSVGIcon className="icon-position w-4" />
+        <FormGroup intent={error ? "danger" : "none"} style={{ position: "relative"}}>
+          <LoginForm>
+            <FormTextField
+              disabled={submitting}
+              name="email"
+              placeholder={createMessage(
+                FORGOT_PASSWORD_PAGE_EMAIL_INPUT_PLACEHOLDER,
+              )}
+              startIcon="null"
+              className="pp-height"
+            />
+          </LoginForm>
+          <StyledEmailIcon height={15} width={15} />
         </FormGroup>
         <FormActions>
           <Button
@@ -147,17 +146,17 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
         </FormActions>
       </StyledForm>
       {/* 底部提示 */}
-      <div className="flex-middle myfont">
+      <FormBottom>
         {createMessage(ALREADY_HAVE_AN_ACCOUNT)}
         <Link
-          className="t--sign-up t--signup-link pl-[var(--ads-v2\-spaces-3)] fs-16 a_link"
+          className="t--sign-up t--signup-link"
           kind="primary"
           target="_self"
           to={AUTH_LOGIN_URL}
         >
           {createMessage(SIGNUP_PAGE_LOGIN_LINK_TEXT)}
         </Link>
-      </div>
+      </FormBottom>
     </Container>
   );
 };

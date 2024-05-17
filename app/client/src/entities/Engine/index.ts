@@ -13,6 +13,7 @@ import { getPersistentAppStore } from "constants/AppConstants";
 import { APP_MODE } from "entities/App";
 import log from "loglevel";
 import { call, put, select } from "redux-saga/effects";
+import type { InitConsolidatedApi } from "sagas/InitSagas";
 import { failFastApiCalls } from "sagas/InitSagas";
 import { getDefaultPageId } from "sagas/selectors";
 import {
@@ -24,6 +25,7 @@ import type URLRedirect from "entities/URLRedirect/index";
 import URLGeneratorFactory from "entities/URLRedirect/factory";
 import { updateBranchLocally } from "actions/gitSyncActions";
 import { getCurrentGitBranch } from "selectors/gitSyncSelectors";
+import { restoreIDEEditorViewMode } from "actions/ideActions";
 
 export interface AppEnginePayload {
   applicationId?: string;
@@ -31,6 +33,7 @@ export interface AppEnginePayload {
   branch?: string;
   mode: APP_MODE;
   queryParams?: any;
+  shouldInitialiseUserDetails?: boolean;
 }
 
 export interface IAppEngine {
@@ -56,14 +59,18 @@ export default abstract class AppEngine {
   }
   private _urlRedirect: URLRedirect | null;
 
-  abstract loadAppEntities(toLoadPageId: string, applicationId: string): any;
+  abstract loadAppEntities(
+    toLoadPageId: string,
+    applicationId: string,
+    allResponses: InitConsolidatedApi,
+  ): any;
   abstract loadGit(applicationId: string): any;
   abstract startPerformanceTracking(): any;
   abstract stopPerformanceTracking(): any;
   abstract completeChore(): any;
 
-  *loadAppData(payload: AppEnginePayload) {
-    const { applicationId, branch, pageId, queryParams } = payload;
+*loadAppData(payload: AppEnginePayload, allResponses: InitConsolidatedApi) {
+  const { applicationId, branch, pageId, queryParams } = payload;
     // sync CloudOS api
     if (
       queryParams &&
@@ -81,9 +88,17 @@ export default abstract class AppEngine {
         );
       }
     }
+    const { pages } = allResponses;
 
     const apiCalls: boolean = yield failFastApiCalls(
-      [fetchApplication({ applicationId, pageId, mode: this._mode })],
+      [
+        fetchApplication({
+          applicationId,
+          pageId,
+          mode: this._mode,
+          pages,
+        }),
+      ],
       [
         ReduxActionTypes.FETCH_APPLICATION_SUCCESS,
         ReduxActionTypes.FETCH_PAGE_LIST_SUCCESS,
@@ -127,6 +142,7 @@ export default abstract class AppEngine {
     const { branch } = payload;
     yield put(updateBranchLocally(branch || ""));
     yield put(setAppMode(this._mode));
+    yield put(restoreIDEEditorViewMode());
     yield put({ type: ReduxActionTypes.START_EVALUATION });
   }
 

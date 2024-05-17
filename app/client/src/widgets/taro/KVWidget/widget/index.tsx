@@ -11,6 +11,7 @@ import {
   demoLayoutProps,
 } from "../constants";
 import IconSVG from "../icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 class MKVWidget extends BaseWidget<MKVWidgetProps, WidgetState> {
   static type = "TARO_KV_WIDGET";
@@ -18,6 +19,7 @@ class MKVWidget extends BaseWidget<MKVWidgetProps, WidgetState> {
   static getConfig() {
     return {
       name: "键值对",
+      tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["kv", "text", "文本", "field"],
       iconSVG: IconSVG,
       needsMeta: false,

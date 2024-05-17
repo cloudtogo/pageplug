@@ -1,10 +1,15 @@
 import widgetLocators from "../../../../locators/Widgets.json";
 import template from "../../../../locators/TemplatesLocators.json";
 import {
-  entityExplorer,
   agHelper,
+  assertHelper,
+  locators,
   templates,
 } from "../../../../support/Objects/ObjectsCore";
+import EditorNavigation, {
+  EntityType,
+} from "../../../../support/Pages/EditorNavigation";
+import PageList from "../../../../support/Pages/PageList";
 
 beforeEach(() => {
   // Closes template dialog if it is already open - useful for retry
@@ -13,24 +18,26 @@ beforeEach(() => {
       cy.xpath(template.closeButton).click({ force: true });
     }
   });
-  entityExplorer.SelectEntityByName("Page1", "Pages");
+  EditorNavigation.SelectEntityByName("Page1", EntityType.Page);
 });
 
 describe(
-  "excludeForAirgap",
   "Fork a template to the current app from new page popover",
+  { tags: ["@tag.Templates", "@tag.excludeForAirgap"] },
   () => {
     it("1. Fork template from page section", () => {
       //Fork template button to be visible always
-      entityExplorer.AddNewPage("Add page from template");
-      agHelper.Sleep(5000);
+      PageList.AddNewPage("Add page from template");
       agHelper.AssertElementExist(template.templateDialogBox);
+      agHelper.AssertElementVisibility(template.templateDialogBox);
       agHelper.AssertElementVisibility(templates.locators._templateCard);
-      agHelper.Sleep(4000);
+      agHelper.AssertElementVisibility(template.vehicleMaintenenceApp);
       agHelper.GetNClick(template.vehicleMaintenenceApp);
-      agHelper.WaitUntilEleDisappear("//*[text()='Loading template details']");
-      agHelper.Sleep();
-      agHelper.CheckForErrorToast(
+      agHelper.AssertElementAbsence(
+        "//*[text()='Loading template details']",
+        Cypress.config().pageLoadTimeout,
+      );
+      agHelper.FailIfErrorToast(
         "Internal server error while processing request",
       );
       cy.get("body").then(($ele) => {
@@ -40,71 +47,55 @@ describe(
           }
         }
       });
-      cy.get(widgetLocators.toastAction).should(
-        "contain",
-        "template added successfully",
+      agHelper.AssertElementAbsence(
+        locators._visibleTextSpan("Setting up the template"),
+        Cypress.config().pageLoadTimeout,
       );
+      agHelper.ValidateToastMessage("template added successfully");
+      agHelper.AssertElementVisibility(locators._itemContainerWidget);
+      agHelper.WaitUntilAllToastsDisappear();
     });
 
     it("2. Add selected page of template from page section", () => {
-      entityExplorer.AddNewPage("Add page from template");
+      PageList.AddNewPage("Add page from template");
       agHelper.AssertElementVisibility(template.templateDialogBox);
-      agHelper.AssertElementVisibility(
-        templates.locators._templateCard,
-        true,
-        0,
-        30000,
-      );
+      agHelper.AssertElementVisibility(templates.locators._templateCard);
+      agHelper.AssertElementVisibility(template.vehicleMaintenenceApp);
       agHelper.GetNClick(template.vehicleMaintenenceApp);
-      //agHelper.WaitUntilEleDisappear("//*[text()='Loading template details']");
-      cy.wait("@getTemplatePages").should(
-        "have.nested.property",
-        "response.body.responseMeta.status",
-        200,
+      agHelper.AssertElementAbsence(
+        "//*[text()='Loading template details']",
+        Cypress.config().pageLoadTimeout,
       );
-
-      //cy.xpath(template.selectAllPages).next().click();
-      // cy.xpath("//span[text()='CALENDAR MOBILE']").parent().next().click();
+      assertHelper.AssertNetworkStatus("getTemplatePages");
+      agHelper.CheckUncheck(template.selectAllPages, false);
+      agHelper.CheckUncheck(
+        "div:has(> span:contains('New vehicle')) + label input[type='checkbox']",
+      );
       agHelper.GetNClick(template.templateViewForkButton);
-      cy.wait("@fetchTemplate").should(
-        "have.nested.property",
-        "response.body.responseMeta.status",
-        200,
+      agHelper.AssertElementAbsence(
+        locators._visibleTextSpan("Setting up the template"),
+        Cypress.config().pageLoadTimeout,
       );
-      agHelper.GetNAssertElementText(
-        widgetLocators.toastAction,
-        "template added successfully",
-        "contain.text",
-      );
+      assertHelper.AssertNetworkStatus("fetchTemplate");
+      agHelper.WaitUntilToastDisappear("template added successfully");
+      agHelper.AssertElementVisibility(locators._itemContainerWidget);
     });
 
     it("3. Templates card should take user to 'select pages from template' page", () => {
-      //agHelper.RefreshPage();
-
-      entityExplorer.AddNewPage("Add page from template");
-      agHelper.AssertElementVisibility(
-        templates.locators._templateCard,
-        true,
-        0,
-        30000,
-      );
+      PageList.AddNewPage("Add page from template");
+      agHelper.AssertElementVisibility(templates.locators._templateCard);
       agHelper.GetNClick(templates.locators._templateCard);
-      agHelper.Sleep(2000);
       agHelper.AssertElementVisibility(template.templateViewForkButton);
-      agHelper.Sleep(2000);
       agHelper.GetNClick(templates.locators._closeTemplateDialogBoxBtn);
-      agHelper.Sleep();
 
       //Similar templates add icon should take user to 'select pages from template'
       //agHelper.RefreshPage();
-      entityExplorer.AddNewPage("Add page from template");
+      PageList.AddNewPage("Add page from template");
       // We are currentlyon on templates list page
       agHelper.GetNClick(templates.locators._templateCard);
       // Here we are on template detail page, with similar templates at the bottom
       agHelper.GetNClick(templates.locators._templateCard);
-      agHelper.Sleep(2000);
       agHelper.AssertElementVisibility(template.templateViewForkButton);
-      agHelper.Sleep(2000);
       agHelper.GetNClick(templates.locators._closeTemplateDialogBoxBtn);
     });
 
@@ -122,7 +113,7 @@ describe(
         ).as("fetchAllTemplates");
         agHelper.RefreshPage(); //is important for intercept to go thru!
 
-        entityExplorer.AddNewPage("Add page from template");
+        PageList.AddNewPage("Add page from template");
 
         agHelper.AssertElementVisibility(template.templateDialogBox);
         cy.wait("@fetchAllTemplates");

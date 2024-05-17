@@ -79,9 +79,9 @@ export class ContainerWidget extends BaseWidget<
         const offset =
           props.borderWidth && props.borderWidth > 1
             ? Math.ceil(
-                (2 * parseInt(props.borderWidth, 10) || 0) /
-                  GridDefaults.DEFAULT_GRID_ROW_HEIGHT,
-              )
+              (2 * parseInt(props.borderWidth, 10) || 0) /
+              GridDefaults.DEFAULT_GRID_ROW_HEIGHT,
+            )
             : 0;
 
         return offset;
@@ -173,6 +173,7 @@ export class ContainerWidget extends BaseWidget<
 
   static getAnvilConfig(): AnvilConfig | null {
     return {
+      isLargeWidget: false,
       widgetSize: {
         maxHeight: {},
         maxWidth: {},

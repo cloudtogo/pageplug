@@ -3,17 +3,69 @@ import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { isNameValid } from "utils/helpers";
 import type { AppState } from "@appsmith/reducers";
 import log from "loglevel";
-import { inGuidedTour } from "selectors/onboardingSelectors";
-import { toggleShowDeviationDialog } from "actions/onboardingActions";
 import { getUsedActionNames } from "selectors/actionSelectors";
 import {
   ACTION_INVALID_NAME_ERROR,
   ACTION_NAME_CONFLICT_ERROR,
   createMessage,
 } from "@appsmith/constants/messages";
+import styled from "styled-components";
+import { Classes } from "@blueprintjs/core";
+
+export const NameWrapper = styled.div<{ enableFontStyling?: boolean }>`
+  min-width: 50%;
+  margin-right: 10px;
+  display: flex;
+  justify-content: flex-start;
+  align-content: center;
+  & > div {
+    max-width: 100%;
+    flex: 0 1 auto;
+    font-size: ${(props) => props.theme.fontSizes[5]}px;
+    font-weight: ${(props) => props.theme.fontWeights[2]};
+  }
+
+  ${(props) =>
+    props.enableFontStyling
+      ? `  &&& .${Classes.EDITABLE_TEXT_CONTENT}, &&& .${Classes.EDITABLE_TEXT_INPUT} {
+  font-size: ${props.theme.typography.h3.fontSize}px;
+  letter-spacing: ${props.theme.typography.h3.letterSpacing}px;
+  font-weight: ${props.theme.typography.h3.fontWeight};
+}`
+      : null}
+
+  & .t--action-name-edit-field, & .t--js-action-name-edit-field, & .t--module-instance-name-edit-field {
+    width: 100%;
+
+    & > span {
+      display: inline-block;
+    }
+  }
+
+  & > div > div:nth-child(2) {
+    width: calc(100% - 42px); // 32px icon width and 8px gap of flex
+  }
+
+  & > div > div:nth-child(2) > :first-child {
+    width: 100%;
+  }
+`;
+
+export const IconWrapper = styled.img`
+  width: 34px;
+  height: auto;
+`;
+
+export const IconBox = styled.div`
+  height: 34px;
+  width: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+`;
 
 interface NameEditorProps {
-  checkForGuidedTour?: boolean;
   children: (params: any) => JSX.Element;
   id?: string;
   name?: string;
@@ -32,7 +84,6 @@ interface NameEditorProps {
 
 function NameEditor(props: NameEditorProps) {
   const {
-    checkForGuidedTour,
     dispatchAction,
     id: entityId,
     idUndefinedErrorMessage,
@@ -47,7 +98,6 @@ function NameEditor(props: NameEditorProps) {
   if (!entityId) {
     log.error(idUndefinedErrorMessage);
   }
-  const guidedTourEnabled = useSelector(inGuidedTour);
 
   const conflictingNames = useSelector(
     (state: AppState) => getUsedActionNames(state, entityId || ""),
@@ -74,15 +124,10 @@ function NameEditor(props: NameEditorProps) {
   const handleNameChange = useCallback(
     (name: string) => {
       if (name !== entityName && !isInvalidNameForEntity(name)) {
-        if (checkForGuidedTour && guidedTourEnabled) {
-          dispatch(toggleShowDeviationDialog(true));
-          return;
-        }
-
         dispatch(dispatchAction({ id: entityId, name }));
       }
     },
-    [dispatch, isInvalidNameForEntity, guidedTourEnabled, entityId, entityName],
+    [dispatch, isInvalidNameForEntity, entityId, entityName],
   );
 
   useEffect(() => {

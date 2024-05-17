@@ -12,6 +12,8 @@ export const CANVAS_BACKGROUND_COLOR = "#FFFFFF";
 export const DEFAULT_ENTITY_EXPLORER_WIDTH = 256;
 export const DEFAULT_PROPERTY_PANE_WIDTH = 288;
 export const APP_SETTINGS_PANE_WIDTH = 525;
+export const DEFAULT_EDITOR_PANE_WIDTH = 255;
+export const DEFAULT_SPLIT_SCREEN_WIDTH = "40.4vw";
 
 export const DEFAULT_VIEWER_LOGO = "https://img.icons8.com/doodle/2x/koala.png";
 
@@ -91,6 +93,16 @@ export interface NavigationSetting {
   logoConfiguration: (typeof NAVIGATION_SETTINGS.LOGO_CONFIGURATION)[keyof typeof NAVIGATION_SETTINGS.LOGO_CONFIGURATION];
 }
 
+export interface ThemeSetting {
+  accentColor: string;
+  colorMode: "LIGHT" | "DARK";
+  borderRadius: string;
+  density: number;
+  sizing: number;
+  fontFamily: string;
+  iconStyle: "FILLED" | "OUTLINED";
+}
+
 export type StringsFromNavigationSetting = Omit<
   NavigationSetting,
   "showNavbar" | "showSignIn"
@@ -118,6 +130,16 @@ export const defaultNavigationSetting = {
   colorStyle: NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT,
   logoConfiguration:
     NAVIGATION_SETTINGS.LOGO_CONFIGURATION.LOGO_AND_APPLICATION_TITLE,
+};
+
+export const defaultThemeSetting: ThemeSetting = {
+  fontFamily: "System Default",
+  accentColor: "#0080ff",
+  colorMode: "LIGHT",
+  borderRadius: "6px",
+  density: 1,
+  sizing: 1,
+  iconStyle: "OUTLINED",
 };
 
 export const SIDEBAR_WIDTH = {

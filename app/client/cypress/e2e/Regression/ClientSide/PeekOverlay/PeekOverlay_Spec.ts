@@ -9,10 +9,9 @@ import {
   dataManager,
 } from "../../../../support/Objects/ObjectsCore";
 
-describe("Peek overlay", () => {
+describe("Peek overlay", { tags: ["@tag.JS"] }, () => {
   it("1. Main test", () => {
     entityExplorer.DragDropWidgetNVerify("tablewidgetv2", 500, 100);
-    entityExplorer.NavigateToSwitcher("Explorer");
     table.AddSampleTableData();
     apiPage.CreateAndFillApi(
       dataManager.dsValues[dataManager.defaultEnviorment].mockApiUrl,

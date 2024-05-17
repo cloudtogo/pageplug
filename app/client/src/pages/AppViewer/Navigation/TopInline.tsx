@@ -16,6 +16,7 @@ import history from "utils/history";
 import { useWindowSizeHooks } from "utils/hooks/dragResizeHooks";
 import { NavLink } from "react-router-dom";
 import { getAppMode } from "@appsmith/selectors/applicationSelectors";
+import { getCurrentPage } from "selectors/editorSelectors";
 import { APP_MODE } from "entities/App";
 import { builderURL, viewerURL } from "@appsmith/RouteBuilder";
 import MenuItem from "./components/MenuItem";
@@ -31,7 +32,7 @@ import { getIsAppSettingsPaneWithNavigationTabOpen } from "selectors/appSettings
 import { throttle, get as _get, size as _size, head as _head } from "lodash";
 import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
 import { Menu } from "antd";
-import { makeRouteNode } from "../utils";
+import { makeRouteNode, findPathNodes } from "../utils";
 import { filterHiddenTreeData, mapClearTree } from "utils/treeUtils";
 // TODO - @Dhruvik - ImprovedAppNav
 // Replace with NavigationProps if nothing changes
@@ -68,16 +69,18 @@ export function TopInline(props: TopInlineProps) {
   const canvasWidth = useSelector(getCanvasWidth);
   const THROTTLE_TIMEOUT = 50;
   const currentApp = useSelector(getCurrentApplication);
+  const currentPage = useSelector(getCurrentPage);
+
   const getPath = (it: any, pagesMap: any, title: string) => {
     if (!it.pageId) return "";
     const pageURL =
       appMode === APP_MODE.PUBLISHED
         ? viewerURL({
-            pageId: pagesMap[title].pageId,
-          })
+          pageId: pagesMap[title].pageId,
+        })
         : builderURL({
-            pageId: pagesMap[title].pageId,
-          });
+          pageId: pagesMap[title].pageId,
+        });
     return pageURL;
   };
 
@@ -122,9 +125,8 @@ export function TopInline(props: TopInlineProps) {
               ),
               icon: (
                 <View
-                  className={`van-icon van-icon-${
-                    item.icon ? item.icon : "orders-o"
-                  } taroify-icon taroify-icon--inherit hydrated`}
+                  className={`van-icon van-icon-${item.icon ? item.icon : "orders-o"
+                    } taroify-icon taroify-icon--inherit hydrated`}
                 />
               ),
             };
@@ -185,6 +187,12 @@ export function TopInline(props: TopInlineProps) {
     };
   }, [viewerLayout, pages, currentApplicationDetails]);
 
+  const activeMenuKeys = useMemo(() => {
+    const currentPageName: any = currentPage?.pageName;
+    const parentPaths = findPathNodes(initState.menudata, currentPageName);
+    return { parentPaths };
+  }, [currentPage?.pageName, initState.menudata]);
+
   useEffect(() => {
     setQuery(window.location.search);
   }, [location]);
@@ -244,13 +252,14 @@ export function TopInline(props: TopInlineProps) {
     ) === "theme"
       ? "dark"
       : "light";
+
   return (
     <Container
       className="gap-x-2 flex items-center grow t--app-viewer-navigation-top-inline"
       ref={navRef}
     >
       <Menu
-        defaultSelectedKeys={_get(_head(initState.menudata), "key")}
+        defaultSelectedKeys={activeMenuKeys.parentPaths}
         mode="horizontal"
         theme={current_theme}
         items={filterHiddenTreeData(initState.menudata)}

@@ -9,6 +9,7 @@ import { ValidationTypes } from "constants/WidgetValidation";
 import styled from "styled-components";
 import LoadingWrapper from "../../LoadingWrapper";
 import IconSVG from "../icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 const Container = styled(View)`
   width: 100%;
@@ -24,6 +25,7 @@ class MCheckboxWidget extends BaseWidget<MCheckboxWidgetProps, WidgetState> {
   static getConfig() {
     return {
       name: "复选框",
+      tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["checkbox"],
       iconSVG: IconSVG,
       needsMeta: true,

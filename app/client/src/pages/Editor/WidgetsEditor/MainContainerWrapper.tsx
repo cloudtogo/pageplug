@@ -17,27 +17,20 @@ import { Spinner } from "design-system";
 import equal from "fast-deep-equal/es6";
 import { WidgetGlobaStyles } from "globalStyles/WidgetGlobalStyles";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router";
 import {
   getAppThemeIsChanging,
   getSelectedAppTheme,
 } from "selectors/appThemingSelectors";
-import { getCurrentThemeDetails } from "selectors/themeSelectors";
 import { getCanvasWidgetsStructure } from "@appsmith/selectors/entitiesSelector";
-import {
-  AUTOLAYOUT_RESIZER_WIDTH_BUFFER,
-  useDynamicAppLayout,
-} from "utils/hooks/useDynamicAppLayout";
+import { useDynamicAppLayout } from "utils/hooks/useDynamicAppLayout";
+import { LayoutSystemTypes } from "../../../layoutSystems/types";
+import { getLayoutSystemType } from "../../../selectors/layoutSystemSelectors";
 import Canvas from "../Canvas";
 import type { AppState } from "@appsmith/reducers";
 import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
 import { getIsAnonymousDataPopupVisible } from "selectors/onboardingSelectors";
-import {
-  LayoutSystemFeatures,
-  useLayoutSystemFeatures,
-} from "../../../layoutSystems/common/useLayoutSystemFeatures";
-import { CANVAS_VIEWPORT } from "constants/componentClassNameConstants";
 import { MainContainerResizer } from "layoutSystems/common/mainContainerResizer/MainContainerResizer";
+import { useMainContainerResizer } from "layoutSystems/common/mainContainerResizer/useMainContainerResizer";
 
 interface MainCanvasWrapperProps {
   isPreviewMode: boolean;
@@ -56,10 +49,7 @@ const Wrapper = styled.section<{
   isAppSettingsPaneWithNavigationTabOpen?: boolean;
   navigationHeight?: number;
 }>`
-  width: ${({ $enableMainCanvasResizer }) =>
-    $enableMainCanvasResizer
-      ? `calc(100% - ${AUTOLAYOUT_RESIZER_WIDTH_BUFFER}px)`
-      : `100%`};
+  width: 100%;
   position: relative;
   overflow-x: auto;
   overflow-y: auto;
@@ -132,9 +122,7 @@ function MainContainerWrapper(props: MainCanvasWrapperProps) {
   const isFetchingPage = useSelector(getIsFetchingPage);
   const widgetsStructure = useSelector(getCanvasWidgetsStructure, equal);
   const pages = useSelector(getViewModePageList);
-  const theme = useSelector(getCurrentThemeDetails);
   const selectedTheme = useSelector(getSelectedAppTheme);
-  const params = useParams<{ applicationId: string; pageId: string }>();
   const shouldHaveTopMargin =
     !(isPreviewMode || isProtectedMode) ||
     !isAppSettingsPaneWithNavigationTabOpen ||
@@ -145,11 +133,11 @@ function MainContainerWrapper(props: MainCanvasWrapperProps) {
   const isLayoutingInitialized = useDynamicAppLayout();
   const isPageInitializing = isFetchingPage || !isLayoutingInitialized;
   const isWDSV2Enabled = useFeatureFlag("ab_wds_enabled");
-
-  const checkLayoutSystemFeatures = useLayoutSystemFeatures();
-  const [enableMainContainerResizer] = checkLayoutSystemFeatures([
-    LayoutSystemFeatures.ENABLE_MAIN_CONTAINER_RESIZER,
-  ]);
+  const { canShowResizer, enableMainContainerResizer } =
+    useMainContainerResizer();
+  const layoutSystemType: LayoutSystemTypes = useSelector(getLayoutSystemType);
+  const isAnvilLayout = layoutSystemType === LayoutSystemTypes.ANVIL;
+  const headerHeight = "40px";
 
   useEffect(() => {
     return () => {
@@ -178,7 +166,6 @@ function MainContainerWrapper(props: MainCanvasWrapperProps) {
       <Canvas
         canvasWidth={props.canvasWidth}
         enableMainCanvasResizer={enableMainContainerResizer}
-        pageId={params.pageId}
         widgetsStructure={widgetsStructure}
       />
     );
@@ -187,26 +174,6 @@ function MainContainerWrapper(props: MainCanvasWrapperProps) {
   const isPreviewingNavigation =
     isPreviewMode || isProtectedMode || isAppSettingsPaneWithNavigationTabOpen;
 
-  /**
-   * calculating exact height to not allow scroll at this component,
-   * calculating total height of the canvas minus
-   * - 1. navigation height
-   *   - 1.1 height for top + stacked or top + inline nav style is calculated
-   *   - 1.2 in case of sidebar nav, height is 0
-   * - 2. top bar (header with preview/share/deploy buttons)
-   * - 3. bottom bar (footer with debug/logs buttons)
-   */
-  const topMargin = shouldShowSnapShotBanner ? "4rem" : "0rem";
-  const bottomBarHeight =
-    isPreviewMode || isProtectedMode ? "0px" : theme.bottomBarHeight;
-  const smallHeaderHeight = showCanvasTopSection
-    ? theme.smallHeaderHeight
-    : "0px";
-  const scrollBarHeight =
-    isPreviewMode || isProtectedMode || isPreviewingNavigation ? "8px" : "40px";
-  // calculating exact height to not allow scroll at this component,
-  // calculating total height minus margin on top, top bar and bottom bar and scrollbar height at the bottom
-  const heightWithTopMargin = `calc(100vh - 2rem - ${topMargin} - ${smallHeaderHeight} - ${bottomBarHeight} - ${scrollBarHeight} - ${navigationHeight}px)`;
   return (
     <>
       <Wrapper
@@ -216,7 +183,7 @@ function MainContainerWrapper(props: MainCanvasWrapperProps) {
           isProtectedMode ||
           isAppSettingsPaneWithNavigationTabOpen
             ? isWDSV2Enabled
-              ? "var(--bg-color)"
+              ? ""
               : selectedTheme.properties.colors.backgroundColor
             : "initial"
         }
@@ -231,18 +198,17 @@ function MainContainerWrapper(props: MainCanvasWrapperProps) {
             shouldHaveTopMargin &&
             !showCanvasTopSection &&
             !isPreviewingNavigation &&
-            !showAnonymousDataPopup,
+            !showAnonymousDataPopup &&
+            !isAnvilLayout,
           "mt-24": shouldShowSnapShotBanner,
         })}
-        id={CANVAS_VIEWPORT}
         isAppSettingsPaneWithNavigationTabOpen={
           isAppSettingsPaneWithNavigationTabOpen
         }
         isPreviewingNavigation={isPreviewingNavigation}
-        key={currentPageId}
         navigationHeight={navigationHeight}
         style={{
-          height: shouldHaveTopMargin ? heightWithTopMargin : "100vh",
+          height: isPreviewMode ? `calc(100% - ${headerHeight})` : "auto",
           fontFamily: fontFamily,
           pointerEvents: isAutoCanvasResizing ? "none" : "auto",
         }}
@@ -262,8 +228,7 @@ function MainContainerWrapper(props: MainCanvasWrapperProps) {
       </Wrapper>
       <MainContainerResizer
         currentPageId={currentPageId}
-        enableMainCanvasResizer={enableMainContainerResizer}
-        heightWithTopMargin={heightWithTopMargin}
+        enableMainCanvasResizer={enableMainContainerResizer && canShowResizer}
         isPageInitiated={!isPageInitializing && !!widgetsStructure}
         isPreview={isPreviewMode || isProtectedMode}
         shouldHaveTopMargin={shouldHaveTopMargin}

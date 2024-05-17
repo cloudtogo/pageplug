@@ -3,6 +3,7 @@ package com.appsmith.server.themes.base;
 import com.appsmith.external.constants.AnalyticsEvents;
 import com.appsmith.server.acl.AclPermission;
 import com.appsmith.server.acl.PolicyGenerator;
+import com.appsmith.server.applications.base.ApplicationService;
 import com.appsmith.server.constants.FieldName;
 import com.appsmith.server.domains.Application;
 import com.appsmith.server.domains.ApplicationMode;
@@ -11,27 +12,22 @@ import com.appsmith.server.exceptions.AppsmithError;
 import com.appsmith.server.exceptions.AppsmithException;
 import com.appsmith.server.repositories.ApplicationRepository;
 import com.appsmith.server.repositories.ThemeRepository;
-import com.appsmith.server.repositories.ce.ThemeRepositoryCE;
 import com.appsmith.server.services.AnalyticsService;
-import com.appsmith.server.services.ApplicationService;
 import com.appsmith.server.services.BaseService;
 import com.appsmith.server.solutions.ApplicationPermission;
 import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.function.Tuples;
 
 import static com.appsmith.server.acl.AclPermission.MANAGE_THEMES;
 import static com.appsmith.server.acl.AclPermission.READ_THEMES;
 
 @Slf4j
-public class ThemeServiceCEImpl extends BaseService<ThemeRepositoryCE, Theme, String> implements ThemeServiceCE {
+public class ThemeServiceCEImpl extends BaseService<ThemeRepository, Theme, String> implements ThemeServiceCE {
 
     private final ApplicationRepository applicationRepository;
     private final ApplicationService applicationService;
@@ -40,17 +36,14 @@ public class ThemeServiceCEImpl extends BaseService<ThemeRepositoryCE, Theme, St
     private String defaultThemeId; // acts as a simple cache so that we don't need to fetch from DB always
 
     public ThemeServiceCEImpl(
-            Scheduler scheduler,
             Validator validator,
-            MongoConverter mongoConverter,
-            ReactiveMongoTemplate reactiveMongoTemplate,
             ThemeRepository repository,
             AnalyticsService analyticsService,
             ApplicationRepository applicationRepository,
             ApplicationService applicationService,
             PolicyGenerator policyGenerator,
             ApplicationPermission applicationPermission) {
-        super(scheduler, validator, mongoConverter, reactiveMongoTemplate, repository, analyticsService);
+        super(validator, repository, analyticsService);
         this.applicationRepository = applicationRepository;
         this.applicationService = applicationService;
         this.policyGenerator = policyGenerator;

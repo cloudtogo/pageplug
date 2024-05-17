@@ -32,8 +32,8 @@
     "sourceMap": true,
     "baseUrl": "./src",
     "noFallthroughCasesInSwitch": true,
-    "importsNotUsedAsValues": "remove",
-    "declaration": false
+    "verbatimModuleSyntax": true,
+    "ignoreDeprecations": "5.0"
   },
   "include": [
     "./src/**/*",
@@ -46,5 +46,5 @@
     "decs1.d.ts",
     "./packages"
   ],
-  "exclude": ["./packages/rts"]
+  "exclude": ["./packages/rts", "**/node_modules", "**/.*/"]
 }

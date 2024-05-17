@@ -18,7 +18,7 @@ import { resolveAsSpaceChar } from "utils/helpers";
 import {
   useEntityUpdateState,
   useEntityEditState,
-} from "pages/Editor/Explorer/hooks";
+} from "@appsmith/pages/Editor/Explorer/hooks";
 import { Icon, IconSize, Switch } from "design-system-old";
 import { TooltipComponent } from "design-system-old";
 import { Alignment } from "@blueprintjs/core";

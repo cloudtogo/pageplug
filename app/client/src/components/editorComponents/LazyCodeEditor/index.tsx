@@ -167,9 +167,13 @@ class LazyCodeEditorStateMachine {
  */
 function LazyCodeEditor({
   input,
+  onLoad,
   placeholder,
   ...otherProps
-}: EditorProps & EditorStyleProps) {
+}: EditorProps &
+  EditorStyleProps & {
+    onLoad?: () => void;
+  }) {
   const [renderTarget, setRenderTarget] = useState<
     "editor" | "editor-focused" | "fallback"
   >("fallback");
@@ -211,6 +215,15 @@ function LazyCodeEditor({
     [renderTarget],
   );
 
+  useEffect(() => {
+    if (
+      (renderTarget === "editor" || renderTarget === "editor-focused") &&
+      CachedCodeEditor
+    ) {
+      onLoad?.();
+    }
+  }, [renderTarget, CachedCodeEditor, onLoad]);
+
   if (renderTarget === "editor" || renderTarget === "editor-focused") {
     if (!CachedCodeEditor)
       throw new Error(
@@ -219,18 +232,18 @@ function LazyCodeEditor({
     const content = (flag?: any) => {
       const panelEditorStyle = !flag
         ? {
-            border: "none",
-            borderLess: true,
-            folding: true,
-            height: "100%",
-            hideEvaluatedValue: true,
-            mode: "javascript",
-            showLightningMenu: false,
-            showLineNumbers: true,
-            size: "EXTENDED",
-            tabBehaviour: "INDENT",
-            theme: "LIGHT",
-          }
+          border: "none",
+          borderLess: true,
+          folding: true,
+          height: "100%",
+          hideEvaluatedValue: true,
+          mode: "javascript",
+          showLightningMenu: false,
+          showLineNumbers: true,
+          size: "EXTENDED",
+          tabBehaviour: "INDENT",
+          theme: "LIGHT",
+        }
         : {};
       return (
         <div
@@ -282,6 +295,7 @@ function LazyCodeEditor({
     return (
       <LazyEditorWrapper className="t--lazyCodeEditor-fallback">
         <CodeEditorFallback
+          borderLess={otherProps.borderLess}
           height={otherProps?.height}
           input={input}
           isReadOnly={otherProps.isReadOnly}

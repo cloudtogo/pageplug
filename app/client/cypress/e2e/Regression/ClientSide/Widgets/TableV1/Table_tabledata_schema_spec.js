@@ -1,7 +1,11 @@
-const explorer = require("../../../../../locators/explorerlocators.json");
+import {
+  PageLeftPane,
+  PagePaneSegment,
+} from "../../../../../support/Pages/EditorNavigation";
+
 import * as _ from "../../../../../support/Objects/ObjectsCore";
 
-describe("Table Widget", function () {
+describe("Table Widget", { tags: ["@tag.Widget", "@tag.Table"] }, function () {
   before(() => {
     _.agHelper.AddDsl("tableNewDsl");
   });
@@ -16,6 +20,8 @@ describe("Table Widget", function () {
     );
     cy.addDsl(dsl);
     cy.wait(5000);
+    cy.dragAndDropToCanvas("switchwidget", { x: 200, y: 200 });
+    cy.wait(2000);
     cy.openPropertyPane("tablewidget");
     cy.get(".t--property-control-tabledata").then(($el) => {
       cy.updateCodeInput($el, jsContext);
@@ -46,7 +52,7 @@ describe("Table Widget", function () {
       expect(value).to.be.equal("joe");
     });
     _.deployMode.NavigateBacktoEditor();
-    cy.CheckAndUnfoldEntityItem("Widgets");
+    PageLeftPane.switchSegment(PagePaneSegment.UI);
     _.entityExplorer.DeleteWidgetFromEntityExplorer("Switch1");
     _.entityExplorer.DeleteWidgetFromEntityExplorer("Table1");
   });

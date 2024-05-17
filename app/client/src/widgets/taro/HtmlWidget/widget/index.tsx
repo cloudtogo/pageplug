@@ -5,6 +5,7 @@ import { ScrollView, RichText } from "@tarojs/components";
 import { ValidationTypes } from "constants/WidgetValidation";
 import styled from "styled-components";
 import IconSVG from "../icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 const Container = styled(ScrollView)`
   width: 100%;
@@ -23,6 +24,7 @@ class MHtmlWidget extends BaseWidget<MHtmlWidgetProps, WidgetState> {
   static getConfig() {
     return {
       name: "HTML",
+      tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["html"],
       iconSVG: IconSVG,
       needsMeta: false,

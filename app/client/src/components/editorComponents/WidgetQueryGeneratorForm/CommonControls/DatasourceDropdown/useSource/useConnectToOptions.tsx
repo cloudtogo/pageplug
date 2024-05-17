@@ -4,6 +4,7 @@ import {
   getCurrentActions,
   getCurrentPageWidgets,
   getPluginIdPackageNamesMap,
+  getQueryModuleInstances,
 } from "@appsmith/selectors/entitiesSelector";
 import WidgetFactory from "WidgetProvider/factory";
 import { DatasourceImage, ImageWrapper } from "../../../styles";
@@ -13,7 +14,20 @@ import type { DropdownOptionType } from "../../../types";
 import type { WidgetProps } from "widgets/BaseWidget";
 import { WidgetQueryGeneratorFormContext } from "components/editorComponents/WidgetQueryGeneratorForm";
 import { PluginPackageName } from "entities/Action";
-import type { ActionDataState } from "@appsmith/reducers/entityReducers/actionsReducer";
+import type {
+  ActionData,
+  ActionDataState,
+} from "@appsmith/reducers/entityReducers/actionsReducer";
+import type {
+  ModuleInstanceData,
+  ModuleInstanceDataState,
+} from "@appsmith/constants/ModuleInstanceConstants";
+import { selectFeatureFlagCheck } from "@appsmith/selectors/featureFlagsSelectors";
+import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
+import type { AppState } from "@appsmith/reducers";
+import type { Module } from "@appsmith/constants/ModuleConstants";
+import { getAllModules } from "@appsmith/selectors/modulesSelector";
+import { getModuleIcon } from "pages/Editor/utils";
 
 enum SortingWeights {
   alphabetical = 1,
@@ -23,7 +37,10 @@ enum SortingWeights {
 
 const SORT_INCREAMENT = 1;
 
-function sortQueries(queries: ActionDataState, expectedDatatype: string) {
+export function sortQueries(
+  queries: ActionDataState | ModuleInstanceDataState,
+  expectedDatatype: string,
+) {
   return queries.sort((A, B) => {
     const score = {
       A: 0,
@@ -60,10 +77,76 @@ function sortQueries(queries: ActionDataState, expectedDatatype: string) {
   });
 }
 
+export function getBindingValue(
+  widget: WidgetProps,
+  query: ActionData | ModuleInstanceData,
+) {
+  const defaultBindingValue = `{{${query.config.name}.data}}`;
+  const querySuggestedWidgets = query.data?.suggestedWidgets;
+  if (!querySuggestedWidgets) return defaultBindingValue;
+  const suggestedWidget = querySuggestedWidgets.find(
+    (suggestedWidget) => suggestedWidget.type === widget.type,
+  );
+  if (!suggestedWidget) return defaultBindingValue;
+  return `{{${query.config.name}.${suggestedWidget.bindingQuery}}}`;
+}
 interface ConnectToOptionsProps {
   pluginImages: Record<string, string>;
   widget: WidgetProps;
 }
+
+export const getQueryIcon = (
+  query: ActionData | ModuleInstanceData,
+  pluginImages: Record<string, string>,
+  modules: Record<string, Module>,
+) => {
+  if (query.config.hasOwnProperty("type")) {
+    const q = query as ModuleInstanceData;
+    const module = modules[q.config.sourceModuleId];
+
+    return getModuleIcon(module, pluginImages);
+  } else {
+    const action = query as ActionData;
+    return (
+      <ImageWrapper>
+        <DatasourceImage
+          alt=""
+          className="dataSourceImage"
+          src={pluginImages[action.config.pluginId]}
+        />
+      </ImageWrapper>
+    );
+  }
+};
+
+export const getAnalyticsInfo = (
+  query: ActionData | ModuleInstanceData,
+  widget: WidgetProps,
+  propertyName: string,
+) => {
+  if (query.config.hasOwnProperty("pluginId")) {
+    const action = query as ActionData;
+    return {
+      widgetName: widget.widgetName,
+      widgetType: widget.type,
+      propertyName: propertyName,
+      entityBound: "Query",
+      entityName: action.config.name,
+      pluginType: action.config.pluginType,
+    };
+  }
+
+  if (query.config.hasOwnProperty("sourceModuleId")) {
+    return {
+      widgetName: widget.widgetName,
+      widgetType: widget.type,
+      propertyName: propertyName,
+      entityBound: "QueryModuleInstance",
+      entityName: query.config.name,
+      pluginType: "",
+    };
+  }
+};
 
 /*
  * useConnectToOptions hook - this returns the dropdown options to connect to a query or a connectable widget.
@@ -79,10 +162,20 @@ function useConnectToOptions(props: ConnectToOptionsProps) {
 
   const queries = useSelector(getCurrentActions);
   const pluginsPackageNamesMap = useSelector(getPluginIdPackageNamesMap);
+  const isJSEnabledByDefaultOnForOneClickBinding = useSelector(
+    (state: AppState) =>
+      selectFeatureFlagCheck(
+        state,
+        FEATURE_FLAG.rollout_js_enabled_one_click_binding_enabled,
+      ),
+  );
 
   const { pluginImages, widget } = props;
 
-  let filteredQueries = queries;
+  const queryModuleInstances = useSelector(getQueryModuleInstances);
+  const modules = useSelector(getAllModules);
+  let filteredQueries: ActionData[] | ModuleInstanceData[] = queries;
+
   /* Exclude Gsheets from query options till this gets resolved https://github.com/appsmithorg/appsmith/issues/27102*/
   if (widget.type === "JSON_FORM_WIDGET") {
     filteredQueries = queries.filter((query) => {
@@ -93,22 +186,21 @@ function useConnectToOptions(props: ConnectToOptionsProps) {
     });
   }
 
+  filteredQueries = [...filteredQueries, ...queryModuleInstances] as
+    | ActionDataState
+    | ModuleInstanceDataState;
+
   const queryOptions = useMemo(() => {
     return sortQueries(filteredQueries, expectedType).map((query) => ({
       id: query.config.id,
       label: query.config.name,
-      value: `{{${query.config.name}.data}}`,
-      icon: (
-        <ImageWrapper>
-          <DatasourceImage
-            alt=""
-            className="dataSourceImage"
-            src={pluginImages[query.config.pluginId]}
-          />
-        </ImageWrapper>
-      ),
+      value: getBindingValue(widget, query),
+      icon: getQueryIcon(query, pluginImages, modules),
       onSelect: function (value?: string, valueOption?: DropdownOptionType) {
-        addBinding(valueOption?.value, false);
+        addBinding(
+          valueOption?.value,
+          !!isJSEnabledByDefaultOnForOneClickBinding,
+        );
 
         updateConfig({
           datasource: "",
@@ -117,17 +209,13 @@ function useConnectToOptions(props: ConnectToOptionsProps) {
           datasourceConnectionMode: "",
         });
 
-        AnalyticsUtil.logEvent("BIND_EXISTING_DATA_TO_WIDGET", {
-          widgetName: widget.widgetName,
-          widgetType: widget.type,
-          propertyName: propertyName,
-          entityBound: "Query",
-          entityName: query.config.name,
-          pluginType: query.config.pluginType,
-        });
+        AnalyticsUtil.logEvent(
+          "BIND_EXISTING_DATA_TO_WIDGET",
+          getAnalyticsInfo(query, widget, propertyName),
+        );
       },
     }));
-  }, [filteredQueries, pluginImages, addBinding]);
+  }, [filteredQueries, pluginImages, addBinding, widget]);
 
   const currentPageWidgets = useSelector(getCurrentPageWidgets);
 

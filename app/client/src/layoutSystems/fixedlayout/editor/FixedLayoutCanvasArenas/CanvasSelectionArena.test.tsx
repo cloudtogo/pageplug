@@ -306,11 +306,7 @@ describe("Canvas selection test cases", () => {
 
     const component = render(
       <MockPageDSL dsl={dsl}>
-        <Canvas
-          canvasWidth={dsl.rightColumn}
-          pageId="page_id"
-          widgetsStructure={dsl}
-        />
+        <Canvas canvasWidth={dsl.rightColumn} widgetsStructure={dsl} />
       </MockPageDSL>,
     );
     const selectionCanvas: any = component.queryByTestId(`canvas-${canvasId}`);
@@ -481,7 +477,7 @@ describe("Canvas selection test cases", () => {
       </MemoryRouter>,
       { initialState: store.getState(), sagasToRun: sagasToRunForTests },
     );
-    const widgetEditor: any = component.queryByTestId("widgets-editor");
+    const widgetEditor: any = component.queryByTestId("t--widgets-editor");
     let selectionCanvas: any = component.queryByTestId(
       `canvas-selection-${MAIN_CONTAINER_WIDGET_ID}`,
     );

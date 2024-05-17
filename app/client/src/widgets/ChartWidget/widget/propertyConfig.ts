@@ -5,16 +5,13 @@ import {
   CUSTOM_CHART_TYPES,
   LabelOrientation,
   LABEL_ORIENTATION_COMPATIBLE_CHARTS,
-  messages,
 } from "../constants";
+import type { WidgetProps } from "widgets/BaseWidget";
 
 export const isLabelOrientationApplicableFor = (chartType: string) =>
   LABEL_ORIENTATION_COMPATIBLE_CHARTS.includes(chartType);
 
-const labelOptions = (
-  customEChartsEnabled: boolean,
-  showCustomFusionChartDeprecationMessage: boolean,
-) => {
+const labelOptions = () => {
   const options = [
     {
       label: "折线图",
@@ -37,26 +34,19 @@ const labelOptions = (
       value: "AREA_CHART",
     },
     {
-      label: messages.customFusionChartOptionLabel(
-        showCustomFusionChartDeprecationMessage,
-      ),
+      label: "Custom EChart",
+      value: "CUSTOM_ECHART",
+    },
+    {
+      label: "Custom Fusion Charts (deprecated)",
       value: "CUSTOM_FUSION_CHART",
     },
   ];
 
-  if (customEChartsEnabled) {
-    options.splice(options.length - 1, 0, {
-      label: "自定义图表",
-      value: "CUSTOM_ECHART",
-    });
-  }
   return options;
 };
 
-export const contentConfig = (
-  customEChartsEnabled: boolean,
-  showCustomFusionChartDeprecationMessage: boolean,
-) => {
+export const contentConfig = () => {
   return [
     {
       sectionName: "数据",
@@ -66,10 +56,7 @@ export const contentConfig = (
           propertyName: "chartType",
           label: "图表类型",
           controlType: "DROP_DOWN",
-          options: labelOptions(
-            customEChartsEnabled,
-            showCustomFusionChartDeprecationMessage,
-          ),
+          options: labelOptions(),
           isJSConvertible: true,
           isBindProperty: true,
           isTriggerProperty: false,
@@ -92,12 +79,19 @@ export const contentConfig = (
           helpText: "完整配置请查阅 Fusion 官方文档",
           placeholderText: `fusion 图表配置`,
           propertyName: "customEChartConfig",
-          label: "自定义 fusion 图表",
-          controlType: "INPUT_TEXT",
+          label: "Custom ECharts Configuration",
+          controlType: "WRAPPED_CODE_EDITOR",
+          controlConfig: {
+            wrapperCode: {
+              prefix: "{{ ((chartType) => ( ",
+              suffix: (widget: WidgetProps) =>
+                `))(${widget.widgetName}.chartType) }}`,
+            },
+          },
           isBindProperty: true,
           isTriggerProperty: false,
           validation: {
-            type: ValidationTypes.OBJECT,
+            type: ValidationTypes.OBJECT_WITH_FUNCTION,
             params: {
               default: {},
             },

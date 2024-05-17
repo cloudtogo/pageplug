@@ -7,7 +7,6 @@ import type { ControlProps } from "components/formControls/BaseControl";
 import type { Datasource } from "entities/Datasource";
 import { isHidden, isKVArray } from "components/formControls/utils";
 import log from "loglevel";
-import CloseEditor from "components/editorComponents/CloseEditor";
 import type { FeatureFlags } from "@appsmith/entities/FeatureFlag";
 
 export const FormContainer = styled.div`
@@ -40,6 +39,7 @@ export interface JSONtoFormProps {
   featureFlags?: FeatureFlags;
   setupConfig: (config: ControlProps) => void;
   currentEnvironment: string;
+  isOnboardingFlow?: boolean;
 }
 
 export class JSONtoForm<
@@ -51,10 +51,6 @@ export class JSONtoForm<
     return (
       // <MainContainer>
       <FormContainer className="t--json-to-form-wrapper">
-        {this.props.featureFlags?.release_app_sidebar_enabled ===
-        true ? null : (
-          <CloseEditor />
-        )}
         <FormContainerBody className="t--json-to-form-body">
           {formContent}
         </FormContainerBody>

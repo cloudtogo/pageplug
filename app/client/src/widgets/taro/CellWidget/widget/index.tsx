@@ -6,6 +6,7 @@ import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { get } from "lodash";
 import IconSVG from "../icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 const noMeSubField = (
   props: MCellWidgetProps,
@@ -24,6 +25,7 @@ class MCellWidget extends BaseWidget<MCellWidgetProps, WidgetState> {
   static getConfig() {
     return {
       name: "单元格",
+      tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["cell"],
       iconSVG: IconSVG,
       needsMeta: false,

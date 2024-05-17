@@ -83,11 +83,13 @@ export function* executeActionTriggers(
       );
       if (action) {
         yield put(
-          updateActionData({
-            entityName: action.name,
-            dataPath: "data",
-            data: undefined,
-          }),
+          updateActionData([
+            {
+              entityName: action.name,
+              dataPath: "data",
+              data: undefined,
+            },
+          ]),
         );
       }
       break;

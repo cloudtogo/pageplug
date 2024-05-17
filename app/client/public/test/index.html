@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+</head>
+
+<body>
+  <div>
+    <div>
+      <input id="text" type="text" value="9000" />
+      <button id="sendMessage">发送消息</button>
+    </div>
+  </div>
+
+
+
+  <script>
+
+    window.onload = function () {
+      const receiver = window.frames['son'];
+      var btn = document.getElementById('sendMessage');
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        var val = document.getElementById('text').value;
+        receiver.postMessage({ name: "mary9000" }, "http://localhost:3000");
+      });
+    }
+  </script>
+
+  <iframe name="son"
+    src="http://localhost:3000/app/my-first-application/page1-65e985ce7a28000e4f2a437d/edit/jsObjects/6639eea1ec7c9a6a5138e079"
+    frameborder="0" width="100%" height="500px"></iframe>
+</body>
+
+</html>

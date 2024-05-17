@@ -160,7 +160,7 @@ class CurrencyInputWidget extends BaseInputWidget<
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.INPUTS],
       needsMeta: true,
-      searchTags: ["amount", "total", "currency"],
+      searchTags: ["amount", "total", "currency", "input"],
     };
   }
 
@@ -220,6 +220,7 @@ class CurrencyInputWidget extends BaseInputWidget<
 
   static getAnvilConfig(): AnvilConfig | null {
     return {
+      isLargeWidget: false,
       widgetSize: {
         maxHeight: {},
         maxWidth: {},

@@ -2,6 +2,7 @@ package com.appsmith.server.newpages.base;
 
 import com.appsmith.external.models.DefaultResources;
 import com.appsmith.server.acl.AclPermission;
+import com.appsmith.server.applications.base.ApplicationService;
 import com.appsmith.server.constants.FieldName;
 import com.appsmith.server.domains.Application;
 import com.appsmith.server.domains.ApplicationMode;
@@ -18,12 +19,10 @@ import com.appsmith.server.helpers.TextUtils;
 import com.appsmith.server.repositories.ApplicationSnapshotRepository;
 import com.appsmith.server.repositories.NewPageRepository;
 import com.appsmith.server.services.AnalyticsService;
-import com.appsmith.server.services.ApplicationService;
 import com.appsmith.server.services.BaseService;
 import com.appsmith.server.services.UserDataService;
 import com.appsmith.server.solutions.ApplicationPermission;
 import com.appsmith.server.solutions.PagePermission;
-import com.mongodb.bulk.BulkWriteResult;
 import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
@@ -31,13 +30,10 @@ import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,10 +61,7 @@ public class NewPageServiceCEImpl extends BaseService<NewPageRepository, NewPage
 
     @Autowired
     public NewPageServiceCEImpl(
-            Scheduler scheduler,
             Validator validator,
-            MongoConverter mongoConverter,
-            ReactiveMongoTemplate reactiveMongoTemplate,
             NewPageRepository repository,
             AnalyticsService analyticsService,
             ApplicationService applicationService,
@@ -77,7 +70,7 @@ public class NewPageServiceCEImpl extends BaseService<NewPageRepository, NewPage
             ApplicationPermission applicationPermission,
             PagePermission pagePermission,
             ApplicationSnapshotRepository applicationSnapshotRepository) {
-        super(scheduler, validator, mongoConverter, reactiveMongoTemplate, repository, analyticsService);
+        super(validator, repository, analyticsService);
         this.applicationService = applicationService;
         this.userDataService = userDataService;
         this.responseUtils = responseUtils;
@@ -628,10 +621,12 @@ public class NewPageServiceCEImpl extends BaseService<NewPageRepository, NewPage
             if (!StringUtils.hasLength(defaultPageId)) {
                 return Mono.error(new AppsmithException(INVALID_PARAMETER, FieldName.PAGE_ID, defaultPageId));
             }
-            getPageMono = repository.findById(
-                    defaultPageId,
-                    List.of(FieldName.APPLICATION_ID, FieldName.DEFAULT_RESOURCES),
-                    pagePermission.getReadPermission());
+            getPageMono = repository
+                    .queryBuilder()
+                    .byId(defaultPageId)
+                    .fields(FieldName.APPLICATION_ID, FieldName.DEFAULT_RESOURCES)
+                    .permission(pagePermission.getReadPermission())
+                    .one();
         } else {
             getPageMono = repository.findPageByBranchNameAndDefaultPageId(
                     branchName, defaultPageId, pagePermission.getReadPermission());
@@ -696,7 +691,7 @@ public class NewPageServiceCEImpl extends BaseService<NewPageRepository, NewPage
     }
 
     @Override
-    public Mono<List<BulkWriteResult>> publishPages(Collection<String> pageIds, AclPermission permission) {
+    public Mono<Void> publishPages(Collection<String> pageIds, AclPermission permission) {
         return repository.publishPages(pageIds, permission);
     }
 }

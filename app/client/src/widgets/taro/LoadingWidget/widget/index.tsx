@@ -12,6 +12,7 @@ import { selectWidgetInitAction } from "actions/widgetSelectionActions";
 import { previewModeSelector } from "selectors/editorSelectors";
 import type { AppState } from "@appsmith/reducers";
 import IconSVG from "../icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 const Container = styled(View)`
   position: fixed;
@@ -74,6 +75,7 @@ class MLoadingWidget extends BaseWidget<MLoadingWidgetProps, WidgetState> {
   static getConfig() {
     return {
       name: "加载遮罩",
+      tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["loading"],
       iconSVG: IconSVG,
       needsMeta: false,

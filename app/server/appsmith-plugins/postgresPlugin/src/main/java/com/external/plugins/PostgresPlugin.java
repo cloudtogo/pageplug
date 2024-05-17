@@ -30,6 +30,7 @@ import com.appsmith.external.services.SharedConfig;
 import com.external.plugins.datatypes.PostgresSpecificDataTypes;
 import com.external.plugins.exceptions.PostgresErrorMessages;
 import com.external.plugins.exceptions.PostgresPluginError;
+import com.external.plugins.utils.MutualTLSCertValidatingFactory;
 import com.external.plugins.utils.PostgresDatasourceUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -75,6 +76,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -86,6 +88,7 @@ import static com.appsmith.external.helpers.PluginUtils.getIdenticalColumns;
 import static com.appsmith.external.helpers.PluginUtils.getPSParamLabel;
 import static com.appsmith.external.helpers.Sizeof.sizeof;
 import static com.appsmith.external.helpers.SmartSubstitutionHelper.replaceQuestionMarkWithDollarIndex;
+import static com.appsmith.external.models.SSLDetails.AuthType.VERIFY_CA;
 import static com.external.plugins.utils.PostgresDataTypeUtils.DataType.BOOL;
 import static com.external.plugins.utils.PostgresDataTypeUtils.DataType.DATE;
 import static com.external.plugins.utils.PostgresDataTypeUtils.DataType.DECIMAL;
@@ -705,7 +708,7 @@ public class PostgresPlugin extends BasePlugin {
                 HikariDataSource connection, DatasourceConfiguration datasourceConfiguration) {
 
             final DatasourceStructure structure = new DatasourceStructure();
-            final Map<String, DatasourceStructure.Table> tablesByName = new LinkedHashMap<>();
+            final Map<String, DatasourceStructure.Table> tablesByName = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
             return Mono.fromSupplier(() -> {
                         Connection connectionFromPool;
@@ -1182,8 +1185,42 @@ public class PostgresPlugin extends BasePlugin {
                 break;
             case DEFAULT:
                 /* do nothing - accept default driver setting */
+                break;
+
+            case VERIFY_CA:
+            case VERIFY_FULL:
+                config.addDataSourceProperty("ssl", "true");
+                if (sslAuthType == SSLDetails.AuthType.VERIFY_FULL) {
+                    config.addDataSourceProperty("sslmode", "verify-full");
+                } else {
+                    config.addDataSourceProperty("sslmode", "verify-ca");
+                }
+                // Common properties for both VERIFY_CA and VERIFY_FULL
+                config.addDataSourceProperty("sslfactory", MutualTLSCertValidatingFactory.class.getName());
+                config.addDataSourceProperty(
+                        "clientCertString",
+                        datasourceConfiguration
+                                .getConnection()
+                                .getSsl()
+                                .getCertificateFile()
+                                .getBase64Content());
+                config.addDataSourceProperty(
+                        "clientKeyString",
+                        datasourceConfiguration
+                                .getConnection()
+                                .getSsl()
+                                .getKeyFile()
+                                .getBase64Content());
+                config.addDataSourceProperty(
+                        "serverCACertString",
+                        datasourceConfiguration
+                                .getConnection()
+                                .getSsl()
+                                .getCaCertificateFile()
+                                .getBase64Content());
 
                 break;
+
             default:
                 throw new AppsmithPluginException(
                         PostgresPluginError.POSTGRES_PLUGIN_ERROR,

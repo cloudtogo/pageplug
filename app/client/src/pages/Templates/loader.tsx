@@ -16,6 +16,8 @@ class TemplatesListLoader extends React.PureComponent<any, { Page: any }> {
       async () => import(/* webpackChunkName: "templates" */ "./index"),
     ).then((module) => {
       this.setState({ Page: module.default });
+    }).catch(err => {
+      console.log(err)
     });
   }
 

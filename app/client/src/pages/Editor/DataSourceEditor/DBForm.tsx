@@ -30,7 +30,6 @@ interface DatasourceDBEditorProps extends JSONtoFormProps {
   datasource: Datasource;
   hiddenHeader?: boolean;
   datasourceName?: string;
-  isEnabledForDSViewModeSchema: boolean;
   isPluginAllowedToPreviewData: boolean;
 }
 

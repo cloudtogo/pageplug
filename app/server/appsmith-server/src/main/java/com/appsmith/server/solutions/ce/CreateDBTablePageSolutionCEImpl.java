@@ -1,5 +1,6 @@
 package com.appsmith.server.solutions.ce;
 
+import com.appsmith.external.constants.ActionCreationSourceTypeEnum;
 import com.appsmith.external.constants.AnalyticsEvents;
 import com.appsmith.external.converters.HttpMethodConverter;
 import com.appsmith.external.converters.ISOStringToInstantConverter;
@@ -14,6 +15,7 @@ import com.appsmith.external.models.DatasourceStructure.PrimaryKey;
 import com.appsmith.external.models.DatasourceStructure.Table;
 import com.appsmith.external.models.DefaultResources;
 import com.appsmith.external.models.Property;
+import com.appsmith.server.applications.base.ApplicationService;
 import com.appsmith.server.constants.Assets;
 import com.appsmith.server.constants.Entity;
 import com.appsmith.server.constants.FieldName;
@@ -31,12 +33,12 @@ import com.appsmith.server.exceptions.AppsmithError;
 import com.appsmith.server.exceptions.AppsmithException;
 import com.appsmith.server.helpers.PluginExecutorHelper;
 import com.appsmith.server.helpers.ResponseUtils;
+import com.appsmith.server.layouts.UpdateLayoutService;
 import com.appsmith.server.migrations.JsonSchemaMigration;
 import com.appsmith.server.newpages.base.NewPageService;
 import com.appsmith.server.plugins.base.PluginService;
 import com.appsmith.server.services.AnalyticsService;
 import com.appsmith.server.services.ApplicationPageService;
-import com.appsmith.server.services.ApplicationService;
 import com.appsmith.server.services.LayoutActionService;
 import com.appsmith.server.services.SessionUserService;
 import com.appsmith.server.solutions.ApplicationPermission;
@@ -80,6 +82,7 @@ public class CreateDBTablePageSolutionCEImpl implements CreateDBTablePageSolutio
     private final DatasourceStorageService datasourceStorageService;
     private final NewPageService newPageService;
     private final LayoutActionService layoutActionService;
+    private final UpdateLayoutService updateLayoutService;
     private final ApplicationPageService applicationPageService;
     private final ApplicationService applicationService;
     private final PluginService pluginService;
@@ -405,7 +408,7 @@ public class CreateDBTablePageSolutionCEImpl implements CreateDBTablePageSolutio
 
                     log.debug("Going to update layout for page {} and layout {}", savedPageId, layoutId);
                     return sanitizeTemplateInfoMono
-                            .then(layoutActionService.updateLayout(
+                            .then(updateLayoutService.updateLayout(
                                     savedPageId, page.getApplicationId(), layoutId, layout))
                             .then(Mono.zip(
                                     Mono.just(datasourceStorage),
@@ -610,6 +613,9 @@ public class CreateDBTablePageSolutionCEImpl implements CreateDBTablePageSolutio
             actionDTO.setPageId(pageId);
             actionDTO.setName(templateAction.getUnpublishedAction().getName());
             actionDTO.setDefaultResources(templateAction.getDefaultResources());
+
+            // Indicates that source of action creation is generate-crud-page
+            actionDTO.setSource(ActionCreationSourceTypeEnum.GENERATE_PAGE);
 
             String actionBody = templateActionConfiguration.getBody();
             actionDTO.setActionConfiguration(templateActionConfiguration);

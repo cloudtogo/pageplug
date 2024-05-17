@@ -89,7 +89,7 @@ export function removeNodeByKey(data: any, key?: string) {
 
 export function filterHiddenTreeData(data: any, parentIsHidden = false) {
   return data
-    .filter((node: any) => !node.isHidden)
+    .filter((node: any) => node && !node.isHidden)
     .map((node: any) => {
       const isHidden = parentIsHidden || node.isHidden;
 

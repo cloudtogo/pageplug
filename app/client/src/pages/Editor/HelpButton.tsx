@@ -31,12 +31,9 @@ import {
   getSignpostingSetOverlay,
   getSignpostingTooltipVisible,
   getSignpostingUnreadSteps,
-  inGuidedTour,
 } from "selectors/onboardingSelectors";
 import SignpostingPopup from "pages/Editor/FirstTimeUserOnboarding/Modal";
 import { showSignpostingModal } from "actions/onboardingActions";
-import { triggerWelcomeTour } from "./FirstTimeUserOnboarding/Utils";
-import { isAirgapped } from "@appsmith/utils/airgapHelpers";
 import TooltipContent from "./FirstTimeUserOnboarding/TooltipContent";
 import { getInstanceId } from "@appsmith/selectors/tenantSelectors";
 import { updateIntercomConsent, updateUserDetails } from "actions/userActions";
@@ -114,6 +111,7 @@ export function IntercomConsent({
   const dispatch = useDispatch();
 
   const sendUserDataToIntercom = () => {
+    const { email } = user || {};
     updateIntercomProperties(instanceId, user);
     dispatch(
       updateUserDetails({
@@ -122,6 +120,14 @@ export function IntercomConsent({
     );
     dispatch(updateIntercomConsent());
     showIntercomConsent(false);
+
+    if (user?.enableTelemetry) {
+      AnalyticsUtil.identifyUser(user, true);
+      AnalyticsUtil.logEvent("SUPPORT_REQUEST_INITIATED", {
+        email,
+      });
+    }
+
     window.Intercom("show");
   };
   return (
@@ -168,26 +174,24 @@ function HelpButton() {
   const isFirstTimeUserOnboardingEnabled = useSelector(
     getIsFirstTimeUserOnboardingEnabled,
   );
-  const guidedTourEnabled = useSelector(inGuidedTour);
   const showSignpostingTooltip = useSelector(getSignpostingTooltipVisible);
   const onboardingModalOpen = useSelector(getFirstTimeUserOnboardingModal);
   const unreadSteps = useSelector(getSignpostingUnreadSteps);
   const setOverlay = useSelector(getSignpostingSetOverlay);
-  const isAirgappedInstance = isAirgapped();
   const showUnreadSteps =
     !!unreadSteps.length &&
     isFirstTimeUserOnboardingEnabled &&
     !onboardingModalOpen;
   const menuProps = isFirstTimeUserOnboardingEnabled
     ? {
-        open: onboardingModalOpen,
-      }
+      open: onboardingModalOpen,
+    }
     : {};
   const tooltipProps = isFirstTimeUserOnboardingEnabled
     ? {
-        visible: showTooltip || showSignpostingTooltip,
-        onVisibleChange: setShowTooltip,
-      }
+      visible: showTooltip || showSignpostingTooltip,
+      onVisibleChange: setShowTooltip,
+    }
     : {};
 
   useEffect(() => {
@@ -255,21 +259,6 @@ function HelpButton() {
             <IntercomConsent showIntercomConsent={setShowIntercomConsent} />
           ) : (
             <>
-              {!isAirgappedInstance && !guidedTourEnabled && (
-                <>
-                  <MenuItem
-                    data-testid="editor-welcome-tour"
-                    onSelect={() => {
-                      triggerWelcomeTour(dispatch);
-                      AnalyticsUtil.logEvent("HELP_MENU_WELCOME_TOUR_CLICK");
-                    }}
-                    startIcon="guide"
-                  >
-                    新手体验
-                  </MenuItem>
-                  <MenuSeparator />
-                </>
-              )}
               {HELP_MENU_ITEMS.map((item) => (
                 <MenuItem
                   id={item.id}

@@ -43,6 +43,15 @@ const JSONEditorFieldWrapper = styled.div`
     height: auto;
     min-height: 250px;
   }
+  .CodeMirror-sizer {
+    min-height: 100px !important;
+    > div {
+      min-height: 100px !important;
+    }
+  }
+  .CodeMirror-lines {
+    min-height: 100px !important;
+  }
 `;
 
 const NoBodyMessage = styled.div`

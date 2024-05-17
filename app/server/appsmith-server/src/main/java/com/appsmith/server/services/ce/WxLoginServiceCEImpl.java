@@ -19,8 +19,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
@@ -34,7 +32,6 @@ import org.springframework.web.server.WebFilterChain;
 import org.springframework.web.server.WebSession;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.net.URI;
 import java.util.HashSet;
@@ -55,16 +52,13 @@ public class WxLoginServiceCEImpl extends BaseService<UserRepository, User, Stri
     private final ObjectMapper objectMapper;
 
     public WxLoginServiceCEImpl(
-            Scheduler scheduler,
             Validator validator,
-            MongoConverter mongoConverter,
-            ReactiveMongoTemplate reactiveMongoTemplate,
             UserRepository repository,
             AnalyticsService analyticsService,
             AuthenticationSuccessHandler authenticationSuccessHandler,
             SessionUserService sessionUserService,
             ObjectMapper objectMapper) {
-        super(scheduler, validator, mongoConverter, reactiveMongoTemplate, repository, analyticsService);
+        super(validator, repository, analyticsService);
         this.authenticationSuccessHandler = authenticationSuccessHandler;
         this.sessionUserService = sessionUserService;
         this.objectMapper = objectMapper;
@@ -95,24 +89,18 @@ public class WxLoginServiceCEImpl extends BaseService<UserRepository, User, Stri
                 .build()
                 .toString();
 
-        JsonNode jsonNode;
+        String openId;
+        String accessToken;
         try {
             String accessTokenInfo = HttpClientUtils.get(accessTokenUrl);
-            jsonNode = objectMapper.readTree(accessTokenInfo);
+            JsonNode jsonNode = objectMapper.readTree(accessTokenInfo);
+            openId = jsonNode.get("openid").asText();
+            String refresh_token = jsonNode.get("refresh_token").asText();
+            accessToken = getRefreshToken(refresh_token);
         } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        boolean existOpenId = jsonNode.has("openid");
-        boolean existRefreshToken = jsonNode.has("refresh_token");
-        if (!existOpenId || !existRefreshToken) {
-            URI location = URI.create("/user/login?error=access token fetch error");
+            URI location = URI.create("/user/login?error=secret参数配置错误");
             return this.redirectStrategy.sendRedirect(exchange, location);
         }
-
-        String openId = jsonNode.get("openid").asText();
-        String refresh_token = jsonNode.get("refresh_token").asText();
-        String accessToken = getRefreshToken(refresh_token);
 
         return repository
                 .findBySourceAndOpenId(LoginSource.WECHAT, openId)
@@ -144,49 +132,55 @@ public class WxLoginServiceCEImpl extends BaseService<UserRepository, User, Stri
                                     .onAuthenticationSuccess(webFilterExchange, securityContext.getAuthentication())
                                     .thenReturn(user);
                         }))
-                .switchIfEmpty(sessionUserService.getCurrentUser().flatMap(currentUser -> {
-                    if (currentUser.isAnonymous()) {
-                        URI location = URI.create("/user/signup?error=请使用邮箱登录后绑定微信账号");
-                        return this.redirectStrategy
-                                .sendRedirect(exchange, location)
-                                .thenReturn(currentUser);
-                    }
+                .switchIfEmpty(sessionUserService
+                        .getCurrentUser()
+                        .map(User::getEmail)
+                        .flatMap(repository::findByEmail)
+                        .flatMap(currentUser -> {
+                            if (currentUser.isAnonymous()) {
+                                URI location = URI.create("/user/signup?error=请使用邮箱登录后绑定微信账号");
+                                return this.redirectStrategy
+                                        .sendRedirect(exchange, location)
+                                        .thenReturn(currentUser);
+                            }
 
-                    String userInfoUrl = UriComponentsBuilder.fromUriString("https://api.weixin.qq.com/sns/userinfo")
-                            .queryParam("access_token", accessToken)
-                            .queryParam("openid", openId)
-                            .build()
-                            .toString();
+                            String userInfoUrl = UriComponentsBuilder.fromUriString(
+                                            "https://api.weixin.qq.com/sns/userinfo")
+                                    .queryParam("access_token", accessToken)
+                                    .queryParam("openid", openId)
+                                    .build()
+                                    .toString();
 
-                    JsonNode userInfoJson;
-                    try {
-                        String resultInfo = HttpClientUtils.get(userInfoUrl);
-                        userInfoJson = objectMapper.readTree(resultInfo);
-                    } catch (Exception e) {
-                        return Mono.error(new RuntimeException(e));
-                    }
+                            JsonNode userInfoJson;
+                            try {
+                                String resultInfo = HttpClientUtils.get(userInfoUrl);
+                                userInfoJson = objectMapper.readTree(resultInfo);
+                            } catch (Exception e) {
+                                return Mono.error(new RuntimeException(e));
+                            }
 
-                    String nickname = userInfoJson.get("nickname").asText();
-                    String headimgurl = userInfoJson.get("headimgurl").asText();
+                            String nickname = userInfoJson.get("nickname").asText();
+                            String headimgurl = userInfoJson.get("headimgurl").asText();
 
-                    OAuth2Authorization authorization = new OAuth2Authorization();
-                    authorization.setSource(LoginSource.WECHAT);
-                    authorization.setName(nickname);
-                    authorization.setAvatarUrl(headimgurl);
-                    authorization.setOpenId(openId);
-                    Map<String, Object> rawUserInfo = objectMapper.convertValue(userInfoJson, new TypeReference<>() {});
-                    authorization.setRawUserInfo(rawUserInfo);
-                    Set<OAuth2Authorization> oAuth2Authorizations = currentUser.getOAuth2Authorizations();
-                    if (oAuth2Authorizations == null) {
-                        oAuth2Authorizations = new HashSet<>();
-                        currentUser.setOAuth2Authorizations(oAuth2Authorizations);
-                    }
-                    oAuth2Authorizations.add(authorization);
-                    return repository
-                            .updateById(currentUser.getId(), currentUser, AclPermission.MANAGE_USERS)
-                            .then(this.redirectStrategy.sendRedirect(exchange, URI.create("/profile")))
-                            .thenReturn(currentUser);
-                }))
+                            OAuth2Authorization authorization = new OAuth2Authorization();
+                            authorization.setSource(LoginSource.WECHAT);
+                            authorization.setName(nickname);
+                            authorization.setAvatarUrl(headimgurl);
+                            authorization.setOpenId(openId);
+                            Map<String, Object> rawUserInfo =
+                                    objectMapper.convertValue(userInfoJson, new TypeReference<>() {});
+                            authorization.setRawUserInfo(rawUserInfo);
+                            Set<OAuth2Authorization> oAuth2Authorizations = currentUser.getOAuth2Authorizations();
+                            if (oAuth2Authorizations == null) {
+                                oAuth2Authorizations = new HashSet<>();
+                                currentUser.setOAuth2Authorizations(oAuth2Authorizations);
+                            }
+                            oAuth2Authorizations.add(authorization);
+                            return repository
+                                    .updateById(currentUser.getId(), currentUser, AclPermission.MANAGE_USERS)
+                                    .then(this.redirectStrategy.sendRedirect(exchange, URI.create("/profile")))
+                                    .thenReturn(currentUser);
+                        }))
                 .then();
     }
 

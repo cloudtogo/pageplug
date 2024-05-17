@@ -57,7 +57,7 @@ import WidgetFactory from "WidgetProvider/factory";
 import { isAirgapped } from "@appsmith/utils/airgapHelpers";
 import { nestDSL } from "@shared/dsl";
 import { getIsAnonymousDataPopupVisible } from "./onboardingSelectors";
-import { WDS_V2_WIDGET_MAP } from "components/wds/constants";
+import { WDS_V2_WIDGET_MAP } from "widgets/wds/constants";
 import { selectFeatureFlagCheck } from "@appsmith/selectors/featureFlagsSelectors";
 import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
 import { LayoutSystemTypes } from "layoutSystems/types";
@@ -70,9 +70,6 @@ const getIsDraggingOrResizing = (state: AppState) =>
 const getIsResizing = (state: AppState) => state.ui.widgetDragResize.isResizing;
 
 const getPageListState = (state: AppState) => state.entities.pageList;
-
-export const getProviderCategories = (state: AppState) =>
-  state.ui.providers.providerCategories;
 
 const getWidgets = (state: AppState): CanvasWidgetsReduxState =>
   state.entities.canvasWidgets;
@@ -360,9 +357,8 @@ export const getWidgetCards = createSelector(
   getIsAutoLayout,
   (_state: any) => selectFeatureFlagCheck(_state, FEATURE_FLAG.ab_wds_enabled),
   isMobileLayout,
-  (isAutoLayout: boolean, isWDSEnabled: boolean, isMobile: boolean) => {
+  (isAutoLayout: boolean, isWDSEnabled: boolean, isTaroWds: boolean) => {
     const widgetConfigs = WidgetFactory.getConfigs();
-
     const cards = Object.values(widgetConfigs).filter((config) => {
       // if wds_vs is not enabled, hide all wds_v2 widgets
       if (
@@ -380,9 +376,8 @@ export const getWidgetCards = createSelector(
       if (isWDSEnabled === true) {
         return Object.values(WDS_V2_WIDGET_MAP).includes(config.type);
       }
-
       return (
-        !config.hideCard && (isMobile ? config.isMobile : !config.isMobile)
+        !config.hideCard && (isTaroWds ? config.isMobile : !config.isMobile)
       );
     });
 
@@ -392,9 +387,11 @@ export const getWidgetCards = createSelector(
         displayName,
         floatLayout = false,
         iconSVG,
+        isSearchWildcard,
         key,
         searchTags,
         tags,
+        thumbnailSVG,
         type,
       } = config;
       let { columns, rows } = config;
@@ -414,13 +411,14 @@ export const getWidgetCards = createSelector(
         floatLayout,
         displayName,
         icon: iconSVG,
+        thumbnail: thumbnailSVG,
         searchTags,
         tags,
         isDynamicHeight: isAutoHeightEnabledForWidget(config as WidgetProps),
+        isSearchWildcard: isSearchWildcard,
       };
     });
     const sortedCards = sortBy(_cards, ["displayName"]);
-
     return sortedCards;
   },
 );
@@ -438,11 +436,11 @@ export const getDimensionMap = createSelector(
   (isAutoLayoutMobileBreakPoint: boolean) => {
     return isAutoLayoutMobileBreakPoint
       ? {
-          leftColumn: "mobileLeftColumn",
-          rightColumn: "mobileRightColumn",
-          topRow: "mobileTopRow",
-          bottomRow: "mobileBottomRow",
-        }
+        leftColumn: "mobileLeftColumn",
+        rightColumn: "mobileRightColumn",
+        topRow: "mobileTopRow",
+        bottomRow: "mobileBottomRow",
+      }
       : DefaultDimensionMap;
   },
 );
@@ -955,6 +953,18 @@ export const getActionById = createSelector(
     const action = actions.find((action) => action.config.id === id);
     if (action) {
       return action.config;
+    } else {
+      return undefined;
+    }
+  },
+);
+
+export const getJSCollectionDataById = createSelector(
+  [getJSCollections, (state: AppState, collectionId: string) => collectionId],
+  (jsActions, id) => {
+    const action = jsActions.find((action) => action.config.id === id);
+    if (action) {
+      return action;
     } else {
       return undefined;
     }

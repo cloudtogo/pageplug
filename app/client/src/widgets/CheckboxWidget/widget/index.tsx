@@ -53,7 +53,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
     return {
       rows: 4,
       columns: 12,
-      label: "Label",
+      label: "标签",
       defaultCheckedState: true,
       widgetName: "Checkbox",
       version: 1,
@@ -107,6 +107,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
 
   static getAnvilConfig(): AnvilConfig | null {
     return {
+      isLargeWidget: false,
       widgetSize: {
         maxHeight: {},
         maxWidth: {},

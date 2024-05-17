@@ -1,11 +1,10 @@
-import React, { memo, useEffect, useMemo, useRef, useState } from "react";
+import React, { memo, useMemo, useRef, useState } from "react";
 import Entity, { EntityClassNames } from "../Explorer/Entity";
 import { datasourceTableIcon } from "../Explorer/ExplorerIcons";
 import QueryTemplates from "./QueryTemplates";
-import DatasourceField from "./DatasourceField";
 import type { DatasourceTable } from "entities/Datasource";
-import { DatasourceStructureContext } from "entities/Datasource";
-import { useCloseMenuOnScroll } from "../Explorer/hooks";
+import type { DatasourceStructureContext } from "entities/Datasource";
+import { useCloseMenuOnScroll } from "@appsmith/pages/Editor/Explorer/hooks";
 import { SIDEBAR_ID } from "constants/Explorer";
 import { useSelector } from "react-redux";
 import type { AppState } from "@appsmith/reducers";
@@ -21,6 +20,8 @@ import { Virtuoso } from "react-virtuoso";
 import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
 import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
 import { hasCreateDSActionPermissionInApp } from "@appsmith/utils/BusinessFeatures/permissionPageHelpers";
+import { useEditorType } from "@appsmith/hooks";
+import history from "utils/history";
 
 interface DatasourceStructureItemProps {
   dbStructure: DatasourceTable;
@@ -28,10 +29,10 @@ interface DatasourceStructureItemProps {
   datasourceId: string;
   context: DatasourceStructureContext;
   isDefaultOpen?: boolean;
-  forceExpand?: boolean;
   currentActionId: string;
   onEntityTableClick?: (table: string) => void;
   tableName?: string;
+  showTemplates: boolean;
 }
 
 const StyledMenuContent = styled(MenuContent)`
@@ -43,6 +44,7 @@ const StructureWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  height: 100%;
 `;
 
 const DatasourceStructureItem = memo((props: DatasourceStructureItemProps) => {
@@ -63,12 +65,14 @@ const DatasourceStructureItem = memo((props: DatasourceStructureItemProps) => {
   const datasourcePermissions = datasource?.userPermissions || [];
   const pagePermissions = useSelector(getPagePermissions);
   const isFeatureEnabled = useFeatureFlag(FEATURE_FLAG.license_gac_enabled);
+  const editorType = useEditorType(history.location.pathname);
 
-  const canCreateDatasourceActions = hasCreateDSActionPermissionInApp(
-    isFeatureEnabled,
-    datasourcePermissions,
+  const canCreateDatasourceActions = hasCreateDSActionPermissionInApp({
+    isEnabled: isFeatureEnabled,
+    dsPermissions: datasourcePermissions,
     pagePermissions,
-  );
+    editorType,
+  });
 
   const onSelect = () => {
     setActive(false);
@@ -79,8 +83,6 @@ const DatasourceStructureItem = memo((props: DatasourceStructureItemProps) => {
       datasourceId: props.datasourceId,
       pluginName: plugin?.name,
     });
-
-    canCreateDatasourceActions && setActive(!active);
 
     if (!!props?.onEntityTableClick) {
       props?.onEntityTableClick(entity.target.outerText);
@@ -102,11 +104,7 @@ const DatasourceStructureItem = memo((props: DatasourceStructureItemProps) => {
               isIconButton
               kind="tertiary"
               onClick={() => setActive(!active)}
-              startIcon={
-                props.context !== DatasourceStructureContext.EXPLORER
-                  ? "add-line"
-                  : "increase-control-v2"
-              }
+              startIcon={"add-line"}
             />
           </MenuTrigger>
         </Tooltip>
@@ -127,47 +125,27 @@ const DatasourceStructureItem = memo((props: DatasourceStructureItemProps) => {
       </Menu>
     ) : null;
 
-  if (dbStructure.templates && !props?.onEntityTableClick)
+  if (dbStructure.templates && props.showTemplates) {
     templateMenu = lightningMenu;
-  const columnsAndKeys = dbStructure.columns.concat(dbStructure.keys);
+  }
 
   const activeState = useMemo(() => {
-    if (props.context === DatasourceStructureContext.DATASOURCE_VIEW_MODE) {
-      return props.tableName === dbStructure.name;
-    } else {
-      return active;
-    }
+    return props.tableName === dbStructure.name || active;
   }, [active, props.tableName]);
 
   return (
     <Entity
       action={onEntityClick}
       active={activeState}
-      className={`datasourceStructure${
-        props.context !== DatasourceStructureContext.EXPLORER &&
-        `-${props.context}`
-      }`}
+      className={`datasourceStructure-${props.context}`}
       collapseRef={collapseRef}
       contextMenu={templateMenu}
       entityId={`${props.datasourceId}-${dbStructure.name}-${props.context}`}
-      forceExpand={props.forceExpand}
       icon={datasourceTableIcon}
       isDefaultExpanded={props?.isDefaultOpen}
       name={dbStructure.name}
       step={props.step}
-    >
-      <>
-        {columnsAndKeys.map((field, index) => {
-          return (
-            <DatasourceField
-              field={field}
-              key={`${field.name}${index}`}
-              step={props.step + 1}
-            />
-          );
-        })}
-      </>
-    </Entity>
+    />
   );
 });
 
@@ -177,20 +155,11 @@ type DatasourceStructureProps = Partial<DatasourceStructureItemProps> & {
   datasourceId: string;
   context: DatasourceStructureContext;
   isDefaultOpen?: boolean;
-  forceExpand?: boolean;
   currentActionId: string;
+  showTemplates: boolean;
 };
 
 const DatasourceStructure = (props: DatasourceStructureProps) => {
-  const [containerHeight, setContainerHeight] = useState<number>();
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (containerRef.current?.offsetHeight) {
-      setContainerHeight(containerRef.current?.offsetHeight);
-    }
-  }, []);
-
   const Row = (index: number) => {
     const structure = props.tables[index];
 
@@ -199,20 +168,18 @@ const DatasourceStructure = (props: DatasourceStructureProps) => {
         {...omit(props, ["tables"])}
         dbStructure={structure}
         key={`${props.datasourceId}${structure.name}-${props.context}`}
+        showTemplates={props.showTemplates}
       />
     );
   };
 
   return (
-    <StructureWrapper ref={containerRef}>
-      {containerHeight && (
-        <Virtuoso
-          className="t--schema-virtuoso-container"
-          itemContent={Row}
-          style={{ height: `${containerHeight}px` }}
-          totalCount={props.tables.length}
-        />
-      )}
+    <StructureWrapper>
+      <Virtuoso
+        className="t--schema-virtuoso-container"
+        itemContent={Row}
+        totalCount={props.tables.length}
+      />
     </StructureWrapper>
   );
 };

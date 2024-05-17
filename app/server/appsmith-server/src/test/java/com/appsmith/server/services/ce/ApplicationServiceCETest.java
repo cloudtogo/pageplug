@@ -4,6 +4,7 @@ import com.appsmith.external.helpers.AppsmithBeanUtils;
 import com.appsmith.external.models.ActionConfiguration;
 import com.appsmith.external.models.ActionDTO;
 import com.appsmith.external.models.BaseDomain;
+import com.appsmith.external.models.CreatorContextType;
 import com.appsmith.external.models.Datasource;
 import com.appsmith.external.models.DatasourceConfiguration;
 import com.appsmith.external.models.DatasourceStorageDTO;
@@ -13,6 +14,7 @@ import com.appsmith.external.models.Policy;
 import com.appsmith.external.plugins.PluginExecutor;
 import com.appsmith.server.acl.AclPermission;
 import com.appsmith.server.actioncollections.base.ActionCollectionService;
+import com.appsmith.server.applications.base.ApplicationService;
 import com.appsmith.server.constants.FieldName;
 import com.appsmith.server.datasources.base.DatasourceService;
 import com.appsmith.server.domains.ActionCollection;
@@ -21,16 +23,16 @@ import com.appsmith.server.domains.ApplicationDetail;
 import com.appsmith.server.domains.ApplicationPage;
 import com.appsmith.server.domains.Asset;
 import com.appsmith.server.domains.CustomJSLib;
-import com.appsmith.server.domains.GitApplicationMetadata;
+import com.appsmith.server.domains.GitArtifactMetadata;
 import com.appsmith.server.domains.GitAuth;
 import com.appsmith.server.domains.Layout;
 import com.appsmith.server.domains.NewAction;
 import com.appsmith.server.domains.NewPage;
 import com.appsmith.server.domains.PermissionGroup;
 import com.appsmith.server.domains.Plugin;
-import com.appsmith.server.domains.QNewAction;
 import com.appsmith.server.domains.Theme;
 import com.appsmith.server.domains.User;
+import com.appsmith.server.domains.UserData;
 import com.appsmith.server.domains.Workspace;
 import com.appsmith.server.dtos.ActionCollectionDTO;
 import com.appsmith.server.dtos.ApplicationAccessDTO;
@@ -38,32 +40,35 @@ import com.appsmith.server.dtos.ApplicationJson;
 import com.appsmith.server.dtos.ApplicationPagesDTO;
 import com.appsmith.server.dtos.InviteUsersDTO;
 import com.appsmith.server.dtos.PageDTO;
+import com.appsmith.server.dtos.RecentlyUsedEntityDTO;
 import com.appsmith.server.dtos.UserHomepageDTO;
 import com.appsmith.server.dtos.WorkspaceApplicationsDTO;
 import com.appsmith.server.exceptions.AppsmithError;
 import com.appsmith.server.exceptions.AppsmithException;
-import com.appsmith.server.exports.internal.ExportApplicationService;
+import com.appsmith.server.exports.internal.ExportService;
 import com.appsmith.server.helpers.MockPluginExecutor;
 import com.appsmith.server.helpers.PluginExecutorHelper;
 import com.appsmith.server.helpers.TextUtils;
-import com.appsmith.server.imports.internal.ImportApplicationService;
+import com.appsmith.server.imports.internal.ImportService;
 import com.appsmith.server.jslibs.base.CustomJSLibService;
+import com.appsmith.server.layouts.UpdateLayoutService;
 import com.appsmith.server.migrations.ApplicationVersion;
 import com.appsmith.server.newactions.base.NewActionService;
 import com.appsmith.server.newpages.base.NewPageService;
 import com.appsmith.server.plugins.base.PluginService;
 import com.appsmith.server.repositories.ApplicationRepository;
 import com.appsmith.server.repositories.AssetRepository;
+import com.appsmith.server.repositories.CacheableRepositoryHelper;
 import com.appsmith.server.repositories.DatasourceRepository;
 import com.appsmith.server.repositories.NewPageRepository;
 import com.appsmith.server.repositories.PermissionGroupRepository;
 import com.appsmith.server.repositories.PluginRepository;
 import com.appsmith.server.repositories.UserRepository;
-import com.appsmith.server.services.ApplicationService;
 import com.appsmith.server.services.LayoutActionService;
 import com.appsmith.server.services.LayoutCollectionService;
 import com.appsmith.server.services.PermissionGroupService;
 import com.appsmith.server.services.SessionUserService;
+import com.appsmith.server.services.UserDataService;
 import com.appsmith.server.services.UserService;
 import com.appsmith.server.services.WorkspaceService;
 import com.appsmith.server.solutions.ApplicationFetcher;
@@ -90,6 +95,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -123,16 +129,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.appsmith.server.acl.AclPermission.CONNECT_TO_GIT;
 import static com.appsmith.server.acl.AclPermission.DELETE_PAGES;
 import static com.appsmith.server.acl.AclPermission.EXECUTE_ACTIONS;
 import static com.appsmith.server.acl.AclPermission.EXECUTE_DATASOURCES;
 import static com.appsmith.server.acl.AclPermission.EXPORT_APPLICATIONS;
 import static com.appsmith.server.acl.AclPermission.MANAGE_ACTIONS;
 import static com.appsmith.server.acl.AclPermission.MANAGE_APPLICATIONS;
+import static com.appsmith.server.acl.AclPermission.MANAGE_AUTO_COMMIT;
 import static com.appsmith.server.acl.AclPermission.MANAGE_DATASOURCES;
+import static com.appsmith.server.acl.AclPermission.MANAGE_DEFAULT_BRANCHES;
 import static com.appsmith.server.acl.AclPermission.MANAGE_PAGES;
+import static com.appsmith.server.acl.AclPermission.MANAGE_PROTECTED_BRANCHES;
 import static com.appsmith.server.acl.AclPermission.MANAGE_THEMES;
 import static com.appsmith.server.acl.AclPermission.PAGE_CREATE_PAGE_ACTIONS;
 import static com.appsmith.server.acl.AclPermission.PUBLISH_APPLICATIONS;
@@ -141,19 +152,21 @@ import static com.appsmith.server.acl.AclPermission.READ_APPLICATIONS;
 import static com.appsmith.server.acl.AclPermission.READ_DATASOURCES;
 import static com.appsmith.server.acl.AclPermission.READ_PAGES;
 import static com.appsmith.server.acl.AclPermission.READ_WORKSPACES;
+import static com.appsmith.server.constants.ArtifactType.APPLICATION;
 import static com.appsmith.server.constants.FieldName.ADMINISTRATOR;
 import static com.appsmith.server.constants.FieldName.ANONYMOUS_USER;
 import static com.appsmith.server.constants.FieldName.DEFAULT_PAGE_LAYOUT;
 import static com.appsmith.server.constants.FieldName.DEVELOPER;
 import static com.appsmith.server.constants.FieldName.VIEWER;
-import static com.appsmith.server.dtos.CustomJSLibApplicationDTO.getDTOFromCustomJSLib;
-import static com.appsmith.server.repositories.BaseAppsmithRepositoryImpl.fieldName;
+import static com.appsmith.server.constants.ce.FieldNameCE.WORKSPACE;
+import static com.appsmith.server.dtos.CustomJSLibContextDTO.getDTOFromCustomJSLib;
 import static com.appsmith.server.services.ApplicationPageServiceImpl.EVALUATION_VERSION;
 import static java.lang.Boolean.TRUE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -207,6 +220,9 @@ public class ApplicationServiceCETest {
     LayoutActionService layoutActionService;
 
     @Autowired
+    UpdateLayoutService updateLayoutService;
+
+    @Autowired
     LayoutCollectionService layoutCollectionService;
 
     @Autowired
@@ -219,10 +235,10 @@ public class ApplicationServiceCETest {
     PluginRepository pluginRepository;
 
     @Autowired
-    ImportApplicationService importApplicationService;
+    ImportService importService;
 
     @Autowired
-    ExportApplicationService exportApplicationService;
+    ExportService exportService;
 
     @Autowired
     ThemeService themeService;
@@ -266,6 +282,12 @@ public class ApplicationServiceCETest {
     @Autowired
     UserAndAccessManagementService userAndAccessManagementService;
 
+    @Autowired
+    CacheableRepositoryHelper cacheableRepositoryHelper;
+
+    @SpyBean
+    UserDataService userDataService;
+
     String workspaceId;
     String defaultEnvironmentId;
 
@@ -287,7 +309,7 @@ public class ApplicationServiceCETest {
     public void setup() {
 
         User currentUser = sessionUserService.getCurrentUser().block();
-        if (!currentUser.getEmail().equals("api_user")) {
+        if (currentUser == null || !currentUser.getEmail().equals("api_user")) {
             // Don't do any setups
             return;
         }
@@ -299,6 +321,9 @@ public class ApplicationServiceCETest {
         Workspace toCreate = new Workspace();
         toCreate.setName("ApplicationServiceTest");
 
+        Set<String> beforeCreatingWorkspace =
+                cacheableRepositoryHelper.getPermissionGroupsOfUser(currentUser).block();
+        log.info("Permission Groups for User before creating workspace: {}", beforeCreatingWorkspace);
         Workspace workspace =
                 workspaceService.create(toCreate, apiUser, Boolean.FALSE).block();
         workspaceId = workspace.getId();
@@ -309,7 +334,7 @@ public class ApplicationServiceCETest {
 
         Application gitConnectedApp1 = new Application();
         gitConnectedApp1.setWorkspaceId(workspaceId);
-        GitApplicationMetadata gitData = new GitApplicationMetadata();
+        GitArtifactMetadata gitData = new GitArtifactMetadata();
         gitData.setBranchName("testBranch");
         gitData.setDefaultBranchName("testBranch");
         gitData.setRepoName("testRepo");
@@ -327,12 +352,14 @@ public class ApplicationServiceCETest {
                 .block();
 
         // Assign the branchName to all the resources connected to the application
-        ApplicationJson gitConnectedApplicationJson = exportApplicationService
-                .exportApplicationById(newGitConnectedApp.getId(), gitData.getBranchName())
+        ApplicationJson gitConnectedApplicationJson = exportService
+                .exportByArtifactIdAndBranchName(newGitConnectedApp.getId(), gitData.getBranchName(), APPLICATION)
+                .map(artifactExchangeJson -> (ApplicationJson) artifactExchangeJson)
                 .block();
-        gitConnectedApp = importApplicationService
-                .importApplicationInWorkspaceFromGit(
-                        workspaceId, gitConnectedApplicationJson, newGitConnectedApp.getId(), gitData.getBranchName())
+        gitConnectedApp = importService
+                .importArtifactInWorkspaceFromGit(
+                        workspaceId, newGitConnectedApp.getId(), gitConnectedApplicationJson, gitData.getBranchName())
+                .map(importableArtifact -> (Application) importableArtifact)
                 .block();
 
         testPlugin = pluginService.findByPackageName("restapi-plugin").block();
@@ -366,12 +393,20 @@ public class ApplicationServiceCETest {
         datasource1.setDatasourceStorages(storages1);
 
         testDatasource1 = datasourceService.create(datasource1).block();
+        Set<String> afterCreatingWorkspace =
+                cacheableRepositoryHelper.getPermissionGroupsOfUser(currentUser).block();
+        log.info("Permission Groups for User after creating workspace: {}", afterCreatingWorkspace);
+
+        log.info("Workspace ID: {}", workspaceId);
+        log.info("Workspace Role Ids: {}", workspace.getDefaultPermissionGroups());
+        log.info("Policy for created Workspace: {}", workspace.getPolicies());
+        log.info("Current User ID: {}", currentUser.getId());
     }
 
     @AfterEach
     public void cleanup() {
         User currentUser = sessionUserService.getCurrentUser().block();
-        if (!currentUser.getEmail().equals("api_user")) {
+        if (currentUser == null || !currentUser.getEmail().equals("api_user")) {
             // Since no setup was done, hence no cleanup needs to happen
             return;
         }
@@ -384,15 +419,19 @@ public class ApplicationServiceCETest {
     }
 
     private Mono<? extends BaseDomain> getArchivedResource(String id, Class<? extends BaseDomain> domainClass) {
-        Query query = new Query(where("id").is(id));
+        return mongoOperations.findOne(new Query(where("id").is(id)), domainClass);
+    }
 
-        final Query actionQuery = query(
-                        where(fieldName(QNewAction.newAction.applicationId)).exists(true))
-                .addCriteria(where(fieldName(QNewAction.newAction.unpublishedAction) + "."
-                                + fieldName(QNewAction.newAction.unpublishedAction.archivedAt))
-                        .exists(true));
-
-        return mongoOperations.findOne(query, domainClass);
+    private List<String> createDummyApplications(String workspaceId) {
+        List<String> applicationIds = new ArrayList<>();
+        for (int count = 0; count < 4; count++) {
+            Application application = new Application();
+            application.setName("Application " + count);
+            application.setWorkspaceId(workspaceId);
+            application = applicationPageService.createApplication(application).block();
+            applicationIds.add(application.getId());
+        }
+        return applicationIds;
     }
 
     @Test
@@ -469,6 +508,27 @@ public class ApplicationServiceCETest {
                             .permission(MANAGE_APPLICATIONS.getValue())
                             .permissionGroups(Set.of(adminPermissionGroup.getId(), developerPermissionGroup.getId()))
                             .build();
+
+                    Policy connectGitPolicy = Policy.builder()
+                            .permission(CONNECT_TO_GIT.getValue())
+                            .permissionGroups(Set.of(adminPermissionGroup.getId(), developerPermissionGroup.getId()))
+                            .build();
+
+                    Policy manageDefaultBranchGitPolicy = Policy.builder()
+                            .permission(MANAGE_DEFAULT_BRANCHES.getValue())
+                            .permissionGroups(Set.of(adminPermissionGroup.getId(), developerPermissionGroup.getId()))
+                            .build();
+
+                    Policy manageProtectedBranchGitPolicy = Policy.builder()
+                            .permission(MANAGE_PROTECTED_BRANCHES.getValue())
+                            .permissionGroups(Set.of(adminPermissionGroup.getId(), developerPermissionGroup.getId()))
+                            .build();
+
+                    Policy manageAutoCommitGitPolicy = Policy.builder()
+                            .permission(MANAGE_AUTO_COMMIT.getValue())
+                            .permissionGroups(Set.of(adminPermissionGroup.getId(), developerPermissionGroup.getId()))
+                            .build();
+
                     Policy readAppPolicy = Policy.builder()
                             .permission(READ_APPLICATIONS.getValue())
                             .permissionGroups(Set.of(
@@ -500,7 +560,11 @@ public class ApplicationServiceCETest {
                                     publishAppPolicy,
                                     exportAppPolicy,
                                     deleteApplicationsPolicy,
-                                    createPagesPolicy));
+                                    createPagesPolicy,
+                                    connectGitPolicy,
+                                    manageProtectedBranchGitPolicy,
+                                    manageDefaultBranchGitPolicy,
+                                    manageAutoCommitGitPolicy));
                 })
                 .verifyComplete();
     }
@@ -532,14 +596,10 @@ public class ApplicationServiceCETest {
                 // Fetch the unpublished pages by applicationId
                 .flatMapMany(application -> newPageService.findByApplicationId(application.getId(), READ_PAGES, false));
 
-        Policy managePagePolicy = Policy.builder()
-                .permission(MANAGE_PAGES.getValue())
-                .users(Set.of("api_user"))
-                .build();
-        Policy readPagePolicy = Policy.builder()
-                .permission(READ_PAGES.getValue())
-                .users(Set.of("api_user"))
-                .build();
+        Policy managePagePolicy =
+                Policy.builder().permission(MANAGE_PAGES.getValue()).build();
+        Policy readPagePolicy =
+                Policy.builder().permission(READ_PAGES.getValue()).build();
 
         StepVerifier.create(pagesFlux)
                 .assertNext(page -> {
@@ -796,7 +856,7 @@ public class ApplicationServiceCETest {
         Mono<Application> updateApplication = applicationService
                 .update(gitConnectedApp.getId(), gitConnectedApp)
                 .flatMap(t -> {
-                    GitApplicationMetadata gitData = t.getGitApplicationMetadata();
+                    GitArtifactMetadata gitData = t.getGitApplicationMetadata();
                     return applicationService.findByBranchNameAndDefaultApplicationId(
                             gitData.getBranchName(), gitData.getDefaultApplicationId(), READ_APPLICATIONS);
                 });
@@ -890,7 +950,7 @@ public class ApplicationServiceCETest {
         Mono<UserHomepageDTO> allApplications = applicationFetcher.getAllApplications();
 
         Application branchedApplication = new Application();
-        GitApplicationMetadata childBranchGitData = new GitApplicationMetadata();
+        GitArtifactMetadata childBranchGitData = new GitArtifactMetadata();
         AppsmithBeanUtils.copyNestedNonNullProperties(gitConnectedApp.getGitApplicationMetadata(), childBranchGitData);
         childBranchGitData.setBranchName("childBranch");
         branchedApplication.setGitApplicationMetadata(childBranchGitData);
@@ -1181,10 +1241,10 @@ public class ApplicationServiceCETest {
         Application testApplication = new Application();
         testApplication.setName("branch1");
         testApplication.setWorkspaceId(workspaceId);
-        GitApplicationMetadata gitApplicationMetadata = new GitApplicationMetadata();
-        gitApplicationMetadata.setDefaultApplicationId(gitConnectedApp.getId());
-        gitApplicationMetadata.setBranchName("test");
-        testApplication.setGitApplicationMetadata(gitApplicationMetadata);
+        GitArtifactMetadata gitArtifactMetadata = new GitArtifactMetadata();
+        gitArtifactMetadata.setDefaultApplicationId(gitConnectedApp.getId());
+        gitArtifactMetadata.setBranchName("test");
+        testApplication.setGitApplicationMetadata(gitArtifactMetadata);
         Application application =
                 applicationPageService.createApplication(testApplication).block();
 
@@ -1328,10 +1388,10 @@ public class ApplicationServiceCETest {
         Application testApplication = new Application();
         testApplication.setName("branch2");
         testApplication.setWorkspaceId(workspaceId);
-        GitApplicationMetadata gitApplicationMetadata = new GitApplicationMetadata();
-        gitApplicationMetadata.setDefaultApplicationId(gitConnectedApp.getId());
-        gitApplicationMetadata.setBranchName("test2");
-        testApplication.setGitApplicationMetadata(gitApplicationMetadata);
+        GitArtifactMetadata gitArtifactMetadata = new GitArtifactMetadata();
+        gitArtifactMetadata.setDefaultApplicationId(gitConnectedApp.getId());
+        gitArtifactMetadata.setBranchName("test2");
+        testApplication.setGitApplicationMetadata(gitArtifactMetadata);
         Application application =
                 applicationPageService.createApplication(testApplication).block();
 
@@ -1454,8 +1514,9 @@ public class ApplicationServiceCETest {
         actionCollectionDTO.setPluginId(installedJsPlugin.getId());
         actionCollectionDTO.setPluginType(PluginType.JS);
 
-        ActionCollectionDTO savedActionCollection =
-                layoutCollectionService.createCollection(actionCollectionDTO).block();
+        ActionCollectionDTO savedActionCollection = layoutCollectionService
+                .createCollection(actionCollectionDTO, null)
+                .block();
 
         Mono<Application> publicAppMono = applicationService
                 .changeViewAccess(createdApplication.getId(), applicationAccessDTO)
@@ -2112,9 +2173,9 @@ public class ApplicationServiceCETest {
                     actionCollectionDTO.setPluginType(PluginType.JS);
 
                     return Mono.zip(
-                            layoutCollectionService.createCollection(actionCollectionDTO),
+                            layoutCollectionService.createCollection(actionCollectionDTO, null),
                             layoutActionService.createSingleAction(action, Boolean.FALSE),
-                            layoutActionService.updateLayout(
+                            updateLayoutService.updateLayout(
                                     testPage.getId(), testPage.getApplicationId(), layout.getId(), layout),
                             Mono.just(application));
                 })
@@ -2473,7 +2534,7 @@ public class ApplicationServiceCETest {
                     layout.setDsl(parentDsl);
 
                     return Mono.zip(
-                            layoutCollectionService.createCollection(actionCollectionDTO),
+                            layoutCollectionService.createCollection(actionCollectionDTO, null),
                             layoutActionService.createSingleAction(action, Boolean.FALSE),
                             Mono.just(application),
                             Mono.just(testPage),
@@ -2485,7 +2546,7 @@ public class ApplicationServiceCETest {
                     return Mono.zip(
                             Mono.just(tuple.getT1()),
                             Mono.just(tuple.getT2()),
-                            layoutActionService.updateLayout(
+                            updateLayoutService.updateLayout(
                                     testPage.getId(), testPage.getApplicationId(), layout.getId(), layout),
                             Mono.just(tuple.getT3()));
                 })
@@ -2679,17 +2740,17 @@ public class ApplicationServiceCETest {
         Application defaultApp = applicationPageService
                 .createApplication(application)
                 .flatMap(application1 -> {
-                    GitApplicationMetadata gitApplicationMetadata = new GitApplicationMetadata();
-                    gitApplicationMetadata.setDefaultApplicationId(application1.getId());
-                    gitApplicationMetadata.setBranchName("master");
-                    gitApplicationMetadata.setDefaultBranchName("feature1");
-                    gitApplicationMetadata.setIsRepoPrivate(false);
-                    gitApplicationMetadata.setRepoName("testRepo");
+                    GitArtifactMetadata gitArtifactMetadata = new GitArtifactMetadata();
+                    gitArtifactMetadata.setDefaultApplicationId(application1.getId());
+                    gitArtifactMetadata.setBranchName("master");
+                    gitArtifactMetadata.setDefaultBranchName("feature1");
+                    gitArtifactMetadata.setIsRepoPrivate(false);
+                    gitArtifactMetadata.setRepoName("testRepo");
                     GitAuth gitAuth = new GitAuth();
                     gitAuth.setPublicKey("testkey");
                     gitAuth.setPrivateKey("privatekey");
-                    gitApplicationMetadata.setGitAuth(gitAuth);
-                    application1.setGitApplicationMetadata(gitApplicationMetadata);
+                    gitArtifactMetadata.setGitAuth(gitAuth);
+                    application1.setGitApplicationMetadata(gitArtifactMetadata);
                     return applicationService.save(application1);
                 })
                 .block();
@@ -2701,17 +2762,17 @@ public class ApplicationServiceCETest {
         Mono<Application> forkedApp = applicationPageService
                 .createApplication(application)
                 .flatMap(application1 -> {
-                    GitApplicationMetadata gitApplicationMetadata = new GitApplicationMetadata();
-                    gitApplicationMetadata.setDefaultApplicationId(application1.getId());
-                    gitApplicationMetadata.setBranchName("feature1");
-                    gitApplicationMetadata.setDefaultBranchName("feature1");
-                    gitApplicationMetadata.setIsRepoPrivate(false);
-                    gitApplicationMetadata.setRepoName("testRepo");
+                    GitArtifactMetadata gitArtifactMetadata = new GitArtifactMetadata();
+                    gitArtifactMetadata.setDefaultApplicationId(application1.getId());
+                    gitArtifactMetadata.setBranchName("feature1");
+                    gitArtifactMetadata.setDefaultBranchName("feature1");
+                    gitArtifactMetadata.setIsRepoPrivate(false);
+                    gitArtifactMetadata.setRepoName("testRepo");
                     GitAuth gitAuth = new GitAuth();
                     gitAuth.setPublicKey("testkey");
                     gitAuth.setPrivateKey("privatekey");
-                    gitApplicationMetadata.setGitAuth(gitAuth);
-                    application1.setGitApplicationMetadata(gitApplicationMetadata);
+                    gitArtifactMetadata.setGitAuth(gitAuth);
+                    application1.setGitApplicationMetadata(gitArtifactMetadata);
                     return applicationService.save(application1);
                 })
                 .flatMap(application1 -> {
@@ -2725,7 +2786,7 @@ public class ApplicationServiceCETest {
 
         StepVerifier.create(forkedApp)
                 .assertNext(application1 -> {
-                    assertThat(application1.getPages().size()).isEqualTo(2);
+                    assertThat(application1.getPages()).hasSize(2);
                 })
                 .verifyComplete();
     }
@@ -2744,6 +2805,15 @@ public class ApplicationServiceCETest {
         Application.NavigationSetting appNavigationSetting = new Application.NavigationSetting();
         appNavigationSetting.setOrientation("top");
         testApplication.getUnpublishedApplicationDetail().setNavigationSetting(appNavigationSetting);
+        Application.ThemeSetting themeSettings = new Application.ThemeSetting();
+        themeSettings.setAccentColor("dark");
+        themeSettings.setBorderRadius("#000000");
+        themeSettings.setDensity(1);
+        themeSettings.setSizing(1);
+        themeSettings.setColorMode(Application.ThemeSetting.Type.LIGHT);
+        themeSettings.setIconStyle(Application.ThemeSetting.IconStyle.OUTLINED);
+        testApplication.getUnpublishedApplicationDetail().setThemeSetting(themeSettings);
+
         Mono<Application> applicationMono = applicationPageService
                 .createApplication(testApplication, workspaceId)
                 .flatMap(application -> applicationPageService.publish(application.getId(), true))
@@ -2792,6 +2862,10 @@ public class ApplicationServiceCETest {
                             .isEqualTo(application
                                     .getUnpublishedApplicationDetail()
                                     .getNavigationSetting());
+                    assertThat(application.getPublishedApplicationDetail().getThemeSetting())
+                            .isEqualTo(application
+                                    .getUnpublishedApplicationDetail()
+                                    .getThemeSetting());
                 })
                 .verifyComplete();
     }
@@ -2870,7 +2944,7 @@ public class ApplicationServiceCETest {
 
                     return layoutActionService
                             .createSingleAction(action, Boolean.FALSE)
-                            .zipWith(layoutCollectionService.createCollection(actionCollectionDTO))
+                            .zipWith(layoutCollectionService.createCollection(actionCollectionDTO, null))
                             .flatMap(tuple1 -> {
                                 ActionDTO savedAction = tuple1.getT1();
                                 ActionCollectionDTO savedActionCollection = tuple1.getT2();
@@ -2903,17 +2977,13 @@ public class ApplicationServiceCETest {
                     NewAction archivedActionFromActionCollection = tuple.getT2();
 
                     assertThat(archivedAction.getDeletedAt()).isNotNull();
-                    assertThat(archivedAction.getDeleted()).isTrue();
 
                     assertThat(archivedActionCollection.getDeletedAt()).isNotNull();
-                    assertThat(archivedActionCollection.getDeleted()).isTrue();
 
                     assertThat(archivedPage.getDeletedAt()).isNotNull();
-                    assertThat(archivedPage.getDeleted()).isTrue();
 
                     assertThat(archivedActionFromActionCollection.getDeletedAt())
                             .isNotNull();
-                    assertThat(archivedActionFromActionCollection.getDeleted()).isTrue();
                 })
                 .verifyComplete();
     }
@@ -2921,7 +2991,7 @@ public class ApplicationServiceCETest {
     @Test
     @WithUserDetails(value = "api_user")
     public void publishApplication_withGitConnectedApp_success() {
-        GitApplicationMetadata gitData = gitConnectedApp.getGitApplicationMetadata();
+        GitArtifactMetadata gitData = gitConnectedApp.getGitApplicationMetadata();
         gitConnectedApp.setAppLayout(new Application.AppLayout(Application.AppLayout.Type.DESKTOP));
         gitConnectedApp.setUnpublishedApplicationDetail(new ApplicationDetail());
         gitConnectedApp
@@ -2952,10 +3022,10 @@ public class ApplicationServiceCETest {
                     List<NewPage> pages = tuple.getT2();
 
                     assertThat(application).isNotNull();
-                    assertThat(application.getPages().size()).isEqualTo(1);
-                    assertThat(application.getPublishedPages().size()).isEqualTo(1);
+                    assertThat(application.getPages()).hasSize(1);
+                    assertThat(application.getPublishedPages()).hasSize(1);
 
-                    assertThat(pages.size()).isEqualTo(1);
+                    assertThat(pages).hasSize(1);
                     NewPage newPage = pages.get(0);
                     assertThat(newPage.getUnpublishedPage().getName())
                             .isEqualTo(newPage.getPublishedPage().getName());
@@ -3077,7 +3147,7 @@ public class ApplicationServiceCETest {
                     assertThat(publishedPages).containsAnyOf(applicationPage);
 
                     List<ApplicationPage> editedApplicationPages = editedApplication.getPages();
-                    assertThat(editedApplicationPages.size()).isEqualTo(1);
+                    assertThat(editedApplicationPages).hasSize(1);
                     assertThat(editedApplicationPages).doesNotContain(applicationPage);
                 })
                 .verifyComplete();
@@ -3121,7 +3191,7 @@ public class ApplicationServiceCETest {
                     assertThat(publishedPages).containsAnyOf(applicationPage);
 
                     List<ApplicationPage> editedApplicationPages = editedApplication.getPages();
-                    assertThat(editedApplicationPages.size()).isEqualTo(1);
+                    assertThat(editedApplicationPages).hasSize(1);
                     assertThat(editedApplicationPages).doesNotContain(applicationPage);
                 })
                 .verifyComplete();
@@ -3182,7 +3252,7 @@ public class ApplicationServiceCETest {
                     assertThat(isFound).isTrue();
 
                     List<ApplicationPage> editedApplicationPages = editedApplication.getPages();
-                    assertThat(editedApplicationPages.size()).isEqualTo(2);
+                    assertThat(editedApplicationPages).hasSize(2);
                     isFound = false;
                     for (ApplicationPage page : editedApplicationPages) {
                         if (page.getId().equals(unpublishedEditedPage.getId())
@@ -3208,7 +3278,8 @@ public class ApplicationServiceCETest {
                     CustomJSLib jsLib =
                             new CustomJSLib("name1", Set.of("accessor"), "url", "docsUrl", "version", "defs");
                     return customJSLibService
-                            .addJSLibToApplication(application.getId(), jsLib, null, false)
+                            .addJSLibsToContext(
+                                    application.getId(), CreatorContextType.APPLICATION, Set.of(jsLib), null, false)
                             .then(applicationService.getById(application.getId()));
                 })
                 .flatMap(application -> {
@@ -3242,7 +3313,7 @@ public class ApplicationServiceCETest {
         StepVerifier.create(viewModeApplicationMono)
                 .assertNext(viewApplication -> {
                     List<ApplicationPage> editedApplicationPages = viewApplication.getPages();
-                    assertThat(editedApplicationPages.size()).isEqualTo(2);
+                    assertThat(editedApplicationPages).hasSize(2);
                     boolean isFound = false;
                     for (ApplicationPage page : editedApplicationPages) {
                         if (page.getId().equals(applicationPage.getId())
@@ -3337,8 +3408,9 @@ public class ApplicationServiceCETest {
         actionCollectionDTO1.setActions(List.of(jsAction));
         actionCollectionDTO1.setPluginType(PluginType.JS);
 
-        final ActionCollectionDTO createdActionCollectionDTO1 =
-                layoutCollectionService.createCollection(actionCollectionDTO1).block();
+        final ActionCollectionDTO createdActionCollectionDTO1 = layoutCollectionService
+                .createCollection(actionCollectionDTO1, null)
+                .block();
 
         // Trigger the clone of application now.
         applicationPageService
@@ -3388,7 +3460,7 @@ public class ApplicationServiceCETest {
 
                     assertThat(cloneApp).isNotNull();
                     assertThat(pages.get(0).getId()).isNotEqualTo(pageId);
-                    assertThat(actions.size()).isEqualTo(4);
+                    assertThat(actions).hasSize(4);
                     Set<String> actionNames = actions.stream()
                             .map(action -> action.getUnpublishedAction().getName())
                             .collect(Collectors.toSet());
@@ -3398,7 +3470,7 @@ public class ApplicationServiceCETest {
                                     "Clone App Test action2",
                                     "Clone App Test action3",
                                     "jsFunc");
-                    assertThat(actionCollections.size()).isEqualTo(1);
+                    assertThat(actionCollections).hasSize(1);
                     Set<String> actionCollectionNames = actionCollections.stream()
                             .map(actionCollection ->
                                     actionCollection.getUnpublishedCollection().getName())
@@ -3481,7 +3553,7 @@ public class ApplicationServiceCETest {
 
         StepVerifier.create(applicationPagesDTOMono)
                 .assertNext(applicationPagesDTO -> {
-                    assertThat(applicationPagesDTO.getPages().size()).isEqualTo(4);
+                    assertThat(applicationPagesDTO.getPages()).hasSize(4);
                     List<String> pageNames = applicationPagesDTO.getPages().stream()
                             .map(pageNameIdDTO -> pageNameIdDTO.getName())
                             .collect(Collectors.toList());
@@ -3743,7 +3815,7 @@ public class ApplicationServiceCETest {
                 .thenReturn(savedApplication)
                 .flatMap(savedMainApp -> {
                     Application unsavedChildApp = new Application();
-                    unsavedChildApp.setGitApplicationMetadata(new GitApplicationMetadata());
+                    unsavedChildApp.setGitApplicationMetadata(new GitArtifactMetadata());
                     unsavedChildApp.getGitApplicationMetadata().setDefaultApplicationId(savedMainApp.getId());
                     unsavedChildApp.setName("ssh-key-child-app");
                     unsavedChildApp.setWorkspaceId(workspaceId);
@@ -3775,7 +3847,7 @@ public class ApplicationServiceCETest {
                     assertThat(gitAuth.getGeneratedAt()).isNotNull();
 
                     // child app should have null as GitAuth inside the metadata
-                    GitApplicationMetadata metadata = childApp.getGitApplicationMetadata();
+                    GitArtifactMetadata metadata = childApp.getGitApplicationMetadata();
                     assertThat(metadata.getDefaultApplicationId()).isEqualTo(mainApp.getId());
                     assertThat(metadata.getGitAuth()).isNull();
                 })
@@ -3845,7 +3917,7 @@ public class ApplicationServiceCETest {
 
                     return layoutActionService
                             .createSingleAction(action, Boolean.FALSE)
-                            .zipWith(layoutCollectionService.createCollection(actionCollectionDTO))
+                            .zipWith(layoutCollectionService.createCollection(actionCollectionDTO, null))
                             .flatMap(tuple1 -> {
                                 ActionDTO savedAction = tuple1.getT1();
                                 ActionCollectionDTO savedActionCollection = tuple1.getT2();
@@ -3878,17 +3950,13 @@ public class ApplicationServiceCETest {
                     NewAction archivedActionFromActionCollection = tuple.getT2();
 
                     assertThat(archivedAction.getDeletedAt()).isNotNull();
-                    assertThat(archivedAction.getDeleted()).isTrue();
 
                     assertThat(archivedActionCollection.getDeletedAt()).isNotNull();
-                    assertThat(archivedActionCollection.getDeleted()).isTrue();
 
                     assertThat(archivedPage.getDeletedAt()).isNotNull();
-                    assertThat(archivedPage.getDeleted()).isTrue();
 
                     assertThat(archivedActionFromActionCollection.getDeletedAt())
                             .isNotNull();
-                    assertThat(archivedActionFromActionCollection.getDeleted()).isTrue();
                 })
                 .verifyComplete();
     }
@@ -3918,12 +3986,12 @@ public class ApplicationServiceCETest {
         Application testApplication = new Application();
         String appName = "deleteApplication_WithDeployKeysNotConnectedToRemote_Success";
         testApplication.setName(appName);
-        GitApplicationMetadata gitApplicationMetadata = new GitApplicationMetadata();
+        GitArtifactMetadata gitArtifactMetadata = new GitArtifactMetadata();
         GitAuth gitAuth = new GitAuth();
         gitAuth.setPrivateKey("privateKey");
         gitAuth.setPublicKey("publicKey");
-        gitApplicationMetadata.setGitAuth(gitAuth);
-        testApplication.setGitApplicationMetadata(gitApplicationMetadata);
+        gitArtifactMetadata.setGitAuth(gitAuth);
+        testApplication.setGitApplicationMetadata(gitArtifactMetadata);
         Application application = applicationPageService
                 .createApplication(testApplication, workspaceId)
                 .block();
@@ -3984,16 +4052,18 @@ public class ApplicationServiceCETest {
         Application testApplication = new Application();
         testApplication.setName("getApplicationConnectedToGit_defaultBranchUpdated_returnBranchSpecificApplication");
         testApplication.setWorkspaceId(workspaceId);
-        GitApplicationMetadata gitData = new GitApplicationMetadata();
+        GitArtifactMetadata gitData = new GitArtifactMetadata();
         gitData.setBranchName("release");
         gitData.setDefaultApplicationId(gitConnectedApp.getId());
         testApplication.setGitApplicationMetadata(gitData);
         Application application = applicationPageService
                 .createApplication(testApplication)
-                .flatMap(application1 -> exportApplicationService
-                        .exportApplicationById(gitConnectedApp.getId(), gitData.getBranchName())
-                        .flatMap(applicationJson -> importApplicationService.importApplicationInWorkspaceFromGit(
-                                workspaceId, applicationJson, application1.getId(), gitData.getBranchName())))
+                .flatMap(application1 -> exportService
+                        .exportByArtifactIdAndBranchName(gitConnectedApp.getId(), gitData.getBranchName(), APPLICATION)
+                        .map(artifactExchangeJson -> (ApplicationJson) artifactExchangeJson)
+                        .flatMap(applicationJson -> importService.importArtifactInWorkspaceFromGit(
+                                workspaceId, application1.getId(), applicationJson, gitData.getBranchName())))
+                .map(importableArtifact -> (Application) importableArtifact)
                 .block();
 
         Mono<Application> getApplication = applicationService.findByIdAndBranchName(gitConnectedApp.getId(), "release");
@@ -4471,5 +4541,122 @@ public class ApplicationServiceCETest {
 
         assertThat(applicationPostLastEdit.getPages()).hasSize(2);
         assertThat(applicationPostLastEdit.getModifiedBy()).isEqualTo(createdUser.getUsername());
+    }
+
+    @Test
+    @WithUserDetails(value = "usertest@usertest.com")
+    public void
+            findByWorkspaceIdAndDefaultApplicationsInRecentlyUsedOrder_noApplicationPresentInWorkspace_emptyListIsReturned() {
+        // Create an workspace for this user first.
+        Workspace workspace = new Workspace();
+        workspace.setName("usertest's workspace");
+        workspace = workspaceService.create(workspace).block();
+
+        assert workspace != null;
+        Flux<Application> allApplicationsWithinWorkspace =
+                applicationService.findByWorkspaceIdAndDefaultApplicationsInRecentlyUsedOrder(workspace.getId());
+
+        StepVerifier.create(allApplicationsWithinWorkspace.collectList())
+                .assertNext(applications -> {
+                    assertThat(applications).isEmpty();
+                })
+                .verifyComplete();
+
+        // Clean up
+        workspaceService.archiveById(workspace.getId()).block();
+    }
+
+    @Test
+    @WithUserDetails(value = "usertest@usertest.com")
+    public void
+            findByWorkspaceIdAndDefaultApplicationsInRecentlyUsedOrder_applicationPresentInWorkspace_recentlyUsedAppsPresent_orderedListIsReturned() {
+        // Create an workspace for this user first.
+        Workspace workspace = new Workspace();
+        workspace.setName("usertest's workspace");
+        workspace = workspaceService.create(workspace).block();
+
+        assert workspace != null;
+        List<String> applicationIds = createDummyApplications(workspace.getId());
+
+        UserData userData = new UserData();
+        RecentlyUsedEntityDTO usedEntityDTO = new RecentlyUsedEntityDTO();
+        usedEntityDTO.setWorkspaceId(workspace.getId());
+        usedEntityDTO.setApplicationIds(applicationIds);
+        userData.setRecentlyUsedEntityIds(List.of(usedEntityDTO));
+        doReturn(Mono.just(userData)).when(userDataService).getForCurrentUser();
+
+        Flux<Application> allApplicationsWithinWorkspace =
+                applicationService.findByWorkspaceIdAndDefaultApplicationsInRecentlyUsedOrder(workspace.getId());
+
+        StepVerifier.create(allApplicationsWithinWorkspace.collectList())
+                .assertNext(applications -> {
+                    assertThat(applications).hasSize(4);
+
+                    List<String> orderedAppIds = new ArrayList<>();
+                    applications.forEach(application -> {
+                        assertThat(applicationIds).contains(application.getId());
+                        orderedAppIds.add(application.getId());
+                    });
+                    assertThat(orderedAppIds).isEqualTo(applicationIds);
+                })
+                .verifyComplete();
+
+        // Clean up
+        applicationIds.forEach(applicationId ->
+                applicationPageService.deleteApplication(applicationId).block());
+        workspaceService.archiveById(workspace.getId()).block();
+    }
+
+    @Test
+    @WithUserDetails(value = "usertest@usertest.com")
+    public void
+            findByWorkspaceIdAndDefaultApplicationsInRecentlyUsedOrder_applicationPresentInWorkspace_recentlyUsedAppsAbsent_allAppsAreReturned() {
+        // Create an workspace for this user first.
+        Workspace workspace = new Workspace();
+        workspace.setName("usertest's workspace");
+        workspace = workspaceService.create(workspace).block();
+
+        assert workspace != null;
+        List<String> applicationIds = createDummyApplications(workspace.getId());
+
+        UserData userData = new UserData();
+        doReturn(Mono.just(userData)).when(userDataService).getForCurrentUser();
+
+        Flux<Application> allApplicationsWithinWorkspace =
+                applicationService.findByWorkspaceIdAndDefaultApplicationsInRecentlyUsedOrder(workspace.getId());
+
+        StepVerifier.create(allApplicationsWithinWorkspace.collectList())
+                .assertNext(applications -> {
+                    assertThat(applications).hasSize(4);
+
+                    List<String> savedApplicationIds = new ArrayList<>();
+                    applications.forEach(application -> {
+                        assertThat(applicationIds).contains(application.getId());
+                        savedApplicationIds.add(application.getId());
+                    });
+                    assertTrue(savedApplicationIds.containsAll(applicationIds));
+                })
+                .verifyComplete();
+
+        // Clean up
+        applicationIds.forEach(applicationId ->
+                applicationPageService.deleteApplication(applicationId).block());
+        workspaceService.archiveById(workspace.getId()).block();
+    }
+
+    @Test
+    public void findByWorkspaceIdAndDefaultApplicationsInRecentlyUsedOrder_invalidWorkspaceId_throwException() {
+
+        String invalidWorkspaceId = UUID.randomUUID().toString();
+        Flux<Application> allApplicationsWithinWorkspace =
+                applicationService.findByWorkspaceIdAndDefaultApplicationsInRecentlyUsedOrder(invalidWorkspaceId);
+
+        StepVerifier.create(allApplicationsWithinWorkspace.collectList())
+                .expectErrorSatisfies(throwable -> {
+                    assertThat(throwable).isInstanceOf(AppsmithException.class);
+                    assertThat(throwable.getMessage())
+                            .isEqualTo(AppsmithError.ACL_NO_RESOURCE_FOUND.getMessage(WORKSPACE, invalidWorkspaceId));
+                })
+                .verify();
     }
 }

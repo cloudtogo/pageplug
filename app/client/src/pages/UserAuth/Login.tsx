@@ -63,9 +63,18 @@ export const LoginForm = styled.div`
   }
 `;
 
+export const LoginBottom = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  a > span {
+    font-size: 16px;
+  }
+`;
+
 const CommonIconStyles = css`
   position: absolute;
-  top: 18px;
+  top: 17px;
   left: 8px;
 `;
 
@@ -204,7 +213,7 @@ export function Login(props: LoginFormProps) {
       {isFormLoginEnabled && (
         <>
           <SpacedSubmitForm action={loginURL} method="POST">
-            <FormGroup intent={error ? "danger" : "none"}>
+            <FormGroup intent={error ? "danger" : "none"} style={{position: "relative"}}>
               <LoginForm>
                 <FormTextField
                   autoFocus
@@ -218,7 +227,7 @@ export function Login(props: LoginFormProps) {
               </LoginForm>
               <StyledEmailIcon height={15} width={15} />
             </FormGroup>
-            <FormGroup intent={error ? "danger" : "none"}>
+            <FormGroup intent={error ? "danger" : "none"} style={{position: "relative"}}>
               <LoginForm>
                 <FormTextField
                   className="pp-height"
@@ -265,12 +274,12 @@ export function Login(props: LoginFormProps) {
             </FormActions>
           </SpacedSubmitForm>
           {/* 底部提示 */}
-          <div className="flex-space-between">
+          <LoginBottom>
             {isFormSignupEnabled ? (
-              <div className="flex myfont">
+              <div className="flex">
                 {createMessage(NEW_TO_APPSMITH)}
                 <Link
-                  className="a_link t--sign-up t--signup-link pl-[var(--ads-v2\-spaces-3)] fs-16"
+                  className="t--sign-up t--signup-link"
                   kind="primary"
                   target="_self"
                   to={signupURL}
@@ -283,14 +292,15 @@ export function Login(props: LoginFormProps) {
             )}
             <div>
               <Link
-                className="justify-center fs-16 a_link"
+                className="justify-center"
+                kind="primary"
                 target="_self"
                 to={forgotPasswordURL}
               >
                 {createMessage(LOGIN_PAGE_FORGOT_PASSWORD_TEXT)}
               </Link>
             </div>
-          </div>
+          </LoginBottom>
         </>
       )}
     </Container>

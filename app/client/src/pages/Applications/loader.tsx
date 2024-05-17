@@ -30,6 +30,7 @@ class ApplicationListLoader extends React.PureComponent<any, { Page: any }> {
         ),
     ).then((module) => {
       this.setState({ Page: module.default });
+    }).catch(err => {
     });
   }
 

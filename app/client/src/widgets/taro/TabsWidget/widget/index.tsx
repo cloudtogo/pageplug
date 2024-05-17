@@ -12,6 +12,7 @@ import { View } from "@tarojs/components";
 import { Skeleton } from "@taroify/core";
 import styled from "styled-components";
 import IconSVG from "../icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 const LoadingContainer = styled(View)<{
   direction: string;
@@ -82,6 +83,7 @@ class MTabsWidget extends BaseWidget<MTabsWidgetProps, WidgetState> {
   static getConfig() {
     return {
       name: "标签导航",
+      tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["tabs"],
       iconSVG: IconSVG,
       needsMeta: true,

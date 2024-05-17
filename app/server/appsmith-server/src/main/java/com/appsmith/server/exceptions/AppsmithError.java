@@ -200,10 +200,11 @@ public enum AppsmithError {
                     + "  \"message\" : \"Binding path in the widget not found. Please reach out to Appsmith customer support to resolve this.\","
                     + "  \"widgetName\" : \"{1}\","
                     + "  \"widgetId\" : \"{2}\","
-                    + "  \"pageId\" : \"{4}\","
+                    + "  \"creatorId\" : \"{4}\","
                     + "  \"layoutId\" : \"{5}\","
                     + "  \"errorDetail\" : \"{8}\","
-                    + "  \"dynamicBinding\" : {6}",
+                    + "  \"dynamicBinding\" : {6},"
+                    + "  \"creatorType\" : \"{9}\"",
             AppsmithErrorAction.LOG_EXTERNALLY,
             "Invalid dynamic binding reference",
             ErrorType.BAD_REQUEST,
@@ -513,14 +514,6 @@ public enum AppsmithError {
             "I/O error",
             ErrorType.INTERNAL_ERROR,
             null),
-    MARKETPLACE_TIMEOUT(
-            504,
-            AppsmithErrorCode.MARKETPLACE_TIMEOUT.getCode(),
-            "Marketplace is responding too slowly. Please try again later",
-            AppsmithErrorAction.DEFAULT,
-            "Timeout in marketplace",
-            ErrorType.CONNECTIVITY_ERROR,
-            null),
     DATASOURCE_HAS_ACTIONS(
             409,
             AppsmithErrorCode.DATASOURCE_HAS_ACTIONS.getCode(),
@@ -552,14 +545,6 @@ public enum AppsmithError {
             AppsmithErrorAction.LOG_EXTERNALLY,
             "Unsupported login method",
             ErrorType.BAD_REQUEST,
-            null),
-    MARKETPLACE_NOT_CONFIGURED(
-            500,
-            AppsmithErrorCode.MARKETPLACE_NOT_CONFIGURED.getCode(),
-            "Marketplace is not configured.",
-            AppsmithErrorAction.DEFAULT,
-            "Marketplace not configured",
-            ErrorType.CONFIGURATION_ERROR,
             null),
     PAYLOAD_TOO_LARGE(
             413,
@@ -757,9 +742,9 @@ public enum AppsmithError {
     GENERIC_JSON_IMPORT_ERROR(
             400,
             AppsmithErrorCode.GENERIC_JSON_IMPORT_ERROR.getCode(),
-            "Unable to import application in workspace {0}. {1}",
+            "Unable to import artifact in workspace {0}. {1}",
             AppsmithErrorAction.DEFAULT,
-            "Unable to import application in workspace",
+            "Unable to import artifact in workspace",
             ErrorType.BAD_REQUEST,
             null),
     FILE_PART_DATA_BUFFER_ERROR(
@@ -1050,6 +1035,22 @@ public enum AppsmithError {
             AppsmithErrorAction.LOG_EXTERNALLY,
             null,
             ErrorType.BAD_REQUEST,
+            null),
+    TRIGGER_PARAMETERS_EMPTY(
+            400,
+            AppsmithErrorCode.TRIGGER_PARAMETERS_EMPTY.getCode(),
+            "Trigger parameters empty.",
+            AppsmithErrorAction.DEFAULT,
+            "Trigger parameters empty.",
+            ErrorType.INTERNAL_ERROR,
+            null),
+    INSUFFICIENT_PASSWORD_STRENGTH(
+            400,
+            AppsmithErrorCode.INSUFFICIENT_PASSWORD_STRENGTH.getCode(),
+            "Password must be {0}-{1} characters long and include at least one uppercase letter, one lowercase letter, one number, one symbol, and no whitespaces.",
+            AppsmithErrorAction.DEFAULT,
+            "Insufficient password strength",
+            ErrorType.ARGUMENT_ERROR,
             null),
     ;
 

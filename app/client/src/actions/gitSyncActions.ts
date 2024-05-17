@@ -9,15 +9,16 @@ import {
 import type { ConnectToGitPayload } from "api/GitSyncAPI";
 import type { GitConfig, GitSyncModalTab, MergeStatus } from "entities/GitSync";
 import type { GitApplicationMetadata } from "@appsmith/api/ApplicationApi";
-import type {
-  GitStatusData,
-  GitRemoteStatusData,
+import {
+  type GitStatusData,
+  GitSettingsTab,
 } from "reducers/uiReducers/gitSyncReducer";
 import type { ResponseMeta } from "api/ApiResponses";
-import { noop } from "lodash";
 
 export interface GitStatusParams {
   compareRemote?: boolean;
+  onSuccessCallback?: (data: any) => void;
+  onErrorCallback?: (error: Error, response?: any) => void;
 }
 
 export const setIsGitSyncModalOpen = (payload: {
@@ -182,22 +183,11 @@ export const fetchGitStatusSuccess = (payload: GitStatusData) => ({
   payload,
 });
 
-export const fetchGitRemoteStatusInit = ({
-  onErrorCallback = noop,
-  onSuccessCallback = noop,
-} = {}) => ({
-  type: ReduxActionTypes.FETCH_GIT_REMOTE_STATUS_INIT,
-  onSuccessCallback,
-  onErrorCallback,
-});
-
-export const fetchGitRemoteStatusSuccess = (payload: GitRemoteStatusData) => ({
-  type: ReduxActionTypes.FETCH_GIT_REMOTE_STATUS_SUCCESS,
-  payload,
-});
-
-export const discardChanges = () => ({
+export const discardChanges = (
+  payload: { successToastMessage?: string } | undefined | null = {},
+) => ({
   type: ReduxActionTypes.GIT_DISCARD_CHANGES,
+  payload,
 });
 
 export const discardChangesSuccess = (payload: any) => ({
@@ -482,3 +472,32 @@ export const updateGitProtectedBranchesInit = (payload: {
     payload,
   };
 };
+
+export const toggleAutocommitEnabledInit = () => ({
+  type: ReduxActionTypes.GIT_TOGGLE_AUTOCOMMIT_ENABLED_INIT,
+});
+
+export const setIsAutocommitModalOpen = (isAutocommitModalOpen: boolean) => ({
+  type: ReduxActionTypes.GIT_SET_IS_AUTOCOMMIT_MODAL_OPEN,
+  payload: { isAutocommitModalOpen },
+});
+
+export const startAutocommitProgressPolling = () => ({
+  type: ReduxActionTypes.GIT_AUTOCOMMIT_INITIATE_PROGRESS_POLLING,
+});
+
+export const stopAutocommitProgressPolling = () => ({
+  type: ReduxActionTypes.GIT_AUTOCOMMIT_STOP_PROGRESS_POLLING,
+});
+
+export const getGitMetadataInitAction = () => ({
+  type: ReduxActionTypes.GIT_GET_METADATA_INIT,
+});
+
+export const setGitSettingsModalOpenAction = (payload: {
+  open: boolean;
+  tab?: GitSettingsTab;
+}) => ({
+  type: ReduxActionTypes.GIT_SET_SETTINGS_MODAL_OPEN,
+  payload: { open: payload.open, tab: payload.tab || GitSettingsTab.GENERAL },
+});

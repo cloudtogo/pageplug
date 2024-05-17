@@ -181,3 +181,30 @@ export const makeRouteNode =
       }
     }
   };
+
+export function findPathNodes(treeArray: any[], leafNode: string) {
+  const pathNodes: any[] = [];
+
+  function traverse(node: any, path: any) {
+    path.push(node.key);
+
+    if (node.title === leafNode) {
+      pathNodes.push(...path);
+      return;
+    }
+
+    if (node.children) {
+      for (let i = 0; i < node.children.length; i++) {
+        traverse(node.children[i], path);
+      }
+    }
+
+    path.pop();
+  }
+
+  for (let i = 0; i < treeArray.length; i++) {
+    traverse(treeArray[i], []);
+  }
+
+  return pathNodes;
+}

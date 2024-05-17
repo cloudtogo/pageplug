@@ -6,8 +6,6 @@ import {
   isImportingTemplateToAppSelector,
 } from "selectors/templatesSelectors";
 import styled from "styled-components";
-import { TemplatesContent } from "..";
-import Filters from "../Filters";
 import LoadingScreen from "./LoadingScreen";
 import type { Template } from "api/TemplatesApi";
 import TemplateModalHeader from "./Header";
@@ -16,6 +14,8 @@ import {
   FETCHING_TEMPLATE_LIST,
   FORKING_TEMPLATE,
 } from "@appsmith/constants/messages";
+import TemplateFilters from "../TemplateFilters";
+import { TemplateContent } from "../TemplateContent";
 
 const Wrapper = styled.div`
   display: flex;
@@ -30,6 +30,7 @@ const Wrapper = styled.div`
 const FilterWrapper = styled.div`
   .filter-wrapper {
     width: 200px;
+    margin-right: 10px;
   }
 `;
 
@@ -66,15 +67,14 @@ function TemplateList(props: TemplateListProps) {
     <Wrapper className="flex flex-col">
       <div className="flex">
         <FilterWrapper>
-          <Filters />
+          <TemplateFilters />
         </FilterWrapper>
         <ListWrapper>
-          <TemplatesContent
+          <TemplateContent
             filterWithAllowPageImport
             isForkingEnabled={false}
             onForkTemplateClick={onForkTemplateClick}
             onTemplateClick={props.onTemplateClick}
-            stickySearchBar
           />
         </ListWrapper>
       </div>

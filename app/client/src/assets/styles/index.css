@@ -101,18 +101,23 @@ textarea::placeholder {
   align-items: center;
 }
 
-.ads-v2-callout__children-link .ads-v2-link__text {
+/* .ads-v2-callout__children-link .ads-v2-link__text {
   font-size: 16px;
   color: #13c2c2;
-}
+} */
 
-.myfont {
+/* .myfont {
   font-size: 16px;
   color: #000000e5;
-}
+} */
 
-.ads-v2-input__input-section-input:focus:enabled:not(:read-only) {
-  --input-color-border: #13c2c2 !important;
+input:active:focus:enabled:not(:read-only) {
+  border-color: var(--brand-color);
+  --input-color-border: var(--brand-color);
+}
+input:active:enabled:not(:read-only), input:focus:enabled:not(:read-only), input:hover:enabled:not(:read-only){
+  border-color: var(--brand-color);
+  --input-color-border: var(--brand-color);
 }
 
 .ads-v2-input__input-section-input:focus {
@@ -123,7 +128,6 @@ textarea::placeholder {
   background-color: #00000042;
   border-color: #00000042;
 }
-/* 图标hack处理 */
 .bp3-form-content {
   position: relative;
 }
@@ -139,10 +143,10 @@ textarea::placeholder {
   text-decoration: none !important;
 }
 /* 按钮禁用状态 */
-.ads-v2-button:disabled > .ads-v2-button__content {
+/* .ads-v2-button:disabled > .ads-v2-button__content {
   background-color: #aabdba;
   border: 1px solid #aabdba;
-}
+} */
 .t--connection.ads-v2-button:disabled > .ads-v2-button__content {
   background-color: transparent;
   border: transparent;
@@ -170,7 +174,6 @@ textarea::placeholder {
   background-color: #13c2c2;
   border: 1px solid #13c2c2;
 }
-
 .pp-height .ads-v2-input__input-section-input {
   height: 48px;
 }
@@ -217,4 +220,19 @@ button.ads-v2-button.pp-height {
   > .ant-menu-submenu-title {
   background-color: transparent;
   color: rgba(0, 0, 0, 0.8);
+.resize-wrapper {
+  display: block;
+  outline-offset: 1px;
+  outline: 1px solid !important;
+  will-change: outline-color;
+  outline-color: transparent !important;
+}
+}
+
+.show-boundary {
+  outline-color: #fafafa !important;
+}
+
+.pointer-event-none {
+  pointer-events: none;
 }

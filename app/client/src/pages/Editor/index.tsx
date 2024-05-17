@@ -26,13 +26,11 @@ import type { Theme } from "constants/DefaultTheme";
 import GlobalHotKeys from "./GlobalHotKeys";
 import GitSyncModal from "pages/Editor/gitSync/GitSyncModal";
 import DisconnectGitModal from "pages/Editor/gitSync/DisconnectGitModal";
-import { fetchPage, updateCurrentPage } from "actions/pageActions";
+import { setupPage, updateCurrentPage } from "actions/pageActions";
 import { getCurrentPageId } from "selectors/editorSelectors";
 import { getSearchQuery } from "utils/helpers";
-import { loading } from "selectors/onboardingSelectors";
-import GuidedTourModal from "./GuidedTour/DeviationModal";
 import RepoLimitExceededErrorModal from "./gitSync/RepoLimitExceededErrorModal";
-import ImportedApplicationSuccessModal from "./gitSync/ImportedAppSuccessModal";
+import ImportedApplicationSuccessModal from "./gitSync/ImportSuccessModal";
 import { getIsBranchUpdated } from "../utils";
 import { APP_MODE } from "entities/App";
 import { GIT_BRANCH_QUERY_KEY } from "constants/routes";
@@ -43,6 +41,10 @@ import SignpostingOverlay from "pages/Editor/FirstTimeUserOnboarding/Overlay";
 import { editorInitializer } from "../../utils/editor/EditorUtils";
 import { widgetInitialisationSuccess } from "../../actions/widgetActions";
 import urlBuilder from "@appsmith/entities/URLRedirect/URLAssembly";
+import DisableAutocommitModal from "./gitSync/DisableAutocommitModal";
+import GitSettingsModal from "./gitSync/GitSettingsModal";
+import ReconfigureCDKeyModal from "@appsmith/components/gitComponents/ReconfigureCDKeyModal";
+import DisableCDModal from "@appsmith/components/gitComponents/DisableCDModal";
 
 interface EditorProps {
   currentApplicationId?: string;
@@ -60,6 +62,7 @@ interface EditorProps {
   inCloudOS: boolean;
   workEnv: string;
   fetchPage: (pageId: string) => void;
+  setupPage: (pageId: string) => void;
   updateCurrentPage: (pageId: string) => void;
   handleBranchChange: (branch: string) => void;
   currentPageId?: string;
@@ -95,7 +98,7 @@ class Editor extends Component<Props> {
       nextProps.isEditorLoading !== this.props.isEditorLoading ||
       nextProps.errorPublishing !== this.props.errorPublishing ||
       nextProps.isEditorInitializeError !==
-        this.props.isEditorInitializeError ||
+      this.props.isEditorInitializeError ||
       nextProps.loadingGuidedTour !== this.props.loadingGuidedTour
     );
   }
@@ -139,7 +142,7 @@ class Editor extends Component<Props> {
        */
       if (prevPageId && pageId && isPageIdUpdated) {
         this.props.updateCurrentPage(pageId);
-        this.props.fetchPage(pageId);
+        this.props.setupPage(pageId);
         urlBuilder.setCurrentPageId(pageId);
       }
     }
@@ -160,26 +163,29 @@ class Editor extends Component<Props> {
         </CenteredWrapper>
       );
     }
+
     return (
       <ThemeProvider theme={theme}>
         <div>
           <Helmet>
             <meta charSet="utf-8" />
             <title>
-              {`${this.props.currentApplicationName} - ${
-                this.props.inCloudOS
-                  ? this.props.workEnv === "methodot"
-                    ? "Methodot"
-                    : "CloudOS"
-                  : "PagePlug"
-              }`}
+              {`${this.props.currentApplicationName} - ${this.props.inCloudOS
+                ? this.props.workEnv === "methodot"
+                  ? "Methodot"
+                  : "CloudOS"
+                : "PagePlug"
+                }`}
             </title>
           </Helmet>
           <GlobalHotKeys>
             <IDE />
             <GitSyncModal />
+            <GitSettingsModal />
+            <DisableCDModal />
+            <ReconfigureCDKeyModal />
             <DisconnectGitModal />
-            <GuidedTourModal />
+            <DisableAutocommitModal />
             <RepoLimitExceededErrorModal />
             <TemplatesModal />
             <ImportedApplicationSuccessModal />
@@ -205,7 +211,6 @@ const mapStateToProps = (state: AppState) => ({
   currentApplicationName: state.ui.applications.currentApplication?.name,
   inCloudOS: state.entities.app.inCloudOS || false,
   currentPageId: getCurrentPageId(state),
-  loadingGuidedTour: loading(state),
 });
 
 const mapDispatchToProps = (dispatch: any) => {
@@ -213,7 +218,7 @@ const mapDispatchToProps = (dispatch: any) => {
     initEditor: (payload: InitializeEditorPayload) =>
       dispatch(initEditor(payload)),
     resetEditorRequest: () => dispatch(resetEditorRequest()),
-    fetchPage: (pageId: string) => dispatch(fetchPage(pageId)),
+    setupPage: (pageId: string) => dispatch(setupPage(pageId)),
     updateCurrentPage: (pageId: string) => dispatch(updateCurrentPage(pageId)),
     widgetConfigBuildSuccess: () => dispatch(widgetInitialisationSuccess()),
   };

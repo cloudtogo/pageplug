@@ -1,54 +1,37 @@
+import { fetchMockDatasources } from "actions/datasourceActions";
 import {
-  fetchAppThemesAction,
-  fetchSelectedAppThemeAction,
-} from "actions/appThemingActions";
-import {
-  fetchDatasources,
-  fetchMockDatasources,
-} from "actions/datasourceActions";
-import {
-  fetchGitRemoteStatusInit,
-  fetchBranchesInit,
   fetchGitProtectedBranchesInit,
   fetchGitStatusInit,
   remoteUrlInputValue,
   resetPullMergeStatus,
+  fetchBranchesInit,
+  startAutocommitProgressPolling,
+  getGitMetadataInitAction,
 } from "actions/gitSyncActions";
 import { restoreRecentEntitiesRequest } from "actions/globalSearchActions";
 import { resetEditorSuccess } from "actions/initActions";
-import { fetchJSCollections } from "actions/jsActionActions";
-import { loadGuidedTourInit } from "actions/onboardingActions";
-import {
-  fetchAllPageEntityCompletion,
-  fetchPage,
-  fetchPageDSLs,
-} from "actions/pageActions";
+import { fetchAllPageEntityCompletion, setupPage } from "actions/pageActions";
 import {
   executePageLoadActions,
   fetchActions,
 } from "actions/pluginActionActions";
-import { fetchPluginFormConfigs, fetchPlugins } from "actions/pluginActions";
-import type {
-  ApplicationPayload,
-  ReduxAction,
-} from "@appsmith/constants/ReduxActionConstants";
+import { fetchPluginFormConfigs } from "actions/pluginActions";
+import type { ApplicationPayload } from "@appsmith/constants/ReduxActionConstants";
 import {
   ReduxActionErrorTypes,
   ReduxActionTypes,
 } from "@appsmith/constants/ReduxActionConstants";
 import { addBranchParam } from "constants/routes";
 import type { APP_MODE } from "entities/App";
-import { call, put, select, spawn, take } from "redux-saga/effects";
+import { call, fork, put, select, spawn } from "redux-saga/effects";
+import type { EditConsolidatedApi } from "sagas/InitSagas";
 import {
   failFastApiCalls,
   reportSWStatus,
   waitForWidgetConfigBuild,
 } from "sagas/InitSagas";
 import { getCurrentApplication } from "selectors/editorSelectors";
-import {
-  getCurrentGitBranch,
-  getIsGitStatusLiteEnabled,
-} from "selectors/gitSyncSelectors";
+import { getCurrentGitBranch } from "selectors/gitSyncSelectors";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import history from "utils/history";
 import PerformanceTracker, {
@@ -72,6 +55,17 @@ import { getAIPromptTriggered } from "utils/storage";
 import { trackOpenEditorTabs } from "../../utils/editor/browserTabsTracking";
 import { EditorModes } from "components/editorComponents/CodeEditor/EditorConfig";
 import { waitForFetchEnvironments } from "@appsmith/sagas/EnvironmentSagas";
+import { getPageDependencyActions } from "@appsmith/entities/Engine/actionHelpers";
+import { getCurrentWorkspaceId } from "@appsmith/selectors/selectedWorkspaceSelectors";
+import {
+  getFeatureFlagsForEngine,
+  type DependentFeatureFlags,
+} from "@appsmith/selectors/engineSelectors";
+import { fetchJSCollections } from "actions/jsActionActions";
+import {
+  fetchAppThemesAction,
+  fetchSelectedAppThemeAction,
+} from "actions/appThemingActions";
 
 export default class AppEditorEngine extends AppEngine {
   constructor(mode: APP_MODE) {
@@ -114,13 +108,22 @@ export default class AppEditorEngine extends AppEngine {
   private *loadPageThemesAndActions(
     toLoadPageId: string,
     applicationId: string,
+    allResponses: EditConsolidatedApi,
   ) {
+    const {
+      currentTheme,
+      customJSLibraries,
+      pageWithMigratedDsl,
+      themes,
+      unpublishedActionCollections,
+      unpublishedActions,
+    } = allResponses;
     const initActionsCalls = [
-      fetchPage(toLoadPageId, true),
-      fetchActions({ applicationId }, []),
-      fetchJSCollections({ applicationId }),
-      fetchSelectedAppThemeAction(applicationId),
-      fetchAppThemesAction(applicationId),
+      setupPage(toLoadPageId, true, pageWithMigratedDsl),
+      fetchActions({ applicationId, unpublishedActions }, []),
+      fetchJSCollections({ applicationId, unpublishedActionCollections }),
+      fetchSelectedAppThemeAction(applicationId, currentTheme),
+      fetchAppThemesAction(applicationId, themes),
     ];
 
     const successActionEffects = [
@@ -128,7 +131,7 @@ export default class AppEditorEngine extends AppEngine {
       ReduxActionTypes.FETCH_ACTIONS_SUCCESS,
       ReduxActionTypes.FETCH_APP_THEMES_SUCCESS,
       ReduxActionTypes.FETCH_SELECTED_APP_THEME_SUCCESS,
-      ReduxActionTypes.FETCH_PAGE_SUCCESS,
+      ReduxActionTypes.SETUP_PAGE_SUCCESS,
     ];
 
     const failureActionEffects = [
@@ -136,10 +139,10 @@ export default class AppEditorEngine extends AppEngine {
       ReduxActionErrorTypes.FETCH_ACTIONS_ERROR,
       ReduxActionErrorTypes.FETCH_APP_THEMES_ERROR,
       ReduxActionErrorTypes.FETCH_SELECTED_APP_THEME_ERROR,
-      ReduxActionErrorTypes.FETCH_PAGE_ERROR,
+      ReduxActionErrorTypes.SETUP_PAGE_ERROR,
     ];
 
-    initActionsCalls.push(fetchJSLibraries(applicationId));
+    initActionsCalls.push(fetchJSLibraries(applicationId, customJSLibraries));
     successActionEffects.push(ReduxActionTypes.FETCH_JS_LIBRARIES_SUCCESS);
 
     const allActionCalls: boolean = yield call(
@@ -160,24 +163,18 @@ export default class AppEditorEngine extends AppEngine {
     yield put(fetchAllPageEntityCompletion([executePageLoadActions()]));
   }
 
-  private *loadPluginsAndDatasources() {
+  private *loadPluginsAndDatasources(allResponses: EditConsolidatedApi) {
+    const { mockDatasources, pluginFormConfigs } = allResponses || {};
     const isAirgappedInstance = isAirgapped();
-    const initActions = [fetchPlugins(), fetchDatasources(), fetchPageDSLs()];
-
-    const successActions = [
-      ReduxActionTypes.FETCH_PLUGINS_SUCCESS,
-      ReduxActionTypes.FETCH_DATASOURCES_SUCCESS,
-      ReduxActionTypes.FETCH_PAGE_DSLS_SUCCESS,
-    ];
-
-    const errorActions = [
-      ReduxActionErrorTypes.FETCH_PLUGINS_ERROR,
-      ReduxActionErrorTypes.FETCH_DATASOURCES_ERROR,
-      ReduxActionErrorTypes.POPULATE_PAGEDSLS_ERROR,
-    ];
+    const currentWorkspaceId: string = yield select(getCurrentWorkspaceId);
+    const featureFlags: DependentFeatureFlags = yield select(
+      getFeatureFlagsForEngine,
+    );
+    const { errorActions, initActions, successActions } =
+      getPageDependencyActions(currentWorkspaceId, featureFlags, allResponses);
 
     if (!isAirgappedInstance) {
-      initActions.push(fetchMockDatasources() as ReduxAction<{ type: string }>);
+      initActions.push(fetchMockDatasources(mockDatasources));
       successActions.push(ReduxActionTypes.FETCH_MOCK_DATASOURCES_SUCCESS);
       errorActions.push(ReduxActionErrorTypes.FETCH_MOCK_DATASOURCES_ERROR);
     }
@@ -194,7 +191,7 @@ export default class AppEditorEngine extends AppEngine {
 
     const pluginFormCall: boolean = yield call(
       failFastApiCalls,
-      [fetchPluginFormConfigs()],
+      [fetchPluginFormConfigs(pluginFormConfigs)],
       [ReduxActionTypes.FETCH_PLUGIN_FORM_CONFIGS_SUCCESS],
       [ReduxActionErrorTypes.FETCH_PLUGIN_FORM_CONFIGS_ERROR],
     );
@@ -204,9 +201,18 @@ export default class AppEditorEngine extends AppEngine {
       );
   }
 
-  public *loadAppEntities(toLoadPageId: string, applicationId: string): any {
-    yield call(this.loadPageThemesAndActions, toLoadPageId, applicationId);
-    yield call(this.loadPluginsAndDatasources);
+  public *loadAppEntities(
+    toLoadPageId: string,
+    applicationId: string,
+    allResponses: EditConsolidatedApi,
+  ): any {
+    yield call(
+      this.loadPageThemesAndActions,
+      toLoadPageId,
+      applicationId,
+      allResponses,
+    );
+    yield call(this.loadPluginsAndDatasources, allResponses);
   }
 
   public *completeChore() {
@@ -231,7 +237,6 @@ export default class AppEditorEngine extends AppEngine {
         currentTabs,
       });
     }
-    yield put(loadGuidedTourInit());
     if (isFirstTimeUserOnboardingComplete) {
       yield put({
         type: ReduxActionTypes.SET_FIRST_TIME_USER_ONBOARDING_APPLICATION_IDS,
@@ -264,7 +269,6 @@ export default class AppEditorEngine extends AppEngine {
 
     yield call(waitForWidgetConfigBuild);
     yield spawn(reportSWStatus);
-
     yield put({
       type: ReduxActionTypes.INITIALIZE_EDITOR_SUCCESS,
     });
@@ -272,9 +276,6 @@ export default class AppEditorEngine extends AppEngine {
 
   public *loadGit(applicationId: string) {
     const branchInStore: string = yield select(getCurrentGitBranch);
-    const isGitStatusLiteEnabled: boolean = yield select(
-      getIsGitStatusLiteEnabled,
-    );
     yield put(
       restoreRecentEntitiesRequest({
         applicationId,
@@ -286,18 +287,19 @@ export default class AppEditorEngine extends AppEngine {
     // add branch query to path and fetch status
     if (branchInStore) {
       history.replace(addBranchParam(branchInStore));
-
-      if (isGitStatusLiteEnabled) {
-        yield put(fetchGitRemoteStatusInit());
-        yield put(fetchGitStatusInit({ compareRemote: false }));
-      } else {
-        yield put(fetchGitStatusInit({ compareRemote: true }));
-      }
-
-      yield put(fetchBranchesInit());
-      yield take(ReduxActionTypes.FETCH_BRANCHES_SUCCESS);
-      yield put(fetchGitProtectedBranchesInit());
+      yield fork(this.loadGitInBackground);
     }
+  }
+
+  private *loadGitInBackground() {
+    yield put(fetchBranchesInit());
+    yield put(fetchGitProtectedBranchesInit());
+    yield put(fetchGitProtectedBranchesInit());
+    yield put(getGitMetadataInitAction());
+
+    yield put(fetchGitStatusInit({ compareRemote: true }));
+
+    yield put(startAutocommitProgressPolling());
     yield put(resetPullMergeStatus());
   }
 }

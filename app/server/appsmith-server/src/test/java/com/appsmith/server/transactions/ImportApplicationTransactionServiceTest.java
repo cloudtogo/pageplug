@@ -12,7 +12,7 @@ import com.appsmith.server.exceptions.AppsmithException;
 import com.appsmith.server.helpers.MockPluginExecutor;
 import com.appsmith.server.helpers.PluginExecutorHelper;
 import com.appsmith.server.imports.importable.ImportableService;
-import com.appsmith.server.imports.internal.ImportApplicationService;
+import com.appsmith.server.imports.internal.ImportService;
 import com.appsmith.server.migrations.JsonSchemaMigration;
 import com.appsmith.server.newactions.base.NewActionService;
 import com.appsmith.server.repositories.ActionCollectionRepository;
@@ -57,7 +57,7 @@ import static org.mockito.ArgumentMatchers.any;
 public class ImportApplicationTransactionServiceTest {
 
     @Autowired
-    ImportApplicationService importApplicationService;
+    ImportService importService;
 
     @Autowired
     WorkspaceService workspaceService;
@@ -82,6 +82,9 @@ public class ImportApplicationTransactionServiceTest {
 
     @MockBean
     ImportableService<NewAction> newActionImportableService;
+
+    @Autowired
+    private Gson gson;
 
     Long applicationCount = 0L, pageCount = 0L, actionCount = 0L, actionCollectionCount = 0L;
     private ApplicationJson applicationJson = new ApplicationJson();
@@ -122,7 +125,6 @@ public class ImportApplicationTransactionServiceTest {
 
         return stringifiedFile
                 .map(data -> {
-                    Gson gson = new Gson();
                     return gson.fromJson(data, ApplicationJson.class);
                 })
                 .map(JsonSchemaMigration::migrateApplicationToLatestSchema);
@@ -140,8 +142,9 @@ public class ImportApplicationTransactionServiceTest {
 
         Workspace createdWorkspace = workspaceService.create(newWorkspace).block();
 
-        Mono<Application> resultMono = importApplicationService.importNewApplicationInWorkspaceFromJson(
-                createdWorkspace.getId(), applicationJson);
+        Mono<Application> resultMono = importService
+                .importNewArtifactInWorkspaceFromJson(createdWorkspace.getId(), applicationJson)
+                .map(importableArtifact -> (Application) importableArtifact);
 
         // Check  if expected exception is thrown
         StepVerifier.create(resultMono)
@@ -172,8 +175,9 @@ public class ImportApplicationTransactionServiceTest {
 
         Workspace createdWorkspace = workspaceService.create(newWorkspace).block();
 
-        Mono<Application> resultMono = importApplicationService.importNewApplicationInWorkspaceFromJson(
-                createdWorkspace.getId(), applicationJson);
+        Mono<Application> resultMono = importService
+                .importNewArtifactInWorkspaceFromJson(createdWorkspace.getId(), applicationJson)
+                .map(importableArtifact -> (Application) importableArtifact);
 
         // Check  if expected exception is thrown
         StepVerifier.create(resultMono)

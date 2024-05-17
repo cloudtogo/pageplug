@@ -6,6 +6,14 @@
   /* input */
   --appsmith-input-focus-border-color: var(--appsmith-color-black-900);
 
+  --ads-v2-color-bg-brand-emphasis: var(--brand-color);
+  --ads-v2-color-bg-brand-emphasis-plus: var(--brand-color);
+  --ads-v2-color-border-brand-emphasis-plus: var(--brand-color);
+  --ads-v2-color-border-emphasis: var(--brand-color);
+  --ads-v2-color-border-emphasis-plus: var(--brand-color);
+  --ads-v2-colors-control-field-hover-border: var(--brand-color);
+  --ads-v2-colors-control-field-active-border: var(--brand-color);
+  
   /* search input */
   --appsmith-search-input-focus-mobile-border-color: var(
     --appsmith-color-black-900

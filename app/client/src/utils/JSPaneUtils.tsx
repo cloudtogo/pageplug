@@ -1,6 +1,6 @@
 //check difference for after body change and parsing
 import type { JSCollection, JSAction, Variable } from "entities/JSCollection";
-import { ENTITY_TYPE } from "entities/AppsmithConsole";
+import { ENTITY_TYPE } from "@appsmith/entities/AppsmithConsole/utils";
 import LOG_TYPE from "entities/AppsmithConsole/logtype";
 import AppsmithConsole from "utils/AppsmithConsole";
 import { isEmpty, isEqual, xorWith } from "lodash";
@@ -43,7 +43,7 @@ export const getDifferenceInJSCollection = (
         if (
           preExisted.actionConfiguration.body !== action.body ||
           !getDifferenceInJSArgumentArrays(
-            preExisted.actionConfiguration.jsArguments,
+            preExisted.actionConfiguration?.jsArguments,
             action.arguments,
           )
         ) {
@@ -98,6 +98,7 @@ export const getDifferenceInJSCollection = (
             oldName: updateExisting.name,
             newName: newActions[i].name,
             pageId: updateExisting.pageId,
+            moduleId: updateExisting.moduleId,
           });
           newActions.splice(i, 1);
           toBearchivedActions.splice(indexOfArchived, 1);
@@ -133,8 +134,9 @@ export const getDifferenceInJSCollection = (
       jsAction.actions.splice(deleteArchived, 1);
     }
   }
-  //change in variables
-  const varList = jsAction.variables;
+  //change in variables. In cases the variable list is not present, jsAction.variables will be undefined
+  // we are setting to empty array to avoid undefined errors further in the code (especially in case of workflows main file)
+  const varList = jsAction.variables || [];
   let changedVariables: Array<Variable> = [];
   if (parsedBody.variables.length) {
     for (let i = 0; i < parsedBody.variables.length; i++) {
@@ -155,7 +157,7 @@ export const getDifferenceInJSCollection = (
       }
     }
   } else {
-    changedVariables = jsAction.variables;
+    changedVariables = varList;
   }
   //delete variable
   if (varList && varList.length > 0 && parsedBody.variables) {
@@ -200,8 +202,8 @@ export const pushLogsForObjectUpdate = (
 };
 
 export const createDummyJSCollectionActions = (
-  pageId: string,
   workspaceId: string,
+  additionalParams: Record<string, unknown> = {},
 ) => {
   const body =
     "export default {\n\tmyVar1: [],\n\tmyVar2: {},\n\tmyFun1 () {\n\t\t//\twrite code here\n\t\t//\tthis.myVar1 = [1,2,3]\n\t},\n\tasync myFun2 () {\n\t\t//\tuse async-await or promises\n\t\t//\tawait storeValue('varName', 'hello world')\n\t}\n}";
@@ -209,7 +211,6 @@ export const createDummyJSCollectionActions = (
   const actions = [
     {
       name: "myFun1",
-      pageId,
       workspaceId,
       executeOnLoad: false,
       actionConfiguration: {
@@ -218,10 +219,10 @@ export const createDummyJSCollectionActions = (
         jsArguments: [],
       },
       clientSideExecution: true,
+      ...additionalParams,
     },
     {
       name: "myFun2",
-      pageId,
       workspaceId,
       executeOnLoad: false,
       actionConfiguration: {
@@ -230,10 +231,24 @@ export const createDummyJSCollectionActions = (
         jsArguments: [],
       },
       clientSideExecution: true,
+      ...additionalParams,
     },
   ];
+
+  const variables = [
+    {
+      name: "myVar1",
+      value: [],
+    },
+    {
+      name: "myVar2",
+      value: {},
+    },
+  ];
+
   return {
     actions,
     body,
+    variables,
   };
 };

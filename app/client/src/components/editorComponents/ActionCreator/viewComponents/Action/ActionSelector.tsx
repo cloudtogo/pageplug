@@ -25,6 +25,7 @@ const ActionText = styled(Text)`
 
 export default function ActionSelector(props: {
   action: TActionBlock;
+  additionalAutoComplete?: AdditionalDynamicDataTree;
   children: React.ReactNode;
   open: boolean;
   id: string;
@@ -53,6 +54,7 @@ export default function ActionSelector(props: {
       content={
         <ActionSelectorForm
           action={action}
+          additionalAutoComplete={props.additionalAutoComplete}
           dataTreePath={props.dataTreePath}
           onChange={props.onChange}
         />
@@ -83,6 +85,7 @@ const pathClassList = [
   "evaluated-value-popup",
   "subtree-container",
   "drag-handle-block",
+  "action-creator-create-new-modal",
 ];
 
 const isClassPresentInList = (path: any, className: string) =>

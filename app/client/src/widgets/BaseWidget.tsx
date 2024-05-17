@@ -17,7 +17,7 @@ import type {
   WidgetType,
 } from "constants/WidgetConstants";
 import { RenderModes } from "constants/WidgetConstants";
-import { ENTITY_TYPE } from "entities/AppsmithConsole";
+import { ENTITY_TYPE } from "@appsmith/entities/AppsmithConsole/utils";
 import type { SetterConfig, Stylesheet } from "entities/AppTheming";
 import type { Context, ReactNode, RefObject } from "react";
 import { Component } from "react";
@@ -55,6 +55,13 @@ import store from "store";
 import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
 import type { WidgetFeatures } from "utils/WidgetFeatures";
 import { LayoutSystemTypes } from "layoutSystems/types";
+import type { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
+import type {
+  CopiedWidgetData,
+  PasteDestinationInfo,
+  PastePayload,
+} from "layoutSystems/anvil/utils/paste/types";
+import { type CallEffect, call } from "redux-saga/effects";
 
 const HiddenDetachWidgetWrapper = styled.div<{
   isVisible: boolean;
@@ -90,12 +97,6 @@ abstract class BaseWidget<
   TCache = unknown,
 > extends Component<T, K> {
   static contextType = EditorContext;
-
-  /*
-   * Turning on this flag will preload all the widget configs like
-   * derivedProperties, propertyPaneconfig etc into the widgetFactory.
-   */
-  static preloadConfig = false;
 
   context!: React.ContextType<Context<EditorContextType<TCache>>>;
 
@@ -166,6 +167,30 @@ abstract class BaseWidget<
 
   static getAutocompleteDefinitions(): AutocompletionDefinitions {
     return {};
+  }
+
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  static pasteOperationChecks(
+    allWidgets: CanvasWidgetsReduxState, // All widgets
+    oldWidget: FlattenedWidgetProps, // Original copied widget
+    newWidget: FlattenedWidgetProps, // Newly generated widget
+    widgetIdMap: Record<string, string>, // Map of oldWidgetId -> newWidgetId
+  ): FlattenedWidgetProps | null {
+    return null;
+  }
+
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  static *performPasteOperation(
+    allWidgets: CanvasWidgetsReduxState, // All widgets
+    copiedWidgets: CopiedWidgetData[], // Original copied widgets
+    destinationInfo: PasteDestinationInfo, // Destination info of copied widgets
+    widgetIdMap: Record<string, string>, // Map of oldWidgetId -> newWidgetId
+    reverseWidgetIdMap: Record<string, string>, // Map of newWidgetId -> oldWidgetId
+  ): Generator<CallEffect<PastePayload>, PastePayload, any> {
+    const res: PastePayload = yield call(function* () {
+      return { widgets: allWidgets, widgetIdMap, reverseWidgetIdMap };
+    });
+    return res;
   }
 
   /**
@@ -262,6 +287,13 @@ abstract class BaseWidget<
     }
   };
 
+  unfocusWidget = () => {
+    const { unfocusWidget } = this.context;
+    if (unfocusWidget) {
+      unfocusWidget();
+    }
+  };
+
   /* eslint-disable @typescript-eslint/no-empty-function */
 
   /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -274,14 +306,14 @@ abstract class BaseWidget<
     }
   }
 
-  componentDidMount(): void {}
+  componentDidMount(): void { }
 
   /*
    * With lazy rendering, skeleton loaders are rendered for below fold widgets.
    * This Appsmith widget life cycle method that gets called when the actual widget
    * component renders instead of the skeleton loader.
    */
-  deferredComponentDidRender(): void {}
+  deferredComponentDidRender(): void { }
 
   /* eslint-enable @typescript-eslint/no-empty-function */
 
@@ -505,6 +537,10 @@ export interface WidgetPositionProps extends WidgetRowCols {
   width?: number;
 }
 
+export interface WidgetCanvasProps {
+  isWidgetSelected?: boolean;
+}
+
 export const WIDGET_DISPLAY_PROPS = {
   isVisible: true,
   isLoading: true,
@@ -534,14 +570,15 @@ export interface WidgetDisplayProps {
 
 export interface WidgetDataProps
   extends WidgetBaseProps,
-    WidgetErrorProps,
-    WidgetPositionProps,
-    WidgetDisplayProps {}
+  WidgetErrorProps,
+  WidgetPositionProps,
+  WidgetDisplayProps,
+  WidgetCanvasProps { }
 
 export interface WidgetProps
   extends WidgetDataProps,
-    WidgetDynamicPathListProps,
-    DataTreeEvaluationProps {
+  WidgetDynamicPathListProps,
+  DataTreeEvaluationProps {
   key?: string;
   isDefaultClickDisabled?: boolean;
 
@@ -555,10 +592,12 @@ export interface WidgetCardProps {
   key?: string;
   displayName: string;
   icon: string;
+  thumbnail?: string;
   isBeta?: boolean;
   isMobile?: boolean;
   tags?: WidgetTags[];
   isScreen: boolean;
+  isSearchWildcard?: boolean;
 }
 
 export const WidgetOperations = {

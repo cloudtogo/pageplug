@@ -4,7 +4,7 @@ import type { WidgetProps } from "widgets/BaseWidget";
 
 export const CanvasFactory = Factory.Sync.makeFactory<WidgetProps>({
   backgroundColor: "none",
-  rightColumn: 1224,
+  rightColumn: 1225,
   snapColumns: 16,
   detachFromLayout: true,
   topRow: 0,

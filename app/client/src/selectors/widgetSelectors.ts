@@ -9,6 +9,7 @@ import { getNextEntityName } from "utils/AppsmithUtils";
 
 import WidgetFactory from "WidgetProvider/factory";
 import {
+  getAltBlockWidgetSelection,
   getFocusedWidget,
   getLastSelectedWidget,
   getSelectedWidgets,
@@ -24,6 +25,7 @@ import { getIsTableFilterPaneVisible } from "selectors/tableFilterSelectors";
 import { getIsAutoHeightWithLimitsChanging } from "utils/hooks/autoHeightUIHooks";
 import { getIsPropertyPaneVisible } from "./propertyPaneSelectors";
 import { combinedPreviewModeSelector } from "./editorSelectors";
+import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
 
 export const getIsDraggingOrResizing = (state: AppState) =>
   state.ui.widgetDragResize.isResizing || state.ui.widgetDragResize.isDragging;
@@ -32,14 +34,37 @@ export const getIsResizing = (state: AppState) =>
   state.ui.widgetDragResize.isResizing;
 
 const getCanvasWidgets = (state: AppState) => state.entities.canvasWidgets;
-export const getModalDropdownList = createSelector(
+
+// A selector that gets the modal widget type based on the feature flag
+// This will need to be updated once Anvil and WDS are generally available
+export const getModalWidgetType = createSelector(
+  selectFeatureFlags,
+  (flags) => {
+    let modalWidgetType = "MODAL_WIDGET";
+    if (flags.ab_wds_enabled) {
+      modalWidgetType = "WDS_MODAL_WIDGET";
+    }
+    return modalWidgetType;
+  },
+);
+
+export const getModalWidgets = createSelector(
   getCanvasWidgets,
-  (widgets) => {
+  getModalWidgetType,
+  (widgets, modalWidgetType) => {
     const modalWidgets = Object.values(widgets).filter(
       (widget: FlattenedWidgetProps) =>
         widget.type === "MODAL_WIDGET" || widget.type === "TARO_POPUP_WIDGET",
     );
     if (modalWidgets.length === 0) return undefined;
+    return modalWidgets;
+  },
+);
+
+export const getModalDropdownList = createSelector(
+  getModalWidgets,
+  (modalWidgets) => {
+    if (!modalWidgets) return undefined;
 
     return modalWidgets.map((widget: FlattenedWidgetProps) => ({
       id: widget.widgetId,
@@ -179,6 +204,7 @@ export const shouldWidgetIgnoreClicksSelector = (widgetId: string) => {
     getAppMode,
     combinedPreviewModeSelector,
     getIsAutoHeightWithLimitsChanging,
+    getAltBlockWidgetSelection,
     (
       focusedWidgetId,
       isTableFilterPaneVisible,
@@ -188,6 +214,7 @@ export const shouldWidgetIgnoreClicksSelector = (widgetId: string) => {
       appMode,
       isPreviewMode,
       isAutoHeightWithLimitsChanging,
+      isWidgetSelectionBlock,
     ) => {
       const isFocused = focusedWidgetId === widgetId;
 
@@ -199,7 +226,8 @@ export const shouldWidgetIgnoreClicksSelector = (widgetId: string) => {
         appMode !== APP_MODE.EDIT ||
         !isFocused ||
         isTableFilterPaneVisible ||
-        isAutoHeightWithLimitsChanging
+        isAutoHeightWithLimitsChanging ||
+        isWidgetSelectionBlock
       );
     },
   );

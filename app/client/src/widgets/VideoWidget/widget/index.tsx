@@ -44,7 +44,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
     return {
       name: "视频",
       iconSVG: IconSVG,
-      tags: [WIDGET_TAGS.FEATRUE],
+      tags: [WIDGET_TAGS.GERNERAL],
       needsMeta: true,
       searchTags: ["video", "player", "play"],
     };
@@ -99,6 +99,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
 
   static getAnvilConfig(): AnvilConfig | null {
     return {
+      isLargeWidget: false,
       widgetSize: {
         maxHeight: {},
         maxWidth: {},
@@ -126,7 +127,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
               type: ValidationTypes.TEXT,
               params: {
                 regex:
-                  /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
+                  /^(http(s)?:\/\/)?([-a-zA-Z0-9:%._\+~#=]*@)?(([-a-zA-Z0-9\.]{2,256}\.[a-z]{2,6})|(?:\d{1,3}\.){3}\d{1,3}\b)\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/,
                 expected: {
                   type: "Video URL",
                   example: getAssetUrl(`${ASSETS_CDN_URL}/widgets/bird.mp4`),

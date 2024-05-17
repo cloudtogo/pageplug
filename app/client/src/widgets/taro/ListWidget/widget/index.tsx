@@ -11,6 +11,7 @@ import { Skeleton } from "@taroify/core";
 import styled from "styled-components";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import IconSVG from "../icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 const LoadingContainer = styled(View)`
   height: 100%;
@@ -30,6 +31,7 @@ class ListWidget extends BaseWidget<MListWidgetProps, WidgetState> {
   static getConfig() {
     return {
       name: "列表",
+      tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["list"],
       iconSVG: IconSVG,
       needsMeta: true,

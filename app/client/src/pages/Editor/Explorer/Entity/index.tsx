@@ -12,16 +12,15 @@ import CollapseToggle from "./CollapseToggle";
 import EntityName from "./Name";
 import AddButton from "./AddButton";
 import Collapse from "./Collapse";
-import { useEntityUpdateState, useEntityEditState } from "../hooks";
+import {
+  useEntityUpdateState,
+  useEntityEditState,
+} from "@appsmith/pages/Editor/Explorer/hooks";
 import { Classes } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import useClick from "utils/hooks/useClick";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
-import { inGuidedTour } from "selectors/onboardingSelectors";
-import { toggleShowDeviationDialog } from "actions/onboardingActions";
-import Boxed from "pages/Editor/GuidedTour/Boxed";
-import { GUIDED_TOUR_STEPS } from "pages/Editor/GuidedTour/constants";
 import { getEntityCollapsibleState } from "selectors/editorContextSelectors";
 import type { AppState } from "@appsmith/reducers";
 import { setEntityCollapsibleState } from "actions/editorContextActions";
@@ -61,6 +60,19 @@ const Wrapper = styled.div<{ active: boolean }>`
       min-width: 30px;
       width: auto;
     }
+  }
+
+  &&&.datasourceStructure-query-editor
+    .t--entity-item.active
+    .${EntityClassNames.CONTEXT_MENU} {
+    visibility: visible;
+  }
+
+  &.datasourceStructure-query-editor
+    .t--entity-item.active
+    ${ContextMenuWrapper} {
+    min-width: 30px;
+    width: auto;
   }
 
   &.group {
@@ -264,7 +276,6 @@ export const Entity = forwardRef(
     const isUpdating = useEntityUpdateState(props.entityId);
     const isEditing = useEntityEditState(props.entityId);
     const dispatch = useDispatch();
-    const guidedTourEnabled = useSelector(inGuidedTour);
 
     const isOpen =
       (isEntityOpen === undefined ? isDefaultExpanded : isEntityOpen) ||
@@ -316,10 +327,6 @@ export const Entity = forwardRef(
 
     const enterEditMode = useCallback(() => {
       if (!canEditEntityName) return;
-      if (guidedTourEnabled) {
-        dispatch(toggleShowDeviationDialog(true));
-        return;
-      }
       props.updateEntityName &&
         dispatch({
           type: ReduxActionTypes.INIT_EXPLORER_ENTITY_NAME_EDIT,
@@ -327,7 +334,7 @@ export const Entity = forwardRef(
             id: props.entityId,
           },
         });
-    }, [dispatch, props.entityId, props.updateEntityName, guidedTourEnabled]);
+    }, [dispatch, props.entityId, props.updateEntityName]);
 
     const itemRef = useRef<HTMLDivElement | null>(null);
     useClick(itemRef, handleClick, noop);
@@ -348,101 +355,96 @@ export const Entity = forwardRef(
     );
 
     return (
-      <Boxed
-        show={props.name === "updateCustomerInfo"}
-        step={GUIDED_TOUR_STEPS.BIND_OTHER_FORM_WIDGETS}
+      <Wrapper
+        active={!!props.active}
+        className={`${EntityClassNames.WRAPPER} ${props.className}`}
+        ref={ref}
       >
-        <Wrapper
+        <EntityItem
           active={!!props.active}
-          className={`${EntityClassNames.WRAPPER} ${props.className}`}
-          ref={ref}
+          alwaysShowRightIcon={props.alwaysShowRightIcon}
+          className={`${props.highlight ? "highlighted" : ""} ${
+            props.active ? "active" : ""
+          } t--entity-item`}
+          data-guided-tour-id={`explorer-entity-${props.name}`}
+          data-guided-tour-iid={props.name}
+          data-testid={`t--entity-item-${props.name}`}
+          disabled={!!props.disabled}
+          highlight={!!props.highlight}
+          id={"entity-" + props.entityId}
+          isSticky={props.isSticky === true}
+          rightIconClickable={typeof props.onClickRightIcon === "function"}
+          spaced={!!props.children}
+          step={props.step}
         >
-          <EntityItem
-            active={!!props.active}
-            alwaysShowRightIcon={props.alwaysShowRightIcon}
-            className={`${props.highlight ? "highlighted" : ""} ${
-              props.active ? "active" : ""
-            } t--entity-item`}
-            data-guided-tour-id={`explorer-entity-${props.name}`}
-            data-guided-tour-iid={props.name}
-            data-testid={`t--entity-item-${props.name}`}
+          <CollapseToggle
+            className={`${EntityClassNames.COLLAPSE_TOGGLE}`}
             disabled={!!props.disabled}
-            highlight={!!props.highlight}
-            id={"entity-" + props.entityId}
-            isSticky={props.isSticky === true}
-            rightIconClickable={typeof props.onClickRightIcon === "function"}
-            spaced={!!props.children}
-            step={props.step}
-          >
-            <CollapseToggle
-              className={`${EntityClassNames.COLLAPSE_TOGGLE}`}
-              disabled={!!props.disabled}
-              isOpen={!!isOpen}
-              isVisible={!!props.children}
-              onClick={toggleChildren}
-            />
-            <IconWrapper
-              className={`${EntityClassNames.ICON}`}
-              onClick={handleClick}
-            >
-              {props.icon}
-            </IconWrapper>
-            <EntityName
-              className={`${EntityClassNames.NAME}`}
-              enterEditMode={enterEditMode}
-              entityId={props.entityId}
-              exitEditMode={exitEditMode}
-              isBeta={props.isBeta}
-              isEditing={!!props.updateEntityName && isEditing}
-              name={props.name}
-              nameTransformFn={props.onNameEdit}
-              ref={itemRef}
-              searchKeyword={props.searchKeyword}
-              updateEntityName={updateNameCallback}
-            />
-            {isUpdating && (
-              <SubItemWrapper>
-                <Spinner />
-              </SubItemWrapper>
-            )}
-            {props.isBeta && (
-              <SubItemWrapper>
-                <Tag isClosable={false}>
-                  {createMessage(EXPLORER_BETA_ENTITY)}
-                </Tag>
-              </SubItemWrapper>
-            )}
-            {props.preRightIcon && (
-              <IconWrapper
-                className={`${EntityClassNames.PRE_RIGHT_ICON} w-full h-full`}
-                onClick={props.onClickPreRightIcon}
-              >
-                {props.preRightIcon}
-              </IconWrapper>
-            )}
-            {props.rightIcon && (
-              <IconWrapper
-                className={EntityClassNames.RIGHT_ICON}
-                onClick={props.onClickRightIcon}
-              >
-                {props.rightIcon}
-              </IconWrapper>
-            )}
-            {showAddButton && addButton}
-            {props.contextMenu && (
-              <ContextMenuWrapper>{props.contextMenu}</ContextMenuWrapper>
-            )}
-          </EntityItem>
-          <Collapse
-            active={props.active}
-            collapseRef={props.collapseRef}
             isOpen={!!isOpen}
-            step={props.step}
+            isVisible={!!props.children}
+            onClick={toggleChildren}
+          />
+          <IconWrapper
+            className={`${EntityClassNames.ICON}`}
+            onClick={handleClick}
           >
-            {props.children}
-          </Collapse>
-        </Wrapper>
-      </Boxed>
+            {props.icon}
+          </IconWrapper>
+          <EntityName
+            className={`${EntityClassNames.NAME}`}
+            enterEditMode={enterEditMode}
+            entityId={props.entityId}
+            exitEditMode={exitEditMode}
+            isBeta={props.isBeta}
+            isEditing={!!props.updateEntityName && isEditing}
+            name={props.name}
+            nameTransformFn={props.onNameEdit}
+            ref={itemRef}
+            searchKeyword={props.searchKeyword}
+            updateEntityName={updateNameCallback}
+          />
+          {isUpdating && (
+            <SubItemWrapper>
+              <Spinner />
+            </SubItemWrapper>
+          )}
+          {props.isBeta && (
+            <SubItemWrapper>
+              <Tag isClosable={false}>
+                {createMessage(EXPLORER_BETA_ENTITY)}
+              </Tag>
+            </SubItemWrapper>
+          )}
+          {props.preRightIcon && (
+            <IconWrapper
+              className={`${EntityClassNames.PRE_RIGHT_ICON} w-full h-full`}
+              onClick={props.onClickPreRightIcon}
+            >
+              {props.preRightIcon}
+            </IconWrapper>
+          )}
+          {props.rightIcon && (
+            <IconWrapper
+              className={EntityClassNames.RIGHT_ICON}
+              onClick={props.onClickRightIcon}
+            >
+              {props.rightIcon}
+            </IconWrapper>
+          )}
+          {showAddButton && addButton}
+          {props.contextMenu && (
+            <ContextMenuWrapper>{props.contextMenu}</ContextMenuWrapper>
+          )}
+        </EntityItem>
+        <Collapse
+          active={props.active}
+          collapseRef={props.collapseRef}
+          isOpen={!!isOpen}
+          step={props.step}
+        >
+          {props.children}
+        </Collapse>
+      </Wrapper>
     );
   },
 );

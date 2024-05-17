@@ -140,7 +140,7 @@ export class Table {
   _filtersCount = this._filterBtn + " span.action-title";
   _headerCell = (column: string) =>
     `.t--widget-tablewidgetv2 .thead .th:contains(${column})`;
-  private _addNewRow = ".t--add-new-row";
+  public _addNewRow = ".t--add-new-row";
   _saveNewRow = ".t--save-new-row";
   _discardRow = ".t--discard-new-row";
   _searchInput = ".t--search-input input";
@@ -241,10 +241,7 @@ export class Table {
     tableVersion: "v1" | "v2" = "v1",
   ) {
     this.agHelper
-      .GetElement(
-        this._tableRowColumnData(rowIndex, colIndex, tableVersion),
-        30000,
-      )
+      .GetElement(this._tableRowColumnData(rowIndex, colIndex, tableVersion))
       .waitUntil(($ele) =>
         cy.wrap($ele).children("span").should("not.be.empty"),
       );
@@ -252,7 +249,7 @@ export class Table {
 
   public WaitForTableEmpty(tableVersion: "v1" | "v2" = "v1") {
     this.agHelper
-      .GetElement(this._tableEmptyColumnData(tableVersion))
+      .GetElement(this._tableEmptyColumnData(tableVersion), "noVerify")
       .children()
       .should("have.length", 0); //or below
     //expect($children).to.have.lengthOf(0)
@@ -290,7 +287,7 @@ export class Table {
     //timeout can be sent higher values incase of larger tables
     this.agHelper.Sleep(timeout); //Settling time for table!
     return this.agHelper
-      .GetElement(this._tableRowColumnData(rowNum, colNum, tableVersion), 30000)
+      .GetElement(this._tableRowColumnData(rowNum, colNum, tableVersion))
       .invoke("text");
   }
 
@@ -563,7 +560,7 @@ export class Table {
     col: number,
     expectedURL: string,
     tableVersion: "v1" | "v2" = "v1",
-    networkCall = "viewPage",
+    networkCall = "getConsolidatedData",
   ) {
     this.deployMode.StubWindowNAssert(
       this._tableRowColumnData(row, col, tableVersion),

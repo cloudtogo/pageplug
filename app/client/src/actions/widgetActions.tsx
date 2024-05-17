@@ -7,6 +7,7 @@ import type { ExecuteTriggerPayload } from "constants/AppsmithActionConstants/Ac
 import type { BatchAction } from "actions/batchActions";
 import { batchAction } from "actions/batchActions";
 import type { WidgetProps } from "widgets/BaseWidget";
+import type { PartialExportParams } from "sagas/PartialImportExportSagas";
 
 export const widgetInitialisationSuccess = () => {
   return {
@@ -46,9 +47,15 @@ export const createModalAction = (
 
 export const focusWidget = (
   widgetId?: string,
-): ReduxAction<{ widgetId?: string }> => ({
+  alt?: boolean,
+): ReduxAction<{ widgetId?: string; alt?: boolean }> => ({
   type: ReduxActionTypes.FOCUS_WIDGET,
-  payload: { widgetId },
+  payload: { widgetId, alt },
+});
+
+export const altFocusWidget = (alt: boolean) => ({
+  type: ReduxActionTypes.ALT_FOCUS_WIDGET,
+  payload: alt,
 });
 
 export const showModal = (id: string, shouldSelectModal = true) => {
@@ -134,5 +141,19 @@ export const addSuggestedWidget = (payload: Partial<WidgetProps>) => {
 export const groupWidgets = () => {
   return {
     type: ReduxActionTypes.GROUP_WIDGETS_INIT,
+  };
+};
+
+export const partialExportWidgets = (params: PartialExportParams) => {
+  return {
+    type: ReduxActionTypes.PARTIAL_EXPORT_INIT,
+    payload: params,
+  };
+};
+
+export const setWidgetSelectionBlock = (payload: boolean) => {
+  return {
+    type: ReduxActionTypes.SET_WIDGET_SELECTION_BLOCK,
+    payload,
   };
 };

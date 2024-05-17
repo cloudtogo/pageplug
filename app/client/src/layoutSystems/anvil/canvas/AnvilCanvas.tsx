@@ -1,30 +1,35 @@
-import React from "react";
+import React, { useMemo } from "react";
 import "./styles.css";
 import type { BaseWidgetProps } from "widgets/BaseWidgetHOC/withBaseWidgetHOC";
-import type { LayoutComponentProps } from "../utils/anvilTypes";
-import type { WidgetProps } from "widgets/BaseWidget";
-import { renderLayouts } from "../utils/layouts/renderUtils";
 import { getAnvilCanvasId } from "./utils";
-import { RenderModes } from "constants/WidgetConstants";
+import { LayoutProvider } from "../layoutComponents/LayoutProvider";
+import { useRenderDetachedChildren } from "../common/hooks/detachedWidgetHooks";
+import { AnvilCanvasClassName } from "widgets/anvil/constants";
 
-export const AnvilCanvas = (props: BaseWidgetProps) => {
-  const map: LayoutComponentProps["childrenMap"] = {};
-  props.children.forEach((child: WidgetProps) => {
-    map[child.widgetId] = child;
-  });
+export const AnvilCanvas = React.forwardRef(
+  (props: BaseWidgetProps, ref: React.ForwardedRef<HTMLDivElement>) => {
+    const className: string = useMemo(
+      () => `${AnvilCanvasClassName} ${props.classList?.join(" ")}`,
+      [props.classList],
+    );
 
-  const className: string = `anvil-canvas ${props.classList?.join(" ")}`;
+    const renderDetachedChildren = useRenderDetachedChildren(
+      props.widgetId,
+      props.children,
+    );
 
-  return (
-    <div className={className} id={getAnvilCanvasId(props.widgetId)}>
-      {renderLayouts(
-        props.layout,
-        map,
-        props.widgetId,
-        "",
-        props.renderMode || RenderModes.CANVAS,
-        [],
-      )}
-    </div>
-  );
-};
+    return (
+      <>
+        {renderDetachedChildren}
+        <div
+          className={className}
+          id={getAnvilCanvasId(props.widgetId)}
+          ref={ref}
+          tabIndex={0} //adding for accessibility in test cases.
+        >
+          <LayoutProvider {...props} />
+        </div>
+      </>
+    );
+  },
+);

@@ -90,7 +90,7 @@ class PhoneInputWidget extends BaseInputWidget<
       iconSVG: IconSVG,
       tags: [WIDGET_TAGS.INPUTS],
       needsMeta: true,
-      searchTags: ["call", "phone", "number", "dial", "telephone"],
+      searchTags: ["call", "phone", "number", "dial", "telephone", "input"],
     };
   }
 
@@ -149,6 +149,7 @@ class PhoneInputWidget extends BaseInputWidget<
 
   static getAnvilConfig(): AnvilConfig | null {
     return {
+      isLargeWidget: false,
       widgetSize: {
         maxHeight: {},
         maxWidth: {},

@@ -11,7 +11,7 @@ import {
 import styled from "styled-components";
 import { Icon, Button } from "design-system";
 import { AddEntity, EmptyComponent } from "./common";
-import { getCurrentAppWorkspace } from "@appsmith/selectors/workspaceSelectors";
+import { getCurrentAppWorkspace } from "@appsmith/selectors/selectedWorkspaceSelectors";
 
 import type { AppState } from "@appsmith/reducers";
 import { DatasourceCreateEntryPoints } from "constants/Datasource";
@@ -24,7 +24,7 @@ import {
 import {
   useAppWideAndOtherDatasource,
   useDatasourceSuggestions,
-} from "./hooks";
+} from "@appsmith/pages/Editor/Explorer/hooks";
 import { getPlugins } from "@appsmith/selectors/entitiesSelector";
 import { keyBy } from "lodash";
 import { useDatasourceIdFromURL } from "@appsmith/pages/Editor/Explorer/helpers";

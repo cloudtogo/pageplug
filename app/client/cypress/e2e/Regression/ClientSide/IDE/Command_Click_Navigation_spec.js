@@ -1,12 +1,13 @@
 import reconnectDatasourceModal from "../../../../locators/ReconnectLocators";
-import { PROPERTY_SELECTOR } from "../../../../locators/WidgetLocators";
 import {
   agHelper,
   homePage,
-  entityExplorer,
   locators,
   gitSync,
 } from "../../../../support/Objects/ObjectsCore";
+import EditorNavigation, {
+  EntityType,
+} from "../../../../support/Pages/EditorNavigation";
 
 const NAVIGATION_ATTRIBUTE = "data-navigate-to";
 
@@ -28,7 +29,7 @@ const JSInput2TestCode =
 
 let repoName;
 
-describe("1. CommandClickNavigation", function () {
+describe("1. CommandClickNavigation", { tags: ["@tag.IDE"] }, function () {
   it("1. Import application & Assert few things", () => {
     homePage.NavigateToHome();
     cy.reload();
@@ -48,162 +49,163 @@ describe("1. CommandClickNavigation", function () {
     });
   });
 
-  it("2. Assert link and and style", () => {
-    cy.CheckAndUnfoldEntityItem("Queries/JS");
-    entityExplorer.ExpandCollapseEntity("Widgets");
-    entityExplorer.SelectEntityByName("Text1", "Container1");
+  //Assert link and and style
+  EditorNavigation.SelectEntityByName("Text1", EntityType.Widget, {}, [
+    "Container1",
+  ]);
 
-    cy.updateCodeInput(".t--property-control-text", "{{ Graphql_Query.data }}");
+  cy.updateCodeInput(".t--property-control-text", "{{ Graphql_Query.data }}");
 
-    cy.get(`[${NAVIGATION_ATTRIBUTE}="Graphql_Query"]`)
-      .should("have.length", 1)
-      .should("have.text", "Graphql_Query")
-      .realHover()
-      .should("have.css", "cursor", "text");
+  cy.get(`[${NAVIGATION_ATTRIBUTE}="Graphql_Query"]`)
+    .should("have.length", 1)
+    .should("have.text", "Graphql_Query")
+    .realHover()
+    .should("have.css", "cursor", "text");
 
-    // TODO how to hover with cmd or ctrl to assert pointer?
+  // TODO how to hover with cmd or ctrl to assert pointer?
 
-    // Assert navigation only when cmd or ctrl is pressed
+  // Assert navigation only when cmd or ctrl is pressed
 
-    agHelper.Sleep();
-    cy.get(`[${NAVIGATION_ATTRIBUTE}="Graphql_Query"]`).click({ force: true });
-    cy.url().should("not.contain", "/api/");
+  agHelper.Sleep();
+  cy.get(`[${NAVIGATION_ATTRIBUTE}="Graphql_Query"]`).click({ force: true });
+  cy.url().should("not.contain", "/api/");
 
-    cy.get(`[${NAVIGATION_ATTRIBUTE}="Graphql_Query"]`).click({
-      ctrlKey: true,
-      force: true,
-    });
-
-    cy.url().should("contain", "/api/");
+  cy.get(`[${NAVIGATION_ATTRIBUTE}="Graphql_Query"]`).click({
+    ctrlKey: true,
+    force: true,
   });
 
-  it("4. Assert working on url field", () => {
-    cy.updateCodeInput(
-      ".t--dataSourceField",
-      "https://www.test.com/{{ SQL_Query.data }}",
-    );
-    agHelper.Sleep();
+  cy.url().should("contain", "/api/");
+});
 
-    cy.get(`[${NAVIGATION_ATTRIBUTE}="SQL_Query"]`)
-      .should("have.length", 1)
-      .click({ cmdKey: true, force: true });
+it("4. Assert working on url field", () => {
+  cy.updateCodeInput(
+    ".t--dataSourceField",
+    "https://www.test.com/{{ SQL_Query.data }}",
+  );
+  agHelper.Sleep();
 
-    cy.url().should("contain", "/queries/");
+  cy.get(`[${NAVIGATION_ATTRIBUTE}="SQL_Query"]`)
+    .should("have.length", 1)
+    .click({ cmdKey: true, force: true });
+
+  cy.url().should("contain", "/queries/");
+});
+
+it("5. Will open modals", () => {
+  cy.updateCodeInput(
+    ".t--actionConfiguration\\.body",
+    "SELECT * from {{ Button3.text }}",
+  );
+  agHelper.Sleep();
+  cy.get(`[${NAVIGATION_ATTRIBUTE}="Button3"]`)
+    .should("have.length", 1)
+    .click({ cmdKey: true });
+
+  cy.url().should("not.contain", "/queries/");
+});
+
+it("6. Will close modals", () => {
+  cy.updateCodeInput(
+    `${locators._propertyControl}tooltip`,
+    "{{ Image1.image }}",
+  );
+
+  // TODO: Debug why image1 data-navigate-to wasn't found
+  // cy.get(`[${NAVIGATION_ATTRIBUTE}="Image1"]`)
+  //   .should("have.length", 1)
+  //   .click({ cmdKey: true });
+});
+
+it("7. Will navigate to specific JS Functions", () => {
+  // It was found that when having git connected,
+  // cmd clicking to JS function reloaded the app. Will assert that does not happen
+  cy.generateUUID().then((uid) => {
+    const repoName = uid;
+    gitSync.CreateNConnectToGit(repoName);
+    gitSync.CreateGitBranch(repoName);
   });
 
-  it("5. Will open modals", () => {
-    cy.updateCodeInput(
-      ".t--actionConfiguration\\.body",
-      "SELECT * from {{ Button3.text }}",
-    );
-    agHelper.Sleep();
-    cy.get(`[${NAVIGATION_ATTRIBUTE}="Button3"]`)
-      .should("have.length", 1)
-      .click({ cmdKey: true });
-
-    cy.url().should("not.contain", "/queries/");
+  cy.get("@gitRepoName").then((repName) => {
+    repoName = repName;
   });
 
-  it("6. Will close modals", () => {
-    cy.updateCodeInput(
-      `${locators._propertyControl}tooltip`,
-      "{{ Image1.image }}",
-    );
+  EditorNavigation.SelectEntityByName("Text1", EntityType.Widget, {}, [
+    "Container1",
+  ]);
+  cy.updateCodeInput(".t--property-control-text", "{{ JSObject1.myFun1() }}");
 
-    // TODO: Debug why image1 data-navigate-to wasn't found
-    // cy.get(`[${NAVIGATION_ATTRIBUTE}="Image1"]`)
-    //   .should("have.length", 1)
-    //   .click({ cmdKey: true });
+  agHelper.Sleep();
+
+  cy.get(`[${NAVIGATION_ATTRIBUTE}="JSObject1.myFun1"]`).click({
+    cmdKey: true,
+    force: true,
   });
 
-  it("7. Will navigate to specific JS Functions", () => {
-    // It was found that when having git connected,
-    // cmd clicking to JS function reloaded the app. Will assert that does not happen
-    cy.generateUUID().then((uid) => {
-      const repoName = uid;
-      gitSync.CreateNConnectToGit(repoName);
-      gitSync.CreateGitBranch(repoName);
-    });
+  cy.assertCursorOnCodeInput(".js-editor", { ch: 1, line: 3 });
+  agHelper.Sleep();
 
-    cy.get("@gitRepoName").then((repName) => {
-      repoName = repName;
-    });
+  // Assert context switching works when going back to canvas
+  EditorNavigation.SelectEntityByName("Page1", EntityType.Page);
 
-    entityExplorer.ExpandCollapseEntity("Widgets");
-    entityExplorer.SelectEntityByName("Text1", "Container1");
-    cy.updateCodeInput(".t--property-control-text", "{{ JSObject1.myFun1() }}");
+  cy.get(`div[data-testid='t--selected']`).should("have.length", 1);
+  cy.get(".t--property-pane-title").should("contain", "Text1");
 
-    agHelper.Sleep();
+  // Go back to JS editor
+  cy.get(`[${NAVIGATION_ATTRIBUTE}="JSObject1.myFun1"]`).click({
+    ctrlKey: true,
+  });
+});
 
-    cy.get(`[${NAVIGATION_ATTRIBUTE}="JSObject1.myFun1"]`).click({
-      cmdKey: true,
-      force: true,
-    });
-
-    cy.assertCursorOnCodeInput(".js-editor", { ch: 1, line: 3 });
-    agHelper.Sleep();
-
-    // Assert context switching works when going back to canvas
-    entityExplorer.SelectEntityByName("Page1", "Pages");
-
-    cy.get(`div[data-testid='t--selected']`).should("have.length", 1);
-    cy.get(".t--property-pane-title").should("contain", "Text1");
-
-    // Go back to JS editor
-    cy.get(`[${NAVIGATION_ATTRIBUTE}="JSObject1.myFun1"]`).click({
-      ctrlKey: true,
-    });
+it("8. Will navigate within Js Object properly", () => {
+  cy.updateCodeInput(".js-editor", JSInputTestCode);
+  agHelper.Sleep(2000);
+  cy.get(`[${NAVIGATION_ATTRIBUTE}="JSObject1.myVar1"]`).click({
+    ctrlKey: true,
+  });
+  cy.getCodeInput(".js-editor").then((input) => {
+    const codeMirrorInput = input[0].CodeMirror;
+    codeMirrorInput.focus();
+  });
+  cy.assertCursorOnCodeInput(".js-editor", { ch: 2, line: 1 });
+  agHelper.Sleep();
+  cy.get(`[${NAVIGATION_ATTRIBUTE}="JSObject1.myFun1"]`).click({
+    ctrlKey: true,
+  });
+  cy.getCodeInput(".js-editor").then((input) => {
+    const codeMirrorInput = input[0].CodeMirror;
+    codeMirrorInput.focus();
   });
 
-  it("8. Will navigate within Js Object properly", () => {
-    cy.updateCodeInput(".js-editor", JSInputTestCode);
-    agHelper.Sleep(2000);
-    cy.get(`[${NAVIGATION_ATTRIBUTE}="JSObject1.myVar1"]`).click({
-      ctrlKey: true,
-    });
-    cy.getCodeInput(".js-editor").then((input) => {
-      const codeMirrorInput = input[0].CodeMirror;
-      codeMirrorInput.focus();
-    });
-    cy.assertCursorOnCodeInput(".js-editor", { ch: 2, line: 1 });
-    agHelper.Sleep();
-    cy.get(`[${NAVIGATION_ATTRIBUTE}="JSObject1.myFun1"]`).click({
-      ctrlKey: true,
-    });
-    cy.getCodeInput(".js-editor").then((input) => {
-      const codeMirrorInput = input[0].CodeMirror;
-      codeMirrorInput.focus();
-    });
-
-    cy.assertCursorOnCodeInput(".js-editor", { ch: 2, line: 2 });
-    agHelper.Sleep();
-    cy.get(`[${NAVIGATION_ATTRIBUTE}="JSObject2.myFun1"]`).click({
-      ctrlKey: true,
-    });
-
-    cy.getCodeInput(".js-editor").then((input) => {
-      const codeMirrorInput = input[0].CodeMirror;
-      expect(codeMirrorInput.getValue()).to.equal(JSInput2TestCode);
-    });
+  cy.assertCursorOnCodeInput(".js-editor", { ch: 2, line: 2 });
+  agHelper.Sleep();
+  cy.get(`[${NAVIGATION_ATTRIBUTE}="JSObject2.myFun1"]`).click({
+    ctrlKey: true,
   });
 
-  // Functionality isn't implemented yet
-  // it("5. Will work with string arguments in framework functions", () => {
-  //   entityExplorer.ExpandCollapseEntity("Widgets");
-  //   entityExplorer.SelectEntityByName("Button1", "Container1");
-  //   cy.get(PROPERTY_SELECTOR.onClick).find(".t--js-toggle").click();
-  //   cy.updateCodeInput(
-  //     PROPERTY_SELECTOR.onClick,
-  //     "{{ resetWidget('Input1') }}",
-  //   );
-  //   agHelper.Sleep();
-  //   cy.get(`[${NAVIGATION_ATTRIBUTE}="Input1"]`)
-  //     .should("have.length", 1)
-  //     .click({ cmdKey: true });
-  // });
-
-  after(() => {
-    //clean up
-    gitSync.DeleteTestGithubRepo(repoName);
+  cy.getCodeInput(".js-editor").then((input) => {
+    const codeMirrorInput = input[0].CodeMirror;
+    expect(codeMirrorInput.getValue()).to.equal(JSInput2TestCode);
   });
+});
+
+// Functionality isn't implemented yet
+// it("5. Will work with string arguments in framework functions", () => {
+//   entityExplorer.ExpandCollapseEntity("Widgets");
+// EditorNavigation.SelectEntityByName("Button1", EntityType.Widget, {}, ["Container1"]);
+//   cy.get(PROPERTY_SELECTOR.onClick).find(".t--js-toggle").click();
+//   cy.updateCodeInput(
+//     PROPERTY_SELECTOR.onClick,
+//     "{{ resetWidget('Input1') }}",
+//   );
+//   agHelper.Sleep();
+//   cy.get(`[${NAVIGATION_ATTRIBUTE}="Input1"]`)
+//     .should("have.length", 1)
+//     .click({ cmdKey: true });
+// });
+
+after(() => {
+  //clean up
+  gitSync.DeleteTestGithubRepo(repoName);
+});
 });

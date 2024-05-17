@@ -4,7 +4,6 @@
 require("cy-verify-downloads").addCustomCommand();
 require("cypress-file-upload");
 import ApiEditor from "../locators/ApiEditor";
-const pages = require("../locators/Pages.json");
 const apiwidget = require("../locators/apiWidgetslocator.json");
 const explorer = require("../locators/explorerlocators.json");
 import { ObjectsRegistry } from "./Objects/Registry";
@@ -50,7 +49,6 @@ Cypress.Commands.add("ResponseTextCheck", (textTocheck) => {
 });
 
 Cypress.Commands.add("NavigateToAPI_Panel", () => {
-  cy.get(pages.addEntityAPI).last().should("be.visible").click({ force: true });
   dataSources.NavigateToDSCreateNew();
   cy.get("#loading").should("not.exist");
 });
@@ -86,7 +84,7 @@ Cypress.Commands.add("EditApiNameFromExplorer", (apiname) => {
     .clear()
     .type(apiname, { force: true })
     .should("have.value", apiname)
-    .blur();
+    .blur({ force: true });
   // eslint-disable-next-line cypress/no-unnecessary-waiting
   cy.wait(3000);
 });
@@ -196,9 +194,7 @@ Cypress.Commands.add("EnterSourceDetailsWithbody", (baseUrl, v1method) => {
 });
 
 Cypress.Commands.add("CreationOfUniqueAPIcheck", (apiname) => {
-  cy.get(pages.addEntityAPI).click();
   dataSources.NavigateToDSCreateNew();
-
   cy.get(apiwidget.createapi).click({ force: true });
   cy.wait("@createNewApi");
   // cy.wait("@getUser");
@@ -273,6 +269,7 @@ Cypress.Commands.add("RenameEntity", (value, selectFirst) => {
 });
 
 Cypress.Commands.add("CreateApiAndValidateUniqueEntityName", (apiname) => {
+  dataSources.NavigateToDSCreateNew();
   cy.get(apiwidget.createapi).click({ force: true });
   cy.wait("@createNewApi");
   cy.get(apiwidget.resourceUrl).should("be.visible");
@@ -349,10 +346,6 @@ Cypress.Commands.add("DeleteAPI", () => {
     .should("eq", 200);
 });
 
-Cypress.Commands.add("NavigateToApiEditor", () => {
-  cy.get(explorer.addEntityAPI).click({ force: true });
-});
-
 Cypress.Commands.add("testCreateApiButton", () => {
   cy.get(ApiEditor.createBlankApiCard).click({ force: true });
   cy.wait("@createNewApi");
@@ -362,7 +355,6 @@ Cypress.Commands.add("testCreateApiButton", () => {
 });
 
 Cypress.Commands.add("createAndFillApi", (url, parameters) => {
-  cy.NavigateToApiEditor();
   dataSources.NavigateToDSCreateNew();
   cy.testCreateApiButton();
   cy.get("@createNewApi").then((response) => {
@@ -400,8 +392,3 @@ Cypress.Commands.add("createAndFillApi", (url, parameters) => {
 //     .contains(apiname)
 //     .click({ force: true });
 // });
-
-Cypress.Commands.add("checkIfApiPaneIsVisible", () => {
-  cy.get(ApiEditor.datasourcesRightPane).should("exist");
-  cy.get(ApiEditor.datasourcesRightPane).should("be.visible");
-});

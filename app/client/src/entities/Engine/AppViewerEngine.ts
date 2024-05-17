@@ -1,12 +1,6 @@
 import {
-  fetchAppThemesAction,
-  fetchSelectedAppThemeAction,
-} from "actions/appThemingActions";
-import { fetchJSCollectionsForView } from "actions/jsActionActions";
-import {
   fetchAllPageEntityCompletion,
-  fetchPublishedPage,
-  fetchPublishedPageSuccess,
+  setupPublishedPage,
 } from "actions/pageActions";
 import {
   executePageLoadActions,
@@ -18,6 +12,7 @@ import {
 } from "@appsmith/constants/ReduxActionConstants";
 import type { APP_MODE } from "entities/App";
 import { call, put, spawn } from "redux-saga/effects";
+import type { DeployConsolidatedApi } from "sagas/InitSagas";
 import {
   failFastApiCalls,
   reportSWStatus,
@@ -34,6 +29,11 @@ import {
   waitForFetchUserSuccess,
 } from "@appsmith/sagas/userSagas";
 import { waitForFetchEnvironments } from "@appsmith/sagas/EnvironmentSagas";
+import { fetchJSCollectionsForView } from "actions/jsActionActions";
+import {
+  fetchAppThemesAction,
+  fetchSelectedAppThemeAction,
+} from "actions/appThemingActions";
 
 export default class AppViewerEngine extends AppEngine {
   constructor(mode: APP_MODE) {
@@ -55,11 +55,6 @@ export default class AppViewerEngine extends AppEngine {
     yield put({
       type: ReduxActionTypes.INITIALIZE_PAGE_VIEWER_SUCCESS,
     });
-    if ("serviceWorker" in navigator) {
-      yield put({
-        type: ReduxActionTypes.FETCH_ALL_PUBLISHED_PAGES,
-      });
-    }
     yield spawn(reportSWStatus);
   }
 
@@ -79,13 +74,28 @@ export default class AppViewerEngine extends AppEngine {
     );
   }
 
-  *loadAppEntities(toLoadPageId: string, applicationId: string): any {
+  *loadAppEntities(
+    toLoadPageId: string,
+    applicationId: string,
+    allResponses: DeployConsolidatedApi,
+  ): any {
+    const {
+      currentTheme,
+      customJSLibraries,
+      pageWithMigratedDsl,
+      publishedActionCollections,
+      publishedActions,
+      themes,
+    } = allResponses;
     const initActionsCalls: any = [
-      fetchActionsForView({ applicationId }),
-      fetchJSCollectionsForView({ applicationId }),
-      fetchSelectedAppThemeAction(applicationId),
-      fetchAppThemesAction(applicationId),
-      fetchPublishedPage(toLoadPageId, true, true),
+      fetchActionsForView({ applicationId, publishedActions }),
+      fetchJSCollectionsForView({
+        applicationId,
+        publishedActionCollections,
+      }),
+      fetchSelectedAppThemeAction(applicationId, currentTheme),
+      fetchAppThemesAction(applicationId, themes),
+      setupPublishedPage(toLoadPageId, true, true, pageWithMigratedDsl),
     ];
 
     const successActionEffects = [
@@ -93,17 +103,17 @@ export default class AppViewerEngine extends AppEngine {
       ReduxActionTypes.FETCH_JS_ACTIONS_VIEW_MODE_SUCCESS,
       ReduxActionTypes.FETCH_APP_THEMES_SUCCESS,
       ReduxActionTypes.FETCH_SELECTED_APP_THEME_SUCCESS,
-      fetchPublishedPageSuccess().type,
+      ReduxActionTypes.SETUP_PUBLISHED_PAGE_SUCCESS,
     ];
     const failureActionEffects = [
       ReduxActionErrorTypes.FETCH_ACTIONS_VIEW_MODE_ERROR,
       ReduxActionErrorTypes.FETCH_JS_ACTIONS_VIEW_MODE_ERROR,
       ReduxActionErrorTypes.FETCH_APP_THEMES_ERROR,
       ReduxActionErrorTypes.FETCH_SELECTED_APP_THEME_ERROR,
-      ReduxActionErrorTypes.FETCH_PUBLISHED_PAGE_ERROR,
+      ReduxActionErrorTypes.SETUP_PUBLISHED_PAGE_ERROR,
     ];
 
-    initActionsCalls.push(fetchJSLibraries(applicationId));
+    initActionsCalls.push(fetchJSLibraries(applicationId, customJSLibraries));
     successActionEffects.push(ReduxActionTypes.FETCH_JS_LIBRARIES_SUCCESS);
     failureActionEffects.push(ReduxActionErrorTypes.FETCH_JS_LIBRARIES_FAILED);
 

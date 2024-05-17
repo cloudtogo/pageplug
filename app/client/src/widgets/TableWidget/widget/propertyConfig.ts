@@ -29,6 +29,54 @@ const ICON_NAMES = Object.keys(IconNames).map(
   (name: string) => IconNames[name as keyof typeof IconNames],
 );
 
+const HIDE_BY_COLUMN_TYPES = {
+  COMPUTED_VALUES: new Set([
+    ColumnTypes.DATE,
+    ColumnTypes.IMAGE,
+    ColumnTypes.NUMBER,
+    ColumnTypes.TEXT,
+    ColumnTypes.VIDEO,
+    ColumnTypes.URL,
+  ]),
+  IS_DISABLED: new Set([
+    ColumnTypes.ICON_BUTTON,
+    ColumnTypes.MENU_BUTTON,
+    ColumnTypes.BUTTON,
+  ]),
+  IS_COMPACT: new Set([ColumnTypes.MENU_BUTTON]),
+  STYLES: new Set([
+    ColumnTypes.TEXT,
+    ColumnTypes.DATE,
+    ColumnTypes.NUMBER,
+    ColumnTypes.URL,
+  ]),
+  BUTTON_PROPERTIES: new Set([
+    ColumnTypes.BUTTON,
+    ColumnTypes.MENU_BUTTON,
+    ColumnTypes.ICON_BUTTON,
+  ]),
+  ICON_NAME: new Set([ColumnTypes.ICON_BUTTON, ColumnTypes.MENU_BUTTON]),
+  ICON_ALIGN: new Set([ColumnTypes.MENU_BUTTON]),
+  MENU_BUTTON_LABEL: new Set([ColumnTypes.MENU_BUTTON]),
+  BUTTON_LABEL: new Set([ColumnTypes.BUTTON]),
+  BUTTON_COLOR: new Set([ColumnTypes.BUTTON, ColumnTypes.ICON_BUTTON]),
+  BUTTON_VARIANT: new Set([ColumnTypes.BUTTON, ColumnTypes.ICON_BUTTON]),
+  BORDER_RADIUS: new Set([
+    ColumnTypes.ICON_BUTTON,
+    ColumnTypes.MENU_BUTTON,
+    ColumnTypes.BUTTON,
+  ]),
+  BOX_SHADOW: new Set([
+    ColumnTypes.ICON_BUTTON,
+    ColumnTypes.MENU_BUTTON,
+    ColumnTypes.BUTTON,
+  ]),
+  MENU_COLOR: new Set([ColumnTypes.MENU_BUTTON]),
+  MENU_VARIANT: new Set([ColumnTypes.MENU_BUTTON]),
+  ON_CLICK: new Set([ColumnTypes.BUTTON, ColumnTypes.ICON_BUTTON]),
+  MENU_OPTIONS: new Set([ColumnTypes.MENU_BUTTON]),
+};
+
 export default [
   {
     sectionName: "属性",
@@ -164,14 +212,11 @@ export default [
                   controlType: "COMPUTE_VALUE",
                   updateHook: updateDerivedColumnsHook,
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
-                    return hideByColumnType(props, propertyPath, [
-                      ColumnTypes.DATE,
-                      ColumnTypes.IMAGE,
-                      ColumnTypes.NUMBER,
-                      ColumnTypes.TEXT,
-                      ColumnTypes.VIDEO,
-                      ColumnTypes.URL,
-                    ]);
+                    return hideByColumnType(
+                      props,
+                      propertyPath,
+                      HIDE_BY_COLUMN_TYPES.COMPUTED_VALUES,
+                    );
                   },
                   dependencies: [
                     "primaryColumns",
@@ -226,11 +271,11 @@ export default [
                     "columnOrder",
                   ],
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
-                    return hideByColumnType(props, propertyPath, [
-                      ColumnTypes.ICON_BUTTON,
-                      ColumnTypes.MENU_BUTTON,
-                      ColumnTypes.BUTTON,
-                    ]);
+                    return hideByColumnType(
+                      props,
+                      propertyPath,
+                      HIDE_BY_COLUMN_TYPES.IS_DISABLED,
+                    );
                   },
                 },
                 {
@@ -255,9 +300,11 @@ export default [
                     "columnOrder",
                   ],
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
-                    return hideByColumnType(props, propertyPath, [
-                      ColumnTypes.MENU_BUTTON,
-                    ]);
+                    return hideByColumnType(
+                      props,
+                      propertyPath,
+                      HIDE_BY_COLUMN_TYPES.IS_COMPACT,
+                    );
                   },
                 },
                 {
@@ -567,12 +614,7 @@ export default [
                 return hideByColumnType(
                   props,
                   propertyPath,
-                  [
-                    ColumnTypes.TEXT,
-                    ColumnTypes.DATE,
-                    ColumnTypes.NUMBER,
-                    ColumnTypes.URL,
-                  ],
+                  HIDE_BY_COLUMN_TYPES.STYLES,
                   true,
                 );
               },
@@ -790,11 +832,7 @@ export default [
                 return hideByColumnType(
                   props,
                   propertyPath,
-                  [
-                    ColumnTypes.BUTTON,
-                    ColumnTypes.MENU_BUTTON,
-                    ColumnTypes.ICON_BUTTON,
-                  ],
+                  HIDE_BY_COLUMN_TYPES.BUTTON_PROPERTIES,
                   true,
                 );
               },
@@ -804,10 +842,11 @@ export default [
                   label: "图标",
                   helpText: "设置按钮图标",
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
-                    return hideByColumnType(props, propertyPath, [
-                      ColumnTypes.ICON_BUTTON,
-                      ColumnTypes.MENU_BUTTON,
-                    ]);
+                    return hideByColumnType(
+                      props,
+                      propertyPath,
+                      HIDE_BY_COLUMN_TYPES.ICON_NAME,
+                    );
                   },
                   updateHook: updateIconAlignmentHook,
                   dependencies: [
@@ -850,9 +889,11 @@ export default [
                   isTriggerProperty: false,
                   updateHook: updateDerivedColumnsHook,
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
-                    return hideByColumnType(props, propertyPath, [
-                      ColumnTypes.MENU_BUTTON,
-                    ]);
+                    return hideByColumnType(
+                      props,
+                      propertyPath,
+                      HIDE_BY_COLUMN_TYPES.ICON_ALIGN,
+                    );
                   },
                   dependencies: [
                     "primaryColumns",
@@ -873,9 +914,11 @@ export default [
                   defaultValue: "动作",
                   updateHook: updateDerivedColumnsHook,
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
-                    return hideByColumnType(props, propertyPath, [
-                      ColumnTypes.BUTTON,
-                    ]);
+                    return hideByColumnType(
+                      props,
+                      propertyPath,
+                      HIDE_BY_COLUMN_TYPES.BUTTON_LABEL,
+                    );
                   },
                   dependencies: [
                     "primaryColumns",
@@ -892,9 +935,11 @@ export default [
                   defaultValue: "打开菜单",
                   updateHook: updateDerivedColumnsHook,
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
-                    return hideByColumnType(props, propertyPath, [
-                      ColumnTypes.MENU_BUTTON,
-                    ]);
+                    return hideByColumnType(
+                      props,
+                      propertyPath,
+                      HIDE_BY_COLUMN_TYPES.MENU_BUTTON_LABEL,
+                    );
                   },
                   dependencies: [
                     "primaryColumns",
@@ -914,10 +959,11 @@ export default [
                   customJSControl: "COMPUTE_VALUE",
                   updateHook: updateDerivedColumnsHook,
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
-                    return hideByColumnType(props, propertyPath, [
-                      ColumnTypes.BUTTON,
-                      ColumnTypes.ICON_BUTTON,
-                    ]);
+                    return hideByColumnType(
+                      props,
+                      propertyPath,
+                      HIDE_BY_COLUMN_TYPES.BUTTON_COLOR,
+                    );
                   },
                   dependencies: [
                     "primaryColumns",
@@ -945,10 +991,11 @@ export default [
                   isJSConvertible: true,
                   helpText: "设置按钮类型",
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
-                    return hideByColumnType(props, propertyPath, [
-                      ColumnTypes.BUTTON,
-                      ColumnTypes.ICON_BUTTON,
-                    ]);
+                    return hideByColumnType(
+                      props,
+                      propertyPath,
+                      HIDE_BY_COLUMN_TYPES.BUTTON_VARIANT,
+                    );
                   },
                   dependencies: [
                     "primaryColumns",
@@ -995,11 +1042,11 @@ export default [
                   helpText: "边框圆角样式",
                   controlType: "BORDER_RADIUS_OPTIONS",
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
-                    return hideByColumnType(props, propertyPath, [
-                      ColumnTypes.ICON_BUTTON,
-                      ColumnTypes.MENU_BUTTON,
-                      ColumnTypes.BUTTON,
-                    ]);
+                    return hideByColumnType(
+                      props,
+                      propertyPath,
+                      HIDE_BY_COLUMN_TYPES.BORDER_RADIUS,
+                    );
                   },
                   dependencies: [
                     "primaryColumns",
@@ -1024,11 +1071,11 @@ export default [
                   isJSConvertible: true,
                   updateHook: removeBoxShadowColorProp,
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
-                    return hideByColumnType(props, propertyPath, [
-                      ColumnTypes.ICON_BUTTON,
-                      ColumnTypes.MENU_BUTTON,
-                      ColumnTypes.BUTTON,
-                    ]);
+                    return hideByColumnType(
+                      props,
+                      propertyPath,
+                      HIDE_BY_COLUMN_TYPES.BOX_SHADOW,
+                    );
                   },
                   dependencies: [
                     "primaryColumns",
@@ -1065,9 +1112,11 @@ export default [
                     },
                   },
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
-                    return hideByColumnType(props, propertyPath, [
-                      ColumnTypes.MENU_BUTTON,
-                    ]);
+                    return hideByColumnType(
+                      props,
+                      propertyPath,
+                      HIDE_BY_COLUMN_TYPES.MENU_COLOR,
+                    );
                   },
                   dependencies: [
                     "primaryColumns",
@@ -1104,9 +1153,11 @@ export default [
                     "columnOrder",
                   ],
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
-                    return hideByColumnType(props, propertyPath, [
-                      ColumnTypes.MENU_BUTTON,
-                    ]);
+                    return hideByColumnType(
+                      props,
+                      propertyPath,
+                      HIDE_BY_COLUMN_TYPES.MENU_VARIANT,
+                    );
                   },
                   isBindProperty: true,
                   isTriggerProperty: false,
@@ -1144,10 +1195,11 @@ export default [
                   isBindProperty: true,
                   isTriggerProperty: true,
                   hidden: (props: TableWidgetProps, propertyPath: string) => {
-                    return hideByColumnType(props, propertyPath, [
-                      ColumnTypes.BUTTON,
-                      ColumnTypes.ICON_BUTTON,
-                    ]);
+                    return hideByColumnType(
+                      props,
+                      propertyPath,
+                      HIDE_BY_COLUMN_TYPES.ON_CLICK,
+                    );
                   },
                 },
               ],
@@ -1158,7 +1210,7 @@ export default [
                 return hideByColumnType(
                   props,
                   propertyPath,
-                  [ColumnTypes.MENU_BUTTON],
+                  HIDE_BY_COLUMN_TYPES.MENU_OPTIONS,
                   true,
                 );
               },

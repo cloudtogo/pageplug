@@ -19,7 +19,6 @@ import {
   updateSelectedAppThemeAction,
 } from "actions/appThemingActions";
 import SettingSection from "./SettingSection";
-import SaveThemeModal from "./SaveThemeModal";
 import type { AppTheme } from "entities/AppTheming";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import ThemeFontControl from "./controls/ThemeFontControl";
@@ -35,7 +34,6 @@ import {
 import ThemeBoxShadowControl from "./controls/ThemeShadowControl";
 import { getCurrentApplicationId } from "selectors/editorSelectors";
 import ThemeBorderRadiusControl from "./controls/ThemeBorderRadiusControl";
-import BetaCard from "components/editorComponents/BetaCard";
 import { capitalizeFirstLetter } from "utils/helpers";
 
 const THEMING_BETA_CARD_POPOVER_CLASSNAME = `theming-beta-card-popover`;
@@ -75,7 +73,6 @@ function ThemeEditor() {
   const applicationId = useSelector(getCurrentApplicationId);
   const selectedTheme = useSelector(getSelectedAppTheme);
   const themingStack = useSelector(getAppThemingStack);
-  const [isSaveModalOpen, setSaveModalOpen] = useState(false);
 
   /**
    * customizes the current theme
@@ -107,22 +104,6 @@ function ThemeEditor() {
   }, [setAppThemingModeStackAction]);
 
   /**
-   * open the save modal
-   */
-  const onOpenSaveModal = useCallback(() => {
-    AnalyticsUtil.logEvent("APP_THEMING_SAVE_THEME_START");
-
-    setSaveModalOpen(true);
-  }, [setSaveModalOpen]);
-
-  /**
-   * on close save modal
-   */
-  const onCloseSaveModal = useCallback(() => {
-    setSaveModalOpen(false);
-  }, [setSaveModalOpen]);
-
-  /**
    * resets theme
    */
   const onResetTheme = useCallback(() => {
@@ -134,8 +115,7 @@ function ThemeEditor() {
       <header className="px-4 space-y-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <SubText>主题配置</SubText>
-            <BetaCard />
+            <SubText>主题属性</SubText>
           </div>
           <div>
             <Menu>
@@ -148,9 +128,6 @@ function ThemeEditor() {
                 />
               </MenuTrigger>
               <MenuContent align="end" className="t--save-theme-menu">
-                <MenuItem onClick={onOpenSaveModal} startIcon="save">
-                  保存主题
-                </MenuItem>
                 <MenuItem onClick={onResetTheme} startIcon="arrow-go-back">
                   重置主题
                 </MenuItem>
@@ -283,7 +260,6 @@ function ThemeEditor() {
         </SettingSection>
         <EchartThemeEditor />
       </main>
-      <SaveThemeModal isOpen={isSaveModalOpen} onClose={onCloseSaveModal} />
       <PopoverStyles />
     </>
   );

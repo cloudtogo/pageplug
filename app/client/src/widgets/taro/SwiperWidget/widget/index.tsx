@@ -5,6 +5,7 @@ import SwiperComponent from "../component";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import IconSVG from "../icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 class SwiperWidget extends BaseWidget<SwiperWidgetProps, WidgetState> {
   static type = "TARO_SWIPER_WIDGET";
@@ -12,6 +13,7 @@ class SwiperWidget extends BaseWidget<SwiperWidgetProps, WidgetState> {
   static getConfig() {
     return {
       name: "轮播",
+      tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["swipper", "image", "picture"],
       iconSVG: IconSVG,
       needsMeta: false,

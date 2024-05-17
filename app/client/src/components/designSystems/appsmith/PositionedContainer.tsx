@@ -131,14 +131,14 @@ export function PositionedContainer(
       isDropTarget && effectedByReflow ? { pointerEvents: "none" } : {};
     const reflowedPositionStyles: CSSProperties = hasReflowedPosition
       ? {
-          transform: `translate3d(${reflowX}px,${reflowY}px,0)`,
-          boxShadow: `0 0 0 1px rgba(104,113,239,0.5)`,
-        }
+        transform: `translate3d(${reflowX}px,${reflowY}px,0)`,
+        boxShadow: `0 0 0 1px rgba(104,113,239,0.5)`,
+      }
       : {};
     const reflowDimensionsStyles = hasReflowedDimensions
       ? {
-          boxShadow: `0 0 0 1px rgba(104,113,239,0.5)`,
-        }
+        boxShadow: `0 0 0 1px rgba(104,113,239,0.5)`,
+      }
       : {};
 
     const styles: CSSProperties = {
@@ -174,7 +174,7 @@ export function PositionedContainer(
 
   return (
     <PositionedWidget
-      className={containerClassName}
+      className={`${containerClassName} positionpp`}
       data-hidden={!props.isVisible || undefined}
       data-testid="test-widget"
       data-widgetname-cy={props.widgetName}

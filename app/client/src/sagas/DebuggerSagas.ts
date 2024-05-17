@@ -12,7 +12,8 @@ import type {
   LogActionPayload,
   LogObject,
 } from "entities/AppsmithConsole";
-import { ENTITY_TYPE, LOG_CATEGORY } from "entities/AppsmithConsole";
+import { LOG_CATEGORY } from "entities/AppsmithConsole";
+import { ENTITY_TYPE } from "@appsmith/entities/AppsmithConsole/utils";
 import {
   all,
   call,
@@ -51,7 +52,7 @@ import {
 } from "@appsmith/constants/messages";
 import AppsmithConsole from "utils/AppsmithConsole";
 import { getWidget } from "./selectors";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import AnalyticsUtil, { AnalyticsEventType } from "utils/AnalyticsUtil";
 import type { Plugin } from "api/PluginApi";
 import { getCurrentPageId } from "selectors/editorSelectors";
 import type { WidgetProps } from "widgets/BaseWidget";
@@ -378,6 +379,10 @@ function* debuggerLogSaga(action: ReduxAction<Log[]>) {
       case LOG_TYPE.ENTITY_DELETED:
         yield fork(onEntityDeleteSaga, payload);
         break;
+      case LOG_TYPE.MISSING_MODULE:
+        yield put(addErrorLogs(payload));
+        yield put(debuggerLog(payload));
+        break;
       default:
         otherLogs = otherLogs.concat(payload);
     }
@@ -421,16 +426,20 @@ function* logDebuggerErrorAnalyticsSaga(
       const propertyPath = `${widgetType}.${payload.propertyPath}`;
 
       // Sending widget type for widgets
-      AnalyticsUtil.logEvent(payload.eventName, {
-        entityType: widgetType,
-        propertyPath,
-        errorId: payload.errorId,
-        errorMessages: payload.errorMessages,
-        pageId: currentPageId,
-        errorMessage: payload.errorMessage,
-        errorType: payload.errorType,
-        appMode: payload.appMode,
-      });
+      AnalyticsUtil.logEvent(
+        payload.eventName,
+        {
+          entityType: widgetType,
+          propertyPath,
+          errorId: payload.errorId,
+          errorMessages: payload.errorMessages,
+          pageId: currentPageId,
+          errorMessage: payload.errorMessage,
+          errorType: payload.errorType,
+          appMode: payload.appMode,
+        },
+        AnalyticsEventType.error,
+      );
     } else if (payload.entityType === ENTITY_TYPE.ACTION) {
       const action: Action | undefined = yield select(
         getAction,
@@ -446,17 +455,21 @@ function* logDebuggerErrorAnalyticsSaga(
       }
 
       // Sending plugin name for actions
-      AnalyticsUtil.logEvent(payload.eventName, {
-        entityType: pluginName,
-        propertyPath,
-        errorId: payload.errorId,
-        errorMessages: payload.errorMessages,
-        pageId: currentPageId,
-        errorMessage: payload.errorMessage,
-        errorType: payload.errorType,
-        errorSubType: payload.errorSubType,
-        appMode: payload.appMode,
-      });
+      AnalyticsUtil.logEvent(
+        payload.eventName,
+        {
+          entityType: pluginName,
+          propertyPath,
+          errorId: payload.errorId,
+          errorMessages: payload.errorMessages,
+          pageId: currentPageId,
+          errorMessage: payload.errorMessage,
+          errorType: payload.errorType,
+          errorSubType: payload.errorSubType,
+          appMode: payload.appMode,
+        },
+        AnalyticsEventType.error,
+      );
     } else if (payload.entityType === ENTITY_TYPE.JSACTION) {
       const action: JSCollection = yield select(
         getJSCollection,
@@ -467,14 +480,18 @@ function* logDebuggerErrorAnalyticsSaga(
       const pluginName = plugin?.name?.replace(/ /g, "");
 
       // Sending plugin name for actions
-      AnalyticsUtil.logEvent(payload.eventName, {
-        entityType: pluginName,
-        errorId: payload.errorId,
-        propertyPath: payload.propertyPath,
-        errorMessages: payload.errorMessages,
-        pageId: currentPageId,
-        appMode: payload.appMode,
-      });
+      AnalyticsUtil.logEvent(
+        payload.eventName,
+        {
+          entityType: pluginName,
+          errorId: payload.errorId,
+          propertyPath: payload.propertyPath,
+          errorMessages: payload.errorMessages,
+          pageId: currentPageId,
+          appMode: payload.appMode,
+        },
+        AnalyticsEventType.error,
+      );
     }
   } catch (e) {
     log.error(e);

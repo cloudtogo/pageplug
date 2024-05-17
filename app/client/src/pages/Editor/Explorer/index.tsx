@@ -14,10 +14,11 @@ import history from "utils/history";
 import EntityExplorer from "./EntityExplorer";
 import { getExplorerSwitchIndex } from "selectors/editorContextSelectors";
 import { setExplorerSwitchIndex } from "actions/editorContextActions";
-import WidgetSidebarWithTags from "../WidgetSidebarWithTags";
+import UIEntitySidebar from "../widgetSidebar/UIEntitySidebar";
 import { ExplorerWrapper } from "./Common/ExplorerWrapper";
 import WidgetSidebar from "../WidgetSidebar";
 import { isMobileLayout } from "@appsmith/selectors/applicationSelectors";
+import WidgetSidebarWithTags from "../WidgetSidebarWithTags";
 
 const selectForceOpenWidgetPanel = (state: AppState) =>
   state.ui.onBoarding.forceOpenWidgetPanel;
@@ -91,13 +92,13 @@ function ExplorerContent() {
           value={activeOption}
         />
       </div>
+      <UIEntitySidebar isActive={activeOption === "widgets"} />
 
-      {/* 换种方案 */}
-      {!isMobile ? (
+      {/* {!isMobile ? (
         <WidgetSidebarWithTags isActive={activeOption === "widgets"} />
       ) : (
-        <WidgetSidebar isActive={activeOption === "widgets"} />
-      )}
+        <UIEntitySidebar isActive={activeOption === "widgets"} />
+      )} */}
 
       <EntityExplorer isActive={activeOption === "explorer"} />
     </ExplorerWrapper>

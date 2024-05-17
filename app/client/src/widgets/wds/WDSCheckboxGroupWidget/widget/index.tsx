@@ -1,13 +1,13 @@
 import React from "react";
+import xor from "lodash/xor";
+import BaseWidget from "widgets/BaseWidget";
+import type { WidgetState } from "widgets/BaseWidget";
 import type { SetterConfig } from "entities/AppTheming";
+import type { AnvilConfig } from "WidgetProvider/constants";
+import { Checkbox, CheckboxGroup } from "@design-system/widgets";
 import type { DerivedPropertiesMap } from "WidgetProvider/factory";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import { xor } from "lodash";
-import BaseWidget from "widgets/BaseWidget";
-import type { CheckboxGroupWidgetProps, OptionProps } from "./types";
-import type { WidgetState } from "widgets/BaseWidget";
-import type { AnvilConfig } from "WidgetProvider/constants";
-import { CheckboxGroupComponent } from "../component";
+
 import {
   anvilConfig,
   autocompleteConfig,
@@ -15,9 +15,10 @@ import {
   featuresConfig,
   metaConfig,
   propertyPaneContentConfig,
-  propertyPaneStyleConfig,
   settersConfig,
 } from "./../config";
+import { validateInput } from "./helpers";
+import type { CheckboxGroupWidgetProps, OptionProps } from "./types";
 
 class WDSCheckboxGroupWidget extends BaseWidget<
   CheckboxGroupWidgetProps,
@@ -37,10 +38,6 @@ class WDSCheckboxGroupWidget extends BaseWidget<
     return defaultsConfig;
   }
 
-  static getAutoLayoutConfig() {
-    return {};
-  }
-
   static getAnvilConfig(): AnvilConfig | null {
     return anvilConfig;
   }
@@ -58,7 +55,7 @@ class WDSCheckboxGroupWidget extends BaseWidget<
   }
 
   static getPropertyPaneStyleConfig() {
-    return propertyPaneStyleConfig;
+    return [];
   }
 
   static getDefaultPropertiesMap(): Record<string, string> {
@@ -91,7 +88,7 @@ class WDSCheckboxGroupWidget extends BaseWidget<
     }
   }
 
-  handleChange = (selectedValues: OptionProps["value"][]) => {
+  onChange = (selectedValues: OptionProps["value"][]) => {
     if (!this.props.isDirty) {
       this.props.updateWidgetMetaProperty("isDirty", true);
     }
@@ -106,20 +103,26 @@ class WDSCheckboxGroupWidget extends BaseWidget<
   };
 
   getWidgetView() {
+    const { labelTooltip, options, selectedOptionValue, widgetId, ...rest } =
+      this.props;
+
+    const validation = validateInput(this.props);
+
     return (
-      <CheckboxGroupComponent
-        defaultSelectedValues={this.props.defaultSelectedValues}
-        isDisabled={this.props.isDisabled}
-        isRequired={this.props.isRequired}
-        isValid={this.props.isValid}
-        labelPosition={this.props.labelPosition}
-        labelText={this.props.labelText}
-        onChange={this.handleChange}
-        options={this.props.options}
-        orientation={this.props.orientation}
-        selectedValues={this.props.selectedValues}
-        widgetId={this.props.widgetId}
-      />
+      <CheckboxGroup
+        {...rest}
+        contextualHelp={labelTooltip}
+        errorMessage={validation.errorMessage}
+        onChange={this.onChange}
+        validationState={validation.validationStatus}
+        value={selectedOptionValue}
+      >
+        {options.map((option, index) => (
+          <Checkbox key={`${widgetId}-option-${index}`} value={option.value}>
+            {option.label}
+          </Checkbox>
+        ))}
+      </CheckboxGroup>
     );
   }
 }

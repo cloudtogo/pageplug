@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
+import React from "react";
 import type { ControlProps } from "./BaseControl";
 import BaseControl from "./BaseControl";
 import { StyledDynamicInput } from "./StyledControls";
 import type { InputType } from "components/constants";
 import type { CodeEditorExpected } from "components/editorComponents/CodeEditor";
+import type { FieldEntityInformation } from "components/editorComponents/CodeEditor/EditorConfig";
 import {
   CodeEditorBorder,
   EditorModes,
@@ -14,7 +15,6 @@ import {
 import { CollapseContext } from "pages/Editor/PropertyPane/PropertySection";
 import LazyCodeEditor from "../editorComponents/LazyCodeEditor";
 import type { AdditionalDynamicDataTree } from "utils/autocomplete/customTreeTypeDefCreator";
-import { assistiveBindingHinter } from "components/editorComponents/CodeEditor/assistiveBindingHinter";
 import { bindingHintHelper } from "components/editorComponents/CodeEditor/hintHelpers";
 import { slashCommandHintHelper } from "components/editorComponents/CodeEditor/commandsHelper";
 
@@ -32,13 +32,17 @@ export function InputText(props: {
   theme?: EditorTheme;
   hideEvaluatedValue?: boolean;
   enableAI?: boolean;
+  isEditorHidden?: boolean;
+  blockCompletions?: FieldEntityInformation["blockCompletions"];
 }) {
   const {
+    blockCompletions,
     dataTreePath,
     enableAI = true,
     evaluatedValue,
     expected,
     hideEvaluatedValue,
+    isEditorHidden,
     label,
     onBlur,
     onChange,
@@ -47,31 +51,25 @@ export function InputText(props: {
     value,
   } = props;
 
-  //subscribing to context to help re-render component on Property section open or close
-  const isOpen = useContext(CollapseContext);
-
   return (
     <StyledDynamicInput>
       <LazyCodeEditor
         AIAssisted={enableAI}
         additionalDynamicData={props.additionalAutocomplete}
+        blockCompletions={blockCompletions}
         border={CodeEditorBorder.ALL_SIDE}
         dataTreePath={dataTreePath}
         evaluatedPopUpLabel={label}
         evaluatedValue={evaluatedValue}
         expected={expected}
         hideEvaluatedValue={hideEvaluatedValue}
-        hinting={[
-          bindingHintHelper,
-          assistiveBindingHinter,
-          slashCommandHintHelper,
-        ]}
+        hinting={[bindingHintHelper, slashCommandHintHelper]}
         hoverInteraction
         input={{
           value: value,
           onChange: onChange,
         }}
-        isEditorHidden={!isOpen}
+        isEditorHidden={isEditorHidden}
         mode={EditorModes.TEXT_WITH_BINDING}
         onEditorBlur={onBlur}
         onEditorFocus={onFocus}
@@ -86,6 +84,9 @@ export function InputText(props: {
 }
 
 class InputTextControl extends BaseControl<InputControlProps> {
+  static contextType = CollapseContext;
+  context!: React.ContextType<typeof CollapseContext>;
+
   render() {
     const {
       additionalAutoComplete,
@@ -100,12 +101,16 @@ class InputTextControl extends BaseControl<InputControlProps> {
       propertyValue,
     } = this.props;
 
+    //subscribing to context to help re-render component on Property section open or close
+    const isOpen = this.context;
+
     return (
       <InputText
         additionalAutocomplete={additionalAutoComplete}
         dataTreePath={dataTreePath}
         expected={expected}
         hideEvaluatedValue={hideEvaluatedValue}
+        isEditorHidden={!isOpen}
         label={label}
         onBlur={onBlur}
         onChange={this.onTextChange}

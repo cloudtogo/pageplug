@@ -8,6 +8,7 @@ import type { DerivedPropertiesMap } from "WidgetProvider/factory";
 import LoadingWrapper from "../../LoadingWrapper";
 import IconSVG from "../icon.svg";
 import { DEFAULT_FONT_SIZE } from "constants/WidgetConstants";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 class TextWidget extends BaseWidget<MTextWidgetProps, WidgetState> {
   static type = "TARO_TEXT_WIDGET";
@@ -15,6 +16,7 @@ class TextWidget extends BaseWidget<MTextWidgetProps, WidgetState> {
   static getConfig() {
     return {
       name: "文本",
+      tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["text", "label", "文字", "标题"],
       iconSVG: IconSVG,
       needsMeta: false,

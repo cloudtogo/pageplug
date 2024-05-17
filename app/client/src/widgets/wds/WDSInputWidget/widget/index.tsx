@@ -6,6 +6,7 @@ import {
   propertyPaneStyleConfig,
 } from "./propertyPaneConfig";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 import type {
   AnvilConfig,
   AutocompletionDefinitions,
@@ -14,6 +15,7 @@ import type {
 } from "WidgetProvider/constants";
 import InputComponent from "../component";
 import { INPUT_TYPES } from "../constants";
+import type { InputWidgetProps } from "./types";
 import { mergeWidgetConfig } from "utils/helpers";
 import { parseText, validateInput } from "./helper";
 import { DynamicHeight } from "utils/WidgetFeatures";
@@ -22,19 +24,18 @@ import type { SetterConfig } from "entities/AppTheming";
 import { WIDGET_TAGS } from "constants/WidgetConstants";
 import derivedProperties from "./parsedDerivedProperties";
 import { WDSBaseInputWidget } from "../../WDSBaseInputWidget";
-import type { InputWidgetProps, KeyDownEvent } from "./types";
 import type { DerivedPropertiesMap } from "WidgetProvider/factory";
-import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
 import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
-import type { BaseInputWidgetProps } from "../../WDSBaseInputWidget";
-import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
+import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
+import type { KeyDownEvent } from "widgets/wds/WDSBaseInputWidget/component/types";
 
 class WDSInputWidget extends WDSBaseInputWidget<InputWidgetProps, WidgetState> {
   static getConfig() {
     return {
       name: "Input",
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.SUGGESTED_WIDGETS, WIDGET_TAGS.INPUTS],
       needsMeta: true,
       searchTags: ["form", "text input", "number", "textarea"],
@@ -54,14 +55,12 @@ class WDSInputWidget extends WDSBaseInputWidget<InputWidgetProps, WidgetState> {
   static getDefaults() {
     return {
       ...WDSBaseInputWidget.getDefaults(),
-      rows: 7,
       labelPosition: "top",
       inputType: "TEXT",
       widgetName: "Input",
       version: 2,
       showStepArrows: false,
       responsiveBehavior: ResponsiveBehavior.Fill,
-      minWidth: FILL_WIDGET_MIN_WIDTH,
     };
   }
 
@@ -81,41 +80,14 @@ class WDSInputWidget extends WDSBaseInputWidget<InputWidgetProps, WidgetState> {
     };
   }
 
-  static getAutoLayoutConfig() {
-    return {
-      disabledPropsDefaults: {
-        labelPosition: "top",
-        labelTextSize: "0.875rem",
-      },
-      autoDimension: (props: BaseInputWidgetProps) => ({
-        height: props.inputType !== "MULTI_LINE_TEXT",
-      }),
-      defaults: {
-        rows: 6.6,
-      },
-      widgetSize: [
-        {
-          viewportMinWidth: 0,
-          configuration: () => {
-            return {
-              minWidth: "120px",
-            };
-          },
-        },
-      ],
-      disableResizeHandles: (props: BaseInputWidgetProps) => ({
-        vertical: props.inputType !== "MULTI_LINE_TEXT",
-      }),
-    };
-  }
-
   static getAnvilConfig(): AnvilConfig | null {
     return {
+      isLargeWidget: false,
       widgetSize: {
-        maxHeight: {},
-        maxWidth: {},
-        minHeight: { base: "70px" },
-        minWidth: { base: "120px" },
+        minWidth: {
+          base: "100%",
+          "180px": "sizing-30",
+        },
       },
     };
   }
@@ -133,6 +105,7 @@ class WDSInputWidget extends WDSBaseInputWidget<InputWidgetProps, WidgetState> {
       isValid: "bool",
       isVisible: DefaultAutocompleteDefinitions.isVisible,
       isDisabled: "bool",
+      isReadOnly: "bool",
     };
 
     return definitions;
@@ -181,6 +154,10 @@ class WDSInputWidget extends WDSBaseInputWidget<InputWidgetProps, WidgetState> {
         },
         setDisabled: {
           path: "isDisabled",
+          type: "boolean",
+        },
+        setReadOnly: {
+          path: "isReadOnly",
           type: "boolean",
         },
         setRequired: {
@@ -337,6 +314,7 @@ class WDSInputWidget extends WDSBaseInputWidget<InputWidgetProps, WidgetState> {
         inputType={inputType}
         isDisabled={this.props.isDisabled}
         isLoading={this.props.isLoading}
+        isReadOnly={this.props.isReadOnly}
         isRequired={this.props.isRequired}
         label={this.props.label}
         maxChars={this.props.maxChars}

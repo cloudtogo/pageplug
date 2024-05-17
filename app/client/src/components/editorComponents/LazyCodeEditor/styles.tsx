@@ -2,7 +2,7 @@ import styled, { keyframes } from "styled-components";
 import { ContentKind } from "./types";
 import { CodeEditorColors } from "../CodeEditor/styledComponents";
 
-export const HighlighedCodeContainer = styled("div")<{
+export const HighlighedCodeContainer = styled("div") <{
   contentKind: ContentKind;
   showLineNumbers?: boolean;
   isReadOnly?: boolean;
@@ -24,24 +24,24 @@ export const HighlighedCodeContainer = styled("div")<{
     tab-size: 2 !important;
     background: white !important;
     ${(props) => {
-      if (props.isReadOnly) {
-        return "padding-left: 35px !important";
-      }
-      if (props.showLineNumbers) {
-        return "padding-left: 47px !important";
-      }
-    }};
+    if (props.isReadOnly) {
+      return "padding-left: 35px !important";
+    }
+    if (props.showLineNumbers) {
+      return "padding-left: 47px !important";
+    }
+  }};
 
     word-wrap: break-word !important;
     white-space: pre-wrap !important;
     word-break: normal !important;
 
     color: ${({ contentKind }) =>
-      contentKind === ContentKind.CODE
-        ? CodeEditorColors.KEYWORD
-        : contentKind === ContentKind.PLACEHOLDER
-          ? "#858282"
-          : "inherit"} !important;
+    contentKind === ContentKind.CODE
+      ? CodeEditorColors.KEYWORD
+      : contentKind === ContentKind.PLACEHOLDER
+        ? "#858282"
+        : "inherit"} !important;
   }
 `;
 
@@ -49,7 +49,8 @@ export const LazyEditorWrapper = styled("div")`
   display: contents;
 `;
 
-export const ContentWrapper = styled("div")<{
+export const ContentWrapper = styled("div") <{
+  borderLess: boolean;
   contentKind: ContentKind;
   showLineNumbers?: boolean;
   folding?: boolean;
@@ -64,7 +65,7 @@ export const ContentWrapper = styled("div")<{
         ? "36px"
         : "auto"};
   min-height: 36px;
-  border: 1px solid;
+  border: ${(props) => (props.borderLess ? "none" : "1px solid")};
   border-color: inherit;
   ${(props) => props.showLineNumbers && "border: none"}
   border-radius: var(--ads-v2-border-radius);

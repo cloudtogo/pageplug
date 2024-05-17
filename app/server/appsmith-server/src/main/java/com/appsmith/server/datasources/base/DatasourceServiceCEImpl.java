@@ -1,15 +1,14 @@
 package com.appsmith.server.datasources.base;
 
 import com.appsmith.external.constants.AnalyticsEvents;
-import com.appsmith.external.helpers.MustacheHelper;
 import com.appsmith.external.models.Datasource;
 import com.appsmith.external.models.DatasourceConfiguration;
 import com.appsmith.external.models.DatasourceStorage;
 import com.appsmith.external.models.DatasourceStorageDTO;
 import com.appsmith.external.models.DatasourceTestResult;
 import com.appsmith.external.models.MustacheBindingToken;
+import com.appsmith.external.models.PluginType;
 import com.appsmith.external.models.Policy;
-import com.appsmith.external.models.QDatasource;
 import com.appsmith.external.plugins.PluginExecutor;
 import com.appsmith.server.acl.AclPermission;
 import com.appsmith.server.acl.PolicyGenerator;
@@ -64,7 +63,6 @@ import static com.appsmith.external.helpers.AppsmithBeanUtils.copyNestedNonNullP
 import static com.appsmith.server.helpers.CollectionUtils.isNullOrEmpty;
 import static com.appsmith.server.helpers.DatasourceAnalyticsUtils.getAnalyticsProperties;
 import static com.appsmith.server.helpers.DatasourceAnalyticsUtils.getAnalyticsPropertiesForTestEventStatus;
-import static com.appsmith.server.repositories.BaseAppsmithRepositoryImpl.fieldName;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -722,17 +720,44 @@ public class DatasourceServiceCEImpl implements DatasourceServiceCE {
     }
 
     @Override
-    public Set<MustacheBindingToken> extractKeysFromDatasource(Datasource datasource) {
-        if (datasource == null || datasource.getDatasourceConfiguration() == null) {
-            return new HashSet<>();
+    public Mono<Set<MustacheBindingToken>> extractKeysFromDatasource(Datasource datasource) {
+
+        if (datasource == null) {
+            return Mono.just(new HashSet<>());
         }
 
-        return MustacheHelper.extractMustacheKeysFromFields(datasource.getDatasourceConfiguration());
+        if (!StringUtils.hasText(datasource.getId())
+                || !StringUtils.hasText(datasource.getPluginId())
+                || !StringUtils.hasText(datasource.getWorkspaceId())) {
+            return Mono.just(new HashSet<>());
+        }
+
+        // for RestAPI and Graphql plugin Type, there is a use case where custom header is required to be
+        // a moustache binding, Datasource binding evaluation has been enabled only to satisfy that use case.
+        return pluginService.findById(datasource.getPluginId()).flatMap(plugin -> {
+            if (plugin.getType() != PluginType.API) {
+                return Mono.just(new HashSet<>());
+            }
+
+            return datasourceStorageService
+                    .getBindingTokensForDatasourceStorages(datasource)
+                    .collectList()
+                    .map(mustacheBindingTokensList -> {
+                        Set<MustacheBindingToken> bindingTokens = new HashSet<>();
+                        mustacheBindingTokensList.forEach(mustacheBindingTokens -> {
+                            if (mustacheBindingTokens != null) {
+                                bindingTokens.addAll(mustacheBindingTokens);
+                            }
+                        });
+
+                        return bindingTokens;
+                    });
+        });
     }
 
     @Override
     public Flux<Datasource> getAllWithStorages(MultiValueMap<String, String> params) {
-        String workspaceId = params.getFirst(fieldName(QDatasource.datasource.workspaceId));
+        String workspaceId = params.getFirst(Datasource.Fields.workspaceId);
         if (workspaceId != null) {
             return this.getAllByWorkspaceIdWithStorages(
                     workspaceId, Optional.of(datasourcePermission.getReadPermission()));

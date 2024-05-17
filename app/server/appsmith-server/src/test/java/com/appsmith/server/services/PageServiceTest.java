@@ -10,11 +10,13 @@ import com.appsmith.external.models.Policy;
 import com.appsmith.external.plugins.PluginExecutor;
 import com.appsmith.server.acl.AclPermission;
 import com.appsmith.server.actioncollections.base.ActionCollectionService;
+import com.appsmith.server.applications.base.ApplicationService;
+import com.appsmith.server.constants.ArtifactType;
 import com.appsmith.server.constants.FieldName;
 import com.appsmith.server.domains.ActionCollection;
 import com.appsmith.server.domains.Application;
 import com.appsmith.server.domains.ApplicationPage;
-import com.appsmith.server.domains.GitApplicationMetadata;
+import com.appsmith.server.domains.GitArtifactMetadata;
 import com.appsmith.server.domains.Layout;
 import com.appsmith.server.domains.NewAction;
 import com.appsmith.server.domains.NewPage;
@@ -23,17 +25,20 @@ import com.appsmith.server.domains.Plugin;
 import com.appsmith.server.domains.User;
 import com.appsmith.server.domains.Workspace;
 import com.appsmith.server.dtos.ActionCollectionDTO;
+import com.appsmith.server.dtos.ApplicationJson;
 import com.appsmith.server.dtos.ApplicationPagesDTO;
+import com.appsmith.server.dtos.ClonePageMetaDTO;
 import com.appsmith.server.dtos.LayoutDTO;
 import com.appsmith.server.dtos.PageDTO;
 import com.appsmith.server.dtos.PageNameIdDTO;
 import com.appsmith.server.exceptions.AppsmithError;
 import com.appsmith.server.exceptions.AppsmithException;
-import com.appsmith.server.exports.internal.ExportApplicationService;
+import com.appsmith.server.exports.internal.ExportService;
 import com.appsmith.server.helpers.MockPluginExecutor;
 import com.appsmith.server.helpers.PluginExecutorHelper;
 import com.appsmith.server.helpers.TextUtils;
-import com.appsmith.server.imports.internal.ImportApplicationService;
+import com.appsmith.server.imports.internal.ImportService;
+import com.appsmith.server.layouts.UpdateLayoutService;
 import com.appsmith.server.newactions.base.NewActionService;
 import com.appsmith.server.newpages.base.NewPageService;
 import com.appsmith.server.repositories.PermissionGroupRepository;
@@ -123,13 +128,16 @@ public class PageServiceTest {
     LayoutActionService layoutActionService;
 
     @Autowired
+    UpdateLayoutService updateLayoutService;
+
+    @Autowired
     LayoutCollectionService layoutCollectionService;
 
     @Autowired
-    ImportApplicationService importApplicationService;
+    ImportService importService;
 
     @Autowired
-    ExportApplicationService exportApplicationService;
+    ExportService exportService;
 
     @Autowired
     PermissionGroupRepository permissionGroupRepository;
@@ -170,21 +178,22 @@ public class PageServiceTest {
     private Application setupGitConnectedTestApplication(String uniquePrefix) {
         Application newApp = new Application();
         newApp.setName(UUID.randomUUID().toString());
-        GitApplicationMetadata gitData = new GitApplicationMetadata();
+        GitArtifactMetadata gitData = new GitArtifactMetadata();
         gitData.setBranchName(uniquePrefix + "_pageServiceTest");
         newApp.setGitApplicationMetadata(gitData);
         return applicationPageService
                 .createApplication(newApp, workspaceId)
                 .flatMap(application -> {
                     application.getGitApplicationMetadata().setDefaultApplicationId(application.getId());
-                    return applicationService
-                            .save(application)
-                            .zipWhen(application1 -> exportApplicationService.exportApplicationById(
-                                    application1.getId(), gitData.getBranchName()));
+                    return applicationService.save(application).zipWhen(application1 -> exportService
+                            .exportByArtifactIdAndBranchName(
+                                    application1.getId(), gitData.getBranchName(), ArtifactType.APPLICATION)
+                            .map(artifactExchangeJson -> (ApplicationJson) artifactExchangeJson));
                 })
                 // Assign the branchName to all the resources connected to the application
-                .flatMap(tuple -> importApplicationService.importApplicationInWorkspaceFromGit(
-                        workspaceId, tuple.getT2(), tuple.getT1().getId(), gitData.getBranchName()))
+                .flatMap(tuple -> importService.importArtifactInWorkspaceFromGit(
+                        workspaceId, tuple.getT1().getId(), tuple.getT2(), gitData.getBranchName()))
+                .map(artifactExchangeJson -> (Application) artifactExchangeJson)
                 .block();
     }
 
@@ -615,7 +624,7 @@ public class PageServiceTest {
 
         action.setPageId(page.getId());
 
-        final LayoutDTO layoutDTO = layoutActionService
+        final LayoutDTO layoutDTO = updateLayoutService
                 .updateLayout(page.getId(), page.getApplicationId(), layout.getId(), layout)
                 .block();
 
@@ -637,12 +646,13 @@ public class PageServiceTest {
         actionCollectionDTO.setActions(List.of(action1));
         actionCollectionDTO.setPluginType(PluginType.JS);
 
-        layoutCollectionService.createCollection(actionCollectionDTO).block();
+        layoutCollectionService.createCollection(actionCollectionDTO, null).block();
 
         applicationPageService.publish(applicationId, true).block();
 
-        final Mono<PageDTO> pageMono =
-                applicationPageService.clonePage(page.getId()).cache();
+        final Mono<PageDTO> pageMono = applicationPageService
+                .clonePage(page.getId(), new ClonePageMetaDTO())
+                .cache();
 
         Mono<List<NewAction>> actionsMono = pageMono.flatMapMany(
                         page1 -> newActionService.findByPageId(page1.getId(), READ_ACTIONS))
@@ -721,7 +731,7 @@ public class PageServiceTest {
 
                     // Confirm that the page action got copied as well
                     List<NewAction> actions = tuple.getT2();
-                    assertThat(actions.size()).isEqualTo(2);
+                    assertThat(actions).hasSize(2);
                     NewAction actionWithoutCollection = actions.stream()
                             .filter(newAction -> !StringUtils.hasLength(
                                     newAction.getUnpublishedAction().getCollectionId()))
@@ -825,7 +835,7 @@ public class PageServiceTest {
 
         layoutActionService.createSingleAction(action, Boolean.FALSE).block();
 
-        final LayoutDTO layoutDTO = layoutActionService
+        final LayoutDTO layoutDTO = updateLayoutService
                 .updateLayout(page.getId(), page.getApplicationId(), layout.getId(), layout)
                 .block();
 
@@ -845,7 +855,7 @@ public class PageServiceTest {
         actionCollectionDTO.setActions(List.of(action1));
         actionCollectionDTO.setPluginType(PluginType.JS);
 
-        layoutCollectionService.createCollection(actionCollectionDTO).block();
+        layoutCollectionService.createCollection(actionCollectionDTO, null).block();
 
         final Mono<NewPage> pageMono = applicationPageService
                 .clonePageByDefaultPageIdAndBranch(page.getId(), branchName)
@@ -1094,7 +1104,7 @@ public class PageServiceTest {
         StepVerifier.create(applicationPageReOrdered)
                 .assertNext(application -> {
                     final List<PageNameIdDTO> pages = application.getPages();
-                    assertThat(pages.size()).isEqualTo(4);
+                    assertThat(pages).hasSize(4);
                     assertThat(pages.get(0).getId()).isEqualTo(pageIds[0]);
                     assertThat(pages.get(1).getId()).isEqualTo(pageIds[3]);
                     assertThat(pages.get(2).getId()).isEqualTo(pageIds[1]);
@@ -1145,7 +1155,7 @@ public class PageServiceTest {
         StepVerifier.create(applicationPageReOrdered)
                 .assertNext(application -> {
                     final List<PageNameIdDTO> pages = application.getPages();
-                    assertThat(pages.size()).isEqualTo(4);
+                    assertThat(pages).hasSize(4);
                     assertThat(pages.get(3).getId()).isEqualTo(pageIds[0]);
                     assertThat(pages.get(0).getId()).isEqualTo(pageIds[1]);
                     assertThat(pages.get(1).getId()).isEqualTo(pageIds[2]);
@@ -1193,7 +1203,7 @@ public class PageServiceTest {
         StepVerifier.create(applicationPageReOrdered)
                 .assertNext(application -> {
                     final List<PageNameIdDTO> pages = application.getPages();
-                    assertThat(pages.size()).isEqualTo(4);
+                    assertThat(pages).hasSize(4);
                     assertThat(pages.get(3).getId()).isEqualTo(pageIds[0].getId());
                     assertThat(pages.get(0).getId()).isEqualTo(pageIds[1].getId());
                     assertThat(pages.get(1).getId()).isEqualTo(pageIds[2].getId());

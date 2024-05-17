@@ -1,12 +1,8 @@
 import type { LogLevelDesc } from "loglevel";
 
-export interface SentryConfig {
-  dsn: string;
-  environment: string;
-}
-
 export interface AppVersionData {
   id: string;
+  sha: string;
   releaseDate: string;
   edition: string;
 }
@@ -31,6 +27,8 @@ export interface AppsmithUIConfigs {
     applicationId: string;
     browserAgentlicenseKey: string;
     otlpLicenseKey: string;
+    otlpServiceName: string;
+    otlpEndpoint: string;
   };
   segment: {
     enabled: boolean;
@@ -49,7 +47,6 @@ export interface AppsmithUIConfigs {
     snippetIndex: string;
   };
 
-  enableRapidAPI: boolean;
   enableMixpanel: boolean;
   enableTNCPP: boolean;
   enableWeChatOAuth: boolean;

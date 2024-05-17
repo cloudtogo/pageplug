@@ -21,7 +21,6 @@ const Wrapper = styled.div`
 const WrapperOverLay = styled.div`
   position: fixed;
   z-index: 10;
-  border: 1px solid pink;
   border-radius: 8px;
 `;
 const HeaderWrapper = styled.div`
@@ -138,9 +137,8 @@ const CodeEditorPanel = (props: any) => {
       )}
     >
       <div
-        className={`absolute right-0 bottom-1 flex justify-end ${
-          !props.isShow ? "hidden" : ""
-        }`}
+        className={`absolute right-0 bottom-1 flex justify-end ${!props.isShow ? "hidden" : ""
+          }`}
       >
         <Button
           className="border-l border-t border-slate-500"

@@ -1027,11 +1027,7 @@ public class AmazonS3PluginTest {
                             PluginUtils.getDataValueSafelyFromFormData(
                                     listFilesConfig, LIST_UNSIGNED_URL, STRING_TYPE));
                     assertEquals(
-                            new HashMap<String, Object>() {
-                                {
-                                    put("condition", "AND");
-                                }
-                            },
+                            Map.of("condition", "AND"),
                             PluginUtils.getDataValueSafelyFromFormData(
                                     listFilesConfig, LIST_WHERE, new TypeReference<HashMap<String, Object>>() {}));
 
@@ -1334,6 +1330,8 @@ public class AmazonS3PluginTest {
         signedURLS.add("https://example.signed.url");
         doNothing().when(spyS3PluginExecutor).uploadFileInS3(any(), any(), any(), anyString(), anyString());
         doReturn(signedURLS).when(spyS3PluginExecutor).getSignedUrls(any(), anyString(), any(), any());
+        String unsignedURL = "https://example.unsigned.url";
+        doReturn(unsignedURL).when(spyS3PluginExecutor).createFileUrl(any(), anyString(), anyString());
         Mono<ActionExecutionResult> resultMono = spyS3PluginExecutor.executeParameterized(
                 connection, executeActionDTO, datasourceConfiguration, actionConfiguration);
 
@@ -1341,6 +1339,7 @@ public class AmazonS3PluginTest {
                 .assertNext(result -> {
                     assertTrue(result.getIsExecutionSuccess());
                     assertEquals(((HashMap) result.getBody()).get("signedUrl"), signedURLS.get(0));
+                    assertEquals(((HashMap) result.getBody()).get("url"), unsignedURL);
                 })
                 .verifyComplete();
     }
@@ -1373,6 +1372,12 @@ public class AmazonS3PluginTest {
         signedURLS.add("https://example.signed.url2");
         doNothing().when(spyS3PluginExecutor).uploadFileInS3(any(), any(), any(), anyString(), anyString());
         doReturn(signedURLS).when(spyS3PluginExecutor).getSignedUrls(any(), anyString(), any(), any());
+        ArrayList<String> unsignedURLS = new ArrayList<>();
+        unsignedURLS.add("https://example.unsigned.url1");
+        unsignedURLS.add("https://example.unsigned.url2");
+        doReturn(unsignedURLS)
+                .when(spyS3PluginExecutor)
+                .createFileUrlsFromBody(any(), anyString(), anyString(), anyString());
         Mono<ActionExecutionResult> resultMono = spyS3PluginExecutor.executeParameterized(
                 connection, executeActionDTO, datasourceConfiguration, actionConfiguration);
 
@@ -1383,6 +1388,10 @@ public class AmazonS3PluginTest {
                     assertEquals(x.size(), signedURLS.size());
                     assertEquals(x.get(0), signedURLS.get(0));
                     assertEquals(x.get(1), signedURLS.get(1));
+                    ArrayList<String> urls = (ArrayList<String>) ((HashMap) result.getBody()).get("urls");
+                    assertEquals(urls.size(), unsignedURLS.size());
+                    assertEquals(urls.get(0), unsignedURLS.get(0));
+                    assertEquals(urls.get(1), unsignedURLS.get(1));
                 })
                 .verifyComplete();
     }

@@ -8,7 +8,7 @@ import type {
   WidgetEntityConfig,
   WidgetEntity,
 } from "@appsmith/entities/DataTree/types";
-import { ENTITY_TYPE_VALUE } from "./dataTreeFactory";
+import { ENTITY_TYPE } from "./dataTreeFactory";
 import type {
   OverridingPropertyPaths,
   PropertyOverrideDependency,
@@ -189,6 +189,7 @@ const generateDataTreeWidgetWithoutMeta = (
 
   const propertyPaneConfigs = WidgetFactory.getWidgetPropertyPaneConfig(
     widget.type,
+    widget,
   );
   const dynamicBindingPathList = getEntityDynamicBindingPathList(widget);
   // Ensure all dynamic bindings are strings as they will be evaluated
@@ -293,7 +294,7 @@ const generateDataTreeWidgetWithoutMeta = (
 
   const dataTreeWidgetWithoutMetaProps = _.merge(
     {
-      ENTITY_TYPE: ENTITY_TYPE_VALUE.WIDGET,
+      ENTITY_TYPE: ENTITY_TYPE.WIDGET,
     },
     _.omit(widget, widgetPathsToOmit),
     unInitializedDefaultProps,
@@ -314,6 +315,7 @@ const generateDataTreeWidgetWithoutMeta = (
     overridingMetaPropsMap,
     defaultMetaProps,
     entityConfig: {
+      widgetId: widget.widgetId,
       defaultProps,
       defaultMetaProps: Object.keys(defaultMetaProps),
       dynamicBindingPathList,
@@ -326,7 +328,7 @@ const generateDataTreeWidgetWithoutMeta = (
       triggerPaths,
       validationPaths,
       dependencyMap,
-      ENTITY_TYPE: ENTITY_TYPE_VALUE.WIDGET,
+      ENTITY_TYPE: ENTITY_TYPE.WIDGET,
       privateWidgets: {
         ...widget.privateWidgets,
       },
@@ -365,7 +367,6 @@ export const generateDataTreeWidget = (
 
   // overridingMetaProps maps properties that can be overriden by either default values or meta changes to initial values.
   // initial value is set to metaProps value or defaultMetaProps value.
-
   Object.entries(defaultMetaProps).forEach(([key, value]) => {
     if (overridingMetaPropsMap[key]) {
       overridingMetaProps[key] =
@@ -402,6 +403,6 @@ export const generateDataTreeWidget = (
       componentWidth,
       type: widget.type,
     },
-    configEntity: { ...entityConfig, widgetId: dataTreeWidget.widgetId },
+    configEntity: entityConfig,
   };
 };
