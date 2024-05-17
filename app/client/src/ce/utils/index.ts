@@ -1,16 +1,5 @@
-import type { MenuItemProps } from "design-system-old";
 import _ from "lodash";
 import Api from "api/Api";
-
-export const addItemsInContextMenu = (
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  args: boolean[],
-  history: any,
-  workspaceId: string,
-  moreActionItems: MenuItemProps[],
-) => {
-  return moreActionItems;
-};
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getHtmlPageTitle = (instanceName: string) => {

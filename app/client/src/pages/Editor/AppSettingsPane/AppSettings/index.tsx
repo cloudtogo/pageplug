@@ -1,5 +1,6 @@
 import type { Page } from "@appsmith/constants/ReduxActionConstants";
 import { ThemePropertyPane } from "pages/Editor/ThemePropertyPane";
+import { WDSThemePropertyPane } from "pages/Editor/WDSThemePropertyPane";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAllPages } from "@appsmith/selectors/entitiesSelector";
@@ -13,8 +14,8 @@ import { getAppSettingsPane } from "selectors/appSettingsPaneSelectors";
 import {
   APP_NAVIGATION_SETTING,
   createMessage,
-  GENERAL_SETTINGS_SECTION_CONTENT_HEADER,
   GENERAL_SETTINGS_SECTION_HEADER,
+  GENERAL_SETTINGS_SECTION_CONTENT_HEADER,
   GENERAL_SETTINGS_SECTION_HEADER_DESC,
   IN_APP_EMBED_SETTING,
   PAGE_SETTINGS_SECTION_CONTENT_HEADER,
@@ -31,6 +32,8 @@ import { updateAppSettingsPaneSelectedTabAction } from "actions/appSettingsPaneA
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { Divider } from "design-system";
 import { ImportAppSettings } from "./ImportAppSettings";
+import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
+import BetaCard from "components/editorComponents/BetaCard";
 
 export enum AppSettingsTabs {
   General,
@@ -48,6 +51,7 @@ export interface SelectedTab {
 
 const Wrapper = styled.div`
   height: calc(100% - 48px);
+  overflow: hidden;
 `;
 
 const SectionContent = styled.div`
@@ -73,13 +77,14 @@ const PageSectionTitle = styled.p`
 
 const ThemeContentWrapper = styled.div`
   height: calc(100% - 48px);
-  overflow-y: overlay;
+  overflow-y: scroll;
 `;
 
 function AppSettings() {
   const { context } = useSelector(getAppSettingsPane);
   const pages: Page[] = useSelector(selectAllPages);
   const dispatch = useDispatch();
+  const isWDSEnabled = useFeatureFlag("ab_wds_enabled");
 
   const [selectedTab, setSelectedTab] = useState<SelectedTab>({
     type: context?.type || AppSettingsTabs.General,
@@ -109,6 +114,14 @@ function AppSettings() {
         },
       }),
     );
+    return () => {
+      dispatch(
+        updateAppSettingsPaneSelectedTabAction({
+          isOpen: false,
+          context: undefined,
+        }),
+      );
+    };
   }, [selectedTab]);
 
   const SectionHeadersConfig: SectionHeaderProps[] = [
@@ -179,15 +192,27 @@ function AppSettings() {
     },
   ];
 
+  // 50 px height of the sectionHeader item
+  // 41px height of pages title
+  // 1px + 20px divider + spacing
+  const SECTION_HEADER_HEIGHT = 50;
+  const PAGES_TITLE_HEIGHT = 41;
+  const DIVIDER_AND_SPACING_HEIGHT = 21;
+  const heightTobeReduced =
+    SectionHeadersConfig.length * SECTION_HEADER_HEIGHT +
+    PAGES_TITLE_HEIGHT +
+    DIVIDER_AND_SPACING_HEIGHT;
+
   return (
     <Wrapper className="flex flex-row">
       <div className="w-1/2">
         {SectionHeadersConfig.map((config) => (
           <SectionHeader key={config.name} {...config} />
         ))}
-        <Divider />
+        <Divider orientation={"horizontal"} />
         <PageSectionTitle>{PAGE_SETTINGS_SECTION_HEADER()}</PageSectionTitle>
         <DraggablePageList
+          heightTobeReduced={heightTobeReduced + "px"}
           onPageSelect={(pageId: string) =>
             setSelectedTab({
               type: AppSettingsTabs.Page,
@@ -214,12 +239,17 @@ function AppSettings() {
               return (
                 <>
                   <div className="px-4">
-                    <SectionTitle>
+                    <SectionTitle className="flex items-center gap-2">
                       {THEME_SETTINGS_SECTION_CONTENT_HEADER()}
+                      <BetaCard />
                     </SectionTitle>
                   </div>
                   <ThemeContentWrapper>
-                    <ThemePropertyPane />
+                    {isWDSEnabled ? (
+                      <WDSThemePropertyPane />
+                    ) : (
+                      <ThemePropertyPane />
+                    )}
                   </ThemeContentWrapper>
                 </>
               );

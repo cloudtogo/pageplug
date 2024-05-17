@@ -1,15 +1,13 @@
+import { widgetURL } from "@appsmith/RouteBuilder";
 import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
 import {
   ReduxActionErrorTypes,
   ReduxActionTypes,
 } from "@appsmith/constants/ReduxActionConstants";
-import { all, call, put, select, take, takeLatest } from "redux-saga/effects";
-import {
-  getWidgetIdsByType,
-  getWidgetIdsByTypes,
-  getWidgetImmediateChildren,
-  getWidgets,
-} from "./selectors";
+import { getAppMode,
+  getCanvasWidgets,
+} from "@appsmith/selectors/entitiesSelector";
+import { showModal } from "actions/widgetActions";
 import type {
   SetSelectedWidgetsPayload,
   WidgetSelectionRequestPayload,
@@ -19,37 +17,50 @@ import {
   setSelectedWidgetAncestry,
   setSelectedWidgets,
 } from "actions/widgetSelectionActions";
-import { getLastSelectedWidget, getSelectedWidgets } from "selectors/ui";
+import { MAIN_CONTAINER_WIDGET_ID } from "constants/WidgetConstants";
+import { APP_MODE } from "entities/App";
 import type { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
-import { showModal } from "actions/widgetActions";
-import history, { NavigationMethod } from "utils/history";
-import {
-  getCurrentPageId,
-  getIsEditorInitialized,
-  getIsFetchingPage,
-  snipingModeSelector,
-} from "selectors/editorSelectors";
-import { builderURL, widgetURL } from "@appsmith/RouteBuilder";
-import {
-  getAppMode,
-  getCanvasWidgets,
-} from "@appsmith/selectors/entitiesSelector";
+import { all, call, put, select, take, takeLatest } from "redux-saga/effects";
 import type { SetSelectionResult } from "sagas/WidgetSelectUtils";
 import {
   assertParentId,
+  getWidgetAncestry,
   isInvalidSelectionRequest,
   pushPopWidgetSelection,
   selectAllWidgetsInCanvasSaga,
   SelectionRequestType,
   selectMultipleWidgets,
   selectOneWidget,
-  getWidgetAncestry,
   shiftSelectWidgets,
   unselectWidget,
 } from "sagas/WidgetSelectUtils";
-import { quickScrollToWidget } from "utils/helpers";
+import {
+  getCurrentPageId,
+  getIsEditorInitialized,
+  getIsFetchingPage,
+  snipingModeSelector,
+} from "selectors/editorSelectors";
+import {
+  getLastSelectedWidget,
+  getSelectedWidgets,
+  getWidgetSelectionBlock,
+} from "selectors/ui";
 import { areArraysEqual } from "utils/AppsmithUtils";
-import { APP_MODE } from "entities/App";
+import { quickScrollToWidget } from "utils/helpers";
+import history, { NavigationMethod } from "utils/history";
+import {
+  getWidgetIdsByType,
+  getWidgetIdsByTypes,
+  getWidgetImmediateChildren,
+  getWidgetMetaProps,
+  getWidgets,
+} from "./selectors";
+import { getModalWidgetType } from "selectors/widgetSelectors";
+import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
+import type { FeatureFlags } from "@appsmith/entities/FeatureFlag";
+import { getWidgetSelectorByWidgetId } from "selectors/layoutSystemSelectors";
+import { getAppViewerPageIdFromPath } from "@appsmith/pages/Editor/Explorer/helpers";
+import AnalyticsUtil from "../utils/AnalyticsUtil";
 
 // The following is computed to be used in the entity explorer
 // Every time a widget is selected, we need to expand widget entities
@@ -62,8 +73,17 @@ function* selectWidgetSaga(action: ReduxAction<WidgetSelectionRequestPayload>) {
       payload = [],
       selectionRequestType,
     } = action.payload;
+    /**
+     * Apart from the normal selection request by a user on canvas, there are other ways which can trigger selection
+     * e.g. when a modal closes in the editor -> we select the main container.
+     * One way modal closes is because user navigates to home page using the appsmith icon. In this case, we don't want the selection process to trigger.
+     * This also safeguards against the case where the selection process is triggered by a non-canvas click where user moves out of editor.
+     * */
 
-    if (payload.some(isInvalidSelectionRequest)) {
+    const isOnEditorURL = !!getAppViewerPageIdFromPath(
+      window.location.pathname,
+    );
+    if (payload.some(isInvalidSelectionRequest) || !isOnEditorURL) {
       // Throw error
       return;
     }
@@ -90,7 +110,7 @@ function* selectWidgetSaga(action: ReduxAction<WidgetSelectionRequestPayload>) {
 
     switch (selectionRequestType) {
       case SelectionRequestType.Empty: {
-        newSelection = [];
+        newSelection = [MAIN_CONTAINER_WIDGET_ID];
         break;
       }
       case SelectionRequestType.UnsafeSelect: {
@@ -193,9 +213,13 @@ function* appendSelectedWidgetToUrlSaga(
   invokedBy?: NavigationMethod,
 ) {
   const isSnipingMode: boolean = yield select(snipingModeSelector);
+  const isWidgetSelectionBlocked: boolean = yield select(
+    getWidgetSelectionBlock,
+  );
   const appMode: APP_MODE = yield select(getAppMode);
   const viewMode = appMode === APP_MODE.PUBLISHED;
   if (isSnipingMode || viewMode) return;
+
   const { pathname } = window.location;
   const currentPageId: string = yield select(getCurrentPageId);
   const currentURL = pathname;
@@ -205,10 +229,14 @@ function* appendSelectedWidgetToUrlSaga(
         persistExistingParams: true,
         selectedWidgets,
       })
-    : builderURL({
+    : widgetURL({
         pageId: pageId ?? currentPageId,
         persistExistingParams: true,
+        selectedWidgets: [MAIN_CONTAINER_WIDGET_ID],
       });
+  if (invokedBy === NavigationMethod.CanvasClick && isWidgetSelectionBlocked) {
+    AnalyticsUtil.logEvent("CODE_MODE_WIDGET_SELECTION");
+  }
   if (currentURL !== newUrl) {
     history.push(newUrl, { invokedBy });
   }
@@ -244,7 +272,15 @@ function* handleWidgetSelectionSaga(
 }
 
 function* openOrCloseModalSaga(action: ReduxAction<{ widgetIds: string[] }>) {
-  if (action.payload.widgetIds.length !== 1) return;
+  const widgetsToSelect = action.payload.widgetIds;
+  if (widgetsToSelect.length !== 1) return;
+  if (
+    widgetsToSelect.length === 1 &&
+    widgetsToSelect[0] === MAIN_CONTAINER_WIDGET_ID
+  ) {
+    // for cases where a widget inside modal is deleted and main canvas gets selected post that.
+    return;
+  }
 
   // Let's assume that the payload widgetId is a modal widget and we need to open the modal as it is selected
   let modalWidgetToOpen: string = action.payload.widgetIds[0];
@@ -279,9 +315,31 @@ function* openOrCloseModalSaga(action: ReduxAction<{ widgetIds: string[] }>) {
       modalWidgetToOpen = widgetAncestry[indexOfParentModalWidget];
     }
   }
+  const featureFlags: FeatureFlags = yield select(selectFeatureFlags);
+  if (featureFlags.ab_wds_enabled) {
+    // If widget is modal and modal is already open, skip opening it
+    const modalProps = allWidgets[modalWidgetToOpen];
+    const metaProps: Record<string, unknown> = yield select(
+      getWidgetMetaProps,
+      modalProps,
+    );
+
+    if (
+      (widgetIsModal || widgetIsChildOfModal) &&
+      metaProps?.isVisible === true
+    ) {
+      return;
+    }
+  }
 
   if (widgetIsModal || widgetIsChildOfModal) {
     yield put(showModal(modalWidgetToOpen));
+  }
+  if (!widgetIsModal && !widgetIsChildOfModal) {
+    yield put({
+      type: ReduxActionTypes.CLOSE_MODAL,
+      payload: {},
+    });
   }
 }
 
@@ -290,7 +348,11 @@ function* focusOnWidgetSaga(action: ReduxAction<{ widgetIds: string[] }>) {
   const widgetId = action.payload.widgetIds[0];
   if (widgetId) {
     const allWidgets: CanvasWidgetsReduxState = yield select(getCanvasWidgets);
-    quickScrollToWidget(widgetId, allWidgets);
+    const widgetIdSelector: string = yield select(
+      getWidgetSelectorByWidgetId,
+      widgetId,
+    );
+    quickScrollToWidget(widgetId, widgetIdSelector, allWidgets);
   }
 }
 

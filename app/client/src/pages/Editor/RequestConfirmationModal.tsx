@@ -99,7 +99,7 @@ class RequestConfirmationModal extends React.Component<Props> {
                   }}
                   size="md"
                 >
-                  不行
+                  取消
                 </Button>
                 <Button
                   kind="primary"

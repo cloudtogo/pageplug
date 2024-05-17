@@ -103,6 +103,7 @@ export const getDataTreeForActionCreator = memoize((state: AppState) => {
     dataTree[key] = {
       meta: value?.meta || null,
       ENTITY_TYPE: value?.ENTITY_TYPE || null,
+      type: value?.type || null,
     };
   });
   return dataTree;

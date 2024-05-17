@@ -365,6 +365,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
 
   static getAnvilConfig(): AnvilConfig | null {
     return {
+      isLargeWidget: false,
       widgetSize: {
         maxHeight: {},
         maxWidth: {},
@@ -487,9 +488,9 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               dependencies: ["inputType"],
             },
             {
-              helpText: "设置最小输入长度",
+              helpText: "设置最小值",
               propertyName: "minNum",
-              label: "最小输入长度",
+              label: "最小值",
               controlType: "INPUT_TEXT",
               placeholderText: "1",
               isBindProperty: true,
@@ -511,9 +512,9 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
               dependencies: ["inputType"],
             },
             {
-              helpText: "设置最大输入长度",
+              helpText: "设置最大值",
               propertyName: "maxNum",
-              label: "最大输入长度",
+              label: "最大值",
               controlType: "INPUT_TEXT",
               placeholderText: "100",
               isBindProperty: true,
@@ -833,7 +834,7 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
 
     const autoFillProps =
       !this.props.shouldAllowAutofill &&
-      isInputTypeEmailOrPassword(this.props.inputType)
+        isInputTypeEmailOrPassword(this.props.inputType)
         ? { autoComplete: "off" }
         : {};
 

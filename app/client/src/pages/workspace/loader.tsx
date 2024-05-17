@@ -16,6 +16,8 @@ class WorkspaceLoader extends React.PureComponent<any, { Page: any }> {
       async () => import(/* webpackChunkName: "workspace" */ "./index"),
     ).then((module) => {
       this.setState({ Page: module.default });
+    }).catch(() => {
+      console.log("Err12")
     });
   }
 

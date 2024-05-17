@@ -1,6 +1,6 @@
 import { getAppsmithConfigs } from "@appsmith/configs";
 import { ERROR_CODES } from "@appsmith/constants/ApiConstants";
-import { createMessage, ERROR_500 } from "@appsmith/constants/messages";
+import { createMessage, ERROR_5001 } from "@appsmith/constants/messages";
 import * as Sentry from "@sentry/react";
 import type { Property } from "api/ActionAPI";
 import type { AppIconName } from "design-system-old";
@@ -9,8 +9,10 @@ import _, { isPlainObject } from "lodash";
 import * as log from "loglevel";
 import { osName } from "react-device-detect";
 import type { ActionDataState } from "@appsmith/reducers/entityReducers/actionsReducer";
-import type { JSCollectionData } from "reducers/entityReducers/jsActionsReducer";
+import type { JSCollectionData } from "@appsmith/reducers/entityReducers/jsActionsReducer";
 import AnalyticsUtil from "./AnalyticsUtil";
+import type { CreateNewActionKeyInterface } from "@appsmith/entities/Engine/actionHelpers";
+import { CreateNewActionKey } from "@appsmith/entities/Engine/actionHelpers";
 
 export const initializeAnalyticsAndTrackers = async () => {
   const appsmithConfigs = getAppsmithConfigs();
@@ -194,19 +196,24 @@ export const getDuplicateName = (prefix: string, existingNames: string[]) => {
   return trimmedPrefix + `_${lastIndex + 1}`;
 };
 
-export const createNewApiName = (actions: ActionDataState, pageId: string) => {
+export const createNewApiName = (
+  actions: ActionDataState,
+  entityId: string,
+  key: CreateNewActionKeyInterface = CreateNewActionKey.PAGE,
+) => {
   const pageApiNames = actions
-    .filter((a) => a.config.pageId === pageId)
+    .filter((a: any) => a.config[key] === entityId)
     .map((a) => a.config.name);
   return getNextEntityName("Api", pageApiNames);
 };
 
 export const createNewJSFunctionName = (
   jsActions: JSCollectionData[],
-  pageId: string,
+  entityId: string,
+  key: CreateNewActionKeyInterface = CreateNewActionKey.PAGE,
 ) => {
   const pageJsFunctionNames = jsActions
-    .filter((a) => a.config.pageId === pageId)
+    .filter((a: any) => a.config[key] === entityId)
     .map((a) => a.config.name);
   return getNextEntityName("JSObject", pageJsFunctionNames);
 };
@@ -221,11 +228,12 @@ export const stopEventPropagation = (e: any) => {
 
 export const createNewQueryName = (
   queries: ActionDataState,
-  pageId: string,
+  entityId: string,
   prefix = "Query",
+  key: CreateNewActionKeyInterface = CreateNewActionKey.PAGE,
 ) => {
   const pageApiNames = queries
-    .filter((a) => a.config.pageId === pageId)
+    .filter((a: any) => a.config[key] === entityId)
     .map((a) => a.config.name);
 
   return getNextEntityName(prefix, pageApiNames);
@@ -324,38 +332,55 @@ export function hexToRgb(hex: string): {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
     ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
-      }
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16),
+    }
     : {
-        r: -1,
-        g: -1,
-        b: -1,
-      };
+      r: -1,
+      g: -1,
+      b: -1,
+    };
 }
 
+/*
+ * Function to call the given function until the promise it returns resolves or the max retries are reached
+ *
+ * @param fn - function that returns a promise
+ * @param retriesLeft - number of retries
+ * @param interval - interval between retries
+ * @param shouldRetry - function to determine if the promise should be retried, helpful when we want to retry only on specific errors
+ * @returns Promise
+ *
+ */
 export const retryPromise = async (
   fn: () => Promise<any>,
   retriesLeft = 5,
   interval = 1000,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  shouldRetry = (e: Error) => true, // default to retry on all errors
+  flag = ""
 ): Promise<any> => {
   return new Promise((resolve, reject) => {
     fn()
       .then(resolve)
-      .catch(() => {
-        setTimeout(async () => {
-          if (retriesLeft === 1) {
-            return Promise.reject({
-              code: ERROR_CODES.SERVER_ERROR,
-              message: createMessage(ERROR_500),
-              show: false,
-            });
-          }
+      .catch((e) => {
+        if (shouldRetry(e)) {
+          setTimeout(async () => {
+            if (retriesLeft === 1) {
+              console.log("SERVER_ERROR", flag)
+              reject("failed")
+              return Promise.reject({
+                code: ERROR_CODES.SERVER_ERROR,
+                message: createMessage(ERROR_5001),
+                show: false,
+              });
+            }
 
-          // Passing on "reject" is the important part
-          retryPromise(fn, retriesLeft - 1, interval).then(resolve, reject);
-        }, interval);
+            // Passing on "reject" is the important part
+            retryPromise(fn, retriesLeft - 1, interval).then(resolve, reject);
+          }, interval);
+        }
       });
   });
 };

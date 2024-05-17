@@ -1,4 +1,7 @@
-import type { PropertyPaneConfig } from "constants/PropertyControlConstants";
+import type {
+  PropertyPaneConfig,
+  PropertyPaneSectionConfig,
+} from "constants/PropertyControlConstants";
 import type { WidgetProps } from "widgets/BaseWidget";
 import type { RenderMode } from "constants/WidgetConstants";
 import * as log from "loglevel";
@@ -7,6 +10,7 @@ import type {
   AutocompletionDefinitions,
   AutoLayoutConfig,
   CanvasWidgetStructure,
+  FlattenedWidgetProps,
   WidgetConfigProps,
   WidgetMethods,
 } from "WidgetProvider/constants";
@@ -27,10 +31,15 @@ import {
   WidgetFeatureProps,
 } from "../../utils/WidgetFeatures";
 import type { RegisteredWidgetFeatures } from "../../utils/WidgetFeatures";
-// import { WIDGETS_COUNT } from "widgets";
 import type { SetterConfig } from "entities/AppTheming";
 import { freeze, memoize } from "./decorators";
-import { defaultSizeConfig } from "layoutSystems/anvil/utils/widgetUtils";
+import produce from "immer";
+import type { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
+import type {
+  CopiedWidgetData,
+  PasteDestinationInfo,
+} from "layoutSystems/anvil/utils/paste/types";
+import { call } from "redux-saga/effects";
 
 type WidgetDerivedPropertyType = any;
 export type DerivedPropertiesMap = Record<string, string>;
@@ -64,23 +73,9 @@ class WidgetFactory {
       WidgetFactory.widgetBuilderMap.set(widget.type, builder);
 
       WidgetFactory.configureWidget(widget);
-
-      WidgetFactory.preloadConfig(widget);
     }
 
     log.debug("Widget registration took: ", performance.now() - start, "ms");
-  }
-
-  private static preloadConfig(widget: typeof BaseWidget) {
-    if (widget.preloadConfig) {
-      // Call functions so we can store the configs in the memo cache
-      WidgetFactory.getWidgetPropertyPaneCombinedConfig(widget.type);
-      WidgetFactory.getWidgetPropertyPaneConfig(widget.type);
-      WidgetFactory.getWidgetPropertyPaneContentConfig(widget.type);
-      WidgetFactory.getWidgetPropertyPaneStyleConfig(widget.type);
-      WidgetFactory.getWidgetPropertyPaneSearchConfig(widget.type);
-      WidgetFactory.getWidgetAutoLayoutConfig(widget.type);
-    }
   }
 
   private static configureWidget(widget: typeof BaseWidget) {
@@ -114,9 +109,11 @@ class WidgetFactory {
       displayName: config.name,
       key: generateReactKey(),
       iconSVG: config.iconSVG,
+      thumbnailSVG: config.thumbnailSVG,
       isCanvas: config.isCanvas,
       needsHeightForContent: config.needsHeightForContent,
       isMobile: config.isMobile,
+      isSearchWildcard: config.isSearchWildcard,
     };
 
     WidgetFactory.widgetConfigMap.set(widget.type, Object.freeze(_config));
@@ -262,18 +259,19 @@ class WidgetFactory {
   @freeze
   static getWidgetPropertyPaneCombinedConfig(
     type: WidgetType,
+    widgetProperties: WidgetProps,
   ): readonly PropertyPaneConfig[] {
-    const contentConfig =
-      WidgetFactory.getWidgetPropertyPaneContentConfig(type);
+    const contentConfig = WidgetFactory.getWidgetPropertyPaneContentConfig(
+      type,
+      widgetProperties,
+    );
     const styleConfig = WidgetFactory.getWidgetPropertyPaneStyleConfig(type);
     return [...contentConfig, ...styleConfig];
   }
 
   @memoize
   @freeze
-  static getWidgetPropertyPaneConfig(
-    type: WidgetType,
-  ): readonly PropertyPaneConfig[] {
+  private static getWidgetPropertyPaneConfigWithMemo(type: WidgetType) {
     const widget = WidgetFactory.widgetsMap.get(type);
 
     const propertyPaneConfig = widget?.getPropertyPaneConfig();
@@ -285,13 +283,28 @@ class WidgetFactory {
         enhancePropertyPaneConfig,
         convertFunctionsToString,
         addPropertyConfigIds,
-        Object.freeze,
       ]);
       const enhancedPropertyPaneConfig = enhance(propertyPaneConfig, features);
 
       return enhancedPropertyPaneConfig;
+    }
+  }
+
+  @memoize
+  static getWidgetPropertyPaneConfig(
+    type: WidgetType,
+    widgetProperties: WidgetProps,
+  ): readonly PropertyPaneConfig[] {
+    const propertyPaneConfig =
+      WidgetFactory.getWidgetPropertyPaneConfigWithMemo(type);
+
+    if (Array.isArray(propertyPaneConfig) && propertyPaneConfig.length > 0) {
+      return propertyPaneConfig;
     } else {
-      const config = WidgetFactory.getWidgetPropertyPaneCombinedConfig(type);
+      const config = WidgetFactory.getWidgetPropertyPaneCombinedConfig(
+        type,
+        widgetProperties,
+      );
 
       if (config === undefined) {
         log.error("Widget property pane config not defined", type);
@@ -303,10 +316,9 @@ class WidgetFactory {
   }
 
   @memoize
-  @freeze
-  static getWidgetPropertyPaneContentConfig(
+  private static getWidgetPropertyPaneContentConfigWithDynamicPropertyGenerator(
     type: WidgetType,
-  ): readonly PropertyPaneConfig[] {
+  ) {
     const widget = WidgetFactory.widgetsMap.get(type);
 
     const propertyPaneContentConfig = widget?.getPropertyPaneContentConfig();
@@ -319,7 +331,6 @@ class WidgetFactory {
         convertFunctionsToString,
         addPropertyConfigIds,
         addSearchConfigToPanelConfig,
-        Object.freeze,
       ]);
 
       const enhancedPropertyPaneContentConfig = enhance(
@@ -332,6 +343,44 @@ class WidgetFactory {
       return enhancedPropertyPaneContentConfig;
     } else {
       return [];
+    }
+  }
+
+  @memoize
+  @freeze
+  static getWidgetPropertyPaneContentConfig(
+    type: WidgetType,
+    widgetProperties: WidgetProps,
+  ): readonly PropertyPaneConfig[] {
+    const propertyPaneContentConfigWithDynamicPropertyGenerator: PropertyPaneSectionConfig[] =
+      WidgetFactory.getWidgetPropertyPaneContentConfigWithDynamicPropertyGenerator(
+        type,
+      );
+
+    if (
+      propertyPaneContentConfigWithDynamicPropertyGenerator.some(
+        (d) => d.hasDynamicProperties,
+      )
+    ) {
+      return propertyPaneContentConfigWithDynamicPropertyGenerator.map(
+        (section: PropertyPaneSectionConfig) => {
+          if (section.hasDynamicProperties) {
+            const dynamicProperties =
+              section.generateDynamicProperties?.(widgetProperties);
+
+            if (dynamicProperties && dynamicProperties.length) {
+              addPropertyConfigIds(dynamicProperties, false);
+              section = produce(section, (draft) => {
+                draft.children = [...dynamicProperties, ...section.children];
+              });
+            }
+          }
+
+          return section;
+        },
+      );
+    } else {
+      return propertyPaneContentConfigWithDynamicPropertyGenerator;
     }
   }
 
@@ -352,7 +401,6 @@ class WidgetFactory {
         convertFunctionsToString,
         addPropertyConfigIds,
         addSearchConfigToPanelConfig,
-        Object.freeze,
       ]);
 
       const enhancedPropertyPaneConfig = enhance(
@@ -371,9 +419,10 @@ class WidgetFactory {
   @freeze
   static getWidgetPropertyPaneSearchConfig(
     type: WidgetType,
+    widgetProperties: WidgetProps,
   ): readonly PropertyPaneConfig[] {
     const config = generatePropertyPaneSearchConfig(
-      WidgetFactory.getWidgetPropertyPaneContentConfig(type),
+      WidgetFactory.getWidgetPropertyPaneContentConfig(type, widgetProperties),
       WidgetFactory.getWidgetPropertyPaneStyleConfig(type),
     );
 
@@ -387,6 +436,9 @@ class WidgetFactory {
   @memoize
   @freeze
   static getWidgetAutoLayoutConfig(type: WidgetType): AutoLayoutConfig {
+    // we don't need AutoLayoutConfig config for WDS widgets
+    if (type?.includes("WDS")) return {};
+
     const widget = WidgetFactory.widgetsMap.get(type);
 
     const baseAutoLayoutConfig = widget?.getAutoLayoutConfig();
@@ -433,7 +485,8 @@ class WidgetFactory {
     if (!baseAnvilConfig) {
       log.error(`Anvil config is not defined for widget type: ${type}`);
       return {
-        widgetSize: defaultSizeConfig,
+        isLargeWidget: false,
+        widgetSize: {},
       };
     }
     return baseAnvilConfig;
@@ -516,6 +569,54 @@ class WidgetFactory {
     } else {
       return {};
     }
+  }
+
+  @memoize
+  static performPasteOperationChecks(
+    allWidgets: CanvasWidgetsReduxState,
+    oldWidget: FlattenedWidgetProps,
+    newWidget: FlattenedWidgetProps,
+    widgetIdMap: Record<string, string>,
+  ): FlattenedWidgetProps {
+    const widget = WidgetFactory.widgetsMap.get(newWidget.type);
+
+    if (!widget) return newWidget;
+
+    const widgetProps: FlattenedWidgetProps | null =
+      widget?.pasteOperationChecks(
+        allWidgets,
+        oldWidget,
+        newWidget,
+        widgetIdMap,
+      );
+
+    return widgetProps !== null ? widgetProps : newWidget;
+  }
+
+  @memoize
+  static *performPasteOperation(
+    allWidgets: CanvasWidgetsReduxState, // All widgets
+    copiedWidgets: CopiedWidgetData[], // Original copied widgets
+    destinationInfo: PasteDestinationInfo, // Destination info of copied widgets
+    widgetIdMap: Record<string, string>, // Map of oldWidgetId -> newWidgetId
+    reverseWidgetIdMap: Record<string, string>, // Map of newWidgetId -> oldWidgetId
+  ) {
+    const { parentOrder } = destinationInfo;
+    const parent: FlattenedWidgetProps =
+      allWidgets[parentOrder[parentOrder.length - 1]];
+    const widget = WidgetFactory.widgetsMap.get(parent.type);
+
+    if (!widget) return allWidgets;
+
+    const res: CanvasWidgetsReduxState = yield call(
+      widget?.performPasteOperation,
+      allWidgets,
+      copiedWidgets,
+      destinationInfo,
+      widgetIdMap,
+      reverseWidgetIdMap,
+    );
+    return res;
   }
 }
 

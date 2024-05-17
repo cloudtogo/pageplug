@@ -176,9 +176,8 @@ export const PropertySection = memo((props: PropertySectionProps) => {
       className={`t--property-pane-section-wrapper ${props.className}`}
     >
       <div
-        className={`section-title-wrapper t--property-pane-section-collapse-${className} flex items-center ${
-          !props.tag ? "cursor-pointer" : "cursor-default"
-        }`}
+        className={`section-title-wrapper select-none t--property-pane-section-collapse-${className} flex items-center ${!props.tag ? "cursor-pointer" : "cursor-default"
+          }`}
         onClick={handleSectionTitleClick}
       >
         <SectionTitle>{props.name}</SectionTitle>

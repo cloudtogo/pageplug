@@ -1,6 +1,6 @@
 import type { JSActionEntity } from "@appsmith/entities/DataTree/types";
 import type { DataTree } from "entities/DataTree/dataTreeTypes";
-import type { JSCollectionData } from "reducers/entityReducers/jsActionsReducer";
+import type { JSCollectionData } from "@appsmith/reducers/entityReducers/jsActionsReducer";
 
 export const getJsActionPeekData = (
   jsAction: JSCollectionData,
@@ -20,7 +20,9 @@ export const getJsActionPeekData = (
       }
     });
 
-    jsAction.config.variables.forEach((jsChild) => {
+    const variables = jsAction.config.variables || [];
+
+    variables.forEach((jsChild) => {
       if (dataTreeAction) peekData[jsChild.name] = dataTreeAction[jsChild.name];
     });
 

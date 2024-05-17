@@ -2,20 +2,16 @@ import React, { useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import { useLocation, useRouteMatch } from "react-router";
 import ApiEditor from "pages/Editor/APIEditor";
-import IntegrationEditor from "pages/Editor/IntegrationEditor";
 import QueryEditor from "pages/Editor/QueryEditor";
 import JSEditor from "pages/Editor/JSEditor";
 import GeneratePage from "pages/Editor/GeneratePage";
-import ProviderTemplates from "pages/Editor/APIEditor/ProviderTemplates";
 import {
   API_EDITOR_ID_PATH,
   BUILDER_CHECKLIST_PATH,
   CURL_IMPORT_PAGE_PATH,
   GENERATE_TEMPLATE_FORM_PATH,
   INTEGRATION_EDITOR_PATH,
-  JS_COLLECTION_EDITOR_PATH,
   JS_COLLECTION_ID_PATH,
-  PROVIDER_TEMPLATE_PATH,
   QUERIES_EDITOR_ID_PATH,
   VIEWER_LAYOUT_CONFIG_PATH,
 } from "constants/routes";
@@ -27,9 +23,7 @@ import { SaaSEditorRoutes } from "pages/Editor/SaaSEditor/routes";
 import OnboardingChecklist from "pages/Editor/FirstTimeUserOnboarding/Checklist";
 import { DatasourceEditorRoutes } from "pages/routes";
 import CurlImportEditor from "pages/Editor/APIEditor/CurlImportEditor";
-import { useFeatureFlag } from "../../../utils/hooks/useFeatureFlag";
-import { FEATURE_FLAG } from "../../entities/FeatureFlag";
-import CreateNewDatasourceTab from "../../../pages/Editor/IntegrationEditor/CreateNewDatasourceTab";
+import CreateNewDatasourceTab from "pages/Editor/IntegrationEditor/CreateNewDatasourceTab";
 import ViewerLayoutEditor from "pages/Editor/ViewerLayoutEditor";
 
 const SentryRoute = Sentry.withSentryRouting(Route);
@@ -37,9 +31,6 @@ const SentryRoute = Sentry.withSentryRouting(Route);
 function EditorRoutes() {
   const { path } = useRouteMatch();
   const { pathname } = useLocation();
-  const isAppSidebarEnabled = useFeatureFlag(
-    FEATURE_FLAG.release_app_sidebar_enabled,
-  );
 
   useEffect(() => {
     return () => {
@@ -53,9 +44,7 @@ function EditorRoutes() {
   return (
     <Switch key={path}>
       <SentryRoute
-        component={
-          isAppSidebarEnabled ? CreateNewDatasourceTab : IntegrationEditor
-        }
+        component={CreateNewDatasourceTab}
         exact
         path={`${path}${INTEGRATION_EDITOR_PATH}`}
       />
@@ -73,11 +62,6 @@ function EditorRoutes() {
         component={QueryEditor}
         exact
         path={`${path}${QUERIES_EDITOR_ID_PATH}`}
-      />
-      <SentryRoute
-        component={JSEditor}
-        exact
-        path={`${path}${JS_COLLECTION_EDITOR_PATH}`}
       />
       <SentryRoute
         component={JSEditor}
@@ -106,11 +90,6 @@ function EditorRoutes() {
           path={`${path}${childPath}`}
         />
       ))}
-      <SentryRoute
-        component={ProviderTemplates}
-        exact
-        path={`${path}${PROVIDER_TEMPLATE_PATH}`}
-      />
       <SentryRoute
         component={GeneratePage}
         exact

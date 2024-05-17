@@ -52,6 +52,7 @@ export class CommonLocators {
   _publishButton = ".t--application-publish-btn";
   _widgetInCanvas = (widgetType: string) => `.t--draggable-${widgetType}`;
   _widgetInDeployed = (widgetType: string) => `.t--widget-${widgetType}`;
+  _anvilWidgetInCanvas = this._widgetInDeployed;
   _widgetInputSelector = (widgetType: string) =>
     this._widgetInDeployed(widgetType) + " input";
   _textWidgetInDeployed = this._widgetInDeployed("textwidget") + " span";
@@ -64,7 +65,6 @@ export class CommonLocators {
     this._widgetInDeployed("inputwidgetv2") + " textarea";
   _imageWidget = ".t--draggable-imagewidget";
   _backToEditor = ".t--back-to-editor";
-  _newPage = ".pages .t--entity-add-btn";
   _toastMsg = "div.Toastify__toast";
   _toastContainer = "div.Toastify__toast-container";
   _specificToast = (toastText: string) =>
@@ -83,11 +83,11 @@ export class CommonLocators {
   _visibleTextDiv = (divText: string) => "//div[text()='" + divText + "']";
   _visibleTextSpan = (spanText: string, isCss = false) =>
     isCss ? `span:contains("${spanText}")` : `//span[text()="${spanText}"]`;
-  _openWidget = ".widgets .t--entity-add-btn";
   _dropHere = ".t--drop-target";
+  _canvasSlider = "[data-type=canvas-slider]";
   _editPage = "[data-testid=onboarding-tasks-datasource-text], .t--drop-target";
   _crossBtn = "span.cancel-icon";
-  _createNew = ".t--entity-add-btn.group.files button";
+  _createNew = ".t--add-item";
   _uploadFiles = "div.uppy-Dashboard-AddFiles input";
   _uploadBtn = "button.uppy-StatusBar-actionBtn--upload";
   _errorTab = "[data-testid=t--tab-ERROR]";
@@ -201,8 +201,10 @@ export class CommonLocators {
     `//p[text()='${fieldName}']/parent::div//following-sibling::div//input[@type='checkbox']`;
   _deployedPage = `.t--page-switch-tab`;
   _hints = "ul.CodeMirror-hints li";
+  _tern_doc = ".t--tern-doc";
+  _argHintFnName = ".CodeMirror-Tern-tooltip .CodeMirror-Tern-fname";
   _cancelActionExecution = ".t--cancel-action-button";
-  _widgetPane = "[data-testid='widget-sidebar-scrollable-wrapper']";
+  _widgetPane = "[data-testid='t--widget-sidebar-scrollable-wrapper']";
   _sliderThumb = '[data-testid="slider-thumb"]';
   _optionsJsToggle = ".t--property-control-options .t--js-toggle";
   _bottomPaneCollapseIcon = ".t--tabs-collapse-icon";
@@ -219,10 +221,10 @@ export class CommonLocators {
   _consoleString = ".cm-string";
   _commentString = ".cm-comment";
   _modalWrapper = "[data-testid='modal-wrapper']";
-  _editorBackButton = ".t--close-editor";
   _dialogCloseButton = ".ads-v2-modal__content-header-close-button";
   _evaluateMsg = ".t--evaluatedPopup-error";
-  _canvas = "[data-testid=widgets-editor]";
+  _evalValuePopover = ".t--CodeEditor-evaluatedValue";
+  _canvas = "[data-testid=t--widgets-editor]";
   _enterPreviewMode = "[data-testid='edit-mode']";
   _exitPreviewMode = "[data-testid='preview-mode']";
   _ds_imageSelector = ".ads-dialog-trigger";
@@ -254,7 +256,6 @@ export class CommonLocators {
   _appLeveltooltip = (toolTip: string) => `span:contains('${toolTip}')`;
   _appEditMenu = "[data-testid='t--editor-menu']";
   _appEditMenuBtn = "[data-testid='t--editor-menu-cta']";
-  _appEditMenuSettings = "[data-testid='t--editor-menu-settings']";
   _appEditExportSettings = "[data-testid='t--editor-menu-export-application']";
   _appThemeSettings = "#t--theme-settings-header";
   _appChangeThemeBtn = ".t--change-theme-btn";
@@ -286,6 +287,7 @@ export class CommonLocators {
   _buttonWidgetInForm =
     "//*[contains(@class,'t--widget-buttonwidget')]//button[contains(@class,'bp3-button')]";
   _walkthrough_overlay = `.t--walkthrough-overlay`;
+  _autoHeightOverlay = "[data-testid='t--auto-height-overlay']";
   _autoHeightHandles = "[data-testid='t-auto-height-overlay-handles']";
   _autoHeightMin = "[data-testid='t--auto-height-overlay-handles-min']";
   _autoHeightMax = "[data-testid='t--auto-height-overlay-handles-max']";
@@ -298,7 +300,6 @@ export class CommonLocators {
   _buttonInDeployedMode = ".bp3-button";
   _treeSelectPlaceholder = ".rc-tree-select-selection-placeholder";
   _treeSelectTitle = ".rc-tree-select-tree-title";
-  _newDataSourceBtn = ".datasources .t--entity-add-btn";
   _callbackAddBtn = ".action-callback-add .ads-v2-button";
   _checkboxInDeployedMode = "//label[contains(@class, 'bp3-checkbox')]//input";
   _listText = "//span[text()='Blue']/../..";

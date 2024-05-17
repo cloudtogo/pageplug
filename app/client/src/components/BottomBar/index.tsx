@@ -8,13 +8,32 @@ const { inCloudOS } = getAppsmithConfigs();
 import { Button } from "design-system";
 import SwitchEnvironment from "@appsmith/components/SwitchEnvironment";
 import { Container, Wrapper } from "./components";
+import { useSelector } from "react-redux";
+import { getCurrentApplicationId } from "selectors/editorSelectors";
+import { useDispatch } from "react-redux";
+import { softRefreshActions } from "actions/pluginActionActions";
+import { START_SWITCH_ENVIRONMENT } from "@appsmith/constants/messages";
 
 export default function BottomBar({ viewMode }: { viewMode: boolean }) {
+  const appId = useSelector(getCurrentApplicationId) || "";
+  const dispatch = useDispatch();
+
+  const onChangeEnv = () => {
+    dispatch(softRefreshActions());
+  };
+
   return (
     <Container>
       {/* {inCloudOS ? <span /> : <QuickGitActions />} */}
       <Wrapper>
-        {/* <SwitchEnvironment viewMode={viewMode} /> */}
+        {!viewMode && (
+          <SwitchEnvironment
+            editorId={appId}
+            onChangeEnv={onChangeEnv}
+            startSwitchEnvMessage={START_SWITCH_ENVIRONMENT}
+            viewMode={viewMode}
+          />
+        )}
         {!viewMode && <QuickGitActions />}
       </Wrapper>
       {!viewMode && (

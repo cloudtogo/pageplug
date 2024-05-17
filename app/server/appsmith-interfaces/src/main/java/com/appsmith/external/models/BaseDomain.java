@@ -4,9 +4,12 @@ import com.appsmith.external.helpers.Identifiable;
 import com.appsmith.external.views.Views;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.querydsl.core.annotations.QueryTransient;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.FieldNameConstants;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -29,6 +32,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
+@FieldNameConstants
 public abstract class BaseDomain implements Persistable<String>, AppsmithDomain, Serializable, Identifiable {
 
     private static final long serialVersionUID = 7459916000501322517L;
@@ -54,9 +58,17 @@ public abstract class BaseDomain implements Persistable<String>, AppsmithDomain,
     @JsonView(Views.Public.class)
     protected String modifiedBy;
 
-    // Deprecating this so we can move on to using `deletedAt` for all domain models.
+    /** @deprecated to rely only on `deletedAt` for all domain models.
+     * This field only exists here because its removal will cause a huge diff on all entities in git-connected
+     * applications. So, instead, we keep it, deprecated, query-transient (no corresponding field in Q* class),
+     * no getter/setter methods and only use it for reflection-powered services, like the git sync
+     * implementation. For all other practical purposes, this field doesn't exist.
+     */
     @Deprecated(forRemoval = true)
-    @JsonView(Views.Public.class)
+    @JsonView(Views.Internal.class)
+    @QueryTransient
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
     protected Boolean deleted = false;
 
     @JsonView(Views.Public.class)
@@ -71,9 +83,10 @@ public abstract class BaseDomain implements Persistable<String>, AppsmithDomain,
         return this.getId() == null;
     }
 
+    @QueryTransient
     @JsonView(Views.Internal.class)
     public boolean isDeleted() {
-        return this.getDeletedAt() != null || Boolean.TRUE.equals(getDeleted());
+        return deletedAt != null;
     }
 
     @Transient
@@ -84,10 +97,8 @@ public abstract class BaseDomain implements Persistable<String>, AppsmithDomain,
     // This field will be deprecated once we move to the new git sync implementation.
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonView(Views.Internal.class)
-    @Deprecated
     String gitSyncId;
 
-    @Deprecated
     public void sanitiseToExportDBObject() {
         this.setCreatedAt(null);
         this.setUpdatedAt(null);
@@ -121,4 +132,6 @@ public abstract class BaseDomain implements Persistable<String>, AppsmithDomain,
         }
         this.setUpdatedAt(Instant.now());
     }
+
+    public static class Fields {}
 }

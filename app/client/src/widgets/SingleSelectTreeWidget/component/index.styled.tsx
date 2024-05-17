@@ -16,7 +16,7 @@ import {
 } from "@design-system/widgets-old";
 import { lightenColor } from "widgets/WidgetUtils";
 
-export const StyledIcon = styled(Icon)<{ expanded: boolean }>`
+export const StyledIcon = styled(Icon) <{ expanded: boolean }>`
   transform: rotate(${({ expanded }) => (expanded ? 0 : 270)}deg);
 
   svg {
@@ -539,7 +539,7 @@ ${({ dropDownWidth, id }) => `
 
   &:hover {
     background: ${({ accentColor }) =>
-      lightenColor(accentColor, "0.90")} !important;
+    lightenColor(accentColor, "0.90")} !important;
   }
 
 
@@ -572,10 +572,10 @@ ${({ dropDownWidth, id }) => `
     background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='10' height='10' rx='5' stroke='${({
       accentColor,
     }) =>
-      accentColor?.replace(
-        "#",
-        "%23",
-      )}' stroke-width='4'/%3E%3C/svg%3E%0A") !important;
+    accentColor?.replace(
+      "#",
+      "%23",
+    )}' stroke-width='4'/%3E%3C/svg%3E%0A") !important;
   }
 }
 .rc-tree-select-tree-icon__open {
@@ -646,10 +646,10 @@ export const TreeSelectContainer = styled.div<{
   & .${LABEL_CONTAINER_CLASS} {
     label {
       ${({ labelPosition }) => {
-        if (!labelPosition) {
-          return `margin-bottom: ${LABEL_MARGIN_OLD_SELECT}`;
-        }
-      }};
+    if (!labelPosition) {
+      return `margin-bottom: ${LABEL_MARGIN_OLD_SELECT}`;
+    }
+  }};
     }
   }
 
@@ -664,9 +664,9 @@ export const TreeSelectContainer = styled.div<{
     .rc-tree-select-selection-placeholder {
       pointer-events: none;
       position: absolute;
-      top: 50%;
-      right: 11px;
-      left: 11px;
+      top: 50% !important;
+      right: 11px !important;
+      left: 11px !important;
       transform: translateY(-50%);
       transition: all 0.3s;
       flex: 1;
@@ -739,9 +739,9 @@ export const TreeSelectContainer = styled.div<{
       .rc-tree-select-selector {
         border: 1.2px solid
           ${(props) =>
-            props.isValid
-              ? "var(--wds-color-border-hover)"
-              : "var(--wds-color-border-danger-hover)"}!important;
+    props.isValid
+      ? "var(--wds-color-border-hover)"
+      : "var(--wds-color-border-danger-hover)"}!important;
       }
     }
   }
@@ -751,9 +751,9 @@ export const TreeSelectContainer = styled.div<{
     padding-right: 42px;
     border: 1px solid
       ${(props) =>
-        props.isValid
-          ? "var(--wds-color-border)"
-          : "var(--wds-color-border-danger)"};
+    props.isValid
+      ? "var(--wds-color-border)"
+      : "var(--wds-color-border-danger)"};
     box-sizing: border-box;
     background: var(--wds-color-bg);
     border-radius: ${({ borderRadius }) => borderRadius};
@@ -795,9 +795,9 @@ export const TreeSelectContainer = styled.div<{
       text-overflow: ellipsis;
       font-size: 14px;
       ${(props) =>
-        props.allowClear
-          ? `width: calc(100% - 58px)`
-          : `width: calc(100% - 40px)`}
+    props.allowClear
+      ? `width: calc(100% - 58px)`
+      : `width: calc(100% - 40px)`}
     }
   }
   .rc-tree-select-multiple {
@@ -927,13 +927,13 @@ export const TreeSelectContainer = styled.div<{
     .rc-tree-select-selector {
       outline: 0px;
       ${(props) =>
-        props.isValid
-          ? `
+    props.isValid
+      ? `
           border: 1px solid ${props.accentColor}!important;
           box-shadow: 0px 0px 0px 3px ${lightenColor(
-            props.isValid ? props.accentColor : Colors.DANGER_SOLID,
-          )} !important;`
-          : `border: 1px solid ${Colors.DANGER_SOLID}!important;`}
+        props.isValid ? props.accentColor : Colors.DANGER_SOLID,
+      )} !important;`
+      : `border: 1px solid ${Colors.DANGER_SOLID}!important;`}
     }
   }
   .rc-tree-select-show-arrow {
@@ -993,11 +993,11 @@ export const TreeSelectContainer = styled.div<{
       .rc-tree-select-selector {
         outline: 0px;
         ${(props) =>
-          props.isValid
-            ? `
+    props.isValid
+      ? `
             border: 1px solid ${props.accentColor}!important;
             box-shadow: 0px 0px 0px 2px ${props.accentColor};`
-            : `border: 1px solid ${Colors.DANGER_SOLID}!important;`}
+      : `border: 1px solid ${Colors.DANGER_SOLID}!important;`}
       }
     }
   }
@@ -1028,6 +1028,6 @@ export const InputContainer = styled.div<{
   &,
   & .rc-tree-select {
     ${({ labelPosition }) =>
-      labelPosition && `height: ${SELECT_DEFAULT_HEIGHT}`};
+    labelPosition && `height: ${SELECT_DEFAULT_HEIGHT}`};
   }
 `;

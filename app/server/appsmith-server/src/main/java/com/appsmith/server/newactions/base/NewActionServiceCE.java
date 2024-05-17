@@ -1,19 +1,19 @@
 package com.appsmith.server.newactions.base;
 
 import com.appsmith.external.models.ActionDTO;
+import com.appsmith.external.models.CreatorContextType;
 import com.appsmith.external.models.Executable;
 import com.appsmith.external.models.MustacheBindingToken;
 import com.appsmith.server.acl.AclPermission;
 import com.appsmith.server.domains.NewAction;
 import com.appsmith.server.domains.NewPage;
 import com.appsmith.server.dtos.ActionViewDTO;
+import com.appsmith.server.dtos.ImportActionCollectionResultDTO;
+import com.appsmith.server.dtos.ImportActionResultDTO;
+import com.appsmith.server.dtos.ImportedActionAndCollectionMapsDTO;
 import com.appsmith.server.dtos.LayoutExecutableUpdateDTO;
 import com.appsmith.server.dtos.PluginTypeAndCountDTO;
-import com.appsmith.server.dtos.ce.ImportActionCollectionResultDTO;
-import com.appsmith.server.dtos.ce.ImportActionResultDTO;
-import com.appsmith.server.dtos.ce.ImportedActionAndCollectionMapsDTO;
 import com.appsmith.server.services.CrudService;
-import com.mongodb.bulk.BulkWriteResult;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.MultiValueMap;
 import reactor.core.publisher.Flux;
@@ -27,17 +27,21 @@ import java.util.Set;
 
 public interface NewActionServiceCE extends CrudService<NewAction, String> {
 
-    Boolean validateActionName(String name);
-
     void setCommonFieldsFromActionDTOIntoNewAction(ActionDTO action, NewAction newAction);
 
-    Mono<ActionDTO> generateActionByViewMode(NewAction newAction, Boolean viewMode);
+    ActionDTO generateActionByViewMode(NewAction newAction, Boolean viewMode);
 
     void generateAndSetActionPolicies(NewPage page, NewAction action);
 
     Mono<ActionDTO> validateAndSaveActionToRepository(NewAction newAction);
 
-    NewAction extractAndSetJsonPathKeys(NewAction newAction);
+    Mono<NewAction> validateAction(NewAction newAction);
+
+    Mono<Void> bulkValidateAndInsertActionInRepository(List<NewAction> newActionList);
+
+    Mono<Void> bulkValidateAndUpdateActionInRepository(List<NewAction> newActionList);
+
+    Mono<NewAction> extractAndSetJsonPathKeys(NewAction newAction);
 
     Mono<ActionDTO> updateUnpublishedAction(String id, ActionDTO action);
 
@@ -74,7 +78,12 @@ public interface NewActionServiceCE extends CrudService<NewAction, String> {
 
     Flux<ActionViewDTO> getActionsForViewMode(String defaultApplicationId, String branchName);
 
+    ActionViewDTO generateActionViewDTO(NewAction action, ActionDTO actionDTO, boolean viewMode);
+
     Mono<ActionDTO> deleteUnpublishedAction(String id);
+
+    Mono<ActionDTO> deleteUnpublishedActionWithOptionalPermission(
+            String id, Optional<AclPermission> newActionDeletePermission);
 
     Flux<ActionDTO> getUnpublishedActions(MultiValueMap<String, String> params, Boolean includeJsActions);
 
@@ -82,6 +91,8 @@ public interface NewActionServiceCE extends CrudService<NewAction, String> {
             MultiValueMap<String, String> params, String branchName, Boolean includeJsActions);
 
     Flux<ActionDTO> getUnpublishedActions(MultiValueMap<String, String> params);
+
+    Flux<ActionDTO> getUnpublishedActionsByPageId(String pageId, AclPermission permission);
 
     Flux<ActionDTO> getUnpublishedActions(MultiValueMap<String, String> params, String branchName);
 
@@ -114,7 +125,7 @@ public interface NewActionServiceCE extends CrudService<NewAction, String> {
     Flux<ActionDTO> getUnpublishedActionsExceptJs(MultiValueMap<String, String> params, String branchName);
 
     Mono<NewAction> findByBranchNameAndDefaultActionId(
-            String branchName, String defaultActionId, AclPermission permission);
+            String branchName, String defaultActionId, Boolean viewMode, AclPermission permission);
 
     Mono<String> findBranchedIdByBranchNameAndDefaultActionId(
             String branchName, String defaultActionId, AclPermission permission);
@@ -125,15 +136,28 @@ public interface NewActionServiceCE extends CrudService<NewAction, String> {
 
     Map<String, Object> getAnalyticsProperties(NewAction savedAction);
 
-    void populateDefaultResources(NewAction newAction, NewAction branchedAction, String branchName);
-
     Mono<ImportedActionAndCollectionMapsDTO> updateActionsWithImportedCollectionIds(
             ImportActionCollectionResultDTO importActionCollectionResultDTO,
             ImportActionResultDTO importActionResultDTO);
 
-    Mono<List<BulkWriteResult>> publishActions(String applicationId, AclPermission permission);
+    Mono<Void> publishActions(String applicationId, AclPermission permission);
 
     Flux<PluginTypeAndCountDTO> countActionsByPluginType(String applicationId);
 
-    Flux<NewAction> findByListOfPageIds(List<String> unpublishedPages, Optional<AclPermission> optionalPermission);
+    Flux<NewAction> findByPageIds(List<String> unpublishedPages, Optional<AclPermission> optionalPermission);
+
+    Flux<NewAction> findByPageIdsForExport(List<String> unpublishedPages, Optional<AclPermission> optionalPermission);
+
+    Flux<NewAction> findAllActionsByContextIdAndContextTypeAndViewMode(
+            String contextId,
+            CreatorContextType contextType,
+            AclPermission permission,
+            boolean viewMode,
+            boolean includeJs);
+
+    NewAction generateActionDomain(ActionDTO action);
+
+    void updateDefaultResourcesInAction(NewAction newAction);
+
+    Mono<Void> saveLastEditInformationInParent(ActionDTO actionDTO);
 }

@@ -19,10 +19,12 @@ export const toggleShowGlobalSearchModal = () => ({
 
 export const setGlobalSearchCategory = (
   category: SearchCategory = filterCategories[SEARCH_CATEGORY_ID.INIT],
-) => ({
-  type: ReduxActionTypes.SET_GLOBAL_SEARCH_CATEGORY,
-  payload: category,
-});
+) => {
+  return {
+    type: ReduxActionTypes.SET_GLOBAL_SEARCH_CATEGORY,
+    payload: category,
+  }
+};
 
 export const setGlobalSearchFilterContext = (payload: any) => ({
   type: ReduxActionTypes.SET_SEARCH_FILTER_CONTEXT,

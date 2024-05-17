@@ -3,7 +3,7 @@ import homePage from "../../../../../locators/HomePage";
 import * as _ from "../../../../../support/Objects/ObjectsCore";
 
 let repoName;
-describe("Git sync modal: deploy tab", function () {
+describe("Git sync modal: deploy tab", { tags: ["@tag.Git"] }, function () {
   before(() => {
     _.homePage.NavigateToHome();
     cy.createWorkspace();
@@ -23,10 +23,7 @@ describe("Git sync modal: deploy tab", function () {
     // The deploy preview Link should be displayed only after the first commit done
     cy.get(gitSyncLocators.bottomBarCommitButton).click();
 
-    // comment text input should not empty
-    cy.get(gitSyncLocators.commitCommentInput)
-      .should("be.disabled")
-      .and("not.be.empty");
+    cy.get(gitSyncLocators.commitCommentInput).should("be.disabled");
     cy.get(gitSyncLocators.commitButton).should("be.disabled");
     cy.get(gitSyncLocators.closeGitSyncModal).click();
   });

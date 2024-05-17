@@ -2,9 +2,10 @@ package com.appsmith.server.fork.internal;
 
 import com.appsmith.external.models.Datasource;
 import com.appsmith.server.actioncollections.base.ActionCollectionService;
+import com.appsmith.server.applications.base.ApplicationService;
 import com.appsmith.server.fork.forkable.ForkableService;
 import com.appsmith.server.helpers.ResponseUtils;
-import com.appsmith.server.imports.internal.ImportApplicationService;
+import com.appsmith.server.imports.internal.ImportService;
 import com.appsmith.server.newactions.base.NewActionService;
 import com.appsmith.server.repositories.ActionCollectionRepository;
 import com.appsmith.server.repositories.NewActionRepository;
@@ -12,7 +13,6 @@ import com.appsmith.server.repositories.NewPageRepository;
 import com.appsmith.server.repositories.WorkspaceRepository;
 import com.appsmith.server.services.AnalyticsService;
 import com.appsmith.server.services.ApplicationPageService;
-import com.appsmith.server.services.ApplicationService;
 import com.appsmith.server.services.LayoutActionService;
 import com.appsmith.server.services.PermissionGroupService;
 import com.appsmith.server.services.SessionUserService;
@@ -38,7 +38,7 @@ public class ApplicationForkingServiceImpl extends ApplicationForkingServiceCEIm
             ResponseUtils responseUtils,
             WorkspacePermission workspacePermission,
             ApplicationPermission applicationPermission,
-            ImportApplicationService importApplicationService,
+            ImportService importService,
             ApplicationPageService applicationPageService,
             NewPageRepository newPageRepository,
             NewActionService newActionService,
@@ -60,7 +60,7 @@ public class ApplicationForkingServiceImpl extends ApplicationForkingServiceCEIm
                 responseUtils,
                 workspacePermission,
                 applicationPermission,
-                importApplicationService,
+                importService,
                 applicationPageService,
                 newPageRepository,
                 newActionService,

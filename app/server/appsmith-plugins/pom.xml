@@ -34,6 +34,11 @@
         <module>openAiPlugin</module>
         <module>dmPlugin</module>
         <module>tidbPlugin</module>
+        <module>anthropicPlugin</module>
+        <module>googleAiPlugin</module>
+        <module>appsmithAiPlugin</module>
+        <module>awsLambdaPlugin</module>
+        <module>databricksPlugin</module>
     </modules>
 
     <properties>
@@ -89,6 +94,12 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
 

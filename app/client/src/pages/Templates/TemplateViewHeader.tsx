@@ -1,9 +1,10 @@
+import { templateIdUrl } from "@appsmith/RouteBuilder";
 import {
   FORK_THIS_TEMPLATE,
+  FORK_THIS_TEMPLATE_BUILDING_BLOCK,
   GO_BACK,
   createMessage,
 } from "@appsmith/constants/messages";
-import { templateIdUrl } from "@appsmith/RouteBuilder";
 import { Button, Link, Text } from "design-system";
 import { useQuery } from "pages/Editor/utils";
 import React from "react";
@@ -11,10 +12,13 @@ import { useSelector } from "react-redux";
 import {
   getActiveTemplateSelector,
   getForkableWorkspaces,
+  isImportingTemplateSelector,
+  isImportingTemplateToAppSelector,
 } from "selectors/templatesSelectors";
 import styled from "styled-components";
 import history from "utils/history";
 import ForkTemplate from "./ForkTemplate";
+import { TEMPLATE_BUILDING_BLOCKS_FILTER_FUNCTION_VALUE } from "./constants";
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -28,34 +32,63 @@ const Title = styled(Text)`
 `;
 
 interface Props {
+  handleBackPress?: () => void;
   templateId: string;
+  onClickUseTemplate?: (id: string) => void;
+  showBack: boolean;
 }
 const SHOW_FORK_MODAL_PARAM = "showForkTemplateModal";
 
-function TemplateViewHeader({ templateId }: Props) {
+function TemplateViewHeader({
+  handleBackPress,
+  onClickUseTemplate,
+  showBack,
+  templateId,
+}: Props) {
   const currentTemplate = useSelector(getActiveTemplateSelector);
   const query = useQuery();
   const workspaceList = useSelector(getForkableWorkspaces);
+  const isImportingTemplateToApp = useSelector(
+    isImportingTemplateToAppSelector,
+  );
+  const isImportingTemplate = useSelector(isImportingTemplateSelector);
   const goBack = () => {
-    history.goBack();
+    if (handleBackPress) {
+      handleBackPress();
+    } else {
+      history.goBack();
+    }
   };
   const onForkModalClose = () => {
     history.replace(`${templateIdUrl({ id: templateId })}`);
   };
   const onForkButtonTrigger = () => {
-    history.replace(
-      `${templateIdUrl({ id: templateId })}?${SHOW_FORK_MODAL_PARAM}=true`,
-    );
+    if (onClickUseTemplate) {
+      onClickUseTemplate(templateId);
+    } else {
+      history.replace(
+        `${templateIdUrl({ id: templateId })}?${SHOW_FORK_MODAL_PARAM}=true`,
+      );
+    }
   };
+
+  const FORK_BUTTON_TEXT = currentTemplate?.functions.includes(
+    TEMPLATE_BUILDING_BLOCKS_FILTER_FUNCTION_VALUE,
+  )
+    ? FORK_THIS_TEMPLATE_BUILDING_BLOCK
+    : FORK_THIS_TEMPLATE;
+
   return (
     <HeaderWrapper>
-      <Link
-        data-testid="t--template-view-goback"
-        onClick={goBack}
-        startIcon="arrow-left-line"
-      >
-        {createMessage(GO_BACK)}
-      </Link>
+      {showBack && (
+        <Link
+          data-testid="t--template-view-goback"
+          onClick={goBack}
+          startIcon="arrow-left-line"
+        >
+          {createMessage(GO_BACK)}
+        </Link>
+      )}
       <Title kind="heading-l" renderAs="h1">
         {currentTemplate?.title}
       </Title>
@@ -69,11 +102,15 @@ function TemplateViewHeader({ templateId }: Props) {
             <Button
               className="template-fork-button"
               data-testid="template-fork-button"
+              isLoading={
+                onClickUseTemplate &&
+                (isImportingTemplateToApp || isImportingTemplate)
+              }
               onClick={onForkButtonTrigger}
               size="md"
               startIcon="fork-2"
             >
-              {createMessage(FORK_THIS_TEMPLATE)}
+              {createMessage(FORK_BUTTON_TEXT)}
             </Button>
           </ForkTemplate>
         )}

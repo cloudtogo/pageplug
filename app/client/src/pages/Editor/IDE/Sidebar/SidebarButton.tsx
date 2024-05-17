@@ -1,6 +1,8 @@
 import React from "react";
 import { Icon, Text, Tooltip } from "design-system";
 import styled from "styled-components";
+import DatasourceStarterLayoutPrompt from "pages/Editor/Explorer/Datasources/DatasourceStarterLayoutPrompt";
+import { SidebarTopButtonTitles } from "@appsmith/entities/IDE/constants";
 
 interface Props {
   title?: string;
@@ -23,7 +25,7 @@ const Container = styled.div`
 const IconContainer = styled.div<{ selected: boolean }>`
   padding: 2px;
   background-color: ${(props) =>
-    props.selected ? "var(--colors-raw-orange-100, #fbe6dc)" : "white"};
+    props.selected ? "rgb(139 212 212 / 33%)" : "white"};
   border-radius: 3px;
   width: 32px;
   height: 32px;
@@ -34,7 +36,7 @@ const IconContainer = styled.div<{ selected: boolean }>`
   &:hover {
     background: ${(props) =>
       props.selected
-        ? "var(--colors-raw-orange-100, #fbe6dc)"
+        ? "rgb(139 212 212 / 33%)"
         : "var(--ads-v2-color-bg-subtle, #f1f5f9);"};
   }
 `;
@@ -42,12 +44,20 @@ const IconContainer = styled.div<{ selected: boolean }>`
 function SidebarButton(props: Props) {
   return (
     <Container>
+      {props.title === SidebarTopButtonTitles.DATA && (
+        <DatasourceStarterLayoutPrompt />
+      )}
       <Tooltip
         content={props.tooltip}
         isDisabled={!!props.title && !props.tooltip}
         placement={"right"}
       >
-        <IconContainer onClick={props.onClick} selected={props.selected}>
+        <IconContainer
+          className={`t--sidebar-${props.title || props.tooltip}`}
+          data-selected={props.selected}
+          onClick={props.onClick}
+          selected={props.selected}
+        >
           <Icon name={props.icon} size="lg" />
         </IconContainer>
       </Tooltip>

@@ -15,6 +15,7 @@ function DropdownFieldWrapper(props: DropdownFieldWrapperProps) {
   });
   const onSelectHandler = (value?: string) => {
     setSelectedOption(value ? { value } : { value: "GET" });
+    props.input.onChange({ value: value });
   };
 
   useEffect(() => {
@@ -31,8 +32,8 @@ function DropdownFieldWrapper(props: DropdownFieldWrapperProps) {
     >
       {props.options.map((option: SelectOptionProps) => {
         return (
-          <Option key={option.value} value={option.value}>
-            {option.value}
+          <Option key={option.id} value={option.value}>
+            {option.label || option.value}
           </Option>
         );
       })}

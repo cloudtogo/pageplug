@@ -6,11 +6,13 @@ import {
   setThenBlockInQuery,
   setCatchBlockInQuery,
 } from "@shared/ast";
-import { setGlobalSearchCategory } from "actions/globalSearchActions";
 import { createNewJSCollection } from "actions/jsPaneActions";
 import { createModalAction } from "actions/widgetActions";
 import type { AppState } from "@appsmith/reducers";
-import { getEntityNameAndPropertyPath } from "@appsmith/workers/Evaluation/evaluationUtils";
+import {
+  getEntityNameAndPropertyPath,
+  isEntityAction,
+} from "@appsmith/workers/Evaluation/evaluationUtils";
 import type { TreeDropdownOption } from "design-system-old";
 import { Icon } from "design-system";
 import { PluginType } from "entities/Action";
@@ -18,21 +20,24 @@ import type { JSAction, Variable } from "entities/JSCollection";
 import keyBy from "lodash/keyBy";
 import { getActionConfig } from "pages/Editor/Explorer/Actions/helpers";
 import { JsFileIconV2 } from "pages/Editor/Explorer/ExplorerIcons";
-import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import type { ActionDataState } from "@appsmith/reducers/entityReducers/actionsReducer";
-import type { JSCollectionData } from "reducers/entityReducers/jsActionsReducer";
+import type {
+  ActionData,
+  ActionDataState,
+} from "@appsmith/reducers/entityReducers/actionsReducer";
+import type { JSCollectionData } from "@appsmith/reducers/entityReducers/jsActionsReducer";
 import { getCurrentPageId } from "selectors/editorSelectors";
 import {
   getCurrentActions,
   getJSCollectionFromName,
   getCurrentJSCollections,
+  getQueryModuleInstances,
+  getJSModuleInstancesData,
 } from "@appsmith/selectors/entitiesSelector";
 import {
   getModalDropdownList,
   getNextModalName,
 } from "selectors/widgetSelectors";
-import { filterCategories, SEARCH_CATEGORY_ID } from "../GlobalSearch/utils";
 import {
   APPSMITH_GLOBAL_FUNCTIONS,
   AppsmithFunction,
@@ -56,11 +61,17 @@ import {
 } from "./utils";
 import store from "store";
 import { selectEvaluationVersion } from "@appsmith/selectors/applicationSelectors";
-import {
-  isAction,
-  isJSAction,
-} from "@appsmith/workers/Evaluation/evaluationUtils";
+import { isJSAction } from "@appsmith/workers/Evaluation/evaluationUtils";
 import type { DataTreeEntity } from "entities/DataTree/dataTreeTypes";
+import type { ModuleInstanceDataState } from "@appsmith/constants/ModuleInstanceConstants";
+import { setShowCreateNewModal } from "actions/propertyPaneActions";
+import { setIdeEditorViewMode } from "actions/ideActions";
+import { EditorViewMode } from "@appsmith/entities/IDE/constants";
+import { getIsSideBySideEnabled } from "selectors/ideSelectors";
+import { getModuleIcon, getPluginImagesFromPlugins } from "pages/Editor/utils";
+import { getAllModules } from "@appsmith/selectors/modulesSelector";
+import type { Module } from "@appsmith/constants/ModuleConstants";
+import type { Plugin } from "api/PluginApi";
 
 const actionList: {
   label: string;
@@ -103,7 +114,7 @@ export function getFieldFromValue(
   const entity = dataTree && dataTree[entityProps.entityName];
 
   if (entity && "ENTITY_TYPE" in entity) {
-    if (isAction(entity)) {
+    if (isEntityAction(entity as DataTreeEntity)) {
       // get fields for API action
       return getActionEntityFields(
         fields,
@@ -385,27 +396,44 @@ export function useModalDropdownList(handleClose: () => void) {
 
 export function getApiQueriesAndJSActionOptionsWithChildren(
   pageId: string,
-  plugins: any,
+  plugins: Plugin[],
   actions: ActionDataState,
   jsActions: Array<JSCollectionData>,
   dispatch: any,
   handleClose: () => void,
+  queryModuleInstances: ModuleInstanceDataState,
+  jsModuleInstances: ReturnType<typeof getJSModuleInstancesData>,
+  modules: Record<string, Module>,
 ) {
   // this function gets a list of all the queries/apis and attaches it to actionList
-  getApiAndQueryOptions(plugins, actions, dispatch, handleClose);
+  getApiAndQueryOptions(
+    plugins,
+    actions,
+    dispatch,
+    handleClose,
+    queryModuleInstances,
+    modules,
+  );
 
   // this function gets a list of all the JS Objects and attaches it to actionList
-  getJSOptions(pageId, jsActions, dispatch);
+  getJSOptions(pageId, jsActions, dispatch, jsModuleInstances);
 
   return actionList;
 }
 
 function getApiAndQueryOptions(
-  plugins: any,
+  plugins: Plugin[],
   actions: ActionDataState,
   dispatch: any,
   handleClose: () => void,
+  queryModuleInstances: ModuleInstanceDataState,
+  modules: Record<string, Module>,
 ) {
+  const state = store.getState();
+  const isSideBySideEnabled = getIsSideBySideEnabled(state);
+  const pluginImages = getPluginImagesFromPlugins(plugins);
+  const pluginGroups: any = keyBy(plugins, "id");
+
   const createQueryObject: TreeDropdownOption = {
     label: "New query",
     value: "datasources",
@@ -413,24 +441,23 @@ function getApiAndQueryOptions(
     icon: "plus",
     className: "t--create-datasources-query-btn",
     onSelect: () => {
-      handleClose();
-      dispatch(
-        setGlobalSearchCategory(
-          filterCategories[SEARCH_CATEGORY_ID.ACTION_OPERATION],
-        ),
-      );
+      dispatch(setShowCreateNewModal(true));
+      if (isSideBySideEnabled) {
+        dispatch(setIdeEditorViewMode(EditorViewMode.SplitScreen));
+      }
     },
   };
 
-  const queries = actions.filter(
-    (action) => action.config.pluginType === PluginType.DB,
+  const queries: ActionDataState = actions.filter(
+    (action: ActionData) => action.config.pluginType === PluginType.DB,
   );
 
-  const apis = actions.filter(
-    (action) =>
+  const apis: ActionDataState = actions.filter(
+    (action: ActionData) =>
       action.config.pluginType === PluginType.API ||
       action.config.pluginType === PluginType.SAAS ||
       action.config.pluginType === PluginType.REMOTE ||
+      action.config.pluginType === PluginType.INTERNAL ||
       action.config.pluginType === PluginType.AI,
   );
 
@@ -449,7 +476,7 @@ function getApiAndQueryOptions(
         type: queryOptions.value,
         icon: getActionConfig(api.config.pluginType)?.getIcon(
           api.config,
-          plugins[(api as any).config.datasource.pluginId],
+          pluginGroups[(api as any).config.datasource.pluginId],
           api.config.pluginType === PluginType.API,
         ),
       } as TreeDropdownOption);
@@ -463,8 +490,18 @@ function getApiAndQueryOptions(
         type: queryOptions.value,
         icon: getActionConfig(query.config.pluginType)?.getIcon(
           query.config,
-          plugins[(query as any).config.datasource.pluginId],
+          pluginGroups[(query as any).config.datasource.pluginId],
         ),
+      } as TreeDropdownOption);
+    });
+    queryModuleInstances.forEach((instance) => {
+      const module = modules[instance.config.sourceModuleId];
+      (queryOptions.children as TreeDropdownOption[]).push({
+        label: instance.config.name,
+        id: instance.config.id,
+        value: instance.config.name,
+        type: queryOptions.value,
+        icon: getModuleIcon(module, pluginImages),
       } as TreeDropdownOption);
     });
   }
@@ -474,6 +511,7 @@ export function getJSOptions(
   pageId: string,
   jsActions: Array<JSCollectionData>,
   dispatch: any,
+  jsModuleInstances: ReturnType<typeof getJSModuleInstancesData>,
 ) {
   const createJSObject: TreeDropdownOption = {
     label: "New JS object",
@@ -509,7 +547,7 @@ export function getJSOptions(
           jsObject.children = [];
 
           jsAction.config.actions.forEach((js: JSAction) => {
-            const jsArguments = js.actionConfiguration.jsArguments;
+            const jsArguments = js.actionConfiguration?.jsArguments;
             const argValue: Array<any> = [];
 
             if (jsArguments && jsArguments.length) {
@@ -534,6 +572,52 @@ export function getJSOptions(
         }
       }
     });
+
+    jsModuleInstances.forEach((jsModuleInstance) => {
+      if (!jsModuleInstance) return;
+      if (
+        jsModuleInstance.config.actions &&
+        jsModuleInstance.config.actions.length > 0
+      ) {
+        const jsObject = {
+          label: jsModuleInstance.name,
+          id: jsModuleInstance.config.id,
+          value: jsModuleInstance.name,
+          type: jsOption.value,
+          icon: JsFileIconV2(),
+        } as unknown as TreeDropdownOption;
+
+        (jsOption.children as unknown as TreeDropdownOption[]).push(jsObject);
+
+        if (jsObject) {
+          jsObject.children = [];
+
+          jsModuleInstance.config.actions.forEach((js: JSAction) => {
+            const jsArguments = js.actionConfiguration?.jsArguments;
+            const argValue: Array<any> = [];
+
+            if (jsArguments && jsArguments.length) {
+              jsArguments.forEach((arg: Variable) => {
+                argValue.push(arg.value);
+              });
+            }
+
+            const jsFunction = {
+              label: js.name,
+              id: js.id,
+              value: jsModuleInstance.name + "." + js.name,
+              type: jsOption.value,
+              icon: <Icon name="js-function" size="md" />,
+              args: argValue,
+            };
+            (jsObject.children as TreeDropdownOption[]).push(
+              jsFunction as unknown as TreeDropdownOption,
+            );
+          });
+          jsObject.children.sort((a, b) => a.label?.localeCompare(b.label));
+        }
+      }
+    });
   }
 }
 
@@ -543,17 +627,24 @@ export function useApisQueriesAndJsActionOptions(handleClose: () => void) {
   const plugins = useSelector((state: AppState) => {
     return state.entities.plugins.list;
   });
-  const pluginGroups: any = useMemo(() => keyBy(plugins, "id"), [plugins]);
   const actions = useSelector(getCurrentActions);
   const jsActions = useSelector(getCurrentJSCollections);
+  const queryModuleInstances = useSelector(
+    getQueryModuleInstances,
+  ) as unknown as ModuleInstanceDataState;
+  const jsModuleInstancesData = useSelector(getJSModuleInstancesData);
+  const modules = useSelector(getAllModules);
 
   // this function gets all the Queries/API's/JS Objects and attaches it to actionList
   return getApiQueriesAndJSActionOptionsWithChildren(
     pageId,
-    pluginGroups,
+    plugins,
     actions,
     jsActions,
     dispatch,
     handleClose,
+    queryModuleInstances,
+    jsModuleInstancesData,
+    modules,
   );
 }

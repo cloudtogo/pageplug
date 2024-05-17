@@ -8,11 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.FieldNameConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.http.HttpMethod;
+import reactor.netty.http.HttpProtocol;
 
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +29,7 @@ import static com.appsmith.external.constants.ActionConstants.DEFAULT_ACTION_EXE
 @Slf4j
 @NoArgsConstructor
 @Document
+@FieldNameConstants
 public class ActionConfiguration implements AppsmithDomain, ExecutableConfiguration {
     private static final int MIN_TIMEOUT_VALUE = 0; // in Milliseconds
     private static final int MAX_TIMEOUT_VALUE = 60000; // in Milliseconds
@@ -64,6 +67,8 @@ public class ActionConfiguration implements AppsmithDomain, ExecutableConfigurat
     @JsonDeserialize(using = HttpMethodConverter.HttpMethodDeserializer.class)
     @JsonAdapter(HttpMethodConverter.class)
     HttpMethod httpMethod;
+
+    HttpProtocol httpVersion;
     // Paginated API fields
     String next;
     String prev;

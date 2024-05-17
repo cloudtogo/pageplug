@@ -1,11 +1,16 @@
+import EditorNavigation, {
+  EntityType,
+} from "../../../../support/Pages/EditorNavigation";
+
 const commonlocators = require("../../../../locators/commonlocators.json");
 import {
   agHelper,
   deployMode,
   entityExplorer,
 } from "../../../../support/Objects/ObjectsCore";
+import PageList from "../../../../support/Pages/PageList";
 
-describe("Page Load tests", () => {
+describe("Page Load tests", { tags: ["@tag.IDE"] }, () => {
   afterEach(() => {
     _.agHelper.SaveLocalStorageCache();
   });
@@ -16,7 +21,7 @@ describe("Page Load tests", () => {
 
   before(() => {
     agHelper.AddDsl("PageLoadDsl");
-    cy.CreatePage();
+    PageList.AddNewPage();
     cy.get("h2").contains("Drag and drop a widget here");
   });
 
@@ -43,7 +48,7 @@ describe("Page Load tests", () => {
       "This is Page 2",
     );
     // Test after reload
-    agHelper.RefreshPage("viewPage");
+    agHelper.RefreshPage("getConsolidatedData");
     // Assert active page tab
     cy.get(".t--page-switch-tab")
       .contains("Page2")
@@ -90,7 +95,7 @@ describe("Page Load tests", () => {
     );
     cy.contains("Page2").should("not.exist");
     deployMode.NavigateBacktoEditor();
-    entityExplorer.SelectEntityByName("Page2");
+    EditorNavigation.SelectEntityByName("Page2", EntityType.Page);
     deployMode.DeployApp();
     // Assert active page DSL
     cy.get(commonlocators.headingTextStyle).should(

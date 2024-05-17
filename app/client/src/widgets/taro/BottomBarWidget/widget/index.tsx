@@ -12,6 +12,7 @@ import { generateClassName } from "utils/generators";
 import { getCanvasWidth } from "selectors/editorSelectors";
 import type { AppState } from "@appsmith/reducers";
 import IconSVG from "../icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 export class MBottomBarWidget extends BaseWidget<
   MBottomBarWidgetProps,
@@ -22,6 +23,7 @@ export class MBottomBarWidget extends BaseWidget<
   static getConfig() {
     return {
       name: "底部面板",
+      tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["bottom bar"],
       iconSVG: IconSVG,
       needsMeta: false,

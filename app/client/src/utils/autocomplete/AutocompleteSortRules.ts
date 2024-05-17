@@ -11,6 +11,7 @@ import type {
 } from "./CodemirrorTernService";
 import { createCompletionHeader } from "./CodemirrorTernService";
 import { AutocompleteDataType } from "./AutocompleteDataType";
+import { ENTITY_TYPE } from "entities/DataTree/dataTreeFactory";
 
 interface AutocompleteRule {
   computeScore(
@@ -306,26 +307,37 @@ class ScopeMatchRule implements AutocompleteRule {
   }
 }
 
-class BlockAsyncFnsInDataFieldRule implements AutocompleteRule {
+class BlockAsyncFnsRule implements AutocompleteRule {
   static threshold = -Infinity;
   static blackList = [
     "setTimeout",
     "clearTimeout",
     "setInterval",
     "clearInterval",
+    "postWindowMessage",
+    "windowMessageListener",
+    "watchPosition",
   ];
   computeScore(
     completion: Completion<TernCompletionResult>,
     entityInfo?: FieldEntityInformation | undefined,
   ): number {
     const score = 0;
-    if (entityInfo?.isTriggerPath) return score;
-    if (completion.type !== "FUNCTION") return score;
+    if (completion.type !== AutocompleteDataType.FUNCTION) return score;
     if (!completion.displayText) return score;
-    const isAsyncFunction = completion.data?.type?.endsWith("Promise");
-    if (isAsyncFunction) return BlockAsyncFnsInDataFieldRule.threshold;
-    if (BlockAsyncFnsInDataFieldRule.blackList.includes(completion.displayText))
-      return BlockAsyncFnsInDataFieldRule.threshold;
+    if (entityInfo?.isTriggerPath) {
+      // triggerPath = true and expectedType = undefined for JSObjects
+      if (!entityInfo.expectedType) return score;
+      // triggerPath = true and expectedType = FUNCTION or UNKNOWN for trigger fields.
+      if (entityInfo.expectedType === AutocompleteDataType.FUNCTION)
+        return score;
+      if (entityInfo.expectedType === AutocompleteDataType.UNKNOWN)
+        return score;
+    }
+    const isAsyncFunction =
+      completion.data?.type?.endsWith("Promise") ||
+      BlockAsyncFnsRule.blackList.includes(completion.displayText);
+    if (isAsyncFunction) return BlockAsyncFnsRule.threshold;
     return score;
   }
 }
@@ -376,10 +388,43 @@ export class AutocompleteSorter {
   }
 }
 
+/**
+ * Set score to -Infinity for paths to be blocked from autocompletion
+ * Max score - 0
+ * Min score - -Infinity
+ * respective module inputs should not get module as autocompletion option
+ */
+class RemoveDependentEntityBlackListedCompletionRule
+  implements AutocompleteRule
+{
+  static threshold = -Infinity;
+
+  computeScore(completion: Completion<TernCompletionResult>): number {
+    let score = 0;
+    const { currentFieldInfo } = AutocompleteSorter;
+    const { blockCompletions } = currentFieldInfo;
+
+    if (
+      blockCompletions &&
+      currentFieldInfo.entityType === ENTITY_TYPE.MODULE_INPUT
+    ) {
+      for (let index = 0; index < blockCompletions.length; index++) {
+        const { subPath } = blockCompletions[index];
+        if (completion.text === subPath) {
+          score = RemoveDependentEntityBlackListedCompletionRule.threshold;
+          break;
+        }
+      }
+    }
+
+    return score;
+  }
+}
+
 export class ScoredCompletion {
   score = 0;
   static rules = [
-    new BlockAsyncFnsInDataFieldRule(),
+    new BlockAsyncFnsRule(),
     new NoDeepNestedSuggestionsRule(),
     new NoSelfReferenceRule(),
     new ScopeMatchRule(),
@@ -394,6 +439,7 @@ export class ScoredCompletion {
     new RemoveBlackListedCompletionRule(),
     new HideInternalDefsRule(),
     new NestedPropertyInsideLiteralRule(),
+    new RemoveDependentEntityBlackListedCompletionRule(),
   ];
   completion: Completion<TernCompletionResult>;
 

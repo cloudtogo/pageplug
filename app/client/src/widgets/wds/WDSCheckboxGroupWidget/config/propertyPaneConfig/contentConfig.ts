@@ -67,6 +67,27 @@ export const propertyPaneContentConfig = [
           },
         },
       },
+      {
+        helpText: "Controls widget orientation",
+        propertyName: "orientation",
+        label: "Orientation",
+        controlType: "ICON_TABS",
+        fullWidth: true,
+        options: [
+          {
+            label: "Horizontal",
+            value: "horizontal",
+          },
+          {
+            label: "Vertical",
+            value: "vertical",
+          },
+        ],
+        defaultValue: "vertical",
+        isBindProperty: true,
+        isTriggerProperty: false,
+        validation: { type: ValidationTypes.TEXT },
+      },
     ],
   },
   {
@@ -74,7 +95,7 @@ export const propertyPaneContentConfig = [
     children: [
       {
         helpText: "Sets the label text of the widget",
-        propertyName: "labelText",
+        propertyName: "label",
         label: "Text",
         controlType: "INPUT_TEXT",
         placeholderText: "Enter label text",
@@ -83,16 +104,12 @@ export const propertyPaneContentConfig = [
         validation: { type: ValidationTypes.TEXT },
       },
       {
-        helpText: "Sets the label position of the widget",
-        propertyName: "labelPosition",
-        label: "Position",
-        controlType: "ICON_TABS",
-        fullWidth: true,
-        options: [
-          { label: "Left", value: "left" },
-          { label: "Right", value: "right" },
-        ],
-        isBindProperty: false,
+        helpText: "Show help text or details about current input",
+        propertyName: "labelTooltip",
+        label: "Tooltip",
+        controlType: "INPUT_TEXT",
+        placeholderText: "Value must be atleast 6 chars",
+        isBindProperty: true,
         isTriggerProperty: false,
         validation: { type: ValidationTypes.TEXT },
       },

@@ -1,4 +1,5 @@
 import {
+  ADD_PATH,
   ADMIN_SETTINGS_PATH,
   GEN_TEMPLATE_FORM_ROUTE,
   GEN_TEMPLATE_URL,
@@ -53,16 +54,21 @@ export const datasourcesEditorIdURL = (
   });
 };
 
+export interface WithAddView {
+  add?: boolean;
+}
+
 export const jsCollectionIdURL = (
-  props: URLBuilderParams & {
-    collectionId: string;
-    // Pass a function name to set the cursor directly on the function
-    functionName?: string;
-  },
+  props: URLBuilderParams &
+    WithAddView & {
+      collectionId: string;
+      // Pass a function name to set the cursor directly on the function
+      functionName?: string;
+    },
 ): string => {
   return urlBuilder.build({
     ...props,
-    suffix: `jsObjects/${props.collectionId}`,
+    suffix: `jsObjects/${props.collectionId}${props.add ? ADD_PATH : ""}`,
     hash: props.functionName,
   });
 };
@@ -78,39 +84,31 @@ export const integrationEditorURL = (
 };
 
 export const queryEditorIdURL = (
-  props: URLBuilderParams & {
-    queryId: string;
-  },
+  props: URLBuilderParams &
+    WithAddView & {
+      queryId: string;
+    },
 ): string =>
   urlBuilder.build({
     ...props,
-    suffix: `queries/${props.queryId}`,
+    suffix: `queries/${props.queryId}${props.add ? ADD_PATH : ""}`,
   });
 
 export const apiEditorIdURL = (
-  props: URLBuilderParams & {
-    apiId: string;
-  },
+  props: URLBuilderParams &
+    WithAddView & {
+      apiId: string;
+    },
 ): string =>
   urlBuilder.build({
     ...props,
-    suffix: `api/${props.apiId}`,
+    suffix: `api/${props.apiId}${props.add ? ADD_PATH : ""}`,
   });
 
 export const curlImportPageURL = (props: URLBuilderParams): string =>
   urlBuilder.build({
     ...props,
     suffix: "api/curl/curl-import",
-  });
-
-export const providerTemplatesURL = (
-  props: URLBuilderParams & {
-    providerId: string;
-  },
-): string =>
-  urlBuilder.build({
-    ...props,
-    suffix: `api/provider/${props.providerId}`,
   });
 
 export const saasEditorDatasourceIdURL = (
@@ -125,14 +123,17 @@ export const saasEditorDatasourceIdURL = (
   });
 
 export const saasEditorApiIdURL = (
-  props: URLBuilderParams & {
-    pluginPackageName: string;
-    apiId: string;
-  },
+  props: URLBuilderParams &
+    WithAddView & {
+      pluginPackageName: string;
+      apiId: string;
+    },
 ): string =>
   urlBuilder.build({
     ...props,
-    suffix: `saas/${props.pluginPackageName}/api/${props.apiId}`,
+    suffix: `saas/${props.pluginPackageName}/api/${props.apiId}${
+      props.add ? ADD_PATH : ""
+    }`,
   });
 
 export const generateTemplateFormURL = (props: URLBuilderParams): string =>
@@ -150,6 +151,12 @@ export const onboardingCheckListUrl = (props: URLBuilderParams): string =>
 export const builderURL = (props: URLBuilderParams): string => {
   return urlBuilder.build(props);
 };
+export const globalAddURL = (props: URLBuilderParams): string => {
+  return urlBuilder.build({
+    ...props,
+    suffix: "add",
+  });
+};
 
 export const widgetURL = (
   props: URLBuilderParams & { selectedWidgets: string[] },
@@ -157,6 +164,13 @@ export const widgetURL = (
   return urlBuilder.build({
     ...props,
     suffix: `widgets/${props.selectedWidgets.join(",")}`,
+  });
+};
+
+export const widgetListURL = (props: URLBuilderParams) => {
+  return urlBuilder.build({
+    ...props,
+    suffix: `widgets`,
   });
 };
 
@@ -176,3 +190,29 @@ export function adminSettingsCategoryUrl({
 
 export const templateIdUrl = ({ id }: { id: string }): string =>
   `${TEMPLATES_PATH}/${id}`;
+
+export const jsCollectionListURL = (props: URLBuilderParams): string => {
+  return urlBuilder.build({
+    ...props,
+    suffix: `jsObjects`,
+  });
+};
+
+export const jsCollectionAddURL = (props: URLBuilderParams): string => {
+  return urlBuilder.build({
+    ...props,
+    suffix: "jsObjects/add",
+  });
+};
+
+export const queryListURL = (props: URLBuilderParams): string =>
+  urlBuilder.build({
+    ...props,
+    suffix: `queries`,
+  });
+
+export const queryAddURL = (props: URLBuilderParams): string =>
+  urlBuilder.build({
+    ...props,
+    suffix: `queries/add`,
+  });

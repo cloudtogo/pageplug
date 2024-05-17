@@ -11,8 +11,19 @@ module.exports = merge(common, {
         errors: false,
       },
     },
+    hot: true,
+    proxy: {
+      "/api": "http://localhost:8080"
+    }
   },
   optimization: {
     minimize: false,
+  },
+  cache: {
+    type: "filesystem",
+    memoryCacheUnaffected: true,
+  },
+  experiments: {
+    cacheUnaffected: true,
   },
 });

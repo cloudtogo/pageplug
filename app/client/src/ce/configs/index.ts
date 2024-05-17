@@ -13,7 +13,6 @@ export interface INJECTED_CONFIGS {
   smartLook: {
     id: string;
   };
-  enableRapidAPI: boolean;
   segment: {
     apiKey: string;
     ceKey: string;
@@ -24,14 +23,14 @@ export interface INJECTED_CONFIGS {
     applicationId: string;
     browserAgentlicenseKey: string;
     otlpLicenseKey: string;
+    otlpServiceName: string;
+    otlpEndpoint: string;
   };
   fusioncharts: {
     licenseKey: string;
   };
   enableWeChatOAuth: boolean;
   enableMixpanel: boolean;
-  google: string;
-  enableTNCPP: boolean;
   cloudHosting: boolean;
   algolia: {
     apiId: string;
@@ -42,6 +41,7 @@ export interface INJECTED_CONFIGS {
   logLevel: "debug" | "error";
   appVersion: {
     id: string;
+    sha: string;
     releaseDate: string;
     edition: string;
   };
@@ -101,25 +101,22 @@ export const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
       browserAgentlicenseKey:
         process.env.APPSMITH_NEW_RELIC_BROWSER_AGENT_LICENSE_KEY || "",
       otlpLicenseKey: process.env.APPSMITH_NEW_RELIC_OTLP_LICENSE_KEY || "",
+      otlpEndpoint: process.env.APPSMITH_NEW_RELIC_OTEL_SERVICE_NAME || "",
+      otlpServiceName:
+        process.env.APPSMITH_NEW_RELIC_OTEL_EXPORTER_OTLP_ENDPOINT || "",
     },
     logLevel:
       (process.env.REACT_APP_CLIENT_LOG_LEVEL as
         | "debug"
         | "error"
         | undefined) || "error",
-    google: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || "",
-    enableTNCPP: process.env.REACT_APP_TNC_PP
-      ? process.env.REACT_APP_TNC_PP.length > 0
-      : false,
-    enableRapidAPI: process.env.REACT_APP_MARKETPLACE_URL
-      ? process.env.REACT_APP_MARKETPLACE_URL.length > 0
-      : false,
     cloudHosting: process.env.REACT_APP_CLOUD_HOSTING
       ? process.env.REACT_APP_CLOUD_HOSTING.length > 0
       : false,
     appVersion: {
       id: process.env.REACT_APP_VERSION_ID || "v1.9.45",
-      releaseDate: process.env.REACT_APP_VERSION_RELEASE_DATE || "",
+      sha: "",
+      releaseDate: "",
       edition: process.env.REACT_APP_VERSION_EDITION || "",
     },
     intercomAppID: process.env.REACT_APP_INTERCOM_APP_ID || "",
@@ -187,6 +184,14 @@ export const getAppsmithConfigs = (): AppsmithUIConfigs => {
     APPSMITH_FEATURE_CONFIGS?.newRelic.otlpLicenseKey,
   );
 
+  const newRelicOtlpServiceName = getConfig(
+    ENV_CONFIG.newRelic.otlpServiceName,
+    APPSMITH_FEATURE_CONFIGS?.newRelic.otlpServiceName,
+  );
+  const newRelicOtlpEndpoint = getConfig(
+    ENV_CONFIG.newRelic.otlpEndpoint,
+    APPSMITH_FEATURE_CONFIGS?.newRelic.otlpEndpoint,
+  );
   const fusioncharts = getConfig(
     ENV_CONFIG.fusioncharts.licenseKey,
     APPSMITH_FEATURE_CONFIGS?.fusioncharts.licenseKey,
@@ -267,6 +272,8 @@ export const getAppsmithConfigs = (): AppsmithUIConfigs => {
       applicationId: newRelicApplicationId.value,
       browserAgentlicenseKey: newRelicBrowserLicenseKey.value,
       otlpLicenseKey: newRelicOtlpLicenseKey.value,
+      otlpEndpoint: newRelicOtlpEndpoint.value,
+      otlpServiceName: newRelicOtlpServiceName.value,
     },
     fusioncharts: {
       enabled: fusioncharts.enabled,
@@ -283,10 +290,6 @@ export const getAppsmithConfigs = (): AppsmithUIConfigs => {
       enabled: googleRecaptchaSiteKey.enabled,
       apiKey: googleRecaptchaSiteKey.value,
     },
-    enableRapidAPI:
-      ENV_CONFIG.enableRapidAPI ||
-      APPSMITH_FEATURE_CONFIGS?.enableRapidAPI ||
-      false,
     enableWeChatOAuth:
       ENV_CONFIG.enableWeChatOAuth ||
       APPSMITH_FEATURE_CONFIGS?.enableWeChatOAuth ||
@@ -301,10 +304,15 @@ export const getAppsmithConfigs = (): AppsmithUIConfigs => {
       false,
     logLevel:
       ENV_CONFIG.logLevel || APPSMITH_FEATURE_CONFIGS?.logLevel || false,
-    enableTNCPP:
-      ENV_CONFIG.enableTNCPP || APPSMITH_FEATURE_CONFIGS?.enableTNCPP || false,
-    appVersion:
-      ENV_CONFIG.appVersion || APPSMITH_FEATURE_CONFIGS?.appVersion || false,
+    appVersion: {
+      id: APPSMITH_FEATURE_CONFIGS?.appVersion?.id || "",
+      sha: APPSMITH_FEATURE_CONFIGS?.appVersion?.sha || "",
+      releaseDate: APPSMITH_FEATURE_CONFIGS?.appVersion?.releaseDate || "",
+      edition:
+        ENV_CONFIG.appVersion?.edition ||
+        APPSMITH_FEATURE_CONFIGS?.appVersion?.edition ||
+        "",
+    },
     intercomAppID:
       ENV_CONFIG.intercomAppID || APPSMITH_FEATURE_CONFIGS?.intercomAppID || "",
     mailEnabled:

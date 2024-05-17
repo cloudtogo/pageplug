@@ -673,18 +673,14 @@ export const replaceActionInQuery = (
     CallExpression(node) {
       if (
         isCallExpressionNode(node) &&
-        // @ts-expect-error: types not matched
         isMemberExpressionNode(node.callee) &&
-        // @ts-expect-error: types not matched
         node.arguments[argNum]
       ) {
         // add 1 to get the starting position of the next
         // node to ending position of previous
-        // @ts-expect-error: types not matched
         const startPosition = node.arguments[argNum].start;
         requiredNode.start = startPosition;
         requiredNode.end = startPosition + changeAction.length;
-        // @ts-expect-error: types not matched
         node.arguments[argNum] = requiredNode;
         requiredQuery = `${generate(astWithComments, {
           comments: true,
@@ -752,13 +748,16 @@ export function canTranslateToUI(
   simple(astWithComments, {
     ConditionalExpression(node) {
       if (
+        // @ts-expect-error: types not matched
         isCallExpressionNode(node.consequent) ||
+        // @ts-expect-error: types not matched
         isCallExpressionNode(node.alternate)
       ) {
         canTranslate = false;
       }
     },
     LogicalExpression(node) {
+      // @ts-expect-error: types not matched
       if (isCallExpressionNode(node.left) || isCallExpressionNode(node.right)) {
         canTranslate = false;
       }
@@ -851,10 +850,12 @@ export function getMainAction(
     ExpressionStatement(node) {
       simple(node, {
         CallExpression(node) {
+          // @ts-expect-error: types not matched
           if (node.callee.type === NodeTypes.Identifier) {
             mainAction = generate(node, { comments: true }).trim();
           } else {
             mainAction =
+              // @ts-expect-error: types not matched
               generate(node.callee, { comments: true }).trim() + "()";
           }
         },

@@ -1,5 +1,4 @@
 import { Colors } from "constants/Colors";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
 
 export type ChartType =
   | "LINE_CHART"
@@ -45,6 +44,33 @@ export interface ChartSelectedDataPoint {
   rawEventData?: Record<string, unknown>;
 }
 
+// export type IFrameChartWidgetEventTypes = "click-event" | "load-complete" | "error"
+
+export interface CustomEChartClickEventData {
+  event: echarts.ECElementEvent; // Record<string, unknown>
+}
+export interface CustomEChartErrorData {
+  message: string;
+  stack: string;
+}
+
+export interface CustomEChartIFrameMessageData {
+  options: Record<string, unknown>;
+  shouldUpdateOptions: boolean;
+  shouldResize: boolean;
+  width: number;
+  height: number;
+}
+
+export interface CustomEChartIFrameMessage {
+  type: "click-event" | "load-complete" | "error" | "update-options";
+  data:
+    | CustomEChartClickEventData
+    | CustomEChartIFrameMessageData
+    | CustomEChartErrorData
+    | Record<string, unknown>;
+}
+
 export const messages = {
   ErrorTitle: "Error in Chart Data/Configuration",
   MoreDetails: "More Details",
@@ -58,35 +84,6 @@ export const messages = {
       : "Custom Fusion Charts";
   },
 };
-
-export const CUSTOM_ECHART_FEATURE_FLAG =
-  FEATURE_FLAG["release_custom_echarts_enabled"];
-
-export const FUSION_CHART_DEPRECATION_FLAG =
-  FEATURE_FLAG["deprecate_custom_fusioncharts_enabled"];
-
-export const THREE_D_CHART_CONFIGS = [
-  "globe",
-  "geo3D",
-  "mapbox3D",
-  "grid3D",
-  "xAxis3D",
-  "yAxis3D",
-  "zAxis3D",
-];
-
-export const THREE_D_CHART_SERIES_TYPES = [
-  "scatter3D",
-  "bar3D",
-  "line3D",
-  "lines3D",
-  "map3D",
-  "surface",
-  "polygons3D",
-  "scatterGL",
-  "graphGL",
-  "flowGL",
-];
 
 export const CUSTOM_CHART_TYPES = [
   "area2d",

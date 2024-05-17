@@ -36,6 +36,7 @@ export interface AppDataState {
     currentPosition?: Partial<GeolocationPosition>;
   };
   echartInstance: any;
+  workflows: Record<string, any>;
 }
 
 const initialState: AppDataState = {
@@ -61,6 +62,7 @@ const initialState: AppDataState = {
     currentPosition: {},
   },
   echartInstance: {},
+  workflows: {},
 };
 
 const appReducer = createReducer(initialState, {

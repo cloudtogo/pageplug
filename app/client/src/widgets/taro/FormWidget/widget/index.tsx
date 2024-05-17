@@ -8,6 +8,7 @@ import FormComponent from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { get, isArray } from "lodash";
 import IconSVG from "../icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 const noMeSubField = (
   props: MFormWidgetProps,
@@ -33,6 +34,7 @@ class MFormWidget extends BaseWidget<MFormWidgetProps, WidgetState> {
   static getConfig() {
     return {
       name: "表单",
+      tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["form"],
       iconSVG: IconSVG,
       needsMeta: true,

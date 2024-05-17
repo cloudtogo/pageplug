@@ -93,7 +93,7 @@ class CheckboxGroupWidget extends BaseWidget<
       isInline: true,
       isRequired: false,
       isVisible: true,
-      labelText: "Label",
+      labelText: "标签",
       labelPosition: LabelPosition.Top,
       labelAlignment: Alignment.LEFT,
       labelWidth: 5,
@@ -143,6 +143,7 @@ class CheckboxGroupWidget extends BaseWidget<
 
   static getAnvilConfig(): AnvilConfig | null {
     return {
+      isLargeWidget: false,
       widgetSize: {
         maxHeight: {},
         maxWidth: {},

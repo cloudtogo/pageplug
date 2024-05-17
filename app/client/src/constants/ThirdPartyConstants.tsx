@@ -30,6 +30,12 @@ export const BUSSINESS_WX_SINGUP_DOC =
 export const PROVISIONING_SETUP_DOC = "https://docs.pageplug.cn";
 export const DISCORD_URL = "https://discord.gg/rBTTVJp";
 export const ENTERPRISE_PRICING_PAGE = "https://www.appsmith.com/enterprise";
+export const DOCS_BRANCH_PROTECTION_URL =
+  "https://docs.appsmith.com/advanced-concepts/version-control-with-git/working-with-branches#branch-protection";
+export const DOCS_DEFAULT_BRANCH_URL =
+  "https://docs.appsmith.com/advanced-concepts/version-control-with-git/working-with-branches#default-branch";
+export const PACKAGES_OVERVIEW_DOC =
+  "https://docs.appsmith.com/packages/overview";
 
 export const PRICING_PAGE_URL = (
   URL: string,

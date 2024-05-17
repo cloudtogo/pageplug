@@ -6,6 +6,7 @@ import ButtonComponent from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import IconSVG from "../icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 class MButtonWidget extends BaseWidget<MButtonWidgetProps, ButtonWidgetState> {
   state = {
@@ -17,6 +18,7 @@ class MButtonWidget extends BaseWidget<MButtonWidgetProps, ButtonWidgetState> {
   static getConfig() {
     return {
       name: "按钮",
+      tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["button"],
       iconSVG: IconSVG,
       needsMeta: false,

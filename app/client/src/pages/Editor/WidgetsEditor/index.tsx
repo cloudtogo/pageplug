@@ -7,15 +7,19 @@ import {
   getCanvasWidth,
   getCurrentPageId,
   getCurrentPageName,
+  getIsAutoLayout,
   previewModeSelector,
 } from "selectors/editorSelectors";
+import styled from "styled-components";
+import { CANVAS_VIEWPORT } from "../../../constants/componentClassNameConstants";
+import { LayoutSystemTypes } from "../../../layoutSystems/types";
+import { getLayoutSystemType } from "../../../selectors/layoutSystemSelectors";
 import NavigationPreview from "./NavigationPreview";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import PerformanceTracker, {
   PerformanceTransactionName,
 } from "utils/PerformanceTracker";
 import CrudInfoModal from "../GeneratePage/components/CrudInfoModal";
-import { useWidgetSelection } from "utils/hooks/useWidgetSelection";
 import {
   getAppMode,
   getAppSidebarPinned,
@@ -23,11 +27,8 @@ import {
   getSidebarWidth,
 } from "@appsmith/selectors/applicationSelectors";
 import { setCanvasSelectionFromEditor } from "actions/canvasSelectionActions";
-import { closePropertyPane, closeTableFilterPane } from "actions/widgetActions";
 import { useAllowEditorDragToSelect } from "utils/hooks/useAllowEditorDragToSelect";
-import { inGuidedTour } from "selectors/onboardingSelectors";
 import EditorContextProvider from "components/editorComponents/EditorContextProvider";
-import Guide from "../GuidedTour/Guide";
 import MainContainerWrapper from "./MainContainerWrapper";
 import EmptyCanvasPrompts from "./EmptyCanvasPrompts";
 import { useAutoHeightUIState } from "utils/hooks/autoHeightUIHooks";
@@ -53,18 +54,24 @@ import {
 } from "layoutSystems/common/useLayoutSystemFeatures";
 import OverlayCanvasContainer from "layoutSystems/common/WidgetNamesCanvas";
 import { protectedModeSelector } from "selectors/gitSyncSelectors";
+import { useCurrentAppState } from "pages/Editor/IDE/hooks";
+import { EditorState } from "@appsmith/entities/IDE/constants";
+import useMissingModuleNotification from "@appsmith/pages/Editor/IDE/MainPane/useMissingModuleNotification";
+
+const BannerWrapper = styled.div`
+  z-index: calc(var(--on-canvas-ui-z-index) + 1);
+`;
 
 function WidgetsEditor() {
-  const { deselectAll, focusWidget } = useWidgetSelection();
   const dispatch = useDispatch();
   const currentPageId = useSelector(getCurrentPageId);
   const currentPageName = useSelector(getCurrentPageName);
   const currentApp = useSelector(getCurrentApplication);
-  const guidedTourEnabled = useSelector(inGuidedTour);
   const isPreviewMode = useSelector(previewModeSelector);
   const isProtectedMode = useSelector(protectedModeSelector);
   const lastUpdatedTime = useSelector(getSnapshotUpdatedTime);
   const readableSnapShotDetails = getReadableSnapShotDetails(lastUpdatedTime);
+  const isAutoLayout = useSelector(getIsAutoLayout);
 
   const currentApplicationDetails = useSelector(getCurrentApplication);
   const isAppSidebarPinned = useSelector(getAppSidebarPinned);
@@ -72,9 +79,12 @@ function WidgetsEditor() {
   const appSettingsPaneContext = useSelector(getAppSettingsPaneContext);
   const navigationPreviewRef = useRef(null);
   const [navigationHeight, setNavigationHeight] = useState(0);
-  const isAppSettingsPaneWithNavigationTabOpen = useSelector(
+  const isNavigationSelectedInSettings = useSelector(
     getIsAppSettingsPaneWithNavigationTabOpen,
   );
+  const appState = useCurrentAppState();
+  const isAppSettingsPaneWithNavigationTabOpen =
+    appState === EditorState.SETTINGS && isNavigationSelectedInSettings;
   const canvasWidth = useSelector(getCanvasWidth);
 
   const appMode = useSelector(getAppMode);
@@ -87,12 +97,16 @@ function WidgetsEditor() {
 
   const shouldShowSnapShotBanner =
     !!readableSnapShotDetails && !isPreviewingNavigation;
+  const missingModuleNotification = useMissingModuleNotification();
 
   const checkLayoutSystemFeatures = useLayoutSystemFeatures();
 
   const [enableOverlayCanvas] = checkLayoutSystemFeatures([
     LayoutSystemFeatures.ENABLE_CANVAS_OVERLAY_FOR_EDITOR_UI,
   ]);
+
+  const layoutSystemType: LayoutSystemTypes = useSelector(getLayoutSystemType);
+  const isAnvilLayout = layoutSystemType === LayoutSystemTypes.ANVIL;
 
   useEffect(() => {
     if (navigationPreviewRef?.current) {
@@ -143,19 +157,10 @@ function WidgetsEditor() {
         !isAutoHeightWithLimitsChanging &&
         !isCanvasWrapperClicked
       ) {
-        focusWidget && focusWidget();
-        deselectAll && deselectAll();
-        dispatch(closePropertyPane());
-        dispatch(closeTableFilterPane());
         dispatch(setCanvasSelectionFromEditor(false));
       }
     },
-    [
-      allowDragToSelect,
-      focusWidget,
-      deselectAll,
-      isAutoHeightWithLimitsChanging,
-    ],
+    [allowDragToSelect, isAutoHeightWithLimitsChanging],
   );
 
   /**
@@ -178,22 +183,14 @@ function WidgetsEditor() {
 
   const showNavigation = () => {
     if (isPreviewingNavigation) {
-      return (
-        <NavigationPreview
-          isAppSettingsPaneWithNavigationTabOpen={
-            isAppSettingsPaneWithNavigationTabOpen
-          }
-          ref={navigationPreviewRef}
-        />
-      );
+      return <NavigationPreview ref={navigationPreviewRef} />;
     }
   };
 
   PerformanceTracker.stopTracking();
   return (
     <EditorContextProvider renderMode="CANVAS">
-      {guidedTourEnabled && <Guide />}
-      <div className="relative flex flex-row w-full overflow-hidden">
+      <div className="relative flex flex-row h-full w-full overflow-hidden">
         <div
           className={classNames({
             "relative flex flex-col w-full overflow-hidden": true,
@@ -204,42 +201,52 @@ function WidgetsEditor() {
           {!isAppSettingsPaneWithNavigationTabOpen && (
             <EmptyCanvasPrompts isPreview={isPreviewMode || isProtectedMode} />
           )}
+          {missingModuleNotification}
           <AnonymousDataPopup />
           <div
-            className="relative flex flex-row w-full overflow-hidden"
-            data-testid="widgets-editor"
+            className="relative flex flex-row h-full w-full overflow-hidden"
+            data-testid="t--widgets-editor"
             draggable
             id="widgets-editor"
             onClick={handleWrapperClick}
             onDragStart={onDragStart}
             style={{
               fontFamily: fontFamily,
+              contain: isAutoLayout ? "content" : "strict",
             }}
           >
             {showNavigation()}
 
             <PageViewWrapper
               className={classNames({
-                "relative flex flex-row w-full justify-center overflow-hidden":
-                  true,
+                "relative flex flex-row w-full justify-center": true,
                 "select-none pointer-events-none":
                   isAppSettingsPaneWithNavigationTabOpen,
               })}
               hasPinnedSidebar={
                 isPreviewingNavigation && !isMobile
                   ? currentApplicationDetails?.applicationDetail
-                      ?.navigationSetting?.orientation ===
-                      NAVIGATION_SETTINGS.ORIENTATION.SIDE && isAppSidebarPinned
+                    ?.navigationSetting?.orientation ===
+                  NAVIGATION_SETTINGS.ORIENTATION.SIDE && isAppSidebarPinned
                   : false
               }
+              id={CANVAS_VIEWPORT}
               isPreview={isPreviewMode || isProtectedMode}
               isPublished={isPublished}
               sidebarWidth={isPreviewingNavigation ? sidebarWidth : 0}
+              style={
+                isAnvilLayout
+                  ? {
+                    //This is necessary in order to place WDS modal with position: fixed; relatively to the canvas.
+                    transform: "scale(1)",
+                  }
+                  : {}
+              }
             >
               {shouldShowSnapShotBanner && (
-                <div className="absolute top-0 z-2 w-full">
+                <BannerWrapper className="absolute top-0 w-full">
                   <SnapShotBannerCTA />
-                </div>
+                </BannerWrapper>
               )}
               <MainContainerWrapper
                 canvasWidth={canvasWidth}

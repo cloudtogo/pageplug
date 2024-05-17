@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { initExplorerEntityNameEdit } from "actions/explorerActions";
@@ -18,12 +18,14 @@ import {
   CONTEXT_DELETE,
   CONFIRM_CONTEXT_DELETE,
   createMessage,
-  CONTEXT_SETTINGS,
+  CONTEXT_PARTIAL_EXPORT,
+  CONTEXT_PARTIAL_IMPORT,
 } from "@appsmith/constants/messages";
-import { openAppSettingsPaneAction } from "actions/appSettingsPaneActions";
-import { AppSettingsTabs } from "pages/Editor/AppSettingsPane/AppSettings";
 import { getPageById } from "selectors/editorSelectors";
-import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
+import {
+  getCurrentApplication,
+  getPartialImportExportLoadingState,
+} from "@appsmith/selectors/applicationSelectors";
 import type { AppState } from "@appsmith/reducers";
 import ContextMenu from "pages/Editor/Explorer/ContextMenu";
 import type { TreeDropdownOption } from "pages/Editor/Explorer/ContextMenu";
@@ -34,6 +36,8 @@ import {
   getHasDeletePagePermission,
   getHasManagePagePermission,
 } from "@appsmith/utils/BusinessFeatures/permissionPageHelpers";
+import PartiaExportModel from "components/editorComponents/PartialImportExport/PartialExportModal";
+import PartialImportModal from "components/editorComponents/PartialImportExport/PartialImportModal";
 
 const CustomLabel = styled.div`
   display: flex;
@@ -46,15 +50,34 @@ export function PageContextMenu(props: {
   name: string;
   applicationId: string;
   className?: string;
+  isCurrentPage: boolean;
   isDefaultPage: boolean;
   isHidden: boolean;
+  hasExportPermission: boolean;
 }) {
   const dispatch = useDispatch();
   const inCloudOS = useSelector((state: AppState) => {
     return state.entities.app.inCloudOS;
   });
+  const isPartialImportExportEnabled = useFeatureFlag(
+    FEATURE_FLAG.release_show_partial_import_export_enabled,
+  );
+  const [showPartialExportModal, setShowPartialExportModal] = useState(false);
+  const [showPartialImportModal, setShowPartialImportModal] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
+  const partialImportExportLoadingState = useSelector(
+    getPartialImportExportLoadingState,
+  );
+
+  useEffect(() => {
+    if (partialImportExportLoadingState.isExportDone) {
+      setShowPartialExportModal(false);
+    }
+    if (partialImportExportLoadingState.isImportDone) {
+      setShowPartialImportModal(false);
+    }
+  }, [partialImportExportLoadingState]);
   /**
    * delete the page
    *
@@ -113,13 +136,20 @@ export function PageContextMenu(props: {
     [dispatch, props.pageId, props.name, props.isHidden],
   );
 
-  const openAppSettingsPane = () =>
-    dispatch(
-      openAppSettingsPaneAction({
-        type: AppSettingsTabs.Page,
-        pageId: props.pageId,
-      }),
-    );
+  const showPartialImportExportInMenu = useMemo(
+    () =>
+      isPartialImportExportEnabled &&
+      props.hasExportPermission &&
+      props.isCurrentPage,
+    [
+      isPartialImportExportEnabled,
+      props.hasExportPermission,
+      props.isCurrentPage,
+    ],
+  );
+
+  const openPartialExportModal = () => setShowPartialExportModal(true);
+  const openPartialImportModal = () => setShowPartialImportModal(true);
 
   const pagePermissions =
     useSelector(getPageById(props.pageId))?.userPermissions || [];
@@ -152,11 +182,11 @@ export function PageContextMenu(props: {
       label: createMessage(CONTEXT_EDIT_NAME),
     },
     canCreatePages &&
-      canManagePages && {
-        value: "clone",
-        onSelect: clonePage,
-        label: createMessage(CONTEXT_CLONE),
-      },
+    canManagePages && {
+      value: "clone",
+      onSelect: clonePage,
+      label: createMessage(CONTEXT_CLONE),
+    },
     canManagePages && {
       value: "visibility",
       onSelect: setHiddenField,
@@ -169,45 +199,64 @@ export function PageContextMenu(props: {
       ) as ReactNode as string,
     },
     !props.isDefaultPage &&
-      !inCloudOS &&
-      canManagePages && {
-        value: "setdefault",
-        onSelect: setPageAsDefaultCallback,
-        label: createMessage(CONTEXT_SET_AS_HOME_PAGE),
-      },
+    !inCloudOS &&
+    canManagePages && {
+      value: "setdefault",
+      onSelect: setPageAsDefaultCallback,
+      label: createMessage(CONTEXT_SET_AS_HOME_PAGE),
+    },
     props.isDefaultPage &&
-      canManagePages && {
-        className: "!text-[color:var(--appsmith-color-black-500)]",
-        disabled: true,
-        value: "setdefault",
-        label: createMessage(CONTEXT_SET_AS_HOME_PAGE),
-      },
-    {
-      value: "settings",
-      onSelect: openAppSettingsPane,
-      label: createMessage(CONTEXT_SETTINGS),
+    canManagePages && {
+      className: "!text-[color:var(--appsmith-color-black-500)]",
+      disabled: true,
+      value: "setdefault",
+      label: createMessage(CONTEXT_SET_AS_HOME_PAGE),
+    },
+    showPartialImportExportInMenu && {
+      value: "partial-export",
+      onSelect: openPartialExportModal,
+      label: createMessage(CONTEXT_PARTIAL_EXPORT),
+    },
+    showPartialImportExportInMenu && {
+      value: "partial-import",
+      onSelect: openPartialImportModal,
+      label: createMessage(CONTEXT_PARTIAL_IMPORT),
     },
     !props.isDefaultPage &&
-      canDeletePages && {
-        className: "t--apiFormDeleteBtn single-select",
-        confirmDelete: confirmDelete,
-        value: "delete",
-        onSelect: () => {
-          confirmDelete ? deletePageCallback() : setConfirmDelete(true);
-        },
-        label: confirmDelete
-          ? createMessage(CONFIRM_CONTEXT_DELETE)
-          : createMessage(CONTEXT_DELETE),
-        intent: "danger",
+    canDeletePages && {
+      className: "t--apiFormDeleteBtn single-select",
+      confirmDelete: confirmDelete,
+      value: "delete",
+      onSelect: () => {
+        confirmDelete ? deletePageCallback() : setConfirmDelete(true);
       },
+      label: confirmDelete
+        ? createMessage(CONFIRM_CONTEXT_DELETE)
+        : createMessage(CONTEXT_DELETE),
+      intent: "danger",
+    },
   ].filter(Boolean);
 
   return optionsTree?.length > 0 ? (
-    <ContextMenu
-      className={props.className}
-      optionTree={optionsTree as TreeDropdownOption[]}
-      setConfirmDelete={setConfirmDelete}
-    />
+    <>
+      <ContextMenu
+        className={props.className}
+        optionTree={optionsTree as TreeDropdownOption[]}
+        setConfirmDelete={setConfirmDelete}
+      />
+      {showPartialExportModal && (
+        <PartiaExportModel
+          handleModalClose={() => setShowPartialExportModal(false)}
+          isModalOpen={showPartialExportModal}
+        />
+      )}
+      {showPartialImportModal && (
+        <PartialImportModal
+          isModalOpen={showPartialImportModal}
+          onClose={() => setShowPartialImportModal(false)}
+        />
+      )}
+    </>
   ) : null;
 }
 

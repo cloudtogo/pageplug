@@ -17,12 +17,12 @@ import {
   ERROR_ACTION_EXECUTE_FAIL,
   createMessage,
 } from "../../../../support/Objects/CommonErrorMessages";
+import {
+  AppSidebar,
+  AppSidebarButton,
+} from "../../../../support/Pages/EditorNavigation";
 
-describe("API Bugs", function () {
-  before(() => {
-    agHelper.RefreshPage();
-  });
-
+describe("API Bugs", { tags: ["@tag.Datasource"] }, function () {
   it("1. Bug 14037, 25432: User gets an error even when table widget is added from the API page successfully", function () {
     // Case where api returns array response
     apiPage.CreateAndFillApi(
@@ -49,6 +49,9 @@ describe("API Bugs", function () {
     const apiUrl = `http://host.docker.internal:5001/v1/{{true ? 'mock-api' : 'mock-apis'}}?records=10`;
 
     apiPage.CreateAndFillApi(apiUrl, "BindingExpressions");
+    agHelper.VerifyEvaluatedValue(
+      dataManager.dsValues[dataManager.defaultEnviorment].mockApiUrl,
+    );
     apiPage.RunAPI();
     agHelper.AssertElementAbsence(
       locators._specificToast(
@@ -60,6 +63,7 @@ describe("API Bugs", function () {
       action: "Delete",
       entityType: entityItems.Api,
     });
+    AppSidebar.navigate(AppSidebarButton.Editor);
   });
 
   it("3. Bug 18876 Ensures application does not crash when saving datasource", () => {
@@ -71,7 +75,7 @@ describe("API Bugs", function () {
     );
     apiPage.SelectPaneTab("Authentication");
     cy.get(apiPage._saveAsDS).last().click({ force: true });
-    cy.get(".t--close-editor").click({ force: true });
+    cy.go("back");
     cy.get(dataSources._datasourceModalSave).click();
     // ensures app does not crash and datasource is saved.
     cy.contains("Edit datasource to access authentication settings").should(
@@ -91,7 +95,6 @@ describe("API Bugs", function () {
 
   it("5. Bug 26897, Invalid binding of table data when used existing suggested widgets for an action returning object & array", function () {
     entityExplorer.DragDropWidgetNVerify(draggableWidgets.TABLE);
-    entityExplorer.NavigateToSwitcher("Explorer");
 
     // Case where api returns array response
     apiPage.CreateAndFillApi(

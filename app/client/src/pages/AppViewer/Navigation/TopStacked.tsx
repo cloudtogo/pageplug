@@ -10,11 +10,10 @@ import { View } from "@tarojs/components";
 import { useLocation } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { getAppMode } from "@appsmith/selectors/applicationSelectors";
+import { getCurrentPage } from "selectors/editorSelectors";
 import { APP_MODE } from "entities/App";
 import history from "utils/history";
 import { builderURL, viewerURL } from "@appsmith/RouteBuilder";
-// import MenuItemContainer from "./components/MenuItemContainer";
-// import MenuItem from "./components/MenuItem";
 import type {
   ApplicationPayload,
   Page,
@@ -34,7 +33,7 @@ import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors"
 import { Menu } from "antd";
 import { mapClearTree, filterHiddenTreeData } from "utils/treeUtils";
 import { Container, ScrollBtnContainer } from "./TopStacked.styled";
-import { makeRouteNode } from "../utils";
+import { makeRouteNode, findPathNodes } from "../utils";
 
 // TODO - @Dhruvik - ImprovedAppNav
 // Replace with NavigationProps if nothing changes
@@ -67,6 +66,7 @@ export function TopStacked(props: TopStackedProps) {
   const [isScrollingLeft, setIsScrollingLeft] = useState(false);
 
   const currentApp = useSelector(getCurrentApplication);
+  const currentPage = useSelector(getCurrentPage);
 
   const viewerLayout = currentApp?.viewerLayout;
   const getPath = (it: any, pagesMap: any, title: string) => {
@@ -74,11 +74,11 @@ export function TopStacked(props: TopStackedProps) {
     const pageURL =
       appMode === APP_MODE.PUBLISHED
         ? viewerURL({
-            pageId: pagesMap[title]?.pageId,
-          })
+          pageId: pagesMap[title]?.pageId,
+        })
         : builderURL({
-            pageId: pagesMap[title]?.pageId,
-          });
+          pageId: pagesMap[title]?.pageId,
+        });
     return pageURL;
   };
 
@@ -122,9 +122,8 @@ export function TopStacked(props: TopStackedProps) {
               ),
               icon: (
                 <View
-                  className={`van-icon van-icon-${
-                    item.icon ? item.icon : "orders-o"
-                  } taroify-icon taroify-icon--inherit hydrated`}
+                  className={`van-icon van-icon-${item.icon ? item.icon : "orders-o"
+                    } taroify-icon taroify-icon--inherit hydrated`}
                 />
               ),
             };
@@ -201,6 +200,12 @@ export function TopStacked(props: TopStackedProps) {
     return list;
   }, [pages]);
 
+  const activeMenuKeys = useMemo(() => {
+    const currentPageName: any = currentPage?.pageName;
+    const parentPaths = findPathNodes(initState.menudata, currentPageName);
+    return { parentPaths };
+  }, [currentPage?.pageName, initState.menudata]);
+
   const setShowScrollArrows = useCallback(() => {
     if (tabsRef.current) {
       const { offsetWidth, scrollLeft, scrollWidth } = tabsRef.current;
@@ -257,7 +262,8 @@ export function TopStacked(props: TopStackedProps) {
   ) {
     return null;
   }
-  // console.log(initState.menudata, "menudata");
+  const menuItems = filterHiddenTreeData(initState.menudata);
+  const needHideMenu = _size(menuItems) === 1 && _size(_get(_head(menuItems), "children", [])) === 0;
   const current_theme =
     _get(
       currentApplicationDetails,
@@ -268,7 +274,7 @@ export function TopStacked(props: TopStackedProps) {
       : "light";
   return (
     <Container
-      className="relative px-6 py-1 t--app-viewer-navigation-top-stacked"
+      className={`relative px-6 py-1 t--app-viewer-navigation-top-stacked ${needHideMenu ? "hidden" : ""}`}
       navColorStyle={navColorStyle}
       primaryColor={primaryColor}
     >
@@ -293,35 +299,16 @@ export function TopStacked(props: TopStackedProps) {
         ref={measuredTabsRef}
       >
         <Menu
-          defaultSelectedKeys={_get(_head(initState.menudata), "key")}
+          defaultSelectedKeys={activeMenuKeys.parentPaths}
           mode="horizontal"
           theme={current_theme}
-          items={filterHiddenTreeData(initState.menudata)}
+          items={menuItems}
           className="rootSideMenu pp-menu"
           style={{
             border: "none",
             backgroundColor: "transparent",
           }}
         />
-        {/* {appPages.map((page) => {
-          return (
-            <MenuItemContainer
-              isTabActive={pathname.indexOf(page.pageId) > -1}
-              key={page.pageId}
-              setShowScrollArrows={setShowScrollArrows}
-              tabsScrollable={tabsScrollable}
-            >
-              <MenuItem
-                navigationSetting={
-                  currentApplicationDetails?.applicationDetail
-                    ?.navigationSetting
-                }
-                page={page}
-                query={query}
-              />
-            </MenuItemContainer>
-          );
-        })} */}
       </div>
       {tabsScrollable && (
         <ScrollBtnContainer

@@ -54,7 +54,7 @@ function ResultsNotFound() {
     <Container>
       <img alt="No data" src={NoSearchDataImage} />
       <div className="no-data-title">{NO_SEARCH_DATA_TEXT()}</div>
-      {!isAirgappedInstance && (
+      {/* {!isAirgappedInstance && (
         <span className="discord">
           🤖 Join our{"  "}
           <span
@@ -69,7 +69,7 @@ function ResultsNotFound() {
           </span>{" "}
           for more help.
         </span>
-      )}
+      )} */}
     </Container>
   );
 }

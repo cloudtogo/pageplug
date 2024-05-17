@@ -19,13 +19,10 @@ import { Colors } from "constants/Colors";
 import { getCurrentApplicationId } from "selectors/editorSelectors";
 import { redoAction, undoAction } from "actions/pageActions";
 import { redoShortCut, undoShortCut } from "utils/helpers";
-import { openAppSettingsPaneAction } from "actions/appSettingsPaneActions";
 import { toast } from "design-system";
 import type { ThemeProp } from "WidgetProvider/constants";
 import { DISCORD_URL, DOCS_BASE_URL } from "constants/ThirdPartyConstants";
-import { useFeatureFlag } from "../../../utils/hooks/useFeatureFlag";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
-import { protectedModeSelector } from "selectors/gitSyncSelectors";
+import { getIsSideBySideEnabled } from "selectors/ideSelectors";
 
 export interface NavigationMenuDataProps extends ThemeProp {
   editMode: typeof noop;
@@ -38,14 +35,12 @@ export const GetNavigationMenuData = ({
 }: NavigationMenuDataProps): MenuItemData[] => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const isAppSidebarEnabled = useFeatureFlag(
-    FEATURE_FLAG.release_app_sidebar_enabled,
-  );
-  const isProtectedMode = useSelector(protectedModeSelector);
 
   const applicationId = useSelector(getCurrentApplicationId);
 
   const isApplicationIdPresent = !!(applicationId && applicationId.length > 0);
+
+  const isSideBySideFlagEnabled = useSelector(getIsSideBySideEnabled);
 
   const currentApplication = useSelector(getCurrentApplication);
   const hasExportPermission = isPermitted(
@@ -80,8 +75,6 @@ export const GetNavigationMenuData = ({
       kind: "success",
     });
   };
-
-  const openAppSettingsPane = () => dispatch(openAppSettingsPaneAction());
 
   const deleteApplication = () => {
     if (applicationId && applicationId.length > 0) {
@@ -118,7 +111,32 @@ export const GetNavigationMenuData = ({
       isVisible: true,
     },
     {
-      text: "视图模式",
+      text: "Fork application",
+      onClick: () => setForkApplicationModalOpen(true),
+      type: MenuTypes.MENU,
+      isVisible: isApplicationIdPresent && hasEditPermission,
+    },
+    {
+      text: "Export application",
+      onClick: exportAppAsJSON,
+      type: MenuTypes.MENU,
+      isVisible: isApplicationIdPresent && hasExportPermission,
+    },
+    hasDeleteApplicationPermission(currentApplication?.userPermissions) && {
+      text: "Delete application",
+      confirmText: "Are you sure?",
+      onClick: deleteApplication,
+      type: MenuTypes.RECONFIRM,
+      isVisible: isApplicationIdPresent,
+      style: { color: Colors.ERROR_RED },
+    },
+    {
+      text: "divider_2",
+      type: MenuTypes.MENU_DIVIDER,
+      isVisible: true,
+    },
+    !isSideBySideFlagEnabled && {
+      text: "Edit",
       type: MenuTypes.PARENT,
       isVisible: true,
       children: [
@@ -139,13 +157,7 @@ export const GetNavigationMenuData = ({
       ],
     },
     {
-      text: "页面配置",
-      onClick: openAppSettingsPane,
-      type: MenuTypes.MENU,
-      isVisible: !isAppSidebarEnabled && !isProtectedMode,
-    },
-    {
-      text: "帮助",
+      text: "Help",
       type: MenuTypes.PARENT,
       isVisible: true,
       children: [
@@ -179,26 +191,6 @@ export const GetNavigationMenuData = ({
           isOpensNewWindow: true,
         },
       ],
-    },
-    {
-      text: "复制应用",
-      onClick: () => setForkApplicationModalOpen(true),
-      type: MenuTypes.MENU,
-      isVisible: isApplicationIdPresent && hasEditPermission,
-    },
-    {
-      text: "导出应用",
-      onClick: exportAppAsJSON,
-      type: MenuTypes.MENU,
-      isVisible: isApplicationIdPresent && hasExportPermission,
-    },
-    hasDeleteApplicationPermission(currentApplication?.userPermissions) && {
-      text: "删除应用",
-      confirmText: "确认删除吗？",
-      onClick: deleteApplication,
-      type: MenuTypes.RECONFIRM,
-      isVisible: isApplicationIdPresent,
-      style: { color: Colors.ERROR_RED },
     },
   ].filter(Boolean) as MenuItemData[];
 };

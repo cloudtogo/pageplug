@@ -17,6 +17,7 @@ import { builderURL, viewerURL } from "@appsmith/RouteBuilder";
 import {
   combinedPreviewModeSelector,
   getCurrentPageId,
+  getCurrentPage,
 } from "selectors/editorSelectors";
 import type { User } from "constants/userConstants";
 import { ANONYMOUS_USERNAME } from "constants/userConstants";
@@ -50,7 +51,7 @@ import { Menu } from "antd";
 import { filterHiddenTreeData, mapClearTree } from "utils/treeUtils";
 type MenuItem = Required<MenuProps>["items"][number];
 import { NavLink } from "react-router-dom";
-import { makeRouteNode } from "../utils";
+import { makeRouteNode, findPathNodes } from "../utils";
 import NavigationLogo from "@appsmith/pages/AppViewer/NavigationLogo";
 
 interface SidebarProps {
@@ -106,6 +107,7 @@ export function Sidebar(props: SidebarProps) {
   const [isLogoVisible, setIsLogoVisible] = useState(false);
 
   const currentApp = useSelector(getCurrentApplication);
+  const currentPage = useSelector(getCurrentPage);
 
   const viewerLayout = currentApp?.viewerLayout;
 
@@ -114,11 +116,11 @@ export function Sidebar(props: SidebarProps) {
     const pageURL =
       appMode === APP_MODE.PUBLISHED
         ? viewerURL({
-            pageId: pagesMap[title].pageId,
-          })
+          pageId: pagesMap[title].pageId,
+        })
         : builderURL({
-            pageId: pagesMap[title].pageId,
-          });
+          pageId: pagesMap[title].pageId,
+        });
     return pageURL;
   };
 
@@ -162,9 +164,8 @@ export function Sidebar(props: SidebarProps) {
               ),
               icon: (
                 <View
-                  className={`van-icon van-icon-${
-                    item.icon ? item.icon : "orders-o"
-                  } taroify-icon taroify-icon--inherit hydrated`}
+                  className={`van-icon van-icon-${item.icon ? item.icon : "orders-o"
+                    } taroify-icon taroify-icon--inherit hydrated`}
                 />
               ),
             };
@@ -225,6 +226,12 @@ export function Sidebar(props: SidebarProps) {
       menudata,
     };
   }, [viewerLayout, pages, currentApplicationDetails]);
+
+  const activeMenuKeys = useMemo(() => {
+    const currentPageName: any = currentPage?.pageName;
+    const parentPaths = findPathNodes(initState.menudata, currentPageName);
+    return { parentPaths };
+  }, [currentPage?.pageName, initState.menudata]);
 
   useEffect(() => {
     setQuery(window.location.search);
@@ -321,8 +328,8 @@ export function Sidebar(props: SidebarProps) {
               NAVIGATION_SETTINGS.LOGO_CONFIGURATION
                 .LOGO_AND_APPLICATION_TITLE ||
               logoConfiguration ===
-                NAVIGATION_SETTINGS.LOGO_CONFIGURATION
-                  .APPLICATION_TITLE_ONLY) && (
+              NAVIGATION_SETTINGS.LOGO_CONFIGURATION
+                .APPLICATION_TITLE_ONLY) && (
               <ApplicationName
                 appName={currentApplicationDetails?.name}
                 forSidebar
@@ -350,7 +357,7 @@ export function Sidebar(props: SidebarProps) {
         primaryColor={primaryColor}
       >
         <Menu
-          defaultSelectedKeys={get(_head(initState.menudata), "key")}
+          defaultSelectedKeys={activeMenuKeys.parentPaths}
           mode="inline"
           theme={current_theme}
           inlineCollapsed={!isOpen}

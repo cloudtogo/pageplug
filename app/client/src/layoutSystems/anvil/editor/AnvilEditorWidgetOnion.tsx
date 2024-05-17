@@ -1,14 +1,13 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useMemo } from "react";
 import type { BaseWidgetProps } from "widgets/BaseWidgetHOC/withBaseWidgetHOC";
-import { AnvilFlexComponent } from "../common/AnvilFlexComponent";
-import SnipeableComponent from "layoutSystems/common/snipeable/SnipeableComponent";
 import { AnvilWidgetComponent } from "../common/widgetComponent/AnvilWidgetComponent";
-import DraggableComponent from "layoutSystems/common/draggable/DraggableComponent";
-import { AnvilResizableLayer } from "../common/resizer/AnvilResizableLayer";
-import { generateDragStateForAnvilLayout } from "../utils/widgetUtils";
 import type { SizeConfig } from "WidgetProvider/constants";
 import { getWidgetSizeConfiguration } from "../utils/widgetUtils";
+import { useSelector } from "react-redux";
+import { combinedPreviewModeSelector } from "selectors/editorSelectors";
+import { AnvilEditorFlexComponent } from "./AnvilEditorFlexComponent";
+import { AnvilFlexComponent } from "../common/AnvilFlexComponent";
 
 /**
  * AnvilEditorWidgetOnion
@@ -26,22 +25,18 @@ import { getWidgetSizeConfiguration } from "../utils/widgetUtils";
  * @returns Enhanced Widget
  */
 export const AnvilEditorWidgetOnion = (props: BaseWidgetProps) => {
-  const { layoutId } = props;
-  // if layoutId is not present on widget props then we need a selector to fetch layout id of a widget.
-  // const layoutId = useSelector(getLayoutIdByWidgetId(props.widgetId));
-  const generateDragState = useCallback(() => {
-    return generateDragStateForAnvilLayout({
-      layoutId,
-    });
-  }, [layoutId]);
+  const isPreviewMode = useSelector(combinedPreviewModeSelector);
   const widgetSize: SizeConfig = useMemo(
-    () => getWidgetSizeConfiguration(props.type, props),
-    [props.type],
+    () => getWidgetSizeConfiguration(props.type, props, isPreviewMode),
+    [isPreviewMode, props.type],
   );
-
+  const WidgetWrapper = useMemo(() => {
+    return isPreviewMode ? AnvilFlexComponent : AnvilEditorFlexComponent;
+  }, [isPreviewMode]);
   return (
-    <AnvilFlexComponent
-      isResizeDisabled={props.resizeDisabled}
+    <WidgetWrapper
+      flexGrow={props.flexGrow}
+      isVisible={!!props.isVisible}
       layoutId={props.layoutId}
       parentId={props.parentId}
       rowIndex={props.rowIndex}
@@ -50,23 +45,7 @@ export const AnvilEditorWidgetOnion = (props: BaseWidgetProps) => {
       widgetSize={widgetSize}
       widgetType={props.type}
     >
-      <SnipeableComponent type={props.type} widgetId={props.widgetId}>
-        <DraggableComponent
-          dragDisabled={!!props.dragDisabled}
-          generateDragState={generateDragState}
-          isFlexChild
-          parentId={props.parentId}
-          resizeDisabled={props.resizeDisabled}
-          type={props.type}
-          widgetId={props.widgetId}
-        >
-          <AnvilResizableLayer {...props}>
-            <AnvilWidgetComponent {...props}>
-              {props.children}
-            </AnvilWidgetComponent>
-          </AnvilResizableLayer>
-        </DraggableComponent>
-      </SnipeableComponent>
-    </AnvilFlexComponent>
+      <AnvilWidgetComponent {...props}>{props.children}</AnvilWidgetComponent>
+    </WidgetWrapper>
   );
 };

@@ -2,7 +2,8 @@ package com.appsmith.server.domains;
 
 import com.appsmith.external.models.BaseDomain;
 import com.appsmith.external.views.Views;
-import com.appsmith.server.dtos.CustomJSLibApplicationDTO;
+import com.appsmith.server.constants.ArtifactType;
+import com.appsmith.server.dtos.CustomJSLibContextDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.querydsl.core.annotations.QueryEntity;
@@ -13,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.FieldNameConstants;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -27,6 +29,7 @@ import java.util.Set;
 import static com.appsmith.server.constants.ResourceModes.EDIT;
 import static com.appsmith.server.constants.ResourceModes.VIEW;
 import static com.appsmith.server.helpers.DateUtils.ISO_FORMATTER;
+import static com.appsmith.server.helpers.StringUtils.dotted;
 
 @Getter
 @Setter
@@ -34,15 +37,11 @@ import static com.appsmith.server.helpers.DateUtils.ISO_FORMATTER;
 @NoArgsConstructor
 @QueryEntity
 @Document
-public class Application extends BaseDomain {
+@FieldNameConstants
+public class Application extends BaseDomain implements Artifact {
 
     @NotNull @JsonView(Views.Public.class)
     String name;
-
-    // Organizations migrated to workspaces, kept the field as deprecated to support the old migration
-    @Deprecated
-    @JsonView(Views.Public.class)
-    String organizationId;
 
     @JsonView(Views.Public.class)
     String workspaceId;
@@ -100,13 +99,13 @@ public class Application extends BaseDomain {
     AppLayout publishedAppLayout;
 
     @JsonView(Views.Public.class)
-    Set<CustomJSLibApplicationDTO> unpublishedCustomJSLibs;
+    Set<CustomJSLibContextDTO> unpublishedCustomJSLibs;
 
     @JsonView(Views.Public.class)
-    Set<CustomJSLibApplicationDTO> publishedCustomJSLibs;
+    Set<CustomJSLibContextDTO> publishedCustomJSLibs;
 
     @JsonView(Views.Public.class)
-    GitApplicationMetadata gitApplicationMetadata;
+    GitArtifactMetadata gitApplicationMetadata;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonView(Views.Public.class)
@@ -204,9 +203,9 @@ public class Application extends BaseDomain {
     @JsonView(Views.Public.class)
     Boolean isCommunityTemplate;
 
-    @JsonView(Views.Internal.class)
-    @Deprecated
-    String defaultPermissionGroup;
+    /* Template title of the template from which this app was forked, if any */
+    @JsonView(Views.Public.class)
+    String forkedFromTemplateTitle;
 
     // This constructor is used during clone application. It only deeply copies selected fields. The rest are either
     // initialized newly or is left up to the calling function to set.
@@ -255,6 +254,16 @@ public class Application extends BaseDomain {
                         application.getPublishedApplicationDetail().getNavigationSetting() == null
                                 ? null
                                 : new NavigationSetting());
+        this.getUnpublishedApplicationDetail()
+                .setThemeSetting(
+                        application.getUnpublishedApplicationDetail().getThemeSetting() == null
+                                ? null
+                                : new ThemeSetting());
+        this.getPublishedApplicationDetail()
+                .setThemeSetting(
+                        application.getPublishedApplicationDetail().getThemeSetting() == null
+                                ? null
+                                : new ThemeSetting());
         this.unpublishedCustomJSLibs = application.getUnpublishedCustomJSLibs();
         this.collapseInvisibleWidgets = application.getCollapseInvisibleWidgets();
         this.viewerLayout = application.getViewerLayout();
@@ -271,10 +280,41 @@ public class Application extends BaseDomain {
         }
     }
 
+    @JsonView(Views.Internal.class)
+    @Override
+    public GitArtifactMetadata getGitArtifactMetadata() {
+        return this.gitApplicationMetadata;
+    }
+
+    @JsonView(Views.Internal.class)
+    @Override
+    public void setGitArtifactMetadata(GitArtifactMetadata gitArtifactMetadata) {
+        this.gitApplicationMetadata = gitArtifactMetadata;
+    }
+
+    @Override
+    public String getUnpublishedThemeId() {
+        return this.getEditModeThemeId();
+    }
+
+    @Override
+    public void setUnpublishedThemeId(String themeId) {
+        this.setEditModeThemeId(themeId);
+    }
+
+    @Override
+    public String getPublishedThemeId() {
+        return this.getPublishedModeThemeId();
+    }
+
+    @Override
+    public void setPublishedThemeId(String themeId) {
+        this.setPublishedModeThemeId(themeId);
+    }
+
     @Override
     public void sanitiseToExportDBObject() {
         this.setWorkspaceId(null);
-        this.setOrganizationId(null);
         this.setModifiedBy(null);
         this.setCreatedBy(null);
         this.setLastDeployedAt(null);
@@ -285,7 +325,6 @@ public class Application extends BaseDomain {
         this.setClientSchemaVersion(null);
         this.setServerSchemaVersion(null);
         this.setIsManualUpdate(false);
-        this.setDefaultPermissionGroup(null);
         this.setPublishedCustomJSLibs(new HashSet<>());
         this.setExportWithConfiguration(null);
         this.setForkWithConfiguration(null);
@@ -321,24 +360,18 @@ public class Application extends BaseDomain {
         }
     }
 
+    @Override
+    @JsonView(Views.Internal.class)
+    public ArtifactType getArtifactType() {
+        return ArtifactType.APPLICATION;
+    }
+
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AppLayout implements Serializable {
         @JsonView(Views.Public.class)
         Type type;
-
-        /**
-         * @deprecated The following field is deprecated and now removed, because it's needed in a migration. After the
-         * migration has been run, it may be removed (along with the migration or there'll be compile errors there).
-         */
-        @JsonView(Views.Internal.class)
-        @Deprecated(forRemoval = true)
-        Integer width = null;
-
-        public AppLayout(Type type) {
-            this.type = type;
-        }
 
         public enum Type {
             DESKTOP,
@@ -417,5 +450,58 @@ public class Application extends BaseDomain {
             AUTO,
             ANVIL
         }
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class ThemeSetting {
+
+        @JsonView(Views.Public.class)
+        private String accentColor;
+
+        @JsonView(Views.Public.class)
+        private String borderRadius;
+
+        @JsonView(Views.Public.class)
+        private float sizing = 1;
+
+        @JsonView(Views.Public.class)
+        private float density = 1;
+
+        @JsonView(Views.Public.class)
+        private String fontFamily;
+
+        @JsonView(Views.Public.class)
+        Type colorMode;
+
+        @JsonView(Views.Public.class)
+        IconStyle iconStyle;
+
+        public ThemeSetting(Type colorMode) {
+            this.colorMode = colorMode;
+        }
+
+        public enum Type {
+            LIGHT,
+            DARK
+        }
+
+        public enum IconStyle {
+            OUTLINED,
+            FILLED
+        }
+    }
+
+    public static class Fields extends BaseDomain.Fields {
+        public static final String gitApplicationMetadata_gitAuth =
+                dotted(gitApplicationMetadata, GitArtifactMetadata.Fields.gitAuth);
+        public static final String gitApplicationMetadata_defaultApplicationId =
+                dotted(gitApplicationMetadata, GitArtifactMetadata.Fields.defaultApplicationId);
+        public static final String gitApplicationMetadata_branchName =
+                dotted(gitApplicationMetadata, GitArtifactMetadata.Fields.branchName);
+        public static final String gitApplicationMetadata_isRepoPrivate =
+                dotted(gitApplicationMetadata, GitArtifactMetadata.Fields.isRepoPrivate);
+        public static final String gitApplicationMetadata_isProtectedBranch =
+                dotted(gitApplicationMetadata, GitArtifactMetadata.Fields.isProtectedBranch);
     }
 }

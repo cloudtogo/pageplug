@@ -1,6 +1,7 @@
 import type { EchartWidgetProps } from "widgets/EchartWidget/widget";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
+import type { WidgetProps } from "widgets/BaseWidget";
 
 export const contentConfig = [
   {
@@ -53,24 +54,13 @@ export const contentConfig = [
         helpText: "完整配置请查阅 Echart 官方文档",
         placeholderText: `Echart 图表配置`,
         propertyName: "customEchartConfig",
-        label: "自定义 Echart 图表",
-        controlType: "INPUT_TEXT",
-        isBindProperty: true,
-        isTriggerProperty: false,
-        validation: {
-          type: ValidationTypes.OBJECT,
-          // params: {
-          //   allowedKeys: [
-          //     {
-          //       type: ValidationTypes.ARRAY,
-          //       name: "series",
-          //       params: {
-          //         default: [] || {},
-          //         required: true,
-          //       },
-          //     },
-          //   ],
-          // },
+        controlType: "WRAPPED_CODE_EDITOR",
+        controlConfig: {
+          wrapperCode: {
+            prefix: "{{ ((chartType) => ( ",
+            suffix: (widget: WidgetProps) =>
+              `))(${widget.widgetName}.chartType) }}`,
+          },
         },
         hidden: (props: EchartWidgetProps) =>
           props.chartType !== "CUSTOM_CHART",

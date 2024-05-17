@@ -137,6 +137,10 @@ import {
   purgeOrphanedDynamicPaths,
 } from "./WidgetOperationUtils";
 import { widgetSelectionSagas } from "./WidgetSelectionSagas";
+import {
+  partialExportSaga,
+  partialImportSaga,
+} from "./PartialImportExportSagas";
 import type { WidgetEntityConfig } from "@appsmith/entities/DataTree/types";
 import type { DataTree, ConfigTree } from "entities/DataTree/dataTreeTypes";
 import { getCanvasSizeAfterWidgetMove } from "./CanvasSagas/DraggingCanvasSagas";
@@ -181,6 +185,8 @@ import localStorage from "utils/localStorage";
 import type { FlexLayer } from "layoutSystems/autolayout/utils/types";
 import { EMPTY_BINDING } from "components/editorComponents/ActionCreator/constants";
 import { getLayoutSystemType } from "selectors/layoutSystemSelectors";
+import { addSuggestedWidgetAnvilAction } from "layoutSystems/anvil/integrations/actions/draggingActions";
+import { updateAndSaveAnvilLayout } from "layoutSystems/anvil/utils/anvilChecksUtils";
 
 export function* resizeSaga(resizeAction: ReduxAction<WidgetResize>) {
   try {
@@ -383,6 +389,20 @@ function getDynamicTriggerPathListUpdate(
   };
 }
 
+const DYNAMIC_BINDING_IGNORED_LIST = [
+  /* Table widget */
+  "primaryColumns",
+  "derivedColumns",
+
+  /* custom widget */
+  "srcDoc.html",
+  "srcDoc.css",
+  "srcDoc.js",
+  "uncompiledSrcDoc.html",
+  "uncompiledSrcDoc.css",
+  "uncompiledSrcDoc.js",
+];
+
 function getDynamicBindingPathListUpdate(
   widget: WidgetProps,
   propertyPath: string,
@@ -394,9 +414,12 @@ function getDynamicBindingPathListUpdate(
     stringProp = JSON.stringify(propertyValue);
   }
 
-  //TODO(abhinav): This is not appropriate from the platform's archtecture's point of view.
+  /*
+   * TODO(Balaji Soundararajan): This is not appropriate from the platform's archtecture's point of view.
+   * This setting should come from widget configuration
+   */
   // Figure out a holistic solutions where we donot have to stringify above.
-  if (propertyPath === "primaryColumns" || propertyPath === "derivedColumns") {
+  if (DYNAMIC_BINDING_IGNORED_LIST.includes(propertyPath)) {
     return {
       propertyPath,
       effect: DynamicPathUpdateEffectEnum.NOOP,
@@ -623,10 +646,12 @@ export function getPropertiesToUpdate(
   const dynamicTriggerPathListUpdates: DynamicPathUpdate[] = [];
   const dynamicBindingPathListUpdates: DynamicPathUpdate[] = [];
 
-  const widgetConfig = WidgetFactory.getWidgetPropertyPaneConfig(widget.type);
+  const widgetConfig = WidgetFactory.getWidgetPropertyPaneConfig(
+    widget.type,
+    widget,
+  );
   const { triggerPaths: triggerPathsFromPropertyConfig = {} } =
     getAllPathsFromPropertyConfig(widgetWithUpdates, widgetConfig, {});
-
   Object.keys(updatePaths).forEach((propertyPath) => {
     const propertyValue = getValueFromTree(updates, propertyPath);
     // only check if
@@ -970,6 +995,7 @@ function* createSelectedWidgetsCopy(
     widgetId: string;
     parentId: string;
     list: FlattenedWidgetProps[];
+    hierarchy: number;
   }[] = yield all(selectedWidgets.map((each) => call(createWidgetCopy, each)));
 
   const saveResult: boolean = yield saveCopiedWidgets(
@@ -1916,7 +1942,7 @@ function* pasteWidgetSaga(
       ),
       reflowedWidgets,
     );
-    yield put(updateAndSaveLayout(updatedWidgets));
+    yield call(updateAndSaveAnvilLayout, updatedWidgets);
 
     const pageId: string = yield select(getCurrentPageId);
 
@@ -2039,7 +2065,7 @@ function* addSuggestedWidget(action: ReduxAction<Partial<WidgetProps>>) {
   const widgets: CanvasWidgetsReduxState = yield select(getWidgets);
 
   const widgetName = getNextWidgetName(widgets, widgetConfig.type, evalTree);
-  const isAutoLayout: boolean = yield select(getIsAutoLayout);
+  const layoutSystemType: LayoutSystemTypes = yield select(getLayoutSystemType);
   try {
     let newWidget = {
       newWidgetId: generateReactKey(),
@@ -2067,26 +2093,39 @@ function* addSuggestedWidget(action: ReduxAction<Partial<WidgetProps>>) {
       bottomRow,
       parentRowSpace: GridDefaults.DEFAULT_GRID_ROW_HEIGHT,
     };
-
-    if (isAutoLayout) {
-      yield put({
-        type: ReduxActionTypes.AUTOLAYOUT_ADD_NEW_WIDGETS,
-        payload: {
-          dropPayload: {
-            isNewLayer: true,
-            alignment: FlexLayerAlignment.Start,
+    switch (layoutSystemType) {
+      case LayoutSystemTypes.AUTO:
+        yield put({
+          type: ReduxActionTypes.AUTOLAYOUT_ADD_NEW_WIDGETS,
+          payload: {
+            dropPayload: {
+              isNewLayer: true,
+              alignment: FlexLayerAlignment.Start,
+            },
+            newWidget,
+            parentId: MAIN_CONTAINER_WIDGET_ID,
+            direction: LayoutDirection.Vertical,
+            addToBottom: true,
           },
-          newWidget,
-          parentId: MAIN_CONTAINER_WIDGET_ID,
-          direction: LayoutDirection.Vertical,
-          addToBottom: true,
-        },
-      });
-    } else {
-      yield put({
-        type: WidgetReduxActionTypes.WIDGET_ADD_CHILD,
-        payload: newWidget,
-      });
+        });
+        break;
+      case LayoutSystemTypes.ANVIL:
+        yield put(
+          addSuggestedWidgetAnvilAction({
+            newWidgetId: newWidget.newWidgetId,
+            rows: newWidget.rows,
+            columns: newWidget.columns,
+            type: newWidget.type,
+            ...widgetConfig,
+          }),
+        );
+        break;
+      default:
+        yield put({
+          type: WidgetReduxActionTypes.WIDGET_ADD_CHILD,
+          payload: newWidget,
+        });
+        break;
     }
 
     yield take(ReduxActionTypes.UPDATE_LAYOUT);
@@ -2147,6 +2186,13 @@ function* widgetBatchUpdatePropertySaga() {
   }
 }
 
+function* shouldCallSaga(saga: any, action: ReduxAction<unknown>) {
+  const layoutSystemType: LayoutSystemTypes = yield select(getLayoutSystemType);
+  if (layoutSystemType !== LayoutSystemTypes.ANVIL) {
+    yield call(saga, action);
+  }
+}
+
 export default function* widgetOperationSagas() {
   yield fork(widgetAdditionSagas);
   yield fork(widgetDeletionSagas);
@@ -2185,8 +2231,14 @@ export default function* widgetOperationSagas() {
     ),
     takeLatest(ReduxActionTypes.UPDATE_CANVAS_SIZE, updateCanvasSize),
     takeLatest(ReduxActionTypes.COPY_SELECTED_WIDGET_INIT, copyWidgetSaga),
-    takeLeading(ReduxActionTypes.PASTE_COPIED_WIDGET_INIT, pasteWidgetSaga),
+    takeLeading(
+      ReduxActionTypes.PASTE_COPIED_WIDGET_INIT,
+      shouldCallSaga,
+      pasteWidgetSaga,
+    ),
     takeEvery(ReduxActionTypes.CUT_SELECTED_WIDGET, cutWidgetSaga),
     takeEvery(ReduxActionTypes.GROUP_WIDGETS_INIT, groupWidgetsSaga),
+    takeEvery(ReduxActionTypes.PARTIAL_IMPORT_INIT, partialImportSaga),
+    takeEvery(ReduxActionTypes.PARTIAL_EXPORT_INIT, partialExportSaga),
   ]);
 }

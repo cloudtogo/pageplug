@@ -10,7 +10,7 @@ export const CONFIG = {
   iconSVG: IconSVG,
   searchTags: ["二维码", "QR", "QRCode", "QR Code", "生成器", "Generator"],
   defaults: {
-    text: "Label",
+    text: "标签",
     fontSize: DEFAULT_FONT_SIZE,
     fontStyle: "BOLD",
     textAlign: "LEFT",

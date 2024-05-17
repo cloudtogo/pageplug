@@ -10,6 +10,7 @@ import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import _ from "lodash";
 import Taro from "@tarojs/taro";
 import IconSVG from "../icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 export interface CategoryValueItem {
   id: string;
@@ -41,6 +42,7 @@ class MSkuWidget extends BaseWidget<MSkuWidgetProps, MSkuWidgetState> {
   static getConfig() {
     return {
       name: "商品规格",
+      tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["sku", "表单", "form"],
       iconSVG: IconSVG,
       needsMeta: true,

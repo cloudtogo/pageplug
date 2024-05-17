@@ -12,10 +12,11 @@ import com.appsmith.server.dtos.LayoutDTO;
 import com.appsmith.server.dtos.RefactorEntityNameDTO;
 import com.appsmith.server.dtos.ResponseDTO;
 import com.appsmith.server.newactions.base.NewActionService;
-import com.appsmith.server.refactors.applications.RefactoringSolution;
+import com.appsmith.server.refactors.applications.RefactoringService;
 import com.appsmith.server.services.LayoutActionService;
 import com.appsmith.server.solutions.ActionExecutionSolution;
 import com.fasterxml.jackson.annotation.JsonView;
+import io.micrometer.observation.ObservationRegistry;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,19 +46,22 @@ public class ActionControllerCE {
 
     private final LayoutActionService layoutActionService;
     private final NewActionService newActionService;
-    private final RefactoringSolution refactoringSolution;
+    private final RefactoringService refactoringService;
     private final ActionExecutionSolution actionExecutionSolution;
+    private final ObservationRegistry observationRegistry;
 
     @Autowired
     public ActionControllerCE(
             LayoutActionService layoutActionService,
             NewActionService newActionService,
-            RefactoringSolution refactoringSolution,
-            ActionExecutionSolution actionExecutionSolution) {
+            RefactoringService refactoringService,
+            ActionExecutionSolution actionExecutionSolution,
+            ObservationRegistry observationRegistry) {
         this.layoutActionService = layoutActionService;
         this.newActionService = newActionService;
-        this.refactoringSolution = refactoringSolution;
+        this.refactoringService = refactoringService;
         this.actionExecutionSolution = actionExecutionSolution;
+        this.observationRegistry = observationRegistry;
     }
 
     @JsonView(Views.Public.class)
@@ -91,9 +95,16 @@ public class ActionControllerCE {
     public Mono<ResponseDTO<ActionExecutionResult>> executeAction(
             @RequestBody Flux<Part> partFlux,
             @RequestHeader(name = FieldName.BRANCH_NAME, required = false) String branchName,
-            @RequestHeader(name = FieldName.ENVIRONMENT_ID, required = false) String environmentId) {
+            @RequestHeader(name = FieldName.HEADER_ENVIRONMENT_ID, required = false) String environmentId,
+            ServerWebExchange serverWebExchange) {
+
         return actionExecutionSolution
-                .executeAction(partFlux, branchName, environmentId)
+                .executeAction(
+                        partFlux,
+                        branchName,
+                        environmentId,
+                        serverWebExchange.getRequest().getHeaders(),
+                        Boolean.FALSE)
                 .map(updatedResource -> new ResponseDTO<>(HttpStatus.OK.value(), updatedResource, null));
     }
 
@@ -119,7 +130,7 @@ public class ActionControllerCE {
             @RequestBody RefactorEntityNameDTO refactorEntityNameDTO,
             @RequestHeader(name = FieldName.BRANCH_NAME, required = false) String branchName) {
         refactorEntityNameDTO.setEntityType(EntityType.ACTION);
-        return refactoringSolution
+        return refactoringService
                 .refactorEntityName(refactorEntityNameDTO, branchName)
                 .map(created -> new ResponseDTO<>(HttpStatus.OK.value(), created, null));
     }

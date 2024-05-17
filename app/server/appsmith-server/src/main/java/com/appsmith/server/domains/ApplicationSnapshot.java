@@ -5,6 +5,7 @@ import com.appsmith.server.helpers.DateUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.FieldNameConstants;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -16,6 +17,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 @Document
+@FieldNameConstants
 public class ApplicationSnapshot extends BaseDomain {
     private String applicationId;
 
@@ -41,4 +43,6 @@ public class ApplicationSnapshot extends BaseDomain {
         return DateUtils.ISO_FORMATTER.format(this.getUpdatedAt());
         //        return DateUtils.ISO_FORMATTER.format(this.getUpdatedAt());
     }
+
+    public static class Fields extends BaseDomain.Fields {}
 }

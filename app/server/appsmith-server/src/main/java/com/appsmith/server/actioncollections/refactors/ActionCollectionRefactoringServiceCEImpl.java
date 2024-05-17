@@ -2,6 +2,7 @@ package com.appsmith.server.actioncollections.refactors;
 
 import com.appsmith.external.constants.AnalyticsEvents;
 import com.appsmith.external.models.ActionDTO;
+import com.appsmith.external.models.CreatorContextType;
 import com.appsmith.external.models.MustacheBindingToken;
 import com.appsmith.server.actioncollections.base.ActionCollectionService;
 import com.appsmith.server.domains.ActionCollection;
@@ -33,7 +34,7 @@ import static com.appsmith.external.constants.AnalyticsEvents.REFACTOR_JSOBJECT;
 @RequiredArgsConstructor
 public class ActionCollectionRefactoringServiceCEImpl implements EntityRefactoringServiceCE<ActionCollection> {
 
-    private final ActionCollectionService actionCollectionService;
+    protected final ActionCollectionService actionCollectionService;
     private final NewActionService newActionService;
     private final ActionPermission actionPermission;
     private final AstService astService;
@@ -41,11 +42,6 @@ public class ActionCollectionRefactoringServiceCEImpl implements EntityRefactori
     @Override
     public AnalyticsEvents getRefactorAnalyticsEvent(EntityType entityType) {
         return REFACTOR_JSOBJECT;
-    }
-
-    @Override
-    public Mono<Boolean> validateName(String name) {
-        return Mono.just(Boolean.TRUE);
     }
 
     @Override
@@ -64,21 +60,10 @@ public class ActionCollectionRefactoringServiceCEImpl implements EntityRefactori
                 .flatMap(actionCollection -> {
                     final ActionCollectionDTO unpublishedCollection = actionCollection.getUnpublishedCollection();
 
-                    return astService
-                            .replaceValueInMustacheKeys(
-                                    new HashSet<>(Collections.singletonList(
-                                            new MustacheBindingToken(unpublishedCollection.getBody(), 0, true))),
-                                    oldName,
-                                    newName,
-                                    evalVersion,
-                                    oldNamePattern,
-                                    true)
-                            .flatMap(replacedMap -> {
-                                Optional<String> replacedValue =
-                                        replacedMap.values().stream().findFirst();
-                                // This value should always be there
-                                if (replacedValue.isPresent()) {
-                                    unpublishedCollection.setBody(replacedValue.get());
+                    return this.refactorNameInActionCollection(
+                                    unpublishedCollection, oldName, newName, evalVersion, oldNamePattern)
+                            .flatMap(isPresent -> {
+                                if (Boolean.TRUE.equals(isPresent)) {
                                     return actionCollectionService.save(actionCollection);
                                 }
                                 return Mono.just(actionCollection);
@@ -87,6 +72,32 @@ public class ActionCollectionRefactoringServiceCEImpl implements EntityRefactori
                 .collectList());
 
         return actionCollectionsMono.then();
+    }
+
+    protected Mono<Boolean> refactorNameInActionCollection(
+            ActionCollectionDTO unpublishedCollection,
+            String oldName,
+            String newName,
+            int evalVersion,
+            Pattern oldNamePattern) {
+        return astService
+                .replaceValueInMustacheKeys(
+                        new HashSet<>(Collections.singletonList(
+                                new MustacheBindingToken(unpublishedCollection.getBody(), 0, false))),
+                        oldName,
+                        newName,
+                        evalVersion,
+                        oldNamePattern,
+                        true)
+                .map(replacedMap -> {
+                    Optional<String> replacedValue =
+                            replacedMap.values().stream().findFirst();
+                    // This value should always be there
+                    if (replacedValue.isPresent()) {
+                        unpublishedCollection.setBody(replacedValue.get());
+                    }
+                    return replacedValue.isPresent();
+                });
     }
 
     @Override
@@ -137,5 +148,16 @@ public class ActionCollectionRefactoringServiceCEImpl implements EntityRefactori
                             actionCollectionService.update(branchedActionCollection.getId(), branchedActionCollection));
                 })
                 .then();
+    }
+
+    @Override
+    public Flux<String> getExistingEntityNames(
+            String contextId, CreatorContextType contextType, String layoutId, boolean viewMode) {
+        return getExistingEntities(contextId, contextType, layoutId, viewMode).map(ActionCollectionDTO::getName);
+    }
+
+    protected Flux<ActionCollectionDTO> getExistingEntities(
+            String contextId, CreatorContextType contextType, String layoutId, boolean viewMode) {
+        return actionCollectionService.getCollectionsByPageIdAndViewMode(contextId, viewMode, null);
     }
 }

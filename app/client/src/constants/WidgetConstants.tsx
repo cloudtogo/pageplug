@@ -208,6 +208,7 @@ export const WIDGET_PROPS_TO_SKIP_FROM_EVAL = {
   isDeprecated: true,
   searchTags: true,
   iconSVG: true,
+  thumbnailSVG: true,
   version: true,
   displayName: true,
   topRowBeforeCollapse: false,
@@ -235,11 +236,27 @@ export const WIDGET_TAGS = {
   DISPLAY: "数据展示类",
   BUTTONS: "按钮类",
   FEATRUE: "功能类",
+  // 分类
+  SUGGESTED_WIDGETS: "Suggested",
+  BUILDING_BLOCKS: "Building Blocks",
+  LAYOUT: "Layout",
+  MEDIA: "Media",
+  TOGGLES: "Toggles",
+  SLIDERS: "Sliders",
+  CONTENT: "Content",
+  EXTERNAL: "External",
 } as const;
 
 export type WidgetTags = (typeof WIDGET_TAGS)[keyof typeof WIDGET_TAGS];
 
 export type WidgetCardsGroupedByTags = Record<WidgetTags, WidgetCardProps[]>;
+
+// Initial items to display as default when loading entities in the explorer
+export const initialEntityCountForExplorerTag: Partial<
+  Record<WidgetTags, number>
+> = {
+  "Building Blocks": 9, // render only 9 items initially
+};
 
 export const SUGGESTED_WIDGETS_ORDER: Record<WidgetType, number> = {
   TABLE_WIDGET_V2: 1,
@@ -252,3 +269,7 @@ export const SUGGESTED_WIDGETS_ORDER: Record<WidgetType, number> = {
 
 // Constant key to show walkthrough for a widget -> stores widget id
 export const WIDGET_ID_SHOW_WALKTHROUGH = "WIDGET_ID_SHOW_WALKTHROUGH";
+
+export const DEFAULT_ROWS_FOR_EXPLORER_BUILDING_BLOCKS = 30;
+export const DEFAULT_COLUMNS_FOR_EXPLORER_BUILDING_BLOCKS = 5;
+export const BUILDING_BLOCK_EXPLORER_TYPE = "BUILDING_BLOCK";

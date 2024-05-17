@@ -18,34 +18,39 @@ import com.appsmith.external.models.Property;
 import com.appsmith.external.models.WidgetSuggestionDTO;
 import com.appsmith.external.models.WidgetType;
 import com.appsmith.external.plugins.PluginExecutor;
+import com.appsmith.server.applications.base.ApplicationService;
+import com.appsmith.server.constants.ArtifactType;
 import com.appsmith.server.datasources.base.DatasourceService;
 import com.appsmith.server.datasourcestorages.base.DatasourceStorageService;
 import com.appsmith.server.domains.Application;
-import com.appsmith.server.domains.GitApplicationMetadata;
+import com.appsmith.server.domains.GitArtifactMetadata;
 import com.appsmith.server.domains.Layout;
 import com.appsmith.server.domains.Plugin;
 import com.appsmith.server.domains.User;
 import com.appsmith.server.domains.Workspace;
+import com.appsmith.server.dtos.ApplicationJson;
+import com.appsmith.server.dtos.ExecuteActionMetaDTO;
 import com.appsmith.server.dtos.MockDataSource;
 import com.appsmith.server.dtos.PageDTO;
 import com.appsmith.server.exceptions.AppsmithError;
-import com.appsmith.server.exports.internal.ExportApplicationService;
+import com.appsmith.server.exports.internal.ExportService;
 import com.appsmith.server.helpers.MockPluginExecutor;
 import com.appsmith.server.helpers.PluginExecutorHelper;
 import com.appsmith.server.helpers.WidgetSuggestionHelper;
-import com.appsmith.server.imports.internal.ImportApplicationService;
+import com.appsmith.server.imports.internal.ImportService;
 import com.appsmith.server.newpages.base.NewPageService;
 import com.appsmith.server.plugins.base.PluginService;
+import com.appsmith.server.repositories.CacheableRepositoryHelper;
 import com.appsmith.server.repositories.DatasourceRepository;
 import com.appsmith.server.repositories.PermissionGroupRepository;
 import com.appsmith.server.repositories.PluginRepository;
 import com.appsmith.server.services.ApplicationPageService;
-import com.appsmith.server.services.ApplicationService;
 import com.appsmith.server.services.AstService;
 import com.appsmith.server.services.LayoutActionService;
 import com.appsmith.server.services.LayoutService;
 import com.appsmith.server.services.MockDataService;
 import com.appsmith.server.services.PermissionGroupService;
+import com.appsmith.server.services.SessionUserService;
 import com.appsmith.server.services.UserService;
 import com.appsmith.server.services.WorkspaceService;
 import com.appsmith.server.solutions.ActionExecutionSolution;
@@ -54,6 +59,7 @@ import com.appsmith.server.solutions.EnvironmentPermission;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
@@ -78,6 +84,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import static com.appsmith.server.acl.AclPermission.READ_PAGES;
@@ -86,6 +93,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Slf4j
 public class ActionExecutionSolutionCETest {
 
     @Autowired
@@ -125,10 +133,10 @@ public class ActionExecutionSolutionCETest {
     DatasourceService datasourceService;
 
     @Autowired
-    ImportApplicationService importApplicationService;
+    ImportService importService;
 
     @Autowired
-    ExportApplicationService exportApplicationService;
+    ExportService exportService;
 
     @SpyBean
     PluginService pluginService;
@@ -163,6 +171,12 @@ public class ActionExecutionSolutionCETest {
     @Autowired
     ApplicationPermission applicationPermission;
 
+    @Autowired
+    SessionUserService sessionUserService;
+
+    @Autowired
+    CacheableRepositoryHelper cacheableRepositoryHelper;
+
     Application testApp = null;
 
     PageDTO testPage = null;
@@ -181,15 +195,26 @@ public class ActionExecutionSolutionCETest {
 
     @BeforeEach
     public void setup() {
-
+        User currentUser = sessionUserService.getCurrentUser().block();
         User apiUser = userService.findByEmail("api_user").block();
 
         Workspace toCreate = new Workspace();
         toCreate.setName("ActionServiceCE_Test");
+        Set<String> beforeCreatingWorkspace =
+                cacheableRepositoryHelper.getPermissionGroupsOfUser(currentUser).block();
+        log.info("Permission Groups for User before creating workspace: {}", beforeCreatingWorkspace);
 
         Workspace workspace =
                 workspaceService.create(toCreate, apiUser, Boolean.FALSE).block();
         workspaceId = workspace.getId();
+        Set<String> afterCreatingWorkspace =
+                cacheableRepositoryHelper.getPermissionGroupsOfUser(currentUser).block();
+        log.info("Permission Groups for User after creating workspace: {}", afterCreatingWorkspace);
+
+        log.info("Workspace ID: {}", workspaceId);
+        log.info("Workspace Role Ids: {}", workspace.getDefaultPermissionGroups());
+        log.info("Policy for created Workspace: {}", workspace.getPolicies());
+        log.info("Current User ID: {}", currentUser.getId());
 
         defaultEnvironmentId = workspaceService
                 .getDefaultEnvironmentId(workspaceId, environmentPermission.getExecutePermission())
@@ -229,21 +254,22 @@ public class ActionExecutionSolutionCETest {
 
         Application newApp = new Application();
         newApp.setName(UUID.randomUUID().toString());
-        GitApplicationMetadata gitData = new GitApplicationMetadata();
+        GitArtifactMetadata gitData = new GitArtifactMetadata();
         gitData.setBranchName("actionServiceTest");
         newApp.setGitApplicationMetadata(gitData);
         gitConnectedApp = applicationPageService
                 .createApplication(newApp, workspaceId)
                 .flatMap(application1 -> {
                     application1.getGitApplicationMetadata().setDefaultApplicationId(application1.getId());
-                    return applicationService
-                            .save(application1)
-                            .zipWhen(application11 -> exportApplicationService.exportApplicationById(
-                                    application11.getId(), gitData.getBranchName()));
+                    return applicationService.save(application1).zipWhen(application11 -> exportService
+                            .exportByArtifactIdAndBranchName(
+                                    application11.getId(), gitData.getBranchName(), ArtifactType.APPLICATION)
+                            .map(artifactExchangeJson -> (ApplicationJson) artifactExchangeJson));
                 })
                 // Assign the branchName to all the resources connected to the application
-                .flatMap(tuple -> importApplicationService.importApplicationInWorkspaceFromGit(
-                        workspaceId, tuple.getT2(), tuple.getT1().getId(), gitData.getBranchName()))
+                .flatMap(tuple -> importService.importArtifactInWorkspaceFromGit(
+                        workspaceId, tuple.getT1().getId(), tuple.getT2(), gitData.getBranchName()))
+                .map(importableArtifact -> (Application) importableArtifact)
                 .block();
 
         gitConnectedPage = newPageService
@@ -309,8 +335,12 @@ public class ActionExecutionSolutionCETest {
                 .when(spyDatasourceService)
                 .isEndpointBlockedForConnectionRequest(Mockito.any());
 
+        ExecuteActionMetaDTO executeActionMetaDTO = ExecuteActionMetaDTO.builder()
+                .environmentId(defaultEnvironmentId)
+                .build();
+
         Mono<ActionExecutionResult> actionExecutionResultMono =
-                actionExecutionSolution.executeAction(executeActionDTO, defaultEnvironmentId);
+                actionExecutionSolution.executeAction(executeActionDTO, executeActionMetaDTO);
         return actionExecutionResultMono;
     }
 
@@ -505,7 +535,11 @@ public class ActionExecutionSolutionCETest {
                 .when(spyDatasourceService)
                 .isEndpointBlockedForConnectionRequest(Mockito.any());
 
-        Mono<ActionExecutionResult> executionResultMono = actionExecutionSolution.executeAction(executeActionDTO, null);
+        ExecuteActionMetaDTO executeActionMetaDTO =
+                ExecuteActionMetaDTO.builder().build();
+
+        Mono<ActionExecutionResult> executionResultMono =
+                actionExecutionSolution.executeAction(executeActionDTO, executeActionMetaDTO);
 
         StepVerifier.create(executionResultMono)
                 .assertNext(result -> {
@@ -558,7 +592,11 @@ public class ActionExecutionSolutionCETest {
                 .when(spyDatasourceService)
                 .isEndpointBlockedForConnectionRequest(Mockito.any());
 
-        Mono<ActionExecutionResult> executionResultMono = actionExecutionSolution.executeAction(executeActionDTO, null);
+        ExecuteActionMetaDTO executeActionMetaDTO =
+                ExecuteActionMetaDTO.builder().build();
+
+        Mono<ActionExecutionResult> executionResultMono =
+                actionExecutionSolution.executeAction(executeActionDTO, executeActionMetaDTO);
 
         StepVerifier.create(executionResultMono)
                 .assertNext(result -> {
@@ -605,7 +643,11 @@ public class ActionExecutionSolutionCETest {
                 .when(spyDatasourceService)
                 .isEndpointBlockedForConnectionRequest(Mockito.any());
 
-        Mono<ActionExecutionResult> executionResultMono = actionExecutionSolution.executeAction(executeActionDTO, null);
+        ExecuteActionMetaDTO executeActionMetaDTO =
+                ExecuteActionMetaDTO.builder().build();
+
+        Mono<ActionExecutionResult> executionResultMono =
+                actionExecutionSolution.executeAction(executeActionDTO, executeActionMetaDTO);
 
         StepVerifier.create(executionResultMono)
                 .assertNext(result -> {
@@ -652,7 +694,11 @@ public class ActionExecutionSolutionCETest {
                 .when(spyDatasourceService)
                 .isEndpointBlockedForConnectionRequest(Mockito.any());
 
-        Mono<ActionExecutionResult> executionResultMono = actionExecutionSolution.executeAction(executeActionDTO, null);
+        ExecuteActionMetaDTO executeActionMetaDTO =
+                ExecuteActionMetaDTO.builder().build();
+
+        Mono<ActionExecutionResult> executionResultMono =
+                actionExecutionSolution.executeAction(executeActionDTO, executeActionMetaDTO);
 
         StepVerifier.create(executionResultMono)
                 .assertNext(result -> {
@@ -696,8 +742,11 @@ public class ActionExecutionSolutionCETest {
         executeActionDTO.setActionId(createdAction.getId());
         executeActionDTO.setViewMode(false);
 
+        ExecuteActionMetaDTO executeActionMetaDTO =
+                ExecuteActionMetaDTO.builder().build();
+
         Mono<ActionExecutionResult> actionExecutionResultMono =
-                actionExecutionSolution.executeAction(executeActionDTO, null);
+                actionExecutionSolution.executeAction(executeActionDTO, executeActionMetaDTO);
 
         StepVerifier.create(actionExecutionResultMono)
                 .assertNext(result -> {
@@ -736,13 +785,17 @@ public class ActionExecutionSolutionCETest {
         action.setActionConfiguration(actionConfiguration);
         action.setDatasource(savedDs);
 
+        ExecuteActionMetaDTO executeActionMetaDTO = ExecuteActionMetaDTO.builder()
+                .environmentId(defaultEnvironmentId)
+                .build();
+
         Mono<ActionExecutionResult> resultMono = layoutActionService
                 .createSingleAction(action, Boolean.FALSE)
                 .flatMap(savedAction -> {
                     ExecuteActionDTO executeActionDTO = new ExecuteActionDTO();
                     executeActionDTO.setActionId(savedAction.getId());
                     executeActionDTO.setViewMode(false);
-                    return actionExecutionSolution.executeAction(executeActionDTO, defaultEnvironmentId);
+                    return actionExecutionSolution.executeAction(executeActionDTO, executeActionMetaDTO);
                 });
 
         StepVerifier.create(resultMono)
@@ -1888,13 +1941,17 @@ public class ActionExecutionSolutionCETest {
         action.setActionConfiguration(actionConfiguration);
         action.setDatasource(savedDs);
 
+        ExecuteActionMetaDTO executeActionMetaDTO = ExecuteActionMetaDTO.builder()
+                .environmentId(defaultEnvironmentId)
+                .build();
+
         Mono<ActionExecutionResult> resultMono = layoutActionService
                 .createSingleAction(action, Boolean.FALSE)
                 .flatMap(savedAction -> {
                     ExecuteActionDTO executeActionDTO = new ExecuteActionDTO();
                     executeActionDTO.setActionId(savedAction.getId());
                     executeActionDTO.setViewMode(false);
-                    return actionExecutionSolution.executeAction(executeActionDTO, defaultEnvironmentId);
+                    return actionExecutionSolution.executeAction(executeActionDTO, executeActionMetaDTO);
                 });
 
         Mockito.doReturn(Mono.empty())

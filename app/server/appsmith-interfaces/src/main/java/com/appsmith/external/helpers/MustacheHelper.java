@@ -41,7 +41,7 @@ public class MustacheHelper {
      * {{JSON.stringify(fetchUsers)}}
      * This pattern should return ["JSON.stringify", "fetchUsers"]
      */
-    private static final Pattern pattern = Pattern.compile("[a-zA-Z_][a-zA-Z0-9._]*");
+    private static final Pattern pattern = Pattern.compile("[a-zA-Z_][a-zA-Z0-9._$]*");
     /**
      * Appsmith smart replacement : The regex pattern below looks for '?' or "?". This pattern is later replaced with ?
      * to fit the requirements of prepared statements.
@@ -353,8 +353,13 @@ public class MustacheHelper {
                 rendered.append(token.getValue());
             }
         }
-
-        return StringEscapeUtils.unescapeHtml4(rendered.toString());
+        /**
+         * ReplaceAll is used to escape the double quotes symbol with \" so that
+         * JSON remains valid.
+         * &quot; and &#34; both are HTML reserved characters for double quotes (")
+         */
+        return StringEscapeUtils.unescapeHtml4(
+                rendered.toString().replaceAll("&quot;", "\\\\&quot;").replaceAll("&#34;", "\\\\&#34;"));
     }
 
     /**

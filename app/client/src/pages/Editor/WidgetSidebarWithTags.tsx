@@ -82,9 +82,8 @@ function WidgetSidebarWithTags({ isActive }: { isActive: boolean }) {
 
   return (
     <div
-      className={`flex flex-col t--widget-sidebar overflow-hidden ${
-        isActive ? "" : "hidden"
-      }`}
+      className={`flex flex-col t--widget-sidebar overflow-hidden ${isActive ? "" : "hidden"
+        }`}
     >
       <div className="sticky top-0 px-3 mt-0.5">
         <SearchInput
@@ -137,13 +136,13 @@ function WidgetSidebarWithTags({ isActive }: { isActive: boolean }) {
                   <div className="grid items-stretch grid-cols-3 gap-x-2 gap-y-1 justify-items-stretch">
                     {tag === WIDGET_TAGS.GERNERAL
                       ? sortBy(cardsForThisTag, (widget) => {
-                          return SUGGESTED_WIDGETS_ORDER[widget.type];
-                        }).map((card) => (
-                          <WidgetCard details={card} key={card.key} />
-                        ))
+                        return SUGGESTED_WIDGETS_ORDER[widget.type];
+                      }).map((card) => (
+                        <WidgetCard details={card} key={card.key} />
+                      ))
                       : cardsForThisTag.map((card) => (
-                          <WidgetCard details={card} key={card.key} />
-                        ))}
+                        <WidgetCard details={card} key={card.key} />
+                      ))}
                   </div>
                 </CollapsibleContent>
               </Collapsible>

@@ -60,7 +60,7 @@ import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
 import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
 import { getHTMLPageTitle } from "@appsmith/utils/BusinessFeatures/brandingPageHelpers";
 import log from "loglevel";
-
+import {FormBottom} from "./ForgotPassword"
 declare global {
   interface Window {
     grecaptcha: any;
@@ -208,7 +208,7 @@ export function SignUp(props: SignUpFormProps) {
           method="POST"
           onSubmit={(e: any) => handleSubmit(e)}
         >
-          <FormGroup intent={error ? "danger" : "none"}>
+          <FormGroup intent={error ? "danger" : "none"} style={{ position: "relative"}}>
             <LoginForm>
               <FormTextField
                 autoFocus
@@ -220,7 +220,7 @@ export function SignUp(props: SignUpFormProps) {
             </LoginForm>
             <StyledEmailIcon height={15} width={15} />
           </FormGroup>
-          <FormGroup intent={error ? "danger" : "none"}>
+          <FormGroup intent={error ? "danger" : "none"} style={{ position: "relative"}}>
             <LoginForm>
               <FormTextField
                 className="pp-height"
@@ -268,17 +268,17 @@ export function SignUp(props: SignUpFormProps) {
         </SpacedSubmitForm>
       )}
       {/* 底部提示 */}
-      <div className="flex-middle myfont">
+      <FormBottom>
         {createMessage(ALREADY_HAVE_AN_ACCOUNT)}
         <Link
-          className="t--sign-up t--signup-link pl-[var(--ads-v2\-spaces-3)] fs-16 a_link"
+          className="t--sign-up t--signup-link"
           kind="primary"
           target="_self"
           to={AUTH_LOGIN_URL}
         >
           {createMessage(SIGNUP_PAGE_LOGIN_LINK_TEXT)}
         </Link>
-      </div>
+      </FormBottom>
     </Container>
   );
 }

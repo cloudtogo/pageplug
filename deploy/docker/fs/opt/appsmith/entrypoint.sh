@@ -2,12 +2,14 @@
 
 set -e
 
+echo "Running as: $(id)"
+
 stacks_path=/appsmith-stacks
 
 export SUPERVISORD_CONF_TARGET="$TMP/supervisor-conf.d/"  # export for use in supervisord.conf
 export MONGODB_TMP_KEY_PATH="$TMP/mongodb-key"  # export for use in supervisor process mongodb.conf
 
-mkdir -pv "$SUPERVISORD_CONF_TARGET" "$NGINX_WWW_PATH"
+mkdir -pv "$SUPERVISORD_CONF_TARGET" "$WWW_PATH"
 
 # ip is a reserved keyword for tracking events in Mixpanel. Instead of showing the ip as is Mixpanel provides derived properties.
 # As we want derived props alongwith the ip address we are sharing the ip address in separate keys
@@ -68,7 +70,7 @@ init_env_file() {
   TEMPLATES_PATH="/opt/appsmith/templates"
 
   # Build an env file with current env variables. We single-quote the values, as well as escaping any single-quote characters.
-  printenv | grep -E '^APPSMITH_|^MONGO_' | sed "s/'/'\\\''/g; s/=/='/; s/$/'/" > "$TEMPLATES_PATH/pre-define.env"
+  printenv | grep -E '^APPSMITH_|^MONGO_' | sed "s/'/'\\\''/g; s/=/='/; s/$/'/" > "$TMP/pre-define.env"
 
   echo "Initialize .env file"
   if ! [[ -e "$ENV_PATH" ]]; then
@@ -99,12 +101,22 @@ init_env_file() {
   echo "Load environment configuration"
   set -o allexport
   . "$ENV_PATH"
-  . "$TEMPLATES_PATH/pre-define.env"
+  . "$TMP/pre-define.env"
   set +o allexport
 }
 
 setup_proxy_variables() {
   export NO_PROXY="${NO_PROXY-localhost,127.0.0.1}"
+
+  # Ensure `localhost` and `127.0.0.1` are in always present in `NO_PROXY`.
+  local no_proxy_lines
+  no_proxy_lines="$(echo "$NO_PROXY" | tr , \\n)"
+  if ! echo "$no_proxy_lines" | grep -q '^localhost$'; then
+    export NO_PROXY="localhost,$NO_PROXY"
+  fi
+  if ! echo "$no_proxy_lines" | grep -q '^127.0.0.1$'; then
+    export NO_PROXY="127.0.0.1,$NO_PROXY"
+  fi
 
   # If one of HTTPS_PROXY or https_proxy are set, copy it to the other. If both are set, prefer HTTPS_PROXY.
   if [[ -n ${HTTPS_PROXY-} ]]; then
@@ -254,14 +266,6 @@ use-mongodb-key() {
   chmod 600 "$MONGODB_TMP_KEY_PATH"
 }
 
-# Keep Let's Encrypt directory persistent
-mount_letsencrypt_directory() {
-  echo "Mounting Let's encrypt directory"
-  rm -rf /etc/letsencrypt
-  mkdir -p /appsmith-stacks/{letsencrypt,ssl}
-  ln -s /appsmith-stacks/letsencrypt /etc/letsencrypt
-}
-
 is_empty_directory() {
   [[ -d $1 && -z "$(ls -A "$1")" ]]
 }
@@ -320,15 +324,13 @@ setup-custom-ca-certificates() (
 
   # Add the custom CA certificates to the store.
   find "$stacks_ca_certs_path" -maxdepth 1 -type f -name '*.crt' \
-    -exec keytool -import -noprompt -keystore "$store" -file '{}' -storepass changeit ';'
+    -print \
+    -exec keytool -import -alias '{}' -noprompt -keystore "$store" -file '{}' -storepass changeit ';'
 
   {
     echo "-Djavax.net.ssl.trustStore=$store"
     echo "-Djavax.net.ssl.trustStorePassword=changeit"
   } > "$opts_file"
-
-  # Get certbot to use the combined trusted CA certs file.
-  export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 )
 
 configure_supervisord() {
@@ -348,13 +350,8 @@ configure_supervisord() {
       cp "$supervisord_conf_source/redis.conf" "$SUPERVISORD_CONF_TARGET"
       mkdir -p "$stacks_path/data/redis"
     fi
-    if ! [[ -e "/appsmith-stacks/ssl/fullchain.pem" ]] || ! [[ -e "/appsmith-stacks/ssl/privkey.pem" ]]; then
-      cp "$supervisord_conf_source/cron.conf" "$SUPERVISORD_CONF_TARGET"
-    fi
     if [[ $runEmbeddedPostgres -eq 1 ]]; then
       cp "$supervisord_conf_source/postgres.conf" "$SUPERVISORD_CONF_TARGET"
-      # Update hosts lookup to resolve to embedded postgres
-      echo '127.0.0.1     mockdb.internal.appsmith.com' >> /etc/hosts
     fi
   fi
 
@@ -394,9 +391,13 @@ init_postgres() {
     echo "Checking initialized local postgres"
     POSTGRES_DB_PATH="$stacks_path/data/postgres/main"
 
-    if [ -e "$POSTGRES_DB_PATH/PG_VERSION" ]; then
-        echo "Found existing Postgres, Skipping initialization"
-        chown -R postgres:postgres "$POSTGRES_DB_PATH"
+    mkdir -p "$POSTGRES_DB_PATH" "$TMP/pg-runtime"
+
+    # Postgres does not allow it's server to be run with super user access, we use user postgres and the file system owner also needs to be the same user postgres
+    chown -R postgres:postgres "$POSTGRES_DB_PATH" "$TMP/pg-runtime"
+
+    if [[ -e "$POSTGRES_DB_PATH/PG_VERSION" ]]; then
+      echo "Found existing Postgres, Skipping initialization"
     else
       echo "Initializing local postgresql database"
       mkdir -p "$POSTGRES_DB_PATH"
@@ -406,6 +407,7 @@ init_postgres() {
 
       # Initialize the postgres db file system
       su postgres -c "/usr/lib/postgresql/13/bin/initdb -D $POSTGRES_DB_PATH"
+      sed -Ei "s,^#(unix_socket_directories =).*,\\1 '$TMP/pg-runtime'," "$POSTGRES_DB_PATH/postgresql.conf"
 
       # Start the postgres server in daemon mode
       su postgres -c "/usr/lib/postgresql/13/bin/pg_ctl -D $POSTGRES_DB_PATH start"
@@ -445,23 +447,20 @@ init_postgres || runEmbeddedPostgres=0
 }
 
 init_loading_pages(){
-  local starting_page="/opt/appsmith/templates/appsmith_starting.html"
-  local initializing_page="/opt/appsmith/templates/appsmith_initializing.html"
-  local editor_load_page="$NGINX_WWW_PATH/loading.html"
-  cp "$initializing_page" "$NGINX_WWW_PATH/index.html"
-  # TODO: Also listen on 443, if HTTP certs are available.
-  cat <<EOF > "$TMP/nginx-app.conf"
-    server {
-      listen ${PORT:-80} default_server;
-      location / {
-        try_files \$uri \$uri/ /index.html =404;
-      }
-    }
-EOF
-  # Start nginx page to display the Appsmith is Initializing page
-  nginx
-  # Update editor nginx page for starting page
-  cp "$starting_page" "$editor_load_page"
+  export XDG_DATA_HOME=/appsmith-stacks/data  # so that caddy saves tls certs and other data under stacks/data/caddy
+  export XDG_CONFIG_HOME=/appsmith-stacks/configuration
+  mkdir -p "$XDG_DATA_HOME" "$XDG_CONFIG_HOME"
+  cp templates/loading.html "$WWW_PATH"
+  node caddy-reconfigure.mjs
+  /opt/caddy/caddy start --config "$TMP/Caddyfile"
+}
+
+function setup_auto_heal(){
+   if [[ ${APPSMITH_AUTO_HEAL-} = 1 ]]; then
+     # By default APPSMITH_AUTO_HEAL=0
+     # To enable auto heal set APPSMITH_AUTO_HEAL=1
+     bash /opt/appsmith/auto_heal.sh $APPSMITH_AUTO_HEAL_CURL_TIMEOUT >> /appsmith-stacks/logs/cron/auto_heal.log 2>&1 &
+   fi
 }
 
 # Main Section
@@ -486,8 +485,6 @@ fi
 check_setup_custom_ca_certificates
 setup-custom-ca-certificates
 
-mount_letsencrypt_directory
-
 check_redis_compatible_page_size
 
 safe_init_postgres
@@ -495,13 +492,12 @@ safe_init_postgres
 configure_supervisord
 
 # Ensure the restore path exists in the container, so an archive can be copied to it, if need be.
-mkdir -p /appsmith-stacks/data/{backup,restore}
+mkdir -p /appsmith-stacks/data/{backup,restore} /appsmith-stacks/ssl
 
 # Create sub-directory to store services log in the container mounting folder
 mkdir -p /appsmith-stacks/logs/{supervisor,backend,cron,editor,rts,mongodb,redis,postgres,appsmithctl}
 
-# Stop nginx gracefully
-nginx -s quit
+setup_auto_heal
 
 # Handle CMD command
 exec "$@"

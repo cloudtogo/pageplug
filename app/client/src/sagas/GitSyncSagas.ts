@@ -10,10 +10,14 @@ import {
 import {
   actionChannel,
   call,
+  cancel,
+  cancelled,
+  delay,
   fork,
   put,
   select,
   take,
+  takeLatest,
 } from "redux-saga/effects";
 import type { TakeableChannel } from "@redux-saga/core";
 import type { MergeBranchPayload, MergeStatusPayload } from "api/GitSyncAPI";
@@ -32,10 +36,8 @@ import type {
   GitStatusParams,
 } from "actions/gitSyncActions";
 import {
-  fetchGitRemoteStatusInit,
   fetchGitProtectedBranchesInit,
   updateGitProtectedBranchesInit,
-  fetchGitRemoteStatusSuccess,
   clearCommitSuccessfulState,
 } from "actions/gitSyncActions";
 import {
@@ -82,8 +84,11 @@ import {
   getWorkspaceIdForImport,
 } from "@appsmith/selectors/applicationSelectors";
 import {
+  AUTOCOMMIT_DISABLED_TOAST,
+  AUTOCOMMIT_ENABLED_TOAST,
   createMessage,
   DELETE_BRANCH_SUCCESS,
+  DISCARD_SUCCESS,
   ERROR_GIT_AUTH_FAIL,
   ERROR_GIT_INVALID_REMOTE,
   GIT_USER_UPDATED_SUCCESSFULLY,
@@ -96,13 +101,11 @@ import { addBranchParam, GIT_BRANCH_QUERY_KEY } from "constants/routes";
 import {
   getCurrentGitBranch,
   getDisconnectingGitApplication,
-  getIsGitProtectedFeatureEnabled,
-  getIsGitStatusLiteEnabled,
 } from "selectors/gitSyncSelectors";
 import { initEditor } from "actions/initActions";
 import { fetchPage } from "actions/pageActions";
 import { getLogToSentryFromResponse } from "utils/helpers";
-import { getCurrentWorkspace } from "@appsmith/selectors/workspaceSelectors";
+import { getFetchedWorkspaces } from "@appsmith/selectors/workspaceSelectors";
 import type { Workspace } from "@appsmith/constants/workspaceConstants";
 import { log } from "loglevel";
 import GIT_ERROR_CODES from "constants/GitErrorCodes";
@@ -115,9 +118,9 @@ import {
   getJSCollections,
 } from "@appsmith/selectors/entitiesSelector";
 import type { Action } from "entities/Action";
-import type { JSCollectionDataState } from "reducers/entityReducers/jsActionsReducer";
+import type { JSCollectionDataState } from "@appsmith/reducers/entityReducers/jsActionsReducer";
 import { toast } from "design-system";
-import { updateGitDefaultBranchSaga } from "@appsmith/sagas/GitExtendedSagas";
+import { gitExtendedSagas } from "@appsmith/sagas/GitExtendedSagas";
 
 export function* handleRepoLimitReachedError(response?: ApiResponse) {
   const { responseMeta } = response || {};
@@ -141,9 +144,7 @@ function* commitToGitRepoSaga(
   let response: ApiResponse | undefined;
   try {
     const applicationId: string = yield select(getCurrentApplicationId);
-    const isGitStatusLiteEnabled: boolean = yield select(
-      getIsGitStatusLiteEnabled,
-    );
+
     const gitMetaData: GitApplicationMetadata = yield select(
       getCurrentAppGitMetaData,
     );
@@ -171,12 +172,7 @@ function* commitToGitRepoSaga(
           payload: curApplication,
         });
       }
-      if (isGitStatusLiteEnabled) {
-        yield put(fetchGitRemoteStatusInit());
-        yield put(fetchGitStatusInit({ compareRemote: false }));
-      } else {
-        yield put(fetchGitStatusInit({ compareRemote: true }));
-      }
+      yield put(fetchGitStatusInit({ compareRemote: true }));
     } else {
       yield put({
         type: ReduxActionErrorTypes.COMMIT_TO_GIT_REPO_ERROR,
@@ -231,16 +227,11 @@ function* connectToGitSaga(action: ConnectToGitReduxAction) {
       yield put(connectToGitSuccess(response?.data));
       const defaultBranch = response?.data?.gitApplicationMetadata?.branchName;
 
-      const isGitProtectedFeatureEnabled: boolean = yield select(
-        getIsGitProtectedFeatureEnabled,
+      yield put(
+        updateGitProtectedBranchesInit({
+          protectedBranches: defaultBranch ? [defaultBranch] : [],
+        }),
       );
-      if (isGitProtectedFeatureEnabled) {
-        yield put(
-          updateGitProtectedBranchesInit({
-            protectedBranches: defaultBranch ? [defaultBranch] : [],
-          }),
-        );
-      }
 
       yield put(fetchPage(currentPageId));
       if (action.onSuccessCallback) {
@@ -384,7 +375,7 @@ function* switchBranch(action: ReduxAction<string>) {
     // Check if page exists in the branch. If not, instead of 404, take them to
     // the app home page
     const page = response.data.pages.find(
-      (page) => page.id === entityInfo.pageId,
+      (page) => page.id === entityInfo.params.pageId,
     );
     const homePage = response.data.pages.find((page) => page.isDefault);
     if (!page) {
@@ -563,11 +554,6 @@ function* updateLocalGitConfig(action: ReduxAction<GitConfig>) {
 }
 
 function* fetchGitStatusSaga(action: ReduxAction<GitStatusParams>) {
-  const isLiteEnabled: boolean = yield select(getIsGitStatusLiteEnabled);
-  const shouldCompareRemote = isLiteEnabled
-    ? !!action.payload?.compareRemote
-    : true;
-
   let response: ApiResponse | undefined;
   try {
     const applicationId: string = yield select(getCurrentApplicationId);
@@ -577,7 +563,7 @@ function* fetchGitStatusSaga(action: ReduxAction<GitStatusParams>) {
     response = yield GitSyncAPI.getGitStatus({
       applicationId,
       branch: gitMetaData?.branchName || "",
-      compareRemote: shouldCompareRemote ? "true" : "false",
+      compareRemote: action.payload.compareRemote ?? true,
     });
     const isValidResponse: boolean = yield validateResponse(
       response,
@@ -587,6 +573,9 @@ function* fetchGitStatusSaga(action: ReduxAction<GitStatusParams>) {
     if (isValidResponse) {
       // @ts-expect-error: response is of type unknown
       yield put(fetchGitStatusSuccess(response?.data));
+    }
+    if (typeof action.payload.onSuccessCallback === "function") {
+      action.payload.onSuccessCallback(response?.data);
     }
   } catch (error) {
     const payload = { error, show: true };
@@ -601,56 +590,8 @@ function* fetchGitStatusSaga(action: ReduxAction<GitStatusParams>) {
       payload,
     });
 
-    // non api error
-    if (!response || response?.responseMeta?.success) {
-      throw error;
-    }
-  }
-}
-
-interface FetchRemoteStatusSagaAction extends ReduxAction<undefined> {
-  onSuccessCallback?: (data: any) => void;
-  onErrorCallback?: (error: Error, response?: any) => void;
-}
-
-function* fetchGitRemoteStatusSaga(action: FetchRemoteStatusSagaAction) {
-  let response: ApiResponse | undefined;
-  try {
-    const applicationId: string = yield select(getCurrentApplicationId);
-    const gitMetaData: GitApplicationMetadata = yield select(
-      getCurrentAppGitMetaData,
-    );
-    response = yield GitSyncAPI.getGitRemoteStatus({
-      applicationId,
-      branch: gitMetaData?.branchName || "",
-    });
-    const isValidResponse: boolean = yield validateResponse(
-      response,
-      false,
-      getLogToSentryFromResponse(response),
-    );
-    if (isValidResponse) {
-      // @ts-expect-error: response is of type unknown
-      yield put(fetchGitRemoteStatusSuccess(response?.data));
-    }
-    if (typeof action?.onSuccessCallback === "function") {
-      action.onSuccessCallback(response?.data);
-    }
-  } catch (error) {
-    const payload = { error, show: !action?.onErrorCallback };
-    if ((error as Error)?.message?.includes("Auth fail")) {
-      payload.error = new Error(createMessage(ERROR_GIT_AUTH_FAIL));
-    } else if ((error as Error)?.message?.includes("Invalid remote: origin")) {
-      payload.error = new Error(createMessage(ERROR_GIT_INVALID_REMOTE));
-    }
-
-    yield put({
-      type: ReduxActionErrorTypes.FETCH_GIT_REMOTE_STATUS_ERROR,
-      payload,
-    });
-
-    if (typeof action?.onErrorCallback === "function") {
-      action.onErrorCallback(error as Error, response);
+    if (typeof action.payload.onErrorCallback === "function") {
+      action.payload.onErrorCallback(error as Error, response);
     }
 
     // non api error
@@ -826,7 +767,7 @@ function* disconnectGitSaga() {
         }),
       );
       yield put({
-        type: ReduxActionTypes.GET_ALL_APPLICATION_INIT,
+        type: ReduxActionTypes.FETCH_ALL_APPLICATIONS_OF_WORKSPACE_INIT,
       });
 
       // while disconnecting another application, i.e. not the current one
@@ -871,7 +812,7 @@ function* importAppFromGitSaga(action: ConnectToGitReduxAction) {
       getLogToSentryFromResponse(response),
     );
     if (isValidResponse) {
-      const allWorkspaces: Workspace[] = yield select(getCurrentWorkspace);
+      const allWorkspaces: Workspace[] = yield select(getFetchedWorkspaces);
       const currentWorkspace = allWorkspaces.filter(
         (el: Workspace) => el.id === workspaceIdForImport,
       );
@@ -1020,11 +961,13 @@ export function* deleteBranch({ payload }: ReduxAction<any>) {
       yield put(fetchBranchesInit({ pruneBranches: true }));
     }
   } catch (error) {
-    yield put(deleteBranchError(error));
+    yield put(deleteBranchError({ error, show: true }));
   }
 }
 
-function* discardChanges() {
+function* discardChanges({
+  payload,
+}: ReduxAction<{ successToastMessage: string } | null | undefined>) {
   let response: ApiResponse<GitDiscardResponse>;
   try {
     const appId: string = yield select(getCurrentApplicationId);
@@ -1036,10 +979,15 @@ function* discardChanges() {
     );
     if (isValidResponse) {
       yield put(discardChangesSuccess(response.data));
-      // const applicationId: string = response.data.id;
+      const successToastMessage =
+        payload?.successToastMessage ?? createMessage(DISCARD_SUCCESS);
+      toast.show(successToastMessage, {
+        kind: "success",
+      });
+      // adding delay to show toast animation before reloading
+      yield delay(500);
       const pageId: string =
         response.data?.pages?.find((page: any) => page.isDefault)?.id || "";
-      localStorage.setItem("GIT_DISCARD_CHANGES", "success");
       const branch = response.data.gitApplicationMetadata.branchName;
       window.open(builderURL({ pageId, branch }), "_self");
     } else {
@@ -1049,21 +997,13 @@ function* discardChanges() {
           show: true,
         }),
       );
-      localStorage.setItem("GIT_DISCARD_CHANGES", "failure");
     }
   } catch (error) {
     yield put(discardChangesFailure({ error, show: true }));
-    localStorage.setItem("GIT_DISCARD_CHANGES", "failure");
   }
 }
 
 function* fetchGitProtectedBranchesSaga() {
-  const isGitProtectedFeatureEnabled: boolean = yield select(
-    getIsGitProtectedFeatureEnabled,
-  );
-  if (!isGitProtectedFeatureEnabled) {
-    return;
-  }
   let response: ApiResponse<string[]>;
   try {
     const appId: string = yield select(getCurrentApplicationId);
@@ -1100,12 +1040,6 @@ function* fetchGitProtectedBranchesSaga() {
 function* updateGitProtectedBranchesSaga({
   payload,
 }: ReduxAction<{ protectedBranches: string[] }>) {
-  const isGitProtectedFeatureEnabled: boolean = yield select(
-    getIsGitProtectedFeatureEnabled,
-  );
-  if (!isGitProtectedFeatureEnabled) {
-    return;
-  }
   const { protectedBranches } = payload;
   const applicationId: string = yield select(getCurrentApplicationId);
   let response: ApiResponse<string[]>;
@@ -1145,36 +1079,188 @@ function* updateGitProtectedBranchesSaga({
   }
 }
 
-const gitRequestActions: Record<
+function* toggleAutocommitSaga() {
+  const applicationId: string = yield select(getCurrentApplicationId);
+  let response: ApiResponse<boolean>;
+  try {
+    response = yield call(GitSyncAPI.toggleAutocommit, applicationId);
+    const isValidResponse: boolean = yield validateResponse(
+      response,
+      false,
+      getLogToSentryFromResponse(response),
+    );
+    if (isValidResponse) {
+      yield put({
+        type: ReduxActionTypes.GIT_TOGGLE_AUTOCOMMIT_ENABLED_SUCCESS,
+      });
+      yield put({ type: ReduxActionTypes.GIT_GET_METADATA_INIT });
+      if (!!response.data) {
+        toast.show(createMessage(AUTOCOMMIT_ENABLED_TOAST), {
+          kind: "success",
+        });
+      } else {
+        toast.show(createMessage(AUTOCOMMIT_DISABLED_TOAST), {
+          kind: "success",
+        });
+      }
+    } else {
+      yield put({
+        type: ReduxActionErrorTypes.GIT_TOGGLE_AUTOCOMMIT_ENABLED_ERROR,
+        payload: {
+          error: response?.responseMeta?.error?.message,
+          show: true,
+        },
+      });
+    }
+  } catch (error) {
+    yield put({
+      type: ReduxActionErrorTypes.GIT_TOGGLE_AUTOCOMMIT_ENABLED_ERROR,
+      payload: { error, show: true },
+    });
+  }
+}
+
+function* getGitMetadataSaga() {
+  const applicationId: string = yield select(getCurrentApplicationId);
+  let response: ApiResponse<string[]>;
+  try {
+    response = yield call(GitSyncAPI.getGitMetadata, applicationId);
+    const isValidResponse: boolean = yield validateResponse(
+      response,
+      false,
+      getLogToSentryFromResponse(response),
+    );
+    if (isValidResponse) {
+      yield put({
+        type: ReduxActionTypes.GIT_GET_METADATA_SUCCESS,
+        payload: { gitMetadata: response.data },
+      });
+    } else {
+      yield put({
+        type: ReduxActionErrorTypes.GIT_GET_METADATA_ERROR,
+        payload: {
+          error: response?.responseMeta?.error?.message,
+          show: true,
+        },
+      });
+    }
+  } catch (error) {
+    yield put({
+      type: ReduxActionErrorTypes.GIT_GET_METADATA_ERROR,
+      payload: { error, show: true },
+    });
+  }
+}
+
+function* pollAutocommitProgressSaga(): any {
+  const applicationId: string = yield select(getCurrentApplicationId);
+  try {
+    const response: ApiResponse<any> = yield call(
+      GitSyncAPI.getAutocommitProgress,
+      applicationId,
+    );
+    const isValidResponse: boolean = yield validateResponse(
+      response,
+      false,
+      getLogToSentryFromResponse(response),
+    );
+    if (isValidResponse && response?.data?.isRunning) {
+      yield put({
+        type: ReduxActionTypes.GIT_AUTOCOMMIT_START_PROGRESS_POLLING,
+      });
+      while (true) {
+        const response: ApiResponse<any> = yield call(
+          GitSyncAPI.getAutocommitProgress,
+          applicationId,
+        );
+        const isValidResponse: boolean = yield validateResponse(
+          response,
+          false,
+          getLogToSentryFromResponse(response),
+        );
+        if (isValidResponse) {
+          yield put({
+            type: ReduxActionTypes.GIT_SET_AUTOCOMMIT_PROGRESS,
+            payload: response.data,
+          });
+          if (!response?.data?.isRunning) {
+            yield put({
+              type: ReduxActionTypes.GIT_AUTOCOMMIT_STOP_PROGRESS_POLLING,
+            });
+          }
+        } else {
+          yield put({
+            type: ReduxActionTypes.GIT_AUTOCOMMIT_STOP_PROGRESS_POLLING,
+          });
+          yield put({
+            type: ReduxActionErrorTypes.GIT_AUTOCOMMIT_PROGRESS_POLLING_ERROR,
+            payload: {
+              error: response?.responseMeta?.error?.message,
+              show: true,
+            },
+          });
+        }
+        yield delay(1000);
+      }
+    } else {
+      yield put({
+        type: ReduxActionTypes.GIT_AUTOCOMMIT_STOP_PROGRESS_POLLING,
+      });
+    }
+  } catch (error) {
+    yield put({
+      type: ReduxActionTypes.GIT_AUTOCOMMIT_STOP_PROGRESS_POLLING,
+    });
+    yield put({
+      type: ReduxActionErrorTypes.GIT_AUTOCOMMIT_PROGRESS_POLLING_ERROR,
+      payload: { error },
+    });
+  } finally {
+    if (yield cancelled()) {
+      yield put({
+        type: ReduxActionTypes.GIT_RESET_AUTOCOMMIT_PROGRESS,
+      });
+    }
+  }
+}
+
+const gitRequestBlockingActions: Record<
   (typeof ReduxActionTypes)[keyof typeof ReduxActionTypes],
   (...args: any[]) => any
 > = {
   [ReduxActionTypes.COMMIT_TO_GIT_REPO_INIT]: commitToGitRepoSaga,
   [ReduxActionTypes.CONNECT_TO_GIT_INIT]: connectToGitSaga,
-  [ReduxActionTypes.FETCH_GLOBAL_GIT_CONFIG_INIT]: fetchGlobalGitConfig,
   [ReduxActionTypes.UPDATE_GLOBAL_GIT_CONFIG_INIT]: updateGlobalGitConfig,
-  [ReduxActionTypes.SWITCH_GIT_BRANCH_INIT]: switchBranch,
   [ReduxActionTypes.FETCH_BRANCHES_INIT]: fetchBranches,
+  [ReduxActionTypes.SWITCH_GIT_BRANCH_INIT]: switchBranch,
   [ReduxActionTypes.CREATE_NEW_BRANCH_INIT]: createNewBranch,
-  [ReduxActionTypes.FETCH_LOCAL_GIT_CONFIG_INIT]: fetchLocalGitConfig,
   [ReduxActionTypes.UPDATE_LOCAL_GIT_CONFIG_INIT]: updateLocalGitConfig,
-  [ReduxActionTypes.FETCH_GIT_STATUS_INIT]: fetchGitStatusSaga,
-  [ReduxActionTypes.FETCH_GIT_REMOTE_STATUS_INIT]: fetchGitRemoteStatusSaga,
   [ReduxActionTypes.MERGE_BRANCH_INIT]: mergeBranchSaga,
   [ReduxActionTypes.FETCH_MERGE_STATUS_INIT]: fetchMergeStatusSaga,
   [ReduxActionTypes.GIT_PULL_INIT]: gitPullSaga,
-  [ReduxActionTypes.SHOW_CONNECT_GIT_MODAL]: showConnectGitModal,
   [ReduxActionTypes.REVOKE_GIT]: disconnectGitSaga,
   [ReduxActionTypes.IMPORT_APPLICATION_FROM_GIT_INIT]: importAppFromGitSaga,
   [ReduxActionTypes.GENERATE_SSH_KEY_PAIR_INIT]: generateSSHKeyPairSaga,
-  [ReduxActionTypes.FETCH_SSH_KEY_PAIR_INIT]: getSSHKeyPairSaga,
   [ReduxActionTypes.DELETE_BRANCH_INIT]: deleteBranch,
   [ReduxActionTypes.GIT_DISCARD_CHANGES]: discardChanges,
-  [ReduxActionTypes.GIT_UPDATE_DEFAULT_BRANCH_INIT]: updateGitDefaultBranchSaga,
-  [ReduxActionTypes.GIT_FETCH_PROTECTED_BRANCHES_INIT]:
-    fetchGitProtectedBranchesSaga,
   [ReduxActionTypes.GIT_UPDATE_PROTECTED_BRANCHES_INIT]:
     updateGitProtectedBranchesSaga,
+};
+
+const gitRequestNonBlockingActions: Record<
+  (typeof ReduxActionTypes)[keyof typeof ReduxActionTypes],
+  (...args: any[]) => any
+> = {
+  ...gitExtendedSagas,
+  [ReduxActionTypes.FETCH_GLOBAL_GIT_CONFIG_INIT]: fetchGlobalGitConfig,
+  [ReduxActionTypes.FETCH_LOCAL_GIT_CONFIG_INIT]: fetchLocalGitConfig,
+  [ReduxActionTypes.FETCH_GIT_STATUS_INIT]: fetchGitStatusSaga,
+  [ReduxActionTypes.SHOW_CONNECT_GIT_MODAL]: showConnectGitModal,
+  [ReduxActionTypes.FETCH_SSH_KEY_PAIR_INIT]: getSSHKeyPairSaga,
+  [ReduxActionTypes.GIT_FETCH_PROTECTED_BRANCHES_INIT]:
+    fetchGitProtectedBranchesSaga,
+  [ReduxActionTypes.GIT_TOGGLE_AUTOCOMMIT_ENABLED_INIT]: toggleAutocommitSaga,
+  [ReduxActionTypes.GIT_GET_METADATA_INIT]: getGitMetadataSaga,
 };
 
 /**
@@ -1186,18 +1272,37 @@ const gitRequestActions: Record<
  *
  * This will ensure that client is not running parallel requests to the server for git
  * */
-function* watchGitRequests() {
+function* watchGitBlockingRequests() {
   const gitActionChannel: TakeableChannel<unknown> = yield actionChannel(
-    Object.keys(gitRequestActions),
+    Object.keys(gitRequestBlockingActions),
   );
 
   while (true) {
     const { type, ...args }: ReduxAction<unknown> =
       yield take(gitActionChannel);
-    yield call(gitRequestActions[type], { type, ...args });
+    yield call(gitRequestBlockingActions[type], { type, ...args });
+  }
+}
+
+function* watchGitNonBlockingRequests() {
+  const keys = Object.keys(gitRequestNonBlockingActions);
+  for (const actionType of keys) {
+    yield takeLatest(actionType, gitRequestNonBlockingActions[actionType]);
+  }
+}
+
+function* watchGitAutocommitPolling() {
+  while (true) {
+    yield take(ReduxActionTypes.GIT_AUTOCOMMIT_INITIATE_PROGRESS_POLLING);
+    /* @ts-expect-error: not sure how to do typings of this */
+    const pollTask = yield fork(pollAutocommitProgressSaga);
+    yield take(ReduxActionTypes.GIT_AUTOCOMMIT_STOP_PROGRESS_POLLING);
+    yield cancel(pollTask);
   }
 }
 
 export default function* gitSyncSagas() {
-  yield fork(watchGitRequests);
+  yield fork(watchGitNonBlockingRequests);
+  yield fork(watchGitBlockingRequests);
+  yield fork(watchGitAutocommitPolling);
 }

@@ -1,164 +1,165 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const CracoAlias = require("craco-alias");
-const CracoLessPlugin = require("craco-less");
-const { DefinePlugin, EnvironmentPlugin } = require("webpack");
-const { merge } = require("webpack-merge");
 const CracoBabelLoader = require("craco-babel-loader");
+const { removeModuleScopePlugin } = require("customize-cra");
+const CracoLessPlugin = require("craco-less");
 const path = require("path");
 const webpack = require("webpack");
+const { DefinePlugin, EnvironmentPlugin } = require("webpack");
 
 module.exports = {
   devServer: {
-    open: false,
-    client: {
-      webSocketURL: {
-        hostname: "127.0.0.1",
-        pathname: "/ws",
-        port: 3000,
-        protocol: "ws",
-      },
-    },
+    // client: {
+    //   webSocketURL: {
+    //     hostname: "127.0.0.1",
+    //     pathname: "/ws",
+    //     port: 3000,
+    //     protocol: "ws",
+    //   },
+    // },
+    port: 3005,
+    hot: true,
+    proxy: {
+      "/api": "http://localhost:8080"
+    }
   },
   babel: {
     plugins: ["babel-plugin-lodash"],
   },
+  eslint: {
+    enable: false,
+  },
   webpack: {
-    configure: (webpackConfig) => {
-      const config = {
-        resolve: {
-          alias: {
-            "lodash-es": "lodash",
-          },
-          fallback: {
-            assert: false,
-            stream: false,
-            util: false,
-            fs: false,
-            os: false,
-            path: false,
-          },
+    configure: {
+      resolve: {
+        alias: {
+          "lodash-es": "lodash",
         },
-        module: {
-          rules: [
-            {
-              test: /\.m?js/,
-              resolve: {
-                fullySpecified: false,
-              },
-            },
-            {
-              test: /\.module\.css$/,
-              use: [
-                {
-                  loader: "postcss-loader",
-                  options: {
-                    postcssOptions: {
-                      plugins: [
-                        "postcss-nesting",
-                        "postcss-import",
-                        "postcss-at-rules-variables",
-                        "postcss-each",
-                        "postcss-url",
-                        "postcss-modules-values",
-                        [
-                          "cssnano",
-                          {
-                            preset: ["default"],
-                          },
-                        ],
+        fallback: {
+          assert: false,
+          stream: false,
+          util: false,
+          fs: false,
+          os: false,
+          path: false,
+        },
+      },
+      module: {
+        rules: [
+          {
+            test: /\.m?js/,
+            resolve: { fullySpecified: false },
+          },
+          {
+            test: /\.module\.css$/,
+            use: [
+              {
+                loader: "postcss-loader",
+                options: {
+                  postcssOptions: {
+                    plugins: [
+                      "postcss-nesting",
+                      "postcss-import",
+                      "postcss-at-rules-variables",
+                      "postcss-each",
+                      "postcss-url",
+                      "postcss-modules-values",
+                      [
+                        "cssnano",
+                        {
+                          preset: ["default"],
+                        },
                       ],
-                    },
+                    ],
                   },
                 },
-              ],
-            },
-          ],
-        },
-        optimization: {
-          splitChunks: {
-            cacheGroups: {
-              icons: {
-                // This determines which modules are considered icons
-                test: (module) => {
-                  const modulePath = module.resource;
-                  if (!modulePath) return false;
-
-                  return (
-                    modulePath.match(
-                      /node_modules[\\\/]remixicon-react[\\\/]/,
-                    ) ||
-                    modulePath.endsWith(".svg.js") ||
-                    modulePath.endsWith(".svg")
-                  );
-                },
-                // This determines which chunk to put the icon into.
-                //
-                // Why have three separate cache groups for three different kinds of
-                // icons? Purely as an optimization: not every page needs all icons,
-                // so we can avoid loading unused icons sometimes.
-                name: (module) => {
-                  if (
-                    module.resource?.match(
-                      /node_modules[\\\/]remixicon-react[\\\/]/,
-                    )
-                  ) {
-                    return "remix-icons";
-                  }
-
-                  if (module.resource?.includes("blueprint")) {
-                    return "blueprint-icons";
-                  }
-
-                  return "svg-icons";
-                },
-                // This specifies that only icons from import()ed chunks should be moved
-                chunks: "async",
-                // This makes webpack ignore the minimum chunk size requirement
-                enforce: true,
               },
+            ],
+          },
+        ],
+      },
+      optimization: {
+        splitChunks: {
+          cacheGroups: {
+            icons: {
+              // This determines which modules are considered icons
+              test: (module) => {
+                const modulePath = module.resource;
+                if (!modulePath) return false;
+
+                return (
+                  modulePath.match(/node_modules[\\\/]remixicon-react[\\\/]/) ||
+                  modulePath.endsWith(".svg.js") ||
+                  modulePath.endsWith(".svg")
+                );
+              },
+              // This determines which chunk to put the icon into.
+              //
+              // Why have three separate cache groups for three different kinds of
+              // icons? Purely as an optimization: not every page needs all icons,
+              // so we can avoid loading unused icons sometimes.
+              name: (module) => {
+                if (
+                  module.resource?.match(
+                    /node_modules[\\\/]remixicon-react[\\\/]/,
+                  )
+                ) {
+                  return "remix-icons";
+                }
+
+                if (module.resource?.includes("blueprint")) {
+                  return "blueprint-icons";
+                }
+
+                return "svg-icons";
+              },
+              // This specifies that only icons from import()ed chunks should be moved
+              chunks: "async",
+              // This makes webpack ignore the minimum chunk size requirement
+              enforce: true,
             },
           },
         },
-        ignoreWarnings: [
-          function ignoreSourcemapsloaderWarnings(warning) {
-            return (
-              warning.module &&
-              warning.module.resource.includes("node_modules") &&
-              warning.details &&
-              warning.details.includes("source-map-loader")
-            );
-          },
-        ],
-        plugins: [
-          // Replace BlueprintJS’s icon component with our own implementation
-          // that code-splits icons away
-          new webpack.NormalModuleReplacementPlugin(
-            /@blueprintjs\/core\/lib\/\w+\/components\/icon\/icon\.\w+/,
-            require.resolve(
-              "./src/components/designSystems/blueprintjs/icon/index.js",
-            ),
+      },
+      ignoreWarnings: [
+        function ignoreSourcemapsloaderWarnings (warning) {
+          return (
+            (warning.module?.resource.includes("node_modules") &&
+              warning.details?.includes("source-map-loader")) ??
+            false
+          );
+        },
+        function ignorePackageWarnings (warning) {
+          return (
+            warning.module?.resource.includes(
+              "/node_modules/@babel/standalone/babel.js",
+            ) ||
+            warning.module?.resource.includes("/node_modules/sass/sass.dart.js")
+          );
+        },
+      ],
+      plugins: [
+        // Replace BlueprintJS’s icon component with our own implementation
+        // that code-splits icons away
+        new webpack.NormalModuleReplacementPlugin(
+          /@blueprintjs\/core\/lib\/\w+\/components\/icon\/icon\.\w+/,
+          require.resolve(
+            "./src/components/designSystems/blueprintjs/icon/index.js",
           ),
-        ],
-      };
-      const scopePluginIndex = webpackConfig.resolve.plugins.findIndex(
-        ({ constructor }) =>
-          constructor && constructor.name === "ModuleScopePlugin",
-      );
-      webpackConfig.resolve.plugins.splice(scopePluginIndex, 1);
-      return merge(webpackConfig, config);
+        ),
+        new DefinePlugin({
+          ENABLE_INNER_HTML: true,
+          ENABLE_ADJACENT_HTML: true,
+          ENABLE_TEMPLATE_CONTENT: true,
+          ENABLE_CLONE_NODE: true,
+          ENABLE_SIZE_APIS: false,
+          REACT_APP_IN_CLOUDOS: process.env.REACT_APP_IN_CLOUDOS,
+          REACT_APP_WORK_ENV: process.env.REACT_APP_WORK_ENV,
+        }),
+        new EnvironmentPlugin({
+          TARO_ENV: "h5",
+        }),
+      ],
     },
-    plugins: [
-      new DefinePlugin({
-        ENABLE_INNER_HTML: true,
-        ENABLE_ADJACENT_HTML: true,
-        ENABLE_TEMPLATE_CONTENT: true,
-        ENABLE_CLONE_NODE: true,
-        ENABLE_SIZE_APIS: false,
-      }),
-      new EnvironmentPlugin({
-        TARO_ENV: "h5",
-      }),
-    ],
   },
   style: {
     postcss: {
@@ -211,6 +212,11 @@ module.exports = {
       options: {
         lessLoaderOptions: {
           lessOptions: {
+            modifyVars: {
+              "@primary-color": process.env.REACT_APP_IN_CLOUDOS
+                ? "#613eea"
+                : "var(--ads-color-brand)",
+            },
             javascriptEnabled: true,
           },
         },
@@ -226,12 +232,10 @@ module.exports = {
             path.resolve(__dirname, "src"),
             ...webpackConfig.resolve.modules,
           ];
+          removeModuleScopePlugin()(webpackConfig);
           return webpackConfig;
         },
       },
     },
   ],
-  typescript: {
-    enableTypeChecking: false,
-  },
 };

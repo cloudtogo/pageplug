@@ -6,6 +6,7 @@ import { Search } from "@taroify/core";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import IconSVG from "../icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 class MSearchWidget extends BaseWidget<MSearchWidgetProps, WidgetState> {
   static type = "TARO_SEARCH_WIDGET";
@@ -13,6 +14,7 @@ class MSearchWidget extends BaseWidget<MSearchWidgetProps, WidgetState> {
   static getConfig() {
     return {
       name: "搜索框",
+      tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["search input"],
       iconSVG: IconSVG,
       needsMeta: true,

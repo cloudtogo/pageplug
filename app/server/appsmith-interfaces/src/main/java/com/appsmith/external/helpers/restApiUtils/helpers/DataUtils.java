@@ -11,11 +11,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
+import com.google.gson.ToNumberPolicy;
+import com.google.gson.reflect.TypeToken;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
+import net.minidev.json.writer.CollectionMapper;
+import net.minidev.json.writer.JsonReader;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.HttpMethod;
@@ -35,6 +39,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -44,12 +49,30 @@ public class DataUtils {
 
     public static String FIELD_API_CONTENT_TYPE = "apiContentType";
 
+    /**
+     * this Gson builder has three parameters for creating a gson instances which is required to maintain the JSON as received
+     * setLenient() : allows parsing of JSONs which don't strictly adhere to RFC4627 (our older implementation is also more permissive)
+     * setObjectToNumberStrategy(): How to parse numbers which comes as a part of JSON objects
+     * i.e. [4, 5.5, 7] --> [4, 5.5, 7] (with lazily parsed numbers), default was [4.0, 5.5, 7.0]
+     * setNumberToNumberStrategy() : same as above but only applies to number json
+     * 4 -> 4,  4.7 --> 4.7
+     */
+    private static final Gson gson = new GsonBuilder()
+            .setLenient()
+            .setObjectToNumberStrategy(ToNumberPolicy.LAZILY_PARSED_NUMBER)
+            .setNumberToNumberStrategy(ToNumberPolicy.LAZILY_PARSED_NUMBER)
+            .create();
+
+    private static final JSONParser jsonParser = new JSONParser(JSONParser.MODE_PERMISSIVE);
+
     private final ObjectMapper objectMapper;
 
     public enum MultipartFormDataType {
         TEXT,
         FILE,
         ARRAY,
+        // this is for allowing application/json in Multipart from data
+        JSON,
     }
 
     public DataUtils() {
@@ -145,6 +168,13 @@ public class DataUtils {
                     continue;
                 }
 
+                // null values are not accepted by the Mutli-part form data standards,
+                // null values cannot be achieved via client side changes, hence skipping the form-data property
+                // altogether instead of throwing an error over here.
+                if (property.getValue() == null) {
+                    continue;
+                }
+
                 // This condition is for the current scenario, while we wait for client changes to come in
                 // before the migration can be introduced
                 if (property.getType() == null) {
@@ -192,6 +222,39 @@ public class DataUtils {
                             }
                         } else {
                             bodyBuilder.part(key, property.getValue());
+                        }
+                        break;
+                    case JSON:
+                        // apart from String we can expect json list or a JSON dictionary as input,
+                        // while spring would typecast a json list to List, a Json Dictionary is not always expected to
+                        // be type-casted as a map, hence this has been chosen to be built as it is.
+                        if (!(property.getValue() instanceof String jsonString)) {
+                            bodyBuilder.part(key, property.getValue(), MediaType.APPLICATION_JSON);
+                            break;
+                        }
+
+                        if (!StringUtils.hasText(jsonString)) {
+                            // the jsonString is empty, it could be intended by the user hence continuing execution.
+                            bodyBuilder.part(key, "", MediaType.APPLICATION_JSON);
+                            break;
+                        }
+
+                        Object objectFromJson;
+                        try {
+                            objectFromJson = objectFromJson(jsonString);
+                        } catch (JsonSyntaxException | ParseException e) {
+                            throw new AppsmithPluginException(
+                                    AppsmithPluginError.PLUGIN_JSON_PARSE_ERROR,
+                                    jsonString,
+                                    "Malformed JSON: " + e.getMessage());
+                        }
+
+                        if (objectFromJson == null) {
+                            // Although this is not expected to be true; However, in case the parsed object is null,
+                            // choosing to error out as the value provided by user has not transformed into json.
+                            throw new AppsmithPluginException(AppsmithPluginError.PLUGIN_JSON_PARSE_ERROR, jsonString);
+                        } else {
+                            bodyBuilder.part(key, objectFromJson, MediaType.APPLICATION_JSON);
                         }
                         break;
                 }
@@ -259,16 +322,44 @@ public class DataUtils {
             return null;
         }
 
-        JSONParser jsonParser = new JSONParser(JSONParser.MODE_PERMISSIVE);
-        Object parsedJson = null;
+        // For both list and Map type we have used fallback parsing strategies, First GSON tries to parse
+        // the jsonString (we've used gson because the native jsonObject gson uses to parse JSON is implemented on top
+        // of linkedHashMaps, which preserves the order of attributes),
+        // however if gson encounters any errors, which could arise due to a lenient jsonString
+        // i.e. { "a" : "one", "b" : "two",} (Notice the comma at the end), this is not a valid json according to
+        // RFC4627. GSON would fail here, however JsonParser from net.minidev would parse this in permissive mode.
 
         if (type.equals(List.class)) {
-            parsedJson = (JSONArray) jsonParser.parse(jsonString);
+            return parseJsonIntoListWithOrderedObjects(jsonString, gson, jsonParser);
         } else {
-            parsedJson = (JSONObject) jsonParser.parse(jsonString);
+            // We learned from issue #23456 that some use-cases require the order of keys to be preserved
+            //  i.e. for AWS authorisation, one signature header is required whose value holds the hash
+            // of the body.
+            return parseJsonIntoOrderedObject(jsonString, gson, jsonParser);
         }
+    }
 
-        return parsedJson;
+    private static Object parseJsonIntoListWithOrderedObjects(String jsonString, Gson gson, JSONParser jsonParser)
+            throws ParseException {
+        TypeToken<List<Object>> listTypeToken = new TypeToken<>() {};
+        try {
+            return gson.fromJson(jsonString, listTypeToken.getType());
+        } catch (JsonSyntaxException jsonSyntaxException) {
+            return jsonParser.parse(jsonString);
+        }
+    }
+
+    private static Object parseJsonIntoOrderedObject(String jsonString, Gson gson, JSONParser jsonParser)
+            throws ParseException {
+        TypeToken<LinkedHashMap<String, Object>> linkedHashMapTypeToken = new TypeToken<>() {};
+        try {
+            return gson.fromJson(jsonString, linkedHashMapTypeToken.getType());
+        } catch (JsonSyntaxException jsonSyntaxException) {
+            JsonReader jsonReader = new JsonReader();
+            CollectionMapper.MapClass<LinkedHashMap<String, Object>> collectionMapper =
+                    new CollectionMapper.MapClass<>(jsonReader, linkedHashMapTypeToken.getRawType());
+            return jsonParser.parse(jsonString, collectionMapper);
+        }
     }
 
     public Object getRequestBodyObject(
@@ -282,7 +373,7 @@ public class DataUtils {
                 PluginUtils.getValueSafelyFromFormData(actionConfiguration.getFormData(), FIELD_API_CONTENT_TYPE);
         ApiContentType apiContentType = ApiContentType.getValueFromString(apiContentTypeStr);
 
-        if (httpMethod.equals(HttpMethod.GET) && (apiContentType == null || apiContentType == ApiContentType.NONE)) {
+        if (HttpMethod.GET.equals(httpMethod) && (apiContentType == null || apiContentType == ApiContentType.NONE)) {
             /**
              * Setting request body object to null makes the webClient object to ignore the body when sending the API
              * request. Earlier, we were setting it to an empty string, which worked fine for almost all the use
@@ -297,7 +388,7 @@ public class DataUtils {
         // Based on the content-type, this Object may be of type MultiValueMap or String
         Object requestBodyObj = "";
 
-        if (!httpMethod.equals(HttpMethod.GET)) {
+        if (!HttpMethod.GET.equals(httpMethod)) {
             // Read the body normally as this is a non-GET request
             requestBodyObj = (actionConfiguration.getBody() == null) ? "" : actionConfiguration.getBody();
         } else if (apiContentType != null && apiContentType != ApiContentType.NONE) {

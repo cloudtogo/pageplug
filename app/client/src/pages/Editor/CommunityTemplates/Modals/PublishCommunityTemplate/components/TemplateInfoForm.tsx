@@ -82,6 +82,7 @@ const TemplateInfoForm = ({
       </TemplateInfoFormFieldWrapper>
       <TemplateInfoFormFieldWrapper>
         <Input
+          data-testid="t--community-template-description-input"
           label={createMessage(
             COMMUNITY_TEMPLATES.publishFormPage.templateForm
               .descriptionInputLabel,
@@ -128,8 +129,12 @@ const UseCasesSelect = ({
   return (
     <Select
       data-testid="t--community-template-usecases-input"
+      getPopupContainer={(triggerNode) => triggerNode.parentNode.parentNode}
       isMultiSelect
+      maxTagCount={6}
+      maxTagTextLength={20}
       onChange={setTemplateUseCases}
+      showSearch
       value={templateUseCases}
     >
       {useCases &&

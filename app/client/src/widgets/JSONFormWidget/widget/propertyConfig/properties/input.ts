@@ -397,8 +397,8 @@ const PROPERTIES = {
       },
       {
         propertyName: "minNum",
-        helpText: "设置最小输入长度",
-        label: "最小输入长度",
+        helpText: "设置最小值",
+        label: "最小值",
         controlType: "INPUT_TEXT",
         placeholderText: "1",
         isBindProperty: true,
@@ -420,8 +420,8 @@ const PROPERTIES = {
       },
       {
         propertyName: "maxNum",
-        helpText: "设置最大输入长度",
-        label: "最大输入长度",
+        helpText: "设置最大值",
+        label: "最大值",
         controlType: "INPUT_TEXT",
         placeholderText: "100",
         isBindProperty: true,

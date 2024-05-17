@@ -29,6 +29,7 @@ import type { LabelPosition } from "components/constants";
 import useDropdown from "widgets/useDropdown";
 import LabelWithTooltip from "widgets/components/LabelWithTooltip";
 import { isNil } from "lodash";
+import { Icon as DIcon } from "design-system";
 
 export interface TreeSelectProps
   extends Required<

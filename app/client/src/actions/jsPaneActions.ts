@@ -6,7 +6,10 @@ import type {
   SetFunctionPropertyPayload,
 } from "@appsmith/api/JSActionAPI";
 import type { EventLocation } from "@appsmith/utils/analyticsUtilTypes";
-import type { JSEditorTab } from "reducers/uiReducers/jsPaneReducer";
+import type {
+  JSEditorTab,
+  JSPaneDebuggerState,
+} from "reducers/uiReducers/jsPaneReducer";
 
 export const createNewJSCollection = (
   pageId: string,
@@ -60,9 +63,8 @@ export const refactorJSCollectionAction = (payload: {
 };
 
 export const executeJSFunctionInit = (payload: {
-  collectionName: string;
+  collection: JSCollection;
   action: JSAction;
-  collectionId: string;
 }) => {
   return {
     type: ReduxActionTypes.EXECUTE_JS_FUNCTION_INIT,
@@ -71,10 +73,10 @@ export const executeJSFunctionInit = (payload: {
 };
 
 export const startExecutingJSFunction = (payload: {
-  collectionName: string;
   action: JSAction;
-  collectionId: string;
+  collection: JSCollection;
   from: EventLocation;
+  openDebugger?: boolean;
 }) => {
   return {
     type: ReduxActionTypes.START_EXECUTE_JS_FUNCTION,
@@ -111,4 +113,11 @@ export const setJsPaneConfigSelectedTab: (
 ) => ReduxAction<{ selectedTab: JSEditorTab }> = (payload: JSEditorTab) => ({
   type: ReduxActionTypes.SET_JS_PANE_CONFIG_SELECTED_TAB,
   payload: { selectedTab: payload },
+});
+
+export const setJsPaneDebuggerState = (
+  payload: Partial<JSPaneDebuggerState>,
+) => ({
+  type: ReduxActionTypes.SET_JS_PANE_DEBUGGER_STATE,
+  payload,
 });

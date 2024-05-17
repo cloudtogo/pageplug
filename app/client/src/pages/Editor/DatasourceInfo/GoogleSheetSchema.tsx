@@ -48,6 +48,9 @@ import Entity from "../Explorer/Entity";
 import DatasourceField from "./DatasourceField";
 import { setEntityCollapsibleState } from "actions/editorContextActions";
 import ItemLoadingIndicator from "./ItemLoadingIndicator";
+import { useEditorType } from "@appsmith/hooks";
+import history from "utils/history";
+import { getIsGeneratingTemplatePage } from "selectors/pageListSelectors";
 
 interface Props {
   datasourceId: string;
@@ -79,6 +82,8 @@ function GoogleSheetSchema(props: Props) {
     selectedSheet?: string;
     selectedSpreadSheet?: string;
   }>({});
+
+  const isGeneratePageLoading = useSelector(getIsGeneratingTemplatePage);
 
   const handleSearch = (value: string) => {
     setSearchString(value.toLowerCase());
@@ -168,7 +173,7 @@ function GoogleSheetSchema(props: Props) {
     );
     scrollIntoView(
       `#${CSS.escape(`entity-${datasource?.id}-${option.value}`)}`,
-      ".t--gsheet-structure",
+      ".t--gsheet-structure .t--gsheet-structure-list",
     );
     setSelectedSpreadsheet(option);
     fetchSheetsList({
@@ -196,7 +201,7 @@ function GoogleSheetSchema(props: Props) {
       `#${CSS.escape(
         `entity-${datasource?.id}-${selectedSpreadsheet.value}-${option.value}`,
       )}`,
-      ".t--gsheet-structure",
+      ".t--gsheet-structure .t--gsheet-structure-list",
       -30,
     );
     setSelectedSheet(option);
@@ -343,16 +348,19 @@ function GoogleSheetSchema(props: Props) {
 
   const isFeatureEnabled = useFeatureFlag(FEATURE_FLAG.license_gac_enabled);
 
+  const editorType = useEditorType(history.location.pathname);
+
   const canCreatePages = getHasCreatePagePermission(
     isFeatureEnabled,
     userAppPermissions,
   );
 
-  const canCreateDatasourceActions = hasCreateDSActionPermissionInApp(
-    isFeatureEnabled,
-    datasourcePermissions,
+  const canCreateDatasourceActions = hasCreateDSActionPermissionInApp({
+    isEnabled: isFeatureEnabled,
+    dsPermissions: datasourcePermissions,
     pagePermissions,
-  );
+    editorType,
+  });
 
   const refreshSpreadSheetButton = (option: DropdownOption) => (
     <Button
@@ -377,7 +385,7 @@ function GoogleSheetSchema(props: Props) {
   return (
     <ViewModeSchemaContainer>
       <DataWrapperContainer>
-        <StructureContainer>
+        <StructureContainer data-testId="datasource-schema-container">
           {datasource && (
             <DatasourceStructureHeader
               datasource={datasource}
@@ -493,8 +501,9 @@ function GoogleSheetSchema(props: Props) {
         <ButtonContainer>
           <Button
             className="t--datasource-generate-page"
+            isLoading={isGeneratePageLoading}
             key="datasource-generate-page"
-            kind="secondary"
+            kind="primary"
             onClick={onGsheetGeneratePage}
             size="md"
           >

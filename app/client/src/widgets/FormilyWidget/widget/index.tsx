@@ -280,7 +280,7 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
 
   static getMetaPropertiesMap(): Record<string, any> {
     return {
-      formData: [],
+      formData: undefined,
     };
   }
 

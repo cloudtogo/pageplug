@@ -9,15 +9,16 @@ import {
   ReduxActionTypes,
 } from "@appsmith/constants/ReduxActionConstants";
 import type {
-  ApplicationObject,
   ApplicationPagePayload,
   ApplicationResponsePayload,
   ChangeAppViewAccessRequest,
   CreateApplicationRequest,
   CreateApplicationResponse,
   DeleteApplicationRequest,
+  DeleteNavigationLogoRequest,
   FetchApplicationPayload,
   FetchApplicationResponse,
+  FetchApplicationsOfWorkspaceResponse,
   FetchUnconfiguredDatasourceListResponse,
   FetchUsersApplicationsWorkspacesResponse,
   ForkApplicationRequest,
@@ -27,24 +28,20 @@ import type {
   SetDefaultPageRequest,
   UpdateApplicationRequest,
   UpdateApplicationResponse,
-  WorkspaceApplicationObject,
   UploadNavigationLogoRequest,
 } from "@appsmith/api/ApplicationApi";
 import ApplicationApi from "@appsmith/api/ApplicationApi";
 import { all, call, put, select, take, takeLatest } from "redux-saga/effects";
 
 import { validateResponse } from "sagas/ErrorSagas";
-import {
-  getDeletingMultipleApps,
-  getUserApplicationsWorkspacesList,
-} from "@appsmith/selectors/applicationSelectors";
+import { getCurrentApplicationIdForCreateNewApp } from "@appsmith/selectors/applicationSelectors";
 import type { ApiResponse } from "api/ApiResponses";
 import history from "utils/history";
 import type { AppState } from "@appsmith/reducers";
 import {
   ApplicationVersion,
+  deleteApplicationNavigationLogoSuccessAction,
   fetchApplication,
-  getAllApplications,
   importApplicationSuccess,
   initDatasourceConnectionDuringImportSuccess,
   resetCurrentApplication,
@@ -58,20 +55,16 @@ import {
   updateCurrentApplicationEmbedSetting,
   updateCurrentApplicationIcon,
   updateCurrentApplicationForkingEnabled,
+  updateApplicationThemeSettingAction,
+  fetchAllApplicationsOfWorkspace,
 } from "@appsmith/actions/applicationActions";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import {
   createMessage,
-  DELETING_APPLICATION,
-  DELETING_MULTIPLE_APPLICATION,
-  DISCARD_SUCCESS,
   ERROR_IMPORTING_APPLICATION_TO_WORKSPACE,
 } from "@appsmith/constants/messages";
 import { APP_MODE } from "entities/App";
-import type {
-  Workspace,
-  Workspaces,
-} from "@appsmith/constants/workspaceConstants";
+import type { Workspace } from "@appsmith/constants/workspaceConstants";
 import type { AppColorCode } from "constants/DefaultTheme";
 import {
   getCurrentApplicationId,
@@ -81,21 +74,20 @@ import {
 
 import {
   deleteRecentAppEntities,
-  setPostWelcomeTourState,
+  getEnableStartSignposting,
 } from "utils/storage";
 import {
   reconnectAppLevelWebsocket,
   reconnectPageLevelWebsocket,
 } from "actions/websocketActions";
-import { getCurrentWorkspace } from "@appsmith/selectors/workspaceSelectors";
 import type { AppLayoutConfig } from "reducers/entityReducers/pageListReducer";
 
 import {
-  getCurrentStep,
   getEnableFirstTimeUserOnboarding,
   getFirstTimeUserOnboardingApplicationId,
-  inGuidedTour,
 } from "selectors/onboardingSelectors";
+import { getFetchedWorkspaces } from "@appsmith/selectors/workspaceSelectors";
+
 import { fetchPluginFormConfigs, fetchPlugins } from "actions/pluginActions";
 import {
   fetchDatasources,
@@ -103,7 +95,6 @@ import {
 } from "actions/datasourceActions";
 import { failFastApiCalls } from "sagas/InitSagas";
 import type { Datasource } from "entities/Datasource";
-import { GUIDED_TOUR_STEPS } from "pages/Editor/GuidedTour/constants";
 import { builderURL, viewerURL } from "@appsmith/RouteBuilder";
 import { getDefaultPageId as selectDefaultPageId } from "sagas/selectors";
 import PageApi from "api/PageApi";
@@ -123,7 +114,6 @@ import { ANONYMOUS_USERNAME } from "constants/userConstants";
 import { getCurrentUser } from "selectors/usersSelectors";
 import { ERROR_CODES } from "@appsmith/constants/ApiConstants";
 import { safeCrashAppRequest } from "actions/errorActions";
-import { isAirgapped } from "@appsmith/utils/airgapHelpers";
 import type { IconNames } from "design-system";
 import {
   defaultNavigationSetting,
@@ -131,10 +121,15 @@ import {
 } from "constants/AppConstants";
 import { setAllEntityCollapsibleStates } from "actions/editorContextActions";
 import { getCurrentEnvironmentId } from "@appsmith/selectors/environmentSelectors";
-import type { DeletingMultipleApps } from "@appsmith/reducers/uiReducers/applicationsReducer";
 import { selectFeatureFlagCheck } from "@appsmith/selectors/featureFlagsSelectors";
 import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
 import { LayoutSystemTypes } from "layoutSystems/types";
+import {
+  getApplicationsOfWorkspace,
+  getCurrentWorkspaceId,
+} from "@appsmith/selectors/selectedWorkspaceSelectors";
+import equal from "fast-deep-equal";
+import { getFromServerWhenNoPrefetchedResult } from "sagas/helper";
 
 export const getDefaultPageId = (
   pages?: ApplicationPagePayload[],
@@ -168,16 +163,10 @@ export function* publishApplicationSaga(
 
       const applicationId: string = yield select(getCurrentApplicationId);
       const currentPageId: string = yield select(getCurrentPageId);
-      const guidedTour: boolean = yield select(inGuidedTour);
-      const currentStep: number = yield select(getCurrentStep);
 
-      let appicationViewPageUrl = viewerURL({
+      const appicationViewPageUrl = viewerURL({
         pageId: currentPageId,
       });
-      if (guidedTour && currentStep === GUIDED_TOUR_STEPS.DEPLOY) {
-        appicationViewPageUrl += "?&guidedTourComplete=true";
-        yield call(setPostWelcomeTourState, true);
-      }
 
       yield put(
         fetchApplication({
@@ -205,39 +194,53 @@ export function* publishApplicationSaga(
   }
 }
 
-export function* getAllApplicationSaga() {
-  const isAirgappedInstance = isAirgapped();
+export function* fetchAllApplicationsOfWorkspaceSaga(
+  action?: ReduxAction<string>,
+) {
+  let activeWorkspaceId: string = "";
+  if (!action?.payload) {
+    activeWorkspaceId = yield select(getCurrentWorkspaceId);
+  } else {
+    activeWorkspaceId = action.payload;
+  }
+
   try {
-    const response: FetchUsersApplicationsWorkspacesResponse = yield call(
-      ApplicationApi.getAllApplication,
+    const response: FetchApplicationsOfWorkspaceResponse = yield call(
+      ApplicationApi.fetchAllApplicationsOfWorkspace,
+      activeWorkspaceId,
+    );
+    const isEnabledForCreateNew: boolean = yield select(
+      selectFeatureFlagCheck,
+      FEATURE_FLAG.ab_create_new_apps_enabled,
+    );
+    const workspaces: Workspace[] = yield select(getFetchedWorkspaces);
+    const isOnboardingApplicationId: string = yield select(
+      getCurrentApplicationIdForCreateNewApp,
     );
     const isValidResponse: boolean = yield validateResponse(response);
     if (isValidResponse) {
-      const workspaceApplication: WorkspaceApplicationObject[] =
-        response.data.workspaceApplications.map(
-          (userWorkspaces: WorkspaceApplicationObject) => ({
-            workspace: userWorkspaces.workspace,
-            users: userWorkspaces.users,
-            applications: !userWorkspaces.applications
-              ? []
-              : userWorkspaces.applications.map(
-                  (application: ApplicationObject) => {
-                    return {
-                      ...application,
-                      defaultPageId: getDefaultPageId(application.pages),
-                    };
-                  },
-                ),
-          }),
-        );
-
-      yield put({
-        type: ReduxActionTypes.FETCH_USER_APPLICATIONS_WORKSPACES_SUCCESS,
-        payload: workspaceApplication,
+      const applications = response.data.map((application) => {
+        return {
+          ...application,
+          defaultPageId: getDefaultPageId(application.pages),
+        };
       });
-    }
-    if (!isAirgappedInstance) {
-      yield call(fetchReleases);
+      yield put({
+        type: ReduxActionTypes.FETCH_ALL_APPLICATIONS_OF_WORKSPACE_SUCCESS,
+        payload: applications,
+      });
+
+      // This will initialise the current workspace to first only during onboarding
+      if (
+        isEnabledForCreateNew &&
+        workspaces.length > 0 &&
+        !!isOnboardingApplicationId
+      ) {
+        yield put({
+          type: ReduxActionTypes.SET_CURRENT_WORKSPACE,
+          payload: workspaces[0],
+        });
+      }
     }
   } catch (error) {
     yield put({
@@ -248,18 +251,20 @@ export function* getAllApplicationSaga() {
     });
   }
 }
-
+// v1
 export function* fetchAppAndPagesSaga(
   action: ReduxAction<FetchApplicationPayload>,
 ) {
   try {
-    const params = pickBy(action.payload, identity);
+    const { pages, ...payload } = action.payload;
+    const params = pickBy(payload, identity);
     if (params.pageId && params.applicationId) {
       delete params.applicationId;
     }
     const response: FetchApplicationResponse = yield call(
-      PageApi.fetchAppAndPages,
-      params,
+      getFromServerWhenNoPrefetchedResult,
+      pages,
+      () => call(PageApi.fetchAppAndPages, params),
     );
     const isValidResponse: boolean = yield call(validateResponse, response);
     if (isValidResponse) {
@@ -299,15 +304,10 @@ export function* fetchAppAndPagesSaga(
         type: ReduxActionTypes.SET_CURRENT_WORKSPACE_ID,
         payload: {
           workspaceId: response.data.workspaceId,
+          editorId: response.data.application?.id,
         },
       });
 
-      if (localStorage.getItem("GIT_DISCARD_CHANGES") === "success") {
-        toast.show(createMessage(DISCARD_SUCCESS), {
-          kind: "success",
-        });
-        localStorage.setItem("GIT_DISCARD_CHANGES", "");
-      }
       yield put({
         type: ReduxActionTypes.SET_APP_VERSION_ON_WORKER,
         payload: response.data.application?.evaluationVersion,
@@ -451,6 +451,15 @@ export function* updateApplicationSaga(
             ),
           );
         }
+
+        // TODO: refactor this once backend is ready
+        if (request.applicationDetail?.themeSetting) {
+          yield put(
+            updateApplicationThemeSettingAction(
+              request.applicationDetail?.themeSetting,
+            ),
+          );
+        }
       }
     }
     if (isValidResponse && request.viewerLayout) {
@@ -473,7 +482,6 @@ export function* deleteApplicationSaga(
   action: ReduxAction<DeleteApplicationRequest>,
 ) {
   try {
-    toast.show(createMessage(DELETING_APPLICATION));
     const request: DeleteApplicationRequest = action.payload;
     const response: ApiResponse = yield call(
       ApplicationApi.deleteApplication,
@@ -490,40 +498,6 @@ export function* deleteApplicationSaga(
   } catch (error) {
     yield put({
       type: ReduxActionErrorTypes.DELETE_APPLICATION_ERROR,
-      payload: {
-        error,
-      },
-    });
-  }
-}
-
-export function* deleteMultipleApplicationSaga() {
-  try {
-    toast.show(createMessage(DELETING_MULTIPLE_APPLICATION));
-    const deleteMultipleAppsObject: DeletingMultipleApps = yield select(
-      getDeletingMultipleApps,
-    );
-
-    if (deleteMultipleAppsObject.list?.length) {
-      const response: ApiResponse = yield call(
-        ApplicationApi.deleteMultipleApps,
-        { ids: deleteMultipleAppsObject.list },
-      );
-      const isValidResponse: boolean = yield validateResponse(response);
-      if (isValidResponse) {
-        yield put({
-          type: ReduxActionTypes.DELETE_MULTIPLE_APPLICATION_SUCCESS,
-          payload: response.data,
-        });
-        deleteMultipleAppsObject.list.forEach(function* (id) {
-          yield call(deleteRecentAppEntities, id);
-        });
-        toast.dismiss();
-      }
-    }
-  } catch (error) {
-    yield put({
-      type: ReduxActionErrorTypes.DELETE_MULTIPLE_APPLICATION_ERROR,
       payload: {
         error,
       },
@@ -567,26 +541,18 @@ export function* createApplicationSaga(
     applicationName: string;
     icon: IconNames;
     color: AppColorCode;
-    isMobile: boolean;
+    isTaroWds: boolean;
     workspaceId: string;
     resolve: any;
     reject: any;
   }>,
 ) {
-  const { applicationName, color, icon, workspaceId, reject, isMobile } =
+  const { applicationName, color, icon, workspaceId, reject, isTaroWds } =
     action.payload;
   try {
-    const userWorkspaces: Workspaces[] = yield select(
-      getUserApplicationsWorkspacesList,
-    );
-    const existingWorkspaces = userWorkspaces.filter(
-      (workspace: Workspaces) => workspace.workspace.id === workspaceId,
-    )[0];
-    const existingApplication = existingWorkspaces
-      ? existingWorkspaces.applications.find(
-          (application: ApplicationPayload) =>
-            application.name === applicationName,
-        )
+    const applications: Workspace[] = yield select(getApplicationsOfWorkspace);
+    const existingApplication = applications
+      ? applications.find((application) => application.name === applicationName)
       : null;
     if (existingApplication) {
       yield call(reject, {
@@ -603,8 +569,9 @@ export function* createApplicationSaga(
       yield put(resetCurrentApplication());
 
       const layout: AppLayoutConfig = {
-        type: isMobile ? "MOBILE_FLUID" : "FLUID",
+        type: isTaroWds ? "MOBILE_FLUID" : "FLUID",
       };
+      console.log("createApplicationSaga", layout)
       const request: CreateApplicationRequest = {
         name: applicationName,
         icon: icon,
@@ -640,7 +607,7 @@ export function* createApplicationSaga(
         };
         AnalyticsUtil.logEvent("CREATE_APP", {
           appName: application.name,
-          isMobile,
+          isTaroWds,
         });
         // This sets ui.pageWidgets = {} to ensure that
         // widgets are cleaned up from state before
@@ -659,10 +626,12 @@ export function* createApplicationSaga(
         const FirstTimeUserOnboardingApplicationId: string = yield select(
           getFirstTimeUserOnboardingApplicationId,
         );
-        if (
-          isMobile ||
+        const enableSignposting: boolean | null =
+          yield getEnableStartSignposting();
+        if ((
+          isTaroWds ||
           (isFirstTimeUserOnboardingEnabled &&
-            FirstTimeUserOnboardingApplicationId === "")
+            FirstTimeUserOnboardingApplicationId === "") && enableSignposting)
         ) {
           yield put({
             type: ReduxActionTypes.SET_FIRST_TIME_USER_ONBOARDING_APPLICATION_ID,
@@ -729,6 +698,7 @@ export function* forkApplicationSaga(
         type: ReduxActionTypes.SET_CURRENT_WORKSPACE_ID,
         payload: {
           workspaceId: action.payload.workspaceId,
+          editorId: application.id,
         },
       });
 
@@ -785,7 +755,7 @@ export function* showReconnectDatasourcesModalSaga(
 ) {
   const { application, pageId, unConfiguredDatasourceList, workspaceId } =
     action.payload;
-  yield put(getAllApplications());
+  yield put(fetchAllApplicationsOfWorkspace());
   yield put(importApplicationSuccess(application));
   yield put(fetchPlugins({ workspaceId }));
 
@@ -793,7 +763,7 @@ export function* showReconnectDatasourcesModalSaga(
     setUnconfiguredDatasourcesDuringImport(unConfiguredDatasourceList || []),
   );
 
-  yield put(setWorkspaceIdForImport(workspaceId));
+  yield put(setWorkspaceIdForImport({ editorId: application.id, workspaceId }));
   yield put(setPageIdForImport(pageId));
   yield put(setIsReconnectingDatasourcesModalOpen({ isOpen: true }));
 }
@@ -808,11 +778,12 @@ export function* importApplicationSaga(
     );
     const isValidResponse: boolean = yield validateResponse(response);
     if (isValidResponse) {
-      const allWorkspaces: Workspace[] = yield select(getCurrentWorkspace);
+      const currentWorkspaceId: string = yield select(getCurrentWorkspaceId);
+      const allWorkspaces: Workspace[] = yield select(getFetchedWorkspaces);
       const currentWorkspace = allWorkspaces.filter(
         (el: Workspace) => el.id === action.payload.workspaceId,
       );
-      if (currentWorkspace.length > 0) {
+      if (currentWorkspaceId && currentWorkspace.length > 0) {
         const {
           // @ts-expect-error: response is of type unknown
           application: { pages },
@@ -842,9 +813,6 @@ export function* importApplicationSaga(
             pageId: defaultPage[0].id,
           });
           history.push(pageURL);
-          const guidedTour: boolean = yield select(inGuidedTour);
-
-          if (guidedTour) return;
 
           toast.show("应用导入成功！", {
             kind: "success",
@@ -939,14 +907,8 @@ export function* initializeDatasourceWithDefaultValues(datasource: Datasource) {
     // if the currentEnvironemnt is not present for use here, take the first key from datasourceStorages
     currentEnvironment = Object.keys(datasource.datasourceStorages)[0];
   }
-  // Added isEmpty instead of ! condition as ! does not account for
-  // datasourceConfiguration being empty
-  if (
-    isEmpty(
-      datasource.datasourceStorages[currentEnvironment]
-        ?.datasourceConfiguration,
-    )
-  ) {
+  const dsStorage = datasource.datasourceStorages[currentEnvironment];
+  if (!dsStorage?.isConfigured) {
     yield call(checkAndGetPluginFormConfigsSaga, datasource.pluginId);
     const formConfig: Record<string, unknown>[] = yield select(
       getPluginForm,
@@ -955,28 +917,39 @@ export function* initializeDatasourceWithDefaultValues(datasource: Datasource) {
     const initialValues: unknown = yield call(
       getConfigInitialValues,
       formConfig,
+      false,
+      false,
     );
-    const payload = merge(
-      initialValues,
-      datasource.datasourceStorages[currentEnvironment],
-    );
+    const payload = merge(initialValues, dsStorage);
     payload.isConfigured = false; // imported datasource as not configured yet
-    const response: ApiResponse =
-      yield DatasourcesApi.updateDatasourceStorage(payload);
-    const isValidResponse: boolean = yield validateResponse(response);
-    if (isValidResponse) {
-      yield put({
-        type: ReduxActionTypes.UPDATE_DATASOURCE_IMPORT_SUCCESS,
-        payload: response.data,
-      });
+
+    let isDSValueUpdated = false;
+    if (isEmpty(dsStorage.datasourceConfiguration)) {
+      isDSValueUpdated = true;
+    } else {
+      isDSValueUpdated = !equal(payload, dsStorage);
+    }
+    if (isDSValueUpdated) {
+      const response: ApiResponse =
+        yield DatasourcesApi.updateDatasourceStorage(payload);
+      const isValidResponse: boolean = yield validateResponse(response);
+      if (isValidResponse) {
+        yield put({
+          type: ReduxActionTypes.UPDATE_DATASOURCE_IMPORT_SUCCESS,
+          payload: response.data,
+        });
+      }
     }
   }
 }
 
 export function* initDatasourceConnectionDuringImport(
-  action: ReduxAction<string>,
+  action: ReduxAction<{
+    workspaceId: string;
+    isPartialImport?: boolean;
+  }>,
 ) {
-  const workspaceId = action.payload;
+  const workspaceId = action.payload.workspaceId;
 
   const pluginsAndDatasourcesCalls: boolean = yield failFastApiCalls(
     [fetchPlugins({ workspaceId }), fetchDatasources({ workspaceId })],
@@ -1008,7 +981,10 @@ export function* initDatasourceConnectionDuringImport(
     ),
   );
 
-  yield put(initDatasourceConnectionDuringImportSuccess());
+  if (!action.payload.isPartialImport) {
+    // This is required for reconnect datasource modal popup
+    yield put(initDatasourceConnectionDuringImportSuccess());
+  }
 }
 
 export function* uploadNavigationLogoSaga(
@@ -1101,51 +1077,69 @@ export function* uploadNavigationLogoSaga(
   }
 }
 
-export default function* applicationSagas() {
-  yield all([
-    takeLatest(
-      ReduxActionTypes.FETCH_APPLICATION_PREVIEW_INIT,
-      fetchApplicationPreviewWxaCodeSaga,
-    ),
-    takeLatest(
-      ReduxActionTypes.PUBLISH_APPLICATION_INIT,
-      publishApplicationSaga,
-    ),
-    takeLatest(ReduxActionTypes.UPDATE_APP_LAYOUT, updateApplicationLayoutSaga),
-    takeLatest(ReduxActionTypes.UPDATE_APPLICATION, updateApplicationSaga),
-    takeLatest(
-      ReduxActionTypes.CHANGE_APPVIEW_ACCESS_INIT,
-      changeAppViewAccessSaga,
-    ),
-    takeLatest(
-      ReduxActionTypes.GET_ALL_APPLICATION_INIT,
-      getAllApplicationSaga,
-    ),
-    takeLatest(ReduxActionTypes.FETCH_APPLICATION_INIT, fetchAppAndPagesSaga),
-    takeLatest(ReduxActionTypes.FORK_APPLICATION_INIT, forkApplicationSaga),
-    takeLatest(ReduxActionTypes.CREATE_APPLICATION_INIT, createApplicationSaga),
-    takeLatest(
-      ReduxActionTypes.SET_DEFAULT_APPLICATION_PAGE_INIT,
-      setDefaultApplicationPageSaga,
-    ),
-    takeLatest(ReduxActionTypes.DELETE_APPLICATION_INIT, deleteApplicationSaga),
-    takeLatest(ReduxActionTypes.IMPORT_APPLICATION_INIT, importApplicationSaga),
-    takeLatest(
-      ReduxActionTypes.FETCH_APPLICATION_PREVIEW_INIT,
-      fetchApplicationPreviewWxaCodeSaga,
-    ),
-    takeLatest(ReduxActionTypes.FETCH_RELEASES, fetchReleases),
-    takeLatest(
-      ReduxActionTypes.INIT_DATASOURCE_CONNECTION_DURING_IMPORT_REQUEST,
-      initDatasourceConnectionDuringImport,
-    ),
-    takeLatest(
-      ReduxActionTypes.SHOW_RECONNECT_DATASOURCE_MODAL,
-      showReconnectDatasourcesModalSaga,
-    ),
-    takeLatest(
-      ReduxActionTypes.FETCH_UNCONFIGURED_DATASOURCE_LIST,
-      fetchUnconfiguredDatasourceList,
-    ),
-  ]);
+export function* deleteNavigationLogoSaga(
+  action: ReduxAction<DeleteNavigationLogoRequest>,
+) {
+  try {
+    const request: DeleteNavigationLogoRequest = action.payload;
+
+    yield call(ApplicationApi.deleteNavigationLogo, request);
+    yield put(deleteApplicationNavigationLogoSuccessAction());
+  } catch (error) {
+    yield put({
+      type: ReduxActionErrorTypes.DELETE_NAVIGATION_LOGO_ERROR,
+      payload: {
+        error,
+      },
+    });
+  }
 }
+
+// export default function* applicationSagas() {
+//   yield all([
+//     takeLatest(
+//       ReduxActionTypes.FETCH_APPLICATION_PREVIEW_INIT,
+//       fetchApplicationPreviewWxaCodeSaga,
+//     ),
+//     takeLatest(
+//       ReduxActionTypes.PUBLISH_APPLICATION_INIT,
+//       publishApplicationSaga,
+//     ),
+//     takeLatest(ReduxActionTypes.UPDATE_APP_LAYOUT, updateApplicationLayoutSaga),
+//     takeLatest(ReduxActionTypes.UPDATE_APPLICATION, updateApplicationSaga),
+//     takeLatest(
+//       ReduxActionTypes.CHANGE_APPVIEW_ACCESS_INIT,
+//       changeAppViewAccessSaga,
+//     ),
+//     takeLatest(
+//       ReduxActionTypes.GET_ALL_APPLICATION_INIT,
+//       getAllApplicationSaga,
+//     ),
+//     takeLatest(ReduxActionTypes.FETCH_APPLICATION_INIT, fetchAppAndPagesSaga),
+//     takeLatest(ReduxActionTypes.FORK_APPLICATION_INIT, forkApplicationSaga),
+//     takeLatest(ReduxActionTypes.CREATE_APPLICATION_INIT, createApplicationSaga),
+//     takeLatest(
+//       ReduxActionTypes.SET_DEFAULT_APPLICATION_PAGE_INIT,
+//       setDefaultApplicationPageSaga,
+//     ),
+//     takeLatest(ReduxActionTypes.DELETE_APPLICATION_INIT, deleteApplicationSaga),
+//     takeLatest(ReduxActionTypes.IMPORT_APPLICATION_INIT, importApplicationSaga),
+//     takeLatest(
+//       ReduxActionTypes.FETCH_APPLICATION_PREVIEW_INIT,
+//       fetchApplicationPreviewWxaCodeSaga,
+//     ),
+//     takeLatest(ReduxActionTypes.FETCH_RELEASES, fetchReleases),
+//     takeLatest(
+//       ReduxActionTypes.INIT_DATASOURCE_CONNECTION_DURING_IMPORT_REQUEST,
+//       initDatasourceConnectionDuringImport,
+//     ),
+//     takeLatest(
+//       ReduxActionTypes.SHOW_RECONNECT_DATASOURCE_MODAL,
+//       showReconnectDatasourcesModalSaga,
+//     ),
+//     takeLatest(
+//       ReduxActionTypes.FETCH_UNCONFIGURED_DATASOURCE_LIST,
+//       fetchUnconfiguredDatasourceList,
+//     ),
+//   ]);
+// }

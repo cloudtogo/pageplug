@@ -6,6 +6,7 @@ import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { get } from "lodash";
 import IconSVG from "../icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 const noMeSubField = (
   props: MActionBarWidgetProps,
@@ -24,6 +25,7 @@ class MActionBarWidget extends BaseWidget<MActionBarWidgetProps, WidgetState> {
   static getConfig() {
     return {
       name: "动作栏",
+      tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["action bar"],
       iconSVG: IconSVG,
       needsMeta: false,

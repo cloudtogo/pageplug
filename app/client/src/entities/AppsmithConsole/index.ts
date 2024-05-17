@@ -3,18 +3,10 @@ import type LOG_TYPE from "./logtype";
 import type { PropertyEvaluationErrorType } from "utils/DynamicBindingUtils";
 import type { PluginType } from "entities/Action";
 import type { HTTP_METHOD } from "constants/ApiEditorConstants/CommonApiConstants";
-
-export enum ENTITY_TYPE {
-  ACTION = "ACTION",
-  DATASOURCE = "DATASOURCE",
-  WIDGET = "WIDGET",
-  JSACTION = "JSACTION",
-}
-
-export enum PLATFORM_ERROR {
-  PLUGIN_EXECUTION = "PLUGIN_EXECUTION",
-  JS_FUNCTION_EXECUTION = "JS_FUNCTION_EXECUTION",
-}
+import type {
+  ENTITY_TYPE,
+  PLATFORM_ERROR,
+} from "@appsmith/entities/AppsmithConsole/utils";
 
 export type Methods =
   | "log"
@@ -71,8 +63,8 @@ export interface SourceEntity {
   id: string;
   // property path of the child
   propertyPath?: string;
-  // plugin type of the action
-  pluginType?: PluginType;
+  // plugin type of the action or type of widget
+  pluginType?: PluginType | string;
   // http method of the api. (Only for api actions)
   httpMethod?: HTTP_METHOD;
 }

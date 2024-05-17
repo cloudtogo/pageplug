@@ -9,6 +9,8 @@ import { IconWrapper } from "constants/IconConstants";
 import { Colors } from "constants/Colors";
 import { Text } from "design-system";
 import WalkthroughContext from "components/featureWalkthrough/walkthroughContext";
+import get from "lodash/get"
+import isString from "lodash/isString"
 
 interface CardProps {
   details: WidgetCardProps;
@@ -89,7 +91,7 @@ function WidgetCard(props: CardProps) {
     closeWalkthrough();
   };
 
-  const type = `${props.details.type.split("_").join("").toLowerCase()}`;
+  const type = isString(get(props, "details.type", "")) ? `${get(props, "details.type", "").split("_").join("").toLowerCase()}` : "";
   const className = `t--widget-card-draggable t--widget-card-draggable-${type}`;
 
   return (

@@ -10,6 +10,7 @@ import { Skeleton } from "@taroify/core";
 import styled from "styled-components";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import IconSVG from "../icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 const LoadingContainer = styled(View)<{
   cols?: number;
@@ -32,6 +33,7 @@ class GridWidget extends BaseWidget<GridWidgetProps, WidgetState> {
   static getConfig() {
     return {
       name: "网格",
+      tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["grid"],
       iconSVG: IconSVG,
       needsMeta: true,

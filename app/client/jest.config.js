@@ -17,7 +17,7 @@ module.exports = {
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node", "css"],
   moduleDirectories: ["node_modules", "src", "test"],
   transformIgnorePatterns: [
-    "<rootDir>/node_modules/(?!codemirror|konva|design-system|design-system-old|react-dnd|dnd-core|@babel|(@blueprintjs)|@github|lodash-es|@draft-js-plugins|react-documents|linkedom|assert-never)",
+    "<rootDir>/node_modules/(?!codemirror|konva|design-system|design-system-old|react-dnd|dnd-core|@babel|(@blueprintjs)|@github|lodash-es|@draft-js-plugins|react-documents|linkedom|assert-never|axios)",
   ],
   moduleNameMapper: {
     "\\.(css|less)$": "<rootDir>/test/__mocks__/styleMock.js",
@@ -78,7 +78,6 @@ module.exports = {
       smartLook: {
         id: parseConfig("__APPSMITH_SMART_LOOK_ID__"),
       },
-      enableRapidAPI: parseConfig("__APPSMITH_MARKETPLACE_ENABLED__"),
       segment: {
         apiKey: parseConfig("__APPSMITH_SEGMENT_KEY__"),
         ceKey: parseConfig("__APPSMITH_SEGMENT_CE_KEY__"),
@@ -89,6 +88,8 @@ module.exports = {
         applicationId: parseConfig("__APPSMITH_NEW_RELIC_APPLICATION_ID__"),
         browserAgentlicenseKey: parseConfig("__APPSMITH_NEW_RELIC_BROWSER_AGENT_LICENSE_KEY__"),
         otlpLicenseKey: parseConfig("__APPSMITH_NEW_RELIC_OTLP_LICENSE_KEY__"),
+        otlpServiceName: parseConfig("__APPSMITH_NEW_RELIC_OTEL_SERVICE_NAME__"),
+        otlpEndpoint:parseConfig("__APPSMITH_NEW_RELIC_OTEL_EXPORTER_OTLP_ENDPOINT__")
       },
       fusioncharts: {
         licenseKey: parseConfig("__APPSMITH_FUSIONCHARTS_LICENSE_KEY__"),
@@ -104,9 +105,9 @@ module.exports = {
           ? LOG_LEVELS[CONFIG_LOG_LEVEL_INDEX]
           : LOG_LEVELS[1],
       cloudHosting: "CLOUD_HOSTING",
-      enableTNCPP: parseConfig("__APPSMITH_TNC_PP__"),
       appVersion: {
         id: parseConfig("__APPSMITH_VERSION_ID__"),
+        sha: parseConfig("__APPSMITH_VERSION_SHA__"),
         releaseDate: parseConfig("__APPSMITH_VERSION_RELEASE_DATE__"),
       },
       intercomAppID: "APP_ID",

@@ -4,7 +4,6 @@ import {
   updateApplicationLayoutSaga,
   updateApplicationSaga,
   changeAppViewAccessSaga,
-  getAllApplicationSaga,
   fetchAppAndPagesSaga,
   forkApplicationSaga,
   createApplicationSaga,
@@ -17,8 +16,8 @@ import {
   fetchUnconfiguredDatasourceList,
   fetchApplicationPreviewWxaCodeSaga,
   uploadNavigationLogoSaga,
-  // deleteNavigationLogoSaga,
-  deleteMultipleApplicationSaga,
+  deleteNavigationLogoSaga,
+  fetchAllApplicationsOfWorkspaceSaga,
 } from "ce/sagas/ApplicationSagas";
 import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
 import { all, takeLatest } from "redux-saga/effects";
@@ -40,8 +39,8 @@ export default function* applicationSagas() {
       changeAppViewAccessSaga,
     ),
     takeLatest(
-      ReduxActionTypes.GET_ALL_APPLICATION_INIT,
-      getAllApplicationSaga,
+      ReduxActionTypes.FETCH_ALL_APPLICATIONS_OF_WORKSPACE_INIT,
+      fetchAllApplicationsOfWorkspaceSaga,
     ),
     takeLatest(ReduxActionTypes.FETCH_APPLICATION_INIT, fetchAppAndPagesSaga),
     takeLatest(ReduxActionTypes.FORK_APPLICATION_INIT, forkApplicationSaga),
@@ -51,10 +50,6 @@ export default function* applicationSagas() {
       setDefaultApplicationPageSaga,
     ),
     takeLatest(ReduxActionTypes.DELETE_APPLICATION_INIT, deleteApplicationSaga),
-    takeLatest(
-      ReduxActionTypes.DELETE_MULTIPLE_APPS_INIT,
-      deleteMultipleApplicationSaga,
-    ),
     takeLatest(ReduxActionTypes.IMPORT_APPLICATION_INIT, importApplicationSaga),
     takeLatest(ReduxActionTypes.FETCH_RELEASES, fetchReleases),
     takeLatest(

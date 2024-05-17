@@ -138,6 +138,7 @@ import {
   ResponsiveBehavior,
 } from "layoutSystems/common/utils/constants";
 import IconSVG from "../icon.svg";
+import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
 
 const ReactTableComponent = lazy(async () =>
   retryPromise(async () => import("../component")),
@@ -166,8 +167,6 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
   memoiseTransformDataWithEditableCell: transformDataWithEditableCell;
 
   static type = "TABLE_WIDGET_V2";
-
-  static preloadConfig = true;
 
   static getConfig() {
     return {
@@ -269,6 +268,13 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
             primaryColumnId: formConfig.primaryColumn,
             isVisibleDownload: false,
           });
+
+          if (
+            !!TableWidgetV2.getFeatureFlag(
+              FEATURE_FLAG.rollout_js_enabled_one_click_binding_enabled,
+            )
+          )
+            dynamicPropertyPathList.push({ key: "tableData" });
         }
 
         if (queryConfig.create) {
@@ -377,6 +383,7 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
 
   static getAnvilConfig(): AnvilConfig | null {
     return {
+      isLargeWidget: false,
       widgetSize: {
         maxHeight: {},
         maxWidth: {},
@@ -552,7 +559,7 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
         },
         setData: {
           path: "tableData",
-          type: "object",
+          type: "array",
         },
       },
     };
@@ -563,8 +570,13 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
    * based on columnType
    */
   getTableColumns = () => {
-    const { columnWidthMap, orderedTableColumns, renderMode, widgetId } =
-      this.props;
+    const {
+      columnWidthMap,
+      isPreviewMode,
+      orderedTableColumns,
+      renderMode,
+      widgetId,
+    } = this.props;
     const { componentWidth } = this.getPaddingAdjustedDimensions();
     const widgetLocalStorageState = getColumnOrderByWidgetIdFromLS(widgetId);
     const memoisdGetColumnsWithLocalStorage =
@@ -575,6 +587,7 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
       orderedTableColumns,
       componentWidth,
       renderMode,
+      isPreviewMode,
     );
   };
 

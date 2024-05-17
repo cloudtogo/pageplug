@@ -1,5 +1,5 @@
 import React from "react";
-import { HotkeysTarget2 } from "@blueprintjs/core";
+import { Hotkey, Hotkeys, HotkeysTarget } from "@blueprintjs/core";
 import { JS_OBJECT_HOTKEYS_CLASSNAME } from "./constants";
 
 interface Props {
@@ -7,34 +7,29 @@ interface Props {
   children: React.ReactNode;
 }
 
+@HotkeysTarget
 class JSObjectHotKeys extends React.Component<Props> {
-  private hotkeys = [
-    {
-      combo: "return",
-      onKeyDown: this.props.runActiveJSFunction,
-      allowInInput: true,
-      global: true,
-      group: "JSObject",
-      label: "Run JS Function",
-    },
-  ];
-
-  public render() {
+  public renderHotkeys() {
     return (
-      <HotkeysTarget2 hotkeys={this.hotkeys}>
-        {({ handleKeyDown, handleKeyUp }) => (
-          <div
-            onKeyDown={handleKeyDown}
-            onKeyUp={handleKeyUp}
-            style={{ height: "100%" }}
-            tabIndex={0}
-          >
-            <div className={JS_OBJECT_HOTKEYS_CLASSNAME}>
-              {this.props.children}
-            </div>
-          </div>
-        )}
-      </HotkeysTarget2>
+      <Hotkeys>
+        <Hotkey
+          allowInInput
+          combo="mod + enter"
+          global
+          label="Run Js Function"
+          onKeyDown={this.props.runActiveJSFunction}
+        />
+      </Hotkeys>
+    );
+  }
+
+  render() {
+    /*
+    Blueprint's v3 decorated component must return a single DOM element in its render() method, not a custom React component.
+    This constraint allows HotkeysTarget to inject event handlers without creating an extra wrapper element.
+    */
+    return (
+      <div className={JS_OBJECT_HOTKEYS_CLASSNAME}>{this.props.children}</div>
     );
   }
 }

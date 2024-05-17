@@ -6,6 +6,7 @@ import { ValidationTypes } from "constants/WidgetValidation";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import LoadingWrapper from "../../LoadingWrapper";
 import IconSVG from "../icon.svg";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 class MImageWidget extends BaseWidget<MImageWidgetProps, WidgetState> {
   static type = "TARO_IMAGE_WIDGET";
@@ -13,6 +14,7 @@ class MImageWidget extends BaseWidget<MImageWidgetProps, WidgetState> {
   static getConfig() {
     return {
       name: "图片",
+      tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["image", "picture"],
       iconSVG: IconSVG,
       needsMeta: false,

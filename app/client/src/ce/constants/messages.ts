@@ -21,6 +21,7 @@ export const INTERCOM_CONSENT_MESSAGE = () =>
   `我们可以获取您的电子邮件以获得更好的支持吗？`;
 export const YES = () => `是的`;
 export const ARE_YOU_SURE = () => `确定吗？`;
+export const CHAT_WITH_US = () => `Chat with us`;
 export const ERROR_ADD_API_INVALID_URL = () =>
   `创建 API 失败！请给你的数据源添加地址`;
 export const ERROR_MESSAGE_NAME_EMPTY = () => `请选择一个名字`;
@@ -126,6 +127,7 @@ export const VERIFY_ERROR_EXPIRED_TITLE = () => "糟糕，此链接已过期";
 
 export const VERIFY_ERROR_MISMATCH_TITLE = () =>
   "此链接似乎损坏。请请求一个新链接";
+export const ERROR_5001 = () => `开发调试用500,为啥`;
 
 export const ERROR_500 = () => `抱歉，服务端出错了，我们正在拼命修复`;
 export const ERROR_0 = () => `无法连接到服务端，请检查你的网络连接`;
@@ -179,6 +181,8 @@ export const PARTNER_PROGRAM_CALLOUT = (email: string) =>
 export const PARTNER_PROGRAM_CALLOUT_LINK = () => `了解 pageplug 合作伙伴计划`;
 
 export const DUPLICATING_APPLICATION = () => `正在拷贝应用...`;
+export const NEW_APPLICATION = () => `New application`;
+export const APPLICATIONS = () => `Applications`;
 
 export const USER_PROFILE_PICTURE_UPLOAD_FAILED = () =>
   "Unable to upload display picture.";
@@ -203,8 +207,7 @@ export const NO_PERMISSION_TO_SELECT_FOR_DELETE = () =>
 export const DELETING_MULTIPLE_APPLICATION_MODAL_TITLE = () => `确认删除`;
 export const DELETING_MULTIPLE_APPLICATION_MODAL_DESC = () =>
   `您确定要删除选定的应用程序吗？`;
-
-export const FORGOT_PASSWORD_PAGE_LOGIN_LINK = () => `返回登录页面`;
+export const FORGOT_PASSWORD_PAGE_LOGIN_LINK = () => `Back to sign in`;
 export const ADD_API_TO_PAGE_SUCCESS_MESSAGE = (actionName: string) =>
   `${actionName} API 添加成功`;
 export const INPUT_WIDGET_DEFAULT_VALIDATION_ERROR = () => `无效输入`;
@@ -242,6 +245,18 @@ export const WORKSPACES_HEADING = () => `应用组`;
 export const WELCOME_TOUR = () => `新手引导`;
 export const NO_APPS_FOUND = () => `没有发现相关应用`;
 export const APPLICATION_CARD_LIST_ZERO_STATE = () => `工作区无应用`;
+export const CREATE_A_NEW_WORKSPACE = () => `Create a new workspace`;
+export const TRY_GUIDED_TOUR = () => `Try guided tour`;
+export const JOIN_OUR_DISCORD = () => `Join our discord`;
+export const WHATS_NEW = () => `What's new?`;
+export const WORKSPACE_ACTION_BUTTON = () => "创建";
+export const NEW_APP = () => "PC端应用";
+export const NEW_MOBILE_APP = () => "移动端应用";
+
+export const NEW_APP_FROM_TEMPLATE = () => "模板";
+export const NO_WORKSPACE_HEADING = () => "Oops! No workspace found";
+export const NO_WORKSPACE_DESCRIPTION = () =>
+  "You can find workspace list on the left sidebar, try selecting one of them to access a workspace.";
 
 // Lightning menu
 export const LIGHTNING_MENU_DATA_API = () => `使用 API 数据`;
@@ -330,6 +345,12 @@ export const INVALID_FORM_CONFIGURATION = () => "无效表单配置";
 export const ACTION_RUN_BUTTON_MESSAGE_FIRST_HALF = () => "🙌 点击";
 export const ACTION_RUN_BUTTON_MESSAGE_SECOND_HALF = () => "在添加你的查询之后";
 export const CREATE_NEW_DATASOURCE = () => "新建数据源";
+export const CONFIGURE = () => "Configure";
+
+export const CREATE_NEW_DATASOURCE_DATABASE_HEADER = () => "Databases";
+export const CREATE_NEW_DATASOURCE_MOST_POPULAR_HEADER = () => "最常用";
+export const CREATE_NEW_DATASOURCE_REST_API = () => "REST API";
+export const SAMPLE_DATASOURCES = () => "开始使用我们的样例数据源";
 
 export const ERROR_EVAL_ERROR_GENERIC = () => `应用解析出错了`;
 
@@ -687,8 +708,8 @@ export const BINDINGS_DISABLED_TOOLTIP = () =>
   "只有在成功获得查询响应时才能显示数据。";
 export const TABLE_OR_COLUMN_NOT_FOUND = () => "未找到表格或列。";
 export const TABLE_NOT_FOUND = () => "找不到表格";
-export const DATASOURCE_STRUCTURE_INPUT_PLACEHOLDER_TEXT = () =>
-  "搜索表格或属性";
+export const DATASOURCE_STRUCTURE_INPUT_PLACEHOLDER_TEXT = (name: string) =>
+  `在 ${name} 搜索表格或属性`;
 export const SCHEMA_LABEL = () => "模式";
 export const STRUCTURE_NOT_FETCHED = () => "我们无法获取数据库的模式。";
 export const TEST_DATASOURCE_AND_FIX_ERRORS = () => "测试数据源并修复错误。";
@@ -772,6 +793,7 @@ export const DEPLOY_KEY_USAGE_GUIDE_MESSAGE = () =>
 export const COMMITTING_AND_PUSHING_CHANGES = () => "正在提交、推送修改...";
 export const DISCARDING_AND_PULLING_CHANGES = () => "正在丢弃、拉取修改...";
 export const DISCARD_SUCCESS = () => "修改丢弃成功";
+export const DISCARD_AND_PULL_SUCCESS = () => "Pulled from remote successfully";
 
 export const IS_MERGING = () => "合并修改...";
 
@@ -959,6 +981,19 @@ export const GIT_AUTHOR = () => "Git 作者";
 export const DISCONNECT_GIT = () => "断开 Git 连接";
 export const DISCONNECT_GIT_MESSAGE = () =>
   "这是不可逆的。如果您希望重新连接，您将需要连接一个新的空仓库。";
+export const AUTOCOMMIT = () => "Auto - commit";
+export const AUTOCOMMIT_MESSAGE = () =>
+  "Enable/disable auto migrations from Appsmith.";
+export const AUTOCOMMIT_ENABLE = () => "Enable auto - commit";
+export const AUTOCOMMIT_DISABLE = () => "Disable auto - commit";
+export const AUTOCOMMIT_CONFIRM_DISABLE_MESSAGE = () =>
+  "Disabling auto-commit may result in uncommitted system changes after an Appsmith instance upgrade, requiring manual handling and potential discrepancies in Git versioning.";
+export const AUTOCOMMIT_IN_PROGRESS_MESSAGE = () =>
+  "Auto-committing Appsmith upgrade changes...";
+export const AUTOCOMMIT_ENABLED_TOAST = () =>
+  "Auto-commit enabled successfully";
+export const AUTOCOMMIT_DISABLED_TOAST = () =>
+  "Auto-commit disabled successfully";
 export const NEED_EMPTY_REPO_MESSAGE = () =>
   "您需要一个空仓库来连接到 Pageplug 的 Git，请在 Git 服务提供商上创建一个仓库以继续。";
 export const GIT_IMPORT_WAITING = () => "请稍候，我们正在导入应用程序...";
@@ -997,12 +1032,25 @@ export const GO_TO_SETTINGS = () => "前往设置";
 export const NOW_PROTECT_BRANCH = () => "您现在可以保护您的默认分支。";
 export const APPSMITH_ENTERPRISE = () => "Pageplug 企业版";
 export const PROTECT_BRANCH_SUCCESS = () => "已更改受保护的分支";
-export const UPDATE_DEFAULT_BRANCH_SUCCESS = () => "已更新默认分支";
+export const UPDATE_DEFAULT_BRANCH_SUCCESS = (branchName: string) =>
+  `更新至分支 ${!!branchName ? `to ${branchName}` : ""}`;
 // Git Branch Protection end
 
 export const NAV_DESCRIPTION = () => `导航到任意页面、组件或者文件`;
 export const ACTION_OPERATION_DESCRIPTION = () => `新建查询、API 或者 JS 对象`;
 export const TABLE_WIDGET_VALIDATION_ASSIST_PROMPT = () => `访问当前单元格`;
+export const CONTACT_ADMIN_FOR_GIT = () =>
+  "Please contact your workspace admin to connect your app to a git repo";
+// Git Branch Protection end
+
+export const GENERAL = () => "General";
+export const BRANCH = () => "Branch";
+
+export const CONTINUOUS_DELIVERY = () => "Continuous delivery";
+export const CONFIGURE_CD_TITLE = () => "Configure continuous delivery";
+export const CONFIGURE_CD_DESC = () =>
+  "To automatically trigger a pull when changes occur on the remote branch, consider upgrading to our enterprise edition for enhanced functionality";
+export const TRY_APPSMITH_ENTERPRISE = () => "Try Appsmith Enterprise";
 
 export const TRIGGER_ACTION_VALIDATION_ERROR = (
   functionName: string,
@@ -1170,6 +1218,7 @@ export const SNIPPET_TOOLTIP = () => "搜索代码片段";
 export const WELCOME_HEADER = () => "欢迎！";
 export const WELCOME_BODY = () => "在创建应用之前，请先让我们给你创建一个账号";
 export const WELCOME_ACTION = () => "开始吧";
+export const PRODUCT_UPDATES_CONFIRMATION_LABEL = () => "我接受产品安全和更新";
 
 // API Editor
 export const API_EDITOR_TAB_TITLES = {
@@ -1197,7 +1246,6 @@ export const WELCOME_FORM_ROLE = () => "角色";
 export const WELCOME_FORM_CUSTOM_USE_CASE = () => "使用场景";
 export const WELCOME_FORM_USE_CASE = () => "请告诉我们你的使用场景";
 export const WELCOME_FORM_USE_CASE_PLACEHOLDER = () => "- 选择一个使用场景 -";
-export const WELCOME_FORM_DATA_COLLECTION_HEADER = () => "分享使用数据";
 export const WELCOME_FORM_DATA_COLLECTION_BODY = () =>
   "分享匿名的使用数据来帮助我们提升产品质量";
 export const WELCOME_FORM_DATA_COLLECTION_LINK = () => "看看分享了哪些数据";
@@ -1250,6 +1298,8 @@ export const RESTART_BANNER_HEADER = () => "正在帮你重启服务...";
 export const RESTART_ERROR_BODY = () => "你可以试着手动重启服务来让更改生效";
 export const RESTART_ERROR_HEADER = () => "重启失败";
 export const RETRY_BUTTON = () => "重试";
+export const HELP = () => "Help";
+
 export const INFO_VERSION_MISMATCH_FOUND_RELOAD_REQUEST = () =>
   "发现 PagePlug 新版本，请刷新页面试试";
 export const TEST_EMAIL_SUCCESS = (email: string) => () =>
@@ -1356,6 +1406,8 @@ export const WELCOME_FORM_USE_CASE_ERROR_MESSAGE = () => "请选择用例";
 
 export const WELCOME_FORM_CUSTOM_USE_CASE_ERROR_MESSAGE = () => "请输入用例";
 
+("What would you like to use Appsmith for?");
+
 export const WELCOME_FORM_EMAIL_ERROR_MESSAGE = () =>
   "请输入有效的电子邮件地址。";
 
@@ -1382,6 +1434,10 @@ export const JS_TOGGLE_DISABLED_MESSAGE = "清空字段回退";
 export const PROPERTY_PANE_EMPTY_SEARCH_RESULT_MESSAGE = "没有发现任何属性";
 export const PROPERTY_SEARCH_INPUT_PLACEHOLDER = "搜索组件属性";
 export const HELP_MESSAGE = "帮助";
+
+export const JS_TOGGLE_SWITCH_JS_MESSAGE =
+  "Switch to JS mode to customize your data using javascript";
+
 export const EXPLORER_BETA_ENTITY = () => "BETA";
 export const BINDING_WIDGET_WALKTHROUGH_TITLE = () => "小部件属性";
 export const BINDING_WIDGET_WALKTHROUGH_DESC = () =>
@@ -1540,6 +1596,8 @@ export const CONTEXT_SETTINGS = () => "设置";
 export const CONTEXT_SET_AS_HOME_PAGE = () => "设置为主页";
 export const PAGE = () => "页面";
 export const PAGES = () => "页面";
+export const CONTEXT_PARTIAL_EXPORT = () => "Export";
+export const CONTEXT_PARTIAL_IMPORT = () => "Import";
 
 // Entity explorer
 export const ADD_DATASOURCE_BUTTON = () => "添加数据源";
@@ -1590,6 +1648,12 @@ export const FETCHING_TEMPLATE_LIST = () => "正在加载模板列表";
 
 export const TEMPLATES_BACK_BUTTON = () => "返回模板";
 export const IMAGE_LOAD_ERROR = () => "图片加载失败";
+export const FORK_THIS_TEMPLATE_BUILDING_BLOCK = () => "Use building block";
+export const REQUEST_BUILDING_BLOCK = () => "Request a building block";
+export const FILTER_SELECT_PAGE = () => "Add selected page";
+
+export const SKIP_START_WITH_USE_CASE_TEMPLATES = () =>
+  "Skip this step, I’ll do it later";
 
 export const REDIRECT_URL_TOOLTIP = () =>
   "这个地址用来配置你的身份认证回调/重定向";
@@ -1663,6 +1727,7 @@ export const PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_2 = () => "更新";
 export const PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_3 = () =>
   "你的应用 URL 到新的可读格式";
 export const PAGE_SETTINGS_SHOW_PAGE_NAV = () => "显示菜单导航";
+("your app URL to the new format to set the page URL.");
 export const PAGE_SETTINGS_SHOW_PAGE_NAV_TOOLTIP = () =>
   "当前页面是否显示应用菜单导航";
 export const PAGE_SETTINGS_SET_AS_HOMEPAGE = () => "设为主页";
@@ -1768,6 +1833,8 @@ export const SAVE_AND_RE_AUTHORIZE_BUTTON_TEXT = () => "保存并重新鉴权";
 export const DISCARD_POPUP_DONT_SAVE_BUTTON_TEXT = () => "不保存";
 export const GSHEET_AUTHORISED_FILE_IDS_KEY = () =>
   "Google sheets authorised file ids key";
+// Datasource/New query
+export const NEW_AI_BUTTON_TEXT = () => "New AI Query";
 export const GOOGLE_SHEETS_INFO_BANNER_MESSAGE = () =>
   "Pageplug will require access to your google drive to access google sheets.";
 export const GOOGLE_SHEETS_AUTHORIZE_DATASOURCE = () => "Authorize datasource";
@@ -2042,6 +2109,13 @@ export const DATA_PANE_TITLE = () => "工作区中的数据源";
 export const DATASOURCE_LIST_BLANK_TITLE = () => "工作区中不存在数据源。";
 export const DATASOURCE_BLANK_STATE_MESSAGE = () =>
   "您需要一个数据源连接来编写第一个查询";
+// Interim data state info
+export const NO_COLUMNS_MESSAGE_TEXT = () => "There are no columns to show";
+export const FAILED_RECORDS_TITLE_TEXT = () => "Failed to load";
+export const FAILED_RECORDS_MESSAGE_TEXT = () =>
+  "There was an error connecting to the datasource. Please check the datasource configuration and retry. If the issue persists, review the datasource settings.";
+
+export const DATASOURCE_LIST_BLANK_DESCRIPTION = () => "连接数据源编写查询语句";
 
 export const STARTER_TEMPLATE_PAGE_LAYOUTS = {
   header: () => "选择一个模板",
@@ -2049,6 +2123,10 @@ export const STARTER_TEMPLATE_PAGE_LAYOUTS = {
     dashboard: {
       name: () => "可视化您的数据",
       description: () => "用于以图表形式查看您的数据",
+    },
+    sortFilterTable: {
+      name: () => "筛选您的数据",
+      description: () => "筛选排序您的数据",
     },
     form: {
       name: () => "表单",
@@ -2070,4 +2148,202 @@ export const STARTER_TEMPLATE_PAGE_LAYOUTS = {
   or: () => "或",
   dragAndDrop: () => "拖放小部件",
   importLoadingText: () => "正在导入模板",
+  seeMoreText: () => "查看更多",
+};
+
+// Create New Apps Intermediary step
+export const CREATE_NEW_APPS_STEP_TITLE = () => "How would you like to start?";
+export const CREATE_NEW_APPS_STEP_SUBTITLE = () =>
+  "Choose an option that fits your approach, and let's shape your app together.";
+export const START_FROM_TEMPLATE_TITLE = () => "Start with template";
+export const START_FROM_TEMPLATE_SUBTITLE = () =>
+  "Begin with an app for a specific scenario. We'll guide you through tailoring your app.";
+export const START_FROM_SCRATCH_TITLE = () => "Start from scratch";
+export const START_FROM_SCRATCH_SUBTITLE = () =>
+  "Create an app from the ground up. Design every detail of your app on a blank canvas.";
+export const START_WITH_DATA_TITLE = () => "Start with data";
+export const START_WITH_DATA_SUBTITLE = () =>
+  "Get started with connecting your data, and easily craft a functional application.";
+export const START_WITH_DATA_CONNECT_HEADING = () => "Connect your datasource";
+export const START_WITH_DATA_CONNECT_SUBHEADING = () =>
+  "Select an option to establish a connection. Your data's security is our priority.";
+export const START_WITH_TEMPLATE_CONNECT_HEADING = () => "Select a template";
+export const START_WITH_TEMPLATE_CONNECT_SUBHEADING = () =>
+  "Choose an option below to embark on your app-building adventure!";
+
+export const EDITOR_PANE_TEXTS = {
+  queries_tab: () => "Queries",
+  js_tab: () => "JS",
+  ui_tab: () => "UI",
+  query_blank_state: () => "没有查询语句",
+  js_blank_state: () => "没有 JS 对象",
+  query_blank_state_description: () => "编写第一个查询语句或API",
+  js_blank_state_description: () => "使用JS转换数据或编写业务逻辑",
+  widget_blank_state_description: () => "拖拉拽组件搭建您的应用",
+  query_add_button: () => "添加 query / API",
+  js_add_button: () => "添加 JS object",
+  js_blank_object_item: () => "Blank JS object",
+  widget_add_button: () => "添加 组件",
+  query_create_tab_title: () => "创建 query / API",
+  widgets_create_tab_title: () => "拖放组件",
+  js_create_tab_title: () => "创建 JS object",
+  queries_create_from_existing: () => "来自已存在的数据源",
+  queries_create_new: () => "新建 API",
+  widget_list_title: () => "资源管理",
+  widget_pool_title: () => "组件",
+};
+
+export const PARTIAL_IMPORT_EXPORT = {
+  export: {
+    modalHeading: () => "Export",
+    modalSubHeading: () => "Select entities below to export from the Page",
+    cta: () => "Export selected entities",
+    sections: {
+      jsObjects: () => "JS objects",
+      databases: () => "Databases",
+      queries: () => "Queries",
+      customLibs: () => "Custom libraries",
+      widgets: () => "Widgets",
+    },
+  },
+  import: {
+    modalHeading: () => "Import",
+    modalSubheading: () => "Import partial application from file",
+  },
+};
+
+export const DATASOURCE_SECURELY_TITLE = () => "安全且快速地连接";
+
+export const CUSTOM_WIDGET_FEATURE = {
+  addEvent: {
+    addCTA: () => "Add",
+    cancelCTA: () => "Cancel",
+    addEventCTA: () => "Add Event",
+    nameLabel: () => "Name",
+    errors: {
+      restricted: () => "Event name is restricted",
+      duplicate: () => "Event name already exists",
+    },
+  },
+  editSource: {
+    editSourceCTA: () => "Edit source",
+    goToSourceCTA: () => "Go to source editor",
+  },
+  builder: {
+    header: () => "Custom Widget Builder",
+    close: () => "Close",
+    connectionLost: () =>
+      "Connection lost because the custom widget was deselected. Please reselect this widget to continue editing.",
+    editor: {
+      css: {
+        contextTooltipScss: () => "Supports SCSS syntax.",
+        contextTooltipVariables: () => "You can use following css variables.",
+        placeholder: () =>
+          "/* you can access string and number properties of your model using `var(--appsmith-model-<property-name>)`*/",
+      },
+      html: {
+        placeholder: () =>
+          "<!-- no need to write html, head, body tags, it is handled by the widget -->",
+      },
+      js: {
+        placeholder: () =>
+          "// no need to write window onLoad, it is handled by the widget",
+      },
+    },
+  },
+  templateKey: {
+    blank: () => "Blank",
+    vanillaJs: () => "Vanilla JS",
+    react: () => "React",
+    vue: () => "Vue",
+  },
+  template: {
+    modal: {
+      header: () => "Are you sure?",
+      body: () =>
+        "This will replace the current changes in the HTML, CSS and JS files.",
+      successCTA: () => "Replace",
+      cancelCTA: () => "Cancel",
+    },
+    buttonCTA: () => "Templates",
+    revert: () => "Revert to Original",
+  },
+  layout: {
+    tab: () => "Tabs",
+    split: () => "Splits",
+  },
+  referrences: {
+    title: () => "References",
+    tooltip: {
+      open: () => "Open references",
+      close: () => "Close references",
+    },
+    liveModel: {
+      helpMessage: [
+        () => "- Use `appsmith.model` to access your model in javascript",
+        () =>
+          "- Use `appsmith.updateModel()` to update your model from javascript",
+      ],
+      label: () => "Live Model",
+    },
+    events: {
+      helpMessage: [
+        () =>
+          "- Use `appsmith.triggerEvent(&lt;EVENT_NAME&gt;)` to trigger an event",
+        () =>
+          "- `appsmith.triggerEvent()` also accepts context data as second arg",
+      ],
+      label: () => "Events",
+      emptyMessage: () =>
+        "You haven’t created any events. Return to the app editor to add events to this custom widget.",
+    },
+    help: {
+      message: () =>
+        "Learn how custom widgets work, and how to access data from the rest of your app within this widget.",
+      buttonCTA: () => "Documentation",
+    },
+  },
+  debugger: {
+    title: () => "Console",
+    emptyMessage: () => "Errors and logs will appear here",
+    helpDropdown: {
+      stackoverflow: () => "Search StackOverflow",
+    },
+    noOnReadyWarning: (url: string) =>
+      `Missing appsmith.onReady() function call. Initiate your component inside 'appsmith.onReady()' for your custom widget to work as expected. For more information - ${url}`,
+  },
+  preview: {
+    eventFired: () => "Event fired:",
+    modelUpdated: () => "Model updated",
+  },
+};
+
+export const WIDGET_PANEL_EMPTY_MESSAGE = () =>
+  "We couldn’t find any widgets called";
+
+export const HTTP_PROTOCOL_INPUT_PLACEHOLDER = () => `选择 HTTP 协议`;
+
+export const ADD_PAGE_FROM_TEMPLATE_MODAL = {
+  title: () => "Add page(s) from a template",
+  buildingBlocksTitle: () => "Building Blocks",
+};
+
+export const HEADER_TITLES = {
+  DATA: () => "Data",
+  EDITOR: () => "Pages",
+  SETTINGS: () => "Settings",
+  LIBRARIES: () => "Libraries",
+};
+
+export const PASTE_FAILED = (str: string): string => `Paste failed! ${str}`;
+
+export const CREATE_A_NEW_ITEM = (item: string) => `Create a new ${item}`;
+
+export const MAXIMIZE_BUTTON_TOOLTIP = () =>
+  `Expand code editor to full-screen`;
+export const MINIMIZE_BUTTON_TOOLTIP = () => `Open code editor next to the UI`;
+export const SPLITPANE_ANNOUNCEMENT = {
+  TITLE: () => "Code and UI, side-by-side",
+  DESCRIPTION: () =>
+    "Write queries and JS functions while you refer to the UI on the side! This is a beta version that we will continue to improve with your feedback.",
 };

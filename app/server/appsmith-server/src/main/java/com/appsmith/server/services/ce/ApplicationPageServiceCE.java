@@ -1,14 +1,15 @@
 package com.appsmith.server.services.ce;
 
+import com.appsmith.server.acl.AclPermission;
 import com.appsmith.server.domains.Application;
 import com.appsmith.server.domains.NewPage;
 import com.appsmith.server.domains.User;
 import com.appsmith.server.dtos.ApplicationPagesDTO;
+import com.appsmith.server.dtos.ClonePageMetaDTO;
 import com.appsmith.server.dtos.PageDTO;
-import com.mongodb.client.result.UpdateResult;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface ApplicationPageServiceCE {
 
@@ -16,13 +17,14 @@ public interface ApplicationPageServiceCE {
 
     Mono<PageDTO> createPageWithBranchName(PageDTO page, String branchName);
 
-    Mono<UpdateResult> addPageToApplication(Application application, PageDTO page, Boolean isDefault);
+    Mono<Integer> addPageToApplication(Application application, PageDTO page, Boolean isDefault);
 
     Mono<PageDTO> getPage(NewPage newPage, boolean viewMode);
 
     Mono<PageDTO> getPage(String pageId, boolean viewMode);
 
-    Mono<PageDTO> getPageByBranchAndDefaultPageId(String defaultPageId, String branchName, boolean viewMode);
+    Mono<PageDTO> getPageAndMigrateDslByBranchAndDefaultPageId(
+            String defaultPageId, String branchName, boolean viewMode, boolean migrateDsl);
 
     Mono<Application> createApplication(Application application);
 
@@ -40,9 +42,7 @@ public interface ApplicationPageServiceCE {
 
     Mono<Application> deleteApplication(String id);
 
-    Mono<List<Application>> deleteMultipleApps(List<String> ids);
-
-    Mono<PageDTO> clonePage(String pageId);
+    Mono<PageDTO> clonePage(String pageId, ClonePageMetaDTO clonePageMetaDTO);
 
     Mono<PageDTO> clonePageByDefaultPageIdAndBranch(String defaultPageId, String branchName);
 
@@ -50,9 +50,14 @@ public interface ApplicationPageServiceCE {
 
     Mono<PageDTO> deleteUnpublishedPageByBranchAndDefaultPageId(String defaultPageId, String branchName);
 
-    Mono<PageDTO> deleteUnpublishedPage(String id);
+    Mono<PageDTO> deleteUnpublishedPageWithOptionalPermission(
+            String id,
+            Optional<AclPermission> deletePagePermission,
+            Optional<AclPermission> readApplicationPermission,
+            Optional<AclPermission> deleteCollectionPermission,
+            Optional<AclPermission> deleteActionPermission);
 
-    Mono<PageDTO> deleteWithoutPermissionUnpublishedPage(String id);
+    Mono<PageDTO> deleteUnpublishedPage(String id);
 
     Mono<Application> publish(String applicationId, boolean isPublishedManually);
 
@@ -65,4 +70,6 @@ public interface ApplicationPageServiceCE {
     Mono<Application> deleteApplicationByResource(Application application);
 
     Mono<Application> createOrUpdateSuffixedApplication(Application application, String name, int suffix);
+
+    int getEvaluationVersion();
 }

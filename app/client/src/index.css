@@ -13,9 +13,12 @@
   /* TODO: This needs to be fixed! This override is to maintain branding changes. */
   --brand-color: #27b7b7;
   --ads-color-background-secondary: var(--ads-v2-color-bg-subtle);
-  --ads-v2-color-bg-brand-emphasis: var(--brand-color);
-  --ads-v2-color-bg-brand-emphasis-plus: var(--brand-color);
-  --ads-v2-color-border-brand-emphasis-plus: var(--brand-color);
+  /* All on canvas ui need to be above other editor elements
+     This includes the Modal overlay.
+     The maximum value of z-index in the theme is 9999.
+     This value makes sure that on-canvas ui is always above editor elements
+  */
+  --on-canvas-ui-z-index: 999999;
 }
 
 body {
@@ -25,6 +28,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #fff !important;
   color: var(--ads-v2-color-fg);
+}
+
+.rc-tree-select-multiple .rc-tree-select-selector {
+  padding-right: 20px;
+  padding-left: 10px;
+  background: var(--wds-color-bg);
+  border-radius: 0px;
+  height: inherit;
+  width: 100%;
+  line-height: 30px;
+  transition: none 0s ease 0s;
+  border: 1px solid var(--wds-color-border) !important;
+  box-shadow: none !important;
 }
 
 body.dragging * {
@@ -67,7 +83,7 @@ span.bp3-popover-target {
   width: 100%;
 }
 
-span.bp3-popover-target > * {
+span.bp3-popover-target>* {
   flex-grow: 1;
 }
 
@@ -86,7 +102,7 @@ span.bp3-popover-target > * {
   border: 1px solid var(--ads-v2-color-border-muted) !important;
 }
 
-.action-selector-popup span.bp3-popover-target > * {
+.action-selector-popup span.bp3-popover-target>* {
   max-width: 100%;
 }
 
@@ -103,7 +119,7 @@ add-action.disabled span {
 /**
   action selector block styles
 **/
-.bp3-submenu.bp3-popover > .bp3-popover-content {
+.bp3-submenu.bp3-popover>.bp3-popover-content {
   box-shadow: none;
 }
 
@@ -186,7 +202,7 @@ div.bp3-popover-arrow {
 
 /* making both the Modal layer and the Dropdown layer */
 .bp3-modal-widget,
-.appsmith_widget_0 > .bp3-portal {
+.appsmith_widget_0>.bp3-portal {
   z-index: 2 !important;
 }
 
@@ -199,6 +215,7 @@ div.bp3-popover-arrow {
   background-color: var(--ads-v2-color-bg) !important;
   border-radius: var(--ads-v2-border-radius) !important;
 }
+
 .bp3-overlay-backdrop {
   background-color: rgba(16, 22, 26, 0.7) !important;
 }
@@ -209,7 +226,7 @@ div.bp3-popover-arrow {
 
 /** color picker input control */
 .color-picker-input,
-.color-picker-input > .bp3-popover-content {
+.color-picker-input>.bp3-popover-content {
   border-radius: var(--ads-v2-border-radius) !important;
 }
 
@@ -218,7 +235,7 @@ div.bp3-popover-arrow {
 }
 
 .icon-select-popover,
-.icon-select-popover > .bp3-popover-content {
+.icon-select-popover>.bp3-popover-content {
   border-radius: var(--ads-v2-border-radius) !important;
 }
 
@@ -229,7 +246,8 @@ div.bp3-popover-arrow {
 .error-menuitem {
   color: var(--ads-v2-color-fg-error) !important;
 }
-.error-menuitem > .ads-v2-menu__menu-item-children {
+
+.error-menuitem>.ads-v2-menu__menu-item-children {
   color: var(--ads-v2-color-fg-error) !important;
 }
 
@@ -237,9 +255,11 @@ div.bp3-popover-arrow {
 .error-menuitem:focus-visible {
   background-color: var(--ads-v2-color-red-50) !important;
 }
+
 .error-menuitem:active:not([data-disabled]) {
   background-color: var(--ads-v2-color-red-100) !important;
 }
+
 .menuitem-nohover:hover {
   background-color: transparent !important;
   cursor: default !important;
@@ -253,13 +273,40 @@ div.bp3-popover-arrow {
   z-index: 9 !important;
 }
 
-div.react-datepicker-wrapper {
-  display: block;
-}
-
-.rc-tree-select-single
-  .rc-tree-select-selector
-  span.rc-tree-select-selection-placeholder {
+/* .rc-tree-select-single .rc-tree-select-selector span.rc-tree-select-selection-placeholder {
   position: absolute;
   top: 15px;
-}
+} */
+
+  /** Conditional vertical margin applied to widgets.
+    If in a row of widgets (.aligned-widget-row), one of the widgets has a label ([data-field-label-wrapper]), then
+    all widgets (.anvil-widget-wrapper) in the row other than the widget with the label, will shift down using the 
+    margin-block-start property. This is to ensure that the widgets are aligned vertically.
+
+    The value of the margin-block-start property is calculated based on the spacing tokens used by the labels in input like components
+*/
+  .aligned-widget-row:has(.anvil-widget-wrapper [data-field-label-wrapper]) .anvil-widget-wrapper:not(:has([data-field-label-wrapper])) {
+    margin-block-start: calc(var(--inner-spacing-2) + var(--sizing-3));
+  }
+
+  /** Asymmetric Padding
+    If a section (has div[data-elevation="false"][elevation="1"]) does not have elevation,
+    then the padding is set to 0.
+    elevation="1" is used to denote that the section has elevation.
+*/
+  div.anvil-widget-wrapper:has(div[data-elevation="false"][elevation="1"]) {
+    padding: var(--outer-sizing-0);
+  }
+
+  /** Asymmetric Padding
+    If none of the zones (has div[data-elevation="false"][elevation="2"]) in a section have elevation,
+    then the vertical padding is set to 0 for all zones.
+    elevation="2" is used to denote that the zone has elevation.
+
+    Note: we've used `div.anvil-widget-wrapper:has(div[data-elevation])` to select all zones
+    because today, we don't have nested sections. So, any widget that has `data-elevation` in another widget that has `data-elevation`
+    will be a zone.
+*/
+  div.anvil-widget-wrapper:not(:has(div[data-elevation="true"][elevation="2"])) div.anvil-widget-wrapper:has(div[data-elevation]) {
+    padding-block: var(--outer-sizing-0);
+  }

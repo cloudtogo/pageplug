@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import type { AppState } from "@appsmith/reducers";
-import { HotkeysTarget2 } from "@blueprintjs/core";
+import { Hotkey, Hotkeys, HotkeysTarget } from "@blueprintjs/core";
 import {
   closePropertyPane,
   closeTableFilterPane,
@@ -36,10 +36,7 @@ import {
   createMessage,
   SAVE_HOTKEY_TOASTER_MESSAGE,
 } from "@appsmith/constants/messages";
-import { setPreviewModeAction } from "actions/editorActions";
 import { previewModeSelector } from "selectors/editorSelectors";
-import { getExplorerPinned } from "selectors/explorerSelector";
-import { setExplorerPinnedAction } from "actions/explorerActions";
 import { setIsGitSyncModalOpen } from "actions/gitSyncActions";
 import { GitSyncModalTab } from "entities/GitSync";
 import { matchBuilderPath } from "constants/routes";
@@ -50,6 +47,7 @@ import { showDebuggerFlag } from "selectors/debuggerSelectors";
 import { getIsFirstTimeUserOnboardingEnabled } from "selectors/onboardingSelectors";
 import WalkthroughContext from "components/featureWalkthrough/walkthroughContext";
 import { protectedModeSelector } from "selectors/gitSyncSelectors";
+import { setPreviewModeInitAction } from "actions/editorActions";
 
 interface Props {
   copySelectedWidget: () => void;
@@ -74,15 +72,14 @@ interface Props {
   appMode?: APP_MODE;
   isPreviewMode: boolean;
   isProtectedMode: boolean;
-  setPreviewModeAction: (shouldSet: boolean) => void;
-  isExplorerPinned: boolean;
+  setPreviewModeInitAction: (shouldSet: boolean) => void;
   isSignpostingEnabled: boolean;
-  setExplorerPinnedAction: (shouldPinned: boolean) => void;
   showCommitModal: () => void;
   getMousePosition: () => { x: number; y: number };
   hideInstaller: () => void;
 }
 
+@HotkeysTarget
 class GlobalHotKeys extends React.Component<Props> {
   public stopPropagationIfWidgetSelected(e: KeyboardEvent): boolean {
     const multipleWidgetsSelected =
@@ -119,252 +116,251 @@ class GlobalHotKeys extends React.Component<Props> {
     });
   }
 
-  private hotkeys = [
-    {
-      combo: "mod + f",
-      global: true,
-      label: "Search entities",
-      onKeyDown: (e: any) => {
-        const widgetSearchInput = document.getElementById(WIDGETS_SEARCH_ID);
-        if (widgetSearchInput) {
-          widgetSearchInput.focus();
-          e.preventDefault();
-          e.stopPropagation();
-        }
-      },
-    },
-    {
-      allowInInput: true,
-      combo: "mod + p",
-      global: true,
-      label: "Navigate",
-      onKeyDown: (e: any) => {
-        this.onOnmnibarHotKeyDown(e);
-      },
-    },
-    {
-      allowInInput: true,
-      combo: "mod + plus",
-      global: true,
-      label: "Create new",
-      onKeyDown: (e: any) => {
-        this.onOnmnibarHotKeyDown(e, SEARCH_CATEGORY_ID.ACTION_OPERATION);
-      },
-    },
-    {
-      allowInInput: true,
-      combo: "mod + k",
-      global: true,
-      label: "Show omnibar",
-      onKeyDown: (e: any) => {
-        this.onOnmnibarHotKeyDown(e, SEARCH_CATEGORY_ID.INIT);
-      },
-    },
-    {
-      allowInInput: true,
-      combo: "mod + d",
-      global: true,
-      group: "Canvas",
-      label: "Open Debugger",
-      onKeyDown: () => {
-        this.props.openDebugger();
-        if (this.props.isDebuggerOpen) {
-          AnalyticsUtil.logEvent("OPEN_DEBUGGER", {
-            source: "CANVAS",
-          });
-        }
-      },
-      preventDefault: true,
-    },
-    {
-      combo: "mod + c",
-      global: true,
-      group: "Canvas",
-      label: "Copy widget",
-      onKeyDown: (e: any) => {
-        if (this.stopPropagationIfWidgetSelected(e)) {
-          this.props.copySelectedWidget();
-        }
-      },
-    },
-    {
-      combo: "mod + v",
-      global: true,
-      group: "Canvas",
-      label: "Paste widget",
-      onKeyDown: () => {
-        if (matchBuilderPath(window.location.pathname)) {
-          this.props.pasteCopiedWidget(
-            this.props.getMousePosition() || { x: 0, y: 0 },
-          );
-        }
-      },
-    },
-    {
-      combo: "backspace",
-      global: true,
-      group: "Canvas",
-      label: "Delete widget",
-      onKeyDown: (e: any) => {
-        if (this.stopPropagationIfWidgetSelected(e) && isMacOrIOS()) {
-          this.props.deleteSelectedWidget();
-        }
-      },
-    },
-    {
-      combo: "del",
-      group: "Canvas",
-      label: "Delete widget",
-      onKeyDown: (e: any) => {
-        if (this.stopPropagationIfWidgetSelected(e)) {
-          this.props.deleteSelectedWidget();
-        }
-      },
-    },
-    {
-      combo: "mod + x",
-      group: "Canvas",
-      label: "Cut Widget",
-      onKeyDown: (e: any) => {
-        if (this.stopPropagationIfWidgetSelected(e)) {
-          this.props.cutSelectedWidget();
-        }
-      },
-    },
-    {
-      combo: "mod + a",
-      group: "Canvas",
-      label: "Select all Widget",
-      onKeyDown: (e: any) => {
-        if (matchBuilderPath(window.location.pathname)) {
-          this.props.selectAllWidgetsInit();
-          e.preventDefault();
-        }
-      },
-    },
-    {
-      combo: "esc",
-      group: "Canvas",
-      label: "Deselect all Widget",
-      onKeyDown: (e: any) => {
-        this.props.resetSnipingMode();
-        this.props.deselectAllWidgets();
-        this.props.closeProppane();
-        this.props.closeTableFilterProppane();
-        e.preventDefault();
-        this.props.setPreviewModeAction(false);
-      },
-    },
-    {
-      combo: "v",
-      global: true,
-      label: "Edit Mode",
-      onKeyDown: (e: any) => {
-        this.props.resetSnipingMode();
-        e.preventDefault();
-      },
-    },
-    {
-      allowInInput: true,
-      combo: "mod + enter",
-      global: true,
-      label: "Execute Action",
-      onKeyDown: this.props.executeAction,
-      preventDefault: true,
-      stopPropagation: true,
-    },
-    {
-      combo: "mod + z",
-      global: true,
-      label: "Undo change in canvas",
-      onKeyDown: this.props.undo,
-      preventDefault: true,
-      stopPropagation: true,
-    },
-    {
-      combo: "mod + shift + z",
-      global: true,
-      label: "Redo change in canvas",
-      onKeyDown: this.props.redo,
-      preventDefault: true,
-      stopPropagation: true,
-    },
-    {
-      combo: "mod + y",
-      global: true,
-      label: "Redo change in canvas",
-      onKeyDown: this.props.redo,
-      preventDefault: true,
-      stopPropagation: true,
-    },
-    {
-      combo: "mod + g",
-      group: "Canvas",
-      label: "Cut Widgets for grouping",
-      onKeyDown: (e: any) => {
-        if (this.stopPropagationIfWidgetSelected(e)) {
-          this.props.groupSelectedWidget();
-        }
-      },
-    },
-    {
-      combo: "mod + s",
-      global: true,
-      label: "Save progress",
-      onKeyDown: () => {
-        toast.show(createMessage(SAVE_HOTKEY_TOASTER_MESSAGE), {
-          kind: "info",
-        });
-      },
-      preventDefault: true,
-      stopPropagation: true,
-    },
-    {
-      combo: "p",
-      global: true,
-      label: "Preview Mode",
-      onKeyDown: () => {
-        this.props.setPreviewModeAction(!this.props.isPreviewMode);
-      },
-    },
-    {
-      combo: "mod + /",
-      label: "Pin/Unpin Entity Explorer",
-      onKeyDown: () => {
-        this.props.setExplorerPinnedAction(!this.props.isExplorerPinned);
-        this.props.hideInstaller();
-      },
-    },
-    {
-      combo: "ctrl + shift + g",
-      label: "Show git commit modal",
-      onKeyDown: () => {
-        this.props.showCommitModal();
-      },
-    },
-  ];
+  public renderHotkeys() {
+    const { isOpened: isWalkthroughOpened } = this.context ?? {};
+    const { isProtectedMode } = this.props;
+    // If walkthrough is open disable shortcuts
+    if (isWalkthroughOpened || isProtectedMode) return <Hotkeys />;
 
-  public render() {
     return (
-      <HotkeysTarget2 hotkeys={this.hotkeys}>
-        {({ handleKeyDown, handleKeyUp }) => (
-          <div onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} tabIndex={0}>
-            <div>{this.props.children}</div>
-          </div>
-        )}
-      </HotkeysTarget2>
+      <Hotkeys>
+        <Hotkey
+          combo="mod + f"
+          global
+          label="Search entities"
+          onKeyDown={(e: any) => {
+            const widgetSearchInput =
+              document.getElementById(WIDGETS_SEARCH_ID);
+            if (widgetSearchInput) {
+              widgetSearchInput.focus();
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          }}
+        />
+        <Hotkey
+          allowInInput
+          combo="mod + p"
+          global
+          label="Navigate"
+          onKeyDown={(e) => this.onOnmnibarHotKeyDown(e)}
+        />
+        <Hotkey
+          allowInInput
+          combo="mod + plus"
+          global
+          label="Create new"
+          onKeyDown={(e) =>
+            this.onOnmnibarHotKeyDown(e, SEARCH_CATEGORY_ID.ACTION_OPERATION)
+          }
+        />
+        <Hotkey
+          allowInInput
+          combo="mod + k"
+          global
+          label="Show omnibar"
+          onKeyDown={(e) =>
+            this.onOnmnibarHotKeyDown(e, SEARCH_CATEGORY_ID.INIT)
+          }
+        />
+        <Hotkey
+          allowInInput
+          combo="mod + d"
+          global
+          group="Canvas"
+          label="Open Debugger"
+          onKeyDown={() => {
+            this.props.openDebugger();
+            if (this.props.isDebuggerOpen) {
+              AnalyticsUtil.logEvent("OPEN_DEBUGGER", {
+                source: "CANVAS",
+              });
+            }
+          }}
+          preventDefault
+        />
+        <Hotkey
+          combo="mod + c"
+          global
+          group="Canvas"
+          label="Copy widget"
+          onKeyDown={(e: any) => {
+            if (this.stopPropagationIfWidgetSelected(e)) {
+              this.props.copySelectedWidget();
+            }
+          }}
+        />
+        <Hotkey
+          combo="mod + v"
+          global
+          group="Canvas"
+          label="Paste Widget"
+          onKeyDown={() => {
+            if (matchBuilderPath(window.location.pathname)) {
+              this.props.pasteCopiedWidget(
+                this.props.getMousePosition() || { x: 0, y: 0 },
+              );
+            }
+          }}
+        />
+        <Hotkey
+          combo="backspace"
+          global
+          group="Canvas"
+          label="Delete widget"
+          onKeyDown={(e: any) => {
+            if (this.stopPropagationIfWidgetSelected(e) && isMacOrIOS()) {
+              this.props.deleteSelectedWidget();
+            }
+          }}
+        />
+        <Hotkey
+          combo="del"
+          global
+          group="Canvas"
+          label="Delete widget"
+          onKeyDown={(e: any) => {
+            if (this.stopPropagationIfWidgetSelected(e)) {
+              this.props.deleteSelectedWidget();
+            }
+          }}
+        />
+        <Hotkey
+          combo="mod + x"
+          global
+          group="Canvas"
+          label="Cut Widget"
+          onKeyDown={(e: any) => {
+            if (this.stopPropagationIfWidgetSelected(e)) {
+              this.props.cutSelectedWidget();
+            }
+          }}
+        />
+
+        <Hotkey
+          combo="mod + a"
+          global
+          group="Canvas"
+          label="Select all Widget"
+          onKeyDown={(e: any) => {
+            if (matchBuilderPath(window.location.pathname)) {
+              this.props.selectAllWidgetsInit();
+              e.preventDefault();
+            }
+          }}
+        />
+        <Hotkey
+          combo="esc"
+          global
+          group="Canvas"
+          label="Deselect all Widget"
+          onKeyDown={(e: any) => {
+            this.props.resetSnipingMode();
+            if (matchBuilderPath(window.location.pathname)) {
+              this.props.deselectAllWidgets();
+              this.props.closeProppane();
+              this.props.closeTableFilterProppane();
+            }
+            e.preventDefault();
+          }}
+        />
+        <Hotkey
+          combo="v"
+          global
+          label="Edit Mode"
+          onKeyDown={(e: any) => {
+            this.props.resetSnipingMode();
+            e.preventDefault();
+          }}
+        />
+        <Hotkey
+          allowInInput
+          combo="mod + enter"
+          global
+          label="Execute Action"
+          onKeyDown={this.props.executeAction}
+          preventDefault
+          stopPropagation
+        />
+        <Hotkey
+          combo="mod + z"
+          global
+          label="Undo change in canvas"
+          onKeyDown={this.props.undo}
+          preventDefault
+          stopPropagation
+        />
+        <Hotkey
+          combo="mod + shift + z"
+          global
+          label="Redo change in canvas"
+          onKeyDown={this.props.redo}
+          preventDefault
+          stopPropagation
+        />
+        <Hotkey
+          combo="mod + y"
+          global
+          label="Redo change in canvas"
+          onKeyDown={this.props.redo}
+          preventDefault
+          stopPropagation
+        />
+        <Hotkey
+          combo="mod + g"
+          global
+          group="Canvas"
+          label="Cut Widgets for grouping"
+          onKeyDown={(e: any) => {
+            if (this.stopPropagationIfWidgetSelected(e)) {
+              this.props.groupSelectedWidget();
+            }
+          }}
+        />
+        <Hotkey
+          combo="mod + s"
+          global
+          label="Save progress"
+          onKeyDown={() => {
+            toast.show(createMessage(SAVE_HOTKEY_TOASTER_MESSAGE), {
+              kind: "info",
+            });
+          }}
+          preventDefault
+          stopPropagation
+        />
+        <Hotkey
+          combo="alt + p"
+          global
+          label="Preview Mode"
+          onKeyDown={() => {
+            this.props.setPreviewModeInitAction(!this.props.isPreviewMode);
+          }}
+        />
+        <Hotkey
+          combo="ctrl + shift + g"
+          global
+          label="Show git commit modal"
+          onKeyDown={() => {
+            this.props.showCommitModal();
+          }}
+        />
+      </Hotkeys>
     );
+  }
+
+  render() {
+    return <div>{this.props.children}</div>;
   }
 }
 
 const mapStateToProps = (state: AppState) => ({
   selectedWidget: getLastSelectedWidget(state),
   selectedWidgets: getSelectedWidgets(state),
-  isDebuggerOpen: showDebuggerFlag(state) as boolean,
+  isDebuggerOpen: showDebuggerFlag(state),
   appMode: getAppMode(state),
   isPreviewMode: previewModeSelector(state),
   isProtectedMode: protectedModeSelector(state),
-  isExplorerPinned: getExplorerPinned(state),
   isSignpostingEnabled: getIsFirstTimeUserOnboardingEnabled(state),
 });
 
@@ -389,10 +385,6 @@ const mapDispatchToProps = (dispatch: any) => {
     executeAction: () => dispatch(runActionViaShortcut()),
     undo: () => dispatch(undoAction()),
     redo: () => dispatch(redoAction()),
-    setPreviewModeAction: (shouldSet: boolean) =>
-      dispatch(setPreviewModeAction(shouldSet)),
-    setExplorerPinnedAction: (shouldSet: boolean) =>
-      dispatch(setExplorerPinnedAction(shouldSet)),
     showCommitModal: () =>
       dispatch(
         setIsGitSyncModalOpen({
@@ -401,6 +393,8 @@ const mapDispatchToProps = (dispatch: any) => {
         }),
       ),
     hideInstaller: () => dispatch(toggleInstaller(false)),
+    setPreviewModeInitAction: (shouldSet: boolean) =>
+      dispatch(setPreviewModeInitAction(shouldSet)),
   };
 };
 
