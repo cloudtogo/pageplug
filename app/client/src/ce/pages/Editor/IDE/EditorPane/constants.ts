@@ -4,6 +4,7 @@ import {
   JS_COLLECTION_EDITOR_PATH,
   QUERIES_EDITOR_BASE_PATH,
   WIDGETS_EDITOR_BASE_PATH,
+  VIEWER_LAYOUT_CONFIG_PATH
 } from "@appsmith/constants/routes/appRoutes";
 import { SAAS_EDITOR_PATH } from "pages/Editor/SaaSEditor/constants";
 

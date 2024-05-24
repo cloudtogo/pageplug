@@ -102,11 +102,11 @@ export function TopStacked(props: TopStackedProps) {
         menudata = current?.treeData.map((itdata: any) => {
           return mapClearTree(itdata, (item: any) => {
             const path = getPath(item, pagesMap, item.title);
-            if (
-              current.outsiderTree.find((n: any) => n.pageId === item.pageId)
-            ) {
-              return false;
-            }
+            // if (
+            //   current.outsiderTree.find((n: any) => n.pageId === item.pageId)
+            // ) {
+            //   return false;
+            // }
             return {
               ...item,
               children: _size(item.children) ? item.children : null,
@@ -120,12 +120,12 @@ export function TopStacked(props: TopStackedProps) {
               ) : (
                 item.title
               ),
-              icon: (
+              icon: item.icon && item.icon !== "无" ? (
                 <View
                   className={`van-icon van-icon-${item.icon ? item.icon : "orders-o"
                     } taroify-icon taroify-icon--inherit hydrated`}
                 />
-              ),
+              ) : null,
             };
           });
         });
@@ -183,22 +183,23 @@ export function TopStacked(props: TopStackedProps) {
       menudata,
     };
   }, [viewerLayout, pages, currentApplicationDetails]);
+  
   useEffect(() => {
     setQuery(window.location.search);
   }, [location]);
-  // Mark default page as first page
-  const appPages = useMemo(() => {
-    const list = _clone(pages);
-    if (list.length > 1) {
-      list.forEach((item, i) => {
-        if (item.isDefault) {
-          list.splice(i, 1);
-          list.unshift(item);
-        }
-      });
-    }
-    return list;
-  }, [pages]);
+  // // Mark default page as first page
+  // const appPages = useMemo(() => {
+  //   const list = _clone(pages);
+  //   if (list.length > 1) {
+  //     list.forEach((item, i) => {
+  //       if (item.isDefault) {
+  //         list.splice(i, 1);
+  //         list.unshift(item);
+  //       }
+  //     });
+  //   }
+  //   return list;
+  // }, [pages]);
 
   const activeMenuKeys = useMemo(() => {
     const currentPageName: any = currentPage?.pageName;
@@ -300,6 +301,7 @@ export function TopStacked(props: TopStackedProps) {
       >
         <Menu
           defaultSelectedKeys={activeMenuKeys.parentPaths}
+          selectedKeys={activeMenuKeys.parentPaths}
           mode="horizontal"
           theme={current_theme}
           items={menuItems}

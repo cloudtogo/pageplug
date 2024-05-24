@@ -23,7 +23,7 @@ const LibrarySidePane = () => {
     <Container>
       <PaneHeader
         rightIcon={<AddLibraryPopover />}
-        title="Installed Libraries"
+        title="安装插件"
       />
       {transitions((style, lib) => (
         <animated.div style={style}>

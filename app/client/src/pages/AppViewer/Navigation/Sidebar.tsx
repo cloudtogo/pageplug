@@ -4,14 +4,10 @@ import type {
   Page,
 } from "@appsmith/constants/ReduxActionConstants";
 import { NAVIGATION_SETTINGS, SIDEBAR_WIDTH } from "constants/AppConstants";
-import { get, head as _head, size } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
 import ApplicationName from "./components/ApplicationName";
-import MenuItem from "./components/MenuItem";
-import ShareButton from "./components/ShareButton";
-import PrimaryCTA from "../PrimaryCTA";
 import { useHref } from "pages/Editor/utils";
 import { builderURL, viewerURL } from "@appsmith/RouteBuilder";
 import {
@@ -42,15 +38,16 @@ import { View } from "@tarojs/components";
 import { getCurrentThemeDetails } from "selectors/themeSelectors";
 import { getIsAppSettingsPaneWithNavigationTabOpen } from "selectors/appSettingsPaneSelectors";
 import BackToHomeButton from "@appsmith/pages/AppViewer/BackToHomeButton";
-import MenuItemContainer from "./components/MenuItemContainer";
-import BackToAppsButton from "./components/BackToAppsButton";
 import history from "utils/history";
 import { APP_MODE } from "entities/App";
-import type { MenuProps } from "antd";
 import { Menu } from "antd";
 import { filterHiddenTreeData, mapClearTree } from "utils/treeUtils";
-type MenuItem = Required<MenuProps>["items"][number];
-import { NavLink } from "react-router-dom";
+import {
+  get as _get,
+  size as _size,
+  head as _head,
+  clone as _clone,
+} from "lodash";
 import { makeRouteNode, findPathNodes } from "../utils";
 import NavigationLogo from "@appsmith/pages/AppViewer/NavigationLogo";
 
@@ -80,12 +77,12 @@ export function Sidebar(props: SidebarProps) {
     currentApplicationDetails?.applicationDetail?.navigationSetting
       ?.logoConfiguration ||
     NAVIGATION_SETTINGS.LOGO_CONFIGURATION.LOGO_AND_APPLICATION_TITLE;
-  const primaryColor = get(
+  const primaryColor = _get(
     selectedTheme,
     "properties.colors.primaryColor",
     "inherit",
   );
-  const borderRadius = get(
+  const borderRadius = _get(
     selectedTheme,
     "properties.borderRadius.appBorderRadius",
     "inherit",
@@ -138,20 +135,20 @@ export function Sidebar(props: SidebarProps) {
           return a;
         }, {});
         const newMenuTree: any = [];
-        current.treeData.forEach(
+        current?.treeData.forEach(
           makeRouteNode(pagesMap, newMenuTree, current.outsiderTree),
         );
         menudata = current?.treeData.map((itdata: any) => {
           return mapClearTree(itdata, (item: any) => {
             const path = getPath(item, pagesMap, item.title);
-            if (
-              current.outsiderTree.find((n: any) => n.pageId === item.pageId)
-            ) {
-              return false;
-            }
+            // if (
+            //   current.outsiderTree.find((n: any) => n.pageId === item.pageId)
+            // ) {
+            //   return false;
+            // }
             return {
               ...item,
-              children: size(item.children) ? item.children : null,
+              children: _size(item.children) ? item.children : null,
               label: item.pageId ? (
                 <a
                   key={item.pageId}
@@ -162,12 +159,12 @@ export function Sidebar(props: SidebarProps) {
               ) : (
                 item.title
               ),
-              icon: (
+              icon: item.icon && item.icon !== "无" ? (
                 <View
                   className={`van-icon van-icon-${item.icon ? item.icon : "orders-o"
                     } taroify-icon taroify-icon--inherit hydrated`}
                 />
-              ),
+              ) : null,
             };
           });
         });
@@ -195,7 +192,6 @@ export function Sidebar(props: SidebarProps) {
             };
           });
         menudata = menudata.concat(newPages);
-        // console.log(newPages, "newPages");
       } catch (e) {
         console.log(e);
       }
@@ -213,7 +209,7 @@ export function Sidebar(props: SidebarProps) {
           key: p.pageId,
           label: p.pageId ? (
             <a key={p.pageId} onClick={() => gotToPath(p.pageId, path)}>
-              {p.pageName}{" "}
+              {p.pageName}
             </a>
           ) : (
             p.pageName
@@ -226,7 +222,7 @@ export function Sidebar(props: SidebarProps) {
       menudata,
     };
   }, [viewerLayout, pages, currentApplicationDetails]);
-
+  
   const activeMenuKeys = useMemo(() => {
     const currentPageName: any = currentPage?.pageName;
     const parentPaths = findPathNodes(initState.menudata, currentPageName);
@@ -285,7 +281,7 @@ export function Sidebar(props: SidebarProps) {
   };
 
   const current_theme =
-    get(
+    _get(
       currentApplicationDetails,
       ["applicationDetail", "navigationSetting", "colorStyle"],
       "theme",
@@ -358,6 +354,7 @@ export function Sidebar(props: SidebarProps) {
       >
         <Menu
           defaultSelectedKeys={activeMenuKeys.parentPaths}
+          selectedKeys={activeMenuKeys.parentPaths}
           mode="inline"
           theme={current_theme}
           inlineCollapsed={!isOpen}
@@ -368,56 +365,10 @@ export function Sidebar(props: SidebarProps) {
             backgroundColor: "transparent",
           }}
         />
-        {/* {appPages.map((page) => {
-          return (
-            <MenuItemContainer
-              forSidebar
-              isTabActive={pathname.indexOf(page.pageId) > -1}
-              key={page.pageId}
-            >
-              <MenuItem
-                isMinimal={isMinimal}
-                key={page.pageId}
-                navigationSetting={
-                  currentApplicationDetails?.applicationDetail
-                    ?.navigationSetting
-                }
-                page={page}
-                query={query}
-              />
-            </MenuItemContainer>
-          );
-        })} */}
       </StyledMenuContainer>
 
       {props.showUserSettings && (
         <StyledFooter navColorStyle={navColorStyle} primaryColor={primaryColor}>
-          {/* {currentApplicationDetails && (
-            <StyledCtaContainer>
-              <ShareButton
-                currentApplicationDetails={currentApplicationDetails}
-                currentWorkspaceId={currentWorkspaceId}
-                insideSidebar
-                isMinimal={isMinimal}
-              />
-
-              <PrimaryCTA
-                className="t--back-to-editor"
-                insideSidebar
-                isMinimal={isMinimal}
-                navColorStyle={navColorStyle}
-                primaryColor={primaryColor}
-                url={editorURL}
-              />
-
-              <BackToAppsButton
-                currentApplicationDetails={currentApplicationDetails}
-                insideSidebar
-                isMinimal={isMinimal}
-              />
-            </StyledCtaContainer>
-          )} */}
-
           <SidebarProfileComponent
             currentUser={currentUser}
             isMinimal={isMinimal}

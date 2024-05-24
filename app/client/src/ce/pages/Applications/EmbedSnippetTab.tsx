@@ -177,7 +177,7 @@ export function AppSettings() {
 
         <Switch
           data-testid={"show-navigation-bar-toggle"}
-          defaultSelected={embedSnippet.currentEmbedSetting?.showNavigationBar}
+          defaultSelected={!embedSnippet.currentEmbedSetting?.showNavigationBar}
           onChange={() =>
             embedSnippet.onChange({
               showNavigationBar:

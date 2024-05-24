@@ -94,6 +94,13 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
         content: `系统未开通邮件服务，不能正常发送重置邮件`,
         className: "my-msg",
       });
+    } else {
+      message.open({
+        type: "success",
+        duration: 10,
+        content: `您的邮箱服务已配置，可正常发送邮件`,
+        className: "my-msg",
+      });
     }
     return () => {
       message.destroy();

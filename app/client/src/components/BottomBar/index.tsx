@@ -26,14 +26,6 @@ export default function BottomBar({ viewMode }: { viewMode: boolean }) {
     <Container>
       {/* {inCloudOS ? <span /> : <QuickGitActions />} */}
       <Wrapper>
-        {!viewMode && (
-          <SwitchEnvironment
-            editorId={appId}
-            onChangeEnv={onChangeEnv}
-            startSwitchEnvMessage={START_SWITCH_ENVIRONMENT}
-            viewMode={viewMode}
-          />
-        )}
         {!viewMode && <QuickGitActions />}
       </Wrapper>
       {!viewMode && (

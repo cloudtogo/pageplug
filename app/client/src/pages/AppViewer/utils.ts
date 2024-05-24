@@ -186,6 +186,7 @@ export function findPathNodes(treeArray: any[], leafNode: string) {
   const pathNodes: any[] = [];
 
   function traverse(node: any, path: any) {
+    if (!node) return;
     path.push(node.key);
 
     if (node.title === leafNode) {

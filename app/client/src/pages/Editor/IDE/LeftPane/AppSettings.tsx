@@ -3,7 +3,7 @@ import AppSettingsPane from "../../AppSettingsPane/AppSettings";
 import EditorSettingsPaneContainer from "pages/Editor/commons/EditorSettingsPaneContainer";
 const SettingsPane = () => {
   return (
-    <EditorSettingsPaneContainer title="App Settings">
+    <EditorSettingsPaneContainer title="应用设置">
       <AppSettingsPane />
     </EditorSettingsPaneContainer>
   );

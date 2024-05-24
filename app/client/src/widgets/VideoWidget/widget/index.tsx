@@ -44,7 +44,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
     return {
       name: "视频",
       iconSVG: IconSVG,
-      tags: [WIDGET_TAGS.GERNERAL],
+      tags: [WIDGET_TAGS.FEATRUE],
       needsMeta: true,
       searchTags: ["video", "player", "play"],
     };

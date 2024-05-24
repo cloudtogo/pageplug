@@ -13,13 +13,17 @@ import MainPane from "./MainPane";
 import RightPane from "./RightPane";
 import classNames from "classnames";
 import { tailwindLayers } from "constants/Layers";
+import { useLocation } from "react-router";
 
 /**
  * OldName: MainContainer
  */
 function IDE() {
+  const loc = useLocation();
   const isPreviewMode = useSelector(previewModeSelector);
   const isCombinedPreviewMode = useSelector(combinedPreviewModeSelector);
+  const isAppSettingView: boolean = loc.pathname?.endsWith("/edit/settings");
+
   return (
     <>
       <EditorWrapperContainer>
@@ -32,9 +36,10 @@ function IDE() {
           })}
         >
           <Sidebar />
-          <LeftPane />
+          {!isAppSettingView ? <LeftPane /> : null}
         </div>
         <MainPane id="app-body" />
+        {isAppSettingView ? <LeftPane /> : null}
         <div
           className={classNames({
             [`transition-transform transform duration-400 ${tailwindLayers.propertyPane}`]:

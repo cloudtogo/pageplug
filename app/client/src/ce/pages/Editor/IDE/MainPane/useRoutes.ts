@@ -136,6 +136,12 @@ function useRoutes(path: string): RouteReturnType[] {
         exact: true,
         path: `${path}${GENERATE_TEMPLATE_FORM_PATH}`,
       },
+      {
+        key: "ViewerLayoutEditor",
+        component: ViewerLayoutEditor,
+        exact: true,
+        path: `${path}${VIEWER_LAYOUT_CONFIG_PATH}`,
+      },
     ];
   }
 

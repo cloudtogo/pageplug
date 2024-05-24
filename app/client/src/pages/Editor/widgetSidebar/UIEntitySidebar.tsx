@@ -89,41 +89,12 @@ function UIEntitySidebar({ isActive }: { isActive: boolean }) {
     setFilteredCards(groupedCards);
   }, [groupedCards]);
 
-  return (
-    <div
-      className={`flex flex-col t--widget-sidebar overflow-hidden ${
-        isActive ? "" : "hidden"
-      }`}
-    >
-      <div className="sticky top-0 px-3 mt-0.5">
-        <SearchInput
-          autoComplete="off"
-          id={ENTITY_EXPLORER_SEARCH_ID}
-          onChange={search}
-          placeholder="Search widgets"
-          ref={searchInputRef}
-          type="text"
-        />
-      </div>
-      <div
-        className="flex-grow px-3 mt-2 overflow-y-scroll"
-        data-testid="t--widget-sidebar-scrollable-wrapper"
-      >
-        {isEmpty && (
-          <Text
-            color="#6A7585"
-            kind="body-m"
-            renderAs="p"
-            style={{ marginBottom: "15px" }}
-          >
-            {createMessage(WIDGET_PANEL_EMPTY_MESSAGE)} `
-            {searchInputRef.current?.value}`
-          </Text>
-        )}
+  const FilteredCardLists = useMemo(
+    () => {
+      return (
         <div>
           {Object.keys(filteredCards).map((tag) => {
             const cardsForThisTag = filteredCards[tag as WidgetTags];
-
             if (!cardsForThisTag?.length && !entityLoading[tag as WidgetTags]) {
               return null;
             }
@@ -146,6 +117,43 @@ function UIEntitySidebar({ isActive }: { isActive: boolean }) {
             );
           })}
         </div>
+      )
+    },
+    [filteredCards],
+  );
+
+  return (
+    <div
+      className={`flex flex-col t--widget-sidebar overflow-hidden ${
+        isActive ? "" : "hidden"
+      }`}
+    >
+      <div className="sticky top-0 px-3 mt-0.5">
+        <SearchInput
+          autoComplete="off"
+          id={ENTITY_EXPLORER_SEARCH_ID}
+          onChange={search}
+          placeholder="搜索"
+          ref={searchInputRef}
+          type="text"
+        />
+      </div>
+      <div
+        className="flex-grow px-3 mt-2 overflow-y-scroll"
+        data-testid="t--widget-sidebar-scrollable-wrapper"
+      >
+        {isEmpty && (
+          <Text
+            color="#6A7585"
+            kind="body-m"
+            renderAs="p"
+            style={{ marginBottom: "15px" }}
+          >
+            {createMessage(WIDGET_PANEL_EMPTY_MESSAGE)} `
+            {searchInputRef.current?.value}`
+          </Text>
+        )}
+        {FilteredCardLists}
       </div>
     </div>
   );
