@@ -32,6 +32,7 @@ import { getIsAppSettingsPaneWithNavigationTabOpen } from "selectors/appSettings
 import { throttle, get as _get, size as _size, head as _head } from "lodash";
 import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
 import { Menu } from "antd";
+import styled from "styled-components";
 import { makeRouteNode, findPathNodes } from "../utils";
 import { filterHiddenTreeData, mapClearTree } from "utils/treeUtils";
 // TODO - @Dhruvik - ImprovedAppNav
@@ -42,17 +43,16 @@ interface TopInlineProps {
   pages: Page[];
 }
 
+const MyMenu = styled(Menu)<{}>`
+  color: "rgba(0,0,0,0.65)";
+  min-width: 90%;
+  .ant-menu-submenu {
+    font-weight: 500;
+  }
+`;
+
 export function TopInline(props: TopInlineProps) {
   const { currentApplicationDetails, pages } = props;
-  // const selectedTheme = useSelector(getSelectedAppTheme);
-  // const navColorStyle =
-  //   currentApplicationDetails?.applicationDetail?.navigationSetting?.colorStyle ||
-  //   NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT;
-  // const primaryColor = get(
-  //   selectedTheme,
-  //   "properties.colors.primaryColor",
-  //   "inherit",
-  // );
   const location = useLocation();
   const { pathname } = location;
   const [query, setQuery] = useState("");
@@ -105,11 +105,11 @@ export function TopInline(props: TopInlineProps) {
         menudata = current?.treeData.map((itdata: any) => {
           return mapClearTree(itdata, (item: any) => {
             const path = getPath(item, pagesMap, item.title);
-            if (
-              current.outsiderTree.find((n: any) => n.pageId === item.pageId)
-            ) {
-              return false;
-            }
+            // if (
+            //   current.outsiderTree.find((n: any) => n.pageId === item.pageId)
+            // ) {
+            //   return false;
+            // }
             return {
               ...item,
               children: _size(item.children) ? item.children : null,
@@ -123,12 +123,12 @@ export function TopInline(props: TopInlineProps) {
               ) : (
                 item.title
               ),
-              icon: (
+              icon: item.icon && item.icon !== "无" ? (
                 <View
                   className={`van-icon van-icon-${item.icon ? item.icon : "orders-o"
                     } taroify-icon taroify-icon--inherit hydrated`}
                 />
-              ),
+              ) : null,
             };
           });
         });
@@ -186,7 +186,6 @@ export function TopInline(props: TopInlineProps) {
       menudata,
     };
   }, [viewerLayout, pages, currentApplicationDetails]);
-
   const activeMenuKeys = useMemo(() => {
     const currentPageName: any = currentPage?.pageName;
     const parentPaths = findPathNodes(initState.menudata, currentPageName);
@@ -255,11 +254,12 @@ export function TopInline(props: TopInlineProps) {
 
   return (
     <Container
-      className="gap-x-2 flex items-center grow t--app-viewer-navigation-top-inline"
+      className={`gap-x-2 flex items-center t--app-viewer-navigation-top-inline w-full`}
       ref={navRef}
     >
-      <Menu
+      <MyMenu
         defaultSelectedKeys={activeMenuKeys.parentPaths}
+        selectedKeys={activeMenuKeys.parentPaths}
         mode="horizontal"
         theme={current_theme}
         items={filterHiddenTreeData(initState.menudata)}
@@ -269,34 +269,6 @@ export function TopInline(props: TopInlineProps) {
           backgroundColor: "transparent",
         }}
       />
-      {/* {appPages.map(
-        (page, index) =>
-          index < maxMenuItemsThatCanFit && (
-            <MenuItemContainer
-              isTabActive={pathname.indexOf(page.pageId) > -1}
-              key={page.pageId}
-            >
-              <MenuItem
-                navigationSetting={
-                  currentApplicationDetails?.applicationDetail
-                    ?.navigationSetting
-                }
-                page={page}
-                query={query}
-              />
-            </MenuItemContainer>
-          ),
-      )}
-
-      {appPages.length > maxMenuItemsThatCanFit && (
-        <MoreDropdownButton
-          key="more-button"
-          navigationSetting={
-            currentApplicationDetails?.applicationDetail?.navigationSetting
-          }
-          pages={appPages.slice(maxMenuItemsThatCanFit, appPages.length)}
-        />
-      )} */}
     </Container>
   );
 }

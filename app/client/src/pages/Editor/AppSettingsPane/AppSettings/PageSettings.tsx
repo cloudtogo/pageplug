@@ -293,7 +293,7 @@ function PageSettings(props: { page: Page }) {
           className="mb-0"
           id="t--page-settings-show-nav-control"
           isDisabled={isShownSaving || !canManagePages}
-          isSelected={isShown}
+          isSelected={!isShown}
           onChange={() => {
             setIsShown(!isShown);
             saveIsShown(!isShown);

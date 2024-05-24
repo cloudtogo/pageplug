@@ -54,7 +54,7 @@ export function setSelectedQuery(entityInfo: FocusEntityInfo) {
 }
 
 export function setSelectedJSObject(focusInfo: FocusEntityInfo) {
-  if (focusInfo.entity === FocusEntity.JS_OBJECT) {
+  if (focusInfo?.entity === FocusEntity.JS_OBJECT) {
     history.replace(
       jsCollectionIdURL({
         collectionId: focusInfo.id,

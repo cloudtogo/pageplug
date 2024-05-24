@@ -46,7 +46,7 @@ export const VersionData = styled.div`
   display: flex;
   flex-direction: column;
   color: var(--ads-v2-color-fg-muted);
-  font-size: 8px;
+  font-size: 10px;
   position: relative;
   padding: 6px 12px 12px;
   gap: 4px;
@@ -149,7 +149,7 @@ const HomepageHeaderAction = ({
                   </MenuItem>
                 )}
                 <MenuSeparator className="mb-1" />
-                <MenuItem
+                {/* <MenuItem
                   className="t--product-updates-btn"
                   data-testid="t--product-updates-btn"
                   onClick={() => {
@@ -158,7 +158,7 @@ const HomepageHeaderAction = ({
                   startIcon="gift-line"
                 >
                   {createMessage(WHATS_NEW)}
-                </MenuItem>
+                </MenuItem> */}
                 <VersionData>
                   <div>
                     {createMessage(

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import type { AppState } from "@appsmith/reducers";
 import { getColorWithOpacity } from "constants/DefaultTheme";
 import { WIDGET_PADDING } from "constants/WidgetConstants";

@@ -1726,7 +1726,7 @@ export const PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_1 = () => "请";
 export const PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_2 = () => "更新";
 export const PAGE_SETTINGS_PAGE_URL_VERSION_UPDATE_3 = () =>
   "你的应用 URL 到新的可读格式";
-export const PAGE_SETTINGS_SHOW_PAGE_NAV = () => "显示菜单导航";
+export const PAGE_SETTINGS_SHOW_PAGE_NAV = () => "隐藏当前页面";
 ("your app URL to the new format to set the page URL.");
 export const PAGE_SETTINGS_SHOW_PAGE_NAV_TOOLTIP = () =>
   "当前页面是否显示应用菜单导航";
@@ -2110,10 +2110,10 @@ export const DATASOURCE_LIST_BLANK_TITLE = () => "工作区中不存在数据源
 export const DATASOURCE_BLANK_STATE_MESSAGE = () =>
   "您需要一个数据源连接来编写第一个查询";
 // Interim data state info
-export const NO_COLUMNS_MESSAGE_TEXT = () => "There are no columns to show";
-export const FAILED_RECORDS_TITLE_TEXT = () => "Failed to load";
+export const NO_COLUMNS_MESSAGE_TEXT = () => "没有可显示的列";
+export const FAILED_RECORDS_TITLE_TEXT = () => "加载失败";
 export const FAILED_RECORDS_MESSAGE_TEXT = () =>
-  "There was an error connecting to the datasource. Please check the datasource configuration and retry. If the issue persists, review the datasource settings.";
+  "连接到数据源时出错。请检查数据源配置，然后重试。如果问题仍然存在，请检查数据源设置。";
 
 export const DATASOURCE_LIST_BLANK_DESCRIPTION = () => "连接数据源编写查询语句";
 

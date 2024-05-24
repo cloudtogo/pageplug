@@ -22,7 +22,7 @@ import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
 import { widgetListURL, builderURL } from "@appsmith/RouteBuilder";
 import { getIDEViewMode, getIsSideBySideEnabled } from "selectors/ideSelectors";
 import { setIdeEditorViewMode } from "actions/ideActions";
-import { useLocation, useRouteMatch } from "react-router";
+import { useLocation } from "react-router";
 import AnalyticsUtil from "../../../../../utils/AnalyticsUtil";
 import { useCurrentAppState } from "../../hooks";
 
@@ -50,7 +50,6 @@ const SegmentedHeader = () => {
   };
   const { segment } = useCurrentEditorState();
   const { onSegmentChange } = useSegmentNavigation();
-  const aa = useRouteMatch();
   const loc = useLocation();
   const handleMaximizeButtonClick = useCallback(() => {
     AnalyticsUtil.logEvent("EDITOR_MODE_CHANGE", {
@@ -60,21 +59,19 @@ const SegmentedHeader = () => {
   }, []);
 
   const appState = useCurrentAppState();
-  const options = appState === EditorState.EDITOR ? [
-    {
-      label: createMessage(EDITOR_PANE_TEXTS.ui_tab),
-      value: EditorEntityTab.UI,
-    },
-  ] : [
-    {
-      label: createMessage(EDITOR_PANE_TEXTS.queries_tab),
-      value: EditorEntityTab.QUERIES,
-    },
-    {
-      label: createMessage(EDITOR_PANE_TEXTS.js_tab),
-      value: EditorEntityTab.JS,
-    },
-  ]
+  const options =
+    appState === EditorState.EDITOR
+      ? []
+      : [
+          {
+            label: createMessage(EDITOR_PANE_TEXTS.queries_tab),
+            value: EditorEntityTab.QUERIES,
+          },
+          {
+            label: createMessage(EDITOR_PANE_TEXTS.js_tab),
+            value: EditorEntityTab.JS,
+          },
+        ];
 
   const UIOptions = [
     {
@@ -85,7 +82,7 @@ const SegmentedHeader = () => {
       label: createMessage(EDITOR_PANE_TEXTS.widget_pool_title),
       value: EditorSubTab.POOL,
     },
-  ]
+  ];
 
   const closePoolView = useCallback(() => {
     history.push(widgetListURL({ pageId }));
@@ -97,53 +94,63 @@ const SegmentedHeader = () => {
 
   const onTypeChange = (type: string) => {
     if (type === EditorSubTab.LIST) {
-      closePoolView()
+      closePoolView();
     } else {
-      closeListView()
+      closeListView();
     }
-  }
+  };
 
-  const activeTab: string = loc.pathname?.includes("/edit/widgets") ? EditorSubTab.LIST : EditorSubTab.POOL
+  const activeTab: string = loc.pathname?.endsWith("/edit/widgets")
+    ? EditorSubTab.LIST
+    : EditorSubTab.POOL;
+
+  const isEditLayoutView: boolean = loc.pathname?.endsWith("/edit/viewerlayout");
+  if (isEditLayoutView) {
+    return null;
+  }
   return (
     <>
-      <Container
-        alignItems="center"
-        backgroundColor="var(--ads-v2-colors-control-track-default-bg)"
-        className="ide-editor-left-pane__header"
-        gap="spaces-2"
-        justifyContent="space-between"
-        padding="spaces-2"
-      >
-        <SegmentedControl
-          id="editor-pane-segment-control"
-          onChange={onSegmentChange}
-          options={options}
-          value={segment}
-        />
-        {isGlobalAddPaneEnabled ? (
-          <Button
-            className={"t--add-editor-button"}
-            isIconButton
-            kind="primary"
-            onClick={onAddButtonClick}
-            size="sm"
-            startIcon="add-line"
+      {options.length ? (
+        <Container
+          alignItems="center"
+          backgroundColor="var(--ads-v2-colors-control-track-default-bg)"
+          className="ide-editor-left-pane__header"
+          gap="spaces-2"
+          justifyContent="space-between"
+          padding="spaces-2"
+        >
+          <SegmentedControl
+            id="editor-pane-segment-control"
+            onChange={onSegmentChange}
+            options={options}
+            value={segment}
           />
-        ) : null}
-        {isSideBySideEnabled &&
+          {isGlobalAddPaneEnabled ? (
+            <Button
+              className={"t--add-editor-button"}
+              isIconButton
+              kind="primary"
+              onClick={onAddButtonClick}
+              size="sm"
+              startIcon="add-line"
+            />
+          ) : null}
+          {isSideBySideEnabled &&
           editorMode === EditorViewMode.SplitScreen &&
           segment !== EditorEntityTab.UI ? (
-          <Tooltip content={createMessage(MAXIMIZE_BUTTON_TOOLTIP)}>
-            <Button
-              id="editor-mode-maximize"
-              isIconButton
-              kind="tertiary"
-              onClick={handleMaximizeButtonClick}
-              startIcon="maximize-v3"
-            />
-          </Tooltip>
-        ) : null}
-      </Container>
+            <Tooltip content={createMessage(MAXIMIZE_BUTTON_TOOLTIP)}>
+              <Button
+                id="editor-mode-maximize"
+                isIconButton
+                kind="tertiary"
+                onClick={handleMaximizeButtonClick}
+                startIcon="maximize-v3"
+              />
+            </Tooltip>
+          ) : null}
+        </Container>
+      ) : null}
+
       <Container
         alignItems="center"
         backgroundColor="var(--ads-v2-colors-control-track-default-bg)"
@@ -152,19 +159,16 @@ const SegmentedHeader = () => {
         justifyContent="space-between"
         padding="spaces-2"
       >
-        {
-          appState === EditorState.EDITOR ? (
-            <SegmentedControl
-              id="editor-pane-segment-control"
-              onChange={onTypeChange}
-              options={UIOptions}
-              value={activeTab}
-            />
-          ) : null
-        }
+        {appState === EditorState.EDITOR ? (
+          <SegmentedControl
+            id="editor-pane-segment-control"
+            onChange={onTypeChange}
+            options={UIOptions}
+            value={activeTab}
+          />
+        ) : null}
       </Container>
     </>
-
   );
 };
 

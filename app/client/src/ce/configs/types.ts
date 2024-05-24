@@ -48,7 +48,7 @@ export interface AppsmithUIConfigs {
   };
 
   enableMixpanel: boolean;
-  enableTNCPP: boolean;
+  enableTNCPP?: boolean;
   enableWeChatOAuth: boolean;
 
   cloudHosting: boolean;

@@ -103,8 +103,8 @@ function WidgetCard(props: CardProps) {
         ...props.details,
         widgetId: generateReactKey(),
       });
+    deselectAll();
     if (!isEditorPaneEnabled) {
-      deselectAll();
       closeWalkthrough();
     }
   };

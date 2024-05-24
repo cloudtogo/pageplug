@@ -124,7 +124,12 @@ function Onboarding() {
   );
 
   if (shouldShowStarterTemplates && appState === IDEAppState.EDITOR)
-    return <StarterBuildingBlocks />;
+    return (
+      <EmptyContainer>
+        <img src={EmptyCanvas} style={{ opacity: 0.5 }} />
+        <h2>开始构建你的应用</h2>
+      </EmptyContainer>
+    );
   else if (!shouldShowStarterTemplates && appState === IDEAppState.EDITOR)
     return (
       <EmptyContainer>

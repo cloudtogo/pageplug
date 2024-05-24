@@ -26,7 +26,6 @@ export const LeftPaneContainer = styled.div`
 const LeftPane = () => {
   const isEditorPaneEnabled = useIsEditorPaneSegmentsEnabled();
   const { path } = useRouteMatch();
-  console.warn("LeftPane", isEditorPaneEnabled)
   return (
     <LeftPaneContainer>
       <Switch>

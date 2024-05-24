@@ -233,7 +233,7 @@ export const quickScrollToWidget = (
   widgetIdSelector: string,
   canvasWidgets: CanvasWidgetsReduxState,
 ) => {
-  if (!widgetId || widgetId === "") return;
+  if (!widgetId || widgetId === "" || widgetId === "0") return;
   window.requestIdleCallback(() => {
     const el = document.getElementById(widgetIdSelector);
     const canvas = document.getElementById(CANVAS_VIEWPORT);

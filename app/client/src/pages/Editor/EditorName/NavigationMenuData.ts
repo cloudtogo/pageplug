@@ -111,20 +111,20 @@ export const GetNavigationMenuData = ({
       isVisible: true,
     },
     {
-      text: "Fork application",
+      text: "克隆应用",
       onClick: () => setForkApplicationModalOpen(true),
       type: MenuTypes.MENU,
       isVisible: isApplicationIdPresent && hasEditPermission,
     },
     {
-      text: "Export application",
+      text: "导出应用",
       onClick: exportAppAsJSON,
       type: MenuTypes.MENU,
       isVisible: isApplicationIdPresent && hasExportPermission,
     },
     hasDeleteApplicationPermission(currentApplication?.userPermissions) && {
-      text: "Delete application",
-      confirmText: "Are you sure?",
+      text: "删除应用",
+      confirmText: "确定吗?",
       onClick: deleteApplication,
       type: MenuTypes.RECONFIRM,
       isVisible: isApplicationIdPresent,
@@ -157,24 +157,24 @@ export const GetNavigationMenuData = ({
       ],
     },
     {
-      text: "Help",
+      text: "帮助",
       type: MenuTypes.PARENT,
       isVisible: true,
       children: [
-        {
-          text: "Community forum",
-          onClick: () => openExternalLink("https://community.appsmith.com/"),
-          type: MenuTypes.MENU,
-          isVisible: true,
-          isOpensNewWindow: true,
-        },
-        {
-          text: "文档",
-          onClick: () => openExternalLink(DISCORD_URL),
-          type: MenuTypes.MENU,
-          isVisible: true,
-          isOpensNewWindow: true,
-        },
+        // {
+        //   text: "Community forum",
+        //   onClick: () => openExternalLink("https://community.appsmith.com/"),
+        //   type: MenuTypes.MENU,
+        //   isVisible: true,
+        //   isOpensNewWindow: true,
+        // },
+        // {
+        //   text: "文档",
+        //   onClick: () => openExternalLink(DISCORD_URL),
+        //   type: MenuTypes.MENU,
+        //   isVisible: true,
+        //   isOpensNewWindow: true,
+        // },
         {
           text: "Github",
           onClick: () =>

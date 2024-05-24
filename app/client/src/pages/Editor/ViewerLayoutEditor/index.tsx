@@ -32,7 +32,7 @@ import {
   processTreeData,
   generateUuid,
   mapTree,
-  // traverseTree,
+  toggleNodeAndChildren,
   removeNodeByKey,
 } from "utils/treeUtils";
 const { Paragraph } = Typography;
@@ -254,7 +254,7 @@ function PagesEditor() {
     // update menu tree
     const newMenuTree: any = [];
     const newOuterTree: any = [];
-    treeData.forEach(updateMenuTree(pagesMap, newMenuTree));
+    initState.treeData.forEach(updateMenuTree(pagesMap, newMenuTree));
     outsiderTree.forEach(updateMenuTree(pagesMap, newOuterTree));
     const newPages = Object.values(pagesMap)
       .filter((p: any) => !p.visited)
@@ -268,7 +268,7 @@ function PagesEditor() {
     setOutsiderTree(newOuterTree);
     setHideNodes(newOuterTree.map((o: any) => o.pageId));
     initNewTree(_tree);
-  }, [pages]);
+  }, [pages, initState.treeData]);
 
   const initNewTree = (tree: any) => {
     const _hidePage: string[] = [];
@@ -436,15 +436,8 @@ function PagesEditor() {
   };
 
   const toggleHidePage = (node: any) => {
-    const updatedGData: any = gData.map((gnode: any) => {
-      return mapTree(gnode, (gn: any) => {
-        if (gn.key === node.key) {
-          return { ...gn, isHidden: !node.isHidden };
-        }
-        return gn;
-      });
-    });
-    setGData(updatedGData);
+    toggleNodeAndChildren(gData, node.key, !node.isHidden);
+    setGData(gData);
   };
 
   const nodeNameChange = (name: string, node: any) => {

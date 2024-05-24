@@ -102,3 +102,19 @@ export function filterHiddenTreeData(data: any, parentIsHidden = false) {
       return node;
     });
 }
+
+export function toggleNodeAndChildren(nodes:any, targetKey?:any, needHidden?: boolean) {
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+    if (node.key === targetKey) { // 等于目标node key
+      node.isHidden = needHidden;
+    }
+    if (!targetKey) {
+      node.isHidden = needHidden;
+    }
+    if (node.children && node.children.length > 0) {
+      toggleNodeAndChildren(node.children, "", needHidden);
+    }
+  }
+}
+

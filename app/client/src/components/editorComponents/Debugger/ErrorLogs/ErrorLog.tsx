@@ -1,6 +1,7 @@
 import type { SyntheticEvent } from "react";
 import React, { memo, useRef, useCallback, useEffect } from "react";
 import _debounce from "lodash/debounce";
+import _uniqueId from "lodash/uniqueId";
 import styled from "styled-components";
 import ErrorLogItem, { getLogItemProps } from "./ErrorLogItem";
 import { BlankState } from "../helpers";
@@ -57,12 +58,12 @@ const ErrorLog = (props: {
       messages.forEach((message) => {
         logItemProps.messages = [message];
         logItems.push(
-          <ErrorLogItem key={`debugger-${index}`} {...logItemProps} />,
+          <ErrorLogItem key={`debugger-${index}-${_uniqueId()}`} {...logItemProps} />,
         );
       });
     } else {
       logItems.push(
-        <ErrorLogItem key={`debugger-${index}`} {...logItemProps} />,
+        <ErrorLogItem key={`debugger-${index}-${_uniqueId()}`} {...logItemProps} />,
       );
     }
     return logItems;

@@ -149,7 +149,7 @@ export function ModalOverlayLayer(props: BaseWidgetProps) {
           height={props.height}
           isEditMode={props.isEditMode}
           left={props.left}
-          leftSidebarWidth={hasSidebarPinned ? sidebarWidth.toString() : "0"}
+          leftSidebarWidth={"0"}
           maxWidth={maxModalWidth}
           minSize={props.minSize}
           right={props.bottom}
