@@ -318,3 +318,22 @@ div.bp3-popover-arrow {
   color: var(--ads-color-brand-text);
   background: var(--ads-color-brand);
 }
+
+.menu-item {
+  background-color: #ffffff;
+  &:hover {
+    background-color: #bee0e654 !important;
+    box-shadow: 0 1px 2px 0 #0000001a;
+  }
+}
+.menu-fold {
+  background: linear-gradient(45deg, #ffffff 93%, #bee0e654 0, #bee0e654 96%, #ffffff 0, #ffffff);
+  &:not(.menuhide):hover {
+    background: linear-gradient(45deg, #bee0e654 93%, #79bcc754 0, #79bcc754 96%, #bee0e654 0, #bee0e654);
+    background-color: #bee0e654 !important;
+    box-shadow: 0 1px 2px 0 #0000001a;
+  }
+}
+.menuhide {
+  background: #eee !important;
+}

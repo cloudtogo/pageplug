@@ -12,7 +12,7 @@ import assertNever from "assert-never/index";
 import log from "loglevel";
 import { toast } from "design-system";
 import CodeEditorPanel from "../CodeEditor/CodeEditorPanel";
-
+import _get from "lodash/get";
 let CachedCodeEditor: typeof CodeEditor | undefined;
 
 type LazyCodeEditorState =
@@ -267,7 +267,11 @@ function LazyCodeEditor({
         </div>
       );
     };
-    if (otherProps.isJSObject) {
+    if (
+      otherProps.isJSObject ||
+      _get(otherProps, "focusElementName", "").includes("custom-widget") ||
+      _get(otherProps, "mode", "").includes("sql")
+    ) {
       return content(true);
     }
 

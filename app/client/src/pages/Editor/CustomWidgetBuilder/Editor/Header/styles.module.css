@@ -40,8 +40,8 @@
 }
 
 .layoutControl {
-  flex-grow: 0;
-  flex-basis: 100px;
+  /* flex-grow: 0;
+  flex-basis: 100px; */
 }
 
 .templateMenu {

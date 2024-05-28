@@ -75,10 +75,15 @@ export enum GROUP_TYPES {
 }
 
 const replacePluginIcon = (url: string) => {
-  return url
+  const _url = url
     ?.replace("https://s3.us-east-2.amazonaws.com/assets.appsmith.com", "")
     ?.replace("https://assets.appsmith.com", "")
     ?.replace(/RestAPI\.png$/g, "RestAPI.svg");
+    if (!_url.startsWith("/logo") && !_url.startsWith("/integrations") && !_url.startsWith("http") && !_url.startsWith("/images")) {
+      return "/logo"+_url;
+    } else {
+      return _url;
+    }
 };
 
 export const getEntities = (state: AppState): AppState["entities"] =>

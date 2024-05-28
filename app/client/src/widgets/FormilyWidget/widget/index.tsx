@@ -58,6 +58,9 @@ class FormilyWidget extends BaseWidget<FormilyWidgetProps, WidgetState> {
 
   static getAutoLayoutConfig() {
     return {
+      autoDimension: {
+        height: true,
+      },
       widgetSize: [
         {
           viewportMinWidth: 0,

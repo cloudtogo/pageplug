@@ -50,10 +50,10 @@ export default {
     }
 }
 `,
-    js: `import React from 'https://cdn.jsdelivr.net/npm/react@18.2.0/+esm'
-import reactDom from 'https://cdn.jsdelivr.net/npm/react-dom@18.2.0/+esm'
-import { Button, Card } from 'https://cdn.jsdelivr.net/npm/antd@5.11.1/+esm'
-import Markdown from 'https://cdn.jsdelivr.net/npm/react-markdown@9.0.1/+esm';
+    js: `import React from 'https://fastly.jsdelivr.net/npm/react@18.2.0/+esm'
+import reactDom from 'https://fastly.jsdelivr.net/npm/react-dom@18.2.0/+esm'
+import { Button, Card } from 'https://fastly.jsdelivr.net/npm/antd@5.11.1/+esm'
+import Markdown from 'https://fastly.jsdelivr.net/npm/react-markdown@9.0.1/+esm';
 
 function App() {
 	const [currentIndex, setCurrentIndex] = React.useState(0);
@@ -71,14 +71,14 @@ function App() {
 		<Card className="app">
 			<div className="tip-container">
 				<div className="tip-header">
-					<h2>Custom Widget</h2>
+					<h2>自定义组件</h2>
 					<div>{currentIndex + 1} / {appsmith.model.tips.length}		</div>
 				</div>
 				<Markdown>{appsmith.model.tips[currentIndex]}</Markdown>
 			</div>
 			<div className="button-container">
-				<Button className="primary" onClick={handleNext} type="primary">Next Tip</Button>
-				<Button className="reset" disabled={currentIndex === 0} onClick={handleReset}>Reset</Button>
+				<Button className="primary" onClick={handleNext} type="primary">下一步</Button>
+				<Button className="reset" disabled={currentIndex === 0} onClick={handleReset}>重置</Button>
 			</div>
 	</Card>
 );
@@ -141,10 +141,10 @@ appsmith.onReady(() => {
 	color: var(--appsmith-theme-primaryColor) !important;
 	border-color: var(--appsmith-theme-primaryColor) !important;
 }`,
-    js: `import React from 'https://cdn.jsdelivr.net/npm/react@18.2.0/+esm';
-import reactDom from 'https://cdn.jsdelivr.net/npm/react-dom@18.2.0/+esm';
-import { Button, Card } from 'https://cdn.jsdelivr.net/npm/antd@5.11.1/+esm';
-import Markdown from 'https://cdn.jsdelivr.net/npm/react-markdown@9.0.1/+esm';
+    js: `import React from 'https://fastly.jsdelivr.net/npm/react@18.2.0/+esm';
+import reactDom from 'https://fastly.jsdelivr.net/npm/react-dom@18.2.0/+esm';
+import { Button, Card } from 'https://fastly.jsdelivr.net/npm/antd@5.11.1/+esm';
+import Markdown from 'https://fastly.jsdelivr.net/npm/react-markdown@9.0.1/+esm';
 
 function App() {
   const [currentIndex, setCurrentIndex] = React.useState(0);
@@ -161,7 +161,7 @@ function App() {
     className: "tip-container"
   }, /*#__PURE__*/React.createElement("div", {
     className: "tip-header"
-  }, /*#__PURE__*/React.createElement("h2", null, "Custom Widget"), /*#__PURE__*/React.createElement("div", null, currentIndex + 1, " / ", appsmith.model.tips.length, "  ")), /*#__PURE__*/React.createElement(Markdown, null, appsmith.model.tips[currentIndex])), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("h2", null, "自定义组件"), /*#__PURE__*/React.createElement("div", null, currentIndex + 1, " / ", appsmith.model.tips.length, "  ")), /*#__PURE__*/React.createElement(Markdown, null, appsmith.model.tips[currentIndex])), /*#__PURE__*/React.createElement("div", {
     className: "button-container"
   }, /*#__PURE__*/React.createElement(Button, {
     className: "primary",

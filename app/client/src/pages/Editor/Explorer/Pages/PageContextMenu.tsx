@@ -187,17 +187,17 @@ export function PageContextMenu(props: {
       onSelect: clonePage,
       label: createMessage(CONTEXT_CLONE),
     },
-    canManagePages && {
-      value: "visibility",
-      onSelect: setHiddenField,
-      // Possibly support ReactNode in TreeOption
-      label: (
-        <CustomLabel>
-          {props.isHidden ? "显示" : "隐藏"}
-          <Icon name={props.isHidden ? "eye-on" : "eye-off"} size="md" />
-        </CustomLabel>
-      ) as ReactNode as string,
-    },
+    // canManagePages && {
+    //   value: "visibility",
+    //   onSelect: setHiddenField,
+    //   // Possibly support ReactNode in TreeOption
+    //   label: (
+    //     <CustomLabel>
+    //       {props.isHidden ? "显示" : "隐藏"}
+    //       <Icon name={props.isHidden ? "eye-on" : "eye-off"} size="md" />
+    //     </CustomLabel>
+    //   ) as ReactNode as string,
+    // },
     !props.isDefaultPage &&
     !inCloudOS &&
     canManagePages && {

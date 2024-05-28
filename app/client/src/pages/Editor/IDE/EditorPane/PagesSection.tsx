@@ -28,6 +28,12 @@ import PaneHeader from "../LeftPane/PaneHeader";
 import styled from "styled-components";
 import type { ButtonSizes } from "design-system";
 import { Button } from "design-system";
+import { EntityExplorerResizeHandler } from "../../Explorer/Common/EntityExplorerResizeHandler";
+
+export const RelativeContainer = styled.div`
+  position: relative;
+`;
+
 
 const StyledButton = styled(Button) <{ isSizePassed?: boolean }>`
   ${({ isSizePassed }) =>
@@ -54,7 +60,8 @@ const PagesSection = () => {
   );
   const workspaceId = useSelector(getCurrentWorkspaceId);
   const instanceId = useSelector(getInstanceId);
-  const pagesActive = useSelector(getPagesActiveStatus);
+  // const pagesActive = useSelector(getPagesActiveStatus);
+  const pagesActive = true;
   const currentPageId = useSelector(getCurrentPageId);
 
   const [springs, api] = useSpring(() => ({
@@ -135,13 +142,16 @@ const PagesSection = () => {
     </TooltipComponent>
   );
 
+  const isEditLayoutView: boolean = location.pathname?.endsWith("/edit/viewerlayout");
+
   return (
     <AnimatedFlex
       flexDirection={"column"}
-      height={"21.5%"}
       justifyContent={"center"}
       overflow={"hidden"}
       style={springs}
+      minHeight={isEditLayoutView ? "100%": 150}
+      overflowY={"auto"}
     >
       <PaneHeader
         className="pages"

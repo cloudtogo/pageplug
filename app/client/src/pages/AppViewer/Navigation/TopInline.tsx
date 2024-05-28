@@ -46,9 +46,6 @@ interface TopInlineProps {
 const MyMenu = styled(Menu)<{}>`
   color: "rgba(0,0,0,0.65)";
   min-width: 90%;
-  .ant-menu-submenu {
-    font-weight: 500;
-  }
 `;
 
 export function TopInline(props: TopInlineProps) {
