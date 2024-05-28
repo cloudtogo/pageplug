@@ -1596,8 +1596,8 @@ export const CONTEXT_SETTINGS = () => "设置";
 export const CONTEXT_SET_AS_HOME_PAGE = () => "设置为主页";
 export const PAGE = () => "页面";
 export const PAGES = () => "页面";
-export const CONTEXT_PARTIAL_EXPORT = () => "Export";
-export const CONTEXT_PARTIAL_IMPORT = () => "Import";
+export const CONTEXT_PARTIAL_EXPORT = () => "导出";
+export const CONTEXT_PARTIAL_IMPORT = () => "导入";
 
 // Entity explorer
 export const ADD_DATASOURCE_BUTTON = () => "添加数据源";
@@ -2216,24 +2216,24 @@ export const DATASOURCE_SECURELY_TITLE = () => "安全且快速地连接";
 
 export const CUSTOM_WIDGET_FEATURE = {
   addEvent: {
-    addCTA: () => "Add",
-    cancelCTA: () => "Cancel",
-    addEventCTA: () => "Add Event",
-    nameLabel: () => "Name",
+    addCTA: () => "添加",
+    cancelCTA: () => "取消",
+    addEventCTA: () => "添加事件",
+    nameLabel: () => "名称",
     errors: {
       restricted: () => "Event name is restricted",
       duplicate: () => "Event name already exists",
     },
   },
   editSource: {
-    editSourceCTA: () => "Edit source",
-    goToSourceCTA: () => "Go to source editor",
+    editSourceCTA: () => "编辑自定义组件",
+    goToSourceCTA: () => "前往自定义组件编辑器",
   },
   builder: {
-    header: () => "Custom Widget Builder",
-    close: () => "Close",
+    header: () => "自定义组件创建",
+    close: () => "关闭",
     connectionLost: () =>
-      "Connection lost because the custom widget was deselected. Please reselect this widget to continue editing.",
+      "由于取消选择自定义组件，连接丢失。请重新选择此组件以继续编辑。",
     editor: {
       css: {
         contextTooltipScss: () => "Supports SCSS syntax.",
@@ -2259,48 +2259,44 @@ export const CUSTOM_WIDGET_FEATURE = {
   },
   template: {
     modal: {
-      header: () => "Are you sure?",
-      body: () =>
-        "This will replace the current changes in the HTML, CSS and JS files.",
-      successCTA: () => "Replace",
-      cancelCTA: () => "Cancel",
+      header: () => "确定吗?",
+      body: () => "将替换HTML、CSS和JS文件中的当前更改.",
+      successCTA: () => "替换",
+      cancelCTA: () => "取消",
     },
-    buttonCTA: () => "Templates",
+    buttonCTA: () => "模版",
     revert: () => "Revert to Original",
   },
   layout: {
-    tab: () => "Tabs",
-    split: () => "Splits",
+    tab: () => "标签页",
+    split: () => "拆分页",
   },
   referrences: {
-    title: () => "References",
+    title: () => "引用",
     tooltip: {
-      open: () => "Open references",
-      close: () => "Close references",
+      open: () => "打开引用",
+      close: () => "关闭引用",
     },
     liveModel: {
       helpMessage: [
-        () => "- Use `appsmith.model` to access your model in javascript",
-        () =>
-          "- Use `appsmith.updateModel()` to update your model from javascript",
+        () => "- 使用 `appsmith.model` 在javascript中访问你的模型",
+        () => "- 使用 `appsmith.updateModel()` 从javascript更新模型",
       ],
-      label: () => "Live Model",
+      label: () => "模型数据",
     },
     events: {
       helpMessage: [
-        () =>
-          "- Use `appsmith.triggerEvent(&lt;EVENT_NAME&gt;)` to trigger an event",
-        () =>
-          "- `appsmith.triggerEvent()` also accepts context data as second arg",
+        () => "- 使用 `appsmith.triggerEvent(&lt;EVENT_NAME&gt;)` 触发事件",
+        () => "- `appsmith.triggerEvent()` 可以接收数据作为第二个参数",
       ],
-      label: () => "Events",
+      label: () => "事件",
       emptyMessage: () =>
         "You haven’t created any events. Return to the app editor to add events to this custom widget.",
     },
     help: {
       message: () =>
-        "Learn how custom widgets work, and how to access data from the rest of your app within this widget.",
-      buttonCTA: () => "Documentation",
+        "了解自定义组件是如何工作的，以及如何在此组件中访问应用程序其余部分的数据。",
+      buttonCTA: () => "文档",
     },
   },
   debugger: {
@@ -2313,13 +2309,13 @@ export const CUSTOM_WIDGET_FEATURE = {
       `Missing appsmith.onReady() function call. Initiate your component inside 'appsmith.onReady()' for your custom widget to work as expected. For more information - ${url}`,
   },
   preview: {
-    eventFired: () => "Event fired:",
-    modelUpdated: () => "Model updated",
+    eventFired: () => "触发的事件:",
+    modelUpdated: () => "数据更新",
   },
 };
 
 export const WIDGET_PANEL_EMPTY_MESSAGE = () =>
-  "We couldn’t find any widgets called";
+  "找不到组件：";
 
 export const HTTP_PROTOCOL_INPUT_PLACEHOLDER = () => `选择 HTTP 协议`;
 

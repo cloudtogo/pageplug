@@ -923,7 +923,7 @@ public class DatabaseChangelog1 {
         plugin.setUiComponent("UQIDbEditorForm");
         plugin.setDatasourceComponent("AutoForm");
         plugin.setResponseType(Plugin.ResponseType.JSON);
-        plugin.setIconLocation("https://assets.appsmith.com/smtp-icon.svg");
+        plugin.setIconLocation("/logo/smtp-icon.svg");
         plugin.setDocumentationLink("https://docs.appsmith.com/datasource-reference/querying-smtp-plugin");
         plugin.setDefaultInstall(true);
         try {

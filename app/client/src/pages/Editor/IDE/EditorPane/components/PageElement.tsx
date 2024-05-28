@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 
@@ -24,12 +24,12 @@ import { useGetPageFocusUrl, useCurrentAppState } from "pages/Editor/IDE/hooks";
 import AnalyticsUtil from "utils/AnalyticsUtil";
 import { toggleInOnboardingWidgetSelection } from "actions/onboardingActions";
 import history, { NavigationMethod } from "utils/history";
-
+import { mapTree } from "utils/treeUtils";
 const PageElement = ({ page }: { page: Page }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const appState = useCurrentAppState();
-
+  const currentLayout = useSelector(getCurrentApplication)?.viewerLayout;
   const navigateToUrl = useGetPageFocusUrl(page.pageId, appState);
   const ref = useRef<null | HTMLDivElement>(null);
 
@@ -52,6 +52,27 @@ const PageElement = ({ page }: { page: Page }) => {
     userAppPermissions ?? [],
     PERMISSION_TYPE.EXPORT_APPLICATION,
   );
+
+  const isHiddenPage = useMemo(() => {
+    if (currentLayout) {
+      try {
+        const current = JSON.parse(currentLayout);
+        const pagesTree = current?.treeData || []
+        let hiddenPages:any =[]
+        pagesTree?.map((pItem:any) => {
+          mapTree(pItem, (p: any) => {
+            if (p?.isHidden) {
+              hiddenPages.push(p.key)
+            }
+          })
+        })
+        return hiddenPages.includes(page.pageId);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    return false;
+  }, [currentLayout, page]);
 
   useEffect(() => {
     if (ref.current && isCurrentPage) {
@@ -99,7 +120,7 @@ const PageElement = ({ page }: { page: Page }) => {
       canEditEntityName={canManagePages}
       className={`page fullWidth ${isCurrentPage && "activePage"}`}
       contextMenu={contextMenu}
-      disabled={page.isHidden}
+      disabled={isHiddenPage}
       entityId={page.pageId}
       icon={icon}
       isDefaultExpanded={isCurrentPage}

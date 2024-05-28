@@ -108,12 +108,19 @@ export function toggleNodeAndChildren(nodes:any, targetKey?:any, needHidden?: bo
     const node = nodes[i];
     if (node.key === targetKey) { // 等于目标node key
       node.isHidden = needHidden;
+      // 如果有孩子节点，可以继续下钻
+      if (node.children && node.children.length > 0) {
+        toggleNodeAndChildren(node.children, "deep", needHidden);
+      }
+    } else if (node.children && node.children.length > 0) {
+      toggleNodeAndChildren(node.children, targetKey, needHidden);
     }
-    if (!targetKey) {
+    if (targetKey === "deep") {
       node.isHidden = needHidden;
-    }
-    if (node.children && node.children.length > 0) {
-      toggleNodeAndChildren(node.children, "", needHidden);
+      // 如果有孩子节点，可以继续下钻
+      if (node.children && node.children.length > 0) {
+        toggleNodeAndChildren(node.children, "deep", needHidden);
+      }
     }
   }
 }

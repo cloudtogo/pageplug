@@ -288,7 +288,7 @@ function PageSettings(props: { page: Page }) {
         </UrlPreviewWrapper>
       )}
 
-      <div className="flex content-center justify-between pb-2">
+      {/* <div className="flex content-center justify-between pb-2">
         <Switch
           className="mb-0"
           id="t--page-settings-show-nav-control"
@@ -306,7 +306,7 @@ function PageSettings(props: { page: Page }) {
             tooltip={PAGE_SETTINGS_SHOW_PAGE_NAV_TOOLTIP()}
           />
         </Switch>
-      </div>
+      </div> */}
 
       <div className="flex content-center justify-between">
         <Switch

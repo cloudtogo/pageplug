@@ -46,12 +46,12 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
 
   static getConfig() {
     return {
-      name: "Custom",
+      name: "自定义组件(New)",
       iconSVG: IconSVG,
       needsMeta: true,
       isCanvas: false,
       tags: [WIDGET_TAGS.DISPLAY],
-      searchTags: ["external"],
+      searchTags: ["external", "custom","自定义"],
       isSearchWildcard: true,
     };
   }
@@ -160,7 +160,7 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
   static getPropertyPaneContentConfig() {
     return [
       {
-        sectionName: "Widget",
+        sectionName: "组件",
         children: [
           {
             propertyName: "editSource",
@@ -172,40 +172,40 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
             dependencies: ["srcDoc", "events", "uncompiledSrcDoc"],
             evaluatedDependencies: ["defaultModel", "theme"],
             dynamicDependencies: (widget: WidgetProps) => widget.events,
-            helperText: (
-              <div className="leading-5" style={{ marginTop: "10px" }}>
-                The source editor lets you add your own HTML, CSS and JS.{" "}
-                <StyledLink
-                  kind="secondary"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  to={CUSTOM_WIDGET_DOC_URL}
-                >
-                  Read more
-                </StyledLink>
-              </div>
-            ),
+            // helperText: (
+            //   <div className="leading-5" style={{ marginTop: "10px" }}>
+            //     The source editor lets you add your own HTML, CSS and JS.{" "}
+            //     <StyledLink
+            //       kind="secondary"
+            //       rel="noopener noreferrer"
+            //       target="_blank"
+            //       to={CUSTOM_WIDGET_DOC_URL}
+            //     >
+            //       Read more
+            //     </StyledLink>
+            //   </div>
+            // ),
           },
         ],
       },
       {
-        sectionName: "Default Model",
+        sectionName: "默认数据",
         children: [
           {
             propertyName: "defaultModel",
-            helperText: (
-              <div className="leading-5" style={{ marginTop: "10px" }}>
-                This model exposes Appsmith data to the widget editor.{" "}
-                <StyledLink
-                  kind="secondary"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  to={CUSTOM_WIDGET_DEFAULT_MODEL_DOC_URL}
-                >
-                  Read more
-                </StyledLink>
-              </div>
-            ),
+            // helperText: (
+            //   <div className="leading-5" style={{ marginTop: "10px" }}>
+            //     This model exposes Appsmith data to the widget editor.{" "}
+            //     <StyledLink
+            //       kind="secondary"
+            //       rel="noopener noreferrer"
+            //       target="_blank"
+            //       to={CUSTOM_WIDGET_DEFAULT_MODEL_DOC_URL}
+            //     >
+            //       Read more
+            //     </StyledLink>
+            //   </div>
+            // ),
             label: "",
             controlType: "INPUT_TEXT",
             defaultValue: "{}",
@@ -218,12 +218,12 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "General",
+        sectionName: "属性",
         children: [
           {
             propertyName: "isVisible",
-            label: "Visible",
-            helpText: "Controls the visibility of the widget",
+            label: "是否显示",
+            helpText: "控制组件的显示/隐藏",
             controlType: "SWITCH",
             isJSConvertible: true,
             isBindProperty: true,
@@ -233,7 +233,7 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Events",
+        sectionName: "事件",
         hasDynamicProperties: true,
         generateDynamicProperties: (widgetProps: WidgetProps) => {
           return widgetProps.events?.map((event: string) => ({
@@ -265,7 +265,7 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
               },
             },
             dependencies: ["events"],
-            helpText: "when the event is triggered from custom widget",
+            helpText: "在自定义组件内触发",
           }));
         },
         children: [
@@ -275,7 +275,7 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
             controlType: "CUSTOM_WIDGET_ADD_EVENT_BUTTON_CONTROL",
             isJSConvertible: false,
             isBindProperty: false,
-            buttonLabel: "Add Event",
+            buttonLabel: "添加事件",
             onAdd: (widget: CustomWidgetProps, event: string) => {
               const events = widget.events;
 
@@ -295,13 +295,13 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
   static getPropertyPaneStyleConfig() {
     return [
       {
-        sectionName: "Color",
+        sectionName: "颜色配置",
         children: [
           {
-            helpText: "Use a html color name, HEX, RGB or RGBA value",
+            helpText: "使用 html 颜色名称，HEX，RGB 或者 RGBA 值",
             placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
             propertyName: "backgroundColor",
-            label: "Background color",
+            label: "背景颜色",
             controlType: "COLOR_PICKER",
             isJSConvertible: true,
             isBindProperty: true,
@@ -309,10 +309,10 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
             validation: { type: ValidationTypes.TEXT },
           },
           {
-            helpText: "Use a html color name, HEX, RGB or RGBA value",
+            helpText: "使用 html 颜色名称，HEX，RGB 或者 RGBA 值",
             placeholderText: "#FFFFFF / Gray / rgb(255, 99, 71)",
             propertyName: "borderColor",
-            label: "Border color",
+            label: "边框颜色",
             controlType: "COLOR_PICKER",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -321,13 +321,13 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
         ],
       },
       {
-        sectionName: "Border and shadow",
+        sectionName: "轮廓样式",
         children: [
           {
-            helpText: "Enter value for border width",
+            helpText: "输入边框宽度",
             propertyName: "borderWidth",
-            label: "Border width",
-            placeholderText: "Enter value in px",
+            label: "边框宽度",
+            placeholderText: "以 px 为单位",
             controlType: "INPUT_TEXT",
             isBindProperty: true,
             isTriggerProperty: false,
@@ -336,8 +336,8 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
           },
           {
             propertyName: "borderRadius",
-            label: "Border radius",
-            helpText: "Rounds the corners of the widgets's outer border edge",
+            label: "边框圆角",
+            helpText: "边框圆角样式",
             controlType: "BORDER_RADIUS_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,
@@ -346,9 +346,8 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
           },
           {
             propertyName: "boxShadow",
-            label: "Box shadow",
-            helpText:
-              "Enables you to cast a drop shadow from the frame of the widget",
+            label: "阴影",
+            helpText: "组件轮廓投影",
             controlType: "BOX_SHADOW_OPTIONS",
             isJSConvertible: true,
             isBindProperty: true,

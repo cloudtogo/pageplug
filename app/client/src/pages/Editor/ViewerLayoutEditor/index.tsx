@@ -47,6 +47,13 @@ const Wrapper = styled.div`
   height: 100%;
   overflow: auto;
 `;
+
+const TitleWrapper = styled.div`
+  .ant-typography-edit-content {
+    transform: translateY(5px) !important;
+  }
+`;
+
 const Header = styled.div`
   display: flex;
   padding-bottom: 20px;
@@ -88,10 +95,10 @@ const TreeContainer = styled.div`
     align-items: center;
   }
   && .ant-tree .ant-tree-switcher {
-    // align-self: center;
+    display: flex;
+    align-content: center;
+    justify-content: center;
   }
-  // transform: scale(1.2);
-  // transform-origin: top left;
 `;
 
 const ConfigContainer = styled.div`
@@ -437,7 +444,9 @@ function PagesEditor() {
 
   const toggleHidePage = (node: any) => {
     toggleNodeAndChildren(gData, node.key, !node.isHidden);
+    console.log(gData, "gData")
     setGData(gData);
+    setSymbol(Symbol("hidemenu"));
   };
 
   const nodeNameChange = (name: string, node: any) => {
@@ -534,12 +543,14 @@ function PagesEditor() {
                 return (
                   <div
                     className={`px-4 py-2 ${
-                      node.isPage ? "border-solid" : "border-dashed"
-                    } border border-teal-500 ${
-                      !node.isHidden ? "bg-neutral-50" : "bg-gray-200"
-                    }  rounded flex gap-2 justify-between items-center`}
+                      node.isPage
+                        ? "border-solid menu-item"
+                        : "border-dashed menu-fold"
+                    } border border-gray-300 ${
+                      !node.isHidden ? "" : "menuhide"
+                    } rounded flex gap-2 justify-between items-center `}
                   >
-                    <div className="flex">
+                    <div className="flex" style={{ alignItems: "center" }}>
                       {node.isPage ? null : (
                         <IconSelector
                           className="flex items-center mr-2"
@@ -555,19 +566,20 @@ function PagesEditor() {
                         {node.isPage ? (
                           node.title
                         ) : (
-                          <Paragraph
-                            editable={{
-                              onChange: (value: string) =>
-                                nodeNameChange(value, node),
-                            }}
-                            style={{ marginBottom: 0 }}
-                          >
-                            {node.title}
-                          </Paragraph>
+                          <TitleWrapper>
+                            <Paragraph
+                              editable={{
+                                onChange: (value: string) =>
+                                  nodeNameChange(value, node),
+                              }}
+                              style={{ marginBottom: 0 }}
+                            >
+                              {node.title}
+                            </Paragraph>
+                          </TitleWrapper>
                         )}
                       </div>
                     </div>
-
                     <div className="flex items-center gap-4">
                       {!node.isPage && !size(node.children) ? (
                         <Icon
@@ -576,7 +588,10 @@ function PagesEditor() {
                           data-testid="fold-collapse-icon"
                           icon="trash"
                           size={12}
-                          onClick={() => onDeleteMenu(node)}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onDeleteMenu(node)
+                          }}
                         />
                       ) : null}
                       <Icon
@@ -585,7 +600,10 @@ function PagesEditor() {
                         data-testid="fold-collapse-icon"
                         icon={node.isHidden ? "eye-off" : "eye-open"}
                         size={12}
-                        onClick={() => toggleHidePage(node)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleHidePage(node)
+                        }}
                       />
                     </div>
                   </div>

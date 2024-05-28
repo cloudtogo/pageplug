@@ -20679,12 +20679,12 @@ export const defaultAppState = {
       brandFaviconUrl:
         "https://assets.appsmith.com/appsmith-favicon-orange.ico",
       brandColors: {
-        primary: "#e15615",
+        primary: "#27b7b7",
         background: "#F1F5F9",
-        hover: "#cf4d10",
-        active: "#ca520f",
+        hover: "#49c4c0",
+        active: "#178d91",
         font: "#fff",
-        disabled: "#fce4da",
+        disabled: "#e9f7f5",
       },
       brandLogoUrl: "https://assets.appsmith.com/appsmith-logo-no-margin.png",
       isFormLoginEnabled: true,
