@@ -93,7 +93,7 @@ function BackToHomeButton(props: BackToHomeButtonProps) {
     return init;
   }, [viewerLayout]);
   const appLogo =
-    initState.logoUrl || "https://img.icons8.com/doodle/2x/koala.png";
+    initState.logoUrl || "/logo/pageplug_icon.svg";
   useEffect(() => {
     if (setIsLogoVisible) {
       setIsLogoVisible(false);
