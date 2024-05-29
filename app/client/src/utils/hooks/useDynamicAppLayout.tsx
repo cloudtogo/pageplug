@@ -178,6 +178,7 @@ export const useDynamicAppLayout = (isViewer?: boolean) => {
     ) {
       calculatedWidth = ele.clientWidth;
     }
+    calculatedWidth -= 28;
 
     switch (true) {
       case maxWidth < 0:

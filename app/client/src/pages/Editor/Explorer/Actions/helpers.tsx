@@ -152,7 +152,7 @@ export const useNewActionName = () => {
 
     return actionNames.indexOf(name) > -1
       ? getNextEntityName(
-          isCopyOperation ? `${name}副本` : name,
+          isCopyOperation ? `${name}Copy` : name,
           actionNames,
           true,
         )

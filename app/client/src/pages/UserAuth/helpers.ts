@@ -5,7 +5,7 @@ import * as Sentry from "@sentry/react";
 import UserApi from "@appsmith/api/UserApi";
 import { toast } from "design-system";
 import type { ApiResponse } from "../../api/ApiResponses";
-
+import { message } from "antd"
 export interface LoginFormValues {
   username?: string;
   password?: string;
@@ -105,6 +105,13 @@ export const forgotPasswordSubmitHandler = async (
         reject,
         email,
       },
+    });
+  }).then(() => {
+    message.open({
+      type: "success",
+      duration: 5,
+      content: `密码重置链接已经发送到你的邮箱 ${email} ，请查收确认`,
+      className: "my-msg",
     });
   }).catch((error) => {
     error.email = "";
