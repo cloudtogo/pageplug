@@ -15,7 +15,7 @@ export const APP_SETTINGS_PANE_WIDTH = 525;
 export const DEFAULT_EDITOR_PANE_WIDTH = 255;
 export const DEFAULT_SPLIT_SCREEN_WIDTH = "40.4vw";
 
-export const DEFAULT_VIEWER_LOGO = "https://img.icons8.com/doodle/2x/koala.png";
+export const DEFAULT_VIEWER_LOGO = "/logo/pageplug_icon.svg";
 
 const APP_STORE_NAMESPACE = "APPSMITH_LOCAL_STORE";
 

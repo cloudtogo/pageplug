@@ -531,7 +531,12 @@ function PagesEditor() {
           </div>
           <TreeContainer>
             <Tree
-              allowDrop={({ dropNode }) => !(dropNode as any).isPage}
+              allowDrop={({ dropNode, dropPosition}) => {
+                if (dropNode?.isPage && !dropPosition) {
+                  return false;
+                }
+                return true;
+              }}
               blockNode
               defaultExpandAll
               expandAction="click"
