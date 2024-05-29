@@ -74,18 +74,6 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
     }
   }, [props.emailValue]);
 
-  const submit = () => {
-    if (mailEnabled) {
-      message.open({
-        type: "success",
-        duration: 5,
-        content: `密码重置链接已经发送到你的邮箱 ${props.emailValue} ，请查收确认`,
-        className: "my-msg",
-      });
-    }
-    props.reset();
-  };
-
   useEffect(() => {
     if (!mailEnabled) {
       message.open({
@@ -145,7 +133,6 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
             isLoading={submitting}
             size="md"
             type="submit"
-            onClick={submit}
             className="pp-height pp-font"
           >
             {createMessage(FORGOT_PASSWORD_PAGE_SUBMIT_BUTTON_TEXT)}
