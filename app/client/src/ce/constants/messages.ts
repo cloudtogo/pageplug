@@ -106,7 +106,7 @@ export const FORGOT_PASSWORD_PAGE_SUBTITLE = () =>
   `我们会将密码重置链接发送到下面的邮箱`;
 export const FORGOT_PASSWORD_PAGE_SUBMIT_BUTTON_TEXT = () => `重置`;
 export const FORGOT_PASSWORD_SUCCESS_TEXT = (email: string) =>
-  `密码重置链接已经发送到你的邮箱 ${email} ，请查收确认`;
+  `密码重置链接已经发送到你的邮箱 ${email} ，请查收确认。`;
 
 export const PRIVACY_POLICY_LINK = () => `隐私条款`;
 export const TERMS_AND_CONDITIONS_LINK = () => `条款协议`;

@@ -121,7 +121,6 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
               placeholder={createMessage(
                 FORGOT_PASSWORD_PAGE_EMAIL_INPUT_PLACEHOLDER,
               )}
-              startIcon="null"
               className="pp-height"
             />
           </LoginForm>

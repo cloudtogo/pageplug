@@ -389,7 +389,7 @@ export class ContainerWidget extends BaseWidget<
       isAutoHeightEnabledForWidget(this.props) &&
       !isAutoHeightEnabledForWidgetWithLimits(this.props) &&
       this.props.positioning !== Positioning.Vertical;
-
+      
     return (
       <ContainerComponent {...props} noScroll={isAutoHeightEnabled}>
         <WidgetsMultiSelectBox
@@ -397,6 +397,7 @@ export class ContainerWidget extends BaseWidget<
           noContainerOffset={!!props.noContainerOffset}
           widgetId={this.props.widgetId}
           widgetType={this.props.type}
+          key={this.props.widgetId}
         />
         {/* without the wrapping div onClick events are triggered twice */}
         <>{this.renderChildren()}</>
