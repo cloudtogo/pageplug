@@ -1653,7 +1653,7 @@ export const REQUEST_BUILDING_BLOCK = () => "Request a building block";
 export const FILTER_SELECT_PAGE = () => "Add selected page";
 
 export const SKIP_START_WITH_USE_CASE_TEMPLATES = () =>
-  "Skip this step, I’ll do it later";
+  "直接跳过";
 
 export const REDIRECT_URL_TOOLTIP = () =>
   "这个地址用来配置你的身份认证回调/重定向";
@@ -2152,24 +2152,24 @@ export const STARTER_TEMPLATE_PAGE_LAYOUTS = {
 };
 
 // Create New Apps Intermediary step
-export const CREATE_NEW_APPS_STEP_TITLE = () => "How would you like to start?";
+export const CREATE_NEW_APPS_STEP_TITLE = () => "您打算如何开始?";
 export const CREATE_NEW_APPS_STEP_SUBTITLE = () =>
-  "Choose an option that fits your approach, and let's shape your app together.";
-export const START_FROM_TEMPLATE_TITLE = () => "Start with template";
+  "选择一个适合您的方法的选项，让我们一起构建您的应用。";
+export const START_FROM_TEMPLATE_TITLE = () => "从模板开始";
 export const START_FROM_TEMPLATE_SUBTITLE = () =>
-  "Begin with an app for a specific scenario. We'll guide you through tailoring your app.";
-export const START_FROM_SCRATCH_TITLE = () => "Start from scratch";
+  "从特定场景的应用程序开始。我们将引导您定制应用。";
+export const START_FROM_SCRATCH_TITLE = () => "从画布开始";
 export const START_FROM_SCRATCH_SUBTITLE = () =>
-  "Create an app from the ground up. Design every detail of your app on a blank canvas.";
-export const START_WITH_DATA_TITLE = () => "Start with data";
+  "从头开始创建一个应用。在空白画布上设计应用的每个细节。";
+export const START_WITH_DATA_TITLE = () => "从数据开始";
 export const START_WITH_DATA_SUBTITLE = () =>
-  "Get started with connecting your data, and easily craft a functional application.";
-export const START_WITH_DATA_CONNECT_HEADING = () => "Connect your datasource";
+  "开始连接数据，轻松构建功能性应用.";
+export const START_WITH_DATA_CONNECT_HEADING = () => "连接您的数据源";
 export const START_WITH_DATA_CONNECT_SUBHEADING = () =>
-  "Select an option to establish a connection. Your data's security is our priority.";
-export const START_WITH_TEMPLATE_CONNECT_HEADING = () => "Select a template";
+  "选择一个选项以建立连接。我们保证您的数据安全.";
+export const START_WITH_TEMPLATE_CONNECT_HEADING = () => "选择一个模板";
 export const START_WITH_TEMPLATE_CONNECT_SUBHEADING = () =>
-  "Choose an option below to embark on your app-building adventure!";
+  "选择下面的选项，开始搭建您的应用吧!";
 
 export const EDITOR_PANE_TEXTS = {
   queries_tab: () => "Queries",
