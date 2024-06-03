@@ -17,7 +17,7 @@ public class EmailConstantsCE {
     public static final String INVITE_USER_CLIENT_URL_FORMAT = "%s/user/signup?email=%s";
     public static final String INVITE_TO_WORKSPACE_EMAIL_SUBJECT_CE =
             "You’re invited to the Pageplug workspace. \uD83E\uDD73";
-    public static final String FORGOT_PASSWORD_EMAIL_SUBJECT = "Reset your Pageplug password";
+    public static final String FORGOT_PASSWORD_EMAIL_SUBJECT = "重置您的 Pageplug 密码";
     public static final String EMAIL_VERIFICATION_EMAIL_SUBJECT = "Verify your account";
     public static final String INSTANCE_ADMIN_INVITE_EMAIL_SUBJECT =
             "You're invited to an Pageplug instance. \uD83E\uDD73";
