@@ -30,19 +30,6 @@ body {
   color: var(--ads-v2-color-fg);
 }
 
-.rc-tree-select-multiple .rc-tree-select-selector {
-  padding-right: 20px;
-  padding-left: 10px;
-  background: var(--wds-color-bg);
-  border-radius: 0px;
-  height: inherit;
-  width: 100%;
-  line-height: 30px;
-  transition: none 0s ease 0s;
-  border: 1px solid var(--wds-color-border) !important;
-  box-shadow: none !important;
-}
-
 body.dragging * {
   cursor: grabbing !important;
 }

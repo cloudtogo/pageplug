@@ -106,7 +106,8 @@ export const forgotPasswordSubmitHandler = async (
         email,
       },
     });
-  }).then(() => {
+  }).then((res) => {
+    console.log(res)
     message.open({
       type: "success",
       duration: 5,
