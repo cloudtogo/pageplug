@@ -3,7 +3,7 @@ import React from "react";
 import { Collapse } from "@blueprintjs/core";
 import styled from "styled-components";
 import { LOG_CATEGORY } from "entities/AppsmithConsole";
-import { getTypographyByKey } from "design-system-old";
+import { getTypographyByKey } from "@appsmith/ads-old";
 import ReactJson from "react-json-view";
 import { Colors } from "constants/Colors";
 import LogAdditionalInfo from "./LogAdditionalInfo";
@@ -54,8 +54,7 @@ export const reactJsonProps = {
   displayObjectSize: false,
   displayDataTypes: false,
   style: {
-    fontFamily:
-      "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue",
+    fontFamily: "var(--ads-v2-font-family)",
     fontSize: "11px",
     fontWeight: "400",
     letterSpacing: "-0.195px",
@@ -65,6 +64,8 @@ export const reactJsonProps = {
 };
 
 // This component is used to render the collapsed information in the error logs.
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function LogCollapseData(props: any) {
   return (
     <StyledCollapse

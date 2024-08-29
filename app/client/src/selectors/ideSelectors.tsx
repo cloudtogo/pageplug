@@ -1,11 +1,11 @@
 import { createSelector } from "reselect";
-import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
-import type { AppState } from "@appsmith/reducers";
-import { getPageActions } from "@appsmith/selectors/entitiesSelector";
-import {
-  EditorEntityTab,
-  EditorViewMode,
-} from "@appsmith/entities/IDE/constants";
+import { selectFeatureFlags } from "ee/selectors/featureFlagsSelectors";
+import type { AppState } from "ee/reducers";
+import { getPageActions } from "ee/selectors/entitiesSelector";
+import { EditorEntityTab, EditorViewMode } from "ee/entities/IDE/constants";
+import { getCurrentBasePageId } from "./editorSelectors";
+import type { ParentEntityIDETabs } from "../reducers/uiReducers/ideReducer";
+import { get } from "lodash";
 
 export const getIsSideBySideEnabled = createSelector(
   selectFeatureFlags,
@@ -25,9 +25,6 @@ export const getIDEViewMode = createSelector(
   },
 );
 
-export const getPagesActiveStatus = (state: AppState) =>
-  state.ui.ide.pagesActive;
-
 export const getActionsCount = (pageId: string) =>
   createSelector(getPageActions(pageId), (actions) => {
     return actions.length || 0;
@@ -42,10 +39,24 @@ export const getWidgetsCount = (state: AppState, pageId: string) =>
     (w) => w.type !== "CANVAS_WIDGET",
   ).length || 0;
 
-export const getJSTabs = (state: AppState) =>
-  state.ui.ide.tabs[EditorEntityTab.JS];
-
-export const getQueryTabs = (state: AppState) =>
-  state.ui.ide.tabs[EditorEntityTab.QUERIES];
-
 export const getIDETabs = (state: AppState) => state.ui.ide.tabs;
+
+export const getJSTabs = createSelector(
+  getCurrentBasePageId,
+  getIDETabs,
+  (basePageId: string, tabs: ParentEntityIDETabs) =>
+    get(tabs, [basePageId, EditorEntityTab.JS], []),
+);
+
+export const getQueryTabs = createSelector(
+  getCurrentBasePageId,
+  getIDETabs,
+  (basePageId: string, tabs: ParentEntityIDETabs): string[] =>
+    get(tabs, [basePageId, EditorEntityTab.QUERIES], []),
+);
+
+export const getShowCreateNewModal = (state: AppState) =>
+  state.ui.ide.showCreateModal;
+
+export const getIdeCanvasSideBySideHoverState = (state: AppState) =>
+  state.ui.ide.ideCanvasSideBySideHover;

@@ -2,57 +2,53 @@ import React from "react";
 import type { SetterConfig } from "entities/AppTheming";
 import type { WidgetState } from "widgets/BaseWidget";
 import BaseWidget from "widgets/BaseWidget";
-import {
-  metaConfig,
-  defaultsConfig,
-  autocompleteConfig,
-  propertyPaneContentConfig,
-  propertyPaneStyleConfig,
-  settersConfig,
-  anvilConfig,
-} from "./../config";
-import type { ButtonGroupWidgetProps } from "./types";
+import * as config from "../config";
+import type { ToolbarButtonsWidgetProps } from "./types";
 import { ToolbarButtonsComponent } from "../component";
 import type { ExecutionResult } from "constants/AppsmithActionConstants/ActionConstants";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import type { AnvilConfig } from "WidgetProvider/constants";
 
 class WDSToolbarButtonsWidget extends BaseWidget<
-  ButtonGroupWidgetProps,
+  ToolbarButtonsWidgetProps,
   WidgetState
 > {
-  constructor(props: ButtonGroupWidgetProps) {
+  constructor(props: ToolbarButtonsWidgetProps) {
     super(props);
   }
 
   static type = "WDS_TOOLBAR_BUTTONS_WIDGET";
 
   static getConfig() {
-    return metaConfig;
+    return config.metaConfig;
   }
 
   static getDefaults() {
-    return defaultsConfig;
+    return config.defaultsConfig;
   }
 
   static getAutocompleteDefinitions() {
-    return autocompleteConfig;
+    return config.autocompleteConfig;
   }
 
   static getPropertyPaneContentConfig() {
-    return propertyPaneContentConfig;
+    return config.propertyPaneContentConfig;
   }
 
   static getPropertyPaneStyleConfig() {
-    return propertyPaneStyleConfig;
+    return config.propertyPaneStyleConfig;
   }
 
   static getSetterConfig(): SetterConfig {
-    return settersConfig;
+    return config.settersConfig;
   }
 
   static getAnvilConfig(): AnvilConfig | null {
-    return anvilConfig;
+    return config.anvilConfig;
+  }
+
+  static getMethods() {
+    return config.methodsConfig;
   }
 
   onButtonClick = (
@@ -74,15 +70,17 @@ class WDSToolbarButtonsWidget extends BaseWidget<
   };
 
   getWidgetView() {
+    const { alignment, buttonsList, color, variant, widgetId } = this.props;
+
     return (
       <ToolbarButtonsComponent
-        buttonsList={this.props.buttonsList}
-        color={this.props.buttonColor}
-        density={this.props.density}
-        key={this.props.widgetId}
+        alignment={alignment}
+        buttonsList={buttonsList}
+        color={color}
+        excludeFromTabOrder={this.props.disableWidgetInteraction}
+        key={widgetId}
         onButtonClick={this.onButtonClick}
-        orientation={this.props.orientation}
-        variant={this.props.buttonVariant}
+        variant={variant}
       />
     );
   }

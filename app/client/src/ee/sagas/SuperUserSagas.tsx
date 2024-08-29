@@ -7,14 +7,21 @@ import {
   RestryRestartServerPoll,
   SendTestEmail,
 } from "ce/sagas/SuperUserSagas";
-import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
 import type { User } from "constants/userConstants";
-import { takeLatest, all } from "redux-saga/effects";
+import { takeLatest, all, select } from "redux-saga/effects";
+import { getCurrentUser } from "selectors/usersSelectors";
+import type { FeatureFlags } from "ee/entities/FeatureFlag";
+import { selectFeatureFlags } from "ee/selectors/featureFlagsSelectors";
+import { isGACEnabled } from "ee/utils/planHelpers";
+import { getShowAdminSettings } from "ee/utils/BusinessFeatures/adminSettingsHelpers";
 
-export function* InitSuperUserSaga(action: ReduxAction<User>) {
-  const user = action.payload;
-  if (user.isSuperUser) {
+export function* InitSuperUserSaga() {
+  const user: User = yield select(getCurrentUser);
+  const featureFlags: FeatureFlags = yield select(selectFeatureFlags);
+  const isFeatureEnabled = isGACEnabled(featureFlags);
+
+  if (getShowAdminSettings(isFeatureEnabled, user)) {
     yield all([
       takeLatest(ReduxActionTypes.FETCH_ADMIN_SETTINGS, FetchAdminSettingsSaga),
       takeLatest(
@@ -34,7 +41,7 @@ export function* InitSuperUserSaga(action: ReduxAction<User>) {
 
 export default function* SuperUserSagas() {
   yield takeLatest(
-    ReduxActionTypes.FETCH_USER_DETAILS_SUCCESS,
+    ReduxActionTypes.END_CONSOLIDATED_PAGE_LOAD,
     InitSuperUserSaga,
   );
 }

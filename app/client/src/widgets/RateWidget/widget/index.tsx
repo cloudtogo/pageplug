@@ -18,12 +18,15 @@ import type {
 } from "WidgetProvider/constants";
 import { Colors } from "constants/Colors";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 import type {
   SnipingModeProperty,
   PropertyUpdates,
 } from "WidgetProvider/constants";
 import { WIDGET_TAGS } from "constants/WidgetConstants";
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function validateDefaultRate(value: unknown, props: any, _: any) {
   try {
     let parsed = value;
@@ -108,6 +111,7 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
     return {
       name: "评分",
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
       searchTags: ["rating", "rate", "star", "stars"],
@@ -160,6 +164,8 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
           configuration: (props: RateWidgetProps) => {
             let maxCount = props.maxCount;
             if (typeof maxCount !== "number")
+              // TODO: Fix this the next time the file is edited
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               maxCount = parseInt(props.maxCount as any, 10);
             return {
               // 21 is the size of a star, 5 is the margin between stars
@@ -182,6 +188,8 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
       widgetSize: (props: RateWidgetProps) => {
         let maxCount = props.maxCount;
         if (typeof maxCount !== "number")
+          // TODO: Fix this the next time the file is edited
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           maxCount = parseInt(props.maxCount as any, 10);
 
         return {
@@ -419,6 +427,8 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
     };
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       rate: undefined,

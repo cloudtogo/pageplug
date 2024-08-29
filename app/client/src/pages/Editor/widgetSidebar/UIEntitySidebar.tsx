@@ -1,31 +1,40 @@
 import {
+  UI_ELEMENT_PANEL_SEARCH_TEXT,
   WIDGET_PANEL_EMPTY_MESSAGE,
   createMessage,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 import { ENTITY_EXPLORER_SEARCH_ID } from "constants/Explorer";
 import type {
   WidgetCardsGroupedByTags,
   WidgetTags,
 } from "constants/WidgetConstants";
 import { WIDGET_TAGS } from "constants/WidgetConstants";
-import { useSelector } from "react-redux";
-import { SearchInput, Text } from "design-system";
+import { Flex, SearchInput, Text } from "@appsmith/ads";
 import Fuse from "fuse.js";
 import { debounce } from "lodash";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import AnalyticsUtil from "utils/AnalyticsUtil";
 import { groupWidgetCardsByTags } from "../utils";
 import UIEntityTagGroup from "./UIEntityTagGroup";
 import { useUIExplorerItems } from "./hooks";
 
-function UIEntitySidebar({ isActive }: { isActive: boolean }) {
-  const isMobile = useSelector((state) => state.ui.mainCanvas.isMobile);
+function UIEntitySidebar({
+  focusSearchInput,
+  isActive,
+}: {
+  isActive: boolean;
+  focusSearchInput?: boolean;
+}) {
   const { cards, entityLoading, groupedCards } = useUIExplorerItems();
   const [filteredCards, setFilteredCards] =
     useState<WidgetCardsGroupedByTags>(groupedCards);
   const searchInputRef = useRef<HTMLInputElement | null>(null);
   const [isSearching, setIsSearching] = useState(false);
-  const [isEmpty, setIsEmpty] = useState(false);
+  const [areSearchResultsEmpty, setAreSearchResultsEmpty] = useState(false);
+  const hideSuggestedWidgets = useMemo(
+    () => isSearching && !areSearchResultsEmpty,
+    [isSearching, areSearchResultsEmpty],
+  );
 
   const searchWildcards = useMemo(
     () =>
@@ -59,25 +68,18 @@ function UIEntitySidebar({ isActive }: { isActive: boolean }) {
     setIsSearching(true);
     sendWidgetSearchAnalytics(keyword);
     if (keyword.trim().length > 0) {
-      const searchResult:any = fuse.search(keyword);
-      if (isMobile) {
-        setFilteredCards(searchResult)
-      } else {
-        setFilteredCards(
-          groupWidgetCardsByTags(
-            searchResult.length > 0 ? searchResult : searchWildcards,
-          ),
-        );
-      }
-      setIsEmpty(searchResult.length === 0);
+      const searchResult = fuse.search(keyword);
+
+      setFilteredCards(
+        groupWidgetCardsByTags(
+          searchResult.length > 0 ? searchResult : searchWildcards,
+        ),
+      );
+      setAreSearchResultsEmpty(searchResult.length === 0);
     } else {
-      if (isMobile) {
-        setFilteredCards(cards);
-      } else {
-        setFilteredCards(groupedCards);
-      }
+      setFilteredCards(groupedCards);
       setIsSearching(false);
-      setIsEmpty(false);
+      setAreSearchResultsEmpty(false);
     }
   };
 
@@ -85,25 +87,55 @@ function UIEntitySidebar({ isActive }: { isActive: boolean }) {
     filterCards(value.toLowerCase());
   }, 300);
 
+  // update widgets list after building blocks have been fetched async
   useEffect(() => {
     setFilteredCards(groupedCards);
-  }, [groupedCards]);
+  }, [entityLoading[WIDGET_TAGS.BUILDING_BLOCKS]]);
 
-  const FilteredCardLists = useMemo(
-    () => {
-      return (
+  useEffect(() => {
+    if (focusSearchInput) searchInputRef.current?.focus();
+  }, [focusSearchInput]);
+
+  return (
+    <div
+      className={`flex flex-col t--widget-sidebar overflow-hidden ${
+        isActive ? "" : "hidden"
+      }`}
+    >
+      <div className="sticky top-0 px-3 mt-0.5">
+        <SearchInput
+          // @ts-expect-error fix this the next time the file is edited
+          autoComplete="off"
+          id={ENTITY_EXPLORER_SEARCH_ID}
+          onChange={search}
+          placeholder={createMessage(UI_ELEMENT_PANEL_SEARCH_TEXT)}
+          ref={searchInputRef}
+          type="text"
+        />
+      </div>
+      <Flex
+        className="flex-grow px-3 overflow-y-scroll flex-col"
+        data-testid="t--widget-sidebar-scrollable-wrapper"
+        pt="spaces-2"
+      >
+        {areSearchResultsEmpty && (
+          <Text
+            color="#6A7585"
+            kind="body-m"
+            renderAs="p"
+            style={{ marginBottom: "15px" }}
+          >
+            {createMessage(WIDGET_PANEL_EMPTY_MESSAGE)} `
+            {searchInputRef.current?.value}`
+          </Text>
+        )}
         <div>
-          {Object.keys(filteredCards).map((tag) => {
-            const cardsForThisTag = filteredCards[tag as WidgetTags];
+          {Object.entries(filteredCards).map(([tag, cardsForThisTag]) => {
             if (!cardsForThisTag?.length && !entityLoading[tag as WidgetTags]) {
               return null;
             }
 
-            if (
-              isSearching &&
-              tag === WIDGET_TAGS.SUGGESTED_WIDGETS &&
-              !isEmpty
-            ) {
+            if (tag === WIDGET_TAGS.SUGGESTED_WIDGETS && hideSuggestedWidgets) {
               return null;
             }
 
@@ -117,44 +149,7 @@ function UIEntitySidebar({ isActive }: { isActive: boolean }) {
             );
           })}
         </div>
-      )
-    },
-    [filteredCards],
-  );
-
-  return (
-    <div
-      className={`flex flex-col t--widget-sidebar overflow-hidden ${
-        isActive ? "" : "hidden"
-      }`}
-    >
-      <div className="sticky top-0 px-3 mt-0.5">
-        <SearchInput
-          autoComplete="off"
-          id={ENTITY_EXPLORER_SEARCH_ID}
-          onChange={search}
-          placeholder="搜索"
-          ref={searchInputRef}
-          type="text"
-        />
-      </div>
-      <div
-        className="flex-grow px-3 mt-2 overflow-y-scroll"
-        data-testid="t--widget-sidebar-scrollable-wrapper"
-      >
-        {isEmpty && (
-          <Text
-            color="#6A7585"
-            kind="body-m"
-            renderAs="p"
-            style={{ marginBottom: "15px" }}
-          >
-            {createMessage(WIDGET_PANEL_EMPTY_MESSAGE)} `
-            {searchInputRef.current?.value}`
-          </Text>
-        )}
-        {FilteredCardLists}
-      </div>
+      </Flex>
     </div>
   );
 }

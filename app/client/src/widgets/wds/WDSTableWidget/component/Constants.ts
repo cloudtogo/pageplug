@@ -17,6 +17,8 @@ import type {
 import type { ColumnTypes } from "../constants";
 import type { TimePrecision } from "widgets/DatePickerWidget2/constants";
 import { generateReactKey } from "widgets/WidgetUtils";
+import type { PlainTextCellProps } from "./cellComponents/PlainTextCell";
+import type { ButtonCellProps } from "./cellComponents/ButtonCell";
 
 export interface TableSizes {
   COLUMN_HEADER_HEIGHT: number;
@@ -112,8 +114,8 @@ export interface TableStyles {
 export type CompactMode = keyof typeof CompactModeTypes;
 export type Condition = keyof typeof ConditionFunctions | "";
 export type Operator = keyof typeof OperatorTypes;
-export type CellAlignment = keyof typeof CellAlignmentTypes;
-export type VerticalAlignment = keyof typeof VerticalAlignmentTypes;
+export type CellAlignment = "start" | "center" | "end";
+export type VerticalAlignment = "start" | "center" | "end";
 export type ImageSize = keyof typeof ImageSizes;
 
 export interface ReactTableFilter {
@@ -121,6 +123,8 @@ export interface ReactTableFilter {
   column: string;
   operator: Operator;
   condition: Condition;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
 }
 
@@ -153,8 +157,8 @@ export interface CellWrappingProperties {
 }
 
 export interface ButtonCellProperties {
-  buttonVariant: ButtonVariant;
-  buttonColor?: string;
+  buttonVariant: ButtonCellProps["buttonVariant"];
+  buttonColor?: ButtonCellProps["buttonColor"];
   buttonLabel?: string;
   isCompact?: boolean;
   iconName?: IconName;
@@ -212,24 +216,17 @@ export interface BaseCellProperties {
   cellBackground?: string;
   isVisible?: boolean;
   isDisabled?: boolean;
-  borderRadius: string;
-  boxShadow: string;
   isCellVisible: boolean;
   isCellDisabled?: boolean;
 }
 
 export interface CellLayoutProperties
-  extends EditActionCellProperties,
-    InlineEditingCellProperties,
-    CellWrappingProperties,
+  extends CellWrappingProperties,
     ButtonCellProperties,
     URLCellProperties,
-    MenuButtonCellProperties,
-    SelectCellProperties,
-    ImageCellProperties,
-    DateCellProperties,
-    CurrencyCellProperties,
-    BaseCellProperties {}
+    BaseCellProperties {
+  cellColor?: "default" | PlainTextCellProps["cellColor"];
+}
 
 export interface TableColumnMetaProps {
   isHidden: boolean;
@@ -254,6 +251,8 @@ export interface TableColumnProps {
   id: string;
   Header: string;
   alias: string;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   accessor: any;
   width?: number;
   minWidth: number;
@@ -266,6 +265,8 @@ export interface TableColumnProps {
   sticky?: StickyType;
 }
 export interface ReactTableColumnProps extends TableColumnProps {
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Cell: (props: any) => JSX.Element;
 }
 
@@ -280,7 +281,6 @@ export interface ColumnBaseProperties {
   enableFilter?: boolean;
   enableSort?: boolean;
   isDerived: boolean;
-  computedValue: string;
   isCellVisible?: boolean;
   isAscOrder?: boolean;
   alias: string;
@@ -353,111 +353,135 @@ export interface CurrencyColumnProperties {
 export interface ColumnProperties
   extends ColumnBaseProperties,
     ColumnStyleProperties,
-    DateColumnProperties,
-    ColumnEditabilityProperties,
-    CurrencyColumnProperties,
-    EditActionColumnProperties {
+    ColumnEditabilityProperties {
   allowSameOptionsInNewRow?: boolean;
   newRowSelectOptions?: DropdownOption[];
   buttonLabel?: string;
-  menuButtonLabel?: string;
-  buttonColor?: string;
+  buttonColor?: ButtonCellProps["buttonColor"];
   onClick?: string;
   dropdownOptions?: string;
   onOptionChange?: string;
   displayText?: string;
   buttonVariant?: ButtonVariant;
-  isCompact?: boolean;
-  menuItems?: MenuItems;
-  menuVariant?: ButtonVariant;
-  menuColor?: string;
-  borderRadius?: ButtonBorderRadius;
-  boxShadow?: string;
-  boxShadowColor?: string;
   iconName?: IconName;
-  menuButtoniconName?: IconName;
   iconAlign?: Alignment;
   onItemClicked?: (onClick: string | undefined) => void;
   iconButtonStyle?: ButtonStyleType;
   imageSize?: ImageSize;
   sticky?: StickyType;
   getVisibleItems?: () => Array<MenuItem>;
-  menuItemsSource?: MenuItemsSource;
   configureMenuItems?: ConfigureMenuItems;
   sourceData?: Array<Record<string, unknown>>;
+  cellColor?: PlainTextCellProps["cellColor"];
 }
 
 export const ConditionFunctions: {
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: (a: any, b: any) => boolean;
 } = {
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   isExactly: (a: any, b: any) => {
     return a.toString() === b.toString();
   },
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   empty: (a: any) => {
     return a === "" || a === undefined || a === null;
   },
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   notEmpty: (a: any) => {
     return a !== "" && a !== undefined && a !== null;
   },
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   notEqualTo: (a: any, b: any) => {
     return a.toString() !== b.toString();
   },
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   isEqualTo: (a: any, b: any) => {
     return a.toString() === b.toString();
   },
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   lessThan: (a: any, b: any) => {
     const numericB = Number(b);
     const numericA = Number(a);
     return numericA < numericB;
   },
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   lessThanEqualTo: (a: any, b: any) => {
     const numericB = Number(b);
     const numericA = Number(a);
     return numericA <= numericB;
   },
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   greaterThan: (a: any, b: any) => {
     const numericB = Number(b);
     const numericA = Number(a);
     return numericA > numericB;
   },
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   greaterThanEqualTo: (a: any, b: any) => {
     const numericB = Number(b);
     const numericA = Number(a);
     return numericA >= numericB;
   },
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   contains: (a: any, b: any) => {
     if (isString(a) && isString(b)) {
       return a.includes(b);
     }
     return false;
   },
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   doesNotContain: (a: any, b: any) => {
     if (isString(a) && isString(b)) {
       return !a.includes(b);
     }
     return false;
   },
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   startsWith: (a: any, b: any) => {
     if (isString(a) && isString(b)) {
       return a.indexOf(b) === 0;
     }
     return false;
   },
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   endsWith: (a: any, b: any) => {
     if (isString(a) && isString(b)) {
       return a.length === a.lastIndexOf(b) + b.length;
     }
     return false;
   },
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   is: (a: any, b: any) => {
     return moment(a).isSame(moment(b), "d");
   },
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   isNot: (a: any, b: any) => {
     return !moment(a).isSame(moment(b), "d");
   },
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   isAfter: (a: any, b: any) => {
     return !moment(a).isAfter(moment(b), "d");
   },
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   isBefore: (a: any, b: any) => {
     return !moment(a).isBefore(moment(b), "d");
   },
@@ -494,16 +518,12 @@ export enum IMAGE_VERTICAL_ALIGN {
 }
 
 export interface BaseCellComponentProps {
-  compactMode: string;
   isHidden: boolean;
-  allowCellWrapping?: boolean;
   horizontalAlignment?: CellAlignment;
   verticalAlignment?: VerticalAlignment;
   cellBackground?: string;
   isCellVisible: boolean;
   fontStyle?: string;
-  textColor?: string;
-  textSize?: string;
   isCellDisabled?: boolean;
 }
 
@@ -513,29 +533,6 @@ export enum CheckboxState {
   PARTIAL = 2,
 }
 
-export const scrollbarOnHoverCSS = `
-  .track-horizontal {
-    height: 6px;
-    bottom: 1px;
-    width: 100%;
-    opacity: 0;
-    transition: opacity 0.15s ease-in;
-    &:active {
-      opacity: 1;
-    }
-  }
-  &:hover {
-    .track-horizontal {
-      opacity: 1;
-    }
-  }
-  .thumb-horizontal {
-    &:hover, &:active {
-      height: 6px !important;
-    }
-  }
-`;
-
 export const MULTISELECT_CHECKBOX_WIDTH = 40;
 
 export enum AddNewRowActions {
@@ -543,20 +540,6 @@ export enum AddNewRowActions {
   DISCARD = "DISCARD",
 }
 
-export const EDITABLE_CELL_PADDING_OFFSET = 8;
-
-export const TABLE_SCROLLBAR_WIDTH = 10;
-export const TABLE_SCROLLBAR_HEIGHT = 8;
-
-export const POPOVER_ITEMS_TEXT_MAP = {
-  SORT_ASC: "Sort column ascending",
-  SORT_DSC: "Sort column descending",
-  FREEZE_LEFT: "Freeze column left",
-  FREEZE_RIGHT: "Freeze column right",
-};
-
-export const HEADER_MENU_PORTAL_CLASS = ".header-menu-portal";
-export const MENU_CONTENT_CLASS = ".menu-content";
 export const DEFAULT_FILTER = {
   id: generateReactKey(),
   column: "",

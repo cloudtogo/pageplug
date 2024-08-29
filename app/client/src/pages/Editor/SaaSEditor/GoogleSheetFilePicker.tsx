@@ -4,11 +4,11 @@ import { FilePickerActionStatus } from "entities/Datasource";
 import { useDispatch } from "react-redux";
 import { filePickerCallbackAction } from "actions/datasourceActions";
 import { GOOGLE_SHEET_FILE_PICKER_OVERLAY_CLASS } from "constants/Datasource";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 import {
   createMessage,
   GOOGLE_SHEETS_FILE_PICKER_TITLE,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 
 interface Props {
   datasourceId: string;
@@ -22,6 +22,8 @@ function GoogleSheetFilePicker({
   gsheetToken,
 }: Props) {
   const [scriptLoadedFlag] = useState<boolean>(
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).googleAPIsLoaded,
   );
   const [pickerInitiated, setPickerInitiated] = useState<boolean>(false);
@@ -31,7 +33,11 @@ function GoogleSheetFilePicker({
   const dispatch = useDispatch();
 
   // objects gapi and google are set, when google apis script is loaded
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const gapi: any = (window as any).gapi;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const google: any = (window as any).google;
 
   useEffect(() => {
@@ -113,6 +119,8 @@ function GoogleSheetFilePicker({
     setPickerVisible(true);
   };
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const addAnalyticalEvents = (data: any) => {
     switch (data?.action) {
       case FilePickerActionStatus.LOADED:
@@ -131,6 +139,8 @@ function GoogleSheetFilePicker({
     }
   };
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const pickerCallback = async (data: any) => {
     addAnalyticalEvents(data);
     if (
@@ -139,6 +149,8 @@ function GoogleSheetFilePicker({
     ) {
       removeClassFromDocumentRoot(GOOGLE_SHEET_FILE_PICKER_OVERLAY_CLASS);
       setPickerVisible(false);
+      // TODO: Fix this the next time the file is edited
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const fileIds = data?.docs?.map((element: any) => element.id) || [];
       dispatch(
         filePickerCallbackAction({

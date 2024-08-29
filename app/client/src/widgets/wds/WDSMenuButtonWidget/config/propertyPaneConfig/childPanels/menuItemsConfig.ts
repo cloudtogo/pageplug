@@ -1,3 +1,7 @@
+import {
+  BUTTON_WIDGET_DEFAULT_LABEL,
+  createMessage,
+} from "ee/constants/messages";
 import { ValidationTypes } from "constants/WidgetValidation";
 
 /**
@@ -8,6 +12,8 @@ export const menuItemsConfig = {
   editableTitle: true,
   titlePropertyName: "label",
   panelIdPropertyName: "id",
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateHook: (props: any, propertyPath: string, propertyValue: string) => {
     return [
       {
@@ -25,7 +31,7 @@ export const menuItemsConfig = {
           helpText: "Sets the label of a menu item",
           label: "Label",
           controlType: "INPUT_TEXT",
-          placeholderText: "Download",
+          placeholderText: createMessage(BUTTON_WIDGET_DEFAULT_LABEL),
           isBindProperty: true,
           isTriggerProperty: false,
           validation: { type: ValidationTypes.TEXT },

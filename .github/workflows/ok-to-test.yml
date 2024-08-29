@@ -29,9 +29,7 @@ jobs:
           issue-type: pull-request
           commands: |
             ok-to-test
-            perf-test
-            ci-merge-check
             ci-test-limit
-            ok-to-test-with-documentdb
             build-deploy-preview
+            ci-test-limit-count
           permission: write

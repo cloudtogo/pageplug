@@ -22,6 +22,7 @@ import { klona as clone } from "klona/full";
 import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
 import { BlueprintOperationTypes } from "WidgetProvider/constants";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 import { WIDGET_TAGS, layoutConfigurations } from "constants/WidgetConstants";
 
 class ButtonGroupWidget extends BaseWidget<
@@ -34,6 +35,7 @@ class ButtonGroupWidget extends BaseWidget<
     return {
       name: "按钮组", // The display name which will be made in uppercase and show in the widgets panel ( can have spaces )
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       needsMeta: false, // Defines if this widget adds any meta properties
       isCanvas: false, // Defines if this widget has a canvas within in which we can drop other widgets
       searchTags: ["click", "submit", "button", "group"], // Search tags used in the search bar of the widgets pane
@@ -132,6 +134,8 @@ class ButtonGroupWidget extends BaseWidget<
             type: BlueprintOperationTypes.MODIFY_PROPS,
             fn: (widget: WidgetProps & { children?: WidgetProps[] }) => {
               const groupButtons = clone(widget.groupButtons);
+              // TODO: Fix this the next time the file is edited
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const dynamicBindingPathList: any[] = get(
                 widget,
                 "dynamicBindingPathList",
@@ -246,6 +250,8 @@ class ButtonGroupWidget extends BaseWidget<
               titlePropertyName: "label",
               panelIdPropertyName: "id",
               updateHook: (
+                // TODO: Fix this the next time the file is edited
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 props: any,
                 propertyPath: string,
                 propertyValue: string,
@@ -312,6 +318,8 @@ class ButtonGroupWidget extends BaseWidget<
                         titlePropertyName: "label",
                         panelIdPropertyName: "id",
                         updateHook: (
+                          // TODO: Fix this the next time the file is edited
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
                           props: any,
                           propertyPath: string,
                           propertyValue: string,

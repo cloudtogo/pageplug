@@ -1,3 +1,4 @@
+import type { POSITION } from "@appsmith/wds";
 import type { WidgetProps } from "widgets/BaseWidget";
 
 export interface OptionProps {
@@ -8,10 +9,8 @@ export interface OptionProps {
 export interface SwitchGroupWidgetProps extends WidgetProps {
   defaultSelectedValues?: OptionProps["value"][];
   isDisabled: boolean;
-  isRequired?: boolean;
-  isValid?: boolean;
   isVisible: boolean;
-  labelPosition: "left" | "right";
+  labelPosition?: keyof typeof POSITION;
   labelText?: string;
   onSelectionChange?: string;
   options: OptionProps[];

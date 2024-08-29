@@ -1,9 +1,8 @@
 import {
-  entityExplorer,
   agHelper,
+  entityExplorer,
   locators,
 } from "../../../../support/Objects/ObjectsCore";
-import { featureFlagIntercept } from "../../../../support/Objects/FeatureFlags";
 
 describe(
   "Entity explorer tests related to widgets and validation",
@@ -27,16 +26,14 @@ describe(
     // Taken from here appsmith/app/client/src/constants/WidgetConstants.tsx
     const SUGGESTED_WIDGETS_ORDER: Record<string, number> = {
       TABLE_WIDGET_V2: 1,
-      JSON_FORM_WIDGET: 2,
-      INPUT_WIDGET_V2: 3,
-      TEXT_WIDGET: 4,
-      SELECT_WIDGET: 5,
-      LIST_WIDGET_V2: 6,
+      INPUT_WIDGET_V2: 2,
+      TEXT_WIDGET: 3,
+      SELECT_WIDGET: 4,
     };
 
     // When adding a new widget or tag, we need to manually add it to this list.
     const WIDGETS_CATALOG: Record<string, string[]> = {
-      Suggested: ["Input", "JSON Form", "List", "Select", "Table", "Text"],
+      Suggested: ["Input", "Select", "Table", "Text"],
       Inputs: [
         "Currency Input",
         "DatePicker",
@@ -71,8 +68,13 @@ describe(
     };
 
     if (Cypress.env("AIRGAPPED")) {
-      // Remove map widget in case of airgap
-      WIDGETS_CATALOG.Content = ["Progress", "Rating", "Text"];
+      // Remove map and custom widget in case of airgap
+      WIDGETS_CATALOG.Content = WIDGETS_CATALOG.Content.filter(
+        (widget) => widget !== "Map",
+      );
+      WIDGETS_CATALOG.Display = WIDGETS_CATALOG.Display.filter(
+        (widget) => widget !== "Custom",
+      );
     }
 
     const getTotalNumberOfWidgets = () => {
@@ -111,6 +113,11 @@ describe(
         // check that all widgets are present within their tags
         const widgetsInThisTag: string[] = [];
 
+        // click the see more button for building blocks first to show all widgets
+        cy.wrap($widgetTag)
+          .find(entityExplorer._widgetSeeMoreButton)
+          .click({ force: true });
+
         cy.wrap($widgetTag)
           .find(entityExplorer._widgetCardTitle)
           .each(($widgetName) => {
@@ -134,10 +141,10 @@ describe(
       });
     });
 
-    it("3. All widgets should be ordered alphabetically within their tags, except Essential widgets, which should be sorted by their static rank.", () => {
+    it("3. All widgets other than building blocks should be ordered alphabetically within their tags, except Essential widgets, which should be sorted by their static rank.", () => {
       agHelper
         .GetElement(
-          `${entityExplorer._widgetTagsList}:not(${entityExplorer._widgetTagSuggestedWidgets})`,
+          `${entityExplorer._widgetTagsList}:not(${entityExplorer._widgetTagSuggestedWidgets}):not(${entityExplorer._widgetTagBuildingBlocks})`,
         )
         .each(($widgetTag) => {
           const widgetsInThisTag: string[] = [];
@@ -188,10 +195,20 @@ describe(
       agHelper.AssertElementLength(entityExplorer._widgetCards, 2);
 
       agHelper.ClearNType(entityExplorer._widgetSearchInput, "cypress");
-      agHelper.AssertElementLength(entityExplorer._widgetCards, 1);
-      agHelper.AssertElementExist(".t--widget-card-draggable-customwidget");
+      if (Cypress.env("AIRGAPPED")) {
+        agHelper.AssertElementLength(entityExplorer._widgetCards, 0);
+      } else {
+        agHelper.AssertElementLength(entityExplorer._widgetCards, 1);
+        agHelper.AssertElementExist(".t--widget-card-draggable-customwidget");
+      }
 
       agHelper.ClearTextField(entityExplorer._widgetSearchInput);
+      // click to show all building blocks
+      agHelper.GetElement(entityExplorer._widgetTagsList).each(($widgetTag) => {
+        cy.wrap($widgetTag)
+          .find(entityExplorer._widgetSeeMoreButton)
+          .click({ force: true });
+      });
 
       agHelper.AssertElementLength(
         entityExplorer._widgetCards,

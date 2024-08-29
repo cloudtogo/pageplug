@@ -1,14 +1,17 @@
 import type { BaseAction } from "../Action";
 import type { PluginType } from "entities/Action";
 import type { LayoutOnLoadActionErrors } from "constants/AppsmithActionConstants/ActionConstants";
-import type { ActionParentEntityTypeInterface } from "@appsmith/entities/Engine/actionHelpers";
+import type { ActionParentEntityTypeInterface } from "ee/entities/Engine/actionHelpers";
 
 export interface Variable {
   name: string;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
 }
 export interface JSCollection {
   id: string;
+  baseId: string;
   applicationId: string;
   workspaceId: string;
   name: string;
@@ -16,8 +19,8 @@ export interface JSCollection {
   pluginId: string;
   pluginType: PluginType.JS;
   actions: Array<JSAction>;
-  body: string;
-  variables: Array<Variable>;
+  body?: string;
+  variables?: Array<Variable>;
   userPermissions?: string[];
   errorReports?: Array<LayoutOnLoadActionErrors>;
   isPublic?: boolean;
@@ -33,9 +36,9 @@ export interface JSCollection {
 }
 
 export interface JSActionConfig {
-  body: string;
+  body?: string;
   timeoutInMillisecond: number;
-  jsArguments: Array<Variable>;
+  jsArguments?: Array<Variable>;
 }
 export interface JSAction extends BaseAction {
   actionConfiguration: JSActionConfig;

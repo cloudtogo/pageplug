@@ -17,7 +17,7 @@ module.exports = {
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node", "css"],
   moduleDirectories: ["node_modules", "src", "test"],
   transformIgnorePatterns: [
-    "<rootDir>/node_modules/(?!codemirror|konva|design-system|design-system-old|react-dnd|dnd-core|@babel|(@blueprintjs)|@github|lodash-es|@draft-js-plugins|react-documents|linkedom|assert-never|axios)",
+    "<rootDir>/node_modules/(?!codemirror|konva|react-dnd|dnd-core|@babel|(@blueprintjs)|@github|lodash-es|@draft-js-plugins|react-documents|linkedom|assert-never|axios)",
   ],
   moduleNameMapper: {
     "\\.(css|less)$": "<rootDir>/test/__mocks__/styleMock.js",
@@ -27,14 +27,9 @@ module.exports = {
     "^worker-loader!": "<rootDir>/test/__mocks__/workerMock.js",
     "^!!raw-loader!": "<rootDir>/test/__mocks__/derivedMock.js",
     "test/(.*)": "<rootDir>/test/$1",
-    "@appsmith/(.*)": "<rootDir>/src/ee/$1",
-    "design-system-old": "<rootDir>/node_modules/design-system-old/build",
+    "@appsmith/ads-old": "<rootDir>/node_modules/@appsmith/ads-old",
     "@design-system/widgets-old":
       "<rootDir>/node_modules/@design-system/widgets-old",
-    "@design-system/widgets": "<rootDir>/node_modules/@design-system/widgets",
-    "@design-system/headless": "<rootDir>/node_modules/@design-system/headless",
-    "@design-system/theming": "<rootDir>/node_modules/@design-system/theming",
-    "design-system": "<rootDir>/node_modules/design-system/build",
     "^proxy-memoize$": "<rootDir>/node_modules/proxy-memoize/dist/wrapper.cjs",
     // @blueprintjs packages need to be resolved to the `esnext` directory. The default `esm` directory
     // contains sources that are transpiled to ES5. As Jest does not transpile our sources to ES5,
@@ -51,7 +46,7 @@ module.exports = {
       "<rootDir>/node_modules/@blueprintjs/popover2/lib/esnext",
     "^@blueprintjs/select$":
       "<rootDir>/node_modules/@blueprintjs/select/lib/esnext",
-    "design-system": "<rootDir>/node_modules/design-system/build",
+    "@appsmith/ads": "<rootDir>/node_modules/@appsmith/ads",
     "^canvas$": "jest-canvas-mock",
   },
   globals: {
@@ -82,14 +77,23 @@ module.exports = {
         apiKey: parseConfig("__APPSMITH_SEGMENT_KEY__"),
         ceKey: parseConfig("__APPSMITH_SEGMENT_CE_KEY__"),
       },
-      newRelic:{
+      newRelic: {
         enableNewRelic: parseConfig("__APPSMITH_NEW_RELIC_ACCOUNT_ENABLE__"),
         accountId: parseConfig("__APPSMITH_NEW_RELIC_ACCOUNT_ID__"),
         applicationId: parseConfig("__APPSMITH_NEW_RELIC_APPLICATION_ID__"),
-        browserAgentlicenseKey: parseConfig("__APPSMITH_NEW_RELIC_BROWSER_AGENT_LICENSE_KEY__"),
+        browserAgentlicenseKey: parseConfig(
+          "__APPSMITH_NEW_RELIC_BROWSER_AGENT_LICENSE_KEY__",
+        ),
+        browserAgentEndpoint: parseConfig(
+          "__APPSMITH_NEW_RELIC_BROWSER_AGENT_ENDPOINT__",
+        ),
         otlpLicenseKey: parseConfig("__APPSMITH_NEW_RELIC_OTLP_LICENSE_KEY__"),
-        otlpServiceName: parseConfig("__APPSMITH_NEW_RELIC_OTEL_SERVICE_NAME__"),
-        otlpEndpoint:parseConfig("__APPSMITH_NEW_RELIC_OTEL_EXPORTER_OTLP_ENDPOINT__")
+        otlpServiceName: parseConfig(
+          "__APPSMITH_NEW_RELIC_OTEL_SERVICE_NAME__",
+        ),
+        otlpEndpoint: parseConfig(
+          "__APPSMITH_NEW_RELIC_OTEL_EXPORTER_OTLP_ENDPOINT__",
+        ),
       },
       fusioncharts: {
         licenseKey: parseConfig("__APPSMITH_FUSIONCHARTS_LICENSE_KEY__"),

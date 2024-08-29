@@ -1,10 +1,10 @@
-import { Button, Icon, SearchInput, Spinner, Text } from "design-system";
+import { Button, Icon, SearchInput, Spinner, Text } from "@appsmith/ads";
 import React from "react";
 import styled from "styled-components";
 import WorkspaceSearchItems from "pages/common/SearchBar/WorkspaceSearchItems";
 import ApplicationSearchItem from "pages/common/SearchBar/ApplicationSearchItem";
-import PackageSearchItem from "@appsmith/pages/common/PackageSearchItem";
-import WorkflowSearchItem from "@appsmith/pages/common/WorkflowSearchItem";
+import PackageSearchItem from "ee/pages/common/PackageSearchItem";
+import WorkflowSearchItem from "ee/pages/common/WorkflowSearchItem";
 import { useRouteMatch } from "react-router";
 
 const SearchListContainer = styled.div`
@@ -19,6 +19,10 @@ const SearchListContainer = styled.div`
   flex-direction: column;
   padding: 12px;
   overflow-y: auto;
+
+  .search-loader {
+    overflow: hidden;
+  }
 `;
 
 const MobileSearchInput = styled(SearchInput)`
@@ -31,22 +35,21 @@ const MobileSearchInput = styled(SearchInput)`
   }
 `;
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function MobileEntitySearchField(props: any) {
   const {
     applicationsList,
-    canShowSearchDropdown,
-    handleInputClicked,
     handleSearchInput,
     isDropdownOpen,
-    isFetchingApplications,
     isFetchingEntities,
     navigateToApplication,
     noSearchResults,
     searchedPackages,
-    searchedWorkflows,
     searchListContainerRef,
     setIsDropdownOpen,
     setShowMobileSearchBar,
+    workflowsList,
     workspacesList,
   } = props;
 
@@ -60,9 +63,7 @@ function MobileEntitySearchField(props: any) {
         <MobileSearchInput
           data-testid="t--application-search-input"
           defaultValue=""
-          isDisabled={isFetchingApplications}
           onChange={handleSearchInput}
-          onClick={handleInputClicked}
           placeholder={""}
         />
         <Button
@@ -74,9 +75,13 @@ function MobileEntitySearchField(props: any) {
           startIcon="close-x"
         />
       </div>
-      {isDropdownOpen && canShowSearchDropdown && (
+      {isDropdownOpen && (
         <SearchListContainer ref={searchListContainerRef}>
-          {noSearchResults && !isFetchingEntities && (
+          {isFetchingEntities ? (
+            <div className="search-loader">
+              <Spinner />
+            </div>
+          ) : noSearchResults ? (
             <div className="no-search-results text-center py-[52px]">
               <Icon
                 className="mb-2"
@@ -91,11 +96,6 @@ function MobileEntitySearchField(props: any) {
                 Please try again with a <br /> different search query
               </Text>
             </div>
-          )}
-          {isFetchingEntities ? (
-            <div className="search-loader">
-              <Spinner />
-            </div>
           ) : (
             <>
               <WorkspaceSearchItems
@@ -107,7 +107,7 @@ function MobileEntitySearchField(props: any) {
                 navigateToApplication={navigateToApplication}
               />
               <PackageSearchItem searchedPackages={searchedPackages} />
-              <WorkflowSearchItem searchedWorkflows={searchedWorkflows} />
+              <WorkflowSearchItem workflowsList={workflowsList} />
             </>
           )}
         </SearchListContainer>

@@ -37,7 +37,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -46,7 +45,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -114,18 +112,6 @@ public class WorkspaceServiceCEImpl extends BaseService<WorkspaceRepository, Wor
         this.workspaceServiceHelper = workspaceServiceHelper;
     }
 
-    @Override
-    public Flux<Workspace> get(MultiValueMap<String, String> params) {
-        return sessionUserService.getCurrentUser().flatMapMany(user -> {
-            Set<String> workspaceIds = user.getWorkspaceIds();
-            if (workspaceIds == null || workspaceIds.isEmpty()) {
-                log.error("No workspace set for user: {}. Returning empty list of workspaces", user.getEmail());
-                return Flux.empty();
-            }
-            return repository.findAllById(workspaceIds);
-        });
-    }
-
     /**
      * Creates the given workspace as a default workspace for the given user. That is, the workspace's name
      * is changed to "[username]'s apps" and then created. The current value of the workspace name
@@ -182,6 +168,7 @@ public class WorkspaceServiceCEImpl extends BaseService<WorkspaceRepository, Wor
                 */
                 .flatMap(org -> pluginRepository
                         .findByDefaultInstall(true)
+                        .filter(plugin -> plugin.getId() != null)
                         .map(obj -> new WorkspacePlugin(obj.getId(), WorkspacePluginStatus.FREE))
                         .collect(Collectors.toSet())
                         .map(pluginList -> {
@@ -462,11 +449,6 @@ public class WorkspaceServiceCEImpl extends BaseService<WorkspaceRepository, Wor
     }
 
     @Override
-    public Mono<Workspace> findById(String id, Optional<AclPermission> permission) {
-        return repository.findById(id, permission);
-    }
-
-    @Override
     public Mono<Workspace> save(Workspace workspace) {
         if (StringUtils.hasLength(workspace.getName())) {
             workspace.setSlug(TextUtils.makeSlug(workspace.getName()));
@@ -590,7 +572,7 @@ public class WorkspaceServiceCEImpl extends BaseService<WorkspaceRepository, Wor
 
     @Override
     public Flux<Workspace> getAll() {
-        return repository.findAllWorkspaces();
+        return repository.findAll();
     }
 
     @Override

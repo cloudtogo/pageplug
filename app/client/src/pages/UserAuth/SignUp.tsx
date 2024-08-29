@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import type { InjectedFormProps } from "redux-form";
 import { reduxForm, formValueSelector } from "redux-form";
 import { AUTH_LOGIN_URL } from "constants/routes";
-import { SIGNUP_FORM_NAME } from "@appsmith/constants/forms";
+import { SIGNUP_FORM_NAME } from "ee/constants/forms";
 import type { RouteComponentProps } from "react-router-dom";
 import { useHistory, useLocation, withRouter } from "react-router-dom";
-import { SpacedSubmitForm, FormActions } from "pages/UserAuth/StyledComponents";
+import {
+  SpacedSubmitForm,
+  FormActions,
+  OrWithLines,
+} from "pages/UserAuth/StyledComponents";
 import {
   SIGNUP_PAGE_TITLE,
   SIGNUP_PAGE_EMAIL_INPUT_PLACEHOLDER,
@@ -19,25 +23,24 @@ import {
   createMessage,
   SIGNUP_PAGE_SUBTITLE,
   GOOGLE_RECAPTCHA_KEY_ERROR,
-} from "@appsmith/constants/messages";
+  LOOKING_TO_SELF_HOST,
+  VISIT_OUR_DOCS,
+} from "ee/constants/messages";
 import FormTextField from "components/utils/ReduxFormTextField";
 import ThirdPartyAuth from "pages/UserAuth/ThirdPartyAuth";
-import { FormGroup } from "design-system-old";
-import { Button, Link, Callout } from "design-system";
+import { FormGroup } from "@appsmith/ads-old";
+import { Button, Link, Callout } from "@appsmith/ads";
 import { isEmail, isStrongPassword, isEmptyString } from "utils/formhelpers";
 
 import type { SignupFormValues } from "pages/UserAuth/helpers";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 
-import { SIGNUP_SUBMIT_PATH } from "@appsmith/constants/ApiConstants";
+import { SIGNUP_SUBMIT_PATH } from "ee/constants/ApiConstants";
 import { connect, useSelector } from "react-redux";
-import type { AppState } from "@appsmith/reducers";
-import PerformanceTracker, {
-  PerformanceTransactionName,
-} from "utils/PerformanceTracker";
+import type { AppState } from "ee/reducers";
 
-import { SIGNUP_FORM_EMAIL_FIELD_NAME } from "@appsmith/constants/forms";
-import { getAppsmithConfigs } from "@appsmith/configs";
+import { SIGNUP_FORM_EMAIL_FIELD_NAME } from "ee/constants/forms";
+import { getAppsmithConfigs } from "ee/configs";
 import { useScript, ScriptStatus, AddScriptTo } from "utils/hooks/useScript";
 
 import { getIsSafeRedirectURL } from "utils/helpers";
@@ -54,19 +57,22 @@ import {
   getIsFormLoginEnabled,
   getTenantConfig,
   getThirdPartyAuths,
-} from "@appsmith/selectors/tenantSelectors";
+} from "ee/selectors/tenantSelectors";
 import Helmet from "react-helmet";
 import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
-import { getHTMLPageTitle } from "@appsmith/utils/BusinessFeatures/brandingPageHelpers";
+import { FEATURE_FLAG } from "ee/entities/FeatureFlag";
+import { getHTMLPageTitle } from "ee/utils/BusinessFeatures/brandingPageHelpers";
 import log from "loglevel";
+import { SELF_HOSTING_DOC } from "constants/ThirdPartyConstants";
 import {FormBottom} from "./ForgotPassword"
 declare global {
   interface Window {
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     grecaptcha: any;
   }
 }
-const { googleRecaptchaSiteKey } = getAppsmithConfigs();
+const { cloudHosting, googleRecaptchaSiteKey } = getAppsmithConfigs();
 
 const validate = (values: SignupFormValues) => {
   const errors: SignupFormValues = {};
@@ -156,7 +162,8 @@ export function SignUp(props: SignUpFormProps) {
         window.grecaptcha
           .execute(googleRecaptchaSiteKey.apiKey, {
             action: "submit",
-          })
+          }) // TODO: Fix this the next time the file is edited
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .then(function (token: any) {
             if (formElement) {
               signupURL.searchParams.append("recaptchaToken", token);
@@ -180,20 +187,42 @@ export function SignUp(props: SignUpFormProps) {
     setIsShowPassword(!isShowPassword);
   };
 
-  useEffect(() => {
-    if (showError) {
-      message.open({
-        type: "error",
-        duration: 5,
-        content: errorMessage,
-        className: "my-msg",
-      });
-    }
-  }, []);
+  const footerSection = (
+    <>
+      <div className="px-2 flex align-center justify-center text-center text-[color:var(--ads-v2\-color-fg)] text-[14px]">
+        {createMessage(ALREADY_HAVE_AN_ACCOUNT)}&nbsp;
+        <Link
+          className="t--sign-up t--signup-link"
+          kind="primary"
+          target="_self"
+          to={AUTH_LOGIN_URL}
+        >
+          {createMessage(SIGNUP_PAGE_LOGIN_LINK_TEXT)}
+        </Link>
+      </div>
+      {cloudHosting && (
+        <>
+          <OrWithLines>or</OrWithLines>
+          <div className="px-2 text-center text-[color:var(--ads-v2\-color-fg)] text-[14px]">
+            {createMessage(LOOKING_TO_SELF_HOST)}
+            <Link
+              className="t--visit-docs t--visit-docs-link pl-[var(--ads-v2\-spaces-3)] justify-center"
+              kind="primary"
+              onClick={() => AnalyticsUtil.logEvent("VISIT_SELF_HOST_DOCS")}
+              target="_self"
+              to={`${SELF_HOSTING_DOC}?utm_source=cloudSignup`}
+            >
+              {createMessage(VISIT_OUR_DOCS)}
+            </Link>
+          </div>
+        </>
+      )}
+    </>
+  );
 
   return (
     <Container
-      footer={null}
+      footer={footerSection}
       subtitle={createMessage(SIGNUP_PAGE_SUBTITLE)}
       title={createMessage(SIGNUP_PAGE_TITLE)}
     >
@@ -255,9 +284,6 @@ export function SignUp(props: SignUpFormProps) {
                 AnalyticsUtil.logEvent("SIGNUP_CLICK", {
                   signupMethod: "EMAIL",
                 });
-                PerformanceTracker.startTracking(
-                  PerformanceTransactionName.SIGN_UP,
-                );
               }}
               size="md"
               type="submit"

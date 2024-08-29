@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from "react";
 import type { WidgetCardProps } from "widgets/BaseWidget";
 import styled from "styled-components";
 import { useWidgetDragResize } from "utils/hooks/dragResizeHooks";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 import { generateReactKey } from "utils/generators";
 import { useWidgetSelection } from "utils/hooks/useWidgetSelection";
 import { IconWrapper } from "constants/IconConstants";

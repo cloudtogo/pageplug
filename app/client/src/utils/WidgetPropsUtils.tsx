@@ -14,7 +14,6 @@ import defaultTemplate from "templates/default";
 import type { FlattenedWidgetProps } from "reducers/entityReducers/canvasWidgetsReducer";
 import type { WidgetType } from "../WidgetProvider/factory";
 import type { DSLWidget } from "WidgetProvider/constants";
-import type { ContainerWidgetProps } from "widgets/ContainerWidget/widget";
 import type { BlockSpace, GridProps } from "reflow/reflowTypes";
 import type { Rect } from "./boxHelpers";
 import { areIntersecting } from "./boxHelpers";
@@ -24,10 +23,13 @@ import type {
   XYCord,
 } from "layoutSystems/common/canvasArenas/ArenaTypes";
 import { migrateDSL } from "@shared/dsl";
+import type { ContainerWidgetProps } from "widgets/ContainerWidget/widget";
 
 export interface WidgetOperationParams {
   operation: WidgetOperation;
   widgetId: string;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload: any;
 }
 
@@ -44,11 +46,9 @@ const defaultDSL = defaultTemplate;
  */
 export const extractCurrentDSL = ({
   dslTransformer,
-  migrateDSLLocally = true,
   response,
 }: {
   dslTransformer?: (dsl: DSLWidget) => DSLWidget;
-  migrateDSLLocally?: boolean;
   response?: FetchPageResponse;
 }): { dsl: DSLWidget; layoutId: string | undefined } => {
   // If fetch page response doesn't exist
@@ -60,14 +60,11 @@ export const extractCurrentDSL = ({
   };
 
   let dsl = currentDSL as DSLWidget;
-  if (migrateDSLLocally) {
-    // Run all the migrations on this DSL
-    dsl = migrateDSL(
-      currentDSL as ContainerWidgetProps<WidgetProps>,
-      newPage,
-    ) as DSLWidget;
-  }
-
+  // Run all the migrations on this DSL
+  dsl = migrateDSL(
+    currentDSL as ContainerWidgetProps<WidgetProps>,
+    newPage,
+  ) as DSLWidget;
   // If this DSL is meant to be transformed
   // then the dslTransformer would have been passed by the caller
   if (dslTransformer) {

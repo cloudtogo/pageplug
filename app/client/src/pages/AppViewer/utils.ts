@@ -7,7 +7,7 @@ import {
   getComplementaryGrayscaleColor,
   isLightColor,
 } from "widgets/WidgetUtils";
-import { viewerURL } from "@appsmith/RouteBuilder";
+import { viewerURL } from "ee/RouteBuilder";
 
 // Menu Item Background Color - Active
 export const getMenuItemBackgroundColorWhenActive = (

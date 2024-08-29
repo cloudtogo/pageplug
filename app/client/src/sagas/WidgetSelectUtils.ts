@@ -1,11 +1,8 @@
-import {
-  createMessage,
-  SELECT_ALL_WIDGETS_MSG,
-} from "@appsmith/constants/messages";
+import { createMessage, SELECT_ALL_WIDGETS_MSG } from "ee/constants/messages";
 import {
   ReduxActionErrorTypes,
   ReduxActionTypes,
-} from "@appsmith/constants/ReduxActionConstants";
+} from "ee/constants/ReduxActionConstants";
 import { MAIN_CONTAINER_WIDGET_ID } from "constants/WidgetConstants";
 import { uniq } from "lodash";
 import type {
@@ -21,7 +18,7 @@ import {
 import { getWidgetChildrenIds } from "sagas/WidgetOperationUtils";
 import { getLastSelectedWidget, getSelectedWidgets } from "selectors/ui";
 import WidgetFactory from "WidgetProvider/factory";
-import { toast } from "design-system";
+import { toast } from "@appsmith/ads";
 import { checkIsDropTarget } from "WidgetProvider/factory/helpers";
 
 /**
@@ -36,6 +33,8 @@ export enum SelectionRequestType {
   /** Replace the existing selection with a new single selection.
    * The new selection will be the last selected widget */
   One = "One",
+  /** Selection that has been lead by creation of a new widget */
+  Create = "Create",
   /** Replace the existing selection with a new selection of multiple widgets.
    * The new selection's first widget becomes the last selected widget
    * */

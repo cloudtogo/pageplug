@@ -21,6 +21,7 @@ export enum NavigationMethod {
   SegmentControl = "SegmentControl",
   EditorTabs = "EditorTabs",
   WorkflowSidebar = "WorkflowSidebar",
+  SlashCommandHint = "SlashCommandHint",
 }
 
 export interface AppsmithLocationState {

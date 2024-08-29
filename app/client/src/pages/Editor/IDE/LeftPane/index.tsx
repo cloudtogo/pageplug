@@ -1,8 +1,7 @@
 import React from "react";
-import WidgetsEditorEntityExplorer from "../../WidgetsEditorEntityExplorer";
 import styled from "styled-components";
 import { Switch, useRouteMatch } from "react-router";
-import { SentryRoute } from "@appsmith/AppRouter";
+import { SentryRoute } from "ee/AppRouter";
 import {
   APP_LIBRARIES_EDITOR_PATH,
   APP_SETTINGS_EDITOR_PATH,
@@ -15,19 +14,18 @@ import AppSettingsPane from "./AppSettings";
 import DataSidePane from "./DataSidePane";
 import LibrarySidePane from "./LibrarySidePane";
 import EditorPane from "../EditorPane";
-import { useIsEditorPaneSegmentsEnabled } from "../hooks";
 
-export const LeftPaneContainer = styled.div`
+export const LeftPaneContainer = styled.div<{ showRightBorder?: boolean }>`
   height: 100%;
-  border-right: 1px solid var(--ads-v2-color-border);
+  border-right: ${({ showRightBorder = true }) =>
+    showRightBorder ? "1px solid var(--ads-v2-color-border)" : "none"};
   background: var(--ads-v2-color-bg);
 `;
 
 const LeftPane = () => {
-  const isEditorPaneEnabled = useIsEditorPaneSegmentsEnabled();
   const { path } = useRouteMatch();
   return (
-    <LeftPaneContainer>
+    <LeftPaneContainer showRightBorder={false}>
       <Switch>
         <SentryRoute
           component={DataSidePane}
@@ -49,11 +47,7 @@ const LeftPane = () => {
           exact
           path={`${path}${APP_SETTINGS_EDITOR_PATH}`}
         />
-        {isEditorPaneEnabled ? (
-          <SentryRoute component={EditorPane} />
-        ) : (
-          <SentryRoute component={WidgetsEditorEntityExplorer} />
-        )}
+        <SentryRoute component={EditorPane} />
       </Switch>
     </LeftPaneContainer>
   );

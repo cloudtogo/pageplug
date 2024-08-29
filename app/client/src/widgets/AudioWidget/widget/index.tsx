@@ -12,11 +12,12 @@ import type {
   AutocompletionDefinitions,
 } from "WidgetProvider/constants";
 import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
-import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+import { getAssetUrl } from "ee/utils/airgapHelpers";
 import type { SetterConfig } from "entities/AppTheming";
 import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
 import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 const AudioComponent = lazy(async () =>
@@ -37,7 +38,8 @@ class AudioWidget extends BaseWidget<AudioWidgetProps, WidgetState> {
     return {
       name: "音频",
       iconSVG: IconSVG,
-      tags: [WIDGET_TAGS.FEATRUE],
+      thumbnailSVG: ThumbnailSVG,
+      tags: [WIDGET_TAGS.MEDIA],
       needsMeta: true,
       searchTags: ["mp3", "sound", "wave", "player"],
     };
@@ -222,6 +224,8 @@ class AudioWidget extends BaseWidget<AudioWidgetProps, WidgetState> {
 
   private _player = React.createRef<ReactPlayer>();
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       // Property reflecting the state of the widget

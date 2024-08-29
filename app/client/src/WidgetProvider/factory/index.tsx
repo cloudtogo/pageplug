@@ -12,6 +12,7 @@ import type {
   CanvasWidgetStructure,
   FlattenedWidgetProps,
   WidgetConfigProps,
+  WidgetDefaultProps,
   WidgetMethods,
 } from "WidgetProvider/constants";
 import {
@@ -20,6 +21,7 @@ import {
   convertFunctionsToString,
   enhancePropertyPaneConfig,
   generatePropertyPaneSearchConfig,
+  getDefaultOnCanvasUIConfig,
   PropertyPaneConfigTypes,
 } from "./helpers";
 import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
@@ -41,6 +43,8 @@ import type {
 } from "layoutSystems/anvil/utils/paste/types";
 import { call } from "redux-saga/effects";
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type WidgetDerivedPropertyType = any;
 export type DerivedPropertiesMap = Record<string, string>;
 export type WidgetType = (typeof WidgetFactory.widgetTypes)[number];
@@ -53,8 +57,13 @@ class WidgetFactory {
     Partial<WidgetProps> & WidgetConfigProps & { type: string }
   > = new Map();
 
+  static widgetDefaultPropertiesMap: Map<string, Record<string, unknown>> =
+    new Map();
+
   static widgetsMap: Map<WidgetType, typeof BaseWidget> = new Map();
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static widgetBuilderMap: Map<WidgetType, any> = new Map();
 
   static initialize(
@@ -79,8 +88,21 @@ class WidgetFactory {
   }
 
   private static configureWidget(widget: typeof BaseWidget) {
+    const defaultConfig: WidgetDefaultProps = widget.getDefaults();
     const config = widget.getConfig();
 
+    /**
+     * As this will make all layout system widgets have these properties.
+     * We're going to prioritise #21825.
+     * This will prevent the DSLs which are persisted from being polluted and overly large.
+     *
+     * The following makes sure that the on canvas ui configurations are picked up from widgets
+     * and added to the WidgetFactory, such that these are accessible when needed in the applcation.
+     */
+    const onCanvasUI =
+      config.onCanvasUI || getDefaultOnCanvasUIConfig(defaultConfig);
+
+    const { IconCmp } = widget.getMethods();
     const features = widget.getFeatures();
 
     let enhancedFeatures: Record<string, unknown> = {};
@@ -103,7 +125,7 @@ class WidgetFactory {
       ...enhancedFeatures,
       searchTags: config.searchTags,
       tags: config.tags,
-      hideCard: !!config.hideCard || !config.iconSVG,
+      hideCard: !!config.hideCard || !(config.iconSVG || IconCmp),
       isDeprecated: !!config.isDeprecated,
       replacement: config.replacement,
       displayName: config.name,
@@ -114,8 +136,22 @@ class WidgetFactory {
       needsHeightForContent: config.needsHeightForContent,
       isMobile: config.isMobile,
       isSearchWildcard: config.isSearchWildcard,
+      needsErrorInfo: !!config.needsErrorInfo,
+      onCanvasUI,
     };
 
+    // When adding widgets to canvas in Anvil, we don't need all of configured properties
+    // (See _config object)
+    // and that should ideally be the case for Fixed mode widgets as well
+    // So, creating this map to use in WidgetAdditionSagas for both Fixed
+    // and Anvil.
+    // Before this we were using "ALL" configured properties when creating
+    // the newly added widget. This lead to many extra properties being added
+    // to the DSL
+    WidgetFactory.widgetDefaultPropertiesMap.set(
+      widget.type,
+      Object.freeze({ ...defaultConfig }),
+    );
     WidgetFactory.widgetConfigMap.set(widget.type, Object.freeze(_config));
   }
 
@@ -624,6 +660,8 @@ export type WidgetTypeConfigMap = Record<
   string,
   {
     defaultProperties: Record<string, string>;
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     metaProperties: Record<string, any>;
     derivedProperties: WidgetDerivedPropertyType;
   }

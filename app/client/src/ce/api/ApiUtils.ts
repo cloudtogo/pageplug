@@ -5,14 +5,14 @@ import {
   ERROR_500,
   GENERIC_API_EXECUTION_ERROR,
   SERVER_API_TIMEOUT_ERROR,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import type { AxiosRequestConfig, AxiosResponse } from "axios";
 import axios from "axios";
 import {
   API_STATUS_CODES,
   ERROR_CODES,
   SERVER_ERROR_CODES,
-} from "@appsmith/constants/ApiConstants";
+} from "ee/constants/ApiConstants";
 import log from "loglevel";
 import type { ActionExecutionResponse } from "api/ActionAPI";
 import store from "store";
@@ -21,17 +21,21 @@ import { AUTH_LOGIN_URL } from "constants/routes";
 import { getCurrentGitBranch } from "selectors/gitSyncSelectors";
 import getQueryParamsObject from "utils/getQueryParamsObject";
 import { UserCancelledActionExecutionError } from "sagas/ActionExecution/errorUtils";
-import AnalyticsUtil from "utils/AnalyticsUtil";
-import { getAppsmithConfigs } from "@appsmith/configs";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
+import { getAppsmithConfigs } from "ee/configs";
 import * as Sentry from "@sentry/react";
 import { CONTENT_TYPE_HEADER_KEY } from "constants/ApiEditorConstants/CommonApiConstants";
-import { isAirgapped } from "@appsmith/utils/airgapHelpers";
-import { getCurrentEnvironmentId } from "@appsmith/selectors/environmentSelectors";
+import { isAirgapped } from "ee/utils/airgapHelpers";
+import { getCurrentEnvironmentId } from "ee/selectors/environmentSelectors";
+import { UNUSED_ENV_ID } from "constants/EnvironmentContants";
+import { ID_EXTRACTION_REGEX } from "ee/constants/routes/appRoutes";
 
 const executeActionRegex = /actions\/execute/;
 const timeoutErrorRegex = /timeout of (\d+)ms exceeded/;
 export const axiosConnectionAbortedCode = "ECONNABORTED";
 const appsmithConfig = getAppsmithConfigs();
+
+export const DEFAULT_ENV_ID = UNUSED_ENV_ID;
 
 export const BLOCKED_ROUTES = [
   "v1/app-templates",
@@ -46,8 +50,8 @@ export const BLOCKED_ROUTES_REGEX = new RegExp(
 );
 
 export const ENV_ENABLED_ROUTES = [
-  "v1/datasources/[a-z0-9]+/structure",
-  "/v1/datasources/[a-z0-9]+/trigger",
+  `v1/datasources/${ID_EXTRACTION_REGEX}/structure`,
+  `/v1/datasources/${ID_EXTRACTION_REGEX}/trigger`,
   "v1/actions/execute",
   "v1/saas",
 ];
@@ -56,6 +60,8 @@ export const ENV_ENABLED_ROUTES_REGEX = new RegExp(
   `^(${ENV_ENABLED_ROUTES.join("|")})($|/)`,
 );
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const makeExecuteActionResponse = (response: any): ActionExecutionResponse => ({
   ...response.data,
   clientMeta: {
@@ -142,6 +148,8 @@ export const apiSuccessResponseInterceptor = (
 };
 
 // Handle different api failure scenarios
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const apiFailureResponseInterceptor = async (error: any) => {
   // this can be extended to other errors we want to catch.
   // in this case it is 413.
@@ -253,4 +261,9 @@ export const apiFailureResponseInterceptor = async (error: any) => {
   }
   log.debug(error.config);
   return Promise.resolve(error);
+};
+
+// function to get the default environment
+export const getDefaultEnvId = () => {
+  return DEFAULT_ENV_ID;
 };

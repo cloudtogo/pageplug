@@ -3,7 +3,7 @@ import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import type { RenderMode } from "constants/WidgetConstants";
 import { GridDefaults } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
-import type { Stylesheet } from "entities/AppTheming";
+import type { SetterConfig, Stylesheet } from "entities/AppTheming";
 import { SelectionRequestType } from "sagas/WidgetSelectUtils";
 import {
   FlexLayerAlignment,
@@ -32,6 +32,7 @@ import type {
 } from "WidgetProvider/constants";
 import { BlueprintOperationTypes } from "WidgetProvider/constants";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 import type { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
 import { getWidgetBluePrintUpdates } from "utils/WidgetBlueprintUtils";
 import { DynamicHeight } from "utils/WidgetFeatures";
@@ -47,6 +48,7 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
     return {
       name: "弹窗",
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.FEATRUE],
       needsMeta: true,
       isCanvas: true,
@@ -176,7 +178,12 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
                           {
                             widgetId: iconChild.widgetId,
                             propertyName: "onClick",
-                            propertyValue: `{{closeModal('${parent.widgetName}')}}`,
+                            propertyValue: `{{closeModal(${parent.widgetName}.name);}}`,
+                          },
+                          {
+                            widgetId: iconChild.widgetId,
+                            propertyName: "dynamicTriggerPathList",
+                            propertyValue: [{ key: "onClick" }],
                           },
                         ];
                       }
@@ -202,7 +209,12 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
                           {
                             widgetId: cancelBtnChild.widgetId,
                             propertyName: "onClick",
-                            propertyValue: `{{closeModal('${parent.widgetName}')}}`,
+                            propertyValue: `{{closeModal(${parent.widgetName}.name);}}`,
+                          },
+                          {
+                            widgetId: cancelBtnChild.widgetId,
+                            propertyName: "dynamicTriggerPathList",
+                            propertyValue: [{ key: "onClick" }],
                           },
                         ];
                       }
@@ -357,6 +369,22 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
   static getAutocompleteDefinitions(): AutocompletionDefinitions {
     return {
       isVisible: DefaultAutocompleteDefinitions.isVisible,
+      name: {
+        "!type": "string",
+        "!doc": "Returns the modal name",
+      },
+    };
+  }
+
+  static getDerivedPropertiesMap() {
+    return {
+      name: "{{this.widgetName}}",
+    };
+  }
+
+  static getSetterConfig(): SetterConfig {
+    return {
+      __setters: {},
     };
   }
 
@@ -482,6 +510,8 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
     }
   };
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   closeModal = (e: any) => {
     this.props.updateWidgetMetaProperty("isVisible", false);
     this.selectWidgetRequest(SelectionRequestType.Empty);

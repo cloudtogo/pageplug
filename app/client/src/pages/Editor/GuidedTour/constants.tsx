@@ -36,9 +36,9 @@ import {
   STEP_THREE_SUCCESS_TEXT,
   STEP_THREE_TITLE,
   STEP_TWO_TITLE,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
-import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+import { getAssetUrl } from "ee/utils/airgapHelpers";
 
 export const Classes = {
   GUIDED_TOUR_BORDER: "guided-tour-border",

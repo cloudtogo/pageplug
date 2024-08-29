@@ -1,8 +1,8 @@
 import equal from "fast-deep-equal/es6";
 import React from "react";
 
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
-import type { AppState } from "@appsmith/reducers";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
+import type { AppState } from "ee/reducers";
 import { checkContainersForAutoHeightAction } from "actions/autoHeightActions";
 import {
   GridDefaults,
@@ -30,14 +30,15 @@ import {
 import {
   createCanvasWidget,
   createLoadingWidget,
+  widgetErrorsFromStaticProps,
 } from "utils/widgetRenderUtils";
 import type { WidgetProps } from "./BaseWidget";
 import type BaseWidget from "./BaseWidget";
-import type { WidgetEntityConfig } from "@appsmith/entities/DataTree/types";
+import type { WidgetEntityConfig } from "ee/entities/DataTree/types";
 import { Positioning } from "layoutSystems/common/utils/constants";
 import { isAutoHeightEnabledForWidget } from "./WidgetUtils";
 import { CANVAS_DEFAULT_MIN_HEIGHT_PX } from "constants/AppConstants";
-import { getGoogleMapsApiKey } from "@appsmith/selectors/tenantSelectors";
+import { getGoogleMapsApiKey } from "ee/selectors/tenantSelectors";
 import ConfigTreeActions from "utils/configTree";
 import { getSelectedWidgetAncestry } from "../selectors/widgetSelectors";
 import { getWidgetMinMaxDimensionsInPixel } from "layoutSystems/autolayout/utils/flexWidgetUtils";
@@ -46,6 +47,12 @@ import { getFlattenedChildCanvasWidgets } from "selectors/flattenedChildCanvasSe
 import { LayoutSystemTypes } from "layoutSystems/types";
 import { getLayoutSystemType } from "selectors/layoutSystemSelectors";
 import { isWidgetSelectedForPropertyPane } from "selectors/propertyPaneSelectors";
+import WidgetFactory from "WidgetProvider/factory";
+import { getIsAnvilLayout } from "layoutSystems/anvil/integrations/selectors";
+import { WidgetProfiler } from "./BaseWidgetHOC/WidgetProfiler";
+import { getAppsmithConfigs } from "ee/configs";
+import { endSpan, startRootSpan } from "UITelemetry/generateTraces";
+const { newRelic } = getAppsmithConfigs();
 
 const WIDGETS_WITH_CHILD_WIDGETS = ["LIST_WIDGET", "FORM_WIDGET"];
 const WIDGETS_REQUIRING_SELECTED_ANCESTRY = ["MODAL_WIDGET", "TABS_WIDGET"];
@@ -63,7 +70,9 @@ function withWidgetProps(WrappedWidget: typeof BaseWidget) {
       widgetId,
     } = props;
 
+    const span = startRootSpan("withWidgetProps", { widgetType: type });
     const isPreviewMode = useSelector(combinedPreviewModeSelector);
+
     const canvasWidget = useSelector((state: AppState) =>
       getWidget(state, widgetId),
     );
@@ -98,6 +107,7 @@ function withWidgetProps(WrappedWidget: typeof BaseWidget) {
 
     const isMobile = useSelector(getIsAutoLayoutMobileBreakPoint);
     const layoutSystemType = useSelector(getLayoutSystemType);
+    const isAnvilLayout = useSelector(getIsAnvilLayout);
     const isAutoLayout = layoutSystemType === LayoutSystemTypes.AUTO;
 
     const configTree = ConfigTreeActions.getConfigTree();
@@ -220,6 +230,20 @@ function withWidgetProps(WrappedWidget: typeof BaseWidget) {
       widgetProps.isLoading = isLoading;
       widgetProps.childWidgets = childWidgets;
       widgetProps.flattenedChildCanvasWidgets = flattenedChildCanvasWidgets;
+
+      /*
+       * In Editor, Widgets can ask for error info to be passed to them
+       * so they can show them on the UI
+       */
+      const needsErrorInfo =
+        !isPreviewMode &&
+        renderMode === RenderModes.CANVAS &&
+        evaluatedWidget &&
+        !!WidgetFactory.getConfig(evaluatedWidget?.type)?.needsErrorInfo;
+
+      widgetProps.errors = needsErrorInfo
+        ? widgetErrorsFromStaticProps(evaluatedWidget)
+        : [];
     }
     //merging with original props
     widgetProps = {
@@ -232,7 +256,7 @@ function withWidgetProps(WrappedWidget: typeof BaseWidget) {
 
     // adding google maps api key to widget props (although meant for map widget only)
     widgetProps.googleMapsApiKey = googleMapsApiKey;
-
+    endSpan(span);
     // isVisible prop defines whether to render a detached widget
     if (
       widgetProps.detachFromLayout &&
@@ -257,7 +281,7 @@ function withWidgetProps(WrappedWidget: typeof BaseWidget) {
       !isPreviewMode;
 
     widgetProps.mainCanvasWidth = mainCanvasWidth;
-    if (layoutSystemType === LayoutSystemTypes.ANVIL) {
+    if (isAnvilLayout) {
       if (shouldCollapseWidgetInViewOrPreviewMode) {
         return null;
       }
@@ -336,7 +360,15 @@ function withWidgetProps(WrappedWidget: typeof BaseWidget) {
       }
     }
 
-    return <WrappedWidget {...widgetProps} />;
+    if (!newRelic.enableNewRelic) {
+      return <WrappedWidget {...widgetProps} />;
+    }
+
+    return (
+      <WidgetProfiler type={type} widgetId={widgetId}>
+        <WrappedWidget {...widgetProps} />
+      </WidgetProfiler>
+    );
   }
 
   return WrappedPropsComponent;

@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import type {
   CanvasWidgetsReduxState,
   FlattenedWidgetProps,
@@ -11,24 +11,15 @@ import type {
 } from "reducers/entityReducers/pageListReducer";
 import type { WidgetProps } from "widgets/BaseWidget";
 
-import type { Page } from "@appsmith/constants/ReduxActionConstants";
-import { ApplicationVersion } from "@appsmith/actions/applicationActions";
+import type { Page } from "ee/constants/ReduxActionConstants";
+import { ApplicationVersion } from "ee/actions/applicationActions";
 import type {
   OccupiedSpace,
   WidgetSpace,
 } from "constants/CanvasEditorConstants";
 import { PLACEHOLDER_APP_SLUG, PLACEHOLDER_PAGE_SLUG } from "constants/routes";
-import {
-  DefaultDimensionMap,
-  MAIN_CONTAINER_WIDGET_ID,
-  RenderModes,
-} from "constants/WidgetConstants";
+import { DefaultDimensionMap, RenderModes } from "constants/WidgetConstants";
 import { APP_MODE } from "entities/App";
-import type {
-  WidgetEntity,
-  WidgetEntityConfig,
-} from "@appsmith/entities/DataTree/types";
-import type { DataTree, ConfigTree } from "entities/DataTree/dataTreeTypes";
 import { find, sortBy } from "lodash";
 import {
   getDataTree,
@@ -38,31 +29,26 @@ import {
 import type { MainCanvasReduxState } from "reducers/uiReducers/mainCanvasReducer";
 
 import {
-  getActions,
+  getApiPaneSavingMap,
   getCanvasWidgets,
   getJSCollections,
-} from "@appsmith/selectors/entitiesSelector";
+} from "ee/selectors/entitiesSelector";
 import { checkIsDropTarget } from "WidgetProvider/factory/helpers";
-import {
-  buildChildWidgetTree,
-  createCanvasWidget,
-  createLoadingWidget,
-} from "utils/widgetRenderUtils";
-import type { ContainerWidgetProps } from "widgets/ContainerWidget/widget";
+import { buildChildWidgetTree } from "utils/widgetRenderUtils";
 import { LOCAL_STORAGE_KEYS } from "utils/localStorage";
 import type { CanvasWidgetStructure } from "WidgetProvider/constants";
 import { denormalize } from "utils/canvasStructureHelpers";
 import { isAutoHeightEnabledForWidget } from "widgets/WidgetUtils";
 import WidgetFactory from "WidgetProvider/factory";
-import { isAirgapped } from "@appsmith/utils/airgapHelpers";
-import { nestDSL } from "@shared/dsl";
+import { isAirgapped } from "ee/utils/airgapHelpers";
 import { getIsAnonymousDataPopupVisible } from "./onboardingSelectors";
 import { WDS_V2_WIDGET_MAP } from "widgets/wds/constants";
-import { selectFeatureFlagCheck } from "@appsmith/selectors/featureFlagsSelectors";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
+import { FEATURE_FLAG } from "ee/entities/FeatureFlag";
 import { LayoutSystemTypes } from "layoutSystems/types";
 import { getLayoutSystemType } from "./layoutSystemSelectors";
 import { protectedModeSelector } from "./gitSyncSelectors";
+import { getIsAnvilLayout } from "layoutSystems/anvil/integrations/selectors";
+import { getCurrentApplication } from "ee/selectors/applicationSelectors";
 
 const getIsDraggingOrResizing = (state: AppState) =>
   state.ui.widgetDragResize.isResizing || state.ui.widgetDragResize.isDragging;
@@ -89,33 +75,40 @@ export const getIsFetchingPage = (state: AppState) =>
 export const getLoadingError = (state: AppState) =>
   state.ui.editor.loadingStates.loadingError;
 
-export const getIsPageSaving = (state: AppState) => {
-  let areApisSaving = false;
-  let areJsObjectsSaving = false;
+export const getIsPageSaving = createSelector(
+  [
+    getApiPaneSavingMap,
+    (state: AppState) => state.ui.jsPane.isSaving,
+    (state: AppState) => state.ui.appTheming.isSaving,
+    (state: AppState) => state.ui.applications.isSavingNavigationSetting,
+    (state: AppState) => state.ui.editor.loadingStates.savingEntity,
+    (state: AppState) => state.ui.editor.loadingStates.saving,
+  ],
+  (
+    savingApis,
+    savingJSObjects,
+    isSavingAppTheme,
+    isSavingNavigationSetting,
+    isEditorSavingEntity,
+    isEditorSaving,
+  ) => {
+    const areApisSaving = Object.keys(savingApis).some(
+      (apiId) => savingApis[apiId],
+    );
+    const areJsObjectsSaving = Object.keys(savingJSObjects).some(
+      (collectionId) => savingJSObjects[collectionId],
+    );
 
-  const savingApis = state.ui.apiPane.isSaving;
-  const savingJSObjects = state.ui.jsPane.isSaving;
-  const isSavingAppTheme = state.ui.appTheming.isSaving;
-  const isSavingNavigationSetting =
-    state.ui.applications.isSavingNavigationSetting;
-
-  Object.keys(savingApis).forEach((apiId) => {
-    areApisSaving = savingApis[apiId] || areApisSaving;
-  });
-
-  Object.keys(savingJSObjects).forEach((collectionId) => {
-    areJsObjectsSaving = savingJSObjects[collectionId] || areJsObjectsSaving;
-  });
-
-  return (
-    state.ui.editor.loadingStates.saving ||
-    areApisSaving ||
-    areJsObjectsSaving ||
-    isSavingAppTheme ||
-    state.ui.editor.loadingStates.savingEntity ||
-    isSavingNavigationSetting
-  );
-};
+    return (
+      isEditorSavingEntity ||
+      areApisSaving ||
+      areJsObjectsSaving ||
+      isSavingAppTheme ||
+      isEditorSaving ||
+      isSavingNavigationSetting
+    );
+  },
+);
 
 export const snipingModeSelector = (state: AppState) =>
   state.ui.editor.isSnipingMode;
@@ -140,7 +133,7 @@ export const getIsPublishingApplication = (state: AppState) =>
 export const getPublishingError = (state: AppState) =>
   state.ui.editor.loadingStates.publishingError;
 
-export const getCurrentLayoutId = (state: AppState) =>
+export const getCurrentLayoutId = (state: AppState): string | undefined =>
   state.ui.editor.currentLayoutId;
 
 export const getPageList = (state: AppState) => state.entities.pageList.pages;
@@ -154,8 +147,16 @@ export const getPageById = (pageId: string) =>
     pages.find((page) => page.pageId === pageId),
   );
 
+export const getPageByBaseId = (basePageId: string) =>
+  createSelector(getPageList, (pages: Page[]) =>
+    pages.find((page) => page.basePageId === basePageId),
+  );
+
 export const getCurrentPageId = (state: AppState) =>
   state.entities.pageList.currentPageId;
+
+export const getCurrentBasePageId = (state: AppState) =>
+  state.entities.pageList.currentBasePageId;
 
 export const getCurrentPagePermissions = createSelector(
   getCurrentPageId,
@@ -196,12 +197,11 @@ export const selectPageSlugToIdMap = createSelector(getPageList, (pages) =>
   ),
 );
 
-export const getCurrentApplication = (state: AppState) =>
-  state.ui.applications.currentApplication;
-
 export const getCurrentApplicationId = (state: AppState) =>
   state.entities.pageList.applicationId || "";
-/** this is set during init can assume it to be defined */
+
+export const getCurrentBaseApplicationId = (state: AppState) =>
+  state.entities.pageList.baseApplicationId || "";
 
 export const selectCurrentApplicationSlug = (state: AppState) =>
   state.ui.applications.currentApplication?.slug || PLACEHOLDER_APP_SLUG;
@@ -236,6 +236,9 @@ export const getRenderMode = (state: AppState) => {
     ? RenderModes.CANVAS
     : RenderModes.PAGE;
 };
+
+export const getIsViewMode = (state: AppState) =>
+  state.entities.app.mode === APP_MODE.PUBLISHED;
 
 export const getViewModePageList = createSelector(
   getPageList,
@@ -355,30 +358,24 @@ export const isHiddenPage = createSelector(
 
 export const getWidgetCards = createSelector(
   getIsAutoLayout,
-  (_state: any) => selectFeatureFlagCheck(_state, FEATURE_FLAG.ab_wds_enabled),
-  isMobileLayout,
-  (isAutoLayout: boolean, isWDSEnabled: boolean, isTaroWds: boolean) => {
+  getIsAnvilLayout,
+  (isAutoLayout, isAnvilLayout) => {
     const widgetConfigs = WidgetFactory.getConfigs();
-    const cards = Object.values(widgetConfigs).filter((config) => {
-      // if wds_vs is not enabled, hide all wds_v2 widgets
-      if (
-        Object.values(WDS_V2_WIDGET_MAP).includes(config.type) &&
-        isWDSEnabled === false
-      ) {
-        return false;
+    const widgetConfigsArray = Object.values(widgetConfigs);
+    const layoutSystemBasesWidgets = widgetConfigsArray.filter((config) => {
+      const isAnvilWidget = Object.values(WDS_V2_WIDGET_MAP).includes(
+        config.type,
+      );
+      if (isAnvilLayout) {
+        return isAnvilWidget;
       }
-
+      return !isAnvilWidget;
+    });
+    const cards = layoutSystemBasesWidgets.filter((config) => {
       if (isAirgapped()) {
         return config.widgetName !== "Map" && !config.hideCard;
       }
-
-      // if wds is enabled, only show the wds_v2 widgets
-      if (isWDSEnabled === true) {
-        return Object.values(WDS_V2_WIDGET_MAP).includes(config.type);
-      }
-      return (
-        !config.hideCard && (isTaroWds ? config.isMobile : !config.isMobile)
-      );
+      return !config.hideCard;
     });
 
     const _cards: any = cards.map((config) => {
@@ -402,6 +399,10 @@ export const getWidgetCards = createSelector(
         columns = autoLayoutConfig?.defaults?.columns ?? columns;
       }
 
+      const { IconCmp, ThumbnailCmp } = WidgetFactory.getWidgetMethods(
+        config.type,
+      );
+
       return {
         key,
         type,
@@ -412,6 +413,8 @@ export const getWidgetCards = createSelector(
         displayName,
         icon: iconSVG,
         thumbnail: thumbnailSVG,
+        IconCmp,
+        ThumbnailCmp,
         searchTags,
         tags,
         isDynamicHeight: isAutoHeightEnabledForWidget(config as WidgetProps),
@@ -445,11 +448,15 @@ export const getDimensionMap = createSelector(
   },
 );
 const addWidgetDimensionProxy = (
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dimensionMap: any,
   widgets: CanvasWidgetsReduxState,
 ) => {
   const dimensions = Object.keys(dimensionMap);
   const proxyHandler = {
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     get(target: any, prop: any) {
       if (dimensions.includes(prop)) {
         const actualMap = dimensionMap[prop];
@@ -475,6 +482,8 @@ export const getWidgetsForBreakpoint = createSelector(
   getIsAutoLayoutMobileBreakPoint,
   getWidgets,
   (
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     dimensionMap: any,
     isAutoLayoutMobileBreakPoint: boolean,
     widgets: CanvasWidgetsReduxState,
@@ -495,79 +504,6 @@ export const computeMainContainerWidget = (
   rightColumn: mainCanvasProps.width,
   minHeight: mainCanvasProps.height,
 });
-
-export const getMainContainer = (
-  canvasWidgets: CanvasWidgetsReduxState,
-  evaluatedDataTree: DataTree,
-  configTree: ConfigTree,
-  mainCanvasProps: MainCanvasReduxState,
-) => {
-  const canvasWidget = computeMainContainerWidget(
-    canvasWidgets[MAIN_CONTAINER_WIDGET_ID],
-    mainCanvasProps,
-  );
-
-  //TODO: Need to verify why `evaluatedDataTree` is required here.
-  const evaluatedWidget = find(evaluatedDataTree, {
-    widgetId: MAIN_CONTAINER_WIDGET_ID,
-  }) as WidgetEntity;
-  const evaluatedWidgetConfig = find(configTree, {
-    widgetId: MAIN_CONTAINER_WIDGET_ID,
-  }) as WidgetEntityConfig;
-  return createCanvasWidget(
-    canvasWidget,
-    evaluatedWidget,
-    evaluatedWidgetConfig,
-  );
-};
-
-export const getCanvasWidgetDsl = createSelector(
-  getCanvasWidgets,
-  getDataTree,
-  getConfigTree,
-  getLoadingEntities,
-  getMainCanvasProps,
-  (
-    canvasWidgets: CanvasWidgetsReduxState,
-    evaluatedDataTree,
-    configTree,
-    loadingEntities,
-    mainCanvasProps,
-  ): ContainerWidgetProps<WidgetProps> => {
-    const widgets: Record<string, WidgetEntity> = {
-      [MAIN_CONTAINER_WIDGET_ID]: getMainContainer(
-        canvasWidgets,
-        evaluatedDataTree,
-        configTree,
-        mainCanvasProps,
-      ),
-    };
-    Object.keys(canvasWidgets)
-      .filter((each) => each !== MAIN_CONTAINER_WIDGET_ID)
-      .forEach((widgetKey) => {
-        const canvasWidget = canvasWidgets[widgetKey];
-        const evaluatedWidget = find(evaluatedDataTree, {
-          widgetId: widgetKey,
-        }) as WidgetEntity;
-        const evaluatedWidgetConfig = find(configTree, {
-          widgetId: widgetKey,
-        });
-        if (evaluatedWidget) {
-          widgets[widgetKey] = createCanvasWidget(
-            canvasWidget,
-            evaluatedWidget,
-            evaluatedWidgetConfig,
-          );
-        } else {
-          widgets[widgetKey] = createLoadingWidget(canvasWidget);
-        }
-        widgets[widgetKey].isLoading = loadingEntities.has(
-          canvasWidget.widgetName,
-        );
-      });
-    return nestDSL(widgets);
-  },
-);
 
 export const getChildWidgets = createSelector(
   [
@@ -947,22 +883,12 @@ export function getContainerWidgetSpacesSelectorWhileMoving(
   );
 }
 
-export const getActionById = createSelector(
-  [getActions, (state: any, props: any) => props.match.params.apiId],
-  (actions, id) => {
-    const action = actions.find((action) => action.config.id === id);
-    if (action) {
-      return action.config;
-    } else {
-      return undefined;
-    }
-  },
-);
-
 export const getJSCollectionDataById = createSelector(
   [getJSCollections, (state: AppState, collectionId: string) => collectionId],
-  (jsActions, id) => {
-    const action = jsActions.find((action) => action.config.id === id);
+  (jsActions, collectionId) => {
+    const action = jsActions.find(
+      (action) => action.config.id === collectionId,
+    );
     if (action) {
       return action;
     } else {
@@ -971,15 +897,19 @@ export const getJSCollectionDataById = createSelector(
   },
 );
 
-export const getJSCollectionById = createSelector(
+export const getJSCollectionDataByBaseId = createSelector(
   [
     getJSCollections,
-    (state: any, props: any) => props.match.params.collectionId,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (state: AppState, baseCollectionId: any) => baseCollectionId,
   ],
-  (jsActions, id) => {
-    const action = jsActions.find((action) => action.config.id === id);
+  (jsActions, baseCollectionId) => {
+    const action = jsActions.find(
+      (action) => action.config.baseId === baseCollectionId,
+    );
     if (action) {
-      return action.config;
+      return action;
     } else {
       return undefined;
     }
@@ -998,6 +928,20 @@ export const getApplicationLastDeployedAt = (state: AppState) =>
 export const previewModeSelector = (state: AppState) => {
   return state.ui.editor.isPreviewMode;
 };
+
+/**
+ * This selector is used to identify if the application is in an edit-only state,
+ * meaning it is in the canvas render mode but not in preview or protected mode.
+ * This is useful for enabling or disabling certain UI elements or functionalities
+ * that are only applicable in this specific mode.
+ */
+export const isEditOnlyModeSelector = createSelector(
+  getRenderMode,
+  previewModeSelector,
+  protectedModeSelector,
+  (renderMode, isPreviewMode, isProtectedMode) =>
+    renderMode === RenderModes.CANVAS && !(isPreviewMode || isProtectedMode),
+);
 
 /**
  * returns the `state.ui.editor.zoomLevel`

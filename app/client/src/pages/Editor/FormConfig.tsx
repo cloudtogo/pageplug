@@ -16,19 +16,20 @@ import { ToggleComponentToJsonHandler } from "components/editorComponents/form/T
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { identifyEntityFromPath } from "navigation/FocusEntity";
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import {
   getPropertyControlFocusElement,
   shouldFocusOnPropertyControl,
 } from "utils/editorContextUtils";
 import { getIsInputFieldFocused } from "selectors/editorContextSelectors";
 import { setFocusableInputField } from "actions/editorContextActions";
-import { Icon, Tooltip } from "design-system";
+import { Icon, Tooltip } from "@appsmith/ads";
 
 const FlexWrapper = styled.div`
   display: flex;
   width: fit-content;
   margin-right: 5px;
+  min-height: 21px;
 
   & .t--js-toggle {
     margin-bottom: 0px;

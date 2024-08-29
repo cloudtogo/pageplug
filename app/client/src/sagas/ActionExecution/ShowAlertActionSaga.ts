@@ -4,7 +4,7 @@ import { getType, Types } from "utils/TypeHelpers";
 import { select } from "redux-saga/effects";
 import { isMobileLayout } from "selectors/applicationSelectors";
 import Taro from "@tarojs/taro";
-import type { ToastKind } from "design-system";
+import type { ToastKind } from "@appsmith/ads";
 import type { TShowAlertDescription } from "workers/Evaluation/fns/showAlert";
 import { call } from "redux-saga/effects";
 import showToast from "sagas/ToastSagas";

@@ -11,7 +11,7 @@ import {
 } from "layoutSystems/common/utils/constants";
 import { APP_MODE } from "entities/App";
 import { useSelector } from "react-redux";
-import { getAppMode } from "@appsmith/selectors/entitiesSelector";
+import { getAppMode } from "ee/selectors/entitiesSelector";
 import AutoLayoutLayer from "./AutoLayoutLayer";
 import { FLEXBOX_PADDING, GridDefaults } from "constants/WidgetConstants";
 import type {
@@ -54,6 +54,8 @@ function FlexBoxComponent(props: FlexBoxProps) {
     /**
      * Wrap children of a Vertical Stack in a flex layer.
      */
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const map: { [key: string]: any } = {};
     if (isArray(props.children)) {
       for (const child of props.children) {
@@ -61,11 +63,15 @@ function FlexBoxComponent(props: FlexBoxProps) {
       }
     }
 
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const layers: any[] = processLayers(map);
 
     return layers;
   };
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function processLayers(map: { [key: string]: any }) {
     const layers = [];
     for (const [index, layer] of props.flexLayers.entries()) {
@@ -76,6 +82,8 @@ function FlexBoxComponent(props: FlexBoxProps) {
 
   function processIndividualLayer(
     layer: FlexLayer,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     map: { [key: string]: any },
     index: number,
   ) {

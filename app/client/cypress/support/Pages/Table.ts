@@ -36,9 +36,8 @@ export class Table {
   private propPane = ObjectsRegistry.PropertyPane;
   private assertHelper = ObjectsRegistry.AssertHelper;
 
-  private _tableWrap = "//div[@class='tableWrap']";
-  private _tableHeader =
-    this._tableWrap + "//div[@class='thead']//div[@class='tr'][1]";
+  private _tableWrap = "//div[contains(@class,'tableWrap')]";
+  private _tableHeader = ".thead div[role=columnheader]";
   private _columnHeader = (columnName: string) =>
     this._tableWrap +
     "//div[@class='thead']//div[@class='tr'][1]//div[@role='columnheader']//span[text()='" +
@@ -257,7 +256,7 @@ export class Table {
   }
 
   public AssertTableHeaderOrder(expectedOrder: string) {
-    cy.xpath(this._tableHeader)
+    cy.get(this._tableHeader)
       .invoke("text")
       .then((x) => {
         expect(x).to.eq(expectedOrder);
@@ -586,6 +585,20 @@ export class Table {
     cy.get(this._defaultColName).type(colId, { force: true });
   }
 
+  public toggleColumnEditableViaColSettingsPane(
+    columnName: string,
+    tableVersion: "v1" | "v2" = "v2",
+    editable = true,
+    goBackToPropertyPane = true,
+  ) {
+    this.EditColumn(columnName, tableVersion);
+    this.propPane.TogglePropertyState(
+      "Editable",
+      editable === true ? "On" : "Off",
+    );
+    goBackToPropertyPane && this.propPane.NavigateBackToPropertyPane();
+  }
+
   public EditColumn(columnName: string, tableVersion: "v1" | "v2") {
     const colSettings =
       tableVersion == "v1"
@@ -653,12 +666,11 @@ export class Table {
     toSaveNewValue = false,
     force = false,
   ) {
-    this.agHelper.UpdateInputValue(
+    this.agHelper.ClearNType(
       this._tableRow(rowIndex, colIndex, "v2") +
         " " +
         this._editCellEditorInput,
       newValue.toString(),
-      force,
     );
     toSaveNewValue &&
       this.agHelper.TypeText(this._editCellEditorInput, "{enter}", {
@@ -814,5 +826,17 @@ export class Table {
     this.agHelper
       .GetText(this._listActivePage(version), "text")
       .then(($newPageNo) => expect(Number($newPageNo)).to.eq(pageNumber));
+  }
+
+  public DiscardEditRow(row: number, col: number, verify = true) {
+    /*
+     * Why not get it with text `Discard`?
+     * We've tried using selector: `[data-colindex="${col}"][data-rowindex="${row}"] button span:contains('Discard')` and this dosn't work, making this spec fail.
+     */
+    const selector = `${this._tableRow(row, col, "v2")} button`;
+
+    cy.get(selector).eq(1).should("be.enabled");
+    this.agHelper.GetHoverNClick(selector, 1, true);
+    verify && cy.get(selector).eq(1).should("be.disabled");
   }
 }

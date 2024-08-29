@@ -88,8 +88,8 @@ describe(
       cy.wait("@getConsolidatedData").then((intercept2) => {
         const { application, pages } = intercept2.response.body.data.pages.data;
         const defaultPage = pages.find((p) => p.isDefault);
-        legacyPathname = `/applications/${application.id}/pages/${defaultPage.id}`;
-        newPathname = `/app/${application.slug}/${defaultPage.slug}-${defaultPage.id}`;
+        legacyPathname = `/applications/${application.baseId}/pages/${defaultPage.baseId}`;
+        newPathname = `/app/${application.slug}/${defaultPage.slug}-${defaultPage.baseId}`;
       });
 
       cy.location().should((location) => {
@@ -121,28 +121,5 @@ describe(
         expect(location.pathname).includes(legacyPathname);
       });
     });
-
-    //   // _.gitSync.DeleteTestGithubRepo(repoName);
-    //   // //cy.deleteTestGithubRepo(repoName);
-    //   // // TODO remove when app deletion with conflicts is fixed
-    //   // cy.get(homePage.homeIcon).click({ force: true });
-    //   // cy.get(homePage.createNew)
-    //   //   .first()
-    //   //   .click({ force: true });
-    //   // cy.wait("@createNewApplication").should(
-    //   //   "have.nested.property",
-    //   //   "response.body.responseMeta.status",
-    //   //   201,
-    //   // );
-    //   // cy.get("#loading").should("not.exist");
-    //   // cy.wait(2000);
-    //   // cy.AppSetupForRename();
-    //   // cy.get(homePage.applicationName).type(repoName + "{enter}");
-    //   // cy.wait("@updateApplication").should(
-    //   //   "have.nested.property",
-    //   //   "response.body.responseMeta.status",
-    //   //   200,
-    //   // );
-    // });
   },
 );

@@ -6,11 +6,11 @@ import { View } from "@tarojs/components";
 import { ValidationTypes } from "constants/WidgetValidation";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
 import { generateClassName } from "utils/generators";
 import { selectWidgetInitAction } from "actions/widgetSelectionActions";
 import { previewModeSelector } from "selectors/editorSelectors";
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import IconSVG from "../icon.svg";
 import { WIDGET_TAGS } from "constants/WidgetConstants";
 

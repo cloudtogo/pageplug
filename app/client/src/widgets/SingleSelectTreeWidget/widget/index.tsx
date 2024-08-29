@@ -31,6 +31,7 @@ import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
 import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
 import { DynamicHeight } from "utils/WidgetFeatures";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 
 import { WIDGET_TAGS, layoutConfigurations } from "constants/WidgetConstants";
 
@@ -60,6 +61,7 @@ class SingleSelectTreeWidget extends BaseWidget<
       name: "树形单选",
       searchTags: ["dropdown", "select", "tree", "single select"],
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
     };
@@ -636,6 +638,8 @@ class SingleSelectTreeWidget extends BaseWidget<
     };
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       selectedOption: undefined,

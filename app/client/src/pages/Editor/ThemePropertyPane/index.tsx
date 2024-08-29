@@ -10,6 +10,9 @@ import {
   getAppThemingStack,
 } from "selectors/appThemingSelectors";
 import { useSelector } from "react-redux";
+import BetaCard from "components/editorComponents/BetaCard";
+import { SectionTitle } from "../AppSettingsPane/AppSettings";
+import { THEME_SETTINGS_SECTION_CONTENT_HEADER } from "ee/constants/messages";
 
 export function ThemePropertyPane() {
   const themingStack = useSelector(getAppThemingStack);
@@ -34,7 +37,15 @@ export function ThemePropertyPane() {
     }
   }, [themingMode]);
 
-  return <div className="relative">{propertyPane}</div>;
+  return (
+    <>
+      <SectionTitle className="flex items-center gap-2 px-2">
+        {THEME_SETTINGS_SECTION_CONTENT_HEADER()}
+        <BetaCard />
+      </SectionTitle>
+      <div className="relative">{propertyPane}</div>
+    </>
+  );
 }
 
 ThemePropertyPane.displayName = "ThemePropertyPane";

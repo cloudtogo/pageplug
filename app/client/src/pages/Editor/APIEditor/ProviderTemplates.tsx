@@ -4,15 +4,15 @@ import { Icon, Collapse } from "@blueprintjs/core";
 import type { RouteComponentProps } from "react-router-dom";
 import styled from "styled-components";
 import ReactJson from "react-json-view";
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import Button from "components/editorComponents/Button";
 import type { ProviderViewerRouteParams } from "constants/routes";
 import {
   getProviderTemplates,
   getProvidersTemplatesLoadingState,
-} from "@appsmith/selectors/applicationSelectors";
+} from "ee/selectors/applicationSelectors";
 import CenteredWrapper from "components/designSystems/appsmith/CenteredWrapper";
-import type { ActionDataState } from "@appsmith/reducers/entityReducers/actionsReducer";
+import type { ActionDataState } from "ee/reducers/entityReducers/actionsReducer";
 import type { ProviderTemplateArray } from "constants/providerConstants";
 import { DEFAULT_TEMPLATE_TYPE } from "constants/providerConstants";
 import type { AddApiToPageRequest } from "api/ProvidersApi";
@@ -29,11 +29,11 @@ import { getDuplicateName } from "utils/AppsmithUtils";
 import { INTEGRATION_TABS } from "constants/routes";
 import Spinner from "components/editorComponents/Spinner";
 import { getInitialsAndColorCode } from "utils/AppsmithUtils";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 import { getAppCardColorPalette } from "selectors/themeSelectors";
 import { getCurrentApplicationId } from "selectors/editorSelectors";
-import { integrationEditorURL } from "@appsmith/RouteBuilder";
-import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+import { integrationEditorURL } from "ee/RouteBuilder";
+import { getAssetUrl } from "ee/utils/airgapHelpers";
 
 const TEMPLATES_TOP_SECTION_HEIGHT = "83px";
 

@@ -180,6 +180,7 @@ export const WIDGET_DSL_STRUCTURE_PROPS = {
   topRow: true,
   type: true,
   widgetId: true,
+  layout: true,
 };
 
 export type TextSize = keyof typeof TextSizes;
@@ -238,13 +239,13 @@ export const WIDGET_TAGS = {
   FEATRUE: "功能类",
   // 分类
   SUGGESTED_WIDGETS: "Suggested",
-  BUILDING_BLOCKS: "Building Blocks",
   LAYOUT: "Layout",
   MEDIA: "Media",
   TOGGLES: "Toggles",
   SLIDERS: "Sliders",
   CONTENT: "Content",
   EXTERNAL: "External",
+  BUILDING_BLOCKS: "Building Blocks",
 } as const;
 
 export type WidgetTags = (typeof WIDGET_TAGS)[keyof typeof WIDGET_TAGS];
@@ -260,16 +261,25 @@ export const initialEntityCountForExplorerTag: Partial<
 
 export const SUGGESTED_WIDGETS_ORDER: Record<WidgetType, number> = {
   TABLE_WIDGET_V2: 1,
-  JSON_FORM_WIDGET: 2,
-  INPUT_WIDGET_V2: 3,
-  TEXT_WIDGET: 4,
-  SELECT_WIDGET: 5,
-  LIST_WIDGET_V2: 6,
+  INPUT_WIDGET_V2: 2,
+  TEXT_WIDGET: 3,
+  SELECT_WIDGET: 4,
 };
 
 // Constant key to show walkthrough for a widget -> stores widget id
 export const WIDGET_ID_SHOW_WALKTHROUGH = "WIDGET_ID_SHOW_WALKTHROUGH";
 
-export const DEFAULT_ROWS_FOR_EXPLORER_BUILDING_BLOCKS = 30;
-export const DEFAULT_COLUMNS_FOR_EXPLORER_BUILDING_BLOCKS = 5;
+export const DEFAULT_ROWS_FOR_EXPLORER_BUILDING_BLOCKS = 60;
+export const DEFAULT_COLUMNS_FOR_EXPLORER_BUILDING_BLOCKS = 62;
+export const BUILDING_BLOCK_MIN_HORIZONTAL_LIMIT = 2000;
+export const BUILDING_BLOCK_MIN_VERTICAL_LIMIT = 800;
 export const BUILDING_BLOCK_EXPLORER_TYPE = "BUILDING_BLOCK";
+
+export type EitherMouseLocationORGridPosition =
+  | { mouseLocation: { x: number; y: number }; gridPosition?: never }
+  | { mouseLocation?: never; gridPosition: { top: number; left: number } };
+
+export type PasteWidgetReduxAction = {
+  groupWidgets: boolean;
+  existingWidgets?: unknown;
+} & EitherMouseLocationORGridPosition;

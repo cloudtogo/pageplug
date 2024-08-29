@@ -17,7 +17,7 @@ import {
   getVisiblePageList,
 } from "selectors/editorSelectors";
 import { getSelectedAppThemeProperties } from "selectors/appThemingSelectors";
-import { builderURL } from "@appsmith/RouteBuilder";
+import { builderURL } from "ee/RouteBuilder";
 // import IconSelect from "./IconSelect";
 import IconSelector from "./IconSelector";
 import { Button, Input, Form, message, Tree, Divider, Typography } from "antd";

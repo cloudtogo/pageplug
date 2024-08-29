@@ -15,7 +15,7 @@ describe(
   { tags: ["@tag.Binding"] },
   function () {
     beforeEach(() => {
-      cy.startRoutesForDatasource();
+      _.dataSources.StartDataSourceRoutes();
     });
 
     it("1. Create a query and populate response by choosing addWidget and validate in Table Widget & Bug 7413", () => {
@@ -40,7 +40,7 @@ describe(
         _.jsEditor.CreateJSObject("return Query1.data;");
         EditorNavigation.SelectEntityByName("Table1", EntityType.Widget);
         _.propPane.EnterJSContext("Table data", "{{JSObject1.myFun1()}}");
-        cy.isSelectRow(1);
+        _.table.SelectTableRow(1, 0, true, "v2");
         cy.readTableV2dataPublish("1", "0").then((tabData) => {
           let tabValue = tabData;
           cy.log("the value is" + tabValue);
@@ -85,7 +85,7 @@ describe(
             },
           ).then(() => cy.wait(500));
 
-          cy.isSelectRow(1);
+          _.table.SelectTableRow(1, 0, true, "v2");
           cy.readTableV2dataPublish("1", "0").then((tabData) => {
             let tabValue = tabData;
             cy.log("Value in public viewing: " + tabValue);

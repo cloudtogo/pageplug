@@ -1,10 +1,10 @@
-import type { AdminConfigType } from "@appsmith/pages/AdminSettings/config/types";
+import type { AdminConfigType } from "ee/pages/AdminSettings/config/types";
 import {
   CategoryType,
   SettingCategories,
   SettingSubtype,
   SettingTypes,
-} from "@appsmith/pages/AdminSettings/config/types";
+} from "ee/pages/AdminSettings/config/types";
 
 export const config: AdminConfigType = {
   icon: "settings-line",
@@ -15,11 +15,11 @@ export const config: AdminConfigType = {
   canSave: true,
   settings: [
     {
-      id: "APPSMITH_MONGODB_URI",
+      id: "APPSMITH_DB_URL",
       category: SettingCategories.ADVANCED,
       controlType: SettingTypes.TEXTINPUT,
       controlSubType: SettingSubtype.TEXT,
-      label: "MongoDB URI",
+      label: "Appsmith DB URL",
       subText:
         "PagePlug 内部使用的 MongoDB，你可以修改为外部 MongoDB 来满足集群化需求",
     },

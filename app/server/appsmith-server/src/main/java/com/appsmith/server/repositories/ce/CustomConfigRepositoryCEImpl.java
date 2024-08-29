@@ -6,19 +6,19 @@ import com.appsmith.server.domains.User;
 import com.appsmith.server.helpers.ce.bridge.Bridge;
 import com.appsmith.server.helpers.ce.bridge.BridgeQuery;
 import com.appsmith.server.repositories.BaseAppsmithRepositoryImpl;
-import com.appsmith.server.repositories.CacheableRepositoryHelper;
-import org.springframework.data.mongodb.core.ReactiveMongoOperations;
-import org.springframework.data.mongodb.core.convert.MongoConverter;
+import io.micrometer.observation.ObservationRegistry;
+import reactor.core.observability.micrometer.Micrometer;
 import reactor.core.publisher.Mono;
+
+import static com.appsmith.external.constants.spans.UserSpan.FETCH_ALL_PERMISSION_GROUPS_OF_USER_SPAN;
 
 public class CustomConfigRepositoryCEImpl extends BaseAppsmithRepositoryImpl<Config>
         implements CustomConfigRepositoryCE {
 
-    public CustomConfigRepositoryCEImpl(
-            ReactiveMongoOperations mongoOperations,
-            MongoConverter mongoConverter,
-            CacheableRepositoryHelper cacheableRepositoryHelper) {
-        super(mongoOperations, mongoConverter, cacheableRepositoryHelper);
+    private final ObservationRegistry observationRegistry;
+
+    public CustomConfigRepositoryCEImpl(ObservationRegistry observationRegistry) {
+        this.observationRegistry = observationRegistry;
     }
 
     @Override
@@ -29,10 +29,13 @@ public class CustomConfigRepositoryCEImpl extends BaseAppsmithRepositoryImpl<Con
 
     @Override
     public Mono<Config> findByNameAsUser(String name, User user, AclPermission permission) {
-        return getAllPermissionGroupsForUser(user).flatMap(permissionGroups -> queryBuilder()
-                .criteria(Bridge.equal(Config.Fields.name, name))
-                .permission(permission)
-                .permissionGroups(permissionGroups)
-                .one());
+        return getAllPermissionGroupsForUser(user)
+                .name(FETCH_ALL_PERMISSION_GROUPS_OF_USER_SPAN)
+                .tap(Micrometer.observation(observationRegistry))
+                .flatMap(permissionGroups -> queryBuilder()
+                        .criteria(Bridge.equal(Config.Fields.name, name))
+                        .permission(permission)
+                        .permissionGroups(permissionGroups)
+                        .one());
     }
 }

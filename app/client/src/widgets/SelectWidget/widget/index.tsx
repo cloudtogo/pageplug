@@ -53,7 +53,8 @@ import type {
 } from "WidgetProvider/constants";
 
 import IconSVG from "../icon.svg";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
+import ThumbnailSVG from "../thumbnail.svg";
+import { FEATURE_FLAG } from "ee/entities/FeatureFlag";
 import type { DynamicPath } from "utils/DynamicBindingUtils";
 
 class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
@@ -66,6 +67,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
     return {
       name: "下拉单选",
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
       searchTags: ["dropdown", "select", "options"],
@@ -109,6 +111,7 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
       labelTextSize: "0.875rem",
       responsiveBehavior: ResponsiveBehavior.Fill,
       minWidth: FILL_WIDGET_MIN_WIDTH,
+      dynamicPropertyPathList: [{ key: "sourceData" }],
     };
   }
 
@@ -767,6 +770,8 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
     };
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       value: undefined,
@@ -829,6 +834,8 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
     };
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   isStringOrNumber = (value: any): value is string | number =>
     isString(value) || isNumber(value);
 
@@ -893,14 +900,15 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
     if (!isNil(this.props.selectedOptionValue)) {
       isChanged = this.props.selectedOptionValue !== selectedOption.value;
     }
+    const { commitBatchMetaUpdates, pushBatchMetaUpdates } = this.props;
     if (isChanged) {
       if (!this.props.isDirty) {
-        this.props.updateWidgetMetaProperty("isDirty", true);
+        pushBatchMetaUpdates("isDirty", true);
       }
 
-      this.props.updateWidgetMetaProperty("label", selectedOption.label ?? "");
+      pushBatchMetaUpdates("label", selectedOption.label ?? "");
 
-      this.props.updateWidgetMetaProperty("value", selectedOption.value ?? "", {
+      pushBatchMetaUpdates("value", selectedOption.value ?? "", {
         triggerPropertyName: "onOptionChange",
         dynamicString: this.props.onOptionChange,
         event: {
@@ -911,8 +919,9 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
 
     // When Label changes but value doesnt change, Applies to serverside Filtering
     if (!isChanged && this.props.selectedOptionLabel !== selectedOption.label) {
-      this.props.updateWidgetMetaProperty("label", selectedOption.label ?? "");
+      pushBatchMetaUpdates("label", selectedOption.label ?? "");
     }
+    commitBatchMetaUpdates();
   };
 
   onFilterChange = (value: string) => {
@@ -965,8 +974,14 @@ export interface SelectWidgetProps extends WidgetProps {
   onOptionChange?: string;
   onDropdownOpen?: string;
   onDropdownClose?: string;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   defaultOptionValue?: any;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value?: any;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   label?: any;
   isRequired: boolean;
   isFilterable: boolean;

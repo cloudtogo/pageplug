@@ -6,7 +6,7 @@ import {
   StyledActionContainer,
   InputGroup,
 } from "components/propertyControls/StyledControls";
-import { Button, Checkbox } from "design-system";
+import { Button, Checkbox } from "@appsmith/ads";
 
 const ItemWrapper = styled.div`
   display: flex;
@@ -204,7 +204,7 @@ export function DraggableListCard(props: RenderComponentProps) {
             startIcon="settings-2-line"
           />
         )}
-        {showDelete && !isSeparator && (
+        {showDelete && (
           <Button
             className="t--delete-column-btn"
             isIconButton

@@ -5,11 +5,11 @@ import DynamicTextField from "components/editorComponents/form/fields/DynamicTex
 import FormRow from "components/editorComponents/FormRow";
 import { PaginationType } from "entities/Action";
 import RadioFieldGroup from "components/editorComponents/form/fields/RadioGroupField";
-import { Classes, Text, TextType } from "design-system-old";
-import { Button } from "design-system";
+import { Classes, Text, TextType } from "@appsmith/ads-old";
+import { Button } from "@appsmith/ads";
 import type { EditorTheme } from "components/editorComponents/CodeEditor/EditorConfig";
 import { CodeEditorBorder } from "components/editorComponents/CodeEditor/EditorConfig";
-import { GifPlayer } from "design-system-old";
+import { GifPlayer } from "@appsmith/ads-old";
 import thumbnail from "assets/icons/gifs/thumbnail.png";
 import configPagination from "assets/icons/gifs/config_pagination.gif";
 
@@ -49,11 +49,15 @@ const PaginationTypeView = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: ${(props) => props.theme.spaces[11]}px;
+  max-width: 100%;
 `;
 
 const PaginationSection = styled.div`
   display: flex;
   padding: var(--ads-v2-spaces-4) 0 0 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ads-v2-spaces-3);
 `;
 
 const Example = styled(Text)`
@@ -77,7 +81,7 @@ const BindingKey = styled.div`
 const GifContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 
   img {
     width: 320px;
@@ -209,6 +213,12 @@ export default function Pagination(props: PaginationProps) {
           ]}
         />
       </FormRow>
+      {props.paginationType !== PaginationType.NONE ? (
+        <GifContainer>
+          <GifPlayer gif={configPagination} thumbnail={thumbnail} />
+          <Text type={TextType.P3}>Configure table for pagination</Text>
+        </GifContainer>
+      ) : null}
     </PaginationSection>
   );
 }

@@ -1,53 +1,40 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import { List, Text } from "design-system";
+import { Flex, List, Text } from "@appsmith/ads";
 import { useSelector } from "react-redux";
 import {
-  getActions,
-  getCurrentPageId,
+  getDatasourceUsageCountForApp,
   getDatasources,
   getDatasourcesGroupedByPluginCategory,
   getPlugins,
-} from "@appsmith/selectors/entitiesSelector";
+} from "ee/selectors/entitiesSelector";
 import history from "utils/history";
-import {
-  datasourcesEditorIdURL,
-  integrationEditorURL,
-} from "@appsmith/RouteBuilder";
-import { getSelectedDatasourceId } from "@appsmith/navigation/FocusSelectors";
-import { countBy, keyBy } from "lodash";
+import { datasourcesEditorIdURL, integrationEditorURL } from "ee/RouteBuilder";
+import { getSelectedDatasourceId } from "ee/navigation/FocusSelectors";
+import { get, keyBy } from "lodash";
 import CreateDatasourcePopover from "./CreateDatasourcePopover";
 import { useLocation } from "react-router";
 import {
   createMessage,
   DATA_PANE_TITLE,
   DATASOURCE_LIST_BLANK_DESCRIPTION,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import PaneHeader from "./PaneHeader";
-import { useEditorType } from "@appsmith/hooks";
+import { useEditorType } from "ee/hooks";
 import { INTEGRATION_TABS } from "../../../../constants/routes";
-import type { AppState } from "@appsmith/reducers";
-import { getCurrentAppWorkspace } from "@appsmith/selectors/selectedWorkspaceSelectors";
+import type { AppState } from "ee/reducers";
+import { getCurrentAppWorkspace } from "ee/selectors/selectedWorkspaceSelectors";
 import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
-import { getHasCreateDatasourcePermission } from "@appsmith/utils/BusinessFeatures/permissionPageHelpers";
+import { FEATURE_FLAG } from "ee/entities/FeatureFlag";
+import { getHasCreateDatasourcePermission } from "ee/utils/BusinessFeatures/permissionPageHelpers";
 import { EmptyState } from "../EditorPane/components/EmptyState";
-import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
-
-const PaneContainer = styled.div`
-  width: 300px;
-`;
+import { getAssetUrl } from "ee/utils/airgapHelpers";
+import { getCurrentBasePageId } from "selectors/editorSelectors";
 
 const PaneBody = styled.div`
-  padding: 12px;
+  padding: var(--ads-v2-spaces-3) 0;
   height: calc(100vh - 120px);
   overflow-y: scroll;
-`;
-
-const SubListContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
 `;
 
 const DatasourceIcon = styled.img`
@@ -60,9 +47,16 @@ const StyledList = styled(List)`
   gap: 0;
 `;
 
-const DataSidePane = () => {
+interface DataSidePaneProps {
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  dsUsageSelector?: (...args: any[]) => Record<string, string>;
+}
+
+const DataSidePane = (props: DataSidePaneProps) => {
+  const { dsUsageSelector = getDatasourceUsageCountForApp } = props;
   const editorType = useEditorType(history.location.pathname);
-  const pageId = useSelector(getCurrentPageId) as string;
+  const basePageId = useSelector(getCurrentBasePageId) as string;
   const [currentSelectedDatasource, setCurrentSelectedDatasource] = useState<
     string | undefined
   >("");
@@ -70,8 +64,7 @@ const DataSidePane = () => {
   const groupedDatasources = useSelector(getDatasourcesGroupedByPluginCategory);
   const plugins = useSelector(getPlugins);
   const groupedPlugins = keyBy(plugins, "id");
-  const actions = useSelector(getActions);
-  const actionCount = countBy(actions, "config.datasource.id");
+  const dsUsageMap = useSelector((state) => dsUsageSelector(state, editorType));
   const goToDatasource = useCallback((id: string) => {
     history.push(datasourcesEditorIdURL({ datasourceId: id }));
   }, []);
@@ -95,13 +88,18 @@ const DataSidePane = () => {
   const addButtonClickHandler = () =>
     history.push(
       integrationEditorURL({
-        pageId: pageId,
+        basePageId,
         selectedTab: INTEGRATION_TABS.NEW,
       }),
     );
 
   return (
-    <PaneContainer>
+    <Flex
+      borderRight="1px solid var(--ads-v2-color-border)"
+      flexDirection="column"
+      height="100%"
+      width="300px"
+    >
       <PaneHeader
         rightIcon={
           canCreateDatasource && datasources.length !== 0 ? (
@@ -120,32 +118,44 @@ const DataSidePane = () => {
             onClick={canCreateDatasource ? addButtonClickHandler : undefined}
           />
         ) : null}
-        {Object.entries(groupedDatasources).map(([key, value]) => (
-          <SubListContainer key={key}>
-            <Text kind="heading-xs">{key}</Text>
-            <StyledList
-              items={value.map((data) => ({
-                className: "t--datasource",
-                title: data.name,
-                onClick: () => goToDatasource(data.id),
-                description: `${
-                  actionCount[data.id] || "No"
-                } queries in this ${editorType}`,
-                descriptionType: "block",
-                isSelected: currentSelectedDatasource === data.id,
-                startIcon: (
-                  <DatasourceIcon
-                    src={getAssetUrl(
-                      groupedPlugins[data.pluginId].iconLocation,
-                    )}
-                  />
-                ),
-              }))}
-            />
-          </SubListContainer>
-        ))}
+        <Flex
+          flexDirection={"column"}
+          gap="spaces-4"
+          overflowY="auto"
+          px="spaces-3"
+        >
+          {Object.entries(groupedDatasources).map(([key, value]) => (
+            <Flex flexDirection={"column"} key={key}>
+              <Flex px="spaces-3" py="spaces-1">
+                <Text
+                  className="overflow-hidden overflow-ellipsis whitespace-nowrap"
+                  kind="body-s"
+                >
+                  {key}
+                </Text>
+              </Flex>
+              <StyledList
+                items={value.map((data) => ({
+                  className: "t--datasource",
+                  title: data.name,
+                  onClick: () => goToDatasource(data.id),
+                  description: get(dsUsageMap, data.id, ""),
+                  descriptionType: "block",
+                  isSelected: currentSelectedDatasource === data.id,
+                  startIcon: (
+                    <DatasourceIcon
+                      src={getAssetUrl(
+                        groupedPlugins[data.pluginId].iconLocation,
+                      )}
+                    />
+                  ),
+                }))}
+              />
+            </Flex>
+          ))}
+        </Flex>
       </PaneBody>
-    </PaneContainer>
+    </Flex>
   );
 };
 

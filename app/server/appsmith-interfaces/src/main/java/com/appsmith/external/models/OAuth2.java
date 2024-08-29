@@ -5,8 +5,12 @@ import com.appsmith.external.annotations.encryption.Encrypted;
 import com.appsmith.external.constants.Authentication;
 import com.appsmith.external.exceptions.pluginExceptions.AppsmithPluginError;
 import com.appsmith.external.exceptions.pluginExceptions.AppsmithPluginException;
+import com.appsmith.external.views.FromRequest;
+import com.appsmith.external.views.Views;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,6 +30,7 @@ import java.util.stream.Collectors;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @DocumentType(Authentication.OAUTH2)
 public class OAuth2 extends AuthenticationDTO {
 
@@ -41,6 +46,7 @@ public class OAuth2 extends AuthenticationDTO {
         BODY
     }
 
+    @JsonView({Views.Public.class, FromRequest.class})
     Type grantType;
 
     // Send tokens as query params if false
@@ -49,32 +55,40 @@ public class OAuth2 extends AuthenticationDTO {
     // Send auth details in body if false
     Boolean isAuthorizationHeader = false;
 
+    @JsonView({Views.Public.class, FromRequest.class})
     String clientId;
 
-    @Encrypted @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Encrypted @JsonView(FromRequest.class)
     String clientSecret;
 
+    @JsonView({Views.Public.class, FromRequest.class})
     String authorizationUrl;
 
     String expiresIn;
 
+    @JsonView({Views.Public.class, FromRequest.class})
     String accessTokenUrl;
 
     @Transient
+    @JsonView({Views.Public.class, FromRequest.class})
     String scopeString;
 
+    @JsonView({Views.Public.class, FromRequest.class})
     Set<String> scope;
 
     Boolean sendScopeWithRefreshToken;
 
     RefreshTokenClientCredentialsLocation refreshTokenClientCredentialsLocation;
 
+    @JsonView({Views.Public.class, FromRequest.class})
     String headerPrefix;
 
     Set<Property> customTokenParameters;
 
+    @JsonView({Views.Public.class, FromRequest.class})
     String audience;
 
+    @JsonView({Views.Public.class, FromRequest.class})
     String resource;
 
     boolean useSelfSignedCert = false;

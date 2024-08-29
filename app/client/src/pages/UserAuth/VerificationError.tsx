@@ -1,20 +1,19 @@
 import React, { useEffect } from "react";
 import Container from "./Container";
-import { Button, Callout, Link, Text } from "design-system";
+import { Button, Callout, Icon, Link, Text } from "@appsmith/ads";
 import { AUTH_LOGIN_URL } from "constants/routes";
 import {
   createMessage,
   DEFAULT_ERROR_MESSAGE,
-  FORGOT_PASSWORD_PAGE_LOGIN_LINK,
   PAGE_CLIENT_ERROR_DESCRIPTION,
   VERIFY_ERROR_ALREADY_VERIFIED_TITLE,
   VERIFY_ERROR_EXPIRED_TITLE,
   VERIFY_ERROR_MISMATCH_TITLE,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import { useResendEmailVerification } from "./helpers";
 import type { RouteComponentProps } from "react-router-dom";
 import styled from "styled-components";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 
 const Body = styled.div`
   display: flex;
@@ -97,14 +96,16 @@ const VerificationError = (
     return (
       <Container
         footer={
-          <div className="px-2 py-4 flex align-center justify-center text-base text-center text-[color:var(--ads-v2\-color-fg)] text-[14px]">
+          <div className="px-2 py-4 flex items-center justify-center text-base text-center text-[color:var(--ads-v2\-color-fg)] text-[14px]">
+            <Icon name="arrow-left-line" size="md" />
+            &nbsp; Back to &nbsp;
             <Link
-              className="pl-[var(--ads-v2\-spaces-3)]"
+              className="text-sm justify-center pl-[var(--ads-v2\-spaces-3)]"
               kind="primary"
               target="_self"
               to={AUTH_LOGIN_URL}
             >
-              {createMessage(FORGOT_PASSWORD_PAGE_LOGIN_LINK)}
+              Sign in
             </Link>
           </div>
         }

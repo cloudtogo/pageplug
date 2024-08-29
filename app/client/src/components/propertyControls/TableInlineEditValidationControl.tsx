@@ -1,4 +1,5 @@
 import React from "react";
+import type { ColumnProperties } from "widgets/TableWidgetV2/component/Constants";
 import type { ControlProps } from "./BaseControl";
 import BaseControl from "./BaseControl";
 import { StyledDynamicInput } from "./StyledControls";
@@ -22,7 +23,7 @@ import {
 import {
   createMessage,
   TABLE_WIDGET_VALIDATION_ASSIST_PROMPT,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import { bindingHintHelper } from "components/editorComponents/CodeEditor/hintHelpers";
 import { slashCommandHintHelper } from "components/editorComponents/CodeEditor/commandsHelper";
 
@@ -53,6 +54,8 @@ interface InputTextProp {
   label: string;
   value: string;
   onChange: (event: React.ChangeEvent<HTMLTextAreaElement> | string) => void;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   evaluatedValue?: any;
   expected?: CodeEditorExpected;
   placeholder?: string;
@@ -108,7 +111,15 @@ const getBindingSuffix = (tableId: string) => {
   return `
     ))
     (
-      ${tableId}.isAddRowInProgress
+      ${tableId}.isAddRowInProgress,
+      ${tableId}.isAddRowInProgress ? -1 : ${tableId}.editableCell.index,
+      ${tableId}.isAddRowInProgress ? ${tableId}.newRow : (${tableId}.processedTableData[${tableId}.editableCell.${ORIGINAL_INDEX_KEY}] ||
+        Object.keys(${tableId}.processedTableData[0])
+          .filter(key => ["${ORIGINAL_INDEX_KEY}", "${PRIMARY_COLUMN_KEY_VALUE}"].indexOf(key) === -1)
+          .reduce((prev, curr) => {
+            prev[curr] = "";
+            return prev;
+          }, {}))
     )
   }}
   `;
@@ -130,6 +141,16 @@ class TableInlineEditValidationControl extends BaseControl<TableInlineEditValida
       propertyValue && isDynamicValue(propertyValue)
         ? this.getInputComputedValue(propertyValue, tableId)
         : propertyValue || defaultValue;
+
+    const columns: Record<string, ColumnProperties> =
+      widgetProperties.primaryColumns || {};
+
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const currentRow: { [key: string]: any } = {};
+    Object.values(columns).forEach((column) => {
+      currentRow[column.alias || column.originalId] = undefined;
+    });
 
     // Load default value in evaluated value
     if (value && !propertyValue) {

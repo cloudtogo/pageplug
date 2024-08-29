@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { connect, useDispatch, useSelector } from "react-redux";
-import type { AppState } from "@appsmith/reducers";
-import { updatePage } from "actions/pageActions";
+import type { AppState } from "ee/reducers";
+import { updatePageAction } from "actions/pageActions";
 import type { UpdatePageRequest } from "api/PageApi";
 import {
   getViewModePageList,
@@ -10,15 +10,15 @@ import {
   isMobileLayout,
 } from "selectors/editorSelectors";
 // import { isMobileLayout } from "selectors/applicationSelectors";
-import type { Page } from "@appsmith/constants/ReduxActionConstants";
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import type { Page } from "ee/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
 import EditablePageName from "pages/Editor/Explorer/Entity/Name";
 // import Loader from "pages/Editor/Explorer/Entity/Loader";
 import { resolveAsSpaceChar } from "utils/helpers";
 import {
   useEntityUpdateState,
   useEntityEditState,
-} from "@appsmith/pages/Editor/Explorer/hooks";
+} from "ee/pages/Editor/Explorer/hooks";
 import { Icon, IconSize, Switch } from "design-system-old";
 import { TooltipComponent } from "design-system-old";
 import { Alignment } from "@blueprintjs/core";
@@ -91,13 +91,13 @@ const TabBar = ({ currentPage, isFull }: TabbarProps) => {
 
   const onIconSelected = (icon?: string) => {
     if (icon) {
-      const payload: UpdatePageRequest = {
+      const payload = {
         id: pageId,
         name: pageName,
         isHidden: pageHidden,
         icon: icon === CLOSE_TABBAR ? "" : icon,
       };
-      dispatch(updatePage(payload));
+      dispatch(updatePageAction(payload));
     }
   };
 
@@ -115,7 +115,7 @@ const TabBar = ({ currentPage, isFull }: TabbarProps) => {
           name={pageName}
           nameTransformFn={resolveAsSpaceChar}
           updateEntityName={(name) =>
-            updatePage({
+            updatePageAction({
               id: pageId,
               name,
               isHidden: pageHidden,

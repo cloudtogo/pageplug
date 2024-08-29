@@ -1,7 +1,4 @@
-import type {
-  ConfigTree,
-  unEvalAndConfigTree,
-} from "entities/DataTree/dataTreeTypes";
+import type { unEvalAndConfigTree } from "entities/DataTree/dataTreeTypes";
 import type { ActionValidationConfigMap } from "constants/PropertyControlConstants";
 import type { AppTheme } from "entities/AppTheming";
 
@@ -11,19 +8,25 @@ import type { DependencyMap, EvalError } from "utils/DynamicBindingUtils";
 import type {
   EVAL_WORKER_ASYNC_ACTION,
   EVAL_WORKER_SYNC_ACTION,
-} from "@appsmith/workers/Evaluation/evalWorkerActions";
+} from "ee/workers/Evaluation/evalWorkerActions";
 import type { JSUpdate } from "utils/JSPaneUtils";
 import type { WidgetTypeConfigMap } from "WidgetProvider/factory";
-import type { EvalMetaUpdates } from "@appsmith/workers/common/DataTreeEvaluator/types";
-import type { WorkerRequest } from "@appsmith/workers/common/types";
-import type { DataTreeDiff } from "@appsmith/workers/Evaluation/evaluationUtils";
+import type { EvalMetaUpdates } from "ee/workers/common/DataTreeEvaluator/types";
+import type { WorkerRequest } from "ee/workers/common/types";
+import type { DataTreeDiff } from "ee/workers/Evaluation/evaluationUtils";
 import type { APP_MODE } from "entities/App";
 import type { WebworkerSpanData } from "UITelemetry/generateWebWorkerTraces";
+import type { SpanAttributes } from "UITelemetry/generateTraces";
+import type { AffectedJSObjects } from "sagas/EvaluationsSagaUtils";
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type EvalWorkerSyncRequest<T = any> = WorkerRequest<
   T,
   EVAL_WORKER_SYNC_ACTION
 >;
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type EvalWorkerASyncRequest<T = any> = WorkerRequest<
   T,
   EVAL_WORKER_ASYNC_ACTION
@@ -42,7 +45,11 @@ export interface EvalTreeRequestData {
   forceEvaluation: boolean;
   metaWidgets: MetaWidgetsReduxState;
   appMode?: APP_MODE;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   widgetsMeta: Record<string, any>;
+  shouldRespondWithLogs?: boolean;
+  affectedJSObjects: AffectedJSObjects;
 }
 
 export interface EvalTreeResponseData {
@@ -54,14 +61,17 @@ export interface EvalTreeResponseData {
   logs: unknown[];
   unEvalUpdates: DataTreeDiff[];
   isCreateFirstTree: boolean;
-  configTree: ConfigTree;
   staleMetaIds: string[];
   removedPaths: Array<{ entityId: string; fullpath: string }>;
   isNewWidgetAdded: boolean;
   undefinedEvalValuesMap: Record<string, boolean>;
   jsVarsCreatedEvent?: { path: string; type: string }[];
-  webworkerTelemetry?: Record<string, WebworkerSpanData>;
+  webworkerTelemetry?: Record<string, WebworkerSpanData | SpanAttributes>;
   updates: string;
 }
 
-export type JSVarMutatedEvents = Record<string, { path: string; type: string }>;
+export interface UpdateTreeResponse {
+  unEvalUpdates: DataTreeDiff[];
+  evalOrder: string[];
+  jsUpdates: Record<string, JSUpdate>;
+}

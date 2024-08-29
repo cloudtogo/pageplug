@@ -1,4 +1,4 @@
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import {
   GridDefaults,
   MAIN_CONTAINER_WIDGET_ID,
@@ -25,7 +25,6 @@ import { useDispatch } from "react-redux";
 import { getDragDetails } from "sagas/selectors";
 import {
   combinedPreviewModeSelector,
-  getIsMobileCanvasLayout,
   getOccupiedSpacesSelectorForContainer,
 } from "selectors/editorSelectors";
 import { getCanvasSnapRows } from "utils/WidgetPropsUtils";
@@ -34,21 +33,17 @@ import { useShowPropertyPane } from "utils/hooks/dragResizeHooks";
 import { useWidgetSelection } from "utils/hooks/useWidgetSelection";
 import { calculateDropTargetRows } from "./DropTargetUtils";
 
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
-import { EditorState as IDEAppState } from "@appsmith/entities/IDE/constants";
-import { isAirgapped } from "@appsmith/utils/airgapHelpers";
 import { LayoutSystemTypes } from "layoutSystems/types";
-import { useCurrentAppState } from "pages/Editor/IDE/hooks";
 import { getIsAppSettingsPaneWithNavigationTabOpen } from "selectors/appSettingsPaneSelectors";
 import { getLayoutSystemType } from "selectors/layoutSystemSelectors";
-import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
 import { getWidgetSelectionBlock } from "selectors/ui";
 import {
   isAutoHeightEnabledForWidget,
   isAutoHeightEnabledForWidgetWithLimits,
 } from "widgets/WidgetUtils";
 import DragLayerComponent from "./DragLayerComponent";
-import StarterBuildingBlocks from "./starterBuildingBlocks";
+import Onboarding from "./OnBoarding";
+import { isDraggingBuildingBlockToCanvas } from "selectors/buildingBlocksSelectors";
 import { isMobileLayout } from "selectors/applicationSelectors";
 export type DropTargetComponentProps = PropsWithChildren<{
   snapColumnSpace: number;
@@ -71,74 +66,6 @@ const StyledDropTarget = styled.div`
   user-select: none;
   z-index: 1;
 `;
-
-const EmptyContainer = styled.div`
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  width: 400px;
-  height: 400px;
-  margin-top: -180px;
-  margin-left: -200px;
-  text-align: center;
-
-  & h2 {
-    color: #666;
-    margin-top: 28px;
-  }
-
-  & img {
-    height: 100%;
-    width: 100%;
-  }
-`;
-
-function Onboarding() {
-  const isMobileCanvas = useSelector(getIsMobileCanvasLayout);
-  const isTaroWdsCanvas = useSelector(isMobileLayout);
-  const appState = useCurrentAppState();
-  const isAirgappedInstance = isAirgapped();
-
-  const showStarterTemplatesInsteadofBlankCanvas = useFeatureFlag(
-    FEATURE_FLAG.ab_show_templates_instead_of_blank_canvas_enabled,
-  );
-  const releaseDragDropBuildingBlocks = useFeatureFlag(
-    FEATURE_FLAG.release_drag_drop_building_blocks_enabled,
-  );
-
-  const shouldShowStarterTemplates = useMemo(
-    () =>
-      showStarterTemplatesInsteadofBlankCanvas &&
-      !isMobileCanvas &&
-      !isTaroWdsCanvas &&
-      !isAirgappedInstance &&
-      // This is to hide starter building blocks once building blocks are available in the explorer
-      !releaseDragDropBuildingBlocks,
-    [
-      showStarterTemplatesInsteadofBlankCanvas,
-      isMobileCanvas,
-      isTaroWdsCanvas,
-      isAirgappedInstance,
-      releaseDragDropBuildingBlocks,
-    ],
-  );
-
-  if (shouldShowStarterTemplates && appState === IDEAppState.EDITOR)
-    return (
-      <EmptyContainer>
-        <img src={EmptyCanvas} style={{ opacity: 0.5 }} />
-        <h2>开始构建你的应用</h2>
-      </EmptyContainer>
-    );
-  else if (!shouldShowStarterTemplates && appState === IDEAppState.EDITOR)
-    return (
-      <EmptyContainer>
-        <img src={EmptyCanvas} style={{ opacity: 0.5 }} />
-        <h2>开始构建你的应用</h2>
-      </EmptyContainer>
-    );
-  else return null;
-}
 
 /*
   This context will provide the function which will help the draglayer and resizablecomponents trigger
@@ -287,8 +214,14 @@ export function DropTargetComponent(props: DropTargetComponentProps) {
     (state: AppState) => state.ui.widgetDragResize.isResizing,
   );
   // Are we currently dragging?
-  const isDragging = useSelector(
+  const isDraggingWidget = useSelector(
     (state: AppState) => state.ui.widgetDragResize.isDragging,
+  );
+  const isDraggingBuildingBlock = useSelector(isDraggingBuildingBlockToCanvas);
+
+  const isDragging = useMemo(
+    () => isDraggingWidget || isDraggingBuildingBlock,
+    [isDraggingWidget, isDraggingBuildingBlock],
   );
   // Are we changing the auto height limits by dragging the signifiers?
   const { isAutoHeightWithLimitsChanging } = useAutoHeightUIState();

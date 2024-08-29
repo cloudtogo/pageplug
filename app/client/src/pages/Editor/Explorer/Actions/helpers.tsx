@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import React, { useMemo } from "react";
+import React from "react";
 import {
   dbQueryIcon,
   ApiMethodIcon,
@@ -14,17 +14,12 @@ import {
 import { generateReactKey } from "utils/generators";
 
 import type { Plugin } from "api/PluginApi";
-import { useSelector } from "react-redux";
-import type { AppState } from "@appsmith/reducers";
-import { groupBy } from "lodash";
-import type { ActionData } from "@appsmith/reducers/entityReducers/actionsReducer";
-import { getNextEntityName } from "utils/AppsmithUtils";
 import {
   apiEditorIdURL,
   queryEditorIdURL,
   saasEditorApiIdURL,
-} from "@appsmith/RouteBuilder";
-import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+} from "ee/RouteBuilder";
+import { getAssetUrl } from "ee/utils/airgapHelpers";
 
 // TODO [new_urls] update would break for existing paths
 // using a common todo, this needs to be fixed
@@ -35,31 +30,33 @@ export interface ActionGroupConfig {
   key: string;
   getURL: (
     parentEntityId: string,
-    id: string,
+    baseId: string,
     pluginType: PluginType,
     plugin?: Plugin,
   ) => string;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getIcon: (action: any, plugin: Plugin, remoteIcon?: boolean) => ReactNode;
 }
 
 export interface ResolveActionURLProps {
   plugin?: Plugin;
-  parentEntityId: string;
+  baseParentEntityId: string;
   pluginType: PluginType;
-  id: string;
+  baseId: string;
 }
 
 export const resolveActionURL = ({
-  id,
-  parentEntityId,
+  baseId,
+  baseParentEntityId,
   pluginType,
 }: ResolveActionURLProps) => {
   if (pluginType === PluginType.SAAS) {
     return saasEditorApiIdURL({
-      parentEntityId,
+      baseParentEntityId,
       // It is safe to assume at this date, that only Google Sheets uses and will use PluginType.SAAS
       pluginPackageName: PluginPackageName.GOOGLE_SHEETS,
-      apiId: id,
+      baseApiId: baseId,
     });
   } else if (
     pluginType === PluginType.DB ||
@@ -68,11 +65,11 @@ export const resolveActionURL = ({
     pluginType === PluginType.INTERNAL
   ) {
     return queryEditorIdURL({
-      parentEntityId,
-      queryId: id,
+      baseParentEntityId,
+      baseQueryId: baseId,
     });
   } else {
-    return apiEditorIdURL({ parentEntityId, apiId: id });
+    return apiEditorIdURL({ baseParentEntityId, baseApiId: baseId });
   }
 };
 
@@ -93,13 +90,20 @@ export const ACTION_PLUGIN_MAP: Array<ActionGroupConfig | undefined> = [
     icon: dbQueryIcon,
     key: generateReactKey(),
     getURL: (
-      parentEntityId: string,
-      id: string,
+      baseParentEntityId: string,
+      baseId: string,
       pluginType: PluginType,
       plugin?: Plugin,
     ) => {
-      return resolveActionURL({ pluginType, plugin, id, parentEntityId });
+      return resolveActionURL({
+        pluginType,
+        plugin,
+        baseId,
+        baseParentEntityId,
+      });
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getIcon: (action: any, plugin: Plugin, remoteIcon?: boolean) => {
       const isGraphql = isGraphqlPlugin(plugin);
       if (
@@ -129,33 +133,3 @@ export const getActionConfig = (type: PluginType) =>
   ACTION_PLUGIN_MAP.find((configByType: ActionGroupConfig | undefined) =>
     configByType?.types.includes(type),
   );
-
-export const useNewActionName = () => {
-  // This takes into consideration only the current page widgets
-  // If we're moving to a different page, there could be a widget
-  // with the same name as the generated API name
-  // TODO: Figure out how to handle this scenario
-  const actions = useSelector((state: AppState) => state.entities.actions);
-  const groupedActions = useMemo(() => {
-    return groupBy(actions, "config.pageId");
-  }, [actions]);
-  return (
-    name: string,
-    destinationPageId: string,
-    isCopyOperation?: boolean,
-  ) => {
-    const pageActions = groupedActions[destinationPageId];
-    // Get action names of the destination page only
-    const actionNames = pageActions
-      ? pageActions.map((action: ActionData) => action.config.name)
-      : [];
-
-    return actionNames.indexOf(name) > -1
-      ? getNextEntityName(
-          isCopyOperation ? `${name}Copy` : name,
-          actionNames,
-          true,
-        )
-      : name;
-  };
-};

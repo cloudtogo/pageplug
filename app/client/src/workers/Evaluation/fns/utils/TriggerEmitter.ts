@@ -1,20 +1,12 @@
 import { EventEmitter } from "events";
-import { MAIN_THREAD_ACTION } from "@appsmith/workers/Evaluation/evalWorkerActions";
+import { MAIN_THREAD_ACTION } from "ee/workers/Evaluation/evalWorkerActions";
 import { WorkerMessenger } from "workers/Evaluation/fns/utils/Messenger";
 import type { UpdatedPathsMap } from "workers/Evaluation/JSObject/JSVariableUpdates";
 import { applyJSVariableUpdatesToEvalTree } from "workers/Evaluation/JSObject/JSVariableUpdates";
 import ExecutionMetaData from "./ExecutionMetaData";
-import { get } from "lodash";
-import { getType } from "utils/TypeHelpers";
-import type { JSVarMutatedEvents } from "workers/Evaluation/types";
-import { dataTreeEvaluator } from "workers/Evaluation/handlers/evalTree";
-import type {
-  TriggerKind,
-  TriggerSource,
-} from "constants/AppsmithActionConstants/ActionConstants";
 import type { UpdateActionProps } from "workers/Evaluation/handlers/updateActionData";
 import { handleActionsDataUpdate } from "workers/Evaluation/handlers/updateActionData";
-import { getEntityNameAndPropertyPath } from "@appsmith/workers/Evaluation/evaluationUtils";
+import { getEntityNameAndPropertyPath } from "ee/workers/Evaluation/evaluationUtils";
 import type { Patch } from "workers/Evaluation/JSObject/Collection";
 
 const _internalSetTimeout = self.setTimeout;
@@ -26,8 +18,6 @@ export enum BatchKey {
   process_batched_triggers = "process_batched_triggers",
   process_batched_fn_execution = "process_batched_fn_execution",
   process_js_variable_updates = "process_js_variable_updates",
-  process_batched_fn_invoke_log = "process_batched_fn_invoke_log",
-  process_js_var_mutation_events = "process_js_var_mutation_events",
 }
 
 const TriggerEmitter = new EventEmitter();
@@ -106,9 +96,15 @@ TriggerEmitter.on(BatchKey.process_batched_triggers, defaultTriggerHandler);
 
 const fnExecutionDataHandler = deferredBatchedActionHandler((data) => {
   const batchedData = data.reduce<{
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     JSExecutionData: Record<string, any>;
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     JSExecutionErrors: Record<string, any>;
   }>(
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (acc, d: any) => {
       const { data, name } = d;
       try {
@@ -149,31 +145,6 @@ TriggerEmitter.on(
   fnExecutionDataHandler,
 );
 
-export const jsVariableMutationEventHandler = deferredBatchedActionHandler(
-  (batchedUpdatesMap: UpdatedPathsMap[]) => {
-    const jsVarMutatedEvents: JSVarMutatedEvents = {};
-    for (const batchedUpdateMap of batchedUpdatesMap) {
-      for (const path in batchedUpdateMap) {
-        const variableValue = get(dataTreeEvaluator?.getEvalTree() || {}, path);
-        jsVarMutatedEvents[path] = {
-          path,
-          type: getType(variableValue),
-        };
-      }
-    }
-
-    WorkerMessenger.ping({
-      method: MAIN_THREAD_ACTION.PROCESS_JS_VAR_MUTATION_EVENTS,
-      data: jsVarMutatedEvents,
-    });
-  },
-);
-
-TriggerEmitter.on(
-  BatchKey.process_js_var_mutation_events,
-  jsVariableMutationEventHandler,
-);
-
 const jsVariableUpdatesHandler = priorityBatchedActionHandler<Patch>(
   (batchedData) => {
     const updatesMap: UpdatedPathsMap = {};
@@ -182,10 +153,6 @@ const jsVariableUpdatesHandler = priorityBatchedActionHandler<Patch>(
     }
 
     applyJSVariableUpdatesToEvalTree(updatesMap);
-
-    TriggerEmitter.emit(BatchKey.process_js_var_mutation_events, {
-      ...updatesMap,
-    });
   },
 );
 
@@ -200,22 +167,5 @@ TriggerEmitter.on(
   BatchKey.process_js_variable_updates,
   jsVariableUpdatesHandlerWrapper,
 );
-
-export const fnInvokeLogHandler = deferredBatchedActionHandler<{
-  jsFnFullName: string;
-  isSuccess: boolean;
-  triggerMeta: {
-    source: TriggerSource;
-    triggerPropertyName: string | undefined;
-    triggerKind: TriggerKind | undefined;
-  };
-}>((data) => {
-  WorkerMessenger.ping({
-    method: MAIN_THREAD_ACTION.LOG_JS_FUNCTION_EXECUTION,
-    data,
-  });
-});
-
-TriggerEmitter.on(BatchKey.process_batched_fn_invoke_log, fnInvokeLogHandler);
 
 export default TriggerEmitter;

@@ -2,7 +2,7 @@ import GlobalHotKeys from "pages/Editor/GlobalHotKeys";
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import * as utilities from "selectors/editorSelectors";
-import * as useDynamicAppLayoutHook from "utils/hooks/useDynamicAppLayout";
+import * as useCanvasWidthAutoResize from "pages/hooks";
 
 import * as useCanvasDraggingHook from "layoutSystems/fixedlayout/editor/FixedLayoutCanvasArenas/hooks/useCanvasDragging";
 import store from "store";
@@ -11,18 +11,22 @@ import {
   widgetCanvasFactory,
 } from "test/factories/WidgetFactoryUtils";
 import { sagasToRunForTests } from "test/sagas";
-import { MockApplication, mockGetCanvasWidgetDsl } from "test/testCommon";
+import { MockApplication } from "test/testCommon";
 import { UpdateAppViewer, UpdatedEditor } from "test/testMockedWidgets";
 import { render } from "test/testUtils";
 import { generateReactKey } from "widgets/WidgetUtils";
+
+const pageId = "0123456789abcdef00000000";
 describe("ContainerWidget tests", () => {
   const mockGetIsFetchingPage = jest.spyOn(utilities, "getIsFetchingPage");
-  const spyGetCanvasWidgetDsl = jest.spyOn(utilities, "getCanvasWidgetDsl");
   jest
-    .spyOn(useDynamicAppLayoutHook, "useDynamicAppLayout")
+    .spyOn(useCanvasWidthAutoResize, "useCanvasWidthAutoResize")
     .mockImplementation(() => true);
+
   const pushState = jest.spyOn(window.history, "pushState");
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   pushState.mockImplementation((state: any, title: any, url: any) => {
     window.document.title = title;
     window.location.pathname = url;
@@ -30,6 +34,8 @@ describe("ContainerWidget tests", () => {
   it("Container widget should not invoke dragging and selection features in View mode", async () => {
     const containerId = generateReactKey();
     const canvasId = generateReactKey();
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const children: any = buildChildren([
       {
         type: "CHECKBOX_WIDGET",
@@ -52,6 +58,8 @@ describe("ContainerWidget tests", () => {
         widgetId: canvasId,
       },
     ]);
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const containerChildren: any = buildChildren([
       {
         type: "CONTAINER_WIDGET",
@@ -60,10 +68,11 @@ describe("ContainerWidget tests", () => {
         parentId: "0",
       },
     ]);
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const dsl: any = widgetCanvasFactory.build({
       children: containerChildren,
     });
-    spyGetCanvasWidgetDsl.mockImplementation(mockGetCanvasWidgetDsl);
     mockGetIsFetchingPage.mockImplementation(() => false);
     const spyUseCanvasDragging = jest
       .spyOn(useCanvasDraggingHook, "useCanvasDragging")
@@ -72,7 +81,9 @@ describe("ContainerWidget tests", () => {
       }));
     const appState = store.getState();
     render(
-      <MemoryRouter initialEntries={["/app/applicationSlug/pageSlug-page_id/"]}>
+      <MemoryRouter
+        initialEntries={[`/app/applicationSlug/pageSlug-${pageId}/`]}
+      >
         <MockApplication>
           <GlobalHotKeys>
             <UpdateAppViewer dsl={dsl} />
@@ -85,7 +96,7 @@ describe("ContainerWidget tests", () => {
     expect(spyUseCanvasDragging).not.toHaveBeenCalled();
     render(
       <MemoryRouter
-        initialEntries={["/app/applicationSlug/pageSlug-page_id/edit"]}
+        initialEntries={[`/app/applicationSlug/pageSlug-${pageId}/edit`]}
       >
         <MockApplication>
           <GlobalHotKeys>

@@ -1,25 +1,19 @@
 import React from "react";
 import styled from "styled-components";
-import {
-  Button,
-  Menu,
-  MenuItem,
-  MenuContent,
-  MenuTrigger,
-} from "design-system";
+import { Button, Icon, Menu, MenuContent, MenuTrigger } from "@appsmith/ads";
 import {
   EditInteractionKind,
   EditableText,
   SavingState,
   notEmptyValidator,
-} from "design-system-old";
-import type { Workspace } from "@appsmith/constants/workspaceConstants";
+} from "@appsmith/ads-old";
+import type { Workspace } from "ee/constants/workspaceConstants";
 import {
   DropdownOnSelectActions,
   getOnSelectAction,
 } from "pages/common/CustomizedDropdown/dropdownHelpers";
-import { ManageEnvironmentsMenu } from "@appsmith/pages/Applications/ManageEnvironmentsMenu";
-import { DISCONNECT_CONFIRMATION } from "@appsmith/constants/messages";
+import { ManageEnvironmentsMenu } from "ee/pages/Applications/ManageEnvironmentsMenu";
+import { DISCONNECT_CONFIRMATION } from "ee/constants/messages";
 
 interface WorkspaceMenuProps {
   canDeleteWorkspace: boolean;
@@ -44,6 +38,25 @@ interface WorkspaceMenuProps {
 
 const WorkspaceRename = styled(EditableText)`
   padding: 0 2px;
+`;
+
+export const CustomMenuItem = styled.span`
+  display: flex;
+  align-items: center;
+  padding: var(--ads-v2-spaces-3);
+  margin-bottom: var(--ads-v2-spaces-1);
+  gap: var(--ads-v2-spaces-3);
+  border-radius: var(--ads-v2-border-radius);
+  cursor: pointer;
+  position: relative;
+  color: var(--ads-v2-color-fg);
+  min-height: 36px;
+  box-sizing: border-box;
+  font-size: var(--ads-v2-font-size-4);
+
+  &:hover {
+    background-color: var(--ads-v2-color-bg-subtle);
+  }
 `;
 
 function WorkspaceMenu({
@@ -123,60 +136,62 @@ function WorkspaceMenu({
                 underline
               />
             </div>
-            <MenuItem
+            <CustomMenuItem
+              className="workspace-menu-item"
               data-testid="t--workspace-setting"
-              onSelect={() =>
+              onClick={() =>
                 getOnSelectAction(DropdownOnSelectActions.REDIRECT, {
                   path: `/workspace/${workspace.id}/settings/general`,
                 })
               }
-              startIcon="settings-2-line"
             >
+              <Icon name="settings-2-line" size="md" />
               设置
-            </MenuItem>
+            </CustomMenuItem>
           </>
         )}
         {hasManageWorkspacePermissions && canInviteToWorkspace && (
-          <MenuItem
-            onSelect={() =>
+          <CustomMenuItem
+            className="workspace-menu-item"
+            onClick={() =>
               getOnSelectAction(DropdownOnSelectActions.REDIRECT, {
                 path: `/workspace/${workspace.id}/settings/members`,
               })
             }
-            startIcon="group-line"
           >
+            <Icon name="group-line" size="md" />
             成员
-          </MenuItem>
+          </CustomMenuItem>
         )}
         <ManageEnvironmentsMenu
           workspaceId={workspace.id}
           workspacePermissions={workspace.userPermissions || []}
         />
         {canInviteToWorkspace && (
-          <MenuItem
-            className="error-menuitem"
-            onSelect={() => {
+          <CustomMenuItem
+            className="error-menuitem workspace-menu-item"
+            onClick={() => {
               !warnLeavingWorkspace
                 ? setWarnLeavingWorkspace(true)
                 : leaveWS(workspace.id);
             }}
-            startIcon="logout"
           >
+            <Icon name="logout" size="md" />
             {!warnLeavingWorkspace ? "离开应用组" : DISCONNECT_CONFIRMATION()}
-          </MenuItem>
+          </CustomMenuItem>
         )}
         {canDeleteWorkspace && (
-          <MenuItem
-            className="error-menuitem"
-            onSelect={() => {
+          <CustomMenuItem
+            className="error-menuitem workspace-menu-item"
+            onClick={() => {
               warnDeleteWorkspace
                 ? handleDeleteWorkspace(workspace.id)
                 : setWarnDeleteWorkspace(true);
             }}
-            startIcon="delete-bin-line"
           >
+            <Icon name="delete-bin-line" size="md" />
             {!warnDeleteWorkspace ? "删除应用组" : DISCONNECT_CONFIRMATION()}
-          </MenuItem>
+          </CustomMenuItem>
         )}
       </MenuContent>
     </Menu>

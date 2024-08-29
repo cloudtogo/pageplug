@@ -10,7 +10,7 @@ import { compact, get, map, sortBy } from "lodash";
 import WidgetsMultiSelectBox from "layoutSystems/fixedlayout/common/widgetGrouping/WidgetsMultiSelectBox";
 import type { SetterConfig, Stylesheet } from "entities/AppTheming";
 import { getSnappedGrid } from "sagas/WidgetOperationUtils";
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
 import {
   isAutoHeightEnabledForWidget,
   DefaultAutocompleteDefinitions,
@@ -27,6 +27,7 @@ import {
 } from "WidgetProvider/constants";
 import { WIDGET_TAGS } from "constants/WidgetConstants";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 import { ButtonBoxShadowTypes } from "components/constants";
 import { Colors } from "constants/Colors";
 import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
@@ -58,7 +59,8 @@ export class ContainerWidget extends BaseWidget<
     return {
       name: "容器",
       iconSVG: IconSVG,
-      tags: [WIDGET_TAGS.GERNERAL],
+      thumbnailSVG: ThumbnailSVG,
+      tags: [WIDGET_TAGS.LAYOUT],
       isCanvas: true,
       searchTags: ["div", "parent", "group", "container"],
     };
@@ -330,6 +332,8 @@ export class ContainerWidget extends BaseWidget<
   static getDefaultPropertiesMap(): Record<string, string> {
     return {};
   }
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {};
   }

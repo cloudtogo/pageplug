@@ -1,12 +1,10 @@
-import { widgetURL } from "@appsmith/RouteBuilder";
-import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
+import { widgetURL } from "ee/RouteBuilder";
+import type { ReduxAction } from "ee/constants/ReduxActionConstants";
 import {
   ReduxActionErrorTypes,
   ReduxActionTypes,
-} from "@appsmith/constants/ReduxActionConstants";
-import { getAppMode,
-  getCanvasWidgets,
-} from "@appsmith/selectors/entitiesSelector";
+} from "ee/constants/ReduxActionConstants";
+import { getAppMode, getCanvasWidgets } from "ee/selectors/entitiesSelector";
 import { showModal } from "actions/widgetActions";
 import type {
   SetSelectedWidgetsPayload,
@@ -35,7 +33,7 @@ import {
   unselectWidget,
 } from "sagas/WidgetSelectUtils";
 import {
-  getCurrentPageId,
+  getCurrentBasePageId,
   getIsEditorInitialized,
   getIsFetchingPage,
   snipingModeSelector,
@@ -56,11 +54,10 @@ import {
   getWidgets,
 } from "./selectors";
 import { getModalWidgetType } from "selectors/widgetSelectors";
-import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
-import type { FeatureFlags } from "@appsmith/entities/FeatureFlag";
 import { getWidgetSelectorByWidgetId } from "selectors/layoutSystemSelectors";
-import { getAppViewerPageIdFromPath } from "@appsmith/pages/Editor/Explorer/helpers";
-import AnalyticsUtil from "../utils/AnalyticsUtil";
+import { getAppViewerPageIdFromPath } from "ee/pages/Editor/Explorer/helpers";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
+import { getIsAnvilLayout } from "layoutSystems/anvil/integrations/selectors";
 
 // The following is computed to be used in the entity explorer
 // Every time a widget is selected, we need to expand widget entities
@@ -68,8 +65,8 @@ import AnalyticsUtil from "../utils/AnalyticsUtil";
 function* selectWidgetSaga(action: ReduxAction<WidgetSelectionRequestPayload>) {
   try {
     const {
+      basePageId,
       invokedBy,
-      pageId,
       payload = [],
       selectionRequestType,
     } = action.payload;
@@ -117,7 +114,8 @@ function* selectWidgetSaga(action: ReduxAction<WidgetSelectionRequestPayload>) {
         newSelection = payload;
         break;
       }
-      case SelectionRequestType.One: {
+      case SelectionRequestType.One:
+      case SelectionRequestType.Create: {
         assertParentId(parentId);
         newSelection = selectOneWidget(payload);
         break;
@@ -189,7 +187,13 @@ function* selectWidgetSaga(action: ReduxAction<WidgetSelectionRequestPayload>) {
       yield put(setSelectedWidgets(newSelection));
       return;
     }
-    yield call(appendSelectedWidgetToUrlSaga, newSelection, pageId, invokedBy);
+    yield call(
+      appendSelectedWidgetToUrlSaga,
+      newSelection,
+      selectionRequestType,
+      basePageId,
+      invokedBy,
+    );
   } catch (error) {
     yield put({
       type: ReduxActionErrorTypes.WIDGET_SELECTION_ERROR,
@@ -204,12 +208,14 @@ function* selectWidgetSaga(action: ReduxAction<WidgetSelectionRequestPayload>) {
 /**
  * Append Selected widgetId as hash to the url path
  * @param selectedWidgets
- * @param pageId
+ * @param type
+ * @param basePageId
  * @param invokedBy
  */
 function* appendSelectedWidgetToUrlSaga(
   selectedWidgets: string[],
-  pageId?: string,
+  type: SelectionRequestType,
+  basePageId?: string,
   invokedBy?: NavigationMethod,
 ) {
   const isSnipingMode: boolean = yield select(snipingModeSelector);
@@ -221,16 +227,17 @@ function* appendSelectedWidgetToUrlSaga(
   if (isSnipingMode || viewMode) return;
 
   const { pathname } = window.location;
-  const currentPageId: string = yield select(getCurrentPageId);
+  const currentBasePageId: string = yield select(getCurrentBasePageId);
   const currentURL = pathname;
   const newUrl = selectedWidgets.length
     ? widgetURL({
-        pageId: pageId ?? currentPageId,
+        basePageId: basePageId ?? currentBasePageId,
         persistExistingParams: true,
+        add: type === SelectionRequestType.Create,
         selectedWidgets,
       })
     : widgetURL({
-        pageId: pageId ?? currentPageId,
+        basePageId: basePageId ?? currentBasePageId,
         persistExistingParams: true,
         selectedWidgets: [MAIN_CONTAINER_WIDGET_ID],
       });
@@ -242,6 +249,8 @@ function* appendSelectedWidgetToUrlSaga(
   }
 }
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function* waitForInitialization(saga: any, action: ReduxAction<unknown>) {
   const isEditorInitialized: boolean = yield select(getIsEditorInitialized);
   const appMode: APP_MODE = yield select(getAppMode);
@@ -315,8 +324,8 @@ function* openOrCloseModalSaga(action: ReduxAction<{ widgetIds: string[] }>) {
       modalWidgetToOpen = widgetAncestry[indexOfParentModalWidget];
     }
   }
-  const featureFlags: FeatureFlags = yield select(selectFeatureFlags);
-  if (featureFlags.ab_wds_enabled) {
+  const isAnvilLayout: boolean = yield select(getIsAnvilLayout);
+  if (isAnvilLayout) {
     // If widget is modal and modal is already open, skip opening it
     const modalProps = allWidgets[modalWidgetToOpen];
     const metaProps: Record<string, unknown> = yield select(

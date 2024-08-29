@@ -1,13 +1,14 @@
-import {
-  getFocusedWidget,
-  getSelectedWidget,
-  getWidgetMetaProps,
-  getWidgets,
-} from "./selectors";
-import _, { find, isString, reduce, remove } from "lodash";
+import type { WidgetEntity } from "ee/entities/DataTree/types";
+import { isWidget } from "ee/workers/Evaluation/evaluationUtils";
+import WidgetFactory from "WidgetProvider/factory";
+import { CANVAS_DEFAULT_MIN_HEIGHT_PX } from "constants/AppConstants";
+import type {
+  OccupiedSpace,
+  WidgetSpace,
+} from "constants/CanvasEditorConstants";
 import type { WidgetType } from "constants/WidgetConstants";
-import { AUTO_LAYOUT_CONTAINER_PADDING } from "constants/WidgetConstants";
 import {
+  AUTO_LAYOUT_CONTAINER_PADDING,
   CONTAINER_GRID_PADDING,
   FLEXBOX_PADDING,
   GridDefaults,
@@ -15,31 +16,29 @@ import {
   RenderModes,
   WIDGET_PADDING,
 } from "constants/WidgetConstants";
-import { all, call } from "redux-saga/effects";
+import {
+  POSITIONED_WIDGET,
+  getBaseWidgetClassName,
+  getSlidingArenaName,
+  getStickyCanvasName,
+} from "constants/componentClassNameConstants";
 import type { DataTree } from "entities/DataTree/dataTreeTypes";
-import { select } from "redux-saga/effects";
-import { getCopiedWidgets } from "utils/storage";
-import type { WidgetProps } from "widgets/BaseWidget";
-import { getSelectedWidgets } from "selectors/ui";
-import { generateReactKey } from "utils/generators";
+import {
+  getWidgetLayoutMetaInfo,
+  type WidgetLayoutPositionInfo,
+} from "layoutSystems/anvil/utils/layouts/widgetPositionUtils";
+import type { CopiedWidgetData } from "layoutSystems/anvil/utils/paste/types";
+import { getWidgetHierarchy } from "layoutSystems/anvil/utils/paste/utils";
+import { Positioning } from "layoutSystems/common/utils/constants";
+import { LayoutSystemTypes } from "layoutSystems/types";
+import _, { find, isString, reduce, remove } from "lodash";
 import type {
   CanvasWidgetsReduxState,
   FlattenedWidgetProps,
 } from "reducers/entityReducers/canvasWidgetsReducer";
-import { getDataTree } from "selectors/dataTreeSelectors";
-import type { DynamicPath } from "utils/DynamicBindingUtils";
-import {
-  getDynamicBindings,
-  combineDynamicBindings,
-} from "utils/DynamicBindingUtils";
-import { getNextEntityName } from "utils/AppsmithUtils";
-import WidgetFactory from "WidgetProvider/factory";
-import { getParentWithEnhancementFn } from "./WidgetEnhancementHelpers";
-import type {
-  OccupiedSpace,
-  WidgetSpace,
-} from "constants/CanvasEditorConstants";
-import { areIntersecting } from "utils/boxHelpers";
+import type { MetaState } from "reducers/entityReducers/metaReducer";
+import { all, call, select } from "redux-saga/effects";
+import { reflow } from "reflow";
 import type {
   GridProps,
   PrevReflowState,
@@ -47,28 +46,28 @@ import type {
   SpaceMap,
 } from "reflow/reflowTypes";
 import { ReflowDirection } from "reflow/reflowTypes";
-import {
-  getBaseWidgetClassName,
-  getStickyCanvasName,
-  getSlidingArenaName,
-  POSITIONED_WIDGET,
-} from "constants/componentClassNameConstants";
+import { getDataTree } from "selectors/dataTreeSelectors";
 import { getContainerWidgetSpacesSelector } from "selectors/editorSelectors";
-import { reflow } from "reflow";
-import { getBottomRowAfterReflow } from "utils/reflowHookUtils";
-import type { WidgetEntity } from "@appsmith/entities/DataTree/types";
-import { isWidget } from "@appsmith/workers/Evaluation/evaluationUtils";
-import { CANVAS_DEFAULT_MIN_HEIGHT_PX } from "constants/AppConstants";
-import type { MetaState } from "reducers/entityReducers/metaReducer";
-import { LayoutSystemTypes } from "layoutSystems/types";
-import { Positioning } from "layoutSystems/common/utils/constants";
-import { getWidgetHierarchy } from "layoutSystems/anvil/utils/paste/utils";
-import type { CopiedWidgetData } from "layoutSystems/anvil/utils/paste/types";
+import { getSelectedWidgets } from "selectors/ui";
+import { getNextEntityName } from "utils/AppsmithUtils";
+import type { DynamicPath } from "utils/DynamicBindingUtils";
 import {
-  getWidgetLayoutMetaInfo,
-  type WidgetLayoutPositionInfo,
-} from "layoutSystems/anvil/utils/layouts/widgetPositionUtils";
-import { getLayoutSystemType } from "selectors/layoutSystemSelectors";
+  combineDynamicBindings,
+  getDynamicBindings,
+} from "utils/DynamicBindingUtils";
+import { areIntersecting } from "utils/boxHelpers";
+import { generateReactKey } from "utils/generators";
+import { getBottomRowAfterReflow } from "utils/reflowHookUtils";
+import { getCopiedWidgets } from "utils/storage";
+import type { WidgetProps } from "widgets/BaseWidget";
+import { getParentWithEnhancementFn } from "./WidgetEnhancementHelpers";
+import {
+  getFocusedWidget,
+  getSelectedWidget,
+  getWidgetMetaProps,
+  getWidgets,
+} from "./selectors";
+import { getIsAnvilLayout } from "layoutSystems/anvil/integrations/selectors";
 
 export interface CopiedWidgetGroup {
   widgetId: string;
@@ -136,6 +135,8 @@ export const handleIfParentIsListWidgetWhilePasting = (
       const listWidget = root;
       const currentWidget = _.cloneDeep(widget);
       let template = _.get(listWidget, "template", {});
+      // TODO: Fix this the next time the file is edited
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const dynamicBindingPathList: any[] = _.get(
         listWidget,
         "dynamicBindingPathList",
@@ -209,6 +210,8 @@ export const handleSpecificCasesWhilePasting = (
       const newWidgetName = widgetNameMap[oldWidgetName];
 
       const newWidget = newWidgetList.find(
+        // TODO: Fix this the next time the file is edited
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (w: any) => w.widgetName === newWidgetName,
       );
 
@@ -228,6 +231,8 @@ export const handleSpecificCasesWhilePasting = (
 
       // updating dynamicBindingPath in copied widget if the copied widget thas reference to oldWidgetNames
       widget.dynamicBindingPathList = (widget.dynamicBindingPathList || []).map(
+        // TODO: Fix this the next time the file is edited
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (path: any) => {
           if (path.key.startsWith(`template.${oldWidgetName}`)) {
             return {
@@ -244,6 +249,8 @@ export const handleSpecificCasesWhilePasting = (
 
       // updating dynamicTriggerPath in copied widget if the copied widget thas reference to oldWidgetNames
       widget.dynamicTriggerPathList = (widget.dynamicTriggerPathList || []).map(
+        // TODO: Fix this the next time the file is edited
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (path: any) => {
           if (path.key.startsWith(`template.${oldWidgetName}`)) {
             return {
@@ -286,13 +293,15 @@ export const handleSpecificCasesWhilePasting = (
   }
 
   widgets = handleListWidgetV2Pasting(widget, widgets, widgetNameMap);
-  widgets = handleIfParentIsListWidgetWhilePasting(widget, widgets);
-
   return widgets;
 };
-export function getWidgetChildrenIds(
+export // TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getWidgetChildrenIds(
   canvasWidgets: CanvasWidgetsReduxState,
   widgetId: string,
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any {
   const childrenIds: string[] = [];
   const widget = _.get(canvasWidgets, widgetId);
@@ -693,6 +702,14 @@ export const getSelectedWidgetWhenPasting = function* () {
   return selectedWidget;
 };
 
+function getStickyCanvasDOM(canvasId: string) {
+  // get DOM of the overall canvas including it's total scroll height
+  const stickyCanvasDOM = document.querySelector(
+    `#${getSlidingArenaName(canvasId)}`,
+  );
+  return stickyCanvasDOM;
+}
+
 /**
  * calculates mouse positions in terms of grid values
  *
@@ -722,10 +739,8 @@ export function getMousePositions(
   )
     return;
 
-  //get DOM of the overall canvas including it's total scroll height
-  const stickyCanvasDOM = document.querySelector(
-    `#${getSlidingArenaName(canvasId)}`,
-  );
+  const stickyCanvasDOM = getStickyCanvasDOM(canvasId);
+
   if (!stickyCanvasDOM) return;
 
   const rect = stickyCanvasDOM.getBoundingClientRect();
@@ -1473,6 +1488,8 @@ export function getNextWidgetName(
   options?: Record<string, unknown>,
 ) {
   // Compute the new widget's name
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const defaultConfig: any = WidgetFactory.widgetConfigMap.get(type);
   const widgetNames = Object.keys(widgets).map((w) => widgets[w].widgetName);
   const entityNames = Object.keys(evalTree);
@@ -1499,10 +1516,10 @@ export function getNextWidgetName(
 export function* createWidgetCopy(widget: FlattenedWidgetProps) {
   const allWidgets: { [widgetId: string]: FlattenedWidgetProps } =
     yield select(getWidgets);
-  const layoutSystemType: LayoutSystemTypes = yield select(getLayoutSystemType);
+  const isAnvilLayout: boolean = yield select(getIsAnvilLayout);
   const widgetsToStore = getAllWidgetsInTree(widget.widgetId, allWidgets);
   let widgetPositionInfo: WidgetLayoutPositionInfo | null = null;
-  if (widget.parentId && layoutSystemType === LayoutSystemTypes.ANVIL) {
+  if (widget.parentId && isAnvilLayout) {
     widgetPositionInfo = getWidgetLayoutMetaInfo(
       allWidgets[widget?.parentId]?.layout[0] ?? null,
       widget.widgetId,
@@ -1601,11 +1618,15 @@ export function updateListWidgetPropertiesOnChildDelete(
     }
 
     // delete dynamic binding path if any
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     remove(listWidget?.dynamicBindingPathList || [], (path: any) =>
       path.key.startsWith(`template.${widgetName}`),
     );
 
     // delete dynamic trigger path if any
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     remove(listWidget?.dynamicTriggerPathList || [], (path: any) =>
       path.key.startsWith(`template.${widgetName}`),
     );
@@ -1822,3 +1843,31 @@ const updateListWidgetBindings = (
 
   return widgets;
 };
+
+/**
+ * A function to check if paste of widgets can work without conflicts by checking the source and target layout systems
+ * @param sourceLayoutSystem The layout system from which the widgets to be pasted were copied/cut
+ * @param targetLayoutSystem The layout system to which the copied/cut widgets are pasted
+ * @returns boolean: Is there a conflict?
+ */
+export function isLayoutSystemConflictingForPaste(
+  targetLayoutSystem: LayoutSystemTypes,
+  sourceLayoutSystem?: LayoutSystemTypes,
+) {
+  // If source is not ANVIL and the target is ANVIL, we will have a conflict
+  if (
+    sourceLayoutSystem !== LayoutSystemTypes.ANVIL &&
+    targetLayoutSystem === LayoutSystemTypes.ANVIL
+  ) {
+    return true;
+  }
+  // If source is ANVIL and target is not ANVIL, we will have a conflict
+  if (
+    sourceLayoutSystem === LayoutSystemTypes.ANVIL &&
+    targetLayoutSystem !== LayoutSystemTypes.ANVIL
+  ) {
+    return true;
+  }
+  // All other scenarios should work fine.
+  return false;
+}

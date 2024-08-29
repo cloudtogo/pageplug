@@ -1,4 +1,4 @@
-import { isEnvironmentValid } from "@appsmith/utils/Environments";
+import { isEnvironmentValid } from "ee/utils/Environments";
 import type { Property } from "entities/Action";
 import type { Datasource, DatasourceStorage } from "entities/Datasource";
 import type {
@@ -259,6 +259,7 @@ const datasourceToFormAuthentication = (
         authentication.sendScopeWithRefreshToken || false,
       refreshTokenClientCredentialsLocation:
         authentication.refreshTokenClientCredentialsLocation || "BODY",
+      useSelfSignedCert: authentication.useSelfSignedCert,
     };
     if (isClientCredentials(authType, authentication)) {
       return {
@@ -316,6 +317,8 @@ const datasourceToFormAuthentication = (
 
 const isClientCredentials = (
   authType: AuthType,
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   val: any,
 ): val is ClientCredentials => {
   if (authType !== AuthType.OAuth2) return false;
@@ -326,6 +329,8 @@ const isClientCredentials = (
 
 const isAuthorizationCode = (
   authType: AuthType,
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   val: any,
 ): val is AuthorizationCode => {
   if (authType !== AuthType.OAuth2) return false;

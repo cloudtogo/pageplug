@@ -1,18 +1,14 @@
-import React, { useCallback } from "react";
-import { Button, Text } from "design-system";
-import type { AppState } from "@appsmith/reducers";
+import React from "react";
+import { Button, Text } from "@appsmith/ads";
+import type { AppState } from "ee/reducers";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { INTEGRATION_EDITOR_MODES, INTEGRATION_TABS } from "constants/routes";
 import history from "utils/history";
-import {
-  setGlobalSearchQuery,
-  toggleShowGlobalSearchModal,
-} from "actions/globalSearchActions";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 import type { WidgetType } from "constants/WidgetConstants";
-import { integrationEditorURL } from "@appsmith/RouteBuilder";
-import { getCurrentPageId } from "selectors/editorSelectors";
+import { integrationEditorURL } from "ee/RouteBuilder";
+import { getCurrentBasePageId } from "selectors/editorSelectors";
 import { DocsLink, openDoc } from "../../../constants/DocumentationLinks";
 import { DatasourceCreateEntryPoints } from "constants/Datasource";
 
@@ -37,21 +33,13 @@ interface ConnectDataCTAProps {
 }
 
 function ConnectDataCTA(props: ConnectDataCTAProps) {
-  const dispatch = useDispatch();
-  const pageId: string = useSelector(getCurrentPageId);
-  const openHelpModal = useCallback(() => {
-    dispatch(setGlobalSearchQuery("Connecting to Data Sources"));
-    dispatch(toggleShowGlobalSearchModal());
-    AnalyticsUtil.logEvent("OPEN_OMNIBAR", {
-      source: "PROPERTY_PANE_CONNECT_DATA",
-    });
-  }, []);
+  const basePageId: string = useSelector(getCurrentBasePageId);
 
   const onClick = () => {
     const { widgetId, widgetTitle, widgetType } = props;
     history.push(
       integrationEditorURL({
-        pageId,
+        basePageId,
         selectedTab: INTEGRATION_TABS.NEW,
         params: { mode: INTEGRATION_EDITOR_MODES.AUTO },
       }),

@@ -17,7 +17,7 @@ import { RenderOptionWrapper } from "../../../TableStyledWrappers";
 import DatePickerComponent from "widgets/DatePickerWidget2/component";
 import { TimePrecision } from "widgets/DatePickerWidget2/constants";
 import { ColumnTypes, ReadOnlyColumnTypes } from "../../../../constants";
-import { importRemixIcon } from "design-system-old";
+import { importRemixIcon } from "@appsmith/ads-old";
 
 const CloseIcon = importRemixIcon(
   async () => import("remixicon-react/CloseCircleFillIcon"),
@@ -304,6 +304,8 @@ interface CascadeFieldProps {
   columns: DropdownOption[];
   column: string;
   condition: Condition;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
   operator: Operator;
   id: string;
@@ -322,6 +324,8 @@ interface CascadeFieldProps {
 interface CascadeFieldState {
   column: string;
   condition: Condition;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
   operator: Operator;
   conditions: DropdownOption[];
@@ -416,6 +420,8 @@ function CaseCaseFieldReducer(
   state: CascadeFieldState,
   action: {
     type: CascadeFieldAction;
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     payload?: any;
   },
 ) {

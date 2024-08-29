@@ -7,6 +7,8 @@ export const GITHUB_RELEASE_URL =
   "https://github.com/appsmithorg/appsmith/releases/tag";
 export const GET_RELEASE_NOTES_URL = (tagName: string) =>
   `${GITHUB_RELEASE_URL}/${tagName}`;
+export const SELF_HOSTING_DOC =
+  "https://docs.appsmith.com/getting-started/setup";
 export const GOOGLE_MAPS_SETUP_DOC = "https://docs.pageplug.cn";
 export const BAIDU_MAPS_SETUP_DOC =
   "https://lbsyun.baidu.com/index.php?title=jspopularGL/guide/getkey";
@@ -31,7 +33,7 @@ export const PROVISIONING_SETUP_DOC = "https://docs.pageplug.cn";
 export const DISCORD_URL = "https://discord.gg/rBTTVJp";
 export const ENTERPRISE_PRICING_PAGE = "https://www.appsmith.com/enterprise";
 export const DOCS_BRANCH_PROTECTION_URL =
-  "https://docs.appsmith.com/advanced-concepts/version-control-with-git/working-with-branches#branch-protection";
+  "https://docs.appsmith.com/advanced-concepts/version-control-with-git/reference/git-settings#branch-protection";
 export const DOCS_DEFAULT_BRANCH_URL =
   "https://docs.appsmith.com/advanced-concepts/version-control-with-git/working-with-branches#default-branch";
 export const PACKAGES_OVERVIEW_DOC =

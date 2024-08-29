@@ -96,6 +96,20 @@ export const StyledNavigateToFieldsContainer = styled.div`
   width: 95%;
 `;
 
+interface InputGroupProps {
+  autoFocus?: boolean;
+  className?: string;
+  dataType?: string;
+  onBlur?: () => void;
+  onFocus?: () => void;
+  placeholder?: string;
+  value?: string;
+  width?: string;
+  onChange?: (value: string) => void;
+  defaultValue?: string;
+  tabIndex?: number;
+}
+
 const StyledInputWrapper = styled.div`
   width: 100%;
 
@@ -112,7 +126,7 @@ const CommonIconStyles = css`
   align-items: center;
 `;
 
-export const InputGroup = React.forwardRef((props: TextInputProps, ref) => {
+export const InputGroup = React.forwardRef((props: InputGroupProps, ref) => {
   let inputRef = React.useRef<HTMLInputElement>(null);
   const wrapperRef = React.useRef<HTMLInputElement>(null);
   const { dispatchInteractionAnalyticsEvent } =

@@ -5,7 +5,7 @@
       "identifier": "SELECTOR",
       "children": [
         {
-          "label": "Commands",
+          "label": "Command",
           "description": "Choose the method you would like to use",
           "configProperty": "actionConfiguration.formData.command.data",
           "controlType": "DROP_DOWN",
@@ -15,13 +15,15 @@
             {
               "label": "Chat",
               "value": "CHAT"
+            },
+            {
+              "label": "Vision",
+              "value": "VISION"
             }
           ]
         }
       ]
     }
   ],
-  "files": [
-    "chat.json"
-  ]
+  "files": ["chat.json", "vision.json"]
 }

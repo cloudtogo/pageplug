@@ -8,7 +8,7 @@ import {
   getTemplateFilterSelector,
 } from "selectors/templatesSelectors";
 import { thinScrollbar } from "constants/DefaultTheme";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 
 const FilterMainContainer = styled.div`
   /* padding: 0 16px; */

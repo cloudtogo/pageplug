@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 
 import {
   moveActionRequest,
@@ -9,14 +9,13 @@ import {
   deleteAction,
 } from "actions/pluginActionActions";
 
-import { useNewActionName } from "./helpers";
 import {
   CONTEXT_COPY,
   CONTEXT_DELETE,
   CONFIRM_CONTEXT_DELETE,
   CONTEXT_MOVE,
   createMessage,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import {
   Button,
   Menu,
@@ -26,23 +25,33 @@ import {
   MenuSubContent,
   MenuSubTrigger,
   MenuTrigger,
-} from "design-system";
+} from "@appsmith/ads";
 import { useToggle } from "@mantine/hooks";
+import { convertToPageIdSelector } from "selectors/pageListSelectors";
 
 interface EntityContextMenuProps {
   id: string;
   name: string;
   className?: string;
-  pageId: string;
+  basePageId: string;
   isChangePermitted?: boolean;
   isDeletePermitted?: boolean;
+  prefixAdditionalMenus?: React.ReactNode | React.ReactNode[];
+  postfixAdditionalMenus?: React.ReactNode | React.ReactNode[];
 }
 
 export function MoreActionsMenu(props: EntityContextMenuProps) {
   const [isMenuOpen, toggleMenuOpen] = useToggle([false, true]);
-  const nextEntityName = useNewActionName();
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const { isChangePermitted = false, isDeletePermitted = false } = props;
+  const propPageId = useSelector((state) =>
+    convertToPageIdSelector(state, props.basePageId),
+  );
+  const {
+    isChangePermitted = false,
+    isDeletePermitted = false,
+    postfixAdditionalMenus,
+    prefixAdditionalMenus,
+  } = props;
 
   useEffect(() => {
     if (!isMenuOpen) setConfirmDelete(false);
@@ -55,10 +64,10 @@ export function MoreActionsMenu(props: EntityContextMenuProps) {
         copyActionRequest({
           id: actionId,
           destinationPageId: pageId,
-          name: nextEntityName(`${actionName}Copy`, pageId),
+          name: actionName,
         }),
       ),
-    [dispatch, nextEntityName],
+    [dispatch],
   );
   const moveActionToPage = useCallback(
     (actionId: string, actionName: string, destinationPageId: string) =>
@@ -66,11 +75,11 @@ export function MoreActionsMenu(props: EntityContextMenuProps) {
         moveActionRequest({
           id: actionId,
           destinationPageId,
-          originalPageId: props.pageId,
-          name: nextEntityName(actionName, destinationPageId),
+          originalPageId: propPageId ?? "",
+          name: actionName,
         }),
       ),
-    [dispatch, nextEntityName, props.pageId],
+    [dispatch, propPageId],
   );
   const deleteActionFromPage = useCallback(
     (actionId: string, actionName: string) => {
@@ -87,6 +96,7 @@ export function MoreActionsMenu(props: EntityContextMenuProps) {
     return state.entities.pageList.pages.map((page) => ({
       label: page.pageName,
       id: page.pageId,
+      baseId: page.basePageId,
       value: page.pageName,
     }));
   });
@@ -107,6 +117,7 @@ export function MoreActionsMenu(props: EntityContextMenuProps) {
         />
       </MenuTrigger>
       <MenuContent loop style={{ zIndex: 100 }} width="200px">
+        {prefixAdditionalMenus ? prefixAdditionalMenus : null}
         {isChangePermitted && (
           <MenuSub>
             <MenuSubTrigger startIcon="duplicate">
@@ -116,7 +127,7 @@ export function MoreActionsMenu(props: EntityContextMenuProps) {
               {menuPages.map((page) => {
                 return (
                   <MenuItem
-                    key={page.id}
+                    key={page.baseId}
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     //@ts-ignore
                     onSelect={() =>
@@ -139,11 +150,11 @@ export function MoreActionsMenu(props: EntityContextMenuProps) {
               {/* Isn't it better ux to perform this check outside the menu and then simply not show the option?*/}
               {menuPages.length > 1 ? (
                 menuPages
-                  .filter((page) => page.id !== props.pageId) // Remove current page from the list
+                  .filter((page) => page.baseId !== props.basePageId) // Remove current page from the list
                   .map((page) => {
                     return (
                       <MenuItem
-                        key={page.id}
+                        key={page.baseId}
                         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                         //@ts-ignore
                         onSelect={() =>
@@ -178,6 +189,7 @@ export function MoreActionsMenu(props: EntityContextMenuProps) {
               : createMessage(CONTEXT_DELETE)}
           </MenuItem>
         )}
+        {postfixAdditionalMenus ? postfixAdditionalMenus : null}
       </MenuContent>
     </Menu>
   ) : null;

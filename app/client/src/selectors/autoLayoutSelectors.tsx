@@ -1,4 +1,4 @@
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import { FLEXBOX_PADDING, GridDefaults } from "constants/WidgetConstants";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
@@ -40,7 +40,7 @@ export const getFlexLayers = (parentId: string) => {
 };
 
 export const getSnapshotUpdatedTime = (state: AppState) =>
-  state.ui.layoutConversion.snapshotDetails?.lastUpdatedTime;
+  state.ui.layoutConversion.snapshotDetails?.updatedTime;
 
 export const getLayerIndex = (widgetId: string, parentId: string) => {
   return createSelector(

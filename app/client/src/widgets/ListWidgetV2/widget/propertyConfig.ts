@@ -12,7 +12,7 @@ import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
 import {
   LIST_WIDGET_V2_TOTAL_RECORD_TOOLTIP,
   createMessage,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 
 const MIN_ITEM_SPACING = 0;
 const MAX_ITEM_SPACING = 16;
@@ -28,6 +28,8 @@ const isValidListData = (
 export const primaryColumnValidation = (
   inputValue: unknown,
   props: ListWidgetProps,
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _: any,
 ) => {
   const { dynamicPropertyPathList = [], listData = [] } = props;
@@ -36,20 +38,23 @@ export const primaryColumnValidation = (
     dynamicPropertyPathList.find((d) => d.key === "primaryKeys"),
   );
 
-  // For not valid entries an empty array is parsed as the inputValue is an array type
-  if (isArray) {
-    if (inputValue.length === 0) {
-      return {
-        isValid: false,
-        parsed: [],
-        messages: [
-          {
-            name: "ValidationError",
-            message: "数据标识符解析为空数组，请使用有效的标识符",
-          },
-        ],
-      };
-    }
+  if (listData.length) {
+    if (isArray) {
+      // For not valid entries an empty array is parsed as the inputValue is an array type
+      if (inputValue.length === 0) {
+        return {
+          isValid: false,
+          parsed: [],
+          messages: [
+            {
+              name: "ValidationError",
+              message:
+                "This data identifier evaluates to an empty array. Please use an identifier that evaluates to a valid value.",
+            },
+          ],
+        };
+      }
+
 
     // when PrimaryKey is {{ currentItem["img"] }} and img doesn't exist in the data.
     if (inputValue.every((value) => _.isNil(value))) {
@@ -82,6 +87,8 @@ export const primaryColumnValidation = (
     const areKeysUnique = _.uniq(inputValue).length === listData.length;
 
     const isDataTypeUnique =
+        // TODO: Fix this the next time the file is edited
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       _.uniqBy(inputValue, (item: any) => item.toString()).length ===
       listData.length;
 
@@ -114,11 +121,16 @@ export const primaryColumnValidation = (
     parsed: inputValue,
     messages: [{ name: "", message: "" }],
   };
+ }
 };
 
 export function defaultSelectedItemValidation(
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any,
   props: ListWidgetProps,
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _?: any,
 ): ValidationResponse {
   const TYPE_ERROR_MESSAGE = {

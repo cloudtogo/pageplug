@@ -1,8 +1,8 @@
 import { createReducer } from "utils/ReducerUtils";
-import { getAppsmithConfigs } from "@appsmith/configs";
+import { getAppsmithConfigs } from "ee/configs";
 const { inCloudOS } = getAppsmithConfigs();
-import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import type { ReduxAction } from "ee/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
 import type { User } from "constants/userConstants";
 import type { APP_MODE } from "entities/App";
 

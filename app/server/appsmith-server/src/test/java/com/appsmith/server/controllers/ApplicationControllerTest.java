@@ -11,7 +11,7 @@ import com.appsmith.server.exceptions.AppsmithErrorCode;
 import com.appsmith.server.exports.internal.ExportService;
 import com.appsmith.server.exports.internal.partial.PartialExportService;
 import com.appsmith.server.fork.internal.ApplicationForkingService;
-import com.appsmith.server.helpers.GitFileUtils;
+import com.appsmith.server.helpers.CommonGitFileUtils;
 import com.appsmith.server.helpers.RedisUtils;
 import com.appsmith.server.imports.internal.ImportService;
 import com.appsmith.server.imports.internal.partial.PartialImportService;
@@ -20,21 +20,22 @@ import com.appsmith.server.services.ApplicationPageService;
 import com.appsmith.server.services.ApplicationSnapshotService;
 import com.appsmith.server.services.SessionUserService;
 import com.appsmith.server.services.UserDataService;
-import com.appsmith.server.solutions.ApplicationFetcher;
+import com.appsmith.server.solutions.UserReleaseNotes;
 import com.appsmith.server.themes.base.ThemeService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.reactive.ReactiveMultipartAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 import reactor.core.publisher.Mono;
@@ -43,8 +44,9 @@ import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.any;
 
-@ExtendWith(SpringExtension.class)
-@WebFluxTest(ApplicationController.class)
+@SpringBootTest
+@AutoConfigureWebTestClient
+@EnableAutoConfiguration(exclude = ReactiveMultipartAutoConfiguration.class)
 @Import({SecurityTestConfig.class, RedisUtils.class, RedisTestContainerConfig.class})
 public class ApplicationControllerTest {
     @MockBean
@@ -54,7 +56,7 @@ public class ApplicationControllerTest {
     ApplicationPageService applicationPageService;
 
     @MockBean
-    ApplicationFetcher applicationFetcher;
+    UserReleaseNotes applicationFetcher;
 
     @MockBean
     ApplicationForkingService applicationForkingService;
@@ -74,14 +76,11 @@ public class ApplicationControllerTest {
     @MockBean
     UserDataService userDataService;
 
-    @Autowired
-    private WebTestClient webTestClient;
-
     @MockBean
     AnalyticsService analyticsService;
 
     @MockBean
-    GitFileUtils gitFileUtils;
+    CommonGitFileUtils commonGitFileUtils;
 
     @MockBean
     SessionUserService sessionUserService;
@@ -94,6 +93,9 @@ public class ApplicationControllerTest {
 
     @MockBean
     ProjectProperties projectProperties;
+
+    @Autowired
+    private WebTestClient webTestClient;
 
     private String getFileName(int length) {
         StringBuilder fileName = new StringBuilder();

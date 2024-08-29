@@ -31,12 +31,15 @@ import moment from "moment";
 import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
 import { DynamicHeight } from "utils/WidgetFeatures";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 import type {
   SnipingModeProperty,
   PropertyUpdates,
 } from "WidgetProvider/constants";
 import { WIDGET_TAGS } from "constants/WidgetConstants";
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function allowedRange(value: any) {
   const allowedValues = [0, 1, 2, 3, 4, 5, 6];
   const isValid = allowedValues.includes(Number(value));
@@ -65,6 +68,7 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
     return {
       name: "日期选择器",
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
       searchTags: ["calendar", "date", "time", "datetime"],
@@ -635,6 +639,8 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
     };
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       value: undefined,

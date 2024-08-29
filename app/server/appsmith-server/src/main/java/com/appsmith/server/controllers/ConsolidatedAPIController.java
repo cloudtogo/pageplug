@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.observability.micrometer.Micrometer;
 import reactor.core.publisher.Mono;
 
+import java.util.Objects;
+
 import static com.appsmith.external.constants.spans.ConsolidatedApiSpanNames.CONSOLIDATED_API_ROOT_EDIT;
 import static com.appsmith.external.constants.spans.ConsolidatedApiSpanNames.CONSOLIDATED_API_ROOT_VIEW;
 
@@ -43,21 +45,24 @@ public class ConsolidatedAPIController {
     @JsonView(Views.Public.class)
     @GetMapping("/edit")
     public Mono<ResponseDTO<ConsolidatedAPIResponseDTO>> getAllDataForFirstPageLoadForEditMode(
-            @RequestParam(required = false) String applicationId,
-            @RequestParam(required = false) String defaultPageId,
-            @RequestHeader(name = FieldName.BRANCH_NAME, required = false) String branchName) {
+            @RequestParam(name = FieldName.APPLICATION_ID, required = false) String baseApplicationId,
+            @RequestParam(name = "defaultPageId", required = false) String basePageId,
+            @RequestHeader(required = false) String branchName) {
         log.debug(
-                "Going to fetch consolidatedAPI response for applicationId: {}, defaultPageId: {}, branchName: {}, "
+                "Going to fetch consolidatedAPI response for baseApplicationId: {}, basePageId: {}, branchName: {}, "
                         + "mode: {}",
-                applicationId,
-                defaultPageId,
+                baseApplicationId,
+                basePageId,
                 branchName,
                 ApplicationMode.EDIT);
 
         return consolidatedAPIService
-                .getConsolidatedInfoForPageLoad(defaultPageId, applicationId, branchName, ApplicationMode.EDIT)
+                .getConsolidatedInfoForPageLoad(basePageId, baseApplicationId, branchName, ApplicationMode.EDIT)
                 .map(consolidatedAPIResponseDTO ->
                         new ResponseDTO<>(HttpStatus.OK.value(), consolidatedAPIResponseDTO, null))
+                .tag("pageId", Objects.toString(basePageId))
+                .tag("applicationId", Objects.toString(baseApplicationId))
+                .tag("branchName", Objects.toString(branchName))
                 .name(CONSOLIDATED_API_ROOT_EDIT)
                 .tap(Micrometer.observation(observationRegistry));
     }
@@ -80,6 +85,9 @@ public class ConsolidatedAPIController {
                 .getConsolidatedInfoForPageLoad(defaultPageId, applicationId, branchName, ApplicationMode.PUBLISHED)
                 .map(consolidatedAPIResponseDTO ->
                         new ResponseDTO<>(HttpStatus.OK.value(), consolidatedAPIResponseDTO, null))
+                .tag("pageId", Objects.toString(defaultPageId))
+                .tag("applicationId", Objects.toString(applicationId))
+                .tag("branchName", Objects.toString(branchName))
                 .name(CONSOLIDATED_API_ROOT_VIEW)
                 .tap(Micrometer.observation(observationRegistry));
     }

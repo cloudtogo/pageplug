@@ -7,6 +7,7 @@ import com.appsmith.server.authentication.oauth2clientrepositories.CustomOauth2C
 import com.appsmith.server.constants.FieldName;
 import com.appsmith.server.constants.Url;
 import com.appsmith.server.domains.User;
+import com.appsmith.server.dtos.ResponseDTO;
 import com.appsmith.server.filters.CSRFFilter;
 import com.appsmith.server.filters.ConditionalFilter;
 import com.appsmith.server.filters.LoginRateLimitFilter;
@@ -14,6 +15,7 @@ import com.appsmith.server.helpers.RedirectHelper;
 import com.appsmith.server.ratelimiting.RateLimitService;
 import com.appsmith.server.services.AnalyticsService;
 import com.appsmith.server.services.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,10 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.InvalidMediaTypeException;
+import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -41,6 +47,8 @@ import org.springframework.security.web.server.util.matcher.ServerWebExchangeMat
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilterChain;
 import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 import org.springframework.web.server.session.CookieWebSessionIdResolver;
 import org.springframework.web.server.session.WebSessionIdResolver;
@@ -162,10 +170,10 @@ public class SecurityConfig {
         ServerAuthenticationEntryPointFailureHandler failureHandler =
                 new ServerAuthenticationEntryPointFailureHandler(authenticationEntryPoint);
 
-        return http
+        return http.addFilterAt(this::sanityCheckFilter, SecurityWebFiltersOrder.FIRST)
                 // The native CSRF solution doesn't work with WebFlux, yet, but only for WebMVC. So we make our own.
                 .csrf(csrfSpec -> csrfSpec.disable())
-                .addFilterAt(new CSRFFilter(), SecurityWebFiltersOrder.CSRF)
+                .addFilterAt(new CSRFFilter(objectMapper), SecurityWebFiltersOrder.CSRF)
                 // Default security headers configuration from
                 // https://docs.spring.io/spring-security/site/docs/5.0.x/reference/html/headers.html
                 .headers(headerSpec -> headerSpec
@@ -177,46 +185,46 @@ public class SecurityConfig {
                 // This returns 401 unauthorized for all requests that are not authenticated but authentication is
                 // required
                 // The client will redirect to the login page if we return 401 as Http status response
-                .exceptionHandling()
-                .authenticationEntryPoint(authenticationEntryPoint)
-                .accessDeniedHandler(accessDeniedHandler)
-                .and()
-                .authorizeExchange()
-                .matchers(
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, Url.LOGIN_URL),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, Url.HEALTH_CHECK),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, Url.WX_LOGIN_URL + "/*"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL + "/super"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL + "/forgotPassword"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, USER_URL + "/verifyPasswordResetToken"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.PUT, USER_URL + "/resetPassword"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, USER_URL + "/invite/verify"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.PUT, USER_URL + "/invite/confirm"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, USER_URL + "/me"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, USER_URL + "/features"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, ASSET_URL + "/*"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, ACTION_URL + "/**"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, ACTION_COLLECTION_URL + "/view"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, PAGE_URL + "/**"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, APPLICATION_URL + "/**"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, THEME_URL + "/**"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, ACTION_URL + "/execute"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, CLOUDOS_URL + "/getMiniPreview"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, TENANT_URL + "/current"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USAGE_PULSE_URL),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, CUSTOM_JS_LIB_URL + "/*/view"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL + "/resendEmailVerification"),
-                        ServerWebExchangeMatchers.pathMatchers(
-                                HttpMethod.POST, USER_URL + "/verifyEmailVerificationToken"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, PRODUCT_ALERT + "/alert"),
-                        ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, CONSOLIDATED_API_URL + "/view"))
-                .permitAll()
-                .pathMatchers("/public/**", "/oauth2/**")
-                .permitAll()
-                .anyExchange()
-                .authenticated()
-                .and()
+                .exceptionHandling(exceptionHandlingSpec -> exceptionHandlingSpec
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler))
+                .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec
+                        // The following endpoints are allowed to be accessed without authentication
+                        .matchers(
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, Url.LOGIN_URL),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, Url.HEALTH_CHECK),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL + "/super"),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USER_URL + "/forgotPassword"),
+                                ServerWebExchangeMatchers.pathMatchers(
+                                        HttpMethod.GET, USER_URL + "/verifyPasswordResetToken"),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.PUT, USER_URL + "/resetPassword"),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, USER_URL + "/invite/verify"),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.PUT, USER_URL + "/invite/confirm"),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, USER_URL + "/me"),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, "/v3/**"),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, USER_URL + "/features"),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, ASSET_URL + "/*"),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, ACTION_URL + "/**"),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, ACTION_COLLECTION_URL + "/view"),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, PAGE_URL + "/**"),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, APPLICATION_URL + "/**"),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, THEME_URL + "/**"),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, ACTION_URL + "/execute"),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, TENANT_URL + "/current"),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.POST, USAGE_PULSE_URL),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, CUSTOM_JS_LIB_URL + "/*/view"),
+                                ServerWebExchangeMatchers.pathMatchers(
+                                        HttpMethod.POST, USER_URL + "/resendEmailVerification"),
+                                ServerWebExchangeMatchers.pathMatchers(
+                                        HttpMethod.POST, USER_URL + "/verifyEmailVerificationToken"),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, PRODUCT_ALERT + "/alert"),
+                                ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, CONSOLIDATED_API_URL + "/view"))
+                        .permitAll()
+                        .pathMatchers("/public/**", "/oauth2/**")
+                        .permitAll()
+                        .anyExchange()
+                        .authenticated())
                 // Add Pre Auth rate limit filter before authentication filter
                 .addFilterBefore(
                         new ConditionalFilter(new LoginRateLimitFilter(rateLimitService), Url.LOGIN_URL),
@@ -266,9 +274,41 @@ public class SecurityConfig {
         User user = new User();
         user.setName(FieldName.ANONYMOUS_USER);
         user.setEmail(FieldName.ANONYMOUS_USER);
-        user.setCurrentWorkspaceId("");
         user.setWorkspaceIds(new HashSet<>());
         user.setIsAnonymous(true);
         return user;
+    }
+
+    private Mono<Void> sanityCheckFilter(ServerWebExchange exchange, WebFilterChain chain) {
+        // 1. Check if the content-type is valid at all. Mostly just checks if it contains a `/`.
+        MediaType contentType;
+        try {
+            contentType = exchange.getRequest().getHeaders().getContentType();
+        } catch (InvalidMediaTypeException e) {
+            return writeErrorResponse(exchange, chain, e.getMessage());
+        }
+
+        // 2. Check if it's a content-type our controllers actually work with.
+        if (contentType != null
+                && !MediaType.APPLICATION_JSON.equalsTypeAndSubtype(contentType)
+                && !MediaType.APPLICATION_FORM_URLENCODED.equalsTypeAndSubtype(contentType)
+                && !MediaType.MULTIPART_FORM_DATA.equalsTypeAndSubtype(contentType)) {
+            return writeErrorResponse(exchange, chain, "Unsupported Content-Type");
+        }
+
+        return chain.filter(exchange);
+    }
+
+    private Mono<Void> writeErrorResponse(ServerWebExchange exchange, WebFilterChain chain, String message) {
+        final ServerHttpResponse response = exchange.getResponse();
+        response.setStatusCode(HttpStatus.BAD_REQUEST);
+        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+        try {
+            return response.writeWith(Mono.just(response.bufferFactory()
+                    .wrap(objectMapper.writeValueAsBytes(
+                            new ResponseDTO<>(response.getStatusCode().value(), null, message, false)))));
+        } catch (JsonProcessingException ex) {
+            return chain.filter(exchange);
+        }
     }
 }

@@ -3,7 +3,7 @@ import styled, { ThemeProvider } from "styled-components";
 import { useDispatch } from "react-redux";
 import type { RouteComponentProps } from "react-router";
 import { withRouter } from "react-router";
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import type {
   AppViewerRouteParams,
   BuilderRouteParams,
@@ -21,7 +21,7 @@ import {
   getShowTabBar,
   getCurrentPage,
   getIsAutoLayout,
-  getViewModePageList,
+  getPageList,
 } from "selectors/editorSelectors";
 import { isMobileLayout } from "selectors/applicationSelectors";
 import { getThemeDetails, ThemeMode } from "selectors/themeSelectors";
@@ -40,44 +40,37 @@ import { setupPublishedPage } from "actions/pageActions";
 import usePrevious from "utils/hooks/usePrevious";
 import { getIsBranchUpdated } from "../utils";
 import { APP_MODE } from "entities/App";
-import { initAppViewer } from "actions/initActions";
+import { initAppViewerAction } from "actions/initActions";
 import { WidgetGlobaStyles } from "globalStyles/WidgetGlobalStyles";
 import useWidgetFocus from "utils/hooks/useWidgetFocus/useWidgetFocus";
 import HtmlTitle from "./AppViewerHtmlTitle";
-import type { ApplicationPayload } from "@appsmith/constants/ReduxActionConstants";
+import type { ApplicationPayload } from "ee/constants/ReduxActionConstants";
 import {
   getAppThemeSettings,
   getCurrentApplication,
-} from "@appsmith/selectors/applicationSelectors";
+} from "ee/selectors/applicationSelectors";
 import { editorInitializer } from "../../utils/editor/EditorUtils";
 import { widgetInitialisationSuccess } from "../../actions/widgetActions";
-import type { FontFamily } from "@design-system/theming";
+import type { FontFamily } from "@appsmith/wds-theming";
 import {
   ThemeProvider as WDSThemeProvider,
   useTheme,
-} from "@design-system/theming";
+} from "@appsmith/wds-theming";
 import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
-import { KBViewerFloatingButton } from "@appsmith/pages/AppViewer/KnowledgeBase/KBViewerFloatingButton";
-import urlBuilder from "@appsmith/entities/URLRedirect/URLAssembly";
-import { getHideWatermark } from "@appsmith/selectors/tenantSelectors";
+import { KBViewerFloatingButton } from "ee/pages/AppViewer/KnowledgeBase/KBViewerFloatingButton";
+import urlBuilder from "ee/entities/URLRedirect/URLAssembly";
+import { getHideWatermark } from "ee/selectors/tenantSelectors";
+import { getIsAnvilLayout } from "layoutSystems/anvil/integrations/selectors";
 
 const AppViewerBody = styled.section<{
-  showTabBar: boolean;
-  isMobile: boolean;
   hasPages: boolean;
   headerHeight: number;
-  showGuidedTourMessage: boolean;
   $contain: string;
 }>`
   display: flex;
   flex-direction: row;
   align-items: stretch;
   justify-content: flex-start;
-  // height: calc(
-  //   100vh - ${(props) => (props.isMobile ? "0px" : "0px")} -
-  //     ${(props) => (props.showTabBar ? "60px" : "0px")} -
-  //     ${({ headerHeight }) => headerHeight}px
-  // );
   height: calc(100vh - ${({ headerHeight }) => headerHeight}px);
   --view-mode-header-height: ${({ headerHeight }) => headerHeight}px;
   contain: ${({ $contain }) => $contain};
@@ -117,16 +110,20 @@ const DEFAULT_FONT_NAME = "System Default";
 function AppViewer(props: Props) {
   const dispatch = useDispatch();
   const { pathname, search } = props.location;
-  const { applicationId, pageId } = props.match.params;
+  const { baseApplicationId, basePageId } = props.match.params;
   const isInitialized = useSelector(getIsInitialized);
-  const pages = useSelector(getViewModePageList);
+  const pages = useSelector(getPageList);
   const selectedTheme = useSelector(getSelectedAppTheme);
   const lightTheme = useSelector((state: AppState) =>
     getThemeDetails(state, ThemeMode.LIGHT),
   );
   const headerHeight = useSelector(getAppViewHeaderHeight);
   const branch = getSearchQuery(search, GIT_BRANCH_QUERY_KEY);
-  const prevValues = usePrevious({ branch, location: props.location, pageId });
+  const prevValues = usePrevious({
+    branch,
+    location: props.location,
+    basePageId,
+  });
   const showTabBar = useSelector(getShowTabBar);
   const isMobile = useSelector(isMobileLayout);
   const currentPage = useSelector(getCurrentPage);
@@ -136,7 +133,7 @@ function AppViewer(props: Props) {
   const currentApplicationDetails: ApplicationPayload | undefined = useSelector(
     getCurrentApplication,
   );
-  const isWDSEnabled = useFeatureFlag("ab_wds_enabled");
+  const isAnvilLayout = useSelector(getIsAnvilLayout);
   const themeSetting = useSelector(getAppThemeSettings);
   const themeProps = {
     borderRadius: selectedTheme.properties.borderRadius.appBorderRadius,
@@ -152,7 +149,7 @@ function AppViewer(props: Props) {
     userDensity: themeSetting.density,
     iconStyle: themeSetting.iconStyle.toLowerCase(),
   };
-  const { theme } = useTheme(isWDSEnabled ? wdsThemeProps : themeProps);
+  const { theme } = useTheme(isAnvilLayout ? wdsThemeProps : themeProps);
   const focusRef = useWidgetFocus();
   const isAutoLayout = useSelector(getIsAutoLayout);
 
@@ -163,17 +160,6 @@ function AppViewer(props: Props) {
     editorInitializer().then(() => {
       dispatch(widgetInitialisationSuccess());
     });
-    // onMount initPage
-    if (applicationId || pageId) {
-      dispatch(
-        initAppViewer({
-          applicationId,
-          branch,
-          pageId,
-          mode: APP_MODE.PUBLISHED,
-        }),
-      );
-    }
   }, []);
 
   /**
@@ -182,20 +168,20 @@ function AppViewer(props: Props) {
   useEffect(() => {
     const prevBranch = prevValues?.branch;
     const prevLocation = prevValues?.location;
-    const prevPageId = prevValues?.pageId;
+    const prevPageBaseId = prevValues?.basePageId;
     let isBranchUpdated = false;
     if (prevBranch && prevLocation) {
       isBranchUpdated = getIsBranchUpdated(props.location, prevLocation);
     }
 
-    const isPageIdUpdated = pageId !== prevPageId;
+    const isPageIdUpdated = basePageId !== prevPageBaseId;
 
-    if (prevBranch && isBranchUpdated && (applicationId || pageId)) {
+    if (prevBranch && isBranchUpdated && (baseApplicationId || basePageId)) {
       dispatch(
-        initAppViewer({
-          applicationId,
+        initAppViewerAction({
+          baseApplicationId,
           branch,
-          pageId,
+          basePageId,
           mode: APP_MODE.PUBLISHED,
         }),
       );
@@ -205,19 +191,24 @@ function AppViewer(props: Props) {
        * If we don't check for `prevPageId`: fetch page is retriggered
        * when redirected to the default page
        */
-      if (prevPageId && pageId && isPageIdUpdated) {
-        dispatch(setupPublishedPage(pageId, true));
+      if (prevPageBaseId && basePageId && isPageIdUpdated) {
+        const pageId = pages.find(
+          (page) => page.basePageId === basePageId,
+        )?.pageId;
+        if (pageId) {
+          dispatch(setupPublishedPage(pageId, true));
+        }
       }
     }
-  }, [branch, pageId, applicationId, pathname]);
+  }, [branch, basePageId, baseApplicationId, pathname]);
 
   useEffect(() => {
-    urlBuilder.setCurrentPageId(pageId);
+    urlBuilder.setCurrentBasePageId(basePageId);
 
     return () => {
-      urlBuilder.setCurrentPageId(null);
+      urlBuilder.setCurrentBasePageId(null);
     };
-  }, [pageId]);
+  }, [basePageId]);
 
   useEffect(() => {
     const header = document.querySelector(".js-appviewer-header");
@@ -261,7 +252,7 @@ function AppViewer(props: Props) {
   const renderChildren = () => {
     return (
       <EditorContextProvider renderMode="PAGE">
-        {!isWDSEnabled && (
+        {!isAnvilLayout && (
           <WidgetGlobaStyles
             fontFamily={selectedTheme.properties.fontFamily.appFont}
             primaryColor={selectedTheme.properties.colors.primaryColor}
@@ -273,7 +264,7 @@ function AppViewer(props: Props) {
         />
         <AppViewerBodyContainer
           backgroundColor={
-            isWDSEnabled ? "" : selectedTheme.properties.colors.backgroundColor
+            isAnvilLayout ? "" : selectedTheme.properties.colors.backgroundColor
           }
         >
           <AppViewerBody
@@ -282,8 +273,6 @@ function AppViewer(props: Props) {
             hasPages={pages.length > 1}
             headerHeight={headerHeight}
             ref={focusRef}
-            showGuidedTourMessage={props.showGuidedTourMessage}
-            showTabBar={showTabBar}
           >
             {isInitialized && <AppViewerPageContainer />}
           </AppViewerBody>
@@ -305,7 +294,7 @@ function AppViewer(props: Props) {
     );
   };
 
-  if (isWDSEnabled) {
+  if (isAnvilLayout) {
     return (
       <WDSThemeProvider theme={theme}>{renderChildren()}</WDSThemeProvider>
     );

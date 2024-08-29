@@ -32,6 +32,7 @@ import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
 import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
 import { DynamicHeight } from "utils/WidgetFeatures";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 
 import { WIDGET_TAGS, layoutConfigurations } from "constants/WidgetConstants";
 
@@ -69,6 +70,7 @@ class MultiSelectTreeWidget extends BaseWidget<
     return {
       name: "树形多选",
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
       searchTags: ["dropdown", "select", "tree", "multi"],
@@ -646,6 +648,8 @@ class MultiSelectTreeWidget extends BaseWidget<
     };
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       selectedOptionValueArr: undefined,

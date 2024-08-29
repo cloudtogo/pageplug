@@ -1,4 +1,4 @@
-import { TYPOGRAPHY_VARIANTS } from "@design-system/theming";
+import { TYPOGRAPHY_VARIANTS } from "@appsmith/wds-theming";
 import { ValidationTypes } from "constants/WidgetValidation";
 
 export const propertyPaneStyleConfig = [
@@ -12,14 +12,6 @@ export const propertyPaneStyleConfig = [
         controlType: "DROP_DOWN",
         defaultValue: "body",
         options: [
-          {
-            label: "Footnote",
-            value: "footnote",
-          },
-          {
-            label: "Caption",
-            value: "caption",
-          },
           {
             label: "Body",
             value: "body",
@@ -40,6 +32,7 @@ export const propertyPaneStyleConfig = [
         isJSConvertible: true,
         isBindProperty: true,
         isTriggerProperty: false,
+        isReusable: true,
         validation: {
           type: ValidationTypes.TEXT,
           params: {
@@ -77,6 +70,7 @@ export const propertyPaneStyleConfig = [
         isJSConvertible: true,
         isBindProperty: true,
         isTriggerProperty: false,
+        isReusable: true,
         validation: {
           type: ValidationTypes.TEXT,
           params: {
@@ -103,6 +97,7 @@ export const propertyPaneStyleConfig = [
         isJSConvertible: true,
         isBindProperty: true,
         isTriggerProperty: false,
+        isReusable: true,
         validation: { type: ValidationTypes.TEXT },
       },
     ],

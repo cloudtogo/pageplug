@@ -32,7 +32,7 @@ defaults:
 
 jobs:
   build:
-    runs-on: appsmith-self-hosted-deployment-runner
+    runs-on: ubuntu-latest
     # Only run this workflow for internally triggered events
     if: |
       github.event.pull_request.head.repo.full_name == github.repository ||
@@ -77,7 +77,7 @@ jobs:
 
       # In case this is second attempt try restoring status of the prior attempt from cache
       - name: Restore the previous run result
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/run_result
@@ -94,16 +94,16 @@ jobs:
 
       - name: Use Node.js
         if: steps.run_result.outputs.run_result != 'success'
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: app/client/package.json
 
-      # actions/setup-node@v3 doesn’t work properly with Yarn 3
+      # actions/setup-node@v4 doesn’t work properly with Yarn 3
       # when the project lives in a subdirectory: https://github.com/actions/setup-node/issues/488
       # Restoring the cache manually instead
       - name: Restore Yarn cache
         if: steps.run_result.outputs.run_result != 'success'
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: app/client/.yarn/cache
           key: v1-yarn3-${{ hashFiles('app/client/yarn.lock') }}
@@ -114,12 +114,12 @@ jobs:
       - name: Install dependencies
         if: steps.run_result.outputs.run_result != 'success'
         run: |
-          npm install -g yarn
+          corepack enable
           yarn install --immutable
 
       # Run the Jest tests only if the workflow has been invoked in a PR
       - name: Run the jest tests
-        if: steps.run_result.outputs.run_result != 'success' && inputs.pr != 0 && inputs.skip-tests != 'true'
+        if: steps.run_result.outputs.run_result != 'success' && inputs.skip-tests != 'true'
         run: yarn run test:unit
 
       - name: Build
@@ -136,7 +136,7 @@ jobs:
 
       # Restore the previous built bundle if present. If not push the newly built into the cache
       - name: Restore the previous bundle
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             app/client/packages/rts/dist/
@@ -149,10 +149,11 @@ jobs:
 
       # Upload the build artifacts and dependencies so that it can be used by the test & deploy job in other workflows
       - name: Upload rts build bundle
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: rts-dist
           path: app/client/packages/rts/rts-dist.tar
+          overwrite: true
 
       # Set status = success
       - name: Save the status of the run

@@ -7,37 +7,35 @@ import React, {
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getCurrentApplication,
   getCurrentApplicationId,
   getCurrentPageId,
 } from "selectors/editorSelectors";
 import { EntityClassNames } from "../Entity";
 import { createNewPageFromEntities } from "actions/pageActions";
-import { ADD_PAGE_TOOLTIP, createMessage } from "@appsmith/constants/messages";
-import type { Page } from "@appsmith/constants/ReduxActionConstants";
+import { ADD_PAGE_TOOLTIP, createMessage } from "ee/constants/messages";
+import type { Page } from "ee/constants/ReduxActionConstants";
 import { getNextEntityName } from "utils/AppsmithUtils";
 import PageContextMenu from "./PageContextMenu";
-import { resolveAsSpaceChar } from "utils/helpers";
-import { builderURL, viewerLayoutEditorURL } from "@appsmith/RouteBuilder";
+import { builderURL, viewerLayoutEditorURL } from "ee/RouteBuilder";
 import { getExplorerPinned } from "selectors/explorerSelector";
 import { setExplorerPinnedAction } from "actions/explorerActions";
-import { selectAllPages } from "@appsmith/selectors/entitiesSelector";
+import { selectAllPages } from "ee/selectors/entitiesSelector";
 import {
   getExplorerStatus,
   saveExplorerStatus,
-} from "@appsmith/pages/Editor/Explorer/helpers";
+} from "ee/pages/Editor/Explorer/helpers";
 import AddPageContextMenu from "./AddPageContextMenu";
 import { useLocation } from "react-router";
 import { toggleInOnboardingWidgetSelection } from "actions/onboardingActions";
 import { isMobileLayout } from "selectors/applicationSelectors";
 import { TooltipComponent } from "design-system-old";
 import { Icon } from "@blueprintjs/core";
-import type { AppState } from "@appsmith/reducers";
-import { getCurrentWorkspaceId } from "@appsmith/selectors/selectedWorkspaceSelectors";
-import { getInstanceId } from "@appsmith//selectors/tenantSelectors";
+import type { AppState } from "ee/reducers";
+import { getCurrentWorkspaceId } from "ee/selectors/selectedWorkspaceSelectors";
+import { getInstanceId } from "ee//selectors/tenantSelectors";
 import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
-import { getHasCreatePagePermission } from "@appsmith/utils/BusinessFeatures/permissionPageHelpers";
+import { FEATURE_FLAG } from "ee/entities/FeatureFlag";
+import { getHasCreatePagePermission } from "ee/utils/BusinessFeatures/permissionPageHelpers";
 import {
   ENTITY_HEIGHT,
   RelativeContainer,
@@ -45,6 +43,7 @@ import {
 } from "../Common/components";
 import { EntityExplorerResizeHandler } from "../Common/EntityExplorerResizeHandler";
 import { PageElement } from "pages/Editor/IDE/EditorPane/components/PageElement";
+import { getCurrentApplication } from "ee/selectors/applicationSelectors";
 import history from "utils/history";
 
 function Pages() {
@@ -85,13 +84,7 @@ function Pages() {
     );
 
     dispatch(
-      createNewPageFromEntities(
-        applicationId,
-        name,
-        workspaceId,
-        false,
-        instanceId,
-      ),
+      createNewPageFromEntities(applicationId, name, workspaceId, instanceId),
     );
   }, [dispatch, pages, applicationId]);
 
@@ -109,7 +102,7 @@ function Pages() {
     </TooltipComponent>
   );
   const navToLayoutEditor = useCallback(() => {
-    history.push(viewerLayoutEditorURL({ pageId: currentPageId }));
+    history.push(viewerLayoutEditorURL({ basePageId: currentPageId }));
   }, [currentPageId]);
 
   /**

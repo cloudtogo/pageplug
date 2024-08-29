@@ -5,6 +5,7 @@ import com.appsmith.server.acl.AclPermission;
 import com.appsmith.server.applications.base.ApplicationService;
 import com.appsmith.server.constants.FieldName;
 import com.appsmith.server.domains.Application;
+import com.appsmith.server.domains.ApplicationMode;
 import com.appsmith.server.domains.GitArtifactMetadata;
 import com.appsmith.server.domains.Layout;
 import com.appsmith.server.domains.NewPage;
@@ -25,14 +26,12 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -41,12 +40,13 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Slf4j
 @DirtiesContext
@@ -140,7 +140,7 @@ public class ApplicationPageServiceTest {
     @WithUserDetails("api_user")
     public void cloneApplication_WhenClonedSuccessfully_ApplicationIsPublished() {
         Mono<Application> applicationMono = createPageMono(UUID.randomUUID().toString())
-                .flatMap(pageDTO -> applicationPageService.cloneApplication(pageDTO.getApplicationId(), null));
+                .flatMap(pageDTO -> applicationPageService.cloneApplication(pageDTO.getApplicationId()));
 
         StepVerifier.create(applicationMono)
                 .assertNext(application -> {
@@ -187,8 +187,8 @@ public class ApplicationPageServiceTest {
         String uuid = UUID.randomUUID().toString();
 
         NewPage newPage = createApplication("App_" + uuid)
-                .flatMap(application ->
-                        newPageService.getById(application.getPages().get(0).getId()))
+                .flatMap(application -> newPageService.getByIdWithoutPermissionCheck(
+                        application.getPages().get(0).getId()))
                 .block();
 
         // mock the dsMigrationUtils to return the current DSL version as the latest DSL version
@@ -197,7 +197,7 @@ public class ApplicationPageServiceTest {
         int currentDslVersion = layout.getDsl().getAsNumber("version").intValue();
         Mockito.when(dslMigrationUtils.getLatestDslVersion()).thenReturn(Mono.just(currentDslVersion));
 
-        StepVerifier.create(applicationPageService.getPageAndMigrateDslByBranchAndDefaultPageId(
+        StepVerifier.create(applicationPageService.getPageAndMigrateDslByBranchAndBasePageId(
                         newPage.getId(), null, false, true))
                 .assertNext(pageDTO -> {
                     Layout layout2 = pageDTO.getLayouts().get(0);
@@ -217,8 +217,8 @@ public class ApplicationPageServiceTest {
     public void getPageAndMigrateDslByBranchAndDefaultPageId_WhenEditModeDslIsNotLatest_EditModeDslMigrated() {
         String uuid = UUID.randomUUID().toString();
         NewPage newPage = createApplication("App_" + uuid)
-                .flatMap(application ->
-                        newPageService.getById(application.getPages().get(0).getId()))
+                .flatMap(application -> newPageService.getByIdWithoutPermissionCheck(
+                        application.getPages().get(0).getId()))
                 .block();
 
         // mock the dsMigrationUtils to return the (current DSL version-1) as the latest DSL version
@@ -242,8 +242,8 @@ public class ApplicationPageServiceTest {
         Mockito.when(dslMigrationUtils.migratePageDsl(any(JSONObject.class))).thenReturn(Mono.just(dslAfterMigration));
 
         Mono<NewPage> newPageMono = applicationPageService
-                .getPageAndMigrateDslByBranchAndDefaultPageId(newPage.getId(), null, false, true)
-                .then(newPageService.getById(newPage.getId()));
+                .getPageAndMigrateDslByBranchAndBasePageId(newPage.getId(), null, false, true)
+                .then(newPageService.getByIdWithoutPermissionCheck(newPage.getId()));
 
         StepVerifier.create(newPageMono)
                 .assertNext(newpage -> {
@@ -276,8 +276,8 @@ public class ApplicationPageServiceTest {
     public void getPageAndMigrateDslByBranchAndDefaultPageId_WhenDSLHasNotVersion_DslMigratedToLatest() {
         String uuid = UUID.randomUUID().toString();
         NewPage newPage = createApplication("App_" + uuid)
-                .flatMap(application ->
-                        newPageService.getById(application.getPages().get(0).getId()))
+                .flatMap(application -> newPageService.getByIdWithoutPermissionCheck(
+                        application.getPages().get(0).getId()))
                 .flatMap(page -> {
                     Layout layout = page.getUnpublishedPage().getLayouts().get(0);
                     JSONObject unpublishedDsl = layout.getDsl();
@@ -302,8 +302,8 @@ public class ApplicationPageServiceTest {
         Mockito.when(dslMigrationUtils.migratePageDsl(any(JSONObject.class))).thenReturn(Mono.just(dslAfterMigration));
 
         Mono<NewPage> newPageMono = applicationPageService
-                .getPageAndMigrateDslByBranchAndDefaultPageId(newPage.getId(), null, false, true)
-                .then(newPageService.getById(newPage.getId()));
+                .getPageAndMigrateDslByBranchAndBasePageId(newPage.getId(), null, false, true)
+                .then(newPageService.getByIdWithoutPermissionCheck(newPage.getId()));
 
         StepVerifier.create(newPageMono)
                 .assertNext(newpage -> {
@@ -325,8 +325,8 @@ public class ApplicationPageServiceTest {
     public void getPageAndMigrateDslByBranchAndDefaultPageId_WhenViewModeDslIsNotLatest_ViewModeDslMigrated() {
         String uuid = UUID.randomUUID().toString();
         NewPage newPage = createApplication("App_" + uuid)
-                .flatMap(application ->
-                        newPageService.getById(application.getPages().get(0).getId()))
+                .flatMap(application -> newPageService.getByIdWithoutPermissionCheck(
+                        application.getPages().get(0).getId()))
                 .block();
 
         // mock the dsMigrationUtils to return the (current DSL version-1) as the latest DSL version
@@ -350,8 +350,8 @@ public class ApplicationPageServiceTest {
         Mockito.when(dslMigrationUtils.migratePageDsl(any(JSONObject.class))).thenReturn(Mono.just(dslAfterMigration));
 
         Mono<NewPage> newPageMono = applicationPageService
-                .getPageAndMigrateDslByBranchAndDefaultPageId(newPage.getId(), null, true, true)
-                .then(newPageService.getById(newPage.getId()));
+                .getPageAndMigrateDslByBranchAndBasePageId(newPage.getId(), null, true, true)
+                .then(newPageService.getByIdWithoutPermissionCheck(newPage.getId()));
 
         StepVerifier.create(newPageMono)
                 .assertNext(newpage -> {
@@ -430,5 +430,64 @@ public class ApplicationPageServiceTest {
                 .expectErrorMatches(throwable -> throwable instanceof AppsmithException
                         && throwable.getMessage().equals(AppsmithError.INVALID_PARAMETER.getMessage(FieldName.ID, id)))
                 .verify();
+    }
+
+    @Test
+    @WithUserDetails("api_user")
+    public void verifyGetPagesBasedOnApplicationMode_ReturnsRigthNumberOfPages_BasedOnApplicationMode() {
+        final String appName = "app" + UUID.randomUUID();
+        Application application = new Application();
+        application.setName(appName);
+
+        Application createdApplication = applicationPageService
+                .createApplication(application, workspace.getId())
+                .block();
+
+        String applicationId = createdApplication.getId();
+
+        PageDTO pageDTO = new PageDTO();
+        pageDTO.setApplicationId(applicationId);
+        final String pageName = "app" + UUID.randomUUID();
+        pageDTO.setName(pageName);
+        applicationPageService.createPage(pageDTO).block();
+
+        applicationPageService.publish(applicationId, true).block();
+
+        PageDTO pageDTO1 = new PageDTO();
+        pageDTO1.setApplicationId(applicationId);
+        final String unpublishedPageName = "app" + UUID.randomUUID();
+        pageDTO1.setName(unpublishedPageName);
+        applicationPageService.createPage(pageDTO1).block();
+
+        Application updatedApplication =
+                applicationService.findById(createdApplication.getId()).block();
+
+        Mono<List<NewPage>> unpublishedPagesMono =
+                applicationPageService.getPagesBasedOnApplicationMode(updatedApplication, ApplicationMode.EDIT);
+
+        Mono<List<NewPage>> publishedPagesMono =
+                applicationPageService.getPagesBasedOnApplicationMode(updatedApplication, ApplicationMode.PUBLISHED);
+
+        StepVerifier.create(publishedPagesMono)
+                .assertNext(pages -> {
+                    assertThat(pages.size()).isEqualTo(2);
+                    Set<String> pageNames = pages.stream()
+                            .map(page -> page.getUnpublishedPage().getName())
+                            .collect(Collectors.toSet());
+                    assertThat(pageNames).contains(pageName);
+                    assertThat(pageNames).doesNotContain(unpublishedPageName);
+                })
+                .verifyComplete();
+
+        StepVerifier.create(unpublishedPagesMono)
+                .assertNext(pages -> {
+                    assertThat(pages.size()).isEqualTo(3);
+                    Set<String> pageNames = pages.stream()
+                            .map(page -> page.getUnpublishedPage().getName())
+                            .collect(Collectors.toSet());
+                    assertThat(pageNames).contains(pageName);
+                    assertThat(pageNames).contains(unpublishedPageName);
+                })
+                .verifyComplete();
     }
 }

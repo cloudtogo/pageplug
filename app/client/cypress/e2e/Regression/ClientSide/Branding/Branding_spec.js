@@ -2,11 +2,14 @@ const commonlocators = require("../../../../locators/commonlocators.json");
 const widgetsPage = require("../../../../locators/Widgets.json");
 import * as _ from "../../../../support/Objects/ObjectsCore";
 import { REPO, CURRENT_REPO } from "../../../../fixtures/REPO";
-import { agHelper, homePage } from "../../../../support/Objects/ObjectsCore";
+import {
+  agHelper,
+  homePage,
+  adminSettings,
+} from "../../../../support/Objects/ObjectsCore";
 import { featureFlagIntercept } from "../../../../support/Objects/FeatureFlags";
 
 const locators = {
-  AdminSettingsEntryLink: ".admin-settings-menu-option",
   LeftPaneBrandingLink: ".t--settings-category-branding",
   AdminSettingsColorInput: ".t--settings-brand-color-input input[type=text]",
   AdmingSettingsLogoInput: ".t--settings-brand-logo-input input[type=file]",
@@ -29,7 +32,7 @@ const locators = {
   AdminSettingsColorInputShades: ".t--color-input-shades",
   businessTag: ".business-tag",
   upgradeBanner: ".upgrade-banner",
-  upgradeButton: "[data-testid='t--branding-upgrade-button']",
+  upgradeButton: "[data-testid='t--button-upgrade']",
 };
 
 describe("Branding", { tags: ["@tag.Settings"] }, () => {
@@ -54,9 +57,9 @@ describe("Branding", { tags: ["@tag.Settings"] }, () => {
   it("2. Super user can access branding page", () => {
     cy.LogOut(false);
     cy.LoginFromAPI(Cypress.env("USERNAME"), Cypress.env("PASSWORD"));
-    cy.get(locators.AdminSettingsEntryLink).should("be.visible");
-    cy.get(locators.AdminSettingsEntryLink).click();
-    cy.url().should("contain", "/settings/general");
+    cy.get(adminSettings._adminSettingsBtn).should("be.visible");
+    cy.get(adminSettings._adminSettingsBtn).click();
+    cy.url().should("contain", adminSettings.routes.GENERAL);
     agHelper.AssertElementVisibility(locators.LeftPaneBrandingLink);
     agHelper.GetNClick(locators.LeftPaneBrandingLink);
   });
@@ -284,9 +287,9 @@ describe("Branding", { tags: ["@tag.Settings"] }, () => {
   it("6. Super user sees upgrade option in branding page in free plan", () => {
     cy.LogOut(false);
     cy.LoginFromAPI(Cypress.env("USERNAME"), Cypress.env("PASSWORD"));
-    cy.get(locators.AdminSettingsEntryLink).should("be.visible");
-    cy.get(locators.AdminSettingsEntryLink).click();
-    cy.url().should("contain", "/settings/general");
+    cy.get(adminSettings._adminSettingsBtn).should("be.visible");
+    cy.get(adminSettings._adminSettingsBtn).click();
+    cy.url().should("contain", adminSettings.routes.GENERAL);
 
     cy.get(locators.LeftPaneBrandingLink).should("be.visible");
     cy.get(locators.LeftPaneBrandingLink).click();
@@ -303,7 +306,7 @@ describe("Branding", { tags: ["@tag.Settings"] }, () => {
       .find("h2")
       .should(
         "have.text",
-        "Make your workspaces and apps look more yours in a few clicks as in the example below. Upload your logo and favicon, set your primary color, and preview the new look. To save a look you like, upgrade to our Business Edition.",
+        Cypress.env("MESSAGES").ADMIN_BRANDING_SETTINGS_SUBTITLE_UPGRADE(),
       );
     cy.get(locators.upgradeButton)
       .should("be.visible")

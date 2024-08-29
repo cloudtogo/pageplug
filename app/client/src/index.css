@@ -1,31 +1,20 @@
 @import "~normalize.css";
 @import "~@blueprintjs/core/lib/css/blueprint.css";
 @import "~@blueprintjs/icons/lib/css/blueprint-icons.css";
-@import "~design-system-old/build/css/design-system-old.css";
-@import "~design-system/build/css/design-system.css";
 @import "theme/colors.css";
 @import "theme/defaultTheme.css";
 @import "theme/wds.css";
 @import "assets/fonts/custom/index.css";
-@import "assets/fonts/google/index.css";
 
 :root {
   /* TODO: This needs to be fixed! This override is to maintain branding changes. */
   --brand-color: #27b7b7;
   --ads-color-background-secondary: var(--ads-v2-color-bg-subtle);
-  /* All on canvas ui need to be above other editor elements
-     This includes the Modal overlay.
-     The maximum value of z-index in the theme is 9999.
-     This value makes sure that on-canvas ui is always above editor elements
-  */
-  --on-canvas-ui-z-index: 999999;
 }
 
 body {
   margin: 0;
   padding: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   background-color: #fff !important;
   color: var(--ads-v2-color-fg);
 }
@@ -259,6 +248,12 @@ div.bp3-popover-arrow {
 .reconnect-datasource-modal {
   z-index: 9 !important;
 }
+
+
+/* .rc-tree-select-single .rc-tree-select-selector span.rc-tree-select-selection-placeholder {
+  position: absolute;
+  top: 15px;
+} */
 
 /* .rc-tree-select-single .rc-tree-select-selector span.rc-tree-select-selection-placeholder {
   position: absolute;

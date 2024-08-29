@@ -12,26 +12,25 @@ import {
   CONFIRM_CONTEXT_DELETE,
   CONTEXT_MOVE,
   createMessage,
-} from "@appsmith/constants/messages";
-import { getPageListAsOptions } from "@appsmith/selectors/entitiesSelector";
+} from "ee/constants/messages";
+import { getPageListAsOptions } from "ee/selectors/entitiesSelector";
 import {
   autoIndentCode,
   getAutoIndentShortcutKeyText,
 } from "components/editorComponents/CodeEditor/utils/autoIndentUtils";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 import { updateJSCollectionBody } from "actions/jsPaneActions";
 import type { IconName } from "@blueprintjs/icons";
 
 import type { ContextMenuOption } from "./JSEditorContextMenu";
 import JSEditorContextMenu from "./JSEditorContextMenu";
 import equal from "fast-deep-equal/es6";
-import { getJSEntityName } from "../Explorer/JSActions/helpers";
 import {
   getHasDeleteActionPermission,
   getHasManageActionPermission,
-} from "@appsmith/utils/BusinessFeatures/permissionPageHelpers";
+} from "ee/utils/BusinessFeatures/permissionPageHelpers";
 import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
+import { FEATURE_FLAG } from "ee/entities/FeatureFlag";
 import type { JSCollection } from "entities/JSCollection";
 
 interface AppJSEditorContextMenuProps {
@@ -59,12 +58,11 @@ export function AppJSEditorContextMenu({
 
   const copyJSCollectionToPage = useCallback(
     (actionId: string, actionName: string, pageId: string) => {
-      const nextEntityName = getJSEntityName();
       dispatch(
         copyJSCollectionRequest({
           id: actionId,
           destinationPageId: pageId,
-          name: nextEntityName(`${actionName}Copy`, pageId),
+          name: actionName,
         }),
       );
     },
@@ -73,12 +71,11 @@ export function AppJSEditorContextMenu({
 
   const moveJSCollectionToPage = useCallback(
     (actionId: string, actionName: string, destinationPageId: string) => {
-      const nextEntityName = getJSEntityName();
       dispatch(
         moveJSCollectionRequest({
           id: actionId,
           destinationPageId,
-          name: nextEntityName(actionName, destinationPageId, false),
+          name: actionName,
         }),
       );
     },

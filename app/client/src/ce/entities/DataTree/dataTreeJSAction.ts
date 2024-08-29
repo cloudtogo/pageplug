@@ -1,12 +1,12 @@
 import { ENTITY_TYPE } from "entities/DataTree/dataTreeFactory";
-import type { JSCollectionData } from "@appsmith/reducers/entityReducers/jsActionsReducer";
+import type { JSCollectionData } from "ee/reducers/entityReducers/jsActionsReducer";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
 import type { DependencyMap } from "utils/DynamicBindingUtils";
 import type {
   JSActionEntity,
   JSActionEntityConfig,
   MetaArgs,
-} from "@appsmith/entities/DataTree/types";
+} from "ee/entities/DataTree/types";
 
 const reg = /this\./g;
 
@@ -19,12 +19,15 @@ export const generateDataTreeJSAction = (
   const meta: Record<string, MetaArgs> = {};
   const dynamicBindingPathList = [];
   const bindingPaths: Record<string, EvaluationSubstitutionType> = {};
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const variableList: Record<string, any> = {};
-  const variables = js.config.variables;
+  const variables = js.config?.variables;
   const listVariables: Array<string> = [];
   dynamicBindingPathList.push({ key: "body" });
 
-  const removeThisReference = js.config.body.replace(reg, `${js.config.name}.`);
+  const removeThisReference =
+    js.config.body && js.config.body.replace(reg, `${js.config.name}.`);
   bindingPaths["body"] = EvaluationSubstitutionType.SMART_SUBSTITUTE;
 
   if (variables) {
@@ -39,12 +42,14 @@ export const generateDataTreeJSAction = (
   const dependencyMap: DependencyMap = {};
   dependencyMap["body"] = [];
   const actions = js.config.actions;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const actionsData: Record<string, any> = {};
   if (actions) {
     for (let i = 0; i < actions.length; i++) {
       const action = actions[i];
       meta[action.name] = {
-        arguments: action.actionConfiguration?.jsArguments,
+        arguments: action.actionConfiguration?.jsArguments || [],
         confirmBeforeExecute: !!action.confirmBeforeExecute,
       };
       bindingPaths[action.name] = EvaluationSubstitutionType.SMART_SUBSTITUTE;

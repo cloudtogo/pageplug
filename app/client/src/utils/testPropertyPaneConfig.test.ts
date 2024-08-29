@@ -46,15 +46,6 @@ function validatePropertyControl(
   }
 
   if (
-    !isWidgetHidden &&
-    _config.label &&
-    !_config.invisible &&
-    !(_config.helpText || _config.helperText)
-  ) {
-    return `${_config.propertyName} (${_config.label}): Help text or Helper text is mandatory for property controls`;
-  }
-
-  if (
     (_config.isJSConvertible || controls.includes(_config.controlType)) &&
     !_config.isTriggerProperty
   ) {
@@ -130,6 +121,8 @@ function validateValidationStructure(
   return true;
 }
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isNotFloat = (n: any) => {
   return Number(n) === n && n % 1 === 0;
 };

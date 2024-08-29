@@ -32,9 +32,9 @@ import com.appsmith.server.repositories.WorkspaceRepository;
 import com.appsmith.server.solutions.EnvironmentPermission;
 import com.appsmith.server.solutions.UserAndAccessManagementService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,7 +47,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -83,7 +82,6 @@ import static com.appsmith.server.helpers.TextUtils.generateDefaultRoleNameForRe
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @DirtiesContext
 @Slf4j
@@ -1044,7 +1042,10 @@ public class WorkspaceServiceTest {
 
         Application application = new Application();
         application.setName("User Management Admin Test Application");
-        Mono<Application> applicationMono = applicationPageService.createApplication(application, workspace1.getId());
+        Mono<Application> applicationMono = applicationPageService
+                .createApplication(application, workspace1.getId())
+                .cache();
+        final String applicationId = applicationMono.block().getId();
 
         // Create datasource for this workspace
         Mono<Datasource> datasourceMono = workspaceService
@@ -1077,7 +1078,7 @@ public class WorkspaceServiceTest {
                 .flatMap(tuple -> workspaceService.findById(workspace1.getId(), READ_WORKSPACES));
 
         Mono<Application> readApplicationByNameMono = applicationService
-                .findByName("User Management Admin Test Application", READ_APPLICATIONS)
+                .getById(applicationId)
                 .switchIfEmpty(
                         Mono.error(new AppsmithException(AppsmithError.NO_RESOURCE_FOUND, "application by name")));
 
@@ -1201,11 +1202,14 @@ public class WorkspaceServiceTest {
                 .single();
 
         // Create an application for this workspace
-        Mono<Application> applicationMono = workspaceMono.flatMap(workspace1 -> {
-            Application application = new Application();
-            application.setName("User Management Viewer Test Application");
-            return applicationPageService.createApplication(application, workspace1.getId());
-        });
+        Mono<Application> applicationMono = workspaceMono
+                .flatMap(workspace1 -> {
+                    Application application = new Application();
+                    application.setName("User Management Viewer Test Application");
+                    return applicationPageService.createApplication(application, workspace1.getId());
+                })
+                .cache();
+        final String applicationId = applicationMono.block().getId();
 
         Mono<Workspace> userAddedToWorkspaceMono = Mono.zip(workspaceMono, viewerPermissionGroupMono)
                 .flatMap(tuple -> {
@@ -1228,7 +1232,7 @@ public class WorkspaceServiceTest {
                 });
 
         Mono<Application> readApplicationByNameMono = applicationService
-                .findByName("User Management Viewer Test Application", READ_APPLICATIONS)
+                .getById(applicationId)
                 .switchIfEmpty(
                         Mono.error(new AppsmithException(AppsmithError.NO_RESOURCE_FOUND, "application by name")));
 
@@ -1701,5 +1705,73 @@ public class WorkspaceServiceTest {
         assertThat(userList).hasSize(1);
         User invitedUser = userList.get(0);
         assertThat(invitedUser.getUsername()).isEqualTo(testName + "user@test.com");
+    }
+
+    @Test
+    @WithUserDetails(value = "api_user")
+    public void inviteInvalidEmailTooLongLocalPart() {
+        Workspace toCreate = new Workspace();
+        toCreate.setName("inviteInvalidEmail");
+        toCreate.setDomain("example.com");
+        toCreate.setWebsite("https://example.com");
+
+        Workspace workspace = workspaceService.create(toCreate).block();
+
+        // Do the assertions now
+        assertThat(workspace).isNotNull();
+        assertThat(workspace.getName()).isEqualTo("inviteInvalidEmail");
+
+        List<PermissionGroup> permissionGroups = permissionGroupRepository
+                .findAllById(workspace.getDefaultPermissionGroups())
+                .collectList()
+                .block();
+
+        String viewerPermissionGroupId = permissionGroups.stream()
+                .filter(permissionGroup -> permissionGroup.getName().startsWith(VIEWER))
+                .findFirst()
+                .get()
+                .getId();
+
+        InviteUsersDTO inviteUsersDTO = new InviteUsersDTO();
+        inviteUsersDTO.setUsernames(List.of(RandomStringUtils.randomAlphanumeric(65) + "@example.com"));
+        inviteUsersDTO.setPermissionGroupId(viewerPermissionGroupId);
+
+        Mono<List<User>> createdUsers = userAndAccessManagementService.inviteUsers(inviteUsersDTO, origin);
+
+        StepVerifier.create(createdUsers).verifyErrorMessage("Please enter a valid parameter usernames.");
+    }
+
+    @Test
+    @WithUserDetails(value = "api_user")
+    public void inviteInvalidEmailTooLongDomainPart() {
+        Workspace toCreate = new Workspace();
+        toCreate.setName("inviteInvalidEmail");
+        toCreate.setDomain("example.com");
+        toCreate.setWebsite("https://example.com");
+
+        Workspace workspace = workspaceService.create(toCreate).block();
+
+        // Do the assertions now
+        assertThat(workspace).isNotNull();
+        assertThat(workspace.getName()).isEqualTo("inviteInvalidEmail");
+
+        List<PermissionGroup> permissionGroups = permissionGroupRepository
+                .findAllById(workspace.getDefaultPermissionGroups())
+                .collectList()
+                .block();
+
+        String viewerPermissionGroupId = permissionGroups.stream()
+                .filter(permissionGroup -> permissionGroup.getName().startsWith(VIEWER))
+                .findFirst()
+                .get()
+                .getId();
+
+        InviteUsersDTO inviteUsersDTO = new InviteUsersDTO();
+        inviteUsersDTO.setUsernames(List.of("abcd@" + RandomStringUtils.randomAlphanumeric(255) + ".com"));
+        inviteUsersDTO.setPermissionGroupId(viewerPermissionGroupId);
+
+        Mono<List<User>> createdUsers = userAndAccessManagementService.inviteUsers(inviteUsersDTO, origin);
+
+        StepVerifier.create(createdUsers).verifyErrorMessage("Please enter a valid parameter usernames.");
     }
 }

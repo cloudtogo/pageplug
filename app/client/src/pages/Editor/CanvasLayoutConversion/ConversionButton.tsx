@@ -6,7 +6,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-} from "design-system";
+} from "@appsmith/ads";
 import { ConversionForm } from "./ConversionForm";
 import { useDispatch, useSelector } from "react-redux";
 import { getIsAutoLayout } from "selectors/canvasSelectors";
@@ -16,7 +16,7 @@ import {
   CONVERT_TO_FIXED_BUTTON,
   CONVERT_TO_FIXED_TITLE,
   createMessage,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import BetaCard from "components/editorComponents/BetaCard";
 import store from "store";
 import {
@@ -25,14 +25,18 @@ import {
 } from "actions/autoLayoutActions";
 import { CONVERSION_STATES } from "reducers/uiReducers/layoutConversionReducer";
 import { useConversionForm } from "./hooks/useConversionForm";
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
+import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
+import { FEATURE_FLAG } from "ee/entities/FeatureFlag";
 
 function ConversionButton() {
   const [showModal, setShowModal] = React.useState(false);
   const isAutoLayout = useRef(getIsAutoLayout(store.getState()));
   const formProps = useConversionForm({ isAutoLayout: isAutoLayout.current });
   const dispatch = useDispatch();
-
+  const isConversionFlowEnabled = useFeatureFlag(
+    FEATURE_FLAG.release_layout_conversion_enabled,
+  );
   const conversionState = useSelector(
     (state: AppState) => state.ui.layoutConversion.conversionState,
   );
@@ -68,7 +72,7 @@ function ConversionButton() {
     conversionState === CONVERSION_STATES.CONVERSION_SPINNER ||
     conversionState === CONVERSION_STATES.SNAPSHOT_SPINNER;
 
-  return (
+  return isConversionFlowEnabled ? (
     <>
       <Button
         className="w-full !mb-5"
@@ -99,7 +103,7 @@ function ConversionButton() {
         </ModalContent>
       </Modal>
     </>
-  );
+  ) : null;
 }
 
 ConversionButton.displayName = "ConversionButton";

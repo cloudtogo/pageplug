@@ -21,19 +21,12 @@ import type {
   AnvilConfig,
   AutocompletionDefinitions,
 } from "WidgetProvider/constants";
-import {
-  anvilConfig,
-  autocompleteConfig,
-  defaultsConfig,
-  featuresConfig,
-  metaConfig,
-  settersConfig,
-  propertyPaneContentConfig,
-} from "./config";
+import * as config from "../config";
 import type { CurrencyInputWidgetProps } from "./types";
 import { WDSBaseInputWidget } from "widgets/wds/WDSBaseInputWidget";
 import { getCountryCodeFromCurrencyCode, validateInput } from "./helpers";
 import type { KeyDownEvent } from "widgets/wds/WDSBaseInputWidget/component/types";
+import { klona as clone } from "klona";
 
 class WDSCurrencyInputWidget extends WDSBaseInputWidget<
   CurrencyInputWidgetProps,
@@ -42,34 +35,78 @@ class WDSCurrencyInputWidget extends WDSBaseInputWidget<
   static type = "WDS_CURRENCY_INPUT_WIDGET";
 
   static getConfig() {
-    return metaConfig;
+    return config.metaConfig;
   }
 
   static getFeatures() {
-    return featuresConfig;
+    return config.featuresConfig;
   }
 
   static getDefaults() {
-    return defaultsConfig;
+    return config.defaultsConfig;
   }
 
   static getAnvilConfig(): AnvilConfig | null {
-    return anvilConfig;
+    return config.anvilConfig;
   }
 
   static getAutocompleteDefinitions(): AutocompletionDefinitions {
-    return autocompleteConfig;
+    return config.autocompleteConfig;
   }
 
   static getSetterConfig(): SetterConfig {
-    return settersConfig;
+    return config.settersConfig;
+  }
+
+  static getMethods() {
+    return config.methodsConfig;
   }
 
   static getPropertyPaneContentConfig() {
-    return mergeWidgetConfig(
-      propertyPaneContentConfig,
-      super.getPropertyPaneContentConfig(),
+    const parentConfig = clone(super.getPropertyPaneContentConfig());
+    const labelSectionIndex = parentConfig.findIndex(
+      (section) => section.sectionName === "Label",
     );
+    const labelPropertyIndex = parentConfig[
+      labelSectionIndex
+    ].children.findIndex((property) => property.propertyName === "label");
+
+    parentConfig[labelSectionIndex].children[labelPropertyIndex] = {
+      ...parentConfig[labelSectionIndex].children[labelPropertyIndex],
+      placeholderText: "Current Price",
+      // TODO: Fix this the next time the file is edited
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
+
+    const generalSectionIndex = parentConfig.findIndex(
+      (section) => section.sectionName === "General",
+    );
+    const tooltipPropertyIndex = parentConfig[
+      generalSectionIndex
+    ].children.findIndex((property) => property.propertyName === "tooltip");
+
+    parentConfig[generalSectionIndex].children[tooltipPropertyIndex] = {
+      ...parentConfig[generalSectionIndex].children[tooltipPropertyIndex],
+      placeholderText:
+        "Prices in other currencies should be recalculated in USD",
+      // TODO: Fix this the next time the file is edited
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
+
+    const placeholderPropertyIndex = parentConfig[
+      generalSectionIndex
+    ].children.findIndex(
+      (property) => property.propertyName === "placeholderText",
+    );
+
+    parentConfig[generalSectionIndex].children[placeholderPropertyIndex] = {
+      ...parentConfig[generalSectionIndex].children[placeholderPropertyIndex],
+      placeholderText: "10",
+      // TODO: Fix this the next time the file is edited
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
+
+    return mergeWidgetConfig(config.propertyPaneContentConfig, parentConfig);
   }
 
   static getPropertyPaneStyleConfig() {
@@ -78,14 +115,16 @@ class WDSCurrencyInputWidget extends WDSBaseInputWidget<
 
   static getDerivedPropertiesMap() {
     return {
-      isValid: `{{(()=>{${derivedProperties.isValid}})()}}`,
-      value: `{{(()=>{${derivedProperties.value}})()}}`,
+      isValid: `{{(() => {${derivedProperties.isValid}})()}}`,
     };
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return _.merge(super.getMetaPropertiesMap(), {
-      text: undefined,
+      rawText: "",
+      parsedText: "",
       currencyCode: undefined,
     });
   }
@@ -93,6 +132,8 @@ class WDSCurrencyInputWidget extends WDSBaseInputWidget<
   static getDefaultPropertiesMap(): Record<string, string> {
     return _.merge(super.getDefaultPropertiesMap(), {
       currencyCode: "defaultCurrencyCode",
+      rawText: "defaultText",
+      parsedText: "defaultText",
     });
   }
 
@@ -106,9 +147,9 @@ class WDSCurrencyInputWidget extends WDSBaseInputWidget<
 
   componentDidUpdate(prevProps: CurrencyInputWidgetProps) {
     if (
-      prevProps.text !== this.props.text &&
+      prevProps.text !== this.props.parsedText &&
       !this.props.isFocused &&
-      this.props.text === String(this.props.defaultText)
+      this.props.parsedText === String(this.props.defaultText)
     ) {
       this.formatText();
     }
@@ -144,7 +185,9 @@ class WDSCurrencyInputWidget extends WDSBaseInputWidget<
       Sentry.captureException(e);
     }
 
-    this.props.updateWidgetMetaProperty("text", String(formattedValue), {
+    this.props.updateWidgetMetaProperty("parsedText", String(formattedValue));
+
+    this.props.updateWidgetMetaProperty("rawText", value, {
       triggerPropertyName: "onTextChanged",
       dynamicString: this.props.onTextChanged,
       event: {
@@ -158,14 +201,18 @@ class WDSCurrencyInputWidget extends WDSBaseInputWidget<
   };
 
   onFocusChange = (isFocused?: boolean) => {
+    // We don't want to deformat or the text or trigger
+    // any event on focus if the widget is read only
+    if (Boolean(this.props.isReadOnly)) return;
+
     try {
       if (isFocused) {
-        const text = this.props.text || "";
+        const text = this.props.parsedText || "";
         const deFormattedValue = text.replace(
           new RegExp("\\" + getLocaleThousandSeparator(), "g"),
           "",
         );
-        this.props.updateWidgetMetaProperty("text", deFormattedValue);
+        this.props.updateWidgetMetaProperty("parsedText", deFormattedValue);
         this.props.updateWidgetMetaProperty("isFocused", isFocused, {
           triggerPropertyName: "onFocus",
           dynamicString: this.props.onFocus,
@@ -174,12 +221,12 @@ class WDSCurrencyInputWidget extends WDSBaseInputWidget<
           },
         });
       } else {
-        if (this.props.text) {
+        if (this.props.parsedText) {
           const formattedValue = formatCurrencyNumber(
             this.props.decimals,
-            this.props.text,
+            this.props.parsedText,
           );
-          this.props.updateWidgetMetaProperty("text", formattedValue);
+          this.props.updateWidgetMetaProperty("parsedText", formattedValue);
         }
         this.props.updateWidgetMetaProperty("isFocused", isFocused, {
           triggerPropertyName: "onBlur",
@@ -192,7 +239,7 @@ class WDSCurrencyInputWidget extends WDSBaseInputWidget<
     } catch (e) {
       log.error(e);
       Sentry.captureException(e);
-      this.props.updateWidgetMetaProperty("text", this.props.text);
+      this.props.updateWidgetMetaProperty("parsedText", this.props.parsedText);
     }
 
     super.onFocusChange(!!isFocused);
@@ -237,13 +284,13 @@ class WDSCurrencyInputWidget extends WDSBaseInputWidget<
   };
 
   isTextFormatted = () => {
-    return this.props.text.includes(getLocaleThousandSeparator());
+    return this.props.parsedText.includes(getLocaleThousandSeparator());
   };
 
   formatText() {
-    if (!!this.props.text && !this.isTextFormatted()) {
+    if (!!this.props.parsedText && !this.isTextFormatted()) {
       try {
-        const floatVal = parseFloat(this.props.text);
+        const floatVal = parseFloat(this.props.parsedText);
 
         const formattedValue = Intl.NumberFormat(getLocale(), {
           style: "decimal",
@@ -251,7 +298,7 @@ class WDSCurrencyInputWidget extends WDSBaseInputWidget<
           maximumFractionDigits: this.props.decimals,
         }).format(floatVal);
 
-        this.props.updateWidgetMetaProperty("text", formattedValue);
+        this.props.updateWidgetMetaProperty("parsedText", formattedValue);
       } catch (e) {
         log.error(e);
         Sentry.captureException(e);
@@ -260,8 +307,7 @@ class WDSCurrencyInputWidget extends WDSBaseInputWidget<
   }
 
   getWidgetView() {
-    const value = this.props.text ?? "";
-
+    const value = this.props.rawText ?? "";
     const validation = validateInput(this.props);
 
     return (
@@ -271,6 +317,7 @@ class WDSCurrencyInputWidget extends WDSBaseInputWidget<
         currencyCode={this.props.currencyCode}
         defaultValue={this.props.defaultText}
         errorMessage={validation.errorMessage}
+        excludeFromTabOrder={this.props.disableWidgetInteraction}
         isDisabled={this.props.isDisabled}
         isLoading={this.props.isLoading}
         isReadOnly={this.props.isReadOnly}
@@ -282,7 +329,7 @@ class WDSCurrencyInputWidget extends WDSBaseInputWidget<
         onValueChange={this.onValueChange}
         placeholder={this.props.placeholderText}
         tooltip={this.props.tooltip}
-        validationStatus={validation.validattionStatus}
+        validationStatus={validation.validationStatus}
         value={value}
         widgetId={this.props.widgetId}
       />

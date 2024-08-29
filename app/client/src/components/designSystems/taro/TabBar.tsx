@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import {
   getViewModePageList,
   getCurrentPageId,
@@ -11,11 +11,11 @@ import {
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
 import { getAppMode } from "selectors/applicationSelectors";
 import { APP_MODE } from "entities/App";
-import type { Page } from "@appsmith/constants/ReduxActionConstants";
+import type { Page } from "ee/constants/ReduxActionConstants";
 import { Tabbar } from "@taroify/core";
 import { createVanIconComponent } from "@taroify/icons/van";
 import history from "utils/history";
-import { builderURL, viewerURL } from "@appsmith/RouteBuilder";
+import { builderURL, viewerURL } from "ee/RouteBuilder";
 
 const TabBarContainer = styled.div<{
   mode?: APP_MODE;

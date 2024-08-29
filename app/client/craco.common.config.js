@@ -19,7 +19,7 @@ module.exports = {
     port: 3005,
     hot: true,
     proxy: {
-      "/api": "http://localhost:8080"
+      "/api": "http://10.10.13.43:30039"
     }
   },
   babel: {
@@ -27,6 +27,9 @@ module.exports = {
   },
   eslint: {
     enable: false,
+  },
+  typescript: {
+    enableTypeChecking: process.env.ENABLE_TYPE_CHECKING !== "false",
   },
   webpack: {
     configure: {

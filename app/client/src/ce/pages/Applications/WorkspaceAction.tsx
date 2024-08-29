@@ -5,7 +5,7 @@ import {
   MenuContent,
   MenuItem,
   MenuTrigger,
-} from "design-system";
+} from "@appsmith/ads";
 import React, { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -16,13 +16,12 @@ import {
   NEW_APP_FROM_TEMPLATE,
   WORKSPACE_ACTION_BUTTON,
   createMessage,
-} from "@appsmith/constants/messages";
-import type { Workspace } from "@appsmith/constants/workspaceConstants";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
-import { getIsCreatingApplicationByWorkspaceId } from "@appsmith/selectors/applicationSelectors";
-import { getIsFetchingApplications } from "@appsmith/selectors/selectedWorkspaceSelectors";
-import { hasCreateNewAppPermission } from "@appsmith/utils/permissionHelpers";
-import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
+} from "ee/constants/messages";
+import type { Workspace } from "ee/constants/workspaceConstants";
+import { getIsCreatingApplicationByWorkspaceId } from "ee/selectors/applicationSelectors";
+import { getIsFetchingApplications } from "ee/selectors/selectedWorkspaceSelectors";
+import { hasCreateNewAppPermission } from "ee/utils/permissionHelpers";
+import { isAirgapped } from "ee/utils/airgapHelpers";
 
 export interface WorkspaceActionProps {
   workspace: Workspace;
@@ -48,9 +47,7 @@ function WorkspaceAction({
   const isCreatingApplication = Boolean(
     useSelector(getIsCreatingApplicationByWorkspaceId(workspace.id)),
   );
-  const isCreateAppFromTemplatesEnabled = useFeatureFlag(
-    FEATURE_FLAG.release_show_create_app_from_templates_enabled,
-  );
+  const isAirgappedInstance = isAirgapped();
 
   const openActionMenu = useCallback(() => {
     setIsActionMenuOpen(true);
@@ -107,7 +104,8 @@ function WorkspaceAction({
           {createMessage(NEW_MOBILE_APP)}
         </MenuItem>
         {<Divider className="!block mb-[2px]" />}
-        {isCreateAppFromTemplatesEnabled && (
+
+        {!isAirgappedInstance && (
           <MenuItem
             data-testid="t--workspace-action-create-app-from-template"
             disabled={!hasCreateNewApplicationPermission}
@@ -117,6 +115,7 @@ function WorkspaceAction({
             {createMessage(NEW_APP_FROM_TEMPLATE)}
           </MenuItem>
         )}
+
         {enableImportExport && hasCreateNewApplicationPermission && (
           <MenuItem
             data-testid="t--workspace-import-app"

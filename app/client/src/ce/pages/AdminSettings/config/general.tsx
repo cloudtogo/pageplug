@@ -1,19 +1,19 @@
 import React from "react";
 import { isEmail } from "utils/formhelpers";
 import { apiRequestConfig } from "api/Api";
-import UserApi from "@appsmith/api/UserApi";
+import UserApi from "ee/api/UserApi";
 import type {
   AdminConfigType,
   Setting,
-} from "@appsmith/pages/AdminSettings/config/types";
+} from "ee/pages/AdminSettings/config/types";
 import {
   CategoryType,
   SettingCategories,
   SettingSubtype,
   SettingTypes,
-} from "@appsmith/pages/AdminSettings/config/types";
+} from "ee/pages/AdminSettings/config/types";
 import BrandingBadge from "pages/AppViewer/BrandingBadge";
-import { TagInput } from "design-system-old";
+import { TagInput } from "@appsmith/ads-old";
 import localStorage from "utils/localStorage";
 import isUndefined from "lodash/isUndefined";
 import { AppsmithFrameAncestorsSetting } from "pages/Applications/EmbedSnippet/Constants/constants";
@@ -28,7 +28,7 @@ export const APPSMITH_INSTANCE_NAME_SETTING_SETTING: Setting = {
   placeholder: "pageplug",
 };
 
-export const APPSMITH__ADMIN_EMAILS_SETTING: Setting = {
+export const APPSMITH_ADMIN_EMAILS_SETTING: Setting = {
   id: "APPSMITH_ADMIN_EMAILS",
   category: SettingCategories.GENERAL,
   controlType: SettingTypes.TAGINPUT,
@@ -84,6 +84,17 @@ export const APPSMITH_HIDE_WATERMARK_SETTING: Setting = {
   textSuffix: <BrandingBadge />,
 };
 
+export const APPSMITH_SHOW_ROLES_AND_GROUPS_SETTING: Setting = {
+  id: "showRolesAndGroups",
+  name: "showRolesAndGroups",
+  category: SettingCategories.GENERAL,
+  controlType: SettingTypes.CHECKBOX,
+  label: "Programmatic access control",
+  text: "Access roles and user groups in code for conditional business logic",
+  isFeatureEnabled: false,
+  isDisabled: () => true,
+};
+
 export const APPSMITH_SINGLE_USER_PER_SESSION_SETTING: Setting = {
   id: "singleSessionPerUserEnabled",
   name: "singleSessionPerUserEnabled",
@@ -95,15 +106,28 @@ export const APPSMITH_SINGLE_USER_PER_SESSION_SETTING: Setting = {
   isDisabled: () => true,
 };
 
-export const APPSMITH_SHOW_ROLES_AND_GROUPS_SETTING: Setting = {
-  id: "showRolesAndGroups",
-  name: "showRolesAndGroups",
+export const APPSMITH_USER_SESSION_TIMEOUT_SETTING: Setting = {
+  id: "userSessionTimeoutInMinutes",
+  name: "userSessionTimeoutInMinutes",
+  category: SettingCategories.GENERAL,
+  controlType: SettingTypes.TEXTINPUT,
+  label: "Session Timeout",
+  subText:
+    "* Default duration is 30 days. To change, enter the new duration in DD:HH:MM format",
+  helpText:
+    "Users' session will automatically end if there's no activity for the specified duration, requiring them to log in again for security. The duration can be set between 1 minute and 30 days.",
+  isFeatureEnabled: false,
+  isEnterprise: true,
+  isDisabled: () => true,
+};
+
+export const APPSMITH_IS_ATOMIC_PUSH_ALLOWED: Setting = {
+  id: "isAtomicPushAllowed",
+  name: "isAtomicPushAllowed",
   category: SettingCategories.GENERAL,
   controlType: SettingTypes.CHECKBOX,
-  label: "Programmatic access control",
-  text: "Access roles and user groups in code for conditional business logic",
-  isFeatureEnabled: false,
-  isDisabled: () => true,
+  label: "Allow atomic pushes",
+  text: "Git operations on this tenant should attempt to perform pushes atomically",
 };
 
 export const APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING: Setting = {
@@ -140,6 +164,8 @@ export const APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING: Setting = {
     ],
   },
   format: formatEmbedSettings,
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   parse: (value: { value: string; additionalData?: any }) => {
     // Retrieve values from local storage while switching to limit by url option
     const sources = isUndefined(value.additionalData)
@@ -179,12 +205,13 @@ export const config: AdminConfigType = {
   canSave: true,
   settings: [
     APPSMITH_INSTANCE_NAME_SETTING_SETTING,
-    APPSMITH__ADMIN_EMAILS_SETTING,
-    APPSMITH_DOWNLOAD_DOCKER_COMPOSE_FILE_SETTING,
+    APPSMITH_ADMIN_EMAILS_SETTING,
     APPSMITH_DISABLE_TELEMETRY_SETTING,
-    // APPSMITH_HIDE_WATERMARK_SETTING,
-    // APPSMITH_SINGLE_USER_PER_SESSION_SETTING,
-    // APPSMITH_SHOW_ROLES_AND_GROUPS_SETTING,
+    APPSMITH_HIDE_WATERMARK_SETTING,
+    APPSMITH_SHOW_ROLES_AND_GROUPS_SETTING,
+    APPSMITH_SINGLE_USER_PER_SESSION_SETTING,
+    APPSMITH_USER_SESSION_TIMEOUT_SETTING,
+    APPSMITH_IS_ATOMIC_PUSH_ALLOWED,
     APPSMITH_ALLOWED_FRAME_ANCESTORS_SETTING,
   ],
 } as AdminConfigType;

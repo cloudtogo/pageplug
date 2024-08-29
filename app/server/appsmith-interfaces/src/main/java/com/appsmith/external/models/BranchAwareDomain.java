@@ -9,17 +9,31 @@ import lombok.experimental.FieldNameConstants;
 @Setter
 @Getter
 @FieldNameConstants
-public abstract class BranchAwareDomain extends BaseDomain {
-    // This field will be used to store the default/root resource IDs for branched resources generated for git
-    // connected applications and will be used to connect resources across the branches
+public abstract class BranchAwareDomain extends GitSyncedDomain {
+
+    @JsonView(Views.Public.class)
+    String baseId;
+
     @JsonView(Views.Internal.class)
-    DefaultResources defaultResources;
+    String branchName;
+
+    @JsonView(Views.Internal.class)
+    public String getBaseIdOrFallback() {
+        return baseId == null ? this.getId() : baseId;
+    }
 
     @Override
     public void sanitiseToExportDBObject() {
-        this.setDefaultResources(null);
+        this.setBaseId(null);
+        this.setBranchName(null);
         super.sanitiseToExportDBObject();
     }
 
-    public static class Fields extends BaseDomain.Fields {}
+    @Override
+    public void makePristine() {
+        super.makePristine();
+        this.setBaseId(null);
+    }
+
+    public static class Fields extends GitSyncedDomain.Fields {}
 }

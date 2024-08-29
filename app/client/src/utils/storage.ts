@@ -4,7 +4,9 @@ import localforage from "localforage";
 import type { VersionUpdateState } from "../sagas/WebsocketSagas/versionUpdatePrompt";
 import { isNumber } from "lodash";
 import { EditorModes } from "components/editorComponents/CodeEditor/EditorConfig";
-import type { EditorViewMode } from "@appsmith/entities/IDE/constants";
+import type { EditorViewMode } from "ee/entities/IDE/constants";
+import type { OverriddenFeatureFlags } from "./hooks/useFeatureFlagOverride";
+import { AvailableFeaturesToOverride } from "./hooks/useFeatureFlagOverride";
 
 export const STORAGE_KEYS: {
   [id: string]: string;
@@ -39,6 +41,8 @@ export const STORAGE_KEYS: {
   PARTNER_PROGRAM_CALLOUT: "PARTNER_PROGRAM_CALLOUT",
   IDE_VIEW_MODE: "IDE_VIEW_MODE",
   CODE_WIDGET_NAVIGATION_USED: "CODE_WIDGET_NAVIGATION_USED",
+  OVERRIDDEN_FEATURE_FLAGS: "OVERRIDDEN_FEATURE_FLAGS",
+  ACTION_TEST_PAYLOAD: "ACTION_TEST_PAYLOAD",
 };
 
 const store = localforage.createInstance({
@@ -73,15 +77,23 @@ export const saveCopiedWidgets = async (widgetJSON: string) => {
   }
 };
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getStoredUsersBetaFlags = async (email: any) => {
   return store.getItem(email);
 };
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const setStoredUsersBetaFlags = async (email: any, userBetaFlagsObj: any) => {
   return store.setItem(email, userBetaFlagsObj);
 };
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const setBetaFlag = async (email: any, key: string, value: any) => {
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const userBetaFlagsObj: any = await getStoredUsersBetaFlags(email);
   const updatedObj = {
     ...userBetaFlagsObj,
@@ -90,13 +102,21 @@ export const setBetaFlag = async (email: any, key: string, value: any) => {
   setStoredUsersBetaFlags(email, updatedObj);
 };
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getBetaFlag = async (email: any, key: string) => {
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const userBetaFlagsObj: any = await getStoredUsersBetaFlags(email);
 
   return userBetaFlagsObj && userBetaFlagsObj[key];
 };
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getReflowOnBoardingFlag = async (email: any) => {
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const userBetaFlagsObj: any = await getStoredUsersBetaFlags(email);
   return (
     userBetaFlagsObj && userBetaFlagsObj[STORAGE_KEYS.REFLOW_ONBOARDED_FLAG]
@@ -197,11 +217,15 @@ export const resetCurrentEnvironment = async () => {
   }
 };
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const setRecentAppEntities = async (entities: any, appId: string) => {
   try {
     const recentEntities =
       ((await store.getItem(STORAGE_KEYS.RECENT_ENTITIES)) as Record<
         string,
+        // TODO: Fix this the next time the file is edited
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         any
       >) || {};
     recentEntities[appId] = entities;
@@ -216,6 +240,8 @@ export const fetchRecentAppEntities = async (recentEntitiesKey: string) => {
   try {
     const recentEntities = (await store.getItem(
       STORAGE_KEYS.RECENT_ENTITIES,
+      // TODO: Fix this the next time the file is edited
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     )) as Record<string, any>;
     return (recentEntities && recentEntities[recentEntitiesKey]) || [];
   } catch (error) {
@@ -229,6 +255,8 @@ export const deleteRecentAppEntities = async (appId: string) => {
     const recentEntities =
       ((await store.getItem(STORAGE_KEYS.RECENT_ENTITIES)) as Record<
         string,
+        // TODO: Fix this the next time the file is edited
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         any
       >) || {};
     if (typeof recentEntities === "object") {
@@ -610,8 +638,12 @@ export const getAIPromptTriggered = async (mode: string) => {
     return 0;
   }
 };
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const setFeatureWalkthroughShown = async (key: string, value: any) => {
   try {
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let flagsJSON: Record<string, any> | null = await store.getItem(
       STORAGE_KEYS.FEATURE_WALKTHROUGH,
     );
@@ -632,6 +664,8 @@ export const setFeatureWalkthroughShown = async (key: string, value: any) => {
 
 export const getFeatureWalkthroughShown = async (key: string) => {
   try {
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const flagsJSON: Record<string, any> | null = await store.getItem(
       STORAGE_KEYS.FEATURE_WALKTHROUGH,
     );
@@ -649,6 +683,8 @@ export const getFeatureWalkthroughShown = async (key: string) => {
 
 export const setUserSignedUpFlag = async (email: string) => {
   try {
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let userSignedUp: Record<string, any> | null = await store.getItem(
       STORAGE_KEYS.USER_SIGN_UP,
     );
@@ -669,6 +705,8 @@ export const setUserSignedUpFlag = async (email: string) => {
 
 export const isUserSignedUpFlagSet = async (email: string) => {
   try {
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const userSignedUp: Record<string, any> | null = await store.getItem(
       STORAGE_KEYS.USER_SIGN_UP,
     );
@@ -918,5 +956,79 @@ export const retrieveCodeWidgetNavigationUsed = async (): Promise<number> => {
     log.error("An error occurred while fetching CODE_WIDGET_NAVIGATION_USED");
     log.error(error);
     return 0;
+  }
+};
+
+/**
+
+
+Retrieves the overridden values for feature flags.
+
+
+@param flagsToFetch - The feature flags to fetch the overridden values for.
+
+@returns An object containing the overridden values for each feature flag.
+*/
+export const getFeatureFlagOverrideValues = async (
+  flagsToFetch = AvailableFeaturesToOverride,
+) => {
+  const featureFlagValues: OverriddenFeatureFlags = {};
+  for (const flag of flagsToFetch) {
+    featureFlagValues[flag] = (await store.getItem(flag)) as boolean;
+  }
+  return featureFlagValues;
+};
+
+/**
+
+
+Sets the override values for feature flags.
+
+
+@param featureFlagValues - An object containing the feature flags and their corresponding override values.
+
+@returns {Promise<void>} - A promise that resolves when all the feature flags have been set.
+*/
+export const setFeatureFlagOverrideValues = async (
+  featureFlagValues: OverriddenFeatureFlags,
+) => {
+  for (const [flag, value] of Object.entries(featureFlagValues)) {
+    await store.setItem(flag, value);
+  }
+};
+
+export const getAllActionTestPayloads = async () => {
+  try {
+    const storedPayload: Record<string, unknown> | null = await store.getItem(
+      STORAGE_KEYS.ACTION_TEST_PAYLOAD,
+    );
+    return storedPayload;
+  } catch (error) {
+    log.error("An error occurred while fetching ACTION_TEST_PAYLOAD");
+    log.error(error);
+    return null;
+  }
+};
+
+export const storeActionTestPayload = async (payload: {
+  actionId: string;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  testData: any;
+}) => {
+  try {
+    const storedPayload: Record<string, unknown> | null = await store.getItem(
+      STORAGE_KEYS.ACTION_TEST_PAYLOAD,
+    );
+    const newPayload = {
+      ...storedPayload,
+      [payload.actionId]: payload.testData,
+    };
+    await store.setItem(STORAGE_KEYS.ACTION_TEST_PAYLOAD, newPayload);
+    return true;
+  } catch (error) {
+    log.error("An error occurred while setting ACTION_TEST_PAYLOAD");
+    log.error(error);
+    return false;
   }
 };

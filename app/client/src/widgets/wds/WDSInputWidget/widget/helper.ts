@@ -7,10 +7,8 @@ import {
   INPUT_DEFAULT_TEXT_MIN_NUM_ERROR,
   INPUT_INVALID_TYPE_ERROR,
   INPUT_TEXT_MAX_CHAR_ERROR,
-} from "@appsmith/constants/messages";
-import { InputTypes } from "components/constants";
+} from "ee/constants/messages";
 import type { InputType } from "../component/types";
-import { DynamicHeight } from "utils/WidgetFeatures";
 import type { WidgetProps } from "widgets/BaseWidget";
 
 import { INPUT_TYPES } from "../constants";
@@ -133,6 +131,8 @@ export const validateInput = (props: InputWidgetProps): Validation => {
 export function inputTypeUpdateHook(
   props: WidgetProps,
   propertyName: string,
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   propertyValue: any,
 ) {
   const updates = [
@@ -142,14 +142,6 @@ export function inputTypeUpdateHook(
     },
   ];
 
-  if (propertyValue === InputTypes.MULTI_LINE_TEXT) {
-    if (props.dynamicHeight === DynamicHeight.FIXED) {
-      updates.push({
-        propertyPath: "dynamicHeight",
-        propertyValue: DynamicHeight.AUTO_HEIGHT,
-      });
-    }
-  }
   // if input type is email or password default the autofill state to be true
   // the user needs to explicity set autofill to fault disable autofill
   updates.push({

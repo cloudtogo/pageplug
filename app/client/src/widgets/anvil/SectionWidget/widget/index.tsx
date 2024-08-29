@@ -15,6 +15,8 @@ import {
   defaultConfig,
   propertyPaneContent,
   propertyPaneStyle,
+  methodsConfig,
+  autocompleteConfig,
 } from "./config";
 import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import type { LayoutProps } from "layoutSystems/anvil/utils/anvilTypes";
@@ -32,7 +34,6 @@ import type {
 } from "layoutSystems/anvil/utils/paste/types";
 import { call } from "redux-saga/effects";
 import { pasteWidgetsInSection } from "layoutSystems/anvil/utils/paste/sectionPasteUtils";
-import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
 
 class SectionWidget extends BaseWidget<SectionWidgetProps, WidgetState> {
   static type = anvilWidgets.SECTION_WIDGET;
@@ -57,9 +58,7 @@ class SectionWidget extends BaseWidget<SectionWidgetProps, WidgetState> {
   }
 
   static getAutocompleteDefinitions(): AutocompletionDefinitions {
-    return {
-      isVisible: DefaultAutocompleteDefinitions.isVisible,
-    };
+    return autocompleteConfig;
   }
 
   static getSetterConfig(): SetterConfig | null {
@@ -81,6 +80,8 @@ class SectionWidget extends BaseWidget<SectionWidgetProps, WidgetState> {
     return {};
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {};
   }
@@ -91,6 +92,10 @@ class SectionWidget extends BaseWidget<SectionWidgetProps, WidgetState> {
 
   static getAnvilConfig(): AnvilConfig | null {
     return anvilConfig;
+  }
+
+  static getMethods() {
+    return methodsConfig;
   }
 
   static getStylesheetConfig(): Stylesheet {

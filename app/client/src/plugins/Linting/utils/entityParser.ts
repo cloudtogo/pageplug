@@ -2,9 +2,9 @@ import type {
   DataTreeEntityConfig,
   JSActionEntityConfig,
   JSActionEntity as TJSActionEntity,
-} from "@appsmith/entities/DataTree/types";
+} from "ee/entities/DataTree/types";
 import type { DataTreeEntity } from "entities/DataTree/dataTreeTypes";
-import { EvaluationSubstitutionType } from "@appsmith/entities/DataTree/types";
+import { EvaluationSubstitutionType } from "ee/entities/DataTree/types";
 import type { TParsedJSProperty } from "@shared/ast";
 import { isJSFunctionProperty } from "@shared/ast";
 import { parseJSObject } from "@shared/ast";
@@ -55,7 +55,7 @@ export class JSLintEntityParser implements EntityParser {
     parsedEntityConfig: {},
   };
   parse(entity: TJSActionEntity, entityConfig: JSActionEntityConfig) {
-    const jsEntityBody = entity.body;
+    const jsEntityBody = entity.body || "";
     if (
       this.#parsedJSCache &&
       jsEntityBody === this.#parsedJSCache.parsedEntity.body

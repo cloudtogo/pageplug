@@ -1,17 +1,14 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import PartialExportModal from "./index";
+import { PartialExportModal } from "./index";
 import { lightTheme } from "selectors/themeSelectors";
 import { ThemeProvider } from "styled-components";
 import configureStore from "redux-mock-store";
 import { Provider } from "react-redux";
 import { defaultAppState } from "./unitTestUtils";
-import {
-  PARTIAL_IMPORT_EXPORT,
-  createMessage,
-} from "@appsmith/constants/messages";
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { PARTIAL_IMPORT_EXPORT, createMessage } from "ee/constants/messages";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
 
 interface TestEntityResetProps {
   entityTitle: string;
@@ -26,16 +23,20 @@ jest.mock("pages/Editor/Explorer/Widgets/WidgetIcon", () => ({
 }));
 
 describe("<PartialExportModal />", () => {
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let store: any;
 
   beforeEach(() => {
+    defaultAppState.ui.applications.partialImportExport.isExportModalOpen =
+      true;
     store = mockStore(defaultAppState);
   });
 
   const BaseComponentRender = () => (
     <Provider store={store}>
       <ThemeProvider theme={lightTheme}>
-        <PartialExportModal handleModalClose={() => jest.fn()} isModalOpen />
+        <PartialExportModal />
       </ThemeProvider>
     </Provider>
   );
@@ -61,6 +62,8 @@ describe("<PartialExportModal />", () => {
     render(<BaseComponentRender />);
     const pageList = defaultAppState.entities.pageList;
     const currentPageName = pageList.pages.find(
+      // TODO: Fix this the next time the file is edited
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (page: any) => page.pageId === pageList.currentPageId,
     )?.pageName;
     expect(screen.getByText(`Export - ${currentPageName}`)).toBeInTheDocument();

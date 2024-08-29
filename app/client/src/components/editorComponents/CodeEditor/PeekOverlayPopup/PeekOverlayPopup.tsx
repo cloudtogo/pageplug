@@ -7,11 +7,11 @@ import { componentWillAppendToBody } from "react-append-to-body";
 import _, { debounce } from "lodash";
 import { zIndexLayers } from "constants/CanvasEditorConstants";
 import { objectCollapseAnalytics, textSelectAnalytics } from "./Analytics";
-import { Divider } from "design-system";
+import { Divider } from "@appsmith/ads";
 import { useSelector } from "react-redux";
 import { getConfigTree, getDataTree } from "selectors/dataTreeSelectors";
 import { filterInternalProperties } from "utils/FilterInternalProperties";
-import { getJSCollections } from "@appsmith/selectors/entitiesSelector";
+import { getJSCollections } from "ee/selectors/entitiesSelector";
 
 export interface PeekOverlayStateProps {
   objectName: string;
@@ -96,6 +96,11 @@ export function PeekOverlayPopUpContent(
     PEEK_OVERLAY_DELAY,
   );
 
+  const getLeftPosition = (position: DOMRect) => {
+    let left = position.right - 300;
+    if (left < 0) left = 8;
+    return left;
+  };
   return (
     <div
       className={`absolute ${zIndexLayers.PEEK_OVERLAY}`}
@@ -110,7 +115,7 @@ export function PeekOverlayPopUpContent(
         backgroundColor: "var(--ads-v2-color-bg)",
         boxShadow: "0px 0px 10px #0000001A", // color used from designs
         borderRadius: "var(--ads-v2-border-radius)",
-        left: `${props.position.left + props.position.width - 300}px`,
+        left: `${getLeftPosition(props.position)}px`,
         ...(props.position.top >= CONTAINER_MAX_HEIGHT_PX
           ? {
               bottom: `calc(100vh - ${props.position.top}px)`,
@@ -153,9 +158,17 @@ export function PeekOverlayPopUpContent(
             <ReactJson src={jsData} {...reactJsonProps} />
           </JsonWrapper>
         )}
+        {/* TODO: Fix this the next time the file is edited */}
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         {dataType === "function" && <div>{(jsData as any).toString()}</div>}
+        {/* TODO: Fix this the next time the file is edited */}
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         {dataType === "boolean" && <div>{(jsData as any).toString()}</div>}
+        {/* TODO: Fix this the next time the file is edited */}
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         {dataType === "string" && <div>{(jsData as any).toString()}</div>}
+        {/* TODO: Fix this the next time the file is edited */}
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         {dataType === "number" && <div>{(jsData as any).toString()}</div>}
         {((dataType !== "object" &&
           dataType !== "function" &&
@@ -165,6 +178,8 @@ export function PeekOverlayPopUpContent(
           dataType !== "number") ||
           jsData === null) && (
           <div>
+            {/* TODO: Fix this the next time the file is edited */}
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {(jsData as any)?.toString() ?? jsData ?? jsData === undefined
               ? "undefined"
               : "null"}

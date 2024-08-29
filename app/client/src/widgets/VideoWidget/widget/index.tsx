@@ -13,13 +13,14 @@ import type {
   AnvilConfig,
   AutocompletionDefinitions,
 } from "WidgetProvider/constants";
-import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+import { getAssetUrl } from "ee/utils/airgapHelpers";
 import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
 import {
   FlexVerticalAlignment,
   ResponsiveBehavior,
 } from "layoutSystems/common/utils/constants";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 import type {
   SnipingModeProperty,
   PropertyUpdates,
@@ -44,6 +45,7 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
     return {
       name: "视频",
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.FEATRUE],
       needsMeta: true,
       searchTags: ["video", "player", "play"],
@@ -275,6 +277,8 @@ class VideoWidget extends BaseWidget<VideoWidgetProps, WidgetState> {
 
   private _player = React.createRef<ReactPlayer>();
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       // Property reflecting the state of the widget

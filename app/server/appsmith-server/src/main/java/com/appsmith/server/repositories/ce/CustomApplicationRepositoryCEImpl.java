@@ -6,16 +6,14 @@ import com.appsmith.server.domains.ApplicationPage;
 import com.appsmith.server.domains.User;
 import com.appsmith.server.helpers.ce.bridge.Bridge;
 import com.appsmith.server.helpers.ce.bridge.BridgeQuery;
+import com.appsmith.server.helpers.ce.bridge.BridgeUpdate;
+import com.appsmith.server.projections.IdOnly;
 import com.appsmith.server.repositories.BaseAppsmithRepositoryImpl;
 import com.appsmith.server.repositories.CacheableRepositoryHelper;
 import com.appsmith.server.solutions.ApplicationPermission;
-import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.ReactiveMongoOperations;
-import org.springframework.data.mongodb.core.convert.MongoConverter;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
@@ -26,22 +24,12 @@ import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
+@RequiredArgsConstructor
 public class CustomApplicationRepositoryCEImpl extends BaseAppsmithRepositoryImpl<Application>
         implements CustomApplicationRepositoryCE {
 
     private final CacheableRepositoryHelper cacheableRepositoryHelper;
     private final ApplicationPermission applicationPermission;
-
-    @Autowired
-    public CustomApplicationRepositoryCEImpl(
-            @NonNull ReactiveMongoOperations mongoOperations,
-            @NonNull MongoConverter mongoConverter,
-            CacheableRepositoryHelper cacheableRepositoryHelper,
-            ApplicationPermission applicationPermission) {
-        super(mongoOperations, mongoConverter, cacheableRepositoryHelper);
-        this.cacheableRepositoryHelper = cacheableRepositoryHelper;
-        this.applicationPermission = applicationPermission;
-    }
 
     @Override
     public Mono<Application> findByIdAndWorkspaceId(String id, String workspaceId, AclPermission permission) {
@@ -97,19 +85,19 @@ public class CustomApplicationRepositoryCEImpl extends BaseAppsmithRepositoryImp
 
     @Override
     public Mono<Integer> addPageToApplication(
-            String applicationId, String pageId, boolean isDefault, String defaultPageId) {
+            String applicationId, String pageId, boolean isDefault, String basePageId) {
         final ApplicationPage applicationPage = new ApplicationPage();
         applicationPage.setIsDefault(isDefault);
-        applicationPage.setDefaultPageId(defaultPageId);
+        applicationPage.setDefaultPageId(basePageId);
         applicationPage.setId(pageId);
         return queryBuilder()
                 .byId(applicationId)
-                .updateFirst(new Update().push(Application.Fields.pages, applicationPage));
+                .updateFirst(Bridge.update().push(Application.Fields.pages, applicationPage));
     }
 
     @Override
     public Mono<Integer> setPages(String applicationId, List<ApplicationPage> pages) {
-        return queryBuilder().byId(applicationId).updateFirst(new Update().set(Application.Fields.pages, pages));
+        return queryBuilder().byId(applicationId).updateFirst(Bridge.update().set(Application.Fields.pages, pages));
     }
 
     @Override
@@ -120,33 +108,37 @@ public class CustomApplicationRepositoryCEImpl extends BaseAppsmithRepositoryImp
         final Mono<Integer> setAllAsNonDefaultMono = queryBuilder()
                 .byId(applicationId)
                 .criteria(Bridge.isTrue("pages.isDefault"))
-                .updateFirst(new Update().set("pages.$.isDefault", false));
+                .updateFirst(Bridge.update().set("pages.$.isDefault", false));
 
         final Mono<Integer> setDefaultMono = queryBuilder()
                 .byId(applicationId)
                 .criteria(Bridge.equal("pages._id", new ObjectId(pageId)))
-                .updateFirst(new Update().set("pages.$.isDefault", true));
+                .updateFirst(Bridge.update().set("pages.$.isDefault", true));
 
         return setAllAsNonDefaultMono.then(setDefaultMono).then();
     }
 
     @Override
     @Deprecated
-    public Mono<Application> getApplicationByGitBranchAndDefaultApplicationId(
-            String defaultApplicationId, String branchName, AclPermission aclPermission) {
-        return getApplicationByGitBranchAndDefaultApplicationId(defaultApplicationId, null, branchName, aclPermission);
+    public Mono<Application> getApplicationByGitBranchAndBaseApplicationId(
+            String baseApplicationId, String branchName, AclPermission aclPermission) {
+        return getApplicationByGitBranchAndBaseApplicationId(baseApplicationId, null, branchName, aclPermission);
     }
 
     @Override
-    public Mono<Application> getApplicationByGitBranchAndDefaultApplicationId(
-            String defaultApplicationId,
+    public Mono<Application> getApplicationByGitBranchAndBaseApplicationId(
+            String baseApplicationId,
             List<String> projectionFieldNames,
             String branchName,
             AclPermission aclPermission) {
 
         return queryBuilder()
-                .criteria(Bridge.equal(
-                                Application.Fields.gitApplicationMetadata_defaultApplicationId, defaultApplicationId)
+                .criteria(Bridge.or(
+                                Bridge.equal(
+                                        Application.Fields.gitApplicationMetadata_defaultApplicationId,
+                                        baseApplicationId),
+                                Bridge.equal(
+                                        Application.Fields.gitApplicationMetadata_defaultArtifactId, baseApplicationId))
                         .equal(Application.Fields.gitApplicationMetadata_branchName, branchName))
                 .fields(projectionFieldNames)
                 .permission(aclPermission)
@@ -154,33 +146,25 @@ public class CustomApplicationRepositoryCEImpl extends BaseAppsmithRepositoryImp
     }
 
     @Override
-    public Mono<Application> getApplicationByGitBranchAndDefaultApplicationId(
-            String defaultApplicationId, String branchName, Optional<AclPermission> aclPermission) {
+    public Mono<Application> getApplicationByGitBranchAndBaseApplicationId(
+            String baseApplicationId, String branchName, Optional<AclPermission> aclPermission) {
 
         return queryBuilder()
-                .criteria(Bridge.equal(
-                                Application.Fields.gitApplicationMetadata_defaultApplicationId, defaultApplicationId)
-                        .equal(Application.Fields.gitApplicationMetadata_branchName, branchName))
+                .criteria(
+                        Bridge.equal(Application.Fields.gitApplicationMetadata_defaultApplicationId, baseApplicationId)
+                                .equal(Application.Fields.gitApplicationMetadata_branchName, branchName))
                 .permission(aclPermission.orElse(null))
                 .one();
     }
 
     @Override
-    public Flux<Application> getApplicationByGitDefaultApplicationId(
-            String defaultApplicationId, AclPermission permission) {
+    public Flux<Application> getApplicationByGitBaseApplicationId(String baseApplicationId, AclPermission permission) {
 
         return queryBuilder()
-                .criteria(Bridge.equal(
-                        Application.Fields.gitApplicationMetadata_defaultApplicationId, defaultApplicationId))
+                .criteria(
+                        Bridge.equal(Application.Fields.gitApplicationMetadata_defaultApplicationId, baseApplicationId))
                 .permission(permission)
                 .all();
-    }
-
-    @Override
-    public Mono<Long> countByWorkspaceId(String workspaceId) {
-        return queryBuilder()
-                .criteria(Bridge.equal(Application.Fields.workspaceId, workspaceId))
-                .count();
     }
 
     @Override
@@ -206,18 +190,18 @@ public class CustomApplicationRepositoryCEImpl extends BaseAppsmithRepositoryImp
     }
 
     @Override
-    public Mono<Application> getApplicationByDefaultApplicationIdAndDefaultBranch(String defaultApplicationId) {
+    public Mono<Application> getApplicationByBaseApplicationIdAndDefaultBranch(String baseApplicationId) {
 
         return queryBuilder()
-                .criteria(Bridge.equal(
-                        Application.Fields.gitApplicationMetadata_defaultApplicationId, defaultApplicationId))
+                .criteria(
+                        Bridge.equal(Application.Fields.gitApplicationMetadata_defaultApplicationId, baseApplicationId))
                 .one();
     }
 
     @Override
     public Mono<Integer> setAppTheme(
             String applicationId, String editModeThemeId, String publishedModeThemeId, AclPermission aclPermission) {
-        Update updateObj = new Update();
+        BridgeUpdate updateObj = Bridge.update();
         if (StringUtils.hasLength(editModeThemeId)) {
             updateObj = updateObj.set(Application.Fields.editModeThemeId, editModeThemeId);
         }
@@ -245,9 +229,8 @@ public class CustomApplicationRepositoryCEImpl extends BaseAppsmithRepositoryImp
                 // Check if the permission is being provided by the given permission group
                 .permission(permission)
                 .permissionGroups(Set.of(permissionGroupId))
-                .fields(Application.Fields.id)
-                .all()
-                .map(application -> application.getId());
+                .all(IdOnly.class)
+                .map(IdOnly::id);
     }
 
     @Override
@@ -263,7 +246,7 @@ public class CustomApplicationRepositoryCEImpl extends BaseAppsmithRepositoryImp
     public Mono<Integer> unprotectAllBranches(String applicationId, AclPermission permission) {
         String isProtectedFieldPath = Application.Fields.gitApplicationMetadata_isProtectedBranch;
 
-        Update unsetProtected = new Update().set(isProtectedFieldPath, false);
+        BridgeUpdate unsetProtected = Bridge.update().set(isProtectedFieldPath, false);
 
         return queryBuilder()
                 .criteria(Bridge.equal(Application.Fields.gitApplicationMetadata_defaultApplicationId, applicationId))
@@ -285,8 +268,34 @@ public class CustomApplicationRepositoryCEImpl extends BaseAppsmithRepositoryImp
                         Application.Fields.gitApplicationMetadata_defaultApplicationId, applicationId)
                 .in(Application.Fields.gitApplicationMetadata_branchName, branchNames);
 
-        Update setProtected = new Update().set(Application.Fields.gitApplicationMetadata_isProtectedBranch, true);
+        BridgeUpdate setProtected =
+                Bridge.update().set(Application.Fields.gitApplicationMetadata_isProtectedBranch, true);
 
         return queryBuilder().criteria(q).permission(permission).updateAll(setProtected);
+    }
+
+    @Override
+    public Flux<String> findBranchedApplicationIdsByBaseApplicationId(String baseApplicationId) {
+
+        final BridgeQuery<Application> q =
+                Bridge.equal(Application.Fields.gitApplicationMetadata_defaultApplicationId, baseApplicationId);
+
+        return queryBuilder().criteria(q).fields(Application.Fields.id).all().map(application -> application.getId());
+    }
+
+    @Override
+    public Flux<String> findAllBranchedApplicationIdsByBranchedApplicationId(
+            String branchedApplicationId, AclPermission permission) {
+        Mono<Application> branchedApplicationMono = this.findById(branchedApplicationId, permission);
+
+        return branchedApplicationMono.flatMapMany(application -> {
+            if (application.getGitArtifactMetadata() != null
+                    && application.getGitArtifactMetadata().getDefaultArtifactId() != null) {
+                return this.findBranchedApplicationIdsByBaseApplicationId(
+                        application.getGitArtifactMetadata().getDefaultArtifactId());
+            } else {
+                return Flux.just(application.getId());
+            }
+        });
     }
 }

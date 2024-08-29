@@ -15,14 +15,13 @@ import {
   storeFocusHistory,
 } from "actions/focusHistoryActions";
 import type { AppsmithLocationState } from "utils/history";
-import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
 import type { Action } from "entities/Action";
-import { getAction, getPlugin } from "@appsmith/selectors/entitiesSelector";
+import { getAction, getPlugin } from "ee/selectors/entitiesSelector";
 import type { Plugin } from "api/PluginApi";
 import { getCurrentGitBranch } from "selectors/gitSyncSelectors";
-import { getIDETypeByUrl } from "@appsmith/entities/IDE/utils";
-import { getIDEFocusStrategy } from "@appsmith/navigation/FocusStrategy";
-import { IDE_TYPE } from "@appsmith/entities/IDE/constants";
+import { getIDETypeByUrl } from "ee/entities/IDE/utils";
+import { getIDEFocusStrategy } from "ee/navigation/FocusStrategy";
+import { IDE_TYPE } from "ee/entities/IDE/constants";
 
 export interface FocusPath {
   key: string;
@@ -40,11 +39,15 @@ export interface FocusStrategy {
     previousPath: string,
     currentPath: string,
     state: AppsmithLocationState,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) => Generator<any, Array<FocusPath>, any>;
   /** based on the route change, what states need to be stored for the previous route **/
   getEntitiesForStore: (
     path: string,
     currentPath: string,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) => Generator<any, Array<FocusPath>, any>;
   /** For entities with hierarchy, return the parent entity path for storing its state  **/
   getEntityParentUrl: (
@@ -55,6 +58,8 @@ export interface FocusStrategy {
   waitForPathLoad: (
     currentPath: string,
     previousPath: string,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ) => Generator<any, void, any>;
 }
 
@@ -80,6 +85,7 @@ class FocusRetention {
     this.setStateOfPath = this.setStateOfPath.bind(this);
     this.getState = this.getState.bind(this);
     this.setState = this.setState.bind(this);
+    this.handleRemoveFocusHistory = this.handleRemoveFocusHistory.bind(this);
   }
 
   public *onRouteChange(
@@ -112,16 +118,16 @@ class FocusRetention {
     }
   }
 
-  public *handleRemoveFocusHistory(action: ReduxAction<{ url: string }>) {
-    const { url } = action.payload;
+  public *handleRemoveFocusHistory(url: string) {
     const branch: string | undefined = yield select(getCurrentGitBranch);
     const removeKeys: string[] = [];
-    const entity = identifyEntityFromPath(url);
+    const focusEntityInfo = identifyEntityFromPath(url);
     removeKeys.push(`${url}#${branch}`);
-    const parentElement = FocusStoreHierarchy[entity.entity];
+
+    const parentElement = FocusStoreHierarchy[focusEntityInfo.entity];
     if (parentElement) {
       const parentPath = this.focusStrategy.getEntityParentUrl(
-        entity,
+        focusEntityInfo,
         parentElement,
       );
       removeKeys.push(`${parentPath}#${branch}`);
@@ -143,6 +149,8 @@ class FocusRetention {
     const selectors =
       this.focusStrategy.focusElements[focusPath.entityInfo.entity];
     if (!selectors) return;
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const state: Record<string, any> = {};
     for (const selectorInfo of selectors) {
       state[selectorInfo.name] = yield call(

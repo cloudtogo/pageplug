@@ -1,17 +1,17 @@
-import { get, isEmpty, set } from "lodash";
-import type { JSActionEntity } from "@appsmith/entities/DataTree/types";
+import { get, isEmpty, isUndefined, set } from "lodash";
+import type { JSActionEntity } from "ee/entities/DataTree/types";
 import type { ConfigTree, DataTree } from "entities/DataTree/dataTreeTypes";
 import { EvalErrorTypes, getEvalValuePath } from "utils/DynamicBindingUtils";
 import type { JSUpdate, ParsedJSSubAction } from "utils/JSPaneUtils";
 import { parseJSObject, isJSFunctionProperty } from "@shared/ast";
 import type DataTreeEvaluator from "workers/common/DataTreeEvaluator";
 import evaluateSync from "workers/Evaluation/evaluate";
-import type { DataTreeDiff } from "@appsmith/workers/Evaluation/evaluationUtils";
+import type { DataTreeDiff } from "ee/workers/Evaluation/evaluationUtils";
 import {
   DataTreeDiffEvent,
   getEntityNameAndPropertyPath,
   isJSAction,
-} from "@appsmith/workers/Evaluation/evaluationUtils";
+} from "ee/workers/Evaluation/evaluationUtils";
 import {
   removeFunctionsAndVariableJSCollection,
   updateJSCollectionInUnEvalTree,
@@ -85,10 +85,16 @@ export function saveResolvedFunctionsAndJSUpdates(
   entityName: string,
 ) {
   jsPropertiesState.delete(entityName);
-  const correctFormat = validJSBodyRegex.test(entity.body);
-  const isEmptyBody = entity.body.trim() === "";
+  const correctFormat =
+    entity.hasOwnProperty("body") &&
+    !isUndefined(entity.body) &&
+    validJSBodyRegex.test(entity.body);
+  const isEmptyBody =
+    entity.hasOwnProperty("body") &&
+    !isUndefined(entity.body) &&
+    entity?.body.trim() === "";
 
-  if (correctFormat || isEmptyBody) {
+  if (!isUndefined(entity.body) && (correctFormat || isEmptyBody)) {
     try {
       JSObjectCollection.deleteResolvedFunction(entityName);
       JSObjectCollection.deleteUnEvalState(entityName);
@@ -105,7 +111,11 @@ export function saveResolvedFunctionsAndJSUpdates(
         JSObjectName: entityName,
         JSObjectASTParseTime,
       });
+      // TODO: Fix this the next time the file is edited
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const actions: any = [];
+      // TODO: Fix this the next time the file is edited
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const variables: any = [];
       if (success) {
         if (!!parsedObject) {
@@ -196,9 +206,19 @@ export function saveResolvedFunctionsAndJSUpdates(
     } catch (e) {
       //if we need to push error as popup in case
     }
+  } else {
+    const parsedBody = {
+      body: entity.body,
+      actions: [],
+      variables: [],
+    };
+    set(jsUpdates, `${entityName}`, {
+      parsedBody: parsedBody,
+      id: entity.actionId,
+    });
   }
 
-  if (!correctFormat) {
+  if (!correctFormat && !isUndefined(entity.body)) {
     const errors = {
       type: EvalErrorTypes.PARSE_JS_ERROR,
       context: {

@@ -92,22 +92,6 @@ public enum AppsmithError {
             "Deprecated API",
             ErrorType.BAD_REQUEST,
             null),
-    USER_DOESNT_BELONG_ANY_WORKSPACE(
-            400,
-            AppsmithErrorCode.USER_DOESNT_BELONG_ANY_WORKSPACE.getCode(),
-            "User {0} does not belong to any workspace",
-            AppsmithErrorAction.LOG_EXTERNALLY,
-            "User doesn''t belong to any workspace",
-            ErrorType.INTERNAL_ERROR,
-            null),
-    USER_DOESNT_BELONG_TO_WORKSPACE(
-            400,
-            AppsmithErrorCode.USER_DOESNT_BELONG_TO_WORKSPACE.getCode(),
-            "User {0} does not belong to the workspace with id {1}",
-            AppsmithErrorAction.LOG_EXTERNALLY,
-            "User doesn''t belong to this workspace",
-            ErrorType.INTERNAL_ERROR,
-            null),
 
     USER_NOT_ASSIGNED_TO_ROLE(
             400,
@@ -517,7 +501,7 @@ public enum AppsmithError {
     DATASOURCE_HAS_ACTIONS(
             409,
             AppsmithErrorCode.DATASOURCE_HAS_ACTIONS.getCode(),
-            "Cannot delete datasource since it has {0} action(s) using it.",
+            "Cannot delete datasource since it has {0} {1} using it.",
             AppsmithErrorAction.DEFAULT,
             "Datasource cannot be deleted",
             ErrorType.BAD_REQUEST,
@@ -594,6 +578,14 @@ public enum AppsmithError {
             "Google recaptcha verification failed",
             ErrorType.INTERNAL_ERROR,
             null),
+    GOOGLE_RECAPTCHA_INVITE_FLOW_FAILED(
+            400,
+            AppsmithErrorCode.GOOGLE_RECAPTCHA_INVITE_FLOW_FAILED.getCode(),
+            "Google recaptcha verification failed. Please try again.",
+            AppsmithErrorAction.DEFAULT,
+            "Google recaptcha verification failed",
+            ErrorType.INTERNAL_ERROR,
+            null),
     UNKNOWN_ACTION_RESULT_DATA_TYPE(
             500,
             AppsmithErrorCode.UNKNOWN_ACTION_RESULT_DATA_TYPE.getCode(),
@@ -652,7 +644,7 @@ public enum AppsmithError {
             ErrorType.CONFIGURATION_ERROR,
             null),
     CLOUD_SERVICES_ERROR(
-            500,
+            400,
             AppsmithErrorCode.CLOUD_SERVICES_ERROR.getCode(),
             "Received error from cloud services {0}",
             AppsmithErrorAction.DEFAULT,
@@ -862,18 +854,10 @@ public enum AppsmithError {
     GIT_FILE_IN_USE(
             500,
             AppsmithErrorCode.GIT_FILE_IN_USE.getCode(),
-            "We were unable to place a lock on the file system to perform #commandName command. This error can occur when another operation is in progress. Please try again later.",
+            "We were unable to place a lock on the file system to perform {0} command. This error can occur when another command {1}, which is in progress. Please try again later.",
             AppsmithErrorAction.DEFAULT,
             "Git repo is locked",
             ErrorType.GIT_ACTION_EXECUTION_ERROR,
-            null),
-    CSRF_TOKEN_INVALID(
-            403,
-            AppsmithErrorCode.CSRF_TOKEN_INVALID.getCode(),
-            "CSRF token missing/invalid. Please try again.",
-            AppsmithErrorAction.DEFAULT,
-            "CSRF token missing/invalid",
-            ErrorType.BAD_REQUEST,
             null),
     UNSUPPORTED_IMPORT_OPERATION_FOR_GIT_CONNECTED_APPLICATION(
             400,

@@ -2,18 +2,22 @@ import React, { useEffect, useState, useMemo } from "react";
 import type {
   ApplicationPayload,
   Page,
-} from "@appsmith/constants/ReduxActionConstants";
+} from "ee/constants/ReduxActionConstants";
 import { NAVIGATION_SETTINGS, SIDEBAR_WIDTH } from "constants/AppConstants";
+import { get } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
 import ApplicationName from "./components/ApplicationName";
+import MenuItem from "./components/MenuItem";
+import ShareButton from "./components/ShareButton";
+import PrimaryCTA from "../PrimaryCTA";
 import { useHref } from "pages/Editor/utils";
-import { builderURL, viewerURL } from "@appsmith/RouteBuilder";
+import { builderURL, viewerURL } from "ee/RouteBuilder";
 import {
   combinedPreviewModeSelector,
-  getCurrentPageId,
-  getCurrentPage,
+  getCurrentBasePageId,
+  getCurrentPage
 } from "selectors/editorSelectors";
 import type { User } from "constants/userConstants";
 import { ANONYMOUS_USERNAME } from "constants/userConstants";
@@ -25,8 +29,8 @@ import {
   getAppSidebarPinned,
   getCurrentApplication,
   getAppMode,
-} from "@appsmith/selectors/applicationSelectors";
-import { setIsAppSidebarPinned } from "@appsmith/actions/applicationActions";
+} from "ee/selectors/applicationSelectors";
+import { setIsAppSidebarPinned } from "ee/actions/applicationActions";
 import {
   StyledCtaContainer,
   StyledFooter,
@@ -37,7 +41,9 @@ import {
 import { View } from "@tarojs/components";
 import { getCurrentThemeDetails } from "selectors/themeSelectors";
 import { getIsAppSettingsPaneWithNavigationTabOpen } from "selectors/appSettingsPaneSelectors";
-import BackToHomeButton from "@appsmith/pages/AppViewer/BackToHomeButton";
+import MenuItemContainer from "./components/MenuItemContainer";
+import BackToAppsButton from "./components/BackToAppsButton";
+import BackToHomeButton from "ee/pages/AppViewer/BackToHomeButton";
 import history from "utils/history";
 import { APP_MODE } from "entities/App";
 import { Menu } from "antd";
@@ -49,7 +55,7 @@ import {
   clone as _clone,
 } from "lodash";
 import { makeRouteNode, findPathNodes } from "../utils";
-import NavigationLogo from "@appsmith/pages/AppViewer/NavigationLogo";
+import NavigationLogo from "ee/pages/AppViewer/NavigationLogo";
 
 interface SidebarProps {
   currentApplicationDetails?: ApplicationPayload;
@@ -90,8 +96,8 @@ export function Sidebar(props: SidebarProps) {
   const location = useLocation();
   const { pathname } = location;
   const [query, setQuery] = useState("");
-  const pageId = useSelector(getCurrentPageId);
-  const editorURL = useHref(builderURL, { pageId });
+  const basePageId = useSelector(getCurrentBasePageId);
+  const editorURL = useHref(builderURL, { basePageId });
   const dispatch = useDispatch();
   const isPinned = useSelector(getAppSidebarPinned);
   const [isOpen, setIsOpen] = useState(true);
@@ -113,11 +119,11 @@ export function Sidebar(props: SidebarProps) {
     const pageURL =
       appMode === APP_MODE.PUBLISHED
         ? viewerURL({
-          pageId: pagesMap[title].pageId,
-        })
+            pageId: pagesMap[title].pageId,
+          })
         : builderURL({
-          pageId: pagesMap[title].pageId,
-        });
+            pageId: pagesMap[title].pageId,
+          });
     return pageURL;
   };
 
@@ -159,12 +165,14 @@ export function Sidebar(props: SidebarProps) {
               ) : (
                 item.title
               ),
-              icon: item.icon && item.icon !== "无" ? (
-                <View
-                  className={`van-icon van-icon-${item.icon ? item.icon : "orders-o"
+              icon:
+                item.icon && item.icon !== "无" ? (
+                  <View
+                    className={`van-icon van-icon-${
+                      item.icon ? item.icon : "orders-o"
                     } taroify-icon taroify-icon--inherit hydrated`}
-                />
-              ) : null,
+                  />
+                ) : null,
             };
           });
         });
@@ -222,7 +230,7 @@ export function Sidebar(props: SidebarProps) {
       menudata,
     };
   }, [viewerLayout, pages, currentApplicationDetails]);
-  
+
   const activeMenuKeys = useMemo(() => {
     const currentPageName: any = currentPage?.pageName;
     const parentPaths = findPathNodes(initState.menudata, currentPageName);
@@ -324,8 +332,8 @@ export function Sidebar(props: SidebarProps) {
               NAVIGATION_SETTINGS.LOGO_CONFIGURATION
                 .LOGO_AND_APPLICATION_TITLE ||
               logoConfiguration ===
-              NAVIGATION_SETTINGS.LOGO_CONFIGURATION
-                .APPLICATION_TITLE_ONLY) && (
+                NAVIGATION_SETTINGS.LOGO_CONFIGURATION
+                  .APPLICATION_TITLE_ONLY) && (
               <ApplicationName
                 appName={currentApplicationDetails?.name}
                 forSidebar
@@ -352,19 +360,25 @@ export function Sidebar(props: SidebarProps) {
         navColorStyle={navColorStyle}
         primaryColor={primaryColor}
       >
-        <Menu
-          defaultSelectedKeys={activeMenuKeys.parentPaths}
-          selectedKeys={activeMenuKeys.parentPaths}
-          mode="inline"
-          theme={current_theme}
-          inlineCollapsed={!isOpen}
-          items={filterHiddenTreeData(initState.menudata)}
-          className="rootSideMenu pp-menu"
-          style={{
-            border: "none",
-            backgroundColor: "transparent",
-          }}
-        />
+        {appPages.map((page) => {
+          return (
+            <MenuItemContainer
+              forSidebar
+              isTabActive={pathname.indexOf(page.pageId) > -1}
+              key={page.pageId}
+            >
+              <MenuItem
+                key={page.pageId}
+                navigationSetting={
+                  currentApplicationDetails?.applicationDetail
+                    ?.navigationSetting
+                }
+                page={page}
+                query={query}
+              />
+            </MenuItemContainer>
+          );
+        })}
       </StyledMenuContainer>
 
       {props.showUserSettings && (

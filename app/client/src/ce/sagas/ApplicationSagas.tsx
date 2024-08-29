@@ -3,11 +3,11 @@ import type {
   ApplicationPayload,
   Page,
   ReduxAction,
-} from "@appsmith/constants/ReduxActionConstants";
+} from "ee/constants/ReduxActionConstants";
 import {
   ReduxActionErrorTypes,
   ReduxActionTypes,
-} from "@appsmith/constants/ReduxActionConstants";
+} from "ee/constants/ReduxActionConstants";
 import type {
   ApplicationPagePayload,
   ApplicationResponsePayload,
@@ -29,15 +29,15 @@ import type {
   UpdateApplicationRequest,
   UpdateApplicationResponse,
   UploadNavigationLogoRequest,
-} from "@appsmith/api/ApplicationApi";
-import ApplicationApi from "@appsmith/api/ApplicationApi";
-import { all, call, put, select, take, takeLatest } from "redux-saga/effects";
+} from "ee/api/ApplicationApi";
+import ApplicationApi from "ee/api/ApplicationApi";
+import { all, call, put, select, take } from "redux-saga/effects";
 
 import { validateResponse } from "sagas/ErrorSagas";
-import { getCurrentApplicationIdForCreateNewApp } from "@appsmith/selectors/applicationSelectors";
+import { getCurrentApplicationIdForCreateNewApp } from "ee/selectors/applicationSelectors";
 import type { ApiResponse } from "api/ApiResponses";
 import history from "utils/history";
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import {
   ApplicationVersion,
   deleteApplicationNavigationLogoSuccessAction,
@@ -57,17 +57,19 @@ import {
   updateCurrentApplicationForkingEnabled,
   updateApplicationThemeSettingAction,
   fetchAllApplicationsOfWorkspace,
-} from "@appsmith/actions/applicationActions";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+} from "ee/actions/applicationActions";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 import {
   createMessage,
   ERROR_IMPORTING_APPLICATION_TO_WORKSPACE,
-} from "@appsmith/constants/messages";
+  IMPORT_APP_SUCCESSFUL,
+} from "ee/constants/messages";
 import { APP_MODE } from "entities/App";
-import type { Workspace } from "@appsmith/constants/workspaceConstants";
+import type { Workspace } from "ee/constants/workspaceConstants";
 import type { AppColorCode } from "constants/DefaultTheme";
 import {
   getCurrentApplicationId,
+  getCurrentBasePageId,
   getCurrentPageId,
   getIsEditorInitialized,
 } from "selectors/editorSelectors";
@@ -86,7 +88,7 @@ import {
   getEnableFirstTimeUserOnboarding,
   getFirstTimeUserOnboardingApplicationId,
 } from "selectors/onboardingSelectors";
-import { getFetchedWorkspaces } from "@appsmith/selectors/workspaceSelectors";
+import { getFetchedWorkspaces } from "ee/selectors/workspaceSelectors";
 
 import { fetchPluginFormConfigs, fetchPlugins } from "actions/pluginActions";
 import {
@@ -95,53 +97,42 @@ import {
 } from "actions/datasourceActions";
 import { failFastApiCalls } from "sagas/InitSagas";
 import type { Datasource } from "entities/Datasource";
-import { builderURL, viewerURL } from "@appsmith/RouteBuilder";
+import { builderURL, viewerURL } from "ee/RouteBuilder";
 import { getDefaultPageId as selectDefaultPageId } from "sagas/selectors";
 import PageApi from "api/PageApi";
-import { identity, isEmpty, merge, pickBy } from "lodash";
+import { isEmpty, merge } from "lodash";
 import { checkAndGetPluginFormConfigsSaga } from "sagas/PluginSagas";
-import {
-  getPageList,
-  getPluginForm,
-} from "@appsmith/selectors/entitiesSelector";
+import { getPageList, getPluginForm } from "ee/selectors/entitiesSelector";
 import { getConfigInitialValues } from "components/formControls/utils";
 import DatasourcesApi from "api/DatasourcesApi";
+import type { SetDefaultPageActionPayload } from "actions/pageActions";
 import { resetApplicationWidgets } from "actions/pageActions";
 import { setCanvasCardsState } from "actions/editorActions";
-import { toast } from "design-system";
+import { toast } from "@appsmith/ads";
 import type { User } from "constants/userConstants";
 import { ANONYMOUS_USERNAME } from "constants/userConstants";
 import { getCurrentUser } from "selectors/usersSelectors";
-import { ERROR_CODES } from "@appsmith/constants/ApiConstants";
+import { ERROR_CODES } from "ee/constants/ApiConstants";
 import { safeCrashAppRequest } from "actions/errorActions";
-import type { IconNames } from "design-system";
+import type { IconNames } from "@appsmith/ads";
 import {
   defaultNavigationSetting,
   keysOfNavigationSetting,
 } from "constants/AppConstants";
 import { setAllEntityCollapsibleStates } from "actions/editorContextActions";
-import { getCurrentEnvironmentId } from "@appsmith/selectors/environmentSelectors";
-import { selectFeatureFlagCheck } from "@appsmith/selectors/featureFlagsSelectors";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
+import { getCurrentEnvironmentId } from "ee/selectors/environmentSelectors";
 import { LayoutSystemTypes } from "layoutSystems/types";
 import {
   getApplicationsOfWorkspace,
   getCurrentWorkspaceId,
-} from "@appsmith/selectors/selectedWorkspaceSelectors";
+} from "ee/selectors/selectedWorkspaceSelectors";
 import equal from "fast-deep-equal";
 import { getFromServerWhenNoPrefetchedResult } from "sagas/helper";
+import { getIsAnvilLayoutEnabled } from "layoutSystems/anvil/integrations/selectors";
 
-export const getDefaultPageId = (
-  pages?: ApplicationPagePayload[],
-): string | undefined => {
-  let defaultPage: ApplicationPagePayload | undefined = undefined;
-  if (pages) {
-    defaultPage = pages.find((page) => page.isDefault);
-    if (!defaultPage) {
-      defaultPage = pages[0];
-    }
-  }
-  return defaultPage ? defaultPage.id : undefined;
+export const findDefaultPage = (pages: ApplicationPagePayload[] = []) => {
+  const defaultPage = pages.find((page) => page.isDefault) ?? pages[0];
+  return defaultPage;
 };
 
 export let windowReference: Window | null = null;
@@ -162,10 +153,11 @@ export function* publishApplicationSaga(
       });
 
       const applicationId: string = yield select(getCurrentApplicationId);
+      const currentBasePageId: string = yield select(getCurrentBasePageId);
       const currentPageId: string = yield select(getCurrentPageId);
 
       const appicationViewPageUrl = viewerURL({
-        pageId: currentPageId,
+        basePageId: currentBasePageId,
       });
 
       yield put(
@@ -209,10 +201,6 @@ export function* fetchAllApplicationsOfWorkspaceSaga(
       ApplicationApi.fetchAllApplicationsOfWorkspace,
       activeWorkspaceId,
     );
-    const isEnabledForCreateNew: boolean = yield select(
-      selectFeatureFlagCheck,
-      FEATURE_FLAG.ab_create_new_apps_enabled,
-    );
     const workspaces: Workspace[] = yield select(getFetchedWorkspaces);
     const isOnboardingApplicationId: string = yield select(
       getCurrentApplicationIdForCreateNewApp,
@@ -220,9 +208,11 @@ export function* fetchAllApplicationsOfWorkspaceSaga(
     const isValidResponse: boolean = yield validateResponse(response);
     if (isValidResponse) {
       const applications = response.data.map((application) => {
+        const defaultPage = findDefaultPage(application.pages);
         return {
           ...application,
-          defaultPageId: getDefaultPageId(application.pages),
+          defaultPageId: defaultPage?.id,
+          defaultBasePageId: defaultPage?.baseId,
         };
       });
       yield put({
@@ -231,11 +221,7 @@ export function* fetchAllApplicationsOfWorkspaceSaga(
       });
 
       // This will initialise the current workspace to first only during onboarding
-      if (
-        isEnabledForCreateNew &&
-        workspaces.length > 0 &&
-        !!isOnboardingApplicationId
-      ) {
+      if (workspaces.length > 0 && !!isOnboardingApplicationId) {
         yield put({
           type: ReduxActionTypes.SET_CURRENT_WORKSPACE,
           payload: workspaces[0],
@@ -257,15 +243,20 @@ export function* fetchAppAndPagesSaga(
 ) {
   try {
     const { pages, ...payload } = action.payload;
-    const params = pickBy(payload, identity);
-    if (params.pageId && params.applicationId) {
-      delete params.applicationId;
+    const request = {
+      applicationId: payload.applicationId,
+      pageId: payload.pageId,
+      mode: payload.mode,
+    };
+    if (request.pageId && request.applicationId) {
+      delete request.applicationId;
     }
     const response: FetchApplicationResponse = yield call(
       getFromServerWhenNoPrefetchedResult,
       pages,
-      () => call(PageApi.fetchAppAndPages, params),
+      () => call(PageApi.fetchAppAndPages, request),
     );
+
     const isValidResponse: boolean = yield call(validateResponse, response);
     if (isValidResponse) {
       const prevPagesState: Page[] = yield select(getPageList);
@@ -287,6 +278,7 @@ export function* fetchAppAndPagesSaga(
           pages: response.data.pages.map((page) => ({
             pageName: page.name,
             pageId: page.id,
+            basePageId: page.baseId,
             isDefault: page.isDefault,
             isHidden: !!page.isHidden,
             slug: page.slug,
@@ -297,6 +289,7 @@ export function* fetchAppAndPagesSaga(
             icon: page.icon,
           })),
           applicationId: response.data.application?.id,
+          baseApplicationId: response.data.application?.baseId,
         },
       });
 
@@ -320,6 +313,8 @@ export function* fetchAppAndPagesSaga(
   }
 }
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function* handleFetchApplicationError(error: any) {
   const currentUser: User = yield select(getCurrentUser);
   if (
@@ -345,12 +340,15 @@ export function* handleFetchApplicationError(error: any) {
 }
 
 export function* setDefaultApplicationPageSaga(
-  action: ReduxAction<SetDefaultPageRequest>,
+  action: ReduxAction<SetDefaultPageActionPayload>,
 ) {
   try {
     const defaultPageId: string = yield select(selectDefaultPageId);
     if (defaultPageId !== action.payload.id) {
-      const request: SetDefaultPageRequest = action.payload;
+      const request: SetDefaultPageRequest = {
+        ...action.payload,
+        pageId: action.payload.id,
+      };
       const response: ApiResponse = yield call(
         ApplicationApi.setDefaultApplicationPage,
         request,
@@ -358,7 +356,10 @@ export function* setDefaultApplicationPageSaga(
       const isValidResponse: boolean = yield validateResponse(response);
       if (isValidResponse) {
         yield put(
-          setDefaultApplicationPageSuccess(request.id, request.applicationId),
+          setDefaultApplicationPageSuccess(
+            request.pageId,
+            request.applicationId,
+          ),
         );
       }
     }
@@ -543,7 +544,11 @@ export function* createApplicationSaga(
     color: AppColorCode;
     isTaroWds: boolean;
     workspaceId: string;
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolve: any;
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     reject: any;
   }>,
 ) {
@@ -582,16 +587,14 @@ export function* createApplicationSaga(
         layoutSystemType: LayoutSystemTypes.FIXED, // Note: This may be provided as an action payload in the future
       };
 
-      /** SPECIAL HANDLING FOR ANVIL DURING EXPERIMENTATION */
-      // Check if Anvil is enabled for the user
-      // If so, default to using Anvil as the layout system for the new app
-      const isAnvilEnabled: boolean = yield select(
-        selectFeatureFlagCheck,
-        FEATURE_FLAG.release_anvil_enabled,
-      );
+      // SPECIAL HANDLING FOR ANVIL DURING EXPERIMENTATION
+      // Check if Anvil is enabled for the user, If so, default to using
+      // Anvil as the layout system for the new app. Also, we want to hide the navbar for anvil apps
+      const isAnvilEnabled: boolean = yield select(getIsAnvilLayoutEnabled);
 
       if (isAnvilEnabled) {
         request.layoutSystemType = LayoutSystemTypes.ANVIL;
+        request.showNavbar = false;
       }
       /** EO SPECIAL HANDLING FOR ANVIL DURING EXPERIMENTATION */
 
@@ -601,9 +604,11 @@ export function* createApplicationSaga(
       );
       const isValidResponse: boolean = yield validateResponse(response);
       if (isValidResponse) {
+        const defaultPage = findDefaultPage(response.data.pages);
         const application: ApplicationPayload = {
           ...response.data,
-          defaultPageId: getDefaultPageId(response.data.pages) as string,
+          defaultPageId: defaultPage?.id,
+          defaultBasePageId: defaultPage?.baseId,
         };
         AnalyticsUtil.logEvent("CREATE_APP", {
           appName: application.name,
@@ -638,13 +643,10 @@ export function* createApplicationSaga(
             payload: application.id,
           });
         }
-        // Show cta's in empty canvas for the first page
-        yield put(
-          setCanvasCardsState(getDefaultPageId(response.data.pages) ?? ""),
-        );
+        yield put(setCanvasCardsState(defaultPage?.id ?? ""));
         history.push(
           builderURL({
-            pageId: application.defaultPageId as string,
+            basePageId: defaultPage?.baseId,
           }),
         );
 
@@ -682,10 +684,11 @@ export function* forkApplicationSaga(
     const isValidResponse: boolean = yield validateResponse(response);
     if (isValidResponse) {
       yield put(resetCurrentApplication());
+      const defaultPage = findDefaultPage(response.data.application.pages);
       const application: ApplicationPayload = {
         ...response.data.application,
-        // @ts-expect-error: response is of type unknown
-        defaultPageId: getDefaultPageId(response.data.application.pages),
+        defaultPageId: defaultPage?.id,
+        defaultBasePageId: defaultPage?.baseId,
       };
       yield put({
         type: ReduxActionTypes.FORK_APPLICATION_SUCCESS,
@@ -703,18 +706,16 @@ export function* forkApplicationSaga(
       });
 
       const pageURL = builderURL({
-        pageId: application.defaultPageId as string,
+        basePageId: defaultPage?.baseId,
         params: { branch: null },
       });
 
       if (action.payload.editMode) {
-        const appId = application.id;
-        const pageId = application.defaultPageId;
         yield put({
           type: ReduxActionTypes.FETCH_APPLICATION_INIT,
           payload: {
-            applicationId: appId,
-            pageId,
+            applicationId: application.id,
+            pageId: defaultPage?.id,
           },
         });
       }
@@ -776,6 +777,8 @@ export function* importApplicationSaga(
       ApplicationApi.importApplicationToWorkspace,
       action.payload,
     );
+    const urlObject = new URL(window.location.href);
+    const isApplicationUrl = urlObject.pathname.includes("/app/");
     const isValidResponse: boolean = yield validateResponse(response);
     if (isValidResponse) {
       const currentWorkspaceId: string = yield select(getCurrentWorkspaceId);
@@ -808,10 +811,22 @@ export function* importApplicationSaga(
         } else {
           // @ts-expect-error: pages is of type any
           // TODO: Update route params here
-          const defaultPage = pages.filter((eachPage) => !!eachPage.isDefault);
+          const { application } = response.data;
+          const defaultPage = findDefaultPage(pages);
           const pageURL = builderURL({
-            pageId: defaultPage[0].id,
+            basePageId: defaultPage?.baseId,
           });
+          if (isApplicationUrl) {
+            const appId = application.id;
+            const pageId = application.defaultPageId;
+            yield put({
+              type: ReduxActionTypes.FETCH_APPLICATION_INIT,
+              payload: {
+                applicationId: appId,
+                pageId,
+              },
+            });
+          }
           history.push(pageURL);
 
           toast.show("应用导入成功！", {

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import React from "react";
 import { connect } from "react-redux";
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
 import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import BaseWidget from "widgets/BaseWidget";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
@@ -10,7 +10,7 @@ import { ValidationTypes } from "constants/WidgetValidation";
 import ModalComponent from "../component";
 import type { RenderMode } from "constants/WidgetConstants";
 import { generateClassName } from "utils/generators";
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import { getCanvasWidth } from "selectors/editorSelectors";
 import IconSVG from "../icon.svg";
 import { WIDGET_TAGS } from "constants/WidgetConstants";

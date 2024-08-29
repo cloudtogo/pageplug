@@ -1,4 +1,4 @@
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
 import {
   FlexVerticalAlignment,
   LayoutDirection,
@@ -39,6 +39,7 @@ import {
 import type { WidgetProps } from "widgets/BaseWidget";
 import { BlueprintOperationTypes } from "WidgetProvider/constants";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 import { renderAppsmithCanvas } from "layoutSystems/CanvasFactory";
 
 export function selectedTabValidation(
@@ -71,6 +72,7 @@ class TabsWidget extends BaseWidget<
     return {
       name: "标签页",
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: true,
       isCanvas: true,
@@ -167,6 +169,8 @@ class TabsWidget extends BaseWidget<
                 idsObj = { ...idsObj, [eachChild.tabId]: eachChild.widgetId };
                 return idsObj;
               }, {});
+              // TODO: Fix this the next time the file is edited
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const tabsObj = tabs.reduce((obj: any, tab: any) => {
                 const newTab = { ...tab };
                 newTab.widgetId = tabIds[newTab.id];
@@ -288,6 +292,8 @@ class TabsWidget extends BaseWidget<
               titlePropertyName: "label",
               panelIdPropertyName: "id",
               updateHook: (
+                // TODO: Fix this the next time the file is edited
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 props: any,
                 propertyPath: string,
                 propertyValue: string,
@@ -529,6 +535,8 @@ class TabsWidget extends BaseWidget<
     };
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       selectedTabWidgetId: undefined,
@@ -614,8 +622,8 @@ class TabsWidget extends BaseWidget<
     let selectedTabWidgetId = this.props.selectedTabWidgetId;
     if (this.props.children) {
       selectedTabWidgetId =
-        this.props.children.find(
-          (tab) => this.props.selectedWidgetAncestry?.includes(tab.widgetId),
+        this.props.children.find((tab) =>
+          this.props.selectedWidgetAncestry?.includes(tab.widgetId),
         )?.widgetId ?? this.props.selectedTabWidgetId;
     }
     return selectedTabWidgetId;

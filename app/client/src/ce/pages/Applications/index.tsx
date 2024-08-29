@@ -1,3 +1,67 @@
+import { updateApplication } from "ee/actions/applicationActions";
+import {
+  deleteWorkspace,
+  fetchAllWorkspaces,
+  fetchEntitiesOfWorkspace,
+  resetCurrentWorkspace,
+  saveWorkspace,
+} from "ee/actions/workspaceActions";
+import type { UpdateApplicationPayload } from "ee/api/ApplicationApi";
+import {
+  ANVIL_APPLICATIONS,
+  APPLICATIONS,
+  CLASSIC_APPLICATION_CARD_LIST_ZERO_STATE,
+  CREATE_A_NEW_WORKSPACE,
+  createMessage,
+  FIXED_APPLICATIONS,
+  INVITE_USERS_PLACEHOLDER,
+  NEW_APPLICATION_CARD_LIST_ZERO_STATE,
+  NO_APPS_FOUND,
+  NO_WORKSPACE_HEADING,
+  WORKSPACES_HEADING,
+} from "ee/constants/messages";
+import type { ApplicationPayload } from "ee/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
+import { createWorkspaceSubmitHandler } from "ee/pages/workspace/helpers";
+import type { AppState } from "ee/reducers";
+import type { creatingApplicationMap } from "ee/reducers/uiReducers/applicationsReducer";
+import {
+  getApplicationList,
+  getApplicationSearchKeyword,
+  getCreateApplicationError,
+  getCurrentApplicationIdForCreateNewApp,
+  getIsCreatingApplication,
+  getIsDeletingApplication,
+} from "ee/selectors/applicationSelectors";
+import { Classes as BlueprintClasses } from "@blueprintjs/core";
+import { Position } from "@blueprintjs/core/lib/esm/common/position";
+import { leaveWorkspace } from "actions/userActions";
+import NoSearchImage from "assets/images/NoSearchResult.svg";
+import CenteredWrapper from "components/designSystems/appsmith/CenteredWrapper";
+import {
+  thinScrollbar,
+  truncateTextUsingEllipsis,
+} from "constants/DefaultTheme";
+import type { User } from "constants/userConstants";
+import {
+  Button,
+  Icon,
+  Text as NewText,
+  Option,
+  Select,
+  Tooltip,
+  Tag,
+} from "@appsmith/ads";
+import {
+  AppIconCollection,
+  Classes,
+  MenuItem as ListItem,
+  Text,
+  TextType,
+} from "@appsmith/ads-old";
+import { loadingUserWorkspaces } from "pages/Applications/ApplicationLoaders";
+import PageWrapper from "pages/common/PageWrapper";
+import WorkspaceInviteUsersForm from "pages/workspace/WorkspaceInviteUsersForm";
 import React, {
   Component,
   useCallback,
@@ -6,63 +70,53 @@ import React, {
   useRef,
   useState,
 } from "react";
-
+import { connect, useDispatch, useSelector } from "react-redux";
 import MediaQuery from "react-responsive";
 import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { getCurrentUser } from "selectors/usersSelectors";
 import styled, { ThemeContext } from "styled-components";
-import { connect, useDispatch, useSelector } from "react-redux";
 import { getNextEntityName, getRandomPaletteColor } from "utils/AppsmithUtils";
-import PerformanceTracker, {
-  PerformanceTransactionName,
-} from "utils/PerformanceTracker";
-import { Classes as BlueprintClasses } from "@blueprintjs/core";
-import { Position } from "@blueprintjs/core/lib/esm/common/position";
-import { leaveWorkspace } from "actions/userActions";
-import NoSearchImage from "assets/images/NoSearchResult.svg";
-import CenteredWrapper from "components/designSystems/appsmith/CenteredWrapper";
 
-import { getAppsmithConfigs } from "@appsmith/configs";
-import type { Workspace } from "@appsmith/constants/workspaceConstants";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
-import urlBuilder from "@appsmith/entities/URLRedirect/URLAssembly";
-import ApplicationCardList from "@appsmith/pages/Applications/ApplicationCardList";
-import CreateNewAppsOption from "@appsmith/pages/Applications/CreateNewAppsOption";
-import { usePackage } from "@appsmith/pages/Applications/helpers";
-import PackageCardList from "@appsmith/pages/Applications/PackageCardList";
-import ResourceListLoader from "@appsmith/pages/Applications/ResourceListLoader";
-import WorkflowCardList from "@appsmith/pages/Applications/WorkflowCardList";
-import WorkspaceAction from "@appsmith/pages/Applications/WorkspaceAction";
-import WorkspaceMenu from "@appsmith/pages/Applications/WorkspaceMenu";
-import { getIsReconnectingDatasourcesModalOpen } from "@appsmith/selectors/entitiesSelector";
-import { allowManageEnvironmentAccessForUser } from "@appsmith/selectors/environmentSelectors";
-import { getPackagesList } from "@appsmith/selectors/packageSelectors";
+import { getAppsmithConfigs } from "ee/configs";
+import type { Workspace } from "ee/constants/workspaceConstants";
+import { FEATURE_FLAG } from "ee/entities/FeatureFlag";
+import urlBuilder from "ee/entities/URLRedirect/URLAssembly";
+import ApplicationCardList from "ee/pages/Applications/ApplicationCardList";
+import CreateNewAppsOption from "ee/pages/Applications/CreateNewAppsOption";
+import { usePackage } from "ee/pages/Applications/helpers";
+import PackageCardList from "ee/pages/Applications/PackageCardList";
+import ResourceListLoader from "ee/pages/Applications/ResourceListLoader";
+import WorkflowCardList from "ee/pages/Applications/WorkflowCardList";
+import WorkspaceAction from "ee/pages/Applications/WorkspaceAction";
+import WorkspaceMenu from "ee/pages/Applications/WorkspaceMenu";
+import { getIsReconnectingDatasourcesModalOpen } from "ee/selectors/entitiesSelector";
+import { allowManageEnvironmentAccessForUser } from "ee/selectors/environmentSelectors";
+import { getPackagesList } from "ee/selectors/packageSelectors";
 import {
   getApplicationsOfWorkspace,
   getCurrentWorkspaceId,
   getIsFetchingApplications,
-} from "@appsmith/selectors/selectedWorkspaceSelectors";
+} from "ee/selectors/selectedWorkspaceSelectors";
 import {
   getTenantPermissions,
   shouldShowLicenseBanner,
-} from "@appsmith/selectors/tenantSelectors";
-import { getWorkflowsList } from "@appsmith/selectors/workflowSelectors";
+} from "ee/selectors/tenantSelectors";
+import { getWorkflowsList } from "ee/selectors/workflowSelectors";
 import {
   getFetchedWorkspaces,
   getIsDeletingWorkspace,
   getIsFetchingWorkspaces,
   getIsSavingWorkspaceInfo,
-} from "@appsmith/selectors/workspaceSelectors";
-import { getHasCreateWorkspacePermission } from "@appsmith/utils/BusinessFeatures/permissionPageHelpers";
+} from "ee/selectors/workspaceSelectors";
+import { getHasCreateWorkspacePermission } from "ee/utils/BusinessFeatures/permissionPageHelpers";
 import {
   hasCreateNewAppPermission,
   hasDeleteWorkspacePermission,
   hasManageWorkspaceEnvironmentPermission,
   isPermitted,
   PERMISSION_TYPE,
-} from "@appsmith/utils/permissionHelpers";
+} from "ee/utils/permissionHelpers";
 import { resetEditorRequest } from "actions/initActions";
-import { resetCurrentApplicationIdForCreateNewApp } from "actions/onboardingActions";
 import { setHeaderMeta } from "actions/themeActions";
 import FormDialogComponent from "components/editorComponents/form/FormDialogComponent";
 import { MOBILE_MAX_WIDTH } from "constants/AppConstants";
@@ -72,61 +126,14 @@ import SharedUserList from "pages/common/SharedUserList";
 import GitSyncModal from "pages/Editor/gitSync/GitSyncModal";
 import ReconnectDatasourceModal from "pages/Editor/gitSync/ReconnectDatasourceModal";
 import RepoLimitExceededErrorModal from "pages/Editor/gitSync/RepoLimitExceededErrorModal";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 import { useIsMobileDevice } from "utils/hooks/useDeviceDetect";
 import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
 import CreateNewAppFromTemplatesWrapper from "./CreateNewAppFromTemplateModal/CreateNewAppFromTemplatesWrapper";
-import {
-  deleteWorkspace,
-  fetchAllWorkspaces,
-  fetchEntitiesOfWorkspace,
-  resetCurrentWorkspace,
-  saveWorkspace,
-} from "@appsmith/actions/workspaceActions";
-import {
-  getApplicationList,
-  getApplicationSearchKeyword,
-  getCreateApplicationError,
-  getCurrentApplicationIdForCreateNewApp,
-  getIsCreatingApplication,
-  getIsDeletingApplication,
-} from "@appsmith/selectors/applicationSelectors";
-import type { UpdateApplicationPayload } from "@appsmith/api/ApplicationApi";
-import { updateApplication } from "@appsmith/actions/applicationActions";
-import {
-  CREATE_A_NEW_WORKSPACE,
-  createMessage,
-  INVITE_USERS_PLACEHOLDER,
-  NO_APPS_FOUND,
-  NO_WORKSPACE_HEADING,
-  WORKSPACES_HEADING,
-} from "@appsmith/constants/messages";
-import type { ApplicationPayload } from "@appsmith/constants/ReduxActionConstants";
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
-import { createWorkspaceSubmitHandler } from "@appsmith/pages/workspace/helpers";
-import { loadingUserWorkspaces } from "pages/Applications/ApplicationLoaders";
-import PageWrapper from "pages/common/PageWrapper";
-import WorkspaceInviteUsersForm from "pages/workspace/WorkspaceInviteUsersForm";
-import {
-  Button,
-  Icon,
-  Text as NewText,
-  Option,
-  Select,
-  Tooltip,
-} from "design-system";
-import {
-  AppIconCollection,
-  Classes,
-  EditableText,
-  MenuItem as ListItem,
-  Text,
-  TextType,
-} from "design-system-old";
-import {
-  thinScrollbar,
-  truncateTextUsingEllipsis,
-} from "constants/DefaultTheme";
+import { getAssetUrl } from "ee/utils/airgapHelpers";
+import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
+import { LayoutSystemTypes } from "layoutSystems/types";
+import { getIsAnvilLayoutEnabled } from "layoutSystems/anvil/integrations/selectors";
 
 export const { cloudHosting } = getAppsmithConfigs();
 
@@ -252,8 +259,25 @@ const LeftPaneDataSection = styled.div<{ isBannerVisible?: boolean }>`
   }
 `;
 
+// Tags for some reason take all available space.
+// We're changing the max width to fit the contents as Tags are supposed to be
+const TitleTag = styled(Tag)`
+  max-width: fit-content;
+`;
+
+// A static component that is a tag signifying Anvil applications
+// This will be passed down to the ApplicationCardsList component
+// in the titleTag prop.
+const AnvilTitleTag = (
+  <TitleTag isClosable={false} onClose={() => {}}>
+    Anvil α
+  </TitleTag>
+);
+
 export function LeftPaneSection(props: {
   heading: string;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   children?: any;
   isFetchingWorkspaces: boolean;
   isBannerVisible?: boolean;
@@ -273,6 +297,8 @@ export function LeftPaneSection(props: {
       {
         name: getNextEntityName(
           "Untitled workspace ",
+          // TODO: Fix this the next time the file is edited
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           fetchedWorkspaces.map((el: any) => el.name),
         ),
       },
@@ -345,7 +371,8 @@ export const textIconStyles = (props: { color: string; hover: string }) => {
 export function WorkspaceMenuItem({
   isFetchingWorkspaces,
   selected,
-  workspace,
+  workspace, // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }: any) {
   const history = useHistory();
   const location = useLocation();
@@ -375,6 +402,8 @@ export function WorkspaceMenuItem({
   );
 }
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const submitCreateWorkspaceForm = async (data: any, dispatch: any) => {
   const result = await createWorkspaceSubmitHandler(data, dispatch);
   return result;
@@ -449,9 +478,6 @@ export const WorkspaceNameWrapper = styled.div<{ disabled?: boolean }>`
     color: ${(props) => props.theme.colors.applications.iconColor};
   }
 `;
-export const WorkspaceRename = styled(EditableText)`
-  padding: 0 2px;
-`;
 
 export const NoSearchResultImg = styled.img`
   margin: 1em;
@@ -467,7 +493,12 @@ export const ApplicationsWrapper = styled.div<{
   margin-left: ${(props) => props.theme.homePage.leftPane.width}px;
   width: calc(100% - ${(props) => props.theme.homePage.leftPane.width}px);
   scroll-behavior: smooth;
-  ${({ isBannerVisible }) => (isBannerVisible ? "margin-top: 48px;" : "")}
+  ${({ isBannerVisible, isMobile }) =>
+    isBannerVisible
+      ? isMobile
+        ? "margin-top: 78px;"
+        : "margin-top: 48px;"
+      : ""}
   ${({ isMobile }) =>
     isMobile
       ? `padding: ${CONTAINER_WRAPPER_PADDING} 0;`
@@ -486,6 +517,8 @@ export const WorkspaceSelectorWrapper = styled.div`
   padding: 24px 10px 0;
 `;
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function ApplicationsSection(props: any) {
   const { activeWorkspaceId, applications, packages, workflows, workspaces } =
     props;
@@ -498,6 +531,9 @@ export function ApplicationsSection(props: any) {
   const isDeletingWorkspace = useSelector(getIsDeletingWorkspace);
   const { isFetchingPackages } = usePackage();
   const creatingApplicationMap = useSelector(getIsCreatingApplication);
+  // This checks if the Anvil feature flag is enabled and shows different sections in the workspace
+  // for Anvil and Classic applications
+  const isAnvilEnabled = useSelector(getIsAnvilLayoutEnabled);
   const currentUser = useSelector(getCurrentUser);
   const isMobile = useIsMobileDevice();
   const urlParams = new URLSearchParams(location.search);
@@ -650,7 +686,7 @@ export function ApplicationsSection(props: any) {
       <div className="flex flex-col items-center justify-center mt-[180px]">
         <img
           className="mb-6"
-          src="https://assets.appsmith.com/no-workspace-found.svg"
+          src={`${getAssetUrl(`${ASSETS_CDN_URL}/no-workspace-found.svg`)}`}
         />
         <NewText className="!mb-3 !font-semibold" kind="heading-s">
           {createMessage(NO_WORKSPACE_HEADING)}
@@ -737,6 +773,21 @@ export function ApplicationsSection(props: any) {
         handleResetMenuState();
       }
     };
+
+    // The following filters the applications into classic and Anvil applications
+    // So, that they can be listed in different card lists depending on whether Anvil is enabled
+    const anvilApplications: ApplicationPayload[] = [];
+    const nonAnvilApplications: ApplicationPayload[] = [];
+    applications.forEach((application: ApplicationPayload) => {
+      if (
+        application.applicationDetail?.appPositioning?.type ===
+        LayoutSystemTypes.ANVIL
+      ) {
+        anvilApplications.push(application);
+      } else {
+        nonAnvilApplications.push(application);
+      }
+    });
 
     workspacesListComponent = (
       <React.Fragment key={activeWorkspace.id}>
@@ -825,10 +876,39 @@ export function ApplicationsSection(props: any) {
             <ResourceListLoader isMobile={isMobile} resources={applications} />
           ) : (
             <>
+              {isAnvilEnabled && ( // Anvil Applications list
+                <ApplicationCardList
+                  applications={anvilApplications}
+                  canInviteToWorkspace={canInviteToWorkspace}
+                  deleteApplication={deleteApplication}
+                  emptyStateMessage={createMessage(
+                    NEW_APPLICATION_CARD_LIST_ZERO_STATE,
+                  )}
+                  enableImportExport={enableImportExport}
+                  hasCreateNewApplicationPermission={
+                    hasCreateNewApplicationPermission
+                  }
+                  hasManageWorkspacePermissions={hasManageWorkspacePermissions}
+                  isMobile={isMobile}
+                  onClickAddNewButton={onClickAddNewAppButton}
+                  title={createMessage(ANVIL_APPLICATIONS)}
+                  titleTag={AnvilTitleTag}
+                  updateApplicationDispatch={updateApplicationDispatch}
+                  workspaceId={activeWorkspace.id}
+                />
+              )}
               <ApplicationCardList
-                applications={applications}
+                applications={nonAnvilApplications}
                 canInviteToWorkspace={canInviteToWorkspace}
                 deleteApplication={deleteApplication}
+                emptyStateMessage={
+                  // We let the original message includded in the ApplicationCardList component
+                  // show if Anvil is not enabled. If Anvil is enabled, we need to pass the message
+                  // to make them appropriate to the context.
+                  isAnvilEnabled
+                    ? createMessage(CLASSIC_APPLICATION_CARD_LIST_ZERO_STATE)
+                    : undefined
+                }
                 enableImportExport={enableImportExport}
                 hasCreateNewApplicationPermission={
                   hasCreateNewApplicationPermission
@@ -836,6 +916,12 @@ export function ApplicationsSection(props: any) {
                 hasManageWorkspacePermissions={hasManageWorkspacePermissions}
                 isMobile={isMobile}
                 onClickAddNewButton={onClickAddNewAppButton}
+                title={
+                  // The title is different based on whether Anvil is enabled or not
+                  createMessage(
+                    isAnvilEnabled ? FIXED_APPLICATIONS : APPLICATIONS,
+                  )
+                }
                 updateApplicationDispatch={updateApplicationDispatch}
                 workspaceId={activeWorkspace.id}
               />
@@ -870,6 +956,8 @@ export function ApplicationsSection(props: any) {
   );
 }
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ApplictionsMainPage = (props: any) => {
   const { searchKeyword } = props;
   const location = useLocation();
@@ -888,12 +976,16 @@ export const ApplictionsMainPage = (props: any) => {
   const isLicensePage = useRouteMatch("/license")?.isExact;
   const isBannerVisible = showBanner && (isHomePage || isLicensePage);
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let workspaces: any;
   if (!isFetchingWorkspaces) {
     workspaces = fetchedWorkspaces;
   } else {
     workspaces = loadingUserWorkspaces.map(
       (loadingWorkspaces) => loadingWorkspaces.workspace,
+      // TODO: Fix this the next time the file is edited
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ) as any;
   }
 
@@ -999,6 +1091,8 @@ export interface ApplicationProps {
     fetchEntities: boolean;
     workspaceId: string | null;
   }) => void;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   workspaces: any;
   currentUser?: User;
   searchKeyword: string | undefined;
@@ -1010,7 +1104,6 @@ export interface ApplicationProps {
   queryModuleFeatureFlagEnabled: boolean;
   resetCurrentWorkspace: () => void;
   currentApplicationIdForCreateNewApp?: string;
-  resetCurrentApplicationIdForCreateNewApp: () => void;
   currentWorkspaceId: string;
   isReconnectModalOpen: boolean;
 }
@@ -1026,8 +1119,6 @@ export class Applications<
   }
 
   componentDidMount() {
-    PerformanceTracker.stopTracking(PerformanceTransactionName.LOGIN_CLICK);
-    PerformanceTracker.stopTracking(PerformanceTransactionName.SIGN_UP);
     const urlParams = new URLSearchParams(window.location.search);
     const workspaceIdFromQueryParams = urlParams.get("workspaceId");
     this.props.getAllWorkspaces({
@@ -1058,7 +1149,6 @@ export class Applications<
           currentApplicationIdForCreateNewApp={
             this.props.currentApplicationIdForCreateNewApp
           }
-          onClickBack={this.props.resetCurrentApplicationIdForCreateNewApp}
         />
       );
     } else {
@@ -1087,6 +1177,8 @@ export const mapStateToProps = (state: AppState) => ({
   isReconnectModalOpen: getIsReconnectingDatasourcesModalOpen(state),
 });
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const mapDispatchToProps = (dispatch: any) => ({
   getAllWorkspaces: ({
     fetchEntities,
@@ -1115,8 +1207,6 @@ export const mapDispatchToProps = (dispatch: any) => ({
     dispatch(setHeaderMeta(hideHeaderShadow, showHeaderSeparator));
   },
   resetCurrentWorkspace: () => dispatch(resetCurrentWorkspace()),
-  resetCurrentApplicationIdForCreateNewApp: () =>
-    dispatch(resetCurrentApplicationIdForCreateNewApp()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Applications);

@@ -1,12 +1,10 @@
-import {
-  createMessage,
-  customJSLibraryMessages,
-} from "@appsmith/constants/messages";
+import { createMessage, customJSLibraryMessages } from "ee/constants/messages";
 import difference from "lodash/difference";
 import type { Def } from "tern";
 import { invalidEntityIdentifiers } from "workers/common/DependencyMap/utils";
 import {
   JSLibraries,
+  JSLibraryAccessor,
   libraryReservedIdentifiers,
 } from "../../common/JSLibrary";
 import type { JSLibrary } from "../../common/JSLibrary";
@@ -18,6 +16,8 @@ import log from "loglevel";
 
 declare global {
   interface WorkerGlobalScope {
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [x: string]: any;
   }
 }
@@ -51,6 +51,8 @@ const removeDataTreeFromContext = () => {
   if (!dataTreeEvaluator) return {};
   const evalTree = dataTreeEvaluator?.getEvalTree();
   const dataTreeEntityNames = Object.keys(evalTree);
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tempDataTreeStore: Record<string, any> = {};
   for (const entityName of dataTreeEntityNames) {
     tempDataTreeStore[entityName] = self[entityName];
@@ -60,6 +62,8 @@ const removeDataTreeFromContext = () => {
 };
 
 function addTempStoredDataTreeToContext(
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tempDataTreeStore: Record<string, any>,
 ) {
   const dataTreeEntityNames = Object.keys(tempDataTreeStore);
@@ -307,6 +311,7 @@ export async function loadLibraries(
       }
     }
     JSLibraries.push(...libs);
+    JSLibraryAccessor.regenerateSet();
     return { success: true, message };
   } catch (e) {
     message = (e as Error).message;
@@ -365,6 +370,8 @@ function generateUniqueAccessor(
   throw new Error("Unable to generate a unique accessor");
 }
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function flattenModule(module: Record<string, any>) {
   const keys = Object.keys(module);
   // If there are no keys other than default, return default.

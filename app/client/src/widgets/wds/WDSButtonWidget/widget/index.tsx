@@ -1,26 +1,15 @@
 import React from "react";
-import { toast } from "design-system";
+import { toast } from "@appsmith/ads";
 
-import IconSVG from "../icon.svg";
-import ThumbnailSVG from "../thumbnail.svg";
+import * as config from "../config";
 import BaseWidget from "widgets/BaseWidget";
 import ButtonComponent from "../component";
-import { WIDGET_TAGS } from "constants/WidgetConstants";
-import { propertyPaneStyleConfig } from "./styleConfig";
-import { propertyPaneContentConfig } from "./contentConfig";
+import type { AnvilConfig } from "WidgetProvider/constants";
+import type { WidgetDefaultProps } from "WidgetProvider/constants";
 import type { DerivedPropertiesMap } from "WidgetProvider/factory";
 import type { ButtonWidgetProps, ButtonWidgetState } from "./types";
-import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
-import { COLORS, BUTTON_VARIANTS } from "@design-system/widgets";
-import type {
-  AnvilConfig,
-  AutocompletionDefinitions,
-} from "WidgetProvider/constants";
-import { RecaptchaTypes } from "components/constants";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import type { ExecutionResult } from "constants/AppsmithActionConstants/ActionConstants";
-import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
-import type { WidgetDefaultProps } from "WidgetProvider/constants";
 
 class WDSButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
   constructor(props: ButtonWidgetProps) {
@@ -34,15 +23,7 @@ class WDSButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
   static type = "WDS_BUTTON_WIDGET";
 
   static getConfig() {
-    return {
-      name: "Button",
-      iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
-      needsMeta: false,
-      isCanvas: false,
-      tags: [WIDGET_TAGS.SUGGESTED_WIDGETS, WIDGET_TAGS.BUTTONS],
-      searchTags: ["click", "submit"],
-    };
+    return config.metaConfig;
   }
 
   static getFeatures() {
@@ -50,64 +31,43 @@ class WDSButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
   }
 
   static getDefaults() {
-    return {
-      animateLoading: false,
-      text: "Submit",
-      buttonVariant: BUTTON_VARIANTS.filled,
-      buttonColor: COLORS.accent,
-      widgetName: "Button",
-      isDisabled: false,
-      isVisible: true,
-      isDefaultClickDisabled: true,
-      disabledWhenInvalid: false,
-      resetFormOnClick: false,
-      recaptchaType: RecaptchaTypes.V3,
-      version: 1,
-      responsiveBehavior: ResponsiveBehavior.Hug,
-    } as unknown as WidgetDefaultProps;
+    return config.defaultsConfig as unknown as WidgetDefaultProps;
   }
 
   static getAnvilConfig(): AnvilConfig | null {
-    return {
-      isLargeWidget: false,
-      widgetSize: {
-        maxWidth: {
-          base: "100%",
-          "280px": "sizing-70",
-        },
-        minWidth: "sizing-14",
-      },
-    };
+    return config.anvilConfig;
   }
 
-  static getAutocompleteDefinitions(): AutocompletionDefinitions {
-    return {
-      "!doc":
-        "Buttons are used to capture user intent and trigger actions based on that intent",
-      "!url": "https://docs.appsmith.com/widget-reference/button",
-      isVisible: DefaultAutocompleteDefinitions.isVisible,
-      text: "string",
-      isDisabled: "bool",
-      recaptchaToken: "string",
-    };
+  static getAutocompleteDefinitions() {
+    return config.autocompleteConfig;
   }
 
   static getPropertyPaneContentConfig() {
-    return propertyPaneContentConfig;
+    return config.propertyPaneContentConfig;
   }
 
   static getPropertyPaneStyleConfig() {
-    return propertyPaneStyleConfig;
+    return config.propertyPaneStyleConfig;
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       recaptchaToken: undefined,
     };
   }
 
+  static getMethods() {
+    return config.methodsConfig;
+  }
+
   static getDerivedPropertiesMap(): DerivedPropertiesMap {
     return {};
+  }
+
+  static getSetterConfig() {
+    return config.settersConfig;
   }
 
   onButtonClick = () => {
@@ -195,15 +155,13 @@ class WDSButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
     return (
       <ButtonComponent
         color={this.props.buttonColor}
+        excludeFromTabOrder={this.props.disableWidgetInteraction}
         handleRecaptchaV2Loading={this.handleRecaptchaV2Loading}
-        iconName={this.props.iconName}
+        icon={this.props.iconName}
         iconPosition={this.props.iconAlign}
         isDisabled={isDisabled}
         isLoading={this.props.isLoading || this.state.isLoading}
         key={this.props.widgetId}
-        maxWidth={this.props.maxWidth}
-        minHeight={this.props.minHeight}
-        minWidth={this.props.minWidth}
         onPress={onPress}
         onRecaptchaSubmitError={this.onRecaptchaSubmitError}
         onRecaptchaSubmitSuccess={this.onRecaptchaSubmitSuccess}
@@ -211,7 +169,6 @@ class WDSButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
         recaptchaType={this.props.recaptchaType}
         text={this.props.text}
         tooltip={this.props.tooltip}
-        type={this.props.buttonType || "button"}
         variant={this.props.buttonVariant}
       />
     );

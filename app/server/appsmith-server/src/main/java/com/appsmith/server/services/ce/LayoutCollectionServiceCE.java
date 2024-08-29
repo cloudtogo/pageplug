@@ -9,12 +9,11 @@ public interface LayoutCollectionServiceCE {
 
     Mono<ActionCollectionDTO> createCollection(ActionCollection actionCollection);
 
-    Mono<ActionCollectionDTO> createCollection(ActionCollectionDTO collection, String branchName);
+    Mono<ActionCollectionDTO> createCollection(ActionCollectionDTO collection);
 
     Mono<ActionCollectionDTO> moveCollection(ActionCollectionMoveDTO actionCollectionMoveDTO);
 
-    Mono<ActionCollectionDTO> moveCollection(ActionCollectionMoveDTO actionCollectionMoveDTO, String branchName);
+    Mono<Integer> updateUnpublishedActionCollectionBody(String id, ActionCollectionDTO actionCollectionDTO);
 
-    Mono<ActionCollectionDTO> updateUnpublishedActionCollection(
-            String id, ActionCollectionDTO actionCollectionDTO, String branchName);
+    Mono<ActionCollectionDTO> updateUnpublishedActionCollection(String id, ActionCollectionDTO actionCollectionDTO);
 }

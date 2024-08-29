@@ -1,16 +1,18 @@
 import type { ReactNode } from "react";
 import React from "react";
-import { Flex } from "design-system";
+import { Flex } from "@appsmith/ads";
+import { EDITOR_TABS_HEIGHT } from "../EditorPane/constants";
 
 const Container = (props: { children: ReactNode }) => {
   return (
     <Flex
       alignItems="center"
       backgroundColor="#FFFFFF"
-      borderBottom="1px solid var(--ads-v2-color-border)"
+      borderBottom="1px solid var(--ads-v2-color-border-muted)"
       gap="spaces-2"
-      maxHeight="32px"
-      minHeight="32px"
+      id="ide-tabs-container"
+      maxHeight={EDITOR_TABS_HEIGHT}
+      minHeight={EDITOR_TABS_HEIGHT}
       px="spaces-2"
       width="100%"
     >

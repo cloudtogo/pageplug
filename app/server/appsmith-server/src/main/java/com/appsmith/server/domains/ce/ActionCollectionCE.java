@@ -2,6 +2,7 @@ package com.appsmith.server.domains.ce;
 
 import com.appsmith.external.models.BranchAwareDomain;
 import com.appsmith.external.models.CreatorContextType;
+import com.appsmith.external.views.Git;
 import com.appsmith.external.views.Views;
 import com.appsmith.server.dtos.ActionCollectionDTO;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -10,7 +11,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldNameConstants;
 
-import static com.appsmith.server.helpers.StringUtils.dotted;
+import static com.appsmith.external.helpers.StringUtils.dotted;
 
 /**
  * This class represents a collection of actions that may or may not belong to the same plugin.
@@ -29,7 +30,7 @@ public class ActionCollectionCE extends BranchAwareDomain {
     @JsonView(Views.Public.class)
     String workspaceId;
 
-    @JsonView(Views.Public.class)
+    @JsonView({Views.Public.class, Git.class})
     ActionCollectionDTO unpublishedCollection;
 
     @JsonView(Views.Public.class)
@@ -40,7 +41,6 @@ public class ActionCollectionCE extends BranchAwareDomain {
 
     @Override
     public void sanitiseToExportDBObject() {
-        this.setDefaultResources(null);
         ActionCollectionDTO unpublishedCollection = this.getUnpublishedCollection();
         if (unpublishedCollection != null) {
             unpublishedCollection.sanitiseForExport();
@@ -67,7 +67,6 @@ public class ActionCollectionCE extends BranchAwareDomain {
                 dotted(publishedCollection, ActionCollectionDTO.Fields.contextType);
         public static final String unpublishedCollection_contextType =
                 dotted(unpublishedCollection, ActionCollectionDTO.Fields.contextType);
-
         public static final String unpublishedCollection_deletedAt =
                 dotted(unpublishedCollection, ActionCollectionDTO.Fields.deletedAt);
     }

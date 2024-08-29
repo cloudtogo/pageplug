@@ -44,10 +44,8 @@ public interface CustomNewActionRepositoryCE extends AppsmithRepository<NewActio
 
     Mono<Long> countByDatasourceId(String datasourceId);
 
-    Mono<NewAction> findByBranchNameAndDefaultActionId(
-            String branchName, String defaultActionId, Boolean viewMode, AclPermission permission);
-
-    Flux<NewAction> findByDefaultApplicationId(String defaultApplicationId, Optional<AclPermission> permission);
+    Mono<NewAction> findByBranchNameAndBaseActionId(
+            String branchName, String baseActionId, Boolean viewMode, AclPermission permission);
 
     Flux<NewAction> findByPageIds(List<String> pageIds, AclPermission permission);
 
@@ -67,9 +65,13 @@ public interface CustomNewActionRepositoryCE extends AppsmithRepository<NewActio
 
     Flux<NewAction> findAllByApplicationIdsWithoutPermission(List<String> applicationIds, List<String> includeFields);
 
+    Flux<NewAction> findAllByCollectionIds(List<String> collectionIds, boolean viewMode, AclPermission aclPermission);
+
     Flux<NewAction> findAllUnpublishedActionsByContextIdAndContextType(
             String contextId, CreatorContextType contextType, AclPermission permission, boolean includeJs);
 
     Flux<NewAction> findAllPublishedActionsByContextIdAndContextType(
             String contextId, CreatorContextType contextType, AclPermission permission, boolean includeJs);
+
+    Flux<NewAction> findAllByApplicationIds(List<String> branchedArtifactIds, List<String> includedFields);
 }

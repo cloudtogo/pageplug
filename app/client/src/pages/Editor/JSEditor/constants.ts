@@ -1,5 +1,4 @@
 import type { OptionProps } from "design-system-old";
-import { css } from "styled-components";
 import type { JSActionDropdownOption } from "./utils";
 
 export const RUN_BUTTON_DEFAULTS = {
@@ -19,17 +18,28 @@ export const NO_FUNCTION_DROPDOWN_OPTION: JSActionDropdownOption = {
   value: "",
   data: null,
 };
+
+export const CONFIRM_BEFORE_CALLING_HEADING = {
+  text: "Confirm before calling ",
+  hasInfo: true,
+  info: `Ask for confirmation before executing function.`,
+  key: "run_before_calling",
+  hidden: true,
+};
+
 export const SETTINGS_HEADINGS = [
   {
     text: "函数名",
     hasInfo: false,
     key: "func_name",
+    hidden: undefined,
   },
   {
     text: "页面加载后执行",
     hasInfo: true,
     info: "页面加载后立即执行该函数",
     key: "run_on_pageload",
+    hidden: undefined,
   },
   {
     text: "执行函数前确认",
@@ -56,26 +66,3 @@ export const ANIMATE_RUN_GUTTER = "animate-run-marker";
 export const testLocators = {
   runJSAction: "run-js-action",
 };
-
-export const CodeEditorWithGutterStyles = css`
-  .${RUN_GUTTER_ID} {
-    width: 0.5em;
-    background: #f0f0f0;
-    margin-left: 5px;
-  }
-  .${RUN_GUTTER_CLASSNAME} {
-    cursor: pointer;
-    color: var(--ads-v2-color-fg-brand);
-  }
-  .CodeMirror-linenumbers {
-    width: max-content;
-  }
-  .CodeMirror-linenumber {
-    text-align: right;
-    padding-left: 0;
-  }
-
-  .cm-s-duotone-light.CodeMirror {
-    padding: 0;
-  }
-`;

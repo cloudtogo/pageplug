@@ -5,10 +5,7 @@ import PhoneInputComponent from "../component";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import type { ValidationResponse } from "constants/WidgetValidation";
 import { ValidationTypes } from "constants/WidgetValidation";
-import {
-  createMessage,
-  FIELD_REQUIRED_ERROR,
-} from "@appsmith/constants/messages";
+import { createMessage, FIELD_REQUIRED_ERROR } from "ee/constants/messages";
 import type { DerivedPropertiesMap } from "WidgetProvider/factory";
 import {
   getCountryCode,
@@ -40,11 +37,16 @@ import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
 import { DynamicHeight } from "utils/WidgetFeatures";
 import { getDefaultISDCode } from "../component/ISDCodeDropdown";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 export function defaultValueValidation(
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any,
   props: PhoneInputWidgetProps,
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _?: any,
 ): ValidationResponse {
   const STRING_ERROR_MESSAGE = {
@@ -88,6 +90,7 @@ class PhoneInputWidget extends BaseInputWidget<
     return {
       name: "手机号输入框",
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.INPUTS],
       needsMeta: true,
       searchTags: ["call", "phone", "number", "dial", "telephone", "input"],
@@ -292,6 +295,8 @@ class PhoneInputWidget extends BaseInputWidget<
     };
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return _.merge(super.getMetaPropertiesMap(), {
       value: "",

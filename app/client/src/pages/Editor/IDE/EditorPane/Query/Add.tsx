@@ -1,38 +1,75 @@
-import React from "react";
-import { Flex } from "design-system";
+import React, { useState } from "react";
+import { Flex, SearchInput } from "@appsmith/ads";
 
-import { EDITOR_PANE_TEXTS } from "@appsmith/constants/messages";
+import { createMessage, EDITOR_PANE_TEXTS } from "ee/constants/messages";
 import SegmentAddHeader from "../components/SegmentAddHeader";
 import GroupedList from "../components/GroupedList";
 import {
   useAddQueryListItems,
   useGroupedAddQueryOperations,
   useQueryAdd,
-} from "@appsmith/pages/Editor/IDE/EditorPane/Query/hooks";
+} from "ee/pages/Editor/IDE/EditorPane/Query/hooks";
+import { fuzzySearchInObjectItems } from "../utils";
+import type { GroupedListProps } from "../components/types";
+import { EmptySearchResult } from "../components/EmptySearchResult";
+import { useSelector } from "react-redux";
+import { getIDEViewMode } from "selectors/ideSelectors";
+import type { FlexProps } from "@appsmith/ads";
+import { EditorViewMode } from "ee/entities/IDE/constants";
 
 const AddQuery = () => {
+  const [searchTerm, setSearchTerm] = useState("");
   const { getListItems } = useAddQueryListItems();
   const groupedActionOperations = useGroupedAddQueryOperations();
+  const { closeAddQuery } = useQueryAdd();
+  const ideViewMode = useSelector(getIDEViewMode);
 
-  const closeButtonClickHandler = useQueryAdd();
+  const groups = groupedActionOperations.map((group) => ({
+    groupTitle: group.title,
+    className: group.className,
+    items: getListItems(group.operations),
+  }));
+
+  const localGroups = fuzzySearchInObjectItems<GroupedListProps[]>(
+    searchTerm,
+    groups,
+  );
+
+  const extraPadding: FlexProps =
+    ideViewMode === EditorViewMode.FullScreen
+      ? {
+          px: "spaces-4",
+          py: "spaces-7",
+        }
+      : {};
 
   return (
-    <Flex flexDirection="column" gap={"spaces-4"} overflow="hidden">
-      <SegmentAddHeader
-        onCloseClick={closeButtonClickHandler}
-        titleMessage={EDITOR_PANE_TEXTS.query_create_tab_title}
-      />
-      <GroupedList
-        flexProps={{
-          pr: "spaces-2",
-          px: "spaces-3",
-        }}
-        groups={groupedActionOperations.map((group) => ({
-          groupTitle: group.title,
-          className: group.className,
-          items: getListItems(group.operations),
-        }))}
-      />
+    <Flex
+      data-testid="t--ide-add-pane"
+      height="100%"
+      justifyContent="center"
+      p="spaces-3"
+      {...extraPadding}
+    >
+      <Flex
+        flexDirection="column"
+        gap={"spaces-4"}
+        maxW="40vw"
+        overflow="hidden"
+        width="100%"
+      >
+        <SegmentAddHeader
+          onCloseClick={closeAddQuery}
+          titleMessage={EDITOR_PANE_TEXTS.query_create_tab_title}
+        />
+        <SearchInput autoFocus onChange={setSearchTerm} value={searchTerm} />
+        {localGroups.length > 0 ? <GroupedList groups={localGroups} /> : null}
+        {localGroups.length === 0 && searchTerm !== "" ? (
+          <EmptySearchResult
+            type={createMessage(EDITOR_PANE_TEXTS.search_objects.datasources)}
+          />
+        ) : null}
+      </Flex>
     </Flex>
   );
 };

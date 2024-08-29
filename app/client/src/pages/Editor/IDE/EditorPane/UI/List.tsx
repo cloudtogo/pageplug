@@ -1,20 +1,20 @@
-import React, { useCallback, useMemo } from "react";
-import { Button, Flex } from "design-system";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { Button, Flex } from "@appsmith/ads";
 import WidgetEntity from "pages/Editor/Explorer/Widgets/WidgetEntity";
 import { useSelector } from "react-redux";
 
+import { selectWidgetsForCurrentPage } from "ee/selectors/entitiesSelector";
 import {
-  getCurrentPageId,
-  selectWidgetsForCurrentPage,
-} from "@appsmith/selectors/entitiesSelector";
-import { getPagePermissions } from "selectors/editorSelectors";
+  getCurrentBasePageId,
+  getPagePermissions,
+} from "selectors/editorSelectors";
 import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
-import { getHasManagePagePermission } from "@appsmith/utils/BusinessFeatures/permissionPageHelpers";
-import { createMessage, EDITOR_PANE_TEXTS } from "@appsmith/constants/messages";
+import { FEATURE_FLAG } from "ee/entities/FeatureFlag";
+import { getHasManagePagePermission } from "ee/utils/BusinessFeatures/permissionPageHelpers";
+import { createMessage, EDITOR_PANE_TEXTS } from "ee/constants/messages";
 import { EmptyState } from "../components/EmptyState";
 import history from "utils/history";
-import { builderURL } from "@appsmith/RouteBuilder";
+import { builderURL } from "ee/RouteBuilder";
 import styled from "styled-components";
 
 const ListContainer = styled(Flex)`
@@ -26,8 +26,10 @@ const ListContainer = styled(Flex)`
   }
 `;
 
-const ListWidgets = () => {
-  const pageId = useSelector(getCurrentPageId) as string;
+const ListWidgets = (props: {
+  setFocusSearchInput: (focusSearchInput: boolean) => void;
+}) => {
+  const basePageId = useSelector(getCurrentBasePageId) as string;
   const widgets = useSelector(selectWidgetsForCurrentPage);
   const pagePermissions = useSelector(getPagePermissions);
   const isFeatureEnabled = useFeatureFlag(FEATURE_FLAG.license_gac_enabled);
@@ -42,11 +44,16 @@ const ListWidgets = () => {
   }, [widgets?.children]);
 
   const addButtonClickHandler = useCallback(() => {
+    props.setFocusSearchInput(true);
     history.push(builderURL({}));
   }, []);
 
   const widgetsExist =
     widgets && widgets.children && widgets.children.length > 0;
+
+  useEffect(() => {
+    props.setFocusSearchInput(false);
+  }, []);
 
   return (
     <ListContainer
@@ -81,12 +88,18 @@ const ListWidgets = () => {
         </Flex>
       ) : null}
       {widgetsExist ? (
-        <Flex flex="1" flexDirection={"column"} overflowY="auto" px="spaces-3">
+        <Flex
+          data-testid="t--ide-list"
+          flex="1"
+          flexDirection={"column"}
+          overflowY="auto"
+          px="spaces-3"
+        >
           {widgets?.children?.map((child) => (
             <WidgetEntity
+              basePageId={basePageId}
               childWidgets={child.children}
               key={child.widgetId}
-              pageId={pageId}
               searchKeyword=""
               step={1}
               widgetId={child.widgetId}

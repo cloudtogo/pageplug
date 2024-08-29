@@ -1,8 +1,8 @@
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
 import type {
   SaveWorkspaceLogo,
   SaveWorkspaceRequest,
-} from "@appsmith/api/WorkspaceApi";
+} from "ee/api/WorkspaceApi";
 
 interface FetchAllWorkspacesParams {
   fetchEntities?: boolean;
@@ -116,11 +116,6 @@ export const searchEntities = (payload: string) => ({
 
 export const resetSearchEntity = () => ({
   type: ReduxActionTypes.SEARCH_WORKSPACE_ENTITIES_RESET,
-});
-
-export const searchWorkspaceEntitiesLoader = (payload: boolean) => ({
-  type: ReduxActionTypes.SEARCH_WORKSPACE_ENTITIES_LOADER,
-  payload,
 });
 
 export const fetchEntitiesOfWorkspace = (payload: { workspaceId?: string }) => {

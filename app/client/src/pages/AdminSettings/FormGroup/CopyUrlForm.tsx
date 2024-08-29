@@ -1,12 +1,14 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
 import copy from "copy-to-clipboard";
-import AnalyticsUtil from "utils/AnalyticsUtil";
-import { Icon, Input, Text, toast, Tooltip } from "design-system";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
+import { Icon, Input, Text, toast, Tooltip } from "@appsmith/ads";
 
 export const BodyContainer = styled.div`
   width: 100%;
   padding: 0 0 16px;
+  .ads-v2-input__input-section-input,
+  .ads-v2-input__input-section-icon[data-has-onclick="true"],
   .ads-v2-input__input-section-icon[data-has-onclick="true"] * {
     cursor: pointer !important;
   }
@@ -19,6 +21,11 @@ const HeaderWrapper = styled.div`
   display: flex;
   align-items: center;
   color: var(--ads-v2-color-fg);
+
+  .title-text {
+    font-weight: var(--ads-v2-h5-font-weight);
+  }
+
   .help-icon {
     margin-left: 8px;
     cursor: pointer;
@@ -64,6 +71,7 @@ function CopyUrlForm(props: {
         endIcon="duplicate"
         endIconProps={{
           className: "copy-icon",
+          // @ts-expect-error Fix this the next time the file is edited
           "data-testid": `${fieldName}-copy-icon`,
           onClick: handleCopy,
         }}

@@ -1,5 +1,4 @@
-/* eslint-disable prettier/prettier */
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import { bindDataToWidget } from "actions/propertyPaneActions";
 import type { WidgetType } from "constants/WidgetConstants";
 import React, { useMemo } from "react";
@@ -15,10 +14,7 @@ import {
 } from "selectors/editorSelectors";
 import { getIsTableFilterPaneVisible } from "selectors/tableFilterSelectors";
 import styled from "styled-components";
-import AnalyticsUtil from "utils/AnalyticsUtil";
-import PerformanceTracker, {
-  PerformanceTransactionName,
-} from "utils/PerformanceTracker";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 import WidgetFactory from "WidgetProvider/factory";
 import { useShowTableFilterPane } from "utils/hooks/dragResizeHooks";
 import { useWidgetSelection } from "utils/hooks/useWidgetSelection";
@@ -26,7 +22,7 @@ import SettingsControl, { Activities } from "./SettingsControl";
 import { theme } from "constants/DefaultTheme";
 import {
   isCurrentWidgetActiveInPropertyPane,
-  isCurrentWidgetFocused,
+  isWidgetFocused,
   isMultiSelectedWidget,
   isResizingOrDragging,
   showWidgetAsSelected,
@@ -93,7 +89,7 @@ export function WidgetNameComponent(props: WidgetNameComponentProps) {
   // Dispatch hook handy to set a widget as focused/selected
   const { selectWidget } = useWidgetSelection();
 
-  const isFocused = useSelector(isCurrentWidgetFocused(props.widgetId));
+  const isFocused = useSelector(isWidgetFocused(props.widgetId));
 
   const shouldHideErrors = useSelector(hideErrors);
 
@@ -104,6 +100,8 @@ export function WidgetNameComponent(props: WidgetNameComponentProps) {
     isCurrentWidgetActiveInPropertyPane(props.widgetId),
   );
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const togglePropertyEditor = memoize((e: any) => {
     if (isSnipingMode) {
       dispatch(
@@ -112,12 +110,6 @@ export function WidgetNameComponent(props: WidgetNameComponentProps) {
         }),
       );
     } else if (!isActiveInPropertyPane) {
-      PerformanceTracker.startTracking(
-        PerformanceTransactionName.OPEN_PROPERTY_PANE,
-        { widgetId: props.widgetId },
-        true,
-        [{ name: "widget_type", value: props.type }],
-      );
       AnalyticsUtil.logEvent("PROPERTY_PANE_OPEN_CLICK", {
         widgetType: props.type,
         widgetId: props.widgetId,

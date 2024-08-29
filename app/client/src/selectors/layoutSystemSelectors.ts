@@ -1,20 +1,23 @@
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import { getAnvilWidgetDOMId } from "layoutSystems/common/utils/LayoutElementPositionsObserver/utils";
 import { LayoutSystemTypes } from "layoutSystems/types";
 
 /**
- * selector to fetch the application's layout type
+ * Returns the layout system type based on the state of the application.
+ * @param state - The current state of the application.
+ * @returns The layout system type.
  */
 export const getLayoutSystemType = (state: AppState) => {
-  if (
+  const applicationLayoutSystemType =
     state.ui.applications?.currentApplication?.applicationDetail?.appPositioning
-      ?.type
-  ) {
-    return LayoutSystemTypes[
-      state.ui.applications.currentApplication?.applicationDetail
-        ?.appPositioning?.type
-    ];
+      ?.type;
+  // Check if the application has a defined appPositioning type
+  if (applicationLayoutSystemType) {
+    // Get the layout system type based on the appPositioning type
+    const layoutSystemType = LayoutSystemTypes[applicationLayoutSystemType];
+    return layoutSystemType;
   }
+  // If no layout system type is found, return FIXED as the default layout system type
   return LayoutSystemTypes.FIXED;
 };
 
@@ -30,3 +33,6 @@ export const getWidgetSelectorByWidgetId = (
       return widgetId;
   }
 };
+
+export const isFixedLayoutSelector = (state: AppState) =>
+  getLayoutSystemType(state) === LayoutSystemTypes.FIXED;

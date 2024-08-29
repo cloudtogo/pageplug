@@ -1,5 +1,4 @@
-/* eslint-disable prettier/prettier */
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import { batchUpdateMultipleWidgetProperties } from "actions/controlActions";
 import { focusWidget } from "actions/widgetActions";
 import { EditorContext } from "components/editorComponents/EditorContextProvider";
@@ -24,12 +23,12 @@ import {
 } from "selectors/editorSelectors";
 import {
   getParentToOpenSelector,
-  isCurrentWidgetFocused,
+  isWidgetFocused,
   isCurrentWidgetLastSelected,
   isMultiSelectedWidget,
   isWidgetSelected,
 } from "selectors/widgetSelectors";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
 import {
   getWidgetHeight,
@@ -60,7 +59,7 @@ import {
   TopRightHandleStyles,
   VisibilityContainer,
 } from "layoutSystems/common/resizer/ResizeStyledComponents";
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
 import type { UIElementSize } from "layoutSystems/common/resizer/ResizableUtils";
 import {
   computeFinalRowCols,
@@ -87,7 +86,7 @@ export const ResizableComponent = memo(function ResizableComponent(
   const isPreviewMode = useSelector(combinedPreviewModeSelector);
   const isWidgetSelectionBlock = useSelector(getWidgetSelectionBlock);
   const isAltWidgetSelectionBlock = useSelector(getAltBlockWidgetSelection);
-  const isAppSettingsPaneWithNavigationTabOpen = useSelector(
+  const isAppSettingsPaneWithNavigationTabOpen: boolean = useSelector(
     getIsAppSettingsPaneWithNavigationTabOpen,
   );
 
@@ -101,7 +100,7 @@ export const ResizableComponent = memo(function ResizableComponent(
   const isLastSelected = useSelector(
     isCurrentWidgetLastSelected(props.widgetId),
   );
-  const isFocused = useSelector(isCurrentWidgetFocused(props.widgetId));
+  const isFocused = useSelector(isWidgetFocused(props.widgetId));
   // Check if current widget is one of multiple selected widgets
   const isMultiSelected = useSelector(isMultiSelectedWidget(props.widgetId));
 
@@ -117,7 +116,7 @@ export const ResizableComponent = memo(function ResizableComponent(
   const isParentWidgetSelected = useSelector(
     isCurrentWidgetLastSelected(parentWidgetToSelect?.widgetId || ""),
   );
-  const isWidgetFocused = isFocused || isLastSelected || isSelected;
+  const canPerformResize = isFocused || isLastSelected || isSelected;
 
   // Calculate the dimensions of the widget,
   // The ResizableContainer's size prop is controlled
@@ -202,7 +201,9 @@ export const ResizableComponent = memo(function ResizableComponent(
       [leftColumnMap]: leftColumn,
       [rightColumnMap]: rightColumn,
       [topRowMap]: topRow,
-    } = props as any;
+    } = // TODO: Fix this the next time the file is edited
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      props as any;
 
     // Get the updated Widget rows and columns props
     // False, if there is collision
@@ -328,7 +329,7 @@ export const ResizableComponent = memo(function ResizableComponent(
   const isEnabled =
     !isAutoCanvasResizing &&
     !isDragging &&
-    isWidgetFocused &&
+    canPerformResize &&
     !props.resizeDisabled &&
     !isSnipingMode &&
     !isPreviewMode &&

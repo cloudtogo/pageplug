@@ -4,12 +4,11 @@ import {
   debuggerLogInit,
   deleteErrorLogsInit,
 } from "actions/debuggerActions";
-import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
+import type { ReduxAction } from "ee/constants/ReduxActionConstants";
 import type { LogActionPayload, Log } from "entities/AppsmithConsole";
 import { Severity, LOG_CATEGORY } from "entities/AppsmithConsole";
 import moment from "moment";
 import store from "store";
-import AnalyticsUtil from "./AnalyticsUtil";
 import { isEmpty } from "lodash";
 
 // * @param payload - payload of the error
@@ -26,12 +25,6 @@ function dispatchAction(action: ReduxAction<unknown>) {
 }
 
 function log(ev: Log) {
-  if (ev.category === LOG_CATEGORY.USER_GENERATED) {
-    AnalyticsUtil.logEvent("CONSOLE_LOG_CREATED", {
-      entityName: ev.source?.name,
-      entityType: ev.source?.type,
-    });
-  }
   dispatchAction(debuggerLogInit([ev]));
 }
 

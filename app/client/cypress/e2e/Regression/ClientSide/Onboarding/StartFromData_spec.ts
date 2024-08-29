@@ -14,17 +14,13 @@ describe(
   function () {
     beforeEach(() => {
       homePage.Signout();
-      featureFlagIntercept(
-        {
-          ab_show_templates_instead_of_blank_canvas_enabled: true,
-          ab_create_new_apps_enabled: true,
-          ab_start_with_data_default_enabled: true,
-        },
-        false,
-      );
       agHelper.GenerateUUID();
       cy.get("@guid").then((uid) => {
-        homePage.SignUp(`${uid}@appsmithtest.com`, uid as unknown as string);
+        homePage.SignUp(
+          `${uid}@appsmithtest.com`,
+          uid as unknown as string,
+          false,
+        );
         onboarding.closeIntroModal();
       });
     });

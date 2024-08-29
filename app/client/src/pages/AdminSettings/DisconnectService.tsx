@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Button, Callout, Text } from "design-system";
+import { Button, Callout, Text } from "@appsmith/ads";
 import {
   createMessage,
   DANGER_ZONE,
   DISCONNECT_AUTH_METHOD,
   DISCONNECT_CONFIRMATION,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 
 export const Container = styled.div`
   width: 100%;
@@ -41,6 +41,7 @@ export function DisconnectService(props: {
       <Callout kind="error">{props.warning}</Callout>
       <Button
         data-testid="disconnect-service-button"
+        isLoading={disconnectCalled}
         kind="error"
         onClick={() =>
           warnDisconnectAuth ? callDisconnect() : setWarnDisconnectAuth(true)

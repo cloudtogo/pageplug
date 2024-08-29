@@ -1,11 +1,11 @@
 package com.appsmith.server.services.ce;
 
 import com.appsmith.caching.components.CacheManager;
+import com.appsmith.external.enums.FeatureFlagEnum;
 import com.appsmith.server.domains.User;
 import com.appsmith.server.dtos.FeaturesResponseDTO;
 import com.appsmith.server.featureflags.CachedFeatures;
 import com.appsmith.server.featureflags.CachedFlags;
-import com.appsmith.server.featureflags.FeatureFlagEnum;
 import com.appsmith.server.helpers.FeatureFlagMigrationHelper;
 import com.appsmith.server.services.CacheableFeatureFlagHelper;
 import com.appsmith.server.services.FeatureFlagService;
@@ -15,7 +15,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +24,6 @@ import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -33,11 +31,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.appsmith.external.enums.FeatureFlagEnum.TENANT_TEST_FEATURE;
 import static com.appsmith.server.constants.FeatureMigrationType.DISABLE;
 import static com.appsmith.server.constants.FeatureMigrationType.ENABLE;
 import static com.appsmith.server.constants.MigrationStatus.COMPLETED;
 import static com.appsmith.server.constants.MigrationStatus.PENDING;
-import static com.appsmith.server.featureflags.FeatureFlagEnum.TENANT_TEST_FEATURE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -46,7 +44,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @Slf4j
 @DirtiesContext

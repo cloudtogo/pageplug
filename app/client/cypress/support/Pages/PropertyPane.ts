@@ -66,10 +66,12 @@ export class PropertyPane {
   _colorInputField = (option: string) =>
     "//h3[text()='" + option + " Color']//parent::div";
   _actionSelectorPopup = ".t--action-selector-popup";
+  _actionCollapsibleHeader = (label: string) =>
+    `.ads-v2-collapsible__header:has(label[for="${label}"])`;
   _actionSelectorFieldByLabel = (label: string) =>
-    `.t--action-selector-popup label[for="${label}"] + div .CodeMirror textarea`;
+    `.t--action-selector-popup label[for="${label}"] + div .CodeMirror textarea, .t--action-selector-popup .ads-v2-collapsible__header:has(label[for="${label}"]) + div .CodeMirror textarea`;
   _actionSelectorFieldContentByLabel = (label: string) =>
-    `.t--action-selector-popup label[for="${label}"] + div`;
+    `.t--action-selector-popup label[for="${label}"] + div, .t--action-selector-popup .ads-v2-collapsible__header:has(label[for="${label}"]) + div`;
   _actionCardByTitle = (title: string) =>
     `[data-testid='action-card-${title}']`;
   _actionCallbacks = ".t--action-callbacks";
@@ -139,6 +141,8 @@ export class PropertyPane {
   _dropdownOptionSpan = ".t--dropdown-option span";
   public _propertyControlColorPicker = (property: string) =>
     `.t--property-control-${property} .bp3-input-group input`;
+  public _propertyControlSelectedColorButton = (property: string) =>
+    `.t--property-control-${property} ${this._fillColor}`;
   _propertyText = ".bp3-ui-text span";
   _paneTitle = ".t--property-pane-title";
   _segmentedControl = (value: string) =>
@@ -172,6 +176,7 @@ export class PropertyPane {
 
   _dataIcon = (icon: string) => `[data-icon="${icon}"]`;
   _iconDropdown = "[data-test-id='virtuoso-scroller']";
+  _dropdownControlError = "[data-testid='t---dropdown-control-error']";
 
   public OpenJsonFormFieldSettings(fieldName: string) {
     this.agHelper.GetNClick(this._jsonFieldEdit(fieldName));
@@ -660,5 +665,25 @@ export class PropertyPane {
       }
       this.SetZoomLevel(zoom);
     });
+  }
+
+  public FocusIntoTextField(endp: string) {
+    this.agHelper
+      .GetElement(this.locator._propertyInputField(endp))
+      .first()
+      .then((el: any) => {
+        cy.get(el).focus();
+      });
+
+    this.agHelper.AssertAutoSave(); //Allowing time for saving entered value
+  }
+
+  public AssertPropertySwitchState(
+    propertyName: string,
+    state: "enabled" | "disabled",
+  ) {
+    this.agHelper
+      .GetElement(this._propertyToggle(propertyName))
+      .should(state === "enabled" ? "be.checked" : "not.be.checked");
   }
 }

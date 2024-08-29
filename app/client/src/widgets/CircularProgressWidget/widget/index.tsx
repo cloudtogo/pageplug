@@ -1,18 +1,21 @@
 import * as React from "react";
 
+import type {
+  AutocompletionDefinitions,
+  WidgetCallout,
+} from "WidgetProvider/constants";
+import { Colors } from "constants/Colors";
+import { WIDGET_TAGS } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
+import type { Stylesheet } from "entities/AppTheming";
+import { buildDeprecationWidgetMessage } from "pages/Editor/utils";
+import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
 import type { WidgetProps, WidgetState } from "widgets/BaseWidget";
 import BaseWidget from "widgets/BaseWidget";
-import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
+import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
 import type { CircularProgressComponentProps } from "../component";
 import CircularProgressComponent from "../component";
-import type { Stylesheet } from "entities/AppTheming";
-import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
-import type { AutocompletionDefinitions } from "WidgetProvider/constants";
-import { Colors } from "constants/Colors";
 import IconSVG from "../icon.svg";
-import { WIDGET_TAGS } from "constants/WidgetConstants";
-
 interface CircularProgressWidgetProps
   extends WidgetProps,
     CircularProgressComponentProps {
@@ -141,6 +144,20 @@ class CircularProgressWidget extends BaseWidget<
       "!url": "https://docs.appsmith.com/widget-reference/circular-progress",
       isVisible: DefaultAutocompleteDefinitions.isVisible,
       progress: "number",
+    };
+  }
+
+  static getMethods() {
+    return {
+      getEditorCallouts(): WidgetCallout[] {
+        return [
+          {
+            message: buildDeprecationWidgetMessage(
+              CircularProgressWidget.getConfig().name,
+            ),
+          },
+        ];
+      },
     };
   }
 

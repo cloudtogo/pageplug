@@ -6,7 +6,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { setGitSettingsModalOpenAction } from "actions/gitSyncActions";
 
-import { Modal, ModalBody, ModalContent, ModalHeader } from "design-system";
+import { Modal, ModalBody, ModalContent, ModalHeader } from "@appsmith/ads";
 import styled from "styled-components";
 import Menu from "../Menu";
 import { GitSettingsTab } from "reducers/uiReducers/gitSyncReducer";
@@ -16,12 +16,10 @@ import {
   GENERAL,
   SETTINGS_GIT,
   createMessage,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import TabGeneral from "./TabGeneral";
 import TabBranch from "./TabBranch";
-import GitSettingsCDTab from "@appsmith/components/gitComponents/GitSettingsCDTab";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
-import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
+import GitSettingsCDTab from "ee/components/gitComponents/GitSettingsCDTab";
 import {
   useHasManageDefaultBranchPermission,
   useHasManageProtectedBranchesPermission,
@@ -48,10 +46,6 @@ function GitSettingsModal() {
   const isModalOpen = useSelector(isGitSettingsModalOpenSelector);
   const activeTabKey = useSelector(activeGitSettingsModalTabSelector);
 
-  const isGitCDEnabled = useFeatureFlag(
-    FEATURE_FLAG.release_git_continuous_delivery_enabled,
-  );
-
   const menuOptions = useMemo(() => {
     const menuOptions = [
       {
@@ -67,15 +61,13 @@ function GitSettingsModal() {
       });
     }
 
-    if (isGitCDEnabled) {
-      menuOptions.push({
-        key: GitSettingsTab.CD,
-        title: createMessage(CONTINUOUS_DELIVERY),
-      });
-    }
+    menuOptions.push({
+      key: GitSettingsTab.CD,
+      title: createMessage(CONTINUOUS_DELIVERY),
+    });
 
     return menuOptions;
-  }, [isGitCDEnabled]);
+  }, [showBranchTab]);
 
   const dispatch = useDispatch();
 
@@ -113,9 +105,7 @@ function GitSettingsModal() {
         <ModalBody>
           {activeTabKey === GitSettingsTab.GENERAL && <TabGeneral />}
           {activeTabKey === GitSettingsTab.BRANCH && <TabBranch />}
-          {isGitCDEnabled && activeTabKey === GitSettingsTab.CD && (
-            <GitSettingsCDTab />
-          )}
+          {activeTabKey === GitSettingsTab.CD && <GitSettingsCDTab />}
         </ModalBody>
       </StyledModalContent>
     </Modal>

@@ -1,6 +1,5 @@
-/* eslint-disable prettier/prettier */
-import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
-import type { AppState } from "@appsmith/reducers";
+import type { ReduxAction } from "ee/constants/ReduxActionConstants";
+import type { AppState } from "ee/reducers";
 
 export enum FocusElement {
   ApiPaneConfigTabs = "ApiPaneConfigTabs",
@@ -25,7 +24,7 @@ export enum FocusElement {
   InputField = "InputField",
   SelectedQuery = "SelectedQuery",
   SelectedJSObject = "SelectedJSObject",
-  SelectedSegment = "SelectedSegment",
+  SelectedEntity = "SelectedEntity",
   IDETabs = "IDETabs",
   QueryDebugger = "QueryDebugger",
   ApiDebugger = "ApiDebugger",
@@ -49,12 +48,16 @@ interface ConfigOther {
 type ConfigRedux = {
   type: FocusElementConfigType.Redux;
   selector: (state: AppState) => unknown;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setter: (payload: any) => ReduxAction<any>;
 } & ConfigOther;
 
 type ConfigURL = {
   type: FocusElementConfigType.URL;
   selector: (url: string) => unknown;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setter: (payload: any) => void;
 } & ConfigOther;
 

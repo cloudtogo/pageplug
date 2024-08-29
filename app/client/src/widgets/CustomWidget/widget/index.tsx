@@ -8,6 +8,7 @@ import BaseWidget from "widgets/BaseWidget";
 import CustomComponent from "../component";
 
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 import { WIDGET_PADDING, WIDGET_TAGS } from "constants/WidgetConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import type {
@@ -27,12 +28,13 @@ import {
   CUSTOM_WIDGET_DOC_URL,
   CUSTOM_WIDGET_HEIGHT_DOC_URL,
 } from "pages/Editor/CustomWidgetBuilder/constants";
-import { Link } from "design-system";
+import { Link } from "@appsmith/ads";
 import styled from "styled-components";
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
 import { Colors } from "constants/Colors";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 import { DynamicHeight, type WidgetFeatures } from "utils/WidgetFeatures";
+import { isAirgapped } from "ee/utils/airgapHelpers";
 
 const StyledLink = styled(Link)`
   display: inline-block;
@@ -48,11 +50,13 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
     return {
       name: "自定义组件(New)",
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       needsMeta: true,
       isCanvas: false,
       tags: [WIDGET_TAGS.DISPLAY],
       searchTags: ["external", "custom","自定义"],
       isSearchWildcard: true,
+      hideCard: isAirgapped(),
     };
   }
 
@@ -70,7 +74,7 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
       uncompiledSrcDoc: defaultApp.uncompiledSrcDoc,
       theme: "{{appsmith.theme}}",
       dynamicBindingPathList: [{ key: "theme" }],
-      dynamicTriggerPathList:[{key: "onResetClick"}],
+      dynamicTriggerPathList: [{ key: "onResetClick" }],
       borderColor: Colors.GREY_5,
       borderWidth: "1",
       backgroundColor: "#FFFFFF",
@@ -247,7 +251,8 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
             controlConfig: {
               allowEdit: true,
               onEdit: (widget: CustomWidgetProps, newLabel: string) => {
-                return {
+                const triggerPaths = [];
+                const updatedProperties = {
                   events: widget.events.map((e) => {
                     if (e === event) {
                       return newLabel;
@@ -255,6 +260,19 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
 
                     return e;
                   }),
+                };
+
+                if (
+                  widget.dynamicTriggerPathList
+                    ?.map((d) => d.key)
+                    .includes(event)
+                ) {
+                  triggerPaths.push(newLabel);
+                }
+
+                return {
+                  modify: updatedProperties,
+                  triggerPaths,
                 };
               },
               allowDelete: true,
@@ -264,7 +282,7 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
                 };
               },
             },
-            dependencies: ["events"],
+            dependencies: ["events", "dynamicTriggerPathList"],
             helpText: "在自定义组件内触发",
           }));
         },
@@ -369,6 +387,8 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
     };
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       model: undefined,

@@ -32,6 +32,7 @@ import {
   ResponsiveBehavior,
 } from "layoutSystems/common/utils/constants";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 import { WIDGET_TAGS } from "constants/WidgetConstants";
 import Skeleton from "components/utils/Skeleton";
 import type { MapType } from "../component/types";
@@ -42,6 +43,8 @@ const MapChartComponent = lazy(async () =>
   ),
 );
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const dataSetMapping: Record<MapType, any> = {
   [MapTypes.WORLD]: dataSetForWorld,
   [MapTypes.WORLD_WITH_ANTARCTICA]: dataSetForWorldWithAntarctica,
@@ -78,6 +81,7 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
     return {
       name: "地图图表", // The display name which will be made in uppercase and show in the widgets panel ( can have spaces )
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: true, // Defines if this widget adds any meta properties
       isCanvas: false, // Defines if this widget has a canvas within in which we can drop other widgets
@@ -440,6 +444,8 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
     ];
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       selectedDataPoint: undefined,
@@ -467,6 +473,8 @@ class MapChartWidget extends BaseWidget<MapChartWidgetProps, WidgetState> {
     };
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleDataPointClick = (data: any) => {
     const { onDataPointClick } = this.props;
 

@@ -22,17 +22,12 @@ describe("Git with Theming:", { tags: ["@tag.Git"] }, function () {
         );
       });
     });
-    // cy.generateUUID().then((uid) => {
-    //   repoName = uid;
+
     _.gitSync.CreateNConnectToGit();
     cy.get("@gitRepoName").then((repName) => {
       repoName = repName;
       _.gitSync.CreateGitBranch(repoName);
     });
-
-    // cy.createTestGithubRepo(repoName);
-    // cy.connectToGitRepo(repoName);
-    //});
   });
   it("1. Bug #13860 Theming is not getting applied on view mode when the app is connected to Git", function () {
     _.appSettings.OpenAppSettings();
@@ -114,7 +109,6 @@ describe("Git with Theming:", { tags: ["@tag.Git"] }, function () {
       "background-color",
       backgroudColorMaster,
     );
-    cy.pause();
     // delete tempBranch
     cy.get(gitSyncLocators.branchButton).click();
     cy.get(gitSyncLocators.branchListItem)

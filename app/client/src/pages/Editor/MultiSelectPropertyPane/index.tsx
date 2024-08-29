@@ -3,10 +3,11 @@ import * as Sentry from "@sentry/react";
 import {
   createMessage,
   MULTI_SELECT_PROPERTY_PANE_MESSAGE,
-} from "@appsmith/constants/messages";
-import { Text, Button } from "design-system";
+  WIDGET_MULTI_SELECT,
+} from "ee/constants/messages";
+import { Text, Button } from "@appsmith/ads";
 import { useSelector } from "react-redux";
-import { getCanvasWidgets } from "@appsmith/selectors/entitiesSelector";
+import { getCanvasWidgets } from "ee/selectors/entitiesSelector";
 import { getSelectedWidgets } from "selectors/ui";
 import { useWidgetSelection } from "utils/hooks/useWidgetSelection";
 import { SelectionRequestType } from "sagas/WidgetSelectUtils";
@@ -19,7 +20,9 @@ function MultiSelectPropertyPane() {
   return (
     <div className="relative space-y-3">
       <div className="px-3 py-3">
-        <h3 className="text-sm font-medium uppercase">选中多个组件</h3>
+        <Text kind="heading-s" renderAs="h3">
+          {createMessage(WIDGET_MULTI_SELECT)}
+        </Text>
       </div>
 
       <div className="px-3 space-y-3 t--layout-control-wrapper">

@@ -1,5 +1,5 @@
-import { MAIN_THREAD_ACTION } from "@appsmith/workers/Evaluation/evalWorkerActions";
-import { addPlatformFunctionsToEvalContext } from "@appsmith/workers/Evaluation/Actions";
+import { MAIN_THREAD_ACTION } from "ee/workers/Evaluation/evalWorkerActions";
+import { addPlatformFunctionsToEvalContext } from "ee/workers/Evaluation/Actions";
 import { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import ExecutionMetaData from "../utils/ExecutionMetaData";
 import { evalContext } from "../mock";
@@ -17,6 +17,8 @@ jest.mock("../utils/Messenger.ts", () => ({
   ...jest.requireActual("../utils/Messenger.ts"),
   get WorkerMessenger() {
     return {
+      // TODO: Fix this the next time the file is edited
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       request: (...args: any) => requestMock(...args),
     };
   },
@@ -26,7 +28,9 @@ describe("Tests for run function in callback styled", () => {
   beforeAll(() => {
     self["$isDataField"] = false;
     ExecutionMetaData.setExecutionMetaData({
-      triggerMeta: {},
+      triggerMeta: {
+        onPageLoad: false,
+      },
       eventType: EventType.ON_PAGE_LOAD,
     });
     addPlatformFunctionsToEvalContext(evalContext);
@@ -63,6 +67,7 @@ describe("Tests for run function in callback styled", () => {
         triggerMeta: {
           source: {},
           triggerPropertyName: undefined,
+          onPageLoad: false,
         },
       },
     });
@@ -97,6 +102,7 @@ describe("Tests for run function in callback styled", () => {
         triggerMeta: {
           source: {},
           triggerPropertyName: undefined,
+          onPageLoad: false,
         },
       },
     });
@@ -146,7 +152,9 @@ describe("Tests for run function in promise styled", () => {
   beforeAll(() => {
     self["$isDataField"] = false;
     ExecutionMetaData.setExecutionMetaData({
-      triggerMeta: {},
+      triggerMeta: {
+        onPageLoad: false,
+      },
       eventType: EventType.ON_PAGE_LOAD,
     });
     addPlatformFunctionsToEvalContext(evalContext);
@@ -177,6 +185,7 @@ describe("Tests for run function in promise styled", () => {
         triggerMeta: {
           source: {},
           triggerPropertyName: undefined,
+          onPageLoad: false,
         },
       },
     });
@@ -209,6 +218,7 @@ describe("Tests for run function in promise styled", () => {
         triggerMeta: {
           source: {},
           triggerPropertyName: undefined,
+          onPageLoad: false,
         },
       },
     });

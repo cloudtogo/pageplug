@@ -54,12 +54,7 @@ describe("Git import flow ", { tags: ["@tag.Git"] }, function () {
       cy.wait(1000);
       dataSources.FillMongoDSForm();
       cy.testDatasource(true);
-      agHelper.GetNClick(dataSources._saveDs);
-      cy.wait(2000);
-      /*cy.get(homePageLocators.toastMessage).should(
-        "contain",
-        "Application imported successfully",
-      ); */
+      dataSources.SaveDatasource(true);
       cy.wait("@getWorkspace");
       cy.get(reconnectDatasourceModal.ImportSuccessModal).should("be.visible");
       cy.get(reconnectDatasourceModal.ImportSuccessModalCloseBtn).click({
@@ -113,10 +108,6 @@ describe("Git import flow ", { tags: ["@tag.Git"] }, function () {
     cy.get(reconnectDatasourceModal.ImportSuccessModalCloseBtn).click({
       force: true,
     });
-    /* cy.get(homePageLocators.toastMessage).should(
-      "contain",
-     "Application imported successfully",
-   ); */
     cy.wait("@gitStatus").then((interception) => {
       cy.log(interception.response.body.data);
       cy.wait(1000);
@@ -126,7 +117,7 @@ describe("Git import flow ", { tags: ["@tag.Git"] }, function () {
     cy.wait(3000); //for uncommited changes to appear if any!
     cy.get("body").then(($body) => {
       if ($body.find(gitSyncLocators.gitPullCount).length > 0) {
-        cy.commitAndPush();
+        gitSync.CommitAndPush();
       }
     });
   });
@@ -178,8 +169,7 @@ describe("Git import flow ", { tags: ["@tag.Git"] }, function () {
     agHelper.AssertElementExist(gitSync._bottomBarPull);
     cy.get(gitSyncLocators.closeGitSyncModal).click();
     cy.wait(2000);
-    cy.merge(mainBranch);
-    cy.get(gitSyncLocators.closeGitSyncModal).click();
+    gitSync.MergeToMaster();
     cy.wait(2000);
     cy.latestDeployPreview();
     table.AssertTableLoaded();
@@ -219,7 +209,7 @@ describe("Git import flow ", { tags: ["@tag.Git"] }, function () {
     cy.wait(2000); // wait for transition
     cy.dragAndDropToCanvas("buttonwidget", { x: 300, y: 600 });
     cy.wait(3000);
-    cy.commitAndPush();
+    gitSync.CommitAndPush();
     cy.merge(newBranch);
     cy.get(gitSyncLocators.closeGitSyncModal).click();
     cy.wait(2000);

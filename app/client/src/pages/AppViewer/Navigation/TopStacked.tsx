@@ -9,15 +9,15 @@ import React, {
 import { View } from "@tarojs/components";
 import { useLocation } from "react-router-dom";
 import { NavLink } from "react-router-dom";
-import { getAppMode } from "@appsmith/selectors/applicationSelectors";
+import { getAppMode } from "ee/selectors/applicationSelectors";
 import { getCurrentPage } from "selectors/editorSelectors";
 import { APP_MODE } from "entities/App";
 import history from "utils/history";
-import { builderURL, viewerURL } from "@appsmith/RouteBuilder";
+import { builderURL, viewerURL } from "ee/RouteBuilder";
 import type {
   ApplicationPayload,
   Page,
-} from "@appsmith/constants/ReduxActionConstants";
+} from "ee/constants/ReduxActionConstants";
 import { Icon, IconSize } from "design-system-old";
 import useThrottledRAF from "utils/hooks/useThrottledRAF";
 import {
@@ -29,7 +29,7 @@ import {
 import { NAVIGATION_SETTINGS } from "constants/AppConstants";
 import { useSelector } from "react-redux";
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
-import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
+import { getCurrentApplication } from "ee/selectors/applicationSelectors";
 import { Menu } from "antd";
 import { mapClearTree, filterHiddenTreeData } from "utils/treeUtils";
 import { Container, ScrollBtnContainer } from "./TopStacked.styled";

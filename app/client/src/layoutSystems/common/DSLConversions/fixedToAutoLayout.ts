@@ -610,6 +610,8 @@ export function getCondensedGroupedWidgets(
   let count = 0;
   let gapIndex = gapsArray[count].index;
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let tempWidgetIds: any[] = [],
     groupLeftColumn = groupedWidgets[0].leftColumn,
     groupRightColumn = groupedWidgets[0].rightColumn;
@@ -761,4 +763,57 @@ function handleSpecialCaseWidgets(dsl: DSLWidget): DSLWidget {
   }
 
   return dsl;
+}
+/**
+ * Removes null values from object
+ * @param object
+ * @returns
+ */
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function removeNullValuesFromObject<T extends { [key: string]: any }>(
+  object: T,
+): T {
+  const copiedObject: T = { ...object };
+
+  //remove null values and dynamic trigger paths which have "null" values
+  Object.keys(copiedObject).forEach(
+    (k) =>
+      copiedObject[k] == null ||
+      (isPathDynamicTrigger(copiedObject, k) &&
+        copiedObject[k] === "null" &&
+        delete copiedObject[k]),
+  );
+
+  return copiedObject;
+}
+
+/**
+ * remove removableDynamicBindingPathList values from DynamicBindingPathList
+ * @param widget
+ * @param removableDynamicBindingPathList
+ * @returns
+ */
+function verifyDynamicPathBindingList(
+  widget: DSLWidget,
+  removableDynamicBindingPathList: string[],
+) {
+  if (!removableDynamicBindingPathList || !widget.dynamicBindingPathList)
+    return widget;
+
+  const dynamicBindingPathList: DynamicPath[] = [];
+  for (const dynamicBindingPath of widget.dynamicBindingPathList) {
+    //if the values are not dynamic, remove from the dynamic binding path list
+    const dynamicValue = get(widget, dynamicBindingPath.key);
+    if (!dynamicValue || !isDynamicValue(dynamicValue)) {
+      continue;
+    }
+
+    if (removableDynamicBindingPathList.indexOf(dynamicBindingPath.key) < 0) {
+      dynamicBindingPathList.push(dynamicBindingPath);
+    }
+  }
+
+  widget.dynamicBindingPathList = dynamicBindingPathList;
+  return widget;
 }

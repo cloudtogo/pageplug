@@ -15,20 +15,18 @@ import Collapse from "./Collapse";
 import {
   useEntityUpdateState,
   useEntityEditState,
-} from "@appsmith/pages/Editor/Explorer/hooks";
+} from "ee/pages/Editor/Explorer/hooks";
 import { Classes } from "@blueprintjs/core";
 import { noop } from "lodash";
 import { useDispatch, useSelector } from "react-redux";
 import useClick from "utils/hooks/useClick";
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
 import { getEntityCollapsibleState } from "selectors/editorContextSelectors";
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import { setEntityCollapsibleState } from "actions/editorContextActions";
-import { Tooltip, Tag, Spinner } from "design-system";
-import {
-  createMessage,
-  EXPLORER_BETA_ENTITY,
-} from "@appsmith/constants/messages";
+import { Tooltip, Tag, Spinner } from "@appsmith/ads";
+import { createMessage, EXPLORER_BETA_ENTITY } from "ee/constants/messages";
+import classNames from "classnames";
 
 export enum EntityClassNames {
   CONTEXT_MENU = "entity-context-menu",
@@ -112,7 +110,7 @@ export const EntityItem = styled.div<{
     props.active
       ? Colors.MINT_GREEN_LIGHT
       : props.isSticky
-        ? Colors.WHITE
+        ? "var(--ads-v2-color-bg)"
         : "none"};
   height: 36px;
   width: 100%;
@@ -243,6 +241,8 @@ export interface EntityProps {
   icon: ReactNode;
   rightIcon?: ReactNode;
   disabled?: boolean;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   action?: (e: any) => void;
   active?: boolean;
   isDefaultExpanded?: boolean;
@@ -250,6 +250,8 @@ export interface EntityProps {
   contextMenu?: ReactNode;
   searchKeyword?: string;
   step: number;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateEntityName?: (id: string, name: string) => any;
   runActionOnExpand?: boolean;
   onNameEdit?: (input: string, limit?: number) => string;
@@ -296,6 +298,8 @@ export const Entity = forwardRef(
     }, [props.forceExpand]);
 
     /* eslint-enable react-hooks/exhaustive-deps */
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const toggleChildren = (e: any) => {
       props.onToggle && props.onToggle(!isOpen);
       // Make sure this entity is enabled before toggling the collpse of children.
@@ -314,6 +318,8 @@ export const Entity = forwardRef(
       [props.entityId, props.updateEntityName],
     );
 
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleClick = (e: any) => {
       if (props.action) props.action(e);
       else toggleChildren(e);
@@ -363,9 +369,12 @@ export const Entity = forwardRef(
         <EntityItem
           active={!!props.active}
           alwaysShowRightIcon={props.alwaysShowRightIcon}
-          className={`${props.highlight ? "highlighted" : ""} ${
-            props.active ? "active" : ""
-          } t--entity-item`}
+          className={classNames({
+            highlighted: props.highlight,
+            active: props.active,
+            editable: canEditEntityName,
+            "t--entity-item": true,
+          })}
           data-guided-tour-id={`explorer-entity-${props.name}`}
           data-guided-tour-iid={props.name}
           data-testid={`t--entity-item-${props.name}`}

@@ -13,6 +13,8 @@ import MainPane from "./MainPane";
 import RightPane from "./RightPane";
 import classNames from "classnames";
 import { tailwindLayers } from "constants/Layers";
+import { protectedModeSelector } from "selectors/gitSyncSelectors";
+import ProtectedCallout from "./ProtectedCallout";
 import { useLocation } from "react-router";
 
 /**
@@ -22,14 +24,16 @@ function IDE() {
   const loc = useLocation();
   const isPreviewMode = useSelector(previewModeSelector);
   const isCombinedPreviewMode = useSelector(combinedPreviewModeSelector);
+  const isProtectedMode = useSelector(protectedModeSelector);
   const isAppSettingView: boolean = loc.pathname?.endsWith("/edit/settings");
 
   return (
     <>
+      {isProtectedMode && <ProtectedCallout />}
       <EditorWrapperContainer>
         <div
           className={classNames({
-            [`transition-transform transform duration-400 flex ${tailwindLayers.entityExplorer}`]:
+            [`transition-transform transform duration-400 flex h-full ${tailwindLayers.entityExplorer}`]:
               true,
             relative: !isCombinedPreviewMode,
             "-translate-x-full fixed": isCombinedPreviewMode,
@@ -42,7 +46,7 @@ function IDE() {
         {isAppSettingView ? <LeftPane /> : null}
         <div
           className={classNames({
-            [`transition-transform transform duration-400 ${tailwindLayers.propertyPane}`]:
+            [`transition-transform transform duration-400 h-full ${tailwindLayers.propertyPane}`]:
               true,
             relative: !isCombinedPreviewMode,
             "translate-x-full fixed right-0": isCombinedPreviewMode,

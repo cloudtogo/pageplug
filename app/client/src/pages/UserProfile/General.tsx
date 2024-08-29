@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Input, toast, Text } from "design-system";
+import { Button, Input, toast, Text } from "@appsmith/ads";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUser } from "selectors/usersSelectors";
 import { forgotPasswordSubmitHandler } from "pages/UserAuth/helpers";
@@ -10,28 +10,27 @@ import {
   USER_DISPLAY_PICTURE_PLACEHOLDER,
   USER_EMAIL_PLACEHOLDER,
   USER_RESET_PASSWORD,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import { logoutUser, updateUserDetails } from "actions/userActions";
 import UserProfileImagePicker from "./UserProfileImagePicker";
 import { Wrapper, FieldWrapper, LabelWrapper } from "./StyledComponents";
 import { ANONYMOUS_USERNAME } from "constants/userConstants";
 import { ALL_LANGUAGE_CHARACTERS_REGEX } from "constants/Regex";
-import { createMessage } from "design-system-old/build/constants/messages";
-import { notEmptyValidator } from "design-system-old";
+import { createMessage } from "@appsmith/ads-old";
+import { notEmptyValidator } from "@appsmith/ads-old";
 import {
   getIsFormLoginEnabled,
   getThirdPartyAuths,
-} from "@appsmith/selectors/tenantSelectors";
-import { ThirdPartyLogin } from "@appsmith/utils";
+} from "ee/selectors/tenantSelectors";
+import { ThirdPartyLogin } from "ee/utils";
 import type { ThirdPartyCardProps } from "./ThirdPartyCard";
 import { ThirdPartyCard, TitleWrapper } from "./ThirdPartyCard";
-
 import WeChat from "assets/images/WeChat.svg";
 import BusinessWeChat from "assets/images/BusinessWeChat.svg";
 import {
   WechatOAuthURL,
   BussinessWechatOAuthURL,
-} from "@appsmith/constants/ApiConstants";
+} from "ee/constants/ApiConstants";
 
 const nameValidator = (
   value: string,

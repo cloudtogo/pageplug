@@ -436,7 +436,7 @@
               {
                 "widgetName": "Icon1",
                 "rightColumn": 16,
-                "onClick": "{{closeModal('TestModal')}}",
+                "onClick": "{{closeModal(TestModal.name)}}",
                 "color": "#040627",
                 "iconName": "cross",
                 "widgetId": "n5fc0ven2a",
@@ -501,15 +501,5 @@
         ]
       }
     ]
-  },
-  "layoutOnLoadActions": [
-    [
-      {
-        "id": "5e906ba76e910873a331b648",
-        "name": "UsersApi",
-        "pluginType": "API",
-        "jsonPathKeys": []
-      }
-    ]
-  ]
+  }
 }

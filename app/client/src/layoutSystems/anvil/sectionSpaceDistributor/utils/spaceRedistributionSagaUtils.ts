@@ -3,7 +3,7 @@ import type {
   FlattenedWidgetProps,
 } from "reducers/entityReducers/canvasWidgetsReducer";
 import { SectionColumns, ZoneMinColumnWidth } from "../constants";
-import type { WidgetLayoutProps } from "../../utils/anvilTypes";
+import type { WidgetLayoutProps } from "layoutSystems/anvil/utils/anvilTypes";
 import { select } from "redux-saga/effects";
 import { getWidgets } from "sagas/selectors";
 
@@ -447,8 +447,14 @@ function getZoneChangeAndRelativeSize(
   zoneChangeFactor: number,
   maxColumnLimit = SectionColumns,
 ): {
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   zoneChange: any;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   isSmallestZoneLargeRelatively: any;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   largestZoneSpace: any;
 } {
   // Constants for determining zone sizes and thresholds
@@ -497,8 +503,8 @@ function adjustZoneSpaces(
             LARGE_SMALL_ZONE_SHRINK_THRESHOLD * spaceDistributedArray[i],
           )
         : index === i
-        ? currentZoneShrinkLimit
-        : minColumnWidth;
+          ? currentZoneShrinkLimit
+          : minColumnWidth;
 
     const adjustedSpace = Math.max(
       Math.round(newlyAdjustedValues[i]),

@@ -6,13 +6,13 @@ import {
   type AppsmithEntity,
   type JSActionEntity,
   ENTITY_TYPE,
-} from "@appsmith/entities/DataTree/types";
+} from "ee/entities/DataTree/types";
 import type {
   ConfigTree,
   DataTreeEntity,
 } from "entities/DataTree/dataTreeTypes";
 import { isFunction } from "lodash";
-import { entityDefinitions } from "@appsmith/utils/autocomplete/EntityDefinitions";
+import { entityDefinitions } from "ee/utils/autocomplete/EntityDefinitions";
 import type { Def } from "tern";
 import type { DataTreeDefEntityInformation } from "utils/autocomplete/CodemirrorTernService";
 import WidgetFactory from "WidgetProvider/factory";
@@ -93,10 +93,12 @@ export const entityDefGeneratorMap: EntityDefGeneratorMap = {
       jsPropertiesDef[`${funcName}.data`] = funcTypeDef.data;
     }
 
-    for (let i = 0; i < entityConfig?.variables?.length; i++) {
-      const varKey = entityConfig?.variables[i];
-      const varValue = (entity as JSActionEntity)[varKey];
-      jsPropertiesDef[varKey] = generateTypeDef(varValue, extraDefsToDefine);
+    if (entityConfig.variables) {
+      for (let i = 0; i < entityConfig?.variables?.length; i++) {
+        const varKey = entityConfig?.variables[i];
+        const varValue = (entity as JSActionEntity)[varKey];
+        jsPropertiesDef[varKey] = generateTypeDef(varValue, extraDefsToDefine);
+      }
     }
 
     def[entityName] = jsPropertiesDef;

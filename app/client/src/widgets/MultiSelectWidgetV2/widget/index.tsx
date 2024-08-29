@@ -46,8 +46,9 @@ import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
 import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
 import { DynamicHeight } from "utils/WidgetFeatures";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 import { WIDGET_TAGS, layoutConfigurations } from "constants/WidgetConstants";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
+import { FEATURE_FLAG } from "ee/entities/FeatureFlag";
 import type { DynamicPath } from "utils/DynamicBindingUtils";
 
 class MultiSelectWidget extends BaseWidget<
@@ -60,6 +61,7 @@ class MultiSelectWidget extends BaseWidget<
     return {
       name: "下拉多选",
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
       searchTags: ["dropdown", "select", "multi select"],
@@ -766,6 +768,8 @@ class MultiSelectWidget extends BaseWidget<
     };
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       selectedOptions: undefined,
@@ -780,6 +784,8 @@ class MultiSelectWidget extends BaseWidget<
     if (
       this.props.defaultOptionValue &&
       this.props.defaultOptionValue.some(
+        // TODO: Fix this the next time the file is edited
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (value: any) => isString(value) || isFinite(value),
       )
     ) {

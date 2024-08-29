@@ -1,29 +1,21 @@
 import React from "react";
-import { Text, Link, Button, Icon } from "design-system";
-import {
-  BUSINESS_PRICE_URL,
-  createMessage,
-  IN_APP_EMBED_SETTING,
-} from "@appsmith/constants/messages";
-import {
-  isPermitted,
-  PERMISSION_TYPE,
-} from "@appsmith/utils/permissionHelpers";
+import { Text, Link, Button, Icon } from "@appsmith/ads";
+import { BUSINESS_PRICE_URL, createMessage, IN_APP_EMBED_SETTING } from "ee/constants/messages";
+import { isPermitted, PERMISSION_TYPE } from "ee/utils/permissionHelpers";
 import {
   RAMP_NAME,
   RampFeature,
   RampSection,
 } from "utils/ProductRamps/RampsControlList";
 import { useSelector } from "react-redux";
-import {
-  getRampLink,
-  showProductRamps,
-} from "@appsmith/selectors/rampSelectors";
-import BusinessTag from "components/BusinessTag";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
+import { getRampLink, showProductRamps } from "ee/selectors/rampSelectors";
+import { FEATURE_FLAG } from "ee/entities/FeatureFlag";
 import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
+import EnterpriseTag from "components/EnterpriseTag";
 
 function PrivateEmbeddingContent(props: {
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   userAppPermissions: any[];
   changeTab?: () => void;
   isAppSettings?: boolean;
@@ -52,6 +44,7 @@ export function PrivateEmbedRampModal() {
   const rampLinkSelector = getRampLink({
     section: RampSection.ShareModal,
     feature: RampFeature.PrivateEmbeds,
+    isBusinessFeature: false,
   });
   const rampLink = BUSINESS_PRICE_URL;
   const isPrivateEmbedEnabled = useFeatureFlag(
@@ -72,7 +65,7 @@ export function PrivateEmbedRampModal() {
             <Text kind="body-m">
               {createMessage(IN_APP_EMBED_SETTING.privateAppsText)}
             </Text>
-            <BusinessTag classes="ml-1 mt-0.5" />
+            <EnterpriseTag classes="ml-1 mt-0.5" />
           </div>
           <Text
             className="w-7/10 block"
@@ -100,6 +93,7 @@ export function PrivateEmbedRampSidebar() {
   const rampLinkSelector = getRampLink({
     section: RampSection.AppSettings,
     feature: RampFeature.PrivateEmbeds,
+    isBusinessFeature: false,
   });
   const rampLink = BUSINESS_PRICE_URL;
   const isPrivateEmbedEnabled = useFeatureFlag(

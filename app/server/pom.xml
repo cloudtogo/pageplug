@@ -27,6 +27,8 @@
 
     <properties>
         <deploy.disabled>true</deploy.disabled>
+        <jackson-bom.version>2.17.0</jackson-bom.version>
+        <jackson.version>2.17.0</jackson.version>
         <java.version>17</java.version>
         <javadoc.disabled>true</javadoc.disabled>
         <logback.version>1.4.14</logback.version>
@@ -156,6 +158,19 @@
                         <removeUnusedImports/>
                         <formatAnnotations/>
                     </java>
+                    <json>
+                        <excludes>
+                            <exclude>**/target/**/*.json</exclude>
+                        </excludes>
+                        <includes>
+                            <include>**/*.json</include>
+                        </includes>
+                        <prettier>
+                            <config>
+                                <tabWidth>2</tabWidth>
+                            </config>
+                        </prettier>
+                    </json>
                     <pom>
                         <includes>
                             <include>pom.xml</include>
@@ -176,8 +191,6 @@
                         <goals>
                             <goal>apply</goal>
                         </goals>
-                        <!-- This gets triggered automatically when we run the build script -->
-                        <phase>compile</phase>
                     </execution>
                 </executions>
             </plugin>

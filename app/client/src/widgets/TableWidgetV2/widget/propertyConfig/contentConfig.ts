@@ -1,7 +1,7 @@
 import {
   createMessage,
   TABLE_WIDGET_TOTAL_RECORD_TOOLTIP,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import type { PropertyPaneConfig } from "constants/PropertyControlConstants";
 import { ValidationTypes } from "constants/WidgetValidation";
 import { EvaluationSubstitutionType } from "entities/DataTree/dataTreeFactory";
@@ -140,6 +140,12 @@ export default [
         validation: { type: ValidationTypes.TEXT },
       },
     ],
+    // Added this prop to indicate that data section needs to be expanded by default
+    // Rest all sections needs to be collapsed
+    // We already have a isDefaultOpen prop configured to keep a section expanded or not
+    // but introducing new prop so that we can control is based on flag
+    // Once we decide to keep this feature, we can go back to using isDefaultOpen and removeexpandedByDefault
+    expandedByDefault: true,
   },
   {
     sectionName: "分页配置",
@@ -208,6 +214,7 @@ export default [
         dependencies: ["serverSidePaginationEnabled"],
       },
     ],
+    expandedByDefault: false,
   },
   {
     sectionName: "搜索过滤",
@@ -288,6 +295,7 @@ export default [
         validation: { type: ValidationTypes.BOOLEAN },
       },
     ],
+    expandedByDefault: false,
   },
   {
     sectionName: "勾选行配置",
@@ -355,6 +363,7 @@ export default [
         isTriggerProperty: true,
       },
     ],
+    expandedByDefault: false,
   },
   {
     sectionName: "排序",
@@ -386,6 +395,7 @@ export default [
         dependencies: ["isSortable"],
       },
     ],
+    expandedByDefault: false,
   },
   {
     sectionName: "新增行数据",
@@ -462,6 +472,7 @@ export default [
         },
       },
     ],
+    expandedByDefault: false,
   },
   {
     sectionName: "属性",
@@ -526,5 +537,6 @@ export default [
         dependencies: ["isVisibleDownload"],
       },
     ],
+    expandedByDefault: false,
   },
 ] as PropertyPaneConfig[];

@@ -1,7 +1,7 @@
 import type { AxiosPromise } from "axios";
 import Api from "api/Api";
 import type { ApiResponse } from "api/ApiResponses";
-import type { FeatureFlags } from "@appsmith/entities/FeatureFlag";
+import type { FeatureFlags } from "ee/entities/FeatureFlag";
 import type { ProductAlert } from "../../reducers/uiReducers/usersReducer";
 
 export interface LoginUserRequest {
@@ -50,6 +50,7 @@ export interface InviteUserRequest {
   email: string;
   groupIds: string[];
   status?: string;
+  recaptchaToken?: string;
 }
 
 export interface UpdateUserRequest {
@@ -101,7 +102,6 @@ export class UserApi extends Api {
   static superUserURL = "v1/users/super";
   static adminSettingsURL = "v1/admin/env";
   static restartServerURL = "v1/admin/restart";
-  static downloadConfigURL = "v1/admin/env/download";
   static sendTestEmailURL = "/v1/admin/send-test-email";
 
   static async createUser(
@@ -147,7 +147,17 @@ export class UserApi extends Api {
   static async inviteUser(
     request: InviteUserRequest,
   ): Promise<AxiosPromise<ApiResponse>> {
-    return Api.post(UserApi.inviteUserURL, request);
+    const { recaptchaToken, ...requestPayload } = request;
+    return Api.post(
+      UserApi.inviteUserURL,
+      requestPayload,
+      undefined,
+      recaptchaToken
+        ? {
+            params: { recaptchaToken },
+          }
+        : {},
+    );
   }
 
   static async verifyUserInvite(

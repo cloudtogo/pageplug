@@ -9,7 +9,7 @@ import {
   RESET_CHILDREN_OPTIONS,
   ViewTypes,
 } from "../constants";
-import { ALERT_STYLE_OPTIONS } from "@appsmith/constants/messages";
+import { ALERT_STYLE_OPTIONS } from "ee/constants/messages";
 import type {
   ActionIntegrationType,
   ActionType,
@@ -32,8 +32,8 @@ import {
   genericSetter,
 } from "../utils";
 import store from "store";
-import { getPageList } from "@appsmith/selectors/entitiesSelector";
-import type { TreeDropdownOption } from "design-system-old";
+import { getPageList } from "ee/selectors/entitiesSelector";
+import type { TreeDropdownOption } from "@appsmith/ads-old";
 import { FIELD_GROUP_CONFIG } from "../FieldGroup/FieldGroupConfig";
 import { getFunctionName, checkIfArgumentExistAtPosition } from "@shared/ast";
 
@@ -100,9 +100,13 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     exampleText: "showAlert('Hello world!', 'info')",
     options: () => ALERT_STYLE_OPTIONS,
     defaultText: "Select type",
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getter: (value: any) => {
       return enumTypeGetter(value, 1, "success");
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (option: any, currentValue: string) => {
       const isMessageSet = Boolean(textGetter(currentValue, 0));
       if (!isMessageSet) {
@@ -135,12 +139,16 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     defaultText: "",
     exampleText: "navigateTo('Page1', { a: 1 }, 'SAME_WINDOW')",
     options: () => null,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getter: (value: any) => {
       const queryParams = textGetter(value, 1);
       if (queryParams === EMPTY_BINDING_WITH_EMPTY_OBJECT || queryParams === "")
         return '{{\n{\n //"key": "value",\n}\n}}';
       return queryParams;
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (value: any, currentValue: string) => {
       const isPageOrURLSet = Boolean(textGetter(currentValue, 0));
       if (!isPageOrURLSet) {
@@ -155,9 +163,13 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     exampleText: "navigateTo('Page1', { a: 1 }, 'SAME_WINDOW')",
     options: () => NAVIGATION_TARGET_FIELD_OPTIONS,
     defaultText: NAVIGATION_TARGET_FIELD_OPTIONS[0].label,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getter: (value: any) => {
       return enumTypeGetter(value, 2, "SAME_WINDOW");
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (option: any, currentValue: string) => {
       const isPageOrURLSet = textGetter(currentValue, 0);
       if (!isPageOrURLSet) {
@@ -185,11 +197,15 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     defaultText: "{{\n{}\n}}",
     exampleText: "Api1.run({ a: 1 })",
     options: () => null,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getter: (value: any, idx?: number) => {
       const params = textGetter(value, idx || 0);
       if (params === "") return '{{\n{\n //"key": "value",\n}\n}}';
       return params;
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (value: any, currentValue: string, idx?: number) => {
       return paramSetter(value, currentValue, idx);
     },
@@ -200,9 +216,13 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     defaultText: "",
     exampleText: "removeValue('a')",
     options: () => null,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getter: (value: any) => {
       return textGetter(value, 0);
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (option: any, currentValue: string) => {
       return textSetter(option, currentValue, 0);
     },
@@ -214,9 +234,13 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     defaultText: "",
     exampleText: "storeValue('a', 'b')",
     options: () => null,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getter: (value: any) => {
       return textGetter(value, 0);
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (option: any, currentValue: string) => {
       return textSetter(option, currentValue, 0);
     },
@@ -227,9 +251,13 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     defaultText: "",
     exampleText: "storeValue('a', 'b')",
     options: () => null,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getter: (value: any) => {
       return textGetter(value, 1);
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (option: any, currentValue: string) => {
       const isKeySet = Boolean(textGetter(currentValue, 0));
       if (!isKeySet) {
@@ -245,9 +273,13 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     defaultText: "",
     exampleText: "download('Image', 'img.png', 'image/png')",
     options: () => null,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getter: (value: any) => {
       return textGetter(value, 0);
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (option: any, currentValue: string) => {
       return textSetter(option, currentValue, 0);
     },
@@ -258,9 +290,13 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     defaultText: "",
     exampleText: "download('Image', 'img.png', 'image/png')",
     options: () => null,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getter: (value: any) => {
       return textGetter(value, 1);
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (option: any, currentValue: string) => {
       const isDataFieldSet = textGetter(currentValue, 0);
       if (!isDataFieldSet) {
@@ -275,9 +311,13 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     defaultText: "",
     exampleText: "copyToClipboard('example')",
     options: () => null,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getter: (value: any) => {
       return textGetter(value, 0);
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (option: any, currentValue: string) => {
       return textSetter(option, currentValue, 0);
     },
@@ -381,6 +421,8 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     getter: (value: any) => {
       return modalGetter(value);
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (option: any, currentValue: string) => {
       return modalSetter(option.value, currentValue);
     },
@@ -394,6 +436,8 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     getter: (value: any) => {
       return modalGetter(value);
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (option: any, currentValue: string) => {
       return modalSetter(option.value, currentValue);
     },
@@ -404,9 +448,13 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     exampleText: "resetWidget('Modal1', true)",
     options: (props: FieldProps) => props.widgetOptionTree,
     defaultText: "Select widget",
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getter: (value: any) => {
       return enumTypeGetter(value, 0);
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (option: any, currentValue: string) => {
       return enumTypeSetter(option.value, currentValue, 0);
     },
@@ -417,9 +465,13 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     options: () => RESET_CHILDREN_OPTIONS,
     defaultText: "true",
     exampleText: "resetWidget('Modal1', true)",
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getter: (value: any) => {
       return enumTypeGetter(value, 1);
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (option: any, currentValue: string) => {
       const isWidgetFieldSet = enumTypeGetter(currentValue, 0);
       if (!isWidgetFieldSet) {
@@ -437,6 +489,8 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     getter: (value: any) => {
       return enumTypeGetter(value, 0, "");
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (option: any, currentValue: string) => {
       return enumTypeSetter(option.value, currentValue, 0);
     },
@@ -450,8 +504,19 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     getter: (value: any) => {
       return enumTypeGetter(value, 2);
     },
-    setter: (option: any, currentValue: string) =>
-      enumTypeSetter(option.value, currentValue, 2),
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setter: (option: any, currentValue: string) => {
+      const isDataFieldSet = textGetter(currentValue, 0);
+      if (!isDataFieldSet) {
+        currentValue = enumTypeSetter("''", currentValue, 0);
+      }
+      const isFileTypeSet = textGetter(currentValue, 1);
+      if (!isFileTypeSet) {
+        currentValue = enumTypeSetter("''", currentValue, 1);
+      }
+      return enumTypeSetter(option.value, currentValue, 2);
+    },
     view: ViewTypes.SELECTOR_VIEW,
   },
   [FieldType.ON_SUCCESS_FIELD]: {
@@ -477,9 +542,13 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     defaultText: "",
     exampleText: "navigateTo('Page1', { a: 1 }, 'SAME_WINDOW')",
     options: () => null,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getter: (value: any) => {
       return enumTypeGetter(value, 0);
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (option: any, currentValue: string) => {
       return enumTypeSetter(option.value, currentValue, 0);
     },
@@ -490,9 +559,13 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     defaultText: "选择动作",
     exampleText: "",
     options: (props: FieldProps) => props.integrationOptions,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getter: (value: any) => {
       return value;
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (value: any) => {
       return value;
     },
@@ -503,9 +576,13 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     defaultText: "",
     exampleText: "",
     options: () => null,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getter: (value: any, index = 0) => {
       return textGetter(value, index);
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (value: any, currentValue: string, index) => {
       if (value === "") {
         value = undefined;
@@ -571,6 +648,8 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     getter: (value: any) => {
       return enumTypeGetter(value, 1);
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (option: any, currentValue: string) => {
       const isMessageFieldSet = textGetter(currentValue, 0);
       if (!isMessageFieldSet) {
@@ -585,9 +664,13 @@ export const FIELD_CONFIG: AppsmithFunctionConfigType = {
     defaultText: "",
     exampleText: "",
     options: () => null,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getter: (value: any) => {
       return enumTypeGetter(value, 0);
     },
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setter: (option: any, currentValue: string) => {
       return enumTypeSetter(option.value, currentValue, 0);
     },

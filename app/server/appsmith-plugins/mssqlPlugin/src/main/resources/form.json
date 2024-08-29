@@ -35,6 +35,7 @@
               "label": "端口",
               "configProperty": "datasourceConfiguration.endpoints[*].port",
               "dataType": "NUMBER",
+              "initialValue": ["1433"],
               "controlType": "KEYVALUE_ARRAY",
               "placeholderText": "1433"
             }

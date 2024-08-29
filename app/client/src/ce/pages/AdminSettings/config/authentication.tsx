@@ -6,14 +6,14 @@ import {
   GOOGLE_SIGNUP_SETUP_DOC,
   WX_SIGNUP_SETUP_DOC,
 } from "constants/ThirdPartyConstants";
-import type { AdminConfigType } from "@appsmith/pages/AdminSettings/config/types";
+import type { AdminConfigType } from "ee/pages/AdminSettings/config/types";
 import {
   CategoryType,
   SettingCategories,
   SettingSubCategories,
   SettingSubtype,
   SettingTypes,
-} from "@appsmith/pages/AdminSettings/config/types";
+} from "ee/pages/AdminSettings/config/types";
 import type { AuthMethodType } from "pages/AdminSettings/Authentication/AuthPage";
 import { AuthPage } from "pages/AdminSettings/Authentication/AuthPage";
 import Google from "assets/images/Google.png";
@@ -29,7 +29,7 @@ import { useSelector } from "react-redux";
 import {
   getThirdPartyAuths,
   getIsFormLoginEnabled,
-} from "@appsmith/selectors/tenantSelectors";
+} from "ee/selectors/tenantSelectors";
 import {
   FORM_LOGIN_DESC,
   GITHUB_AUTH_DESC,
@@ -40,16 +40,16 @@ import {
   BUSINESS_WECHAT_AUTH_DESC,
   WECHAT_AUTH_DESC,
   DINGDING_AUTH_DESC,
-} from "@appsmith/constants/messages";
-import { isSAMLEnabled } from "@appsmith/utils/planHelpers";
-import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
+} from "ee/constants/messages";
+import { isSAMLEnabled } from "ee/utils/planHelpers";
+import { selectFeatureFlags } from "ee/selectors/featureFlagsSelectors";
 import store from "store";
-import { getWXLoginClientId } from "@appsmith/selectors/settingSelectors";
+import { getWXLoginClientId } from "ee/selectors/settingSelectors";
 import { BUSSINESS_WX_SINGUP_DOC } from "constants/ThirdPartyConstants";
 
 const { enableWeChatOAuth } = getAppsmithConfigs();
 const featureFlags = selectFeatureFlags(store.getState());
-import { getAppsmithConfigs } from "@appsmith/configs";
+import { getAppsmithConfigs } from "ee/configs";
 const { mailEnabled } = getAppsmithConfigs();
 
 const FormAuth: AdminConfigType = {

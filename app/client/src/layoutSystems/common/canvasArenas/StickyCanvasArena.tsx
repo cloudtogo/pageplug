@@ -14,9 +14,12 @@ interface StickyCanvasArenaProps {
    * The dependencies object is to make sure the parent of the StickyCanvasArena can submit custom props,
    * those when changed the canvas re-observes to reposition or rescale it selves.
    */
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dependencies?: Record<string, any>;
   ref: StickyCanvasArenaRef;
   shouldObserveIntersection: boolean;
+  scaleFactor?: number;
 }
 
 interface StickyCanvasArenaRef {
@@ -86,6 +89,7 @@ const shouldUpdateCanvas = (
 
 const StyledCanvasSlider = styled.div<{ paddingBottom: number }>`
   position: absolute;
+  pointer-events: all;
   top: 0px;
   left: 0px;
   height: calc(100% + ${(props) => props.paddingBottom}px);
@@ -98,12 +102,15 @@ const StyledCanvasSlider = styled.div<{ paddingBottom: number }>`
 `;
 
 export const StickyCanvasArena = forwardRef(
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (props: StickyCanvasArenaProps, ref: any) => {
     const {
       canvasId,
       canvasPadding,
       dependencies = {},
       getRelativeScrollingParent,
+      scaleFactor = 1,
       shouldObserveIntersection,
       showCanvas,
       sliderId,
@@ -140,9 +147,11 @@ export const StickyCanvasArena = forwardRef(
     const rescaleSliderCanvas = (entry: IntersectionObserverEntry) => {
       const canvasCtx: CanvasRenderingContext2D =
         stickyCanvasRef.current.getContext("2d");
-      stickyCanvasRef.current.height = entry.intersectionRect.height * scale;
-      stickyCanvasRef.current.width = entry.intersectionRect.width * scale;
-      canvasCtx.scale(scale, scale);
+      stickyCanvasRef.current.height =
+        entry.intersectionRect.height * scale * scaleFactor;
+      stickyCanvasRef.current.width =
+        entry.intersectionRect.width * scale * scaleFactor;
+      canvasCtx.scale(scale * scaleFactor, scale * scaleFactor);
     };
 
     const updateCanvasStylesIntersection = (

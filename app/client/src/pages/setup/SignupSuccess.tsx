@@ -1,22 +1,17 @@
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
 import { requiresAuth } from "pages/UserAuth/requiresAuthHOC";
 import React from "react";
 import { useCallback } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUser } from "selectors/usersSelectors";
-import PerformanceTracker, {
-  PerformanceTransactionName,
-} from "utils/PerformanceTracker";
 import UserWelcomeScreen from "pages/setup/UserWelcomeScreen";
 import { Center } from "pages/setup/common";
-import { Spinner } from "design-system";
-import { isValidLicense } from "@appsmith/selectors/tenantSelectors";
-import { redirectUserAfterSignup } from "@appsmith/utils/signupHelpers";
+import { Spinner } from "@appsmith/ads";
+import { isValidLicense } from "ee/selectors/tenantSelectors";
+import { redirectUserAfterSignup } from "ee/utils/signupHelpers";
 import { setUserSignedUpFlag } from "utils/storage";
-import AnalyticsUtil from "utils/AnalyticsUtil";
-import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 
 export function SignupSuccess() {
   const dispatch = useDispatch();
@@ -27,12 +22,8 @@ export function SignupSuccess() {
   );
   const validLicense = useSelector(isValidLicense);
   const user = useSelector(getCurrentUser);
-  const isEnabledForCreateNew = useFeatureFlag(
-    FEATURE_FLAG.ab_create_new_apps_enabled,
-  );
 
   useEffect(() => {
-    PerformanceTracker.stopTracking(PerformanceTransactionName.SIGN_UP);
     user?.email && setUserSignedUpFlag(user?.email);
   }, []);
 
@@ -45,7 +36,7 @@ export function SignupSuccess() {
         shouldEnableFirstTimeUserOnboarding,
         validLicense,
         dispatch,
-        isNonInvitedUser && isEnabledForCreateNew,
+        isNonInvitedUser,
       ),
     [],
   );

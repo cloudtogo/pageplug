@@ -1,24 +1,29 @@
-import { generateDataTreeAction } from "@appsmith/entities/DataTree/dataTreeAction";
-import { generateDataTreeJSAction } from "@appsmith/entities/DataTree/dataTreeJSAction";
+import { generateDataTreeAction } from "ee/entities/DataTree/dataTreeAction";
+import { generateDataTreeJSAction } from "ee/entities/DataTree/dataTreeJSAction";
 import { generateDataTreeWidget } from "entities/DataTree/dataTreeWidget";
 import log from "loglevel";
 import {
   ENTITY_TYPE,
   EvaluationSubstitutionType,
-} from "@appsmith/entities/DataTree/types";
-import { generateDataTreeModuleInputs } from "@appsmith/entities/DataTree/utils";
+} from "ee/entities/DataTree/types";
+import { generateDataTreeModuleInputs } from "ee/entities/DataTree/utils";
 import type {
   DataTreeSeed,
   AppsmithEntity,
   EntityTypeValue,
-} from "@appsmith/entities/DataTree/types";
+} from "ee/entities/DataTree/types";
 import type {
   unEvalAndConfigTree,
   ConfigTree,
   UnEvalTree,
 } from "entities/DataTree/dataTreeTypes";
 import { isEmpty } from "lodash";
-import { generateModuleInstance } from "@appsmith/entities/DataTree/dataTreeModuleInstance";
+import { generateModuleInstance } from "ee/entities/DataTree/dataTreeModuleInstance";
+import {
+  endSpan,
+  startNestedSpan,
+  startRootSpan,
+} from "UITelemetry/generateTraces";
 export class DataTreeFactory {
   static create({
     actions,
@@ -41,6 +46,8 @@ export class DataTreeFactory {
     const configTree: ConfigTree = {};
     const start = performance.now();
     const startActions = performance.now();
+    const rootSpan = startRootSpan("DataTreeFactory.create");
+    const actionsSpan = startNestedSpan("DataTreeFactory.actions", rootSpan);
 
     actions.forEach((action) => {
       const editorConfig = editorConfigs[action.config.pluginId];
@@ -54,8 +61,13 @@ export class DataTreeFactory {
       configTree[action.config.name] = configEntity;
     });
     const endActions = performance.now();
+    endSpan(actionsSpan);
 
     const startJsActions = performance.now();
+    const jsActionsSpan = startNestedSpan(
+      "DataTreeFactory.jsActions",
+      rootSpan,
+    );
 
     jsActions.forEach((js) => {
       const { configEntity, unEvalEntity } = generateDataTreeJSAction(js);
@@ -63,8 +75,10 @@ export class DataTreeFactory {
       configTree[js.config.name] = configEntity;
     });
     const endJsActions = performance.now();
+    endSpan(jsActionsSpan);
 
     const startWidgets = performance.now();
+    const widgetsSpan = startNestedSpan("DataTreeFactory.widgets", rootSpan);
 
     if (!isEmpty(moduleInputs)) {
       const { configEntity, unEvalEntity } =
@@ -102,6 +116,7 @@ export class DataTreeFactory {
     });
 
     const endWidgets = performance.now();
+    endSpan(widgetsSpan);
 
     dataTree.global = dataTree.appsmith = {
       ...appData,
@@ -113,6 +128,10 @@ export class DataTreeFactory {
     (dataTree.global as AppsmithEntity).ENTITY_TYPE = ENTITY_TYPE.APPSMITH;
 
     const startMetaWidgets = performance.now();
+    const metaWidgetsSpan = startNestedSpan(
+      "DataTreeFactory.metaWidgets",
+      rootSpan,
+    );
 
     Object.values(metaWidgets).forEach((widget) => {
       const { configEntity, unEvalEntity } = generateDataTreeWidget(
@@ -124,6 +143,8 @@ export class DataTreeFactory {
       configTree[widget.widgetName] = configEntity;
     });
     const endMetaWidgets = performance.now();
+    endSpan(metaWidgetsSpan);
+    endSpan(rootSpan);
 
     const end = performance.now();
 

@@ -13,7 +13,6 @@ export interface AppsmithUIConfigs {
     dsn: string;
     release: string;
     environment: string;
-    integrations: any[];
     normalizeDepth: number;
     tracesSampleRate: number;
   };
@@ -26,6 +25,7 @@ export interface AppsmithUIConfigs {
     accountId: string;
     applicationId: string;
     browserAgentlicenseKey: string;
+    browserAgentEndpoint: string;
     otlpLicenseKey: string;
     otlpServiceName: string;
     otlpEndpoint: string;

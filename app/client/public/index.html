@@ -20,6 +20,7 @@
     // could return either boolean or string based on value
     const parseConfig = (config) => {
       if (
+        (config.startsWith("{") && config.startsWith("}")) ||
         config.indexOf("__") === 0 ||
         config.indexOf("$") === 0 ||
         config.indexOf("%") === 0
@@ -33,37 +34,34 @@
         return true;
       }
 
-      return result;
-    };
-    const CLOUD_HOSTING = parseConfig("__APPSMITH_CLOUD_HOSTING__");
-    const ZIPY_KEY = parseConfig("__APPSMITH_ZIPY_SDK_KEY__");
-    const AIRGAPPED = parseConfig("__APPSMITH_AIRGAP_ENABLED__");
-    // NREUM variable is required when we are we are are dynamically loading new relic browser agent script
-    NREUM = undefined
-  </script>
-  <script>
+          return result;
+        };
+        const CLOUD_HOSTING = parseConfig('{{env "APPSMITH_CLOUD_HOSTING"}}');
+        const ZIPY_KEY = parseConfig('{{env "APPSMITH_ZIPY_SDK_KEY"}}');
+        const AIRGAPPED = parseConfig('{{env "APPSMITH_AIRGAP_ENABLED"}}');
+      </script>
+    <script>
+        window.__APPSMITH_CHUNKS_TO_PRELOAD =
+      <%=
+        (function () {
+          // This code emits URLs to be preloaded as soon as the main bundle loads.
+          // If you code-split away some files and need to preload them as well, here’s how to do that:
+          //  1) Give your import a name (use the `webpackChunkName` comment: `import(/* webpackChunkName: "my-name" */ "./my-file")`)
+          //  2) Add the name into the `chunksToPreload` array below
+          let chunksToPreload = {
+            'edit-mode': [...getChunkUrls("editor"), ...getChunkUrls("global-search")],
+            'view-mode': getChunkUrls("AppViewer")
+          };
 
-    const enableNewRelic = parseConfig("__APPSMITH_NEW_RELIC_ACCOUNT_ENABLE__");
-    //only when newRelic is enabled do we load the browser agent script
-    if (!!enableNewRelic) {
-      const accountId = parseConfig("__APPSMITH_NEW_RELIC_ACCOUNT_ID__");
-      const applicationId = parseConfig("__APPSMITH_NEW_RELIC_APPLICATION_ID__");
-      const browserAgentlicenseKey = parseConfig("__APPSMITH_NEW_RELIC_BROWSER_AGENT_LICENSE_KEY__");
-      const script = document.createElement("script");
-      //we load the new relic browser agent script from our CDN.
-      script.src = "https://assets.appsmith.com/newRelicBrowserAgent1.js";
-      script.onload = () => {
-        // we have defined and init function within the Browser agent script.
-        // This init fn gets assigned to a global var called NEW_RELIC_BROWSER_AGENT, when the script tag element loads
-        // we call the init fn with all env vars. Through this step browser agent has the required license key to push telemetry info to new relic.
-        NEW_RELIC_BROWSER_AGENT && NEW_RELIC_BROWSER_AGENT.init([accountId, applicationId, browserAgentlicenseKey]);
-      };
-      const head = document.getElementsByTagName("head")[0];
-      head && head.appendChild(script);
-    }
-  </script>
+          return JSON.stringify(chunksToPreload);
 
-  <script>
+          function getChunkUrls(chunkName) {
+            return compilation.namedChunkGroups.get(chunkName).chunks.flatMap(chunk => [...chunk.files]);
+          }
+        })()
+          %>
+    </script>
+    <script>
       if (CLOUD_HOSTING && ZIPY_KEY) {
       const script = document.createElement("script");
       script.crossOrigin = "anonymous";
@@ -77,8 +75,8 @@
     }
 
 
-  </script>
-</head>
+    </script>
+  </head>
 
 <body class="appsmith-light-theme">
   <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -90,80 +88,81 @@
   <div id="header-root"></div>
   <div id="root"></div>
   <div id="date-picker-control" style="position: relative; z-index: 1000"></div>
+  
   <script type="text/javascript">
-    // Ref: https://github.com/Modernizr/Modernizr/blob/94592f279a410436530c7c06acc42a6e90c20150/feature-detects/storage/localstorage.js
-    const getIsLocalStorageSupported = () => {
-      try {
-        window.localStorage.setItem("test", "testA");
-        window.localStorage.removeItem("test");
-        return true;
-      } catch (e) {
-        return false;
-      }
-    };
-    const isLocalStorageSupported = getIsLocalStorageSupported();
-
-    const handleLocalStorageNotSupportedError = () => {
-      console.error("Localstorage storage is not supported on your device.");
-    };
-
-    const localStorageUtil = {
-      getItem: (key) => {
-        if (!isLocalStorageSupported) {
-          handleLocalStorageNotSupportedError();
-          return;
+      // Ref: https://github.com/Modernizr/Modernizr/blob/94592f279a410436530c7c06acc42a6e90c20150/feature-detects/storage/localstorage.js
+      const getIsLocalStorageSupported = () => {
+        try {
+          window.localStorage.setItem("test", "testA");
+          window.localStorage.removeItem("test");
+          return true;
+        } catch (e) {
+          return false;
         }
-        return window.localStorage.getItem(key);
-      },
-      removeItem: (key) => {
-        if (!isLocalStorageSupported) {
-          handleLocalStorageNotSupportedError();
-          return;
-        }
-        return window.localStorage.removeItem(key);
-      },
-      setItem: (key, value) => {
-        if (!isLocalStorageSupported) {
-          handleLocalStorageNotSupportedError();
-          return;
-        }
-        return window.localStorage.setItem(key, value);
-      },
-    };
-    window.addEventListener("DOMContentLoaded", (event) => {
-      document.getElementById("loader").style.width = "50vw";
-    });
+      };
+      const isLocalStorageSupported = getIsLocalStorageSupported();
 
-    const registerPageServiceWorker = () => {
-      if (
-        "serviceWorker" in navigator &&
-        // Disable the service worker in Cypress tests. We primarily do this to make
-        // the Performance/LinkRelPreload_Spec.js test work (as it collects URLs all network requests,
-        // and service worker requests fail it.) But, anecdotally, disabling the service worker
-        // also seems to make the tests a bit faster, as the network load is lower.
-        !window.Cypress
-      ) {
-        window.addEventListener("load", function () {
-          navigator.serviceWorker
-            .register("/pageService.js")
-            .catch((error) => {
-              console.error("Service Worker Registration failed: " + error);
-            });
-        });
-      }
-    };
-    registerPageServiceWorker();
+      const handleLocalStorageNotSupportedError = () => {
+        console.error("Localstorage storage is not supported on your device.");
+      };
+
+      const localStorageUtil = {
+        getItem: (key) => {
+          if (!isLocalStorageSupported) {
+            handleLocalStorageNotSupportedError();
+            return;
+          }
+          return window.localStorage.getItem(key);
+        },
+        removeItem: (key) => {
+          if (!isLocalStorageSupported) {
+            handleLocalStorageNotSupportedError();
+            return;
+          }
+          return window.localStorage.removeItem(key);
+        },
+        setItem: (key, value) => {
+          if (!isLocalStorageSupported) {
+            handleLocalStorageNotSupportedError();
+            return;
+          }
+          return window.localStorage.setItem(key, value);
+        },
+      };
+      window.addEventListener("DOMContentLoaded", (event) => {
+        document.getElementById("loader").style.width = "50vw";
+      });
+
+      const registerPageServiceWorker = () => {
+        if (
+          "serviceWorker" in navigator &&
+          // Disable the service worker in Cypress tests. We primarily do this to make
+          // the Performance/LinkRelPreload_Spec.js test work (as it collects URLs all network requests,
+          // and service worker requests fail it.) But, anecdotally, disabling the service worker
+          // also seems to make the tests a bit faster, as the network load is lower.
+          !window.Cypress
+        ) {
+          window.addEventListener("load", function () {
+            navigator.serviceWorker
+              .register("/pageService.js")
+              .catch((error) => {
+                console.error("Service Worker Registration failed: " + error);
+              });
+          });
+        }
+      };
+      registerPageServiceWorker();
   </script>
   <script type="text/javascript">
     const LOG_LEVELS = ["debug", "error"];
     const CONFIG_LOG_LEVEL_INDEX = LOG_LEVELS.indexOf(
-      parseConfig("__APPSMITH_CLIENT_LOG_LEVEL__"),
+      parseConfig('{{env "APPSMITH_CLIENT_LOG_LEVEL"}}'),
     );
 
     const INTERCOM_APP_ID =
       parseConfig("%REACT_APP_INTERCOM_APP_ID%") ||
-      parseConfig("__APPSMITH_INTERCOM_APP_ID__");
-    const DISABLE_INTERCOM = parseConfig("__APPSMITH_DISABLE_INTERCOM__");
+      parseConfig('{{env "APPSMITH_INTERCOM_APP_ID"}}');
+    const DISABLE_INTERCOM = parseConfig('{{env "APPSMITH_DISABLE_INTERCOM"}}');
 
     // Initialize the Intercom library
     if (INTERCOM_APP_ID.length && !DISABLE_INTERCOM) {
@@ -202,68 +201,68 @@
       })();
     }
 
-    window.SENTRY_CONFIG = parseConfig("__APPSMITH_SENTRY_DSN__");
+    window.SENTRY_CONFIG = parseConfig('{{env "APPSMITH_SENTRY_DSN"}}');
     window.APPSMITH_FEATURE_CONFIGS = {
       sentry: {
-        dsn: parseConfig("__APPSMITH_SENTRY_DSN__"),
-        release: parseConfig("__APPSMITH_SENTRY_RELEASE__"),
-        environment: parseConfig("__APPSMITH_SENTRY_ENVIRONMENT__"),
+        dsn: parseConfig('{{env "APPSMITH_SENTRY_DSN"}}'),
+        release: parseConfig('{{env "APPSMITH_SENTRY_RELEASE"}}'),
+        environment: parseConfig('{{env "APPSMITH_SENTRY_ENVIRONMENT"}}'),
       },
       smartLook: {
-        id: parseConfig("__APPSMITH_SMART_LOOK_ID__"),
+        id: parseConfig('{{env "APPSMITH_SMART_LOOK_ID"}}'),
       },
       segment: {
-        apiKey: parseConfig("__APPSMITH_SEGMENT_KEY__"),
-        ceKey: parseConfig("__APPSMITH_SEGMENT_CE_KEY__"),
+        apiKey: parseConfig('{{env "APPSMITH_SEGMENT_KEY"}}'),
+        ceKey: parseConfig('{{env "APPSMITH_SEGMENT_CE_KEY"}}'),
       },
       newRelic: {
-        enableNewRelic: parseConfig("__APPSMITH_NEW_RELIC_ACCOUNT_ENABLE__"),
-        accountId: parseConfig("__APPSMITH_NEW_RELIC_ACCOUNT_ID__"),
-        applicationId: parseConfig("__APPSMITH_NEW_RELIC_APPLICATION_ID__"),
-        browserAgentlicenseKey: parseConfig("__APPSMITH_NEW_RELIC_BROWSER_AGENT_LICENSE_KEY__"),
-        otlpLicenseKey: parseConfig("__APPSMITH_NEW_RELIC_OTLP_LICENSE_KEY__"),
+        enableNewRelic: parseConfig('{{env "APPSMITH_NEW_RELIC_ACCOUNT_ENABLE"}}'),
+        accountId: parseConfig('{{env "APPSMITH_NEW_RELIC_ACCOUNT_ID"}}'),
+        applicationId: parseConfig('{{env "APPSMITH_NEW_RELIC_APPLICATION_ID"}}'),
+        browserAgentlicenseKey: parseConfig('{{env "APPSMITH_NEW_RELIC_BROWSER_AGENT_LICENSE_KEY"}}'),
+        browserAgentEndpoint: parseConfig('{{env "APPSMITH_NEW_RELIC_BROWSER_AGENT_ENDPOINT"}}'),
+        otlpLicenseKey: parseConfig('{{env "APPSMITH_NEW_RELIC_OTLP_LICENSE_KEY"}}'),
         //OTLP following the naming convention of Sdk initialisation
-        otlpServiceName: parseConfig("__APPSMITH_NEW_RELIC_OTEL_SERVICE_NAME__"),
-        otlpEndpoint: parseConfig("__APPSMITH_NEW_RELIC_OTEL_EXPORTER_OTLP_ENDPOINT__"),
+        otlpServiceName: parseConfig('{{env "APPSMITH_NEW_RELIC_OTEL_SERVICE_NAME"}}'),
+        otlpEndpoint: parseConfig('{{env "APPSMITH_NEW_RELIC_OTEL_EXPORTER_OTLP_ENDPOINT"}}'),
 
-      },
-      fusioncharts: {
-        licenseKey: parseConfig("__APPSMITH_FUSIONCHARTS_LICENSE_KEY__"),
-      },
-      enableMixpanel: parseConfig("__APPSMITH_SEGMENT_KEY__"),
-      algolia: {
-        apiId: parseConfig("__APPSMITH_ALGOLIA_API_ID__"),
-        apiKey: parseConfig("__APPSMITH_ALGOLIA_API_KEY__"),
-        indexName: parseConfig("__APPSMITH_ALGOLIA_SEARCH_INDEX_NAME__"),
-      },
-      logLevel:
-        CONFIG_LOG_LEVEL_INDEX > -1
-          ? LOG_LEVELS[CONFIG_LOG_LEVEL_INDEX]
-          : LOG_LEVELS[1],
-      cloudHosting: CLOUD_HOSTING,
-      appVersion: {
-        id: parseConfig("__APPSMITH_VERSION_ID__"),
-        sha: parseConfig("__APPSMITH_VERSION_SHA__"),
-        releaseDate: parseConfig("__APPSMITH_VERSION_RELEASE_DATE__"),
-      },
-      intercomAppID: INTERCOM_APP_ID,
-      mailEnabled: parseConfig("__APPSMITH_MAIL_ENABLED__"),
-      cloudServicesBaseUrl:
-        parseConfig("__APPSMITH_CLOUD_SERVICES_BASE_URL__") ||
-        "https://cs.appsmith.com",
-      googleRecaptchaSiteKey: parseConfig("__APPSMITH_RECAPTCHA_SITE_KEY__"),
-      hideWatermark: parseConfig("__APPSMITH_HIDE_WATERMARK__"),
-      disableIframeWidgetSandbox: parseConfig(
-        "__APPSMITH_DISABLE_IFRAME_WIDGET_SANDBOX__",
-      ),
-      customerPortalUrl:
-        parseConfig("__APPSMITH_CUSTOMER_PORTAL_URL__") ||
-        "https://customer.appsmith.com",
-      pricingUrl:
-        parseConfig("__APPSMITH_PRICING_URL__") ||
-        "https://www.appsmith.com/pricing",
-    };
-  </script>
-</body>
-
+        },
+        fusioncharts: {
+          licenseKey: parseConfig('{{env "APPSMITH_FUSIONCHARTS_LICENSE_KEY"}}'),
+        },
+        enableMixpanel: parseConfig('{{env "APPSMITH_SEGMENT_KEY"}}'),
+        algolia: {
+          apiId: parseConfig('{{env "APPSMITH_ALGOLIA_API_ID"}}'),
+          apiKey: parseConfig('{{env "APPSMITH_ALGOLIA_API_KEY"}}'),
+          indexName: parseConfig('{{env "APPSMITH_ALGOLIA_SEARCH_INDEX_NAME"}}'),
+        },
+        logLevel:
+          CONFIG_LOG_LEVEL_INDEX > -1
+            ? LOG_LEVELS[CONFIG_LOG_LEVEL_INDEX]
+            : LOG_LEVELS[1],
+        cloudHosting: CLOUD_HOSTING,
+        appVersion: {
+          id: parseConfig('{{env "APPSMITH_VERSION_ID"}}'),
+          sha: parseConfig('{{env "APPSMITH_VERSION_SHA"}}'),
+          releaseDate: parseConfig('{{env "APPSMITH_VERSION_RELEASE_DATE"}}'),
+        },
+        intercomAppID: INTERCOM_APP_ID,
+        mailEnabled: parseConfig('{{env "APPSMITH_MAIL_ENABLED"}}'),
+        cloudServicesBaseUrl:
+          parseConfig('{{env "APPSMITH_CLOUD_SERVICES_BASE_URL"}}') ||
+          "https://cs.appsmith.com",
+        googleRecaptchaSiteKey: parseConfig('{{env "APPSMITH_RECAPTCHA_SITE_KEY"}}'),
+        hideWatermark: parseConfig('{{env "APPSMITH_HIDE_WATERMARK"}}'),
+        disableIframeWidgetSandbox: parseConfig(
+          '{{env "APPSMITH_DISABLE_IFRAME_WIDGET_SANDBOX"}}',
+        ),
+        customerPortalUrl:
+          parseConfig('{{env "APPSMITH_CUSTOMER_PORTAL_URL"}}') ||
+          "https://customer.appsmith.com",
+        pricingUrl:
+          parseConfig('{{env "APPSMITH_PRICING_URL"}}') ||
+          "https://www.appsmith.com/pricing",
+      };
+    </script>
+  </body>
 </html>

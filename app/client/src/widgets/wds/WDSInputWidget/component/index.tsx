@@ -1,7 +1,7 @@
 import React from "react";
 import { isNil } from "lodash";
-import { TextInput } from "@design-system/widgets";
-import { Icon, TextArea } from "@design-system/widgets";
+import { TextInput } from "@appsmith/wds";
+import { Icon, TextArea } from "@appsmith/wds";
 
 import { INPUT_TYPES } from "../constants";
 import type { InputComponentProps } from "./types";
@@ -94,8 +94,8 @@ function InputComponent(props: InputComponentProps) {
       autoFocus={props.autoFocus}
       contextualHelp={props.tooltip}
       defaultValue={props.defaultValue}
-      endIcon={endIcon}
       errorMessage={props.validationStatus === "invalid" ? errorMessage : ""}
+      excludeFromTabOrder={props.excludeFromTabOrder}
       isDisabled={props.isDisabled}
       isReadOnly={props.isReadOnly}
       isRequired={props.isRequired}
@@ -106,9 +106,11 @@ function InputComponent(props: InputComponentProps) {
       onChange={props.onValueChange}
       onFocusChange={props.onFocusChange}
       onKeyDown={props.onKeyDown}
+      onPaste={props.onPaste}
       placeholder={props.placeholder}
+      prefix={startIcon}
       spellCheck={props.spellCheck}
-      startIcon={startIcon}
+      suffix={endIcon}
       type={type}
       validationState={validationStatus}
       value={props.value}

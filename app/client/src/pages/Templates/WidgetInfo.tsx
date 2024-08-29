@@ -1,10 +1,10 @@
 import React, { useMemo } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { Text } from "design-system";
+import { Text } from "@appsmith/ads";
 import { IconWrapper } from "constants/IconConstants";
 import { getWidgetCards } from "selectors/editorSelectors";
-import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+import { getAssetUrl } from "ee/utils/airgapHelpers";
 
 const Wrapper = styled.div`
   display: inline-flex;
@@ -26,7 +26,10 @@ function WidgetInfo({ widgetType }: WidgetInfoProps) {
   return (
     <Wrapper>
       <IconWrapper>
-        <img className="w-5 h-5" src={getAssetUrl(widgetInfo?.icon)} />
+        <img
+          className="w-5 h-5"
+          src={getAssetUrl(widgetInfo?.icon as string)}
+        />
       </IconWrapper>
       <Text kind="body-m">{widgetInfo?.displayName}</Text>
     </Wrapper>

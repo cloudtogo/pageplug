@@ -6,7 +6,7 @@ import { ENTITY_EXPLORER_SEARCH_ID } from "constants/Explorer";
 import { debounce, sortBy } from "lodash";
 import Fuse from "fuse.js";
 import type { WidgetCardProps } from "widgets/BaseWidget";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 import {
   SUGGESTED_WIDGETS_ORDER,
   WIDGET_TAGS,

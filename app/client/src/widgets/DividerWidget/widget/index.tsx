@@ -14,6 +14,7 @@ import { Colors } from "constants/Colors";
 import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
 import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 
 import { WIDGET_TAGS } from "constants/WidgetConstants";
 
@@ -24,6 +25,7 @@ class DividerWidget extends BaseWidget<DividerWidgetProps, WidgetState> {
     return {
       name: "分隔线",
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["line", "divider", "separator"],
     };

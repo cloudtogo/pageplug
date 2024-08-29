@@ -1,7 +1,7 @@
 package com.appsmith.server.services;
 
+import com.appsmith.external.helpers.EncryptionHelper;
 import com.appsmith.external.models.Policy;
-import com.appsmith.external.services.EncryptionService;
 import com.appsmith.server.applications.base.ApplicationService;
 import com.appsmith.server.configurations.CommonConfig;
 import com.appsmith.server.configurations.WithMockAppsmithUser;
@@ -29,12 +29,11 @@ import com.appsmith.server.repositories.UserRepository;
 import com.appsmith.server.solutions.UserAndAccessManagementService;
 import com.appsmith.server.solutions.UserSignup;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
+import org.apache.hc.core5.net.WWWFormCodec;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,10 +42,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.LinkedCaseInsensitiveMap;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import reactor.util.function.Tuple2;
@@ -69,7 +64,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @DirtiesContext
 public class UserServiceTest {
@@ -94,9 +88,6 @@ public class UserServiceTest {
 
     @Autowired
     PasswordEncoder passwordEncoder;
-
-    @Autowired
-    EncryptionService encryptionService;
 
     @Autowired
     UserDataService userDataService;
@@ -360,20 +351,9 @@ public class UserServiceTest {
                 })
                 .verifyComplete();
 
-        Workspace deletedWorkspace = workspaceMono
+        workspaceMono
                 .flatMap(workspace1 -> workspaceService.archiveById(workspace1.getId()))
                 .block();
-    }
-
-    @Test
-    @WithUserDetails(value = "api_user")
-    public void getAllUsersTest() {
-        Flux<User> userFlux = userService.get(CollectionUtils.toMultiValueMap(new LinkedCaseInsensitiveMap<>()));
-
-        StepVerifier.create(userFlux)
-                .expectErrorMatches(throwable -> throwable instanceof AppsmithException
-                        && throwable.getMessage().equals(AppsmithError.UNSUPPORTED_OPERATION.getMessage()))
-                .verify();
     }
 
     @Test
@@ -565,8 +545,8 @@ public class UserServiceTest {
         List<NameValuePair> nameValuePairs = new ArrayList<>(2);
         nameValuePairs.add(new BasicNameValuePair("email", emailAddress));
         nameValuePairs.add(new BasicNameValuePair("token", token));
-        String urlParams = URLEncodedUtils.format(nameValuePairs, StandardCharsets.UTF_8);
-        return encryptionService.encryptString(urlParams);
+        String urlParams = WWWFormCodec.format(nameValuePairs, StandardCharsets.UTF_8);
+        return EncryptionHelper.encrypt(urlParams);
     }
 
     @Test

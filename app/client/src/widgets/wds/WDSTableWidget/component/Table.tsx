@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo } from "react";
-import { Flex } from "@design-system/widgets";
 import { reduce } from "lodash";
 import type { Row as ReactTableRowType } from "react-table";
 import {
@@ -10,8 +9,7 @@ import {
   useRowSelect,
 } from "react-table";
 import { useSticky } from "react-table-sticky";
-import { TableWrapper } from "./TableStyledWrappers";
-import TableHeader from "./header";
+import { TableHeader } from "./TableHeader";
 import { Classes } from "@blueprintjs/core";
 import type {
   ReactTableColumnProps,
@@ -20,45 +18,15 @@ import type {
   AddNewRowActions,
   StickyType,
 } from "./Constants";
-import {
-  TABLE_SIZES,
-  CompactModeTypes,
-  TABLE_SCROLLBAR_HEIGHT,
-} from "./Constants";
-import { Colors } from "constants/Colors";
+import { TABLE_SIZES, CompactModeTypes } from "./Constants";
 import type { EventType } from "constants/AppsmithActionConstants/ActionConstants";
 import type { EditableCell, TableVariant } from "../constants";
-import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
-import { createGlobalStyle } from "styled-components";
-import { Classes as PopOver2Classes } from "@blueprintjs/popover2";
 import StaticTable from "./StaticTable";
-import VirtualTable from "./VirtualTable";
 import { ConnectDataOverlay } from "widgets/ConnectDataOverlay";
 import { TABLE_CONNECT_OVERLAY_TEXT } from "../constants/messages";
-import {
-  createMessage,
-  CONNECT_BUTTON_TEXT,
-} from "@appsmith/constants/messages";
-
-const SCROLL_BAR_OFFSET = 2;
-const HEADER_MENU_PORTAL_CLASS = ".header-menu-portal";
-
-const PopoverStyles = createGlobalStyle<{
-  widgetId: string;
-  borderRadius: string;
-}>`
-  ${HEADER_MENU_PORTAL_CLASS}-${({ widgetId }) => widgetId} {
-    font-family: var(--wds-font-family) !important;
-
-    & .${PopOver2Classes.POPOVER2},
-    .${PopOver2Classes.POPOVER2_CONTENT},
-    .bp3-menu {
-      border-radius: ${({ borderRadius }) =>
-        borderRadius >= `1.5rem` ? `0.375rem` : borderRadius} !important;
-    }
-  }
-`;
+import { createMessage, CONNECT_BUTTON_TEXT } from "ee/constants/messages";
+import styles from "./styles.module.css";
 
 export interface TableProps {
   width: number;
@@ -97,9 +65,10 @@ export interface TableProps {
     pageData: ReactTableRowType<Record<string, unknown>>[],
   ) => void;
   triggerRowSelection: boolean;
-  searchTableData: (searchKey: any) => void;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onSearch: (searchKey: any) => void;
   filters?: ReactTableFilter[];
-  applyFilter: (filters: ReactTableFilter[]) => void;
   compactMode?: CompactMode;
   isVisibleDownload?: boolean;
   isVisibleFilters?: boolean;
@@ -127,6 +96,8 @@ export interface TableProps {
   canFreezeColumn?: boolean;
   showConnectDataOverlay: boolean;
   onConnectData: () => void;
+  excludeFromTabOrder?: boolean;
+  disableScroll?: boolean;
 }
 
 const defaultColumn = {
@@ -138,13 +109,11 @@ export interface HeaderComponentProps {
   enableDrag: () => void;
   disableDrag: () => void;
   multiRowSelection?: boolean;
-  handleAllRowSelectClick: (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-  ) => void;
+  handleAllRowSelectClick: () => void;
   handleReorderColumn: (columnOrder: string[]) => void;
   columnOrder?: string[];
-  accentColor: string;
-  borderRadius: string;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   headerGroups: any;
   canFreezeColumn?: boolean;
   editMode: boolean;
@@ -155,12 +124,16 @@ export interface HeaderComponentProps {
   columns: ReactTableColumnProps[];
   width: number;
   subPage: ReactTableRowType<Record<string, unknown>>[];
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   prepareRow: any;
   headerWidth?: number;
   rowSelectionState: 0 | 1 | 2 | null;
   widgetId: string;
 }
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const emptyArr: any = [];
 
 export function Table(props: TableProps) {
@@ -208,7 +181,6 @@ export function Table(props: TableProps) {
     getTableProps,
     headerGroups,
     page,
-    pageOptions,
     prepareRow,
     state,
     totalColumnsWidth,
@@ -271,16 +243,11 @@ export function Table(props: TableProps) {
       selectedRowCount === 0 ? 0 : selectedRowCount === page.length ? 1 : 2;
     return result;
   }, [multiRowSelection, page, selectedRowIndices]);
-  const handleAllRowSelectClick = useCallback(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      // if all / some rows are selected we remove selection on click
-      // else select all rows
-      toggleAllRowSelect(!Boolean(rowSelectionState), page);
-      // loop over subPage rows and toggleRowSelected if required
-      e.stopPropagation();
-    },
-    [page, rowSelectionState, toggleAllRowSelect],
-  );
+  const handleAllRowSelectClick = useCallback(() => {
+    // if all / some rows are selected we remove selection on click
+    // else select all rows
+    toggleAllRowSelect(!Boolean(rowSelectionState), page);
+  }, [page, rowSelectionState, toggleAllRowSelect]);
   const isHeaderVisible =
     props.isVisibleSearch ||
     props.isVisibleFilters ||
@@ -288,20 +255,13 @@ export function Table(props: TableProps) {
     props.isVisiblePagination ||
     props.allowAddNewRow;
 
-  const scrollContainerStyles = useMemo(() => {
-    return {
-      height: isHeaderVisible
-        ? props.height -
-          tableSizes.TABLE_HEADER_HEIGHT -
-          TABLE_SCROLLBAR_HEIGHT -
-          SCROLL_BAR_OFFSET
-        : props.height - TABLE_SCROLLBAR_HEIGHT - SCROLL_BAR_OFFSET,
-    };
-  }, [isHeaderVisible, props.height, tableSizes.TABLE_HEADER_HEIGHT]);
+  const variant = (() => {
+    if (props.variant === "DEFAULT") return "default";
+    if (props.variant === "VARIANT2") return "no-borders";
+    if (props.variant === "VARIANT3") return "horizontal-borders";
 
-  const shouldUseVirtual =
-    props.serverSidePaginationEnabled &&
-    !props.columns.some((column) => column.columnProperties.allowCellWrapping);
+    return "default";
+  })();
 
   return (
     <>
@@ -312,163 +272,74 @@ export function Table(props: TableProps) {
           onConnectData={props.onConnectData}
         />
       )}
-      <TableWrapper
-        accentColor={props.accentColor}
-        backgroundColor={Colors.ATHENS_GRAY_DARKER}
-        borderColor={props.borderColor}
-        borderRadius={props.borderRadius}
-        borderWidth={props.borderWidth}
-        boxShadow={props.boxShadow}
-        height={props.height}
+      <div
+        className={styles.table}
+        data-status={props.isAddRowInProgress ? "add-row-in-progress" : ""}
+        data-type="static"
+        data-variant={variant}
         id={`table${props.widgetId}`}
-        isAddRowInProgress={props.isAddRowInProgress}
-        isHeaderVisible={isHeaderVisible}
-        isResizingColumn={isResizingColumn.current}
-        multiRowSelection={props.multiRowSelection}
-        tableSizes={tableSizes}
-        triggerRowSelection={props.triggerRowSelection}
-        variant={props.variant}
-        width={props.width}
       >
-        <PopoverStyles
-          borderRadius={props.borderRadius}
-          widgetId={props.widgetId}
-        />
         {isHeaderVisible && (
-          <SimpleBar
-            style={{
-              maxHeight: tableSizes.TABLE_HEADER_HEIGHT,
-            }}
-          >
-            <Flex
-              gap="spacing-1"
-              minWidth="910px"
-              padding="spacing-1"
-              style={{
-                borderBottom: "var(--border-width-1) solid var(--color-bd)",
-              }}
-            >
-              <TableHeader
-                allowAddNewRow={props.allowAddNewRow}
-                applyFilter={props.applyFilter}
-                columns={tableHeadercolumns}
-                currentPageIndex={currentPageIndex}
-                delimiter={props.delimiter}
-                disableAddNewRow={!!props.editableCell?.column}
-                disabledAddNewRowSave={props.disabledAddNewRowSave}
-                filters={props.filters}
-                isAddRowInProgress={props.isAddRowInProgress}
-                isVisibleDownload={props.isVisibleDownload}
-                isVisibleFilters={props.isVisibleFilters}
-                isVisiblePagination={props.isVisiblePagination}
-                isVisibleSearch={props.isVisibleSearch}
-                nextPageClick={props.nextPageClick}
-                onAddNewRow={props.onAddNewRow}
-                onAddNewRowAction={props.onAddNewRowAction}
-                pageCount={pageCount}
-                pageNo={props.pageNo}
-                pageOptions={pageOptions}
-                prevPageClick={props.prevPageClick}
-                searchKey={props.searchKey}
-                searchTableData={props.searchTableData}
-                serverSidePaginationEnabled={props.serverSidePaginationEnabled}
-                tableColumns={columns}
-                tableData={data}
-                tableSizes={tableSizes}
-                totalRecordsCount={props.totalRecordsCount}
-                updatePageNo={props.updatePageNo}
-                widgetId={props.widgetId}
-                widgetName={props.widgetName}
-                width={props.width}
-              />
-            </Flex>
-          </SimpleBar>
+          <TableHeader
+            columns={tableHeadercolumns}
+            currentPageIndex={currentPageIndex}
+            excludeFromTabOrder={props.excludeFromTabOrder}
+            isVisiblePagination={props.isVisiblePagination}
+            isVisibleSearch={props.isVisibleSearch}
+            nextPageClick={props.nextPageClick}
+            onSearch={props.onSearch}
+            pageCount={pageCount}
+            pageNo={props.pageNo}
+            prevPageClick={props.prevPageClick}
+            searchKey={props.searchKey}
+            serverSidePaginationEnabled={props.serverSidePaginationEnabled}
+            tableData={data}
+            totalRecordsCount={props.totalRecordsCount}
+            updatePageNo={props.updatePageNo}
+          />
         )}
         <div
-          className={
-            props.isLoading
-              ? Classes.SKELETON
-              : shouldUseVirtual
-                ? "tableWrap virtual"
-                : "tableWrap"
-          }
+          className={`tableWrap ${props.isLoading ? Classes.SKELETON : ""}`}
+          data-disable-scroll={props.disableScroll ? "" : undefined}
+          data-table-wrapper=""
         >
           <div {...getTableProps()} className="table column-freeze">
-            {!shouldUseVirtual && (
-              <StaticTable
-                accentColor={props.accentColor}
-                borderRadius={props.borderRadius}
-                canFreezeColumn={props.canFreezeColumn}
-                columns={props.columns}
-                disableDrag={props.disableDrag}
-                editMode={props.editMode}
-                enableDrag={props.enableDrag}
-                getTableBodyProps={getTableBodyProps}
-                handleAllRowSelectClick={handleAllRowSelectClick}
-                handleColumnFreeze={props.handleColumnFreeze}
-                handleReorderColumn={props.handleReorderColumn}
-                headerGroups={headerGroups}
-                height={props.height}
-                isAddRowInProgress={props.isAddRowInProgress}
-                isResizingColumn={isResizingColumn}
-                isSortable={props.isSortable}
-                multiRowSelection={props?.multiRowSelection}
-                pageSize={props.pageSize}
-                prepareRow={prepareRow}
-                primaryColumnId={props.primaryColumnId}
-                rowSelectionState={rowSelectionState}
-                scrollContainerStyles={scrollContainerStyles}
-                selectTableRow={props.selectTableRow}
-                selectedRowIndex={props.selectedRowIndex}
-                selectedRowIndices={props.selectedRowIndices}
-                sortTableColumn={props.sortTableColumn}
-                subPage={subPage}
-                tableSizes={tableSizes}
-                totalColumnsWidth={totalColumnsWidth}
-                useVirtual={shouldUseVirtual}
-                widgetId={props.widgetId}
-                width={props.width}
-              />
-            )}
-            {shouldUseVirtual && (
-              <VirtualTable
-                accentColor={props.accentColor}
-                borderRadius={props.borderRadius}
-                canFreezeColumn={props.canFreezeColumn}
-                columns={props.columns}
-                disableDrag={props.disableDrag}
-                editMode={props.editMode}
-                enableDrag={props.enableDrag}
-                getTableBodyProps={getTableBodyProps}
-                handleAllRowSelectClick={handleAllRowSelectClick}
-                handleColumnFreeze={props.handleColumnFreeze}
-                handleReorderColumn={props.handleReorderColumn}
-                headerGroups={headerGroups}
-                height={props.height}
-                isAddRowInProgress={props.isAddRowInProgress}
-                isResizingColumn={isResizingColumn}
-                isSortable={props.isSortable}
-                multiRowSelection={props?.multiRowSelection}
-                pageSize={props.pageSize}
-                prepareRow={prepareRow}
-                primaryColumnId={props.primaryColumnId}
-                rowSelectionState={rowSelectionState}
-                scrollContainerStyles={scrollContainerStyles}
-                selectTableRow={props.selectTableRow}
-                selectedRowIndex={props.selectedRowIndex}
-                selectedRowIndices={props.selectedRowIndices}
-                sortTableColumn={props.sortTableColumn}
-                subPage={subPage}
-                tableSizes={tableSizes}
-                totalColumnsWidth={totalColumnsWidth}
-                useVirtual={shouldUseVirtual}
-                widgetId={props.widgetId}
-                width={props.width}
-              />
-            )}
+            <StaticTable
+              accentColor={props.accentColor}
+              borderRadius={props.borderRadius}
+              canFreezeColumn={props.canFreezeColumn}
+              columns={props.columns}
+              disableDrag={props.disableDrag}
+              editMode={props.editMode}
+              enableDrag={props.enableDrag}
+              excludeFromTabOrder={props.excludeFromTabOrder}
+              getTableBodyProps={getTableBodyProps}
+              handleAllRowSelectClick={handleAllRowSelectClick}
+              handleColumnFreeze={props.handleColumnFreeze}
+              handleReorderColumn={props.handleReorderColumn}
+              headerGroups={headerGroups}
+              height={props.height}
+              isAddRowInProgress={props.isAddRowInProgress}
+              isResizingColumn={isResizingColumn}
+              isSortable={props.isSortable}
+              multiRowSelection={props?.multiRowSelection}
+              pageSize={props.pageSize}
+              prepareRow={prepareRow}
+              primaryColumnId={props.primaryColumnId}
+              rowSelectionState={rowSelectionState}
+              selectTableRow={props.selectTableRow}
+              selectedRowIndex={props.selectedRowIndex}
+              selectedRowIndices={props.selectedRowIndices}
+              sortTableColumn={props.sortTableColumn}
+              subPage={subPage}
+              tableSizes={tableSizes}
+              totalColumnsWidth={totalColumnsWidth}
+              widgetId={props.widgetId}
+              width={props.width}
+            />
           </div>
         </div>
-      </TableWrapper>
+      </div>
     </>
   );
 }

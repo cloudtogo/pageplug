@@ -1,14 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import {
-  createMessage,
-  MOVE_TO_BUSINESS_EDITION,
-} from "@appsmith/constants/messages";
+import { createMessage, MOVE_TO_BUSINESS_EDITION } from "ee/constants/messages";
 import { FooterComponent } from "../Footer";
 import useOnUpgrade from "utils/hooks/useOnUpgrade";
 import { Colors } from "constants/Colors";
 import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
-import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+import { getAssetUrl } from "ee/utils/airgapHelpers";
 
 export const UpgradeToBEPageWrapper = styled.div`
   width: 100%;
@@ -92,14 +89,14 @@ export const UpgradeToBEPage = () => {
           <ContentWrapper className="content-wrapper">
             <LeftWrapper>
               <img
-                alt="Upgrade to Business edition"
+                alt="Upgrade to business plan"
                 loading="lazy"
                 src={BUSINESS_FEATURES_IMAGE}
               />
             </LeftWrapper>
             <ImageContainer>
               <img
-                alt="Upgrade to Business edition"
+                alt="Upgrade to business plan"
                 loading="lazy"
                 src={UPGRADE_BOX_IMAGE}
               />

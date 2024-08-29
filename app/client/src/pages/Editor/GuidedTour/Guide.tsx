@@ -30,7 +30,7 @@ import {
   PROCEED,
   PROCEED_TO_NEXT_STEP,
   TITLE,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 
 const GuideWrapper = styled.div`
   user-select: text;

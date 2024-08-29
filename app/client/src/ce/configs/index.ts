@@ -1,8 +1,5 @@
 // eslint-disable-next-line prettier/prettier
 import type { AppsmithUIConfigs } from "./types";
-import { Integrations } from "@sentry/tracing";
-import * as Sentry from "@sentry/react";
-import { createBrowserHistory } from "history";
 
 export interface INJECTED_CONFIGS {
   sentry: {
@@ -22,6 +19,7 @@ export interface INJECTED_CONFIGS {
     accountId: string;
     applicationId: string;
     browserAgentlicenseKey: string;
+    browserAgentEndpoint: string;
     otlpLicenseKey: string;
     otlpServiceName: string;
     otlpEndpoint: string;
@@ -100,6 +98,8 @@ export const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
       applicationId: process.env.APPSMITH_NEW_RELIC_APPLICATION_ID || "",
       browserAgentlicenseKey:
         process.env.APPSMITH_NEW_RELIC_BROWSER_AGENT_LICENSE_KEY || "",
+      browserAgentEndpoint:
+        process.env.APPSMITH_NEW_RELIC_BROWSER_AGENT_ENDPOINT || "",
       otlpLicenseKey: process.env.APPSMITH_NEW_RELIC_OTLP_LICENSE_KEY || "",
       otlpEndpoint: process.env.APPSMITH_NEW_RELIC_OTEL_SERVICE_NAME || "",
       otlpServiceName:
@@ -179,6 +179,10 @@ export const getAppsmithConfigs = (): AppsmithUIConfigs => {
     ENV_CONFIG.newRelic.browserAgentlicenseKey,
     APPSMITH_FEATURE_CONFIGS?.newRelic.browserAgentlicenseKey,
   );
+  const newRelicBrowserAgentEndpoint = getConfig(
+    ENV_CONFIG.newRelic.browserAgentEndpoint,
+    APPSMITH_FEATURE_CONFIGS?.newRelic.browserAgentEndpoint,
+  );
   const newRelicOtlpLicenseKey = getConfig(
     ENV_CONFIG.newRelic.otlpLicenseKey,
     APPSMITH_FEATURE_CONFIGS?.newRelic.otlpLicenseKey,
@@ -241,17 +245,6 @@ export const getAppsmithConfigs = (): AppsmithUIConfigs => {
       release: sentryRelease.value,
       environment: sentryENV.value,
       normalizeDepth: 3,
-      integrations: [
-        typeof window === "undefined"
-          ? // The Browser Tracing instrumentation isn’t working (and is unnecessary) in the worker environment
-            undefined
-          : new Integrations.BrowserTracing({
-              // Can also use reactRouterV4Instrumentation
-              routingInstrumentation: Sentry.reactRouterV5Instrumentation(
-                createBrowserHistory(),
-              ),
-            }),
-      ].filter((i) => i !== undefined),
       tracesSampleRate: 0.1,
     },
     smartLook: {
@@ -271,6 +264,7 @@ export const getAppsmithConfigs = (): AppsmithUIConfigs => {
       accountId: newRelicAccountId.value,
       applicationId: newRelicApplicationId.value,
       browserAgentlicenseKey: newRelicBrowserLicenseKey.value,
+      browserAgentEndpoint: newRelicBrowserAgentEndpoint.value,
       otlpLicenseKey: newRelicOtlpLicenseKey.value,
       otlpEndpoint: newRelicOtlpEndpoint.value,
       otlpServiceName: newRelicOtlpServiceName.value,

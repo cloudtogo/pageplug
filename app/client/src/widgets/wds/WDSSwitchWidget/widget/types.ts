@@ -1,4 +1,5 @@
 import type { WidgetProps } from "widgets/BaseWidget";
+import type { POSITION } from "@appsmith/wds";
 
 export interface SwitchWidgetProps extends WidgetProps {
   label: string;
@@ -7,5 +8,5 @@ export interface SwitchWidgetProps extends WidgetProps {
   isDisabled?: boolean;
   onChange?: string;
   isRequired?: boolean;
-  labelPosition?: "left" | "right";
+  labelPosition?: keyof typeof POSITION;
 }

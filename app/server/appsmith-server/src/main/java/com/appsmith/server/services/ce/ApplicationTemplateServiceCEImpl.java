@@ -1,7 +1,6 @@
 package com.appsmith.server.services.ce;
 
 import com.appsmith.external.constants.AnalyticsEvents;
-import com.appsmith.external.converters.ISOStringToInstantConverter;
 import com.appsmith.server.applications.base.ApplicationService;
 import com.appsmith.server.configurations.CloudServicesConfig;
 import com.appsmith.server.constants.ArtifactType;
@@ -13,33 +12,29 @@ import com.appsmith.server.dtos.ApplicationAccessDTO;
 import com.appsmith.server.dtos.ApplicationImportDTO;
 import com.appsmith.server.dtos.ApplicationJson;
 import com.appsmith.server.dtos.ApplicationTemplate;
+import com.appsmith.server.dtos.CacheableApplicationJson;
+import com.appsmith.server.dtos.CacheableApplicationTemplate;
 import com.appsmith.server.dtos.TemplateDTO;
 import com.appsmith.server.dtos.TemplateUploadDTO;
 import com.appsmith.server.exceptions.AppsmithError;
 import com.appsmith.server.exceptions.AppsmithException;
 import com.appsmith.server.exports.internal.ExportService;
-import com.appsmith.server.helpers.ResponseUtils;
+import com.appsmith.server.helpers.CacheableTemplateHelper;
 import com.appsmith.server.imports.internal.ImportService;
 import com.appsmith.server.services.AnalyticsService;
 import com.appsmith.server.services.SessionUserService;
-import com.appsmith.server.services.UserDataService;
 import com.appsmith.server.solutions.ApplicationPermission;
 import com.appsmith.server.solutions.ReleaseNotesService;
 import com.appsmith.util.WebClientUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriComponents;
@@ -47,24 +42,23 @@ import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.lang.reflect.Type;
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class ApplicationTemplateServiceCEImpl implements ApplicationTemplateServiceCE {
     private final CloudServicesConfig cloudServicesConfig;
     private final ReleaseNotesService releaseNotesService;
     private final ImportService importService;
     private final ExportService exportService;
     private final AnalyticsService analyticsService;
-    private final UserDataService userDataService;
     private final ApplicationService applicationService;
-    private final ResponseUtils responseUtils;
     private final ApplicationPermission applicationPermission;
     private final ObjectMapper objectMapper;
     private final SessionUserService sessionUserService;
+
+    private final CacheableTemplateHelper cacheableTemplateHelper;
 
     public ApplicationTemplateServiceCEImpl(
             CloudServicesConfig cloudServicesConfig,
@@ -72,23 +66,21 @@ public class ApplicationTemplateServiceCEImpl implements ApplicationTemplateServ
             ImportService importService,
             ExportService exportService,
             AnalyticsService analyticsService,
-            UserDataService userDataService,
             ApplicationService applicationService,
-            ResponseUtils responseUtils,
             ApplicationPermission applicationPermission,
             ObjectMapper objectMapper,
-            SessionUserService sessionUserService) {
+            SessionUserService sessionUserService,
+            CacheableTemplateHelper cacheableTemplateHelper) {
         this.cloudServicesConfig = cloudServicesConfig;
         this.releaseNotesService = releaseNotesService;
         this.importService = importService;
         this.exportService = exportService;
         this.analyticsService = analyticsService;
-        this.userDataService = userDataService;
         this.applicationService = applicationService;
-        this.responseUtils = responseUtils;
         this.applicationPermission = applicationPermission;
         this.objectMapper = objectMapper;
         this.sessionUserService = sessionUserService;
+        this.cacheableTemplateHelper = cacheableTemplateHelper;
     }
 
     @Override
@@ -115,31 +107,14 @@ public class ApplicationTemplateServiceCEImpl implements ApplicationTemplateServ
 
     @Override
     public Mono<List<ApplicationTemplate>> getActiveTemplates(List<String> templateIds) {
-        final String baseUrl = cloudServicesConfig.getBaseUrl();
-
-        UriComponentsBuilder uriComponentsBuilder =
-                UriComponentsBuilder.newInstance().queryParam("version", releaseNotesService.getRunningVersion());
-
-        if (!CollectionUtils.isEmpty(templateIds)) {
-            uriComponentsBuilder.queryParam("id", templateIds);
-        }
-
-        // uriComponents will build url in format: version=version&id=id1&id=id2&id=id3
-        UriComponents uriComponents = uriComponentsBuilder.build();
-
-        return WebClientUtils.create(baseUrl + "/api/v1/app-templates?" + uriComponents.getQuery())
-                .get()
-                .exchangeToFlux(clientResponse -> {
-                    if (clientResponse.statusCode().equals(HttpStatus.OK)) {
-                        return clientResponse.bodyToFlux(ApplicationTemplate.class);
-                    } else if (clientResponse.statusCode().isError()) {
-                        return Flux.error(
-                                new AppsmithException(AppsmithError.CLOUD_SERVICES_ERROR, clientResponse.statusCode()));
-                    } else {
-                        return clientResponse.createException().flatMapMany(Flux::error);
-                    }
-                })
-                .collectList();
+        return cacheableTemplateHelper
+                .getTemplates(releaseNotesService.getRunningVersion(), cloudServicesConfig.getBaseUrl())
+                .map(CacheableApplicationTemplate::getApplicationTemplateList)
+                .onErrorResume(e -> {
+                    log.error("Error fetching templates data from cloud service ", e);
+                    // If there is an error fetching the template from the cache, then evict the cache and fetch from CS
+                    return Mono.error(new AppsmithException(AppsmithError.CLOUD_SERVICES_ERROR, e.getMessage()));
+                });
     }
 
     @Override
@@ -163,39 +138,14 @@ public class ApplicationTemplateServiceCEImpl implements ApplicationTemplateServ
     @Override
     public Mono<ApplicationJson> getApplicationJsonFromTemplate(String templateId) {
         final String baseUrl = cloudServicesConfig.getBaseUrl();
-        final String templateUrl = baseUrl + "/api/v1/app-templates/" + templateId + "/application";
-        /*
-         * using a custom url builder factory because default builder always encodes
-         * URL.
-         * It's expected that the appDataUrl is already encoded, so we don't need to
-         * encode that again.
-         * Encoding an encoded URL will not work and end up resulting a 404 error
-         */
-        final int size = 4 * 1024 * 1024; // 4 MB
-        final ExchangeStrategies strategies = ExchangeStrategies.builder()
-                .codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(size))
-                .build();
-
-        WebClient webClient = WebClientUtils.builder()
-                .uriBuilderFactory(new NoEncodingUriBuilderFactory(templateUrl))
-                .exchangeStrategies(strategies)
-                .build();
-
-        return webClient
-                .get()
-                .retrieve()
-                .bodyToMono(String.class)
-                .map(jsonString -> {
-                    Gson gson = new GsonBuilder()
-                            .registerTypeAdapter(Instant.class, new ISOStringToInstantConverter())
-                            .create();
-                    Type fileType = new TypeToken<ApplicationJson>() {}.getType();
-
-                    ApplicationJson jsonFile = gson.fromJson(jsonString, fileType);
-                    return jsonFile;
-                })
-                .switchIfEmpty(
-                        Mono.error(new AppsmithException(AppsmithError.NO_RESOURCE_FOUND, "template", templateId)));
+        return cacheableTemplateHelper
+                .getApplicationByTemplateId(templateId, baseUrl)
+                .map(CacheableApplicationJson::getApplicationJson)
+                .onErrorResume(e -> {
+                    log.error("Error fetching template json data from cloud service ", e);
+                    // If there is an error fetching the template from the cache, then evict the cache and fetch from CS
+                    return Mono.error(new AppsmithException(AppsmithError.CLOUD_SERVICES_ERROR, templateId));
+                });
     }
 
     @Override
@@ -223,12 +173,12 @@ public class ApplicationTemplateServiceCEImpl implements ApplicationTemplateServ
                     final Map<String, Object> data = Map.of(
                             FieldName.APPLICATION_ID, application.getId(),
                             FieldName.WORKSPACE_ID, application.getWorkspaceId(),
-                            FieldName.TEMPLATE_APPLICATION_NAME, application.getName(),
+                            FieldName.TEMPLATE_APPLICATION_NAME, application.getForkedFromTemplateTitle(),
                             FieldName.SOURCE, "Templates page",
                             FieldName.EVENT_DATA, eventData);
 
                     return analyticsService
-                            .sendObjectEvent(AnalyticsEvents.FORK, applicationTemplate, data)
+                            .sendObjectEvent(AnalyticsEvents.TEMPLATE_FORK, applicationTemplate, data)
                             .thenReturn(applicationImportDTO);
                 });
     }
@@ -274,51 +224,59 @@ public class ApplicationTemplateServiceCEImpl implements ApplicationTemplateServ
      */
     @Override
     public Mono<ApplicationImportDTO> mergeTemplateWithApplication(
-            String templateId,
-            String applicationId,
-            String organizationId,
-            String branchName,
-            List<String> pagesToImport) {
+            String templateId, String branchedApplicationId, String organizationId, List<String> pagesToImport) {
         Mono<ApplicationImportDTO> importedApplicationMono = getApplicationJsonFromTemplate(templateId)
                 .flatMap(applicationJson -> {
-                    if (branchName != null) {
-                        return applicationService
-                                .findByBranchNameAndDefaultApplicationId(
-                                        branchName, applicationId, applicationPermission.getEditPermission())
-                                .flatMap(application -> importService.mergeArtifactExchangeJsonWithImportableArtifact(
-                                        organizationId,
-                                        application.getId(),
-                                        branchName,
-                                        applicationJson,
-                                        pagesToImport))
-                                .map(importableArtifact -> (Application) importableArtifact);
+                    String templateName = "";
+                    if (applicationJson.getExportedApplication() != null
+                            && applicationJson.getExportedApplication().getName() != null) {
+                        templateName = applicationJson.getExportedApplication().getName();
                     }
+
                     return importService
                             .mergeArtifactExchangeJsonWithImportableArtifact(
-                                    organizationId, applicationId, branchName, applicationJson, pagesToImport)
-                            .map(importableArtifact -> (Application) importableArtifact);
+                                    organizationId, branchedApplicationId, null, applicationJson, pagesToImport)
+                            .map(importableArtifact -> (Application) importableArtifact)
+                            .zipWith(Mono.just(templateName));
                 })
-                .flatMap(application -> importService.getArtifactImportDTO(
-                        application.getWorkspaceId(), application.getId(), application, ArtifactType.APPLICATION))
-                .flatMap(importableArtifactDTO -> {
-                    ApplicationImportDTO applicationImportDTO = (ApplicationImportDTO) importableArtifactDTO;
-                    responseUtils.updateApplicationWithDefaultResources(applicationImportDTO.getApplication());
-                    Application application = applicationImportDTO.getApplication();
-                    ApplicationTemplate applicationTemplate = new ApplicationTemplate();
-                    applicationTemplate.setId(templateId);
-                    final Map<String, Object> eventData = Map.of(
-                            FieldName.APP_MODE, ApplicationMode.EDIT.toString(), FieldName.APPLICATION, application);
+                .flatMap(tuple -> {
+                    Application application = tuple.getT1();
+                    String templateTitle = tuple.getT2();
+                    application.setForkedFromTemplateTitle(templateTitle);
+                    return importService
+                            .getArtifactImportDTO(
+                                    application.getWorkspaceId(),
+                                    application.getId(),
+                                    application,
+                                    ArtifactType.APPLICATION)
+                            .flatMap(importableArtifactDTO -> {
+                                ApplicationImportDTO applicationImportDTO =
+                                        (ApplicationImportDTO) importableArtifactDTO;
+                                Application application1 = applicationImportDTO.getApplication();
+                                ApplicationTemplate applicationTemplate = new ApplicationTemplate();
+                                applicationTemplate.setId(templateId);
+                                final Map<String, Object> eventData = Map.of(
+                                        FieldName.APP_MODE,
+                                        ApplicationMode.EDIT.toString(),
+                                        FieldName.APPLICATION,
+                                        application);
 
-                    final Map<String, Object> data = Map.of(
-                            FieldName.APPLICATION_ID, application.getId(),
-                            FieldName.WORKSPACE_ID, application.getWorkspaceId(),
-                            FieldName.TEMPLATE_APPLICATION_NAME, application.getName(),
-                            FieldName.SOURCE, "Templates page",
-                            FieldName.EVENT_DATA, eventData);
+                                final Map<String, Object> data = Map.of(
+                                        FieldName.APPLICATION_ID,
+                                        application1.getId(),
+                                        FieldName.WORKSPACE_ID,
+                                        application1.getWorkspaceId(),
+                                        FieldName.TEMPLATE_APPLICATION_NAME,
+                                        templateTitle,
+                                        FieldName.SOURCE,
+                                        "Add New page",
+                                        FieldName.EVENT_DATA,
+                                        eventData);
 
-                    return analyticsService
-                            .sendObjectEvent(AnalyticsEvents.FORK, applicationTemplate, data)
-                            .thenReturn(applicationImportDTO);
+                                return analyticsService
+                                        .sendObjectEvent(AnalyticsEvents.TEMPLATE_FORK, applicationTemplate, data)
+                                        .thenReturn(applicationImportDTO);
+                            });
                 });
 
         return Mono.create(
@@ -355,9 +313,7 @@ public class ApplicationTemplateServiceCEImpl implements ApplicationTemplateServ
             // The default mapper is registered with views.public.class and removes few
             // attributes due to this
             // The templates flow has different requirement hence not using the same
-            ObjectMapper ow = new ObjectMapper();
-            ow.registerModule(new JavaTimeModule());
-            ObjectWriter writer = ow.writer().withDefaultPrettyPrinter();
+            ObjectWriter writer = objectMapper.writerWithView(null);
             payload = writer.writeValueAsString(communityTemplate);
         } catch (Exception e) {
             return Mono.error(e);
@@ -384,7 +340,7 @@ public class ApplicationTemplateServiceCEImpl implements ApplicationTemplateServ
                     application.setForkingEnabled(true);
                     application.setIsCommunityTemplate(isCommunityTemplate);
 
-                    return applicationService.update(applicationId, application, branchId);
+                    return applicationService.updateApplicationWithPresets(applicationId, application);
                 });
     }
 
@@ -426,8 +382,8 @@ public class ApplicationTemplateServiceCEImpl implements ApplicationTemplateServ
                 .flatMap(application -> {
                     ApplicationAccessDTO applicationAccessDTO = new ApplicationAccessDTO();
                     applicationAccessDTO.setPublicAccess(true);
-                    return applicationService.changeViewAccess(
-                            application.getId(), resource.getBranchName(), applicationAccessDTO);
+                    return applicationService.changeViewAccessForAllBranchesByBranchedApplicationId(
+                            application.getId(), applicationAccessDTO);
                 });
     }
 

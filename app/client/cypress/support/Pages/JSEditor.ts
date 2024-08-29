@@ -39,7 +39,8 @@ export class JSEditor {
   private _jsFunctionExecutionParseErrorCallout =
     "div.t--function-execution-parse-error-call-out";
   private _onPageLoadRadioButton = (functionName: string, onLoad: boolean) =>
-    `.${functionName}-on-page-load-setting label:contains(${onLoad ? "Yes" : "No"
+    `.${functionName}-on-page-load-setting label:contains(${
+      onLoad ? "Yes" : "No"
     }) input`;
   private _onPageLoadSwitch = (functionName: string) =>
     `.${functionName}-on-page-load-setting
@@ -71,30 +72,21 @@ export class JSEditor {
     `//div[contains(@class, '${functionName}-confirm-before-execute')]//label/input`;
   private _outputConsole = ".CodeEditorTarget";
   private _jsObjName = ".t--js-action-name-edit-field span";
-  private _jsObjTxt = ".t--js-action-name-edit-field input";
-  private _newJSobj = "span:contains('New JS object')";
+  public _jsObjTxt = ".t--js-action-name-edit-field input";
+  public _newJSobj = "span:contains('New JS object')";
   private _bindingsClose = ".t--entity-property-close";
   public _propertyList = ".binding";
-  private _responseTabAction = (funName: string) =>
-    "//div[@class='function-name'][text()='" +
-    funName +
-    "']/following-sibling::div//*[local-name()='svg']";
-  private _functionSetting = (settingTxt: string) =>
-    "//span[text()='" +
-    settingTxt +
-    "']/parent::div/following-sibling::input[@type='checkbox']";
   _dialog = (dialogHeader: string) =>
     "//div[@role='dialog']//h3[contains(text(), '" + dialogHeader + "')]";
-  private _closeSettings = "span[icon='small-cross']";
   _dialogBody = (jsFuncName: string) =>
     "//div[@role='dialog']//*[contains(text(), '" +
-    Cypress.env("MESSAGES").QUERY_CONFIRMATION_MODAL_MESSAGE() +
+    Cypress.env("MESSAGES")?.QUERY_CONFIRMATION_MODAL_MESSAGE() +
     "')]//*[contains(text(),'" +
     jsFuncName +
     "')]";
   _dialogInDeployView =
     "//div[@role='dialog']//*[contains(text(), '" +
-    Cypress.env("MESSAGES").QUERY_CONFIRMATION_MODAL_MESSAGE() +
+    Cypress.env("MESSAGES")?.QUERY_CONFIRMATION_MODAL_MESSAGE() +
     "')]";
   _funcDropdown = ".t--formActionButtons .function-select-dropdown";
   _funcDropdownValue = `${this._funcDropdown} p`;
@@ -124,7 +116,6 @@ export class JSEditor {
   // Pastes or types content into field
   private HandleJsContentFilling(toPaste: boolean, JSCode: string, el: any) {
     if (toPaste) {
-      //input.invoke("val", value);
       this.agHelper.Paste(el, JSCode);
     } else {
       cy.get(el).type(JSCode, {
@@ -140,19 +131,20 @@ export class JSEditor {
     this.agHelper.ClickOutside(); //to enable click of below!
     AppSidebar.navigate(AppSidebarButton.Editor);
     PageLeftPane.switchSegment(PagePaneSegment.JS);
-    cy.get(this._newJSobj).eq(0).click({ force: true });
+    PageLeftPane.switchToAddNew();
 
-    this.agHelper.RemoveUIElement("Tooltip", "Add a new query/JS Object");
+    this.agHelper.RemoveUIElement(
+      "Tooltip",
+      Cypress.env("MESSAGES").ADD_QUERY_JS_TOOLTIP(),
+    );
     //Checking JS object was created successfully
-    this.assertHelper.AssertNetworkStatus("@jsCollections", 200);
+    this.assertHelper.AssertNetworkStatus("@createNewJSCollection", 201);
     this.agHelper.AssertElementVisibility(this._jsObjTxt);
     // Assert that the name of the JS Object is focused when newly created
-    //cy.get(this._jsObjTxt).should("be.focused").type("{enter}");
     this.agHelper.PressEnter();
     this.agHelper.PressEnter();
     // Assert that the name of the JS Object is no longer in the editable form after pressing "enter"
     this.agHelper.AssertElementAbsence(this._jsObjTxt);
-    //cy.waitUntil(() => cy.get(this.locator._toastMsg).should('not.be.visible')) // fails sometimes
 
     this.agHelper.Sleep();
   }
@@ -258,7 +250,7 @@ export class JSEditor {
   public RenameJSObjFromExplorer(entityName: string, renameVal: string) {
     this.ee.ActionContextMenuByEntityName({
       entityNameinLeftSidebar: entityName,
-      action: "Edit name",
+      action: "Rename",
     });
     cy.xpath(this.locator._entityNameEditing(entityName)).type(
       renameVal + "{enter}",
@@ -302,50 +294,19 @@ export class JSEditor {
     cy.get(this._bindingsClose).click({ force: true });
   }
 
-  // public EnableDisableOnPageLoad(funName: string, onLoad: 'enable' | 'disable' | '', bfrCalling: 'enable' | 'disable' | '') {
-  //   this.agHelper.GetNClick(this._responseTabAction(funName))
-  //   this.agHelper.AssertElementPresence(this._dialog('Function settings'))
-  //   if (onLoad)
-  //     this.agHelper.CheckUncheck(this._functionSetting(Cypress.env("MESSAGES").JS_SETTINGS_ONPAGELOAD()), onLoad == 'enable' ? true : false)
-  //   if (bfrCalling)
-  //     this.agHelper.CheckUncheck(this._functionSetting(Cypress.env("MESSAGES").JS_SETTINGS_CONFIRM_EXECUTION()), bfrCalling == 'enable' ? true : false)
-
-  //   this.agHelper.GetNClick(this._closeSettings)
-  // }
-
-  public VerifyAsyncFuncSettings(
-    funName: string,
-    onLoad = true,
-    bfrCalling = true,
-  ) {
-    // this.agHelper.AssertExistingToggleState(this._functionSetting(Cypress.env("MESSAGES").JS_SETTINGS_ONPAGELOAD()), onLoad)
-    // this.agHelper.AssertExistingToggleState(this._functionSetting(Cypress.env("MESSAGES").JS_SETTINGS_CONFIRM_EXECUTION()), bfrCalling)
-
+  public VerifyAsyncFuncSettings(funName: string, onLoad = true) {
     this.agHelper.GetNClick(this._settingsTab);
     this.agHelper.AssertExistingCheckedState(
       this._onPageLoadSwitchStatus(funName),
       onLoad.toString(),
     );
-    this.agHelper.AssertExistingCheckedState(
-      this._confirmBeforeExecuteSwitchStatus(funName),
-      bfrCalling.toString(),
-    );
   }
 
-  public EnableDisableAsyncFuncSettings(
-    funName: string,
-    onLoad = true,
-    bfrCalling = true,
-  ) {
+  public EnableDisableAsyncFuncSettings(funName: string, onLoad = true) {
     // Navigate to Settings tab
     this.agHelper.GetNClick(this._settingsTab);
     // Set onPageLoad
     this.agHelper.CheckUncheck(this._onPageLoadSwitch(funName), onLoad);
-    // Set confirmBeforeExecute
-    this.agHelper.CheckUncheck(
-      this._confirmBeforeExecuteSwitch(funName),
-      bfrCalling,
-    );
     // Return to code tab
     this.agHelper.GetNClick(this._codeTab);
   }
@@ -371,7 +332,6 @@ export class JSEditor {
   }
 
   public ConfirmationClick(type: "Yes" | "No") {
-    //this.agHelper.GetNClick(this._confirmationModalBtns(type), 0, true);
     this.agHelper
       .GetElement(this._confirmationModalBtns(type))
       .eq(0)

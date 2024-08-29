@@ -13,6 +13,7 @@ import type {
   AutocompletionDefinitions,
 } from "WidgetProvider/constants";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 
 import { ButtonPlacementTypes } from "components/constants";
 import { ScannerLayout } from "../constants";
@@ -31,7 +32,8 @@ class CodeScannerWidget extends BaseWidget<
     return {
       name: "扫码器",
       iconSVG: IconSVG,
-      tags: [WIDGET_TAGS.FEATRUE],
+      thumbnailSVG: ThumbnailSVG,
+      tags: [WIDGET_TAGS.EXTERNAL],
       needsMeta: true,
       searchTags: [
         "barcode scanner",
@@ -116,6 +118,8 @@ class CodeScannerWidget extends BaseWidget<
     return styleConfig;
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       value: undefined,

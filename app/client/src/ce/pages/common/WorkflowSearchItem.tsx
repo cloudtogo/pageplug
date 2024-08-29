@@ -1,10 +1,12 @@
+import type { Workflow } from "ee/constants/WorkflowConstants";
+
 interface Props {
-  searchedWorkflows: any;
+  workflowsList: Workflow[];
 }
 
 const WorkflowSearchItem = (props: Props) => {
   // eslint-disable-next-line
-  const { searchedWorkflows } = props;
+  const { workflowsList } = props;
   return null;
 };
 

@@ -3,10 +3,10 @@ package com.appsmith.server.domains;
 import com.appsmith.external.dtos.DslExecutableDTO;
 import com.appsmith.external.exceptions.ErrorDTO;
 import com.appsmith.external.models.Policy;
+import com.appsmith.external.views.Git;
 import com.appsmith.external.views.Views;
 import com.appsmith.server.helpers.CollectionUtils;
 import com.appsmith.server.helpers.CompareDslActionDTO;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -38,7 +38,7 @@ public class Layout {
     @JsonView(Views.Internal.class)
     Boolean viewMode = false;
 
-    @JsonView({Views.Public.class, Views.Export.class})
+    @JsonView({Views.Public.class, Views.Export.class, Git.class})
     JSONObject dsl;
 
     @JsonView(Views.Internal.class)
@@ -49,7 +49,6 @@ public class Layout {
 
     // this attribute will be used to display errors caused white calculating allOnLoadAction
     // PageLoadActionsUtilCEImpl.java
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonView({Views.Public.class, Views.Export.class})
     List<ErrorDTO> layoutOnLoadActionErrors;
 
@@ -74,13 +73,14 @@ public class Layout {
     @JsonView(Views.Internal.class)
     Boolean validOnPageLoadActions = TRUE;
 
+    @JsonView({Views.Public.class, Views.Export.class})
+    private String id;
+
     /*
      * These fields (except for `id`) only exist here because their removal will cause a huge diff on all layouts in
      * git-connected applications. So, instead, we keep them, but defunct. For all other practical purposes, these
      * fields (again, except for `id`) don't exist.
      */
-    @JsonView({Views.Public.class, Views.Export.class})
-    private String id;
     // BEGIN DEFUNCT FIELDS
     @Deprecated(forRemoval = true)
     @Transient
@@ -105,7 +105,7 @@ public class Layout {
      * If view mode, the dsl returned should be the publishedDSL, else if the edit mode is on (view mode = false)
      * the dsl returned should be JSONObject dsl
      */
-    @JsonView({Views.Public.class, Views.Export.class})
+    @JsonView({Views.Public.class, Views.Export.class, Git.class})
     public JSONObject getDsl() {
         return viewMode ? publishedDsl : dsl;
     }
@@ -125,7 +125,6 @@ public class Layout {
             for (int dslActionIndex = 0; dslActionIndex < layoutOnLoadActions.size(); dslActionIndex++) {
                 TreeSet<DslExecutableDTO> sortedActions = new TreeSet<>(new CompareDslActionDTO());
                 sortedActions.addAll(layoutOnLoadActions.get(dslActionIndex));
-                sortedActions.forEach(DslExecutableDTO::sanitiseForExport);
                 layoutOnLoadActions.set(dslActionIndex, sortedActions);
             }
         }

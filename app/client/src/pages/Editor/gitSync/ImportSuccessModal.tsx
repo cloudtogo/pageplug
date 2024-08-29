@@ -5,7 +5,7 @@ import {
   createMessage,
   APPLICATION_IMPORT_SUCCESS,
   APPLICATION_IMPORT_SUCCESS_DESCRIPTION,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import {
   Button,
   Icon,
@@ -15,8 +15,8 @@ import {
   ModalFooter,
   ModalHeader,
   Text,
-} from "design-system";
-import type { AppState } from "@appsmith/reducers";
+} from "@appsmith/ads";
+import type { AppState } from "ee/reducers";
 import type { User } from "constants/userConstants";
 
 const BodyContainer = styled.div`

@@ -13,7 +13,8 @@ import type {
   AutocompletionDefinitions,
 } from "WidgetProvider/constants";
 import IconSVG from "../icon.svg";
-import { isAirgapped } from "@appsmith/utils/airgapHelpers";
+import ThumbnailSVG from "../thumbnail.svg";
+import { isAirgapped } from "ee/utils/airgapHelpers";
 import type {
   SnipingModeProperty,
   PropertyUpdates,
@@ -37,6 +38,7 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
     return {
       name: "Iframe",
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: true,
       searchTags: ["embed", "iframe", "html"],
@@ -307,6 +309,8 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
     ];
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       message: undefined,

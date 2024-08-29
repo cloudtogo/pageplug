@@ -1,45 +1,47 @@
 import React from "react";
-import { Flex, Tooltip } from "design-system";
-import type { EntityItem } from "@appsmith/entities/IDE/constants";
-import { useLocation } from "react-router";
-import clsx from "classnames";
+
 import {
-  StyledTab,
-  TabIconContainer,
-  TabTextContainer,
-} from "./StyledComponents";
-import { identifyEntityFromPath } from "navigation/FocusEntity";
+  EditorEntityTabState,
+  type EntityItem,
+} from "ee/entities/IDE/constants";
+import { useCurrentEditorState } from "../hooks";
+import { FileTab } from "IDE/Components/FileTab";
+import type { FocusEntityInfo } from "navigation/FocusEntity";
 
 interface Props {
   tabs: EntityItem[];
   navigateToTab: (tab: EntityItem) => void;
+  onClose: (actionId?: string) => void;
+  currentEntity: FocusEntityInfo;
+  isListActive?: boolean;
 }
 
 const FileTabs = (props: Props) => {
-  const { navigateToTab, tabs } = props;
+  const { currentEntity, isListActive, navigateToTab, onClose, tabs } = props;
+  const { segmentMode } = useCurrentEditorState();
 
-  const location = useLocation();
-
-  const currentEntity = identifyEntityFromPath(location.pathname);
+  const onCloseClick = (e: React.MouseEvent, id?: string) => {
+    e.stopPropagation();
+    onClose(id);
+  };
 
   return (
-    <Flex data-testid="editor-tabs" flex="1" gap="spaces-2" height="100%">
+    <>
       {tabs.map((tab: EntityItem) => (
-        <StyledTab
-          className={clsx(
-            "editor-tab",
-            currentEntity.id === tab.key && "active",
-          )}
+        <FileTab
+          icon={tab.icon}
+          isActive={
+            currentEntity.id === tab.key &&
+            segmentMode !== EditorEntityTabState.Add &&
+            !isListActive
+          }
           key={tab.key}
           onClick={() => navigateToTab(tab)}
-        >
-          <TabIconContainer>{tab.icon}</TabIconContainer>
-          <Tooltip content={tab.title} mouseEnterDelay={1}>
-            <TabTextContainer>{tab.title}</TabTextContainer>
-          </Tooltip>
-        </StyledTab>
+          onClose={(e) => onCloseClick(e, tab.key)}
+          title={tab.title}
+        />
       ))}
-    </Flex>
+    </>
   );
 };
 

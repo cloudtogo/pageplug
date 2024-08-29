@@ -7,9 +7,7 @@ import { Layers } from "constants/Layers";
 import { theme } from "constants/DefaultTheme";
 import { useDispatch, useSelector } from "react-redux";
 import { getAppViewHeaderHeight } from "selectors/appViewSelectors";
-import { selectWidgetInitAction } from "actions/widgetSelectionActions";
-import { SelectionRequestType } from "sagas/WidgetSelectUtils";
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
 import { useMaxModalWidth } from "widgets/ModalWidget/component/useModalWidth";
 import { useAppViewerSidebarProperties } from "utils/hooks/useAppViewerSidebarProperties";
 const Container = styled.div<{
@@ -116,6 +114,8 @@ export function ModalOverlayLayer(props: BaseWidgetProps) {
     return !!props.isVisible;
   };
   const isOpen = getModalVisibility();
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const closeModal = (e: any) => {
     dispatch({
       type: ReduxActionTypes.CLOSE_MODAL,
@@ -123,7 +123,6 @@ export function ModalOverlayLayer(props: BaseWidgetProps) {
         modalName: props.widgetName,
       },
     });
-    dispatch(selectWidgetInitAction(SelectionRequestType.Empty));
     e.stopPropagation();
     e.preventDefault();
   };

@@ -6,11 +6,9 @@ import com.appsmith.external.models.PluginType;
 import com.appsmith.server.acl.PolicyGenerator;
 import com.appsmith.server.applications.base.ApplicationService;
 import com.appsmith.server.datasources.base.DatasourceService;
-import com.appsmith.server.defaultresources.DefaultResourcesService;
 import com.appsmith.server.domains.NewAction;
 import com.appsmith.server.domains.Plugin;
 import com.appsmith.server.helpers.PluginExecutorHelper;
-import com.appsmith.server.helpers.ResponseUtils;
 import com.appsmith.server.newactions.base.NewActionServiceCEImpl;
 import com.appsmith.server.newactions.helpers.NewActionHelper;
 import com.appsmith.server.newpages.base.NewPageService;
@@ -34,12 +32,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.BodyExtractor;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.test.StepVerifier;
 
 import java.util.Map;
@@ -54,16 +49,7 @@ public class NewActionServiceUnitTest {
     NewActionServiceCEImpl newActionService;
 
     @MockBean
-    Scheduler scheduler;
-
-    @MockBean
     Validator validator;
-
-    @MockBean
-    MongoConverter mongoConverter;
-
-    @MockBean
-    ReactiveMongoTemplate reactiveMongoTemplate;
 
     @MockBean
     AnalyticsService analyticsService;
@@ -91,9 +77,6 @@ public class NewActionServiceUnitTest {
 
     @MockBean
     ConfigService configService;
-
-    @MockBean
-    ResponseUtils responseUtils;
 
     @MockBean
     PermissionGroupService permissionGroupService;
@@ -145,7 +128,6 @@ public class NewActionServiceUnitTest {
                 applicationService,
                 policySolution,
                 configService,
-                responseUtils,
                 permissionGroupService,
                 newActionHelper,
                 datasourcePermission,
@@ -153,9 +135,7 @@ public class NewActionServiceUnitTest {
                 pagePermission,
                 actionPermission,
                 entityValidationService,
-                observationRegistry,
-                defaultResourcesService,
-                dtoDefaultResourcesService);
+                observationRegistry);
 
         ObservationRegistry.ObservationConfig mockObservationConfig =
                 Mockito.mock(ObservationRegistry.ObservationConfig.class);

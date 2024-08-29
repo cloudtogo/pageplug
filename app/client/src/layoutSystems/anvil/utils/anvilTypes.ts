@@ -41,6 +41,8 @@ export interface WidgetLayoutProps {
 export interface LayoutProps {
   layout: LayoutProps[] | WidgetLayoutProps[]; // Array of layout components or widgets to render.
   layoutId: string; // Identifier of layout
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   layoutStyle?: { [key: string]: any }; // React.CSSProperties for overriding default layout style.
   layoutType: LayoutComponentTypes; // Used to identify the correct layout component to render.
 
@@ -112,6 +114,12 @@ export interface HighlightRenderInfo {
   width: number; // width of the highlight.
   posX: number; // x position of the highlight.
   posY: number; // y position of the highlight.
+  edgeDetails: {
+    top: boolean; // Whether the highlight is at the top edge of the layout.
+    bottom: boolean; // Whether the highlight is at the bottom edge of the layout.
+    left: boolean; // Whether the highlight is at the left edge of the layout.
+    right: boolean; // Whether the highlight is at the right edge of the layout.
+  };
 }
 
 export interface HighlightDropInfo {
@@ -133,19 +141,6 @@ export interface DraggedWidget {
   type: WidgetType;
   widgetId: string;
 }
-
-export type GenerateHighlights = (
-  baseHighlight: AnvilHighlightInfo,
-  layoutDimension: LayoutElementPosition,
-  currentDimension: LayoutElementPosition,
-  prevDimension: LayoutElementPosition | undefined,
-  nextDimension: LayoutElementPosition | undefined,
-  rowIndex: number,
-  isLastHighlight: boolean,
-  prevHighlight: AnvilHighlightInfo | undefined,
-  hasFillWidget?: boolean,
-  isDropTarget?: boolean,
-) => AnvilHighlightInfo[];
 
 export type GetInitialHighlights = (
   layoutProps: LayoutProps,
@@ -196,14 +191,3 @@ export interface HighlightPayload {
   highlights: AnvilHighlightInfo[];
   skipEntity: boolean;
 }
-
-export type UpdateHighlights = (
-  arr: AnvilHighlightInfo[],
-  baseHighlight: AnvilHighlightInfo,
-  layoutDimension: LayoutElementPosition,
-  currDimension: LayoutElementPosition,
-  nextDimension: LayoutElementPosition | undefined,
-  rowIndex: number,
-  isLastHighlight: boolean,
-  hasFillWidget?: boolean,
-) => AnvilHighlightInfo[];

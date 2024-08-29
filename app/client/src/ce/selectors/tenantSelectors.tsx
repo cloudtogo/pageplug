@@ -1,4 +1,4 @@
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 
 /**
  * selects the tenant permissions
@@ -51,8 +51,11 @@ export const getInstanceId = (state: AppState): string =>
 export const getIsFormSignupEnable = (state: AppState): boolean =>
   !state.settings.config?.APPSMITH_SIGNUP_DISABLED;
 
-// eslint-disable-next-line
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const shouldShowLicenseBanner = (state: AppState) => false;
 
 export const getHideWatermark = (state: AppState): boolean =>
   state.tenant?.tenantConfiguration?.hideWatermark;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const isFreePlan = (state: AppState) => true;

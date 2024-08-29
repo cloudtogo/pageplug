@@ -1,4 +1,4 @@
-import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+import { getAssetUrl } from "ee/utils/airgapHelpers";
 import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
 
 export const originalDSLForDSLMigrations = {
@@ -3532,7 +3532,7 @@ export const originalDSLForDSLMigrations = {
             {
               boxShadow: "none",
               widgetName: "IconButton6",
-              onClick: "{{closeModal('Modal1')}}",
+              onClick: "{{closeModal(Modal1.name)}}",
               buttonColor: "{{appsmith.theme.colors.primaryColor}}",
               displayName: "Icon button",
               iconSVG: "/static/media/icon.1a0c634a.svg",

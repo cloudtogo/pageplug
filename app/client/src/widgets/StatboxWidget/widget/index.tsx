@@ -6,7 +6,7 @@ import {
   FlexVerticalAlignment,
   Positioning,
 } from "layoutSystems/common/utils/constants";
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
 import { DefaultAutocompleteDefinitions } from "widgets/WidgetUtils";
 import type {
   AnvilConfig,
@@ -21,6 +21,7 @@ import {
 import { GridDefaults, WIDGET_TAGS } from "constants/WidgetConstants";
 import type { WidgetProps } from "widgets/BaseWidget";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 import type { FlattenedWidgetProps } from "WidgetProvider/constants";
 import { BlueprintOperationTypes } from "WidgetProvider/constants";
 import get from "lodash/get";
@@ -39,6 +40,7 @@ class StatboxWidget extends ContainerWidget {
     return {
       name: "统计框",
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: true,
       searchTags: ["statbox"],
@@ -80,7 +82,6 @@ class StatboxWidget extends ContainerWidget {
       backgroundColor: "white",
       borderWidth: "1",
       borderColor: Colors.GREY_5,
-      minDynamicHeight: 14,
       children: [],
       positioning: Positioning.Fixed,
       responsiveBehavior: ResponsiveBehavior.Fill,

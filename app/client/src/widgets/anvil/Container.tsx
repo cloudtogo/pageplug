@@ -3,6 +3,7 @@ import React from "react";
 import styled from "styled-components";
 import { generateClassName } from "utils/generators";
 import type { Elevations } from "./constants";
+import { useAnvilWidgetElevationSetter } from "layoutSystems/anvil/editor/canvas/hooks/useAnvilWidgetElevationSetter";
 
 /**
  * This container component wraps the Zone and Section widgets and allows Anvil to utilise tokens from the themes
@@ -19,27 +20,10 @@ const StyledContainerComponent = styled.div<
   outline: none;
   border: none;
   position: relative;
-  border-radius: var(--border-radius-1);
-  /* If the elevatedBackground is true, then apply the elevation styles */
-  ${(props) => {
-    if (props.elevatedBackground) {
-      return `
-      background-color: var(--color-bg-elevation-${props.elevation});
-      border-radius: var(--border-radius-elevation-${props.elevation})};
-      border-color: var(--color-bd-elevation-${props.elevation});
-      border-width: var(--border-width-1);
-      border-style: solid;
-
-      /* Add padding to the container to maintain the visual spacing rhythm */
-      /* This is based on the hypothesis of asymmetric padding */
-      padding-block: var(--inner-spacing-1);
-      padding-inline: var(--inner-spacing-1);
-      `;
-    }
-  }}
 `;
 
 export function ContainerComponent(props: ContainerComponentProps) {
+  useAnvilWidgetElevationSetter(props.widgetId, props.elevatedBackground);
   return (
     <StyledContainerComponent
       className={`${generateClassName(props.widgetId)}`}

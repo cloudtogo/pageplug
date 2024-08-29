@@ -1,12 +1,11 @@
 export default {
-  curlImage: ".t--curlImage",
   curlImportBtn: ".t--importBtn",
   createBlankApiCard: ".t--createBlankApiCard",
   eachProviderCard: ".t--eachProviderCard",
   nameOfApi: ".t--nameOfApi",
   ApiNameField: ".t--action-name-edit-field",
   addToPageBtn: ".t--addToPageBtn",
-  ApiActionMenu: '[data-testid="more-action-trigger"]',
+  ApiActionMenu: "[data-testid=\"more-action-trigger\"]",
   ApiDeleteBtn: ".t--apiFormDeleteBtn",
   ApiRunBtn: ".t--apiFormRunBtn",
   addToPageBtnsId: ".t--addToPageButtons",
@@ -23,11 +22,8 @@ export default {
     ".t--apiFormPaginationType label:contains('Paginate with response URL') input",
   apiTab: ".react-tabs__tab-list li",
   bodyType: ".t--apiFormPostBodyType",
-  bodyTypeSelected:
-    '[data-testid="t--api-body-tab-switch"] .ads-v2-segmented-control__segments-container-segment[data-selected="true"]',
+  bodyTypeSelected: "[data-testid=\"t--api-body-tab-switch\"] .rc-select-selection-item",
   bodyTab: "Body",
-  jsonBodyTab:
-    ".ads-v2-segmented-control__segments-container-segment[data-value='application/json']",
   headersTab: "Header",
   jsonResponseTab: "[data-value='JSON']",
   tableResponseTab: "[data-value='TABLE']",

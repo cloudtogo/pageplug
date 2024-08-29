@@ -1,14 +1,12 @@
-import type {
-  ReduxAction,
-  EvaluationReduxAction,
-} from "@appsmith/constants/ReduxActionConstants";
 import {
-  ReduxActionTypes,
+  type EvaluationReduxAction,
+  type ReduxAction,
   ReduxActionErrorTypes,
-} from "@appsmith/constants/ReduxActionConstants";
+  ReduxActionTypes,
+} from "ee/constants/ReduxActionConstants";
 import type { JSCollection } from "entities/JSCollection";
-import type { CreateJSCollectionRequest } from "@appsmith/api/JSActionAPI";
-import type { EventLocation } from "@appsmith/utils/analyticsUtilTypes";
+import type { CreateJSCollectionRequest } from "ee/api/JSActionAPI";
+import type { EventLocation } from "ee/utils/analyticsUtilTypes";
 import type { ApiResponse } from "api/ApiResponses";
 
 export interface FetchJSCollectionsPayload {
@@ -158,6 +156,22 @@ export const fetchJSCollectionsForView = ({
   return {
     type: ReduxActionTypes.FETCH_JS_ACTIONS_VIEW_MODE_INIT,
     payload: { applicationId, publishedActionCollections },
+  };
+};
+
+export const closeJSActionTab = (payload: { id: string; parentId: string }) => {
+  return {
+    type: ReduxActionTypes.CLOSE_JS_ACTION_TAB,
+    payload,
+  };
+};
+export const closeJsActionTabSuccess = (payload: {
+  id: string;
+  parentId: string;
+}) => {
+  return {
+    type: ReduxActionTypes.CLOSE_JS_ACTION_TAB_SUCCESS,
+    payload,
   };
 };
 

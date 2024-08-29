@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 import { saveSelectedThemeAction } from "actions/appThemingActions";
 import { getCurrentApplicationId } from "selectors/editorSelectors";
 import { getAppThemes } from "selectors/appThemingSelectors";
@@ -10,7 +10,7 @@ import {
   ERROR_MESSAGE_NAME_EMPTY,
   APLHANUMERIC_HYPHEN_SLASH_SPACE_ERROR,
   UNIQUE_NAME_ERROR,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import {
   Button,
   Input,

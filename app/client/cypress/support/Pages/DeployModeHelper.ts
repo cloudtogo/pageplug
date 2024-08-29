@@ -31,7 +31,7 @@ export class DeployMode {
   private _backtoHome = ".t--back-to-home";
   private _homeAppsmithImage = "a.t--appsmith-logo";
   public _deployPageWidgets =
-    ".bp3-heading, section.canvas div.canvas:not(:empty)";
+    ".bp3-heading, section.canvas [data-testid=t--app-viewer-page]:not(:empty)";
   public _appViewPageName = `div.t--app-viewer-application-name`;
 
   //refering PublishtheApp from command.js

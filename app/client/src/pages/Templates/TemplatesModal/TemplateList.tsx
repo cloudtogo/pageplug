@@ -1,4 +1,9 @@
-import { importTemplateIntoApplication } from "actions/templateActions";
+import {
+  FETCHING_TEMPLATE_LIST,
+  FORKING_TEMPLATE,
+  createMessage,
+} from "ee/constants/messages";
+import type { Template } from "api/TemplatesApi";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -7,13 +12,7 @@ import {
 } from "selectors/templatesSelectors";
 import styled from "styled-components";
 import LoadingScreen from "./LoadingScreen";
-import type { Template } from "api/TemplatesApi";
 import TemplateModalHeader from "./Header";
-import {
-  createMessage,
-  FETCHING_TEMPLATE_LIST,
-  FORKING_TEMPLATE,
-} from "@appsmith/constants/messages";
 import TemplateFilters from "../TemplateFilters";
 import { TemplateContent } from "../TemplateContent";
 
@@ -48,7 +47,7 @@ interface TemplateListProps {
 function TemplateList(props: TemplateListProps) {
   const dispatch = useDispatch();
   const onForkTemplateClick = (template: Template) => {
-    dispatch(importTemplateIntoApplication(template.id, template.title));
+    props.onTemplateClick(template.id);
   };
   const isImportingTemplateToApp = useSelector(
     isImportingTemplateToAppSelector,

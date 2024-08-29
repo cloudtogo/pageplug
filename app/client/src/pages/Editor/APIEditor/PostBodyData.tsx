@@ -6,10 +6,10 @@ import {
   POST_BODY_FORMAT_OPTIONS,
   POST_BODY_FORMAT_TITLES,
 } from "constants/ApiEditorConstants/CommonApiConstants";
-import { API_EDITOR_FORM_NAME } from "@appsmith/constants/forms";
+import { API_EDITOR_FORM_NAME } from "ee/constants/forms";
 import KeyValueFieldArray from "components/editorComponents/form/fields/KeyValueFieldArray";
 import DynamicTextField from "components/editorComponents/form/fields/DynamicTextField";
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import FIELD_VALUES from "constants/FieldExpectedValue";
 import type { EditorTheme } from "components/editorComponents/CodeEditor/EditorConfig";
 import {
@@ -18,21 +18,23 @@ import {
   EditorSize,
   TabBehaviour,
 } from "components/editorComponents/CodeEditor/EditorConfig";
-import { Classes } from "design-system-old";
+import { Classes } from "@appsmith/ads-old";
 import { updateBodyContentType } from "actions/apiPaneActions";
 import type { CodeEditorExpected } from "components/editorComponents/CodeEditor";
 import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
-import { createMessage, API_PANE_NO_BODY } from "@appsmith/constants/messages";
-import { SegmentedControl } from "design-system";
+import { createMessage, API_PANE_NO_BODY } from "ee/constants/messages";
+import { Select, Option } from "@appsmith/ads";
 
 const PostBodyContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   padding: 12px 0px 0px;
   background-color: var(--ads-v2-color-bg);
   height: 100%;
-  .ads-v2-segmented-control {
-    /* max-width: fit-content;
-    margin-left: 30px; */
-    margin-bottom: 12px;
+  gap: var(--ads-v2-spaces-4);
+  .ads-v2-select {
+    max-width: 250px;
+    width: 100%;
   }
 `;
 
@@ -150,6 +152,24 @@ function PostBodyData(props: Props) {
             />
           </JSONEditorFieldWrapper>
         );
+      // This format is particularly used for uploading files, in this case
+      // From filepicker we can take base64 string and pass it to server
+      // which then decodes it and uploads the file to given URL
+      case POST_BODY_FORMAT_OPTIONS.BINARY:
+        return (
+          <JSONEditorFieldWrapper key={key}>
+            <DynamicTextField
+              border={CodeEditorBorder.ALL_SIDE}
+              dataTreePath={`${dataTreePath}.body`}
+              mode={EditorModes.TEXT_WITH_BINDING}
+              name="actionConfiguration.body"
+              placeholder={`{{\n\t// Make sure to select the 'Base64' in the Data Format property of the Filepicker widget as the file contents are expected to be in Base64 format\n\tfilePickerName.files[0].data\n}}`}
+              size={EditorSize.EXTENDED}
+              tabBehaviour={TabBehaviour.INDENT}
+              theme={theme}
+            />
+          </JSONEditorFieldWrapper>
+        );
     }
   };
 
@@ -165,13 +185,18 @@ function PostBodyData(props: Props) {
 
   return (
     <PostBodyContainer>
-      <SegmentedControl
+      <Select
         data-testid="t--api-body-tab-switch"
         defaultValue={selectedTab}
-        isFullWidth={false}
-        onChange={(key: string) => postBodyDataOnChangeFn(key)}
-        options={options}
-      />
+        onSelect={(value) => postBodyDataOnChangeFn(value)}
+        value={selectedTab}
+      >
+        {options.map((option) => (
+          <Option key={option.value} value={option.value}>
+            {option.label}
+          </Option>
+        ))}
+      </Select>
       {tabComponentsMap(selectedTab)}
     </PostBodyContainer>
   );
@@ -179,6 +204,8 @@ function PostBodyData(props: Props) {
 
 const selector = formValueSelector(API_EDITOR_FORM_NAME);
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mapDispatchToProps = (dispatch: any) => ({
   updateBodyContentType: (contentType: string, apiId: string) =>
     dispatch(updateBodyContentType(contentType, apiId)),

@@ -8,9 +8,11 @@ import com.appsmith.server.domains.User;
 import com.appsmith.server.domains.Workspace;
 import com.appsmith.server.dtos.InviteUsersDTO;
 import com.appsmith.server.dtos.MemberInfoDTO;
+import com.appsmith.server.dtos.RecentlyUsedEntityDTO;
 import com.appsmith.server.dtos.UpdatePermissionGroupDTO;
 import com.appsmith.server.exceptions.AppsmithError;
 import com.appsmith.server.exceptions.AppsmithException;
+import com.appsmith.server.helpers.UserUtils;
 import com.appsmith.server.newpages.base.NewPageService;
 import com.appsmith.server.repositories.PermissionGroupRepository;
 import com.appsmith.server.repositories.UserRepository;
@@ -58,6 +60,9 @@ public class UserWorkspaceServiceTest {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserUtils userUtils;
 
     @Autowired
     private UserWorkspaceService userWorkspaceService;
@@ -126,7 +131,7 @@ public class UserWorkspaceServiceTest {
 
         // Add application and workspace to the recently used list by accessing the application pages.
         newPageService
-                .findApplicationPagesByApplicationIdViewModeAndBranch(savedApplication.getId(), null, false, true)
+                .findApplicationPagesByBranchedApplicationIdAndViewMode(savedApplication.getId(), false, true)
                 .block();
 
         Set<String> uniqueUsersInWorkspaceBefore = userWorkspaceService
@@ -164,8 +169,12 @@ public class UserWorkspaceServiceTest {
 
         StepVerifier.create(userDataService.getForCurrentUser())
                 .assertNext(userData -> {
-                    assertThat(userData.getRecentlyUsedWorkspaceIds()).doesNotContain(testWorkspace.getId());
-                    assertThat(userData.getRecentlyUsedAppIds()).doesNotContain(savedApplication.getId());
+                    List<RecentlyUsedEntityDTO> recentlyUsedEntityIds = userData.getRecentlyUsedEntityIds();
+                    assertThat(recentlyUsedEntityIds).isNotNull();
+                    Set<String> workspaceIds = recentlyUsedEntityIds.stream()
+                            .map(RecentlyUsedEntityDTO::getWorkspaceId)
+                            .collect(Collectors.toSet());
+                    assertThat(workspaceIds).doesNotContain(testWorkspace.getId());
                 })
                 .verifyComplete();
     }

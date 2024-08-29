@@ -2,14 +2,17 @@ import React from "react";
 import type { ControlProps } from "./BaseControl";
 import BaseControl from "./BaseControl";
 import { generateReactKey } from "utils/generators";
-import { getNextEntityName } from "utils/AppsmithUtils";
 import orderBy from "lodash/orderBy";
 import isString from "lodash/isString";
 import isUndefined from "lodash/isUndefined";
-import { Button, Flex } from "design-system";
+import { Button, Flex } from "@appsmith/ads";
 import { ButtonPlacementTypes } from "components/constants";
 import { DraggableListControl } from "pages/Editor/PropertyPane/DraggableListControl";
 import { DraggableListCard } from "components/propertyControls/DraggableListCard";
+import {
+  createMessage,
+  BUTTON_WIDGET_DEFAULT_LABEL,
+} from "ee/constants/messages";
 
 interface State {
   focusedIndex: number | null;
@@ -56,7 +59,11 @@ class ButtonListControl extends BaseControl<
     return orderBy(menuItems, ["index"], ["asc"]);
   };
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateItems = (items: Array<Record<string, any>>) => {
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const menuItems = items.reduce((obj: any, each: any, index: number) => {
       obj[each.id] = {
         ...each,
@@ -93,6 +100,8 @@ class ButtonListControl extends BaseControl<
           items={this.getMenuItems()}
           onEdit={this.onEdit}
           propertyPath={this.props.dataTreePath}
+          // TODO: Fix this the next time the file is edited
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           renderComponent={(props: any) =>
             DraggableListCard({
               ...props,
@@ -149,10 +158,14 @@ class ButtonListControl extends BaseControl<
   deleteOption = (index: number) => {
     const menuItemsArray = this.getMenuItems();
     if (menuItemsArray.length === 1) return;
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updatedArray = menuItemsArray.filter((eachItem: any, i: number) => {
       return i !== index;
     });
     const updatedObj = updatedArray.reduce(
+      // TODO: Fix this the next time the file is edited
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (obj: any, each: any, index: number) => {
         obj[each.id] = {
           ...each,
@@ -178,22 +191,21 @@ class ButtonListControl extends BaseControl<
     let groupButtons = this.props.propertyValue;
     const groupButtonsArray = this.getMenuItems();
     const newGroupButtonId = generateReactKey({ prefix: "groupButton" });
-    const newGroupButtonLabel = getNextEntityName(
-      "Group Button ",
-      groupButtonsArray.map((groupButton: any) => groupButton.label),
-    );
 
     groupButtons = {
       ...groupButtons,
       [newGroupButtonId]: {
         id: newGroupButtonId,
         index: groupButtonsArray.length,
-        label: isSeparator ? "Separator" : newGroupButtonLabel,
+        label: isSeparator
+          ? "Separator"
+          : createMessage(BUTTON_WIDGET_DEFAULT_LABEL),
         widgetId: generateReactKey(),
         isDisabled: false,
         itemType: isSeparator ? "SEPARATOR" : "BUTTON",
+        isSeparator,
         isVisible: true,
-        buttonVariant: "filled",
+        variant: "filled",
       },
     };
 
@@ -216,17 +228,33 @@ class ButtonListControl extends BaseControl<
       };
     }
 
-    // if the widget is a WDS_INLINE_BUTTONS_WIDGET, and button already have filled button variant in groupButtons,
-    // then we should add a secondary button ( outlined button ) instead of simple button
     if (this.props.widgetProperties.type === "WDS_INLINE_BUTTONS_WIDGET") {
+      // if buttonVariant and buttonColor values ar present in session storage, then we should use those values
+      const buttonVariantSessionValue = sessionStorage.getItem(
+        "WDS_INLINE_BUTTONS_WIDGET.buttonVariant",
+      );
+      const buttonColorSessionValue = sessionStorage.getItem(
+        "WDS_INLINE_BUTTONS_WIDGET.buttonColor",
+      );
+
+      groupButtons[newGroupButtonId] = {
+        ...groupButtons[newGroupButtonId],
+        buttonVariant: buttonVariantSessionValue || "filled",
+        buttonColor: buttonColorSessionValue || "accent",
+      };
+
+      // if the widget is a WDS_INLINE_BUTTONS_WIDGET, and button already have filled button variant in groupButtons,
+      // then we should add a secondary button ( outlined button ) instead of simple button
       const filledButtonVariant = groupButtonsArray.find(
+        // TODO: Fix this the next time the file is edited
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (groupButton: any) => groupButton.buttonVariant === "filled",
       );
 
       if (filledButtonVariant) {
         groupButtons[newGroupButtonId] = {
           ...groupButtons[newGroupButtonId],
-          buttonVariant: "outlined",
+          buttonVariant: buttonVariantSessionValue || "outlined",
         };
       }
     }

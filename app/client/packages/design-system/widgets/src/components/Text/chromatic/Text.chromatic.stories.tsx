@@ -2,8 +2,8 @@ import React from "react";
 import {
   TYPOGRAPHY_VARIANTS,
   TYPOGRAPHY_FONT_WEIGHTS,
-} from "@design-system/theming";
-import { Text, COLORS } from "@design-system/widgets";
+} from "@appsmith/wds-theming";
+import { Text, COLORS } from "@appsmith/wds";
 import { StoryGrid } from "@design-system/storybook";
 import type { Meta, StoryObj } from "@storybook/react";
 
@@ -39,14 +39,14 @@ export const LightMode: Story = {
         necessitatibus, molestias deleniti corrupti aliquam repudiandae.
       </Text>
 
-      <Text textAlign="left">Text Align Left</Text>
+      <Text textAlign="start">Text Align Left</Text>
       <Text textAlign="center">Text Align Center</Text>
-      <Text textAlign="right">Text Align Right</Text>
+      <Text textAlign="end">Text Align Right</Text>
       <Text isItalic>isItalic</Text>
       <Text isBold>isBold</Text>
 
       {Object.values(TYPOGRAPHY_VARIANTS).map((variant) => (
-        <Text key={variant} variant={variant}>
+        <Text key={variant} size={variant}>
           variant — {variant}
         </Text>
       ))}

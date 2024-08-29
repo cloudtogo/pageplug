@@ -1,7 +1,7 @@
 import {
   APP_NAVIGATION_SETTING,
   createMessage,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import type { NavigationSetting } from "constants/AppConstants";
 import type { DropdownOption } from "design-system-old";
 import { Dropdown, Text, TextType } from "design-system-old";

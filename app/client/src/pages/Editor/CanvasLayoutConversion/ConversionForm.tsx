@@ -3,7 +3,7 @@ import React from "react";
 import styled from "styled-components";
 import type { InfoBlockProps } from "./InfoBlock";
 import { InfoBlock } from "./InfoBlock";
-import type { CalloutKind, SegmentedControlOption } from "design-system";
+import type { CalloutKind, SegmentedControlOption } from "@appsmith/ads";
 import {
   Button,
   SegmentedControl,
@@ -11,7 +11,7 @@ import {
   Callout,
   Icon,
   Text,
-} from "design-system";
+} from "@appsmith/ads";
 import type { ConversionCompleteLayoutProps } from "./ConversionCompleteLayout";
 import { ConversionCompleteLayout } from "./ConversionCompleteLayout";
 

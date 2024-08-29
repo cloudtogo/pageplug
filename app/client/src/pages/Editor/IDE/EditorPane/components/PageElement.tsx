@@ -2,35 +2,39 @@ import React, { useCallback, useEffect, useRef, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router";
 
-import type { Page } from "@appsmith/constants/ReduxActionConstants";
+import type { Page } from "ee/constants/ReduxActionConstants";
 import { defaultPageIcon, pageIcon } from "pages/Editor/Explorer/ExplorerIcons";
-import { getCurrentPageId } from "@appsmith/selectors/entitiesSelector";
-import { getHasManagePagePermission } from "@appsmith/utils/BusinessFeatures/permissionPageHelpers";
+import { getHasManagePagePermission } from "ee/utils/BusinessFeatures/permissionPageHelpers";
 import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
+import { FEATURE_FLAG } from "ee/entities/FeatureFlag";
 import PageContextMenu from "pages/Editor/Explorer/Pages/PageContextMenu";
-import { getCurrentApplicationId } from "selectors/editorSelectors";
-import { EntityClassNames } from "pages/Editor/Explorer/Entity";
 import {
-  PERMISSION_TYPE,
-  isPermitted,
-} from "@appsmith/utils/permissionHelpers";
-import { getCurrentApplication } from "@appsmith/selectors/applicationSelectors";
-import type { AppState } from "@appsmith/reducers";
+  getCurrentApplicationId,
+  getCurrentPageId,
+} from "selectors/editorSelectors";
+import { EntityClassNames } from "pages/Editor/Explorer/Entity";
+import { PERMISSION_TYPE, isPermitted } from "ee/utils/permissionHelpers";
+import { getCurrentApplication } from "ee/selectors/applicationSelectors";
+import type { AppState } from "ee/reducers";
 import { StyledEntity } from "pages/Editor/Explorer/Common/components";
-import { resolveAsSpaceChar } from "utils/helpers";
-import { updatePage } from "actions/pageActions";
+import { toValidPageName } from "utils/helpers";
+import { updatePageAction } from "actions/pageActions";
 import { useGetPageFocusUrl, useCurrentAppState } from "pages/Editor/IDE/hooks";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 import { toggleInOnboardingWidgetSelection } from "actions/onboardingActions";
 import history, { NavigationMethod } from "utils/history";
 import { mapTree } from "utils/treeUtils";
-const PageElement = ({ page }: { page: Page }) => {
+const PageElement = ({
+  onClick,
+  page,
+}: {
+  page: Page;
+  onClick?: () => void;
+}) => {
   const dispatch = useDispatch();
   const location = useLocation();
-  const appState = useCurrentAppState();
+  const navigateToUrl = useGetPageFocusUrl(page.basePageId);
   const currentLayout = useSelector(getCurrentApplication)?.viewerLayout;
-  const navigateToUrl = useGetPageFocusUrl(page.pageId, appState);
   const ref = useRef<null | HTMLDivElement>(null);
 
   const currentPageId = useSelector(getCurrentPageId);
@@ -53,27 +57,6 @@ const PageElement = ({ page }: { page: Page }) => {
     PERMISSION_TYPE.EXPORT_APPLICATION,
   );
 
-  const isHiddenPage = useMemo(() => {
-    if (currentLayout) {
-      try {
-        const current = JSON.parse(currentLayout);
-        const pagesTree = current?.treeData || []
-        let hiddenPages:any =[]
-        pagesTree?.map((pItem:any) => {
-          mapTree(pItem, (p: any) => {
-            if (p?.isHidden) {
-              hiddenPages.push(p.key)
-            }
-          })
-        })
-        return hiddenPages.includes(page.pageId);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    return false;
-  }, [currentLayout, page]);
-
   useEffect(() => {
     if (ref.current && isCurrentPage) {
       ref.current.scrollIntoView({
@@ -95,6 +78,9 @@ const PageElement = ({ page }: { page: Page }) => {
       history.push(navigateToUrl, {
         invokedBy: NavigationMethod.EntityExplorer,
       });
+      if (onClick) {
+        onClick();
+      }
     },
     [location.pathname, currentPageId, navigateToUrl],
   );
@@ -109,6 +95,7 @@ const PageElement = ({ page }: { page: Page }) => {
       isHidden={!!page.isHidden}
       key={page.pageId + "_context-menu"}
       name={page.pageName}
+      onItemSelected={onClick}
       pageId={page.pageId}
     />
   );
@@ -120,18 +107,18 @@ const PageElement = ({ page }: { page: Page }) => {
       canEditEntityName={canManagePages}
       className={`page fullWidth ${isCurrentPage && "activePage"}`}
       contextMenu={contextMenu}
-      disabled={isHiddenPage}
+      disabled={page.isHidden}
       entityId={page.pageId}
       icon={icon}
       isDefaultExpanded={isCurrentPage}
       key={page.pageId}
       name={page.pageName}
-      onNameEdit={resolveAsSpaceChar}
+      onNameEdit={toValidPageName}
       ref={ref}
       searchKeyword={""}
-      step={1}
+      step={0}
       updateEntityName={(id, name) =>
-        updatePage({ id, name, isHidden: !!page.isHidden })
+        updatePageAction({ id, name, isHidden: !!page.isHidden })
       }
     />
   );

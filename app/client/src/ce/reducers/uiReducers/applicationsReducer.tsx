@@ -2,24 +2,24 @@ import { createReducer } from "utils/ReducerUtils";
 import type {
   ReduxAction,
   ApplicationPayload,
-} from "@appsmith/constants/ReduxActionConstants";
+} from "ee/constants/ReduxActionConstants";
 import {
   ReduxActionTypes,
   ReduxActionErrorTypes,
-} from "@appsmith/constants/ReduxActionConstants";
+} from "ee/constants/ReduxActionConstants";
 import {
   createMessage,
   ERROR_MESSAGE_CREATE_APPLICATION,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import type {
   AppEmbedSetting,
   PageDefaultMeta,
   UpdateApplicationRequest,
-} from "@appsmith/api/ApplicationApi";
+} from "ee/api/ApplicationApi";
 import type { CreateApplicationFormValues } from "pages/Applications/helpers";
 import type { AppLayoutConfig } from "reducers/entityReducers/pageListReducer";
 import type { ConnectToGitResponse } from "actions/gitSyncActions";
-import type { IconNames } from "design-system";
+import type { IconNames } from "@appsmith/ads";
 import type { NavigationSetting, ThemeSetting } from "constants/AppConstants";
 import {
   defaultNavigationSetting,
@@ -55,8 +55,10 @@ export const initialState: ApplicationsReduxState = {
     isFetchingAllUsers: false,
   },
   partialImportExport: {
+    isExportModalOpen: false,
     isExporting: false,
     isExportDone: false,
+    isImportModalOpen: false,
     isImporting: false,
     isImportDone: false,
   },
@@ -253,6 +255,8 @@ export const handlers = {
   }),
   [ReduxActionTypes.IMPORT_APPLICATION_SUCCESS]: (
     state: ApplicationsReduxState,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     action: ReduxAction<{ importedApplication: any }>,
   ) => {
     const importedApplication = action.payload;
@@ -290,6 +294,7 @@ export const handlers = {
     ...state,
     partialImportExport: {
       ...state.partialImportExport,
+      isImportModalOpen: false,
       isImporting: false,
       isImportDone: true,
     },
@@ -300,6 +305,7 @@ export const handlers = {
     ...state,
     partialImportExport: {
       ...state.partialImportExport,
+      isImportModalOpen: false,
       isImporting: false,
       isImportDone: true,
     },
@@ -425,8 +431,12 @@ export const handlers = {
   }), // updating default branch when git sync on branch list
   [ReduxActionTypes.FETCH_BRANCHES_SUCCESS]: (
     state: ApplicationsReduxState,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     action: ReduxAction<any[]>,
   ) => {
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const defaultBranch = action.payload.find((branch: any) => branch.default);
     if (defaultBranch) {
       return {
@@ -701,6 +711,26 @@ export const handlers = {
       currentApplicationIdForCreateNewApp: undefined,
     };
   },
+  [ReduxActionTypes.PARTIAL_IMPORT_MODAL_OPEN]: (
+    state: ApplicationsReduxState,
+    action: ReduxAction<boolean>,
+  ) => ({
+    ...state,
+    partialImportExport: {
+      ...state.partialImportExport,
+      isImportModalOpen: action.payload,
+    },
+  }),
+  [ReduxActionTypes.PARTIAL_EXPORT_MODAL_OPEN]: (
+    state: ApplicationsReduxState,
+    action: ReduxAction<boolean>,
+  ) => ({
+    ...state,
+    partialImportExport: {
+      ...state.partialImportExport,
+      isExportModalOpen: action.payload,
+    },
+  }),
   [ReduxActionTypes.PARTIAL_EXPORT_INIT]: (state: ApplicationsReduxState) => ({
     ...state,
     partialImportExport: {
@@ -715,6 +745,7 @@ export const handlers = {
     ...state,
     partialImportExport: {
       ...state.partialImportExport,
+      isExportModalOpen: false,
       isExporting: false,
       isExportDone: true,
     },
@@ -725,6 +756,7 @@ export const handlers = {
     ...state,
     partialImportExport: {
       ...state.partialImportExport,
+      isExportModalOpen: false,
       isExporting: false,
       isExportDone: true,
     },
@@ -744,6 +776,12 @@ export const handlers = {
     return {
       ...state,
       currentPluginIdForCreateNewApp: undefined,
+    };
+  },
+  [ReduxActionTypes.RESET_EDITOR_REQUEST]: (state: ApplicationsReduxState) => {
+    return {
+      ...state,
+      isSavingNavigationSetting: false,
     };
   },
 };
@@ -770,6 +808,8 @@ export interface ApplicationsReduxState {
   previewWxaCodeFailed: boolean;
   importedApplication: unknown;
   isImportAppModalOpen: boolean;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   workspaceIdForImport: any;
   pageIdForImport: string;
   isDatasourceConfigForImportFetched?: boolean;
@@ -784,8 +824,10 @@ export interface ApplicationsReduxState {
   };
   currentApplicationIdForCreateNewApp?: string;
   partialImportExport: {
+    isExportModalOpen: boolean;
     isExporting: boolean;
     isExportDone: boolean;
+    isImportModalOpen: boolean;
     isImporting: boolean;
     isImportDone: boolean;
   };
@@ -794,6 +836,7 @@ export interface ApplicationsReduxState {
 
 export interface Application {
   id: string;
+  baseId: string;
   name: string;
   workspaceId: string;
   isPublic: boolean;

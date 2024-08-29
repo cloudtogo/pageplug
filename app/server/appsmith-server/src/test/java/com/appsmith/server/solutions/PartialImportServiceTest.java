@@ -4,7 +4,6 @@ import com.appsmith.external.models.DBAuth;
 import com.appsmith.external.models.Datasource;
 import com.appsmith.external.models.DatasourceConfiguration;
 import com.appsmith.external.models.DatasourceStorageDTO;
-import com.appsmith.external.models.DefaultResources;
 import com.appsmith.external.models.Property;
 import com.appsmith.server.actioncollections.base.ActionCollectionService;
 import com.appsmith.server.applications.base.ApplicationService;
@@ -18,6 +17,7 @@ import com.appsmith.server.domains.User;
 import com.appsmith.server.domains.Workspace;
 import com.appsmith.server.dtos.ApplicationJson;
 import com.appsmith.server.dtos.BuildingBlockDTO;
+import com.appsmith.server.dtos.BuildingBlockResponseDTO;
 import com.appsmith.server.dtos.PageDTO;
 import com.appsmith.server.helpers.MockPluginExecutor;
 import com.appsmith.server.helpers.PluginExecutorHelper;
@@ -40,7 +40,6 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,7 +53,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -70,7 +68,6 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class PartialImportServiceTest {
 
@@ -281,7 +278,7 @@ public class PartialImportServiceTest {
                 .block();
 
         String pageId = newPageService
-                .findById(testApplication.getPages().get(0).getId(), Optional.empty())
+                .findById(testApplication.getPages().get(0).getId(), null)
                 .block()
                 .getId();
 
@@ -334,13 +331,8 @@ public class PartialImportServiceTest {
         PageDTO savedPage = new PageDTO();
         savedPage.setName("Page 2");
         savedPage.setApplicationId(application.getId());
-        DefaultResources defaultResources = new DefaultResources();
-        defaultResources.setApplicationId(application.getId());
-        defaultResources.setBranchName("master");
-        savedPage.setDefaultResources(defaultResources);
-        savedPage = applicationPageService
-                .createPageWithBranchName(savedPage, "master")
-                .block();
+        savedPage.setBranchName("master");
+        savedPage = applicationPageService.createPage(savedPage).block();
 
         Part filePart = createFilePart("test_assets/ImportExportServiceTest/partial-export-valid-without-widget.json");
 
@@ -399,7 +391,7 @@ public class PartialImportServiceTest {
                 .block();
 
         String pageId = newPageService
-                .findById(testApplication.getPages().get(0).getId(), Optional.empty())
+                .findById(testApplication.getPages().get(0).getId(), null)
                 .block()
                 .getId();
 
@@ -462,8 +454,13 @@ public class PartialImportServiceTest {
         ApplicationJson applicationJson = (ApplicationJson)
                 importService.extractArtifactExchangeJson(filePart).block();
         // Mock the call to fetch the json file from CS
-        Mockito.when(applicationTemplateService.getApplicationJsonFromTemplate(Mockito.anyString()))
+        Mockito.when(applicationTemplateService.getApplicationJsonFromTemplate("templatedId"))
                 .thenReturn(Mono.just(applicationJson));
+
+        ApplicationJson applicationJson1 = (ApplicationJson)
+                importService.extractArtifactExchangeJson(filePart).block();
+        Mockito.when(applicationTemplateService.getApplicationJsonFromTemplate("templatedId1"))
+                .thenReturn(Mono.just(applicationJson1));
 
         // Create an application with all resources
         Application testApplication = new Application();
@@ -475,7 +472,7 @@ public class PartialImportServiceTest {
                 .block();
 
         String pageId = newPageService
-                .findById(testApplication.getPages().get(0).getId(), Optional.empty())
+                .findById(testApplication.getPages().get(0).getId(), null)
                 .block()
                 .getId();
         BuildingBlockDTO buildingBlockDTO = new BuildingBlockDTO();
@@ -484,16 +481,33 @@ public class PartialImportServiceTest {
         buildingBlockDTO.setWorkspaceId(workspaceId);
         buildingBlockDTO.setTemplateId("templatedId");
 
-        Mono<String> result = partialImportService
-                .importResourceInPage(workspaceId, testApplication.getId(), pageId, null, filePart)
-                .then(partialImportService.importBuildingBlock(buildingBlockDTO, null));
+        BuildingBlockDTO buildingBlockDTO1 = new BuildingBlockDTO();
+        buildingBlockDTO1.setApplicationId(testApplication.getId());
+        buildingBlockDTO1.setPageId(pageId);
+        buildingBlockDTO1.setWorkspaceId(workspaceId);
+        buildingBlockDTO1.setTemplateId("templatedId1");
+
+        Mono<Tuple3<BuildingBlockResponseDTO, List<ActionCollection>, List<NewAction>>> result = partialImportService
+                .importBuildingBlock(buildingBlockDTO)
+                .flatMap(s -> partialImportService.importBuildingBlock(buildingBlockDTO1))
+                .flatMap(buildingBlockResponseDTO -> {
+                    return Mono.zip(
+                            Mono.just(buildingBlockResponseDTO),
+                            actionCollectionService.findByPageId(pageId).collectList(),
+                            newActionService
+                                    .findByPageId(pageId, Optional.empty())
+                                    .collectList());
+                });
 
         StepVerifier.create(result)
-                .assertNext(dsl -> {
-                    assertThat(dsl).isNotNull();
+                .assertNext(tuple -> {
+                    BuildingBlockResponseDTO BuildingBlockResponseDTO1 = tuple.getT1();
+                    List<ActionCollection> actionCollectionList = tuple.getT2();
+                    List<NewAction> actionList = tuple.getT3();
+                    assertThat(BuildingBlockResponseDTO1.getWidgetDsl()).isNotNull();
                     // Compare the json string of widget DSL,
                     // the binding names will be updated, and hence the json will be different
-                    assertThat(dsl)
+                    assertThat(BuildingBlockResponseDTO1.getWidgetDsl())
                             .isNotEqualTo(applicationJson
                                     .getPageList()
                                     .get(0)
@@ -501,6 +515,13 @@ public class PartialImportServiceTest {
                                     .getLayouts()
                                     .get(0)
                                     .getDsl());
+                    List<String> actionIds =
+                            actionList.stream().map(action -> action.getId()).toList();
+
+                    BuildingBlockResponseDTO1.getOnPageLoadActions().forEach(action -> {
+                        assertThat(action.getName()).isIn("updateProductVariant1", "getProducts1", "updateProduct1");
+                        assertThat(actionIds).contains(action.getId());
+                    });
                 })
                 .verifyComplete();
     }

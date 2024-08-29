@@ -19,10 +19,16 @@ import {
  * This is because when representing on the UI, we show column values which add up to SectionColumns
  * Also space distribution algorithm(redistributeSpaceWithDynamicMinWidth) works with the flex-grow values.
  */
-export const convertFlexGrowToFlexBasis = (
+export const convertFlexGrowToFlexBasis = (flexGrow: number) => {
+  const columns = SectionColumns / flexGrow;
+  // We calculate the total gap count and distribute it proportionally between the zones.
+  return `calc(100% / ${columns} - (${columns} - 1) * var(--outer-spacing-4) / ${columns})`;
+};
+
+export const convertFlexGrowToFlexBasisForPropPane = (
   flexGrow: number,
   columns = SectionColumns,
-) => {
+): string => {
   return `${(flexGrow / columns) * 100}%`;
 };
 
@@ -160,10 +166,10 @@ export const resetCSSOnZones = (spaceDistributed: {
     const zonePropDom = document.getElementById(getPropertyPaneZoneId(zoneId));
     if (zoneDom) {
       zoneDom.style.flexBasis = "";
-      zoneDom.style.transition = "all 0.3s ease";
+      zoneDom.style.transition = "flex-basis 0.3s ease";
       if (zonePropDom) {
         zonePropDom.style.flexBasis = "";
-        zonePropDom.style.transition = "all 0.3s ease";
+        zonePropDom.style.transition = "flex-basis 0.3s ease";
       }
       setTimeout(() => {
         zoneDom.style.transition = "";

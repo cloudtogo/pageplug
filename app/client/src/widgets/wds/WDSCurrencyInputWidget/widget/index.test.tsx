@@ -1,8 +1,10 @@
 import type { CurrencyInputWidgetProps } from "./types";
-import { defaultValueValidation } from "./config/propertyPaneConfig/validations";
+import { defaultValueValidation } from "../config/propertyPaneConfig/validations";
 import _ from "lodash";
 
 describe("defaultValueValidation", () => {
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let result: any;
 
   it("should validate defaulttext", () => {

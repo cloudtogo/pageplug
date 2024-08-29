@@ -1,13 +1,12 @@
-import { getInstanceId } from "@appsmith/selectors/tenantSelectors";
-import { getAppsmithConfigs } from "@appsmith/configs";
+import { getInstanceId } from "ee/selectors/tenantSelectors";
 import { useSelector } from "react-redux";
 import { ENTERPRISE_PRICING_PAGE } from "constants/ThirdPartyConstants";
 import { useMemo } from "react";
+import { getUserSource } from "ee/utils/AnalyticsUtil";
 
 export const useAppsmithEnterpriseLink = (feature: string) => {
   const instanceId = useSelector(getInstanceId);
-  const { cloudHosting } = getAppsmithConfigs();
-  const source = cloudHosting ? "cloud" : "ce";
+  const source = getUserSource();
   const constructedUrl = useMemo(() => {
     const url = new URL(ENTERPRISE_PRICING_PAGE);
     if (source) url.searchParams.append("source", source);

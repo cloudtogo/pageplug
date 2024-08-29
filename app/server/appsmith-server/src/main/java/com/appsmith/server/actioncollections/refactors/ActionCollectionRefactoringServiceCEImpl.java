@@ -16,12 +16,10 @@ import com.appsmith.server.services.AstService;
 import com.appsmith.server.solutions.ActionPermission;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -101,35 +99,20 @@ public class ActionCollectionRefactoringServiceCEImpl implements EntityRefactori
     }
 
     @Override
-    public Mono<Void> updateRefactoredEntity(RefactorEntityNameDTO refactorEntityNameDTO, String branchName) {
+    public Mono<Void> updateRefactoredEntity(RefactorEntityNameDTO refactorEntityNameDTO) {
         String newName = refactorEntityNameDTO.getNewName();
         String actionCollectionId = refactorEntityNameDTO.getActionCollectionId();
 
         Mono<ActionCollectionDTO> branchedActionCollectionDTOMono;
-        if (!StringUtils.hasLength(branchName)) {
-            branchedActionCollectionDTOMono = actionCollectionService.findActionCollectionDTObyIdAndViewMode(
-                    actionCollectionId, false, actionPermission.getEditPermission());
-        } else {
-            branchedActionCollectionDTOMono = actionCollectionService
-                    .findByBranchNameAndDefaultCollectionId(
-                            branchName, actionCollectionId, actionPermission.getEditPermission())
-                    .flatMap(actionCollection ->
-                            actionCollectionService.generateActionCollectionByViewMode(actionCollection, false));
-        }
+        branchedActionCollectionDTOMono = actionCollectionService.findActionCollectionDTObyIdAndViewMode(
+                actionCollectionId, false, actionPermission.getEditPermission());
 
         return branchedActionCollectionDTOMono
                 .flatMap(branchedActionCollection -> {
-                    final HashMap<String, String> actionIds = new HashMap<>();
-                    if (branchedActionCollection.getDefaultToBranchedActionIdsMap() != null) {
-                        actionIds.putAll(branchedActionCollection.getDefaultToBranchedActionIdsMap());
-                    }
-                    if (branchedActionCollection.getDefaultToBranchedArchivedActionIdsMap() != null) {
-                        actionIds.putAll(branchedActionCollection.getDefaultToBranchedArchivedActionIdsMap());
-                    }
-
-                    Flux<ActionDTO> actionUpdatesFlux = Flux.fromIterable(actionIds.values())
-                            .flatMap(actionId -> newActionService.findActionDTObyIdAndViewMode(
-                                    actionId, false, actionPermission.getEditPermission()))
+                    Flux<ActionDTO> actionUpdatesFlux = newActionService
+                            .findByCollectionIdAndViewMode(
+                                    branchedActionCollection.getId(), false, actionPermission.getEditPermission())
+                            .map(action -> newActionService.generateActionByViewMode(action, false))
                             .flatMap(actionDTO -> {
                                 actionDTO.setFullyQualifiedName(newName + "." + actionDTO.getName());
                                 return newActionService

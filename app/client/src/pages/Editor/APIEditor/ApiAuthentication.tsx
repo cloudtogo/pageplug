@@ -5,24 +5,24 @@ import styled from "styled-components";
 import { connect, useSelector } from "react-redux";
 import { AuthType } from "entities/Datasource/RestAPIForm";
 import { formValueSelector } from "redux-form";
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import {
   EDIT_DATASOURCE_MESSAGE,
   OAUTH_2_0,
   OAUTH_ERROR,
   SAVE_DATASOURCE_MESSAGE,
   createMessage,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import StoreAsDatasource from "components/editorComponents/StoreAsDatasource";
-import { getCurrentAppWorkspace } from "@appsmith/selectors/selectedWorkspaceSelectors";
-import { Icon, Text } from "design-system";
-import { getCurrentEnvironmentId } from "@appsmith/selectors/environmentSelectors";
+import { getCurrentAppWorkspace } from "ee/selectors/selectedWorkspaceSelectors";
+import { Icon, Text } from "@appsmith/ads";
+import { getCurrentEnvironmentId } from "ee/selectors/environmentSelectors";
 import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
+import { FEATURE_FLAG } from "ee/entities/FeatureFlag";
 import {
   getHasCreateDatasourcePermission,
   getHasManageDatasourcePermission,
-} from "@appsmith/utils/BusinessFeatures/permissionPageHelpers";
+} from "ee/utils/BusinessFeatures/permissionPageHelpers";
 interface ReduxStateProps {
   datasource: EmbeddedRestDatasource;
 }
@@ -33,7 +33,9 @@ const AuthContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding: var(--ads-v2-spaces-5);
+  gap: var(--ads-v2-spaces-3);
 `;
 
 const OAuthContainer = styled.div`
@@ -53,10 +55,6 @@ const OAuthText = styled.span<ErrorProps>`
       ? "var(--ads-v2-color-fg-error)"
       : "var(--ads-v2-color-fg-success)"};
   margin-left: 5px;
-`;
-
-const DescriptionText = styled(Text)`
-  margin: 12px auto;
 `;
 
 function OAuthLabel(props: ErrorProps) {
@@ -118,11 +116,11 @@ function ApiAuthentication(props: Props): JSX.Element {
   return (
     <AuthContainer>
       {authType === AuthType.OAuth2 && <OAuthLabel hasError={hasError} />}
-      <DescriptionText kind="body-m">
+      <Text kind="body-m">
         {shouldSave
           ? createMessage(SAVE_DATASOURCE_MESSAGE)
           : createMessage(EDIT_DATASOURCE_MESSAGE)}
-      </DescriptionText>
+      </Text>
       <StoreAsDatasource
         datasourceId={datasourceId}
         enable={isEnabled}
@@ -132,6 +130,8 @@ function ApiAuthentication(props: Props): JSX.Element {
   );
 }
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mapStateToProps = (state: AppState, ownProps: any): ReduxStateProps => {
   const apiFormValueSelector = formValueSelector(ownProps.formName);
   const datasourceFromAction = apiFormValueSelector(state, "datasource");

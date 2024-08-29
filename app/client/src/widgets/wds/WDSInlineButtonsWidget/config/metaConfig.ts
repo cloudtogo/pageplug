@@ -1,14 +1,24 @@
-import IconSVG from "../icon.svg";
-import ThumbnailSVG from "../thumbnail.svg";
-
 import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 export const metaConfig = {
   name: "Inline Buttons",
-  iconSVG: IconSVG,
-  thumbnailSVG: ThumbnailSVG,
   needsMeta: false,
   isCanvas: false,
-  searchTags: ["click", "submit"],
+  searchTags: [
+    "click",
+    "submit",
+    "button",
+    "action",
+    "toolbar",
+    "menu",
+    "panel",
+    "delete",
+    "save",
+    "cancel",
+    "group",
+    "bar",
+    "footer",
+    "form",
+  ],
   tags: [WIDGET_TAGS.BUTTONS],
 };

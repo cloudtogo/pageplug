@@ -1,58 +1,58 @@
-import type { WidgetAddChild } from "actions/pageActions";
-import { updateAndSaveLayout } from "actions/pageActions";
-import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
+import type { ReduxAction } from "ee/constants/ReduxActionConstants";
 import {
   ReduxActionErrorTypes,
   ReduxActionTypes,
   WidgetReduxActionTypes,
-} from "@appsmith/constants/ReduxActionConstants";
+} from "ee/constants/ReduxActionConstants";
+import { ENTITY_TYPE } from "ee/entities/AppsmithConsole/utils";
+import type { WidgetBlueprint } from "WidgetProvider/constants";
+import {
+  BlueprintOperationTypes,
+  GRID_DENSITY_MIGRATION_V1,
+} from "WidgetProvider/constants";
+import WidgetFactory from "WidgetProvider/factory";
+import { generateAutoHeightLayoutTreeAction } from "actions/autoHeightActions";
+import type { WidgetAddChild } from "actions/pageActions";
+import { updateAndSaveLayout } from "actions/pageActions";
 import {
   BUILDING_BLOCK_EXPLORER_TYPE,
   RenderModes,
 } from "constants/WidgetConstants";
-import { ENTITY_TYPE } from "@appsmith/entities/AppsmithConsole/utils";
+import { toast } from "@appsmith/ads";
+import type { DataTree } from "entities/DataTree/dataTreeTypes";
+import produce from "immer";
+import { klona as clone } from "klona/full";
+import { getWidgetMinMaxDimensionsInPixel } from "layoutSystems/autolayout/utils/flexWidgetUtils";
+import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
+import { isFunction } from "lodash";
+import omit from "lodash/omit";
+import log from "loglevel";
 import type {
   CanvasWidgetsReduxState,
   FlattenedWidgetProps,
 } from "reducers/entityReducers/canvasWidgetsReducer";
-import type { WidgetBlueprint } from "WidgetProvider/constants";
 import { all, call, put, select, takeEvery } from "redux-saga/effects";
+import { getDataTree } from "selectors/dataTreeSelectors";
+import {
+  getCanvasWidth,
+  getIsAutoLayout,
+  getIsAutoLayoutMobileBreakPoint,
+} from "selectors/editorSelectors";
 import AppsmithConsole from "utils/AppsmithConsole";
 import { getNextEntityName } from "utils/AppsmithUtils";
 import { generateWidgetProps } from "utils/WidgetPropsUtils";
-import { getDragDetails, getWidget, getWidgets } from "./selectors";
+import { generateReactKey } from "utils/generators";
+import type { WidgetProps } from "widgets/BaseWidget";
+import { isStack } from "../layoutSystems/autolayout/utils/AutoLayoutUtils";
 import {
   buildWidgetBlueprint,
   executeWidgetBlueprintBeforeOperations,
   executeWidgetBlueprintOperations,
   traverseTreeAndExecuteBlueprintChildOperations,
 } from "./WidgetBlueprintSagas";
-import log from "loglevel";
-import { getDataTree } from "selectors/dataTreeSelectors";
-import { generateReactKey } from "utils/generators";
-import type { WidgetProps } from "widgets/BaseWidget";
-import WidgetFactory from "WidgetProvider/factory";
-import omit from "lodash/omit";
-import produce from "immer";
-import {
-  GRID_DENSITY_MIGRATION_V1,
-  BlueprintOperationTypes,
-} from "WidgetProvider/constants";
 import { getPropertiesToUpdate } from "./WidgetOperationSagas";
-import { klona as clone } from "klona/full";
-import type { DataTree } from "entities/DataTree/dataTreeTypes";
-import { generateAutoHeightLayoutTreeAction } from "actions/autoHeightActions";
-import { toast } from "design-system";
-import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
-import { isStack } from "../layoutSystems/autolayout/utils/AutoLayoutUtils";
-import {
-  getCanvasWidth,
-  getIsAutoLayout,
-  getIsAutoLayoutMobileBreakPoint,
-} from "selectors/editorSelectors";
-import { getWidgetMinMaxDimensionsInPixel } from "layoutSystems/autolayout/utils/flexWidgetUtils";
-import { isFunction } from "lodash";
-import type { DragDetails } from "reducers/uiReducers/dragResizeReducer";
+import { getWidget, getWidgets } from "./selectors";
+import { addBuildingBlockToCanvasSaga } from "./BuildingBlockSagas/BuildingBlockAdditionSagas";
 
 const WidgetTypes = WidgetFactory.widgetTypes;
 
@@ -62,6 +62,8 @@ export interface GeneratedWidgetPayload {
 }
 
 interface WidgetAddTabChild {
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tabs: any;
   widgetId: string;
 }
@@ -173,6 +175,26 @@ function* getChildWidgetProps(
   }
 
   widget.widgetId = newWidgetId;
+  // Remove props that don't belong in the DSL and can be accessed using
+  // the widget type's static methods and configurations
+  // Fixes #21825
+  widget.rows = undefined;
+  widget.columns = undefined;
+  widget.name = undefined;
+  widget.iconSVG = undefined;
+  widget.thumbnailSVG = undefined;
+  widget.hideCard = undefined;
+  widget.isDeprecated = undefined;
+  widget.needsMeta = undefined;
+  widget.searchTags = undefined;
+  widget.tags = undefined;
+  widget.displayName = undefined;
+  widget.onCanvasUI = undefined;
+  widget.eagerRender = undefined;
+  widget.needsHeightForContent = undefined;
+  widget.features = undefined;
+  widget.replacement = undefined;
+
   /**
    * un-evaluated childStylesheet used by widgets; so they are to be excluded
    * from the dynamicBindingPathList and they are not included as a part of
@@ -216,6 +238,8 @@ export function* generateChildWidgets(
   params: WidgetAddChild,
   widgets: { [widgetId: string]: FlattenedWidgetProps },
   propsBlueprint?: WidgetBlueprint,
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any {
   // Get the props for the widget
   const widget = yield getChildWidgetProps(parent, params, widgets);
@@ -363,7 +387,13 @@ export function* getUpdateDslAfterCreatingChild(
  *
  * @param addChildAction
  */
-export function* addChildSaga(addChildAction: ReduxAction<WidgetAddChild>) {
+export function* addChildSaga(
+  addChildAction: ReduxAction<
+    WidgetAddChild & {
+      shouldReplay?: boolean;
+    }
+  >,
+) {
   try {
     const start = performance.now();
     toast.dismiss();
@@ -384,8 +414,11 @@ export function* addChildSaga(addChildAction: ReduxAction<WidgetAddChild>) {
     const updatedWidgets: {
       [widgetId: string]: FlattenedWidgetProps;
     } = yield call(getUpdateDslAfterCreatingChild, addChildAction.payload);
-
-    yield put(updateAndSaveLayout(updatedWidgets));
+    yield put(
+      updateAndSaveLayout(updatedWidgets, {
+        shouldReplay: addChildAction.payload.shouldReplay,
+      }),
+    );
     yield put({
       type: ReduxActionTypes.RECORD_RECENTLY_ADDED_WIDGET,
       payload: [addChildAction.payload.newWidgetId],
@@ -453,6 +486,8 @@ function* addNewTabChildSaga(
   const newTabId = generateReactKey({ prefix: "tab" });
   const newTabLabel = getNextEntityName(
     "Tab ",
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     tabsArray.map((tab: any) => tab.label),
   );
 
@@ -466,6 +501,8 @@ function* addNewTabChildSaga(
       isVisible: true,
     },
   };
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const newTabProps: any = getChildTabData(tabProps, {
     id: newTabId,
     label: newTabLabel,
@@ -482,21 +519,11 @@ function* addNewTabChildSaga(
 
 function* addUIEntitySaga(addEntityAction: ReduxAction<WidgetAddChild>) {
   try {
-    if (addEntityAction.payload.type === BUILDING_BLOCK_EXPLORER_TYPE) {
-      const dragDetails: DragDetails = yield select(getDragDetails);
-      const buildingblockName = dragDetails.newWidget.displayName;
-      const skeletonWidgetName = `loading_${buildingblockName
-        .toLowerCase()
-        .replace(/ /g, "_")}`;
-      const addSkeletonWidgetAction: ReduxAction<WidgetAddChild> = {
-        ...addEntityAction,
-        payload: {
-          ...addEntityAction.payload,
-          type: "SKELETON_WIDGET",
-          widgetName: skeletonWidgetName,
-        },
-      };
-      yield call(addChildSaga, addSkeletonWidgetAction);
+    const { payload } = addEntityAction;
+    const { type } = payload;
+
+    if (type === BUILDING_BLOCK_EXPLORER_TYPE) {
+      yield call(addBuildingBlockToCanvasSaga, addEntityAction);
     } else {
       yield call(addChildSaga, addEntityAction);
     }

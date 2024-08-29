@@ -32,6 +32,7 @@ import {
 import { generateReactKey } from "widgets/WidgetUtils";
 import { LabelOrientation } from "../constants";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 import { WIDGET_TAGS } from "constants/WidgetConstants";
 import { EChartsDatasetBuilder } from "../component/EChartsDatasetBuilder";
 
@@ -66,8 +67,10 @@ class ChartWidget extends BaseWidget<ChartWidgetProps, WidgetState> {
     return {
       name: "Chart",
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: true,
+      needsErrorInfo: true,
       searchTags: ["graph", "visuals", "visualisations"],
     };
   }
@@ -178,6 +181,8 @@ class ChartWidget extends BaseWidget<ChartWidgetProps, WidgetState> {
     };
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       selectedDataPoint: undefined,

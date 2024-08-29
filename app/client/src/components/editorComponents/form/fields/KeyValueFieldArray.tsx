@@ -12,13 +12,13 @@ import {
   CodeEditorBorder,
   EditorSize,
 } from "components/editorComponents/CodeEditor/EditorConfig";
-import { Classes } from "design-system-old";
+import { Classes } from "@appsmith/ads-old";
 import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
 import {
   DEFAULT_MULTI_PART_DROPDOWN_PLACEHOLDER,
   MULTI_PART_DROPDOWN_OPTIONS,
 } from "constants/ApiEditorConstants/CommonApiConstants";
-import { Button, Text } from "design-system";
+import { Button, Text } from "@appsmith/ads";
 import RequestDropdownField from "./RequestDropdownField";
 
 interface CustomStack {
@@ -116,7 +116,7 @@ function KeyValueRow(props: Props & WrappedFieldArrayProps) {
     >
       {!props.hideHeader && (
         <FlexContainer>
-          <Flex className="key-value" size={1}>
+          <Flex className="key-value" size={props.hasType ? 2 : 1}>
             <Text kind="body-m">键</Text>
           </Flex>
           <Flex className="key-value" size={3}>
@@ -126,7 +126,11 @@ function KeyValueRow(props: Props & WrappedFieldArrayProps) {
       )}
       {props.fields.length > 0 && (
         <>
+          {/* TODO: Fix this the next time the file is edited */}
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {props.fields.map((field: any, index: number) => {
+            // TODO: Fix this the next time the file is edited
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const otherProps: Record<string, any> = {};
             if (
               props.actionConfig &&
@@ -144,7 +148,10 @@ function KeyValueRow(props: Props & WrappedFieldArrayProps) {
 
             return (
               <FormRowWithLabel key={index}>
-                <Flex data-location-id={btoa(`${field}.key`)} size={1}>
+                <Flex
+                  data-location-id={btoa(`${field}.key`)}
+                  size={props.hasType ? 2 : 1}
+                >
                   {props.hasType ? (
                     <DynamicTextFieldWithDropdownWrapper>
                       <DynamicTextField
@@ -274,6 +281,8 @@ interface Props {
   label: string;
   rightIcon?: React.ReactNode;
   description?: string;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   actionConfig?: any;
   addOrDeleteFields?: boolean;
   mandatory?: boolean;

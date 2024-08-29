@@ -8,13 +8,12 @@ import com.appsmith.server.domains.UserData;
 import com.appsmith.server.dtos.RecentlyUsedEntityDTO;
 import com.appsmith.server.exceptions.AppsmithError;
 import com.appsmith.server.exceptions.AppsmithException;
-import com.appsmith.server.repositories.ApplicationRepository;
+import com.appsmith.server.git.common.CommonGitService;
 import com.appsmith.server.repositories.AssetRepository;
 import com.appsmith.server.repositories.UserDataRepository;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +26,6 @@ import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -40,9 +38,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @DirtiesContext
 public class UserDataServiceTest {
@@ -62,13 +58,7 @@ public class UserDataServiceTest {
     private AssetRepository assetRepository;
 
     @Autowired
-    private AssetService assetService;
-
-    @Autowired
-    private ApplicationRepository applicationRepository;
-
-    @Autowired
-    private GitService gitService;
+    private CommonGitService commonGitService;
 
     private Mono<User> userMono;
 
@@ -238,19 +228,14 @@ public class UserDataServiceTest {
                 .getForCurrentUser()
                 .flatMap(userData -> {
                     // set recently used org ids to null
-                    userData.setRecentlyUsedWorkspaceIds(null);
                     userData.setRecentlyUsedEntityIds(null);
                     return userDataRepository.save(userData);
                 })
-                .then(userDataService.updateLastUsedAppAndWorkspaceList(application));
+                .then(userDataService.updateLastUsedResourceAndWorkspaceList(
+                        application.getId(), sampleWorkspaceId, null));
 
         StepVerifier.create(saveMono)
                 .assertNext(userData -> {
-                    assertEquals(1, userData.getRecentlyUsedWorkspaceIds().size());
-                    assertEquals(
-                            sampleWorkspaceId,
-                            userData.getRecentlyUsedWorkspaceIds().get(0));
-
                     assertThat(userData.getRecentlyUsedEntityIds()).hasSize(1);
                     assertThat(userData.getRecentlyUsedEntityIds().get(0).getWorkspaceId())
                             .isEqualTo(sampleWorkspaceId);
@@ -282,16 +267,12 @@ public class UserDataServiceTest {
                     Application application = new Application();
                     application.setWorkspaceId(sampleWorkspaceId);
                     application.setId("sample-app-id");
-                    return userDataService.updateLastUsedAppAndWorkspaceList(application);
+                    return userDataService.updateLastUsedResourceAndWorkspaceList(
+                            application.getId(), sampleWorkspaceId, null);
                 });
 
         StepVerifier.create(resultMono)
                 .assertNext(userData -> {
-                    assertEquals(3, userData.getRecentlyUsedWorkspaceIds().size());
-                    assertEquals(
-                            "sample-org-id",
-                            userData.getRecentlyUsedWorkspaceIds().get(0));
-
                     assertThat(userData.getRecentlyUsedEntityIds()).hasSize(3);
                     assertThat(userData.getRecentlyUsedEntityIds().get(0).getWorkspaceId())
                             .isEqualTo("sample-org-id");
@@ -338,20 +319,13 @@ public class UserDataServiceTest {
                     Application application = new Application();
                     application.setId(sampleAppId);
                     application.setWorkspaceId(sampleWorkspaceId);
-                    return userDataService.updateLastUsedAppAndWorkspaceList(application);
+                    return userDataService.updateLastUsedResourceAndWorkspaceList(
+                            application.getId(), sampleWorkspaceId, null);
                 })
                 .cache();
 
         StepVerifier.create(resultMono)
                 .assertNext(userData -> {
-                    assertThat(userData.getRecentlyUsedWorkspaceIds()).hasSize(MAX_RECENT_WORKSPACES_LIMIT);
-                    assertThat(userData.getRecentlyUsedWorkspaceIds().get(0)).isEqualTo(sampleWorkspaceId);
-                    assertThat(userData.getRecentlyUsedWorkspaceIds().get(9)).isEqualTo("org-9");
-
-                    assertThat(userData.getRecentlyUsedAppIds()).hasSize(MAX_RECENT_APPLICATIONS_LIMIT);
-                    assertThat(userData.getRecentlyUsedAppIds().get(0)).isEqualTo(sampleAppId);
-                    assertThat(userData.getRecentlyUsedAppIds().get(19)).isEqualTo("app-19");
-
                     assertThat(userData.getRecentlyUsedEntityIds()).hasSize(MAX_RECENT_WORKSPACES_LIMIT);
                     assertThat(userData.getRecentlyUsedEntityIds().get(0).getWorkspaceId())
                             .isEqualTo(sampleWorkspaceId);
@@ -380,7 +354,7 @@ public class UserDataServiceTest {
             Application application = new Application();
             application.setId(sampleAppId);
             application.setWorkspaceId("org-1");
-            return userDataService.updateLastUsedAppAndWorkspaceList(application);
+            return userDataService.updateLastUsedResourceAndWorkspaceList(application.getId(), "org-1", null);
         });
 
         StepVerifier.create(updateRecentlyUsedEntitiesMono)
@@ -465,7 +439,7 @@ public class UserDataServiceTest {
         GitProfile gitGlobalConfigDTO = createGitProfile(null, "Test 1");
 
         Mono<Map<String, GitProfile>> userDataMono =
-                gitService.updateOrCreateGitProfileForCurrentUser(gitGlobalConfigDTO);
+                commonGitService.updateOrCreateGitProfileForCurrentUser(gitGlobalConfigDTO);
         StepVerifier.create(userDataMono)
                 .expectErrorMatches(throwable -> throwable instanceof AppsmithException
                         && throwable.getMessage().contains(AppsmithError.INVALID_PARAMETER.getMessage("Author Email")))
@@ -478,7 +452,7 @@ public class UserDataServiceTest {
         GitProfile gitProfileDTO = createGitProfile(null, null);
 
         Mono<Map<String, GitProfile>> userDataMono =
-                gitService.updateOrCreateGitProfileForCurrentUser(gitProfileDTO, "defaultAppId");
+                commonGitService.updateOrCreateGitProfileForCurrentUser(gitProfileDTO, "defaultAppId");
         StepVerifier.create(userDataMono)
                 .assertNext(gitProfileMap -> {
                     AssertionsForClassTypes.assertThat(gitProfileMap).isNotNull();
@@ -500,7 +474,7 @@ public class UserDataServiceTest {
         GitProfile gitGlobalConfigDTO = createGitProfile("test@appsmith.com", null);
 
         Mono<Map<String, GitProfile>> userDataMono =
-                gitService.updateOrCreateGitProfileForCurrentUser(gitGlobalConfigDTO);
+                commonGitService.updateOrCreateGitProfileForCurrentUser(gitGlobalConfigDTO);
         StepVerifier.create(userDataMono)
                 .expectErrorMatches(throwable -> throwable instanceof AppsmithException
                         && throwable.getMessage().contains(AppsmithError.INVALID_PARAMETER.getMessage("Author Name")))
@@ -511,10 +485,11 @@ public class UserDataServiceTest {
     @WithUserDetails(value = "api_user")
     public void getAndUpdateDefaultGitProfile_fallbackValueFromUserProfileIfEmpty_updateWithProfile() {
 
-        Mono<GitProfile> gitConfigMono = gitService.getDefaultGitProfileOrCreateIfEmpty();
+        Mono<GitProfile> gitConfigMono = commonGitService.getDefaultGitProfileOrCreateIfEmpty();
 
-        Mono<User> userData =
-                userDataService.getForCurrentUser().flatMap(userData1 -> userService.getById(userData1.getUserId()));
+        Mono<User> userData = userDataService
+                .getForCurrentUser()
+                .flatMap(userData1 -> userService.getByIdWithoutPermissionCheck(userData1.getUserId()));
 
         StepVerifier.create(gitConfigMono.zipWhen(gitProfile -> userData))
                 .assertNext(tuple -> {
@@ -527,7 +502,7 @@ public class UserDataServiceTest {
 
         GitProfile gitGlobalConfigDTO = createGitProfile("test@appsmith.com", "Test 1");
         Mono<Map<String, GitProfile>> gitProfilesMono =
-                gitService.updateOrCreateGitProfileForCurrentUser(gitGlobalConfigDTO);
+                commonGitService.updateOrCreateGitProfileForCurrentUser(gitGlobalConfigDTO);
 
         StepVerifier.create(gitProfilesMono)
                 .assertNext(gitProfileMap -> {

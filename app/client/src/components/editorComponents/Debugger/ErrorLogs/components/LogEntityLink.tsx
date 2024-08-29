@@ -4,10 +4,10 @@ import { useSelector } from "react-redux";
 import { keyBy } from "lodash";
 import type { LogItemProps } from "../ErrorLogItem";
 import { Colors } from "constants/Colors";
-import { getPlugins } from "@appsmith/selectors/entitiesSelector";
+import { getPlugins } from "ee/selectors/entitiesSelector";
 import EntityLink from "../../EntityLink";
 import { DebuggerLinkUI } from "components/editorComponents/Debugger/DebuggerEntityLink";
-import { getIconForEntity } from "@appsmith/components/editorComponents/Debugger/ErrorLogs/getLogIconForEntity";
+import { getIconForEntity } from "ee/components/editorComponents/Debugger/ErrorLogs/getLogIconForEntity";
 import { getPluginImagesFromPlugins } from "pages/Editor/utils";
 
 const EntityLinkWrapper = styled.div`
@@ -32,11 +32,15 @@ const IconWrapper = styled.span`
 // This function is used to fetch the icon component for the entity link.
 const getIcon = (props: LogItemProps, pluginImages: Record<string, string>) => {
   const entityType = props.source?.type;
-  let icon = null;
+  let Icon = null;
   if (entityType) {
-    icon = getIconForEntity[entityType](props, pluginImages);
+    Icon = getIconForEntity[entityType];
   }
-  return icon || <img alt="icon" src={undefined} />;
+  return Icon ? (
+    <Icon {...props} pluginImages={pluginImages} />
+  ) : (
+    <img alt="icon" src={undefined} />
+  );
 };
 
 // This component is used to render the entity link in the error logs.

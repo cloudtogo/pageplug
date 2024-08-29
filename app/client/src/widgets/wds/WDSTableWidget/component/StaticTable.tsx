@@ -5,12 +5,11 @@ import type {
   Row as ReactTableRowType,
 } from "react-table";
 import type { ReactElementType } from "react-window";
-import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 import type { ReactTableColumnProps, TableSizes } from "./Constants";
-import { MULTISELECT_CHECKBOX_WIDTH, TABLE_SCROLLBAR_WIDTH } from "./Constants";
-import type { TableColumnHeaderProps } from "./header/TableColumnHeader";
-import TableColumnHeader from "./header/TableColumnHeader";
+import { MULTISELECT_CHECKBOX_WIDTH } from "./Constants";
+import type { TableColumnHeaderProps } from "./TableHeader/TableColumnHeader";
+import TableColumnHeader from "./TableHeader/TableColumnHeader";
 import { TableBody } from "./TableBody";
 
 type StaticTableProps = TableColumnHeaderProps & {
@@ -37,14 +36,13 @@ type StaticTableProps = TableColumnHeaderProps & {
   isAddRowInProgress: boolean;
   headerProps?: TableColumnHeaderProps | Record<string, never>;
   totalColumnsWidth?: number;
-  scrollContainerStyles: any;
-  useVirtual: boolean;
   tableBodyRef?: React.MutableRefObject<HTMLDivElement | null>;
+  excludeFromTabOrder?: boolean;
 };
 
-const StaticTable = (props: StaticTableProps, ref: React.Ref<SimpleBar>) => {
+const StaticTable = (props: StaticTableProps) => {
   return (
-    <SimpleBar ref={ref} style={props.scrollContainerStyles}>
+    <>
       <TableColumnHeader
         accentColor={props.accentColor}
         borderRadius={props.borderRadius}
@@ -53,6 +51,7 @@ const StaticTable = (props: StaticTableProps, ref: React.Ref<SimpleBar>) => {
         disableDrag={props.disableDrag}
         editMode={props.editMode}
         enableDrag={props.enableDrag}
+        excludeFromTabOrder={props.excludeFromTabOrder}
         handleAllRowSelectClick={props.handleAllRowSelectClick}
         handleColumnFreeze={props.handleColumnFreeze}
         handleReorderColumn={props.handleReorderColumn}
@@ -76,8 +75,9 @@ const StaticTable = (props: StaticTableProps, ref: React.Ref<SimpleBar>) => {
         accentColor={props.accentColor}
         borderRadius={props.borderRadius}
         columns={props.columns}
+        excludeFromTabOrder={props.excludeFromTabOrder}
         getTableBodyProps={props.getTableBodyProps}
-        height={props.height}
+        height={props.pageSize * props.tableSizes.ROW_HEIGHT}
         isAddRowInProgress={props.isAddRowInProgress}
         multiRowSelection={!!props.multiRowSelection}
         pageSize={props.pageSize}
@@ -87,11 +87,9 @@ const StaticTable = (props: StaticTableProps, ref: React.Ref<SimpleBar>) => {
         selectTableRow={props.selectTableRow}
         selectedRowIndex={props.selectedRowIndex}
         selectedRowIndices={props.selectedRowIndices}
-        tableSizes={props.tableSizes}
-        useVirtual={props.useVirtual}
-        width={props.width - TABLE_SCROLLBAR_WIDTH / 2}
+        width={props.width}
       />
-    </SimpleBar>
+    </>
   );
 };
 

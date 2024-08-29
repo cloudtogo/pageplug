@@ -17,6 +17,7 @@ import type {
 import { FILL_WIDGET_MIN_WIDTH } from "constants/minWidthConstants";
 import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 export interface AudioRecorderWidgetProps extends WidgetProps {
@@ -42,7 +43,8 @@ class AudioRecorderWidget extends BaseWidget<
     return {
       name: "录音器",
       iconSVG: IconSVG,
-      tags: [WIDGET_TAGS.FEATRUE],
+      thumbnailSVG: ThumbnailSVG,
+      tags: [WIDGET_TAGS.EXTERNAL],
       needsMeta: true,
       searchTags: ["sound recorder", "voice recorder"],
     };
@@ -234,6 +236,8 @@ class AudioRecorderWidget extends BaseWidget<
     };
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       blobURL: undefined,
@@ -255,7 +259,7 @@ class AudioRecorderWidget extends BaseWidget<
     if (this.props.blobURL) {
       URL.revokeObjectURL(this.props.blobURL);
     }
-
+    this.props.updateWidgetMetaProperty("blobURL", null);
     this.props.updateWidgetMetaProperty("dataURL", undefined);
     this.props.updateWidgetMetaProperty("rawBinary", undefined);
 

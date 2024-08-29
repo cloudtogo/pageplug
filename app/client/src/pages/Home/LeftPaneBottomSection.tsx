@@ -8,11 +8,11 @@ import {
   createMessage,
   DOCUMENTATION,
   WELCOME_TOUR,
-} from "@appsmith/constants/messages";
-import { getIsFetchingApplications } from "@appsmith/selectors/applicationSelectors";
+} from "ee/constants/messages";
+import { getIsFetchingApplications } from "ee/selectors/applicationSelectors";
 import { getOnboardingWorkspaces } from "selectors/onboardingSelectors";
-import { getAppsmithConfigs } from "@appsmith/configs";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import { getAppsmithConfigs } from "ee/configs";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 import { howMuchTimeBeforeText } from "utils/helpers";
 import { onboardingCreateApplication } from "actions/onboardingActions";
 import ProductUpdatesModal from "pages/Applications/ProductUpdatesModal";
@@ -21,16 +21,16 @@ import {
   getOnSelectAction,
 } from "pages/common/CustomizedDropdown/dropdownHelpers";
 import { getCurrentUser } from "selectors/usersSelectors";
-import { getTenantPermissions } from "@appsmith/selectors/tenantSelectors";
-import { isAirgapped } from "@appsmith/utils/airgapHelpers";
-import { ShowUpgradeMenuItem } from "@appsmith/utils/licenseHelpers";
+import { getTenantPermissions } from "ee/selectors/tenantSelectors";
+import { isAirgapped } from "ee/utils/airgapHelpers";
+import { ShowUpgradeMenuItem } from "ee/utils/licenseHelpers";
 import { DOCS_BASE_URL } from "constants/ThirdPartyConstants";
 import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
-import { FEATURE_FLAG } from "@appsmith/entities/FeatureFlag";
+import { FEATURE_FLAG } from "ee/entities/FeatureFlag";
 import {
   getAdminSettingsPath,
   getShowAdminSettings,
-} from "@appsmith/utils/BusinessFeatures/adminSettingsHelpers";
+} from "ee/utils/BusinessFeatures/adminSettingsHelpers";
 
 export const Wrapper = styled.div`
   background-color: var(--ads-v2-color-bg);

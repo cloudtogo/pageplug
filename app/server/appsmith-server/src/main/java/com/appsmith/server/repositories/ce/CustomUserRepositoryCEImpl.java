@@ -3,18 +3,20 @@ package com.appsmith.server.repositories.ce;
 import com.appsmith.server.acl.AclPermission;
 import com.appsmith.server.constants.FieldName;
 import com.appsmith.server.domains.LoginSource;
-import com.appsmith.server.domains.QOAuth2Authorization;
-import com.appsmith.server.domains.QUser;
 import com.appsmith.server.domains.User;
 import com.appsmith.server.helpers.ce.bridge.Bridge;
 import com.appsmith.server.helpers.ce.bridge.BridgeQuery;
+import com.appsmith.server.projections.IdOnly;
 import com.appsmith.server.repositories.BaseAppsmithRepositoryImpl;
 import com.appsmith.server.repositories.CacheableRepositoryHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.mongodb.core.ReactiveMongoOperations;
-import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import com.appsmith.server.domains.QOAuth2Authorization;
+import com.appsmith.server.domains.QUser;
+import com.appsmith.server.domains.User;
+import org.springframework.data.mongodb.core.ReactiveMongoOperations;
+import org.springframework.data.mongodb.core.convert.MongoConverter;
 import reactor.core.publisher.Mono;
 
 import java.util.HashSet;
@@ -52,11 +54,9 @@ public class CustomUserRepositoryCEImpl extends BaseAppsmithRepositoryImpl<User>
     @Override
     public Mono<Boolean> isUsersEmpty() {
         return queryBuilder()
-                .fields(User.Fields.email)
-                // Basically limit to system generated emails plus 1 more.
-                .limit(getSystemGeneratedUserEmails().size() + 1)
-                .all()
-                .filter(user -> !getSystemGeneratedUserEmails().contains(user.getEmail()))
+                .criteria(Bridge.notIn(User.Fields.email, getSystemGeneratedUserEmails()))
+                .limit(1)
+                .all(IdOnly.class)
                 .count()
                 .map(count -> count == 0);
     }

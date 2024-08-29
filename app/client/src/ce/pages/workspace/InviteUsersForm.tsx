@@ -3,14 +3,14 @@ import styled from "styled-components";
 import TagListField from "components/editorComponents/form/fields/TagListField";
 import { reduxForm, SubmissionError } from "redux-form";
 import { connect, useSelector } from "react-redux";
-import type { AppState } from "@appsmith/reducers";
-import { getRolesForField } from "@appsmith/selectors/workspaceSelectors";
+import type { AppState } from "ee/reducers";
+import { getRolesForField } from "ee/selectors/workspaceSelectors";
 import type {
   InviteUsersToWorkspaceFormValues,
   InviteUsersProps,
-} from "@appsmith/pages/workspace/helpers";
-import { inviteUsersToWorkspace } from "@appsmith/pages/workspace/helpers";
-import { INVITE_USERS_TO_WORKSPACE_FORM } from "@appsmith/constants/forms";
+} from "ee/pages/workspace/helpers";
+import { inviteUsersToWorkspace } from "ee/pages/workspace/helpers";
+import { INVITE_USERS_TO_WORKSPACE_FORM } from "ee/constants/forms";
 import {
   createMessage,
   INVITE_USERS_SUBMIT_SUCCESS,
@@ -25,11 +25,11 @@ import {
   CUSTOM_ROLE_DISABLED_OPTION_TEXT,
   CUSTOM_ROLE_TEXT,
   BUSINESS_PRICE_URL,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import { isEmail } from "utils/formhelpers";
-import AnalyticsUtil from "utils/AnalyticsUtil";
-import type { SelectOptionProps } from "design-system";
-import { Callout, Checkbox } from "design-system";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
+import type { SelectOptionProps } from "@appsmith/ads";
+import { Callout, Checkbox } from "@appsmith/ads";
 import {
   Button,
   Icon,
@@ -39,29 +39,30 @@ import {
   Tooltip,
   toast,
   Link,
-} from "design-system";
+} from "@appsmith/ads";
 import {
   fetchRolesForWorkspace,
   fetchUsersForWorkspace,
   fetchWorkspace,
-} from "@appsmith/actions/workspaceActions";
-import {
-  getRampLink,
-  showProductRamps,
-} from "@appsmith/selectors/rampSelectors";
+} from "ee/actions/workspaceActions";
+import { getRampLink, showProductRamps } from "ee/selectors/rampSelectors";
 import {
   RAMP_NAME,
   RampFeature,
   RampSection,
 } from "utils/ProductRamps/RampsControlList";
 import BusinessTag from "components/BusinessTag";
-import { selectFeatureFlags } from "@appsmith/selectors/featureFlagsSelectors";
+import { selectFeatureFlags } from "ee/selectors/featureFlagsSelectors";
 import store from "store";
-import { isGACEnabled } from "@appsmith/utils/planHelpers";
+import { isGACEnabled } from "ee/utils/planHelpers";
 import type { DefaultOptionType } from "rc-select/lib/Select";
+import log from "loglevel";
+import { getAppsmithConfigs } from "ee/configs";
+import { AddScriptTo, ScriptStatus, useScript } from "utils/hooks/useScript";
 
 const featureFlags = selectFeatureFlags(store.getState());
 const isFeatureEnabled = isGACEnabled(featureFlags);
+const { googleRecaptchaSiteKey } = getAppsmithConfigs();
 
 export const StyledForm = styled.form`
   width: 100%;
@@ -164,7 +165,11 @@ const validateFormValues = (values: {
   }
 };
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const validate = (values: any) => {
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const errors: any = {};
   if (!(values.users && values.users.length > 0)) {
     errors["users"] = createMessage(INVITE_USERS_VALIDATION_EMAILS_EMPTY);
@@ -222,6 +227,8 @@ export function InviteUserText({
 }
 
 export function CustomRolesRamp() {
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [dynamicProps, setDynamicProps] = useState<any>({});
   const rampLinkSelector = getRampLink({
     section: RampSection.WorkspaceShare,
@@ -268,22 +275,24 @@ export function CustomRolesRamp() {
   );
 }
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function InviteUsersForm(props: any) {
   const [emailError, setEmailError] = useState("");
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedOption, setSelectedOption] = useState<any[]>([]);
-  const selectedId = props?.selected?.id;
   const showRampSelector = showProductRamps(RAMP_NAME.CUSTOM_ROLES);
   const canShowRamp = useSelector(showRampSelector);
 
   const selected = useMemo(
     () =>
-      selectedId &&
-      props.selected && {
+      props?.selected && {
         description: props.selected.rolename,
         value: props.selected.rolename,
         key: props.selected.id,
       },
-    [selectedId],
+    [props?.selected],
   );
 
   const {
@@ -309,9 +318,10 @@ function InviteUsersForm(props: any) {
   // set state for checking number of users invited
   const [numberOfUsersInvited, updateNumberOfUsersInvited] = useState(0);
 
-  useEffect(() => {
-    setSelectedOption([]);
-  }, [submitSucceeded]);
+  const recaptchaStatus = useScript(
+    `https://www.google.com/recaptcha/api.js?render=${googleRecaptchaSiteKey.apiKey}`,
+    AddScriptTo.HEAD,
+  );
 
   useEffect(() => {
     fetchCurrentWorkspace(props.workspaceId);
@@ -342,13 +352,15 @@ function InviteUsersForm(props: any) {
   const styledRoles =
     props.options && props.options.length > 0
       ? props.options
-      : props.roles.map((role: any) => {
-        return {
-          key: role.id,
-          value: role.name?.split(" - ")[0],
-          description: role.description,
-        };
-      });
+      : // TODO: Fix this the next time the file is edited
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        props.roles.map((role: any) => {
+          return {
+            key: role.id,
+            value: role.name?.split(" - ")[0],
+            description: role.description,
+          };
+        });
 
   const onSelect = (value: string, option: DefaultOptionType) => {
     if (isMultiSelectDropdown) {
@@ -370,39 +382,76 @@ function InviteUsersForm(props: any) {
     }
   };
 
-  return (
-    <StyledForm
-      onSubmit={handleSubmit(async (values: any, dispatch: any) => {
-        const roles = isMultiSelectDropdown
-          ? selectedOption
-            .map((option: DefaultOptionType) => option.value)
-            .join(",")
-          : selectedOption[0].value;
-        validateFormValues({ ...values, role: roles });
-        const usersAsStringsArray = values.users.split(",");
-        // update state to show success message correctly
-        updateNumberOfUsersInvited(usersAsStringsArray.length);
-        const validEmails = usersAsStringsArray.filter((user: string) =>
-          isEmail(user),
-        );
-        const validEmailsString = [...new Set(validEmails)].join(",");
+  const inviteUsersSubmitHandler = async (
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    values: any,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    dispatch: any,
+    recaptchaToken?: string,
+  ) => {
+    const roles = isMultiSelectDropdown
+      ? selectedOption
+          .map((option: DefaultOptionType) => option.value)
+          .join(",")
+      : selectedOption[0].value;
+    validateFormValues({ ...values, role: roles });
+    const usersAsStringsArray = values.users.split(",");
+    // update state to show success message correctly
+    updateNumberOfUsersInvited(usersAsStringsArray.length);
+    const validEmails = usersAsStringsArray.filter((user: string) =>
+      isEmail(user),
+    );
+    const validEmailsString = [...new Set(validEmails)].join(",");
 
-        AnalyticsUtil.logEvent("INVITE_USER", {
-          ...(!isFeatureEnabled ? { users: usersAsStringsArray } : {}),
-          role: roles,
-          numberOfUsersInvited: usersAsStringsArray.length,
-          orgId: props.workspaceId,
-        });
-        return inviteUsersToWorkspace(
-          {
-            ...(props.workspaceId ? { workspaceId: props.workspaceId } : {}),
-            users: validEmailsString,
-            permissionGroupId: roles,
-          },
-          dispatch,
-        );
-      })}
-    >
+    AnalyticsUtil.logEvent("INVITE_USER", {
+      ...(!isFeatureEnabled ? { users: usersAsStringsArray } : {}),
+      role: roles,
+      numberOfUsersInvited: usersAsStringsArray.length,
+      orgId: props.workspaceId,
+    });
+
+    return inviteUsersToWorkspace(
+      {
+        ...(props.workspaceId ? { workspaceId: props.workspaceId } : {}),
+        users: validEmailsString,
+        permissionGroupId: roles,
+        recaptchaToken,
+      },
+      dispatch,
+    );
+  };
+
+  const captchaWrappedInviteUsersSubmitHandler = handleSubmit(
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async (values: any, dispatch: any) => {
+      try {
+        if (
+          googleRecaptchaSiteKey.enabled &&
+          recaptchaStatus === ScriptStatus.READY
+        ) {
+          const token = await window.grecaptcha.execute(
+            googleRecaptchaSiteKey.apiKey,
+            {
+              action: "submit",
+            },
+          );
+
+          return inviteUsersSubmitHandler(values, dispatch, token);
+        } else {
+          return inviteUsersSubmitHandler(values, dispatch);
+        }
+      } catch (error) {
+        log.error(error);
+        throw error; // This will cause the form submission to fail
+      }
+    },
+  );
+
+  return (
+    <StyledForm onSubmit={captchaWrappedInviteUsersSubmitHandler}>
       <StyledInviteFieldGroup>
         <div style={{ width: "60%" }}>
           <TagListField
@@ -506,6 +555,8 @@ export const mapStateToProps = (
   };
 };
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const mapDispatchToProps = (dispatch: any) => ({
   fetchAllRoles: (workspaceId: string) =>
     dispatch(fetchRolesForWorkspace(workspaceId)),

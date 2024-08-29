@@ -18,6 +18,7 @@ import type {
 import { WIDGET_TAGS } from "constants/WidgetConstants";
 import { ResponsiveBehavior } from "layoutSystems/common/utils/constants";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
   static type = "PROGRESS_WIDGET";
 
@@ -25,6 +26,7 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
     return {
       name: "进度", // The display name which will be made in uppercase and show in the widgets panel ( can have spaces )
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: false, // Defines if this widget adds any meta properties
       isCanvas: false, // Defines if this widget has a canvas within in which we can drop other widgets
@@ -252,6 +254,8 @@ class ProgressWidget extends BaseWidget<ProgressWidgetProps, WidgetState> {
     return {};
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {};
   }

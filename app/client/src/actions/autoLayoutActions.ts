@@ -1,9 +1,9 @@
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
 import type { LayoutSystemTypes } from "layoutSystems/types";
 import type { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
 import type {
   CONVERSION_STATES,
-  SnapShotDetails,
+  SnapshotDetails,
 } from "reducers/uiReducers/layoutConversionReducer";
 
 /**
@@ -46,11 +46,11 @@ export const setLayoutConversionStateAction = (
 };
 
 export const updateSnapshotDetails = (
-  snapShotDetails: SnapShotDetails | undefined,
+  snapshotDetails: SnapshotDetails | undefined,
 ) => {
   return {
     type: ReduxActionTypes.UPDATE_SNAPSHOT_DETAILS,
-    payload: snapShotDetails,
+    payload: snapshotDetails,
   };
 };
 export function updateWidgetDimensionAction(

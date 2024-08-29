@@ -1,17 +1,22 @@
 import type CodeMirror from "codemirror";
-import { ENTITY_TYPE } from "@appsmith/entities/AppsmithConsole/utils";
-import type {
-  WidgetEntity,
-  ActionEntity,
-} from "@appsmith/entities/DataTree/types";
+import { ENTITY_TYPE } from "ee/entities/AppsmithConsole/utils";
+import type { WidgetEntity, ActionEntity } from "ee/entities/DataTree/types";
 import { trim } from "lodash";
 import { getDynamicStringSegments } from "utils/DynamicBindingUtils";
 import { EditorSize } from "./EditorConfig";
+import { selectFeatureFlagCheck } from "ee/selectors/featureFlagsSelectors";
+import store from "store";
+import { FEATURE_FLAG } from "ee/entities/FeatureFlag";
+import { SlashCommandMenuOnFocusWidgetProps } from "./constants";
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const removeNewLineChars = (inputValue: any) => {
   return inputValue && inputValue.replace(/(\r\n|\n|\r)/gm, "");
 };
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getInputValue = (inputValue: any) => {
   if (typeof inputValue === "object" || typeof inputValue === "boolean") {
     inputValue = JSON.stringify(inputValue, null, 2);
@@ -61,10 +66,14 @@ export const checkIfCursorInsideBinding = (
   return cursorBetweenBinding;
 };
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isActionEntity = (entity: any): entity is ActionEntity => {
   return entity.ENTITY_TYPE === ENTITY_TYPE.ACTION;
 };
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isWidgetEntity = (entity: any): entity is WidgetEntity => {
   return entity.ENTITY_TYPE === ENTITY_TYPE.WIDGET;
 };
@@ -75,6 +84,8 @@ interface Event {
 }
 
 export const addEventToHighlightedElement = (
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   element: any,
   customClassName: string,
   events?: Event[],
@@ -94,6 +105,8 @@ export const addEventToHighlightedElement = (
 };
 
 export const removeEventFromHighlightedElement = (
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   element: any,
   events?: Event[],
 ) => {
@@ -136,4 +149,21 @@ export function isCursorOnEmptyToken(editor: CodeMirror.Editor) {
   );
 
   return isEmptyString;
+}
+
+// This function tells us whether to show slash command menu on focus or not
+// Based on widget type and the property path
+export function shouldShowSlashCommandMenu(
+  widgetType: string = "",
+  propertyPath: string = "",
+) {
+  const isEaseOfUseFlagEnabled = selectFeatureFlagCheck(
+    store.getState(),
+    FEATURE_FLAG.ab_learnability_ease_of_initial_use_enabled,
+  );
+  return (
+    !!isEaseOfUseFlagEnabled &&
+    !!SlashCommandMenuOnFocusWidgetProps[widgetType] &&
+    SlashCommandMenuOnFocusWidgetProps[widgetType].includes(propertyPath)
+  );
 }

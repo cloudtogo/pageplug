@@ -29,17 +29,26 @@ import type {
   AutocompletionDefinitions,
 } from "WidgetProvider/constants";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 import { WIDGET_TAGS } from "constants/WidgetConstants";
 import { FlexVerticalAlignment } from "layoutSystems/common/utils/constants";
 
 export function defaultSelectedValuesValidation(
   value: unknown,
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  props: any,
 ): ValidationResponse {
   let values: string[] = [];
+  const options: OptionProps[] = props.options || [];
 
   if (typeof value === "string") {
     try {
       values = JSON.parse(value);
+      values = values.filter((value: string) =>
+        options.some((option: OptionProps) => option.value === value),
+      );
+
       if (!Array.isArray(values)) {
         throw new Error();
       }
@@ -71,7 +80,8 @@ class CheckboxGroupWidget extends BaseWidget<
     return {
       name: "勾选组",
       iconSVG: IconSVG,
-      tags: [WIDGET_TAGS.SELECT],
+      thumbnailSVG: ThumbnailSVG,
+      tags: [WIDGET_TAGS.TOGGLES],
       needsMeta: true,
       searchTags: ["checkbox", "group"],
     };
@@ -150,6 +160,12 @@ class CheckboxGroupWidget extends BaseWidget<
         minHeight: { base: "70px" },
         minWidth: { base: "240px" },
       },
+    };
+  }
+
+  static getDependencyMap(): Record<string, string[]> {
+    return {
+      defaultSelectedValues: ["options"],
     };
   }
 
@@ -589,6 +605,8 @@ class CheckboxGroupWidget extends BaseWidget<
     };
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       selectedValues: undefined,
@@ -611,6 +629,17 @@ class CheckboxGroupWidget extends BaseWidget<
   }
 
   componentDidUpdate(prevProps: CheckboxGroupWidgetProps) {
+    const validSelectedValues = prevProps.selectedValues.filter(
+      (value: string) =>
+        prevProps.options.some((option) => option.value === value),
+    );
+    if (validSelectedValues.length !== prevProps.selectedValues.length) {
+      this.props.updateWidgetMetaProperty(
+        "selectedValues",
+        validSelectedValues,
+      );
+    }
+
     // Reset isDirty to false whenever defaultSelectedValues changes
     if (
       xor(this.props.defaultSelectedValues, prevProps.defaultSelectedValues)

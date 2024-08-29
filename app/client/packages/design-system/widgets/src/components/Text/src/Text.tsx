@@ -2,7 +2,7 @@ import clsx from "clsx";
 import {
   getTypographyClassName,
   type TYPOGRAPHY_FONT_WEIGHTS,
-} from "@design-system/theming";
+} from "@appsmith/wds-theming";
 import type { Ref } from "react";
 import React, { forwardRef } from "react";
 
@@ -18,10 +18,11 @@ const _Text = (props: TextProps, ref: Ref<HTMLParagraphElement>) => {
     isBold = false,
     isItalic = false,
     lineClamp,
+    size = "body",
     style,
-    textAlign = "left",
+    textAlign = "start",
     title,
-    variant = "body",
+    wordBreak = "break-all",
     ...rest
   } = props;
 
@@ -36,12 +37,13 @@ const _Text = (props: TextProps, ref: Ref<HTMLParagraphElement>) => {
 
   return (
     <div
-      className={clsx(className, styles.text, getTypographyClassName(variant))}
+      className={clsx(className, styles.text, getTypographyClassName(size))}
       data-color={color ? color : undefined}
       ref={ref}
       style={{
         fontWeight: getFontWeight(fontWeight, isBold),
         fontStyle: isItalic ? "italic" : "normal",
+        wordBreak,
         textAlign,
         ...style,
       }}

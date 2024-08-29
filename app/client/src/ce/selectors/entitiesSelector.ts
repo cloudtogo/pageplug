@@ -1,8 +1,8 @@
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import type {
   ActionData,
   ActionDataState,
-} from "@appsmith/reducers/entityReducers/actionsReducer";
+} from "ee/reducers/entityReducers/actionsReducer";
 import type { ActionResponse } from "api/ActionAPI";
 import { createSelector } from "reselect";
 import type {
@@ -20,7 +20,7 @@ import {
   PluginPackageName,
   PluginType,
 } from "entities/Action";
-import { find, get, groupBy, keyBy, sortBy } from "lodash";
+import { countBy, find, get, groupBy, keyBy, sortBy } from "lodash";
 import ImageAlt from "assets/images/placeholder-image.svg";
 import type { CanvasWidgetsReduxState } from "reducers/entityReducers/canvasWidgetsReducer";
 import { MAIN_CONTAINER_WIDGET_ID } from "constants/WidgetConstants";
@@ -28,7 +28,7 @@ import type { AppStoreState } from "reducers/entityReducers/appReducer";
 import type {
   JSCollectionData,
   JSCollectionDataState,
-} from "@appsmith/reducers/entityReducers/jsActionsReducer";
+} from "ee/reducers/entityReducers/jsActionsReducer";
 import type {
   DefaultPlugin,
   GenerateCRUDEnabledPluginMap,
@@ -36,7 +36,7 @@ import type {
 } from "api/PluginApi";
 import type { JSAction, JSCollection } from "entities/JSCollection";
 import { APP_MODE } from "entities/App";
-import type { ExplorerFileEntity } from "@appsmith/pages/Editor/Explorer/helpers";
+import type { ExplorerFileEntity } from "ee/pages/Editor/Explorer/helpers";
 import type { ActionValidationConfigMap } from "constants/PropertyControlConstants";
 import type { EvaluationError } from "utils/DynamicBindingUtils";
 import {
@@ -47,24 +47,24 @@ import {
 import { InstallState } from "reducers/uiReducers/libraryReducer";
 import recommendedLibraries from "pages/Editor/Explorer/Libraries/recommendedLibraries";
 import type { JSLibrary } from "workers/common/JSLibrary";
-import { getEntityNameAndPropertyPath } from "@appsmith/workers/Evaluation/evaluationUtils";
+import { getEntityNameAndPropertyPath } from "ee/workers/Evaluation/evaluationUtils";
 import { getFormValues } from "redux-form";
 import { TEMP_DATASOURCE_ID } from "constants/Datasource";
-import type { Module } from "@appsmith/constants/ModuleConstants";
+import type { Module } from "ee/constants/ModuleConstants";
 import { getAnvilSpaceDistributionStatus } from "layoutSystems/anvil/integrations/selectors";
 import {
   getCurrentWorkflowActions,
   getCurrentWorkflowJSActions,
-} from "@appsmith/selectors/workflowSelectors";
+} from "ee/selectors/workflowSelectors";
 import { MAX_DATASOURCE_SUGGESTIONS } from "constants/DatasourceEditorConstants";
-import type { CreateNewActionKeyInterface } from "@appsmith/entities/Engine/actionHelpers";
+import type { CreateNewActionKeyInterface } from "ee/entities/Engine/actionHelpers";
 import { getNextEntityName } from "utils/AppsmithUtils";
-import type { EntityItem } from "@appsmith/entities/IDE/constants";
+import type { EntityItem } from "ee/entities/IDE/constants";
 import {
   ActionUrlIcon,
   JsFileIconV2,
 } from "pages/Editor/Explorer/ExplorerIcons";
-import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+import { getAssetUrl } from "ee/utils/airgapHelpers";
 
 export enum GROUP_TYPES {
   API = "APIs",
@@ -96,7 +96,8 @@ export const getDatasources = (state: AppState): Datasource[] => {
 export const getPlugins = (state: AppState) => state.entities.plugins.list;
 
 export enum PluginCategory {
-  Integrations = "Integrations",
+  SAAS = "SaaS integrations",
+  AI = "AI integrations",
   Databases = "Databases",
   APIs = "APIs",
   Others = "Others",
@@ -106,6 +107,8 @@ export interface NewEntityNameOptions {
   prefix: string;
   parentEntityId: string;
   parentEntityKey: CreateNewActionKeyInterface;
+  suffix?: string;
+  startWithoutIndex?: boolean;
 }
 
 export type DatasourceGroupByPluginCategory = Record<
@@ -122,11 +125,11 @@ export const getDatasourcesGroupedByPluginCategory = createSelector(
       const plugin = groupedPlugins[d.pluginId];
       if (
         plugin.type === PluginType.SAAS ||
-        plugin.type === PluginType.REMOTE ||
-        plugin.type === PluginType.AI
+        plugin.type === PluginType.REMOTE
       ) {
-        return PluginCategory.Integrations;
+        return PluginCategory.SAAS;
       }
+      if (plugin.type === PluginType.AI) return PluginCategory.AI;
       if (plugin.type === PluginType.DB) return PluginCategory.Databases;
       if (plugin.type === PluginType.API) return PluginCategory.APIs;
       return PluginCategory.Others;
@@ -388,6 +391,8 @@ export const getPluginTypeFromDatasourceId = (
   return plugin.type;
 };
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getPluginForm = (state: AppState, pluginId: string): any[] => {
   return state.entities.plugins.formConfigs[pluginId];
 };
@@ -406,10 +411,14 @@ export const getIsDatasourceTesting = (state: AppState): boolean => {
   return state.entities.datasources.isTesting;
 };
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getEditorConfig = (state: AppState, pluginId: string): any[] => {
   return state.entities.plugins.editorConfigs[pluginId];
 };
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getSettingConfig = (state: AppState, pluginId: string): any[] => {
   return state.entities.plugins.settingConfigs[pluginId];
 };
@@ -551,7 +560,8 @@ export const getQueryName = (state: AppState, actionId: string): string => {
   return action?.config.name ?? "";
 };
 
-export const getCurrentPageId = (state: AppState) =>
+// * This is only for internal use to avoid cyclic dependency issue
+const getCurrentPageId = (state: AppState) =>
   state.entities.pageList.currentPageId;
 
 export const getDatasourcePlugins = createSelector(getPlugins, (plugins) => {
@@ -578,6 +588,8 @@ export const getPluginNames = createSelector(getPlugins, (plugins) => {
 });
 
 export const getPluginTemplates = createSelector(getPlugins, (plugins) => {
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const pluginTemplates: Record<string, any> = {};
 
   plugins.forEach((plugin) => {
@@ -588,6 +600,8 @@ export const getPluginTemplates = createSelector(getPlugins, (plugins) => {
 });
 
 export const getPluginResponseTypes = createSelector(getPlugins, (plugins) => {
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const pluginResponseTypes: Record<string, any> = {};
 
   plugins.forEach((plugin) => {
@@ -745,6 +759,17 @@ export const getAction = (
   return action ? action.config : undefined;
 };
 
+export const getActionByBaseId = (
+  state: AppState,
+  baseActionId: string,
+): Action | undefined => {
+  const action = find(
+    state.entities.actions,
+    (a) => a.config.baseId === baseActionId,
+  );
+  return action ? action.config : undefined;
+};
+
 export const getActionData = (
   state: AppState,
   actionId: string,
@@ -753,10 +778,21 @@ export const getActionData = (
   return action ? action.data : undefined;
 };
 
-export const getJSCollection = (state: AppState, actionId: string) => {
+export const getJSCollection = (state: AppState, collectionId: string) => {
   const jsaction = find(
     state.entities.jsActions,
-    (a) => a.config.id === actionId,
+    (a) => a.config.id === collectionId,
+  );
+  return jsaction && jsaction.config;
+};
+
+export const getJsCollectionByBaseId = (
+  state: AppState,
+  baseCollectionId: string,
+) => {
+  const jsaction = find(
+    state.entities.jsActions,
+    (a) => a.config.baseId === baseCollectionId,
   );
   return jsaction && jsaction.config;
 };
@@ -806,7 +842,8 @@ export function getPageNameByPageId(state: AppState, pageId: string): string {
 }
 
 const getQueryPaneSavingMap = (state: AppState) => state.ui.queryPane.isSaving;
-const getApiPaneSavingMap = (state: AppState) => state.ui.apiPane.isSaving;
+export const getApiPaneSavingMap = (state: AppState) =>
+  state.ui.apiPane.isSaving;
 const getActionDirtyState = (state: AppState) => state.ui.apiPane.isDirty;
 
 export const isActionSaving = (id: string) =>
@@ -844,7 +881,11 @@ export const getCurrentPageWidgets = createSelector(
 );
 
 export const getParentModalId = (
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   widget: any,
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   pageWidgets: Record<string, any>,
 ) => {
   let parentModalId;
@@ -868,6 +909,8 @@ export const getCanvasWidgetsWithParentId = createSelector(
   getCanvasWidgets,
   (canvasWidgets: CanvasWidgetsReduxState) => {
     return Object.entries(canvasWidgets).reduce(
+      // TODO: Fix this the next time the file is edited
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (res, [widgetId, widget]: any) => {
         const parentModalId = getParentModalId(widget, canvasWidgets);
 
@@ -885,8 +928,12 @@ export const getAllWidgetsMap = createSelector(
   getPageWidgets,
   (widgetsByPage) => {
     return Object.entries(widgetsByPage).reduce(
+      // TODO: Fix this the next time the file is edited
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (res: any, [pageId, pageWidgets]: any) => {
         const widgetsMap = Object.entries(pageWidgets.dsl).reduce(
+          // TODO: Fix this the next time the file is edited
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (res, [widgetId, widget]: any) => {
             const parentModalId = getParentModalId(widget, pageWidgets);
 
@@ -911,6 +958,8 @@ export const getAllWidgetsMap = createSelector(
 export const getAllPageWidgets = createSelector(
   getAllWidgetsMap,
   (widgetsMap) => {
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return Object.entries(widgetsMap).reduce((res: any[], [, widget]: any) => {
       res.push(widget);
       return res;
@@ -1117,7 +1166,11 @@ export const selectFilesForExplorer = createSelector(
         return acc;
       },
       {
+        // TODO: Fix this the next time the file is edited
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         group: "" as any,
+        // TODO: Fix this the next time the file is edited
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         files: [] as any,
       },
     );
@@ -1125,6 +1178,8 @@ export const selectFilesForExplorer = createSelector(
   },
 );
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getActionValidationConfig = (state: AppState, action: any) => {
   const pluginId = action.pluginId;
   return getActionValidationConfigFromPlugin(
@@ -1151,6 +1206,8 @@ export const getAllActionValidationConfig = (state: AppState) => {
 };
 
 function getActionValidationConfigFromPlugin(
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   editorConfigs: any,
   validationConfig: ActionValidationConfigMap,
 ): ActionValidationConfigMap {
@@ -1369,10 +1426,15 @@ export const getDatasourceScopeValue = (
   const configProperty = "datasourceConfiguration.authentication.scopeString";
   const scopeValue = get(formData, configProperty);
   const options = formConfig[0]?.children?.find(
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (child: any) => child?.configProperty === configProperty,
   )?.options;
-  const label = options?.find((option: any) => option.value === scopeValue)
-    ?.label;
+  const label = options?.find(
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (option: any) => option.value === scopeValue,
+  )?.label;
   return label;
 };
 
@@ -1478,7 +1540,13 @@ export const getNewEntityName = createSelector(
   getJSCollections,
   (_state: AppState, options: NewEntityNameOptions) => options,
   (actions, jsCollections, options) => {
-    const { parentEntityId, parentEntityKey, prefix } = options;
+    const {
+      parentEntityId,
+      parentEntityKey,
+      prefix,
+      startWithoutIndex = false,
+      suffix = "",
+    } = options;
 
     const actionNames = actions
       .filter((a) => a.config[parentEntityKey] === parentEntityId)
@@ -1487,7 +1555,15 @@ export const getNewEntityName = createSelector(
       .filter((a) => a.config[parentEntityKey] === parentEntityId)
       .map((a) => a.config.name);
 
-    return getNextEntityName(prefix, actionNames.concat(jsActionNames));
+    const entityNames = actionNames.concat(jsActionNames);
+
+    const prefixExists = entityNames.indexOf(`${prefix}`) > -1;
+
+    return getNextEntityName(
+      prefixExists ? `${prefix}${suffix}` : prefix,
+      entityNames,
+      startWithoutIndex,
+    );
   },
 );
 
@@ -1516,7 +1592,7 @@ export const getQuerySegmentItems = createSelector(
       return {
         icon: ActionUrlIcon(iconUrl),
         title: action.config.name,
-        key: action.config.id,
+        key: action.config.baseId,
         type: action.config.pluginType,
         group,
       };
@@ -1530,7 +1606,7 @@ export const getJSSegmentItems = createSelector(
     const items: EntityItem[] = jsActions.map((js) => ({
       icon: JsFileIconV2(),
       title: js.config.name,
-      key: js.config.id,
+      key: js.config.baseId,
       type: PluginType.JS,
     }));
     return items;
@@ -1539,3 +1615,22 @@ export const getJSSegmentItems = createSelector(
 
 export const getSelectedTableName = (state: AppState) =>
   state.ui.datasourcePane.selectedTableName;
+
+export const getDatasourceUsageCountForApp = createSelector(
+  getActions,
+  getDatasources,
+  (state: AppState, editorType: string) => editorType,
+  (actions, datasources, editorType) => {
+    const actionCount = countBy(actions, "config.datasource.id");
+    const actionDsMap: Record<string, string> = {};
+
+    datasources.forEach((ds) => {
+      actionDsMap[ds.id] = `No queries in this ${editorType}`;
+    });
+    Object.keys(actionCount).forEach((dsId) => {
+      actionDsMap[dsId] = `${actionCount[dsId]} queries in this ${editorType}`;
+    });
+
+    return actionDsMap;
+  },
+);

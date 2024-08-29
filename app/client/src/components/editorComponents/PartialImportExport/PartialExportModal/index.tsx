@@ -1,15 +1,15 @@
-import {
-  PARTIAL_IMPORT_EXPORT,
-  createMessage,
-} from "@appsmith/constants/messages";
-import { getPartialImportExportLoadingState } from "@appsmith/selectors/applicationSelectors";
+import { PARTIAL_IMPORT_EXPORT, createMessage } from "ee/constants/messages";
+import { getPartialImportExportLoadingState } from "ee/selectors/applicationSelectors";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { selectFilesForExplorer } from "ce/selectors/entitiesSelector";
 import {
   selectLibrariesForExplorer,
   selectWidgetsForCurrentPage,
-} from "@appsmith/selectors/entitiesSelector";
-import { partialExportWidgets } from "actions/widgetActions";
+} from "ee/selectors/entitiesSelector";
+import {
+  openPartialExportModal,
+  partialExportWidgets,
+} from "actions/widgetActions";
 import {
   Button,
   Collapsible,
@@ -21,10 +21,10 @@ import {
   ModalFooter,
   ModalHeader,
   Text,
-} from "design-system";
+} from "@appsmith/ads";
 import { ControlIcons } from "icons/ControlIcons";
 import { MenuIcons } from "icons/MenuIcons";
-import { useAppWideAndOtherDatasource } from "@appsmith/pages/Editor/Explorer/hooks";
+import { useAppWideAndOtherDatasource } from "ee/pages/Editor/Explorer/hooks";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { CanvasStructure } from "reducers/uiReducers/pageCanvasStructureReducer";
@@ -36,10 +36,6 @@ import JSObjectsNQueriesExport from "./JSObjectsNQueriesExport";
 import { Bar, ScrollableSection } from "./StyledSheet";
 import WidgetsExport from "./WidgetsExport";
 
-interface Props {
-  handleModalClose: () => void;
-  isModalOpen: boolean;
-}
 const selectedParamsInitValue: PartialExportParams = {
   jsObjects: [],
   datasources: [],
@@ -47,7 +43,7 @@ const selectedParamsInitValue: PartialExportParams = {
   widgets: [],
   queries: [],
 };
-const PartiaExportModel = ({ handleModalClose, isModalOpen }: Props) => {
+export const PartialExportModal = () => {
   const [customJsLibraries, setCustomJsLibraries] = useState<JSLibrary[]>([]);
   const dispatch = useDispatch();
   const [selectedParams, setSelectedParams] = useState<PartialExportParams>(
@@ -77,6 +73,8 @@ const PartiaExportModel = ({ handleModalClose, isModalOpen }: Props) => {
   }, [selectedParams]);
 
   const entities = useMemo(() => {
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const groupedData: Record<string, any> = {};
 
     let currentGroup: unknown = null;
@@ -91,6 +89,8 @@ const PartiaExportModel = ({ handleModalClose, isModalOpen }: Props) => {
     }
     const jsObjects =
       groupedData["JS Objects"] &&
+      // TODO: Fix this the next time the file is edited
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       groupedData["JS Objects"].map((item: any) => item.entity);
     delete groupedData["JS Objects"];
 
@@ -260,10 +260,21 @@ const PartiaExportModel = ({ handleModalClose, isModalOpen }: Props) => {
         widgets: selectOnlyParentIds(canvasWidgets!, selectedParams.widgets),
       }),
     );
+    setSelectedParams(selectedParamsInitValue);
+  };
+
+  const handleModalClose = (open: boolean) => {
+    if (!open) {
+      dispatch(openPartialExportModal(false));
+      setSelectedParams(selectedParamsInitValue);
+    }
   };
 
   return (
-    <Modal onOpenChange={handleModalClose} open={isModalOpen}>
+    <Modal
+      onOpenChange={handleModalClose}
+      open={partialImportExportLoadingState.isExportModalOpen}
+    >
       <ModalContent>
         <ModalHeader>
           <Text className="title" kind="heading-xl">
@@ -329,5 +340,3 @@ const PartiaExportModel = ({ handleModalClose, isModalOpen }: Props) => {
     </Modal>
   );
 };
-
-export default PartiaExportModel;

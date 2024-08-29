@@ -18,7 +18,7 @@ import {
 } from "selectors/appThemingSelectors";
 import type { EchartTheme } from "entities/AppTheming";
 import { AppTheme } from "entities/AppTheming";
-// import AnalyticsUtil from "utils/AnalyticsUtil";
+// import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 // import DeleteThemeModal from "../DeleteThemeModal";
 import { getComplementaryGrayscaleColor } from "widgets/WidgetUtils";
 import { getCurrentApplicationId } from "selectors/editorSelectors";

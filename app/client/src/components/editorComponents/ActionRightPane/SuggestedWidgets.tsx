@@ -5,7 +5,7 @@ import { generateReactKey } from "utils/generators";
 import { Collapsible } from ".";
 import { getTypographyByKey } from "design-system-old";
 import { addSuggestedWidget } from "actions/widgetActions";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 import {
   ADD_NEW_WIDGET,
   ADD_NEW_WIDGET_SUB_HEADING,
@@ -17,14 +17,14 @@ import {
   SUGGESTED_WIDGET_TOOLTIP,
   BINDING_WALKTHROUGH_TITLE,
   BINDING_WALKTHROUGH_DESC,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import type { SuggestedWidget } from "api/ActionAPI";
 
 import { getDataTree } from "selectors/dataTreeSelectors";
 import { getWidgets } from "sagas/selectors";
 import { getNextWidgetName } from "sagas/WidgetOperationUtils";
 import { ASSETS_CDN_URL } from "constants/ThirdPartyConstants";
-import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+import { getAssetUrl } from "ee/utils/airgapHelpers";
 import { Tooltip } from "design-system";
 import type { TextKind } from "design-system";
 import { Text } from "design-system";

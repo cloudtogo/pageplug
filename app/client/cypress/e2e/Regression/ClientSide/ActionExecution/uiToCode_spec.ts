@@ -371,6 +371,7 @@ describe("UI to Code", { tags: ["@tag.JS"] }, () => {
 
     // Edit the success callback of the nested Api2.run
     propPane.SelectActionByTitleAndValue("Execute a query", "Api2.run");
+    agHelper.GetNClick(propPane._actionCollapsibleHeader("Params"));
     agHelper.EnterActionValue(
       "Params",
       `{{{

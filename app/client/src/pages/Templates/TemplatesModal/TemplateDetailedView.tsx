@@ -2,7 +2,8 @@ import {
   createMessage,
   FETCHING_TEMPLATES,
   FORKING_TEMPLATE,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
+import type { AppState } from "ee/reducers";
 import {
   getSimilarTemplatesInit,
   getTemplateInformation,
@@ -23,7 +24,6 @@ import { generatePath, matchPath } from "react-router";
 import { isURLDeprecated, trimQueryString } from "utils/helpers";
 import TemplateDescription from "../Template/TemplateDescription";
 import SimilarTemplates from "../Template/SimilarTemplates";
-import type { AppState } from "@appsmith/reducers";
 import TemplateDetailedViewHeader from "./Components/TemplateDetailedViewHeader";
 import LoadingScreen from "./LoadingScreen";
 import PageSelection from "./PageSelection";

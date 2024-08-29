@@ -15,6 +15,7 @@ export const defaultsConfig = {
   shouldTruncate: false,
   version: 1,
   animateLoading: false,
+  isVisible: true,
   responsiveBehavior: ResponsiveBehavior.Fill,
   blueprint: {
     operations: [

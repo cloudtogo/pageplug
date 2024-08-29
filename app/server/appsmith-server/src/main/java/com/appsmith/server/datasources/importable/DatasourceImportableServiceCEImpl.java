@@ -15,6 +15,7 @@ import com.appsmith.server.datasources.base.DatasourceService;
 import com.appsmith.server.domains.Artifact;
 import com.appsmith.server.domains.Workspace;
 import com.appsmith.server.dtos.ArtifactExchangeJson;
+import com.appsmith.server.dtos.DBOpsType;
 import com.appsmith.server.dtos.ImportingMetaDTO;
 import com.appsmith.server.dtos.MappedImportableResourcesDTO;
 import com.appsmith.server.exceptions.AppsmithError;
@@ -24,6 +25,7 @@ import com.appsmith.server.imports.importable.ImportableServiceCE;
 import com.appsmith.server.imports.importable.artifactbased.ArtifactBasedImportableService;
 import com.appsmith.server.services.SequenceService;
 import com.appsmith.server.services.WorkspaceService;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +39,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static com.appsmith.external.helpers.AppsmithBeanUtils.copyNestedNonNullProperties;
 
@@ -87,7 +88,7 @@ public class DatasourceImportableServiceCEImpl implements ImportableServiceCE<Da
             ArtifactExchangeJson artifactExchangeJson) {
         return workspaceMono.flatMap(workspace -> {
             final Flux<Datasource> existingDatasourceFlux = datasourceService
-                    .getAllByWorkspaceIdWithStorages(workspace.getId(), Optional.empty())
+                    .getAllByWorkspaceIdWithStorages(workspace.getId(), null)
                     .cache();
 
             Mono<List<Datasource>> existingDatasourceMono =
@@ -212,9 +213,16 @@ public class DatasourceImportableServiceCEImpl implements ImportableServiceCE<Da
                                     // Don't update the datasource configuration for already available datasources
                                     existingDatasource.setDatasourceConfiguration(null);
                                     return datasourceService
-                                            .save(existingDatasource)
-                                            .map(createdDatasource ->
-                                                    Tuples.of(createdDatasource.getName(), createdDatasource.getId()));
+                                            .save(existingDatasource, true)
+                                            .map(createdDatasource -> {
+                                                // Add dry run queries for the datasource
+                                                addDryOpsForEntity(
+                                                        DBOpsType.SAVE,
+                                                        mappedImportableResourcesDTO.getDatasourceDryRunQueries(),
+                                                        createdDatasource);
+                                                return Tuples.of(
+                                                        createdDatasource.getName(), createdDatasource.getId());
+                                            });
                                 } else {
                                     // This is explicitly copied over from the map we created before
                                     datasourceStorage.setPluginId(pluginMap.get(datasourceStorage.getPluginId()));
@@ -236,9 +244,16 @@ public class DatasourceImportableServiceCEImpl implements ImportableServiceCE<Da
                                                     datasourceStorage,
                                                     workspace,
                                                     environmentId,
-                                                    importingMetaDTO.getPermissionProvider())
-                                            .map(createdDatasource ->
-                                                    Tuples.of(importedDatasourceName, createdDatasource.getId()));
+                                                    importingMetaDTO.getPermissionProvider(),
+                                                    mappedImportableResourcesDTO)
+                                            .map(createdDatasource -> {
+                                                // Add dry run queries for the datasource
+                                                addDryOpsForEntity(
+                                                        DBOpsType.SAVE,
+                                                        mappedImportableResourcesDTO.getDatasourceDryRunQueries(),
+                                                        createdDatasource);
+                                                return Tuples.of(importedDatasourceName, createdDatasource.getId());
+                                            });
                                 }
                             });
                 })
@@ -267,7 +282,8 @@ public class DatasourceImportableServiceCEImpl implements ImportableServiceCE<Da
             DatasourceStorage datasourceStorage,
             Workspace workspace,
             String environmentId,
-            ImportArtifactPermissionProvider permissionProvider) {
+            ImportArtifactPermissionProvider permissionProvider,
+            MappedImportableResourcesDTO mappedImportableResourcesDTO) {
         /*
            1. If same datasource is present return
            2. If unable to find the datasource create a new datasource with unique name and return
@@ -307,16 +323,20 @@ public class DatasourceImportableServiceCEImpl implements ImportableServiceCE<Da
                     datasourceStorage.setEnvironmentId(environmentId);
 
                     return datasourceService
-                            .findByNameAndWorkspaceId(datasourceStorage.getName(), workspace.getId(), Optional.empty())
+                            .findByNameAndWorkspaceId(datasourceStorage.getName(), workspace.getId(), null)
                             .flatMap(duplicateNameDatasource ->
                                     getUniqueSuffixForDuplicateNameEntity(duplicateNameDatasource, workspace.getId()))
                             .map(dsName -> {
                                 datasourceStorage.setName(datasourceStorage.getName() + dsName);
+
                                 return datasourceService.createDatasourceFromDatasourceStorage(datasourceStorage);
                             })
                             .switchIfEmpty(Mono.just(
                                     datasourceService.createDatasourceFromDatasourceStorage(datasourceStorage)))
-                            .flatMap(datasourceService::createWithoutPermissions);
+                            // DRY RUN queries are not saved, so we need to create them separately at the import service
+                            // solution
+                            .flatMap(datasource -> datasourceService.createWithoutPermissions(
+                                    datasource, mappedImportableResourcesDTO.getDatasourceStorageDryRunQueries()));
                 }))
                 .onErrorResume(throwable -> {
                     log.error("failed to import datasource", throwable);
@@ -385,6 +405,14 @@ public class DatasourceImportableServiceCEImpl implements ImportableServiceCE<Da
 
     @Override
     public Flux<Datasource> getEntitiesPresentInWorkspace(String workspaceId) {
-        return datasourceService.getAllByWorkspaceIdWithStorages(workspaceId, Optional.empty());
+        return datasourceService.getAllByWorkspaceIdWithStorages(workspaceId, null);
+    }
+
+    private void addDryOpsForEntity(
+            DBOpsType queryType, @NonNull Map<DBOpsType, List<Datasource>> dryRunOpsMap, Datasource createdDatasource) {
+        List<Datasource> datasourceList = dryRunOpsMap.get(queryType);
+        datasourceList = datasourceList == null ? new ArrayList<>() : datasourceList;
+        datasourceList.add(createdDatasource);
+        dryRunOpsMap.put(queryType, datasourceList);
     }
 }

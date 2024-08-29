@@ -1,9 +1,6 @@
 import { createSelector } from "reselect";
-import type { AppState } from "@appsmith/reducers";
-import type {
-  Workspace,
-  WorkspaceRole,
-} from "@appsmith/constants/workspaceConstants";
+import type { AppState } from "ee/reducers";
+import type { Workspace, WorkspaceRole } from "ee/constants/workspaceConstants";
 
 export const getRolesFromState = (state: AppState) => {
   return state.ui.workspaces.roles;
@@ -50,7 +47,11 @@ export const getRoles = createSelector(
   },
 );
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getRolesForField = createSelector(getAllRoles, (roles?: any) => {
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return roles.map((role: any) => {
     return {
       id: role.id,
@@ -79,6 +80,9 @@ export const getSearchedWorkspaces = (state: AppState) =>
 
 export const getSearchedApplications = (state: AppState) =>
   state.ui.workspaces.searchEntities?.applications;
+
+export const getSearchedWorkflows = (state: AppState) =>
+  state.ui.workspaces.searchEntities?.workflows;
 
 export const getIsFetchingEntities = (state: AppState) => {
   return state.ui.workspaces.loadingStates.isFetchingEntities;

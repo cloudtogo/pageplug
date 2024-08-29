@@ -1,9 +1,6 @@
 import { transform } from "@babel/standalone/";
 import type { DebuggerLogItem, SrcDoc } from "./types";
-import {
-  CUSTOM_WIDGET_FEATURE,
-  createMessage,
-} from "@appsmith/constants/messages";
+import { CUSTOM_WIDGET_FEATURE, createMessage } from "ee/constants/messages";
 import { CUSTOM_WIDGET_ONREADY_DOC_URL } from "./constants";
 import { compileString } from "sass";
 
@@ -56,10 +53,11 @@ function checkForWarnings(compiledResult: CompiledResult) {
 
   if (code?.length > 0) {
     /*
+     * Check whether the code has an onReady function.
      * We are keeping this check as a simple string check instead of using AST
      * because we want to keep the custom widget compile process as simple as possible.
      */
-    !code.includes("appsmith.onReady(") &&
+    !code.match(/appsmith[\n\t\s]*\.[\n\t\s]*onReady[\n\t\s]*\(/) &&
       compiledResult.warnings.push({
         message: createMessage(
           CUSTOM_WIDGET_FEATURE.debugger.noOnReadyWarning,

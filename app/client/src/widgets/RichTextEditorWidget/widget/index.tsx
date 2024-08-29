@@ -28,6 +28,7 @@ import {
 } from "layoutSystems/common/utils/constants";
 import { DynamicHeight } from "utils/WidgetFeatures";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 
 import type {
   SnipingModeProperty,
@@ -56,6 +57,7 @@ class RichTextEditorWidget extends BaseWidget<
     return {
       name: "富文本编辑器",
       iconSVG: IconSVG,
+      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.FEATRUE],
       needsMeta: true,
       searchTags: ["text", "editor", "richtext", "html", "markdown"],
@@ -460,6 +462,8 @@ class RichTextEditorWidget extends BaseWidget<
     };
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       text: undefined,

@@ -22,6 +22,7 @@ import { POSITIONED_WIDGET } from "constants/componentClassNameConstants";
 import equal from "fast-deep-equal";
 import { widgetTypeClassname } from "widgets/WidgetUtils";
 import { checkIsDropTarget } from "WidgetProvider/factory/helpers";
+import { useHoverToFocusWidget } from "utils/hooks/useHoverToFocusWidget";
 
 const PositionedWidget = styled.div<{
   zIndexOnHover: number;
@@ -159,6 +160,11 @@ export function PositionedContainer(
     return styles;
   }, [style, isReflowEffected, onHoverZIndex, zIndex, reflowedPosition]);
 
+  const [handleMouseOver, handleMouseLeave] = useHoverToFocusWidget(
+    props.widgetId,
+    props.resizeDisabled,
+  );
+
   // TODO: Experimental fix for sniping mode. This should be handled with a single event
   const stopEventPropagation = (e: any) => {
     !isSnipingMode && e.stopPropagation();
@@ -184,6 +190,8 @@ export function PositionedContainer(
       // Positioned Widget is the top enclosure for all widgets and clicks on/inside the widget should not be propagated/bubbled out of this Container.
       onClick={onClickFn}
       onClickCapture={clickToSelectWidget}
+      onMouseLeave={handleMouseLeave}
+      onMouseOver={handleMouseOver}
       ref={ref}
       //Before you remove: This is used by property pane to reference the element
       style={containerStyle}

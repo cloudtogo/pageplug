@@ -1,13 +1,14 @@
-import type { ReduxAction } from "@appsmith/constants/ReduxActionConstants";
+import type { ReduxAction } from "ee/constants/ReduxActionConstants";
 import {
   ReduxActionTypes,
   WidgetReduxActionTypes,
-} from "@appsmith/constants/ReduxActionConstants";
+} from "ee/constants/ReduxActionConstants";
 import type { ExecuteTriggerPayload } from "constants/AppsmithActionConstants/ActionConstants";
 import type { BatchAction } from "actions/batchActions";
 import { batchAction } from "actions/batchActions";
 import type { WidgetProps } from "widgets/BaseWidget";
 import type { PartialExportParams } from "sagas/PartialImportExportSagas";
+import type { PasteWidgetReduxAction } from "constants/WidgetConstants";
 
 export const widgetInitialisationSuccess = () => {
   return {
@@ -95,15 +96,19 @@ export const copyWidget = (isShortcut: boolean) => {
   };
 };
 
-export const pasteWidget = (
+export const pasteWidget = ({
+  existingWidgets,
+  gridPosition,
   groupWidgets = false,
-  mouseLocation: { x: number; y: number },
-) => {
+  mouseLocation,
+}: PasteWidgetReduxAction) => {
   return {
-    type: ReduxActionTypes.PASTE_COPIED_WIDGET_INIT,
+    type: ReduxActionTypes.VERIFY_LAYOUT_SYSTEM_AND_PASTE_WIDGETS,
     payload: {
-      groupWidgets: groupWidgets,
+      groupWidgets,
       mouseLocation,
+      gridPosition,
+      existingWidgets,
     },
   };
 };
@@ -141,6 +146,13 @@ export const addSuggestedWidget = (payload: Partial<WidgetProps>) => {
 export const groupWidgets = () => {
   return {
     type: ReduxActionTypes.GROUP_WIDGETS_INIT,
+  };
+};
+
+export const openPartialExportModal = (payload: boolean) => {
+  return {
+    type: ReduxActionTypes.PARTIAL_EXPORT_MODAL_OPEN,
+    payload,
   };
 };
 

@@ -1,4 +1,4 @@
-import { ReduxActionTypes } from "@appsmith/constants/ReduxActionConstants";
+import { ReduxActionTypes } from "ee/constants/ReduxActionConstants";
 import type {
   RecentEntity,
   SearchCategory,
@@ -26,6 +26,8 @@ export const setGlobalSearchCategory = (
   }
 };
 
+// TODO: Fix this the next time the file is edited
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const setGlobalSearchFilterContext = (payload: any) => ({
   type: ReduxActionTypes.SET_SEARCH_FILTER_CONTEXT,
   payload,

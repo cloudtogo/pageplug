@@ -10,21 +10,21 @@ import {
   Text,
   MenuSeparator,
   Tag,
-} from "design-system";
+} from "@appsmith/ads";
 import {
   createMessage,
   ERROR_ADD_API_INVALID_URL,
   NEW_AI_BUTTON_TEXT,
   NEW_API_BUTTON_TEXT,
   NEW_QUERY_BUTTON_TEXT,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import { createNewQueryAction } from "actions/apiPaneActions";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentPageId, getPageList } from "selectors/editorSelectors";
 import type { Datasource } from "entities/Datasource";
-import type { EventLocation } from "@appsmith/utils/analyticsUtilTypes";
-import { getCurrentEnvironmentId } from "@appsmith/selectors/environmentSelectors";
-import { getSelectedTableName } from "@appsmith/selectors/entitiesSelector";
+import type { EventLocation } from "ee/utils/analyticsUtilTypes";
+import { getCurrentEnvironmentId } from "ee/selectors/environmentSelectors";
+import { getSelectedTableName } from "ee/selectors/entitiesSelector";
 
 interface NewActionButtonProps {
   datasource?: Datasource;
@@ -33,9 +33,27 @@ interface NewActionButtonProps {
   isLoading?: boolean;
   eventFrom?: string; // this is to track from where the new action is being generated
   pluginType?: string;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   style?: any;
   isNewQuerySecondaryButton?: boolean;
 }
+
+export const apiPluginHasUrl = (
+  currentEnvironment: string,
+  pluginType?: string,
+  datasource?: Datasource,
+) => {
+  if (pluginType !== PluginType.API) {
+    return false;
+  }
+  return (
+    !datasource ||
+    !datasource?.datasourceStorages[currentEnvironment]?.datasourceConfiguration
+      ?.url
+  );
+};
+
 function NewActionButton(props: NewActionButtonProps) {
   const {
     datasource,
@@ -59,14 +77,7 @@ function NewActionButton(props: NewActionButtonProps) {
 
   const createQueryAction = useCallback(
     (pageId: string) => {
-      if (
-        pluginType === PluginType.API &&
-        (!datasource ||
-          !datasource.datasourceStorages[currentEnvironment]
-            .datasourceConfiguration ||
-          !datasource.datasourceStorages[currentEnvironment]
-            .datasourceConfiguration.url)
-      ) {
+      if (apiPluginHasUrl(currentEnvironment, pluginType, datasource)) {
         toast.show(ERROR_ADD_API_INVALID_URL(), {
           kind: "error",
         });

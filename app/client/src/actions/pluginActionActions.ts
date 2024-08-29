@@ -1,14 +1,12 @@
 import type { ActionResponse, PaginationField } from "api/ActionAPI";
-import type {
-  EvaluationReduxAction,
-  AnyReduxAction,
-  ReduxAction,
-} from "@appsmith/constants/ReduxActionConstants";
-import type { JSUpdate } from "utils/JSPaneUtils";
 import {
+  type AnyReduxAction,
+  type EvaluationReduxAction,
+  type ReduxAction,
   ReduxActionErrorTypes,
   ReduxActionTypes,
-} from "@appsmith/constants/ReduxActionConstants";
+} from "ee/constants/ReduxActionConstants";
+import type { JSUpdate } from "utils/JSPaneUtils";
 import type { Action, ActionViewMode } from "entities/Action";
 import { ActionExecutionContext } from "entities/Action";
 import { batchAction } from "actions/batchActions";
@@ -252,6 +250,7 @@ export const executePluginActionRequest = (payload: { id: string }) => ({
 
 export interface ExecutePluginActionSuccessPayload {
   id: string;
+  baseId: string;
   response: ActionResponse;
   isPageLoad?: boolean;
   isActionCreatedInApp: boolean;
@@ -288,6 +287,8 @@ export const saveActionName = (payload: { id: string; name: string }) => ({
 export interface SetActionPropertyPayload {
   actionId: string;
   propertyName: string;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
   skipSave?: boolean;
 }
@@ -304,6 +305,8 @@ export const setActionProperty = (
 export interface UpdateActionPropertyActionPayload {
   id: string;
   field: string;
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any;
 }
 
@@ -366,7 +369,7 @@ export const setJSActionsToExecuteOnPageLoad = (
 export const bindDataOnCanvas = (payload: {
   queryId: string;
   applicationId: string;
-  pageId: string;
+  basePageId: string;
 }) => {
   return {
     type: ReduxActionTypes.BIND_DATA_ON_CANVAS,
@@ -398,6 +401,25 @@ export const updateActionData = (
       actionDataPayload: payload,
       parentSpan,
     },
+  };
+};
+
+export const closeQueryActionTab = (payload: {
+  id: string;
+  parentId: string;
+}) => {
+  return {
+    type: ReduxActionTypes.CLOSE_QUERY_ACTION_TAB,
+    payload,
+  };
+};
+export const closeQueryActionTabSuccess = (payload: {
+  id: string;
+  parentId: string;
+}) => {
+  return {
+    type: ReduxActionTypes.CLOSE_QUERY_ACTION_TAB_SUCCESS,
+    payload,
   };
 };
 

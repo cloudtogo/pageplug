@@ -22,6 +22,11 @@ public final class BridgeQuery<T extends BaseDomain> extends Criteria {
         return this;
     }
 
+    public BridgeQuery<T> equal(@NonNull String key, int value) {
+        checks.add(Criteria.where(key).is(value));
+        return this;
+    }
+
     public BridgeQuery<T> notEqual(@NonNull String key, @NonNull String value) {
         checks.add(Criteria.where(key).ne(value));
         return this;
@@ -53,7 +58,27 @@ public final class BridgeQuery<T extends BaseDomain> extends Criteria {
         return this;
     }
 
+    public BridgeQuery<T> searchIgnoreCase(@NonNull String key, @NonNull String needle) {
+        if (key.contains(".")) {
+            throw new UnsupportedOperationException("Search-ignore-case is not supported for nested fields");
+        }
+
+        checks.add(Criteria.where(key).regex(".*" + Pattern.quote(needle) + ".*", "i"));
+        return this;
+    }
+
     public BridgeQuery<T> in(@NonNull String key, @NonNull Collection<String> value) {
+        checks.add(Criteria.where(key).in(value));
+        return this;
+    }
+
+    public BridgeQuery<T> notIn(@NonNull String needle, @NonNull Collection<String> haystack) {
+        checks.add(Criteria.where(needle).not().in(haystack));
+        return this;
+    }
+
+    // Filtering for enums does not work with hibernate even if the field is annotated with @Enumerated(String.class)
+    public BridgeQuery<T> enumIn(@NonNull String key, @NonNull Collection<Enum<?>> value) {
         checks.add(Criteria.where(key).in(value));
         return this;
     }
@@ -117,5 +142,9 @@ public final class BridgeQuery<T extends BaseDomain> extends Criteria {
         }
 
         return new Criteria().andOperator(checks.toArray(new Criteria[0])).getCriteriaObject();
+    }
+
+    public boolean isEmpty() {
+        return checks.isEmpty();
     }
 }

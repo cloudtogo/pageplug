@@ -7,10 +7,10 @@ import type { CommandsCompletion } from "utils/autocomplete/CodemirrorTernServic
 import { AutocompleteDataType } from "utils/autocomplete/AutocompleteDataType";
 import { generateAssistiveBindingCommands } from "./assistiveBindingCommands";
 import type { Datasource } from "entities/Datasource";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 import { ENTITY_TYPE_VALUE } from "entities/DataTree/dataTreeFactory";
 import type { SlashCommandPayload } from "entities/Action";
-import type { FeatureFlags } from "@appsmith/entities/FeatureFlag";
+import type { FeatureFlags } from "ee/entities/FeatureFlag";
 import type {
   EntityNavigationData,
   NavigationData,
@@ -93,6 +93,7 @@ export const assistiveBindingHinter: HintHelper = (
         data: {},
         text: "",
         shortcut: "",
+        displayText: ""
       };
       const cursor = editor.getCursor();
       const currentLine = cursor.line;

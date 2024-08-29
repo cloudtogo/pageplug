@@ -6,15 +6,14 @@ import {
   setThenBlockInQuery,
   setCatchBlockInQuery,
 } from "@shared/ast";
-import { createNewJSCollection } from "actions/jsPaneActions";
 import { createModalAction } from "actions/widgetActions";
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import {
   getEntityNameAndPropertyPath,
   isEntityAction,
-} from "@appsmith/workers/Evaluation/evaluationUtils";
-import type { TreeDropdownOption } from "design-system-old";
-import { Icon } from "design-system";
+} from "ee/workers/Evaluation/evaluationUtils";
+import type { TreeDropdownOption } from "@appsmith/ads-old";
+import { Icon } from "@appsmith/ads";
 import { PluginType } from "entities/Action";
 import type { JSAction, Variable } from "entities/JSCollection";
 import keyBy from "lodash/keyBy";
@@ -24,8 +23,8 @@ import { useDispatch, useSelector } from "react-redux";
 import type {
   ActionData,
   ActionDataState,
-} from "@appsmith/reducers/entityReducers/actionsReducer";
-import type { JSCollectionData } from "@appsmith/reducers/entityReducers/jsActionsReducer";
+} from "ee/reducers/entityReducers/actionsReducer";
+import type { JSCollectionData } from "ee/reducers/entityReducers/jsActionsReducer";
 import { getCurrentPageId } from "selectors/editorSelectors";
 import {
   getCurrentActions,
@@ -33,13 +32,14 @@ import {
   getCurrentJSCollections,
   getQueryModuleInstances,
   getJSModuleInstancesData,
-} from "@appsmith/selectors/entitiesSelector";
+} from "ee/selectors/entitiesSelector";
 import {
   getModalDropdownList,
   getNextModalName,
 } from "selectors/widgetSelectors";
 import {
   APPSMITH_GLOBAL_FUNCTIONS,
+  APPSMITH_INTEGRATIONS,
   AppsmithFunction,
   AppsmithFunctionsWithFields,
   FieldType,
@@ -60,18 +60,18 @@ import {
   getEvaluationVersion,
 } from "./utils";
 import store from "store";
-import { selectEvaluationVersion } from "@appsmith/selectors/applicationSelectors";
-import { isJSAction } from "@appsmith/workers/Evaluation/evaluationUtils";
+import { selectEvaluationVersion } from "ee/selectors/applicationSelectors";
+import { isJSAction } from "ee/workers/Evaluation/evaluationUtils";
 import type { DataTreeEntity } from "entities/DataTree/dataTreeTypes";
-import type { ModuleInstanceDataState } from "@appsmith/constants/ModuleInstanceConstants";
-import { setShowCreateNewModal } from "actions/propertyPaneActions";
-import { setIdeEditorViewMode } from "actions/ideActions";
-import { EditorViewMode } from "@appsmith/entities/IDE/constants";
-import { getIsSideBySideEnabled } from "selectors/ideSelectors";
+import type { ModuleInstanceDataState } from "ee/constants/ModuleInstanceConstants";
 import { getModuleIcon, getPluginImagesFromPlugins } from "pages/Editor/utils";
-import { getAllModules } from "@appsmith/selectors/modulesSelector";
-import type { Module } from "@appsmith/constants/ModuleConstants";
+import { getAllModules } from "ee/selectors/modulesSelector";
+import type { Module } from "ee/constants/ModuleConstants";
 import type { Plugin } from "api/PluginApi";
+import {
+  createNewJSCollectionFromActionCreator,
+  createNewQueryFromActionCreator,
+} from "actions/propertyPaneActions";
 
 const actionList: {
   label: string;
@@ -149,6 +149,8 @@ export function getFieldFromValue(
 }
 
 function getActionEntityFields(
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fields: any[],
   getParentValue: (changeValue: string) => string,
   value: string,
@@ -258,6 +260,8 @@ function getActionEntityFields(
 }
 
 function getJSFunctionExecutionFields(
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fields: any[],
   getParentValue: (changeValue: string) => string,
   value: string,
@@ -298,6 +302,8 @@ function getJSFunctionExecutionFields(
 }
 
 function getFieldsForSelectedAction(
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fields: any[],
   getParentValue: (changeValue: string) => string,
   value: string,
@@ -378,7 +384,7 @@ export function useModalDropdownList(handleClose: () => void) {
         const modalName = nextModalName;
         if (setter) {
           setter({
-            value: `${modalName}`,
+            value: `${modalName}.name`,
           });
           dispatch(createModalAction(modalName));
           handleClose();
@@ -399,6 +405,8 @@ export function getApiQueriesAndJSActionOptionsWithChildren(
   plugins: Plugin[],
   actions: ActionDataState,
   jsActions: Array<JSCollectionData>,
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dispatch: any,
   handleClose: () => void,
   queryModuleInstances: ModuleInstanceDataState,
@@ -424,14 +432,16 @@ export function getApiQueriesAndJSActionOptionsWithChildren(
 function getApiAndQueryOptions(
   plugins: Plugin[],
   actions: ActionDataState,
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dispatch: any,
   handleClose: () => void,
   queryModuleInstances: ModuleInstanceDataState,
   modules: Record<string, Module>,
 ) {
-  const state = store.getState();
-  const isSideBySideEnabled = getIsSideBySideEnabled(state);
   const pluginImages = getPluginImagesFromPlugins(plugins);
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const pluginGroups: any = keyBy(plugins, "id");
 
   const createQueryObject: TreeDropdownOption = {
@@ -440,10 +450,18 @@ function getApiAndQueryOptions(
     id: "create",
     icon: "plus",
     className: "t--create-datasources-query-btn",
-    onSelect: () => {
-      dispatch(setShowCreateNewModal(true));
-      if (isSideBySideEnabled) {
-        dispatch(setIdeEditorViewMode(EditorViewMode.SplitScreen));
+    onSelect: (value, setterMethod) => {
+      if (setterMethod && queryOptions) {
+        const createQueryCallback = (name: string) => {
+          setterMethod({
+            label: name,
+            id: name,
+            value: name,
+            type: queryOptions.value,
+          });
+        };
+
+        dispatch(createNewQueryFromActionCreator(createQueryCallback));
       }
     },
   };
@@ -476,6 +494,8 @@ function getApiAndQueryOptions(
         type: queryOptions.value,
         icon: getActionConfig(api.config.pluginType)?.getIcon(
           api.config,
+          // TODO: Fix this the next time the file is edited
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           pluginGroups[(api as any).config.datasource.pluginId],
           api.config.pluginType === PluginType.API,
         ),
@@ -490,6 +510,8 @@ function getApiAndQueryOptions(
         type: queryOptions.value,
         icon: getActionConfig(query.config.pluginType)?.getIcon(
           query.config,
+          // TODO: Fix this the next time the file is edited
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           pluginGroups[(query as any).config.datasource.pluginId],
         ),
       } as TreeDropdownOption);
@@ -510,23 +532,35 @@ function getApiAndQueryOptions(
 export function getJSOptions(
   pageId: string,
   jsActions: Array<JSCollectionData>,
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dispatch: any,
   jsModuleInstances: ReturnType<typeof getJSModuleInstancesData>,
 ) {
+  const jsOption = actionList.find(
+    (action) => action.value === AppsmithFunction.jsFunction,
+  );
+
   const createJSObject: TreeDropdownOption = {
     label: "New JS object",
     value: AppsmithFunction.jsFunction,
     id: "create",
     icon: "plus",
     className: "t--create-js-object-btn",
-    onSelect: () => {
-      dispatch(createNewJSCollection(pageId, "ACTION_SELECTOR"));
+    onSelect: (value, setterMethod) => {
+      if (setterMethod) {
+        const callback = (bindingValue: string) => {
+          setterMethod({
+            label: bindingValue,
+            id: bindingValue,
+            value: bindingValue,
+            type: APPSMITH_INTEGRATIONS.jsFunction,
+          });
+        };
+        dispatch(createNewJSCollectionFromActionCreator(callback));
+      }
     },
   };
-
-  const jsOption = actionList.find(
-    (action) => action.value === AppsmithFunction.jsFunction,
-  );
 
   if (jsOption) {
     jsOption.children = [createJSObject];
@@ -548,6 +582,8 @@ export function getJSOptions(
 
           jsAction.config.actions.forEach((js: JSAction) => {
             const jsArguments = js.actionConfiguration?.jsArguments;
+            // TODO: Fix this the next time the file is edited
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const argValue: Array<any> = [];
 
             if (jsArguments && jsArguments.length) {
@@ -594,6 +630,8 @@ export function getJSOptions(
 
           jsModuleInstance.config.actions.forEach((js: JSAction) => {
             const jsArguments = js.actionConfiguration?.jsArguments;
+            // TODO: Fix this the next time the file is edited
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const argValue: Array<any> = [];
 
             if (jsArguments && jsArguments.length) {

@@ -3,8 +3,11 @@ package com.appsmith.external.models;
 import com.appsmith.external.annotations.documenttype.DocumentType;
 import com.appsmith.external.annotations.encryption.Encrypted;
 import com.appsmith.external.constants.Authentication;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.appsmith.external.views.FromRequest;
+import com.appsmith.external.views.Views;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +18,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @DocumentType(Authentication.DB_AUTH)
 public class DBAuth extends AuthenticationDTO {
 
@@ -25,12 +29,15 @@ public class DBAuth extends AuthenticationDTO {
         USERNAME_PASSWORD
     }
 
+    @JsonView({Views.Public.class, FromRequest.class})
     Type authType;
 
+    @JsonView({Views.Public.class, FromRequest.class})
     String username;
 
-    @Encrypted @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Encrypted @JsonView(FromRequest.class)
     String password;
 
+    @JsonView({Views.Public.class, FromRequest.class})
     String databaseName;
 }

@@ -10,7 +10,7 @@ describe("Private embed in-app ramp", { tags: ["@tag.Settings"] }, () => {
     );
     _.agHelper.GetNAssertElementText(
       _.inviteModal.locators._privateEmbedRampAppSettings,
-      "To embed private Appsmith apps and seamlessly authenticate users through SSO",
+      Cypress.env("MESSAGES").IN_APP_EMBED_SETTING.rampSubtextSidebar(),
       "contain.text",
     );
     checkRampLink();
@@ -19,7 +19,7 @@ describe("Private embed in-app ramp", { tags: ["@tag.Settings"] }, () => {
     _.inviteModal.SelectEmbedTab();
     _.agHelper.GetNAssertElementText(
       _.inviteModal.locators._privateEmbedRampAppSettings,
-      "Embed private Appsmith apps and seamlessly authenticate users through SSO in our Business Edition",
+      Cypress.env("MESSAGES").IN_APP_EMBED_SETTING.rampSubtextModal(),
       "contain.text",
     );
     checkRampLink();
@@ -28,7 +28,7 @@ describe("Private embed in-app ramp", { tags: ["@tag.Settings"] }, () => {
     cy.get(_.inviteModal.locators._privateEmbedRampLink)
       .should("have.attr", "href")
       .then((href) => {
-        expect(href).to.include("customer.appsmith.com");
+        expect(href).to.include("https://www.appsmith.com/pricing?");
       });
   }
 
@@ -62,11 +62,13 @@ describe("Private embed in-app ramp", { tags: ["@tag.Settings"] }, () => {
       featureFlagIntercept({
         license_private_embeds_enabled: false,
       });
+      _.agHelper.WaitUntilEleAppear("[data-testid=t--canvas-artboard]");
       _.inviteModal.OpenShareModal();
       checkRampTextInShareModal();
       featureFlagIntercept({
         license_private_embeds_enabled: true,
       });
+      _.agHelper.WaitUntilEleAppear("[data-testid=t--canvas-artboard]");
       _.inviteModal.OpenShareModal();
       _.agHelper.AssertElementAbsence(
         _.inviteModal.locators._privateEmbedRampAppSettings,
@@ -93,7 +95,7 @@ describe("Private embed in-app ramp", { tags: ["@tag.Settings"] }, () => {
       );
       _.inviteModal.CloseModal();
       _.homePage.Signout(false);
-      _.homePage.LogintoApp(
+      cy.LoginFromAPI(
         Cypress.env("TESTUSERNAME1"),
         Cypress.env("TESTPASSWORD1"),
       );

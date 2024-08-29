@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { getThirdPartyAuths } from "@appsmith/selectors/tenantSelectors";
+import { getThirdPartyAuths } from "ee/selectors/tenantSelectors";
 import ThirdPartyAuth from "./ThirdPartyAuth";
 
 const LineDiv = styled.div`

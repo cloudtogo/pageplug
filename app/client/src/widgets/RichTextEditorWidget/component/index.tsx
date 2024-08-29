@@ -1,6 +1,5 @@
 import "tinymce/tinymce";
 import "tinymce/icons/default";
-import "tinymce/plugins/paste";
 import "tinymce/plugins/link";
 import "tinymce/plugins/image";
 import "tinymce/plugins/table";
@@ -19,12 +18,13 @@ import "tinymce/plugins/visualblocks";
 import "tinymce/plugins/fullscreen";
 import "tinymce/plugins/emoticons";
 import "tinymce/plugins/emoticons/js/emojis";
-import "tinymce/plugins/print";
 import "tinymce/themes/silver";
 import "tinymce/skins/ui/oxide/skin.min.css";
+import "tinymce/models/dom";
+import "tinymce/plugins/help/js/i18n/keynav/en.js";
 import "tinymce/skins/ui/oxide/content.min.css";
 import React, { useRef, useCallback, useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import { Editor } from "@tinymce/tinymce-react";
 import type { LabelPosition } from "components/constants";
 import type { Alignment } from "@blueprintjs/core";
@@ -50,6 +50,7 @@ const StyledRTEditor = styled.div<{
   && {
     width: 100%;
     height: 100%;
+
     .tox .tox-editor-header {
       z-index: 0;
     }
@@ -59,12 +60,15 @@ const StyledRTEditor = styled.div<{
       box-shadow: ${({ boxShadow }) => `${boxShadow}`} !important;
     }
   }
+
   .tox {
     font-family: inherit;
 
     width: 100%;
+
     .tox-tbtn {
       cursor: pointer;
+
       .tox-tbtn__select-label {
         cursor: inherit;
       }
@@ -148,6 +152,7 @@ const StyledRTEditor = styled.div<{
   .tox .tox-tbtn {
     margin: 3px 0 2px 0;
     border-radius: ${({ borderRadius }) => borderRadius};
+    height: 34px;
 
     &:hover {
       background: var(--wds-color-bg-hover);
@@ -168,7 +173,7 @@ const StyledRTEditor = styled.div<{
     background-size: auto 39px;
   }
 
-  .tox-editor-header {
+  .tox:not(.tox-tinymce-inline) .tox-editor-header {
     border-bottom: 1px solid var(--wds-color-border);
   }
 
@@ -186,9 +191,11 @@ const StyledRTEditor = styled.div<{
     &:hover {
       box-shadow: 0 0 0 1px var(--wds-color-border) inset;
     }
+
     &:focus {
       background: var(--wds-color-bg-focus);
     }
+
     &:active {
       background: var(--wds-color-bg-focus);
     }
@@ -224,6 +231,7 @@ const StyledRTEditor = styled.div<{
 
   .tox .tox-toolbar__group {
     height: 39px;
+    padding: 0 4px;
   }
 
   .tox .tox-tbtn--disabled svg,
@@ -234,10 +242,55 @@ const StyledRTEditor = styled.div<{
   }
 
   ${labelLayoutStyles}
-
   & .${LABEL_CONTAINER_CLASS} {
     align-self: center;
   }
+
+  .tox:not(.tox-tinymce-inline) .tox-editor-header {
+    padding: 0;
+  }
+
+  .tox .tox-edit-area::before,
+  .tox .tox-tbtn:focus::after,
+  .tox .tox-split-button:focus::after,
+  .tox-statusbar__help-text {
+    display: none;
+  }
+
+  .tox .tox-tbtn--bespoke {
+    background: #fff;
+  }
+
+  .tox .tox-tbtn--disabled,
+  .tox .tox-tbtn--disabled:hover,
+  .tox .tox-tbtn:disabled,
+  .tox .tox-tbtn:disabled:hover {
+    background: #fff0;
+  }
+`;
+
+const GlobalStyles = createGlobalStyle`
+  .tox {
+    &&& .tox-collection--list .tox-collection__item--active {
+      background-color: #dee0e2;
+      color: #222f3e;
+    }
+
+    &&& .tox-menu.tox-collection.tox-collection--list {
+      padding: 0;
+    }
+
+    .tox-collection--toolbar .tox-collection__item--active:focus::after {
+      display: none;
+    }
+
+    && {
+      .tox-button, .tox-dialog {
+      {
+        border-radius: 0px;
+      }
+      }
+    }
 `;
 
 export const RichTextEditorInputWrapper = styled.div<{
@@ -298,9 +351,11 @@ function RichtextEditorComponent(props: RichtextEditorComponentProps) {
   const initialRender = useRef(true);
 
   const toolbarConfig =
-    "insertfile undo redo | formatselect | bold italic underline backcolor forecolor | lineheight | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | removeformat | table | print preview media | emoticons |help";
+    "insertfile undo redo | blocks | bold italic underline backcolor forecolor | lineheight | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | removeformat | table | print preview media | emoticons | code | help";
 
   const handleEditorChange = useCallback(
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (newValue: string, editor: any) => {
       // avoid updating value, when there is no actual change.
       if (newValue !== editorValue) {
@@ -386,9 +441,23 @@ function RichtextEditorComponent(props: RichtextEditorComponentProps) {
                   : ""
               }`,
             plugins: [
-              "advlist autolink lists link image charmap print preview anchor",
-              "searchreplace visualblocks code fullscreen",
-              "insertdatetime media table paste code help",
+              "advlist",
+              "autolink",
+              "lists",
+              "link",
+              "image",
+              "charmap",
+              "preview",
+              "anchor",
+              "searchreplace",
+              "visualblocks",
+              "code",
+              "fullscreen",
+              "insertdatetime ",
+              "media ",
+              "table",
+              "code ",
+              "help",
               "emoticons",
             ],
             contextmenu: "link useBrowserSpellcheck image table",
@@ -404,7 +473,6 @@ function RichtextEditorComponent(props: RichtextEditorComponentProps) {
                     } key and right-click on the misspelt word.`,
                     type: "info",
                     timeout: 5000,
-                    closeButton: true,
                   });
                 },
               });
@@ -423,6 +491,7 @@ function RichtextEditorComponent(props: RichtextEditorComponentProps) {
           value={editorValue}
         />
       </RichTextEditorInputWrapper>
+      <GlobalStyles />
     </StyledRTEditor>
   );
 }

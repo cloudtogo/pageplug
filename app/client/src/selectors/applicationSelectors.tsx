@@ -1,17 +1,17 @@
 import { createSelector } from "reselect";
-import type { AppState } from "@appsmith/reducers";
+import type { AppState } from "ee/reducers";
 import type {
   ApplicationsReduxState,
   creatingApplicationMap,
-} from "@appsmith/reducers/uiReducers/applicationsReducer";
+} from "ee/reducers/uiReducers/applicationsReducer";
 import type {
   ApplicationPayload,
   WorkspaceDetails,
-} from "@appsmith/constants/ReduxActionConstants";
+} from "ee/constants/ReduxActionConstants";
 import Fuse from "fuse.js";
-import type { Workspaces } from "@appsmith/constants/workspaceConstants";
-import type { GitApplicationMetadata } from "@appsmith/api/ApplicationApi";
-import { hasCreateNewAppPermission } from "@appsmith/utils/permissionHelpers";
+import type { Workspaces } from "ee/constants/workspaceConstants";
+import type { GitApplicationMetadata } from "ee/api/ApplicationApi";
+import { hasCreateNewAppPermission } from "ee/utils/permissionHelpers";
 
 const fuzzySearchOptions = {
   keys: ["applications.name", "workspace.name"],

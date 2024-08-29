@@ -20,7 +20,7 @@ import {
   STOP_WATCH_GEO_LOCATION,
   STORE_VALUE,
   WATCH_GEO_LOCATION,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import type { FieldGroupConfig } from "../types";
 
 export const FIELD_GROUP_CONFIG: FieldGroupConfig = {
@@ -70,7 +70,7 @@ export const FIELD_GROUP_CONFIG: FieldGroupConfig = {
   [AppsmithFunction.showModal]: {
     label: createMessage(OPEN_MODAL),
     fields: [FieldType.SHOW_MODAL_FIELD],
-    defaultParams: `''`,
+    defaultParams: ``,
     icon: "show-modal",
   },
   [AppsmithFunction.closeModal]: {

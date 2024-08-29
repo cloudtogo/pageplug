@@ -8,9 +8,9 @@ import {
   createMessage,
   WELCOME_BODY,
   WELCOME_HEADER,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import { SuperUserForm } from "./GetStarted";
-import { getAssetUrl } from "@appsmith/utils/airgapHelpers";
+import { getAssetUrl } from "ee/utils/airgapHelpers";
 import Animation from "assets/lottie/Animation.json";
 import Pageplug from "assets/images/pageplug_logo_mint.png";
 

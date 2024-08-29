@@ -1,5 +1,5 @@
 import type { EventType } from "constants/AppsmithActionConstants/ActionConstants";
-import type { TriggerMeta } from "@appsmith/sagas/ActionExecution/ActionExecutionSagas";
+import type { TriggerMeta } from "ee/sagas/ActionExecution/ActionExecutionSagas";
 import { call, put, spawn, take, select } from "redux-saga/effects";
 import { logActionExecutionError } from "sagas/ActionExecution/errorUtils";
 import { setUserCurrentGeoLocation } from "actions/browserRequestActions";
@@ -14,12 +14,14 @@ import _find from "lodash/find";
 import { getEchartWidget } from "selectors/widgetSelectors";
 import type { FlattenedWidgetProps } from "reducers/entityReducers/canvasWidgetsReducer";
 import { ActionValidationError } from "sagas/ActionExecution/errorUtils";
-import type { EchartActionDescription } from "@appsmith/entities/DataTree/actionTriggers";
+import type { EchartActionDescription } from "ee/entities/DataTree/actionTriggers";
 import { getType, Types } from "utils/TypeHelpers";
 
 class GeoLocationError extends Error {
   constructor(
     message: string,
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private responseData?: any,
   ) {
     super(message);

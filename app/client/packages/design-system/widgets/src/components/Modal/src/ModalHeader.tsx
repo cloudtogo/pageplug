@@ -1,5 +1,5 @@
 import React, { useLayoutEffect } from "react";
-import { usePopoverContext } from "@design-system/headless";
+import { usePopoverContext } from "@appsmith/wds-headless";
 
 import { Text } from "../../Text";
 import { IconButton } from "../../IconButton";
@@ -10,7 +10,7 @@ import styles from "./styles.module.css";
 import type { ModalHeaderProps } from "./types";
 
 export const ModalHeader = (props: ModalHeaderProps) => {
-  const { title } = props;
+  const { excludeFromTabOrder = false, title } = props;
   const { setLabelId, setOpen } = usePopoverContext();
   const id = useId();
 
@@ -32,12 +32,17 @@ export const ModalHeader = (props: ModalHeaderProps) => {
         fontWeight={600}
         id={id}
         lineClamp={1}
+        size="subtitle"
         title={title}
-        variant="subtitle"
       >
         {title}
       </Text>
-      <IconButton icon="x" onPress={() => setOpen(false)} variant="ghost" />
+      <IconButton
+        excludeFromTabOrder={excludeFromTabOrder}
+        icon="x"
+        onPress={() => setOpen(false)}
+        variant="ghost"
+      />
     </Flex>
   );
 };

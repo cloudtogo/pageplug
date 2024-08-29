@@ -126,6 +126,8 @@ export type ClearStoreActionDescription = ActionDescriptionInterface<
 
 export type DownloadActionDescription = ActionDescriptionInterface<
   {
+    // TODO: Fix this the next time the file is edited
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any;
     name: string;
     type: string;
@@ -193,6 +195,8 @@ export type StopWatchingCurrentLocationDescription = ActionDescriptionInterface<
 >;
 
 export type ConfirmationModalDescription = ActionDescriptionInterface<
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Record<string, any> | undefined,
   "CONFIRMATION_MODAL"
 >;

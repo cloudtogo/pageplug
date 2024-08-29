@@ -8,10 +8,10 @@ import { debounce } from "lodash";
 import {
   createMessage,
   WIDGET_SIDEBAR_CAPTION,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import Fuse from "fuse.js";
 import type { WidgetCardProps } from "widgets/BaseWidget";
-import AnalyticsUtil from "utils/AnalyticsUtil";
+import AnalyticsUtil from "ee/utils/AnalyticsUtil";
 
 function WidgetSidebar({ isActive }: { isActive: boolean }) {
   const cards = useSelector(getWidgetCards);

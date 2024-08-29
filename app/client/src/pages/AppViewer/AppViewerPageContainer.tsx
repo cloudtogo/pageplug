@@ -11,19 +11,10 @@ import Centered from "components/designSystems/appsmith/CenteredWrapper";
 import AppPage from "./AppPage";
 import { getCanvasWidth, getCurrentPageName } from "selectors/editorSelectors";
 import RequestConfirmationModal from "pages/Editor/RequestConfirmationModal";
-import {
-  getCurrentApplication,
-  isMobileLayout,
-} from "selectors/applicationSelectors";
-import {
-  isPermitted,
-  PERMISSION_TYPE,
-} from "@appsmith/utils/permissionHelpers";
-import { builderURL } from "@appsmith/RouteBuilder";
-import {
-  getCanvasWidgetsStructure,
-  getCanvasWidgets,
-} from "@appsmith/selectors/entitiesSelector";
+import { getCurrentApplication, isMobileLayout } from "ee/selectors/applicationSelectors";
+import { isPermitted, PERMISSION_TYPE } from "ee/utils/permissionHelpers";
+import { builderURL } from "ee/RouteBuilder";
+import { getCanvasWidgetsStructure, getCanvasWidgets } from "ee/selectors/entitiesSelector";
 import equal from "fast-deep-equal/es6";
 
 const Section = styled.section<{
@@ -77,7 +68,7 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
           想给页面添加组件？立即前往&nbsp;
           <Link
             to={builderURL({
-              pageId: props.match.params.pageId as string,
+              basePageId: props.match.params.basePageId as string,
             })}
           >
             页面编辑
@@ -122,8 +113,8 @@ function AppViewerPageContainer(props: AppViewerPageContainerProps) {
     >
       <AppPage
         appName={currentApplication?.name}
+        basePageId={match.params.basePageId}
         canvasWidth={canvasWidth}
-        pageId={match.params.pageId}
         pageName={currentPageName}
         widgetsStructure={widgetsStructure}
       />

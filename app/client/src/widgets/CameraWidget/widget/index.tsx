@@ -26,12 +26,13 @@ import {
   DEFAULT_CAMERA_LABEL,
   DEFAULT_CAMERA_LABEL_DESCRIPTION,
   FRONT_CAMERA_LABEL,
-} from "@appsmith/constants/messages";
+} from "ee/constants/messages";
 import {
   FlexVerticalAlignment,
   ResponsiveBehavior,
 } from "layoutSystems/common/utils/constants";
 import IconSVG from "../icon.svg";
+import ThumbnailSVG from "../thumbnail.svg";
 import { WIDGET_TAGS } from "constants/WidgetConstants";
 
 class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
@@ -41,7 +42,8 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
     return {
       name: "相机", // The display name which will be made in uppercase and show in the widgets panel ( can have spaces )
       iconSVG: IconSVG,
-      tags: [WIDGET_TAGS.FEATRUE],
+      thumbnailSVG: ThumbnailSVG,
+      tags: [WIDGET_TAGS.EXTERNAL],
       needsMeta: true, // Defines if this widget adds any meta properties
       isCanvas: false, // Defines if this widget has a canvas within in which we can drop other widgets
       searchTags: ["photo", "video recorder"],
@@ -301,6 +303,8 @@ class CameraWidget extends BaseWidget<CameraWidgetProps, WidgetState> {
     return {};
   }
 
+  // TODO: Fix this the next time the file is edited
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   static getMetaPropertiesMap(): Record<string, any> {
     return {
       image: null,
