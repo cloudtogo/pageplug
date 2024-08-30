@@ -104,12 +104,6 @@ public class NewActionServiceUnitTest {
     @MockBean
     ObservationRegistry observationRegistry;
 
-    @MockBean
-    DefaultResourcesService<NewAction> defaultResourcesService;
-
-    @MockBean
-    DefaultResourcesService<ActionDTO> dtoDefaultResourcesService;
-
     private BodyExtractor.Context context;
 
     private Map<String, Object> hints;
