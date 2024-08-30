@@ -104,10 +104,6 @@ public class NewActionServiceUnitTest {
     @MockBean
     ObservationRegistry observationRegistry;
 
-    private BodyExtractor.Context context;
-
-    private Map<String, Object> hints;
-
     @BeforeEach
     public void setup() {
         newActionService = new NewActionServiceCEImpl(
