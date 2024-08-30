@@ -18,4 +18,6 @@ public interface InstanceConfigHelperCE {
     Mono<String> checkMongoDBVersion();
 
     Mono<Void> updateCacheForTenantFeatureFlags();
+
+    public void printReady();
 }

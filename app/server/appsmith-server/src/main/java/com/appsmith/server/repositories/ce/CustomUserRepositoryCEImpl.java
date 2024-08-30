@@ -12,24 +12,33 @@ import com.appsmith.server.repositories.CacheableRepositoryHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import com.appsmith.server.domains.QOAuth2Authorization;
-import com.appsmith.server.domains.QUser;
-import com.appsmith.server.domains.User;
+
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.convert.MongoConverter;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.reflections.util.JavassistHelper.fieldName;
+
 @Slf4j
 public class CustomUserRepositoryCEImpl extends BaseAppsmithRepositoryImpl<User> implements CustomUserRepositoryCE {
 
+    private final ReactiveMongoOperations mongoOperations;
+
+    private final MongoConverter mongoConverter;
+
+    private final CacheableRepositoryHelper cacheableRepositoryHelper;
+
     public CustomUserRepositoryCEImpl(
-            ReactiveMongoOperations mongoOperations,
-            MongoConverter mongoConverter,
-            CacheableRepositoryHelper cacheableRepositoryHelper) {
-        super(mongoOperations, mongoConverter, cacheableRepositoryHelper);
+        ReactiveMongoOperations mongoOperations,
+        MongoConverter mongoConverter,
+        CacheableRepositoryHelper cacheableRepositoryHelper) {
+        this.mongoOperations = mongoOperations;
+        this.mongoConverter = mongoConverter;
+        this.cacheableRepositoryHelper = cacheableRepositoryHelper;
     }
 
     @Override
@@ -41,8 +50,8 @@ public class CustomUserRepositoryCEImpl extends BaseAppsmithRepositoryImpl<User>
     @Override
     public Mono<User> findByEmailAndTenantId(String email, String tenantId) {
         return queryBuilder()
-                .criteria(Bridge.equal(User.Fields.email, email).equal(User.Fields.tenantId, tenantId))
-                .one();
+            .criteria(Bridge.equal(User.Fields.email, email).equal(User.Fields.tenantId, tenantId))
+            .one();
     }
 
     /**
@@ -54,11 +63,11 @@ public class CustomUserRepositoryCEImpl extends BaseAppsmithRepositoryImpl<User>
     @Override
     public Mono<Boolean> isUsersEmpty() {
         return queryBuilder()
-                .criteria(Bridge.notIn(User.Fields.email, getSystemGeneratedUserEmails()))
-                .limit(1)
-                .all(IdOnly.class)
-                .count()
-                .map(count -> count == 0);
+            .criteria(Bridge.notIn(User.Fields.email, getSystemGeneratedUserEmails()))
+            .limit(1)
+            .all(IdOnly.class)
+            .count()
+            .map(count -> count == 0);
     }
 
     protected Set<String> getSystemGeneratedUserEmails() {
@@ -71,12 +80,12 @@ public class CustomUserRepositoryCEImpl extends BaseAppsmithRepositoryImpl<User>
     public Mono<User> findBySourceAndOpenId(LoginSource loginSource, String openId) {
         Criteria andCriteria = new Criteria();
         andCriteria.andOperator(
-                Criteria.where(fieldName(QOAuth2Authorization.oAuth2Authorization.source))
-                        .is(loginSource),
-                Criteria.where(fieldName(QOAuth2Authorization.oAuth2Authorization.openId))
-                        .is(openId));
+            Criteria.where("source")
+                .is(loginSource),
+            Criteria.where("open_id")
+                .is(openId));
         Criteria criteria =
-                Criteria.where(fieldName(QUser.user.oAuth2Authorizations)).elemMatch(andCriteria);
+            Criteria.where("oAuth2_authorizations").elemMatch(andCriteria);
         Query query = new Query();
         query.addCriteria(criteria);
         return mongoOperations.findOne(query, User.class);
