@@ -187,6 +187,12 @@ export interface WxaCodeRequest {
   app_id: string;
 }
 
+export interface FetchAppAndPagesRequest {
+  applicationId?: string | null;
+  pageId?: string | null;
+  mode: APP_MODE;
+}
+
 class PageApi extends Api {
   static url = "v1/pages";
   static pageUpdateCancelTokenSource?: CancelTokenSource = undefined;

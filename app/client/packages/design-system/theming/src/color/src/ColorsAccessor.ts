@@ -3,7 +3,7 @@ import Color from "colorjs.io";
 import type { ColorTypes } from "colorjs.io/types/src/color";
 
 export class ColorsAccessor {
-  private color: Color;
+  color: Color;
 
   constructor(color: ColorTypes) {
     this.color = new Color(color);

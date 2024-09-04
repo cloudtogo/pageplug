@@ -10,9 +10,12 @@ import {
 } from "components/editorComponents/CodeEditor/EditorConfig";
 import { CustomWidgetBuilderContext } from "../..";
 import LazyCodeEditor from "components/editorComponents/LazyCodeEditor";
-import styles from "./styles.module.css";
 import { Spinner } from "@appsmith/ads";
 import { CUSTOM_WIDGET_FEATURE, createMessage } from "ee/constants/messages";
+
+
+import styles from "./styles.module.css";
+
 
 export default function HTMLEditor(props: ContentProps) {
   const [loading, setLoading] = useState(true);

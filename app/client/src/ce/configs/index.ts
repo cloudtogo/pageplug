@@ -19,7 +19,7 @@ export interface INJECTED_CONFIGS {
     accountId: string;
     applicationId: string;
     browserAgentlicenseKey: string;
-    browserAgentEndpoint: string;
+    // browserAgentEndpoint: string;
     otlpLicenseKey: string;
     otlpServiceName: string;
     otlpEndpoint: string;
@@ -81,7 +81,7 @@ export const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
       licenseKey: process.env.REACT_APP_FUSIONCHARTS_LICENSE_KEY || "",
     },
     enableWeChatOAuth: process.env.APPSMITH_WX_CLIENT_ID
-      ? process.env.APPSMITH_WX_CLIENT_SECRET.length > 0
+      ? process.env.APPSMITH_WX_CLIENT_ID.length > 0
       : false,
     enableMixpanel: process.env.REACT_APP_SEGMENT_KEY
       ? process.env.REACT_APP_SEGMENT_KEY.length > 0
@@ -98,8 +98,8 @@ export const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
       applicationId: process.env.APPSMITH_NEW_RELIC_APPLICATION_ID || "",
       browserAgentlicenseKey:
         process.env.APPSMITH_NEW_RELIC_BROWSER_AGENT_LICENSE_KEY || "",
-      browserAgentEndpoint:
-        process.env.APPSMITH_NEW_RELIC_BROWSER_AGENT_ENDPOINT || "",
+      // browserAgentEndpoint:
+      //   process.env.APPSMITH_NEW_RELIC_BROWSER_AGENT_ENDPOINT || "",
       otlpLicenseKey: process.env.APPSMITH_NEW_RELIC_OTLP_LICENSE_KEY || "",
       otlpEndpoint: process.env.APPSMITH_NEW_RELIC_OTEL_SERVICE_NAME || "",
       otlpServiceName:
@@ -139,7 +139,8 @@ export const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
   };
 };
 
-const getConfig = (fromENV: string, fromWindow = "") => {
+const getConfig = (fromENV: string = "", fromWindow = "") => {
+  console.log("fromWindow", fromENV, fromWindow);
   if (fromWindow.length > 0) return { enabled: true, value: fromWindow };
   else if (fromENV.length > 0) return { enabled: true, value: fromENV };
   return { enabled: false, value: "" };

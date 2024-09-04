@@ -203,7 +203,7 @@ function MultiTreeSelectComponent({
             leftIcon="search"
             onChange={onQueryChange}
             onKeyDown={onKeyDown}
-            placeholder="过滤"
+            placeholder="Filter..."
             rightElement={clearButton as JSX.Element}
             small
             type="text"

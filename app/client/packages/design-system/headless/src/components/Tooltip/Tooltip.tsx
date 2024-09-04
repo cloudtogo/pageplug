@@ -1,9 +1,9 @@
 import React from "react";
 import type { ReactNode } from "react";
 
-import { useTooltip } from "./useTooltip";
-import { TooltipContext } from "./TooltipContext";
-import type { TooltipOptions } from "./useTooltip";
+import { useTooltip } from "./src/useTooltip";
+import { TooltipContext } from "./src/TooltipContext";
+import type { TooltipOptions } from "./src/useTooltip";
 
 type TooltipProps = { children: ReactNode } & TooltipOptions;
 

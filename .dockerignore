@@ -3,3 +3,4 @@
 !./app/client/build
 !./app/client/packages/rts
 !./deploy/docker
+!./info.json

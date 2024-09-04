@@ -102,6 +102,7 @@ export class UserApi extends Api {
   static superUserURL = "v1/users/super";
   static adminSettingsURL = "v1/admin/env";
   static restartServerURL = "v1/admin/restart";
+  static downloadConfigURL = "v1/admin/env/download";
   static sendTestEmailURL = "/v1/admin/send-test-email";
 
   static async createUser(

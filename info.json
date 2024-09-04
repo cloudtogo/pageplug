@@ -1,0 +1,9 @@
+{
+    "commitSha": "b299a1e129aaa7825304560ee3d6f6de595fb809",
+    "commitUrl": "https://github.com/appsmithorg/appsmith-ee/commit/b299a1e129aaa7825304560ee3d6f6de595fb809",
+    "githubRef": "refs/tags/v1.9.45",
+    "githubRunUrl": "https://github.com/appsmithorg/appsmith-ee/actions/runs/8419430008/attempts/1",
+    "version": "v1.9.45",
+    "imageBuiltAt": "2024-03-25T11:50:08+00:00",
+    "isCI": false
+  }

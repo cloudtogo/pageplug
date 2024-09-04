@@ -549,7 +549,7 @@ __metadata:
     normalize.css: ^8.0.1
     overlayscrollbars: ^2.7.2
     overlayscrollbars-react: ^0.5.6
-    rc-select: ^14.4.3
+    rc-select: 14.4.3
     rc-table: ^7.35.2
     rc-tooltip: ^5.3.1
     react-datepicker: ^4.10.0
@@ -7294,6 +7294,23 @@ __metadata:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
   checksum: 720a577a62db39c2a5728621096e5aee229802be0c6344b05b5daa921cdf3e5443ad3a3f0720a345874e0e82a96bd45f40ebbbc67c8d7ca7c6031aa4105c8dbe
+  languageName: node
+  linkType: hard
+
+"@rc-component/trigger@npm:^1.5.0":
+  version: 1.18.3
+  resolution: "@rc-component/trigger@npm:1.18.3"
+  dependencies:
+    "@babel/runtime": ^7.23.2
+    "@rc-component/portal": ^1.1.0
+    classnames: ^2.3.2
+    rc-motion: ^2.0.0
+    rc-resize-observer: ^1.3.1
+    rc-util: ^5.38.0
+  peerDependencies:
+    react: ">=16.9.0"
+    react-dom: ">=16.9.0"
+  checksum: 272098e67b4c09e8ee8f4fa2e55054c05f2ea5196e26859a2fd1dfb63ee4f02e4ca7b60d15704defb59b34151f042ff906099aee20d67a01066d2f0b76dd0c58
   languageName: node
   linkType: hard
 
@@ -28510,8 +28527,8 @@ __metadata:
     punycode: ^2.1.1
     raw-loader: ^4.0.2
     rc-pagination: ^3.1.3
-    rc-select: ^14.1.9
-    rc-tree-select: ^5.4.0
+    rc-select: 14.1.9
+    rc-tree-select: 5.4.0
     re-reselect: ^3.4.0
     react: ^17.0.2
     react-append-to-body: ^2.0.26
@@ -28588,7 +28605,7 @@ __metadata:
     ts-loader: ^9.4.1
     ts-node: ^10.9.1
     tslib: ^2.3.1
-    typescript: ^5.5.4
+    typescript: 4.9.5
     unescape-js: ^1.1.4
     url-search-params-polyfill: ^8.0.0
     uuid: ^9.0.0
@@ -31284,7 +31301,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rc-overflow@npm:^1.3.1, rc-overflow@npm:^1.3.2":
+"rc-overflow@npm:^1.0.0, rc-overflow@npm:^1.3.1, rc-overflow@npm:^1.3.2":
   version: 1.3.2
   resolution: "rc-overflow@npm:1.3.2"
   dependencies:
@@ -31448,7 +31465,43 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rc-select@npm:^14.1.9, rc-select@npm:^14.4.3, rc-select@npm:~14.15.0, rc-select@npm:~14.15.1":
+"rc-select@npm:14.1.9":
+  version: 14.1.9
+  resolution: "rc-select@npm:14.1.9"
+  dependencies:
+    "@babel/runtime": ^7.10.1
+    classnames: 2.x
+    rc-motion: ^2.0.1
+    rc-overflow: ^1.0.0
+    rc-trigger: ^5.0.4
+    rc-util: ^5.16.1
+    rc-virtual-list: ^3.2.0
+  peerDependencies:
+    react: "*"
+    react-dom: "*"
+  checksum: 6edfccb555ccac1dd9cf8d023705db99629ffbaff2dcd559867068d04e719f5df9ed164469e9bb86dbed0c3c053fd00ca420de98a91cb271b633dff6c424a972
+  languageName: node
+  linkType: hard
+
+"rc-select@npm:14.4.3":
+  version: 14.4.3
+  resolution: "rc-select@npm:14.4.3"
+  dependencies:
+    "@babel/runtime": ^7.10.1
+    "@rc-component/trigger": ^1.5.0
+    classnames: 2.x
+    rc-motion: ^2.0.1
+    rc-overflow: ^1.0.0
+    rc-util: ^5.16.1
+    rc-virtual-list: ^3.4.13
+  peerDependencies:
+    react: "*"
+    react-dom: "*"
+  checksum: 6f5654bf30e571a52842fe8f5542c6c3c833f4756d5686d82548845a31bf4bd299e2a1931cfdd1b47f522402acd38ffe869ff422a6ade0bffed6167fe7fe2f39
+  languageName: node
+  linkType: hard
+
+"rc-select@npm:^14.4.3, rc-select@npm:~14.15.0, rc-select@npm:~14.15.1":
   version: 14.15.1
   resolution: "rc-select@npm:14.15.1"
   dependencies:
@@ -31463,6 +31516,24 @@ __metadata:
     react: "*"
     react-dom: "*"
   checksum: 1dd7a52ce34816fd8db064509fe222521f4c5f2e6b43add7ce715fb56e4be30a9873ed5968af2775a70b6eab79a51d34bbad9b3aa1e68d69ee3f60586df6e99e
+  languageName: node
+  linkType: hard
+
+"rc-select@npm:~14.1.0":
+  version: 14.1.18
+  resolution: "rc-select@npm:14.1.18"
+  dependencies:
+    "@babel/runtime": ^7.10.1
+    classnames: 2.x
+    rc-motion: ^2.0.1
+    rc-overflow: ^1.0.0
+    rc-trigger: ^5.0.4
+    rc-util: ^5.16.1
+    rc-virtual-list: ^3.2.0
+  peerDependencies:
+    react: "*"
+    react-dom: "*"
+  checksum: 6d0bf03480e8e1a8a98550f5ce0fc695f465bac548963014103ad5fc0aae5104f5b6e3bf83cb881362d9d87181a79d4945ffe30efc129c922e040b35eba5e4de
   languageName: node
   linkType: hard
 
@@ -31587,7 +31658,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rc-tree-select@npm:^5.4.0, rc-tree-select@npm:~5.22.1":
+"rc-tree-select@npm:5.4.0":
+  version: 5.4.0
+  resolution: "rc-tree-select@npm:5.4.0"
+  dependencies:
+    "@babel/runtime": ^7.10.1
+    classnames: 2.x
+    rc-select: ~14.1.0
+    rc-tree: ~5.6.1
+    rc-util: ^5.16.1
+  peerDependencies:
+    react: "*"
+    react-dom: "*"
+  checksum: e1f4b3cf025b371579a686fa1b04a9439ac84fa663f6ed52e384059a15255b634d0ab94a49a555727ada0b2686fd43daf4ba0b244529d1ff7ae6816a2cba2c34
+  languageName: node
+  linkType: hard
+
+"rc-tree-select@npm:~5.22.1":
   version: 5.22.2
   resolution: "rc-tree-select@npm:5.22.2"
   dependencies:
@@ -31600,6 +31687,22 @@ __metadata:
     react: "*"
     react-dom: "*"
   checksum: 336b56fc2958b16a92ed2daaa7c4644b29a7c6ef05c2ad695bb59ce34dc2d4f8715d826db9343546be0af5589ea984ebc2ef84201aba179c8478a98b3e776be5
+  languageName: node
+  linkType: hard
+
+"rc-tree@npm:~5.6.1":
+  version: 5.6.9
+  resolution: "rc-tree@npm:5.6.9"
+  dependencies:
+    "@babel/runtime": ^7.10.1
+    classnames: 2.x
+    rc-motion: ^2.0.1
+    rc-util: ^5.16.1
+    rc-virtual-list: ^3.4.8
+  peerDependencies:
+    react: "*"
+    react-dom: "*"
+  checksum: 552954a9038f065d3ea2537ef0fcc57992a8934024a2c731ec07f7f7998a73f5b58a3fc7fca0f3a5f85cbf9c58f5a3643c41f643ccceec9636b3c3dbfd580252
   languageName: node
   linkType: hard
 
@@ -31675,7 +31778,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rc-virtual-list@npm:^3.14.2, rc-virtual-list@npm:^3.5.1, rc-virtual-list@npm:^3.5.2":
+"rc-virtual-list@npm:^3.14.2, rc-virtual-list@npm:^3.2.0, rc-virtual-list@npm:^3.4.13, rc-virtual-list@npm:^3.4.8, rc-virtual-list@npm:^3.5.1, rc-virtual-list@npm:^3.5.2":
   version: 3.14.5
   resolution: "rc-virtual-list@npm:3.14.5"
   dependencies:
@@ -36803,6 +36906,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:4.9.5":
+  version: 4.9.5
+  resolution: "typescript@npm:4.9.5"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: ee000bc26848147ad423b581bd250075662a354d84f0e06eb76d3b892328d8d4440b7487b5a83e851b12b255f55d71835b008a66cbf8f255a11e4400159237db
+  languageName: node
+  linkType: hard
+
 "typescript@npm:^5.5.4":
   version: 5.5.4
   resolution: "typescript@npm:5.5.4"
@@ -36810,6 +36923,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: b309040f3a1cd91c68a5a58af6b9fdd4e849b8c42d837b2c2e73f9a4f96a98c4f1ed398a9aab576ee0a4748f5690cf594e6b99dbe61de7839da748c41e6d6ca8
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@4.9.5#~builtin<compat/typescript>":
+  version: 4.9.5
+  resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=289587"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 1f8f3b6aaea19f0f67cba79057674ba580438a7db55057eb89cc06950483c5d632115c14077f6663ea76fd09fce3c190e6414bb98582ec80aa5a4eaf345d5b68
   languageName: node
   linkType: hard
 

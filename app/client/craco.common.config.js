@@ -19,7 +19,8 @@ module.exports = {
     port: 3005,
     hot: true,
     proxy: {
-      "/api": "http://10.10.13.43:30039"
+      // "/api": "http://10.10.13.43:30039"
+      "/api": "http://localhost:8079"
     }
   },
   babel: {

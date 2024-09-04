@@ -26,7 +26,7 @@ interface ApplicationCardListProps {
   isMobile?: boolean;
   workspaceId: string;
   onClickAddNewButton: (workspaceId: string, isMobile: boolean) => void;
-  onClickAddMobileNewButton: (workspaceId: string, isMobile: boolean) => void;
+  onClickAddMobileNewButton?: (workspaceId: string, isMobile: boolean) => void;
   deleteApplication: (applicationId: string) => void;
   updateApplicationDispatch: (
     id: string,

@@ -102,14 +102,14 @@ export const publishApplication = (applicationId: string) => {
   };
 };
 
-export const duplicateApplication = (applicationId: string) => {
-  return {
-    type: ReduxActionTypes.DUPLICATE_APPLICATION_INIT,
-    payload: {
-      applicationId,
-    },
-  };
-};
+// export const duplicateApplication = (applicationId: string) => {
+//   return {
+//     type: ReduxActionTypes.DUPLICATE_APPLICATION_INIT,
+//     payload: {
+//       applicationId,
+//     },
+//   };
+// };
 
 export const importApplication = (appDetails: ImportApplicationRequest) => {
   return {
@@ -127,11 +127,11 @@ export const importApplicationSuccess = (
   };
 };
 
-export const getAllApplications = () => {
-  return {
-    type: ReduxActionTypes.GET_ALL_APPLICATION_INIT,
-  };
-};
+// export const getAllApplications = () => {
+//   return {
+//     type: ReduxActionTypes.GET_ALL_APPLICATION_INIT,
+//   };
+// };
 
 export const resetCurrentApplication = () => {
   return {
@@ -139,10 +139,10 @@ export const resetCurrentApplication = () => {
   };
 };
 
-export const setShowAppInviteUsersDialog = (payload: boolean) => ({
-  type: ReduxActionTypes.SET_SHOW_APP_INVITE_USERS_MODAL,
-  payload,
-});
+// export const setShowAppInviteUsersDialog = (payload: boolean) => ({
+//   type: ReduxActionTypes.SET_SHOW_APP_INVITE_USERS_MODAL,
+//   payload,
+// });
 
 export const fetchApplicationPreviewWxaCode = (applicationId: string) => {
   return {

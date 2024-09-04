@@ -32,8 +32,7 @@
     "sourceMap": true,
     "baseUrl": "./src",
     "noFallthroughCasesInSwitch": true,
-    "verbatimModuleSyntax": true,
-    "ignoreDeprecations": "5.0"
+    "verbatimModuleSyntax": true
   },
   "include": [
     "./src/**/*",

@@ -46,6 +46,7 @@ import {
   updateWidgetNameSuccess,
 } from "actions/pageActions";
 import type {
+  FetchPageListResponse,
   FetchPageRequest,
   FetchPageResponse,
   FetchPageResponseData,
@@ -1371,9 +1372,9 @@ export function* setupPublishedPageSaga(
 export function* fetchCloudOSApiSaga(
   fetchApiAction: ReduxAction<FetchCloudOSApiRequest>,
 ) {
-  PerformanceTracker.startAsyncTracking(
-    PerformanceTransactionName.SYNC_CLOUDOS_API,
-  );
+  // PerformanceTracker.startAsyncTracking(
+  //   PerformanceTransactionName.SYNC_CLOUDOS_API,
+  // );
   try {
     const { depList, orgId, pageId, projectId } = fetchApiAction.payload;
     const response: FetchPageListResponse = yield call(PageApi.syncCloudOSApi, {
@@ -1387,13 +1388,13 @@ export function* fetchCloudOSApiSaga(
       yield put({
         type: ReduxActionTypes.FETCH_CLOUDOS_API_SUCCESS,
       });
-      PerformanceTracker.stopAsyncTracking(
-        PerformanceTransactionName.SYNC_CLOUDOS_API,
-      );
+      // PerformanceTracker.stopAsyncTracking(
+      //   PerformanceTransactionName.SYNC_CLOUDOS_API,
+      // );
     } else {
-      PerformanceTracker.stopAsyncTracking(
-        PerformanceTransactionName.SYNC_CLOUDOS_API,
-      );
+      // PerformanceTracker.stopAsyncTracking(
+      //   PerformanceTransactionName.SYNC_CLOUDOS_API,
+      // );
       yield put({
         type: ReduxActionErrorTypes.FETCH_CLOUDOS_API_ERROR,
         payload: {
@@ -1402,10 +1403,10 @@ export function* fetchCloudOSApiSaga(
       });
     }
   } catch (error) {
-    PerformanceTracker.stopAsyncTracking(
-      PerformanceTransactionName.SYNC_CLOUDOS_API,
-      { failed: true },
-    );
+    // PerformanceTracker.stopAsyncTracking(
+    //   PerformanceTransactionName.SYNC_CLOUDOS_API,
+    //   { failed: true },
+    // );
     yield put({
       type: ReduxActionErrorTypes.FETCH_CLOUDOS_API_ERROR,
       payload: {

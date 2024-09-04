@@ -1,5 +1,4 @@
-ARG BASE
-FROM ${BASE}
+FROM appsmith/base-ce:nightly
 
 ENV IN_DOCKER=1
 
@@ -34,6 +33,10 @@ COPY ./app/client/build editor/
 
 # Add RTS - Application Layer
 COPY ./app/client/packages/rts/dist rts/
+
+RUN ls -l /
+COPY ./info.json /opt/appsmith/info.json
+RUN chmod 644 /opt/appsmith/info.json
 
 ENV PATH /opt/bin:/opt/appsmith/utils/node_modules/.bin:/opt/java/bin:/opt/node/bin:$PATH
 
