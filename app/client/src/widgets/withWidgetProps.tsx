@@ -52,7 +52,6 @@ import { getIsAnvilLayout } from "layoutSystems/anvil/integrations/selectors";
 import { WidgetProfiler } from "./BaseWidgetHOC/WidgetProfiler";
 import { getAppsmithConfigs } from "ee/configs";
 import { endSpan, startRootSpan } from "UITelemetry/generateTraces";
-const { newRelic } = getAppsmithConfigs();
 
 const WIDGETS_WITH_CHILD_WIDGETS = ["LIST_WIDGET", "FORM_WIDGET"];
 const WIDGETS_REQUIRING_SELECTED_ANCESTRY = ["MODAL_WIDGET", "TABS_WIDGET"];
@@ -358,10 +357,6 @@ function withWidgetProps(WrappedWidget: typeof BaseWidget) {
             : undefined,
         };
       }
-    }
-
-    if (!newRelic.enableNewRelic) {
-      return <WrappedWidget {...widgetProps} />;
     }
 
     return (

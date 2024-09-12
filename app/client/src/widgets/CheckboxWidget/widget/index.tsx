@@ -35,8 +35,7 @@ class CheckboxWidget extends BaseWidget<CheckboxWidgetProps, WidgetState> {
     return {
       name: "勾选",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
-      tags: [WIDGET_TAGS.TOGGLES],
+      tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
       searchTags: ["boolean", "checkbox"],
     };

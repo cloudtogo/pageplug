@@ -17,7 +17,7 @@ import { builderURL, viewerURL } from "ee/RouteBuilder";
 import {
   combinedPreviewModeSelector,
   getCurrentBasePageId,
-  getCurrentPage
+  getCurrentPage,
 } from "selectors/editorSelectors";
 import type { User } from "constants/userConstants";
 import { ANONYMOUS_USERNAME } from "constants/userConstants";
@@ -119,10 +119,10 @@ export function Sidebar(props: SidebarProps) {
     const pageURL =
       appMode === APP_MODE.PUBLISHED
         ? viewerURL({
-            pageId: pagesMap[title].pageId,
+            basePageId: pagesMap[title].pageId,
           })
         : builderURL({
-            pageId: pagesMap[title].pageId,
+            basePageId: pagesMap[title].pageId,
           });
     return pageURL;
   };

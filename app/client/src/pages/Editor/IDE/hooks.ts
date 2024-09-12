@@ -37,6 +37,8 @@ import { closeQueryActionTab } from "actions/pluginActionActions";
 import { getCurrentBasePageId } from "selectors/editorSelectors";
 import { getCurrentEntityInfo } from "../utils";
 import useWindowDimensions from "../../../utils/hooks/useWindowDimensions";
+import { useFeatureFlag } from "utils/hooks/useFeatureFlag";
+import { FEATURE_FLAG } from "ee/entities/FeatureFlag";
 
 export const useCurrentAppState = () => {
   const [appState, setAppState] = useState(EditorState.EDITOR);
@@ -154,6 +156,18 @@ export const useGetPageFocusUrl = (basePageId: string): string => {
   }, [editorStateFocusInfo, branch]);
 
   return focusPageUrl;
+};
+
+export const useIsEditorPaneSegmentsEnabled = () => {
+  const isEditorSegmentsReleaseEnabled = useFeatureFlag(
+    FEATURE_FLAG.release_show_new_sidebar_pages_pane_enabled,
+  );
+
+  const isEditorSegmentsRolloutEnabled = useFeatureFlag(
+    FEATURE_FLAG.rollout_editor_pane_segments_enabled,
+  );
+
+  return isEditorSegmentsReleaseEnabled || isEditorSegmentsRolloutEnabled;
 };
 
 export function useWidgetSelectionBlockListener() {

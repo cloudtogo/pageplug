@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 import { getIsAppSettingsPaneWithNavigationTabOpen } from "selectors/appSettingsPaneSelectors";
 import { EditorState } from "ee/entities/IDE/constants";
 import { RenderModes } from "constants/WidgetConstants";
+import TabBar from "components/designSystems/taro/TabBar";
+import Debugger from "components/editorComponents/Debugger";
 
 /**
  * WidgetEditorContainer

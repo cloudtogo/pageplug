@@ -67,7 +67,6 @@ class SelectWidget extends BaseWidget<SelectWidgetProps, WidgetState> {
     return {
       name: "下拉单选",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
       searchTags: ["dropdown", "select", "options"],

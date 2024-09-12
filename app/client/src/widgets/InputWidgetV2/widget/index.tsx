@@ -300,7 +300,6 @@ class InputWidget extends BaseInputWidget<InputWidgetProps, WidgetState> {
     return {
       name: "输入",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.INPUTS],
       needsMeta: true,
       searchTags: ["form", "text input", "number", "textarea"],

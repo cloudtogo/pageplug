@@ -17,7 +17,7 @@ import { setExplorerSwitchIndex } from "actions/editorContextActions";
 import UIEntitySidebar from "../widgetSidebar/UIEntitySidebar";
 import { ExplorerWrapper } from "./Common/ExplorerWrapper";
 import WidgetSidebar from "../WidgetSidebar";
-import { isMobileLayout } from "@appsmith/selectors/applicationSelectors";
+import { isMobileLayout } from "ee/selectors/applicationSelectors";
 import WidgetSidebarWithTags from "../WidgetSidebarWithTags";
 
 const selectForceOpenWidgetPanel = (state: AppState) =>

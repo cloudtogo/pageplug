@@ -61,7 +61,6 @@ class MultiSelectWidget extends BaseWidget<
     return {
       name: "下拉多选",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
       searchTags: ["dropdown", "select", "multi select"],

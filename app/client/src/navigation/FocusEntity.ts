@@ -125,7 +125,7 @@ export function identifyEntityFromPath(path: string): FocusEntityInfo {
       return {
         entity: FocusEntity.QUERY,
         id: match.params.baseApiId,
-        appState: EditorState.EDITOR,
+        appState: EditorState.QUERY2,
         params: match.params,
       };
     }
@@ -135,7 +135,7 @@ export function identifyEntityFromPath(path: string): FocusEntityInfo {
     return {
       entity: FocusEntity.QUERY,
       id: match.params.baseApiId,
-      appState: EditorState.EDITOR,
+      appState: EditorState.QUERY2,
       params: match.params,
     };
   }
@@ -179,7 +179,7 @@ export function identifyEntityFromPath(path: string): FocusEntityInfo {
     return {
       entity: FocusEntity.QUERY,
       id: match.params.baseQueryId,
-      appState: EditorState.EDITOR,
+      appState: EditorState.QUERY2,
       params: match.params,
     };
   }
@@ -217,7 +217,7 @@ export function identifyEntityFromPath(path: string): FocusEntityInfo {
     return {
       entity: FocusEntity.JS_OBJECT,
       id: match.params.baseCollectionId,
-      appState: EditorState.EDITOR,
+      appState: EditorState.QUERY2,
       params: match.params,
     };
   }

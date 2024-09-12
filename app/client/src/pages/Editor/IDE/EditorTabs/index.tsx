@@ -82,7 +82,6 @@ const EditorTabs = () => {
   const newTabClickHandler = () => {
     setShowListView(false);
   };
-
   return (
     <>
       <Container>
@@ -127,7 +126,6 @@ const EditorTabs = () => {
           </Flex>
         </ScrollArea>
 
-        {files.length > 0 ? <AddButton /> : null}
         {/* Switch screen mode button */}
         <ScreenModeToggle />
       </Container>

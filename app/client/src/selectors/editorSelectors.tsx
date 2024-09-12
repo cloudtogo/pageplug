@@ -359,7 +359,8 @@ export const isHiddenPage = createSelector(
 export const getWidgetCards = createSelector(
   getIsAutoLayout,
   getIsAnvilLayout,
-  (isAutoLayout, isAnvilLayout) => {
+  isMobileLayout,
+  (isAutoLayout: boolean, isAnvilLayout: boolean, isTaroWds: boolean) => {
     const widgetConfigs = WidgetFactory.getConfigs();
     const widgetConfigsArray = Object.values(widgetConfigs);
     const layoutSystemBasesWidgets = widgetConfigsArray.filter((config) => {
@@ -375,7 +376,10 @@ export const getWidgetCards = createSelector(
       if (isAirgapped()) {
         return config.widgetName !== "Map" && !config.hideCard;
       }
-      return !config.hideCard;
+
+      return (
+        !config.hideCard && (isTaroWds ? config.isMobile : !config.isMobile)
+      );
     });
 
     const _cards: any = cards.map((config) => {
@@ -439,11 +443,11 @@ export const getDimensionMap = createSelector(
   (isAutoLayoutMobileBreakPoint: boolean) => {
     return isAutoLayoutMobileBreakPoint
       ? {
-        leftColumn: "mobileLeftColumn",
-        rightColumn: "mobileRightColumn",
-        topRow: "mobileTopRow",
-        bottomRow: "mobileBottomRow",
-      }
+          leftColumn: "mobileLeftColumn",
+          rightColumn: "mobileRightColumn",
+          topRow: "mobileTopRow",
+          bottomRow: "mobileBottomRow",
+        }
       : DefaultDimensionMap;
   },
 );

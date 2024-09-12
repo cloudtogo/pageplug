@@ -38,7 +38,7 @@ export function UserAuth() {
       <div
         className={`absolute inset-0 flex flex-col overflow-y-auto auth-container bg-[color:var(--ads-color-background-secondary)] ${
           !isMobileDevice ? "p-4" : "px-6 py-12"
-        } t--auth-container justify-between`}
+        } t--auth-container justify-between p-4 t--auth-container login-page-bg`}
       >
         {isMobileDevice && (
           <img
@@ -72,7 +72,7 @@ export function UserAuth() {
           />
           <SentryRoute component={PageNotFound} />
         </Switch>
-        {cloudHosting && <FooterLinks />}
+        {/* {cloudHosting && <FooterLinks />} */}
       </div>
     </ThemeProvider>
   );

@@ -239,13 +239,13 @@ export const WIDGET_TAGS = {
   FEATRUE: "功能类",
   // 分类
   SUGGESTED_WIDGETS: "Suggested",
+  BUILDING_BLOCKS: "Building Blocks",
   LAYOUT: "Layout",
   MEDIA: "Media",
   TOGGLES: "Toggles",
   SLIDERS: "Sliders",
   CONTENT: "Content",
   EXTERNAL: "External",
-  BUILDING_BLOCKS: "Building Blocks",
 } as const;
 
 export type WidgetTags = (typeof WIDGET_TAGS)[keyof typeof WIDGET_TAGS];
@@ -269,8 +269,8 @@ export const SUGGESTED_WIDGETS_ORDER: Record<WidgetType, number> = {
 // Constant key to show walkthrough for a widget -> stores widget id
 export const WIDGET_ID_SHOW_WALKTHROUGH = "WIDGET_ID_SHOW_WALKTHROUGH";
 
-export const DEFAULT_ROWS_FOR_EXPLORER_BUILDING_BLOCKS = 60;
-export const DEFAULT_COLUMNS_FOR_EXPLORER_BUILDING_BLOCKS = 62;
+export const DEFAULT_ROWS_FOR_EXPLORER_BUILDING_BLOCKS = 30;
+export const DEFAULT_COLUMNS_FOR_EXPLORER_BUILDING_BLOCKS = 5;
 export const BUILDING_BLOCK_MIN_HORIZONTAL_LIMIT = 2000;
 export const BUILDING_BLOCK_MIN_VERTICAL_LIMIT = 800;
 export const BUILDING_BLOCK_EXPLORER_TYPE = "BUILDING_BLOCK";

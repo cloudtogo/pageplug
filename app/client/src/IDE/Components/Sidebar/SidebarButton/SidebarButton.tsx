@@ -36,7 +36,7 @@ const Container = styled(Flex)`
 const IconContainer = styled.div<{ selected: boolean }>`
   padding: 2px;
   background-color: ${(props) =>
-    props.selected ? "var(--colors-raw-orange-100, #fbe6dc)" : "white"};
+    props.selected ? "rgb(139 212 212 / 33%)" : "white"};
   border-radius: 3px;
   width: 32px;
   height: 32px;
@@ -49,7 +49,7 @@ const IconContainer = styled.div<{ selected: boolean }>`
   &:hover {
     background: ${(props) =>
       props.selected
-        ? "var(--colors-raw-orange-100, #fbe6dc)"
+        ? "rgb(139 212 212 / 33%)"
         : "var(--ads-v2-color-bg-subtle, #f1f5f9);"};
   }
 `;
@@ -89,13 +89,13 @@ function SidebarButton(props: SidebarButtonProps) {
           selected={selected}
         >
           <Icon name={icon} size="lg" />
-          {condition && (
+          {/* {condition && (
             <ConditionIcon
               className={`t--sidebar-${condition}-condition-icon`}
               name={ConditionConfig[condition].icon}
               size="md"
             />
-          )}
+          )} */}
         </IconContainer>
       </Tooltip>
       {title ? <Text kind="body-s">{title}</Text> : null}

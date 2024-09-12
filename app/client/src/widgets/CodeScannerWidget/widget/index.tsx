@@ -32,8 +32,7 @@ class CodeScannerWidget extends BaseWidget<
     return {
       name: "扫码器",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
-      tags: [WIDGET_TAGS.EXTERNAL],
+      tags: [WIDGET_TAGS.FEATRUE],
       needsMeta: true,
       searchTags: [
         "barcode scanner",

@@ -17,6 +17,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { groupWidgetCardsByTags } from "../utils";
 import UIEntityTagGroup from "./UIEntityTagGroup";
 import { useUIExplorerItems } from "./hooks";
+import { useSelector } from "react-redux";
 
 function UIEntitySidebar({
   focusSearchInput,
@@ -25,6 +26,7 @@ function UIEntitySidebar({
   isActive: boolean;
   focusSearchInput?: boolean;
 }) {
+  const isMobile = useSelector((state) => state.ui.mainCanvas.isMobile);
   const { cards, entityLoading, groupedCards } = useUIExplorerItems();
   const [filteredCards, setFilteredCards] =
     useState<WidgetCardsGroupedByTags>(groupedCards);
@@ -35,6 +37,7 @@ function UIEntitySidebar({
     () => isSearching && !areSearchResultsEmpty,
     [isSearching, areSearchResultsEmpty],
   );
+  const [isEmpty, setIsEmpty] = useState(false);
 
   const searchWildcards = useMemo(
     () =>
@@ -68,18 +71,25 @@ function UIEntitySidebar({
     setIsSearching(true);
     sendWidgetSearchAnalytics(keyword);
     if (keyword.trim().length > 0) {
-      const searchResult = fuse.search(keyword);
-
-      setFilteredCards(
-        groupWidgetCardsByTags(
-          searchResult.length > 0 ? searchResult : searchWildcards,
-        ),
-      );
-      setAreSearchResultsEmpty(searchResult.length === 0);
+      const searchResult: any = fuse.search(keyword);
+      if (isMobile) {
+        setFilteredCards(searchResult);
+      } else {
+        setFilteredCards(
+          groupWidgetCardsByTags(
+            searchResult.length > 0 ? searchResult : searchWildcards,
+          ),
+        );
+      }
+      setIsEmpty(searchResult.length === 0);
     } else {
-      setFilteredCards(groupedCards);
+      if (isMobile) {
+        setFilteredCards(cards);
+      } else {
+        setFilteredCards(groupedCards);
+      }
       setIsSearching(false);
-      setAreSearchResultsEmpty(false);
+      setIsEmpty(false);
     }
   };
 
@@ -95,7 +105,6 @@ function UIEntitySidebar({
   useEffect(() => {
     if (focusSearchInput) searchInputRef.current?.focus();
   }, [focusSearchInput]);
-
   return (
     <div
       className={`flex flex-col t--widget-sidebar overflow-hidden ${

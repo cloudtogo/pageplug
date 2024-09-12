@@ -8,6 +8,8 @@ import { setCanvasSelectionFromEditor } from "actions/canvasSelectionActions";
 import { useAllowEditorDragToSelect } from "utils/hooks/useAllowEditorDragToSelect";
 import { useAutoHeightUIState } from "utils/hooks/autoHeightUIHooks";
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
+import TabBar from "components/designSystems/taro/TabBar";
+import Debugger from "components/editorComponents/Debugger";
 
 export const WidgetEditorContentWrapper = (props: { children: ReactNode }) => {
   const allowDragToSelect = useAllowEditorDragToSelect();
@@ -73,6 +75,8 @@ export const WidgetEditorContentWrapper = (props: { children: ReactNode }) => {
       style={wrapperStyle}
     >
       {props.children}
+      <TabBar />
+      <Debugger />
     </div>
   );
 };

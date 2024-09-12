@@ -40,7 +40,6 @@ class StatboxWidget extends ContainerWidget {
     return {
       name: "统计框",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: true,
       searchTags: ["statbox"],

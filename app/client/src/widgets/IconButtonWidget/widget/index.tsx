@@ -47,7 +47,6 @@ class IconButtonWidget extends BaseWidget<IconButtonWidgetProps, WidgetState> {
     return {
       name: "图标按钮",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.BUTTONS],
       searchTags: ["click", "submit", "button", "icon"],
     };

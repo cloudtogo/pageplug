@@ -98,7 +98,7 @@ class ListWidget extends BaseWidget<ListWidgetProps<WidgetProps>, WidgetState> {
       hideCard: true,
       replacement: "LIST_WIDGET_V2",
       needsHeightForContent: true,
-      tags: [WIDGET_TAGS.DISPLAY],
+      // tags: [WIDGET_TAGS.DISPLAY],
     };
   }
 

@@ -43,7 +43,6 @@ class TextWidget extends BaseWidget<TextWidgetProps, WidgetState> {
     return {
       name: "文本",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["text", "label"],
     };

@@ -25,7 +25,6 @@ class DividerWidget extends BaseWidget<DividerWidgetProps, WidgetState> {
     return {
       name: "分隔线",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.GERNERAL],
       searchTags: ["line", "divider", "separator"],
     };

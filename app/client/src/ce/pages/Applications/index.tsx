@@ -659,7 +659,6 @@ export function ApplicationsSection(props: any) {
     const color = getRandomPaletteColor(theme.colors.appCardColors);
     const icon =
       AppIconCollection[Math.floor(Math.random() * AppIconCollection.length)];
-    console.log(isTaroWds, "isTaroWds")
     return dispatch({
       type: ReduxActionTypes.CREATE_APPLICATION_INIT,
       payload: {

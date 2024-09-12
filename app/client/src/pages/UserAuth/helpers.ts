@@ -123,7 +123,6 @@ export const forgotPasswordSubmitHandler = async (
       },
     });
   }).then((res) => {
-    console.log(res)
     message.open({
       type: "success",
       duration: 5,

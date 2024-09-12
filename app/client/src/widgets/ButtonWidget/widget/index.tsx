@@ -54,7 +54,6 @@ class ButtonWidget extends BaseWidget<ButtonWidgetProps, ButtonWidgetState> {
     return {
       name: "按钮",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.BUTTONS],
       needsMeta: true,
       searchTags: ["click", "submit", "button"],

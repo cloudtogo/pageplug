@@ -112,7 +112,6 @@ export const PropertyPaneSidebar = memo((props: Props) => {
       sidebarRef.current?.removeEventListener("click", closeWalkthrough);
     };
   }, [isWalkthroughOpened]);
-
   return (
     <div className="relative h-full">
       {/* PROPERTY PANE */}

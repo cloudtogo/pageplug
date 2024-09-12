@@ -104,7 +104,6 @@ const TabBar = ({ currentPage, isFull }: TabbarProps) => {
   if (!isMobile) {
     return null;
   }
-
   return (
     <TabBarContainer>
       <PropertyName>页面名称</PropertyName>

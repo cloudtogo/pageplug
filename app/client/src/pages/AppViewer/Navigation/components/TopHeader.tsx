@@ -79,8 +79,6 @@ const TopHeader = (props: TopHeaderProps) => {
             setMenuOpen={setMenuOpen}
           />
 
-          <NavigationLogo logoConfiguration={logoConfiguration} />
-
           <ApplicationName
             appName={currentApplicationDetails?.name}
             navColorStyle={navColorStyle}

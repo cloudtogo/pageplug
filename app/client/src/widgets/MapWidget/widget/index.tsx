@@ -73,7 +73,6 @@ class MapWidget extends BaseWidget<MapWidgetProps, WidgetState> {
     return {
       name: "地图",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: true,
       searchTags: ["map", "location", "google"],

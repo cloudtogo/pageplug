@@ -80,8 +80,7 @@ class CheckboxGroupWidget extends BaseWidget<
     return {
       name: "勾选组",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
-      tags: [WIDGET_TAGS.TOGGLES],
+      tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
       searchTags: ["checkbox", "group"],
     };

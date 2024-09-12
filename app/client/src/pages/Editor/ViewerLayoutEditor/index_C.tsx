@@ -363,8 +363,6 @@ function PagesEditor() {
     message.success("保存成功");
   };
 
-  // console.log(treeData, "treeData");
-
   const renderTitle = (node: any, path: any) => {
     const iconContent =
       path.length === 1 ? (

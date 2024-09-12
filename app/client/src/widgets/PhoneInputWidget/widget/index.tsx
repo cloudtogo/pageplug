@@ -90,7 +90,6 @@ class PhoneInputWidget extends BaseInputWidget<
     return {
       name: "手机号输入框",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.INPUTS],
       needsMeta: true,
       searchTags: ["call", "phone", "number", "dial", "telephone", "input"],

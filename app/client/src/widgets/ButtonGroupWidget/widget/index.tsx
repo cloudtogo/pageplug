@@ -35,7 +35,6 @@ class ButtonGroupWidget extends BaseWidget<
     return {
       name: "按钮组", // The display name which will be made in uppercase and show in the widgets panel ( can have spaces )
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       needsMeta: false, // Defines if this widget adds any meta properties
       isCanvas: false, // Defines if this widget has a canvas within in which we can drop other widgets
       searchTags: ["click", "submit", "button", "group"], // Search tags used in the search bar of the widgets pane

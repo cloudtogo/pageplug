@@ -180,7 +180,6 @@ function PageSettings(props: { page: Page }) {
       ? setCustomSlug(filterAccentedAndSpecialCharacters(value))
       : setCustomSlug(value);
   };
-
   return (
     <>
       <div

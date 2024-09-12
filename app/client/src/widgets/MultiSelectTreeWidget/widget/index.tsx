@@ -70,7 +70,6 @@ class MultiSelectTreeWidget extends BaseWidget<
     return {
       name: "树形多选",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
       searchTags: ["dropdown", "select", "tree", "multi"],

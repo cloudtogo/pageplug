@@ -67,7 +67,6 @@ class ChartWidget extends BaseWidget<ChartWidgetProps, WidgetState> {
     return {
       name: "Chart",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: true,
       needsErrorInfo: true,

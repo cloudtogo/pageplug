@@ -33,7 +33,6 @@ interface IDESidebarProps {
 
 function IDESidebar(props: IDESidebarProps) {
   const { bottomButtons, editorState, onClick, topButtons } = props;
-
   return (
     <Container className="t--sidebar" id={props.id}>
       <div>

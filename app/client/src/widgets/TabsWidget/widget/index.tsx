@@ -72,7 +72,6 @@ class TabsWidget extends BaseWidget<
     return {
       name: "标签页",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: true,
       isCanvas: true,

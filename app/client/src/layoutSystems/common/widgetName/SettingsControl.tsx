@@ -81,7 +81,6 @@ const getStyles = (
       color: "var(--ads-v2-color-bg-error)",
     };
   }
-
   switch (activity) {
     case Activities.ACTIVE:
       return {

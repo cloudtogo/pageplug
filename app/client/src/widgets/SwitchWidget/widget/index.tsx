@@ -33,7 +33,6 @@ class SwitchWidget extends BaseWidget<SwitchWidgetProps, WidgetState> {
     return {
       name: "开关",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
       searchTags: ["toggle", "switch"],

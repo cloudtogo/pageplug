@@ -444,7 +444,6 @@ function PagesEditor() {
 
   const toggleHidePage = (node: any) => {
     toggleNodeAndChildren(gData, node.key, !node.isHidden);
-    console.log(gData, "gData")
     setGData(gData);
     setSymbol(Symbol("hidemenu"));
   };

@@ -522,8 +522,6 @@ function PopoverContent(props: PopoverContentProps) {
       : `This value does not evaluate to type "${expected?.type}".`;
   };
 
-  console.log(props)
-
   return (
     <ContentWrapper
       className="t--CodeEditor-evaluatedValue evaluated-value-popup"

@@ -38,7 +38,6 @@ class IframeWidget extends BaseWidget<IframeWidgetProps, WidgetState> {
     return {
       name: "Iframe",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: true,
       searchTags: ["embed", "iframe", "html"],

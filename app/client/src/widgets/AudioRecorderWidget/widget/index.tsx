@@ -43,8 +43,7 @@ class AudioRecorderWidget extends BaseWidget<
     return {
       name: "录音器",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
-      tags: [WIDGET_TAGS.EXTERNAL],
+      tags: [WIDGET_TAGS.FEATRUE],
       needsMeta: true,
       searchTags: ["sound recorder", "voice recorder"],
     };

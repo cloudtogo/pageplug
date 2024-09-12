@@ -59,7 +59,6 @@ class FilePickerWidget extends BaseWidget<
     return {
       name: "文件上传",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.INPUTS],
       needsMeta: true,
       searchTags: ["upload", "file", "picker", "filepicker"],

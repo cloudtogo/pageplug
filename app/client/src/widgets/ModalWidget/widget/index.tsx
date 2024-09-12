@@ -48,7 +48,6 @@ export class ModalWidget extends BaseWidget<ModalWidgetProps, WidgetState> {
     return {
       name: "弹窗",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.FEATRUE],
       needsMeta: true,
       isCanvas: true,

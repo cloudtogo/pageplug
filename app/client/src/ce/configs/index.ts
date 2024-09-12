@@ -140,7 +140,6 @@ export const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
 };
 
 const getConfig = (fromENV: string = "", fromWindow = "") => {
-  console.log("fromWindow", fromENV, fromWindow);
   if (fromWindow.length > 0) return { enabled: true, value: fromWindow };
   else if (fromENV.length > 0) return { enabled: true, value: fromENV };
   return { enabled: false, value: "" };

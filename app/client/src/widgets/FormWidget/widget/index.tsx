@@ -43,7 +43,6 @@ class FormWidget extends ContainerWidget {
     return {
       name: "表单",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.INPUTS],
       needsMeta: true,
       isCanvas: true,

@@ -67,12 +67,6 @@ function LeftSideContent() {
   return (
     <Wrapper>
       <div className="left-description">
-        <div className="left-description-container">
-          &quot;We’d been looking for a tool like Appsmith for years. With
-          Appsmith we were able to build a UI on top of 12 different Snowflake
-          control tables. Appsmith was easy for our developers to learn, and
-          it’s easy to implement.&quot;
-        </div>
         <div className="left-description-author">
           <Avatar
             image={`${getAssetUrl(`${ASSETS_CDN_URL}/thomas-zwick.png`)}`}

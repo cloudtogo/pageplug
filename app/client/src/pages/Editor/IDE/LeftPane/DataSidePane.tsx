@@ -85,13 +85,14 @@ const DataSidePane = (props: DataSidePaneProps) => {
     userWorkspacePermissions,
   );
 
-  const addButtonClickHandler = () =>
+  const addButtonClickHandler = () => {
     history.push(
       integrationEditorURL({
         basePageId,
         selectedTab: INTEGRATION_TABS.NEW,
       }),
     );
+  };
 
   return (
     <Flex

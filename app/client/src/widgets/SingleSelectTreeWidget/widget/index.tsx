@@ -61,7 +61,6 @@ class SingleSelectTreeWidget extends BaseWidget<
       name: "树形单选",
       searchTags: ["dropdown", "select", "tree", "single select"],
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
     };

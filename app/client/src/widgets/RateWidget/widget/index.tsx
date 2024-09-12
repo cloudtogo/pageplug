@@ -111,7 +111,6 @@ class RateWidget extends BaseWidget<RateWidgetProps, WidgetState> {
     return {
       name: "评分",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
       searchTags: ["rating", "rate", "star", "stars"],

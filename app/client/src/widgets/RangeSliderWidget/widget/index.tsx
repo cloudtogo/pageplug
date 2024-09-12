@@ -67,7 +67,6 @@ class RangeSliderWidget extends BaseWidget<
       name: "区间滑动条",
       needsMeta: true,
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.DISPLAY],
       searchTags: ["range", "slider", "number", "percentage"],
     };

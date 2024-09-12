@@ -57,7 +57,6 @@ class RichTextEditorWidget extends BaseWidget<
     return {
       name: "富文本编辑器",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.FEATRUE],
       needsMeta: true,
       searchTags: ["text", "editor", "richtext", "html", "markdown"],

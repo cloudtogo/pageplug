@@ -162,7 +162,6 @@ class CurrencyInputWidget extends BaseInputWidget<
     return {
       name: "货币输入框",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.INPUTS],
       needsMeta: true,
       searchTags: ["amount", "total", "currency", "input"],

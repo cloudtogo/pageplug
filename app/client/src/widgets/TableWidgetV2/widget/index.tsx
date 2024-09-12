@@ -177,7 +177,6 @@ class TableWidgetV2 extends BaseWidget<TableWidgetProps, WidgetState> {
     return {
       name: "表格",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.DISPLAY],
       needsMeta: true,
       needsHeightForContent: true,

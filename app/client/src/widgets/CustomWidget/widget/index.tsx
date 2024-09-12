@@ -50,7 +50,6 @@ class CustomWidget extends BaseWidget<CustomWidgetProps, WidgetState> {
     return {
       name: "自定义组件(New)",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       needsMeta: true,
       isCanvas: false,
       tags: [WIDGET_TAGS.DISPLAY],

@@ -89,17 +89,17 @@ const newRelicBrowserAgentConfig = {
 };
 
 // The agent loader code executes immediately on instantiation.
-if (enableNewRelic) {
-  new Agent(
-    {
-      ...newRelicBrowserAgentConfig,
-      features: [PageViewTiming, PageViewEvent],
-    },
-    // The second argument agentIdentifier is not marked as optional in its type definition.
-    // Passing a null value throws an error as well. So we pass undefined.
-    undefined,
-  );
-}
+// if (enableNewRelic) {
+//   new Agent(
+//     {
+//       ...newRelicBrowserAgentConfig,
+//       features: [PageViewTiming, PageViewEvent],
+//     },
+//     // The second argument agentIdentifier is not marked as optional in its type definition.
+//     // Passing a null value throws an error as well. So we pass undefined.
+//     undefined,
+//   );
+// }
 
 const shouldAutoFreeze = process.env.NODE_ENV === "development";
 
@@ -112,7 +112,8 @@ enableNewRelic &&
   (async () => {
     try {
       await import(
-        /* webpackChunkName: "otlpTelemetry" */ "./UITelemetry/auto-otel-web"
+        /* webpackChunkName: "otlpTelemetry" */ 
+        "./UITelemetry/auto-otel-web"
       );
     } catch (e) {
       log.error("Error loading telemetry script", e);

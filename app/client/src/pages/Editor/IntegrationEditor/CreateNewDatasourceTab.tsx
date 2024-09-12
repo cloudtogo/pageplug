@@ -40,6 +40,8 @@ import { useParentEntityInfo } from "ee/hooks/datasourceEditorHooks";
 import AIDataSources from "./AIDataSources";
 import Debugger from "../DataSourceEditor/Debugger";
 
+import { FEATURE_FLAG } from "ee/entities/FeatureFlag";
+
 const NewIntegrationsContainer = styled.div`
   ${thinScrollbar};
   overflow: auto;
@@ -78,7 +80,7 @@ function UseMockDatasources({ active, mockDatasources }: MockDataSourcesProps) {
     <div id="mock-database" ref={useMockRef}>
       <Text kind="heading-m">{createMessage(SAMPLE_DATASOURCES)}</Text>
       <MockDataSources mockDatasources={mockDatasources} />
-    </div >
+    </div>
   );
 }
 
@@ -146,7 +148,6 @@ function CreateNewDatasource({
   }, [active]);
 
   const isAirgappedInstance = isAirgapped();
-
   return (
     <div id="new-datasources" ref={newDatasourceRef}>
       <Text kind="heading-m">
@@ -244,6 +245,7 @@ interface CreateNewDatasourceScreenProps {
   showDebugger: boolean;
   pageId: string;
   isOnboardingScreen?: boolean;
+  isEnabledForCreateNew?: boolean;
 }
 
 interface CreateNewDatasourceScreenState {
@@ -277,6 +279,7 @@ class CreateNewDatasourceTab extends React.Component<
       isOnboardingScreen,
       pageId,
       showDebugger,
+      isEnabledForCreateNew,
     } = this.props;
     if (!canCreateDatasource) return null;
     const mockDataSection =
@@ -370,6 +373,9 @@ const mapStateToProps = (state: AppState) => {
     userWorkspacePermissions,
   );
 
+  const isEnabledForCreateNew =
+    !!featureFlags[FEATURE_FLAG.ab_create_new_apps_enabled];
+
   return {
     dataSources: getDatasources(state),
     mockDatasources: getMockDatasources(state),
@@ -378,6 +384,7 @@ const mapStateToProps = (state: AppState) => {
     canCreateDatasource,
     showDebugger,
     pageId,
+    isEnabledForCreateNew,
   };
 };
 

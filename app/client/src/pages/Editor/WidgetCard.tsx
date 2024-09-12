@@ -9,8 +9,9 @@ import { IconWrapper } from "constants/IconConstants";
 import { Colors } from "constants/Colors";
 import { Text } from "design-system";
 import WalkthroughContext from "components/featureWalkthrough/walkthroughContext";
-import get from "lodash/get"
-import isString from "lodash/isString"
+import get from "lodash/get";
+import isString from "lodash/isString";
+import { useIsEditorPaneSegmentsEnabled } from "./IDE/hooks";
 
 interface CardProps {
   details: WidgetCardProps;
@@ -66,7 +67,7 @@ export const BetaLabel = styled.div`
 function WidgetCard(props: CardProps) {
   const { setDraggingNewWidget } = useWidgetDragResize();
   const { deselectAll } = useWidgetSelection();
-
+  const isEditorPaneEnabled = useIsEditorPaneSegmentsEnabled();
   const { isOpened: isWalkthroughOpened, popFeature } =
     useContext(WalkthroughContext) || {};
   const closeWalkthrough = useCallback(() => {
@@ -88,10 +89,14 @@ function WidgetCard(props: CardProps) {
         widgetId: generateReactKey(),
       });
     deselectAll();
-    closeWalkthrough();
+    if (!isEditorPaneEnabled) {
+      closeWalkthrough();
+    }
   };
 
-  const type = isString(get(props, "details.type", "")) ? `${get(props, "details.type", "").split("_").join("").toLowerCase()}` : "";
+  const type = isString(get(props, "details.type", ""))
+    ? `${get(props, "details.type", "").split("_").join("").toLowerCase()}`
+    : "";
   const className = `t--widget-card-draggable t--widget-card-draggable-${type}`;
 
   return (

@@ -43,7 +43,6 @@ class QueryHomeScreen extends React.Component<QueryHomeScreenProps> {
       showMostPopularPlugins,
       showUnsupportedPluginDialog,
     } = this.props;
-
     return (
       <QueryHomePage>
         <DataSourceHome

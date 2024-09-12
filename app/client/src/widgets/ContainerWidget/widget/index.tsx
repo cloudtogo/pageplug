@@ -59,8 +59,7 @@ export class ContainerWidget extends BaseWidget<
     return {
       name: "容器",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
-      tags: [WIDGET_TAGS.LAYOUT],
+      tags: [WIDGET_TAGS.GERNERAL],
       isCanvas: true,
       searchTags: ["div", "parent", "group", "container"],
     };

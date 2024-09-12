@@ -60,8 +60,7 @@ class CategorySliderWidget extends BaseWidget<
       needsMeta: true,
       searchTags: ["range"],
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
-      tags: [WIDGET_TAGS.SLIDERS],
+      tags: [WIDGET_TAGS.DISPLAY],
     };
   }
 

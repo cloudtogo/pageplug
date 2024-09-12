@@ -45,39 +45,53 @@ function Container(props: ContainerProps) {
   const isMobileDevice = useIsMobileDevice();
 
   return (
-    <ContainerWrapper
-      className={`gap-14 my-auto flex items-center justify-center min-w-min`}
+    <div
+      className="flex flex-col items-center gap-4 my-auto min-w-min"
       data-testid={testId}
     >
-      {cloudHosting && !isMobileDevice && <LeftSideContent />}
-      <BoxWrapper
-        className={`t--login-container ${
-          isMobileDevice ? "w-full" : "w-[min(400px,80%)]"
-        }`}
-        isMobileView={isMobileDevice}
-      >
-        {!isMobileDevice && (
-          <img
-            className="h-8 mx-auto"
-            src={getAssetUrl(tenantConfig.brandLogoUrl)}
-          />
-        )}
-        <div className={`flex flex-col gap-4`}>
-          <div className="flex flex-col gap-2 text-center">
-            <h1 className="text-lg font-semibold text-center text-[color:var(--ads-v2\-color-fg-emphasis)]">
-              {title}
-            </h1>
-            {subtitle && (
-              <p className="text-[14px] text-center text-[color:var(--ads-v2\-color-fg)]">
-                {subtitle}
-              </p>
-            )}
-          </div>
-          {children}
-          {footer}
-        </div>
-      </BoxWrapper>
-    </ContainerWrapper>
+      <div className="py-8 px-6 w-[min(400px,80%)] flex flex-col gap-6 t--login-container">
+        <img
+          className="mx-auto login-img"
+          src={getAssetUrl(tenantConfig.brandLogoUrl)}
+        />
+        {children}
+      </div>
+      {footer}
+    </div>
+
+    // <ContainerWrapper
+    //   className={`gap-14 my-auto flex items-center justify-center min-w-min`}
+    //   data-testid={testId}
+    // >
+    //   {/* {cloudHosting && !isMobileDevice && <LeftSideContent />} */}
+    //   <BoxWrapper
+    //     className={`t--login-container ${
+    //       isMobileDevice ? "w-full" : "w-[min(400px,80%)]"
+    //     }`}
+    //     isMobileView={isMobileDevice}
+    //   >
+    //     {!isMobileDevice && (
+    //       <img
+    //         className="h-8 mx-auto"
+    //         src={getAssetUrl(tenantConfig.brandLogoUrl)}
+    //       />
+    //     )}
+    //     <div className={`flex flex-col gap-4`}>
+    //       <div className="flex flex-col gap-2 text-center">
+    //         <h1 className="text-lg font-semibold text-center text-[color:var(--ads-v2\-color-fg-emphasis)]">
+    //           {title}
+    //         </h1>
+    //         {subtitle && (
+    //           <p className="text-[14px] text-center text-[color:var(--ads-v2\-color-fg)]">
+    //             {subtitle}
+    //           </p>
+    //         )}
+    //       </div>
+    //       {children}
+    //       {footer}
+    //     </div>
+    //   </BoxWrapper>
+    // </ContainerWrapper>
   );
 }
 

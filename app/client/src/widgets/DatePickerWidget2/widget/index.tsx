@@ -68,7 +68,6 @@ class DatePickerWidget extends BaseWidget<DatePickerWidget2Props, WidgetState> {
     return {
       name: "日期选择器",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.SELECT],
       needsMeta: true,
       searchTags: ["calendar", "date", "time", "datetime"],

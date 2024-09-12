@@ -52,7 +52,6 @@ class NumberSliderWidget extends BaseWidget<
       needsMeta: true,
       searchTags: ["range", "slider", "number", "percentage"],
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
       tags: [WIDGET_TAGS.DISPLAY],
     };
   }

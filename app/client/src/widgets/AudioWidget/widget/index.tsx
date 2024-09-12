@@ -38,8 +38,7 @@ class AudioWidget extends BaseWidget<AudioWidgetProps, WidgetState> {
     return {
       name: "音频",
       iconSVG: IconSVG,
-      thumbnailSVG: ThumbnailSVG,
-      tags: [WIDGET_TAGS.MEDIA],
+      tags: [WIDGET_TAGS.FEATRUE],
       needsMeta: true,
       searchTags: ["mp3", "sound", "wave", "player"],
     };

@@ -9,8 +9,12 @@ import { BUILDING_BLOCK_EXPLORER_TYPE } from "constants/WidgetConstants";
 import { useSelector } from "react-redux";
 import { getCurrentApplicationId } from "selectors/editorSelectors";
 import { getCurrentWorkspaceId } from "ee/selectors/selectedWorkspaceSelectors";
-import { noop } from "utils/AppsmithUtils";import { Colors } from "constants/Colors";
+import { noop } from "utils/AppsmithUtils";
+import { Colors } from "constants/Colors";
 import WalkthroughContext from "components/featureWalkthrough/walkthroughContext";
+import { IconWrapper } from "constants/IconConstants";
+import { useWidgetSelection } from "utils/hooks/useWidgetSelection";
+import { useIsEditorPaneSegmentsEnabled } from "../IDE/hooks";
 
 export interface CardProps {
   details: WidgetCardProps;
@@ -76,6 +80,7 @@ export const BetaLabel = styled.div`
 
 const THUMBNAIL_HEIGHT = 76;
 const THUMBNAIL_WIDTH = 72;
+const ICON_SIZE = 24;
 
 function WidgetCardComponent({
   details,
@@ -87,8 +92,9 @@ function WidgetCardComponent({
   onDragStart?: (e: any) => void;
 }) {
   const type = `${details.type.split("_").join("").toLowerCase()}`;
-  const className = `t--widget-card-draggable t--widget-card-draggable-${type}`;
-  const { ThumbnailCmp } = details;
+  const className = `t--widget-card-draggable t--widget-card-draggable-${type} ${
+    !Boolean(details.thumbnail) ? "pt-2 gap-2 mt-2" : ""
+  }`;
 
   return (
     <Wrapper
@@ -98,10 +104,13 @@ function WidgetCardComponent({
       id={`widget-card-draggable-${type}`}
       onDragStart={onDragStart}
     >
-      <ThumbnailWrapper height={THUMBNAIL_HEIGHT} width={THUMBNAIL_WIDTH}>
-        {details.thumbnail && <img src={details.thumbnail} />}
-        {ThumbnailCmp && <ThumbnailCmp />}
-      </ThumbnailWrapper>
+      <IconWrapper
+        // if widget has a thumbnail, use thumbnail dimensions, else use icon dimensions
+        height={details.thumbnail ? THUMBNAIL_HEIGHT : ICON_SIZE}
+        width={details.thumbnail ? THUMBNAIL_WIDTH : ICON_SIZE}
+      >
+        <img src={details.thumbnail ?? details.icon} />
+      </IconWrapper>
       <Text kind="body-s">{details.displayName}</Text>
       {details.isBeta && <BetaLabel>Beta</BetaLabel>}
     </Wrapper>
@@ -112,7 +121,8 @@ function WidgetCard(props: CardProps) {
   const applicationId = useSelector(getCurrentApplicationId);
   const workspaceId = useSelector(getCurrentWorkspaceId);
   const { setDraggingNewWidget } = useWidgetDragResize();
-
+  const { deselectAll } = useWidgetSelection();
+  const isEditorPaneEnabled = useIsEditorPaneSegmentsEnabled();
   const { isOpened: isWalkthroughOpened, popFeature } =
     useContext(WalkthroughContext) || {};
   const closeWalkthrough = useCallback(() => {
@@ -146,6 +156,10 @@ function WidgetCard(props: CardProps) {
         ...props.details,
         widgetId: generateReactKey(),
       });
+    deselectAll();
+    if (!isEditorPaneEnabled) {
+      closeWalkthrough();
+    }
   };
 
   return (

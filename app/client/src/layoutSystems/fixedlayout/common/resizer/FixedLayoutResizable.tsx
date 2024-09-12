@@ -381,7 +381,6 @@ export function FixedLayoutResizable(props: ResizableProps) {
       props.showResizeBoundary ? "show-boundary" : ""
     } ${pointerEvents ? "" : "pointer-event-none"}`;
   }, [props.className, pointerEvents, props.showResizeBoundary]);
-
   return (
     <Spring
       config={{
