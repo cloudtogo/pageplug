@@ -69,16 +69,22 @@ export function TopStacked(props: TopStackedProps) {
   const currentPage = useSelector(getCurrentPage);
 
   const viewerLayout = currentApp?.viewerLayout;
-  const getPath = (it: any, pagesMap: any, title: string) => {
-    if (!it.pageId) return "";
+
+  const getPath = (
+    it: any,
+    pagesMap: any,
+    pageId: string,
+    appMode: APP_MODE | undefined,
+  ) => {
+    if (!it.pageId || !pagesMap[pageId]) return "";
     const pageURL =
       appMode === APP_MODE.PUBLISHED
         ? viewerURL({
-          pageId: pagesMap[title]?.pageId,
-        })
+            basePageId: pagesMap[pageId].pageId,
+          })
         : builderURL({
-          pageId: pagesMap[title]?.pageId,
-        });
+            basePageId: pagesMap[pageId].pageId,
+          });
     return pageURL;
   };
 
@@ -92,7 +98,7 @@ export function TopStacked(props: TopStackedProps) {
       try {
         const current = JSON.parse(viewerLayout);
         const pagesMap = pages.reduce((a: any, c: any) => {
-          a[c.pageName] = { ...c };
+          a[c.pageId] = { ...c };
           return a;
         }, {});
         const newMenuTree: any = [];
@@ -101,7 +107,8 @@ export function TopStacked(props: TopStackedProps) {
         );
         menudata = current?.treeData.map((itdata: any) => {
           return mapClearTree(itdata, (item: any) => {
-            const path = getPath(item, pagesMap, item.title);
+            const path = getPath(item, pagesMap, item.pageId, appMode);
+            console.log("path===1", path);
             // if (
             //   current.outsiderTree.find((n: any) => n.pageId === item.pageId)
             // ) {
@@ -120,12 +127,14 @@ export function TopStacked(props: TopStackedProps) {
               ) : (
                 item.title
               ),
-              icon: item.icon && item.icon !== "无" ? (
-                <View
-                  className={`van-icon van-icon-${item.icon ? item.icon : "orders-o"
+              icon:
+                item.icon && item.icon !== "无" ? (
+                  <View
+                    className={`van-icon van-icon-${
+                      item.icon ? item.icon : "orders-o"
                     } taroify-icon taroify-icon--inherit hydrated`}
-                />
-              ) : null,
+                  />
+                ) : null,
             };
           });
         });
@@ -136,7 +145,8 @@ export function TopStacked(props: TopStackedProps) {
               !current.outsiderTree.find((n: any) => n.pageId === p.pageId),
           )
           .map((p: any) => {
-            const path = getPath(p, pagesMap, p.pageName);
+            const path = getPath(p, pagesMap, p.pageId, appMode);
+            console.log("path===2", path);
             return {
               title: p.pageName,
               pageId: p.pageId,
@@ -158,11 +168,12 @@ export function TopStacked(props: TopStackedProps) {
       }
     } else {
       const pagesMap = pages.reduce((a: any, c: any) => {
-        a[c.pageName] = { ...c };
+        a[c.pageId] = { ...c };
         return a;
       }, {});
       menudata = pages.map((p) => {
-        const path = getPath(p, pagesMap, p.pageName);
+        const path = getPath(p, pagesMap, p.pageId, appMode);
+        console.log("path===3", path);
         return {
           title: p.pageName,
           pageId: p.pageId,
@@ -183,7 +194,7 @@ export function TopStacked(props: TopStackedProps) {
       menudata,
     };
   }, [viewerLayout, pages, currentApplicationDetails]);
-  
+
   useEffect(() => {
     setQuery(window.location.search);
   }, [location]);
@@ -264,7 +275,9 @@ export function TopStacked(props: TopStackedProps) {
     return null;
   }
   const menuItems = filterHiddenTreeData(initState.menudata);
-  const needHideMenu = _size(menuItems) === 1 && _size(_get(_head(menuItems), "children", [])) === 0;
+  const needHideMenu =
+    _size(menuItems) === 1 &&
+    _size(_get(_head(menuItems), "children", [])) === 0;
   const current_theme =
     _get(
       currentApplicationDetails,

@@ -295,6 +295,8 @@ export class ApplicationApi extends Api {
   static baseURL = "v1/applications";
   static publishURLPath = (applicationId: string) =>
     `/publish/${applicationId}`;
+  static createApplicationPath = (workspaceId: string) =>
+    `?workspaceId=${workspaceId}`;
   static changeAppViewAccessPath = (applicationId: string) =>
     `/${applicationId}/changeAccess`;
   static setDefaultPagePath = (request: SetDefaultPageRequest) =>
@@ -350,6 +352,26 @@ export class ApplicationApi extends Api {
     return Api.get(ApplicationApi.baseURL + `/view/${applicationId}`);
   }
 
+  // static async createApplication(
+  //   request: CreateApplicationRequest,
+  // ): Promise<AxiosPromise<PublishApplicationResponse>> {
+  //   return Api.post(
+  //     ApplicationApi.baseURL +
+  //       ApplicationApi.createApplicationPath(request.workspaceId),
+  //     {
+  //       name: request.name,
+  //       color: request.color,
+  //       icon: request.icon,
+  //       unpublishedAppLayout: request.unpublishedAppLayout,
+  //       publishedAppLayout: request.publishedAppLayout,
+  //       applicationDetail: {
+  //         appPositioning: {
+  //           type: request.layoutSystemType,
+  //         },
+  //       },
+  //     },
+  //   );
+  // }
   static async createApplication(
     request: CreateApplicationRequest,
   ): Promise<AxiosPromise<PublishApplicationResponse>> {
@@ -360,6 +382,13 @@ export class ApplicationApi extends Api {
       icon: request.icon,
       positioningType: request.layoutSystemType,
       showNavbar: request.showNavbar ?? null,
+      unpublishedAppLayout: request.unpublishedAppLayout,
+      publishedAppLayout: request.publishedAppLayout,
+      applicationDetail: {
+        appPositioning: {
+          type: request.layoutSystemType,
+        },
+      },
     });
   }
 

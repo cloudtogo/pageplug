@@ -101,7 +101,7 @@ export const SpacedForm = styled(Form)``;
 export const SpacedSubmitForm = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 22px;
   && .bp3-label {
     color: var(--ads-v2-color-fg);
     margin-bottom: var(--ads-v2-spaces-2);

@@ -107,71 +107,71 @@ export const useNavigationMenuData = ({
     () =>
       [
         {
-          text: "Rename",
+          text: "重命名",
           onClick: editMode,
           type: MenuTypes.MENU,
           isVisible: true,
         },
         {
-          text: "Fork application",
+          text: "克隆应用",
           onClick: () => setForkApplicationModalOpen(true),
           type: MenuTypes.MENU,
           isVisible: isApplicationIdPresent && hasEditPermission,
         },
         {
-          text: "Export application",
+          text: "导出应用",
           onClick: exportAppAsJSON,
           type: MenuTypes.MENU,
           isVisible: isApplicationIdPresent && hasExportPermission,
         },
         hasDeletePermission && {
-          text: "Delete application",
-          confirmText: "Are you sure?",
+          text: "删除应用",
+          confirmText: "确定吗?",
           onClick: deleteApplication,
           type: MenuTypes.RECONFIRM,
           isVisible: isApplicationIdPresent,
           style: { color: Colors.ERROR_RED },
         },
-        {
-          text: "divider_2",
-          type: MenuTypes.MENU_DIVIDER,
-          isVisible: true,
-        },
-        {
-          text: "Help",
-          type: MenuTypes.PARENT,
-          isVisible: true,
-          children: [
-            {
-              text: "Documentation",
-              onClick: () => openExternalLink(DOCS_BASE_URL),
-              type: MenuTypes.MENU,
-              isVisible: true,
-              startIcon: "book-line",
-            },
-            {
-              text: "Report a bug",
-              onClick: () =>
-                openExternalLink(
-                  "https://github.com/appsmithorg/appsmith/issues/new/choose",
-                ),
-              type: MenuTypes.MENU,
-              isVisible: true,
-              startIcon: "bug-line",
-            },
-            {
-              startIcon: "chat-help",
-              text: "Chat with us",
-              onClick: () => {
-                if (cloudHosting || isIntercomConsentGiven) {
-                  window.Intercom("show");
-                }
-              },
-              type: MenuTypes.MENU,
-              isVisible: intercomAppID && window.Intercom,
-            },
-          ],
-        },
+        // {
+        //   text: "divider_2",
+        //   type: MenuTypes.MENU_DIVIDER,
+        //   isVisible: true,
+        // },
+        // {
+        //   text: "Help",
+        //   type: MenuTypes.PARENT,
+        //   isVisible: true,
+        //   children: [
+        //     {
+        //       text: "Documentation",
+        //       onClick: () => openExternalLink(DOCS_BASE_URL),
+        //       type: MenuTypes.MENU,
+        //       isVisible: true,
+        //       startIcon: "book-line",
+        //     },
+        //     {
+        //       text: "Report a bug",
+        //       onClick: () =>
+        //         openExternalLink(
+        //           "https://github.com/appsmithorg/appsmith/issues/new/choose",
+        //         ),
+        //       type: MenuTypes.MENU,
+        //       isVisible: true,
+        //       startIcon: "bug-line",
+        //     },
+        //     {
+        //       startIcon: "chat-help",
+        //       text: "Chat with us",
+        //       onClick: () => {
+        //         if (cloudHosting || isIntercomConsentGiven) {
+        //           window.Intercom("show");
+        //         }
+        //       },
+        //       type: MenuTypes.MENU,
+        //       isVisible: intercomAppID && window.Intercom,
+        //     },
+        //   ],
+        // },
       ].filter(Boolean) as MenuItemData[],
     [
       editMode,

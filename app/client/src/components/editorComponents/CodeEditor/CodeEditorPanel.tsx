@@ -137,8 +137,9 @@ const CodeEditorPanel = (props: any) => {
       )}
     >
       <div
-        className={`absolute right-0 bottom-1 flex justify-end ${!props.isShow ? "hidden" : ""
-          }`}
+        className={`absolute right-1 bottom-[48px] ${
+          !props.isShow ? "hidden" : ""
+        }`}
       >
         <Button
           className="border-l border-t border-slate-500"

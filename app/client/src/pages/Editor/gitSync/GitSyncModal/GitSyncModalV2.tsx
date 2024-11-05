@@ -38,7 +38,7 @@ const StyledModalContent = styled(ModalContent)`
     transform: none !important;
     top: 100px;
     left: calc(50% - 320px);
-    max-height: calc(100vh - 200px);
+    max-height: calc(100vh - 183px);
   }
 `;
 

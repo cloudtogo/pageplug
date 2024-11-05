@@ -64,7 +64,7 @@ import { FEATURE_FLAG } from "ee/entities/FeatureFlag";
 import { getHTMLPageTitle } from "ee/utils/BusinessFeatures/brandingPageHelpers";
 import log from "loglevel";
 import { SELF_HOSTING_DOC } from "constants/ThirdPartyConstants";
-import {FormBottom} from "./ForgotPassword"
+import { FormBottom } from "./ForgotPassword";
 declare global {
   interface Window {
     // TODO: Fix this the next time the file is edited
@@ -162,8 +162,7 @@ export function SignUp(props: SignUpFormProps) {
         window.grecaptcha
           .execute(googleRecaptchaSiteKey.apiKey, {
             action: "submit",
-          }) // TODO: Fix this the next time the file is edited
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          })
           .then(function (token: any) {
             if (formElement) {
               signupURL.searchParams.append("recaptchaToken", token);
@@ -187,42 +186,53 @@ export function SignUp(props: SignUpFormProps) {
     setIsShowPassword(!isShowPassword);
   };
 
-  const footerSection = (
-    <>
-      <div className="px-2 flex align-center justify-center text-center text-[color:var(--ads-v2\-color-fg)] text-[14px]">
-        {createMessage(ALREADY_HAVE_AN_ACCOUNT)}&nbsp;
-        <Link
-          className="t--sign-up t--signup-link"
-          kind="primary"
-          target="_self"
-          to={AUTH_LOGIN_URL}
-        >
-          {createMessage(SIGNUP_PAGE_LOGIN_LINK_TEXT)}
-        </Link>
-      </div>
-      {cloudHosting && (
-        <>
-          <OrWithLines>or</OrWithLines>
-          <div className="px-2 text-center text-[color:var(--ads-v2\-color-fg)] text-[14px]">
-            {createMessage(LOOKING_TO_SELF_HOST)}
-            <Link
-              className="t--visit-docs t--visit-docs-link pl-[var(--ads-v2\-spaces-3)] justify-center"
-              kind="primary"
-              onClick={() => AnalyticsUtil.logEvent("VISIT_SELF_HOST_DOCS")}
-              target="_self"
-              to={`${SELF_HOSTING_DOC}?utm_source=cloudSignup`}
-            >
-              {createMessage(VISIT_OUR_DOCS)}
-            </Link>
-          </div>
-        </>
-      )}
-    </>
-  );
+  useEffect(() => {
+    if (showError) {
+      message.open({
+        type: "error",
+        duration: 5,
+        content: errorMessage,
+        className: "my-msg",
+      });
+    }
+  }, []);
+
+  // const footerSection = (
+  //   <>
+  //     <div className="px-2 flex align-center justify-center text-center text-[color:var(--ads-v2\-color-fg)] text-[14px]">
+  //       {createMessage(ALREADY_HAVE_AN_ACCOUNT)}&nbsp;
+  //       <Link
+  //         className="t--sign-up t--signup-link"
+  //         kind="primary"
+  //         target="_self"
+  //         to={AUTH_LOGIN_URL}
+  //       >
+  //         {createMessage(SIGNUP_PAGE_LOGIN_LINK_TEXT)}
+  //       </Link>
+  //     </div>
+  //     {cloudHosting && (
+  //       <>
+  //         <OrWithLines>or</OrWithLines>
+  //         <div className="px-2 text-center text-[color:var(--ads-v2\-color-fg)] text-[14px]">
+  //           {createMessage(LOOKING_TO_SELF_HOST)}
+  //           <Link
+  //             className="t--visit-docs t--visit-docs-link pl-[var(--ads-v2\-spaces-3)] justify-center"
+  //             kind="primary"
+  //             onClick={() => AnalyticsUtil.logEvent("VISIT_SELF_HOST_DOCS")}
+  //             target="_self"
+  //             to={`${SELF_HOSTING_DOC}?utm_source=cloudSignup`}
+  //           >
+  //             {createMessage(VISIT_OUR_DOCS)}
+  //           </Link>
+  //         </div>
+  //       </>
+  //     )}
+  //   </>
+  // );
 
   return (
     <Container
-      footer={footerSection}
+      footer={null}
       subtitle={createMessage(SIGNUP_PAGE_SUBTITLE)}
       title={createMessage(SIGNUP_PAGE_TITLE)}
     >
@@ -237,7 +247,10 @@ export function SignUp(props: SignUpFormProps) {
           method="POST"
           onSubmit={(e: any) => handleSubmit(e)}
         >
-          <FormGroup intent={error ? "danger" : "none"} style={{ position: "relative"}}>
+          <FormGroup
+            intent={error ? "danger" : "none"}
+            style={{ position: "relative" }}
+          >
             <LoginForm>
               <FormTextField
                 autoFocus
@@ -249,7 +262,10 @@ export function SignUp(props: SignUpFormProps) {
             </LoginForm>
             <StyledEmailIcon height={15} width={15} />
           </FormGroup>
-          <FormGroup intent={error ? "danger" : "none"} style={{ position: "relative"}}>
+          <FormGroup
+            intent={error ? "danger" : "none"}
+            style={{ position: "relative" }}
+          >
             <LoginForm>
               <FormTextField
                 className="pp-height"

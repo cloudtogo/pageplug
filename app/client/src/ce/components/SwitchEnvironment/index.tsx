@@ -81,11 +81,11 @@ export default function SwitchEnvironment({}: Props) {
   // Fetching feature flags from the store and checking if the feature is enabled
   const showRampSelector = showProductRamps(RAMP_NAME.MULTIPLE_ENV, true);
   const canShowRamp = useSelector(showRampSelector);
-  const rampLinkSelector = getRampLink({
-    section: RampSection.BottomBarEnvSwitcher,
-    feature: RampFeature.MultipleEnv,
-  });
-  const rampLink = useSelector(rampLinkSelector);
+  // const rampLinkSelector = getRampLink({
+  //   section: RampSection.BottomBarEnvSwitcher,
+  //   feature: RampFeature.MultipleEnv,
+  // });
+  const rampLink = BUSINESS_PRICE_URL;
 
   //listen to url change and disable switch environment if datasource page is open
   useEffect(() => {

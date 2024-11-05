@@ -19,6 +19,7 @@ import {
   FORGOT_PASSWORD_SUCCESS_TEXT,
   createMessage,
   FORGOT_PASSWORD_PAGE_SUB_TITLE,
+  FORGOT_PASSWORD_PAGE_LOGIN_LINK,
 } from "ee/constants/messages";
 import { AUTH_LOGIN_URL } from "constants/routes";
 import { FORGOT_PASSWORD_FORM_NAME } from "ee/constants/forms";
@@ -66,7 +67,6 @@ export const ForgotPassword = (props: ForgotPasswordProps) => {
   const { error, handleSubmit, submitFailed, submitSucceeded, submitting } =
     props;
   const dispatch = useDispatch();
-
   useEffect(() => {
     if (submitSucceeded) {
       props.reset();

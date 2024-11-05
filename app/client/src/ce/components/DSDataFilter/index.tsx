@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link, Tag, Text, Tooltip } from "@appsmith/ads";
-import { BUSINESS_TAG, createMessage } from "ee/constants/messages";
+import { BUSINESS_PRICE_URL, BUSINESS_TAG, createMessage } from "ee/constants/messages";
 import { capitalizeFirstLetter } from "utils/helpers";
 import { getRampLink, showProductRamps } from "ee/selectors/rampSelectors";
 import {
@@ -75,7 +75,7 @@ export function DSDataFilter({
     section: RampSection.DSEditor,
     feature: RampFeature.MultipleEnv,
   });
-  const rampLink = useSelector(rampLinkSelector);
+  const rampLink = BUSINESS_PRICE_URL;
 
   // update the selected environment if the list of environments changes
   useEffect(() => {

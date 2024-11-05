@@ -12,6 +12,7 @@ import type {
   RampFeature,
   RampSection,
 } from "utils/ProductRamps/RampsControlList";
+import { BUSINESS_PRICE_URL } from "ee/constants/messages";
 
 interface Props {
   logEventName?: EventName;
@@ -34,28 +35,7 @@ const useOnUpgrade = (props: Props) => {
       logEventName || "ADMIN_SETTINGS_UPGRADE",
       logEventData,
     );
-    if (isEnterprise) {
-      window.open(
-        PRICING_PAGE_URL(
-          appsmithConfigs.pricingUrl,
-          pricingPageUrlSource,
-          instanceId,
-          featureName,
-          sectionName,
-        ),
-      );
-    } else {
-      window.open(
-        CUSTOMER_PORTAL_URL_WITH_PARAMS(
-          appsmithConfigs.customerPortalUrl,
-          pricingPageUrlSource,
-          instanceId,
-          featureName,
-          sectionName,
-        ),
-        "_blank",
-      );
-    }
+    window.open(BUSINESS_PRICE_URL, "_blank");
   };
 
   return { onUpgrade };
