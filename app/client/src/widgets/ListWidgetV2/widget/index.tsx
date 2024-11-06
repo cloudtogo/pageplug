@@ -1186,79 +1186,154 @@ class ListWidget extends BaseWidget<
    * Instead pass that prop as part of options and make sure that an equality check if
    * added to the isMatchingKey method.
    */
+  // renderChildren = memoize(
+  //   (
+  //     metaWidgetChildrenStructure: ListWidgetProps["metaWidgetChildrenStructure"],
+  //     options: RenderChildrenOption,
+  //   ) => {
+  //     const { componentWidth, parentColumnSpace, selectedItemKey, startIndex } =
+  //       options;
+
+  //     const childWidgets = (metaWidgetChildrenStructure || []).map(
+  //       (childWidgetStructure, cIndex) => {
+  //         const child: ExtendedCanvasWidgetStructure = {
+  //           ...childWidgetStructure,
+  //         };
+  //         child.parentColumnSpace = parentColumnSpace;
+  //         child.rightColumn = componentWidth;
+  //         child.canExtend = true;
+  //         child.positioning = this.props.positioning;
+  //         if (this.props.layoutSystemType === LayoutSystemTypes.AUTO) {
+  //           child.isListWidgetCanvas = true;
+  //         }
+  //         child.children = child.children?.map((container, viewIndex) => {
+  //           container.positioning = this.props.positioning;
+  //           const rowIndex = viewIndex + startIndex;
+  //           const focused =
+  //             this.props.renderMode === RenderModes.CANVAS && rowIndex === 0;
+  //           const key = this.metaWidgetGenerator.getPrimaryKey(rowIndex);
+  //           if (
+  //             this.props.layoutSystemType === LayoutSystemTypes.AUTO &&
+  //             container.children?.[0]
+  //           ) {
+  //             container.children[0].isListWidgetCanvas = true;
+  //           }
+  //           return {
+  //             ...container,
+  //             focused,
+  //             selected: selectedItemKey === key,
+  //             onClick: (e: React.MouseEvent<HTMLElement>) => {
+  //               e.stopPropagation();
+  //               // If Container Child Elements are clickable, we should not call the containers onItemClick Event
+  //               if (isTargetElementClickable(e)) return;
+
+  //               this.onItemClick(rowIndex);
+  //             },
+  //             onClickCapture: () => {
+  //               this.onItemClickCapture(rowIndex);
+  //             },
+  //             key: container.widgetId,
+  //           };
+  //         });
+  //         child.key = child.widgetId;
+  //         return renderAppsmithCanvas(child as WidgetProps);
+  //       },
+  //     );
+
+  //     return childWidgets;
+  //   },
+  //   {
+  //     isMatchingKey: (prevArgs, nextArgs) => {
+  //       const prevMetaChildrenStructure = prevArgs[0];
+  //       const nextMetaChildrenStructure = nextArgs[0];
+  //       const prevOptions: RenderChildrenOption = prevArgs[1];
+  //       const nextOptions: RenderChildrenOption = nextArgs[1];
+
+  //       return (
+  //         prevMetaChildrenStructure === nextMetaChildrenStructure &&
+  //         prevOptions.componentWidth === nextOptions.componentWidth &&
+  //         prevOptions.parentColumnSpace === nextOptions.parentColumnSpace &&
+  //         prevOptions.selectedItemKey === nextOptions.selectedItemKey &&
+  //         prevOptions.startIndex === nextOptions.startIndex
+  //       );
+  //     },
+  //   },
+  // );
+
+  handleClick = (rowIndex: number) => (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    if (!isTargetElementClickable(e)) {
+      this.onItemClick(rowIndex);
+    }
+  };
+
   renderChildren = memoize(
     (
       metaWidgetChildrenStructure: ListWidgetProps["metaWidgetChildrenStructure"],
-      options: RenderChildrenOption,
+      options: RenderChildrenOption
     ) => {
-      const { componentWidth, parentColumnSpace, selectedItemKey, startIndex } =
-        options;
-
-      const childWidgets = (metaWidgetChildrenStructure || []).map(
+      const {
+        componentWidth,
+        parentColumnSpace,
+        selectedItemKey,
+        startIndex,
+      } = options;
+  
+      return (metaWidgetChildrenStructure || []).map(
         (childWidgetStructure, cIndex) => {
           const child: ExtendedCanvasWidgetStructure = {
             ...childWidgetStructure,
+            parentColumnSpace,
+            rightColumn: componentWidth,
+            canExtend: true,
+            positioning: this.props.positioning,
+            ...(this.props.layoutSystemType === LayoutSystemTypes.AUTO && {
+              isListWidgetCanvas: true,
+            }),
           };
-          child.parentColumnSpace = parentColumnSpace;
-          child.rightColumn = componentWidth;
-          child.canExtend = true;
-          child.positioning = this.props.positioning;
-          if (this.props.layoutSystemType === LayoutSystemTypes.AUTO) {
-            child.isListWidgetCanvas = true;
-          }
+  
           child.children = child.children?.map((container, viewIndex) => {
-            container.positioning = this.props.positioning;
             const rowIndex = viewIndex + startIndex;
-            const focused =
-              this.props.renderMode === RenderModes.CANVAS && rowIndex === 0;
             const key = this.metaWidgetGenerator.getPrimaryKey(rowIndex);
-            if (
-              this.props.layoutSystemType === LayoutSystemTypes.AUTO &&
-              container.children?.[0]
-            ) {
-              container.children[0].isListWidgetCanvas = true;
-            }
+  
             return {
               ...container,
-              focused,
+              positioning: this.props.positioning,
+              focused:
+                this.props.renderMode === RenderModes.CANVAS && rowIndex === 0,
               selected: selectedItemKey === key,
-              onClick: (e: React.MouseEvent<HTMLElement>) => {
-                e.stopPropagation();
-                // If Container Child Elements are clickable, we should not call the containers onItemClick Event
-                if (isTargetElementClickable(e)) return;
-
-                this.onItemClick(rowIndex);
-              },
-              onClickCapture: () => {
-                this.onItemClickCapture(rowIndex);
-              },
               key: container.widgetId,
+              onClick: this.handleClick(rowIndex),
+              onClickCapture: () => this.onItemClickCapture(rowIndex),
+              ...(this.props.layoutSystemType === LayoutSystemTypes.AUTO &&
+                container.children?.[0] && {
+                  children: container.children.map((child) => ({
+                    ...child,
+                    isListWidgetCanvas: true,
+                  })),
+                }),
             };
           });
-          child.key = child.widgetId;
+  
           return renderAppsmithCanvas(child as WidgetProps);
-        },
+        }
       );
-
-      return childWidgets;
     },
     {
       isMatchingKey: (prevArgs, nextArgs) => {
-        const prevMetaChildrenStructure = prevArgs[0];
-        const nextMetaChildrenStructure = nextArgs[0];
-        const prevOptions: RenderChildrenOption = prevArgs[1];
-        const nextOptions: RenderChildrenOption = nextArgs[1];
-
+        const [prevMetaChildrenStructure, prevOptions] = prevArgs;
+        const [nextMetaChildrenStructure, nextOptions] = nextArgs;
+  
         return (
           prevMetaChildrenStructure === nextMetaChildrenStructure &&
-          prevOptions.componentWidth === nextOptions.componentWidth &&
-          prevOptions.parentColumnSpace === nextOptions.parentColumnSpace &&
-          prevOptions.selectedItemKey === nextOptions.selectedItemKey &&
-          prevOptions.startIndex === nextOptions.startIndex
+          Object.keys(prevOptions).every(
+            (key) => prevOptions[key] === nextOptions[key]
+          )
         );
       },
-    },
+    }
   );
+
 
   overrideBatchUpdateWidgetProperty = (
     metaWidgetId: string,

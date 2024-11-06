@@ -114,10 +114,10 @@ export const getConfigsFromEnvVars = (): INJECTED_CONFIGS => {
       ? process.env.REACT_APP_CLOUD_HOSTING.length > 0
       : false,
     appVersion: {
-      id: process.env.REACT_APP_VERSION_ID || "v1.9.39",
+      id: process.env.REACT_APP_VERSION_ID || "ce-v1.9.39",
       sha: "",
       releaseDate: "",
-      edition: process.env.REACT_APP_VERSION_EDITION || "v1.9.39",
+      edition: process.env.REACT_APP_VERSION_EDITION || "ce-v1.9.39",
     },
     intercomAppID: process.env.REACT_APP_INTERCOM_APP_ID || "",
     mailEnabled: process.env.REACT_APP_MAIL_ENABLED

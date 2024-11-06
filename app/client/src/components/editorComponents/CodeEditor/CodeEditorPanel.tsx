@@ -79,7 +79,7 @@ const CodeEditorPanel = (props: any) => {
       onPopupVisibleChange={(visible) => onHandleVisible(visible)}
       // afterPopupVisibleChange={(visible) => props.onVisibleChange(visible)}
       popup={() => (
-        <WrapperOverLay id="code-portal">
+        <WrapperOverLay id="code-portal" data-no-touch-simulate>
           <Draggable
             position={{
               x: currentPosition.xRate,
@@ -137,20 +137,13 @@ const CodeEditorPanel = (props: any) => {
       )}
     >
       <div
-        className={`absolute right-1 bottom-[48px] ${
-          !props.isShow ? "hidden" : ""
-        }`}
+        className={`code-editor-sub-icon absolute gap-1 bottom-[6px] right-[6px] z-4 flex justify-center ${!props.isShow ? "hidden" : ""}`}
       >
-        <Button
-          className="border-l border-t border-slate-500"
-          onClick={() => onHandleVisible(true)}
-          size="small"
-          type="text"
-        >
-          <span className="text-gray-500 rotate-90">
+        <a onClick={() => onHandleVisible(true)}>
+          <div className="text-gray-400 rotate-90 scale-75 hover:text-gray-500">
             <Icon icon="expand-all" />
-          </span>
-        </Button>
+          </div>
+        </a>
       </div>
     </Trigger>
   );

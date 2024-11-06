@@ -282,7 +282,7 @@ function LazyCodeEditor({
         onMouseEnter={() => setPanelIsHovered(true)}
         onMouseLeave={() => setPanelIsHovered(false)}
         onFocus={() => setPanelIsHovered(true)}
-        className="w-full h-full"
+        className="code-editor-warpper w-full h-full relative"
       >
         {content(true)}
         <CodeEditorPanel

@@ -32,7 +32,7 @@ export const updateIntercomProperties = (instanceId: string, user?: User) => {
 
     window.Intercom("update", {
       email,
-      "Appsmith version": `Appsmith ${
+      "PagePlug version": `PagePlug ${
         !cloudHosting ? appVersion.edition : ""
       } ${appVersion.id}`,
       instanceId,

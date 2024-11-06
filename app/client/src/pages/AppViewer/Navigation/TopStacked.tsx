@@ -92,88 +92,183 @@ export function TopStacked(props: TopStackedProps) {
     history.push(path);
   };
 
+  // const initState = useMemo(() => {
+  //   let menudata: any = [];
+  //   if (viewerLayout && pages.length) {
+  //     try {
+  //       const current = JSON.parse(viewerLayout);
+  //       const pagesMap = pages.reduce((a: any, c: any) => {
+  //         a[c.pageId] = { ...c };
+  //         return a;
+  //       }, {});
+  //       const newMenuTree: any = [];
+  //       current?.treeData.forEach(
+  //         makeRouteNode(pagesMap, newMenuTree, current.outsiderTree),
+  //       );
+  //       menudata = current?.treeData.map((itdata: any) => {
+  //         return mapClearTree(itdata, (item: any) => {
+  //           const path = getPath(item, pagesMap, item.pageId, appMode);
+  //           console.log("path===1", path);
+  //           // if (
+  //           //   current.outsiderTree.find((n: any) => n.pageId === item.pageId)
+  //           // ) {
+  //           //   return false;
+  //           // }
+  //           return {
+  //             ...item,
+  //             children: _size(item.children) ? item.children : null,
+  //             label: item.pageId ? (
+  //               <a
+  //                 key={item.pageId}
+  //                 onClick={() => gotToPath(item.pageId, path)}
+  //               >
+  //                 {item.title}
+  //               </a>
+  //             ) : (
+  //               item.title
+  //             ),
+  //             icon:
+  //               item.icon && item.icon !== "无" ? (
+  //                 <View
+  //                   className={`van-icon van-icon-${
+  //                     item.icon ? item.icon : "orders-o"
+  //                   } taroify-icon taroify-icon--inherit hydrated`}
+  //                 />
+  //               ) : null,
+  //           };
+  //         });
+  //       });
+  //       const newPages = Object.values(pagesMap)
+  //         .filter(
+  //           (p: any) =>
+  //             !p.visited &&
+  //             !current.outsiderTree.find((n: any) => n.pageId === p.pageId),
+  //         )
+  //         .map((p: any) => {
+  //           const path = getPath(p, pagesMap, p.pageId, appMode);
+  //           console.log("path===2", path);
+  //           return {
+  //             title: p.pageName,
+  //             pageId: p.pageId,
+  //             isPage: true,
+  //             key: p.pageId,
+  //             label: p.pageId ? (
+  //               <a key={p.pageId} onClick={() => gotToPath(p.pageId, path)}>
+  //                 {p.pageName}
+  //               </a>
+  //             ) : (
+  //               p.pageName
+  //             ),
+  //             children: null,
+  //           };
+  //         });
+  //       menudata = menudata.concat(newPages);
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   } else {
+  //     const pagesMap = pages.reduce((a: any, c: any) => {
+  //       a[c.pageId] = { ...c };
+  //       return a;
+  //     }, {});
+  //     menudata = pages.map((p) => {
+  //       const path = getPath(p, pagesMap, p.pageId, appMode);
+  //       console.log("path===3", path);
+  //       return {
+  //         title: p.pageName,
+  //         pageId: p.pageId,
+  //         isPage: true,
+  //         key: p.pageId,
+  //         label: p.pageId ? (
+  //           <a key={p.pageId} onClick={() => gotToPath(p.pageId, path)}>
+  //             {p.pageName}
+  //           </a>
+  //         ) : (
+  //           p.pageName
+  //         ),
+  //         children: null,
+  //       };
+  //     });
+  //   }
+  //   return {
+  //     menudata,
+  //   };
+  // }, [viewerLayout, pages, currentApplicationDetails]);
   const initState = useMemo(() => {
     let menudata: any = [];
+    const pagesMap = pages.reduce((a: any, c: any) => {
+      a[c.pageId] = { ...c };
+      return a;
+    }, {});
     if (viewerLayout && pages.length) {
       try {
         const current = JSON.parse(viewerLayout);
-        const pagesMap = pages.reduce((a: any, c: any) => {
-          a[c.pageId] = { ...c };
-          return a;
-        }, {});
-        const newMenuTree: any = [];
-        current?.treeData.forEach(
-          makeRouteNode(pagesMap, newMenuTree, current.outsiderTree),
-        );
-        menudata = current?.treeData.map((itdata: any) => {
-          return mapClearTree(itdata, (item: any) => {
-            const path = getPath(item, pagesMap, item.pageId, appMode);
-            console.log("path===1", path);
-            // if (
-            //   current.outsiderTree.find((n: any) => n.pageId === item.pageId)
-            // ) {
-            //   return false;
-            // }
-            return {
-              ...item,
-              children: _size(item.children) ? item.children : null,
-              label: item.pageId ? (
-                <a
-                  key={item.pageId}
-                  onClick={() => gotToPath(item.pageId, path)}
-                >
-                  {item.title}
-                </a>
-              ) : (
-                item.title
-              ),
-              icon:
-                item.icon && item.icon !== "无" ? (
-                  <View
-                    className={`van-icon van-icon-${
-                      item.icon ? item.icon : "orders-o"
-                    } taroify-icon taroify-icon--inherit hydrated`}
-                  />
-                ) : null,
-            };
-          });
-        });
-        const newPages = Object.values(pagesMap)
-          .filter(
-            (p: any) =>
-              !p.visited &&
-              !current.outsiderTree.find((n: any) => n.pageId === p.pageId),
-          )
-          .map((p: any) => {
-            const path = getPath(p, pagesMap, p.pageId, appMode);
-            console.log("path===2", path);
-            return {
-              title: p.pageName,
-              pageId: p.pageId,
-              isPage: true,
-              key: p.pageId,
-              label: p.pageId ? (
-                <a key={p.pageId} onClick={() => gotToPath(p.pageId, path)}>
-                  {p.pageName}
-                </a>
-              ) : (
-                p.pageName
-              ),
-              children: null,
-            };
-          });
-        menudata = menudata.concat(newPages);
+        const _outsiderTree = current.outsiderTree || [];
+        menudata = current?.treeData
+          .map((itdata: any) => {
+            return mapClearTree(itdata, (item: any) => {
+              const path = getPath(item, pagesMap, item.pageId, appMode);
+              const title = _get(
+                pagesMap,
+                [item.pageId, "pageName"],
+                item.title,
+              ); //用最新的 pageName
+              if (_outsiderTree.find((n: any) => n.pageId === item.pageId)) {
+                return false;
+              }
+              if (title && item.isPage && !pagesMap[item.pageId]) {
+                // 不存在的 pageId, 删除掉
+                return false;
+              }
+              // console.log(item?.icon, "icon");
+              return {
+                ...item,
+                key: item.pageId || item.key,
+                children: _size(item.children) ? item.children : null,
+                label: item.pageId ? (
+                  <a
+                    key={item.pageId}
+                    onClick={() => gotToPath(item.pageId, path)}
+                  >
+                    {title}
+                  </a>
+                ) : (
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "5px",
+                    }}
+                  >
+                    {title}
+                    <span className="custom-expand-icon">
+                      {_size(item.children) ? (
+                        <Icon name="arrow-down-s-line" size={"md"} />
+                      ) : (
+                        ""
+                      )}
+                    </span>
+                  </span>
+                ),
+                icon:
+                  item.icon && item.icon !== "无" ? (
+                    <View
+                      className={`van-icon van-icon-${
+                        item.icon ? item.icon : "orders-o"
+                      } taroify-icon taroify-icon--inherit hydrated`}
+                    />
+                  ) : null,
+              };
+            });
+          })
+          .filter((i: any) => i);
       } catch (e) {
         console.log(e);
       }
     } else {
-      const pagesMap = pages.reduce((a: any, c: any) => {
-        a[c.pageId] = { ...c };
-        return a;
-      }, {});
       menudata = pages.map((p) => {
         const path = getPath(p, pagesMap, p.pageId, appMode);
-        console.log("path===3", path);
         return {
           title: p.pageName,
           pageId: p.pageId,

@@ -15,7 +15,7 @@ export const APPSMITH_DISPLAY_VERSION = (
   edition: string,
   version: string,
   cloudHosting: boolean,
-) => `PagePlug ${!cloudHosting ? edition : ""} ${version}`;
+) => `PagePlug ${!cloudHosting ? edition : ""}`;
 export const INTERCOM_CONSENT_MESSAGE = () =>
   `我们可以获取您的电子邮件以获得更好的支持吗？`;
 export const YES = () => `是的`;

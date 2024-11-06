@@ -36,7 +36,7 @@ export const UserList = styled.div`
   overflow-y: auto;
   justify-content: space-between;
   margin-left: 0.1rem;
-
+  padding-bottom: 10px;
   .user-icons {
     width: 32px;
     justify-content: center;
@@ -49,6 +49,9 @@ export const User = styled.div`
   min-height: 54px;
   justify-content: space-between;
   border-bottom: 1px solid var(--ads-v2-color-border);
+  // overflow: hidden;
+  // padding-bottom: 1px;
+  margin-bottom: 4px;
 `;
 
 export const UserInfo = styled.div`
@@ -141,7 +144,7 @@ function WorkspaceInviteUsers(props: any) {
     <WorkspaceInviteWrapper>
       <InviteUsersForm {...props} />
       {isLoading ? (
-        <div className="pt-4 overflow-hidden">
+        <div className="p-4 overflow-hidden">
           <Spinner size="lg" />
         </div>
       ) : (
