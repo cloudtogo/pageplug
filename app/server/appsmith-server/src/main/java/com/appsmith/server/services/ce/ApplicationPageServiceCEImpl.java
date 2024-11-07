@@ -420,6 +420,15 @@ public class ApplicationPageServiceCEImpl implements ApplicationPageServiceCE {
                     })
                     .then(applicationService.createBaseApplication(application1));
         })
+            .flatMap(savedApplication -> {
+                final Application.AppLayout appLayout = savedApplication.getPublishedAppLayout();
+                if (appLayout != null && appLayout.getType() == Application.AppLayout.Type.MOBILE_FLUID) {
+                    final ApplicationAccessDTO applicationAccessDTO = new ApplicationAccessDTO();
+                    applicationAccessDTO.setPublicAccess(true);
+                    return this.applicationService.changeViewAccessForSingleBranchByBranchedApplicationId(savedApplication.getId(), applicationAccessDTO);
+                }
+                return Mono.just(savedApplication);
+            })
         .flatMap(savedApplication -> {
             PageDTO page = new PageDTO();
             page.setName(FieldName.DEFAULT_PAGE_NAME);

@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -48,6 +49,8 @@ public class UserSessionDTO {
     private String tenantId;
 
     private Object credentials;
+
+    private Map<String, Object> attributes;
 
     private Collection<? extends GrantedAuthority> authorities;
 
@@ -91,6 +94,7 @@ public class UserSessionDTO {
 
         session.credentials = authentication.getCredentials();
         session.authorities = authentication.getAuthorities();
+        session.attributes = user.getAttributes();
 
         if (authentication instanceof OAuth2AuthenticationToken) {
             session.authorizedClientRegistrationId =
@@ -129,6 +133,7 @@ public class UserSessionDTO {
         user.setTenantId(tenantId);
         user.setEmailVerified(Boolean.TRUE.equals(emailVerified));
         user.setEmailVerificationRequired(Boolean.TRUE.equals(emailVerificationRequired));
+        user.setAttributes(attributes);
 
         if (PASSWORD_PROVIDER.equals(authorizedClientRegistrationId)) {
             return new UsernamePasswordAuthenticationToken(user, credentials, authorities);

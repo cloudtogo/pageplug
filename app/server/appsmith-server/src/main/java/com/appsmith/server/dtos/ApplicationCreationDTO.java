@@ -9,12 +9,15 @@ import jakarta.validation.constraints.Size;
 import org.apache.commons.lang3.StringUtils;
 
 public record ApplicationCreationDTO(
-        @NotBlank @Size(max = 99) String workspaceId,
-        @NotBlank @Size(max = 99) String name,
-        @IconName String icon,
-        @Pattern(regexp = "#[A-F0-9]{6}") String color,
-        Application.AppPositioning positioningType,
-        Boolean showNavbar) {
+    @NotBlank @Size(max = 99) String workspaceId,
+    @NotBlank @Size(max = 99) String name,
+    @IconName String icon,
+    @Pattern(regexp = "#[A-F0-9]{6}") String color,
+    Application.AppPositioning positioningType,
+    Boolean showNavbar,
+    Application.AppLayout unpublishedAppLayout,
+    Application.AppLayout publishedAppLayout
+    ) {
 
     public Application toApplication() {
         final Application application = new Application();
@@ -22,6 +25,8 @@ public record ApplicationCreationDTO(
         application.setName(name.trim());
         application.setIcon(StringUtils.isBlank(icon) ? null : icon.trim());
         application.setColor(color);
+        application.setUnpublishedAppLayout(unpublishedAppLayout);
+        application.setPublishedAppLayout(publishedAppLayout);
 
         final ApplicationDetail applicationDetail = new ApplicationDetail();
         application.setApplicationDetail(applicationDetail);
