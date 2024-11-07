@@ -120,7 +120,7 @@ export const SpacedSubmitForm = styled.form`
 export const EmailFormWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 22px;
 `;
 
 export const FormActions = styled.div`

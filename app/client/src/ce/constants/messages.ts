@@ -48,7 +48,7 @@ export const ENTER_VIDEO_URL = () => `请填写有效的地址`;
 export const ENTER_AUDIO_URL = () => `请填写有效的地址`;
 
 export const FORM_VALIDATION_EMPTY_PASSWORD = () => `请输入密码`;
-export const FORM_VALIDATION_PASSWORD_RULE = () => `请输入6位字符以上的密码`;
+export const FORM_VALIDATION_PASSWORD_RULE = () => `请输入8位字符以上的密码`;
 export const FORM_VALIDATION_INVALID_PASSWORD = FORM_VALIDATION_PASSWORD_RULE;
 
 export const LOGIN_PAGE_SUBTITLE = () => `使用你的团队邮箱`;

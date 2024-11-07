@@ -155,16 +155,18 @@ export function ResetPassword(props: ResetPasswordProps) {
 
   const footerSection = (
     <div className="px-2 flex items-center justify-center text-center text-[color:var(--ads-v2\-color-fg)] text-[14px]">
-      <Icon name="arrow-left-line" size="md" />
-      &nbsp; Back to &nbsp;
+      {/* <Icon name="arrow-left-line" size="md" /> */}
+      {/* &nbsp; Back to &nbsp; */}
+      点击【
       <Link
         className="text-sm justify-center"
         kind="primary"
         target="_self"
         to={AUTH_LOGIN_URL}
       >
-        Sign in
+        立即登录
       </Link>
+      】
     </div>
   );
 
