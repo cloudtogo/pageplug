@@ -12,6 +12,7 @@ import type {
 } from "ee/constants/ReduxActionConstants";
 import { View } from "@tarojs/components";
 import history from "utils/history";
+// import { NAVIGATION_SETTINGS } from "constants/AppConstants";
 import { useWindowSizeHooks } from "utils/hooks/dragResizeHooks";
 import { NavLink } from "react-router-dom";
 import { getAppMode } from "ee/selectors/applicationSelectors";
@@ -72,10 +73,10 @@ export function TopInline(props: TopInlineProps) {
     const pageURL =
       appMode === APP_MODE.PUBLISHED
         ? viewerURL({
-          pageId: pagesMap[title].pageId,
+          basePageId: pagesMap[title].pageId,
         })
         : builderURL({
-          pageId: pagesMap[title].pageId,
+          basePageId: pagesMap[title].pageId,
         });
     return pageURL;
   };
@@ -253,35 +254,18 @@ export function TopInline(props: TopInlineProps) {
       className={`gap-x-2 flex items-center t--app-viewer-navigation-top-inline w-full`}
       ref={navRef}
     >
-      {appPages.map(
-        (page, index) =>
-          index < maxMenuItemsThatCanFit && (
-            <MenuItemContainer
-              isTabActive={pathname.indexOf(page.pageId) > -1}
-              key={page.pageId}
-            >
-              <MenuItem
-                navigationSetting={
-                  currentApplicationDetails?.applicationDetail
-                    ?.navigationSetting
-                }
-                page={page}
-                query={query}
-              />
-            </MenuItemContainer>
-          ),
-      )}
-
-      {appPages.length > maxMenuItemsThatCanFit && (
-        <MoreDropdownButton
-          key="more-button"
-          navigationSetting={
-            currentApplicationDetails?.applicationDetail?.navigationSetting
-          }
-          pages={appPages.slice(maxMenuItemsThatCanFit, appPages.length)}
-          query={query}
-        />
-      )}
+      <MyMenu
+        defaultSelectedKeys={activeMenuKeys.parentPaths}
+        selectedKeys={activeMenuKeys.parentPaths}
+        mode="horizontal"
+        theme={current_theme}
+        items={filterHiddenTreeData(initState.menudata)}
+        className="rootSideMenu pp-menu"
+        style={{
+          border: "none",
+          backgroundColor: "transparent",
+        }}
+      />
     </Container>
   );
 }
