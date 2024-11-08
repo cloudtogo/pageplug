@@ -1,4 +1,3 @@
-/* eslint-disable react/react-in-jsx-scope */
 import React, {
   useRef,
   useEffect,
@@ -6,19 +5,18 @@ import React, {
   useCallback,
   useMemo,
 } from "react";
-import { View } from "@tarojs/components";
 import { useLocation } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { getAppMode } from "ee/selectors/applicationSelectors";
-import { getCurrentPage } from "selectors/editorSelectors";
 import { APP_MODE } from "entities/App";
 import history from "utils/history";
 import { builderURL, viewerURL } from "ee/RouteBuilder";
+import { getCurrentPage } from "selectors/editorSelectors";
 import type {
   ApplicationPayload,
   Page,
 } from "ee/constants/ReduxActionConstants";
-import { Icon, IconSize } from "design-system-old";
+import { Icon } from "design-system";
 import useThrottledRAF from "utils/hooks/useThrottledRAF";
 import {
   get as _get,
@@ -30,10 +28,17 @@ import { NAVIGATION_SETTINGS } from "constants/AppConstants";
 import { useSelector } from "react-redux";
 import { getSelectedAppTheme } from "selectors/appThemingSelectors";
 import { getCurrentApplication } from "ee/selectors/applicationSelectors";
-import { Menu } from "antd";
+import { Menu, ConfigProvider } from "antd";
 import { mapClearTree, filterHiddenTreeData } from "utils/treeUtils";
 import { Container, ScrollBtnContainer } from "./TopStacked.styled";
-import { makeRouteNode, findPathNodes } from "../utils";
+import {
+  getMenuItemTextColor,
+  findPathNodes,
+  getSecondMenuItemBackgroundColorOnHover,
+  getMenuContainerBackgroundColor,
+} from "../utils";
+import styled from "styled-components";
+import { View } from "@tarojs/components";
 
 // TODO - @Dhruvik - ImprovedAppNav
 // Replace with NavigationProps if nothing changes
@@ -43,20 +48,74 @@ interface TopStackedProps {
   pages: Page[];
 }
 
+const MyMenu = styled(Menu)<{
+  theme: string;
+  primaryColor: string;
+  navColorStyle: any;
+}>`
+  color: "rgba(0,0,0,0.65)";
+  max-width: 90%;
+  .ant-menu-submenu {
+    font-weight: 500;
+  }
+  .ant-menu-item {
+    transition:
+      border-color 0.1s,
+      background 0.1s,
+      color 0s !important;
+  }
+  .ant-menu-title-content {
+    transition:
+      opacity 0.1s,
+      background 0.1s,
+      color 0s !important;
+  }
+  .ant-menu-submenu-popup > .ant-menu .ant-menu-submenu-title {
+    transition:
+      opacity 0.1s,
+      background 0.1s,
+      color 0s !important;
+  }
+  .anticon {
+    transition:
+      opacity 0.1s,
+      background 0.1s,
+      color 0s !important;
+  }
+  .ant-menu .ant-menu-item .ant-menu-item-icon + span,
+  .ant-menu .ant-menu-submenu-title .ant-menu-item-icon + span,
+  .ant-menu .ant-menu-item .anticon + span,
+  .ant-menu .ant-menu-submenu-title .anticon + span {
+    transition:
+      opacity 0s,
+      margin 0s,
+      color 0s;
+  }
+`;
+
+const MenuContainer = styled.div<{
+  isCenter?: boolean;
+}>`
+  max-width: 90%;
+  padding: 0px 8px;
+`;
+
 export function TopStacked(props: TopStackedProps) {
   const { currentApplicationDetails, pages } = props;
   const selectedTheme = useSelector(getSelectedAppTheme);
   const appMode = useSelector(getAppMode);
   const navColorStyle =
-    currentApplicationDetails?.applicationDetail?.navigationSetting
-      ?.colorStyle || NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT;
+    _get(
+      currentApplicationDetails,
+      "applicationDetail.navigationSetting.colorStyle",
+      "",
+    ) || NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT;
   const primaryColor = _get(
     selectedTheme,
     "properties.colors.primaryColor",
     "inherit",
   );
   const location = useLocation();
-  const { pathname } = location;
   const [query, setQuery] = useState("");
   const tabsRef = useRef<HTMLElement | null>(null);
   const [tabsScrollable, setTabsScrollable] = useState(false);
@@ -188,28 +247,15 @@ export function TopStacked(props: TopStackedProps) {
     };
   }, [viewerLayout, pages, currentApplicationDetails]);
 
+  const activeMenuKeys = useMemo(() => {
+    const currentPageId: any = currentPage?.pageId;
+    const parentPaths = findPathNodes(initState.menudata, currentPageId);
+    return { parentPaths };
+  }, [currentPage?.pageId, initState.menudata]);
+
   useEffect(() => {
     setQuery(window.location.search);
   }, [location]);
-  // // Mark default page as first page
-  // const appPages = useMemo(() => {
-  //   const list = _clone(pages);
-  //   if (list.length > 1) {
-  //     list.forEach((item, i) => {
-  //       if (item.isDefault) {
-  //         list.splice(i, 1);
-  //         list.unshift(item);
-  //       }
-  //     });
-  //   }
-  //   return list;
-  // }, [pages]);
-
-  const activeMenuKeys = useMemo(() => {
-    const currentPageName: any = currentPage?.pageName;
-    const parentPaths = findPathNodes(initState.menudata, currentPageName);
-    return { parentPaths };
-  }, [currentPage?.pageName, initState.menudata]);
 
   const setShowScrollArrows = useCallback(() => {
     if (tabsRef.current) {
@@ -260,17 +306,9 @@ export function TopStacked(props: TopStackedProps) {
     return clear;
   }, [isScrolling, isScrollingLeft]);
 
-  if (
-    !_size(initState.menudata) ||
-    (_size(initState.menudata) === 1 &&
-      !_get(initState.menudata, ["0", "children"], ""))
-  ) {
+  if (!_size(initState.menudata)) {
     return null;
   }
-  const menuItems = filterHiddenTreeData(initState.menudata);
-  const needHideMenu =
-    _size(menuItems) === 1 &&
-    _size(_get(_head(menuItems), "children", [])) === 0;
   const current_theme =
     _get(
       currentApplicationDetails,
@@ -279,9 +317,17 @@ export function TopStacked(props: TopStackedProps) {
     ) === "theme"
       ? "dark"
       : "light";
+  const isMenuPositionCenter =
+    _get(
+      currentApplicationDetails,
+      ["applicationDetail", "navigationSetting", "position"],
+      "",
+    ) === "center";
   return (
     <Container
-      className={`relative px-6 py-1 t--app-viewer-navigation-top-stacked ${needHideMenu ? "hidden" : ""}`}
+      className={`gap-x-2 flex items-center ${
+        isMenuPositionCenter ? "justify-center" : ""
+      } grow t--app-viewer-navigation-top-stack`}
       navColorStyle={navColorStyle}
       primaryColor={primaryColor}
     >
@@ -299,25 +345,43 @@ export function TopStacked(props: TopStackedProps) {
           visible={shouldShowLeftArrow}
         />
       )}
-
-      <div
-        className="w-full hidden-scrollbar gap-x-2  items-center"
-        onScroll={() => setShowScrollArrows()}
-        ref={measuredTabsRef}
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: primaryColor,
+          },
+          components: {
+            Menu: {
+              darkItemSelectedColor: primaryColor,
+              popupBg: "white",
+              darkSubMenuItemBg: "white",
+              darkItemColor: "rgba(255, 255, 255, 0.8)",
+              darkItemHoverColor: getMenuItemTextColor(
+                primaryColor,
+                navColorStyle,
+              ),
+            },
+          },
+        }}
       >
-        <Menu
-          defaultSelectedKeys={activeMenuKeys.parentPaths}
-          selectedKeys={activeMenuKeys.parentPaths}
-          mode="horizontal"
-          theme={current_theme}
-          items={menuItems}
-          className="rootSideMenu pp-menu"
-          style={{
-            border: "none",
-            backgroundColor: "transparent",
-          }}
-        />
-      </div>
+        <MenuContainer className="menu-container">
+          <MyMenu
+            className="rootSideMenu pp-menu"
+            // defaultSelectedKeys={activeMenuKeys.parentPaths}
+            selectedKeys={activeMenuKeys.parentPaths}
+            items={filterHiddenTreeData(initState.menudata)}
+            mode="horizontal"
+            navColorStyle={navColorStyle}
+            overflowedIndicatorPopupClassName="menupop"
+            primaryColor={primaryColor}
+            style={{
+              border: "none",
+              backgroundColor: "transparent",
+            }}
+            theme={current_theme}
+          />
+        </MenuContainer>
+      </ConfigProvider>
       {tabsScrollable && (
         <ScrollBtnContainer
           className="right-0 scroll-arrows"

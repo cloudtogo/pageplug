@@ -155,9 +155,7 @@ export function ResetPassword(props: ResetPasswordProps) {
 
   const footerSection = (
     <div className="px-2 flex items-center justify-center text-center text-[color:var(--ads-v2\-color-fg)] text-[14px]">
-      {/* <Icon name="arrow-left-line" size="md" /> */}
-      {/* &nbsp; Back to &nbsp; */}
-      点击【
+      已有账号？
       <Link
         className="text-sm justify-center"
         kind="primary"
@@ -166,7 +164,6 @@ export function ResetPassword(props: ResetPasswordProps) {
       >
         立即登录
       </Link>
-      】
     </div>
   );
 
@@ -182,15 +179,14 @@ export function ResetPassword(props: ResetPasswordProps) {
         <StyledFormGroup
           className="text-[color:var(--ads-v2\-color-fg)]"
           intent={error ? "danger" : "none"}
-          label={createMessage(RESET_PASSWORD_PAGE_PASSWORD_INPUT_LABEL)}
+          label={""}
         >
           <FormTextField
             disabled={submitSucceeded}
             name="password"
-            placeholder={createMessage(
-              RESET_PASSWORD_PAGE_PASSWORD_INPUT_PLACEHOLDER,
-            )}
+            placeholder={"请输入新密码"}
             type="password"
+            className="pp-height"
           />
         </StyledFormGroup>
         <Field component="input" name="email" type="hidden" />
@@ -201,6 +197,7 @@ export function ResetPassword(props: ResetPasswordProps) {
             isLoading={submitting}
             size="md"
             type="submit"
+            className="pp-height pp-font"
           >
             {createMessage(RESET_PASSWORD_SUBMIT_BUTTON_TEXT)}
           </Button>

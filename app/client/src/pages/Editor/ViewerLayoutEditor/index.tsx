@@ -99,6 +99,9 @@ const TreeContainer = styled.div`
     align-content: center;
     justify-content: center;
   }
+  && .ant-tree .ant-tree-switcher:before {
+    top: 12px;
+  }
 `;
 
 const ConfigContainer = styled.div`
@@ -530,7 +533,7 @@ function PagesEditor() {
           </div>
           <TreeContainer>
             <Tree
-              allowDrop={({ dropNode, dropPosition}) => {
+              allowDrop={({ dropNode, dropPosition }) => {
                 if (dropNode?.isPage && !dropPosition) {
                   return false;
                 }
@@ -593,8 +596,8 @@ function PagesEditor() {
                           icon="trash"
                           size={12}
                           onClick={(e) => {
-                            e.stopPropagation()
-                            onDeleteMenu(node)
+                            e.stopPropagation();
+                            onDeleteMenu(node);
                           }}
                         />
                       ) : null}
@@ -606,7 +609,7 @@ function PagesEditor() {
                         size={12}
                         onClick={(e) => {
                           e.stopPropagation();
-                          toggleHidePage(node)
+                          toggleHidePage(node);
                         }}
                       />
                     </div>

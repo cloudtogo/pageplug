@@ -23,6 +23,7 @@ import { HeaderRow, StyledNav } from "./TopHeader.styled";
 import TopInline from "../TopInline";
 import NavigationLogo from "ee/pages/AppViewer/NavigationLogo";
 import BackToAppsButton from "./BackToAppsButton";
+import BackToHomeButton from "ee/pages/AppViewer/BackToHomeButton";
 
 interface TopHeaderProps {
   currentApplicationDetails?: ApplicationPayload;
@@ -44,6 +45,13 @@ const TopHeader = (props: TopHeaderProps) => {
     setMenuOpen,
   } = props;
   const selectedTheme = useSelector(getSelectedAppTheme);
+  const isMinimal =
+    currentApplicationDetails?.applicationDetail?.navigationSetting
+      ?.navStyle === NAVIGATION_SETTINGS.NAV_STYLE.MINIMAL;
+  const logoConfiguration =
+    currentApplicationDetails?.applicationDetail?.navigationSetting
+      ?.logoConfiguration ||
+    NAVIGATION_SETTINGS.LOGO_CONFIGURATION.LOGO_AND_APPLICATION_TITLE;
   const navColorStyle =
     currentApplicationDetails?.applicationDetail?.navigationSetting
       ?.colorStyle || NAVIGATION_SETTINGS.COLOR_STYLE.LIGHT;
@@ -57,7 +65,7 @@ const TopHeader = (props: TopHeaderProps) => {
   );
   const basePageId = useSelector(getCurrentBasePageId);
   const editorURL = useHref(builderURL, { basePageId });
-
+  console.log("");
   return (
     <StyledNav
       className="relative js-appviewer-header t--app-viewer-navigation-header z-8"
@@ -79,12 +87,28 @@ const TopHeader = (props: TopHeaderProps) => {
             setMenuOpen={setMenuOpen}
           />
 
-          <ApplicationName
-            appName={currentApplicationDetails?.name}
-            navColorStyle={navColorStyle}
-            navStyle={navStyle}
-            primaryColor={primaryColor}
-          />
+          {currentUser?.username !== ANONYMOUS_USERNAME && (
+            <BackToHomeButton
+              navColorStyle={navColorStyle}
+              primaryColor={primaryColor}
+            />
+          )}
+
+          {!isMinimal &&
+            (logoConfiguration ===
+              NAVIGATION_SETTINGS.LOGO_CONFIGURATION
+                .LOGO_AND_APPLICATION_TITLE ||
+              logoConfiguration ===
+                NAVIGATION_SETTINGS.LOGO_CONFIGURATION
+                  .APPLICATION_TITLE_ONLY) && (
+              <ApplicationName
+                appName={currentApplicationDetails?.name}
+                forSidebar
+                navColorStyle={navColorStyle}
+                navStyle={navStyle}
+                primaryColor={primaryColor}
+              />
+            )}
         </section>
 
         {currentApplicationDetails?.applicationDetail?.navigationSetting

@@ -14,7 +14,6 @@ import { ThirdPartyLogin } from "ee/utils";
 const ThirdPartyAuthWrapper = styled.div`
   display: flex;
   gap: var(--ads-v2-spaces-3);
-  width: 100%;
   flex-wrap: wrap;
 `;
 
@@ -35,7 +34,7 @@ export const SocialLoginTypes = {
   OIDC: "oidc",
 };
 
-const handleClick = (url: any) => {
+const handleClick = (url: any, isDingtalk: boolean) => {
   ThirdPartyLogin(url);
 };
 
@@ -62,39 +61,36 @@ function SocialLoginButton(props: {
   if (redirectUrl != null) {
     url += `?redirectUrl=${encodeURIComponent(redirectUrl)}`;
   }
-
+  const { logo, name, url: requestUrl } = props;
+  const needRequest = ["wechat", "wecom"].includes(name);
   let buttonLabel = props.name;
 
   if (props.name && isTenantConfig(props.name)) {
     buttonLabel = tenantConfiguration[props.name];
   }
-
   return (
-    <StyledButton
-      href={url}
-      kind="secondary"
+    <a
+      href={!needRequest ? url : "#"}
       onClick={() => {
         let eventName: EventName = "LOGIN_CLICK";
         if (props.type === "SIGNUP") {
           eventName = "SIGNUP_CLICK";
         }
-
         AnalyticsUtil.logEvent(eventName, {
           loginMethod: props.name.toUpperCase(),
         });
       }}
-      renderAs="a"
-      size="md"
-      startIcon={
-        ["Google", "Github"].includes(props.name)
-          ? startIcon[props.name]
-          : "key-2-line"
-      }
     >
-      <div className="login-method" data-testid={`login-with-${props.name}`}>
-        {buttonLabel}
-      </div>
-    </StyledButton>
+      <LogoImg
+        alt="还没找到图片"
+        onClick={
+          needRequest
+            ? () => handleClick(requestUrl, name === "dingtalk")
+            : () => null
+        }
+        src={logo}
+      />
+    </a>
   );
 }
 

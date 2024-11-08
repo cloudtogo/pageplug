@@ -4,7 +4,7 @@ import styled from "styled-components";
 const StyledForm = styled(Form)`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 22px;
   .bp3-form-group {
     margin: 0;
   }

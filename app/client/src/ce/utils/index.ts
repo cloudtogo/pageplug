@@ -41,7 +41,11 @@ export function getSnippetUrl(
 ) {
   return url;
 }
-export const ThirdPartyLogin = (requestUrl: any): void => {
+export const ThirdPartyLogin = (
+  requestUrl: any,
+  param?: any,
+  config?: any,
+): void => {
   Api.get(requestUrl).then(({ data }) => {
     const url = data.redirectUrl;
     const newWindow: any = window.open(url, "_self");

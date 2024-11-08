@@ -16,7 +16,7 @@ module.exports = {
     //     protocol: "ws",
     //   },
     // },
-    port: 3005,
+    port: 8160,
     hot: true,
     proxy: {
       "/api": "http://10.10.13.43:30039"
