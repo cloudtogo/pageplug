@@ -1,4 +1,4 @@
-<p align="center">
+<p align="center" style="text-align: center;">
   <img src="static/pageplug/README/new-banner.png" width="361" height="110" alt="PagePlug">
 </p>
 
@@ -250,11 +250,11 @@ yarn dev:weapp
 
 我们对 PagePlug 有更远的目标及期望，我们非常欢迎开发者们为 PagePlug 开源贡献一份力量，相应也将给予贡献者激励以表认可与感谢。如果你对 PagePlug 有更多的想法，欢迎在 PP 社区中寻找你志同道合的伙伴一起尝试。[社区介绍及成长路线](https://docs.pageplug.cn/jie-shao/jia-ru-wo-men)
 
-PP Contributor：Catsoft、无名、茂行、Nina、洪涛、东哥隆咚锵、<a href="https://github.com/zhangjichengcc" style="display: inline-flex;"><img src="https://avatars.githubusercontent.com/u/22339151?v=4" style="border-radius: 50%; width: 18px; height: 18px; margin-right: 3px;">zhangjicheng</a>
+PP Contributor：Catsoft、无名、茂行、Nina、洪涛、东哥隆咚锵、[zhangjicheng](https://avatars.githubusercontent.com/u/22339151?v=4)
 
 PP Committer：xiaolu
 
-PP Maintainer：平头哥、kate、Bob、zhangjicheng
+PP Maintainer：平头哥、kate、Bob、[zhangjicheng](https://avatars.githubusercontent.com/u/22339151?v=4)
 
 PP Team Leader：DD（Owner）、Chris Huang、克力、Lyy
 
